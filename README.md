@@ -61,7 +61,7 @@ G1 X77.080 Y108.827 F3000.000 ; move to first perimeter point
 * As shown in transposer_LARGE.py, you can modify the default sizes for device features in Python. Ideally, primitives should be tuned to the limitations of the printer -- if you have a .2mm nozzle, you probably want channels whose width is a multiple of .2mm. Similarly, the Z-distance between the layers should be a multiple of the layer height you're using in Slic3r.
 * Device-agnostic settings such as the size and shape of the slide holder can be configured in the UF_Generator.scad file. If your slides don't fit in your holder, or are taller or shorter than the holder, try modifying the constants at the beginning of the file. Keep in mind that the slide height should remain a multiple of your chosen layer height.
 * Dialing in your settings reliable prints can be tough. If you're having trouble getting filament to stick to the glass slides, try increasing the temperature (bed and extruder), re-calibrating your z-axis, leveling your print bed, or using more/less/different hairspray.
-* A set of example Slic3r settings has been included in this repository. These work well with our Printrbot Simple Metal, but you'll probably have to tweak and play with things to get it to work for you.
+* A set of example Slic3r settings has been included in this repository, which can be loaded into Slic3r using File -> Load Config... These work well with our Printrbot Simple Metal, but you'll probably have to tweak and play with your settings for the best results!
 
 ### Disclaimer
 
