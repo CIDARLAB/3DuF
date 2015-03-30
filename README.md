@@ -1,7 +1,9 @@
 # 3DuF
-Create molds for microfluidic devices using your FDM 3D Printer.
+Create molds for microfluidic devices with  your 3D Printer.
 
-### Gather materials:
+## Before you print
+---
+### Gather materials
 You should be able to get everything you need for less than $1,000, and a lot less if you have access to a 3D printer already.
 
 1. FDM 3D Printer -- We use the [Printrbot Simple Metal](http://printrbot.com/product-category/3d-printers/simple-metal/) beacuse it's cheap, hackable, and supports easy nozzle changes. We got ours from [Amazon](http://amzn.com/B00IYC60IM) and modded it with a [heated bed](http://printrbot.com/shop/simple-metal-heated-bed/), an [ATX power supply](http://printrbot.com/shop/atx-power-supply/), and a [.2mm nozzle](http://printrbot.com/shop/tip-6-pack/) to improve bed adhesion and device resolution, respectively.
@@ -9,7 +11,7 @@ You should be able to get everything you need for less than $1,000, and a lot le
 3. Hairspray -- Used to get PLA to stick nicely to the glass slides. We use [Consort](http://amzn.com/B000052Y6I), but any alcohol-based spray will probably do. Water-based hairspray took a long time to evaporate and was less tacky afterwards, but YMMV.
 4. 2x3" Glass slides -- We bought [a whole lot of these]( http://amzn.com/B00EP0RUZ4) so we wouldn't have to worry about running out. Anything around that size and 1-1.2mm thick should do.
 
-### Get the software:
+### Get the software
 
 1. [Python](http://www.python.org/) -- For designing chips and placing primitives. I use 2.7, but 3.4 should also work.
 2. [OpenSCAD](http://www.openscad.org/) -- For rendering designs into 3D geometry. 
@@ -17,14 +19,16 @@ You should be able to get everything you need for less than $1,000, and a lot le
 4. [Octoprint](http://www.octoprint.org/) -- *Optional*, for running your 3D printer. Install it on a Raspberry Pi and experience the joy of browser-based printing!
 5. Clone this repo onto your computer.
 
+## Fabrication Process
+---
 ### Preparing a mold for printing
 
 1. Create a device design in Python by using one of the provided files (such as hello_device.py) as an example. Running the script from the src directory will generate separate OpenSCAD files for the layers in your device.
 2. Open the OpenSCAD files in the directory where they were generated. Hit F5 to render a preview, then F6 to create a printable model. Labels are very slow to render due to how OpenSCAD handles Minkowski sums, so if you're waiting a long time, consider removing them.
 3. After the model is rendered (it will change color in the preview window), use File -> Export -> Export as STL... to save it. You'll want to do this for each layer of the device, but not the MOCKUP.
 4. Open the .stl file for each layer model in Slic3r and generate G-code instructions for your printer. You can print multiple layers at once by dropping in multiple STL files and arranging them to fit. Save the G-code instructions somewhere you can find them.
-5. *Temporary* -- Manually insert a PAUSE command into the G-code after the holder has printed so that you have time to place and prepare the glass slides. The pause sequence should look something like this:
-```
+5. **Temporary** -- Manually insert a PAUSE command into the G-code after the holder has printed so that you have time to place and prepare the glass slides. The pause sequence should look something like this:
+   ```
 G1 Z1.300 F3000.000 ; move to next layer (11)
 G1 E3.33423 F4800.00000 ; retract
 G92 E0 ; reset extrusion distance
@@ -33,11 +37,11 @@ G1 X0 Y150 Z20 F3000;                     MODIFIED -- lift the head and move it 
 M0;                                       MODIFIED -- pause the print so that slides can be placed
 G1 Z1.500 F6000.000;                      MODIFIED -- move the head back into place. Pause sequence ends!
 G1 X77.080 Y108.827 F3000.000 ; move to first perimeter point
-```
+   ```
 
-You will want to insert it after the last holder layer, which will depend on your print settings and slide size. For example, if your slides are 1 mm tall, and you are printing in .1mm layers, you'll want to insert the pause after the 10th layer, which you can find by searching the G-code for "move to next layer (11)". You may need to adjust the Z-height to avoid hitting the slide with the nozzle.  
+   You will want to insert it after the last holder layer, which will depend on your print settings and slide size. For example, if your slides are 1 mm tall, and you are printing in .1mm layers, you'll want to insert the pause after the 10th layer, which you can find by searching the G-code for "move to next layer (11)". You may need to adjust the Z-height to avoid hitting the slide with the nozzle.  
 
-We're working on making this part easier by looking into automatic G-code post-processing! Hang tight.
+   We're working on making this part easier by looking into automatic G-code post-processing! Hang tight.
 
 ### Printing a mold
 1. Send your modified G-code file to your printer, either using Octoprint or by transferring it to an SD card.
@@ -49,6 +53,8 @@ We're working on making this part easier by looking into automatic G-code post-p
 7. Once the print finishes, remove the slide and holder -- you may need to scrape it off using a razor blade or other thin tool, depending on how well it is stuck to the bed.
 8. Assemble the layers of your mold. You may need to add standoff features to the corners to ensure that the glass slides are held the proper distance from one another. 
 9. You're ready for PDMS casting! Stay tuned, we're working on this process and we'll be writing up a guide soon.
+
+---
 
 ### Tips and tweaking
 1. Nozzle size makes a big difference in minimum mold resolution. With our .2mm nozzle, we are able to reliably print .2mm wide channels at .1mm (one layer) tall, which approaches the theoretical limits of the printer and slicing software.
