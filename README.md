@@ -16,7 +16,7 @@ You should be able to get everything you need for less than $1,000, and a lot le
 1. [Python](http://www.python.org/) 2.7 -- For designing chips and placing primitives. 
 2. [OpenSCAD](http://www.openscad.org/) -- For rendering designs into 3D geometry. 
 3. [Slic3r](http://www.slic3r.org/) -- For slicing 3D models into printer instructions.
-4. [Octoprint](http://www.octoprint.org/) -- *Optional*, for running your 3D printer. Install it on a Raspberry Pi and experience the joy of browser-based printing!
+4. [Octoprint](http://www.octoprint.org/) -- **Optional**, for running your 3D printer. Install it on a Raspberry Pi and experience the joy of browser-based printing!
 5. Clone this repo onto your computer.
 
 ## Fabrication Process
