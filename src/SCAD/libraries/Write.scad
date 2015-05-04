@@ -33,7 +33,7 @@
 	t = 1; 			//mm letter thickness
 	space =1; 			//extra space between characters in (character widths)
 	rotate=0;			// text rotation (clockwise)
-	font = "./orbitron.dxf";	//default for aditional fonts
+	font = "orbitron.dxf";	//default for aditional fonts
 
 
 // write cube defaults

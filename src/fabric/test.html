@@ -1,0 +1,49 @@
+<script src="fabric.js"></script>
+
+<div class="block">
+  <canvas id="c" width="768" height="520"></canvas>
+  <a href="" id="link" download="test.JSON">Download JSON</a>
+
+<script>
+
+    document.getElementById('link').onclick = function(code) {
+      this.href = 'data:text/plain;charset=utf-8,'
+        + encodeURIComponent(JSON.stringify(canvas));
+    };
+ 
+  var canvas = new fabric.Canvas('c');
+  var selectedItem = null;
+  var valves = [];
+
+  document.addEventListener('keydown', function(event){
+  	if (event.keyCode == 8 || event.keyCode == 46){
+  		if (selectedItem != null){
+
+  			selectedItem.remove();
+  		}
+  	}
+  	else if (event.keyCode == 16){
+  		alert(JSON.stringify(canvas));
+  	}
+  });
+
+  var border = new fabric.Rect({ width:758, height:510, fill:'white', strokeWidth: 5, stroke:'black'});
+  canvas.add(border);
+  canvas.item(0).selectable = false;
+  canvas.on('mouse:down', function(options){
+  	if (!options.target || options.target == border)
+  	{
+  		mouse_pos = canvas.getPointer(options.e);
+  		newCircle = new fabric.Circle({radius: 30, fill: '#f55', top: 100, left: 100, lockUniScaling: true, lockRotation: true, centeredScaling: true, left: mouse_pos.x - 30, top: mouse_pos.y - 30});
+  		valves.push(newCircle);
+  		if (mouse_pos.x >= 30|| mouse_pos.x < 758 - 30 && mouse_pos.y >= 30 && mouse_pos.y < 510 - 30){
+  			canvas.add(newCircle);
+  		}
+  		selectedItem = null;
+  	}
+  	else {
+  		selectedItem = options.target;
+  	}
+  });
+</script>
+</div>

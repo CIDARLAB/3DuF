@@ -10,9 +10,6 @@ SLIDE_Z_OFFSET = 1.20;
 BORDER_HEIGHT = 1.20;
 HOLDER_SKIRT_WIDTH = .8;
 HOLDER_SKIRT_HEIGHT = .2;
-LABEL_SCALE_X = 1.2;
-LABEL_SCALE_Y = 1.2;
-BOLD = .3;
 FIRST_LAYER_COLOR =  [0,.5,1];
 OTHER_LAYER_COLOR = [1,.2,.1];
 
@@ -278,7 +275,8 @@ else{
 	}
 }
 	//slide_z_offset();
-	single_slide_holder();
-	slide_holder_skirt();
-	color([1,1,1,.5]) %slide_mockup();
+	
+    //single_slide_holder();
+	//slide_holder_skirt();
+	//color([1,1,1,.5]) %slide_mockup();
 
