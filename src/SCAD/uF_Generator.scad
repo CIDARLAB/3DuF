@@ -1,5 +1,3 @@
-include <Write.scad>;
-
 $fn = 20;
 
 BORDER_WIDTH = .1;
@@ -11,8 +9,8 @@ BORDER_HEIGHT = 1.20;
 HOLDER_SKIRT_WIDTH = .8;
 HOLDER_SKIRT_HEIGHT = .2;
 LABEL_SCALE_X = 1.2;
-LABEL_SCALE_Y = 1.2;
-BOLD = .3;
+LABEL_FONT = "Liberation Sans:style=Bold";
+LABEL_SCALE = 3;
 FIRST_LAYER_COLOR =  [0,.5,1];
 OTHER_LAYER_COLOR = [1,.2,.1];
 
@@ -124,7 +122,7 @@ module valve(point, start_radius, end_radius, valve_height, flip, height_offset)
 }
 
 
-module label(point, text, height, flip, height_offset){
+module label(point, label_text, height, flip, height_offset){
 	col = height_offset == 0 ? FIRST_LAYER_COLOR : OTHER_LAYER_COLOR;
 
 	translate([point[0], point[1], height_offset])
@@ -133,16 +131,16 @@ module label(point, text, height, flip, height_offset){
 		{
 			translate([0,0,-height])
 			{
-				scale([LABEL_SCALE_X,LABEL_SCALE_Y,height]){
-					color(col) write(text, bold=BOLD);
+				scale([1,1,height]){
+					color(col) text(label_text, size=LABEL_SCALE, font=LABEL_FONT);
 				}
 			}
 		}
 		else
 		{	
-			scale([LABEL_SCALE_X,LABEL_SCALE_Y,height])
+			scale([1,1,height])
 			{
-				color(col) write(text, bold=BOLD);
+				color(col) text(label_text, size=LABEL_SCALE, font=LABEL_FONT);
 			}
 		}	
 	}	

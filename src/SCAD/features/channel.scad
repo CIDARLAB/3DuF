@@ -28,4 +28,4 @@ module channel(start, end, channel_width, channel_height, flip, height_offset){
 	}
 }
 
-//channel([1,2],[3,4],1,5,false,0);
+channel([0,0],[0,20],2,.5, false,0);
