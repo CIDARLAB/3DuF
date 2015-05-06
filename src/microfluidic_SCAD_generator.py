@@ -495,12 +495,13 @@ class Layer:
 
 	def all_feature_IDs(self):
 		all_IDs = []
-		all_IDs.append(self.channels)
-		all_IDs.append(self.ports)
-		all_IDs.append(self.vias)
-		all_IDs.append(self.valves)
-		all_IDs.append(self.standoffs)
-		all_IDs.append(self.labels)
+		all_IDs = all_IDs + self.channels
+		all_IDs = all_IDs + self.ports
+		all_IDs = all_IDs + self.vias
+		all_IDs = all_IDs + self.labels
+		all_IDs = all_IDs + self.standoffs
+		all_IDs = all_IDs + self.valves
+
 
 		return all_IDs
 
