@@ -133,4 +133,4 @@ standoff_2 = ufgen.create_standoff(offset_point_2, "f")
 standoff_3 = ufgen.create_standoff(offset_point_3, "f")
 standoff_4 = ufgen.create_standoff(offset_point_4, "f")
 
-ufgen.output_all_SCAD(False)
+ufgen.output_all_SCAD(True)

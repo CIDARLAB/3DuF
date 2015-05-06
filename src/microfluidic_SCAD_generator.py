@@ -1,5 +1,6 @@
 import uuid
 import os
+import json
 
 class UF_Generator:
 
@@ -22,7 +23,8 @@ class UF_Generator:
 		self.valve_radius_1 = 1.2
 		self.valve_radius_2 = 1
 
-		self.output_filename_suffix = ".scad"
+		self.scad_filename_suffix = ".scad"
+		self.json_filename_suffix = ".json"
 		self.scad_functions_filename = scad_functions_filename
 		self.device_name = device_name
 
@@ -34,6 +36,71 @@ class UF_Generator:
 		self.valves = {}
 		self.standoffs = {}
 		self.labels = {}
+
+	def device_data(self):
+		device_data = {}
+		device_data["width"] = self.width
+		device_data["height"] = self.height
+		device_data["name"] = self.device_name
+
+		return device_data
+
+	def import_device_data(self, device_data):
+		self.width = device_data["width"]
+		self.height = device_data["height"]
+		self.device_name = device_data["name"]
+
+	def layer_data(self):
+		layer_data = {}
+		for layer in self.layers.values():
+			layer_data[layer.ID] = layer.JSON_data()
+		return layer_data
+
+	def import_layer_data(self, layer_data):
+		self.layers = {}
+		for layer in layer_data:
+			self.layers[layer["ID"]] = Layer(layer["z_offset"], layer["ID"], layer["flip"], self)
+
+	def feature_data(self):
+		feature_data = {}
+		for channel in self.channels.values():
+			feature_data[channel.ID] = channel.JSON_data()
+		for port in self.ports.values():
+			feature_data[port.ID] = port.JSON_data()
+		for standoff in self.standoffs.values():
+			feature_data[standoff.ID] = standoff.JSON_data()
+		for via in self.vias.values():
+			feature_data[via.ID] = via.JSON_data()
+		for valve in self.valves.values():
+			feature_data[valve.ID] = valve.JSON_data()
+		for label in self.labels.values():
+			feature_data[label.ID] = label.JSON_data()
+
+		return feature_data
+
+	def import_feature_data(self, feature_data):
+		for feature in feature_data:
+			feature_type = feature["type"]
+			if (feature_type == "channel"):
+				self.create_channel(feature["start"], feature["end"], feature["layer"], feature["height"], feature["width"], feature["ID"])
+			elif (feature_type == "port"):
+				self.create_port(feature["position"], feature["layer"], feature["height"], feature["radius"], feature["ID"])
+			elif (feature_type == "standoff"):
+				self.create_standoff(feature["position"], feature["layer"], feature["height"], feature["radius1"], feature["radius2"], feature["ID"])
+			elif (feature_type == "via:"):
+				self.create_via(feature["position"], feature["layer"], feature["height"], feature["radius1"], feature["radius2"], feature["ID"])
+			elif (feature_type == "valve"):
+				self.create_valve(feature["position"], feature["layer"], feature["height"], feature["radius1"], feature["radius2"], feature["ID"])
+			elif (feature_type == "label"):
+				self.create_label(feature["position"], feature["layer"], feature["height"], feature["label_text"], feature["ID"])
+
+	def JSON_data(self):
+		data = {}
+		data["device"] = self.device_data()
+		data["layers"] = self.layer_data()
+		data["features"] = self.feature_data()
+
+		return json.dumps(data)
 
 	def port_height(self):
 		return self.channel_height
@@ -96,6 +163,27 @@ class UF_Generator:
 			pass
 		return subdirectory
 
+	def output_JSON_file(self, filename):
+		sub = self.make_output_folder()
+		f = open(os.path.join(sub, filename), 'w')
+		f.write(self.JSON_data())
+		f.close()
+
+	@staticmethod
+	def import_JSON_file(filename):
+		f = open(filename, 'r')
+		data = json.loads(f.read())
+		f.close()
+		device_data = data["device"]
+		feature_data = data["features"]
+		layer_data = data["layers"]
+
+		UF = UF_Generator()
+		UF.import_device_data(device_data)
+		UF.import_layer_data(layer_data)
+		UF.import_feature_data(feature_data)
+
+		return UF
 
 	def output_SCAD_file(self, filename, channels, ports, vias, valves, standoffs, labels, flip, offset, width, height):
 		output = ""
@@ -120,7 +208,7 @@ class UF_Generator:
 	def output_layer_SCAD(self, layer_name, label_layer = True):
 		layer = self.layers[layer_name]
 		layer_label_text = self.device_name + "_" + layer.ID
-		layer_filename = layer_label_text + self.output_filename_suffix
+		layer_filename = layer_label_text + self.scad_filename_suffix
 		if (label_layer):
 			if (layer.flip):
 				self.create_label(self.label_flipped_position(), layer.ID, layer_label_text)
@@ -130,17 +218,18 @@ class UF_Generator:
 		self.output_SCAD_file(layer_filename, layer.channel_list(), layer.port_list(), layer.via_list(), layer.valve_list(), layer.standoff_list(), layer.label_list(), layer.flip, layer.offset, self.width, self.height)
 
 	def output_mockup_SCAD(self):
-		new_filename = self.device_name + "_MOCKUP" +  self.output_filename_suffix
-		self.output_SCAD_file(new_filename, self.channels.values(), self.ports.values(), self.vias.values(), self.valves.values(), self.standoffs.values(), self.labels.values(), False, 0, self.width, self.height)
+		new_scad_filename = self.device_name + "_MOCKUP" +  self.scad_filename_suffix
+		self.output_SCAD_file(new_scad_filename, self.channels.values(), self.ports.values(), self.vias.values(), self.valves.values(), self.standoffs.values(), self.labels.values(), False, 0, self.width, self.height)
 
 	def output_all_SCAD(self, label_layers = True):
 		for layer in self.layers.keys():
 			self.output_layer_SCAD(layer, label_layers)
 		self.output_mockup_SCAD()
+		self.output_JSON_file(self.device_name + self.json_filename_suffix)
 
 	def create_channel(self, start, end, layer, height = None, width = None, ID = None):
 		if ID == None:
-				ID = uuid.uuid4()
+				ID = uuid.uuid4().urn
 		if height == None:
 			height = self.channel_height
 		if width == None:
@@ -151,7 +240,7 @@ class UF_Generator:
 
 	def create_port(self, position, layer, height = None, radius = None, ID = None):
 		if ID == None:
-			ID = uuid.uuid4()
+			ID = uuid.uuid4().urn
 		if height == None:
 			height = self.port_height()
 		if radius == None:
@@ -162,7 +251,7 @@ class UF_Generator:
 
 	def create_standoff(self, position, layer, height = None, radius1 = None, radius2 = None, ID = None):
 		if ID == None:
-			ID = uuid.uuid4()
+			ID = uuid.uuid4().urn
 		if height == None:
 			height = self.standoff_height()
 		if radius1 == None:
@@ -175,7 +264,7 @@ class UF_Generator:
 
 	def create_via(self, position, layer, height = None, radius1 = None, radius2 = None, ID = None):
 		if ID == None:
-			ID = uuid.uuid4()
+			ID = uuid.uuid4().urn
 		if height == None:
 			height = self.via_height()
 		if radius1 == None:
@@ -188,7 +277,7 @@ class UF_Generator:
 
 	def create_valve(self, position, layer, height = None, radius1 = None, radius2 = None, ID = None):
 		if ID == None:
-			ID = uuid.uuid4()
+			ID = uuid.uuid4().urn
 		if height == None:
 			height = self.valve_height()
 		if radius1 == None:
@@ -201,7 +290,7 @@ class UF_Generator:
 
 	def create_label(self, position, layer, text, height = None, ID = None):
 		if ID == None:
-			ID = uuid.uuid4()
+			ID = uuid.uuid4().urn
 		if height == None:
 			height = self.label_height
 		target_layer = self.layers[layer]
@@ -223,11 +312,25 @@ class Channel:
 		self.start = start
 		self.end = end
 		self.width = width
+		self.ID = ID
 		self.height = height
 		self.flip = layer.flip
 
 	def SCAD_data(self):
 		return [self.start, self.end, self.width, self.height, self.flip, self.layer.offset]
+
+	def JSON_data(self):
+		data = {}
+		data["type"] = "channel"
+		data["layer"] = self.layer.ID
+		data["start"] = self.start
+		data["end"] = self.end
+		data["width"] = self.width
+		data["height"] = self.height
+		data["ID"] = self.ID
+
+		return data
+
 
 class Port:
 
@@ -241,6 +344,18 @@ class Port:
 
 	def SCAD_data(self):
 		return [self.position, self.radius, self.height, self.flip, self.layer.offset]
+
+	def JSON_data(self):
+		data = {}
+		data["type"] = "port"
+		data["layer"] = self.layer.ID
+		data["position"] = self.position
+		data["radius"] = self.radius
+		data["height"] = self.height
+		data["ID"] = self.ID
+
+		return data
+
 
 class Standoff:
 
@@ -256,6 +371,19 @@ class Standoff:
 	def SCAD_data(self):
 		return [self.position, self.radius1, self.radius2, self.height, self.flip, self.layer.offset]
 
+	def JSON_data(self):
+		data = {}
+		data["type"] = "standoff"
+		data["layer"] = self.layer.ID
+		data["position"] = self.position
+		data["radius1"] = self.radius1
+		data["radius2"] = self.radius2
+		data["height"] = self.height
+		data["ID"] = self.ID
+
+		return data
+
+
 class Via:
 
 	def __init__(self, position, layer, height, radius1, radius2, ID):
@@ -270,12 +398,25 @@ class Via:
 	def SCAD_data(self):
 		return [self.position, self.radius1, self.radius2, self.height, self.flip, self.layer.offset]
 
+	def JSON_data(self):
+		data = {}
+		data["type"] = "via"
+		data["layer"] = self.layer.ID
+		data["position"] = self.position
+		data["radius1"] = self.radius1
+		data["radius2"] = self.radius2
+		data["height"] = self.height
+		data["ID"] = self.ID
+
+		return data
+
 class Valve:
 
 	def __init__(self, position, layer, height, radius1, radius2, ID):
 		self.position = position
 		self.radius1 = radius1
 		self.radius2 = radius2
+		self.ID = ID
 		self.height = height
 		self.layer = layer
 		self.flip = layer.flip
@@ -283,17 +424,42 @@ class Valve:
 	def SCAD_data(self):
 		return [self.position, self.radius1, self.radius2, self.height, self.flip, self.layer.offset]# + channel_height]
 
+	def JSON_data(self):
+		data = {}
+		data["type"] = "valve"
+		data["layer"] = self.layer.ID
+		data["position"] = self.position
+		data["radius1"] = self.radius1
+		data["radius2"] = self.radius2
+		data["height"] = self.height
+		data["ID"] = self.ID
+
+		return data
+
+
 class Label:
 
 	def __init__(self, position, layer, text, height, ID):
 		self.position = position
 		self.height = height
 		self.text = text
+		self.ID = ID
 		self.layer = layer
 		self.flip = layer.flip
 
 	def SCAD_data(self):
 		return [self.position, self.text, self.height, self.flip, self.layer.offset]
+
+	def JSON_data(self):
+		data = {}
+		data["type"] = "label"
+		data["layer"] = self.layer.ID
+		data["position"] = self.position
+		data["height"] = self.height
+		data["label_text"] = self.text
+		data["ID"] = self.ID
+
+		return data
 
 class Layer:
 
@@ -327,4 +493,22 @@ class Layer:
 	def label_list(self):
 		return [self.generator.labels[x] for x in self.labels]
 
+	def all_feature_IDs(self):
+		all_IDs = []
+		all_IDs.append(self.channels)
+		all_IDs.append(self.ports)
+		all_IDs.append(self.vias)
+		all_IDs.append(self.valves)
+		all_IDs.append(self.standoffs)
+		all_IDs.append(self.labels)
 
+		return all_IDs
+
+	def JSON_data(self):
+		data = {}
+		data["flip"] = self.flip
+		data["z_offset"] = self.offset
+		data["ID"] = self.ID
+		data["features"] = self.all_feature_IDs()
+
+		return data

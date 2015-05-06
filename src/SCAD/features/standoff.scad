@@ -1,18 +1,18 @@
-module standoff(point, start_radius, end_radius, standoff_height, flip, height_offset){
-	translate([point[0], point[1], height_offset])
+module standoff(position, radius1, radius2, height, flip, z_offset){
+	translate([position[0], position[1], z_offset])
 	{
 		if(flip)
 		{
 			rotate([180,0,0])
 			{
-				cylinder(standoff_height, r1 = start_radius, r2 = end_radius);
+				cylinder(height, r1 = radius1, r2 = radius2);
 			}
 		}
 		else
 		{
-            cylinder(standoff_height, r1 = start_radius, r2 = end_radius);
+            cylinder(height, r1 = radius1, r2 = radius2);
 		}
 	}
 }
 
-//standoff([1,2],1,.5,.5,false,0);
+standoff(position = [1,2],radius1 = 1,radius2 = .5,height = .5, flip=false,z_offset=40);

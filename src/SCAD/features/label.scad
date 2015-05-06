@@ -3,10 +3,8 @@ include <../libraries/Write.scad>;
 LABEL_SCALE = 3;
 LABEL_FONT = "Liberation Sans:style=Bold";
 
-
-
-module label(point, label_text, height, flip, height_offset){
-	translate([point[0], point[1], height_offset])
+module label(position, label_text, height, flip, z_offset){
+	translate([position[0], position[1], z_offset])
 	{
 		if (flip)
 		{
@@ -27,4 +25,4 @@ module label(point, label_text, height, flip, height_offset){
 	}	
 }
 
-//label([0,0],"foobarbaz",.05,false,1);
+label(position=[0,0],label_text="foobarbaz",height=.05,flip=false,z_offset=1);

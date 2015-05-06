@@ -1,17 +1,17 @@
-module valve(point, start_radius, end_radius, valve_height, flip, height_offset){
-	translate([point[0], point[1], height_offset])
+module valve(position, radius1, radius2, height, flip, z_offset){
+	translate([position[0], position[1], z_offset])
 	{
 		if (flip)
 		{
 			rotate([0, 180, 0]){
-				cylinder(valve_height, r1 = start_radius, r2 = end_radius);
+				cylinder(height, r1 = radius1, r2 = radius2);
 			}
 		}
 		else
 		{
-			cylinder(valve_height, r1 = start_radius, r2 = end_radius);
+			cylinder(height, r1 = radius1, r2 = radius2);
 		}
 	}
 }
 
-//valve([1,2],1,.75,.5,true,1);
+valve(position = [1,2], radius1 = 1,radius2 = .75, height = .5, flip = true, z_offset = 1);

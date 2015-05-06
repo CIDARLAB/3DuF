@@ -1,18 +1,18 @@
-module via(point, start_radius, end_radius, via_height, flip, height_offset){
-	translate([point[0], point[1], height_offset])
+module via(position, radius1, radius2, height, flip, z_offset){
+	translate([position[0], position[1], z_offset])
 	{
 		if(flip)
 		{
 			rotate([180,0,0])
 			{
-                cylinder(via_height, r1 = start_radius, r2 = end_radius);
+                cylinder(height, r1 = radius1, r2 = radius2);
 			}
 		}
 		else 
 		{
-			cylinder(via_height, r1 = start_radius, r2 = end_radius);
+			cylinder(height, r1 = radius1, r2 = radius2);
 		}
 	}
 }
 
-//via([1,2],.5,.4,.5,false,0);
+via(position = [1,2],radius1 = .5,radius2 = .4,height=.5,flip=false,z_offset=0);

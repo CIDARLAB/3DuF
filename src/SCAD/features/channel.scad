@@ -1,4 +1,4 @@
-module channel(start, end, channel_width, channel_height, flip, height_offset){
+module channel(start, end, width, height, flip, z_offset){
 	
 	dX = end[0] - start[0];
 	dY = end[1] - start[1];
@@ -6,14 +6,14 @@ module channel(start, end, channel_width, channel_height, flip, height_offset){
 	dXPow = pow(dX,2);
 	dYPow = pow(dY,2);
 	length = sqrt(dXPow + dYPow);
-	translate([start[0]+(channel_width/2)*sin(angle_deg),start[1]-cos(angle_deg)*(channel_width/2), height_offset]){
+	translate([start[0]+(width/2)*sin(angle_deg),start[1]-cos(angle_deg)*(width/2), z_offset]){
 		if (flip)
 		{	
-			translate([0,0,-channel_height])
+			translate([0,0,-height])
 			{
 				rotate([0,0,angle_deg])
 					{
-					cube([length+channel_width/2,channel_width,channel_height]);
+					cube([length+width/2,width,height]);
 				}
 			
 			}
@@ -22,10 +22,10 @@ module channel(start, end, channel_width, channel_height, flip, height_offset){
 		{
 			rotate([0,0,angle_deg])
 			{
-				cube([length+channel_width/2,channel_width,channel_height]);
+				cube([length+width/2,width,height]);
 			}
 		}
 	}
 }
 
-channel([0,0],[0,20],2,.5, false,0);
+channel(start=[0,0],end=[0,20],width=2,height=.5,flip= false,z_offset=0);

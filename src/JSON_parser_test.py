@@ -26,7 +26,10 @@ UF.create_layer(0,"flow", flip=False)
 for port in ports:
 	UF.create_standoff([port[0][0]/10, dev_height - port[0][1]/10], "flow", radius1=(port[1]/10), radius2 = (port[1]/10)/1.5)
 
+
+#print(UF.JSON_data())
 UF.output_all_SCAD(label_layers = False)
+
 """
 UF = UF_Generator("hello_device", width=75.8, height=51)
 UF.create_layer(0, "flow") 

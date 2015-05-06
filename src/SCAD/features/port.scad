@@ -1,17 +1,17 @@
-module port(point, port_radius, port_height, flip, height_offset){
-	translate([point[0],point[1],height_offset]){
+module port(position, radius, height, flip, z_offset){
+	translate([position[0],position[1],z_offset]){
 		if (flip)
 		{
 			rotate([180,0,0])
 			{
-				cylinder(port_height, r = port_radius);
+				cylinder(height, r = radius);
 			}
 		}
 		else
 		{
-			cylinder(port_height, r = port_radius);
+			cylinder(height, r = radius);
 		}
 	}
 }
 
-//port([1,2],1.2,false,0);
+port(position=[1,2],radius=1, height=.2,flip=false,z_offset=0);
