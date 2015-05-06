@@ -11,7 +11,7 @@ module label(position, label_text, height, flip, z_offset){
 			translate([0,0,-height])
 			{
 				scale([1,1,height]){
-					text(label_text, size=LABEL_SCALE, font=LABEL_FONT);
+					%text(label_text, size=LABEL_SCALE, font=LABEL_FONT);
 				}
 			}
 		}
@@ -19,7 +19,7 @@ module label(position, label_text, height, flip, z_offset){
 		{	
 			scale([1,1,height])
 			{
-				text(label_text, size=LABEL_SCALE, font=LABEL_FONT);
+				%text(label_text, size=LABEL_SCALE, font=LABEL_FONT);
 			}
 		}	
 	}	

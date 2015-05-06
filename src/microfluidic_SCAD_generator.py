@@ -297,10 +297,10 @@ class UF_Generator:
 		target_layer.labels.append(ID)
 		self.labels[ID] = Label(position, target_layer, text, height, ID)
 
-	def create_layer(self, offset, ID = None, flip = False):
+	def create_layer(self, offset, ID = None, flip = False, color=[.5,.5,.5,1]):
 		if ID == None:
 			ID = uuid.uuid4()
-		self.layers[ID] = Layer(offset, ID, flip, self)
+		self.layers[ID] = Layer(offset, ID, flip, self, color)
 
 class Channel:
 	
@@ -463,7 +463,9 @@ class Label:
 
 class Layer:
 
-	def __init__(self, offset, ID, flip, generator):
+	def __init__(self, offset, ID, flip, generator, color):
+		
+		self.color = color
 		self.flip = flip;
 		self.channels = []
 		self.ports = []
@@ -502,7 +504,6 @@ class Layer:
 		all_IDs = all_IDs + self.standoffs
 		all_IDs = all_IDs + self.valves
 
-
 		return all_IDs
 
 	def JSON_data(self):
@@ -510,6 +511,7 @@ class Layer:
 		data["flip"] = self.flip
 		data["z_offset"] = self.offset
 		data["ID"] = self.ID
+		data["color"] = self.color
 		data["features"] = self.all_feature_IDs()
 
 		return data

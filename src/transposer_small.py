@@ -2,8 +2,8 @@ import microfluidic_SCAD_generator
 
 ufgen = microfluidic_SCAD_generator.UF_Generator("VT_SMALL")
 
-c = ufgen.create_layer(ufgen.layer_offset, "c", True)
-f = ufgen.create_layer(0, "f")
+c = ufgen.create_layer(ufgen.layer_offset, "c", True, color="Red")
+f = ufgen.create_layer(0, "f", color="Blue")
 
 x_offset_start = 30
 y_offset_start = 20
@@ -120,4 +120,4 @@ standoff_2 = ufgen.create_standoff(offset_point_2, "f")
 standoff_3 = ufgen.create_standoff(offset_point_3, "f")
 standoff_4 = ufgen.create_standoff(offset_point_4, "f")
 
-ufgen.output_all_SCAD(False)
+ufgen.output_all_SCAD(True)

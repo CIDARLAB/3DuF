@@ -6,6 +6,8 @@ SLIDE_Z_OFFSET = 1.20;
 BORDER_HEIGHT = 1.20;
 HOLDER_SKIRT_WIDTH = .8;
 HOLDER_SKIRT_HEIGHT = .2;
+HOLDER_COLOR = [.5,.5,.5,1];
+SLIDE_COLOR = [.75,.75,1,.5];
 
 module slide_holder_skirt(width, height)
 {
@@ -56,10 +58,12 @@ module slide_mockup(width,height){
 }
 
 module preset_mold(width, height){
-    
+    color(HOLDER_COLOR)
+    {
     single_slide_holder(width, height);
 	slide_holder_skirt(width,height);
-	color([1,1,1,.5]) %slide_mockup(width,height);
+    }
+	color(SLIDE_COLOR) %slide_mockup(width,height);
 }
 
 
