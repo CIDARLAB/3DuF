@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+	<form action="{{ url_for('render_JSON') }}" method=post class=add-entry>
+			<dl>
+				<dt>Text:
+				<dd><textarea name=json_data rows=5 cols=40></textarea>
+				<dd><input type=submit value=Share>
+			</dl>
+	</form>
+{% endblock %}
