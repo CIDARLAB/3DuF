@@ -1,29 +1,29 @@
 import microfluidic_SCAD_generator 
 
-ufgen = microfluidic_SCAD_generator.UF_Generator("transposer_large")
+ufgen = microfluidic_SCAD_generator.UF_Generator("transposer_med")
 
-ufgen.label_height = .5
-ufgen.channel_height = .5
-ufgen.channel_width = 2
-ufgen.port_radius = 1.6
-ufgen.layer_offset = 4
-ufgen.standoff_radius_1 = 3;
-ufgen.standoff_radius_2 = 2.4;
-ufgen.via_radius_1 = 2
-ufgen.via_radius_2 = 1.6
-ufgen.valve_membrane_thickness = .5
-ufgen.valve_radius_1 = 3
-ufgen.valve_radius_2 = 2.4
+ufgen.channel_height = .1
+ufgen.channel_width = .41
+ufgen.port_radius = .7
+ufgen.layer_offset = 1.2
+ufgen.standoff_radius_1 = 1.2
+ufgen.standoff_radius_2 = 1.2;
+ufgen.via_radius_1 = .8
+ufgen.via_radius_2 = .7
+ufgen.valve_membrane_thickness = .2
+ufgen.valve_radius_1 = 1.4
+ufgen.valve_radius_2 = 1.2
+
 
 c = ufgen.create_layer(ufgen.layer_offset, "c", True, color="Red")
 f = ufgen.create_layer(0, "f", color="Blue")
 
-x_offset_start = 10
-y_offset_start = 10
+x_offset_start = 30
+y_offset_start = 20
 
 width = ufgen.width
 height = ufgen.height
-BUFFER_DISTANCE = 3.4 # mm, area left clear between features
+BUFFER_DISTANCE = 1 # mm, area left clear between features
 transposer_width = ufgen.via_radius_1 * 2 *2  + ufgen.valve_radius_1 * 3 * 2 + BUFFER_DISTANCE * 8 + ufgen.channel_width *2
 transposer_height = ufgen.via_radius_1 *1  *2+ ufgen.valve_radius_1 * 2  * 2+ BUFFER_DISTANCE * 3 + ufgen.channel_width *2
 startX = x_offset_start
