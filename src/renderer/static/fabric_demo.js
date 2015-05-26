@@ -63,10 +63,29 @@ var feature = function(feature_data){
   this.layer = feature_data["target_layer"];
   this.ID = feature_data["ID"];
   this.featureType = feature_data["type"];
+  if (feature_data["color"])
+  {
+    this.color = feature_data["color"];
+  }
+  else {
+    this.color = layers[this.layer].color;
+  }
+}
+
+feature.prototype.updateFabColor = function()
+{
+  if (this.fab)
+  {
+    this.fab.set({fill: this.color, stroke: this.color});
+  }
+  else {
+    console.log("No fab to update for feature: " + this.ID);
+  }
 }
 
 feature.prototype.feature_data = function(){
     var data = {};
+    data["color"] = this.color;
     data["layer"] = this.layer;
     data["ID"] = this.ID;
     data["type"] = this.featureType;
@@ -99,14 +118,16 @@ var flipY = function(position)
 }
 
 var via = function(feature_data){
-    feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "via"});
+    feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "via", color: feature_data["color"]});
     this.position = feature_data["position"];
     this.radius1 = feature_data["radius1"];
     this.radius2 = feature_data["radius2"];
     this.height = feature_data["height"];
 
   this.fab = new fabric.Circle({top: flipY(this.position)[1], left: this.position[0], radius: this.radius1, lockRotation: true, 
-    originX: 'center', originY: 'center', fill: 'blue', lockUniScaling: true, originX: 'center', originY: 'center'});
+    originX: 'center', originY: 'center', fill: 'purple', lockUniScaling: true, originX: 'center', originY: 'center', strokeWidth: 0});
+  this.updateFabColor();
+
 
   this.update = function()
   {
@@ -116,7 +137,8 @@ var via = function(feature_data){
 
   this.updateFab = function()
   {
-    this.fab.set({'radius': this.radius1, 'left': this.position[0], 'top': this.position[1]});
+    this.fab.set({radius: this.radius1, left: this.position[0], top: this.position[1]});
+    this.updateFabColor();
   }
 
   this.JSON_data = function(){
@@ -147,7 +169,7 @@ var grabber = function(position, parent){
 
 var channel = function(feature_data)
 {
-  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "channel"});
+  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "channel", color: feature_data["color"]});
   this.grabbers = {}
   this.height = feature_data["height"];
   this.start = feature_data["start"];
@@ -164,6 +186,7 @@ var channel = function(feature_data)
   }
 
   this.fab = this.toFab()
+  this.updateFabColor();
 
   this.update = function()
   {
@@ -201,11 +224,11 @@ var channel = function(feature_data)
   }
   this.updateEnds = function(){
     if (this.grabbers['start']){
-      pos = this.grabbers['start'].position();
+      var pos = flipY(this.grabbers['start'].position());
       this.fab.set({'x1': pos[0], 'y1': pos[1]});
     }
     if (this.grabbers['end']){
-      pos = this.grabbers['end'].position();
+      var pos = flipY(this.grabbers['end'].position());
       this.fab.set({'x2': pos[0], 'y2': pos[1]});
     }
     this.update();
@@ -228,12 +251,14 @@ channel.prototype.constructor = channel;
 
 var valve = function(feature_data)
 {
-  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "valve"});
+  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "valve", color: feature_data["color"]});
   this.radius1 = feature_data["radius1"];
   this.radius2 = feature_data["radius2"];
   this.position = feature_data["position"];
   this.height = feature_data["height"];
-  this.fab = new fabric.Circle({radius: this.radius1, fill:'#f55', left: this.position[0], top: flipY(this.position)[1], lockUniScaling: true, lockRotation: true, centeredScaling: true, originX: 'center', originY: 'center'});
+  this.fab = new fabric.Circle({radius: this.radius1, fill:'#f55', left: this.position[0], top: flipY(this.position)[1], lockUniScaling: true, lockRotation: true, centeredScaling: true, originX: 'center', originY: 'center', strokeWidth: 0});
+  this.updateFabColor();
+
   this.update = function()
   {
     this.radius1 = this.fab.radius * this.fab.scaleX;
@@ -257,12 +282,14 @@ valve.prototype.constructor = valve;
 
 var standoff = function(feature_data)
 {
-  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "standoff"});
+  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "standoff", color: feature_data["color"]});
   this.radius1 = feature_data["radius1"];
   this.radius2 = feature_data["radius2"];
   this.position = feature_data["position"];
   this.height = feature_data["height"];
-  this.fab = new fabric.Circle({radius: this.radius1, fill:'yellow', left: this.position[0], top: flipY(this.position)[1], lockUniScaling: true, lockRotation: true, centeredScaling: true, originX: 'center', originY: 'center'});
+  this.fab = new fabric.Circle({radius: this.radius1, fill:'yellow', left: this.position[0], top: flipY(this.position)[1], lockUniScaling: true, lockRotation: true, centeredScaling: true, originX: 'center', originY: 'center', strokeWidth: 0});
+  this.updateFabColor();
+
   this.update = function()
   {
     this.radius1 = this.fab.radius * this.fab.scaleX;
@@ -288,11 +315,13 @@ valve.prototype.constructor = valve;
 
 var label = function(feature_data)
 {
-  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "label"});
+  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "label", color: feature_data["color"]});
   this.position = feature_data["position"];
   this.text = feature_data["text"];
   this.height = feature_data["height"];
-  this.fab = new fabric.Text(this.text, {left: this.position[0], top: flipY(this.position)[1], hasControls: false, lockUniScaling: true, lockRotation: true, centeredScaling: true, originX: 'center', originY: 'center'});
+  this.fab = new fabric.Text(this.text, {left: this.position[0], top: flipY(this.position)[1], hasControls: false, lockUniScaling: true, lockRotation: true, centeredScaling: true, originX: 'center', originY: 'center', strokeWidth: 0});
+  this.updateFabColor();
+
   this.update = function()
   {
     this.position = flipY([this.fab.left, this.fab.top]);
@@ -314,11 +343,13 @@ label.prototype.constructor = label;
 
 var port = function(feature_data)
 {
-  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "port"});
+  feature.call(this, {target_layer: feature_data["layer"], ID: feature_data["ID"], type: "port", color: feature_data["color"]});
   this.radius = feature_data["radius"];
   this.position = feature_data["position"];
   this.height = feature_data["height"];
-  this.fab = new fabric.Circle({radius: this.radius, fill:'green', left: this.position[0], top: flipY(this.position)[1], lockUniScaling: true, lockRotation: true, centeredScaling: true, originX: 'center', originY: 'center'});
+  this.fab = new fabric.Circle({radius: this.radius, fill:'green', left: this.position[0], top: flipY(this.position)[1], lockUniScaling: true, lockRotation: true, centeredScaling: true, originX: 'center', originY: 'center', strokeWidth: 0});
+  this.updateFabColor();
+
   this.update = function()
   {
     this.radius = this.fab.radius * this.fab.scaleX;

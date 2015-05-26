@@ -36,6 +36,10 @@ def generate_feature(feature, layers):
     args = {}
     args["z_offset"] = target_layer["z_offset"]
     args["flip"] = target_layer["flip"]
+    if ("color" in feature):
+        feature_color = feature["color"]
+    else:
+        feature_color = target_layer["color"]
     feature_color = target_layer["color"]
     for prop in feature.keys():
         if (prop != "layer" and prop != "ID" and prop != "type"):
