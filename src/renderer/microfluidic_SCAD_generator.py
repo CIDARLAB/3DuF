@@ -79,20 +79,23 @@ class UF_Generator:
 		return feature_data
 
 	def import_feature_data(self, feature_data):
-		for feature in feature_data:
-			feature_type = feature["type"]
+		for imported_feature in feature_data:
+			feature_type = imported_feature["type"]
+			layer = imported_feature["layer"]
+			ID = imported_feature["ID"]
+			feature = imported_feature["feature_params"]
 			if (feature_type == "channel"):
-				self.create_channel(feature["start"], feature["end"], feature["layer"], feature["height"], feature["width"], feature["ID"])
+				self.create_channel(feature["start"], feature["end"], layer, feature["height"], feature["width"], ID)
 			elif (feature_type == "port"):
-				self.create_port(feature["position"], feature["layer"], feature["height"], feature["radius"], feature["ID"])
+				self.create_port(feature["position"], layer, feature["height"], feature["radius"], ID)
 			elif (feature_type == "standoff"):
-				self.create_standoff(feature["position"], feature["layer"], feature["height"], feature["radius1"], feature["radius2"], feature["ID"])
+				self.create_standoff(feature["position"], layer, feature["height"], feature["radius1"], feature["radius2"], ID)
 			elif (feature_type == "via:"):
-				self.create_via(feature["position"], feature["layer"], feature["height"], feature["radius1"], feature["radius2"], feature["ID"])
+				self.create_via(feature["position"], layer, feature["height"], feature["radius1"], feature["radius2"], ID)
 			elif (feature_type == "valve"):
-				self.create_valve(feature["position"], feature["layer"], feature["height"], feature["radius1"], feature["radius2"], feature["ID"])
+				self.create_valve(feature["position"], layer, feature["height"], feature["radius1"], feature["radius2"], ID)
 			elif (feature_type == "label"):
-				self.create_label(feature["position"], feature["layer"], feature["height"], feature["label_text"], feature["ID"])
+				self.create_label(feature["position"], layer, feature["height"], feature["label_text"], ID)
 
 	def JSON_data(self):
 		data = {}
@@ -321,12 +324,13 @@ class Channel:
 
 	def JSON_data(self):
 		data = {}
+		data["feature_params"] = {}
 		data["type"] = "channel"
 		data["layer"] = self.layer.ID
-		data["start"] = self.start
-		data["end"] = self.end
-		data["width"] = self.width
-		data["height"] = self.height
+		data["feature_params"]["start"] = self.start
+		data["feature_params"]["end"] = self.end
+		data["feature_params"]["width"] = self.width
+		data["feature_params"]["height"] = self.height
 		data["ID"] = self.ID
 
 		return data
@@ -347,11 +351,12 @@ class Port:
 
 	def JSON_data(self):
 		data = {}
+		data["feature_params"] = {}
 		data["type"] = "port"
 		data["layer"] = self.layer.ID
-		data["position"] = self.position
-		data["radius"] = self.radius
-		data["height"] = self.height
+		data["feature_params"]["position"] = self.position
+		data["feature_params"]["radius"] = self.radius
+		data["feature_params"]["height"] = self.height
 		data["ID"] = self.ID
 
 		return data
@@ -373,12 +378,13 @@ class Standoff:
 
 	def JSON_data(self):
 		data = {}
+		data["feature_params"] = {}
 		data["type"] = "standoff"
 		data["layer"] = self.layer.ID
-		data["position"] = self.position
-		data["radius1"] = self.radius1
-		data["radius2"] = self.radius2
-		data["height"] = self.height
+		data["feature_params"]["position"] = self.position
+		data["feature_params"]["radius1"] = self.radius1
+		data["feature_params"]["radius2"] = self.radius2
+		data["feature_params"]["height"] = self.height
 		data["ID"] = self.ID
 
 		return data
@@ -400,12 +406,13 @@ class Via:
 
 	def JSON_data(self):
 		data = {}
+		data["feature_params"] = {}
 		data["type"] = "via"
 		data["layer"] = self.layer.ID
-		data["position"] = self.position
-		data["radius1"] = self.radius1
-		data["radius2"] = self.radius2
-		data["height"] = self.height
+		data["feature_params"]["position"] = self.position
+		data["feature_params"]["radius1"] = self.radius1
+		data["feature_params"]["radius2"] = self.radius2
+		data["feature_params"]["height"] = self.height
 		data["ID"] = self.ID
 
 		return data
@@ -426,12 +433,13 @@ class Valve:
 
 	def JSON_data(self):
 		data = {}
+		data["feature_params"] = {}
 		data["type"] = "valve"
 		data["layer"] = self.layer.ID
-		data["position"] = self.position
-		data["radius1"] = self.radius1
-		data["radius2"] = self.radius2
-		data["height"] = self.height
+		data["feature_params"]["position"] = self.position
+		data["feature_params"]["radius1"] = self.radius1
+		data["feature_params"]["radius2"] = self.radius2
+		data["feature_params"]["height"] = self.height
 		data["ID"] = self.ID
 
 		return data
@@ -452,11 +460,12 @@ class Label:
 
 	def JSON_data(self):
 		data = {}
+		data["feature_params"] = {}
 		data["type"] = "label"
 		data["layer"] = self.layer.ID
-		data["position"] = self.position
-		data["height"] = self.height
-		data["label_text"] = self.text
+		data["feature_params"]["position"] = self.position
+		data["feature_params"]["height"] = self.height
+		data["feature_params"]["label_text"] = self.text
 		data["ID"] = self.ID
 
 		return data

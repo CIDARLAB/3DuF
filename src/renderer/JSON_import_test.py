@@ -33,22 +33,25 @@ def load_json_data(filename):
 
 def generate_feature(feature, layers):
     target_layer = layers[feature["layer"]]
+    feature_params = feature["feature_params"]
     args = {}
     args["z_offset"] = target_layer["z_offset"]
     args["flip"] = target_layer["flip"]
+    args["type"] = feature["type"]
+    args["ID"] = feature["ID"]
+
+
     if ("color" in feature):
         feature_color = feature["color"]
     else:
         feature_color = target_layer["color"]
-    feature_color = target_layer["color"]
-    for prop in feature.keys():
-        if (prop != "layer" and prop != "ID" and prop != "type"):
-            data = feature[prop]
-         #  if isinstance(data, str):
-          #      data = "\"" + data + "\""
-            args[prop] = data
 
-    return color(feature_color)(globals()[feature["type"]](**args))
+    args["ID"] = feature["ID"]
+
+    for prop in feature_params.keys():
+        args[prop] = feature_params[prop]
+
+    return color(feature_color)(globals()[args["type"]](**args))
    # return globals()[feature["type"]](**args)
 
 def generate_mold(device_data):
