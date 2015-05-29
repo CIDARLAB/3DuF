@@ -55,5 +55,9 @@ def make_stl_A():
 def fabric_demo():
 	return render_template("fabric_test.html")
 
+@app.route('/fabric_demo_2')
+def fabric_demo_2():
+	return render_template("fabric_test_2.html")
+
 if __name__ == '__main__':
 	app.run()

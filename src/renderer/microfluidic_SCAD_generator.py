@@ -311,7 +311,6 @@ class Channel:
 
 		self.ID = ID
 		self.layer = layer
-		self.layer.channels.append(self.ID)
 		self.start = start
 		self.end = end
 		self.width = width

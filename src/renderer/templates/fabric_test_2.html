@@ -1,0 +1,71 @@
+<script src="{{ url_for('static', filename='jquery-1.11.3.min.js')}}"></script>
+<script src="{{ url_for('static', filename='fabric.js')}}"></script>
+<script src="{{ url_for('static', filename='fabricjs_viewport.js')}}"></script>
+
+<script src="{{ url_for('static', filename='bootstrap.min.js')}}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme.min.css')}}">
+
+<body>
+  <div class="container">
+    <div width="810" height="610" id="canvas_block"> 
+      <canvas id="c" width="800" height="600"></canvas>
+    </div>
+    <div class="btn-group">
+      <a href="" id="link" download="test.svg">
+        <button type="button" class="btn btn-default" role="group">Download SVG</button>
+      </a>
+      <form action="{{ url_for('render_JSON_A')}}" method=post>
+        <input type=hidden name="json_data" value="" id="hidden_data">
+        <input type=submit id="submit_button" class="btn btn-default" role="group" value="Download STL">
+      </form>
+    </div>
+  </div>
+</body>
+
+<script>
+
+	document.getElementById('link').onclick = function(code) {
+      this.href = 'data:text/plain;charset=utf-8,'
+        + encodeURIComponent(export_to_svg());
+    };
+
+    document.getElementById('submit_button').onclick = function(code) {
+      document.getElementById('hidden_data').value = JSON.stringify(json_data);
+    };
+</script>
+
+ <script src="{{ url_for('static', filename='fabric_demo_redux.js')}}"></script>
+
+ <script>
+  function handleFileSelect(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    var files = evt.dataTransfer.files; // FileList object.
+    var target = files[0];
+    var reader = new FileReader();
+
+    reader.onload = (function(theFile)
+    {
+      return function(e)
+      {
+        var json_data = JSON.parse(e.target.result);
+        import_json(json_data);
+        load_all_layers();
+      };
+    })(target);
+    reader.readAsText(target);
+  }
+
+  function handleDragOver(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+  }
+
+  // Setup the dnd listeners.
+  var dropZone = document.getElementById('canvas_block');
+  dropZone.addEventListener('dragover', handleDragOver, false);
+  dropZone.addEventListener('drop', handleFileSelect, false);
+</script>
