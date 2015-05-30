@@ -1,13 +1,4 @@
-#canvas_block {
-	height: 100vh;
-}
-
-#button_block {
-	margin-left: auto;
-	margin-right: auto;
-}
-
-#layer_buttons {
-	margin-left: auto;
-	margin-right: auto;
+#c {
+	width:100%;
+	height:50%;
 }
