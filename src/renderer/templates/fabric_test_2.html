@@ -3,14 +3,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="{{ url_for('static', filename='jquery-1.11.3.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='fabric.js')}}"></script>
-    <script src="{{ url_for('static', filename='fabricjs_viewport.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-1.11.3.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/fabric.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/fabricjs_viewport.js')}}"></script>
 
-    <script src="{{ url_for('static', filename='bootstrap.min.js')}}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme.min.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='demo.css')}}">
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/demo.css')}}">
 </head>
 
 <body>
@@ -20,8 +20,8 @@
         <canvas id="c"></canvas>
       </div>
 
-      <div id="button_block" class="col-md-2">
-        <div class="btn-group">
+      <div id="button_block" class="col-md-2 text-center">
+        <div class="btn-group" class="center-block">
           <a href="" id="link" download="test.svg">
             <button type="button" class="btn btn-default" role="group">Download SVG</button>
           </a>
@@ -30,9 +30,18 @@
             <input type=submit id="submit_button" class="btn btn-default" role="group" value="Download STL">
           </form>
         </div>
-
+        <hr>
         <h3>Select Active Layer</h3>
         <div class="btn-group btn-group-vertical" id="layer_buttons">
+        </div>
+        <hr>
+
+        <h4>Open Examples</h4>
+        <div class="btn-group btn-group-vertical" id="example_buttons">
+          <button type="button" id="ex_0" class='btn btn-default'>transposer_tiny</button>
+          <button type="button" id="ex_1" class='btn btn-default'>transposer_small</button>
+          <button type="button" id="ex_2" class='btn btn-default'>transposer_medium</button>
+          <button type="button" id="ex_3" class='btn btn-default'>transposer_large</button>
         </div>
       </div>
     </div>
@@ -41,17 +50,60 @@
 
 <script>
 
-	document.getElementById('link').onclick = function(code) {
+	document.getElementById('link').onclick = function() {
       this.href = 'data:text/plain;charset=utf-8,'
         + encodeURIComponent(export_to_svg());
     };
 
-    document.getElementById('submit_button').onclick = function(code) {
+    document.getElementById('submit_button').onclick = function() {
       document.getElementById('hidden_data').value = JSON.stringify(json_data);
     };
+
+    var load_example = function(url)
+    {
+      request = new XMLHttpRequest();
+      request.open('GET', url, true);
+
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400){
+          // Success!
+          import_json(JSON.parse(request.responseText));
+        } else {
+          // We reached our target server, but it returned an error
+        }
+      };
+    
+
+      request.onerror = function() {
+        // There was a connection error of some sort
+      };
+
+    request.send();
+    }
+
+    document.getElementById("ex_0").onclick = function()
+    {
+      load_example("{{ url_for('static', filename='examples/transposer_tiny.json')}}");
+    }
+    document.getElementById("ex_1").onclick = function()
+    {
+      load_example("{{ url_for('static', filename='examples/transposer_small.json')}}");
+    }
+
+    document.getElementById("ex_2").onclick = function()
+    {
+      load_example("{{ url_for('static', filename='examples/transposer_med.json')}}");
+    }
+
+    document.getElementById("ex_3").onclick = function()
+    {
+      load_example("{{ url_for('static', filename='examples/transposer_large.json')}}");
+    }
 </script>
 
- <script src="{{ url_for('static', filename='fabric_demo_redux.js')}}"></script>
+ <script src="{{ url_for('static', filename='js/fabric_demo_redux.js')}}"></script>
+
+ <script>load_example("{{ url_for('static', filename='examples/transposer_small.json')}}");</script>
 
  <script>
   function handleFileSelect(evt) {
@@ -68,7 +120,6 @@
       {
         var json_data = JSON.parse(e.target.result);
         import_json(json_data);
-        load_all_layers();
       };
     })(target);
     reader.readAsText(target);
