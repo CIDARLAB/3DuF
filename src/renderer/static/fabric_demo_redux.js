@@ -1,4 +1,5 @@
 var test_json = JSON.parse('{"device": {"width": 75.8, "name": "transposer_tiny", "height": 51}, "layers": {"c": {"z_offset": 1.2, "color": "Red", "features": ["C6_AB", "PNC1_AB", "PNC1_BC", "PNC1_CD", "PNC1_DE", "PNC1_EF", "PNC1_EG", "PNC2_AB", "PNC2_BC", "PNC2_DE", "C6_PA", "C6_PB", "VA1", "VA2", "VA3", "VA4", "VA5", "VA6"], "flip": true, "ID": "c"}, "f": {"z_offset": 0, "color": "Blue", "features": ["C1_AB", "C1_BC", "C1_CD", "C1_DE", "C1_EF", "C2_AB", "C3_AB", "C4_AB", "C5_AB", "VI1", "VI2", "urn:uuid:4d385be5-1fa5-4611-807d-6b52222f1604", "urn:uuid:e64b4a2a-0ac4-4a99-8b7c-8d91934e4f5c", "urn:uuid:f2794b9f-cabf-4f02-8f54-19d821f3731f", "urn:uuid:0e11b4bd-a071-421f-b1f8-4ae7eb26c7ec"], "flip": false, "ID": "f"}}, "features": {"C5_AB": {"layer": "f", "type": "channel", "feature_params": {"start": [30, 30.60000000000001], "height": 0.1, "end": [43.70000000000002, 30.60000000000001], "width": 0.2}, "ID": "C5_AB"}, "VI2": {"layer": "f", "type": "via", "feature_params": {"radius1": 0.6, "position": [39.900000000000006, 26.300000000000004], "radius2": 0.5, "height": 1.0999999999999999}, "ID": "VI2"}, "VI1": {"layer": "f", "type": "via", "feature_params": {"radius1": 0.6, "position": [33.900000000000006, 26.300000000000004], "radius2": 0.5, "height": 1.0999999999999999}, "ID": "VI1"}, "PNC1_BC": {"layer": "c", "type": "channel", "feature_params": {"start": [36.900000000000006, 20], "height": 0.4, "end": [32.0, 20], "width": 0.4}, "ID": "PNC1_BC"}, "C1_DE": {"layer": "f", "type": "channel", "feature_params": {"start": [36.900000000000006, 28.700000000000006], "height": 0.1, "end": [33.900000000000006, 28.700000000000006], "width": 0.2}, "ID": "C1_DE"}, "urn:uuid:e64b4a2a-0ac4-4a99-8b7c-8d91934e4f5c": {"layer": "f", "type": "standoff", "feature_params": {"radius1": 1.2, "position": [72.8, 3], "radius2": 1, "height": 1.2}, "ID": "urn:uuid:e64b4a2a-0ac4-4a99-8b7c-8d91934e4f5c"}, "PNC1_DE": {"layer": "c", "type": "channel", "feature_params": {"start": [32.0, 31.30000000000001], "height": 0.4, "end": [36.900000000000006, 31.30000000000001], "width": 0.4}, "ID": "PNC1_DE"}, "C2_AB": {"layer": "f", "type": "channel", "feature_params": {"start": [33.900000000000006, 22.0], "height": 0.1, "end": [33.900000000000006, 26.300000000000004], "width": 0.2}, "ID": "C2_AB"}, "C4_AB": {"layer": "f", "type": "channel", "feature_params": {"start": [30, 22.0], "height": 0.1, "end": [43.70000000000002, 22.0], "width": 0.2}, "ID": "C4_AB"}, "urn:uuid:f2794b9f-cabf-4f02-8f54-19d821f3731f": {"layer": "f", "type": "standoff", "feature_params": {"radius1": 1.2, "position": [72.8, 48], "radius2": 1, "height": 1.2}, "ID": "urn:uuid:f2794b9f-cabf-4f02-8f54-19d821f3731f"}, "C3_AB": {"layer": "f", "type": "channel", "feature_params": {"start": [39.900000000000006, 30.60000000000001], "height": 0.1, "end": [39.900000000000006, 26.300000000000004], "width": 0.2}, "ID": "C3_AB"}, "PNC2_AB": {"layer": "c", "type": "channel", "feature_params": {"start": [33.900000000000006, 23.900000000000002], "height": 0.4, "end": [41.80000000000001, 23.900000000000002], "width": 0.4}, "ID": "PNC2_AB"}, "C1_BC": {"layer": "f", "type": "channel", "feature_params": {"start": [39.900000000000006, 23.900000000000002], "height": 0.1, "end": [36.900000000000006, 23.900000000000002], "width": 0.2}, "ID": "C1_BC"}, "VA2": {"layer": "c", "type": "valve", "feature_params": {"radius1": 1.2, "position": [36.900000000000006, 22.0], "radius2": 1, "height": 0.8999999999999999}, "ID": "VA2"}, "VA3": {"layer": "c", "type": "valve", "feature_params": {"radius1": 1.2, "position": [39.900000000000006, 23.900000000000002], "radius2": 1, "height": 0.8999999999999999}, "ID": "VA3"}, "C1_CD": {"layer": "f", "type": "channel", "feature_params": {"start": [36.900000000000006, 23.900000000000002], "height": 0.1, "end": [36.900000000000006, 28.700000000000006], "width": 0.2}, "ID": "C1_CD"}, "VA6": {"layer": "c", "type": "valve", "feature_params": {"radius1": 1.2, "position": [39.900000000000006, 28.700000000000006], "radius2": 1, "height": 0.8999999999999999}, "ID": "VA6"}, "VA4": {"layer": "c", "type": "valve", "feature_params": {"radius1": 1.2, "position": [33.900000000000006, 28.700000000000006], "radius2": 1, "height": 0.8999999999999999}, "ID": "VA4"}, "VA5": {"layer": "c", "type": "valve", "feature_params": {"radius1": 1.2, "position": [36.900000000000006, 30.60000000000001], "radius2": 1, "height": 0.8999999999999999}, "ID": "VA5"}, "urn:uuid:4d385be5-1fa5-4611-807d-6b52222f1604": {"layer": "f", "type": "standoff", "feature_params": {"radius1": 1.2, "position": [3, 3], "radius2": 1, "height": 1.2}, "ID": "urn:uuid:4d385be5-1fa5-4611-807d-6b52222f1604"}, "PNC1_EF": {"layer": "c", "type": "channel", "feature_params": {"start": [36.900000000000006, 31.30000000000001], "height": 0.4, "end": [36.900000000000006, 30.60000000000001], "width": 0.4}, "ID": "PNC1_EF"}, "VA1": {"layer": "c", "type": "valve", "feature_params": {"radius1": 1.2, "position": [33.900000000000006, 23.900000000000002], "radius2": 1, "height": 0.8999999999999999}, "ID": "VA1"}, "PNC1_AB": {"layer": "c", "type": "channel", "feature_params": {"start": [36.900000000000006, 22.0], "height": 0.4, "end": [36.900000000000006, 20], "width": 0.4}, "ID": "PNC1_AB"}, "PNC1_EG": {"layer": "c", "type": "channel", "feature_params": {"start": [36.900000000000006, 31.30000000000001], "height": 0.4, "end": [36.900000000000006, 33.100000000000016], "width": 0.4}, "ID": "PNC1_EG"}, "C1_EF": {"layer": "f", "type": "channel", "feature_params": {"start": [33.900000000000006, 28.700000000000006], "height": 0.1, "end": [33.900000000000006, 30.60000000000001], "width": 0.2}, "ID": "C1_EF"}, "C6_PB": {"layer": "c", "type": "port", "feature_params": {"position": [39.900000000000006, 26.300000000000004], "radius": 0.5, "height": 0.1}, "ID": "C6_PB"}, "C6_PA": {"layer": "c", "type": "port", "feature_params": {"position": [33.900000000000006, 26.300000000000004], "radius": 0.5, "height": 0.1}, "ID": "C6_PA"}, "PNC2_DE": {"layer": "c", "type": "channel", "feature_params": {"start": [33.900000000000006, 28.700000000000006], "height": 0.4, "end": [41.80000000000001, 28.700000000000006], "width": 0.4}, "ID": "PNC2_DE"}, "C1_AB": {"layer": "f", "type": "channel", "feature_params": {"start": [39.900000000000006, 22.0], "height": 0.1, "end": [39.900000000000006, 23.900000000000002], "width": 0.2}, "ID": "C1_AB"}, "urn:uuid:0e11b4bd-a071-421f-b1f8-4ae7eb26c7ec": {"layer": "f", "type": "standoff", "feature_params": {"radius1": 1.2, "position": [3, 48], "radius2": 1, "height": 1.2}, "ID": "urn:uuid:0e11b4bd-a071-421f-b1f8-4ae7eb26c7ec"}, "C6_AB": {"layer": "c", "type": "channel", "feature_params": {"start": [33.900000000000006, 26.300000000000004], "height": 0.1, "end": [39.900000000000006, 26.300000000000004], "width": 0.2}, "ID": "C6_AB"}, "PNC1_CD": {"layer": "c", "type": "channel", "feature_params": {"start": [32.0, 20], "height": 0.4, "end": [32.0, 31.30000000000001], "width": 0.4}, "ID": "PNC1_CD"}, "PNC2_BC": {"layer": "c", "type": "channel", "feature_params": {"start": [41.80000000000001, 23.900000000000002], "height": 0.4, "end": [41.80000000000001, 33.100000000000016], "width": 0.4}, "ID": "PNC2_BC"}}}')
+var default_zoom = .95;
 
 var setup_defaults = function()
 {
@@ -9,7 +10,34 @@ var setup_defaults = function()
 
 var reset_view_position = function()
 {
-	canvas.viewport.position = new fabric.Point(0,0);
+	canvas.viewport.position = new fabric.Point(5,5);
+}
+
+var set_optimal_position = function()
+{
+	canvas.viewport.position = compute_optimal_position();
+}
+
+var compute_optimal_position = function()
+{
+	return new fabric.Point((canvas.width * (1 - default_zoom)/2), (canvas.height * (1 - default_zoom))/2);
+}
+
+var compute_optimal_zoom = function()
+{
+	var x_max = canvas.width * default_zoom;
+	var y_max = canvas.height * default_zoom;
+	var x_max_zoom = x_max / json_data["device"]["width"];
+	var y_max_zoom = y_max / json_data["device"]["height"];
+
+	if (x_max_zoom > y_max_zoom)
+	{
+		return y_max_zoom;
+	}
+	else
+	{
+		return x_max_zoom;
+	}
 }
 
 var enable_grab = function()
@@ -303,8 +331,13 @@ var export_to_svg = function()
 
 var import_json = function(json_object)
 {
+	remove_layer_buttons();
 	clear_data();
 	json_data = json_object;
+	set_zoom(compute_optimal_zoom());
+	set_optimal_position();
+	load_all_layers();
+	add_layer_buttons();
 }
 
 var set_fab_inactive = function(fab)
@@ -390,17 +423,58 @@ var count_active_fabs = function()
 	return canvas.getObjects().length;
 }
 
+var init_canvas = function()
+{
+	document.getElementById('c').width = document.getElementById('canvas_block').clientWidth;
+	document.getElementById('c').height = document.getElementById('canvas_block').clientHeight;
+}
+
+var add_layer_button = function(layer_ID)
+{
+	var element = document.createElement("input");
+	element.type = "button";
+	element.name = layer_ID;
+	element.value = layer_ID;
+	element.className += "btn btn-default";
+	element.id = layer_ID + "_button";
+	element.onclick = function()
+	{
+		load_all_layers(layer_ID);
+	}
+	document.getElementById("layer_buttons").appendChild(element);
+}
+
+var remove_layer_button = function(layer_ID)
+{
+	var element = document.getElementById(layer_ID + "_button");
+	element.parentNode.removeChild(element);
+}
+
+var remove_layer_buttons = function(layer_ID)
+{
+	for (layer in json_data["layers"])
+	{
+		remove_layer_button(layer);
+	}
+}
+
+var add_layer_buttons = function()
+{
+	for (layer in json_data["layers"])
+	{
+		add_layer_button(layer);
+	}
+}
+
+init_canvas();
 canvas = new fabric.CanvasWithViewport('c');
 setup_defaults();
 json_data = {};
 import_json(test_json);
-load_all_layers("c");
+//load_all_layers("c");
 //load_layer("f");
 //load_layer("c");
 canvas.renderAll();
-console.log("Total JSON features: " + count_json_features());
-console.log("Total Fabric elements: " + count_active_fabs());
-console.log("Total Layer features: " + count_all_layer_features());
 
 canvas.on('object:modified', function(e)
 {

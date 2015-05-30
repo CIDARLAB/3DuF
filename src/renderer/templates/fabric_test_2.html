@@ -1,24 +1,40 @@
-<script src="{{ url_for('static', filename='jquery-1.11.3.min.js')}}"></script>
-<script src="{{ url_for('static', filename='fabric.js')}}"></script>
-<script src="{{ url_for('static', filename='fabricjs_viewport.js')}}"></script>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script src="{{ url_for('static', filename='bootstrap.min.js')}}"></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme.min.css')}}">
+    <script src="{{ url_for('static', filename='jquery-1.11.3.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='fabric.js')}}"></script>
+    <script src="{{ url_for('static', filename='fabricjs_viewport.js')}}"></script>
+
+    <script src="{{ url_for('static', filename='bootstrap.min.js')}}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='demo.css')}}">
+</head>
 
 <body>
-  <div class="container">
-    <div width="810" height="610" id="canvas_block"> 
-      <canvas id="c" width="800" height="600"></canvas>
-    </div>
-    <div class="btn-group">
-      <a href="" id="link" download="test.svg">
-        <button type="button" class="btn btn-default" role="group">Download SVG</button>
-      </a>
-      <form action="{{ url_for('render_JSON_A')}}" method=post>
-        <input type=hidden name="json_data" value="" id="hidden_data">
-        <input type=submit id="submit_button" class="btn btn-default" role="group" value="Download STL">
-      </form>
+  <div class="container-fluid">
+    <div class="row" >
+      <div id="canvas_block" class="col-md-10"> 
+        <canvas id="c"></canvas>
+      </div>
+
+      <div id="button_block" class="col-md-2">
+        <div class="btn-group">
+          <a href="" id="link" download="test.svg">
+            <button type="button" class="btn btn-default" role="group">Download SVG</button>
+          </a>
+          <form action="{{ url_for('render_JSON_A')}}" method=post>
+            <input type=hidden name="json_data" value="" id="hidden_data">
+            <input type=submit id="submit_button" class="btn btn-default" role="group" value="Download STL">
+          </form>
+        </div>
+
+        <h3>Select Active Layer</h3>
+        <div class="btn-group btn-group-vertical" id="layer_buttons">
+        </div>
+      </div>
     </div>
   </div>
 </body>
