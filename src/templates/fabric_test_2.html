@@ -16,11 +16,12 @@
 <body>
   <div class="container">
     <div class="row">
-      <div id="canvas_block" class="col-md-8"> 
+      <div id="canvas_block"> 
         <canvas id="c"></canvas>
       </div>
 
-      <div id="button_block" class="col-md-4 text-center">
+      <div id="button_block" class="text-center">
+        <h3 class='btn-label'>Download</h2>
         <div class="btn-group" class="center-block">
           <a href="" id="link" download="test.svg">
             <button type="button" class="btn btn-default" role="group">Download SVG</button>
@@ -30,13 +31,11 @@
             <input type=submit id="submit_button" class="btn btn-default" role="group" value="Download STL">
           </form>
         </div>
-        <hr>
-        <h3>Select Active Layer</h3>
+        <h3 class='btn-label'>Select Active Layer</h2>
         <div class="btn-group btn-group-vertical" id="layer_buttons">
         </div>
-        <hr>
 
-        <h4>Open Examples</h4>
+        <h3 class='btn-label'>Open Examples</h2>
         <div class="btn-group btn-group-vertical" id="example_buttons">
           <button type="button" id="ex_0" class='btn btn-default'>transposer_tiny</button>
           <button type="button" id="ex_1" class='btn btn-default'>transposer_small</button>
