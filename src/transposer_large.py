@@ -68,10 +68,6 @@ valve12 = [endX, startY + mid_offset_y]
 
 c1 = ufgen.create_channel(start1, end1, "f")
 c2 = ufgen.create_channel(start2, end2, "f")
-ufgen.create_port(start1, "f")
-ufgen.create_port(start2, "f")
-ufgen.create_port(end1, "f")
-ufgen.create_port(end2, "f")
 
 c3 = ufgen.create_channel(mid1, mid2, "f")
 c4 = ufgen.create_channel(mid1_forward, via_mid_forward, "f")

@@ -1,5 +1,48 @@
 var default_zoom = .95;
 
+if (document.addEventListener) {
+  // IE9, Chrome, Safari, Opera
+  document.addEventListener("mousewheel", MouseWheelHandler, false);
+  // Firefox
+  document.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+}
+// IE 6/7/8
+else document.attachEvent("onmousewheel", MouseWheelHandler);
+
+
+$(document).keydown(function(ev){
+	if (ev.which === 18)
+	{
+    	enable_grab();
+    }
+});
+
+$(document).keyup(function(ev){
+    if (ev.which === 18)
+    {
+    	disable_grab();
+	}
+});
+
+
+function MouseWheelHandler(e) {
+
+  // cross-browser wheel delta
+  var e = window.event || e; // old IE support
+  var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+  if (delta > 0)
+  {
+    console.log("UP");
+    canvas.setZoom(canvas.viewport.zoom*1.1);
+  }
+  else
+  {
+    console.log("DOWN");
+    canvas.setZoom(canvas.viewport.zoom/1.1);
+  }
+  return false;
+}
+
 var setup_defaults = function()
 {
 	disable_grab();
@@ -114,6 +157,34 @@ var default_circle = function(position, radius, color)
     );
 }
 
+var default_channel = function(start, end, width, color)
+{
+	var flipEnd = [end[0], flip_y_value(end[1])];
+	var flipStart = [start[0], flip_y_value(start[1])];
+	var dX = flipEnd[0] - flipStart[0];
+	var dY = flipEnd[1] - flipStart[1];
+	var angle_rad = Math.atan2(dY, dX);
+	var angle_deg = angle_rad * 180 / Math.PI;
+	var dX_Pow = Math.pow(dX, 2);
+	var dYPow = Math.pow(dY, 2);
+	var length = Math.sqrt(dX_Pow + dYPow);
+	var fab =  new fabric.Rect(
+		{
+			left: flipStart[0],
+			top: flipStart[1],
+			centeredScaling: true,
+			angle: angle_deg,
+			width: length,
+			height: width,
+			fill: color,
+			originX: "left",
+			originY: "center",
+			hasRotatingPoint: false
+		}
+	);
+	return fab;
+}
+
 var default_line = function(start, end, width, color)
 {
 	var coords = [start[0], flip_y_value(start[1]), end[0], flip_y_value(end[1])];
@@ -181,11 +252,19 @@ var cylinder_handler = function()
 	this.update_json = function(fabric_cylinder)
 	{
 		var x = fabric_cylinder["left"];
-		var y = flip_y_value(fabric_cylinder["top"]);
-		var position = [x,y];
-		var radius = fabric_cylinder["radius"] * fabric_cylinder["scaleX"];	
-		params = {radius1: radius, position: position};
+		var y = fabric_cylinder["top"];
+
+		if ('group' in fabric_cylinder)
+		{
+			x += fabric_cylinder.group.left + fabric_cylinder.group.width/2;
+			y += fabric_cylinder.group.top + fabric_cylinder.group.height/2;
+		}
+
+		var position = [x,flip_y_value(y)];
+		var radius = fabric_cylinder.radius * fabric_cylinder.scaleX;	
+		var params = {radius: radius, position: position};
 		update_json_feature(fabric_cylinder["feature_ID"], params);
+
 	}
 }
 
@@ -198,17 +277,34 @@ var channel_handler = function()
 		var end = params["end"];
 		var width = params["width"];
 		var color = get_feature_color(channel_feature);
-		fab = default_line(start, end, width, color);
+		//fab = default_line(start, end, width, color);
+		var fab = default_channel(start, end, width, color);
 		fab.feature_ID = channel_feature["ID"];
 		return fab;
 	}
 
 	this.update_json = function(fabric_channel)
 	{
-		var start = [fabric_channel["x1"], fabric_channel["y1"]];
-		var end = [fabric_channel["x2"], fabric_channel["y2"]];
-		var width = fabric_channel["strokeWidth"];
-		params = {start: start, end: end, width: width};
+		var length = fabric_channel.width;
+		var start = [fabric_channel.left, fabric_channel.top];
+		var width = fabric_channel.height * fabric_channel.scaleY;
+		var angle_deg = fabric_channel.angle;
+		var angle_rad = angle_deg / 180 * Math.PI;
+		var dX = length * Math.cos(angle_rad);
+		var dY = length * Math.sin(angle_rad);
+		var end = [start[0] + dX, start[1] + dY];
+
+		if ('group' in fabric_channel)
+		{
+			end[0] += fabric_channel.group.left + fabric_channel.group.width/2;
+			end[1] += fabric_channel.group.top + fabric_channel.group.height/2;
+			start[0] += fabric_channel.group.left + fabric_channel.group.width/2;
+			start[1] += fabric_channel.group.top + fabric_channel.group.height/2;
+		}
+
+		var flipStart = [start[0], flip_y_value(start[1])];
+		var flipEnd = [end[0], flip_y_value(end[1])];
+		var params = {start: flipStart, end: flipEnd, width: width};
 		update_json_feature(fabric_channel["feature_ID"], params);
 	}
 }
@@ -221,7 +317,7 @@ var cone_handler = function()
 		var position = params["position"]
 		var radius = params["radius1"];
 		var color = get_feature_color(cone_feature);
-		fab = default_circle(position, radius, color);
+		var fab = default_circle(position, radius, color);
 		fab.feature_ID = cone_feature["ID"];
 		return fab;
 	}
@@ -229,10 +325,17 @@ var cone_handler = function()
 	this.update_json = function(fabric_cone)
 	{
 		var x = fabric_cone["left"];
-		var y = flip_y_value(fabric_cone["top"]);
-		var position = [x,y];
+		var y = fabric_cone["top"];
+
+		if ('group' in fabric_cone)
+		{
+			x += fabric_cone.group.left + fabric_cone.group.width/2;
+			y += fabric_cone.group.top + fabric_cone.group.height/2;
+		}
+
+		var position = [x,flip_y_value(y)];
 		var radius = fabric_cone["radius"] * fabric_cone["scaleX"];	
-		params = {radius1: radius, position: position};
+		var params = {radius1: radius, position: position};
 		update_json_feature(fabric_cone["feature_ID"], params);
 	}
 }
@@ -288,7 +391,6 @@ var init_border = function()
 
 var update_from_fab_object = function(fab)
 {
-	console.log(fab);
 	var type = fab.get('type');
 	if (type == "group")
 	{
@@ -299,9 +401,9 @@ var update_from_fab_object = function(fab)
 		}
 	}
 	else {
-		feature = json_data["features"][fab.feature_ID];
-		type = feature["type"];
-		handler = handlers[type];
+		var feature = json_data["features"][fab.feature_ID];
+		var type = feature["type"];
+		var handler = handlers[type];
 		handler.update_json(fab);
 	}
 }
@@ -317,7 +419,7 @@ var init_all_features = function()
 
 var export_to_svg = function()
 {
-	svg =  canvas.toSVG();
+	var svg =  canvas.toSVG();
 	var height_string_ori = 'height="' + canvas.height + '"';
 	var width_string_ori = 'width="' + canvas.width + '"';
 	var height_string_new = 'height="' + canvas.height + "mm" + '"';
