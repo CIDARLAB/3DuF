@@ -1,0 +1,24 @@
+{
+  "name": "Port",
+  "params": {
+    "position": "position",
+    "radius": "number",
+    "height": "number"
+  },
+  "2D_handler": {
+    "type": "CircleHandler",
+    "params": {
+      "position": "position",
+      "radius": "radius"
+    }
+  },
+  "3D_handler": {
+    "type": "ConeHandler",
+    "params": {
+      "position": "position",
+      "radius1": "radius",
+      "radius2": "radius",
+      "height": "height"
+    }
+  }
+}

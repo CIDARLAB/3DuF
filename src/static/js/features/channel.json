@@ -1,0 +1,26 @@
+{
+  "name": "Channel",
+  "params": {
+    "start": "position",
+    "end": "position",
+    "width": "number",
+    "height": "number"
+  },
+  "2D_handler": {
+    "type": "TwoPointRectHandler",
+    "params": {
+      "start": "start",
+      "end": "end",
+      "width": "width"
+    }
+  },
+  "3D_handler": {
+    "type": "TwoPointBoxHandler",
+    "params": {
+      "start": "start",
+      "end": "end",
+      "width": "width",
+      "height": "height"
+    }
+  }
+}

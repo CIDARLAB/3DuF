@@ -1,435 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Handler = (function () {
-	function Handler(feature, type, handlerParams, handlerClass) {
-		_classCallCheck(this, Handler);
-
-		this.feature = feature;
-		this.type = type;
-		this.handlerClass = handlerClass;
-		this.handlerParams = handlerParams;
-		this.paramTargets = {};
-		this.associateParams();
-	}
-
-	_createClass(Handler, [{
-		key: "printParams",
-		value: function printParams() {
-			for (var param in this.paramTargets) {
-				console.log("Param: " + param + ", Target: " + this.paramTargets[param] + ", Value: " + this.__getParamValue(param));
-			}
-		}
-	}, {
-		key: "associateParams",
-		value: function associateParams() {
-			var targets = {};
-			if (!this.__isCorrectHandlerType()) {
-				throw "Wrong " + handlerClass + " used for this feature!";
-			}
-			for (var param in this.handlerParams) {
-				if (!this.__featureHasHandlerParam(param)) {
-					throw "Feature does not have the correct 2D Handler parameter.";
-				} else if (!this.__isCorrectParamType(param)) {
-					throw "Feature has the correct parameter target, but it is of the wrong type.";
-				} else if (!this.__featureHasTargetParam(param)) {
-					throw "Feature does not have the correct target parameter.";
-				} else {
-					this.__associateParam(param);
-				}
-			}
-		}
-	}, {
-		key: "__getParamValue",
-		value: function __getParamValue(param) {
-			return this.feature.params[this.paramTargets[param]];
-		}
-	}, {
-		key: "__associateParam",
-		value: function __associateParam(param) {
-			this.paramTargets[param] = this.feature[this.handlerClass].params[param];
-		}
-	}, {
-		key: "__featureHasTargetParam",
-		value: function __featureHasTargetParam(param) {
-			return this.feature.paramTypes.hasOwnProperty(this.feature[this.handlerClass].params[param]);
-		}
-	}, {
-		key: "__featureHasHandlerParam",
-		value: function __featureHasHandlerParam(param) {
-			return this.feature[this.handlerClass].params.hasOwnProperty(param);
-		}
-	}, {
-		key: "__isCorrectParamType",
-		value: function __isCorrectParamType(param) {
-			return this.feature.paramTypes[param] == this.handlerParams[param];
-		}
-	}, {
-		key: "__isCorrectHandlerType",
-		value: function __isCorrectHandlerType() {
-			return this.feature[this.handlerClass].type == this.type;
-		}
-	}]);
-
-	return Handler;
-})();
-
-var Handler2D = (function (_Handler) {
-	function Handler2D(feature, type, handlerParams) {
-		_classCallCheck(this, Handler2D);
-
-		_get(Object.getPrototypeOf(Handler2D.prototype), "constructor", this).call(this, feature, type, handlerParams, "handler2D");
-	}
-
-	_inherits(Handler2D, _Handler);
-
-	return Handler2D;
-})(Handler);
-
-var CircleHandler = (function (_Handler2D) {
-	function CircleHandler(feature) {
-		_classCallCheck(this, CircleHandler);
-
-		_get(Object.getPrototypeOf(CircleHandler.prototype), "constructor", this).call(this, feature, "CircleHandler", {
-			position: "position",
-			radius: "number" });
-	}
-
-	_inherits(CircleHandler, _Handler2D);
-
-	return CircleHandler;
-})(Handler2D);
-
-var TwoPointRectHandler = (function (_Handler2D2) {
-	function TwoPointRectHandler(feature) {
-		_classCallCheck(this, TwoPointRectHandler);
-
-		_get(Object.getPrototypeOf(TwoPointRectHandler.prototype), "constructor", this).call(this, feature, "TwoPointRectHandler", {
-			start: "position",
-			end: "position",
-			width: "number"
-		});
-	}
-
-	_inherits(TwoPointRectHandler, _Handler2D2);
-
-	return TwoPointRectHandler;
-})(Handler2D);
-
-var RectHandler = (function (_Handler2D3) {
-	function RectHandler(feature) {
-		_classCallCheck(this, RectHandler);
-
-		_get(Object.getPrototypeOf(RectHandler.prototype), "constructor", this).call(this, feature, "RectHandler", {
-			position: "position",
-			width: "number",
-			length: "number"
-		});
-	}
-
-	_inherits(RectHandler, _Handler2D3);
-
-	return RectHandler;
-})(Handler2D);
-
-var Handler3D = (function (_Handler2) {
-	function Handler3D(feature, type, handlerParams) {
-		_classCallCheck(this, Handler3D);
-
-		_get(Object.getPrototypeOf(Handler3D.prototype), "constructor", this).call(this, feature, type, handlerParams, "handler3D");
-	}
-
-	_inherits(Handler3D, _Handler2);
-
-	return Handler3D;
-})(Handler);
-
-var TwoPointBoxHandler = (function (_Handler3D) {
-	function TwoPointBoxHandler(feature) {
-		_classCallCheck(this, TwoPointBoxHandler);
-
-		_get(Object.getPrototypeOf(TwoPointBoxHandler.prototype), "constructor", this).call(this, feature, "TwoPointBoxHandler", {
-			start: "position",
-			end: "position",
-			width: "number",
-			height: "number"
-		});
-	}
-
-	_inherits(TwoPointBoxHandler, _Handler3D);
-
-	return TwoPointBoxHandler;
-})(Handler3D);
-
-var BoxHandler = (function (_Handler3D2) {
-	function BoxHandler(feature) {
-		_classCallCheck(this, BoxHandler);
-
-		_get(Object.getPrototypeOf(BoxHandler.prototype), "constructor", this).call(this, feature, "BoxHandler", {
-			position: "position",
-			length: "number",
-			width: "number",
-			height: "number"
-		});
-	}
-
-	_inherits(BoxHandler, _Handler3D2);
-
-	return BoxHandler;
-})(Handler3D);
-
-var ConeHandler = (function (_Handler3D3) {
-	function ConeHandler(feature) {
-		_classCallCheck(this, ConeHandler);
-
-		_get(Object.getPrototypeOf(ConeHandler.prototype), "constructor", this).call(this, feature, "ConeHandler", {
-			position: "position",
-			radius1: "number",
-			radius2: "number"
-		});
-	}
-
-	_inherits(ConeHandler, _Handler3D3);
-
-	return ConeHandler;
-})(Handler3D);
-
-exports.TwoPointRectHandler = TwoPointRectHandler;
-exports.CircleHandler = CircleHandler;
-exports.ConeHandler = ConeHandler;
-exports.BoxHandler = BoxHandler;
-exports.TwoPointBoxHandler = TwoPointBoxHandler;
-exports.RectHandler = RectHandler;
-
-},{}],2:[function(require,module,exports){
-'use strict';
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-//for Browserify
-
-var Feature = (function () {
-	function Feature(featureData) {
-		_classCallCheck(this, Feature);
-
-		this.ID = Feature.__parseOptionalID(featureData);
-		this.color = Feature.__parseOptionalColor(featureData);
-		this.type = featureData.type;
-		this.params = featureData.params;
-		this.paramTypes = featureData.paramTypes;
-		this.handler2D = featureData.handler2D;
-		this.handler3D = featureData.handler3D;
-		this.layer = null;
-	}
-
-	_createClass(Feature, [{
-		key: 'toJSON',
-		value: function toJSON() {
-			return {
-				ID: this.ID,
-				color: this.color,
-				type: this.type,
-				layer: this.layer.ID,
-				feature_params: this.params
-			};
-		}
-	}], [{
-		key: 'generateID',
-
-		//From: http://byronsalau.com/blog/how-to-create-a-guid-uuid-in-javascript/
-		value: function generateID() {
-			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-				var r = Math.random() * 16 | 0,
-				    v = c === 'x' ? r : r & 3 | 8;
-				return v.toString(16);
-			});
-		}
-	}, {
-		key: '__fromJSON',
-		value: function __fromJSON(featureJSON) {
-			var feat = new Feature({
-				ID: featureJSON.ID,
-				color: featureJSON.color,
-				type: featureJSON.type,
-				params: featureJSON.feature_params });
-			return feat;
-		}
-	}, {
-		key: '__parseOptionalColor',
-		value: function __parseOptionalColor(featureData) {
-			if (featureData.hasOwnProperty('color') && featureData.color != undefined && featureData.color != null) {
-				return featureData.color;
-			} else {
-				return 'layer';
-			}
-		}
-	}, {
-		key: '__parseOptionalID',
-		value: function __parseOptionalID(featureData) {
-			if (!featureData.hasOwnProperty('ID') || featureData.ID === null || featureData.ID === undefined) {
-				return Feature.generateID();
-			} else {
-				return featureData.ID;
-			}
-		}
-	}]);
-
-	return Feature;
-})();
-
-var Layer = (function () {
-	function Layer(layerData) {
-		_classCallCheck(this, Layer);
-
-		this.color = layerData.color;
-		this.ID = layerData.ID;
-		this.ZOffset = layerData.z_offset;
-		this.flip = layerData.flip;
-		this.features = [];
-		this.device = null;
-	}
-
-	_createClass(Layer, [{
-		key: 'toJSON',
-		value: function toJSON() {
-			return {
-				features: this.featuresToJSON(),
-				z_offset: this.ZOffset,
-				ID: this.ID
-			};
-		}
-	}, {
-		key: 'addFeature',
-		value: function addFeature(feature) {
-			feature.layer = this;
-			this.features.push(feature);
-			this.device.__addFeature(feature);
-			return feature;
-		}
-	}, {
-		key: 'featuresToJSON',
-		value: function featuresToJSON() {
-			var data = [];
-			for (var feature in this.features) {
-				data.push(this.features[feature].ID);
-			}
-			return data;
-		}
-	}], [{
-		key: '__fromJSON',
-		value: function __fromJSON(layerJSON) {
-			return new Layer({
-				color: layerJSON.color,
-				ID: layerJSON.ID,
-				z_offset: layerJSON.z_offset
-			});
-		}
-	}]);
-
-	return Layer;
-})();
-
-var Device = (function () {
-	function Device(deviceData) {
-		_classCallCheck(this, Device);
-
-		this.height = deviceData.height;
-		this.width = deviceData.width;
-		this.ID = deviceData.ID;
-		this.layers = {};
-		this.features = {};
-	}
-
-	_createClass(Device, [{
-		key: 'addLayer',
-		value: function addLayer(layer) {
-			if (this.layers.hasOwnProperty(layer.ID)) {
-				throw 'layer ID ' + layer.ID + ' already exists in device ' + this.ID;
-			} else {
-				this.layers[layer.ID] = layer;
-				layer.device = this;
-			}
-			return layer;
-		}
-	}, {
-		key: '__addFeature',
-		value: function __addFeature(feature) {
-			if (this.features.hasOwnProperty(feature.ID)) {
-
-				throw 'Feature with ID ' + feature.ID + ' already exists in device ' + this.ID;
-			} else if (!this.layers.hasOwnProperty(feature.layer.ID)) {
-				throw 'Layer ' + feature.layer.ID + ' does not exist in device ' + this.ID;
-			} else {
-				this.features[feature.ID] = feature;
-			}
-		}
-	}, {
-		key: 'toJSON',
-		value: function toJSON() {
-			return {
-				device_data: this.deviceData,
-				layers: this.__layersToJSON(),
-				features: this.__featuresToJSON() };
-		}
-	}, {
-		key: '__featuresToJSON',
-		value: function __featuresToJSON() {
-			var data = {};
-			for (var featureID in this.features) {
-				data[featureID] = this.features[featureID].toJSON();
-			}
-			return data;
-		}
-	}, {
-		key: '__layersToJSON',
-		value: function __layersToJSON() {
-			var data = {};
-			for (var layerID in this.layers) {
-				data[layerID] = this.layers[layerID].toJSON();
-			}
-			return data;
-		}
-	}], [{
-		key: 'fromJSON',
-		value: function fromJSON(deviceJSON) {
-			var devData = {
-				height: deviceJSON.device.height,
-				width: deviceJSON.device.width,
-				ID: deviceJSON.device.name };
-			var dev = new Device(devData);
-
-			for (var layerID in deviceJSON.layers) {
-				dev.addLayer(Layer.__fromJSON(deviceJSON.layers[layerID]));
-			}
-
-			for (var featureID in deviceJSON.features) {
-				var featData = deviceJSON.features[featureID];
-				dev.layers[featData.layer].addFeature(Feature.__fromJSON(featData));
-			}
-			return dev;
-		}
-	}]);
-
-	return Device;
-})();
-
-exports.Device = Device;
-exports.Layer = Layer;
-exports.Feature = Feature;
-
-},{}],3:[function(require,module,exports){
 //watchify uFab_test.js -t babelify -v --outfile bundle.js
-
-'use strict';
 
 var uFab = require('./uFab');
 var handlers = require('./handlers');
@@ -440,13 +9,14 @@ var channel_JSON = JSON.parse('{"name":"Channel","paramTypes":{"start":"position
 
 var canvas = new fabric.CanvasWithViewport('c');
 
-var dev = new uFab.Device({ height: 50, width: 100, ID: 'test_device' });
-var lay = new uFab.Layer({ z_offset: 0, color: 'blue', ID: 'layer_1' });
+var dev = new uFab.Device({height: 50, width: 100, ID: "test_device"});
+var lay = new uFab.Layer({z_offset: 0, color: "blue", ID: "layer_1"});
 
 dev.addLayer(lay);
 
-var makeFeatureClass = function makeFeatureClass(featureJSON) {
-	window[featureJSON.name] = function (featureData) {
+var makeFeatureClass = function(featureJSON){
+	window[featureJSON.name] = function(featureData)
+	{
 		var newFeat = new uFab.Feature({
 			ID: featureData.ID,
 			color: featureData.color,
@@ -454,24 +24,25 @@ var makeFeatureClass = function makeFeatureClass(featureJSON) {
 			paramTypes: featureJSON.paramTypes,
 			handler2D: featureJSON.handler2D,
 			handler3D: featureJSON.handler3D,
-			params: featureData.params });
+			params: featureData.params,
+		});
 		// Placeholders, figure out your naming conventions!
 		newFeat.handler2DReal = new handlers[newFeat.handler2D.type](newFeat);
 		newFeat.handler3DReal = new handlers[newFeat.handler3D.type](newFeat);
 		return newFeat;
-	};
-};
+	}
+}
 
 makeFeatureClass(channel_JSON);
 
 var foo = new Channel({
 	params: {
-		start: [0, 10],
+		start: [0,10],
 		end: [10, 20],
 		width: 2,
-		height: 0.2
+		height: .2
 	}
-});
+})
 /*
 
 var foo = new fabric.Circle(
@@ -486,5 +57,3 @@ var foo = new fabric.Circle(
 canvas.add(foo);
 
 console.log(JSON.stringify(foo.toJSON()));
-
-},{"./handlers":1,"./uFab":2}]},{},[3]);

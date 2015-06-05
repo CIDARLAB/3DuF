@@ -1,0 +1,25 @@
+{
+  "name": "Standoff",
+  "params": {
+    "position": "position",
+    "radius1": "number",
+    "radius2": "number",
+    "height": "number"
+  },
+  "2D_handler": {
+    "type": "CircleHandler",
+    "params": {
+      "position": "position",
+      "radius": "radius1"
+    }
+  },
+  "3D_handler": {
+    "type": "ConeHandler",
+    "params": {
+      "position": "position",
+      "radius1": "radius1",
+      "radius2": "radius2",
+      "height": "height"
+    }
+  }
+}

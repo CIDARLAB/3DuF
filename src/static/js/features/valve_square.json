@@ -1,0 +1,26 @@
+{
+  "name": "SquareValve",
+  "params": {
+    "position": "position",
+    "width": "number",
+    "length": "number",
+    "height": "number"
+  },
+  "2D_handler": {
+    "type": "RectHandler",
+    "params": {
+      "position": "position",
+      "width": "width",
+      "length": "length"
+    }
+  },
+  "3D_handler": {
+    "type": "BoxHandler",
+    "params": {
+      "position": "position",
+      "width": "width",
+      "length": "length",
+      "height": "height"
+    }
+  }
+}
