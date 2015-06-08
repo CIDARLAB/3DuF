@@ -1,19 +1,19 @@
 {
   "name": "CircleValve",
-  "params": {
+  "paramTypes": {
     "position": "position",
     "radius1": "number",
     "radius2": "number",
     "height": "number"
   },
-  "2D_handler": {
+  "handler2D": {
     "type": "CircleHandler",
     "params": {
       "position": "position",
       "radius": "radius1"
     }
   },
-  "3D_handler": {
+  "handler3D": {
     "type": "ConeHandler",
     "params": {
       "position": "position",

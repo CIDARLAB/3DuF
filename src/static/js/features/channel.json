@@ -1,12 +1,12 @@
 {
   "name": "Channel",
-  "params": {
+  "paramTypes": {
     "start": "position",
     "end": "position",
     "width": "number",
     "height": "number"
   },
-  "2D_handler": {
+  "handler2D": {
     "type": "TwoPointRectHandler",
     "params": {
       "start": "start",
@@ -14,7 +14,7 @@
       "width": "width"
     }
   },
-  "3D_handler": {
+  "handler3D": {
     "type": "TwoPointBoxHandler",
     "params": {
       "start": "start",

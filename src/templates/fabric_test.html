@@ -41,6 +41,7 @@
           <button type="button" id="ex_1" class='btn btn-default'>transposer_small</button>
           <button type="button" id="ex_2" class='btn btn-default'>transposer_medium</button>
           <button type="button" id="ex_3" class='btn btn-default'>transposer_large</button>
+          <button type="button" id="ex_4" class='btn btn-default'>transposer_large_MOD</button>
         </div>
       </div>
     </div>
@@ -48,16 +49,6 @@
 </body>
 
 <script>
-
-	document.getElementById('link').onclick = function() {
-      this.href = 'data:text/plain;charset=utf-8,'
-        + encodeURIComponent(export_to_svg());
-    };
-
-    document.getElementById('submit_button').onclick = function() {
-      document.getElementById('hidden_data').value = JSON.stringify(json_data);
-    };
-
     var load_example = function(url)
     {
       request = new XMLHttpRequest();
@@ -98,11 +89,16 @@
     {
       load_example("{{ url_for('static', filename='examples/transposer_large.json')}}");
     }
+    document.getElementById("ex_3").onclick = function()
+    {
+      load_example("{{ url_for('static', filename='examples/transposer_large_MOD.json')}}");
+    }
+
 </script>
 
  <script src="{{ url_for('static', filename='js/bundle.js')}}"></script>
 
- <script>load_example("{{ url_for('static', filename='examples/transposer_small.json')}}");</script>
+ <script>//load_example("{{ url_for('static', filename='examples/transposer_large_MOD.json')}}");</script>
 
  <script>
   function handleFileSelect(evt) {

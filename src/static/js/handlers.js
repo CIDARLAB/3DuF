@@ -1,5 +1,7 @@
 'use strict';
 
+var features2D = require('./features2D.js');
+
 class Handler{
 	constructor(feature, type, handlerParams, handlerClass){
 		this.feature = feature;
@@ -25,7 +27,7 @@ class Handler{
 			if (!this.__featureHasHandlerParam(param)){
 				throw "Feature does not have the correct 2D Handler parameter."
 			} else if (!this.__isCorrectParamType(param)){
-				throw "Feature has the correct parameter target, but it is of the wrong type."
+				throw `Feature has the correct parameter target ${param}, but it is of the wrong type. ${this.feature.paramTypes.param}`
 			} else if (!this.__featureHasTargetParam(param)){
 				throw "Feature does not have the correct target parameter."
 			} else {
@@ -34,34 +36,66 @@ class Handler{
 		}
 	}
 
+	invertY(position){
+		return [position[0], this.feature.layer.device.width - position[1]];
+	}
+
 	__getParamValue(param){
 		return this.feature.params[this.paramTargets[param]];
 	}
 
 	__associateParam(param){
-		this.paramTargets[param] = this.feature[this.handlerClass].params[param];
+		this.paramTargets[param] = this.feature.classData[this.handlerClass].params[param];
 	}
 
 	__featureHasTargetParam(param){
-		return this.feature.paramTypes.hasOwnProperty(this.feature[this.handlerClass].params[param]);
+		return this.feature.classData.paramTypes.hasOwnProperty(this.feature[this.handlerClass].params[param]);
 	}
 
 	__featureHasHandlerParam(param){
-		return this.feature[this.handlerClass].params.hasOwnProperty(param);
+		return this.feature.classData[this.handlerClass].params.hasOwnProperty(param);
 	}
 
 	__isCorrectParamType(param){
-		return this.feature.paramTypes[param] == this.handlerParams[param];
+		var type = this.handlerParams[param];
+		var target = this.feature.classData[this.handlerClass].params[param];
+		var targetType = this.feature.classData.paramTypes[target];
+		return type == targetType;
 	}
 
 	__isCorrectHandlerType(){
-		return this.feature[this.handlerClass].type == this.type;
+		return this.feature.classData[this.handlerClass].type == this.type;
 	}
 } 
 
 class Handler2D extends Handler {
 	constructor(feature, type, handlerParams){
 		super(feature, type, handlerParams, "handler2D");
+		this.fab = null;
+	}
+
+	updateFab(){
+		var fabParams = {};
+		for (var param in this.paramTargets){
+			fabParams[param] = this.__getParamValue(param);
+		}
+		if (this.feature.color == 'team'){
+			fabParams["color"] = this.feature.layer.color;
+		} else{
+			fabParams["color"] = this.feature.color;
+		}
+		this.fab.setState(fabParams);
+	}
+
+	updateJSON(){
+		var fabState = this.fab.getState();
+		for (var param in this.handlerParams){
+			this.feature.params[this.paramTargets[param]] = fabState[param];
+		}
+	}
+
+	render(){
+		this.feature.layer.device.canvas.add(this.fab);
 	}
 }
 
@@ -71,6 +105,8 @@ class CircleHandler extends Handler2D{
 			position: "position",
 			radius: "number",
 		});
+		this.fab = new features2D.uFabCircle();
+		this.updateFab();
 	}
 }
 
@@ -81,6 +117,8 @@ class TwoPointRectHandler extends Handler2D{
 			end: "position", 
 			width: "number"
 		});
+		this.fab = new features2D.uFabTwoPointRect();
+		this.updateFab();
 	}
 }
 
@@ -91,6 +129,8 @@ class RectHandler extends Handler2D{
 			width: "number",
 			length: "number"
 		});
+		this.fab = new features2D.uFabRect();
+		this.updateFab();
 	}
 }
 

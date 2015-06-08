@@ -4,11 +4,10 @@ class Feature{
 	constructor(featureData){
 		this.ID = Feature.__parseOptionalID(featureData);
 		this.color = Feature.__parseOptionalColor(featureData);
-		this.type = featureData.type;
 		this.params = featureData.params;
-		this.paramTypes = featureData.paramTypes;
-		this.handler2D = featureData.handler2D;
-		this.handler3D = featureData.handler3D;
+		this.classData = featureData.classData;
+		this.handler2D = null;
+		this.handler3D = null;
 		this.layer = null;
 	}
 
@@ -31,11 +30,11 @@ class Feature{
    	}
 
    	static __parseOptionalColor(featureData){
-		if (featureData.hasOwnProperty("color") && featureData.color != undefined && featureData.color != null){
-			return featureData.color;
+		if (!featureData.hasOwnProperty("color") || featureData.color == undefined || featureData.color == null){
+			return "layer";
 		}
 		else {
-			return "layer";
+			return featureData.color;
 		}
    	}
 
@@ -55,6 +54,10 @@ class Feature{
    			layer: this.layer.ID,
    			feature_params: this.params
    		}
+   	}
+
+   	render2D(){
+   		this.handler2D.render();
    	}
 }
 
@@ -99,6 +102,12 @@ class Layer {
 		}
 		return data;
 	}
+
+	render2D(){
+		for (var feature in features){
+			features[feature].render2D();
+		}
+	}
 }
 
 class Device {
@@ -108,6 +117,7 @@ class Device {
 		this.ID = deviceData.ID;
 		this.layers = {};
 		this.features = {};
+		this.canvas = null;
 	}
 
 	static fromJSON(deviceJSON){
@@ -150,6 +160,12 @@ class Device {
 		}
 		else {
 			this.features[feature.ID] = feature;
+		}
+	}
+
+	render2D(){
+		for (var layer in layers){
+			layers[layer].render2D();
 		}
 	}
 
