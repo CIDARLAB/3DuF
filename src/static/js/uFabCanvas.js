@@ -1,9 +1,8 @@
 'use strict';
 
-var uFab = require('uFab.js');
+var uFab = require('./uFab');
 
-class uFabCanvas extends CanvasWithViewport(){
-
+class uFabCanvas extends fabric.CanvasWithViewport{
 	constructor(id){
 		super(id);
 		this.resizeCanvasElement();

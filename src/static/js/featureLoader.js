@@ -19,8 +19,8 @@ var makeFeatureClass = function(featureJSON){
 			params: params
 		});
 		// Placeholders, figure out your naming conventions!
-		newFeat.handler2D = new handlers[newFeat.handler2D.type](newFeat);
-		newFeat.handler3D = new handlers[newFeat.handler3D.type](newFeat);
+		newFeat.handler2D = new handlers[newFeat.classData.handler2D.type](newFeat);
+		newFeat.handler3D = new handlers[newFeat.classData.handler3D.type](newFeat);
 		return newFeat;
 	}
 }

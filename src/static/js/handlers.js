@@ -49,7 +49,7 @@ class Handler{
 	}
 
 	__featureHasTargetParam(param){
-		return this.feature.classData.paramTypes.hasOwnProperty(this.feature[this.handlerClass].params[param]);
+		return this.feature.classData.paramTypes.hasOwnProperty(this.feature.classData[this.handlerClass].params[param]);
 	}
 
 	__featureHasHandlerParam(param){

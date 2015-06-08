@@ -9,9 +9,13 @@ document.getElementById('c').width = document.getElementById('canvas_block').cli
 document.getElementById('c').height = document.getElementById('canvas_block').clientHeight;
 var canvas = new uFabCanvas('c');
 
-var dev = new uFab.Device({height: 50, width: 100, ID: "test_device"});
+var Device = uFab.Device;
+var Layer = uFab.Layer;
+
+
+var dev = new Device({height: 50, width: 100, ID: "test_device"});
 dev.canvas = canvas;
-var lay = new uFab.Layer({z_offset: 0, color: "blue", ID: "layer_1"});
+var lay = new Layer({z_offset: 0, color: "blue", ID: "layer_1"});
 
 dev.addLayer(lay);
 
@@ -42,7 +46,6 @@ var foo = new fabric.Circle(
 */
 foo.render2D();
 bar.render2D();
-console.log(canvas.toJSON());
 
 /*
 
