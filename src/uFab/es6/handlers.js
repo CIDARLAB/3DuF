@@ -107,6 +107,7 @@ class CircleHandler extends Handler2D{
 			radius: "number",
 		});
 		this.fab = new features2D.uFabCircle();
+		this.fab.handler = this;
 	}
 }
 
@@ -118,6 +119,8 @@ class TwoPointRectHandler extends Handler2D{
 			width: "number"
 		});
 		this.fab = new features2D.uFabTwoPointRect();
+		this.fab.handler = this;
+
 	}
 }
 
@@ -129,6 +132,7 @@ class RectHandler extends Handler2D{
 			length: "number"
 		});
 		this.fab = new features2D.uFabRect();
+		this.fab.handler = this;
 	}
 }
 

@@ -276,7 +276,7 @@ var uFabCircle = (function (_fabric$Circle) {
 		value: function setState(params) {
 			this.set({
 				left: params.position[0],
-				top: params.position[1],
+				top: this.handler.invertY(params.position)[1],
 				radius: params.radius,
 				fill: params.color
 			});
@@ -288,7 +288,7 @@ var uFabCircle = (function (_fabric$Circle) {
 			var left = this.left + offset[0];
 			var top = this.top + offset[1];
 			return {
-				position: [left, top],
+				position: this.handler.invertY([left, top]),
 				radius: this.radius,
 				color: this.fill
 			};
@@ -324,7 +324,7 @@ var uFabRect = (function (_fabric$Rect) {
 		value: function setState(params) {
 			this.set({
 				left: params.position[0],
-				top: params.position[1],
+				top: this.handler.invertY(params.position)[1],
 				height: params.width,
 				width: params.length,
 				fill: params.color
@@ -355,7 +355,7 @@ var uFabTwoPointRect = (function (_fabric$Rect2) {
 		_get(Object.getPrototypeOf(uFabTwoPointRect.prototype), 'constructor', this).call(this, {
 			lockRotation: true,
 			originX: 'center',
-			originY: 'center',
+			originY: 'bottom',
 			centeredScaling: true,
 			lockUniScaling: true,
 			hasRotatingPoint: false,
@@ -380,13 +380,13 @@ var uFabTwoPointRect = (function (_fabric$Rect2) {
 	}, {
 		key: 'setState',
 		value: function setState(params) {
-			var posState = this.__computePositionalState(params.start, params.end);
+			var posState = this.__computePositionalState(this.handler.invertY(params.start), this.handler.invertY(params.end));
 			this.set({
 				left: posState.left,
 				top: posState.top,
-				width: posState.length,
+				width: params.width,
 				angle: posState.angle,
-				height: params.width,
+				height: posState.length,
 				fill: params.color
 			});
 		}
@@ -399,8 +399,8 @@ var uFabTwoPointRect = (function (_fabric$Rect2) {
 			var eLeft = endPoint[0] + offset[0];
 			var eTop = endPoint[1] + offset[1];
 			return {
-				start: [left, top],
-				end: [eLeft, eTop],
+				start: this.handler.invertY([left, top]),
+				end: this.handler.invertY([eLeft, eTop]),
 				width: this.height,
 				color: this.color
 			};
@@ -557,9 +557,9 @@ var CircleHandler = (function (_Handler2D) {
 
 		_get(Object.getPrototypeOf(CircleHandler.prototype), 'constructor', this).call(this, feature, 'CircleHandler', {
 			position: 'position',
-			radius: 'number'
-		});
+			radius: 'number' });
 		this.fab = new features2D.uFabCircle();
+		this.fab.handler = this;
 	}
 
 	_inherits(CircleHandler, _Handler2D);
@@ -577,6 +577,7 @@ var TwoPointRectHandler = (function (_Handler2D2) {
 			width: 'number'
 		});
 		this.fab = new features2D.uFabTwoPointRect();
+		this.fab.handler = this;
 	}
 
 	_inherits(TwoPointRectHandler, _Handler2D2);
@@ -594,6 +595,7 @@ var RectHandler = (function (_Handler2D3) {
 			length: 'number'
 		});
 		this.fab = new features2D.uFabRect();
+		this.fab.handler = this;
 	}
 
 	_inherits(RectHandler, _Handler2D3);
@@ -745,14 +747,16 @@ var Transposer = (function (_Module) {
 			var pTopLeft = [x.pneuLeft, y.pneuTop];
 			var pTopMid = [x.valveMid, y.pneuTop];
 			var vTopMid = [x.valveMid, y.valveTop];
-			var pExitMid = [x.valveMid, y.pneuExit];
-			var pExitRight = [x.pneuRight, y.pneuExit];
+			var pExitMid = [x.valveMid, y.exitTop];
+			var pExitRight = [x.pneuRight, y.exitTop];
 			var vTopLeft = [x.valveLeft, y.valveHigh];
 			var pTopRight = [x.pneuRight, y.valveHigh];
 			var vBotLeft = [x.valveLeft, y.valveLow];
 			var pBotRight = [x.pneuRight, y.valveLow];
 
 			var positionPairs = [[vBot, vBelow], [vBelow, pBotLeft], [pBotLeft, pTopLeft], [pTopLeft, pTopMid], [vTopMid, pExitMid], [pExitRight, pBotRight], [vTopLeft, pTopRight], [vBotLeft, pBotRight]];
+
+			console.log(positionPairs);
 
 			for (var pos in positionPairs) {
 				var start = positionPairs[pos][0];
@@ -802,16 +806,16 @@ var Transposer = (function (_Module) {
 			var viaWidth = this.featureDefaults.Via.radius1;
 			var buff = this.transposerParams.buffer;
 
-			var flowBot = this.transposerParams.position[0];
+			var flowBot = this.transposerParams.position[1];
 			var pneuBot = flowBot - valveWidth - buff - pneuWidth;
-			var valveLow = valveWidth + buff + pneuWidth;
+			var valveLow = flowBot + valveWidth + buff + pneuWidth;
 			var pneuMid = valveLow + valveWidth + buff + viaWidth;
-			var valveHigh = pneuMid + pneuWidth + buff + valveWidth;
+			var valveHigh = pneuMid + viaWidth + buff + valveWidth;
 			var valveTop = valveHigh + valveWidth + buff + pneuWidth;
 			var pneuTop = valveTop + valveWidth + buff + pneuWidth;
 			var exitTop = pneuTop + buff;
 
-			return {
+			var pos = {
 				'flowBot': flowBot,
 				'pneuBot': pneuBot,
 				'valveLow': valveLow,
@@ -821,6 +825,9 @@ var Transposer = (function (_Module) {
 				'pneuTop': pneuTop,
 				'exitTop': exitTop
 			};
+
+			console.log(pos);
+			return pos;
 		}
 	}, {
 		key: 'makeValve',
@@ -927,8 +934,7 @@ var Feature = (function () {
 				ID: featureJSON.ID,
 				color: featureJSON.color,
 				type: featureJSON.type,
-				params: featureJSON.feature_params
-			});
+				params: featureJSON.feature_params });
 			return feat;
 		}
 	}, {
@@ -1061,8 +1067,7 @@ var Device = (function () {
 			return {
 				device_data: this.deviceData,
 				layers: this.__layersToJSON(),
-				features: this.__featuresToJSON()
-			};
+				features: this.__featuresToJSON() };
 		}
 	}, {
 		key: '__featuresToJSON',
@@ -1088,8 +1093,7 @@ var Device = (function () {
 			var devData = {
 				height: deviceJSON.device.height,
 				width: deviceJSON.device.width,
-				ID: deviceJSON.device.name
-			};
+				ID: deviceJSON.device.name };
 			var dev = new Device(devData);
 
 			for (var layerID in deviceJSON.layers) {
@@ -1143,7 +1147,9 @@ var uFabCanvas = (function (_fabric$CanvasWithViewport) {
 	_createClass(uFabCanvas, [{
 		key: 'setDevice',
 		value: function setDevice(device) {
+			this.clear();
 			this.device = device;
+			this.device.canvas = this;
 			this.resetZoom();
 			this.resetViewPosition();
 		}
@@ -1155,12 +1161,12 @@ var uFabCanvas = (function (_fabric$CanvasWithViewport) {
 	}, {
 		key: 'increaseZoom',
 		value: function increaseZoom(zoom) {
-			setZoom(this.viewport.zoom * 1.1);
+			this.setZoom(this.viewport.zoom * 1.1);
 		}
 	}, {
 		key: 'decreaseZoom',
 		value: function decreaseZoom() {
-			setZoom(this.viewport.zoom * 0.9);
+			this.setZoom(this.viewport.zoom * 0.9);
 		}
 	}, {
 		key: 'setZoom',
@@ -1170,7 +1176,7 @@ var uFabCanvas = (function (_fabric$CanvasWithViewport) {
 	}, {
 		key: 'resetZoom',
 		value: function resetZoom() {
-			setZoom(this.computeOptimalZoom());
+			this.setZoom(this.computeOptimalZoom());
 		}
 	}, {
 		key: 'resizeCanvasElement',
@@ -1213,7 +1219,7 @@ var radToDeg = function radToDeg(radians) {
 
 var computeAngleFromPoints = function computeAngleFromPoints(start, end) {
 	var dX = end[0] - start[0];
-	var dY = end[1] - end[0];
+	var dY = start[1] - end[1];
 	return computeAngle(dX, dY);
 };
 
@@ -1222,11 +1228,11 @@ var computeAngle = function computeAngle(dX, dY) {
 };
 
 var computeDistanceBetweenPoints = function computeDistanceBetweenPoints(start, end) {
-	return computeDistance(end[1] - end[0], start[1] - start[0]);
+	return computeDistance(end[0] - start[0], end[1] - start[1]);
 };
 
 var computeDistance = function computeDistance(dX, dY) {
-	return Math.sqrt(Math.pow(dX, 2), Math.pow(dY, 2));
+	return Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
 };
 
 var computeEndPoint = function computeEndPoint(start, angle, length) {
@@ -1263,8 +1269,7 @@ var canvas = new uFabCanvas('c');
 var Device = uFab.Device;
 var Layer = uFab.Layer;
 
-var dev = new Device({ height: 50, width: 100, ID: 'test_device' });
-dev.canvas = canvas;
+var dev = new Device({ width: 75.8, height: 51, ID: 'test_device' });
 var flow = new Layer({ z_offset: 0, color: 'blue', ID: 'flow' });
 var control = new Layer({ z_offset: 1.4, color: 'red', ID: 'control' });
 
@@ -1290,7 +1295,7 @@ var featureDefaults = {
 };
 
 var transposerParams = {
-	position: [50, 50],
+	position: [dev.width / 2, dev.height / 2],
 	buffer: 1,
 	flowLayer: flow,
 	controlLayer: control
@@ -1302,6 +1307,74 @@ dev.addLayer(control);
 featureLoader.loadDefaultFeatures();
 
 var trans = new Transposer(featureDefaults, transposerParams);
+/*
+var up = [15,5];
+var down = [15,25];
+var left = [5, 15];
+var right = [25, 15];
+var mid = [15, 15];
+
+var p1 = new Port({
+	position: up,
+	radius: 1,
+	height: .4
+});
+
+var p2 = new Port({
+	position: down,
+	radius: 1,
+	height: .4
+})
+
+var p3 = new Port({
+	position: left,
+	radius: 1,
+	height: .4
+})
+
+var p4 = new Port({
+	position: right,
+	radius: 1,
+	height: .4
+})
+
+var p5 = new Port({
+	position: mid,
+	radius: 1,
+	height: .4
+})
+
+control.addFeature(p1);
+control.addFeature(p2);
+control.addFeature(p3);
+control.addFeature(p4);
+control.addFeature(p5);
+
+var c1 = new Channel({
+	start: up,
+	end: down,
+	width: .2, 
+	height: .4
+});
+
+var c2 = new Channel({
+	start: left,
+	end: right,
+	width: .2, 
+	height: .4
+});
+
+flow.addFeature(c1);
+control.addFeature(c2);
+
+console.log(c2);
+console.log(c1);
+
+*/
+
+canvas.setDevice(dev);
+
+console.log();
 
 /*
 var valve = new CircleValve({

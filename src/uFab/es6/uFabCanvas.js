@@ -27,11 +27,11 @@ class uFabCanvas extends fabric.CanvasWithViewport{
 	}
 
 	increaseZoom(zoom){
-		setZoom(this.viewport.zoom * 1.1);
+		this.setZoom(this.viewport.zoom * 1.1);
 	}
 
 	decreaseZoom(){
-		setZoom(this.viewport.zoom * .9);
+		this.setZoom(this.viewport.zoom * .9);
 	}
 
 	setZoom(zoom){
@@ -39,7 +39,7 @@ class uFabCanvas extends fabric.CanvasWithViewport{
 	}
 
 	resetZoom(){
-		setZoom(this.computeOptimalZoom());
+		this.setZoom(this.computeOptimalZoom());
 	}
 
 	resizeCanvasElement(){

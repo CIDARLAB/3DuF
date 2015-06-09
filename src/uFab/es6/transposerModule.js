@@ -68,8 +68,8 @@ class Transposer extends Module{
 		var pTopLeft = [x.pneuLeft, y.pneuTop];
 		var pTopMid = [x.valveMid, y.pneuTop];
 		var vTopMid = [x.valveMid, y.valveTop];
-		var pExitMid = [x.valveMid, y.pneuExit];
-		var pExitRight = [x.pneuRight, y.pneuExit];
+		var pExitMid = [x.valveMid, y.exitTop];
+		var pExitRight = [x.pneuRight, y.exitTop];
 		var vTopLeft = [x.valveLeft, y.valveHigh];
 		var pTopRight = [x.pneuRight, y.valveHigh];
 		var vBotLeft = [x.valveLeft, y.valveLow];
@@ -85,6 +85,8 @@ class Transposer extends Module{
 			[vTopLeft, pTopRight],
 			[vBotLeft, pBotRight]
 		];
+
+		console.log(positionPairs);
 
 		for (var pos in positionPairs){
 			var start = positionPairs[pos][0];
@@ -131,16 +133,16 @@ class Transposer extends Module{
 		var viaWidth = this.featureDefaults.Via.radius1;
 		var buff = this.transposerParams.buffer;
 
-		var flowBot = this.transposerParams.position[0];
+		var flowBot = this.transposerParams.position[1];
 		var pneuBot = flowBot - valveWidth - buff - pneuWidth;
-		var valveLow = valveWidth + buff + pneuWidth;
+		var valveLow = flowBot + valveWidth + buff + pneuWidth;
 		var pneuMid = valveLow + valveWidth + buff + viaWidth;
-		var valveHigh = pneuMid + pneuWidth + buff + valveWidth;
+		var valveHigh = pneuMid + viaWidth + buff + valveWidth;
 		var valveTop = valveHigh + valveWidth + buff + pneuWidth;
 		var pneuTop = valveTop + valveWidth + buff + pneuWidth;
 		var exitTop = pneuTop + buff;
 
-		return {
+		var pos =  {
 			"flowBot": flowBot,
 			"pneuBot": pneuBot,
 			"valveLow": valveLow,
@@ -149,7 +151,10 @@ class Transposer extends Module{
 			"valveTop": valveTop,
 			"pneuTop": pneuTop,
 			"exitTop": exitTop
-		}
+		};
+
+		console.log(pos);
+		return pos;
 	}
 
 

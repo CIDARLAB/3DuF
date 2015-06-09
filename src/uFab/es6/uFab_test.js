@@ -14,7 +14,7 @@ var canvas = new uFabCanvas('c');
 var Device = uFab.Device;
 var Layer = uFab.Layer;
 
-var dev = new Device({height: 50, width: 100, ID: "test_device"});
+var dev = new Device({width: 75.8, height: 51, ID: "test_device"});
 var flow = new Layer({z_offset: 0, color: "blue", ID: "flow"});
 var control = new Layer({z_offset: 1.4, color: "red", ID: "control"});
 
@@ -40,7 +40,7 @@ var featureDefaults = {
 }
 
 var transposerParams = {
-	position: [50,50],
+	position: [dev.width/2,dev.height/2],
 	buffer: 1,
 	flowLayer: flow,
 	controlLayer: control
@@ -53,8 +53,74 @@ dev.addLayer(control);
 featureLoader.loadDefaultFeatures();
 
 var trans = new Transposer(featureDefaults, transposerParams);
+/*
+var up = [15,5];
+var down = [15,25];
+var left = [5, 15];
+var right = [25, 15];
+var mid = [15, 15];
+
+var p1 = new Port({
+	position: up,
+	radius: 1,
+	height: .4
+});
+
+var p2 = new Port({
+	position: down,
+	radius: 1,
+	height: .4
+})
+
+var p3 = new Port({
+	position: left,
+	radius: 1,
+	height: .4
+})
+
+var p4 = new Port({
+	position: right,
+	radius: 1,
+	height: .4
+})
+
+var p5 = new Port({
+	position: mid,
+	radius: 1,
+	height: .4
+})
+
+control.addFeature(p1);
+control.addFeature(p2);
+control.addFeature(p3);
+control.addFeature(p4);
+control.addFeature(p5);
+
+var c1 = new Channel({
+	start: up,
+	end: down,
+	width: .2, 
+	height: .4
+});
+
+var c2 = new Channel({
+	start: left,
+	end: right,
+	width: .2, 
+	height: .4
+});
+
+flow.addFeature(c1);
+control.addFeature(c2);
+
+console.log(c2);
+console.log(c1);
+
+*/
 
 canvas.setDevice(dev);
+
+console.log()
 
 /*
 var valve = new CircleValve({
@@ -83,4 +149,5 @@ console.log(valve);
 */
 
 dev.render2D();
+
 

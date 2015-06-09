@@ -10,7 +10,7 @@ var radToDeg = function(radians){
 
 var computeAngleFromPoints = function(start, end){
 	var dX = end[0] - start[0];
-	var dY = end[1] - end[0];
+	var dY = start[1] - end[1];
 	return computeAngle(dX, dY);
 }
 
@@ -19,11 +19,11 @@ var computeAngle = function(dX, dY){
 }
 
 var computeDistanceBetweenPoints = function(start, end){
-	return computeDistance(end[1]-end[0], start[1]-start[0]);
+	return computeDistance(end[0]-start[0], end[1]-start[1]);
 }
 
 var computeDistance = function(dX, dY){
-	return Math.sqrt(Math.pow(dX,2), Math.pow(dY, 2));
+	return Math.sqrt(Math.pow(dX,2) +  Math.pow(dY, 2));
 }
 
 var computeEndPoint = function(start, angle, length){

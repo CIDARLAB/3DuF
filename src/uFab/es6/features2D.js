@@ -27,7 +27,7 @@ class uFabCircle extends fabric.Circle{
 	setState(params){
 		this.set({
 			left: params.position[0],
-			top: params.position[1],
+			top: this.handler.invertY(params.position)[1],
 			radius: params.radius,
 			fill: params.color
 		});
@@ -38,7 +38,7 @@ class uFabCircle extends fabric.Circle{
 		var left = this.left + offset[0];
 		var top = this.top + offset[1];
 		return {
-			position: [left, top],
+			position: this.handler.invertY([left, top]),
 			radius: this.radius,
 			color: this.fill
 		}
@@ -65,7 +65,7 @@ class uFabRect extends fabric.Rect{
 	setState(params){
 		this.set({
 			left: params.position[0],
-			top: params.position[1],
+			top: this.handler.invertY(params.position)[1],
 			height: params.width,
 			width: params.length,
 			fill: params.color
@@ -90,7 +90,7 @@ class uFabTwoPointRect extends fabric.Rect{
 		super({
 			lockRotation: true,
 			originX: 'center',
-			originY: 'center',
+			originY: 'bottom',
 			centeredScaling: true,
 			lockUniScaling: true,
 			hasRotatingPoint: false,
@@ -110,13 +110,13 @@ class uFabTwoPointRect extends fabric.Rect{
 	}
 
 	setState(params){
-		var posState = this.__computePositionalState(params.start, params.end);
+		var posState = this.__computePositionalState(this.handler.invertY(params.start), this.handler.invertY(params.end));
 		this.set({
 			left: posState.left,
 			top: posState.top,
-			width: posState.length,
+			width: params.width,
 			angle: posState.angle,
-			height: params.width,
+			height: posState.length,
 			fill: params.color
 		});
 	}
@@ -128,8 +128,8 @@ class uFabTwoPointRect extends fabric.Rect{
 		var eLeft = endPoint[0] + offset[0];
 		var eTop = endPoint[1] + offset[1];
 		return {
-			start: [left, top],
-			end: [eLeft, eTop],
+			start: this.handler.invertY([left, top]),
+			end: this.handler.invertY([eLeft, eTop]),
 			width: this.height,
 			color: this.color
 		}
