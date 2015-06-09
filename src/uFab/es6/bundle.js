@@ -1139,7 +1139,9 @@ var uFabCanvas = (function (_fabric$CanvasWithViewport) {
 	_createClass(uFabCanvas, [{
 		key: 'setDevice',
 		value: function setDevice(device) {
+			this.clear();
 			this.device = device;
+			this.device.canvas = this;
 			this.resetZoom();
 			this.resetViewPosition();
 		}
@@ -1260,7 +1262,6 @@ var Device = uFab.Device;
 var Layer = uFab.Layer;
 
 var dev = new Device({ height: 50, width: 100, ID: 'test_device' });
-dev.canvas = canvas;
 var flow = new Layer({ z_offset: 0, color: 'blue', ID: 'flow' });
 var control = new Layer({ z_offset: 1.4, color: 'red', ID: 'control' });
 
@@ -1298,6 +1299,8 @@ dev.addLayer(control);
 featureLoader.loadDefaultFeatures();
 
 var trans = new Transposer(featureDefaults, transposerParams);
+
+canvas.setDevice(dev);
 
 /*
 var valve = new CircleValve({

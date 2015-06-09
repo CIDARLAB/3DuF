@@ -15,7 +15,9 @@ class uFabCanvas extends fabric.CanvasWithViewport{
 	}
 
 	setDevice(device){
+		this.clear();
 		this.device = device;
+		this.device.canvas = this;
 		this.resetZoom();
 		this.resetViewPosition();
 	}
