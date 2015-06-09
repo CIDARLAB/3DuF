@@ -79,7 +79,7 @@ class Handler2D extends Handler {
 		for (var param in this.paramTargets){
 			fabParams[param] = this.__getParamValue(param);
 		}
-		if (this.feature.color == 'team'){
+		if (this.feature.color == 'layer'){
 			fabParams["color"] = this.feature.layer.color;
 		} else{
 			fabParams["color"] = this.feature.color;
@@ -95,6 +95,7 @@ class Handler2D extends Handler {
 	}
 
 	render(){
+		this.updateFab();
 		this.feature.layer.device.canvas.add(this.fab);
 	}
 }
@@ -106,7 +107,6 @@ class CircleHandler extends Handler2D{
 			radius: "number",
 		});
 		this.fab = new features2D.uFabCircle();
-		this.updateFab();
 	}
 }
 
@@ -118,7 +118,6 @@ class TwoPointRectHandler extends Handler2D{
 			width: "number"
 		});
 		this.fab = new features2D.uFabTwoPointRect();
-		this.updateFab();
 	}
 }
 
@@ -130,7 +129,6 @@ class RectHandler extends Handler2D{
 			length: "number"
 		});
 		this.fab = new features2D.uFabRect();
-		this.updateFab();
 	}
 }
 

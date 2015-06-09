@@ -1,0 +1,44 @@
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="src/renderer/static/js/jquery-1.11.3.min.js"></script>
+    <script src="src/renderer/static/js/bootstrap.min.js"></script>
+    <script src="src/renderer/static/js/fabric.js"></script>
+    <script src="src/renderer/static/js/fabricjs_viewport.js"></script>
+
+    <link rel="stylesheet" href="src/renderer/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="src/renderer/static/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="src/renderer/static/css/demo.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div id="canvas_block"> 
+        <canvas id="c"></canvas>
+      </div>
+
+      <div id="button_block" class="text-center">
+        <h3 class='btn-label'>Download</h2>
+        <div class="btn-group" class="center-block">
+          <a href="" id="link" download="test.svg">
+            <button type="button" class="btn btn-default" role="group">Download SVG</button>
+          </a>
+        </div>
+        <h3 class='btn-label'>Select Active Layer</h2>
+        <div class="btn-group btn-group-vertical" id="layer_buttons">
+        </div>
+
+        <h3 class='btn-label'>Open Examples</h2>
+        <div class="btn-group btn-group-vertical" id="example_buttons">
+          <button type="button" id="ex_4" class='btn btn-default'>transposer_large_MOD</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script src="src/renderer/static/js/uFabApp.js"></script>
+
+ <script>//load_example("{{ url_for('static', filename='examples/transposer_large_MOD.json')}}");</script>

@@ -3,23 +3,16 @@ from contextlib import closing
 import os
 import json
 from io import BytesIO
-import JSON_import_test
-import JSON_parser_test
-
-#config
-DEBUG = True
-SECRET_KEY = 'development_key'
-USERNAME = 'admin'
-PASSWORD = 'default'
+import microfluidic_JSON_renderer as mjr
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 def convert_B_to_A(json_data):
-	return JSON_parser_test.convert_json(json_data)
+	return mjr.convert_json(json_data)
 
 def convert_A_to_stl(json_data):
-	return JSON_import_test.JSON_to_STL(json_data)
+	return mjr.JSON_to_STL(json_data)
 
 def create_STL_file(filename, stl_data):
 	response = make_response(stl_data)

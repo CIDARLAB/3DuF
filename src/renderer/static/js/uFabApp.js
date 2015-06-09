@@ -1,4 +1,37 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var uFab = require('./uFab');
+
+var Module = (function () {
+	function Module(featureDefaults) {
+		_classCallCheck(this, Module);
+
+		this.featureDefaults = featureDefaults;
+		this.features = [];
+	}
+
+	_createClass(Module, [{
+		key: 'makeFeature',
+		value: function makeFeature(type, params) {
+			params = {};
+
+			for (param in this.featureDefaults[type]) {}
+		}
+	}]);
+
+	return Module;
+})();
+
+exports.Module = Module;
+
+// TODO: general method for modules to make prims of known params
+
+},{"./uFab":7}],2:[function(require,module,exports){
 "use strict";
 
 var getDefaultFeatures = function getDefaultFeatures() {
@@ -159,7 +192,7 @@ var getDefaultFeatures = function getDefaultFeatures() {
 
 exports.getDefaultFeatures = getDefaultFeatures;
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 var uFab = require('./uFab');
@@ -200,7 +233,7 @@ exports.makeFeatureClass = makeFeatureClass;
 exports.parseFeatureList = parseFeatureList;
 exports.loadDefaultFeatures = loadDefaultFeatures;
 
-},{"./defaultFeatures.js":1,"./handlers":4,"./uFab":5}],3:[function(require,module,exports){
+},{"./defaultFeatures.js":2,"./handlers":5,"./uFab":7}],4:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -381,7 +414,7 @@ exports.uFabRect = uFabRect;
 exports.uFabCircle = uFabCircle;
 exports.uFabTwoPointRect = uFabTwoPointRect;
 
-},{"./uFabUtils.js":7}],4:[function(require,module,exports){
+},{"./uFabUtils.js":9}],5:[function(require,module,exports){
 'use strict';
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -492,7 +525,7 @@ var Handler2D = (function (_Handler) {
 			for (var param in this.paramTargets) {
 				fabParams[param] = this.__getParamValue(param);
 			}
-			if (this.feature.color == 'team') {
+			if (this.feature.color == 'layer') {
 				fabParams['color'] = this.feature.layer.color;
 			} else {
 				fabParams['color'] = this.feature.color;
@@ -510,6 +543,7 @@ var Handler2D = (function (_Handler) {
 	}, {
 		key: 'render',
 		value: function render() {
+			this.updateFab();
 			this.feature.layer.device.canvas.add(this.fab);
 		}
 	}]);
@@ -523,9 +557,9 @@ var CircleHandler = (function (_Handler2D) {
 
 		_get(Object.getPrototypeOf(CircleHandler.prototype), 'constructor', this).call(this, feature, 'CircleHandler', {
 			position: 'position',
-			radius: 'number' });
+			radius: 'number'
+		});
 		this.fab = new features2D.uFabCircle();
-		this.updateFab();
 	}
 
 	_inherits(CircleHandler, _Handler2D);
@@ -543,7 +577,6 @@ var TwoPointRectHandler = (function (_Handler2D2) {
 			width: 'number'
 		});
 		this.fab = new features2D.uFabTwoPointRect();
-		this.updateFab();
 	}
 
 	_inherits(TwoPointRectHandler, _Handler2D2);
@@ -561,7 +594,6 @@ var RectHandler = (function (_Handler2D3) {
 			length: 'number'
 		});
 		this.fab = new features2D.uFabRect();
-		this.updateFab();
 	}
 
 	_inherits(RectHandler, _Handler2D3);
@@ -638,7 +670,209 @@ exports.BoxHandler = BoxHandler;
 exports.TwoPointBoxHandler = TwoPointBoxHandler;
 exports.RectHandler = RectHandler;
 
-},{"./features2D.js":3}],5:[function(require,module,exports){
+},{"./features2D.js":4}],6:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var uFab = require('./uFab');
+var Module = require('./Module').Module;
+
+var Transposer = (function (_Module) {
+	function Transposer(featureDefaults, transposerParams) {
+		_classCallCheck(this, Transposer);
+
+		_get(Object.getPrototypeOf(Transposer.prototype), 'constructor', this).call(this, featureDefaults);
+		this.transposerParams = transposerParams;
+		this.makeFeatures();
+	}
+
+	_inherits(Transposer, _Module);
+
+	_createClass(Transposer, [{
+		key: 'makeFeatures',
+		value: function makeFeatures() {
+			this.updateValues();
+			this.makeValves();
+			this.makeVias();
+			this.makeChannels();
+			this.makePneumaticChannels();
+		}
+	}, {
+		key: 'makeValves',
+		value: function makeValves() {
+			var x = this.xValues;
+			var y = this.yValues;
+			var positions = [[x.valveMid, y.flowBot], [x.valveLeft, y.valveLow], [x.valveRight, y.valveLow], [x.valveLeft, y.valveHigh], [x.valveMid, y.valveTop], [x.valveRight, y.valveHigh]];
+
+			for (var pos in positions) {
+				var v = this.makeValve(positions[pos]);
+				this.features.push(v);
+				this.transposerParams.controlLayer.addFeature(v);
+			}
+		}
+	}, {
+		key: 'makeVias',
+		value: function makeVias() {
+			var x = this.xValues;
+			var y = this.yValues;
+			var positions = [[x.valveLeft, y.pneuMid], [x.valveRight, y.pneuMid]];
+
+			for (var pos in positions) {
+				var v = this.makeVia(positions[pos]);
+				this.features.push(v);
+				this.transposerParams.flowLayer.addFeature(v);
+			}
+		}
+	}, {
+		key: 'makeChannels',
+		value: function makeChannels() {}
+	}, {
+		key: 'makePneumaticChannels',
+		value: function makePneumaticChannels() {
+			var x = this.xValues;
+			var y = this.yValues;
+
+			var vBot = [x.valveMid, y.flowBot];
+			var vBelow = [x.valveMid, y.pneuBot];
+			var pBotLeft = [x.pneuLeft, y.pneuBot];
+			var pTopLeft = [x.pneuLeft, y.pneuTop];
+			var pTopMid = [x.valveMid, y.pneuTop];
+			var vTopMid = [x.valveMid, y.valveTop];
+			var pExitMid = [x.valveMid, y.pneuExit];
+			var pExitRight = [x.pneuRight, y.pneuExit];
+			var vTopLeft = [x.valveLeft, y.valveHigh];
+			var pTopRight = [x.pneuRight, y.valveHigh];
+			var vBotLeft = [x.valveLeft, y.valveLow];
+			var pBotRight = [x.pneuRight, y.valveLow];
+
+			var positionPairs = [[vBot, vBelow], [vBelow, pBotLeft], [pBotLeft, pTopLeft], [pTopLeft, pTopMid], [vTopMid, pExitMid], [pExitRight, pBotRight], [vTopLeft, pTopRight], [vBotLeft, pBotRight]];
+
+			for (var pos in positionPairs) {
+				var start = positionPairs[pos][0];
+				var end = positionPairs[pos][1];
+				var p = this.makePneumaticChannel(start, end);
+				this.features.push(p);
+				this.transposerParams.controlLayer.addFeature(p);
+			}
+		}
+	}, {
+		key: 'updateValues',
+		value: function updateValues() {
+			this.xValues = this.computeXValues();
+			this.yValues = this.computeYValues();
+		}
+	}, {
+		key: 'computeXValues',
+		value: function computeXValues() {
+			var pneuWidth = this.featureDefaults.PneumaticChannel.width / 2;
+			var valveWidth = this.featureDefaults.CircleValve.radius1;
+			var buff = this.transposerParams.buffer;
+
+			var flowLeft = this.transposerParams.position[0];
+			var pneuLeft = flowLeft + pneuWidth + buff;
+			var valveLeft = pneuLeft + pneuWidth + buff + valveWidth;
+			var valveMid = valveLeft + buff + valveWidth * 2;
+			var valveRight = valveMid + buff + valveWidth * 2;
+			var pneuRight = valveRight + valveWidth + buff + pneuWidth;
+			var flowRight = pneuRight + pneuWidth + buff;
+
+			return {
+				'flowLeft': flowLeft,
+				'pneuLeft': pneuLeft,
+				'valveLeft': valveLeft,
+				'valveMid': valveMid,
+				'valveRight': valveRight,
+				'pneuRight': pneuRight,
+				'flowRight': flowRight
+			};
+		}
+	}, {
+		key: 'computeYValues',
+		value: function computeYValues() {
+			var pneuWidth = this.featureDefaults.PneumaticChannel.width / 2;
+			var valveWidth = this.featureDefaults.CircleValve.radius1;
+			var flowWidth = this.featureDefaults.Channel.width / 2;
+			var viaWidth = this.featureDefaults.Via.radius1;
+			var buff = this.transposerParams.buffer;
+
+			var flowBot = this.transposerParams.position[0];
+			var pneuBot = flowBot - valveWidth - buff - pneuWidth;
+			var valveLow = valveWidth + buff + pneuWidth;
+			var pneuMid = valveLow + valveWidth + buff + viaWidth;
+			var valveHigh = pneuMid + pneuWidth + buff + valveWidth;
+			var valveTop = valveHigh + valveWidth + buff + pneuWidth;
+			var pneuTop = valveTop + valveWidth + buff + pneuWidth;
+			var exitTop = pneuTop + buff;
+
+			return {
+				'flowBot': flowBot,
+				'pneuBot': pneuBot,
+				'valveLow': valveLow,
+				'pneuMid': pneuMid,
+				'valveHigh': valveHigh,
+				'valveTop': valveTop,
+				'pneuTop': pneuTop,
+				'exitTop': exitTop
+			};
+		}
+	}, {
+		key: 'makeValve',
+		value: function makeValve(position) {
+			return new CircleValve({
+				'position': position,
+				'radius1': this.featureDefaults.CircleValve.radius1,
+				'radius2': this.featureDefaults.CircleValve.radius2,
+				'height': this.featureDefaults.CircleValve.height
+			});
+		}
+	}, {
+		key: 'makeChannel',
+		value: function makeChannel(start, end) {
+			return new Channel({
+				'start': start,
+				'end': end,
+				'width': this.featureDefaults.Channel.width,
+				'height': this.featureDefaults.Channel.height
+			});
+		}
+	}, {
+		key: 'makePneumaticChannel',
+		value: function makePneumaticChannel(start, end) {
+			return new Channel({
+				'start': start,
+				'end': end,
+				'width': this.featureDefaults.PneumaticChannel.width,
+				'height': this.featureDefaults.PneumaticChannel.height
+			});
+		}
+	}, {
+		key: 'makeVia',
+		value: function makeVia(position) {
+			return new Via({
+				'position': position,
+				'height': this.featureDefaults.Via.height,
+				'radius1': this.featureDefaults.Via.radius1,
+				'radius2': this.featureDefaults.Via.radius2
+			});
+		}
+	}]);
+
+	return Transposer;
+})(Module);
+
+exports.Transposer = Transposer;
+
+//TODO: Make the flow channels!
+// Don't forget that these go in two different layers!
+
+},{"./Module":1,"./uFab":7}],7:[function(require,module,exports){
 'use strict';
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -693,7 +927,8 @@ var Feature = (function () {
 				ID: featureJSON.ID,
 				color: featureJSON.color,
 				type: featureJSON.type,
-				params: featureJSON.feature_params });
+				params: featureJSON.feature_params
+			});
 			return feat;
 		}
 	}, {
@@ -760,8 +995,8 @@ var Layer = (function () {
 	}, {
 		key: 'render2D',
 		value: function render2D() {
-			for (var feature in features) {
-				features[feature].render2D();
+			for (var feature in this.features) {
+				this.features[feature].render2D();
 			}
 		}
 	}], [{
@@ -816,8 +1051,8 @@ var Device = (function () {
 	}, {
 		key: 'render2D',
 		value: function render2D() {
-			for (var layer in layers) {
-				layers[layer].render2D();
+			for (var layer in this.layers) {
+				this.layers[layer].render2D();
 			}
 		}
 	}, {
@@ -826,7 +1061,8 @@ var Device = (function () {
 			return {
 				device_data: this.deviceData,
 				layers: this.__layersToJSON(),
-				features: this.__featuresToJSON() };
+				features: this.__featuresToJSON()
+			};
 		}
 	}, {
 		key: '__featuresToJSON',
@@ -852,7 +1088,8 @@ var Device = (function () {
 			var devData = {
 				height: deviceJSON.device.height,
 				width: deviceJSON.device.width,
-				ID: deviceJSON.device.name };
+				ID: deviceJSON.device.name
+			};
 			var dev = new Device(devData);
 
 			for (var layerID in deviceJSON.layers) {
@@ -874,7 +1111,7 @@ exports.Device = Device;
 exports.Layer = Layer;
 exports.Feature = Feature;
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -963,7 +1200,7 @@ var uFabCanvas = (function (_fabric$CanvasWithViewport) {
 
 exports.uFabCanvas = uFabCanvas;
 
-},{"./uFab":5}],7:[function(require,module,exports){
+},{"./uFab":7}],9:[function(require,module,exports){
 'use strict';
 
 var degToRad = function degToRad(degrees) {
@@ -1007,8 +1244,9 @@ exports.computeDistance = computeDistance;
 exports.computeDistanceBetweenPoints = computeDistanceBetweenPoints;
 exports.computeEndPoint = computeEndPoint;
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 //watchify uFab_test.js -t babelify -v --outfile bundle.js
+//watchify uFab_test.js -t babelify -v --outfile ../../renderer/static/js/uFabApp.js
 
 'use strict';
 
@@ -1016,6 +1254,7 @@ var uFab = require('./uFab');
 var handlers = require('./handlers');
 var featureLoader = require('./featureLoader');
 var uFabCanvas = require('./uFabCanvas').uFabCanvas;
+var Transposer = require('./transposerModule').Transposer;
 
 document.getElementById('c').width = document.getElementById('canvas_block').clientWidth;
 document.getElementById('c').height = document.getElementById('canvas_block').clientHeight;
@@ -1026,48 +1265,70 @@ var Layer = uFab.Layer;
 
 var dev = new Device({ height: 50, width: 100, ID: 'test_device' });
 dev.canvas = canvas;
-var lay = new Layer({ z_offset: 0, color: 'blue', ID: 'layer_1' });
+var flow = new Layer({ z_offset: 0, color: 'blue', ID: 'flow' });
+var control = new Layer({ z_offset: 1.4, color: 'red', ID: 'control' });
 
-dev.addLayer(lay);
+var featureDefaults = {
+	Channel: {
+		height: 0.2,
+		width: 0.41
+	},
+	PneumaticChannel: {
+		height: 0.4,
+		width: 0.4
+	},
+	Via: {
+		height: 1,
+		radius1: 0.8,
+		radius2: 0.7
+	},
+	CircleValve: {
+		height: 0.9,
+		radius1: 1.4,
+		radius2: 1.2
+	}
+};
+
+var transposerParams = {
+	position: [50, 50],
+	buffer: 1,
+	flowLayer: flow,
+	controlLayer: control
+};
+
+dev.addLayer(flow);
+dev.addLayer(control);
 
 featureLoader.loadDefaultFeatures();
 
+var trans = new Transposer(featureDefaults, transposerParams);
+
+/*
+var valve = new CircleValve({
+	position: [100, 50],
+	radius1: 30,
+	radius2: 40,
+	height: 5});
+
 var foo = new Port({
-	position: [200, 10],
+	position: [200,10],
 	radius: 10,
-	height: 5 }, 'black');
+	height: 5});
 
 var bar = new Channel({
 	start: [200, 50],
 	end: [200, 30],
 	height: 5,
-	width: 20 }, 'blue');
+	width: 20});
 
-lay.addFeature(foo);
-lay.addFeature(bar);
-/*
+flow.addFeature(foo);
+flow.addFeature(bar);
+flow.addFeature(valve);
 
-var foo = new fabric.Circle(
-	{
-		fill: 'black',
-		radius: 100,
-		top: 50,
-		left: 50
-	});
-*/
-foo.render2D();
-bar.render2D();
-
-/*
-
-canvas.add(new fabric.Rect({
-	left: 0,
-	top: 0,
-	width: 50,
-	height: 50,
-	fill: 'black'
-}))
+console.log(valve);
 
 */
 
-},{"./featureLoader":2,"./handlers":4,"./uFab":5,"./uFabCanvas":6}]},{},[8]);
+dev.render2D();
+
+},{"./featureLoader":3,"./handlers":5,"./transposerModule":6,"./uFab":7,"./uFabCanvas":8}]},{},[10]);

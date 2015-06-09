@@ -104,8 +104,8 @@ class Layer {
 	}
 
 	render2D(){
-		for (var feature in features){
-			features[feature].render2D();
+		for (var feature in this.features){
+			this.features[feature].render2D();
 		}
 	}
 }
@@ -164,8 +164,8 @@ class Device {
 	}
 
 	render2D(){
-		for (var layer in layers){
-			layers[layer].render2D();
+		for (var layer in this.layers){
+			this.layers[layer].render2D();
 		}
 	}
 
