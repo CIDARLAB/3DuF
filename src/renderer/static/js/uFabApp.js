@@ -698,6 +698,20 @@ var Transposer = (function (_Module) {
 	_inherits(Transposer, _Module);
 
 	_createClass(Transposer, [{
+		key: 'refresh',
+		value: function refresh() {
+			this.clearFeatures();
+			this.makeFeatures();
+		}
+	}, {
+		key: 'clearFeatures',
+		value: function clearFeatures() {
+			for (var feature in this.features) {
+				this.features[feature].destroy();
+			}
+			this.features = [];
+		}
+	}, {
 		key: 'makeFeatures',
 		value: function makeFeatures() {
 			this.updateValues();
@@ -734,7 +748,15 @@ var Transposer = (function (_Module) {
 		}
 	}, {
 		key: 'makeChannels',
-		value: function makeChannels() {}
+		value: function makeChannels() {
+			var x = this.xValues;
+			var y = this.yValues;
+
+			var fBotLeft = [x.flowLeft, y.flowBot];
+			var fBotRight = [x.flowRight, y.flowBot];
+			var fTopleft = [x.flowLeft, y.valveTop];
+			var fTopRight = [x.flowRight, y.valveTop];
+		}
 	}, {
 		key: 'makePneumaticChannels',
 		value: function makePneumaticChannels() {
@@ -755,8 +777,6 @@ var Transposer = (function (_Module) {
 			var pBotRight = [x.pneuRight, y.valveLow];
 
 			var positionPairs = [[vBot, vBelow], [vBelow, pBotLeft], [pBotLeft, pTopLeft], [pTopLeft, pTopMid], [vTopMid, pExitMid], [pExitRight, pBotRight], [vTopLeft, pTopRight], [vBotLeft, pBotRight]];
-
-			console.log(positionPairs);
 
 			for (var pos in positionPairs) {
 				var start = positionPairs[pos][0];
@@ -813,7 +833,7 @@ var Transposer = (function (_Module) {
 			var valveHigh = pneuMid + viaWidth + buff + valveWidth;
 			var valveTop = valveHigh + valveWidth + buff + pneuWidth;
 			var pneuTop = valveTop + valveWidth + buff + pneuWidth;
-			var exitTop = pneuTop + buff;
+			var exitTop = pneuTop + pneuWidth + buff;
 
 			var pos = {
 				'flowBot': flowBot,
@@ -826,7 +846,6 @@ var Transposer = (function (_Module) {
 				'exitTop': exitTop
 			};
 
-			console.log(pos);
 			return pos;
 		}
 	}, {
@@ -876,9 +895,6 @@ var Transposer = (function (_Module) {
 
 exports.Transposer = Transposer;
 
-//TODO: Make the flow channels!
-// Don't forget that these go in two different layers!
-
 },{"./Module":1,"./uFab":7}],7:[function(require,module,exports){
 'use strict';
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -901,6 +917,12 @@ var Feature = (function () {
 	}
 
 	_createClass(Feature, [{
+		key: 'destroy',
+		value: function destroy() {
+			this.layer.removeFeature(this.ID);
+			delete this;
+		}
+	}, {
 		key: 'toJSON',
 		value: function toJSON() {
 			return {
@@ -968,7 +990,7 @@ var Layer = (function () {
 		this.ID = layerData.ID;
 		this.ZOffset = layerData.z_offset;
 		this.flip = layerData.flip;
-		this.features = [];
+		this.features = {};
 		this.device = null;
 	}
 
@@ -982,10 +1004,16 @@ var Layer = (function () {
 			};
 		}
 	}, {
+		key: 'removeFeature',
+		value: function removeFeature(feature) {
+			delete this.features[feature];
+			this.device.__removeFeature(feature);
+		}
+	}, {
 		key: 'addFeature',
 		value: function addFeature(feature) {
 			feature.layer = this;
-			this.features.push(feature);
+			this.features[feature.ID] = feature;
 			this.device.__addFeature(feature);
 			return feature;
 		}
@@ -994,7 +1022,7 @@ var Layer = (function () {
 		value: function featuresToJSON() {
 			var data = [];
 			for (var feature in this.features) {
-				data.push(this.features[feature].ID);
+				data.push(feature);
 			}
 			return data;
 		}
@@ -1002,7 +1030,10 @@ var Layer = (function () {
 		key: 'render2D',
 		value: function render2D() {
 			for (var feature in this.features) {
-				this.features[feature].render2D();
+				var feat = this.features[feature];
+				if (feat != undefined) {
+					feat.render2D();
+				}
 			}
 		}
 	}], [{
@@ -1043,10 +1074,14 @@ var Device = (function () {
 			return layer;
 		}
 	}, {
+		key: '__removeFeature',
+		value: function __removeFeature(feature) {
+			delete this.features[feature];
+		}
+	}, {
 		key: '__addFeature',
 		value: function __addFeature(feature) {
 			if (this.features.hasOwnProperty(feature.ID)) {
-
 				throw 'Feature with ID ' + feature.ID + ' already exists in device ' + this.ID;
 			} else if (!this.layers.hasOwnProperty(feature.layer.ID)) {
 				throw 'Layer ' + feature.layer.ID + ' does not exist in device ' + this.ID;
@@ -1057,6 +1092,7 @@ var Device = (function () {
 	}, {
 		key: 'render2D',
 		value: function render2D() {
+			this.canvas.clear();
 			for (var layer in this.layers) {
 				this.layers[layer].render2D();
 			}
@@ -1290,13 +1326,26 @@ var featureDefaults = {
 	CircleValve: {
 		height: 0.9,
 		radius1: 1.4,
-		radius2: 1.2
-	}
+		radius2: 1.2 }
 };
 
+var updateBuffer = function updateBuffer() {
+	transposerParams.buffer = ex1.getValue();
+	trans.refresh();
+	dev.render2D();
+	console.log(dev);
+};
+
+var ex1 = $('#ex1').slider({
+	min: 0,
+	max: 5,
+	step: 0.1,
+	value: 1
+}).on('slide', updateBuffer).data('slider');
+
 var transposerParams = {
-	position: [dev.width / 2, dev.height / 2],
-	buffer: 1,
+	position: [dev.width / 2, dev.height],
+	buffer: 0.5,
 	flowLayer: flow,
 	controlLayer: control
 };
@@ -1307,100 +1356,8 @@ dev.addLayer(control);
 featureLoader.loadDefaultFeatures();
 
 var trans = new Transposer(featureDefaults, transposerParams);
-/*
-var up = [15,5];
-var down = [15,25];
-var left = [5, 15];
-var right = [25, 15];
-var mid = [15, 15];
-
-var p1 = new Port({
-	position: up,
-	radius: 1,
-	height: .4
-});
-
-var p2 = new Port({
-	position: down,
-	radius: 1,
-	height: .4
-})
-
-var p3 = new Port({
-	position: left,
-	radius: 1,
-	height: .4
-})
-
-var p4 = new Port({
-	position: right,
-	radius: 1,
-	height: .4
-})
-
-var p5 = new Port({
-	position: mid,
-	radius: 1,
-	height: .4
-})
-
-control.addFeature(p1);
-control.addFeature(p2);
-control.addFeature(p3);
-control.addFeature(p4);
-control.addFeature(p5);
-
-var c1 = new Channel({
-	start: up,
-	end: down,
-	width: .2, 
-	height: .4
-});
-
-var c2 = new Channel({
-	start: left,
-	end: right,
-	width: .2, 
-	height: .4
-});
-
-flow.addFeature(c1);
-control.addFeature(c2);
-
-console.log(c2);
-console.log(c1);
-
-*/
 
 canvas.setDevice(dev);
-
-console.log();
-
-/*
-var valve = new CircleValve({
-	position: [100, 50],
-	radius1: 30,
-	radius2: 40,
-	height: 5});
-
-var foo = new Port({
-	position: [200,10],
-	radius: 10,
-	height: 5});
-
-var bar = new Channel({
-	start: [200, 50],
-	end: [200, 30],
-	height: 5,
-	width: 20});
-
-flow.addFeature(foo);
-flow.addFeature(bar);
-flow.addFeature(valve);
-
-console.log(valve);
-
-*/
 
 dev.render2D();
 

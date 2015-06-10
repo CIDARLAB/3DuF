@@ -46,6 +46,11 @@ class Feature{
 		}
    	}
 
+   	destroy(){
+   		this.layer.removeFeature(this.ID);
+   		delete this;
+   	}
+
    	toJSON(){
    		return {
    			ID: this.ID,
@@ -67,7 +72,7 @@ class Layer {
 		this.ID = layerData.ID;
 		this.ZOffset = layerData.z_offset;
 		this.flip = layerData.flip;
-		this.features = [];
+		this.features = {};
 		this.device = null;
 	}
 
@@ -87,9 +92,14 @@ class Layer {
 		}
 	}
 
+	removeFeature(feature){
+		delete this.features[feature];
+		this.device.__removeFeature(feature);
+	}
+
 	addFeature(feature){
 		feature.layer = this;
-		this.features.push(feature);
+		this.features[feature.ID] = feature;
 		this.device.__addFeature(feature);
 		return feature;
 	}
@@ -98,14 +108,17 @@ class Layer {
 		var data = [];
 		for (var feature in this.features)
 		{
-			data.push(this.features[feature].ID);
+			data.push(feature);
 		}
 		return data;
 	}
 
 	render2D(){
 		for (var feature in this.features){
-			this.features[feature].render2D();
+			var feat = this.features[feature];
+			if (feat != undefined){
+				feat.render2D();
+			}
 		}
 	}
 }
@@ -150,9 +163,12 @@ class Device {
 		return layer;
 	}
 
+	__removeFeature(feature){
+		delete this.features[feature];
+	}
+
 	__addFeature(feature){
 		if (this.features.hasOwnProperty(feature.ID)){
-
 			throw `Feature with ID ${feature.ID} already exists in device ${this.ID}`;
 		}
 		else if (!this.layers.hasOwnProperty(feature.layer.ID)){
@@ -164,6 +180,7 @@ class Device {
 	}
 
 	render2D(){
+		this.canvas.clear();
 		for (var layer in this.layers){
 			this.layers[layer].render2D();
 		}

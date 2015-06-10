@@ -8,8 +8,19 @@ class Transposer extends Module{
 		super(featureDefaults);
 		this.transposerParams = transposerParams;
 		this.makeFeatures();
-
 	}	
+
+	refresh(){
+		this.clearFeatures();
+		this.makeFeatures();
+	}
+
+	clearFeatures(){
+		for (var feature in this.features){
+			this.features[feature].destroy();
+		}
+		this.features = [];
+	}
 
 	makeFeatures(){
 		this.updateValues();
@@ -54,8 +65,13 @@ class Transposer extends Module{
 	}
 
 	makeChannels(){
-		//TODO: Make the flow channels!
-		// Don't forget that these go in two different layers!
+		var x = this.xValues;
+		var y = this.yValues;
+
+		var fBotLeft = [x.flowLeft, y.flowBot];
+		var fBotRight = [x.flowRight, y.flowBot];
+		var fTopleft = [x.flowLeft, y.valveTop];
+		var fTopRight = [x.flowRight, y.valveTop];
 	}
 
 	makePneumaticChannels(){
@@ -85,8 +101,6 @@ class Transposer extends Module{
 			[vTopLeft, pTopRight],
 			[vBotLeft, pBotRight]
 		];
-
-		console.log(positionPairs);
 
 		for (var pos in positionPairs){
 			var start = positionPairs[pos][0];
@@ -140,7 +154,7 @@ class Transposer extends Module{
 		var valveHigh = pneuMid + viaWidth + buff + valveWidth;
 		var valveTop = valveHigh + valveWidth + buff + pneuWidth;
 		var pneuTop = valveTop + valveWidth + buff + pneuWidth;
-		var exitTop = pneuTop + buff;
+		var exitTop = pneuTop + pneuWidth + buff;
 
 		var pos =  {
 			"flowBot": flowBot,
@@ -153,7 +167,6 @@ class Transposer extends Module{
 			"exitTop": exitTop
 		};
 
-		console.log(pos);
 		return pos;
 	}
 
