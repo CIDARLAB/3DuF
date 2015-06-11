@@ -1452,7 +1452,7 @@ var makeSliders = function makeSliders(params, linker) {
 					start: params[foo][subparam],
 					step: 0.1,
 					range: {
-						'min': 0,
+						'min': 0.2,
 						'max': 5
 					}
 				});
@@ -1463,7 +1463,6 @@ var makeSliders = function makeSliders(params, linker) {
 				};
 				$('#' + subSliderID).on({
 					slide: function slide() {
-						console.log(this.id + ' is sliding.');
 						var link = linker[this.id];
 						updateParam(params, link.parent, link.child, getSliderValue(this.id));
 					}
