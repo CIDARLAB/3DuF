@@ -69,7 +69,6 @@ dev.addLayer(flow);
 dev.addLayer(control);
 
 var updateParam = function(list, parent, child, value){
-	console.log(value);
 	list[parent][child] = Number(value);
 	trans.refresh();
 	dev.render2D();
@@ -119,13 +118,13 @@ var makeSliders = function(params, linker){
 				$("#" + subSliderID).on({
 					slide: function(){
 						var link = linker[this.id];
-						updateParam(params, link.parent, link.child, getSliderValue(this.id));					}
-					});
+						updateParam(params, link.parent, link.child, getSliderValue(this.id));	
+					},
 					change: function(){
-							var link = linker[this.id];
-							updateParam(params, link.parent, link.child, getSliderValue(this.id));					}
+						var link = linker[this.id];
+						updateParam(params, link.parent, link.child, getSliderValue(this.id));	
+						}
 					});
-
 			}
 		}
 	}
