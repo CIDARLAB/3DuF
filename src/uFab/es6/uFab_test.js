@@ -120,7 +120,11 @@ var makeSliders = function(params, linker){
 					slide: function(){
 						var link = linker[this.id];
 						updateParam(params, link.parent, link.child, getSliderValue(this.id));					}
-				});
+					});
+					change: function(){
+							var link = linker[this.id];
+							updateParam(params, link.parent, link.child, getSliderValue(this.id));					}
+					});
 
 			}
 		}
