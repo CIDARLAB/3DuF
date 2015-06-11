@@ -28,6 +28,7 @@ class Transposer extends Module{
 		this.makeVias();
 		this.makeChannels();
 		this.makePneumaticChannels();
+		this.makePorts();
 	}
 
 	makeValves(){
@@ -64,14 +65,65 @@ class Transposer extends Module{
 		}
 	}
 
+	makePorts(){
+		var x = this.xValues;
+		var y = this.yValues;
+
+		var viaLeft = [x.valveLeft, y.pneuMid];
+		var viaRight = [x.valveRight, y.pneuMid];
+
+		var v1 = this.makePort(viaLeft);
+		var v2 = this.makePort(viaRight);
+		this.features.push(v1);
+		this.transposerParams.controlLayer.addFeature(v1);
+		this.features.push(v2);
+		this.transposerParams.controlLayer.addFeature(v2);
+	}
+
 	makeChannels(){
 		var x = this.xValues;
 		var y = this.yValues;
 
 		var fBotLeft = [x.flowLeft, y.flowBot];
 		var fBotRight = [x.flowRight, y.flowBot];
-		var fTopleft = [x.flowLeft, y.valveTop];
+		var fTopLeft = [x.flowLeft, y.valveTop];
 		var fTopRight = [x.flowRight, y.valveTop];
+		var fBotValveLeft = [x.valveLeft, y.flowBot];
+		var fBotValveRight = [x.valveRight, y.flowBot];
+		var fTopValveLeft = [x.valveLeft, y.valveTop];
+		var fTopValveRight = [x.valveRight, y.valveTop];
+		var fLowerValveLeft = [x.valveLeft, y.valveLow];
+		var fLowerValveRight = [x.valveRight, y.valveLow];
+		var fUpperValveLeft = [x.valveLeft, y.valveHigh];
+		var fUpperValveRight = [x.valveRight, y.valveHigh];
+		var fLowerMid = [x.valveMid, y.valveLow];
+		var fUpperMid = [x.valveMid, y.valveHigh];
+		var viaLeft = [x.valveLeft, y.pneuMid];
+		var viaRight = [x.valveRight, y.pneuMid];
+
+		var positionPairs = [
+			[fBotLeft, fBotRight],
+			[fTopLeft, fTopRight],
+			[fBotValveLeft, viaLeft],
+			[fTopValveRight, viaRight],
+			[fTopValveLeft, fUpperValveLeft],
+			[fUpperValveLeft, fUpperMid],
+			[fUpperMid, fLowerMid],
+			[fLowerMid, fLowerValveRight],
+			[fLowerValveRight, fBotValveRight]
+		];
+
+		for (var pos in positionPairs){
+			var start = positionPairs[pos][0];
+			var end = positionPairs[pos][1];
+			var f = this.makeChannel(start, end);
+			this.features.push(f);
+			this.transposerParams.flowLayer.addFeature(f);
+		}
+
+		var f = this.makeChannel(viaLeft,viaRight);
+		this.features.push(f);
+		this.transposerParams.controlLayer.addFeature(f);
 	}
 
 	makePneumaticChannels(){
@@ -145,6 +197,7 @@ class Transposer extends Module{
 		var valveWidth = this.featureDefaults.CircleValve.radius1;
 		var flowWidth = this.featureDefaults.Channel.width/2;
 		var viaWidth = this.featureDefaults.Via.radius1;
+		var portWidth = this.featureDefaults.Port.radius;
 		var buff = this.transposerParams.buffer;
 
 		var flowBot = this.transposerParams.position[1];
@@ -168,6 +221,14 @@ class Transposer extends Module{
 		};
 
 		return pos;
+	}
+
+	makePort(position){
+		return new Port({
+			"position": position,
+			"radius": this.featureDefaults.Port.radius,
+			"height": this.featureDefaults.Port.height
+		});
 	}
 
 

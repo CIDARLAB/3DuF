@@ -557,7 +557,8 @@ var CircleHandler = (function (_Handler2D) {
 
 		_get(Object.getPrototypeOf(CircleHandler.prototype), 'constructor', this).call(this, feature, 'CircleHandler', {
 			position: 'position',
-			radius: 'number' });
+			radius: 'number'
+		});
 		this.fab = new features2D.uFabCircle();
 		this.fab.handler = this;
 	}
@@ -719,6 +720,7 @@ var Transposer = (function (_Module) {
 			this.makeVias();
 			this.makeChannels();
 			this.makePneumaticChannels();
+			this.makePorts();
 		}
 	}, {
 		key: 'makeValves',
@@ -747,6 +749,22 @@ var Transposer = (function (_Module) {
 			}
 		}
 	}, {
+		key: 'makePorts',
+		value: function makePorts() {
+			var x = this.xValues;
+			var y = this.yValues;
+
+			var viaLeft = [x.valveLeft, y.pneuMid];
+			var viaRight = [x.valveRight, y.pneuMid];
+
+			var v1 = this.makePort(viaLeft);
+			var v2 = this.makePort(viaRight);
+			this.features.push(v1);
+			this.transposerParams.controlLayer.addFeature(v1);
+			this.features.push(v2);
+			this.transposerParams.controlLayer.addFeature(v2);
+		}
+	}, {
 		key: 'makeChannels',
 		value: function makeChannels() {
 			var x = this.xValues;
@@ -754,8 +772,34 @@ var Transposer = (function (_Module) {
 
 			var fBotLeft = [x.flowLeft, y.flowBot];
 			var fBotRight = [x.flowRight, y.flowBot];
-			var fTopleft = [x.flowLeft, y.valveTop];
+			var fTopLeft = [x.flowLeft, y.valveTop];
 			var fTopRight = [x.flowRight, y.valveTop];
+			var fBotValveLeft = [x.valveLeft, y.flowBot];
+			var fBotValveRight = [x.valveRight, y.flowBot];
+			var fTopValveLeft = [x.valveLeft, y.valveTop];
+			var fTopValveRight = [x.valveRight, y.valveTop];
+			var fLowerValveLeft = [x.valveLeft, y.valveLow];
+			var fLowerValveRight = [x.valveRight, y.valveLow];
+			var fUpperValveLeft = [x.valveLeft, y.valveHigh];
+			var fUpperValveRight = [x.valveRight, y.valveHigh];
+			var fLowerMid = [x.valveMid, y.valveLow];
+			var fUpperMid = [x.valveMid, y.valveHigh];
+			var viaLeft = [x.valveLeft, y.pneuMid];
+			var viaRight = [x.valveRight, y.pneuMid];
+
+			var positionPairs = [[fBotLeft, fBotRight], [fTopLeft, fTopRight], [fBotValveLeft, viaLeft], [fTopValveRight, viaRight], [fTopValveLeft, fUpperValveLeft], [fUpperValveLeft, fUpperMid], [fUpperMid, fLowerMid], [fLowerMid, fLowerValveRight], [fLowerValveRight, fBotValveRight]];
+
+			for (var pos in positionPairs) {
+				var start = positionPairs[pos][0];
+				var end = positionPairs[pos][1];
+				var f = this.makeChannel(start, end);
+				this.features.push(f);
+				this.transposerParams.flowLayer.addFeature(f);
+			}
+
+			var f = this.makeChannel(viaLeft, viaRight);
+			this.features.push(f);
+			this.transposerParams.controlLayer.addFeature(f);
 		}
 	}, {
 		key: 'makePneumaticChannels',
@@ -824,6 +868,7 @@ var Transposer = (function (_Module) {
 			var valveWidth = this.featureDefaults.CircleValve.radius1;
 			var flowWidth = this.featureDefaults.Channel.width / 2;
 			var viaWidth = this.featureDefaults.Via.radius1;
+			var portWidth = this.featureDefaults.Port.radius;
 			var buff = this.transposerParams.buffer;
 
 			var flowBot = this.transposerParams.position[1];
@@ -847,6 +892,15 @@ var Transposer = (function (_Module) {
 			};
 
 			return pos;
+		}
+	}, {
+		key: 'makePort',
+		value: function makePort(position) {
+			return new Port({
+				'position': position,
+				'radius': this.featureDefaults.Port.radius,
+				'height': this.featureDefaults.Port.height
+			});
 		}
 	}, {
 		key: 'makeValve',
@@ -956,7 +1010,8 @@ var Feature = (function () {
 				ID: featureJSON.ID,
 				color: featureJSON.color,
 				type: featureJSON.type,
-				params: featureJSON.feature_params });
+				params: featureJSON.feature_params
+			});
 			return feat;
 		}
 	}, {
@@ -1103,7 +1158,8 @@ var Device = (function () {
 			return {
 				device_data: this.deviceData,
 				layers: this.__layersToJSON(),
-				features: this.__featuresToJSON() };
+				features: this.__featuresToJSON()
+			};
 		}
 	}, {
 		key: '__featuresToJSON',
@@ -1129,7 +1185,8 @@ var Device = (function () {
 			var devData = {
 				height: deviceJSON.device.height,
 				width: deviceJSON.device.width,
-				ID: deviceJSON.device.name };
+				ID: deviceJSON.device.name
+			};
 			var dev = new Device(devData);
 
 			for (var layerID in deviceJSON.layers) {
@@ -1312,7 +1369,7 @@ var control = new Layer({ z_offset: 1.4, color: 'red', ID: 'control' });
 var featureDefaults = {
 	Channel: {
 		height: 0.2,
-		width: 0.41
+		width: 0.21
 	},
 	PneumaticChannel: {
 		height: 0.4,
@@ -1326,14 +1383,18 @@ var featureDefaults = {
 	CircleValve: {
 		height: 0.9,
 		radius1: 1.4,
-		radius2: 1.2 }
+		radius2: 1.2
+	},
+	Port: {
+		height: 0.4,
+		radius: 0.7
+	}
 };
 
 var updateBuffer = function updateBuffer() {
 	transposerParams.buffer = ex1.getValue();
 	trans.refresh();
 	dev.render2D();
-	console.log(dev);
 };
 
 var ex1 = $('#ex1').slider({
@@ -1353,11 +1414,74 @@ var transposerParams = {
 dev.addLayer(flow);
 dev.addLayer(control);
 
+var updateParam = function updateParam(list, parent, child, value) {
+	console.log(value);
+	list[parent][child] = Number(value);
+	trans.refresh();
+	dev.render2D();
+};
+
 featureLoader.loadDefaultFeatures();
 
 var trans = new Transposer(featureDefaults, transposerParams);
 
 canvas.setDevice(dev);
+
+updateBuffer();
+
+var makeSliders = function makeSliders(params, linker) {
+	for (var foo in params) {
+		var container = $('<div></div>').addClass('param-slider-container');
+		var string = '<h5>' + foo + '</h5>';
+		var label = $(string);
+		label.appendTo(container);
+		container.appendTo('#param-controls');
+		for (var subparam in params[foo]) {
+			if (subparam != 'height' && subparam != 'radius2') {
+				var subContainer = $('<div></div>').addClass('param-slider-subcontainer');
+				var subString = '<h6>' + subparam + '<h6>';
+				var subLabel = $(subString);
+				var subSliderID = foo + subparam;
+				var subSlider = $('<div></div>');
+				subSlider.attr('id', subSliderID);
+				//console.log(subSlider);
+				subLabel.appendTo(subContainer);
+				subSlider.appendTo(subContainer);
+				subContainer.appendTo(container);
+				var sl = subSlider.noUiSlider({
+					start: params[foo][subparam],
+					step: 0.1,
+					range: {
+						'min': 0,
+						'max': 5
+					}
+				});
+				linker[subSliderID] = {
+					params: params,
+					parent: foo,
+					child: subparam
+				};
+				$('#' + subSliderID).on({
+					slide: function slide() {
+						console.log(this.id + ' is sliding.');
+						var link = linker[this.id];
+						updateParam(params, link.parent, link.child, getSliderValue(this.id));
+					}
+				});
+			}
+		}
+	}
+};
+
+var getSliderValue = function getSliderValue(id) {
+	return $('#' + id).val();
+};
+
+//$("<input id='test'/>").appendTo("#param-controls");
+
+var links = {};
+
+makeSliders(featureDefaults, links);
 
 dev.render2D();
 
