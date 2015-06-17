@@ -557,8 +557,7 @@ var CircleHandler = (function (_Handler2D) {
 
 		_get(Object.getPrototypeOf(CircleHandler.prototype), 'constructor', this).call(this, feature, 'CircleHandler', {
 			position: 'position',
-			radius: 'number'
-		});
+			radius: 'number' });
 		this.fab = new features2D.uFabCircle();
 		this.fab.handler = this;
 	}
@@ -1010,8 +1009,7 @@ var Feature = (function () {
 				ID: featureJSON.ID,
 				color: featureJSON.color,
 				type: featureJSON.type,
-				params: featureJSON.feature_params
-			});
+				params: featureJSON.feature_params });
 			return feat;
 		}
 	}, {
@@ -1158,8 +1156,7 @@ var Device = (function () {
 			return {
 				device_data: this.deviceData,
 				layers: this.__layersToJSON(),
-				features: this.__featuresToJSON()
-			};
+				features: this.__featuresToJSON() };
 		}
 	}, {
 		key: '__featuresToJSON',
@@ -1185,8 +1182,7 @@ var Device = (function () {
 			var devData = {
 				height: deviceJSON.device.height,
 				width: deviceJSON.device.width,
-				ID: deviceJSON.device.name
-			};
+				ID: deviceJSON.device.name };
 			var dev = new Device(devData);
 
 			for (var layerID in deviceJSON.layers) {
@@ -1233,6 +1229,8 @@ var uFabCanvas = (function (_fabric$CanvasWithViewport) {
 		this.DEVICE_MARGIN_X = 5;
 		this.DEVICE_MARGIN_Y = 5;
 		this.DEFAULT_ZOOM = 0.95;
+		this.isDrawingMode = false;
+		this.isGrabMode = false;
 	}
 
 	_inherits(uFabCanvas, _fabric$CanvasWithViewport);
@@ -1244,7 +1242,7 @@ var uFabCanvas = (function (_fabric$CanvasWithViewport) {
 			this.device = device;
 			this.device.canvas = this;
 			this.resetZoom();
-			this.resetViewPosition();
+			//this.resetViewPosition();
 		}
 	}, {
 		key: 'resetViewPosition',
@@ -1383,8 +1381,7 @@ var featureDefaults = {
 	CircleValve: {
 		height: 0.9,
 		radius1: 1.4,
-		radius2: 1.2
-	},
+		radius2: 1.2 },
 	Port: {
 		height: 0.4,
 		radius: 0.7
@@ -1401,11 +1398,18 @@ var ex1 = $('#ex1').slider({
 	min: 0,
 	max: 5,
 	step: 0.1,
-	value: 1
+	value: 0.5
 }).on('slide', updateBuffer).data('slider');
 
 var transposerParams = {
 	position: [dev.width / 2, dev.height],
+	buffer: 0.5,
+	flowLayer: flow,
+	controlLayer: control
+};
+
+var transposerParams2 = {
+	position: [dev.width / 2 - 20, dev.height],
 	buffer: 0.5,
 	flowLayer: flow,
 	controlLayer: control
@@ -1417,12 +1421,14 @@ dev.addLayer(control);
 var updateParam = function updateParam(list, parent, child, value) {
 	list[parent][child] = Number(value);
 	trans.refresh();
+	trans2.refresh();
 	dev.render2D();
 };
 
 featureLoader.loadDefaultFeatures();
 
 var trans = new Transposer(featureDefaults, transposerParams);
+var trans2 = new Transposer(featureDefaults, transposerParams2);
 
 canvas.setDevice(dev);
 

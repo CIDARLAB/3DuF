@@ -13,12 +13,13 @@
 #button_block {
 	position: fixed;
 	left: 0;
-	min-width: 250px;
-	width: 15%;
+	width: 250px;
 	height: 100%;
 	background: #EEE;
 	top: 0;
 }
+
+.btn-label:first-of-type { margin-top: 0; }
 
 .btn-label { width: 100%;
 display: block;

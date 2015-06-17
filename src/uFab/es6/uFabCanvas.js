@@ -12,6 +12,8 @@ class uFabCanvas extends fabric.CanvasWithViewport{
 		this.DEVICE_MARGIN_X = 5;
 		this.DEVICE_MARGIN_Y = 5;
 		this.DEFAULT_ZOOM = .95;
+		this.isDrawingMode = false;
+		this.isGrabMode = false;
 	}
 
 	setDevice(device){
@@ -19,7 +21,7 @@ class uFabCanvas extends fabric.CanvasWithViewport{
 		this.device = device;
 		this.device.canvas = this;
 		this.resetZoom();
-		this.resetViewPosition();
+		//this.resetViewPosition();
 	}
 
 	resetViewPosition(){

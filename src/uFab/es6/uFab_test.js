@@ -53,7 +53,7 @@ var ex1 = $('#ex1').slider({
 	min: 0,
 	max: 5,
 	step: .1,
-	value: 1
+	value: .5
 })
 		.on('slide', updateBuffer)
 		.data('slider');
@@ -65,18 +65,27 @@ var transposerParams = {
 	controlLayer: control
 }
 
+var transposerParams2 = {
+	position: [dev.width/2 - 20,dev.height],
+	buffer: .5,
+	flowLayer: flow,
+	controlLayer: control
+}
+
 dev.addLayer(flow);
 dev.addLayer(control);
 
 var updateParam = function(list, parent, child, value){
 	list[parent][child] = Number(value);
 	trans.refresh();
+	trans2.refresh();
 	dev.render2D();
 }
 
 featureLoader.loadDefaultFeatures();
 
 var trans = new Transposer(featureDefaults, transposerParams);
+var trans2 = new Transposer(featureDefaults, transposerParams2);
 
 
 canvas.setDevice(dev);
