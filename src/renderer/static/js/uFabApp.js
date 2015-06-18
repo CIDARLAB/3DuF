@@ -557,7 +557,8 @@ var CircleHandler = (function (_Handler2D) {
 
 		_get(Object.getPrototypeOf(CircleHandler.prototype), 'constructor', this).call(this, feature, 'CircleHandler', {
 			position: 'position',
-			radius: 'number' });
+			radius: 'number'
+		});
 		this.fab = new features2D.uFabCircle();
 		this.fab.handler = this;
 	}
@@ -1009,7 +1010,8 @@ var Feature = (function () {
 				ID: featureJSON.ID,
 				color: featureJSON.color,
 				type: featureJSON.type,
-				params: featureJSON.feature_params });
+				params: featureJSON.feature_params
+			});
 			return feat;
 		}
 	}, {
@@ -1156,7 +1158,8 @@ var Device = (function () {
 			return {
 				device_data: this.deviceData,
 				layers: this.__layersToJSON(),
-				features: this.__featuresToJSON() };
+				features: this.__featuresToJSON()
+			};
 		}
 	}, {
 		key: '__featuresToJSON',
@@ -1182,7 +1185,8 @@ var Device = (function () {
 			var devData = {
 				height: deviceJSON.device.height,
 				width: deviceJSON.device.width,
-				ID: deviceJSON.device.name };
+				ID: deviceJSON.device.name
+			};
 			var dev = new Device(devData);
 
 			for (var layerID in deviceJSON.layers) {
@@ -1343,7 +1347,7 @@ exports.computeEndPoint = computeEndPoint;
 
 },{}],10:[function(require,module,exports){
 //watchify uFab_test.js -t babelify -v --outfile bundle.js
-//watchify uFab_test.js -t babelify -v --outfile ../../renderer/static/js/uFabApp.js
+//watchify uFab_test2.js -t babelify -v --outfile ../../renderer/static/js/uFabApp.js
 
 'use strict';
 
@@ -1381,7 +1385,8 @@ var featureDefaults = {
 	CircleValve: {
 		height: 0.9,
 		radius1: 1.4,
-		radius2: 1.2 },
+		radius2: 1.2
+	},
 	Port: {
 		height: 0.4,
 		radius: 0.7
@@ -1391,7 +1396,7 @@ var featureDefaults = {
 var updateBuffer = function updateBuffer() {
 	transposerParams.buffer = ex1.getValue();
 	trans.refresh();
-	dev.render2D();
+	//dev.render2D();
 };
 
 var ex1 = $('#ex1').slider({
@@ -1422,7 +1427,7 @@ var updateParam = function updateParam(list, parent, child, value) {
 	list[parent][child] = Number(value);
 	trans.refresh();
 	trans2.refresh();
-	dev.render2D();
+	//dev.render2D();
 };
 
 featureLoader.loadDefaultFeatures();
@@ -1430,7 +1435,7 @@ featureLoader.loadDefaultFeatures();
 var trans = new Transposer(featureDefaults, transposerParams);
 var trans2 = new Transposer(featureDefaults, transposerParams2);
 
-canvas.setDevice(dev);
+//canvas.setDevice(dev);
 
 updateBuffer();
 
@@ -1491,6 +1496,29 @@ var links = {};
 
 makeSliders(featureDefaults, links);
 
-dev.render2D();
+paper.install(window);
+
+// Only executed our code once the DOM is ready.
+window.onload = function () {
+	// Setup directly from canvas id:
+	paper.setup('c');
+	// Create a simple drawing tool:
+	var tool = new Tool();
+	var path;
+
+	// Define a mousedown and mousedrag handler
+	tool.onMouseDown = function (event) {
+		path = new Path();
+		path.strokeColor = 'black';
+		path.add(event.point);
+	};
+
+	tool.onMouseDrag = function (event) {
+		path.add(event.point);
+	};
+}
+
+//dev.render2D();
+;
 
 },{"./featureLoader":3,"./handlers":5,"./transposerModule":6,"./uFab":7,"./uFabCanvas":8}]},{},[10]);
