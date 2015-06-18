@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Load the Paper.js library -->
+<script type="text/javascript" src="src/renderer/static/js/paper-full.min.js"></script>
+
+<script type="text/javascript">
+    paper.install(window);
+    // Keep global references to both tools, so the HTML
+    // links below can access them.
+    var tool1, tool2;
+
+    window.onload = function() {
+        paper.setup('myCanvas');
+
+        // Create two drawing tools.
+        // tool1 will draw straight lines,
+        // tool2 will draw clouds.
+
+        // Both share the mouseDown event:
+        var start;
+        var current_stroke;
+        var width = 20;
+        var cornerWidth = width/2;
+
+        function onMouseDown(event) {
+            start = event.point;
+            current_stroke = null;
+        }
+
+        tool1 = new Tool();
+        tool1.onMouseDown = onMouseDown;
+
+        tool1.onMouseDrag = function(event) {
+            clearStroke();
+            if (event.modifiers.shift){
+                current_stroke = makeChannel(start, clipXY(start, event.point));
+            } else {
+                current_stroke = makeChannel(start, event.point);
+            }
+        }
+
+        var clearStroke = function(){
+            if (current_stroke){
+                current_stroke.remove();
+            }
+        }
+
+        var makeChannel = function(start, end){
+            var s = makeLine(start, end);
+            var c1 = new Path.Circle(start, cornerWidth);
+            c1.fillColor = 'black';
+            var c2 = new Path.Circle(end, cornerWidth);
+            c2.fillColor = 'black';
+            return new Group([s,c1,c2]);
+        }
+
+        var makeLine = function(start, end){
+            var l = new Path.Line(start, end);
+            l.strokeColor = 'black';
+            l.strokeWidth = width;
+            return l;
+        }
+    }   
+
+        var clipXY = function(start, end){
+            var vec = start.subtract(end);
+            if (Math.abs(vec.x) > Math.abs(vec.y)){
+                vec.y = 0;
+            } else {
+                vec.x = 0;
+            }
+            return start.subtract(vec);
+        }
+</script>
+</head>
+<body>
+    <canvas id="myCanvas" resize></canvas>
+</body>
+
+<script type="text/javascript">
+      var canvas = document.getElementById('myCanvas'),
+            context = canvas.getContext('2d');
+
+    // resize the canvas to fill browser window dynamically
+    window.addEventListener('resize', resizeCanvas, false);
+
+    function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+</script>
+</html>
