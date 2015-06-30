@@ -10,10 +10,6 @@
     <script src="src/renderer/static/js/bootstrap-slider.min.js"></script>
     <script src="src/renderer/static/js/paper-full.min.js"></script>
 
-
-
-
-
     <link rel="stylesheet" href="src/renderer/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="src/renderer/static/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="src/renderer/static/css/demo.css">
@@ -53,6 +49,14 @@
     </div>
   </div>
 </body>
+
+<script>
+console.log($(window).width());
+var leftoverWidth = $(window).width() - $('#button_block').width();
+console.log(leftoverWidth);
+$('#canvas_block').width(leftoverWidth);
+
+</script>
 
 <script src="src/renderer/static/js/uFabApp.js"></script>
 
