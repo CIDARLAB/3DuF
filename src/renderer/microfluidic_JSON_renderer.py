@@ -93,7 +93,7 @@ def render_all_features(json_data):
 
     return all_features
 
-def JSON_to_STL(json):
+def JSON_to_STL(json, kill_STL = True, kill_SCAD = True, skip_render = False):
     out_prefix = json["device"]["name"]
     use_all_features()
     use_all_molds()
@@ -101,38 +101,34 @@ def JSON_to_STL(json):
     mockup_out = out_prefix + "_MOCKUP.scad"
     mockup_stl = out_prefix + "_MOCKUP.stl"
     scad_render_to_file(mockup, mockup_out, file_header='$fn = %s;\n'%SEGMENTS, include_orig_code=False)
-    os.system("openscad -o " + mockup_stl + " " + mockup_out)
-    stl_file = open(mockup_stl)
-    stl = stl_file.read()
-    stl_file.close()
-    os.remove(mockup_stl)
-    os.remove(mockup_out)
-    return stl
+    stl = None
+    if (not skip_render):
+        os.system("openscad -o " + mockup_stl + " " + mockup_out)
+        stl_file = open(mockup_stl)
+        stl = stl_file.read()
+        stl_file.close()
 
-    """
+    if (kill_SCAD):
+        os.remove(mockup_out)
+    if (kill_STL):
+        os.remove(mockup_stl)
+
     for layer in json["layers"].keys():
+        print("Doing layer: " + layer);
         layer_out = out_prefix + "_" + layer + ".scad"
         layer_stl = out_prefix + "_" + layer + ".stl"
         scad_render_to_file(render_layer(layer, json), layer_out, file_header='$fn = %s;\n'%SEGMENTS, include_orig_code=False)
-        os.system("openscad -o " + layer_stl + " " + layer_out)
-    """
+        if (not skip_render):
+            os.system("openscad -o " + layer_stl + " " + layer_out)
+        if (kill_STL):
+            os.remove(layer_stl)
+        if (kill_SCAD):    
+            os.remove(layer_out)
+
+    return stl
 
 if __name__ == '__main__':    
     input_file = sys.argv[1]
-    STL = JSON_to_STL(load_json_data(input_file))
-    print(STL)
+    STL = JSON_to_STL(load_json_data(input_file), False, False, True)
+    #print(STL)
     
-    """
-    scad_render_to_file(mockup, mockup_out, file_header='$fn = %s;\n'%SEGMENTS, include_orig_code=False)
-    os.system("openscad -o " + mockup_stl + " " + mockup_out)
-    for layer in json["layers"].keys():
-        layer_out = out_prefix + "_" + layer + ".scad"
-        layer_stl = out_prefix + "_" + layer + ".stl"
-        scad_render_to_file(render_layer(layer, json), layer_out, file_header='$fn = %s;\n'%SEGMENTS, include_orig_code=False)
-        os.system("openscad -o " + layer_stl + " " + layer_out)
-
-    #a = render_layer("f", json)
-    
-    print("%(__file__)s: SCAD files written to: \n%(out_prefix)s"%vars())
-    
-    """
