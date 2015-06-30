@@ -1,6 +1,8 @@
 //watchify uFab_test.js -t babelify -v --outfile bundle.js
 //watchify uFab_test2.js -t babelify -v --outfile ../../renderer/static/js/uFabApp.js
 
+/*
+
 var uFab = require('./uFab');
 var handlers = require('./handlers');
 var featureLoader = require('./featureLoader');
@@ -149,28 +151,267 @@ var links = {};
 
 makeSliders(featureDefaults, links);
 
-paper.install(window);
+*/
 
-// Only executed our code once the DOM is ready.
-window.onload = function() {
-// Setup directly from canvas id:
-		paper.setup('c');
-		// Create a simple drawing tool:
-		var tool = new Tool();
-		var path;
+    paper.install(window);
+    // Keep global references to both tools, so the HTML
+    // links below can access them.
+    var tool1, tool2;
+    var start;
+    var current_stroke;
+    var width = 20;
+    var cornerWidth = width/2;
+    var gridSize = 20;
+    var strokes = [];
+    var strokeHistory = [];
+    //console.log(strokeHistory);
+    var forceSnap = true;
+    var forceSharpCorners = false;
+    var ctrl = false;
 
-		// Define a mousedown and mousedrag handler
-		tool.onMouseDown = function(event) {
-			path = new Path();
-			path.strokeColor = 'black';
-			path.add(event.point);
-		}
+    var hitOptions = {
+    stroke: true,
+    ends: true,
+    tolerance: 5
+    };
 
-		tool.onMouseDrag = function(event) {
-			path.add(event.point);
-		}
-}
+    window.onload = function() {
+        paper.setup('c');
 
-//dev.render2D();
+        var intersectionGroup = new Group();
+        var gridGroup = new Group();
+
+
+        var background = new Path.Rectangle(view.bounds);
+        //background.fillColor = 'grey';
+
+        var vert = new Symbol(vertGridLine());
+        var horiz = new Symbol(horizGridLine());
+
+        makeGrid();
+
+        function makeGrid(){
+        	vertGrid();
+        	horizGrid();
+        	gridGroup.insertBelow(intersectionGroup);
+        }
+
+        function vertGrid(){
+        	for (var i = 0; i < view.bounds.width; i += gridSize){
+        		var p = new Point(i+gridSize/2,view.bounds.height/2);
+        		var s = vert.place(p);
+        		gridGroup.addChild(s);
+        	}
+        }
+
+        function horizGrid(){
+        	for (var i = 0; i < view.bounds.height; i+= gridSize){
+        		var p = new Point(view.bounds.width/2, i+gridSize/2);
+        		var s = horiz.place(p);
+        		gridGroup.addChild(s);
+        	}
+        }
+
+        // Create two drawing tools.
+        // tool1 will draw straight lines,
+        // tool2 will draw clouds.
+
+        // Both share the mouseDown event:
+
+        //loadStrokes();
+
+        function gridLine(start, end){
+        	var line = new Path.Line(start, end);
+        	line.strokeColor = 'lightblue';
+        	line.strokeWidth = 1;
+        	line.remove();
+        	line.guide = true;
+        	return line;
+        }
+
+        function vertGridLine(){
+        	return gridLine(view.bounds.bottomLeft, view.bounds.topLeft);
+        }
+
+        function horizGridLine(){
+        	return gridLine(view.bounds.topLeft, view.bounds.topRight);
+        }
+
+        function loadStrokes(){
+            console.log(localStorage.strokes);
+            strokeHistory = JSON.parse(localStorage.strokes);
+            if (strokeHistory == null){
+                strokeHistory = [];
+            }
+            for (var stroke in strokeHistory){
+                st = strokeHistory[stroke];
+                var sta = new Point(st[0], st[1]);
+                var end = new Point(st[2], st[3]);
+                var c = makeChannel(sta, end);
+                strokes.push(c);
+            }
+        }
+
+        function saveStrokes(){
+            localStorage.setItem("strokes", JSON.stringify(strokeHistory));
+            //console.log(localStorage.strokes);
+        }
+
+        function removeLastStroke(){
+            var last;
+            if (strokes.length > 1){
+                last = strokes.pop();
+                strokeHistory.pop();
+            } else if (strokes.length ==1){
+                last = strokes[0];
+            }
+            if (last){
+                last.remove();
+            }
+            saveStrokes();
+        }
+
+        function onKeyDown(event) {
+            // When a key is pressed, set the content of the text item:
+            if (event.key.charCodeAt(0) == 26){
+                removeLastStroke();
+                console.log("removing stroke");
+            }
+        }
+
+        function onMouseMove(event){
+            selectStroke(event);
+            var res = project.hitTest(event.point, hitOptions);
+            if (res && event.modifiers.shift){
+                console.log(res);
+            } 
+        }
+
+        function onMouseDown(event) {
+            start = event.point;
+            if (event.modifiers.control || forceSnap){
+                start = snapToGrid(start, gridSize);
+            }
+            if (current_stroke){
+                current_stroke.selected = false;
+                current_stroke = null;
+            }
+        }
+
+        tool1 = new Tool();
+        tool1.onMouseDown = onMouseDown;
+        tool1.onKeyDown = onKeyDown;
+        tool1.onMouseMove = onMouseMove;
+
+        function selectStroke(event){
+            project.activeLayer.selected = false;
+            if (event.item && event.item != background){
+                event.item.selected = true;
+            }
+        }
+
+        function showIntersections(path1, path2) {
+		    var intersections = path1.getIntersections(path2);
+		    for (var i = 0; i < intersections.length; i++) {
+		        var c = new Path.Circle({
+		            center: intersections[i].point,
+		            radius: 5,
+		            fillColor: '#009dec',
+		            parent: intersectionGroup
+		        }).removeOnMove();	
+	    }
+   		}
+
+        tool1.onMouseDrag = function(event) {
+            clearStroke();
+            var target = event.point;
+            
+            if (event.modifiers.control || forceSnap){
+                target = snapToGrid(target, gridSize);
+            }
+            if (event.modifiers.shift || forceSharpCorners){
+                target = snapXY(start, target);
+            } 
+            current_stroke = makeChannel(start, target);
+            current_stroke.insertBelow(intersectionGroup);
+            current_stroke.selected = true;
+        }
+
+        tool1.onMouseUp = function(event){
+            strokes.push(current_stroke);
+            strokeHistory.push([current_stroke.start.x, current_stroke.start.y, current_stroke.end.x, current_stroke.end.y]);
+            saveStrokes();
+            current_stroke.selected = false;
+        }
+
+        function clearStroke(){
+            if (current_stroke){
+                current_stroke.remove();
+            }
+        }
+
+        function makeChannel(start, end){
+            var s = makeLine(start, end, width);
+            
+            var c1 = new Path.Circle(start, cornerWidth);
+            c1.fillColor = 'black';
+            var c2 = new Path.Circle(end, cornerWidth);
+            c2.fillColor = 'black';
+            
+            var g = new Group([s,c1,c2]);
+            g.start = start;
+            g.end = end;
+            return g;
+            }
+
+        function snapToGrid(target, gridSize){
+            var newTarget = new Point();
+            newTarget.x = Math.round(target.x / gridSize) * gridSize;
+            newTarget.y = Math.round(target.y / gridSize) * gridSize;
+            return newTarget;
+        }
+
+        function makeHollowLine(start, end){
+            var l1 = makeLine(start, end, width);
+            var l2 = makeLine(start, end, width/2);
+            return new CompoundPath({
+                children: [l1, l2],
+                fillColor: 'black'
+            });
+        }
+
+        function makeLine(start, end, thickness){
+            /*
+            var l = new Path.Line(start, end);
+            l.strokeColor = 'black';
+            l.strokeWidth = width;
+            return l;
+            */
+            var vec = end.subtract(start);
+            var rec = new Path.Rectangle({
+                size: [vec.length, thickness],
+                point: start,
+                fillColor: 'black'
+            });
+            rec.translate([0,-thickness/2]);
+            rec.rotate(vec.angle, start);
+            return rec;
+
+        }
+    }   
+
+        function snapXY(start, end){
+            var vec = start.subtract(end);
+            if (Math.abs(vec.x) > Math.abs(vec.y)){
+                vec.y = 0;
+            } else {
+                vec.x = 0;
+            }
+            return start.subtract(vec);
+
+            //loadStrokes()
+        }
+
+
 
 

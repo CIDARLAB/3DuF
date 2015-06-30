@@ -30,6 +30,12 @@
     window.onload = function() {
         paper.setup('myCanvas');
 
+        new Path.Rectangle({
+            bottomLeft: view.bounds.bottomLeft,
+            topRight: view.bounds.topRight,
+            fillColor: 'gray'
+        })
+
         // Create two drawing tools.
         // tool1 will draw straight lines,
         // tool2 will draw clouds.
