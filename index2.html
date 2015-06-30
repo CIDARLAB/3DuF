@@ -16,8 +16,9 @@
     var gridSize = 20;
     var strokes = [];
     var strokeHistory = [];
+    console.log(strokeHistory);
     var forceSnap = true;
-    var forceSharpCorners = true;
+    var forceSharpCorners = false;
     var ctrl = false;
 
     var hitOptions = {
@@ -35,28 +36,27 @@
 
         // Both share the mouseDown event:
 
-        function bake_cookie(name, value) {
-          var cookie = [name, '=', JSON.stringify(value), '; domain=.', window.location.host.toString(),
-           '; path=/;'].join('');
-          document.cookie = cookie;
-        }
+        loadStrokes();
 
-        function read_cookie(name) {
-             var result = document.cookie.match(new RegExp(name + '=([^;]+)'));
-             result && (result = JSON.parse(result[1]));
-             return result;
-        }
-
-        function loadStrokes(cookie){
-            strokeHistory = read_cookie("strokeHistory");
+        function loadStrokes(){
+            console.log(localStorage.strokes);
+            strokeHistory = JSON.parse(localStorage.strokes);
+            if (strokeHistory == null){
+                strokeHistory = [];
+            }
             for (var stroke in strokeHistory){
-                var c = makeChannel(new Point(stroke[0], stroke[1]), new Point(stroke[2], stroke[3]));
+                st = strokeHistory[stroke];
+                var sta = new Point(st[0], st[1]);
+                var end = new Point(st[2], st[3]);
+                var c = makeChannel(sta, end);
+                //var c = makeChannel(new Point([stroke[0], stroke[1]]), new Point([stroke[2], stroke[3]]));
                 strokes.push(c);
             }
         }
 
-        function saveStrokes(cookie){
-            bake_cookie("strokeHistory",strokeHistory);
+        function saveStrokes(){
+            localStorage.setItem("strokes", JSON.stringify(strokeHistory));
+            console.log(localStorage.strokes);
         }
 
         function removeLastStroke(){
@@ -70,6 +70,7 @@
             if (last){
                 last.remove();
             }
+            saveStrokes();
         }
 
         function onKeyDown(event) {
@@ -90,7 +91,7 @@
 
         function onMouseDown(event) {
             start = event.point;
-            if (event.modifiers.control || forceSharpCorners){
+            if (event.modifiers.control || forceSnap){
                 start = snapToGrid(start, gridSize);
             }
             if (current_stroke){
@@ -128,16 +129,17 @@
         tool1.onMouseUp = function(event){
             strokes.push(current_stroke);
             strokeHistory.push([current_stroke.start.x, current_stroke.start.y, current_stroke.end.x, current_stroke.end.y]);
+            saveStrokes();
             current_stroke.selected = false;
         }
 
-        var clearStroke = function(){
+        function clearStroke(){
             if (current_stroke){
                 current_stroke.remove();
             }
         }
 
-        var makeChannel = function(start, end){
+        function makeChannel(start, end){
             var s = makeHollowLine(start, end, width);
             var c1 = new Path.Circle(start, cornerWidth);
             c1.fillColor = 'black';
@@ -149,14 +151,14 @@
             return g;
             }
 
-        var snapToGrid = function(target, gridSize){
+        function snapToGrid(target, gridSize){
             var newTarget = new Point();
             newTarget.x = Math.round(target.x / gridSize) * gridSize;
             newTarget.y = Math.round(target.y / gridSize) * gridSize;
             return newTarget;
         }
 
-        var makeHollowLine = function(start, end){
+        function makeHollowLine(start, end){
             var l1 = makeLine(start, end, width);
             var l2 = makeLine(start, end, width/2);
             return new CompoundPath({
@@ -165,7 +167,7 @@
             });
         }
 
-        var makeLine = function(start, end, thickness){
+        function makeLine(start, end, thickness){
             /*
             var l = new Path.Line(start, end);
             l.strokeColor = 'black';
@@ -185,7 +187,7 @@
         }
     }   
 
-        var snapXY = function(start, end){
+        function snapXY(start, end){
             var vec = start.subtract(end);
             if (Math.abs(vec.x) > Math.abs(vec.y)){
                 vec.y = 0;
@@ -193,6 +195,8 @@
                 vec.x = 0;
             }
             return start.subtract(vec);
+
+            loadStrokes()
         }
 </script>
 </head>

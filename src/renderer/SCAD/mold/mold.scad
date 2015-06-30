@@ -1,6 +1,6 @@
 BORDER_WIDTH = .1;
 INTERLOCK_TOLERANCE = .125;
-HOLDER_BORDER_WIDTH = .2; //.8
+HOLDER_BORDER_WIDTH = .41; //.8
 SLIDE_Z_OFFSET = 1.20;
 //SLIDE_Z_OFFSET = 0;
 BORDER_HEIGHT = 1.20;
@@ -8,6 +8,7 @@ HOLDER_SKIRT_WIDTH = .8;
 HOLDER_SKIRT_HEIGHT = .2;
 HOLDER_COLOR = [.5,.5,.5,1];
 SLIDE_COLOR = [.75,.75,1,.5];
+CORNER_DISTANCE = 10; //mm
 
 module slide_holder_skirt(width, height)
 {
@@ -35,6 +36,12 @@ module single_slide_holder(width, height)
 			{
 				cube([width+INTERLOCK_TOLERANCE*2, height+INTERLOCK_TOLERANCE*2, BORDER_HEIGHT+1]);
 			}
+            translate([CORNER_DISTANCE + HOLDER_BORDER_WIDTH, -HOLDER_BORDER_WIDTH, -.5]){
+                cube([width + INTERLOCK_TOLERANCE*2 - CORNER_DISTANCE*2, height+ INTERLOCK_TOLERANCE*2 + HOLDER_BORDER_WIDTH*4 , BORDER_HEIGHT+1]);
+            }
+            translate([-HOLDER_BORDER_WIDTH, HOLDER_BORDER_WIDTH + CORNER_DISTANCE, -.5]){
+                cube([width + INTERLOCK_TOLERANCE*2 + HOLDER_BORDER_WIDTH*4, height+ INTERLOCK_TOLERANCE*2 - CORNER_DISTANCE*2 , BORDER_HEIGHT+1]);
+            }
 		}
 	}
 }
