@@ -174,7 +174,10 @@ var ctrl = false;
 
 var hitOptions = {
     stroke: true,
-    ends: true,
+    ends: false,
+    fill: false,
+    segments: true,
+    'class': Path,
     tolerance: 5
 };
 
@@ -283,9 +286,14 @@ window.onload = function () {
 
     function onMouseMove(event) {
         selectStroke(event);
+        intersectionGroup.removeChildren();
         var res = project.hitTest(event.point, hitOptions);
         if (res && event.modifiers.shift) {
             console.log(res);
+            var c = new Path.Circle(res.point, 20);
+            c.fillColor = 'purple';
+            c.parent = intersectionGroup;
+            c.removeOnMove();
         }
     }
 
@@ -309,6 +317,13 @@ window.onload = function () {
         project.activeLayer.selected = false;
         if (event.item && event.item != background) {
             event.item.selected = true;
+        }
+    }
+
+    function hitTestAll(point) {
+        var hitResult = project.hitTest(point, hitOptions);
+        if (hitResult) {
+            console.log(hitResult.type);
         }
     }
 
@@ -353,16 +368,18 @@ window.onload = function () {
     }
 
     function makeChannel(start, end) {
-        var s = makeLine(start, end, width);
+        var s = makeRoundedLine(start, end, width);
 
         var c1 = new Path.Circle(start, cornerWidth);
         c1.fillColor = 'black';
         var c2 = new Path.Circle(end, cornerWidth);
         c2.fillColor = 'black';
+        var l = makeGuideLine(start, end);
 
-        var g = new Group([s, c1, c2]);
+        var g = new Group([s, c1, c2, l]);
         g.start = start;
         g.end = end;
+
         return g;
     }
 
@@ -371,6 +388,13 @@ window.onload = function () {
         newTarget.x = Math.round(target.x / gridSize) * gridSize;
         newTarget.y = Math.round(target.y / gridSize) * gridSize;
         return newTarget;
+    }
+
+    function makeGuideLine(start, end) {
+        var l = new Path.Line(start, end);
+        l.strokeWidth = 1;
+        l.strokeColor = 'none';
+        return l;
     }
 
     function makeHollowLine(start, end) {
@@ -382,7 +406,7 @@ window.onload = function () {
         });
     }
 
-    function makeLine(start, end, thickness) {
+    function makeRoundedLine(start, end, thickness) {
         /*
         var l = new Path.Line(start, end);
         l.strokeColor = 'black';

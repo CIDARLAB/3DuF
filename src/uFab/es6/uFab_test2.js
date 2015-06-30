@@ -171,7 +171,10 @@ makeSliders(featureDefaults, links);
 
     var hitOptions = {
     stroke: true,
-    ends: true,
+    ends: false,
+    fill: false,
+    segments: true,
+    class: Path,
     tolerance: 5
     };
 
@@ -281,9 +284,14 @@ makeSliders(featureDefaults, links);
 
         function onMouseMove(event){
             selectStroke(event);
+            intersectionGroup.removeChildren();
             var res = project.hitTest(event.point, hitOptions);
             if (res && event.modifiers.shift){
                 console.log(res);
+                var c = new Path.Circle(res.point, 20);
+                c.fillColor = 'purple';
+                c.parent = intersectionGroup;
+                c.removeOnMove();
             } 
         }
 
@@ -310,6 +318,14 @@ makeSliders(featureDefaults, links);
             }
         }
 
+        function hitTestAll(point){
+        	var hitResult = project.hitTest(point, hitOptions);
+        	if (hitResult){
+        		console.log(hitResult.type);
+        	}
+
+        }
+
         function showIntersections(path1, path2) {
 		    var intersections = path1.getIntersections(path2);
 		    for (var i = 0; i < intersections.length; i++) {
@@ -319,7 +335,7 @@ makeSliders(featureDefaults, links);
 		            fillColor: '#009dec',
 		            parent: intersectionGroup
 		        }).removeOnMove();	
-	    }
+	    	}
    		}
 
         tool1.onMouseDrag = function(event) {
@@ -351,24 +367,33 @@ makeSliders(featureDefaults, links);
         }
 
         function makeChannel(start, end){
-            var s = makeLine(start, end, width);
+            var s = makeRoundedLine(start, end, width);
             
             var c1 = new Path.Circle(start, cornerWidth);
             c1.fillColor = 'black';
             var c2 = new Path.Circle(end, cornerWidth);
             c2.fillColor = 'black';
-            
-            var g = new Group([s,c1,c2]);
+            var l = makeGuideLine(start, end);
+
+            var g = new Group([s,c1,c2,l]);
             g.start = start;
             g.end = end;
+
             return g;
-            }
+        }	
 
         function snapToGrid(target, gridSize){
             var newTarget = new Point();
             newTarget.x = Math.round(target.x / gridSize) * gridSize;
             newTarget.y = Math.round(target.y / gridSize) * gridSize;
             return newTarget;
+        }
+
+        function makeGuideLine(start, end){
+        	var l = new Path.Line(start, end);
+        	l.strokeWidth = 1;
+        	l.strokeColor = 'none';
+        	return l;
         }
 
         function makeHollowLine(start, end){
@@ -380,7 +405,7 @@ makeSliders(featureDefaults, links);
             });
         }
 
-        function makeLine(start, end, thickness){
+        function makeRoundedLine(start, end, thickness){
             /*
             var l = new Path.Line(start, end);
             l.strokeColor = 'black';
