@@ -170,21 +170,23 @@ var strokeHistory = [];
 //console.log(strokeHistory);
 var forceSnap = true;
 var forceSharpCorners = false;
+var forceHit = true;
 var ctrl = false;
 
 var hitOptions = {
     stroke: true,
     ends: false,
     fill: false,
-    segments: true,
+    segments: false,
     'class': Path,
-    tolerance: 5
+    tolerance: 8
 };
 
 window.onload = function () {
     paper.setup('c');
 
     var intersectionGroup = new Group();
+    var highlightGroup = new Group();
     var gridGroup = new Group();
 
     var background = new Path.Rectangle(view.bounds);
@@ -284,24 +286,69 @@ window.onload = function () {
         }
     }
 
-    function onMouseMove(event) {
-        selectStroke(event);
-        intersectionGroup.removeChildren();
-        var res = project.hitTest(event.point, hitOptions);
-        if (res && event.modifiers.shift) {
-            console.log(res);
-            var c = new Path.Circle(res.point, 20);
-            c.fillColor = 'purple';
-            c.parent = intersectionGroup;
-            c.removeOnMove();
+    function XOR(bool1, bool2) {
+        if (bool1 && !bool2 || bool2 && !bool1) {
+            return true;
+        } else {
+            return false;
         }
     }
 
-    function onMouseDown(event) {
-        start = event.point;
-        if (event.modifiers.control || forceSnap) {
-            start = snapToGrid(start, gridSize);
+    function highlightTarget(target) {
+        highlightGroup.removeChildren();
+        var highlight = new Path.Circle(target, 15);
+        highlight.fillColor = 'purple';
+        highlight.opacity = 0.5;
+        highlight.parent = highlightGroup;
+        highlight.removeOnMove();
+    }
+
+    function onMouseMove(event) {
+        selectStroke(event);
+        highlightTarget(targetHandler(event));
+    }
+
+    function getTarget(point, snap, sharp, hit) {
+        var start = arguments[4] === undefined ? null : arguments[4];
+
+        //first snap the target point to x/y if sharp corners are enforced
+        if (start && sharp) {
+            point = snapXY(start, point);
         }
+
+        var hitResult = project.hitTest(point, hitOptions);
+
+        if (!hitResult || !hit) {
+            if (snap) {
+                return snapToGrid(point, gridSize);
+            } else {
+                return point;
+            }
+        } else {
+            if (snap) {
+                var snapPoint = snapToGrid(point, gridSize);
+                var snapResult = project.hitTest(snapPoint, hitOptions);
+                if (snapResult) {
+                    return snapResult.point;
+                } else {
+                    return hitResult.point;
+                }
+            } else {
+                return hitResult.point;
+            }
+        }
+    }
+
+    function targetHandler(event) {
+        var snapGrid = XOR(event.modifiers.control, forceSnap);
+        var sharpCorners = XOR(event.modifiers.shift, forceSharpCorners);
+        var hitStrokes = XOR(event.modifiers.option, forceHit);
+        var point = event.point;
+        return getTarget(point, snapGrid, sharpCorners, hitStrokes, start);
+    }
+
+    function onMouseDown(event) {
+        start = targetHandler(event);
         if (current_stroke) {
             current_stroke.selected = false;
             current_stroke = null;
@@ -341,14 +388,7 @@ window.onload = function () {
 
     tool1.onMouseDrag = function (event) {
         clearStroke();
-        var target = event.point;
-
-        if (event.modifiers.control || forceSnap) {
-            target = snapToGrid(target, gridSize);
-        }
-        if (event.modifiers.shift || forceSharpCorners) {
-            target = snapXY(start, target);
-        }
+        var target = targetHandler(event);
         current_stroke = makeChannel(start, target);
         current_stroke.insertBelow(intersectionGroup);
         current_stroke.selected = true;
@@ -359,6 +399,7 @@ window.onload = function () {
         strokeHistory.push([current_stroke.start.x, current_stroke.start.y, current_stroke.end.x, current_stroke.end.y]);
         saveStrokes();
         current_stroke.selected = false;
+        start = null;
     };
 
     function clearStroke() {
