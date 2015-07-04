@@ -855,6 +855,7 @@ window.onload = function () {
     renderArray();
     setupForms();
     showType(typeOptions[eParams.type]);
+    console.log('Hello, Autodesk!');
 };
 
 },{}]},{},[1]);

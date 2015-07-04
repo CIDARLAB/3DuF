@@ -872,6 +872,7 @@ makeSliders(featureDefaults, links);
         renderArray();
         setupForms();
         showType(typeOptions[eParams.type]);
+        console.log("Hello, Autodesk!");
 
     }
 
