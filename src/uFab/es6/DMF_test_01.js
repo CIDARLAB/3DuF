@@ -536,8 +536,6 @@ makeSliders(featureDefaults, links);
                 zigHeight = Math.min(width, height)/8;
             }
 
-    
-
             var perTop = Math.floor(width/zigWidth);
             var perSide = Math.floor(height/zigWidth);
             var topRemainder = width - zigWidth * perTop;
@@ -731,10 +729,6 @@ makeSliders(featureDefaults, links);
                 range: {
                     'min': [min],
                     'max': [max]
-                },
-                pips: {
-                    mode: 'count',
-                    values: 5
                 }
             });
             return container;

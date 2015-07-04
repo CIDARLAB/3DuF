@@ -723,10 +723,6 @@ window.onload = function () {
             range: {
                 'min': [min],
                 'max': [max]
-            },
-            pips: {
-                mode: 'count',
-                values: 5
             }
         });
         return container;
