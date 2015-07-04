@@ -180,6 +180,8 @@ makeSliders(featureDefaults, links);
     }
 
     var zigzagParams = {
+        zigWidth: 10,
+        zigHeight: 6
     }
 
     var swiftParams = {
@@ -518,6 +520,7 @@ makeSliders(featureDefaults, links);
         function ZigzagElectrode(position, width, height, options){
             var outline = new Path();
             //outline.closed = true;
+            console.log(options);
 
             var zigWidth;
             var zigHeight;
@@ -657,6 +660,7 @@ makeSliders(featureDefaults, links);
                 round = options.round;
             }
             var outline = Path.Rectangle(new Rectangle(position, new Size(width, height)), round);
+            outline.translate(new Point(0, -height));
             return outline;
         }
 
@@ -752,13 +756,13 @@ makeSliders(featureDefaults, links);
 
         function setupRectForms(){
             var container = document.getElementById("rect-slider-container");
-            var round = createSlider("roundedness", "rect-round", 0, 0, 30, 5);
+            var round = createSlider("roundedness", "rect-round", 1, 1, 30, 1);
             container.appendChild(round);
             var roundSlider = document.getElementById("rect-round");
             roundSlider.noUiSlider.on('slide', function(){
                 var val = parseFloat(roundSlider.noUiSlider.get());
                 if (val == 0){
-                    val = null;
+                    //val = null;
                 }
                 rectParams.round = val;
                 renderArray();
@@ -772,13 +776,13 @@ makeSliders(featureDefaults, links);
 
         function setupSwiftForms(){
             var container = document.getElementById("swift-slider-container");
-            var curve = createSlider("curveDistance", "swift-curve", 0, 0, 60, 5);
+            var curve = createSlider("curveDistance", "swift-curve", 20, 1, 60, 1);
             container.appendChild(curve);
             var curveSlider = document.getElementById("swift-curve");
             curveSlider.noUiSlider.on('slide', function(){
                 var val = parseFloat(curveSlider.noUiSlider.get());
                 if (val == 0){
-                    val = null;
+                    //val = null;
                 }
                 swiftParams.curveDistance = val;
                 renderArray();
@@ -792,7 +796,7 @@ makeSliders(featureDefaults, links);
 
         function setupZigZagForms(){
             var container = document.getElementById("zigzag-slider-container");
-            var zigWidth = createSlider("zigWidth", "zigzag-zigWidth", 0, 0, 30, 5);
+            var zigWidth = createSlider("zigWidth", "zigzag-zigWidth", 10, 10, 30, 1);
             container.appendChild(zigWidth);
             var widthSlider = document.getElementById("zigzag-zigWidth");
 
@@ -800,7 +804,7 @@ makeSliders(featureDefaults, links);
             widthSlider.noUiSlider.on('slide', function(){
                 var val = parseFloat(widthSlider.noUiSlider.get());
                 if (val == 0){
-                    val = null;
+                    //val = null;
                 }
                 zigzagParams.zigWidth = val;
                 renderArray();
@@ -810,14 +814,14 @@ makeSliders(featureDefaults, links);
             
             
 
-            var zigHeight = createSlider("zigHeight", "zigzag-zigHeight", 0, 0, 12, 3);
+            var zigHeight = createSlider("zigHeight", "zigzag-zigHeight", 6, .1, 12, 1);
             container.appendChild(zigHeight);
             var heightSlider = document.getElementById("zigzag-zigHeight");
             heightSlider.noUiSlider.on('slide', function(){
                 
                 var val = parseFloat(heightSlider.noUiSlider.get());
                 if (val == 0){
-                    val = null;
+                    //val = null;
                 } 
                 zigzagParams.zigHeight = val;
                 renderArray();
@@ -856,8 +860,8 @@ makeSliders(featureDefaults, links);
             document.getElementById("type").value = eParams.type;
             var columns = createParamSlider("columns", eParams["columns"], 1,5,1);
             var rows = createParamSlider("rows", eParams["rows"], 1,5,1);
-            var width = createParamSlider("width", eParams["width"], 10,100,1);
-            var height = createParamSlider("height", eParams["height"], 10,100,1);
+            var width = createParamSlider("width", eParams["width"], 10,200,1);
+            var height = createParamSlider("height", eParams["height"], 10,200,1);
             var spacing = createParamSlider("spacing", eParams["spacing"], 0, 20, 1);
 
             setupZigZagForms();
@@ -869,9 +873,9 @@ makeSliders(featureDefaults, links);
             setType(this.value);
         }
 
-        renderArray();
         setupForms();
         showType(typeOptions[eParams.type]);
+        renderArray();
         console.log("Hello, Autodesk!");
 
     }
