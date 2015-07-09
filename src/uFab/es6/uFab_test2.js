@@ -175,6 +175,7 @@ makeSliders(featureDefaults, links);
     ends: false,
     fill: false,
     segments: false,
+    center: true,
     class: Path,
     tolerance: 8
     };
