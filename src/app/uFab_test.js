@@ -43,21 +43,6 @@ var featureDefaults = {
 	}
 }
 
-var updateBuffer = function(){
-	transposerParams.buffer = ex1.getValue();
-	trans.refresh();
-	dev.render2D();
-}
-
-var ex1 = $('#ex1').slider({
-	min: 0,
-	max: 5,
-	step: .1,
-	value: .5
-})
-		.on('slide', updateBuffer)
-		.data('slider');
-
 var transposerParams = {
 	position: [dev.width/2,dev.height],
 	buffer: .5,
@@ -90,8 +75,6 @@ var trans2 = new Transposer(featureDefaults, transposerParams2);
 
 canvas.setDevice(dev);
 
-updateBuffer();
-
 var makeSliders = function(params, linker){
 	for (var foo in params){
 		var container = $("<div></div>").addClass("param-slider-container");
@@ -111,14 +94,14 @@ var makeSliders = function(params, linker){
 				subLabel.appendTo(subContainer);
 				subSlider.appendTo(subContainer);
 				subContainer.appendTo(container);
-				var sl = subSlider.noUiSlider({
-					start:  params[foo][subparam],
-					step: .1,
-					range: {
-						'min': .2,
-						'max': 5
-					}
-				});
+	            noUiSlider.create(subSlider, {
+	                start: [0],
+	                step: .1,
+	                range: {
+	                    'min': [0],
+	                    'max': [10]
+	                }
+	            });
 				linker[subSliderID] = {
 					params: params,
 					parent: foo,
@@ -139,6 +122,7 @@ var makeSliders = function(params, linker){
 	}
 }
 
+
 var getSliderValue = function(id){
 	return $("#" + id).val();
 }
@@ -147,7 +131,7 @@ var getSliderValue = function(id){
 
 var links = {};
 
-makeSliders(featureDefaults, links);
+//makeSliders(featureDefaults, links);
 
 
 dev.render2D();
