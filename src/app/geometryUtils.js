@@ -1,21 +1,25 @@
 'use strict';
 
+/* Returns the the radian value of the specified degrees in the range of (-PI, PI] */
 var degToRad = function(degrees){
-	return degrees/180 * Math.PI;
+	var res = degrees/180 * Math.PI;
+	return res;
 }
 
+/* Returns the radian value of the specified radians in the range of [0,360), to a precision of four decimal places.*/
 var radToDeg = function(radians){
-	return radians * 180 / Math.PI;
+	var res = radians * 180 / Math.PI;
+	return res;
 }
 
 var computeAngleFromPoints = function(start, end){
 	var dX = end[0] - start[0];
-	var dY = start[1] - end[1];
+	var dY = end[1] - start[1];
 	return computeAngle(dX, dY);
 }
 
 var computeAngle = function(dX, dY){
-	return radToDeg(Math.atan2(dX, dY));
+	return radToDeg(Math.atan2(dY, dX));
 }
 
 var computeDistanceBetweenPoints = function(start, end){
@@ -27,10 +31,11 @@ var computeDistance = function(dX, dY){
 }
 
 var computeEndPoint = function(start, angle, length){
+	length = parseFloat(length);
 	var rad = degToRad(angle);
-	dX = length * Math.cos(rad);
-	dY = length * Math.sin(rad);
-	return [start[0] + dX, start[1] + dY]
+	var dX = length * Math.cos(rad);
+	var dY = length * Math.sin(rad);
+	return [start[0] + dX, start[1] + dY];
 }
 
 exports.degToRad = degToRad;
