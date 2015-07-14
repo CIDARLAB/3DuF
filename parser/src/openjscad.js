@@ -491,7 +491,11 @@ OpenJsCad.parseJsCadScriptASync = function(script, mainParameters, options, call
   }
 
   var workerscript = "";
+  /*transposer_json = JSON.stringify(transposer_json);
+  workerscript += "var transposer_json=" + transposer_json + ";\n";
+  workerscript += "transposer_json = JSON.parse(transposer_json);\n";
   workerscript += script;
+  */
   workerscript += "\n\n\n\n//// The following code is added by OpenJsCad:\n";
   workerscript += "var _csg_baselibraries=" + JSON.stringify(baselibraries)+";\n";
   workerscript += "var _csg_libraries=" + JSON.stringify(libraries)+";\n";
@@ -1065,7 +1069,8 @@ OpenJsCad.Processor.prototype = {
     this.enableItems();
     var that = this;
     var paramValues = this.getParamValues();
-    var useSync = this.debugging;
+    //var useSync = this.debugging;
+    var useSync = true;
     var options = {};
     var startTime = Date.now();
 

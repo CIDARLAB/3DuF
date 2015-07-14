@@ -1,6 +1,7 @@
 'use strict';
 
-var uFabUtils = require('./uFabUtils.js');
+var utils = require('./geometryUtils.js');
+var paperFunctions = require('./paperFunctions.js');
 
 var getGroupOffset = function(feature){
 	if (feature.hasOwnProperty(group) && feature.group != undefined && feature.group != null){
@@ -89,8 +90,8 @@ class uFabTwoPointRect extends fabric.Rect{
 	constructor(){
 		super({
 			lockRotation: true,
-			originX: 'center',
-			originY: 'bottom',
+			originX: 'left',
+			originY: 'center',
 			centeredScaling: true,
 			lockUniScaling: true,
 			hasRotatingPoint: false,
@@ -101,11 +102,12 @@ class uFabTwoPointRect extends fabric.Rect{
 	}
 
 	__computePositionalState(start, end){
+		var len = utils.computeDistanceBetweenPoints(start, end);
 		return {
-			left: start[0],
+			left: start[0] ,
 			top: start[1],
-			length: uFabUtils.computeDistanceBetweenPoints(start, end),
-			angle: uFabUtils.computeAngleFromPoints(start, end)
+			length: utils.computeDistanceBetweenPoints(start, end),
+			angle: utils.computeAngleFromPoints(start, end)
 		}
 	}
 
@@ -114,9 +116,9 @@ class uFabTwoPointRect extends fabric.Rect{
 		this.set({
 			left: posState.left,
 			top: posState.top,
-			width: params.width,
+			width: posState.length,
 			angle: posState.angle,
-			height: posState.length,
+			height: params.width,
 			fill: params.color
 		});
 	}

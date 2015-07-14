@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 
 <html><head>
-  <script src="lib/three.min.js"></script>
-  <script src="lib/orbitcontrols.js"></script>
-  <!-- fallback if no WebGL -->
-  <script src="lib/projector.js"></script>
-  <script src="lib/canvasrenderer.js"></script>
-  <script src="lib/jquery-2.1.3.min.js"></script>
+  <script src="../lib/canvas_rendering/three.min.js"></script>
+  <script src="../lib/canvas_rendering/orbitcontrols.js"></script>
+
   <script src="src/csg.js"></script>
   <script src="src/threecsg.js"></script>
   <script src="src/openjscad.js"></script>
@@ -42,9 +39,11 @@ a { color: inherit; }
 
 <script>
 
-
 var gCurrentFile = null;
 var gProcessor=null;
+
+var transposer_json = JSON.parse('{"device":{"width":75.8,"name":"transposer_large","height":51},"layers":{"c":{"z_offset":4,"color":[1,0,0],"features":["urn:uuid:49be1379-3560-4291-9518-6aff37ed589b","urn:uuid:7c21e476-147d-4277-bc0f-c64035b246c1","urn:uuid:69de722a-def1-49b7-964c-73fcddcc5ecd","urn:uuid:d1c56c4b-8553-464e-aedb-89033649fd07","urn:uuid:c40f4ee7-cfbe-42b3-97e8-fb93ba05eb19","urn:uuid:824559a7-f17b-402d-8710-65856c398957","urn:uuid:75cbe0fa-654a-4250-abde-4c21d6f69489","urn:uuid:507ad383-030a-467e-bb2e-70c1b9006520","urn:uuid:df928a9c-4d64-414c-bdfa-045812629540","urn:uuid:42630eae-ac7b-4d6d-b416-d61bb5d146f8","urn:uuid:78ea0daf-d101-48e0-a981-71ba1fb7d499","urn:uuid:23423670-f1bd-4e77-8439-8b1aa2150947","urn:uuid:2bdb2ce1-0ffe-4262-879b-5ccb23f0809d","urn:uuid:e50ea8e5-dca4-4d34-93e8-98be3af91375","urn:uuid:d394d33f-8abf-4c4a-b439-d398eed9c258","urn:uuid:4f28be7c-396d-4991-a9e9-3d8b01b0da08","urn:uuid:27a28cbc-4be8-4fae-8923-300b3b19e374","urn:uuid:4d3a57b8-7b4a-40b6-9616-7ea363e27c43","urn:uuid:374ce52e-30c2-402c-8d85-87998169959f","urn:uuid:cfd59dc9-5a7a-49e9-9157-e0d5696568db","urn:uuid:bf4eec2f-2f38-42eb-a3ad-b14778a1a224","urn:uuid:b0f80156-d420-4ee6-b533-cc0d6be45091","urn:uuid:42afbc83-48e1-4217-aaa2-2dc6f9063d59","urn:uuid:7fcd1115-fe19-4fd7-a513-b22b8120d26c","urn:uuid:b628b2b4-ada8-4f5c-b1c1-7919f8dbeb90"],"flip":true,"ID":"c"},"f":{"z_offset":0,"color":[0,0,1],"features":["urn:uuid:0d1f9840-d2b6-4b76-b5b8-6c724a757997","urn:uuid:8a3c19ae-4f4b-4f32-8c24-ed8e68a79b37","urn:uuid:5923486b-4b6e-4750-9275-b65844144013","urn:uuid:41c61ae6-85e8-4fc8-a7cc-b5ff7770c8f0","urn:uuid:09c89c7e-0c59-4d95-b998-07a3aa4b2619","urn:uuid:1a9d498b-9d5a-41ae-8945-6821f5dda45d","urn:uuid:b461b89e-c2a1-4472-bfd8-d1b9b2c19bef","urn:uuid:33ede38a-fb0b-486b-b32c-83217ed77e84","urn:uuid:ccb5b70d-68fc-4822-a5a5-b01e00266eaf","urn:uuid:76f30bca-aad7-4287-98d5-872e4ae6888d","urn:uuid:7d064609-e9a8-4262-a299-41df967539a1","urn:uuid:732129bf-ff4c-4f4e-86ac-937f190021db","urn:uuid:028f66f9-c0b3-41cf-abbb-cfdda11c97fb","urn:uuid:9963bf26-0fff-414e-b4b2-3b12dd3364ae","urn:uuid:a569d50c-c6ed-424d-acd9-e1ee756373e0"],"flip":false,"ID":"f"}},"features":{"urn:uuid:732129bf-ff4c-4f4e-86ac-937f190021db":{"layer":"f","type":"standoff","feature_params":{"radius1":3,"position":[3,3],"radius2":2.4,"height":4},"ID":"urn:uuid:732129bf-ff4c-4f4e-86ac-937f190021db"},"urn:uuid:33ede38a-fb0b-486b-b32c-83217ed77e84":{"layer":"f","type":"via","feature_params":{"radius1":2,"position":[10,10],"radius2":1.6,"height":3.5},"ID":"urn:uuid:33ede38a-fb0b-486b-b32c-83217ed77e84"},"urn:uuid:42630eae-ac7b-4d6d-b416-d61bb5d146f8":{"layer":"c","type":"channel","feature_params":{"start":[15.400000000000002,10],"height":0.5,"end":[60.2,10],"width":2},"ID":"urn:uuid:42630eae-ac7b-4d6d-b416-d61bb5d146f8"},"urn:uuid:7d064609-e9a8-4262-a299-41df967539a1":{"layer":"f","type":"via","feature_params":{"radius1":2,"position":[67.2,40.2],"radius2":1.6,"height":3.5},"ID":"urn:uuid:7d064609-e9a8-4262-a299-41df967539a1"},"urn:uuid:42afbc83-48e1-4217-aaa2-2dc6f9063d59":{"layer":"c","type":"valve","feature_params":{"radius1":3,"position":[38.6,32.800000000000004],"radius2":2.4,"height":3.0},"ID":"urn:uuid:42afbc83-48e1-4217-aaa2-2dc6f9063d59"},"urn:uuid:1a9d498b-9d5a-41ae-8945-6821f5dda45d":{"layer":"f","type":"via","feature_params":{"radius1":2,"position":[22.8,25.1],"radius2":1.6,"height":3.5},"ID":"urn:uuid:1a9d498b-9d5a-41ae-8945-6821f5dda45d"},"urn:uuid:9963bf26-0fff-414e-b4b2-3b12dd3364ae":{"layer":"f","type":"standoff","feature_params":{"radius1":3,"position":[72.8,48],"radius2":2.4,"height":4},"ID":"urn:uuid:9963bf26-0fff-414e-b4b2-3b12dd3364ae"},"urn:uuid:7c21e476-147d-4277-bc0f-c64035b246c1":{"layer":"c","type":"channel","feature_params":{"start":[38.6,32.800000000000004],"height":0.5,"end":[54.400000000000006,32.800000000000004],"width":2},"ID":"urn:uuid:7c21e476-147d-4277-bc0f-c64035b246c1"},"urn:uuid:78ea0daf-d101-48e0-a981-71ba1fb7d499":{"layer":"c","type":"channel","feature_params":{"start":[61.8,17.4],"height":0.5,"end":[67.2,17.4],"width":2},"ID":"urn:uuid:78ea0daf-d101-48e0-a981-71ba1fb7d499"},"urn:uuid:2bdb2ce1-0ffe-4262-879b-5ccb23f0809d":{"layer":"c","type":"port","feature_params":{"position":[54.400000000000006,25.1],"radius":1.6,"height":0.5},"ID":"urn:uuid:2bdb2ce1-0ffe-4262-879b-5ccb23f0809d"},"urn:uuid:507ad383-030a-467e-bb2e-70c1b9006520":{"layer":"c","type":"channel","feature_params":{"start":[15.400000000000002,40.2],"height":0.5,"end":[46.5,40.2],"width":2},"ID":"urn:uuid:507ad383-030a-467e-bb2e-70c1b9006520"},"urn:uuid:a569d50c-c6ed-424d-acd9-e1ee756373e0":{"layer":"f","type":"standoff","feature_params":{"radius1":3,"position":[3,48],"radius2":2.4,"height":4},"ID":"urn:uuid:a569d50c-c6ed-424d-acd9-e1ee756373e0"},"urn:uuid:4f28be7c-396d-4991-a9e9-3d8b01b0da08":{"layer":"c","type":"port","feature_params":{"position":[67.2,10],"radius":1.6,"height":0.5},"ID":"urn:uuid:4f28be7c-396d-4991-a9e9-3d8b01b0da08"},"urn:uuid:5923486b-4b6e-4750-9275-b65844144013":{"layer":"f","type":"channel","feature_params":{"start":[38.6,10],"height":0.5,"end":[38.6,40.2],"width":2},"ID":"urn:uuid:5923486b-4b6e-4750-9275-b65844144013"},"urn:uuid:09c89c7e-0c59-4d95-b998-07a3aa4b2619":{"layer":"f","type":"channel","feature_params":{"start":[54.400000000000006,40.2],"height":0.5,"end":[54.400000000000006,25.1],"width":2},"ID":"urn:uuid:09c89c7e-0c59-4d95-b998-07a3aa4b2619"},"urn:uuid:7fcd1115-fe19-4fd7-a513-b22b8120d26c":{"layer":"c","type":"valve","feature_params":{"radius1":3,"position":[22.8,17.4],"radius2":2.4,"height":3.0},"ID":"urn:uuid:7fcd1115-fe19-4fd7-a513-b22b8120d26c"},"urn:uuid:0d1f9840-d2b6-4b76-b5b8-6c724a757997":{"layer":"f","type":"channel","feature_params":{"start":[10,10],"height":0.5,"end":[67.2,10],"width":2},"ID":"urn:uuid:0d1f9840-d2b6-4b76-b5b8-6c724a757997"},"urn:uuid:b628b2b4-ada8-4f5c-b1c1-7919f8dbeb90":{"layer":"c","type":"valve","feature_params":{"radius1":3,"position":[54.400000000000006,32.800000000000004],"radius2":2.4,"height":3.0},"ID":"urn:uuid:b628b2b4-ada8-4f5c-b1c1-7919f8dbeb90"},"urn:uuid:c40f4ee7-cfbe-42b3-97e8-fb93ba05eb19":{"layer":"c","type":"channel","feature_params":{"start":[38.6,32.800000000000004],"height":0.5,"end":[61.8,32.800000000000004],"width":2},"ID":"urn:uuid:c40f4ee7-cfbe-42b3-97e8-fb93ba05eb19"},"urn:uuid:df928a9c-4d64-414c-bdfa-045812629540":{"layer":"c","type":"channel","feature_params":{"start":[15.400000000000002,10],"height":0.5,"end":[15.400000000000002,40.2],"width":2},"ID":"urn:uuid:df928a9c-4d64-414c-bdfa-045812629540"},"urn:uuid:cfd59dc9-5a7a-49e9-9157-e0d5696568db":{"layer":"c","type":"valve","feature_params":{"radius1":3,"position":[30.700000000000003,10],"radius2":2.4,"height":3.0},"ID":"urn:uuid:cfd59dc9-5a7a-49e9-9157-e0d5696568db"},"urn:uuid:028f66f9-c0b3-41cf-abbb-cfdda11c97fb":{"layer":"f","type":"standoff","feature_params":{"radius1":3,"position":[72.8,3],"radius2":2.4,"height":4},"ID":"urn:uuid:028f66f9-c0b3-41cf-abbb-cfdda11c97fb"},"urn:uuid:bf4eec2f-2f38-42eb-a3ad-b14778a1a224":{"layer":"c","type":"valve","feature_params":{"radius1":3,"position":[46.5,40.2],"radius2":2.4,"height":3.0},"ID":"urn:uuid:bf4eec2f-2f38-42eb-a3ad-b14778a1a224"},"urn:uuid:b0f80156-d420-4ee6-b533-cc0d6be45091":{"layer":"c","type":"valve","feature_params":{"radius1":3,"position":[38.6,17.4],"radius2":2.4,"height":3.0},"ID":"urn:uuid:b0f80156-d420-4ee6-b533-cc0d6be45091"},"urn:uuid:75cbe0fa-654a-4250-abde-4c21d6f69489":{"layer":"c","type":"channel","feature_params":{"start":[30.700000000000003,10],"height":0.5,"end":[15.400000000000002,10],"width":2},"ID":"urn:uuid:75cbe0fa-654a-4250-abde-4c21d6f69489"},"urn:uuid:ccb5b70d-68fc-4822-a5a5-b01e00266eaf":{"layer":"f","type":"via","feature_params":{"radius1":2,"position":[10,40.2],"radius2":1.6,"height":3.5},"ID":"urn:uuid:ccb5b70d-68fc-4822-a5a5-b01e00266eaf"},"urn:uuid:41c61ae6-85e8-4fc8-a7cc-b5ff7770c8f0":{"layer":"f","type":"channel","feature_params":{"start":[22.8,10],"height":0.5,"end":[22.8,25.1],"width":2},"ID":"urn:uuid:41c61ae6-85e8-4fc8-a7cc-b5ff7770c8f0"},"urn:uuid:23423670-f1bd-4e77-8439-8b1aa2150947":{"layer":"c","type":"port","feature_params":{"position":[22.8,25.1],"radius":1.6,"height":0.5},"ID":"urn:uuid:23423670-f1bd-4e77-8439-8b1aa2150947"},"urn:uuid:d394d33f-8abf-4c4a-b439-d398eed9c258":{"layer":"c","type":"port","feature_params":{"position":[10,40.2],"radius":1.6,"height":0.5},"ID":"urn:uuid:d394d33f-8abf-4c4a-b439-d398eed9c258"},"urn:uuid:69de722a-def1-49b7-964c-73fcddcc5ecd":{"layer":"c","type":"channel","feature_params":{"start":[38.6,17.4],"height":0.5,"end":[22.8,17.4],"width":2},"ID":"urn:uuid:69de722a-def1-49b7-964c-73fcddcc5ecd"},"urn:uuid:d1c56c4b-8553-464e-aedb-89033649fd07":{"layer":"c","type":"channel","feature_params":{"start":[38.6,17.4],"height":0.5,"end":[61.8,17.4],"width":2},"ID":"urn:uuid:d1c56c4b-8553-464e-aedb-89033649fd07"},"urn:uuid:4d3a57b8-7b4a-40b6-9616-7ea363e27c43":{"layer":"c","type":"port","feature_params":{"position":[60.2,10],"radius":1.6,"height":0.5},"ID":"urn:uuid:4d3a57b8-7b4a-40b6-9616-7ea363e27c43"},"urn:uuid:b461b89e-c2a1-4472-bfd8-d1b9b2c19bef":{"layer":"f","type":"via","feature_params":{"radius1":2,"position":[54.400000000000006,25.1],"radius2":1.6,"height":3.5},"ID":"urn:uuid:b461b89e-c2a1-4472-bfd8-d1b9b2c19bef"},"urn:uuid:76f30bca-aad7-4287-98d5-872e4ae6888d":{"layer":"f","type":"via","feature_params":{"radius1":2,"position":[67.2,10],"radius2":1.6,"height":3.5},"ID":"urn:uuid:76f30bca-aad7-4287-98d5-872e4ae6888d"},"urn:uuid:8a3c19ae-4f4b-4f32-8c24-ed8e68a79b37":{"layer":"f","type":"channel","feature_params":{"start":[10,40.2],"height":0.5,"end":[67.2,40.2],"width":2},"ID":"urn:uuid:8a3c19ae-4f4b-4f32-8c24-ed8e68a79b37"},"urn:uuid:e50ea8e5-dca4-4d34-93e8-98be3af91375":{"layer":"c","type":"port","feature_params":{"position":[10,10],"radius":1.6,"height":0.5},"ID":"urn:uuid:e50ea8e5-dca4-4d34-93e8-98be3af91375"},"urn:uuid:374ce52e-30c2-402c-8d85-87998169959f":{"layer":"c","type":"port","feature_params":{"position":[67.2,17.4],"radius":1.6,"height":0.5},"ID":"urn:uuid:374ce52e-30c2-402c-8d85-87998169959f"},"urn:uuid:27a28cbc-4be8-4fae-8923-300b3b19e374":{"layer":"c","type":"port","feature_params":{"position":[67.2,40.2],"radius":1.6,"height":0.5},"ID":"urn:uuid:27a28cbc-4be8-4fae-8923-300b3b19e374"},"urn:uuid:824559a7-f17b-402d-8710-65856c398957":{"layer":"c","type":"channel","feature_params":{"start":[61.8,17.4],"height":0.5,"end":[61.8,32.800000000000004],"width":2},"ID":"urn:uuid:824559a7-f17b-402d-8710-65856c398957"},"urn:uuid:49be1379-3560-4291-9518-6aff37ed589b":{"layer":"c","type":"channel","feature_params":{"start":[22.8,25.1],"height":0.5,"end":[54.400000000000006,25.1],"width":2},"ID":"urn:uuid:49be1379-3560-4291-9518-6aff37ed589b"}}}');
+
 
 // Show all exceptions to the user:
 OpenJsCad.AlertUserOfUncaughtExceptions();
@@ -53,6 +52,7 @@ function onload()
 {
   gProcessor = new OpenJsCad.Processor(document.getElementById("viewer"));
   setupDragDrop();
+  console.log()
 }
 
 function setupDragDrop()
@@ -171,7 +171,7 @@ function parseFile(debugging, onlyifchanged)
             filename = filename.replace(/^.*\/([^\/]*)$/, "$1");
             gProcessor.setDebugging(debugging); 
             gProcessor.setJsCad(jscadscript, filename);
-						previousScript = jscadscript;
+						      previousScript = jscadscript;
           }
         }
       }
@@ -206,45 +206,4 @@ function parseFile(debugging, onlyifchanged)
   </div>
 </div>
 <input type="file" id="fileUploadButton" />
-<br>
-<h2>Instructions:</h2>
-Create a new file in your favorite text editor. To get started enter the following text:
-<br>
-<pre>function main() {
-  var cube = CSG.roundedCube({radius: 10, roundradius: 2, resolution: 16});
-  var sphere = CSG.sphere({radius: 10, resolution: 16}).translate([5, 5, 5]);
-  return cube.union(sphere);
-}
-</pre>
-Save this to a file on your desktop with .jscad extension. Then drag &amp; drop the file from your desktop
-to the box above (marked with 'drop your .jscad file here).<br><br>
-The 3d model should now appear. You can continue to make changes to your .jscad file. Just press Reload 
-to parse the changes, you do not need to drag &amp; drop the file again.
-<br><br>  
-When finished press Generate STL to generate the STL file. Then click Save STL and save it to
-a file with .stl extension.
-<br><br>  
-For more information about OpenJsCad see the <a href="index.html">introduction</a>.
-
-<h2>Debugging</h2>
-By default your .jscad file is parsed in a separate thread (in a Web Worker). This allows long running
-scripts to be executed while the web browser stays responsive. The web browser's debugger does not
-have access to scripts running in web workers however. To allow debugging you can use the Debug button above to execute
-your jscad code in the main thread instead of in a web worker.
-<br><br>
-To debug your code in Google Chrome: open the Developer Tools by typing Ctrl+Shift+I (or Command+Option+I on mac).
-Then press the Debug button above. The debugger will stop just before executing your main() function.
-<br><br>
-For more information about debugging in Chrome see 
-<a href="http://code.google.com/chrome/devtools/docs/overview.html" target="_blank">Chrome Developer Tools: Overview</a>
-<br><br>
-You can output log messages from your script using:
-<pre>
-OpenJsCad.log("Hello");
-</pre>
-The log messages will appear in the browser's console (shown using Ctrl+Shift+I in Chrome). They will appear
-even while not actually debugging.
-<br><br>
-
-</body>
 </html>
