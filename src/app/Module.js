@@ -1,6 +1,6 @@
 'use strict';
 
-var uFab = require('./uFab');
+var uFab = require('./3DuFCore');
 
 class Module{
 	constructor(featureDefaults){
