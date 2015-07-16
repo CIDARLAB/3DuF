@@ -59,8 +59,7 @@ var Feature = (function () {
 				ID: featureJSON.ID,
 				color: featureJSON.color,
 				type: featureJSON.type,
-				params: featureJSON.feature_params
-			});
+				params: featureJSON.feature_params });
 			return feat;
 		}
 	}, {
@@ -207,8 +206,7 @@ var Device = (function () {
 			return {
 				device_data: this.deviceData,
 				layers: this.__layersToJSON(),
-				features: this.__featuresToJSON()
-			};
+				features: this.__featuresToJSON() };
 		}
 	}, {
 		key: '__featuresToJSON',
@@ -234,8 +232,7 @@ var Device = (function () {
 			var devData = {
 				height: deviceJSON.device.height,
 				width: deviceJSON.device.width,
-				ID: deviceJSON.device.name
-			};
+				ID: deviceJSON.device.name };
 			var dev = new Device(devData);
 
 			for (var layerID in deviceJSON.layers) {
@@ -960,8 +957,7 @@ var CircleHandler = (function (_Handler2D) {
 
 		_get(Object.getPrototypeOf(CircleHandler.prototype), 'constructor', this).call(this, feature, 'CircleHandler', {
 			position: 'position',
-			radius: 'number'
-		});
+			radius: 'number' });
 		this.fab = new features2D.uFabCircle();
 		this.fab.handler = this;
 	}
@@ -1789,8 +1785,7 @@ var featureDefaults = {
     CircleValve: {
         height: 0.9,
         radius1: 1.4,
-        radius2: 1.2
-    },
+        radius2: 1.2 },
     Port: {
         height: 0.4,
         radius: 0.7
@@ -1828,6 +1823,14 @@ var trans2 = new Transposer(featureDefaults, transposerParams2);
 
 canvas.setDevice(dev);
 
+var getSetterFunction = function getSetterFunction(params, linker, id) {
+    var setterFunction = function setterFunction() {
+        var link = linker[id];
+        updateParam(params, link.parent, link.child, document.getElementById(id).get());
+    };
+    return setterFunction;
+};
+
 var makeSliders = function makeSliders(params, linker) {
     for (var param in params) {
         /* Make a container and label for each feature. */
@@ -1842,50 +1845,58 @@ var makeSliders = function makeSliders(params, linker) {
 
         for (var subparam in params[param]) {
             if (subparam != 'height' && subparam != 'radius2') {
-                //ignore these subparams
-                var subContainer = $('<div></div>').addClass('param-slider-subcontainer');
-                var subString = '<h6>' + subparam + '<h6>';
-                var subLabel = $(subString);
-                var subSliderID = param + subparam;
-                var subSlider = $('<div></div>');
-                subSlider.attr('id', subSliderID);
-                subLabel.appendTo(subContainer);
-                subSlider.appendTo(subContainer);
-                subContainer.appendTo(container);
+                (function () {
+                    //ignore these subparams
+                    var subContainer = $('<div></div>').addClass('param-slider-subcontainer');
+                    var subString = '<h6>' + subparam + '<h6>';
+                    var subLabel = $(subString);
+                    var subSliderID = param + subparam;
+                    var subSlider = $('<div></div>');
+                    subSlider.attr('id', subSliderID);
+                    subLabel.appendTo(subContainer);
+                    subSlider.appendTo(subContainer);
+                    subContainer.appendTo(container);
 
-                /* Grab the HTML element by the unique subSliderID */
+                    /* Grab the HTML element by the unique subSliderID */
 
-                var slider = document.getElementById(subSliderID);
+                    var slider = document.getElementById(subSliderID);
 
-                /* Initialize the slider */
+                    /* Initialize the slider */
 
-                noUiSlider.create(slider, {
-                    start: 0.4,
-                    range: {
-                        'min': 0,
-                        'max': 2
-                    }
-                });
-                linker[subSliderID] = {
-                    params: params,
-                    parent: param,
-                    child: subparam
-                };
+                    noUiSlider.create(slider, {
+                        start: params[param][subparam],
+                        range: {
+                            'min': 0,
+                            'max': 2
+                        }
+                    });
+                    linker[subSliderID] = {
+                        params: params,
+                        parent: param,
+                        child: subparam
+                    };
 
-                /* Event handlers attempt to reference each slider 
-                by its unique ID, but all point to the same variable,
-                which is overwritten by the end of the loop.*/
+                    /* Event handlers attempt to reference each slider 
+                    by its unique ID, but all point to the same variable,
+                    which is overwritten by the end of the loop.*/
 
-                slider.noUiSlider.on('slide', function () {
-                    var thisThing = document.getElementById(subSliderID);
-                    var link = linker[thisThing.id];
-                    updateParam(params, link.parent, link.child, thisThing.noUiSlider.get());
-                });
-                slider.noUiSlider.on('change', function () {
-                    var thisThing = document.getElementById(subSliderID);
-                    var link = linker[thisThing.id];
-                    updateParam(params, link.parent, link.child, thisThing.noUiSlider.get());
-                });
+                    //slider.noUiSlider.on('slide', getSetterFunction(params, linker, subSliderID));
+                    //slider.noUiSlider.on('change', getSetterFunction(params, linker, subSliderID));
+
+                    var updateFromSliderValue = function updateFromSliderValue() {};
+
+                    slider.noUiSlider.on('change', function () {
+                        var thisThing = document.getElementById(subSliderID);
+                        var link = linker[thisThing.id];
+                        updateParam(params, link.parent, link.child, thisThing.noUiSlider.get());
+                    });
+
+                    slider.noUiSlider.on('slide', function () {
+                        var thisThing = document.getElementById(subSliderID);
+                        var link = linker[thisThing.id];
+                        updateParam(params, link.parent, link.child, thisThing.noUiSlider.get());
+                    });
+                })();
             }
         }
     }
