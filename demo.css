@@ -1,0 +1,50 @@
+#canvas_block {
+	position: fixed;
+	left: 250px;
+	padding: 0px;
+}
+
+#c {
+	width:100%;
+	height:100%;
+}
+
+#button_block {
+	position: fixed;
+	left: 0;
+	width: 250px;
+	height: 100%;
+	background: #EEE;
+	top: 0;
+}
+
+#param-slider-container {
+	padding: 15;
+}
+
+hr {
+    border: 0;
+    border-bottom: 1px dashed #ccc;
+    background: #999;
+}
+
+.slider-container {
+	margin-bottom: 10;
+}
+
+.btn-label:first-of-type { margin-top: 0; }
+
+.btn-label { width: 100%;
+display: block;
+background-color: #1c2b44;
+height: auto;
+padding: 10px;
+font-size: 14px;
+margin: 1em 0 1em 0;
+color: #EEE;
+text-shadow: 0 -1px 0 #000;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+font-weight: normal;
+box-shadow: 0 2px 0px #CCC;
+}
