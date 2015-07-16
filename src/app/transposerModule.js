@@ -1,6 +1,6 @@
 'use strict';
 
-var uFab = require('./uFab');
+var uFab = require('./3DuFCore');
 var Module = require('./Module').Module;
 
 class Transposer extends Module{

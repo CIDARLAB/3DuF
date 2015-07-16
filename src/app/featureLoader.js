@@ -1,6 +1,6 @@
 'use strict';
 
-var uFab = require('./uFab');
+var uFab = require('./3DuFCore');
 var getDefaultFeatures = require('./defaultFeatures.js').getDefaultFeatures; // currently a hack, to avoid UI interaction for now
 var handlers = require('./handlers')
 

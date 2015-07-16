@@ -1,6 +1,6 @@
 'use strict';
 
-var uFab = require('./uFab');
+var uFab = require('./3DuFCore');
 
 class uFabCanvas extends fabric.CanvasWithViewport{
 	constructor(id){
