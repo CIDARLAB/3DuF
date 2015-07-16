@@ -1,5 +1,5 @@
-//watchify uFab_test.js -t babelify -v --outfile bundle.js
-//watchify uFab_test2.js -t babelify -v --outfile ../../renderer/static/js/uFabApp.js
+// to build me, run: watchify appSetup.js -t babelify -v --outfile "../../3DuFapp.js"
+// from the src/app folder!
 
 var paperFunctions = require("./paperFunctions");
 

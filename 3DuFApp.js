@@ -1,4 +1,25 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// to build me, run: watchify appSetup.js -t babelify -v --outfile "../../3DuFapp.js"
+// from the src/app folder!
+
+"use strict";
+
+var paperFunctions = require("./paperFunctions");
+
+paper.install(window);
+paper.setup("c");
+
+window.onload = function () {
+    paperFunctions.setup();
+    paperFunctions.channel([100, 100], [200, 200], 20);
+};
+
+document.getElementById("c").onmousewheel = function (event) {
+    view.zoom = paperFunctions.changeZoom(view.zoom, event.wheelDelta);
+    console.log(event.offsetX);
+};
+
+},{"./paperFunctions":2}],2:[function(require,module,exports){
 
 // Keep global references to both tools, so the HTML
 // links below can access them.
@@ -384,25 +405,4 @@ exports.channel = channel;
 exports.changeZoom = changeZoom;
 exports.changeCenter = changeCenter;
 
-},{}],2:[function(require,module,exports){
-//watchify uFab_test.js -t babelify -v --outfile bundle.js
-//watchify uFab_test2.js -t babelify -v --outfile ../../renderer/static/js/uFabApp.js
-
-"use strict";
-
-var paperFunctions = require("./paperFunctions");
-
-paper.install(window);
-paper.setup("c");
-
-window.onload = function () {
-    paperFunctions.setup();
-    paperFunctions.channel([100, 100], [200, 200], 20);
-};
-
-document.getElementById("c").onmousewheel = function (event) {
-    view.zoom = paperFunctions.changeZoom(view.zoom, event.wheelDelta);
-    console.log(event.offsetX);
-};
-
-},{"./paperFunctions":1}]},{},[2]);
+},{}]},{},[1]);
