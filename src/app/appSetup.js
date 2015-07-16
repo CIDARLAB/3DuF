@@ -8,7 +8,7 @@ paper.setup("c");
 
 window.onload = function(){
     paperFunctions.setup()
-    paperFunctions.channel([100,100],[200,200],20);
+    //paperFunctions.channel([100,100],[200,200],20);
 };
 
 document.getElementById("c").onmousewheel = function(event){
