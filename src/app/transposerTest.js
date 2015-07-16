@@ -86,12 +86,20 @@ var trans2 = new Transposer(featureDefaults, transposerParams2);
 
 canvas.setDevice(dev);
 
+var getSetterFunction = function(params, linker, id){
+    var setterFunction = function(){
+        let link = linker[id];
+        updateParam(params, link.parent, link.child, document.getElementById(id).get());
+    }
+    return setterFunction;
+}
+
 var makeSliders = function(params, linker) {
-    for (var param in params) {
+    for (let param in params) {
         /* Make a container and label for each feature. */
-        var container = $("<div></div>").addClass("param-slider-container");
-        var string = "<h5>" + param + "</h5>";
-        var label = $(string);
+        let container = $("<div></div>").addClass("param-slider-container");
+        let string = "<h5>" + param + "</h5>";
+        let label = $(string);
         label.appendTo(container);
         container.appendTo("#param-controls");
 
@@ -99,13 +107,13 @@ var makeSliders = function(params, linker) {
         with some default parameters and attach it to the parent container. */
 
 
-        for (var subparam in params[param]) {
+        for (let subparam in params[param]) {
             if (subparam != "height" && subparam != "radius2") { //ignore these subparams
-                var subContainer = $("<div></div>").addClass("param-slider-subcontainer");
-                var subString = "<h6>" + subparam + "<h6>";
-                var subLabel = $(subString);
-                var subSliderID = param + subparam;
-                var subSlider = $("<div></div>");
+                let subContainer = $("<div></div>").addClass("param-slider-subcontainer");
+                let subString = "<h6>" + subparam + "<h6>";
+                let subLabel = $(subString);
+                let subSliderID = param + subparam;
+                let subSlider = $("<div></div>");
                 subSlider.attr('id', subSliderID);
                 subLabel.appendTo(subContainer);
                 subSlider.appendTo(subContainer);
@@ -113,12 +121,12 @@ var makeSliders = function(params, linker) {
 
                 /* Grab the HTML element by the unique subSliderID */
 
-                var slider = document.getElementById(subSliderID);
+                let slider = document.getElementById(subSliderID);
 
                 /* Initialize the slider */
 
                 noUiSlider.create(slider, {
-                    start: .4,
+                    start: params[param][subparam],
                     range: {
                         'min': 0,
                         'max': 2
@@ -134,16 +142,25 @@ var makeSliders = function(params, linker) {
                 by its unique ID, but all point to the same variable,
                 which is overwritten by the end of the loop.*/
 
-                slider.noUiSlider.on('slide', function() {
-                    var thisThing = document.getElementById(subSliderID);
-                    var link = linker[thisThing.id];
+                //slider.noUiSlider.on('slide', getSetterFunction(params, linker, subSliderID));
+                //slider.noUiSlider.on('change', getSetterFunction(params, linker, subSliderID));
+
+                let updateFromSliderValue = function(){
+
+                };
+
+                slider.noUiSlider.on('change',function(){
+                    let thisThing = document.getElementById(subSliderID);
+                    let link = linker[thisThing.id];
                     updateParam(params, link.parent, link.child, thisThing.noUiSlider.get());
                 });
-                slider.noUiSlider.on('change', function() {
-                    var thisThing = document.getElementById(subSliderID);
-                    var link = linker[thisThing.id];
+
+                slider.noUiSlider.on('slide', function(){
+                    let thisThing = document.getElementById(subSliderID);
+                    let link = linker[thisThing.id];
                     updateParam(params, link.parent, link.child, thisThing.noUiSlider.get());
                 });
+
             }
         }
     }
