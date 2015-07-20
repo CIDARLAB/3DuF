@@ -7,29 +7,61 @@ class ParamValue{
 
 class FloatValue extends ParamValue{
 	constructor(value){
-		if (!Number.isFinite(value) ||  value < 0) throw new Error("AbsoluteValue must be a finite number >= 0.");
 		super("Float", value);
+		if (this.isInvalid(value)) throw new Error("AbsoluteValue must be a finite number >= 0.");
+	}
+
+	isInvalid(value){
+		if (!Number.isFinite(value) ||  value < 0) return true;
+		else return false;
+	}
+}
+
+class StringValue extends ParamValue{
+	constructor(value){
+		super("String", value);
+		if (this.isInvalid(value)) throw new Error("StringValue must be a string.");
+	}
+
+	isInvalid(value){
+		if(typeof value != "string") return true;
+		else return false;
 	}
 }
 
 class RelativeValue extends ParamValue{
 	constructor(value, reference){
-		if (!Number.isFinite(value) || value < 0) throw new Error("RelativeValue must be a finite number >= 0.");
 	 	super("Relative", value);
+	 	if (this.isInvalid(value)) throw new Error("RelativeValue must be a finite number >= 0.");
+	}
+
+	isInvalid(value){
+		if (!Number.isFinite(value) || value < 0) return true;
+		else return false;
 	}
 }
 
 class IntegerValue extends ParamValue{
 	constructor(value){
-		if (!Number.isInteger(value) || value < 0) throw new Error("IntegerValue must be an integer >= 0.");
 		super("Integer", value);
+		if (this.isInvalid(value)) throw new Error("IntegerValue must be an integer >= 0.");
+	}
+
+	isInvalid(value){
+		if (!Number.isInteger(value) || value <0) return true;
+		else return false;
 	}
 }
 
 class BooleanValue extends ParamValue{
 	constructor(value, reference){
-		if (value != false && value != true) throw new Error("BooleanValue must be true or false.");
 		super("Boolean", value);
+		if (this.isInvalid(value)) throw new Error("BooleanValue must be true or false.");
+	}
+
+	isInvalid(value){
+		if (value === false || value === true) return false;
+		else return true;
 	}
 }
 
@@ -53,3 +85,4 @@ exports.FloatValue = FloatValue;
 exports.IntegerValue = IntegerValue;
 exports.BooleanValue = BooleanValue;
 exports.PointValue = PointValue;
+exports.StringValue = StringValue;
