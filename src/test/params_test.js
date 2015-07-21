@@ -1,5 +1,5 @@
 var should = require("should");
-var Values = require("../app/values");
+var Values = require("../app/core/values");
 
 describe("ParamTypes", function(){
 	var unique = {"start": "Point", "end": "Point"};
