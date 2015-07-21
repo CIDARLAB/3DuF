@@ -64,6 +64,7 @@ describe("Layer", function(){
 			lay1.params.z_offset.value.should.equal(0);
 			lay1.params.flip.value.should.equal(false);
 			lay1.params.name.value.should.equal("layer1");
+
 			lay2.params.z_offset.value.should.equal(1.2);
 			lay2.params.flip.value.should.equal(true);
 			lay2.params.name.value.should.equal("layer2");
@@ -118,9 +119,8 @@ describe("Layer", function(){
 		});
 		it("should let the user remove a feature", function(){
 			lay1.featureCount.should.equal(0);
-			lay1.addFeature("before", feat1);
-			old_console.log("foobarbaz");
-			lay1.removeFeature("after", feat1);
+			lay1.addFeature(feat1);
+			lay1.removeFeature(feat1);
 			lay1.featureCount.should.equal(0);
 		});
 		it("should not let the user remove a feature by ID", function(){

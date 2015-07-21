@@ -47,11 +47,11 @@ class Layer {
 	}
 
 	__ensureIsAFeature(feature){
-		if (!(feature instanceof Feature)) throw new Error("Provided value is not a Feature! Did you pass an ID by mistake?");
+		if (!(feature instanceof Feature)) throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
 	}
 
 	__ensureFeatureExists(feature){
-		if (!this.containsFeature()) throw new Error("Layer does not contain the specified feature!");
+		if (!this.containsFeature(feature)) throw new Error("Layer does not contain the specified feature!");
 	}
 
 	__ensureFeatureIDExists(featureID){
@@ -87,11 +87,12 @@ class Group {
 }
 
 class Feature {
-	constructor(type, name = "New Feature"){
+	constructor(type, paramTypes, name = "New Feature"){
 		this.id = this.generateID();
 		this.name = name;
 		this.connections = {};
-		this.type = "";
+		this.type = type;
+		this.paramTypes = paramTypes;
 		this.params = {};
 		this.group = null;
 	}
