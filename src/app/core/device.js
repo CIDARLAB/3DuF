@@ -87,13 +87,12 @@ class Group {
 }
 
 class Feature {
-	constructor(type, paramTypes, name = "New Feature"){
+	constructor(type, params, name = "New Feature"){
 		this.id = this.generateID();
 		this.name = name;
 		this.connections = {};
 		this.type = type;
-		this.paramTypes = paramTypes;
-		this.params = {};
+		this.params = params;
 		this.group = null;
 	}
 
