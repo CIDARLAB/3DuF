@@ -5,9 +5,23 @@ class ParamValue{
 	}
 }
 
+var registeredTypes = {};
+
+function registerType(type, func){
+	registeredTypes[type] = func;
+}
+
+function makeParam(type, value){
+	if (registeredTypes.hasOwnProperty(type)){
+		return new registeredTypes[type](value);
+	} else {
+		throw new Error("Type " + type + " has not been registered.");
+	}
+}
+
 class FloatValue extends ParamValue{
 	constructor(value){
-		super("Float", value);
+		super(FloatValue.typeString(), value);
 		if (this.isInvalid(value)) throw new Error("AbsoluteValue must be a finite number >= 0.");
 	}
 
@@ -15,11 +29,15 @@ class FloatValue extends ParamValue{
 		if (!Number.isFinite(value) ||  value < 0) return true;
 		else return false;
 	}
+
+	static typeString(){
+		return "Float";
+	}
 }
 
 class StringValue extends ParamValue{
 	constructor(value){
-		super("String", value);
+		super(StringValue.typeString(), value);
 		if (this.isInvalid(value)) throw new Error("StringValue must be a string.");
 	}
 
@@ -27,23 +45,15 @@ class StringValue extends ParamValue{
 		if(typeof value != "string") return true;
 		else return false;
 	}
-}
 
-class RelativeValue extends ParamValue{
-	constructor(value, reference){
-	 	super("Relative", value);
-	 	if (this.isInvalid(value)) throw new Error("RelativeValue must be a finite number >= 0.");
-	}
-
-	isInvalid(value){
-		if (!Number.isFinite(value) || value < 0) return true;
-		else return false;
+	static typeString(){
+		return "String";
 	}
 }
 
 class IntegerValue extends ParamValue{
 	constructor(value){
-		super("Integer", value);
+		super(IntegerValue.typeString(), value);
 		if (this.isInvalid(value)) throw new Error("IntegerValue must be an integer >= 0.");
 	}
 
@@ -51,11 +61,15 @@ class IntegerValue extends ParamValue{
 		if (!Number.isInteger(value) || value <0) return true;
 		else return false;
 	}
+
+	static typeString(){
+		return "Integer";
+	}
 }
 
 class BooleanValue extends ParamValue{
 	constructor(value, reference){
-		super("Boolean", value);
+		super(BooleanValue.typeString(), value);
 		if (this.isInvalid(value)) throw new Error("BooleanValue must be true or false.");
 	}
 
@@ -63,26 +77,108 @@ class BooleanValue extends ParamValue{
 		if (value === false || value === true) return false;
 		else return true;
 	}
+
+	static typeString(){
+		return "Boolean";
+	}
 }
 
 class PointValue extends ParamValue{
 	constructor(value, reference){
-		if (value.length != 2 || !Number.isFinite(value[0]) || !Number.isFinite(value[1])) throw new Error("PointValue must be a coordinate represented by a two-member array of finite numbers, ex. [1,3]");
-		super("Point", value);
+		super(PointValue.typeString(), value);
+		if (this.isInvalid(value)) throw new Error("PointValue must be a coordinate represented by a two-member array of finite numbers, ex. [1,3]");
+	}
+
+	isInvalid(value){
+		if (value.length != 2 || !Number.isFinite(value[0]) || !Number.isFinite(value[1])) return true;
+		else return false;
+	}
+
+	static typeString(){
+		return "Point";
 	}
 }
 
-class Connection{
-	constructor(type, reference){
-		this.type = type;
-		this.value = value;
+class ParamTypes {
+	constructor(unique, heritable){
+		this.unique = unique;
+		this.heritable = heritable;
+	}
+
+	isUnique(key){
+		return (this.unique.hasOwnProperty(key));
+	}
+
+	isHeritable(key){
+		return (this.heritable.hasOwnProperty(key));
+	}
+
+	uniquesExist(params){
+		for (let key in this.unique) if (!params.hasOwnProperty(key)) return false;
+		return true;
+	}
+
+	wrongType(key, expected, actual){
+		throw new Error("Parameter " + key + " is the wrong type. " + 
+			"Expected: " + this.unique[key] + ", Actual: " + param.type);
+	}
+
+	/* Turns the raw key:value pairs passed into a user-written Feature declaration
+	into key:ParamValue pairs. This forces the checks for each ParamValue type
+	to execute on the provided values, and should throw an error for mismatches. */
+	sanitizeParams(params){
+		let newParams = {};
+		for (let key in params){
+			let oldParam = params[key];
+			if (this.isUnique(key)){
+				newParams[key] = makeParam(this.unique[key], oldParam);
+			} else if (this.isHeritable){
+				newParams[key] = makeParam(this.heritable[key], oldParam);
+			} else {
+				throw new Error(key + " does not exist in this set of ParamTypes.");
+			}
+		}
+		this.checkParams(newParams);
+		return newParams;
+	}
+
+	/* Checks to make sure the set of sanitized parameters matches the expected ParamTypes.
+	This method also checks to make sure that all unique (required) params are present.*/
+	checkParams(params){
+		for (let key in params){
+			let param = params[key];
+			if (!(param instanceof ParamValue)){
+				throw new Error(key + " is not a ParameterValue.");
+			} 
+			else if (this.isUnique(key)){
+				if (param.type != this.unique[key]){
+					wrongType(key, this.unique[key], param.type);
+				} 
+			} else if (this.isHeritable(key)) {
+				if (params[key].type != this.heritable[key]){
+					wrongType(key, this.heritable[key], param.type);
+				} 
+			} else {
+				throw new Error(key + " does not exist in this set of ParamTypes.");
+			}
+		}
+		if (!this.uniquesExist(params)){
+			throw new Error("Unique values were not present in the provided parameters.");
+		}
 	}
 }
+
+registerType(FloatValue.typeString(), FloatValue);
+registerType(StringValue.typeString(), StringValue);
+registerType(BooleanValue.typeString(), BooleanValue);
+registerType(PointValue.typeString(), PointValue);
+registerType(IntegerValue.typeString(), IntegerValue);
 
 exports.ParamValue = ParamValue;
-exports.RelativeValue = RelativeValue;
 exports.FloatValue = FloatValue;
 exports.IntegerValue = IntegerValue;
 exports.BooleanValue = BooleanValue;
 exports.PointValue = PointValue;
 exports.StringValue = StringValue;
+exports.ParamTypes = ParamTypes;
+exports.makeParam = makeParam;

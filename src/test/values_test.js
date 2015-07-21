@@ -5,6 +5,7 @@ var IntegerValue = Values.IntegerValue;
 var PointValue = Values.PointValue;
 var BooleanValue = Values.BooleanValue;
 var StringValue = Values.StringValue;
+var makeParam = Values.makeParam;
 
 describe('Values', function(){
 	describe('#FloatValue', function(){
@@ -122,6 +123,23 @@ describe('Values', function(){
 		});
 		it("should not allow a malformed point [1,3,4]", function(){
 			(function() {new StringValue([1,3,4])}).should.throwError();
+		});
+	});
+
+	describe("#makeParam", function(){
+		it("should allow properly-formed type:value pairs", function(){
+			let str = makeParam(StringValue.typeString(), "foobar");
+			let pnt = makeParam(PointValue.typeString(), [0,1]);
+			let int = makeParam(IntegerValue.typeString(), 5);
+			let flt = makeParam(FloatValue.typeString(), 5.5);
+			let bln = makeParam(BooleanValue.typeString(), true);
+		});
+		it("should not allow improperly-formed type:value pairs", function(){
+			(function() { let badStr = makeParam(StringValue.typeString(), [0,1])}).should.throwError();
+			(function() { let badStr = makeParam(BooleanValue.typeString(), 10)}).should.throwError();
+			(function() { let badStr = makeParam(PointValue.typeString(), true)}).should.throwError();
+			(function() { let badStr = makeParam(IntegerValue.typeString(), 5.5)}).should.throwError();
+			(function() { let badStr = makeParam(FloatValue.typeString(), "foobar")}).should.throwError();
 		});
 	});
 });
