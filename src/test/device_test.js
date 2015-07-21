@@ -1,4 +1,4 @@
-var device = require('../app/device.js');
+var device = require('../app/core/device.js');
 var should = require('should');
 
 var dev = null;

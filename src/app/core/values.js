@@ -1,3 +1,5 @@
+var Registry = require('./registry');
+
 class ParamValue{
 	constructor(type, value){
 		this.type = type;
@@ -5,15 +7,13 @@ class ParamValue{
 	}
 }
 
-var registeredTypes = {};
-
 function registerType(type, func){
-	registeredTypes[type] = func;
+	Registry.registeredParams[type] = func;
 }
 
 function makeParam(type, value){
-	if (registeredTypes.hasOwnProperty(type)){
-		return new registeredTypes[type](value);
+	if (Registry.registeredParams.hasOwnProperty(type)){
+		return new Registry.registeredParams[type](value);
 	} else {
 		throw new Error("Type " + type + " has not been registered.");
 	}
