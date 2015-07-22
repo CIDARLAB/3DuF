@@ -1,6 +1,70 @@
 var should = require("should");
 var Values = require("../app/core/values");
 
+describe("#Params", function(){
+	describe("#toJSON", function(){
+		//TODO: Convert Params to object that stores data, remove static function test
+		it("should convert valid parameters to JSON", function(){
+			let params = {};
+			params.foo = new Values.FloatValue(1.3);
+			params.bar = new Values.IntegerValue(12);
+			params.baz = new Values.StringValue("whatever");
+			Values.Params.toJSON(params);
+		});
+	});
+
+	describe("#fromJSON", function(){
+		it("should convert valid JSON to a params object", function(){
+			let json = {
+				"width": {
+					"type": Values.FloatValue.typeString(),
+					"value": 3.2
+				},
+				"name": {
+					"type": Values.StringValue.typeString(),
+					"value": "foobar" 
+				},
+				"number": {
+					"type": Values.IntegerValue.typeString(),
+					"value": 3
+				},
+				"bool": {
+					"type": Values.BooleanValue.typeString(),
+					"value": true
+				},
+				"point": {
+					"type": Values.PointValue.typeString(),
+					"value": [0,2]
+				}
+			};
+			Values.Params.fromJSON(json);
+		});
+		it("should fail when passed invalid JSON", function(){
+			let json = {
+				"weirdParam": {
+					"type": "SomeWeirdThingWeHaveNeverSeen",
+					"value": 23
+				},
+				"normalParam": {
+					"type": Values.FloatValue.typeString(),
+					"value": 23.4
+				}
+			};
+			(function() {Values.Params.fromJSON(json);}).should.throwError();
+		});
+		it("should succeed when passed JSON from toJSON()", function(){
+			let params = {};
+			params.foo = new Values.FloatValue(1.3);
+			params.bar = new Values.IntegerValue(12);
+			params.baz = new Values.StringValue("whatever");
+			let json = Values.Params.toJSON(params);
+			let newParams = Values.Params.fromJSON(json);
+			newParams.foo.value.should.equal(1.3);
+			newParams.foo.type.should.equal(Values.FloatValue.typeString());
+		});
+	});
+});
+
 describe("ParamTypes", function(){
 	var unique = {"start": "Point", "end": "Point"};
 	var heritable = {"width": "Float", "height": "Float"};

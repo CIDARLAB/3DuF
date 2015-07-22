@@ -5,6 +5,13 @@ class ParamValue{
 		this.type = type;
 		this.value = value;
 	}
+
+	toJSON(){
+		let output = {};
+		output.type = this.type;
+		output.value = this.value;
+		return output;
+	}
 }
 
 function registerType(type, func){
@@ -19,10 +26,14 @@ function makeParam(type, value){
 	}
 }
 
+function JSONToParam(json){
+	return makeParam(json.type, json.value);
+}
+
 class FloatValue extends ParamValue{
 	constructor(value){
 		super(FloatValue.typeString(), value);
-		if (this.isInvalid(value)) throw new Error("AbsoluteValue must be a finite number >= 0.");
+		if (this.isInvalid(value)) throw new Error("FloatValue must be a finite number >= 0.");
 	}
 
 	isInvalid(value){
@@ -38,7 +49,7 @@ class FloatValue extends ParamValue{
 class StringValue extends ParamValue{
 	constructor(value){
 		super(StringValue.typeString(), value);
-		if (this.isInvalid(value)) throw new Error("StringValue must be a string.");
+		if (this.isInvalid(value)) throw new Error("StringValue must be a string, got: " + value);
 	}
 
 	isInvalid(value){
@@ -96,6 +107,25 @@ class PointValue extends ParamValue{
 
 	static typeString(){
 		return "Point";
+	}
+}
+
+//TODO: Replace all generic params object with Params, and make output non-static
+class Params {
+	static toJSON(params){
+		let output = {};
+		for (let i in params){
+			output[i] = params[i].toJSON();
+		}
+		return output;
+	}
+
+	static fromJSON(json){
+		let output = {};
+		for (let i in json){
+			output[i] = JSONToParam(json[i]);
+		}
+		return output;
 	}
 }
 
@@ -182,3 +212,5 @@ exports.PointValue = PointValue;
 exports.StringValue = StringValue;
 exports.ParamTypes = ParamTypes;
 exports.makeParam = makeParam;
+exports.Params = Params;
+exports.JSONToParam = JSONToParam;
