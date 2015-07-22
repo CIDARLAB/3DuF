@@ -3,11 +3,12 @@ var values = require('./values');
 var registry = require('./Registry');
 var PointValue = values.PointValue;
 var FloatValue = values.FloatValue;
+var StringValue = values.StringValue;
 
 class Port extends feature.Feature{
 	constructor(params, name = "New Port"){
 		let sanitized = Port.getParamTypes().sanitizeParams(params);
-		super(Port.typeString(), sanitized, name);
+		super(Port.typeString(), sanitized, new StringValue(name));
 	}
 
 	static typeString(){

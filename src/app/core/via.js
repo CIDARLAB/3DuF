@@ -3,11 +3,12 @@ var values = require('./values');
 var registry = require('./Registry');
 var PointValue = values.PointValue;
 var FloatValue = values.FloatValue;
+var StringValue = values.StringValue;
 
 class Via extends feature.Feature{
 	constructor(params, name = "New Via"){
 		let sanitized = Via.getParamTypes().sanitizeParams(params);
-		super(Via.typeString(), sanitized, name);
+		super(Via.typeString(), sanitized, new StringValue(name));
 	}
 
 	static typeString(){

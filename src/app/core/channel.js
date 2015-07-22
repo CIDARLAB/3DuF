@@ -3,11 +3,12 @@ var values = require('./values');
 var registry = require('./Registry');
 var PointValue = values.PointValue;
 var FloatValue = values.FloatValue;
+var StringValue = values.StringValue;
 
 class Channel extends feature.Feature{
 	constructor(params, name = "New Channel"){
 		let sanitized = Channel.getParamTypes().sanitizeParams(params);
-		super(Channel.typeString(), sanitized, name);
+		super(Channel.typeString(), sanitized, new StringValue(name));
 	}
 
 	static typeString(){
