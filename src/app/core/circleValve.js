@@ -3,11 +3,12 @@ var values = require('./values');
 var registry = require('./Registry');
 var PointValue = values.PointValue;
 var FloatValue = values.FloatValue;
+var StringValue = values.StringValue;
 
 class CircleValve extends feature.Feature{
 	constructor(params, name = "New CircleValve"){
 		let sanitized = CircleValve.getParamTypes().sanitizeParams(params);
-		super(CircleValve.typeString(), sanitized, name);
+		super(CircleValve.typeString(), sanitized, new StringValue(name));
 	}
 
 	static typeString(){
