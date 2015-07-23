@@ -1,11 +1,11 @@
-var feature = require('./device');
-var values = require('./values');
-var registry = require('./Registry');
+var Feature = require('../feature');
+var values = require('../values');
+var registry = require('../Registry');
 var PointValue = values.PointValue;
 var FloatValue = values.FloatValue;
 var StringValue = values.StringValue;
 
-class Via extends feature.Feature{
+class Via extends Feature{
 	constructor(params, name = "New Via"){
 		let sanitized = Via.getParamTypes().sanitizeParams(params);
 		super(Via.typeString(), sanitized, new StringValue(name));
@@ -32,4 +32,4 @@ class Via extends feature.Feature{
 
 registry.registeredFeatures[Via.typeString()] = Via;
 
-exports.Via = Via;
+module.exports = Via;
