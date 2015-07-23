@@ -1,6 +1,6 @@
-var device = require('../app/core/device');
+var device = require('../../app/core/device');
 var should = require('should');
-var values = require('../app/core/values');
+var values = require('../../app/core/values');
 
 var dev ;
 var lay1;

@@ -1,9 +1,9 @@
 var should = require("should");
-var device = require('../app/core/device')
+var device = require('../../app/core/device')
 var Device = device.Device;
 var Layer = device.Layer;
-var Channel = require('../app/core/channel').Channel;
-var CircleValve = require('../app/core/circleValve').CircleValve;
+var Channel = require('../../app/core/features/channel');
+var CircleValve = require('../../app/core/features/circleValve');
 
 describe("Integration", function(){
 	describe("#core", function(){

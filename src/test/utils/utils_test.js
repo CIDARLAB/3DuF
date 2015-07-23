@@ -1,5 +1,5 @@
 var should = require("should");
-var utils = require("../app/utils/geometryUtils");
+var utils = require("../../app/utils/geometryUtils");
 
 describe('Utils', function(){
 	describe('#degToRad', function(){

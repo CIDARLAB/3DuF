@@ -1,11 +1,11 @@
-var feature = require('./device');
-var values = require('./values');
-var registry = require('./Registry');
+var Feature = require('../feature');
+var values = require('../values');
+var registry = require('../Registry');
 var PointValue = values.PointValue;
 var FloatValue = values.FloatValue;
 var StringValue = values.StringValue;
 
-class Channel extends feature.Feature{
+class Channel extends Feature{
 	constructor(params, name = "New Channel"){
 		let sanitized = Channel.getParamTypes().sanitizeParams(params);
 		super(Channel.typeString(), sanitized, new StringValue(name));
@@ -28,4 +28,4 @@ class Channel extends feature.Feature{
 
 registry.registeredFeatures[Channel.typeString()] = Channel;
 
-exports.Channel = Channel;
+module.exports = Channel;

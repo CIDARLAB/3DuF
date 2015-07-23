@@ -1,8 +1,8 @@
 var should = require("should");
-var Channel = require("../app/core/channel").Channel;
-var CircleValve = require("../app/core/CircleValve").CircleValve;
-var Via = require("../app/core/Via").Via;
-var Port = require("../app/core/Port").Port;
+var Channel = require("../../app/core/features/channel");
+var CircleValve = require("../../app/core/features/circleValve");
+var Via = require("../../app/core/features/via");
+var Port = require("../../app/core/features/port");
 
 describe('Channel', function(){
 	describe("#init", function(){

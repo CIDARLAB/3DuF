@@ -1,5 +1,5 @@
 var should = require("should");
-var Values = require("../app/core/values");
+var Values = require("../../app/core/values");
 
 describe("#Params", function(){
 	describe("#toJSON", function(){
