@@ -1,11 +1,11 @@
-var feature = require('./device');
-var values = require('./values');
-var registry = require('./Registry');
+var Feature = require('../feature');
+var values = require('../values');
+var registry = require('../Registry');
 var PointValue = values.PointValue;
 var FloatValue = values.FloatValue;
 var StringValue = values.StringValue;
 
-class Port extends feature.Feature{
+class Port extends Feature{
 	constructor(params, name = "New Port"){
 		let sanitized = Port.getParamTypes().sanitizeParams(params);
 		super(Port.typeString(), sanitized, new StringValue(name));
@@ -31,4 +31,4 @@ class Port extends feature.Feature{
 
 registry.registeredFeatures[Port.typeString()] = Port;
 
-exports.Port = Port;
+module.exports = Port;

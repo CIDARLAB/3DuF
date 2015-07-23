@@ -1,11 +1,11 @@
-var feature = require('./device');
-var values = require('./values');
-var registry = require('./Registry');
+var Feature = require('../feature');
+var values = require('../values');
+var registry = require('../Registry');
 var PointValue = values.PointValue;
 var FloatValue = values.FloatValue;
 var StringValue = values.StringValue;
 
-class CircleValve extends feature.Feature{
+class CircleValve extends Feature{
 	constructor(params, name = "New CircleValve"){
 		let sanitized = CircleValve.getParamTypes().sanitizeParams(params);
 		super(CircleValve.typeString(), sanitized, new StringValue(name));
@@ -32,4 +32,4 @@ class CircleValve extends feature.Feature{
 
 registry.registeredFeatures[CircleValve.typeString()] = CircleValve;
 
-exports.CircleValve = CircleValve;
+module.exports = CircleValve;

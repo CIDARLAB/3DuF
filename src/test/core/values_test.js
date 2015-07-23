@@ -1,5 +1,5 @@
 var should = require("should");
-var Values = require("../app/core/values");
+var Values = require("../../app/core/values");
 var FloatValue = Values.FloatValue;
 var IntegerValue = Values.IntegerValue;
 var PointValue = Values.PointValue;
