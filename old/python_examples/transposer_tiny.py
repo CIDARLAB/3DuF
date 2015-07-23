@@ -2,8 +2,8 @@ import microfluidic_SCAD_generator
 
 ufgen = microfluidic_SCAD_generator.UF_Generator("transposer_tiny")
 
-c = ufgen.create_layer(ufgen.layer_offset, "c", True, color="Red")
-f = ufgen.create_layer(0, "f", color="Blue")
+c = ufgen.create_layer(ufgen.layer_offset, "c", True, color=[1,0,0])
+f = ufgen.create_layer(0, "f", color=[0,0,1])
 
 x_offset_start = 30
 y_offset_start = 20
