@@ -15,8 +15,8 @@ ufgen.valve_membrane_thickness = .5
 ufgen.valve_radius_1 = 3
 ufgen.valve_radius_2 = 2.4
 
-c = ufgen.create_layer(ufgen.layer_offset, "c", True, color="Red")
-f = ufgen.create_layer(0, "f", color="Blue")
+c = ufgen.create_layer(ufgen.layer_offset, "c", True, color=[1,0,0])
+f = ufgen.create_layer(0, "f", color=[0,0,1])
 
 x_offset_start = 10
 y_offset_start = 10
