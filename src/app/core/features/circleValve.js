@@ -1,33 +1,43 @@
-var Feature = require('../feature');
-var values = require('../values');
-var registry = require('../Registry');
-var PointValue = values.PointValue;
-var FloatValue = values.FloatValue;
-var StringValue = values.StringValue;
+var appRoot = "../../";
 
-class CircleValve extends Feature{
-	constructor(params, name = "New CircleValve"){
-		let sanitized = CircleValve.getParamTypes().sanitizeParams(params);
-		super(CircleValve.typeString(), sanitized, new StringValue(name));
-	}
+var Feature = require(appRoot + 'core/feature');
+var values = require(appRoot + 'core/values');
+var registry = require(appRoot +'core/registry');
+var Parameters = require(appRoot +'core/parameters')
 
-	static typeString(){
-		return "CircleValve";
-	}
+var PointValue = Parameters.PointValue;
+var FloatValue = Parameters.FloatValue;
+var StringValue = Parameters.StringValue;
 
-	static getParamTypes(){
-		let unique = {"position": PointValue.typeString()};
-		let heritable = {
-			"radius1": FloatValue.typeString(),
-		 	"radius2": FloatValue.typeString(),
-		  	"height": FloatValue.typeString()
-	  	};
-		return new values.ParamTypes(unique, heritable);
-	}
+class CircleValve extends Feature {
+    constructor(params, name = "New CircleValve") {
+        let sanitized = CircleValve.getParamTypes().sanitizeParams(params);
+        super(CircleValve.typeString(), sanitized, new StringValue(name));
+    }
 
-	static getDefaultParams(){
-		return {"radius1": 1.2, "radius2": 1, "height": .4};
-	}
+    static typeString() {
+        return "CircleValve";
+    }
+
+    static getParamTypes() {
+        let unique = {
+            "position": PointValue.typeString()
+        };
+        let heritable = {
+            "radius1": FloatValue.typeString(),
+            "radius2": FloatValue.typeString(),
+            "height": FloatValue.typeString()
+        };
+        return new values.ParamTypes(unique, heritable);
+    }
+
+    static getDefaultParams() {
+        return {
+            "radius1": 1.2,
+            "radius2": 1,
+            "height": .4
+        };
+    }
 }
 
 registry.registeredFeatures[CircleValve.typeString()] = CircleValve;
