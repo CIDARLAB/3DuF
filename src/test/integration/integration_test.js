@@ -1,29 +1,31 @@
 var should = require("should");
-var device = require('../../app/core/device')
-var Device = device.Device;
-var Layer = device.Layer;
-var Channel = require('../../app/core/features/channel');
-var CircleValve = require('../../app/core/features/circleValve');
+var appRoot = "../../app/";
+var Device = require(appRoot + '/core/device')
+var Layer = require(appRoot + '/core/layer')
+var Features = require(appRoot + '/core/features/');
 
-describe("Integration", function(){
-	describe("#core", function(){
-		it("Create a device, add layers and features, export, import", function(){
-			let dev = new Device(60, 30, "My Device");
-			let flow = new Layer(0, false, "flow");
-			let control = new Layer(1.2, true, "control");
-			dev.addLayer(flow);
-			dev.addLayer(control);
-			let chan1 = new Channel({
-				"start": [0,0],
-				"end": [10,10]
-			});
-			flow.addFeature(chan1);
-			let valve1 = new CircleValve({
-				"position": [5,5]
-			});
-			control.addFeature(valve1);
-			let devJSON = dev.toJSON();
-			let newDev = Device.fromJSON(devJSON);
-		});
-	});
+var Channel = Features.Channel;
+var CircleValve = Features.CircleValve;
+
+describe("Integration", function() {
+    describe("#core", function() {
+        it("Create a device, add layers and features, export, import", function() {
+            let dev = new Device(60, 30, "My Device");
+            let flow = new Layer(0, false, "flow");
+            let control = new Layer(1.2, true, "control");
+            dev.addLayer(flow);
+            dev.addLayer(control);
+            let chan1 = new Channel({
+                "start": [0, 0],
+                "end": [10, 10]
+            });
+            flow.addFeature(chan1);
+            let valve1 = new CircleValve({
+                "position": [5, 5]
+            });
+            control.addFeature(valve1);
+            let devJSON = dev.toJSON();
+            let newDev = Device.fromJSON(devJSON);
+        });
+    });
 });
