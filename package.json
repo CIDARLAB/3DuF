@@ -1,0 +1,42 @@
+{
+  "name": "3duf",
+  "devDependencies": {
+    "mocha": ">=2.2.5",
+    "babel": ">=5.5.5",
+    "browserify": ">=10.2.4",
+    "babelify": ">=6.1.2",
+    "watchify": ">=3.2.2",
+    "istanbul": ">=0.3.17",
+    "should": ">=7.0.2",
+    "node-uuid": ">=1.4.3"
+  },
+  "version": "0.0.1",
+  "description": "User-friendly CAD tool for designing microfluidic devices.",
+  "main": "3DuFApp.js",
+  "scripts": {
+    "compile": "node_modules/.bin/browserify ./src/app/appSetup.js -t babelify --outfile ./3DuFapp.js",
+    "test": "node_modules/.bin/mocha --recursive --compilers js:babel/register -R spec ./src/test/",
+    "prepublish": "npm run compile",
+    "watch_compile": "node_modules/.bin/watchify ./src/app/appSetup.js -t babelify -v --outfile ./3DuFapp.js",
+    "watch_test": "node_modules/.bin/mocha --watch --recursive --compilers js:babel/register -R min ./src/test/",
+    "cover":
+      "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R spec --recursive --compilers js:babel/register ./src/test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CIDARLAB/3DuF.git"
+  },
+  "keywords": [
+    "microfluidics",
+    "CAD",
+    "webapp",
+    "design",
+    "rendering"
+  ],
+  "author": "Aaron W. Heuckroth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CIDARLAB/3DuF/issues"
+  },
+  "homepage": "https://github.com/CIDARLAB/3DuF#readme"
+}
