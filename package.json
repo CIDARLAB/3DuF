@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "node-uuid": ">=1.4.3"
-  }
+  },
   "version": "0.0.1",
   "description": "User-friendly CAD tool for designing microfluidic devices.",
   "main": "3DuFApp.js",
