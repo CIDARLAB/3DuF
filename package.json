@@ -5,6 +5,7 @@
     "babel": ">=5.5.5",
     "browserify": ">=10.2.4",
     "babelify": ">=6.1.2",
+    "require-directory": ">=2.1.1",
     "watchify": ">=3.2.2",
     "istanbul": ">=0.3.17",
     "should": ">=7.0.2"
