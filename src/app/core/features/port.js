@@ -1,33 +1,35 @@
 var appRoot = "../../";
 
 var Feature = require(appRoot + 'core/feature');
-var values = require(appRoot + 'core/values');
-var registry = require(appRoot +'core/registry');
-var Parameters = require(appRoot +'core/parameters')
+var Registry = require(appRoot +'core/registry');
+var Parameters = require(appRoot +'core/parameters');
+var Params = require(appRoot + 'core/params');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
 var StringValue = Parameters.StringValue;
 
 class Port extends Feature {
-    constructor(params, name = "New Port") {
-        let sanitized = Port.getParamTypes().sanitizeParams(params);
-        super(Port.typeString(), sanitized, new StringValue(name));
+    constructor(values, name = "New Port") {
+        let params = new Params(values, Port.getUniqueParameters(), Port.getHeritableParameters());
+        super(Port.typeString(), params, name);
     }
 
-    static typeString() {
+    static typeString(){
         return "Port";
     }
 
-    static getParamTypes() {
-        let unique = {
-            "position": PointValue.typeString()
-        };
-        let heritable = {
+    static getUniqueParameters(){
+        return {
+            "position": PointValue.typeString(),
+        }
+    }
+
+    static getHeritableParameters(){
+        return { 
             "radius": FloatValue.typeString(),
             "height": FloatValue.typeString()
         };
-        return new values.ParamTypes(unique, heritable);
     }
 
     static getDefaultParams() {
@@ -39,6 +41,6 @@ class Port extends Feature {
     }
 }
 
-registry.registeredFeatures[Port.typeString()] = Port;
+Registry.registeredFeatures[Port.typeString()] = Port;
 
 module.exports = Port;

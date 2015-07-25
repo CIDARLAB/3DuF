@@ -8,14 +8,23 @@ class Parameter {
     }
 
     toJSON() {
-        let output = {};
-        output.type = this.type;
-        output.value = this.value;
-        return output;
+        return this.value;
     }
 
     static registerParamType(type, func) {
         Registry.registeredParams[type] = func;
+    }
+
+    static makeParam(type, value) {
+        if (Registry.registeredParams.hasOwnProperty(type)) {
+            return new Registry.registeredParams[type](value);
+        } else {
+            throw new Error("Type " + type + " has not been registered.");
+        }
+    }
+
+    static fromJSON(json) {
+        return Parameter.makeParam(json.type, json.value);
     }
 }
 

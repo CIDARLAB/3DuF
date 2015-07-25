@@ -5,7 +5,7 @@ var Registry = require(appRoot + "/core/registry");
 class FloatValue extends Parameter {
     constructor(value) {
         super(FloatValue.typeString(), value);
-        if (FloatValue.isInvalid(value)) throw new Error("FloatValue must be a finite number >= 0.");
+        if (FloatValue.isInvalid(value)) throw new Error("FloatValue must be a finite number >= 0. Saw: " + value);
     }
 
     static isInvalid(value) {
