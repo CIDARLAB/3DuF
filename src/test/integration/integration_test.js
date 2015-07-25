@@ -10,9 +10,18 @@ var CircleValve = Features.CircleValve;
 describe("Integration", function() {
     describe("#core", function() {
         it("Create a device, add layers and features, export, import", function() {
-            let dev = new Device(60, 30, "My Device");
-            let flow = new Layer(0, false, "flow");
-            let control = new Layer(1.2, true, "control");
+            let dev = new Device({
+                "width": 60,
+                "height": 30
+            }, "My Device");
+            let flow = new Layer({
+                "z_offset": 0,
+                "flip": false
+            }, "flow");
+            let control = new Layer({
+                "z_offset": 1.2,
+                "flip": true
+            }, "control");
             dev.addLayer(flow);
             dev.addLayer(control);
             let chan1 = new Channel({

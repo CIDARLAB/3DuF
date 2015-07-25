@@ -17,8 +17,8 @@ describe('Channel', function() {
                 "width": .4,
                 "height": .6
             });
-            chan.params.width.value.should.equal(.4);
-            chan.params.height.value.should.equal(.6);
+            chan.params.getValue("width").should.equal(.4);
+            chan.params.getValue("height").should.equal(.6);
         });
         it("cannot be initalized without start or end", function() {
             (function() {

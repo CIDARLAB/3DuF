@@ -4,6 +4,7 @@ var Layer = require(appRoot + "core/layer");
 var Feature = require(appRoot + "core/feature");
 var Device = require(appRoot + "core/device");
 var Parameters = require(appRoot + "core/parameters");
+var Features = require(appRoot + "core/features");
 
 var FloatValue = Parameters.FloatValue;
 var BooleanValue = Parameters.BooleanValue;
@@ -11,34 +12,35 @@ var StringValue = Parameters.StringValue;
 var IntegerValue = Parameters.IntegerValue;
 var PointValue = Parameters.PointValue;
 
+var Channel = Features.Channel;
+var CircleValve = Features.CircleValve;
+
 var dev;
 var lay1;
 var lay2;
 var feat1;
 var feat2;
-var params1;
-var layerParams;
 
 var initDevice = function() {
-    dev = new Device(50, 60, "dev1");
-    lay1 = new Layer(0, false, "layer1");
-    lay2 = new Layer(1.2, true, "layer2");
-    params1 = {
-        "width": new FloatValue(1, 3),
-        "otherParam": new StringValue("foobar")
-    };
-    layerParams = {
-        "z_offset": {
-            "type": FloatValue.typeString(),
-            "value": .2
-        },
-        "flip": {
-            "type": BooleanValue.typeString(),
-            "value": false
-        }
-    }
-    feat1 = new Feature("type1", params1, new StringValue("feat1"));
-    feat2 = new Feature("type2", params1, new StringValue("feat2"));
+    dev = new Device({
+        "width": 50, 
+        "height": 60
+    }, "dev1");
+    lay1 = new Layer({
+        "z_offset": 0,
+        "flip": false
+    }, "layer1");
+    lay2 = new Layer({
+        "z_offset": 1.2,
+        "flip": true
+    }, "layer2");
+    feat1 = new Channel({
+        "start": [0,0],
+        "end": [2,2]
+    });
+    feat2 = new CircleValve({
+        "position": [3,5]
+    });
 }
 
 describe("Device", function() {
@@ -51,12 +53,15 @@ describe("Device", function() {
         });
         it("should start with the correct width, height, and name", function() {
             dev.name.value.should.equal("dev1");
-            dev.params.width.value.should.equal(50);
-            dev.params.height.value.should.equal(60);
+            dev.params.getValue("width").should.equal(50);
+            dev.params.getValue("height").should.equal(60);
         });
         it("should be able to be constructed without a name", function() {
             (function() {
-                let dev2 = new Device(50, 70)
+                let dev2 = new Device({
+                    "width": 50,
+                    "height": 70
+                });
             }).should.not.throwError();
         });
     });
@@ -117,19 +122,10 @@ describe("Device", function() {
             lay2.addFeature(feat2);
             let json = {
                 "params": {
-                    "width": {
-                        "type": FloatValue.typeString(),
-                        "value": 59
-                    },
-                    "height": {
-                        "type": FloatValue.typeString(),
-                        "value": 23.5
-                    }
+                    "width": 59,
+                    "height": 23.5
                 },
-                "name": {
-                    "type": StringValue.typeString(),
-                    "value": "myDevice"
-                },
+                "name": "myDevice",
                 "groups": [],
                 "defaults": {},
                 "layers": {
@@ -177,17 +173,12 @@ describe("Feature", function() {
         it("should be given a unique ID on initialization", function() {
             feat1.id.should.not.equal(feat2.id);
         });
-        it("can be initalized with type and params", function() {
-            let feat3 = new Feature("type1", params1);
-        });
-        it("can be initalized with type, params, and name", function() {
-            let feat3 = new Feature("type1", params1, new StringValue("feat3"));
-        });
     });
 
     describe("#toJSON", function() {
         it("can produce JSON when containing multiple parameters", function() {
             feat1.toJSON();
+            console.log(feat1.toJSON());
             feat2.toJSON();
         });
     });
@@ -196,21 +187,12 @@ describe("Feature", function() {
         it("can produce a Feature from valid JSON", function() {
             let json = {
                 "id": "someValue",
-                "type": "someType",
+                "type": "CircleValve",
                 "params": {
-                    "width": {
-                        "type": FloatValue.typeString(),
-                        "value": 5.1
-                    },
-                    "height": {
-                        "type": IntegerValue.typeString(),
-                        "value": 3
-                    }
+                    "position": [0,0],
+                    "height": 3
                 },
-                "name": {
-                    "type": StringValue.typeString(),
-                    "value": "foobar"
-                }
+                "name": "foobar"
             }
             let feat3 = Feature.fromJSON(json);
         });

@@ -1,37 +1,38 @@
 var appRoot = "../../";
 
 var Feature = require(appRoot + 'core/feature');
-var values = require(appRoot + 'core/values');
-var registry = require(appRoot +'core/registry');
+var Registry = require(appRoot +'core/registry');
 var Parameters = require(appRoot +'core/parameters')
+var Params = require(appRoot + 'core/params');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
-var StringValue = Parameters.StringValue;
 
 class Channel extends Feature {
-    constructor(params, name = "New Channel") {
-        let sanitized = Channel.getParamTypes().sanitizeParams(params);
-        super(Channel.typeString(), sanitized, new StringValue(name));
+    constructor(values, name = "New Channel") {
+        let params = new Params(values, Channel.getUniqueParameters(), Channel.getHeritableParameters());
+        super(Channel.typeString(), params, name);
     }
 
     static typeString() {
         return "Channel";
     }
 
-    static getParamTypes() {
-        let unique = {
+    static getUniqueParameters(){
+        return {
             "start": PointValue.typeString(),
             "end": PointValue.typeString()
-        };
-        let heritable = {
+        }
+    }
+
+    static getHeritableParameters(){
+        return { 
             "width": FloatValue.typeString(),
             "height": FloatValue.typeString()
         };
-        return new values.ParamTypes(unique, heritable);
     }
 
-    static getDefaultParams() {
+    static getDefaultValues() {
         return {
             "width": .4,
             "height": .4
@@ -39,6 +40,6 @@ class Channel extends Feature {
     }
 }
 
-registry.registeredFeatures[Channel.typeString()] = Channel;
+Registry.registeredFeatures[Channel.typeString()] = Channel;
 
 module.exports = Channel;

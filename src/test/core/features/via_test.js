@@ -16,9 +16,9 @@ describe('Via', function() {
                 "radius2": .8,
                 "height": .6
             });
-            circ.params.radius1.value.should.equal(.6);
-            circ.params.radius2.value.should.equal(.8);
-            circ.params.height.value.should.equal(.6);
+            circ.params.getValue("radius1").should.equal(.6);
+            circ.params.getValue("radius2").should.equal(.8);
+            circ.params.getValue("height").should.equal(.6);
         });
         it("cannot be initalized without position", function() {
             (function() {

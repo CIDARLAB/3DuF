@@ -1,7 +1,7 @@
 var appRoot = "../";
-var values = require('./values.js');
-var Params = values.Params;
+var Params = require(appRoot + "core/params");
 var Parameters = require(appRoot + "core/parameters");
+var Parameter =require(appRoot + "core/parameter");
 var Feature = require('./feature')
 var Layer = require('./layer');
 var Group = require('./group');
@@ -11,20 +11,18 @@ var FloatValue = Parameters.FloatValue;
 
 /* The Device stores information about a design. */
 class Device {
-    constructor(width, height, name = "New Device") {
+    constructor(values, name = "New Device") {
         this.defaults = {};
         this.layers = [];
         this.groups = [];
-        this.params = {};
+        this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
         this.name = new StringValue(name);
-        this.params.width = new FloatValue(width);
-        this.params.height = new FloatValue(height);
     }
 
     /* Sort the layers such that they are ordered from lowest to highest z_offset. */
     sortLayers() {
         this.layers.sort(function(a, b) {
-            return a.params.z_offset.value - b.params.z_offset.value;
+            return a.params.getValue("z_offset") - b.params.getValue("z_offset");
         });
     }
 
@@ -42,6 +40,18 @@ class Device {
     addDefault(def) {
         this.defaults.push(def);
         //TODO: Establish what defaults are. Params?
+    }
+
+    static getUniqueParameters(){
+        return {
+            "height": FloatValue.typeString(),
+            "width": FloatValue.typeString()
+        }
+    }
+
+    //TODO: Figure out whether this is ever needed
+    static getHeritableParameters(){
+        return {};
     }
 
     __groupsToJSON() {
@@ -88,7 +98,7 @@ class Device {
     toJSON() {
         let output = {};
         output.name = this.name.toJSON();
-        output.params = Params.toJSON(this.params);
+        output.params = this.params.toJSON();
         output.layers = this.__layersToJSON();
         output.groups = this.__groupsToJSON();
         output.defaults = this.defaults;
@@ -96,10 +106,11 @@ class Device {
     }
 
     static fromJSON(json) {
-        let params = Params.fromJSON(json.params);
-        let name = values.JSONToParam(json.name).value;
         let defaults = json.defaults;
-        let newDevice = new Device(params.width.value, params.height.value, name);
+        let newDevice = new Device({
+            "width": json.params.width,
+            "height": json.params.height
+        }, json.name);
         newDevice.__loadLayersFromJSON(json.layers);
         newDevice.__loadGroupsFromJSON(json.groups);
         newDevice.__loadDefaultsFromJSON(json.defaults);
