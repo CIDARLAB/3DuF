@@ -22,14 +22,8 @@ var lay2;
 
 function initLayer() {
     layerParams = {
-        "z_offset": {
-            "type": FloatValue.typeString(),
-            "value": 0.2
-        },
-        "flip": {
-            "type": BooleanValue.typeString(),
-            "value": false
-        }
+        "z_offset": 0,
+        "flip": false
     };
     feat1 = new Channel({
         "start": [0,0],
@@ -38,8 +32,11 @@ function initLayer() {
     feat2 = new CircleValve({
         "position": [5,4]
     });
-    lay1 = new Layer(0, false, "layer1");
-    lay2 = new Layer(1.2, true, "layer2");
+    lay1 = new Layer(layerParams, "layer1");
+    lay2 = new Layer({
+        "z_offset": 1.2,
+        "flip": true
+        }, "layer2");
 }
 
 describe("Layer", function() {
@@ -48,17 +45,20 @@ describe("Layer", function() {
             initLayer();
         });
         it("should start with the correct z_offset, flip, and name", function() {
-            lay1.params.z_offset.value.should.equal(0);
-            lay1.params.flip.value.should.equal(false);
+            lay1.params.getValue("z_offset").should.equal(0);
+            lay1.params.getValue("flip").should.equal(false);
             lay1.name.value.should.equal("layer1");
 
-            lay2.params.z_offset.value.should.equal(1.2);
-            lay2.params.flip.value.should.equal(true);
+            lay2.params.getValue("z_offset").should.equal(1.2);
+            lay2.params.getValue("flip").should.equal(true);
             lay2.name.value.should.equal("layer2");
         });
         it("should be able to be constructed without a name", function() {
             (function() {
-                let lay3 = new Layer(1.2, true)
+                let lay3 = new Layer({
+                    "z_offset": 1.2,
+                    "flip": true 
+                });
             }).should.not.throwError();
         });
         it("should not permit a z_offset less than 0", function() {
@@ -70,7 +70,6 @@ describe("Layer", function() {
             lay1.featureCount.should.equal(0);
         });
     });
-
 
     describe("#addFeature", function() {
         beforeEach(function initialize() {
@@ -217,10 +216,7 @@ describe("Layer", function() {
         });
         it("can construct a Layer from valid JSON", function() {
             let json = {
-                "name": {
-                    "type": StringValue.typeString(),
-                    "value": "layer3"
-                },
+                "name": "layer3",
                 "params": layerParams,
                 "features": {
                     "feat1": feat1.toJSON()

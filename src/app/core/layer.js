@@ -1,25 +1,17 @@
-var Params = require('./values').Params;
-var FloatValue = require('./values').FloatValue;
-var BooleanValue = require('./values').BooleanValue;
-var StringValue = require('./values').StringValue;
-var Feature = require('./feature');
+var Params = require('./params');
 var Parameters = require('./parameters');
+var Feature = require('./feature');
 
 var FloatValue = Parameters.FloatValue;
 var BooleanValue = Parameters.BooleanValue;
 var StringValue = Parameters.StringValue;
 
 class Layer {
-    constructor(z_offset, flip, name = "New Layer") {
-        this.params = {};
-        if (z_offset == undefined || flip == undefined || name == undefined) {
-            throw new Error("Cannot create feature with undefined values. z_offset: " + z_offset + "flip: " + flip + "name: " + name);
+    constructor(values, name = "New Layer") {
+        this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
+        if (name == undefined) {
+            throw new Error("Cannot create feature with undefined values. name: " + name);
         }
-        if (z_offset < 0) {
-            throw new Error("Layer z_offset must be >= 0.");
-        }
-        this.params.z_offset = new FloatValue(z_offset);
-        this.params.flip = new BooleanValue(flip);
         this.name = new StringValue(name);
         this.features = {};
         this.featureCount = 0;
@@ -41,6 +33,18 @@ class Layer {
 
     __ensureFeatureIDExists(featureID) {
         if (!this.containsFeatureID(featureID)) throw new Error("Layer does not contain a feature with the specified ID!");
+    }
+
+    static getUniqueParameters(){
+        return {
+            "z_offset": FloatValue.typeString(),
+            "flip": BooleanValue.typeString()
+        }
+    }
+
+    //TODO: Figure out whether this is ever needed
+    static getHeritableParameters(){
+        return {};
     }
 
     getFeature(featureID) {
@@ -80,7 +84,7 @@ class Layer {
     toJSON() {
         let output = {};
         output.name = this.name.toJSON();
-        output.params = Params.toJSON(this.params);
+        output.params = this.params.toJSON();
         output.features = this.__featuresToJSON();
         return output;
     }
@@ -89,8 +93,7 @@ class Layer {
         if (!json.hasOwnProperty("features")) {
             throw new Error("JSON layer has no features!");
         }
-        let jsonParams = Params.fromJSON(json.params);
-        let newLayer = new Layer(jsonParams.z_offset.value, jsonParams.flip.value, json.name.value);
+        let newLayer = new Layer(json.params, json.name);
         newLayer.__loadFeaturesFromJSON(json.features);
         return newLayer;
     }

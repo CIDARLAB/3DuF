@@ -9,8 +9,8 @@ describe('Port', function(){
 		});
 		it("can be initialized with position, radius, and height", function(){
 			let circ = new Port({"position": [0,0], "radius": .6, "height": .6});
-			circ.params.radius.value.should.equal(.6);
-			circ.params.height.value.should.equal(.6);
+			circ.params.getValue('radius').should.equal(.6);
+			circ.params.getValue('height').should.equal(.6);
 		});
 		it("channot be initalized without position", function(){
 			(function(){let circ = new Port({"height": 5.5})}).should.throwError();

@@ -1,4 +1,2 @@
 --recursive
 --compilers js:mocha-traceur
---reporter spec
---watch

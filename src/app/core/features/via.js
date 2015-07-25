@@ -1,34 +1,36 @@
 var appRoot = "../../";
 
 var Feature = require(appRoot + 'core/feature');
-var values = require(appRoot + 'core/values');
-var registry = require(appRoot +'core/registry');
-var Parameters = require(appRoot +'core/parameters')
+var Registry = require(appRoot +'core/registry');
+var Parameters = require(appRoot +'core/parameters');
+var Params = require(appRoot + 'core/params');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
 var StringValue = Parameters.StringValue;
 
 class Via extends Feature {
-    constructor(params, name = "New Via") {
-        let sanitized = Via.getParamTypes().sanitizeParams(params);
-        super(Via.typeString(), sanitized, new StringValue(name));
+    constructor(values, name = "New Via") {
+        let params = new Params(values, Via.getUniqueParameters(), Via.getHeritableParameters());
+        super(Via.typeString(), params, name);
     }
 
     static typeString() {
         return "Via";
     }
 
-    static getParamTypes() {
-        let unique = {
+    static getUniqueParameters(){
+        return {
             "position": PointValue.typeString()
-        };
-        let heritable = {
+        }
+    }
+
+    static getHeritableParameters(){
+        return { 
             "radius1": FloatValue.typeString(),
             "radius2": FloatValue.typeString(),
-            "height": FloatValue.typeString()
+            "height": FloatValue.typeString(),
         };
-        return new values.ParamTypes(unique, heritable);
     }
 
     static getDefaultParams() {
@@ -40,6 +42,6 @@ class Via extends Feature {
     }
 }
 
-registry.registeredFeatures[Via.typeString()] = Via;
+Registry.registeredFeatures[Via.typeString()] = Via;
 
 module.exports = Via;
