@@ -2,17 +2,17 @@ var appRoot = "../";
 var Parameter = require(appRoot + "core/parameter");
 
 class Params {
-    constructor(values, unique, heritable){
+    constructor(values, unique, heritable) {
         this.unique = unique;
         this.heritable = heritable;
         this.parameters = this.sanitizeValues(values);
     }
 
-    getValue(key){
+    getValue(key) {
         return this.parameters[key].value;
     }
 
-    getParameter(key){
+    getParameter(key) {
         return this.parameters[key];
     }
 
@@ -29,7 +29,6 @@ class Params {
             if (!params.hasOwnProperty(key)) return false;
         return true;
     }
-
     WrongTypeError(key, expected, actual) {
         return new Error("Parameter " + key + " is the wrong type. " +
             "Expected: " + this.unique[key] + ", Actual: " + param.type);
@@ -67,7 +66,7 @@ class Params {
                 }
             } else if (this.isHeritable(key)) {
                 if (param.type != this.heritable[key]) {
-                    wrongType(key, this.heritable[key], param.type);
+                    wrongType(key, this.heritable[key], param.type)
                 }
             } else {
                 throw new Error(key + " does not exist in this set of ParamTypes.");
@@ -78,18 +77,17 @@ class Params {
         }
     }
 
-    toJSON(){
+    toJSON() {
         let json = {};
-        for (let key in this.parameters){
+        for (let key in this.parameters) {
             json[key] = this.parameters[key].value;
         }
-        console.log(json);
         return json;
     }
 
-    static fromJSON(json){
+    static fromJSON(json) {
         let values = {};
-        for (let i = 0; i < json.length; i ++){
+        for (let i = 0; i < json.length; i++) {
             values[i] = json[i];
         }
         return values;

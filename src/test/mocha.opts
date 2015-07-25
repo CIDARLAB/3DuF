@@ -1,2 +1,2 @@
 --recursive
---compilers js:mocha-traceur
+--compilers js:babel/register
