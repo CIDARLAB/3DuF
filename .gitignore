@@ -7,3 +7,4 @@ node_modules/
 
 old/*output
 old/*.scad
+*.log
