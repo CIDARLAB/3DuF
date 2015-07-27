@@ -7,9 +7,6 @@ var Registry = require(appRoot + "core/registry");
 
 class Feature {
     constructor(type, params, name, id = Feature.generateID(), group = null){
-        if (id == undefined || name == undefined || type == undefined || params == undefined){
-            throw new Error("Cannot create feature with undefined values. id: " + id + " name: " + name + " type: " + type + "params: " + params);
-        }
         this.type = type;
         this.params = params;
         this.name = new StringValue(name);
@@ -20,6 +17,10 @@ class Feature {
 
     static generateID() {
         return uuid.v1();
+    }
+
+    updateParameter(key, value){
+        this.params.updateParameter(key, value);
     }
 
     toJSON() {

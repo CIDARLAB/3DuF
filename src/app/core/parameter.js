@@ -11,6 +11,11 @@ class Parameter {
         return this.value;
     }
 
+    updateValue(value){
+        if (Registry.registeredParams[this.type].isInvalid(value)) throw new Error("Input value " + value + "does not match the type: " + this.type);
+        else this.value = value;
+    }
+
     static registerParamType(type, func) {
         Registry.registeredParams[type] = func;
     }
