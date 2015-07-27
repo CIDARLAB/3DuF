@@ -1,6 +1,6 @@
 'use strict';
 
-var utils = require('./geometryUtils.js');
+var utils = require('./utils/geometryUtils.js');
 var paperFunctions = require('./paperFunctions.js');
 
 var getGroupOffset = function(feature){
