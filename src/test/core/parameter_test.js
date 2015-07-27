@@ -56,8 +56,10 @@ describe("Parameter", function() {
                 "type": StringValue.typeString(),
                 "value": "foobar"
             };
-            Parameter.fromJSON(floatJSON);
-            Parameter.fromJSON(strJSON);
+            let flo = Parameter.fromJSON(floatJSON);
+            let str = Parameter.fromJSON(strJSON);
+            flo.type.should.equal(FloatValue.typeString());
+            str.type.should.equal(StringValue.typeString());
         });
         it("should fail when passed JSON with valid types but invalid values", function() {
             let floatJSON = {

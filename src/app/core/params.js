@@ -5,22 +5,24 @@ class Params {
     constructor(values, unique, heritable) {
         this.unique = unique;
         this.heritable = heritable;
-        this.parameters = this.sanitizeValues(values);
+        this.parameters = this.__sanitizeValues(values);
     }
 
     getValue(key) {
-        return this.parameters[key].value;
+        if (this.parameters.hasOwnProperty(key)) return this.parameters[key].value;
+        else throw new Error(key + " parameter does not exist in Params object.");
     }
 
     getParameter(key) {
-        return this.parameters[key];
+        if (this.parameters.hasOwnProperty(key)) return this.parameters[key];
+        else throw new Error(key + " parameter does not exist in Params object.");
     }
 
-    isUnique(key) {
+    __isUnique(key) {
         return (this.unique.hasOwnProperty(key));
     }
 
-    isHeritable(key) {
+    __isHeritable(key) {
         return (this.heritable.hasOwnProperty(key));
     }
 
@@ -37,36 +39,36 @@ class Params {
     /* Turns the raw key:value pairs passed into a user-written Feature declaration
     into key:Parameter pairs. This forces the checks for each Parameter type
     to execute on the provided values, and should throw an error for mismatches. */
-    sanitizeValues(values) {
+    __sanitizeValues(values) {
         let newParams = {};
         for (let key in values) {
             let oldParam = values[key];
-            if (this.isUnique(key)) {
+            if (this.__isUnique(key)) {
                 newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
-            } else if (this.isHeritable) {
+            } else if (this.__isHeritable(key)) {
                 newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
             } else {
                 throw new Error(key + " does not exist in this set of ParamTypes.");
             }
         }
-        this.checkParams(newParams);
+        this.__checkParams(newParams);
         return newParams;
     }
 
     /* Checks to make sure the set of sanitized parameters matches the expected ParamTypes.
     This method also checks to make sure that all unique (required) params are present.*/
-    checkParams(parameters) {
+    __checkParams(parameters) {
         for (let key in parameters) {
             let param = parameters[key];
             if (!(param instanceof Parameter)) {
                 throw new Error(key + " is not a ParameterValue.");
-            } else if (this.isUnique(key)) {
+            } else if (this.__isUnique(key)) {
                 if (param.type != this.unique[key]) {
-                    wrongType(key, this.unique[key], param.type);
+                    throw wrongTypeError(key, this.unique[key], param.type);
                 }
-            } else if (this.isHeritable(key)) {
+            } else if (this.__isHeritable(key)) {
                 if (param.type != this.heritable[key]) {
-                    wrongType(key, this.heritable[key], param.type)
+                    throw wrongTypeError(key, this.heritable[key], param.type)
                 }
             } else {
                 throw new Error(key + " does not exist in this set of ParamTypes.");
@@ -85,12 +87,8 @@ class Params {
         return json;
     }
 
-    static fromJSON(json) {
-        let values = {};
-        for (let i = 0; i < json.length; i++) {
-            values[i] = json[i];
-        }
-        return values;
+    static fromJSON(json, unique, heritable) {
+        return new Params(json, unique, heritable);
     }
 }
 
