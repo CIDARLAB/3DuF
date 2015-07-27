@@ -9,9 +9,6 @@ var StringValue = Parameters.StringValue;
 class Layer {
     constructor(values, name = "New Layer") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
-        if (name == undefined) {
-            throw new Error("Cannot create feature with undefined values. name: " + name);
-        }
         this.name = new StringValue(name);
         this.features = {};
         this.featureCount = 0;

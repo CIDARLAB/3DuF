@@ -20,6 +20,22 @@ describe("Parameter", function() {
             val.toJSON();
         });
     });
+    describe("#updateValue", function(){
+        it("should allow its value to be updated to a valid input value", function(){
+            let flo = new FloatValue(1.3985);
+            flo.updateValue(178.235);
+            flo.value.should.be.approximately(178.235, .00001);
+            let str = new StringValue("foobar");
+            str.updateValue("whatever");
+            str.value.should.equal("whatever");
+        });
+        it("should not allow its value to be updated to an invalid input value", function(){
+            let flo = new FloatValue(1.3985);
+            (function(){flo.updateValue("whatever")}).should.throwError();
+            let str = new StringValue("foobar");
+            (function(){str.updateValue(265)}).should.throwError();
+        });
+    });
     describe("#makeParam", function() {
         it("should allow properly-formed type:value pairs", function() {
             let str = Parameter.makeParam(StringValue.typeString(), "foobar");
