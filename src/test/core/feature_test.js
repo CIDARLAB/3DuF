@@ -15,7 +15,7 @@ var feat2;
 
 function initFeatures(){
     feat1 = new Port({
-        "position": [0,0]
+        "position": [0,0],
     });
     feat2 = new CircleValve({
         "position": [5,15]
@@ -23,18 +23,35 @@ function initFeatures(){
 }
 
 describe("Feature", function() {
+    beforeEach(function initialize() {
+        initFeatures();
+    });
     describe("#init", function() {
-        beforeEach(function initialize() {
-            initFeatures();
-        });
         it("should be given a unique ID on initialization", function() {
             feat1.id.should.not.equal(feat2.id);
         });
     });
-
+    describe("#updateParameter", function(){
+        it("should allow a parameter to be updated to a valid value", function(){
+            feat2.updateParameter("position", [13,25]);
+        });
+        it("should allow a parameter to be updated if a heritable value is missing", function(){
+            feat1.updateParameter("radius", 13);
+        })
+        it("should not allow a heritable parameter to be set to an invalid value", function(){
+            (function(){feat1.updateParameter("radius", [0,0])}).should.throwError();
+        })
+        it("should not allow a parameter to be updated to an invalid value", function(){
+            (function(){feat1.updateParameter("radius", "foobar")}).should.throwError();
+            (function(){feat2.updateParameter("position", 5)}).should.throwError();
+        });
+        it("should not allow updates to parameters that do not exist", function(){
+            (function(){feat1.updateParameter("wrongParamKey", 27)}).should.throwError();
+            (function(){feat2.updateParameter(56, 25)}).should.throwError();
+        });
+    });
     describe("#toJSON", function() {
         it("can produce JSON when containing multiple parameters", function() {
-
             feat1.toJSON();
             console.log(feat1.toJSON());
             feat2.toJSON();

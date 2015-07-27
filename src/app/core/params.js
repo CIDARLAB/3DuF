@@ -8,6 +8,16 @@ class Params {
         this.parameters = this.__sanitizeValues(values);
     }
 
+    updateParameter(key, value){
+        if(this.parameters.hasOwnProperty(key)) this.parameters[key].updateValue(value);
+        else {
+            if(this.__isHeritable(key)){
+                this.parameters[key] = Parameter.makeParam(this.heritable[key], value);
+            } 
+            else throw new Error(key + "parameter does not exist in Params object");
+        }
+    }
+
     getValue(key) {
         if (this.parameters.hasOwnProperty(key)) return this.parameters[key].value;
         else throw new Error(key + " parameter does not exist in Params object.");
