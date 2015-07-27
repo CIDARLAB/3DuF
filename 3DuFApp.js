@@ -109,7 +109,7 @@ function horizGrid() {
 
 function gridLine(start, end) {
     var line = new Path.Line(start, end);
-    line.strokeColor = "lightblue";
+    line.strokeColor = 'lightblue';
     line.strokeWidth = 1;
     line.remove();
     line.guide = true;
@@ -177,8 +177,8 @@ function XOR(bool1, bool2) {
 function highlightTarget(target) {
     highlightGroup.removeChildren();
     var highlight = new Path.Circle(target, 15);
-    highlight.fillColor = "purple";
-    highlight.opacity = 0.5;
+    highlight.fillColor = 'purple';
+    highlight.opacity = .5;
     highlight.parent = highlightGroup;
     highlight.removeOnMove();
 }
@@ -189,7 +189,7 @@ function onMouseMove(event) {
 }
 
 function getTarget(point, snap, sharp, hit) {
-    var start = arguments[4] === undefined ? null : arguments[4];
+    var start = arguments.length <= 4 || arguments[4] === undefined ? null : arguments[4];
 
     //first snap the target point to x/y if sharp corners are enforced
     if (start && sharp) {
@@ -255,7 +255,7 @@ function showIntersections(path1, path2) {
         var c = new Path.Circle({
             center: intersections[i].point,
             radius: 5,
-            fillColor: "#009dec",
+            fillColor: '#009dec',
             parent: intersectionGroup
         }).removeOnMove();
     }
@@ -268,7 +268,7 @@ function clearStroke() {
 }
 
 function channel(start, end, width) {
-    var color = arguments[3] === undefined ? "purple" : arguments[3];
+    var color = arguments.length <= 3 || arguments[3] === undefined ? "purple" : arguments[3];
 
     start = new Point(start[0], start[1]);
     end = new Point(end[0], end[1]);
@@ -289,9 +289,9 @@ function makeChannel(start, end) {
     var s = makeRoundedLine(start, end, width);
 
     var c1 = new Path.Circle(start, cornerWidth);
-    c1.fillColor = "black";
+    c1.fillColor = 'black';
     var c2 = new Path.Circle(end, cornerWidth);
-    c2.fillColor = "black";
+    c2.fillColor = 'black';
     var l = makeGuideLine(start, end);
 
     var g = new Group([s, c1, c2, l]);
@@ -311,7 +311,7 @@ function snapToGrid(target, gridSize) {
 function makeGuideLine(start, end) {
     var l = new Path.Line(start, end);
     l.strokeWidth = 1;
-    l.strokeColor = "none";
+    l.strokeColor = 'none';
     return l;
 }
 
@@ -320,7 +320,7 @@ function makeHollowLine(start, end) {
     var l2 = makeLine(start, end, width / 2);
     return new CompoundPath({
         children: [l1, l2],
-        fillColor: "black"
+        fillColor: 'black'
     });
 }
 
@@ -335,7 +335,7 @@ function makeRoundedLine(start, end, thickness) {
     var rec = new Path.Rectangle({
         size: [vec.length, thickness],
         point: start,
-        fillColor: "black"
+        fillColor: 'black'
     });
     rec.translate([0, -thickness / 2]);
     rec.rotate(vec.angle, start);

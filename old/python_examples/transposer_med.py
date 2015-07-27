@@ -15,8 +15,8 @@ ufgen.valve_radius_1 = 1.4
 ufgen.valve_radius_2 = 1.2
 
 
-c = ufgen.create_layer(ufgen.layer_offset, "c", True, color="Red")
-f = ufgen.create_layer(0, "f", color="Blue")
+c = ufgen.create_layer(ufgen.layer_offset, "c", True, color=[1,0,0])
+f = ufgen.create_layer(0, "f", color=[0,0,1])
 
 x_offset_start = 30
 y_offset_start = 20
