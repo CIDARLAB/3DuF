@@ -1,5 +1,10 @@
 __pycache__/
 *.py[cod]
 *.stl
-src/*.json
-src/*output
+
+coverage/
+node_modules/
+
+old/*output
+old/*.scad
+*.log
