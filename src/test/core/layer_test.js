@@ -40,10 +40,11 @@ function initLayer() {
 }
 
 describe("Layer", function() {
+    beforeEach(function initialize() {
+        initLayer();
+    });
     describe("#init", function() {
-        beforeEach(function initialize() {
-            initLayer();
-        });
+
         it("should start with the correct z_offset, flip, and name", function() {
             lay1.params.getValue("z_offset").should.equal(0);
             lay1.params.getValue("flip").should.equal(false);
@@ -72,9 +73,6 @@ describe("Layer", function() {
     });
 
     describe("#addFeature", function() {
-        beforeEach(function initialize() {
-            initLayer();
-        });
         it("should let the user add a feature", function() {
             lay1.addFeature(feat1);
             lay1.featureCount.should.equal(1);
@@ -92,9 +90,6 @@ describe("Layer", function() {
     });
 
     describe("#__ensureIsAFeature", function() {
-        beforeEach(function initialize() {
-            initLayer();
-        });
         it("should not error if the value is a feature", function() {
             lay1.__ensureIsAFeature(feat1);
         });
@@ -112,9 +107,6 @@ describe("Layer", function() {
     });
 
     describe("#removeFeature", function() {
-        beforeEach(function initialize() {
-            initLayer();
-        });
         it("should let the user remove a feature", function() {
             lay1.featureCount.should.equal(0);
             lay1.addFeature(feat1);
@@ -142,9 +134,6 @@ describe("Layer", function() {
 
 
     describe("#containsFeature", function() {
-        beforeEach(function initialize() {
-            initLayer();
-        });
         it("should return true if the feature exists in the layer", function() {
             lay1.addFeature(feat1);
             lay1.containsFeature(feat1).should.equal(true);
@@ -178,9 +167,6 @@ describe("Layer", function() {
     });
 
     describe("#getFeature", function() {
-        beforeEach(function initialize() {
-            initLayer();
-        });
         it("should return a feature when passed an ID", function() {
             lay1.addFeature(feat1);
             lay1.getFeature(feat1.id).should.be.exactly(feat1);
@@ -193,9 +179,6 @@ describe("Layer", function() {
     });
 
     describe("#toJSON", function() {
-        beforeEach(function initialize() {
-            initLayer();
-        });
         it("can produce JSON when empty", function() {
             lay1.toJSON();
         });
@@ -211,9 +194,6 @@ describe("Layer", function() {
     });
 
     describe("#fromJSON", function() {
-        beforeEach(function initialize() {
-            initLayer();
-        });
         it("can construct a Layer from valid JSON", function() {
             let json = {
                 "name": "layer3",
