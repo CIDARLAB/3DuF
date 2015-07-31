@@ -86,12 +86,17 @@ class GridGenerator {
         return line;
     }
 
+    static snapToGrid(point, spacing){
+        let x = Math.round(point.x / spacing) * spacing;
+        let y = Math.round(point.y / spacing) * spacing;
+        return new paper.Point(x,y);
+    }
+
     static gridLineTemplate(start, end){
         let line = paper.Path.Line(start, end);
         line.strokeColor = lineColor;
         line.strokeWidth = GridGenerator.getStrokeWidth();
         line.remove();
-        line.guide = true;
         return line;
     }
 

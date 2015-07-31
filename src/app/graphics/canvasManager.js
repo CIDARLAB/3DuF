@@ -15,11 +15,18 @@ class CanvasManager {
         this.valveTool = new Tools.ValveTool(Features.CircleValve);
         this.panTool = new Tools.PanTool();
         this.panTool.activate();
+        this.valveTool.activate();
+        this.channelTool = new Tools.ChannelTool(Features.Channel);
+        this.channelTool.activate();
 
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
 
         this.setupZoomEvent();
+    }
+
+    snapToGrid(point){
+        return GridGenerator.snapToGrid(point, this.gridSpacing);
     }
 
     setupZoomEvent() {
@@ -30,6 +37,11 @@ class CanvasManager {
             else if (paper.view.zoom <= this.minZoom && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");
             else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
         };
+    }
+
+    renderFeature(feature, forceUpdate = true){
+        feature.render2D();
+        paper.view.update(forceUpdate);
     }
 
     render(forceUpdate = true) {

@@ -33,9 +33,9 @@ class Via extends Feature {
 
     static getDefaultParams() {
         return {
-            "radius1": .6,
-            "radius2": .4,
-            "height": .8
+            "radius1": .6 * 1000,
+            "radius2": .4 * 1000,
+            "height": .8 * 1000
         };
     }
 }

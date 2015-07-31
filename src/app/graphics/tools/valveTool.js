@@ -9,7 +9,7 @@ class ValveTool extends paper.Tool{
 			let newValve = new this.valveClass({
 				"position": [event.point.x, event.point.y]
 			});
-			Registry.currentDevice.layers[0].addFeature(newValve);
+			Registry.currentLayer.addFeature(newValve);
 			Registry.canvasManager.render();
 		};	
 	}
