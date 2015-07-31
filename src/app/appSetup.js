@@ -7,6 +7,7 @@ var Features = require('./core/features');
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
+var HollowChannel = Features.HollowChannel;
 
 var manager;
 

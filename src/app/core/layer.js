@@ -51,7 +51,7 @@ class Layer {
 
     removeFeature(feature) {
         this.__ensureFeatureExists(feature);
-        delete features[feature.id];
+        delete this.features[feature.id];
         this.featureCount -= 1;
     }
 
