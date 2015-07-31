@@ -4,20 +4,28 @@ var PanAndZoom = require("./panAndZoom");
 var Features = require("../core/features");
 var Tools = require("./tools");
 
+var Channel = Features.Channel;
+var HollowChannel = Features.HollowChannel;
+var Port = Features.Port;
+var CircleValve = Features.CircleValve;
+var Via = Features.Via;
+var ChannelTool = Tools.ChannelTool;
+var ValveTool = Tools.ValveTool;
+
 class CanvasManager {
     constructor(canvas) {
         this.canvas = canvas;
         this.paperDevice = undefined;
         this.grid = undefined;
-        this.gridSpacing = 20;
+        this.tools = {};
+        this.minPixelSpacing = 10;
+        this.maxPixelSpacing = 50;
+        this.gridSpacing = 10;
+        this.thickCount = 5;
         this.minZoom = .00001;
         this.maxZoom = 10;
-        this.valveTool = new Tools.ValveTool(Features.CircleValve);
-        this.panTool = new Tools.PanTool();
-        this.panTool.activate();
-        this.valveTool.activate();
-        this.channelTool = new Tools.ChannelTool(Features.Channel);
-        this.channelTool.activate();
+        this.generateTools();
+        this.selectTool(Channel.typeString());
 
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
@@ -25,16 +33,31 @@ class CanvasManager {
         this.setupZoomEvent();
     }
 
+    //TODO: Find a non-manual way to do this
+    generateTools(){
+        this.tools[Channel.typeString()] = new ChannelTool(Channel);
+        this.tools[HollowChannel.typeString()] = new ChannelTool(HollowChannel);
+        this.tools[Port.typeString()] = new ValveTool(Port);
+        this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
+        this.tools[Via.typeString()] = new ValveTool(Via);
+    }
+
+    selectTool(typeString){
+        this.tools[typeString].activate();
+    }
+
     snapToGrid(point){
         return GridGenerator.snapToGrid(point, this.gridSpacing);
     }
 
     setupZoomEvent() {
+        let min = this.minZoom;
+        let max = this.maxZoom;
         this.canvas.onmousewheel = function(event) {
             let x = event.layerX;
             let y = event.layerY;
-            if (paper.view.zoom >= this.maxZoom && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");
-            else if (paper.view.zoom <= this.minZoom && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");
+            if (paper.view.zoom >= max && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");
+            else if (paper.view.zoom <= min && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");
             else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
         };
     }
@@ -54,7 +77,7 @@ class CanvasManager {
         if (this.grid) {
             this.grid.remove();
         }
-        this.grid = GridGenerator.makeGrid(this.gridSpacing);
+        this.grid = GridGenerator.makeGrid(this.gridSpacing, this.thickCount);
         if (this.paperDevice) this.grid.insertBelow(this.paperDevice);
         paper.view.update(forceUpdate);
     }
@@ -74,14 +97,12 @@ class CanvasManager {
     }
 
     updateGridSpacing() {
-        let width = paper.view.bounds.width;
-        let height = paper.view.bounds.height;
-        let cutoffHigh = 75;
-        let cutoffLow = 15;
-        while (width / this.gridSpacing > cutoffHigh || height / this.gridSpacing > cutoffHigh) {
+        let min = this.minPixelSpacing / paper.view.zoom;
+        let max = this.maxPixelSpacing / paper.view.zoom;
+        while (this.gridSpacing < min) {
             this.gridSpacing = this.gridSpacing * 5;
         }
-        while (width / this.gridSpacing <= cutoffLow || height / this.gridSpacing <= cutoffLow) {
+        while (this.gridSpacing > max) {
             this.gridSpacing = this.gridSpacing / 5;
         }
         this.render();

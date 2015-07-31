@@ -30,12 +30,30 @@ class Port extends Feature {
         };
     }
 
-    static getDefaultParams() {
+    static getDefaultValues() {
         return {
             "radius1": .6 * 1000,
             "radius2": .6 * 1000,
             "height": .8 * 1000
         };
+    }
+
+    render2D() {
+        let position = this.params.getValue("position");
+        let radius1;
+
+        //TODO: figure out inheritance pattern for values!
+
+        try {
+            radius1 = this.params.getValue("radius1");
+        } catch (err) {
+            radius1 = Port.getDefaultValues()["radius1"];
+        }
+
+
+        let c1 = new paper.Path.Circle(new paper.Point(position), radius1);
+        c1.fillColor = new paper.Color(.5,0,.5);
+        return c1;
     }
 }
 
