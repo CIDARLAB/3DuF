@@ -56,6 +56,7 @@ window.onload = function(){
     window.Channel = Channel;
     window.man = manager;
     window.Features = Features;
+    window.Registry = Registry;
     let canvas = document.getElementById("c");
     paper.view.center = new paper.Point(30 * 1000, 30 * 1000);
     manager.setZoom(.04);
