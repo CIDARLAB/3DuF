@@ -307,8 +307,8 @@ window.onload = function () {
     window.man = manager;
     window.Features = Features;
     var canvas = document.getElementById("c");
-    paper.view.center = new paper.Point(dev.params.getValue("width") / 2, dev.params.getValue("height") / 2);
-    manager.setZoom(.01);
+    paper.view.center = new paper.Point(30 * 1000, 30 * 1000);
+    manager.setZoom(.04);
     manager.updateGridSpacing();
 
     canvas.onmousewheel = function (event) {
