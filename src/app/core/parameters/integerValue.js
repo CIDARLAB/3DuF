@@ -1,6 +1,4 @@
-var appRoot = "../../";
-var Parameter = require(appRoot + "/core/parameter");
-var Registry = require(appRoot + "/core/registry");
+var Parameter = require("../parameter");
 
 class IntegerValue extends Parameter {
     constructor(value) {

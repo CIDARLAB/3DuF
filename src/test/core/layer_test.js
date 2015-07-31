@@ -184,7 +184,8 @@ describe("Layer", function() {
         });
         it("can produce JSON when containing a feature", function() {
             lay1.addFeature(feat1);
-            lay1.toJSON();
+            let json = lay1.toJSON();
+            json["features"][feat1.id]["id"].should.equal(feat1.id);
         });
         it("can produce JSON when containing multiple features", function() {
             lay1.addFeature(feat1);
