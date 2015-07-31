@@ -43,11 +43,12 @@ var chan2 = new Channel({
 flow.addFeature(chan2);
 
 Registry.currentDevice = dev;
+Registry.currentLayer = dev.layers[0];
 
 paper.setup("c");
 
 window.onload = function(){
-    manager = new CanvasManager(canvas);
+    manager = new CanvasManager(document.getElementById("c"));
     manager.render();
 
     window.dev = dev;
@@ -58,18 +59,6 @@ window.onload = function(){
     paper.view.center = new paper.Point(30 * 1000, 30 * 1000);
     manager.setZoom(.04);
     manager.updateGridSpacing();
-
-    canvas.onmousewheel = function(event){
-        let x = event.layerX;
-        let y = event.layerY;
-        if (paper.view.zoom >= 10 && event.deltaY < 0){
-            console.log("Whoa! Zoom is way too big.");
-        } else if (paper.view.zoom <= .00001 && event.deltaY > 0){
-            console.log("Whoa! Zoom is way too small.");
-        } else {
-            manager.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x,y)));
-        }
-    };
 };
 
 /*

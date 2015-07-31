@@ -1,6 +1,8 @@
 var Registry = require("../core/registry");
 var GridGenerator = require("./gridGenerator");
 var PanAndZoom = require("./panAndZoom");
+var Features = require("../core/features");
+var Tools = require("./tools");
 
 class CanvasManager {
     constructor(canvas) {
@@ -10,16 +12,22 @@ class CanvasManager {
         this.gridSpacing = 20;
         this.minZoom = .00001;
         this.maxZoom = 10;
+        this.valveTool = new Tools.ValveTool(Features.CircleValve);
+        this.panTool = new Tools.PanTool();
+        this.panTool.activate();
+
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
+
+        this.setupZoomEvent();
     }
 
     setupZoomEvent() {
         this.canvas.onmousewheel = function(event) {
             let x = event.layerX;
             let y = event.layerY;
-            if (paper.view.zoom >= maxZoom && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");
-            else if (paper.view.zoom <= minZoom && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");
+            if (paper.view.zoom >= this.maxZoom && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");
+            else if (paper.view.zoom <= this.minZoom && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");
             else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
         };
     }
@@ -75,6 +83,11 @@ class CanvasManager {
         paper.view.zoom = zoom;
         this.updateGridSpacing();
         this.render();
+    }
+
+    moveCenter(delta){
+        let newCenter = paper.view.center.subtract(delta);
+        this.setCenter(newCenter);
     }
 
     setCenter(x, y) {

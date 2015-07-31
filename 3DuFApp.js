@@ -295,11 +295,12 @@ var chan2 = new Channel({
 flow.addFeature(chan2);
 
 Registry.currentDevice = dev;
+Registry.currentLayer = dev.layers[0];
 
 paper.setup("c");
 
 window.onload = function () {
-    manager = new CanvasManager(canvas);
+    manager = new CanvasManager(document.getElementById("c"));
     manager.render();
 
     window.dev = dev;
@@ -310,18 +311,6 @@ window.onload = function () {
     paper.view.center = new paper.Point(30 * 1000, 30 * 1000);
     manager.setZoom(.04);
     manager.updateGridSpacing();
-
-    canvas.onmousewheel = function (event) {
-        var x = event.layerX;
-        var y = event.layerY;
-        if (paper.view.zoom >= 10 && event.deltaY < 0) {
-            console.log("Whoa! Zoom is way too big.");
-        } else if (paper.view.zoom <= .00001 && event.deltaY > 0) {
-            console.log("Whoa! Zoom is way too small.");
-        } else {
-            manager.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
-        }
-    };
 };
 
 /*
@@ -670,9 +659,9 @@ var CircleValve = (function (_Feature) {
         key: 'getDefaultValues',
         value: function getDefaultValues() {
             return {
-                "radius1": 1.2,
-                "radius2": 1,
-                "height": .4
+                "radius1": 1.2 * 1000,
+                "radius2": 1 * 1000,
+                "height": .4 * 1000
             };
         }
     }]);
@@ -1531,10 +1520,12 @@ var registeredParams = {};
 var registeredFeatures = {};
 var currentDevice = null;
 var canvasManager = null;
+var currentLayer = null;
 
 exports.registeredFeatures = registeredFeatures;
 exports.registeredParams = registeredParams;
 exports.currentDevice = currentDevice;
+exports.currentLayer = currentLayer;
 exports.canvasManager = canvasManager;
 
 },{}],21:[function(require,module,exports){
@@ -1547,6 +1538,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Registry = require("../core/registry");
 var GridGenerator = require("./gridGenerator");
 var PanAndZoom = require("./panAndZoom");
+var Features = require("../core/features");
+var Tools = require("./tools");
 
 var CanvasManager = (function () {
     function CanvasManager(canvas) {
@@ -1558,7 +1551,13 @@ var CanvasManager = (function () {
         this.gridSpacing = 20;
         this.minZoom = .00001;
         this.maxZoom = 10;
+        this.valveTool = new Tools.ValveTool(Features.CircleValve);
+        this.panTool = new Tools.PanTool();
+        this.panTool.activate();
+
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
+
+        this.setupZoomEvent();
     }
 
     _createClass(CanvasManager, [{
@@ -1567,7 +1566,7 @@ var CanvasManager = (function () {
             this.canvas.onmousewheel = function (event) {
                 var x = event.layerX;
                 var y = event.layerY;
-                if (paper.view.zoom >= maxZoom && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");else if (paper.view.zoom <= minZoom && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
+                if (paper.view.zoom >= this.maxZoom && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");else if (paper.view.zoom <= this.minZoom && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
             };
         }
     }, {
@@ -1639,6 +1638,12 @@ var CanvasManager = (function () {
             this.render();
         }
     }, {
+        key: "moveCenter",
+        value: function moveCenter(delta) {
+            var newCenter = paper.view.center.subtract(delta);
+            this.setCenter(newCenter);
+        }
+    }, {
         key: "setCenter",
         value: function setCenter(x, y) {
             paper.view.center = new paper.Point(x, y);
@@ -1651,7 +1656,7 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/registry":20,"./gridGenerator":22,"./panAndZoom":23}],22:[function(require,module,exports){
+},{"../core/features":9,"../core/registry":20,"./gridGenerator":22,"./panAndZoom":23,"./tools":25}],22:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1835,4 +1840,119 @@ var PanAndZoom = (function () {
 
 module.exports = PanAndZoom;
 
-},{"../core/registry":20}]},{},[2]);
+},{"../core/registry":20}],24:[function(require,module,exports){
+"use strict";
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Features = require("../../core/features");
+var Registry = require("../../core/registry");
+
+var ChannelTool = (function (_paper$Tool) {
+	_inherits(ChannelTool, _paper$Tool);
+
+	function ChannelTool(channelClass) {
+		_classCallCheck(this, ChannelTool);
+
+		_get(Object.getPrototypeOf(ChannelTool.prototype), "constructor", this).call(this);
+		this.channelClass = channelClass;
+		this.onMouseDown = function (event) {
+			var newValve = new this.valveClass({
+				"position": [event.point.x, event.point.y]
+			});
+			console.log(newValve);
+			Registry.currentDevice.layers[0].addFeature(newValve);
+			Registry.canvasManager.render();
+		};
+	}
+
+	return ChannelTool;
+})(paper.Tool);
+
+module.exports = ChannelTool;
+
+},{"../../core/features":9,"../../core/registry":20}],25:[function(require,module,exports){
+"use strict";
+
+module.exports.ChannelTool = require("./channelTool");
+module.exports.ValveTool = require("./valveTool");
+module.exports.PanTool = require("./panTool");
+
+},{"./channelTool":24,"./panTool":26,"./valveTool":27}],26:[function(require,module,exports){
+"use strict";
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Registry = require("../../core/registry");
+
+var PanTool = (function (_paper$Tool) {
+	_inherits(PanTool, _paper$Tool);
+
+	function PanTool() {
+		_classCallCheck(this, PanTool);
+
+		_get(Object.getPrototypeOf(PanTool.prototype), "constructor", this).call(this);
+		this.startPoint = null;
+
+		this.onMouseDown = function (event) {
+			this.startPoint = event.point;
+		};
+		this.onMouseDrag = function (event) {
+			if (this.startPoint) {
+				var delta = event.point.subtract(this.startPoint);
+				Registry.canvasManager.moveCenter(delta);
+			}
+		};
+		this.onMouseUp = function (event) {
+			this.startPoint = null;
+		};
+	}
+
+	return PanTool;
+})(paper.Tool);
+
+module.exports = PanTool;
+
+},{"../../core/registry":20}],27:[function(require,module,exports){
+"use strict";
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Features = require("../../core/features");
+var Registry = require("../../core/registry");
+
+var ValveTool = (function (_paper$Tool) {
+	_inherits(ValveTool, _paper$Tool);
+
+	function ValveTool(valveClass) {
+		_classCallCheck(this, ValveTool);
+
+		_get(Object.getPrototypeOf(ValveTool.prototype), "constructor", this).call(this);
+		this.valveClass = valveClass;
+		this.onMouseDown = function (event) {
+			var newValve = new this.valveClass({
+				"position": [event.point.x, event.point.y]
+			});
+			Registry.currentDevice.layers[0].addFeature(newValve);
+			Registry.canvasManager.render();
+		};
+	}
+
+	return ValveTool;
+})(paper.Tool);
+
+module.exports = ValveTool;
+
+},{"../../core/features":9,"../../core/registry":20}]},{},[2]);
