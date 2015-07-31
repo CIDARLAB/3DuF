@@ -32,8 +32,8 @@ class Channel extends Feature {
 
     static getDefaultValues() {
         return {
-            "width": .4,
-            "height": .4
+            "width": .4 * 1000,
+            "height": .4 * 1000
         };
     }
 

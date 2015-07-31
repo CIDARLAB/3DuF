@@ -729,9 +729,9 @@ var Port = (function (_Feature) {
         key: 'getDefaultParams',
         value: function getDefaultParams() {
             return {
-                "radius1": .6,
-                "radius2": .6,
-                "height": .8
+                "radius1": .6 * 1000,
+                "radius2": .6 * 1000,
+                "height": .8 * 1000
             };
         }
     }]);
@@ -800,9 +800,9 @@ var Via = (function (_Feature) {
         key: 'getDefaultParams',
         value: function getDefaultParams() {
             return {
-                "radius1": .6,
-                "radius2": .4,
-                "height": .8
+                "radius1": .6 * 1000,
+                "radius2": .4 * 1000,
+                "height": .8 * 1000
             };
         }
     }]);
@@ -901,8 +901,8 @@ var Channel = (function (_Feature) {
         key: 'getDefaultValues',
         value: function getDefaultValues() {
             return {
-                "width": .4,
-                "height": .4
+                "width": .4 * 1000,
+                "height": .4 * 1000
             };
         }
     }]);
@@ -1024,7 +1024,14 @@ var Layer = (function () {
         key: 'removeFeature',
         value: function removeFeature(feature) {
             this.__ensureFeatureExists(feature);
-            this.features[feature.id] = undefined;
+            delete features[feature.id];
+            this.featureCount -= 1;
+        }
+    }, {
+        key: 'removeFeatureByID',
+        value: function removeFeatureByID(featureID) {
+            this.__ensureFeatureIDExists(featureID);
+            delete this.features[featureID];
             this.featureCount -= 1;
         }
     }, {
@@ -1554,6 +1561,9 @@ var CanvasManager = (function () {
         this.valveTool = new Tools.ValveTool(Features.CircleValve);
         this.panTool = new Tools.PanTool();
         this.panTool.activate();
+        this.valveTool.activate();
+        this.channelTool = new Tools.ChannelTool(Features.Channel);
+        this.channelTool.activate();
 
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
 
@@ -1561,6 +1571,11 @@ var CanvasManager = (function () {
     }
 
     _createClass(CanvasManager, [{
+        key: "snapToGrid",
+        value: function snapToGrid(point) {
+            return GridGenerator.snapToGrid(point, this.gridSpacing);
+        }
+    }, {
         key: "setupZoomEvent",
         value: function setupZoomEvent() {
             this.canvas.onmousewheel = function (event) {
@@ -1568,6 +1583,14 @@ var CanvasManager = (function () {
                 var y = event.layerY;
                 if (paper.view.zoom >= this.maxZoom && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");else if (paper.view.zoom <= this.minZoom && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
             };
+        }
+    }, {
+        key: "renderFeature",
+        value: function renderFeature(feature) {
+            var forceUpdate = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            feature.render2D();
+            paper.view.update(forceUpdate);
         }
     }, {
         key: "render",
@@ -1762,13 +1785,19 @@ var GridGenerator = (function () {
             return line;
         }
     }, {
+        key: "snapToGrid",
+        value: function snapToGrid(point, spacing) {
+            var x = Math.round(point.x / spacing) * spacing;
+            var y = Math.round(point.y / spacing) * spacing;
+            return new paper.Point(x, y);
+        }
+    }, {
         key: "gridLineTemplate",
         value: function gridLineTemplate(start, end) {
             var line = paper.Path.Line(start, end);
             line.strokeColor = lineColor;
             line.strokeWidth = GridGenerator.getStrokeWidth();
             line.remove();
-            line.guide = true;
             return line;
         }
     }, {
@@ -1843,6 +1872,8 @@ module.exports = PanAndZoom;
 },{"../core/registry":20}],24:[function(require,module,exports){
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1860,15 +1891,92 @@ var ChannelTool = (function (_paper$Tool) {
 
 		_get(Object.getPrototypeOf(ChannelTool.prototype), "constructor", this).call(this);
 		this.channelClass = channelClass;
+		this.startPoint = null;
+		this.currentChannelID = null;
+		this.currentTarget = null;
+
 		this.onMouseDown = function (event) {
-			var newValve = new this.valveClass({
-				"position": [event.point.x, event.point.y]
-			});
-			console.log(newValve);
-			Registry.currentDevice.layers[0].addFeature(newValve);
-			Registry.canvasManager.render();
+			this.initChannel(event.point);
+			this.showTarget(event.point);
+		};
+		this.onMouseDrag = function (event) {
+			this.updateChannel(event.point);
+			this.showTarget(event.point);
+		};
+		this.onMouseUp = function (event) {
+			this.finishChannel(event.point);
+			this.showTarget(event.point);
+		};
+		this.onMouseMove = function (event) {
+			this.showTarget(event.point);
 		};
 	}
+
+	_createClass(ChannelTool, [{
+		key: "showTarget",
+		value: function showTarget(point) {
+			if (this.currentTarget) {
+				this.currentTarget.remove();
+			}
+			point = ChannelTool.getTarget(point);
+			this.currentTarget = ChannelTool.makeReticle(point);
+		}
+	}, {
+		key: "initChannel",
+		value: function initChannel(point) {
+			this.startPoint = ChannelTool.getTarget(point);
+			var newChannel = this.createChannel(this.startPoint, this.startPoint);
+			this.currentChannelID = newChannel.id;
+			Registry.currentLayer.addFeature(newChannel);
+			Registry.canvasManager.render();
+		}
+
+		//TODO: Re-render only the current channel, to improve perforamnce
+	}, {
+		key: "updateChannel",
+		value: function updateChannel(point) {
+			var target = ChannelTool.getTarget(point);
+			var feat = Registry.currentLayer.getFeature(this.currentChannelID);
+			feat.updateParameter("end", [target.x, target.y]);
+			Registry.canvasManager.render();
+		}
+	}, {
+		key: "finishChannel",
+		value: function finishChannel(point) {
+			if (this.currentChannel) {
+				if (this.startPoint.x == point.x && this.startPoint.y == point.y) {
+					Registry.currentLayer.removeFeatureByID(this.currentChannelID);
+					//TODO: This will be slow for complex devices, since it re-renders everything
+					Registry.canvasManager.render();
+				}
+			}
+			this.currentChannelID = null;
+			this.startPoint = null;
+		}
+	}, {
+		key: "createChannel",
+		value: function createChannel(start, end) {
+			return new this.channelClass({
+				"start": [start.x, start.y],
+				"end": [end.x, end.y]
+			});
+		}
+
+		//TODO: Re-establish target selection logic from earlier demo
+	}], [{
+		key: "makeReticle",
+		value: function makeReticle(point) {
+			var size = 10 / paper.view.zoom;
+			var ret = paper.Path.Circle(point, size);
+			ret.fillColor = new paper.Color(.5, 0, 1, .5);
+			return ret;
+		}
+	}, {
+		key: "getTarget",
+		value: function getTarget(point) {
+			return Registry.canvasManager.snapToGrid(point);
+		}
+	}]);
 
 	return ChannelTool;
 })(paper.Tool);
@@ -1945,7 +2053,7 @@ var ValveTool = (function (_paper$Tool) {
 			var newValve = new this.valveClass({
 				"position": [event.point.x, event.point.y]
 			});
-			Registry.currentDevice.layers[0].addFeature(newValve);
+			Registry.currentLayer.addFeature(newValve);
 			Registry.canvasManager.render();
 		};
 	}
