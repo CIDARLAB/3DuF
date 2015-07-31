@@ -299,7 +299,7 @@ Registry.currentDevice = dev;
 paper.setup("c");
 
 window.onload = function () {
-    manager = new CanvasManager();
+    manager = new CanvasManager(canvas);
     manager.render();
 
     window.dev = dev;
@@ -1546,18 +1546,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var Registry = require("../core/registry");
 var GridGenerator = require("./gridGenerator");
+var PanAndZoom = require("./panAndZoom");
 
 var CanvasManager = (function () {
-    function CanvasManager() {
+    function CanvasManager(canvas) {
         _classCallCheck(this, CanvasManager);
 
+        this.canvas = canvas;
         this.paperDevice = undefined;
         this.grid = undefined;
         this.gridSpacing = 20;
+        this.minZoom = .00001;
+        this.maxZoom = 10;
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
     }
 
     _createClass(CanvasManager, [{
+        key: "setupZoomEvent",
+        value: function setupZoomEvent() {
+            this.canvas.onmousewheel = function (event) {
+                var x = event.layerX;
+                var y = event.layerY;
+                if (paper.view.zoom >= maxZoom && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");else if (paper.view.zoom <= minZoom && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
+            };
+        }
+    }, {
         key: "render",
         value: function render() {
             var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
@@ -1598,47 +1611,6 @@ var CanvasManager = (function () {
             if (this.grid) this.paperDevice.insertAbove(this.grid);
             paper.view.update(forceUpdate);
         }
-
-        // Stable pan and zoom modified from: http://matthiasberth.com/articles/stable-zoom-and-pan-in-paperjs/
-
-    }, {
-        key: "calcZoom",
-        value: function calcZoom(delta) {
-            var multiplier = arguments.length <= 1 || arguments[1] === undefined ? 1.1 : arguments[1];
-
-            if (delta < 0) return paper.view.zoom * multiplier;else if (delta > 0) return paper.view.zoom / multiplier;else return paper.view.zoom;
-        }
-    }, {
-        key: "calcCenter",
-        value: function calcCenter(deltaX, deltaY, factor) {
-            var offset = new paper.Point(deltaX, deltaY);
-            //offset = offset.multiply(factor);
-            return paper.view.center.add(offset);
-        }
-    }, {
-        key: "setCenter",
-        value: function setCenter(x, y) {
-            paper.view.center = new paper.Point(x, y);
-            this.render();
-        }
-    }, {
-        key: "adjustZoom",
-        value: function adjustZoom(delta, position) {
-            this.stableZoom(this.calcZoom(delta), position);
-        }
-    }, {
-        key: "stableZoom",
-        value: function stableZoom(zoom, position) {
-            var newZoom = zoom;
-            var p = position;
-            var c = paper.view.center;
-            var beta = paper.view.zoom / newZoom;
-            var pc = p.subtract(c);
-            var a = p.subtract(pc.multiply(beta)).subtract(c);
-            var newCenter = this.calcCenter(a.x, a.y);
-            this.setCenter(newCenter.x, newCenter.y, 1 / beta);
-            this.setZoom(newZoom);
-        }
     }, {
         key: "updateGridSpacing",
         value: function updateGridSpacing() {
@@ -1655,10 +1627,21 @@ var CanvasManager = (function () {
             this.render();
         }
     }, {
+        key: "adjustZoom",
+        value: function adjustZoom(delta, position) {
+            PanAndZoom.adjustZoom(delta, position);
+        }
+    }, {
         key: "setZoom",
         value: function setZoom(zoom) {
             paper.view.zoom = zoom;
             this.updateGridSpacing();
+            this.render();
+        }
+    }, {
+        key: "setCenter",
+        value: function setCenter(x, y) {
+            paper.view.center = new paper.Point(x, y);
             this.render();
         }
     }]);
@@ -1668,7 +1651,7 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/registry":20,"./gridGenerator":22}],22:[function(require,module,exports){
+},{"../core/registry":20,"./gridGenerator":22,"./panAndZoom":23}],22:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1796,4 +1779,60 @@ var GridGenerator = (function () {
 
 module.exports = GridGenerator;
 
-},{}]},{},[2]);
+},{}],23:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../core/registry");
+
+var PanAndZoom = (function () {
+	function PanAndZoom() {
+		_classCallCheck(this, PanAndZoom);
+	}
+
+	_createClass(PanAndZoom, null, [{
+		key: "stableZoom",
+		value: function stableZoom(zoom, position) {
+			var newZoom = zoom;
+			var p = position;
+			var c = paper.view.center;
+			var beta = paper.view.zoom / newZoom;
+			var pc = p.subtract(c);
+			var a = p.subtract(pc.multiply(beta)).subtract(c);
+			var newCenter = this.calcCenter(a.x, a.y);
+			Registry.canvasManager.setCenter(newCenter.x, newCenter.y, 1 / beta);
+			Registry.canvasManager.setZoom(newZoom);
+		}
+	}, {
+		key: "adjustZoom",
+		value: function adjustZoom(delta, position) {
+			this.stableZoom(this.calcZoom(delta), position);
+		}
+
+		// Stable pan and zoom modified from: http://matthiasberth.com/articles/stable-zoom-and-pan-in-paperjs/
+
+	}, {
+		key: "calcZoom",
+		value: function calcZoom(delta) {
+			var multiplier = arguments.length <= 1 || arguments[1] === undefined ? 1.1 : arguments[1];
+
+			if (delta < 0) return paper.view.zoom * multiplier;else if (delta > 0) return paper.view.zoom / multiplier;else return paper.view.zoom;
+		}
+	}, {
+		key: "calcCenter",
+		value: function calcCenter(deltaX, deltaY, factor) {
+			var offset = new paper.Point(deltaX, deltaY);
+			//offset = offset.multiply(factor);
+			return paper.view.center.add(offset);
+		}
+	}]);
+
+	return PanAndZoom;
+})();
+
+module.exports = PanAndZoom;
+
+},{"../core/registry":20}]},{},[2]);
