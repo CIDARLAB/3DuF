@@ -308,6 +308,7 @@ window.onload = function () {
     window.Channel = Channel;
     window.man = manager;
     window.Features = Features;
+    window.Registry = Registry;
     var canvas = document.getElementById("c");
     paper.view.center = new paper.Point(30 * 1000, 30 * 1000);
     manager.setZoom(.04);
@@ -1687,14 +1688,17 @@ var GridGenerator = require("./gridGenerator");
 var PanAndZoom = require("./panAndZoom");
 var Features = require("../core/features");
 var Tools = require("./tools");
+var Device = require("../core/device");
 
 var Channel = Features.Channel;
 var HollowChannel = Features.HollowChannel;
 var Port = Features.Port;
 var CircleValve = Features.CircleValve;
 var Via = Features.Via;
+
 var ChannelTool = Tools.ChannelTool;
 var ValveTool = Tools.ValveTool;
+var PanTool = Tools.PanTool;
 
 var CanvasManager = (function () {
     function CanvasManager(canvas) {
@@ -1711,7 +1715,7 @@ var CanvasManager = (function () {
         this.minZoom = .00001;
         this.maxZoom = 10;
         this.generateTools();
-        this.selectTool(Channel.typeString());
+        this.selectTool("pan");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
 
@@ -1728,6 +1732,7 @@ var CanvasManager = (function () {
             this.tools[Port.typeString()] = new ValveTool(Port);
             this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
             this.tools[Via.typeString()] = new ValveTool(Via);
+            this.tools["pan"] = new PanTool();
         }
     }, {
         key: "selectTool",
@@ -1836,6 +1841,18 @@ var CanvasManager = (function () {
             paper.view.center = new paper.Point(x, y);
             this.render();
         }
+    }, {
+        key: "saveToStorage",
+        value: function saveToStorage() {
+            localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
+        }
+    }, {
+        key: "loadFromStorage",
+        value: function loadFromStorage() {
+            Registry.currentDevice = Device.fromJSON(JSON.parse(localStorage.getItem("currentDevice")));
+            Registry.currentLayer = Registry.currentDevice.layers[0];
+            this.render();
+        }
     }]);
 
     return CanvasManager;
@@ -1843,7 +1860,7 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/features":10,"../core/registry":21,"./gridGenerator":23,"./panAndZoom":24,"./tools":26}],23:[function(require,module,exports){
+},{"../core/device":3,"../core/features":10,"../core/registry":21,"./gridGenerator":23,"./panAndZoom":24,"./tools":26}],23:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();

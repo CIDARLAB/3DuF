@@ -3,14 +3,17 @@ var GridGenerator = require("./gridGenerator");
 var PanAndZoom = require("./panAndZoom");
 var Features = require("../core/features");
 var Tools = require("./tools");
+var Device = require("../core/device");
 
 var Channel = Features.Channel;
 var HollowChannel = Features.HollowChannel;
 var Port = Features.Port;
 var CircleValve = Features.CircleValve;
 var Via = Features.Via;
+
 var ChannelTool = Tools.ChannelTool;
 var ValveTool = Tools.ValveTool;
+var PanTool = Tools.PanTool;
 
 class CanvasManager {
     constructor(canvas) {
@@ -25,7 +28,7 @@ class CanvasManager {
         this.minZoom = .00001;
         this.maxZoom = 10;
         this.generateTools();
-        this.selectTool(Channel.typeString());
+        this.selectTool("pan");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
@@ -40,6 +43,7 @@ class CanvasManager {
         this.tools[Port.typeString()] = new ValveTool(Port);
         this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
         this.tools[Via.typeString()] = new ValveTool(Via);
+        this.tools["pan"] = new PanTool();
     }
 
     selectTool(typeString){
@@ -125,6 +129,16 @@ class CanvasManager {
 
     setCenter(x, y) {
         paper.view.center = new paper.Point(x, y);
+        this.render();
+    }
+
+    saveToStorage(){
+        localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
+    }
+
+    loadFromStorage(){
+        Registry.currentDevice = Device.fromJSON(JSON.parse(localStorage.getItem("currentDevice")));
+        Registry.currentLayer = Registry.currentDevice.layers[0];
         this.render();
     }
 }
