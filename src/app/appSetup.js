@@ -47,7 +47,7 @@ Registry.currentDevice = dev;
 paper.setup("c");
 
 window.onload = function(){
-    manager = new CanvasManager();
+    manager = new CanvasManager(canvas);
     manager.render();
 
     window.dev = dev;
