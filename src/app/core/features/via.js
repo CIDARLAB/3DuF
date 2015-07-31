@@ -1,9 +1,7 @@
-var appRoot = "../../";
-
-var Feature = require(appRoot + 'core/feature');
-var Registry = require(appRoot +'core/registry');
-var Parameters = require(appRoot +'core/parameters');
-var Params = require(appRoot + 'core/params');
+var Feature = require('../feature');
+var Registry = require('../registry');
+var Parameters = require('../parameters');
+var Params = require('../params');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;

@@ -1,5 +1,4 @@
-var appRoot = "../";
-var Registry = require(appRoot + "core/registry");
+var Registry = require("./registry");
 
 class Parameter {
     constructor(type, value) {

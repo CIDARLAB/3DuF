@@ -1,28 +1,31 @@
+var Registry = require("./core/registry");
+var Features = require("./core/features");
+var Channel = Features.Channel;
 
-        // Keep global references to both tools, so the HTML
-        // links below can access them.
-        var tool1, tool2;
-        var start;
-        var current_stroke;
-        var width = 20;
-        var cornerWidth = width/2;
-        var gridSize = 20;
-        var strokes = [];
-        var strokeHistory = [];
-        //console.log(strokeHistory);
-        var forceSnap = true;
-        var forceSharpCorners = false;
-        var forceHit = true;
-        var ctrl = false;
-        var vert;
-        var horiz;
-        var gridGroup;
-        var highlightGroup;
-        var intersectionGroup;
-        var background;
+// Keep global references to both tools, so the HTML
+// links below can access them.
+var tool1, tool2;
+var start;
+var current_stroke;
+var width = 20;
+var cornerWidth = width/2;
+var gridSize = 20;
+var strokes = [];
+var strokeHistory = [];
+//console.log(strokeHistory);
+var forceSnap = true;
+var forceSharpCorners = false;
+var forceHit = true;
+var ctrl = false;
+var vert;
+var horiz;
+var gridGroup;
+var highlightGroup;
+var intersectionGroup;
+var background;
 
-        var hitOptions;
-        var view;
+var hitOptions;
+var view;
 
 function setup(){
 
@@ -61,7 +64,7 @@ function setup(){
 	tool1.onMouseDrag = function(event) {
 	    clearStroke();
 	    var target = targetHandler(event);
-	    current_stroke = makeChannel(start, target);
+	    //current_stroke = makeChannel(start, target);
 	    current_stroke.insertBelow(intersectionGroup);
 	    current_stroke.selected = true;
 	}

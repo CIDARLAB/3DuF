@@ -1,5 +1,4 @@
-var appRoot = "../../";
-var Parameter = require(appRoot + "/core/parameter");
+var Parameter = require("../parameter");
 
 class StringValue extends Parameter {
     constructor(value) {
