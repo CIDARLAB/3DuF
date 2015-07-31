@@ -64,11 +64,20 @@ class Layer {
         return this.features.hasOwnProperty(featureID);
     }
 
+    __renderFeatures2D(){
+        let output = [];
+        for (let i in this.features){
+            output.push(this.features[i].render2D());
+        }
+        return output;
+    }
+
     __featuresToJSON() {
         let output = {};
         for (let i in this.features) {
             output[i] = this.features[i].toJSON();
         }
+        return output;
     }
 
     __loadFeaturesFromJSON(json) {
@@ -93,6 +102,10 @@ class Layer {
         let newLayer = new Layer(json.params, json.name);
         newLayer.__loadFeaturesFromJSON(json.features);
         return newLayer;
+    }
+
+    render2D(paperScope){
+        return new paper.Group(this.__renderFeatures2D());
     }
 }
 

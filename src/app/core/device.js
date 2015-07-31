@@ -1,7 +1,6 @@
-var appRoot = "../";
-var Params = require(appRoot + "core/params");
-var Parameters = require(appRoot + "core/parameters");
-var Parameter =require(appRoot + "core/parameter");
+var Params = require("./params");
+var Parameters = require("./parameters");
+var Parameter =require("./parameter");
 var Feature = require('./feature')
 var Layer = require('./layer');
 var Group = require('./group');
@@ -52,6 +51,14 @@ class Device {
     //TODO: Figure out whether this is ever needed
     static getHeritableParameters(){
         return {};
+    }
+
+    __renderLayers2D(){
+        let output = [];
+        for (let i = 0; i < this.layers.length; i++){
+            output.push(this.layers[i].render2D())
+        }
+        return output;
     }
 
     __groupsToJSON() {
@@ -115,6 +122,10 @@ class Device {
         newDevice.__loadGroupsFromJSON(json.groups);
         newDevice.__loadDefaultsFromJSON(json.defaults);
         return newDevice;
+    }
+
+    render2D(paperScope){
+        return new paper.Group(this.__renderLayers2D());
     }
 }
 
