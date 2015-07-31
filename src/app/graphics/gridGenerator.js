@@ -4,9 +4,9 @@ var lineColor = new paper.Color(173/255, 216/255, 230/255);
 //TODO: Fix fifth-line highlighting at low/high zooms!
 class GridGenerator {
 
-    static makeGrid(spacing){
-        let vert = GridGenerator.makeVerticalGrid(spacing);
-        let horiz = GridGenerator.makeHorizontalGrid(spacing);
+    static makeGrid(spacing, thickCount){
+        let vert = GridGenerator.makeVerticalGrid(spacing, thickCount);
+        let horiz = GridGenerator.makeHorizontalGrid(spacing, thickCount);
         return new paper.Group([vert, horiz]);
     }
 
@@ -26,7 +26,7 @@ class GridGenerator {
         return paper.view.viewToProject(new paper.Point(paper.view.bounds.width * paper.view.zoom, 0));
     }
 
-    static makeVerticalGrid(spacing){
+    static makeVerticalGrid(spacing, thickCount){
         let topLeft = GridGenerator.getTopLeft();
         let bottomRight = GridGenerator.getBottomRight();
         let height = bottomRight.y - topLeft.y;
@@ -35,18 +35,18 @@ class GridGenerator {
         let thick = new paper.Symbol(GridGenerator.makeThickVerticalLineTemplate());
         for (let i = Math.floor(topLeft.x / spacing) * spacing; i <= bottomRight.x; i += spacing){
             let pos = new paper.Point(i, topLeft.y + height/2);
-            if (i% (spacing*5) < spacing && i % (spacing*5) > -spacing) vertGroup.addChild(thick.place(pos));
+            if (i% (spacing*thickCount) < spacing && i % (spacing*thickCount) > -spacing) vertGroup.addChild(thick.place(pos));
             else vertGroup.addChild(sym.place(pos));
         }
         for (let i = Math.floor(topLeft.x / spacing) * spacing; i >= topLeft.x; i -= spacing){
             let pos = new paper.Point(i, topLeft.y + height/2);
-            if (i% (spacing*5) < spacing && i % (spacing*5) > -spacing) vertGroup.addChild(thick.place(pos));
+            if (i% (spacing*thickCount) < spacing && i % (spacing*thickCount) > -spacing) vertGroup.addChild(thick.place(pos));
             else vertGroup.addChild(sym.place(pos));
         }
         return vertGroup;
     }
 
-    static makeHorizontalGrid(spacing){
+    static makeHorizontalGrid(spacing, thickCount){
         let topLeft = GridGenerator.getTopLeft();
         let bottomRight = GridGenerator.getBottomRight();
         let width = bottomRight.x - topLeft.x;
@@ -55,12 +55,12 @@ class GridGenerator {
         let thick = new paper.Symbol(GridGenerator.makeThickHorizontalLineTemplate());
         for (let i = Math.floor(topLeft.y / spacing) * spacing; i < bottomRight.y; i += spacing){
             let pos = new paper.Point(topLeft.x + width/2, i);
-            if (i% (spacing*5) < spacing && i % (spacing*5) > -spacing) horizGroup.addChild(thick.place(pos));
+            if (i% (spacing*thickCount) < spacing && i % (spacing*thickCount) > -spacing) horizGroup.addChild(thick.place(pos));
             else horizGroup.addChild(sym.place(pos));
         }
         for (let i = Math.floor(topLeft.y / spacing) * spacing; i >= topLeft.y; i -= spacing){
             let pos = new paper.Point(topLeft.x + width/2, i);
-            if (i% (spacing*5) < spacing && i % (spacing*5) > -spacing) horizGroup.addChild(thick.place(pos));
+            if (i% (spacing*thickCount) < spacing && i % (spacing*thickCount) > -spacing) horizGroup.addChild(thick.place(pos));
             else horizGroup.addChild(sym.place(pos));
         }
         return horizGroup;

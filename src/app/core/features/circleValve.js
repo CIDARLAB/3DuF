@@ -53,9 +53,8 @@ class CircleValve extends Feature {
 
 
         let c1 = new paper.Path.Circle(new paper.Point(position), radius1);
-        let grp = new paper.Group([c1]);
-        grp.fillColor = new paper.Color(1,0,0);
-        return grp;
+        c1.fillColor = new paper.Color(1,0,0);
+        return c1;
     }
 }
 

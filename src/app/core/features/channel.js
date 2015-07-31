@@ -51,20 +51,17 @@ class Channel extends Feature {
         let startPoint = new paper.Point(start[0], start[1]);
         let endPoint = new paper.Point(end[0], end[1]);
 
-        let c1 = new paper.Path.Circle(startPoint, width / 2);
-        let c2 = new paper.Path.Circle(endPoint, width / 2);
-
         let vec = endPoint.subtract(startPoint);
         let rec = new paper.Path.Rectangle({
-            size: [vec.length, width],
+            size: [vec.length + width, width],
             point: start,
+            radius: width/2
         });
 
-        rec.translate([0, -width / 2]);
+        rec.translate([-width/2, -width / 2]);
         rec.rotate(vec.angle, start);
-        let grp = new paper.Group([rec, c1, c2]);
-        grp.fillColor = new paper.Color(0, 0, 1);
-        return grp;
+        rec.fillColor = new paper.Color(0,0,1);
+        return rec;
     }
 }
 
