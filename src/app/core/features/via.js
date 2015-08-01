@@ -54,6 +54,7 @@ class Via extends Feature {
 
         let c1 = new paper.Path.Circle(new paper.Point(position), radius1);
         c1.fillColor = new paper.Color(.2,1,.3);
+        c1.featureID = this.id;
         return c1;
     }
 }

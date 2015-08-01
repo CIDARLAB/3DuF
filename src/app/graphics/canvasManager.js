@@ -14,6 +14,7 @@ var Via = Features.Via;
 var ChannelTool = Tools.ChannelTool;
 var ValveTool = Tools.ValveTool;
 var PanTool = Tools.PanTool;
+var SelectTool = Tools.SelectTool;
 
 class CanvasManager {
     constructor(canvas) {
@@ -23,14 +24,14 @@ class CanvasManager {
         this.tools = {};
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
-        this.gridSpacing = 10;
-        this.thickCount = 5;
+        this.gridSpacing = 1000;
+        this.thickCount = 10;
         this.minZoom = .00001;
         this.maxZoom = 10;
         this.currentTool = null;
         this.setupMouseEvents();
         this.generateTools();
-        this.selectTool("Channel");
+        this.selectTool("select");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
@@ -48,12 +49,25 @@ class CanvasManager {
         this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
         this.tools[Via.typeString()] = new ValveTool(Via);
         this.tools["pan"] = new PanTool();
+        this.tools["select"] = new SelectTool();
         //this.tools["none"] = new paper.Tool();
     }
 
     selectTool(typeString){
         this.tools[typeString].activate();
         this.currentTool = this.tools[typeString];
+    }
+
+    //TODO: Hit test only features instead of the whole device
+    hitFeatureInDevice(point){
+        let hitOptions = {
+            fill: true,
+            tolerance: 5,
+            guides: false,
+        }
+        let hitResult = this.paperDevice.hitTest(point, hitOptions);
+        if (hitResult) return hitResult.item;
+        else return false;
     }
 
     snapToGrid(point){
@@ -156,7 +170,7 @@ class CanvasManager {
         while (this.gridSpacing > max) {
             this.gridSpacing = this.gridSpacing / 10;
         }
-        this.render();
+        this.renderGrid();
     }
 
     adjustZoom(delta, position) {
@@ -166,7 +180,7 @@ class CanvasManager {
     setZoom(zoom) {
         paper.view.zoom = zoom;
         this.updateGridSpacing();
-        this.render();
+        this.renderGrid();
     }
 
     moveCenter(delta){
@@ -176,7 +190,7 @@ class CanvasManager {
 
     setCenter(x, y) {
         paper.view.center = new paper.Point(x, y);
-        this.render();
+        this.renderGrid();
     }
 
     saveToStorage(){
