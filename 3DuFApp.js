@@ -1713,7 +1713,7 @@ var CanvasManager = (function () {
         this.grid = undefined;
         this.tools = {};
         this.minPixelSpacing = 10;
-        this.maxPixelSpacing = 50;
+        this.maxPixelSpacing = 100;
         this.gridSpacing = 10;
         this.thickCount = 5;
         this.minZoom = .00001;
@@ -1758,7 +1758,6 @@ var CanvasManager = (function () {
         value: function setupMouseEvents() {
             var manager = this;
             this.canvas.onmousedown = function (e) {
-                console.log("foo");
                 if (e.which == 2) {
                     manager.currentTool.abort();
                     manager.tools["pan"].activate();
@@ -1856,10 +1855,10 @@ var CanvasManager = (function () {
             var min = this.minPixelSpacing / paper.view.zoom;
             var max = this.maxPixelSpacing / paper.view.zoom;
             while (this.gridSpacing < min) {
-                this.gridSpacing = this.gridSpacing * 5;
+                this.gridSpacing = this.gridSpacing * 10;
             }
             while (this.gridSpacing > max) {
-                this.gridSpacing = this.gridSpacing / 5;
+                this.gridSpacing = this.gridSpacing / 10;
             }
             this.render();
         }
@@ -2163,26 +2162,29 @@ var ChannelTool = (function (_paper$Tool) {
 		key: "initChannel",
 		value: function initChannel(point) {
 			this.startPoint = ChannelTool.getTarget(point);
-			var newChannel = this.createChannel(this.startPoint, this.startPoint);
-			this.currentChannelID = newChannel.id;
-			Registry.currentLayer.addFeature(newChannel);
-			Registry.canvasManager.render();
 		}
 
 		//TODO: Re-render only the current channel, to improve perforamnce
 	}, {
 		key: "updateChannel",
 		value: function updateChannel(point) {
-			var target = ChannelTool.getTarget(point);
-			var feat = Registry.currentLayer.getFeature(this.currentChannelID);
-			feat.updateParameter("end", [target.x, target.y]);
-			Registry.canvasManager.render();
+			if (this.currentChannelID) {
+				var target = ChannelTool.getTarget(point);
+				var feat = Registry.currentLayer.getFeature(this.currentChannelID);
+				feat.updateParameter("end", [target.x, target.y]);
+				Registry.canvasManager.render();
+			} else {
+				var newChannel = this.createChannel(this.startPoint, this.startPoint);
+				this.currentChannelID = newChannel.id;
+				Registry.currentLayer.addFeature(newChannel);
+			}
 		}
 	}, {
 		key: "finishChannel",
 		value: function finishChannel(point) {
-			if (this.currentChannel) {
-				if (this.startPoint.x == point.x && this.startPoint.y == point.y) {
+			var target = ChannelTool.getTarget(point);
+			if (this.currentChannelID) {
+				if (this.startPoint.x == target.x && this.startPoint.y == target.y) {
 					Registry.currentLayer.removeFeatureByID(this.currentChannelID);
 					//TODO: This will be slow for complex devices, since it re-renders everything
 					Registry.canvasManager.render();

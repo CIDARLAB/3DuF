@@ -22,7 +22,7 @@ class CanvasManager {
         this.grid = undefined;
         this.tools = {};
         this.minPixelSpacing = 10;
-        this.maxPixelSpacing = 50;
+        this.maxPixelSpacing = 100;
         this.gridSpacing = 10;
         this.thickCount = 5;
         this.minZoom = .00001;
@@ -62,7 +62,6 @@ class CanvasManager {
     setupMouseEvents(){
         var manager = this;
         this.canvas.onmousedown = function(e){
-            console.log("foo");
             if(e.which == 2) {
                 manager.currentTool.abort();
                 manager.tools["pan"].activate();
@@ -144,10 +143,10 @@ class CanvasManager {
         let min = this.minPixelSpacing / paper.view.zoom;
         let max = this.maxPixelSpacing / paper.view.zoom;
         while (this.gridSpacing < min) {
-            this.gridSpacing = this.gridSpacing * 5;
+            this.gridSpacing = this.gridSpacing * 10;
         }
         while (this.gridSpacing > max) {
-            this.gridSpacing = this.gridSpacing / 5;
+            this.gridSpacing = this.gridSpacing / 10;
         }
         this.render();
     }
