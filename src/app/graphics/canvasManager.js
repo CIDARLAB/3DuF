@@ -37,6 +37,7 @@ class CanvasManager {
 
         this.setupZoomEvent();
         this.setupContextEvent();
+        this.setupResizeEvent();
     }
 
     //TODO: Find a non-manual way to do this
@@ -57,6 +58,13 @@ class CanvasManager {
 
     snapToGrid(point){
         return GridGenerator.snapToGrid(point, this.gridSpacing);
+    }
+
+    setupResizeEvent(){
+        let man = this;
+        paper.view.onResize = function(event){
+            man.render();
+        }
     }
 
     setupMouseEvents(){
