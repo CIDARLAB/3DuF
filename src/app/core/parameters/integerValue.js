@@ -1,4 +1,5 @@
 var Parameter = require("../parameter");
+var NumberUtils = require("../../utils/numberUtils");
 
 class IntegerValue extends Parameter {
     constructor(value) {
@@ -7,7 +8,7 @@ class IntegerValue extends Parameter {
     }
 
     static isInvalid(value) {
-        if (!Number.isInteger(value) || value < 0) return true;
+        if (!NumberUtils.isInteger(value) || value < 0) return true;
         else return false;
     }
 

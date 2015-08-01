@@ -57,13 +57,17 @@ class CanvasManager {
     setupZoomEvent() {
         let min = this.minZoom;
         let max = this.maxZoom;
-        this.canvas.onmousewheel = function(event) {
-            let x = event.layerX;
-            let y = event.layerY;
+        let canvas = this.canvas;
+
+        this.canvas.addEventListener("wheel", function(event){
+            let rect = canvas.getBoundingClientRect();
+            let x = event.clientX - rect.left;
+            let y = event.clientY - rect.top;
             if (paper.view.zoom >= max && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");
             else if (paper.view.zoom <= min && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");
             else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
-        };
+            }, false);
+
     }
 
     renderFeature(feature, forceUpdate = true){
