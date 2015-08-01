@@ -27,13 +27,16 @@ class CanvasManager {
         this.thickCount = 5;
         this.minZoom = .00001;
         this.maxZoom = 10;
+        this.currentTool = null;
+        this.setupMouseEvents();
         this.generateTools();
-        this.selectTool("pan");
+        this.selectTool("Channel");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
 
         this.setupZoomEvent();
+        this.setupContextEvent();
     }
 
     //TODO: Find a non-manual way to do this
@@ -44,30 +47,63 @@ class CanvasManager {
         this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
         this.tools[Via.typeString()] = new ValveTool(Via);
         this.tools["pan"] = new PanTool();
+        //this.tools["none"] = new paper.Tool();
     }
 
     selectTool(typeString){
         this.tools[typeString].activate();
+        this.currentTool = this.tools[typeString];
     }
 
     snapToGrid(point){
         return GridGenerator.snapToGrid(point, this.gridSpacing);
     }
 
+    setupMouseEvents(){
+        var manager = this;
+        this.canvas.onmousedown = function(e){
+            console.log("foo");
+            if(e.which == 2) {
+                manager.currentTool.abort();
+                manager.tools["pan"].activate();
+                manager.tools["pan"].startPoint = manager.canvasToProject(e.clientX, e.clientY);
+            } else if (e.which == 3){
+                manager.currentTool.abort();
+            }
+        }
+        this.canvas.onmouseup = function(e){
+            if(e.which == 2 || 3){
+                manager.currentTool.activate();
+            }
+        }
+    }
+
+    setupContextEvent(){
+        this.canvas.oncontextmenu = function(e){
+            console.log("Context menu!");
+            e.preventDefault();
+        }
+    }
+
     setupZoomEvent() {
         let min = this.minZoom;
         let max = this.maxZoom;
         let canvas = this.canvas;
+        let manager = this;
 
         this.canvas.addEventListener("wheel", function(event){
-            let rect = canvas.getBoundingClientRect();
-            let x = event.clientX - rect.left;
-            let y = event.clientY - rect.top;
             if (paper.view.zoom >= max && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");
             else if (paper.view.zoom <= min && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");
-            else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
+            else PanAndZoom.adjustZoom(event.deltaY, manager.canvasToProject(event.clientX, event.clientY));
             }, false);
 
+    }
+
+    canvasToProject(x, y) {
+        let rect = this.canvas.getBoundingClientRect();
+        let projX = x - rect.left;
+        let projY = y - rect.top;
+        return (paper.view.viewToProject(new paper.Point(projX,projY)));
     }
 
     renderFeature(feature, forceUpdate = true){

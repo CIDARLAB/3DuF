@@ -33,6 +33,16 @@ class ChannelTool extends paper.Tool{
 		return ret;
 	}
 
+	abort(){
+		if (this.currentTarget){
+			this.currentTarget.remove();
+		}
+		if (this.currentChannelID){
+			Registry.currentLayer.removeFeatureByID(this.currentChannelID);
+		}
+		Registry.canvasManager.render();
+	}
+
 	showTarget(point){
 		if (this.currentTarget){
 			this.currentTarget.remove();
