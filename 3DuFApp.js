@@ -1365,6 +1365,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Parameter = require("../parameter");
+var NumberUtils = require("../../utils/numberUtils");
 
 var FloatValue = (function (_Parameter) {
     _inherits(FloatValue, _Parameter);
@@ -1379,7 +1380,8 @@ var FloatValue = (function (_Parameter) {
     _createClass(FloatValue, null, [{
         key: "isInvalid",
         value: function isInvalid(value) {
-            if (!Number.isFinite(value) || value < 0) return true;else return false;
+            //if (!Number.isFinite(value) || value < 0) return true;
+            if (value < 0 || !NumberUtils.isFloat(value) && !NumberUtils.isInteger(value)) return true;else return false;
         }
     }, {
         key: "typeString",
@@ -1394,7 +1396,7 @@ var FloatValue = (function (_Parameter) {
 Parameter.registerParamType(FloatValue.typeString(), FloatValue);
 module.exports = FloatValue;
 
-},{"../parameter":13}],16:[function(require,module,exports){
+},{"../../utils/numberUtils":29,"../parameter":13}],16:[function(require,module,exports){
 /*
 
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
@@ -1423,6 +1425,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Parameter = require("../parameter");
+var NumberUtils = require("../../utils/numberUtils");
 
 var IntegerValue = (function (_Parameter) {
     _inherits(IntegerValue, _Parameter);
@@ -1437,7 +1440,7 @@ var IntegerValue = (function (_Parameter) {
     _createClass(IntegerValue, null, [{
         key: "isInvalid",
         value: function isInvalid(value) {
-            if (!Number.isInteger(value) || value < 0) return true;else return false;
+            if (!NumberUtils.isInteger(value) || value < 0) return true;else return false;
         }
     }, {
         key: "typeString",
@@ -1452,7 +1455,7 @@ var IntegerValue = (function (_Parameter) {
 Parameter.registerParamType(IntegerValue.typeString(), IntegerValue);
 module.exports = IntegerValue;
 
-},{"../parameter":13}],18:[function(require,module,exports){
+},{"../../utils/numberUtils":29,"../parameter":13}],18:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1464,6 +1467,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Parameter = require("../parameter");
+var NumberUtils = require("../../utils/numberUtils");
 
 var PointValue = (function (_Parameter) {
     _inherits(PointValue, _Parameter);
@@ -1478,7 +1482,7 @@ var PointValue = (function (_Parameter) {
     _createClass(PointValue, null, [{
         key: "isInvalid",
         value: function isInvalid(value) {
-            if (value.length != 2 || !Number.isFinite(value[0]) || !Number.isFinite(value[1])) return true;else return false;
+            if (value.length != 2 || !NumberUtils.isFloatOrInt(value[0]) || !NumberUtils.isFloatOrInt(value[1])) return true;else return false;
         }
     }, {
         key: "typeString",
@@ -1493,7 +1497,7 @@ var PointValue = (function (_Parameter) {
 Parameter.registerParamType(PointValue.typeString(), PointValue);
 module.exports = PointValue;
 
-},{"../parameter":13}],19:[function(require,module,exports){
+},{"../../utils/numberUtils":29,"../parameter":13}],19:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1749,11 +1753,14 @@ var CanvasManager = (function () {
         value: function setupZoomEvent() {
             var min = this.minZoom;
             var max = this.maxZoom;
-            this.canvas.onmousewheel = function (event) {
-                var x = event.layerX;
-                var y = event.layerY;
+            var canvas = this.canvas;
+
+            this.canvas.addEventListener("wheel", function (event) {
+                var rect = canvas.getBoundingClientRect();
+                var x = event.clientX - rect.left;
+                var y = event.clientY - rect.top;
                 if (paper.view.zoom >= max && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");else if (paper.view.zoom <= min && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
-            };
+            }, false);
         }
     }, {
         key: "renderFeature",
@@ -2244,4 +2251,23 @@ var ValveTool = (function (_paper$Tool) {
 
 module.exports = ValveTool;
 
-},{"../../core/features":10,"../../core/registry":21}]},{},[2]);
+},{"../../core/features":10,"../../core/registry":21}],29:[function(require,module,exports){
+"use strict";
+
+function isFloat(n) {
+    return n === +n && n !== (n | 0);
+}
+
+function isInteger(n) {
+    return n === +n && n === (n | 0);
+}
+
+function isFloatOrInt(n) {
+    return isFloat(n) || isInteger(n);
+}
+
+module.exports.isFloat = isFloat;
+module.exports.isInteger = isInteger;
+module.exports.isFloatOrInt = isFloatOrInt;
+
+},{}]},{},[2]);
