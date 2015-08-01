@@ -19,7 +19,7 @@ class PanAndZoom {
 
 	// Stable pan and zoom modified from: http://matthiasberth.com/articles/stable-zoom-and-pan-in-paperjs/
 
-	static calcZoom(delta, multiplier = 1.1) {
+	static calcZoom(delta, multiplier = 1.177827941003) {
 		if (delta < 0) return paper.view.zoom * multiplier;
 		else if (delta > 0) return paper.view.zoom / multiplier;
 		else return paper.view.zoom;

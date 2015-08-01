@@ -315,27 +315,6 @@ window.onload = function () {
     manager.updateGridSpacing();
 };
 
-/*
-
-var paperFunctions = require("./paperFunctions");
-
-paper.install(window);
-paper.setup("c");
-
-window.onload = function(){
-    paperFunctions.setup()
-    //paperFunctions.channel([100,100],[200,200],20);
-};
-
-document.getElementById("c").onmousewheel = function(event){
-    view.zoom = paperFunctions.changeZoom(view.zoom, event.wheelDelta);
-    console.log(event.offsetX);
-}
-
-
-
-*/
-
 },{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22}],3:[function(require,module,exports){
 "use strict";
 
@@ -377,6 +356,23 @@ var Device = (function () {
                 return a.params.getValue("z_offset") - b.params.getValue("z_offset");
             });
         }
+    }, {
+        key: "getLayerFromFeatureID",
+        value: function getLayerFromFeatureID(featureID) {
+            for (var i = 0; i < this.layers.length; i++) {
+                var layer = this.layers[i];
+                if (layer.containsFeatureID(featureID)) {
+                    return layer;
+                }
+            }
+            throw new Error("FeatureID " + featureID + " not found in any layer.");
+        }
+    }, {
+        key: "getFeatureByID",
+        value: function getFeatureByID(featureID) {
+            var layer = this.getLayerFromFeatureID(featureID);
+            return layer.getFeature(featureID);
+        }
 
         /* Add a layer, and re-sort the layers array.*/
     }, {
@@ -384,6 +380,17 @@ var Device = (function () {
         value: function addLayer(layer) {
             this.layers.push(layer);
             this.sortLayers();
+        }
+    }, {
+        key: "removeFeature",
+        value: function removeFeature(feature) {
+            this.removeFeatureByID(feature.id);
+        }
+    }, {
+        key: "removeFeatureByID",
+        value: function removeFeatureByID(featureID) {
+            var layer = this.getLayerFromFeatureID(featureID);
+            layer.removeFeatureByID(featureID);
         }
     }, {
         key: "addGroup",
@@ -633,6 +640,7 @@ var CircleValve = (function (_Feature) {
 
             var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
             c1.fillColor = new paper.Color(1, 0, 0);
+            c1.featureID = this.id;
             return c1;
         }
     }], [{
@@ -736,11 +744,12 @@ var HollowChannel = (function (_Feature) {
             });
             rec.translate([-width / 4, -width / 4]);
             rec.rotate(vec.angle, start);
-
-            return new paper.CompoundPath({
+            var comp = new paper.CompoundPath({
                 children: [ori, rec],
                 fillColor: new paper.Color(0, 0, 0)
             });
+            comp.featureID = this.id;
+            return comp;
         }
     }], [{
         key: "getUniqueParameters",
@@ -828,6 +837,7 @@ var Port = (function (_Feature) {
 
             var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
             c1.fillColor = new paper.Color(.5, 0, .5);
+            c1.featureID = this.id;
             return c1;
         }
     }], [{
@@ -916,6 +926,7 @@ var Via = (function (_Feature) {
 
             var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
             c1.fillColor = new paper.Color(.2, 1, .3);
+            c1.featureID = this.id;
             return c1;
         }
     }], [{
@@ -1014,6 +1025,7 @@ var Channel = (function (_Feature) {
             rec.translate([-width / 2, -width / 2]);
             rec.rotate(vec.angle, start);
             rec.fillColor = new paper.Color(0, 0, 1);
+            rec.featureID = this.id;
             return rec;
         }
     }], [{
@@ -1396,7 +1408,7 @@ var FloatValue = (function (_Parameter) {
 Parameter.registerParamType(FloatValue.typeString(), FloatValue);
 module.exports = FloatValue;
 
-},{"../../utils/numberUtils":29,"../parameter":13}],16:[function(require,module,exports){
+},{"../../utils/numberUtils":30,"../parameter":13}],16:[function(require,module,exports){
 /*
 
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
@@ -1455,7 +1467,7 @@ var IntegerValue = (function (_Parameter) {
 Parameter.registerParamType(IntegerValue.typeString(), IntegerValue);
 module.exports = IntegerValue;
 
-},{"../../utils/numberUtils":29,"../parameter":13}],18:[function(require,module,exports){
+},{"../../utils/numberUtils":30,"../parameter":13}],18:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1497,7 +1509,7 @@ var PointValue = (function (_Parameter) {
 Parameter.registerParamType(PointValue.typeString(), PointValue);
 module.exports = PointValue;
 
-},{"../../utils/numberUtils":29,"../parameter":13}],19:[function(require,module,exports){
+},{"../../utils/numberUtils":30,"../parameter":13}],19:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1703,6 +1715,7 @@ var Via = Features.Via;
 var ChannelTool = Tools.ChannelTool;
 var ValveTool = Tools.ValveTool;
 var PanTool = Tools.PanTool;
+var SelectTool = Tools.SelectTool;
 
 var CanvasManager = (function () {
     function CanvasManager(canvas) {
@@ -1714,14 +1727,14 @@ var CanvasManager = (function () {
         this.tools = {};
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
-        this.gridSpacing = 10;
-        this.thickCount = 5;
+        this.gridSpacing = 1000;
+        this.thickCount = 10;
         this.minZoom = .00001;
         this.maxZoom = 10;
         this.currentTool = null;
         this.setupMouseEvents();
         this.generateTools();
-        this.selectTool("Channel");
+        this.selectTool("select");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
 
@@ -1741,6 +1754,7 @@ var CanvasManager = (function () {
             this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
             this.tools[Via.typeString()] = new ValveTool(Via);
             this.tools["pan"] = new PanTool();
+            this.tools["select"] = new SelectTool();
             //this.tools["none"] = new paper.Tool();
         }
     }, {
@@ -1748,6 +1762,19 @@ var CanvasManager = (function () {
         value: function selectTool(typeString) {
             this.tools[typeString].activate();
             this.currentTool = this.tools[typeString];
+        }
+
+        //TODO: Hit test only features instead of the whole device
+    }, {
+        key: "hitFeatureInDevice",
+        value: function hitFeatureInDevice(point) {
+            var hitOptions = {
+                fill: true,
+                tolerance: 5,
+                guides: false
+            };
+            var hitResult = this.paperDevice.hitTest(point, hitOptions);
+            if (hitResult) return hitResult.item;else return false;
         }
     }, {
         key: "snapToGrid",
@@ -1869,7 +1896,7 @@ var CanvasManager = (function () {
             while (this.gridSpacing > max) {
                 this.gridSpacing = this.gridSpacing / 10;
             }
-            this.render();
+            this.renderGrid();
         }
     }, {
         key: "adjustZoom",
@@ -1881,7 +1908,7 @@ var CanvasManager = (function () {
         value: function setZoom(zoom) {
             paper.view.zoom = zoom;
             this.updateGridSpacing();
-            this.render();
+            this.renderGrid();
         }
     }, {
         key: "moveCenter",
@@ -1893,7 +1920,7 @@ var CanvasManager = (function () {
         key: "setCenter",
         value: function setCenter(x, y) {
             paper.view.center = new paper.Point(x, y);
-            this.render();
+            this.renderGrid();
         }
     }, {
         key: "saveToStorage",
@@ -1914,7 +1941,7 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/device":3,"../core/features":10,"../core/registry":21,"./gridGenerator":23,"./panAndZoom":24,"./tools":26}],23:[function(require,module,exports){
+},{"../core/device":3,"../core/features":10,"../core/registry":21,"./gridGenerator":23,"./panAndZoom":24,"./tools":27}],23:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2086,7 +2113,7 @@ var PanAndZoom = (function () {
 	}, {
 		key: "calcZoom",
 		value: function calcZoom(delta) {
-			var multiplier = arguments.length <= 1 || arguments[1] === undefined ? 1.1 : arguments[1];
+			var multiplier = arguments.length <= 1 || arguments[1] === undefined ? 1.177827941003 : arguments[1];
 
 			if (delta < 0) return paper.view.zoom * multiplier;else if (delta > 0) return paper.view.zoom / multiplier;else return paper.view.zoom;
 		}
@@ -2105,6 +2132,93 @@ var PanAndZoom = (function () {
 module.exports = PanAndZoom;
 
 },{"../core/registry":21}],25:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Registry = require("../../core/registry");
+
+var SelectTool = (function (_paper$Tool) {
+	_inherits(SelectTool, _paper$Tool);
+
+	function SelectTool() {
+		_classCallCheck(this, SelectTool);
+
+		_get(Object.getPrototypeOf(SelectTool.prototype), "constructor", this).call(this);
+		this.currentPaperElement = null;
+		this.currentFeature = null;
+		this.onMouseDown = function (event) {
+			this.testAndSelect(event.point);
+		};
+		this.onKeyDown = function (event) {
+			this.keyHandler(event);
+		};
+	}
+
+	_createClass(SelectTool, [{
+		key: "keyHandler",
+		value: function keyHandler(event) {
+			if (event.key == "delete" || event.key == "backspace") {
+				this.removeFeature();
+			}
+		}
+	}, {
+		key: "removeFeature",
+		value: function removeFeature() {
+			if (this.currentFeature) {
+				Registry.currentDevice.removeFeature(this.currentFeature);
+				this.currentPaperElement.remove();
+				Registry.canvasManager.render();
+			}
+		}
+	}, {
+		key: "testAndSelect",
+		value: function testAndSelect(point) {
+			var target = this.hitFeature(point);
+			if (target) {
+				if (target == this.currentPaperElement) console.log("Doubleclick?");else this.selectFeature(target);
+			} else this.deselectFeature();
+		}
+	}, {
+		key: "hitFeature",
+		value: function hitFeature(point) {
+			var target = Registry.canvasManager.hitFeatureInDevice(point);
+			return target;
+		}
+	}, {
+		key: "selectFeature",
+		value: function selectFeature(paperElement) {
+			this.deselectFeature();
+			this.currentPaperElement = paperElement;
+			this.currentFeature = Registry.currentDevice.getFeatureByID(paperElement.featureID);
+			paperElement.selected = true;
+		}
+	}, {
+		key: "deselectFeature",
+		value: function deselectFeature() {
+			if (this.currentPaperElement) this.currentPaperElement.selected = false;
+			this.currentPaperElement = null;
+			this.currentFeature = null;
+		}
+	}, {
+		key: "abort",
+		value: function abort() {
+			this.deselectFeature();
+		}
+	}]);
+
+	return SelectTool;
+})(paper.Tool);
+
+module.exports = SelectTool;
+
+},{"../../core/registry":21}],26:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2232,14 +2346,15 @@ var ChannelTool = (function (_paper$Tool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/features":10,"../../core/registry":21}],26:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21}],27:[function(require,module,exports){
 "use strict";
 
 module.exports.ChannelTool = require("./channelTool");
 module.exports.ValveTool = require("./valveTool");
 module.exports.PanTool = require("./panTool");
+module.exports.SelectTool = require("./SelectTool");
 
-},{"./channelTool":25,"./panTool":27,"./valveTool":28}],27:[function(require,module,exports){
+},{"./SelectTool":25,"./channelTool":26,"./panTool":28,"./valveTool":29}],28:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2288,7 +2403,7 @@ var PanTool = (function (_paper$Tool) {
 
 module.exports = PanTool;
 
-},{"../../core/registry":21}],28:[function(require,module,exports){
+},{"../../core/registry":21}],29:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2334,7 +2449,7 @@ var ValveTool = (function (_paper$Tool) {
 
 module.exports = ValveTool;
 
-},{"../../core/features":10,"../../core/registry":21}],29:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21}],30:[function(require,module,exports){
 "use strict";
 
 function isFloat(n) {

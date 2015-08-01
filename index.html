@@ -19,15 +19,12 @@
 <script>
 
 var resizeCanvas = function(){
-  console.log("Resizing");
   var leftoverWidth;
   var left;
   if ($('#button_block').css('display') != 'none'){
-    console.log("Visible");
     left = $('#button_block').width();
     leftoverWidth = $(window).width() - left;   
   } else {
-    console.log("invisible");
     leftoverWidth = $(window).width();
     left = 0;
   }
@@ -35,7 +32,6 @@ var resizeCanvas = function(){
   $('#canvas_block').offset({left: left});
   //$('#c').width(leftoverWidth);
   //$('#c').offset({left:left});
-  console.log("Set width to: ", leftoverWidth);
 }
 </script>
 
