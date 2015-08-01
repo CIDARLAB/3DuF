@@ -67,11 +67,12 @@ class HollowChannel extends Feature {
         });
         rec.translate([-width/4, -width / 4]);
         rec.rotate(vec.angle, start);
-
-        return new paper.CompoundPath({
+        let comp = new paper.CompoundPath({
             children: [ori, rec],
-            fillColor: new paper.Color(0,0,0)
+            fillColor: new paper.Color(0,0,0)  
         });
+        comp.featureID = this.id;
+        return comp;
     }
 }
 

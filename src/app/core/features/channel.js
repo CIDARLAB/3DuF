@@ -61,6 +61,7 @@ class Channel extends Feature {
         rec.translate([-width/2, -width / 2]);
         rec.rotate(vec.angle, start);
         rec.fillColor = new paper.Color(0,0,1);
+        rec.featureID = this.id;
         return rec;
     }
 }

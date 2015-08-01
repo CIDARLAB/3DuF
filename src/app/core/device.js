@@ -25,10 +25,34 @@ class Device {
         });
     }
 
+    getLayerFromFeatureID(featureID){
+        for (let i = 0; i < this.layers.length; i ++){
+            let layer = this.layers[i];
+            if (layer.containsFeatureID(featureID)){
+                return layer;
+            } 
+        } 
+        throw new Error("FeatureID " + featureID + " not found in any layer.");
+    }
+
+    getFeatureByID(featureID){
+        let layer =  this.getLayerFromFeatureID(featureID);
+        return layer.getFeature(featureID);
+    }
+
     /* Add a layer, and re-sort the layers array.*/
     addLayer(layer) {
         this.layers.push(layer);
         this.sortLayers();
+    }
+    
+    removeFeature(feature){
+        this.removeFeatureByID(feature.id);
+    }
+
+    removeFeatureByID(featureID){
+        let layer = this.getLayerFromFeatureID(featureID);
+        layer.removeFeatureByID(featureID);
     }
 
     addGroup(group) {

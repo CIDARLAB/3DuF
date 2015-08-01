@@ -53,6 +53,7 @@ class Port extends Feature {
 
         let c1 = new paper.Path.Circle(new paper.Point(position), radius1);
         c1.fillColor = new paper.Color(.5,0,.5);
+        c1.featureID = this.id;
         return c1;
     }
 }

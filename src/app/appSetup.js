@@ -62,24 +62,3 @@ window.onload = function(){
     manager.setZoom(.04);
     manager.updateGridSpacing();
 };
-
-/*
-
-var paperFunctions = require("./paperFunctions");
-
-paper.install(window);
-paper.setup("c");
-
-window.onload = function(){
-    paperFunctions.setup()
-    //paperFunctions.channel([100,100],[200,200],20);
-};
-
-document.getElementById("c").onmousewheel = function(event){
-    view.zoom = paperFunctions.changeZoom(view.zoom, event.wheelDelta);
-    console.log(event.offsetX);
-}
-
-
-
-*/
