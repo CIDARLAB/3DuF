@@ -1,4 +1,5 @@
 var Parameter = require("../parameter");
+var NumberUtils = require("../../utils/numberUtils");
 
 class FloatValue extends Parameter {
     constructor(value) {
@@ -7,7 +8,8 @@ class FloatValue extends Parameter {
     }
 
     static isInvalid(value) {
-        if (!Number.isFinite(value) || value < 0) return true;
+        //if (!Number.isFinite(value) || value < 0) return true;
+        if (value < 0 || !NumberUtils.isFloat(value) && !NumberUtils.isInteger(value)) return true;
         else return false;
     }
 
