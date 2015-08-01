@@ -8,6 +8,7 @@ class PanTool extends paper.Tool{
 		this.onMouseDown = function(event){
 			this.startPoint = event.point;
 		};	
+
 		this.onMouseDrag = function(event){
 			if(this.startPoint){
 				let delta = event.point.subtract(this.startPoint);
@@ -17,6 +18,10 @@ class PanTool extends paper.Tool{
 		this.onMouseUp = function(event){
 			this.startPoint = null;
 		}
+	}
+
+	abort(){
+		this.startPoint = null;
 	}
 }
 

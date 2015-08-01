@@ -1718,12 +1718,15 @@ var CanvasManager = (function () {
         this.thickCount = 5;
         this.minZoom = .00001;
         this.maxZoom = 10;
+        this.currentTool = null;
+        this.setupMouseEvents();
         this.generateTools();
-        this.selectTool("pan");
+        this.selectTool("Channel");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
 
         this.setupZoomEvent();
+        this.setupContextEvent();
     }
 
     //TODO: Find a non-manual way to do this
@@ -1737,11 +1740,13 @@ var CanvasManager = (function () {
             this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
             this.tools[Via.typeString()] = new ValveTool(Via);
             this.tools["pan"] = new PanTool();
+            //this.tools["none"] = new paper.Tool();
         }
     }, {
         key: "selectTool",
         value: function selectTool(typeString) {
             this.tools[typeString].activate();
+            this.currentTool = this.tools[typeString];
         }
     }, {
         key: "snapToGrid",
@@ -1749,18 +1754,52 @@ var CanvasManager = (function () {
             return GridGenerator.snapToGrid(point, this.gridSpacing);
         }
     }, {
+        key: "setupMouseEvents",
+        value: function setupMouseEvents() {
+            var manager = this;
+            this.canvas.onmousedown = function (e) {
+                console.log("foo");
+                if (e.which == 2) {
+                    manager.currentTool.abort();
+                    manager.tools["pan"].activate();
+                    manager.tools["pan"].startPoint = manager.canvasToProject(e.clientX, e.clientY);
+                } else if (e.which == 3) {
+                    manager.currentTool.abort();
+                }
+            };
+            this.canvas.onmouseup = function (e) {
+                if (e.which == 2 || 3) {
+                    manager.currentTool.activate();
+                }
+            };
+        }
+    }, {
+        key: "setupContextEvent",
+        value: function setupContextEvent() {
+            this.canvas.oncontextmenu = function (e) {
+                console.log("Context menu!");
+                e.preventDefault();
+            };
+        }
+    }, {
         key: "setupZoomEvent",
         value: function setupZoomEvent() {
             var min = this.minZoom;
             var max = this.maxZoom;
             var canvas = this.canvas;
+            var manager = this;
 
             this.canvas.addEventListener("wheel", function (event) {
-                var rect = canvas.getBoundingClientRect();
-                var x = event.clientX - rect.left;
-                var y = event.clientY - rect.top;
-                if (paper.view.zoom >= max && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");else if (paper.view.zoom <= min && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");else PanAndZoom.adjustZoom(event.deltaY, paper.view.viewToProject(new paper.Point(x, y)));
+                if (paper.view.zoom >= max && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");else if (paper.view.zoom <= min && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");else PanAndZoom.adjustZoom(event.deltaY, manager.canvasToProject(event.clientX, event.clientY));
             }, false);
+        }
+    }, {
+        key: "canvasToProject",
+        value: function canvasToProject(x, y) {
+            var rect = this.canvas.getBoundingClientRect();
+            var projX = x - rect.left;
+            var projY = y - rect.top;
+            return paper.view.viewToProject(new paper.Point(projX, projY));
         }
     }, {
         key: "renderFeature",
@@ -2101,6 +2140,17 @@ var ChannelTool = (function (_paper$Tool) {
 	}
 
 	_createClass(ChannelTool, [{
+		key: "abort",
+		value: function abort() {
+			if (this.currentTarget) {
+				this.currentTarget.remove();
+			}
+			if (this.currentChannelID) {
+				Registry.currentLayer.removeFeatureByID(this.currentChannelID);
+			}
+			Registry.canvasManager.render();
+		}
+	}, {
 		key: "showTarget",
 		value: function showTarget(point) {
 			if (this.currentTarget) {
@@ -2181,6 +2231,8 @@ module.exports.PanTool = require("./panTool");
 },{"./channelTool":25,"./panTool":27,"./valveTool":28}],27:[function(require,module,exports){
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2201,6 +2253,7 @@ var PanTool = (function (_paper$Tool) {
 		this.onMouseDown = function (event) {
 			this.startPoint = event.point;
 		};
+
 		this.onMouseDrag = function (event) {
 			if (this.startPoint) {
 				var delta = event.point.subtract(this.startPoint);
@@ -2212,6 +2265,13 @@ var PanTool = (function (_paper$Tool) {
 		};
 	}
 
+	_createClass(PanTool, [{
+		key: "abort",
+		value: function abort() {
+			this.startPoint = null;
+		}
+	}]);
+
 	return PanTool;
 })(paper.Tool);
 
@@ -2219,6 +2279,8 @@ module.exports = PanTool;
 
 },{"../../core/registry":21}],28:[function(require,module,exports){
 "use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
@@ -2237,14 +2299,24 @@ var ValveTool = (function (_paper$Tool) {
 
 		_get(Object.getPrototypeOf(ValveTool.prototype), "constructor", this).call(this);
 		this.valveClass = valveClass;
+		this.currentValveID = null;
 		this.onMouseDown = function (event) {
 			var newValve = new this.valveClass({
 				"position": [event.point.x, event.point.y]
 			});
+			this.currentValveID = newValve.id;
 			Registry.currentLayer.addFeature(newValve);
 			Registry.canvasManager.render();
 		};
 	}
+
+	_createClass(ValveTool, [{
+		key: "abort",
+		value: function abort() {
+			Registry.currentLayer.removeFeatureByID(this.currentValveID);
+			Registry.canvasManager.render();
+		}
+	}]);
 
 	return ValveTool;
 })(paper.Tool);
