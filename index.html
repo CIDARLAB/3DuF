@@ -16,9 +16,32 @@
     <link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="lib/bootstrap/bootstrap-theme.min.css">
 
+<script>
+
+var resizeCanvas = function(){
+  console.log("Resizing");
+  var leftoverWidth;
+  var left;
+  if ($('#button_block').css('display') != 'none'){
+    console.log("Visible");
+    left = $('#button_block').width();
+    leftoverWidth = $(window).width() - left;   
+  } else {
+    console.log("invisible");
+    leftoverWidth = $(window).width();
+    left = 0;
+  }
+  $('#canvas_block').width(leftoverWidth);
+  $('#canvas_block').offset({left: left});
+  //$('#c').width(leftoverWidth);
+  //$('#c').offset({left:left});
+  console.log("Set width to: ", leftoverWidth);
+}
+</script>
+
 </head>
 
-<body>
+<body onresize="resizeCanvas()">
   <div class="container">
     <div class="row">
       <div id="canvas_block" class="container"> 
@@ -52,12 +75,9 @@
 </body>
 
 <script>
-console.log($(window).width());
-var leftoverWidth = $(window).width() - $('#button_block').width();
-console.log(leftoverWidth);
-$('#canvas_block').width(leftoverWidth);
-
+resizeCanvas();
 </script>
+
 
 <script src="3DuFApp.js"></script>
 
