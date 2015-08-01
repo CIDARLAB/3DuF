@@ -53,23 +53,27 @@ class ChannelTool extends paper.Tool{
 
 	initChannel(point){
 		this.startPoint = ChannelTool.getTarget(point);
-		let newChannel = this.createChannel(this.startPoint, this.startPoint);
-		this.currentChannelID = newChannel.id;
-		Registry.currentLayer.addFeature(newChannel);
-		Registry.canvasManager.render();
 	}
 
 	//TODO: Re-render only the current channel, to improve perforamnce
 	updateChannel(point){
-		let target = ChannelTool.getTarget(point);
-		let feat = Registry.currentLayer.getFeature(this.currentChannelID);
-		feat.updateParameter("end", [target.x, target.y]);
-		Registry.canvasManager.render();
+		if(this.currentChannelID){
+			let target = ChannelTool.getTarget(point);
+			let feat = Registry.currentLayer.getFeature(this.currentChannelID);
+			feat.updateParameter("end", [target.x, target.y]);
+			Registry.canvasManager.render();
+		} else {
+			let newChannel = this.createChannel(this.startPoint, this.startPoint);
+			this.currentChannelID = newChannel.id;
+			Registry.currentLayer.addFeature(newChannel);
+		}
+		
 	}
 
 	finishChannel(point){
-		if (this.currentChannel){
-			if (this.startPoint.x == point.x && this.startPoint.y == point.y){
+		let target = ChannelTool.getTarget(point);
+		if (this.currentChannelID){
+			if (this.startPoint.x == target.x && this.startPoint.y == target.y){
 				Registry.currentLayer.removeFeatureByID(this.currentChannelID);
 				//TODO: This will be slow for complex devices, since it re-renders everything
 				Registry.canvasManager.render();
