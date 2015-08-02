@@ -1,9 +1,7 @@
-var appRoot = "../../";
-
-var Feature = require(appRoot + 'core/feature');
-var Registry = require(appRoot +'core/registry');
-var Parameters = require(appRoot +'core/parameters');
-var Params = require(appRoot + 'core/params');
+var Feature = require('../feature');
+var Registry = require('../registry');
+var Parameters = require('../parameters');
+var Params = require('../params');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -33,12 +31,31 @@ class Via extends Feature {
         };
     }
 
-    static getDefaultParams() {
+    static getDefaultValues() {
         return {
-            "radius1": .6,
-            "radius2": .4,
-            "height": .8
+            "radius1": .6 * 1000,
+            "radius2": .4 * 1000,
+            "height": .8 * 1000
         };
+    }
+
+    render2D() {
+        let position = this.params.getValue("position");
+        let radius1;
+
+        //TODO: figure out inheritance pattern for values!
+
+        try {
+            radius1 = this.params.getValue("radius1");
+        } catch (err) {
+            radius1 = Via.getDefaultValues()["radius1"];
+        }
+
+
+        let c1 = new paper.Path.Circle(new paper.Point(position), radius1);
+        c1.fillColor = new paper.Color(.2,1,.3);
+        c1.featureID = this.id;
+        return c1;
     }
 }
 

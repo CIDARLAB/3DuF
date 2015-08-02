@@ -9,9 +9,6 @@ var StringValue = Parameters.StringValue;
 class Layer {
     constructor(values, name = "New Layer") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
-        if (name == undefined) {
-            throw new Error("Cannot create feature with undefined values. name: " + name);
-        }
         this.name = new StringValue(name);
         this.features = {};
         this.featureCount = 0;
@@ -54,7 +51,13 @@ class Layer {
 
     removeFeature(feature) {
         this.__ensureFeatureExists(feature);
-        this.features[feature.id] = undefined;
+        delete this.features[feature.id];
+        this.featureCount -= 1;
+    }
+
+    removeFeatureByID(featureID){
+        this.__ensureFeatureIDExists(featureID);
+        delete this.features[featureID];
         this.featureCount -= 1;
     }
 
@@ -67,11 +70,20 @@ class Layer {
         return this.features.hasOwnProperty(featureID);
     }
 
+    __renderFeatures2D(){
+        let output = [];
+        for (let i in this.features){
+            output.push(this.features[i].render2D());
+        }
+        return output;
+    }
+
     __featuresToJSON() {
         let output = {};
         for (let i in this.features) {
             output[i] = this.features[i].toJSON();
         }
+        return output;
     }
 
     __loadFeaturesFromJSON(json) {
@@ -96,6 +108,10 @@ class Layer {
         let newLayer = new Layer(json.params, json.name);
         newLayer.__loadFeaturesFromJSON(json.features);
         return newLayer;
+    }
+
+    render2D(paperScope){
+        return this.__renderFeatures2D();
     }
 }
 
