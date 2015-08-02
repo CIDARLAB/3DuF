@@ -43,22 +43,16 @@ var chan2 = new Channel({
 });
 flow.addFeature(chan2);
 
-Registry.currentDevice = dev;
-Registry.currentLayer = dev.layers[0];
-
 paper.setup("c");
 
 window.onload = function(){
     manager = new CanvasManager(document.getElementById("c"));
-    manager.render();
 
     window.dev = dev;
     window.Channel = Channel;
     window.man = manager;
     window.Features = Features;
     window.Registry = Registry;
-    let canvas = document.getElementById("c");
-    paper.view.center = new paper.Point(30 * 1000, 30 * 1000);
-    manager.setZoom(.04);
-    manager.updateGridSpacing();
+
+    manager.loadDeviceFromJSON(dev.toJSON());
 };
