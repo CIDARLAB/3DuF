@@ -3,37 +3,77 @@ var Registry = require("../../core/registry");
 class SelectTool extends paper.Tool{
 	constructor(){
 		super();
-		this.currentPaperElement = null;
-		this.currentFeature = null;
+		this.dragStart = null;
+		this.currentSelectBox = null;
+		this.currentSelection = [];
 		this.onMouseDown = function(event){
-			this.testAndSelect(event.point);
+			this.mouseDownHandler(event.point);
 		};	
 		this.onKeyDown = function(event){
 			this.keyHandler(event);
 		};
+		this.onMouseDrag = function(event){
+			this.dragHandler(event.point);
+		}
+		this.onMouseUp = function(event){
+			this.mouseUpHandler(event.point);
+		}
 	}
 
 	keyHandler(event){
 		if (event.key == "delete" || event.key == "backspace"){
-			this.removeFeature();
+			this.removeFeatures();
 		}
 	}
 
-	removeFeature(){
-		if (this.currentFeature){
-			Registry.currentDevice.removeFeature(this.currentFeature);
-			this.currentPaperElement.remove();
+	dragHandler(point){
+		if (this.dragStart){
+			if (this.currentSelectBox){
+				this.currentSelectBox.remove();
+			}
+			this.currentSelectBox = this.rectSelect(this.dragStart, point);
+		}
+	}
+
+	mouseUpHandler(point){
+		if (this.currentSelectBox){
+			this.currentSelection = Registry.canvasManager.hitFeaturesWithPaperElement(this.currentSelectBox)
+			this.selectFeatures();
+		}
+		this.killSelectBox();
+	}
+
+	removeFeatures(){
+		if (this.currentSelection.length > 0){
+			for (let i =0; i < this.currentSelection.length; i ++){
+				let paperFeature = this.currentSelection[i];
+				Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
+			}
+			this.currentSelection = [];
 			Registry.canvasManager.render();
 		}
 	}
 
-	testAndSelect(point){
+	mouseDownHandler(point){
 		let target = this.hitFeature(point);
-		if (target) {
-			if (target == this.currentPaperElement) console.log("Doubleclick?");
-			else this.selectFeature(target);
+		if(target){
+			if (target.selected) console.log("Doubleclick?");
+			else {
+				this.deselectFeatures();
+				this.selectFeature(target);
+			}
+		} else {
+			this.deselectFeatures();
+			this.dragStart = point;
 		}
-		else this.deselectFeature();
+	}
+
+	killSelectBox(){
+		if (this.currentSelectBox){
+			this.currentSelectBox.remove();
+			this.currentSelectBox = null;
+		}
+		this.dragStart = null;
 	}
 
 	hitFeature(point){
@@ -42,20 +82,42 @@ class SelectTool extends paper.Tool{
 	}
 
 	selectFeature(paperElement){
-		this.deselectFeature();
-		this.currentPaperElement = paperElement;
-		this.currentFeature = Registry.currentDevice.getFeatureByID(paperElement.featureID);
+		this.currentSelection.push(paperElement);
 		paperElement.selected = true;
 	}
 
-	deselectFeature(){
-		if (this.currentPaperElement) this.currentPaperElement.selected = false;
-		this.currentPaperElement = null;
-		this.currentFeature = null;
+	selectFeatures(){
+		if (this.currentSelection){
+			for (let i =0; i < this.currentSelection.length; i ++){
+				let paperFeature = this.currentSelection[i];
+				paperFeature.selected = true;
+			}
+		} 
+	}
+
+	deselectFeatures(){
+		if (this.currentSelection){
+			for (let i =0; i < this.currentSelection.length; i ++){
+				let paperFeature = this.currentSelection[i];
+				paperFeature.selected = false;
+			}
+		} 
+		this.currentSelection = [];
 	}
 
 	abort(){
-		this.deselectFeature();
+		this.deselectFeatures();
+		this.killSelectBox();
+		Registry.canvasManager.render();
+	}
+
+	rectSelect(point1, point2){
+		let rect = new paper.Path.Rectangle(point1, point2);
+		rect.fillColor = new paper.Color(0,.3,1,.4);
+		rect.strokeColor = new paper.Color(0,0,0);
+		rect.strokeWidth = 2;
+		rect.selected = true;
+		return rect;
 	}
 }
 

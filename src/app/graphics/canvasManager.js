@@ -19,8 +19,9 @@ var SelectTool = Tools.SelectTool;
 class CanvasManager {
     constructor(canvas) {
         this.canvas = canvas;
-        this.paperDevice = undefined;
-        this.grid = undefined;
+        this.layers = [];
+        this.gridLayer = undefined;
+        this.selectLayer = new paper.Group();
         this.tools = {};
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
@@ -31,6 +32,7 @@ class CanvasManager {
         this.currentTool = null;
         this.setupMouseEvents();
         this.generateTools();
+        this.generateToolButtons();
         this.selectTool("select");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;
@@ -53,7 +55,27 @@ class CanvasManager {
         //this.tools["none"] = new paper.Tool();
     }
 
+    generateToolButtons(){
+        let container = document.getElementById("button_block");
+        for (let toolName in this.tools){
+            let btn = this.generateButton(toolName);
+            container.appendChild(btn);
+        }
+    }
+
+    generateButton(toolName){
+        let btn = document.createElement("BUTTON");
+        let t = document.createTextNode(toolName);
+        let manager = this;
+        btn.appendChild(t);
+        btn.onclick = function(){
+            manager.selectTool(toolName);
+        }
+        return btn;
+    }
+
     selectTool(typeString){
+        if (this.currentTool) this.currentTool.abort();
         this.tools[typeString].activate();
         this.currentTool = this.tools[typeString];
     }
@@ -63,11 +85,32 @@ class CanvasManager {
         let hitOptions = {
             fill: true,
             tolerance: 5,
-            guides: false,
+            guides: false
         }
-        let hitResult = this.paperDevice.hitTest(point, hitOptions);
-        if (hitResult) return hitResult.item;
-        else return false;
+
+        let output = [];
+
+        for (let i = this.layers.length-1; i >=0; i--){
+            let layer = this.layers[i];
+            let result = layer.hitTest(point, hitOptions);
+            if (result){
+                return result.item;
+            }
+        }
+    }
+
+    hitFeaturesWithPaperElement(paperElement){
+        let output = [];
+        for (let i = 0 ; i < this.layers.length; i ++){
+            let layer = this.layers[i];
+            for (let j = 0; j < layer.children.length; j++){
+                let child = layer.children[j];
+                if (paperElement.intersects(child) || child.isInside(paperElement.bounds)){
+                    output.push(child);
+                }
+            }
+        }
+        return output;
     }
 
     snapToGrid(point){
@@ -89,6 +132,12 @@ class CanvasManager {
                 manager.tools["pan"].activate();
                 manager.tools["pan"].startPoint = manager.canvasToProject(e.clientX, e.clientY);
             } else if (e.which == 3){
+                man.currentTool.abort();
+                let point = manager.canvasToProject(e.clientX, e.clientY);
+                let target = manager.hitFeatureInDevice(point);
+                if (target){
+                    console.log(Registry.currentDevice.getFeatureByID(target.featureID));
+                }
                 manager.currentTool.abort();
             }
         }
@@ -101,7 +150,6 @@ class CanvasManager {
 
     setupContextEvent(){
         this.canvas.oncontextmenu = function(e){
-            console.log("Context menu!");
             e.preventDefault();
         }
     }
@@ -139,11 +187,12 @@ class CanvasManager {
     }
 
     renderGrid(forceUpdate = true) {
-        if (this.grid) {
-            this.grid.remove();
+        if (this.gridLayer) {
+            this.gridLayer.remove();
         }
-        this.grid = GridGenerator.makeGrid(this.gridSpacing, this.thickCount);
-        if (this.paperDevice) this.grid.insertBelow(this.paperDevice);
+        let grid = GridGenerator.makeGrid(this.gridSpacing, this.thickCount);
+        this.gridLayer = new paper.Group(grid); 
+        if (this.layers) this.gridLayer.insertBelow(this.layers[0]);
         paper.view.update(forceUpdate);
     }
 
@@ -152,12 +201,30 @@ class CanvasManager {
         this.renderGrid(forceUpdate);
     }
 
-    renderDevice(forceUpdate = true) {
-        if (this.paperDevice) {
-            this.paperDevice.remove();
+    //TODO: This is a hacky way to clear everything.
+    clearLayers(){
+        for (let i = 0; i < this.layers.length; i ++){
+            this.layers[i].remove();
         }
-        this.paperDevice = Registry.currentDevice.render2D(this.paper);
-        if (this.grid) this.paperDevice.insertAbove(this.grid);
+    }
+
+    //TODO: Optimize this to re-render only things that changed? 
+    // Or write another partial-rendering procedure?
+    renderDevice(forceUpdate = true) {
+        this.clearLayers();
+        let rendered = Registry.currentDevice.render2D(this.paper);
+        let layers = [];
+        for (let i =0 ; i < rendered.length; i++){
+            let layer = rendered[i];
+            let paperLayer = new paper.Group(layer);
+            if (this.gridLayer) paperLayer.insertAbove(this.gridLayer);
+            if (this.selectLayer) paperLayer.insertBelow(this.selectLayer);
+            if (i > 0){
+                paperLayer.insertAbove(layers[i-1]);
+            }
+            layers.push(paperLayer);
+        }
+        this.layers = layers;
         paper.view.update(forceUpdate);
     }
 

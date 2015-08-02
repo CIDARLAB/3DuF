@@ -476,7 +476,7 @@ var Device = (function () {
     }, {
         key: "render2D",
         value: function render2D(paperScope) {
-            return new paper.Group(this.__renderLayers2D());
+            return this.__renderLayers2D();
         }
     }], [{
         key: "getUniqueParameters",
@@ -1237,7 +1237,7 @@ var Layer = (function () {
     }, {
         key: 'render2D',
         value: function render2D(paperScope) {
-            return new paper.Group(this.__renderFeatures2D());
+            return this.__renderFeatures2D();
         }
     }], [{
         key: 'getUniqueParameters',
@@ -1722,8 +1722,9 @@ var CanvasManager = (function () {
         _classCallCheck(this, CanvasManager);
 
         this.canvas = canvas;
-        this.paperDevice = undefined;
-        this.grid = undefined;
+        this.layers = [];
+        this.gridLayer = undefined;
+        this.selectLayer = new paper.Group();
         this.tools = {};
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
@@ -1734,6 +1735,7 @@ var CanvasManager = (function () {
         this.currentTool = null;
         this.setupMouseEvents();
         this.generateTools();
+        this.generateToolButtons();
         this.selectTool("select");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
@@ -1758,8 +1760,30 @@ var CanvasManager = (function () {
             //this.tools["none"] = new paper.Tool();
         }
     }, {
+        key: "generateToolButtons",
+        value: function generateToolButtons() {
+            var container = document.getElementById("button_block");
+            for (var toolName in this.tools) {
+                var btn = this.generateButton(toolName);
+                container.appendChild(btn);
+            }
+        }
+    }, {
+        key: "generateButton",
+        value: function generateButton(toolName) {
+            var btn = document.createElement("BUTTON");
+            var t = document.createTextNode(toolName);
+            var manager = this;
+            btn.appendChild(t);
+            btn.onclick = function () {
+                manager.selectTool(toolName);
+            };
+            return btn;
+        }
+    }, {
         key: "selectTool",
         value: function selectTool(typeString) {
+            if (this.currentTool) this.currentTool.abort();
             this.tools[typeString].activate();
             this.currentTool = this.tools[typeString];
         }
@@ -1773,8 +1797,31 @@ var CanvasManager = (function () {
                 tolerance: 5,
                 guides: false
             };
-            var hitResult = this.paperDevice.hitTest(point, hitOptions);
-            if (hitResult) return hitResult.item;else return false;
+
+            var output = [];
+
+            for (var i = this.layers.length - 1; i >= 0; i--) {
+                var layer = this.layers[i];
+                var result = layer.hitTest(point, hitOptions);
+                if (result) {
+                    return result.item;
+                }
+            }
+        }
+    }, {
+        key: "hitFeaturesWithPaperElement",
+        value: function hitFeaturesWithPaperElement(paperElement) {
+            var output = [];
+            for (var i = 0; i < this.layers.length; i++) {
+                var layer = this.layers[i];
+                for (var j = 0; j < layer.children.length; j++) {
+                    var child = layer.children[j];
+                    if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
+                        output.push(child);
+                    }
+                }
+            }
+            return output;
         }
     }, {
         key: "snapToGrid",
@@ -1799,6 +1846,12 @@ var CanvasManager = (function () {
                     manager.tools["pan"].activate();
                     manager.tools["pan"].startPoint = manager.canvasToProject(e.clientX, e.clientY);
                 } else if (e.which == 3) {
+                    man.currentTool.abort();
+                    var point = manager.canvasToProject(e.clientX, e.clientY);
+                    var target = manager.hitFeatureInDevice(point);
+                    if (target) {
+                        console.log(Registry.currentDevice.getFeatureByID(target.featureID));
+                    }
                     manager.currentTool.abort();
                 }
             };
@@ -1812,7 +1865,6 @@ var CanvasManager = (function () {
         key: "setupContextEvent",
         value: function setupContextEvent() {
             this.canvas.oncontextmenu = function (e) {
-                console.log("Context menu!");
                 e.preventDefault();
             };
         }
@@ -1858,11 +1910,12 @@ var CanvasManager = (function () {
         value: function renderGrid() {
             var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
-            if (this.grid) {
-                this.grid.remove();
+            if (this.gridLayer) {
+                this.gridLayer.remove();
             }
-            this.grid = GridGenerator.makeGrid(this.gridSpacing, this.thickCount);
-            if (this.paperDevice) this.grid.insertBelow(this.paperDevice);
+            var grid = GridGenerator.makeGrid(this.gridSpacing, this.thickCount);
+            this.gridLayer = new paper.Group(grid);
+            if (this.layers) this.gridLayer.insertBelow(this.layers[0]);
             paper.view.update(forceUpdate);
         }
     }, {
@@ -1873,16 +1926,37 @@ var CanvasManager = (function () {
             this.gridSpacing = size;
             this.renderGrid(forceUpdate);
         }
+
+        //TODO: This is a hacky way to clear everything.
+    }, {
+        key: "clearLayers",
+        value: function clearLayers() {
+            for (var i = 0; i < this.layers.length; i++) {
+                this.layers[i].remove();
+            }
+        }
+
+        //TODO: Optimize this to re-render only things that changed?
+        // Or write another partial-rendering procedure?
     }, {
         key: "renderDevice",
         value: function renderDevice() {
             var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
-            if (this.paperDevice) {
-                this.paperDevice.remove();
+            this.clearLayers();
+            var rendered = Registry.currentDevice.render2D(this.paper);
+            var layers = [];
+            for (var i = 0; i < rendered.length; i++) {
+                var layer = rendered[i];
+                var paperLayer = new paper.Group(layer);
+                if (this.gridLayer) paperLayer.insertAbove(this.gridLayer);
+                if (this.selectLayer) paperLayer.insertBelow(this.selectLayer);
+                if (i > 0) {
+                    paperLayer.insertAbove(layers[i - 1]);
+                }
+                layers.push(paperLayer);
             }
-            this.paperDevice = Registry.currentDevice.render2D(this.paper);
-            if (this.grid) this.paperDevice.insertAbove(this.grid);
+            this.layers = layers;
             paper.view.update(forceUpdate);
         }
     }, {
@@ -2151,13 +2225,20 @@ var SelectTool = (function (_paper$Tool) {
 		_classCallCheck(this, SelectTool);
 
 		_get(Object.getPrototypeOf(SelectTool.prototype), "constructor", this).call(this);
-		this.currentPaperElement = null;
-		this.currentFeature = null;
+		this.dragStart = null;
+		this.currentSelectBox = null;
+		this.currentSelection = [];
 		this.onMouseDown = function (event) {
-			this.testAndSelect(event.point);
+			this.mouseDownHandler(event.point);
 		};
 		this.onKeyDown = function (event) {
 			this.keyHandler(event);
+		};
+		this.onMouseDrag = function (event) {
+			this.dragHandler(event.point);
+		};
+		this.onMouseUp = function (event) {
+			this.mouseUpHandler(event.point);
 		};
 	}
 
@@ -2165,25 +2246,62 @@ var SelectTool = (function (_paper$Tool) {
 		key: "keyHandler",
 		value: function keyHandler(event) {
 			if (event.key == "delete" || event.key == "backspace") {
-				this.removeFeature();
+				this.removeFeatures();
 			}
 		}
 	}, {
-		key: "removeFeature",
-		value: function removeFeature() {
-			if (this.currentFeature) {
-				Registry.currentDevice.removeFeature(this.currentFeature);
-				this.currentPaperElement.remove();
+		key: "dragHandler",
+		value: function dragHandler(point) {
+			if (this.dragStart) {
+				if (this.currentSelectBox) {
+					this.currentSelectBox.remove();
+				}
+				this.currentSelectBox = this.rectSelect(this.dragStart, point);
+			}
+		}
+	}, {
+		key: "mouseUpHandler",
+		value: function mouseUpHandler(point) {
+			if (this.currentSelectBox) {
+				this.currentSelection = Registry.canvasManager.hitFeaturesWithPaperElement(this.currentSelectBox);
+				this.selectFeatures();
+			}
+			this.killSelectBox();
+		}
+	}, {
+		key: "removeFeatures",
+		value: function removeFeatures() {
+			if (this.currentSelection.length > 0) {
+				for (var i = 0; i < this.currentSelection.length; i++) {
+					var paperFeature = this.currentSelection[i];
+					Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
+				}
+				this.currentSelection = [];
 				Registry.canvasManager.render();
 			}
 		}
 	}, {
-		key: "testAndSelect",
-		value: function testAndSelect(point) {
+		key: "mouseDownHandler",
+		value: function mouseDownHandler(point) {
 			var target = this.hitFeature(point);
 			if (target) {
-				if (target == this.currentPaperElement) console.log("Doubleclick?");else this.selectFeature(target);
-			} else this.deselectFeature();
+				if (target.selected) console.log("Doubleclick?");else {
+					this.deselectFeatures();
+					this.selectFeature(target);
+				}
+			} else {
+				this.deselectFeatures();
+				this.dragStart = point;
+			}
+		}
+	}, {
+		key: "killSelectBox",
+		value: function killSelectBox() {
+			if (this.currentSelectBox) {
+				this.currentSelectBox.remove();
+				this.currentSelectBox = null;
+			}
+			this.dragStart = null;
 		}
 	}, {
 		key: "hitFeature",
@@ -2194,22 +2312,46 @@ var SelectTool = (function (_paper$Tool) {
 	}, {
 		key: "selectFeature",
 		value: function selectFeature(paperElement) {
-			this.deselectFeature();
-			this.currentPaperElement = paperElement;
-			this.currentFeature = Registry.currentDevice.getFeatureByID(paperElement.featureID);
+			this.currentSelection.push(paperElement);
 			paperElement.selected = true;
 		}
 	}, {
-		key: "deselectFeature",
-		value: function deselectFeature() {
-			if (this.currentPaperElement) this.currentPaperElement.selected = false;
-			this.currentPaperElement = null;
-			this.currentFeature = null;
+		key: "selectFeatures",
+		value: function selectFeatures() {
+			if (this.currentSelection) {
+				for (var i = 0; i < this.currentSelection.length; i++) {
+					var paperFeature = this.currentSelection[i];
+					paperFeature.selected = true;
+				}
+			}
+		}
+	}, {
+		key: "deselectFeatures",
+		value: function deselectFeatures() {
+			if (this.currentSelection) {
+				for (var i = 0; i < this.currentSelection.length; i++) {
+					var paperFeature = this.currentSelection[i];
+					paperFeature.selected = false;
+				}
+			}
+			this.currentSelection = [];
 		}
 	}, {
 		key: "abort",
 		value: function abort() {
-			this.deselectFeature();
+			this.deselectFeatures();
+			this.killSelectBox();
+			Registry.canvasManager.render();
+		}
+	}, {
+		key: "rectSelect",
+		value: function rectSelect(point1, point2) {
+			var rect = new paper.Path.Rectangle(point1, point2);
+			rect.fillColor = new paper.Color(0, .3, 1, .4);
+			rect.strokeColor = new paper.Color(0, 0, 0);
+			rect.strokeWidth = 2;
+			rect.selected = true;
+			return rect;
 		}
 	}]);
 
