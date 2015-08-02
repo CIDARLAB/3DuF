@@ -14,10 +14,13 @@ class ValveTool extends paper.Tool{
 			Registry.currentLayer.addFeature(newValve);
 			Registry.canvasManager.render();
 		};	
+		this.onMouseUp = function(event){
+			this.currentValveID = null;
+		}
 	}
 
 	abort(){
-		Registry.currentLayer.removeFeatureByID(this.currentValveID);
+		if (this.currentValveID) Registry.currentLayer.removeFeatureByID(this.currentValveID);
 		Registry.canvasManager.render();
 	}
 }

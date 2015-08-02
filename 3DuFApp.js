@@ -295,24 +295,18 @@ var chan2 = new Channel({
 });
 flow.addFeature(chan2);
 
-Registry.currentDevice = dev;
-Registry.currentLayer = dev.layers[0];
-
 paper.setup("c");
 
 window.onload = function () {
     manager = new CanvasManager(document.getElementById("c"));
-    manager.render();
 
     window.dev = dev;
     window.Channel = Channel;
     window.man = manager;
     window.Features = Features;
     window.Registry = Registry;
-    var canvas = document.getElementById("c");
-    paper.view.center = new paper.Point(30 * 1000, 30 * 1000);
-    manager.setZoom(.04);
-    manager.updateGridSpacing();
+
+    manager.loadDeviceFromJSON(dev.toJSON());
 };
 
 },{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22}],3:[function(require,module,exports){
@@ -1723,6 +1717,7 @@ var CanvasManager = (function () {
 
         this.canvas = canvas;
         this.layers = [];
+        this.backgroundLayer = new paper.Group();
         this.gridLayer = undefined;
         this.selectLayer = new paper.Group();
         this.tools = {};
@@ -1897,10 +1892,27 @@ var CanvasManager = (function () {
             paper.view.update(forceUpdate);
         }
     }, {
+        key: "renderBackground",
+        value: function renderBackground() {
+            var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+            this.backgroundLayer.clear();
+            var width = Registry.currentDevice.params.getValue("width");
+            var height = Registry.currentDevice.params.getValue("height");
+            var border = new paper.Path.Rectangle(new paper.Point(0, 0), new paper.Point(width, height));
+            border.fillColor = null;
+            border.strokeColor = new paper.Color(.2, .2, .2);
+            border.strokeWidth = 3 / paper.view.zoom;
+            this.backgroundLayer.addChild(border);
+            if (this.gridLayer) this.backgroundLayer.insertAbove(this.gridLayer);
+            paper.view.update(forceUpdate);
+        }
+    }, {
         key: "render",
         value: function render() {
             var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
+            this.renderBackground();
             this.renderDevice();
             this.renderGrid();
             paper.view.update(forceUpdate);
@@ -1915,7 +1927,9 @@ var CanvasManager = (function () {
             }
             var grid = GridGenerator.makeGrid(this.gridSpacing, this.thickCount);
             this.gridLayer = new paper.Group(grid);
-            if (this.layers) this.gridLayer.insertBelow(this.layers[0]);
+            if (this.layers.length > 0) this.gridLayer.insertBelow(this.layers[0]);
+            if (this.backgroundLayer) this.gridLayer.insertBelow(this.backgroundLayer);
+
             paper.view.update(forceUpdate);
         }
     }, {
@@ -1951,6 +1965,7 @@ var CanvasManager = (function () {
                 var paperLayer = new paper.Group(layer);
                 if (this.gridLayer) paperLayer.insertAbove(this.gridLayer);
                 if (this.selectLayer) paperLayer.insertBelow(this.selectLayer);
+                if (this.backgroundLayer) paperLayer.insertAbove(this.backgroundLayer);
                 if (i > 0) {
                     paperLayer.insertAbove(layers[i - 1]);
                 }
@@ -1983,6 +1998,29 @@ var CanvasManager = (function () {
             paper.view.zoom = zoom;
             this.updateGridSpacing();
             this.renderGrid();
+            this.renderBackground();
+        }
+    }, {
+        key: "calculateOptimalZoom",
+        value: function calculateOptimalZoom() {
+            var breathingRoom = 100; //pixels
+            var dev = Registry.currentDevice;
+            var width = dev.params.getValue("width");
+            var height = dev.params.getValue("height");
+            var rect = this.canvas.getBoundingClientRect();
+            if (rect.width - breathingRoom <= 0 || rect.height - breathingRoom <= 0) breathingRoom = 0;
+            var widthRatio = width / (rect.width - breathingRoom);
+            var heightRatio = height / (rect.height - breathingRoom);
+            var targetRatio = 0;
+            if (widthRatio > heightRatio) return 1 / widthRatio;else return 1 / heightRatio;
+        }
+    }, {
+        key: "calculateMidpoint",
+        value: function calculateMidpoint() {
+            var dev = Registry.currentDevice;
+            var width = dev.params.getValue("width");
+            var height = dev.params.getValue("height");
+            return new paper.Point(width / 2, height / 2);
         }
     }, {
         key: "moveCenter",
@@ -1995,6 +2033,22 @@ var CanvasManager = (function () {
         value: function setCenter(x, y) {
             paper.view.center = new paper.Point(x, y);
             this.renderGrid();
+            this.renderBackground();
+        }
+    }, {
+        key: "initializeView",
+        value: function initializeView() {
+            this.setZoom(this.calculateOptimalZoom());
+            this.setCenter(this.calculateMidpoint());
+        }
+    }, {
+        key: "loadDeviceFromJSON",
+        value: function loadDeviceFromJSON(json) {
+            Registry.currentDevice = Device.fromJSON(json);
+            Registry.currentLayer = Registry.currentDevice.layers[0];
+            this.initializeView();
+            this.updateGridSpacing();
+            this.render();
         }
     }, {
         key: "saveToStorage",
@@ -2004,9 +2058,7 @@ var CanvasManager = (function () {
     }, {
         key: "loadFromStorage",
         value: function loadFromStorage() {
-            Registry.currentDevice = Device.fromJSON(JSON.parse(localStorage.getItem("currentDevice")));
-            Registry.currentLayer = Registry.currentDevice.layers[0];
-            this.render();
+            this.loadDeviceFromJSON(JSON.parse(localStorage.getItem("currentDevice")));
         }
     }]);
 
@@ -2576,12 +2628,15 @@ var ValveTool = (function (_paper$Tool) {
 			Registry.currentLayer.addFeature(newValve);
 			Registry.canvasManager.render();
 		};
+		this.onMouseUp = function (event) {
+			this.currentValveID = null;
+		};
 	}
 
 	_createClass(ValveTool, [{
 		key: "abort",
 		value: function abort() {
-			Registry.currentLayer.removeFeatureByID(this.currentValveID);
+			if (this.currentValveID) Registry.currentLayer.removeFeatureByID(this.currentValveID);
 			Registry.canvasManager.render();
 		}
 	}]);

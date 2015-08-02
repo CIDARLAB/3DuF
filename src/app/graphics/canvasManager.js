@@ -20,6 +20,7 @@ class CanvasManager {
     constructor(canvas) {
         this.canvas = canvas;
         this.layers = [];
+        this.backgroundLayer = new paper.Group();
         this.gridLayer = undefined;
         this.selectLayer = new paper.Group();
         this.tools = {};
@@ -180,7 +181,21 @@ class CanvasManager {
         paper.view.update(forceUpdate);
     }
 
+    renderBackground(forceUpdate = true){
+        this.backgroundLayer.clear();
+        let width = Registry.currentDevice.params.getValue("width");
+        let height = Registry.currentDevice.params.getValue("height");
+        let border = new paper.Path.Rectangle(new paper.Point(0,0), new paper.Point(width, height));
+        border.fillColor = null;
+        border.strokeColor = new paper.Color(.2,.2,.2);
+        border.strokeWidth = 3 / paper.view.zoom;
+        this.backgroundLayer.addChild(border);
+        if(this.gridLayer) this.backgroundLayer.insertAbove(this.gridLayer);
+        paper.view.update(forceUpdate);
+    }
+
     render(forceUpdate = true) {
+        this.renderBackground();
         this.renderDevice();
         this.renderGrid();
         paper.view.update(forceUpdate);
@@ -192,7 +207,9 @@ class CanvasManager {
         }
         let grid = GridGenerator.makeGrid(this.gridSpacing, this.thickCount);
         this.gridLayer = new paper.Group(grid); 
-        if (this.layers) this.gridLayer.insertBelow(this.layers[0]);
+        if (this.layers.length > 0) this.gridLayer.insertBelow(this.layers[0]);
+        if(this.backgroundLayer) this.gridLayer.insertBelow(this.backgroundLayer);
+
         paper.view.update(forceUpdate);
     }
 
@@ -219,6 +236,7 @@ class CanvasManager {
             let paperLayer = new paper.Group(layer);
             if (this.gridLayer) paperLayer.insertAbove(this.gridLayer);
             if (this.selectLayer) paperLayer.insertBelow(this.selectLayer);
+            if (this.backgroundLayer) paperLayer.insertAbove(this.backgroundLayer);
             if (i > 0){
                 paperLayer.insertAbove(layers[i-1]);
             }
@@ -248,6 +266,30 @@ class CanvasManager {
         paper.view.zoom = zoom;
         this.updateGridSpacing();
         this.renderGrid();
+        this.renderBackground();
+
+    }
+
+    calculateOptimalZoom(){
+        let breathingRoom = 100; //pixels
+        let dev = Registry.currentDevice;
+        let width = dev.params.getValue("width");
+        let height = dev.params.getValue("height");
+        let rect = this.canvas.getBoundingClientRect();
+        if (rect.width - breathingRoom <= 0 || rect.height - breathingRoom <= 0) breathingRoom = 0;
+        let widthRatio = width/(rect.width - breathingRoom);
+        let heightRatio = height/(rect.height - breathingRoom);
+        let targetRatio = 0;
+        if (widthRatio > heightRatio) return 1/widthRatio;
+        else return 1/heightRatio;
+
+    }
+
+    calculateMidpoint(){
+        let dev = Registry.currentDevice;
+        let width = dev.params.getValue("width");
+        let height = dev.params.getValue("height");
+        return new paper.Point(width/2, height/2);
     }
 
     moveCenter(delta){
@@ -258,6 +300,20 @@ class CanvasManager {
     setCenter(x, y) {
         paper.view.center = new paper.Point(x, y);
         this.renderGrid();
+        this.renderBackground();
+    }
+
+    initializeView(){
+        this.setZoom(this.calculateOptimalZoom());
+        this.setCenter(this.calculateMidpoint());
+    }
+    
+    loadDeviceFromJSON(json){
+        Registry.currentDevice = Device.fromJSON(json);
+        Registry.currentLayer = Registry.currentDevice.layers[0];
+        this.initializeView();
+        this.updateGridSpacing();
+        this.render();
     }
 
     saveToStorage(){
@@ -265,9 +321,7 @@ class CanvasManager {
     }
 
     loadFromStorage(){
-        Registry.currentDevice = Device.fromJSON(JSON.parse(localStorage.getItem("currentDevice")));
-        Registry.currentLayer = Registry.currentDevice.layers[0];
-        this.render();
+        this.loadDeviceFromJSON(JSON.parse(localStorage.getItem("currentDevice")));
     }
 }
 
