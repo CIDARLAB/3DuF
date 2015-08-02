@@ -111,7 +111,7 @@ class Layer {
     }
 
     render2D(paperScope){
-        return new paper.Group(this.__renderFeatures2D());
+        return this.__renderFeatures2D();
     }
 }
 
