@@ -1,9 +1,7 @@
-var appRoot = "../../";
-
-var Feature = require(appRoot + 'core/feature');
-var Registry = require(appRoot +'core/registry');
-var Parameters = require(appRoot +'core/parameters')
-var Params = require(appRoot + 'core/params');
+var Feature = require('../feature');
+var Registry = require('../registry');
+var Parameters = require('../parameters');
+var Params = require('../params');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -18,15 +16,15 @@ class Channel extends Feature {
         return "Channel";
     }
 
-    static getUniqueParameters(){
+    static getUniqueParameters() {
         return {
             "start": PointValue.typeString(),
             "end": PointValue.typeString()
         }
     }
 
-    static getHeritableParameters(){
-        return { 
+    static getHeritableParameters() {
+        return {
             "width": FloatValue.typeString(),
             "height": FloatValue.typeString()
         };
@@ -34,9 +32,37 @@ class Channel extends Feature {
 
     static getDefaultValues() {
         return {
-            "width": .4,
-            "height": .4
+            "width": .4 * 1000,
+            "height": .4 * 1000
         };
+    }
+
+    render2D() {
+        let start = this.params.getValue("start");
+        let end = this.params.getValue("end");
+        //TODO: figure out inheritance pattern for values!
+        let width;
+        try {
+            width = this.params.getValue("width");
+        } catch (err) {
+            width = Channel.getDefaultValues()["width"];
+        }
+
+        let startPoint = new paper.Point(start[0], start[1]);
+        let endPoint = new paper.Point(end[0], end[1]);
+
+        let vec = endPoint.subtract(startPoint);
+        let rec = new paper.Path.Rectangle({
+            size: [vec.length + width, width],
+            point: start,
+            radius: width/2
+        });
+
+        rec.translate([-width/2, -width / 2]);
+        rec.rotate(vec.angle, start);
+        rec.fillColor = new paper.Color(0,0,1);
+        rec.featureID = this.id;
+        return rec;
     }
 }
 

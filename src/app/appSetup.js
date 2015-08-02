@@ -1,23 +1,58 @@
-// to build me, run: watchify appSetup.js -t babelify -v --outfile "../../3DuFapp.js"
-// from the src/app folder!
+var CanvasManager = require("./graphics/CanvasManager");
+//var CanvasManager = require("./graphics/CanvasManager");
+var Registry = require("./core/registry");
+var Device = require('./core/device');
+var Layer = require('./core/layer');
+var Features = require('./core/features');
 
-var paperFunctions = require("./paperFunctions");
+var Channel = Features.Channel;
+var CircleValve = Features.CircleValve;
+var HollowChannel = Features.HollowChannel;
 
-paper.install(window);
+var manager;
+
+var dev = new Device({
+    "width": 75.8 * 1000,
+    "height": 51 * 1000
+    }, "My Device");
+var flow = new Layer({
+    "z_offset": 0,
+    "flip": false
+}, "flow");
+var control = new Layer({
+    "z_offset": 1.2 * 1000,
+    "flip": true
+}, "control");
+dev.addLayer(flow);
+dev.addLayer(control);
+var chan1 = new Channel({
+    "start": [20 * 1000, 20 * 1000],
+    "end": [40 * 1000, 40 * 1000],
+    "width": .4 * 1000
+});
+flow.addFeature(chan1);
+var circ1 = new CircleValve({
+    "position": [30 * 1000,30 * 1000],
+    "radius1": .8 * 1000
+});
+control.addFeature(circ1);
+var chan2 = new Channel({
+    "start": [25 * 1000, 20 * 1000],
+    "end": [45*1000, 40*1000],
+    "width": 10
+});
+flow.addFeature(chan2);
+
 paper.setup("c");
 
 window.onload = function(){
-    paperFunctions.setup()
-    //paperFunctions.channel([100,100],[200,200],20);
+    manager = new CanvasManager(document.getElementById("c"));
+
+    window.dev = dev;
+    window.Channel = Channel;
+    window.man = manager;
+    window.Features = Features;
+    window.Registry = Registry;
+
+    manager.loadDeviceFromJSON(dev.toJSON());
 };
-
-document.getElementById("c").onmousewheel = function(event){
-    view.zoom = paperFunctions.changeZoom(view.zoom, event.wheelDelta);
-    console.log(event.offsetX);
-}
-
-
-
-
-
-

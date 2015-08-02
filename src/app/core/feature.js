@@ -1,15 +1,11 @@
-var appRoot = "../";
 var uuid = require('node-uuid');
-var Params = require(appRoot + 'core/params');
-var Parameters = require(appRoot + 'core/parameters');
+var Params = require('./params');
+var Parameters = require('./parameters');
 var StringValue = Parameters.StringValue;
-var Registry = require(appRoot + "core/registry");
+var Registry = require("./registry");
 
 class Feature {
     constructor(type, params, name, id = Feature.generateID(), group = null){
-        if (id == undefined || name == undefined || type == undefined || params == undefined){
-            throw new Error("Cannot create feature with undefined values. id: " + id + " name: " + name + " type: " + type + "params: " + params);
-        }
         this.type = type;
         this.params = params;
         this.name = new StringValue(name);
@@ -20,6 +16,10 @@ class Feature {
 
     static generateID() {
         return uuid.v1();
+    }
+
+    updateParameter(key, value){
+        this.params.updateParameter(key, value);
     }
 
     toJSON() {
@@ -44,6 +44,11 @@ class Feature {
         } else {
             throw new Error("Feature " + type + " has not been registered.");
         }
+    }
+
+    //I wish I had abstract methods. :(
+    render2D(){
+        throw new Error("Base class Feature cannot be rendered in 2D.");
     }
 }
 

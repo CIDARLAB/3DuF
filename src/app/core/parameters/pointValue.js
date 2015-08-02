@@ -1,6 +1,5 @@
-var appRoot = "../../";
-var Parameter = require(appRoot + "/core/parameter");
-var Registry = require(appRoot + "/core/registry");
+var Parameter = require("../parameter");
+var NumberUtils = require("../../utils/numberUtils");
 
 class PointValue extends Parameter {
     constructor(value, reference) {
@@ -9,7 +8,7 @@ class PointValue extends Parameter {
     }
 
     static isInvalid(value) {
-        if (value.length != 2 || !Number.isFinite(value[0]) || !Number.isFinite(value[1])) return true;
+        if (value.length != 2 || !NumberUtils.isFloatOrInt(value[0]) || !NumberUtils.isFloatOrInt(value[1])) return true;
         else return false;
     }
 
