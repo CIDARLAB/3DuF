@@ -149,7 +149,7 @@ class Device {
     }
 
     render2D(paperScope){
-        return new paper.Group(this.__renderLayers2D());
+        return this.__renderLayers2D();
     }
 }
 

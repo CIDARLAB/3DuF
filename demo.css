@@ -9,7 +9,7 @@
 }
 
 #button_block {
-	display: none;
+	display: block;
 	position: fixed;
 	left: 0;
 	width: 250px;
