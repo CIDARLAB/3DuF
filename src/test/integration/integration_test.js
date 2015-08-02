@@ -9,7 +9,7 @@ var CircleValve = Features.CircleValve;
 
 describe("Integration", function() {
     describe("#core", function() {
-        it("Create a device, add layers and features, export, import", function() {
+        it("Create a device, add layers and features, toJSON, fromJSON", function() {
             let dev = new Device({
                 "width": 60,
                 "height": 30

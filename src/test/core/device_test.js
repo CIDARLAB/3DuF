@@ -44,10 +44,11 @@ var initDevice = function() {
 }
 
 describe("Device", function() {
+    beforeEach(function initialize() {
+        initDevice();
+    });
     describe("#init", function() {
-        beforeEach(function initialize() {
-            initDevice();
-        });
+
         it("should start with no layers", function() {
             dev.layers.length.should.equal(0);
         });
@@ -67,9 +68,6 @@ describe("Device", function() {
     });
 
     describe("#addLayer", function() {
-        beforeEach(function initialize() {
-            initDevice();
-        });
         it("should let the user add a layer", function() {
             dev.addLayer(lay1);
             dev.layers.length.should.equal(1);
@@ -88,9 +86,6 @@ describe("Device", function() {
     });
 
     describe("#toJSON", function() {
-        beforeEach(function initialize() {
-            initDevice();
-        });
         it("can output JSON with no layers or groups", function() {
             dev.toJSON();
         });
@@ -114,9 +109,6 @@ describe("Device", function() {
     });
 
     describe("#fromJSON", function() {
-        beforeEach(function initialize() {
-            initDevice();
-        });
         it("can load a device from valid JSON", function() {
             lay1.addFeature(feat1);
             lay2.addFeature(feat2);
@@ -163,59 +155,6 @@ describe("Device", function() {
             let dev2;
             (function() {
                 dev2 = Device.fromJSON(json)
-            }).should.throwError();
-        });
-    });
-});
-
-describe("Feature", function() {
-    describe("#init", function() {
-        it("should be given a unique ID on initialization", function() {
-            feat1.id.should.not.equal(feat2.id);
-        });
-    });
-
-    describe("#toJSON", function() {
-        it("can produce JSON when containing multiple parameters", function() {
-            feat1.toJSON();
-            console.log(feat1.toJSON());
-            feat2.toJSON();
-        });
-    });
-
-    describe("#fromJSON", function() {
-        it("can produce a Feature from valid JSON", function() {
-            let json = {
-                "id": "someValue",
-                "type": "CircleValve",
-                "params": {
-                    "position": [0,0],
-                    "height": 3
-                },
-                "name": "foobar"
-            }
-            let feat3 = Feature.fromJSON(json);
-        });
-        it("can produce a Feature from the output of toJSON", function() {
-            let json = feat2.toJSON();
-            let feat3 = Feature.fromJSON(json);
-        });
-        it("cannot produce a Feature from invalid JSON", function() {
-            let json = {
-                "params": {
-                    "width": {
-                        "type": FloatValue.typeString(),
-                        "value": 5.1
-                    },
-                    "height": {
-                        "type": IntegerValue.typeString(),
-                        "value": 3
-                    }
-                }
-            }
-            let feat;
-            (function() {
-                feat = Feature.fromJSON(json)
             }).should.throwError();
         });
     });
