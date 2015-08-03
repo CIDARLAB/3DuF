@@ -59,11 +59,14 @@ class CanvasManager {
 
     generateToolButtons(){
         let target = document.getElementById("features-menu");
+
         for (let toolName in this.tools){
             let btn = this.generateButton(toolName);
             target.appendChild(btn);
+            componentHandler.upgradeElement(btn);
         }
-        //componentHandler.upgradeElement(target);
+
+
     }
 
     generateButton(toolName){
@@ -75,7 +78,6 @@ class CanvasManager {
             manager.selectTool(toolName);
         }
         btn.className = 'mdl-menu__item';
-        //componentHandler.upgradeElement(btn);
         return btn;
     }
 
