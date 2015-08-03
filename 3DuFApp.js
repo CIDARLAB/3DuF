@@ -602,6 +602,7 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
+var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -633,7 +634,7 @@ var CircleValve = (function (_Feature) {
             }
 
             var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
-            c1.fillColor = new paper.Color(1, 0, 0);
+            c1.fillColor = Colors.RED_500;
             c1.featureID = this.id;
             return c1;
         }
@@ -676,7 +677,7 @@ Registry.registeredFeatures[CircleValve.typeString()] = CircleValve;
 
 module.exports = CircleValve;
 
-},{"../feature":4,"../parameters":16,"../params":20,"../registry":21}],6:[function(require,module,exports){
+},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -798,6 +799,7 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
+var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -830,7 +832,7 @@ var Port = (function (_Feature) {
             }
 
             var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
-            c1.fillColor = new paper.Color(.5, 0, .5);
+            c1.fillColor = Colors.DEEP_PURPLE_500;
             c1.featureID = this.id;
             return c1;
         }
@@ -872,7 +874,7 @@ Registry.registeredFeatures[Port.typeString()] = Port;
 
 module.exports = Port;
 
-},{"../feature":4,"../parameters":16,"../params":20,"../registry":21}],8:[function(require,module,exports){
+},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -887,6 +889,7 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
+var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -919,7 +922,7 @@ var Via = (function (_Feature) {
             }
 
             var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
-            c1.fillColor = new paper.Color(.2, 1, .3);
+            c1.fillColor = Colors.GREEN_500;
             c1.featureID = this.id;
             return c1;
         }
@@ -962,7 +965,7 @@ Registry.registeredFeatures[Via.typeString()] = Via;
 
 module.exports = Via;
 
-},{"../feature":4,"../parameters":16,"../params":20,"../registry":21}],9:[function(require,module,exports){
+},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -977,6 +980,7 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
+var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -1018,7 +1022,7 @@ var Channel = (function (_Feature) {
 
             rec.translate([-width / 2, -width / 2]);
             rec.rotate(vec.angle, start);
-            rec.fillColor = new paper.Color(0, 0, 1);
+            rec.fillColor = Colors.INDIGO_500;
             rec.featureID = this.id;
             return rec;
         }
@@ -1060,7 +1064,7 @@ Registry.registeredFeatures[Channel.typeString()] = Channel;
 
 module.exports = Channel;
 
-},{"../feature":4,"../parameters":16,"../params":20,"../registry":21}],10:[function(require,module,exports){
+},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],10:[function(require,module,exports){
 /*
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
 var requireDirectory = require('require-directory');
@@ -1402,7 +1406,7 @@ var FloatValue = (function (_Parameter) {
 Parameter.registerParamType(FloatValue.typeString(), FloatValue);
 module.exports = FloatValue;
 
-},{"../../utils/numberUtils":30,"../parameter":13}],16:[function(require,module,exports){
+},{"../../utils/numberUtils":31,"../parameter":13}],16:[function(require,module,exports){
 /*
 
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
@@ -1461,7 +1465,7 @@ var IntegerValue = (function (_Parameter) {
 Parameter.registerParamType(IntegerValue.typeString(), IntegerValue);
 module.exports = IntegerValue;
 
-},{"../../utils/numberUtils":30,"../parameter":13}],18:[function(require,module,exports){
+},{"../../utils/numberUtils":31,"../parameter":13}],18:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1503,7 +1507,7 @@ var PointValue = (function (_Parameter) {
 Parameter.registerParamType(PointValue.typeString(), PointValue);
 module.exports = PointValue;
 
-},{"../../utils/numberUtils":30,"../parameter":13}],19:[function(require,module,exports){
+},{"../../utils/numberUtils":31,"../parameter":13}],19:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1699,6 +1703,7 @@ var PanAndZoom = require("./panAndZoom");
 var Features = require("../core/features");
 var Tools = require("./tools");
 var Device = require("../core/device");
+var Colors = require("./colors");
 
 var Channel = Features.Channel;
 var HollowChannel = Features.HollowChannel;
@@ -1724,14 +1729,14 @@ var CanvasManager = (function () {
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
         this.gridSpacing = 1000;
-        this.thickCount = 10;
-        this.minZoom = .00001;
-        this.maxZoom = 10;
+        this.thickCount = 5;
+        this.minZoom = .0001;
+        this.maxZoom = 5;
         this.currentTool = null;
         this.setupMouseEvents();
         this.generateTools();
         this.generateToolButtons();
-        this.selectTool("select");
+        this.selectTool("Select");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
 
@@ -1750,29 +1755,31 @@ var CanvasManager = (function () {
             this.tools[Port.typeString()] = new ValveTool(Port);
             this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
             this.tools[Via.typeString()] = new ValveTool(Via);
-            this.tools["pan"] = new PanTool();
-            this.tools["select"] = new SelectTool();
+            this.tools["Pan"] = new PanTool();
+            this.tools["Select"] = new SelectTool();
             //this.tools["none"] = new paper.Tool();
         }
     }, {
         key: "generateToolButtons",
         value: function generateToolButtons() {
-            var container = document.getElementById("button_block");
+            var target = document.getElementById("features-menu");
             for (var toolName in this.tools) {
                 var btn = this.generateButton(toolName);
-                container.appendChild(btn);
+                target.appendChild(btn);
             }
         }
     }, {
         key: "generateButton",
         value: function generateButton(toolName) {
-            var btn = document.createElement("BUTTON");
+            var btn = document.createElement("li");
             var t = document.createTextNode(toolName);
             var manager = this;
             btn.appendChild(t);
             btn.onclick = function () {
                 manager.selectTool(toolName);
             };
+            btn.className = 'mdl-menu__item mdl-js-ripple-effect';
+            componentHandler.upgradeElement(btn);
             return btn;
         }
     }, {
@@ -1838,8 +1845,8 @@ var CanvasManager = (function () {
             this.canvas.onmousedown = function (e) {
                 if (e.which == 2) {
                     manager.currentTool.abort();
-                    manager.tools["pan"].activate();
-                    manager.tools["pan"].startPoint = manager.canvasToProject(e.clientX, e.clientY);
+                    manager.tools["Pan"].activate();
+                    manager.tools["Pan"].startPoint = manager.canvasToProject(e.clientX, e.clientY);
                 } else if (e.which == 3) {
                     man.currentTool.abort();
                     var point = manager.canvasToProject(e.clientX, e.clientY);
@@ -1901,7 +1908,7 @@ var CanvasManager = (function () {
             var height = Registry.currentDevice.params.getValue("height");
             var border = new paper.Path.Rectangle(new paper.Point(0, 0), new paper.Point(width, height));
             border.fillColor = null;
-            border.strokeColor = new paper.Color(.2, .2, .2);
+            border.strokeColor = Colors.GREY_700;
             border.strokeWidth = 3 / paper.view.zoom;
             this.backgroundLayer.addChild(border);
             if (this.gridLayer) this.backgroundLayer.insertAbove(this.gridLayer);
@@ -2003,7 +2010,7 @@ var CanvasManager = (function () {
     }, {
         key: "calculateOptimalZoom",
         value: function calculateOptimalZoom() {
-            var breathingRoom = 100; //pixels
+            var breathingRoom = 200; //pixels
             var dev = Registry.currentDevice;
             var width = dev.params.getValue("width");
             var height = dev.params.getValue("height");
@@ -2067,14 +2074,26 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/device":3,"../core/features":10,"../core/registry":21,"./gridGenerator":23,"./panAndZoom":24,"./tools":27}],23:[function(require,module,exports){
+},{"../core/device":3,"../core/features":10,"../core/registry":21,"./colors":23,"./gridGenerator":24,"./panAndZoom":25,"./tools":28}],23:[function(require,module,exports){
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+module.exports.RED_500 = "#F44336";
+module.exports.INDIGO_500 = "#3F51B5";
+module.exports.GREEN_500 = "#4CAF50";
+module.exports.DEEP_PURPLE_500 = "#673AB7";
+module.exports.BLUE_100 = "#BBDEFB";
+module.exports.GREY_700 = "#616161";
+module.exports.GREY_500 = "#9E9E9E";
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+},{}],24:[function(require,module,exports){
+'use strict';
 
-var lineColor = new paper.Color(173 / 255, 216 / 255, 230 / 255);
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var Colors = require('./colors');
+var lineColor = Colors.BLUE_100;
 
 //TODO: Fix fifth-line highlighting at low/high zooms!
 
@@ -2084,34 +2103,34 @@ var GridGenerator = (function () {
     }
 
     _createClass(GridGenerator, null, [{
-        key: "makeGrid",
+        key: 'makeGrid',
         value: function makeGrid(spacing, thickCount) {
             var vert = GridGenerator.makeVerticalGrid(spacing, thickCount);
             var horiz = GridGenerator.makeHorizontalGrid(spacing, thickCount);
             return new paper.Group([vert, horiz]);
         }
     }, {
-        key: "getTopLeft",
+        key: 'getTopLeft',
         value: function getTopLeft() {
             return paper.view.viewToProject(new paper.Point(0, 0));
         }
     }, {
-        key: "getBottomLeft",
+        key: 'getBottomLeft',
         value: function getBottomLeft() {
             return paper.view.viewToProject(new paper.Point(0, paper.view.bounds.height * paper.view.zoom));
         }
     }, {
-        key: "getBottomRight",
+        key: 'getBottomRight',
         value: function getBottomRight() {
             return paper.view.viewToProject(new paper.Point(paper.view.bounds.width * paper.view.zoom, paper.view.bounds.height * paper.view.zoom));
         }
     }, {
-        key: "getTopRight",
+        key: 'getTopRight',
         value: function getTopRight() {
             return paper.view.viewToProject(new paper.Point(paper.view.bounds.width * paper.view.zoom, 0));
         }
     }, {
-        key: "makeVerticalGrid",
+        key: 'makeVerticalGrid',
         value: function makeVerticalGrid(spacing, thickCount) {
             var topLeft = GridGenerator.getTopLeft();
             var bottomRight = GridGenerator.getBottomRight();
@@ -2130,7 +2149,7 @@ var GridGenerator = (function () {
             return vertGroup;
         }
     }, {
-        key: "makeHorizontalGrid",
+        key: 'makeHorizontalGrid',
         value: function makeHorizontalGrid(spacing, thickCount) {
             var topLeft = GridGenerator.getTopLeft();
             var bottomRight = GridGenerator.getBottomRight();
@@ -2149,38 +2168,38 @@ var GridGenerator = (function () {
             return horizGroup;
         }
     }, {
-        key: "makeVerticalLineTemplate",
+        key: 'makeVerticalLineTemplate',
         value: function makeVerticalLineTemplate() {
             return GridGenerator.gridLineTemplate(GridGenerator.getTopLeft(), GridGenerator.getBottomLeft());
         }
     }, {
-        key: "makeThickVerticalLineTemplate",
+        key: 'makeThickVerticalLineTemplate',
         value: function makeThickVerticalLineTemplate() {
             var line = GridGenerator.makeVerticalLineTemplate();
             line.strokeWidth = GridGenerator.getStrokeWidth() * 3;
             return line;
         }
     }, {
-        key: "makeHorizontalLineTemplate",
+        key: 'makeHorizontalLineTemplate',
         value: function makeHorizontalLineTemplate() {
             return GridGenerator.gridLineTemplate(GridGenerator.getTopLeft(), GridGenerator.getTopRight());
         }
     }, {
-        key: "makeThickHorizontalLineTemplate",
+        key: 'makeThickHorizontalLineTemplate',
         value: function makeThickHorizontalLineTemplate() {
             var line = GridGenerator.makeHorizontalLineTemplate();
             line.strokeWidth = GridGenerator.getStrokeWidth() * 3;
             return line;
         }
     }, {
-        key: "snapToGrid",
+        key: 'snapToGrid',
         value: function snapToGrid(point, spacing) {
             var x = Math.round(point.x / spacing) * spacing;
             var y = Math.round(point.y / spacing) * spacing;
             return new paper.Point(x, y);
         }
     }, {
-        key: "gridLineTemplate",
+        key: 'gridLineTemplate',
         value: function gridLineTemplate(start, end) {
             var line = paper.Path.Line(start, end);
             line.strokeColor = lineColor;
@@ -2189,7 +2208,7 @@ var GridGenerator = (function () {
             return line;
         }
     }, {
-        key: "getStrokeWidth",
+        key: 'getStrokeWidth',
         value: function getStrokeWidth() {
             var width = 1 / paper.view.zoom;
             return width;
@@ -2201,7 +2220,7 @@ var GridGenerator = (function () {
 
 module.exports = GridGenerator;
 
-},{}],24:[function(require,module,exports){
+},{"./colors":23}],25:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2257,7 +2276,7 @@ var PanAndZoom = (function () {
 
 module.exports = PanAndZoom;
 
-},{"../core/registry":21}],25:[function(require,module,exports){
+},{"../core/registry":21}],26:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2412,7 +2431,7 @@ var SelectTool = (function (_paper$Tool) {
 
 module.exports = SelectTool;
 
-},{"../../core/registry":21}],26:[function(require,module,exports){
+},{"../../core/registry":21}],27:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2540,7 +2559,7 @@ var ChannelTool = (function (_paper$Tool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/features":10,"../../core/registry":21}],27:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21}],28:[function(require,module,exports){
 "use strict";
 
 module.exports.ChannelTool = require("./channelTool");
@@ -2548,7 +2567,7 @@ module.exports.ValveTool = require("./valveTool");
 module.exports.PanTool = require("./panTool");
 module.exports.SelectTool = require("./SelectTool");
 
-},{"./SelectTool":25,"./channelTool":26,"./panTool":28,"./valveTool":29}],28:[function(require,module,exports){
+},{"./SelectTool":26,"./channelTool":27,"./panTool":29,"./valveTool":30}],29:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2597,7 +2616,7 @@ var PanTool = (function (_paper$Tool) {
 
 module.exports = PanTool;
 
-},{"../../core/registry":21}],29:[function(require,module,exports){
+},{"../../core/registry":21}],30:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2646,7 +2665,7 @@ var ValveTool = (function (_paper$Tool) {
 
 module.exports = ValveTool;
 
-},{"../../core/features":10,"../../core/registry":21}],30:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21}],31:[function(require,module,exports){
 "use strict";
 
 function isFloat(n) {

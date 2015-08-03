@@ -2,6 +2,7 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
+var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -60,7 +61,7 @@ class Channel extends Feature {
 
         rec.translate([-width/2, -width / 2]);
         rec.rotate(vec.angle, start);
-        rec.fillColor = new paper.Color(0,0,1);
+        rec.fillColor = Colors.INDIGO_500;
         rec.featureID = this.id;
         return rec;
     }

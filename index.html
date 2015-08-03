@@ -6,75 +6,32 @@
     <script src="lib/jquery/jquery-1.11.3.min.js"></script>
     <script src="lib/nouislider/nouislider.min.js"></script>
     <script src="lib/paper/paper-full.min.js"></script>
-    <script src="lib/bootstrap/bootstrap.min.js"></script>
-    <script src="lib/fabric/fabric.min.js"></script>
-    <script src="lib/fabric/fabricjs_viewport.js"></script>
 
-
-    <link rel="stylesheet" href="demo.css">
+    <link rel="stylesheet" href="modified.css">
     <link rel="stylesheet" href="lib/nouislider/nouislider.min.css">
-    <link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="lib/bootstrap/bootstrap-theme.min.css">
 
-<script>
-
-var resizeCanvas = function(){
-  var leftoverWidth;
-  var left;
-  if ($('#button_block').css('display') != 'none'){
-    left = $('#button_block').width();
-    leftoverWidth = $(window).width() - left;   
-  } else {
-    leftoverWidth = $(window).width();
-    left = 0;
-  }
-  $('#canvas_block').width(leftoverWidth);
-  $('#canvas_block').offset({left: left});
-  //$('#c').width(leftoverWidth);
-  //$('#c').offset({left:left});
-}
-</script>
+    <link rel="stylesheet" href="node_modules/material-design-lite/material.min.css">
+    <script src="node_modules/material-design-lite/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 </head>
 
-<body onresize="resizeCanvas()">
-  <div class="container">
-    <div class="row">
-      <div id="canvas_block" class="container"> 
-        <canvas id="c" resize></canvas>
+<body>
+  <div id="main_grid" class="mdl-grid mdl-grid--no-spacing">
+    <div id="button_block" class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone mdl-cell--stretch">
+      <img class='logo' src='img/3DuF_placeholder_logo.png'>
+      <h3>Controls</h2>
+      <div id="param-controls"></div>
+        <button id="features-menu-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored mdl-button--raised">Tools</button>
+        <ul id="features-menu" class="mdl-menu mdl-js-menu mdl-js-ripple-effect" for="features-menu-button">
+        </ul>
       </div>
-      <div id="button_block" class="text-center">
-        <img class='logo' src='img/3DuF_placeholder_logo.png'>
-        <h3 class='btn-label'>Controls</h3>
-          <div id="param-controls">
-          </div>
-        <!--
-        <h3 class='btn-label'>Download</h3>
-        <div class="btn-group" class="center-block">
-          <a href="" id="link" download="test.svg">
-            <button type="button" class="btn btn-default" role="group">Download SVG</button>
-          </a>
-        </div>
-        <h3 class='btn-label'>Select Active Layer</h3>
-        <input id="ex1" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>
-        <div class="btn-group btn-group-vertical" id="layer_buttons">
-        </div>
-
-        <h3 class='btn-label'>Open Examples</h3>
-        <div class="btn-group btn-group-vertical" id="example_buttons">
-          <button type="button" id="ex_4" class='btn btn-default'>transposer_large_MOD</button>
-        </div>
-        -->
-      </div>
+    <div id="canvas_block" class="mdl-cell mdl-cell--10-col mdl-cell--stretch">
+      <canvas id="c" resize></canvas>
     </div>
-  </div>
+  <div>
+
+
 </body>
 
-<script>
-resizeCanvas();
-</script>
-
-
 <script src="3DuFApp.js"></script>
-
- <script>//load_example("{{ url_for('static', filename='examples/transposer_large_MOD.json')}}");</script>
