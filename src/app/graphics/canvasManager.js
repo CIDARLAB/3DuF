@@ -63,6 +63,7 @@ class CanvasManager {
             let btn = this.generateButton(toolName);
             target.appendChild(btn);
         }
+        //componentHandler.upgradeElement(target);
     }
 
     generateButton(toolName){
@@ -73,8 +74,8 @@ class CanvasManager {
         btn.onclick = function(){
             manager.selectTool(toolName);
         }
-        btn.className = 'mdl-menu__item mdl-js-ripple-effect';
-        componentHandler.upgradeElement(btn);
+        btn.className = 'mdl-menu__item';
+        //componentHandler.upgradeElement(btn);
         return btn;
     }
 

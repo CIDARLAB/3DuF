@@ -1767,6 +1767,7 @@ var CanvasManager = (function () {
                 var btn = this.generateButton(toolName);
                 target.appendChild(btn);
             }
+            //componentHandler.upgradeElement(target);
         }
     }, {
         key: "generateButton",
@@ -1778,8 +1779,8 @@ var CanvasManager = (function () {
             btn.onclick = function () {
                 manager.selectTool(toolName);
             };
-            btn.className = 'mdl-menu__item mdl-js-ripple-effect';
-            componentHandler.upgradeElement(btn);
+            btn.className = 'mdl-menu__item';
+            //componentHandler.upgradeElement(btn);
             return btn;
         }
     }, {
