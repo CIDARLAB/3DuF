@@ -1,5 +1,5 @@
-var lineColor = new paper.Color(173/255, 216/255, 230/255);
-
+var Colors = require('./colors');
+var lineColor = Colors.BLUE_100;
 
 //TODO: Fix fifth-line highlighting at low/high zooms!
 class GridGenerator {

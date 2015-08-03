@@ -4,6 +4,7 @@ var PanAndZoom = require("./panAndZoom");
 var Features = require("../core/features");
 var Tools = require("./tools");
 var Device = require("../core/device");
+var Colors = require("./colors");
 
 var Channel = Features.Channel;
 var HollowChannel = Features.HollowChannel;
@@ -27,14 +28,14 @@ class CanvasManager {
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
         this.gridSpacing = 1000;
-        this.thickCount = 10;
-        this.minZoom = .00001;
-        this.maxZoom = 10;
+        this.thickCount = 5;
+        this.minZoom = .0001;
+        this.maxZoom = 5;
         this.currentTool = null;
         this.setupMouseEvents();
         this.generateTools();
         this.generateToolButtons();
-        this.selectTool("select");
+        this.selectTool("Select");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
@@ -51,27 +52,29 @@ class CanvasManager {
         this.tools[Port.typeString()] = new ValveTool(Port);
         this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
         this.tools[Via.typeString()] = new ValveTool(Via);
-        this.tools["pan"] = new PanTool();
-        this.tools["select"] = new SelectTool();
+        this.tools["Pan"] = new PanTool();
+        this.tools["Select"] = new SelectTool();
         //this.tools["none"] = new paper.Tool();
     }
 
     generateToolButtons(){
-        let container = document.getElementById("button_block");
+        let target = document.getElementById("features-menu");
         for (let toolName in this.tools){
             let btn = this.generateButton(toolName);
-            container.appendChild(btn);
+            target.appendChild(btn);
         }
     }
 
     generateButton(toolName){
-        let btn = document.createElement("BUTTON");
+        let btn = document.createElement("li");
         let t = document.createTextNode(toolName);
         let manager = this;
         btn.appendChild(t);
         btn.onclick = function(){
             manager.selectTool(toolName);
         }
+        btn.className = 'mdl-menu__item mdl-js-ripple-effect';
+        componentHandler.upgradeElement(btn);
         return btn;
     }
 
@@ -130,8 +133,8 @@ class CanvasManager {
         this.canvas.onmousedown = function(e){
             if(e.which == 2) {
                 manager.currentTool.abort();
-                manager.tools["pan"].activate();
-                manager.tools["pan"].startPoint = manager.canvasToProject(e.clientX, e.clientY);
+                manager.tools["Pan"].activate();
+                manager.tools["Pan"].startPoint = manager.canvasToProject(e.clientX, e.clientY);
             } else if (e.which == 3){
                 man.currentTool.abort();
                 let point = manager.canvasToProject(e.clientX, e.clientY);
@@ -187,7 +190,7 @@ class CanvasManager {
         let height = Registry.currentDevice.params.getValue("height");
         let border = new paper.Path.Rectangle(new paper.Point(0,0), new paper.Point(width, height));
         border.fillColor = null;
-        border.strokeColor = new paper.Color(.2,.2,.2);
+        border.strokeColor = Colors.GREY_700;
         border.strokeWidth = 3 / paper.view.zoom;
         this.backgroundLayer.addChild(border);
         if(this.gridLayer) this.backgroundLayer.insertAbove(this.gridLayer);
@@ -271,7 +274,7 @@ class CanvasManager {
     }
 
     calculateOptimalZoom(){
-        let breathingRoom = 100; //pixels
+        let breathingRoom = 200; //pixels
         let dev = Registry.currentDevice;
         let width = dev.params.getValue("width");
         let height = dev.params.getValue("height");
