@@ -1763,11 +1763,12 @@ var CanvasManager = (function () {
         key: "generateToolButtons",
         value: function generateToolButtons() {
             var target = document.getElementById("features-menu");
+
             for (var toolName in this.tools) {
                 var btn = this.generateButton(toolName);
                 target.appendChild(btn);
+                componentHandler.upgradeElement(btn);
             }
-            //componentHandler.upgradeElement(target);
         }
     }, {
         key: "generateButton",
@@ -1780,7 +1781,6 @@ var CanvasManager = (function () {
                 manager.selectTool(toolName);
             };
             btn.className = 'mdl-menu__item';
-            //componentHandler.upgradeElement(btn);
             return btn;
         }
     }, {
