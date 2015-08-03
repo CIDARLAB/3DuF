@@ -1763,9 +1763,11 @@ var CanvasManager = (function () {
         key: "generateToolButtons",
         value: function generateToolButtons() {
             var target = document.getElementById("features-menu");
+
             for (var toolName in this.tools) {
                 var btn = this.generateButton(toolName);
                 target.appendChild(btn);
+                componentHandler.upgradeElement(btn);
             }
         }
     }, {
@@ -1778,8 +1780,7 @@ var CanvasManager = (function () {
             btn.onclick = function () {
                 manager.selectTool(toolName);
             };
-            btn.className = 'mdl-menu__item mdl-js-ripple-effect';
-            componentHandler.upgradeElement(btn);
+            btn.className = 'mdl-menu__item';
             return btn;
         }
     }, {
