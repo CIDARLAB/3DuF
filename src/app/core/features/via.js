@@ -2,6 +2,7 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
+var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -53,7 +54,7 @@ class Via extends Feature {
 
 
         let c1 = new paper.Path.Circle(new paper.Point(position), radius1);
-        c1.fillColor = new paper.Color(.2,1,.3);
+        c1.fillColor = Colors.GREEN_500;
         c1.featureID = this.id;
         return c1;
     }
