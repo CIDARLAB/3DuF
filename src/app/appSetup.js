@@ -5,12 +5,17 @@ var Device = require('./core/device');
 var Layer = require('./core/layer');
 var Features = require('./core/features');
 var PaperView = require("./view/paperView");
+var ViewManager = require("./view/viewManager");
+var AdaptiveGrid = require("./view/grid/adaptiveGrid");
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
 var HollowChannel = Features.HollowChannel;
 
 var manager;
+var view;
+var viewManager;
+var grid;
 
 var dev = new Device({
     "width": 75.8 * 1000,
@@ -48,10 +53,16 @@ paper.setup("c");
 
 window.onload = function(){
     manager = new CanvasManager(document.getElementById("c"));
-    Registry.view = new PaperView();
+    view = new PaperView(document.getElementById("c"));
+    viewManager = new ViewManager(view);
+    grid = new AdaptiveGrid();
+
+    Registry.viewManager = viewManager;
 
     manager.loadDeviceFromJSON(dev.toJSON());
-
+    
+    viewManager.updateGrid(grid);
+    Registry.currentDevice.updateView();
 
     window.dev = Registry.currentDevice;
     window.Channel = Channel;

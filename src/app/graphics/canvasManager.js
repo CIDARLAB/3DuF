@@ -32,10 +32,10 @@ class CanvasManager {
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.currentTool = null;
-        this.setupMouseEvents();
-        this.generateTools();
-        this.generateToolButtons();
-        this.selectTool("Select");
+        //this.setupMouseEvents();
+        //this.generateTools();
+        //this.generateToolButtons();
+        //this.selectTool("Select");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
@@ -172,7 +172,6 @@ class CanvasManager {
             else if (paper.view.zoom <= min && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");
             else PanAndZoom.adjustZoom(event.deltaY, manager.canvasToProject(event.clientX, event.clientY));
             }, false);
-
     }
 
     canvasToProject(x, y) {
@@ -201,9 +200,9 @@ class CanvasManager {
     }
 
     render(forceUpdate = true) {
-        this.renderBackground();
+        //this.renderBackground();
         //this.renderDevice();
-        this.renderGrid();
+        //this.renderGrid();
         paper.view.update(forceUpdate);
     }
 
@@ -221,7 +220,7 @@ class CanvasManager {
 
     setGridSize(size, forceUpdate = true) {
         this.gridSpacing = size;
-        this.renderGrid(forceUpdate);
+        //this.renderGrid(forceUpdate);
     }
 
     //TODO: This is a hacky way to clear everything.
@@ -261,7 +260,7 @@ class CanvasManager {
         while (this.gridSpacing > max) {
             this.gridSpacing = this.gridSpacing / 10;
         }
-        this.renderGrid();
+        //this.renderGrid();
     }
 
     adjustZoom(delta, position) {
@@ -270,9 +269,9 @@ class CanvasManager {
 
     setZoom(zoom) {
         paper.view.zoom = zoom;
-        this.updateGridSpacing();
-        this.renderGrid();
-        this.renderBackground();
+        //this.updateGridSpacing();
+        Registry.viewManager.updateGrid();
+        //this.renderBackground();
 
     }
 
@@ -305,8 +304,9 @@ class CanvasManager {
 
     setCenter(x, y) {
         paper.view.center = new paper.Point(x, y);
-        this.renderGrid();
-        this.renderBackground();
+        //this.renderGrid();
+        Registry.viewManager.updateGrid();
+        //this.renderBackground();
     }
 
     initializeView(){
