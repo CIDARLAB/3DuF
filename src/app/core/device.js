@@ -44,6 +44,7 @@ class Device {
     addLayer(layer) {
         this.layers.push(layer);
         this.sortLayers();
+        layer.device = this;
     }
     
     removeFeature(feature){

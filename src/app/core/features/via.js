@@ -2,7 +2,8 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
+var Colors = require('../../view/colors');
+var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -42,18 +43,18 @@ class Via extends Feature {
 
     render2D() {
         let position = this.params.getValue("position");
-        let radius1;
+        let radius;
 
         //TODO: figure out inheritance pattern for values!
 
         try {
-            radius1 = this.params.getValue("radius1");
+            radius = this.params.getValue("radius1");
         } catch (err) {
-            radius1 = Via.getDefaultValues()["radius1"];
+            radius = Via.getDefaultValues()["radius1"];
         }
 
 
-        let c1 = new paper.Path.Circle(new paper.Point(position), radius1);
+        let c1 = PaperPrimitives.Circle(position, radius);
         c1.fillColor = Colors.GREEN_500;
         c1.featureID = this.id;
         return c1;

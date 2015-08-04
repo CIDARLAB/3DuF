@@ -256,6 +256,7 @@ var Registry = require("./core/registry");
 var Device = require('./core/device');
 var Layer = require('./core/layer');
 var Features = require('./core/features');
+var PaperView = require("./view/paperView");
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
@@ -299,17 +300,18 @@ paper.setup("c");
 
 window.onload = function () {
     manager = new CanvasManager(document.getElementById("c"));
+    Registry.view = new PaperView();
 
-    window.dev = dev;
+    manager.loadDeviceFromJSON(dev.toJSON());
+
+    window.dev = Registry.currentDevice;
     window.Channel = Channel;
     window.man = manager;
     window.Features = Features;
     window.Registry = Registry;
-
-    manager.loadDeviceFromJSON(dev.toJSON());
 };
 
-},{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22}],3:[function(require,module,exports){
+},{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22,"./view/paperView":39}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -374,6 +376,7 @@ var Device = (function () {
         value: function addLayer(layer) {
             this.layers.push(layer);
             this.sortLayers();
+            layer.device = this;
         }
     }, {
         key: "removeFeature",
@@ -539,6 +542,7 @@ var Feature = (function () {
         key: 'updateParameter',
         value: function updateParameter(key, value) {
             this.params.updateParameter(key, value);
+            this.updateView();
         }
     }, {
         key: 'toJSON',
@@ -555,9 +559,14 @@ var Feature = (function () {
 
         //TODO: This needs to return the right subclass of Feature, not just the right data!
     }, {
-        key: 'render2D',
+        key: 'updateView',
+        value: function updateView() {
+            if (Registry.view) Registry.view.updateFeature(this);
+        }
 
         //I wish I had abstract methods. :(
+    }, {
+        key: 'render2D',
         value: function render2D() {
             throw new Error("Base class Feature cannot be rendered in 2D.");
         }
@@ -602,7 +611,8 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
+var Colors = require('../../view/colors');
+var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -623,17 +633,17 @@ var CircleValve = (function (_Feature) {
         key: 'render2D',
         value: function render2D() {
             var position = this.params.getValue("position");
-            var radius1 = undefined;
+            var radius = undefined;
 
             //TODO: figure out inheritance pattern for values!
 
             try {
-                radius1 = this.params.getValue("radius1");
+                radius = this.params.getValue("radius1");
             } catch (err) {
-                radius1 = CircleValve.getDefaultValues()["radius1"];
+                radius = CircleValve.getDefaultValues()["radius1"];
             }
 
-            var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
+            var c1 = PaperPrimitives.Circle(position, radius);
             c1.fillColor = Colors.RED_500;
             c1.featureID = this.id;
             return c1;
@@ -677,7 +687,7 @@ Registry.registeredFeatures[CircleValve.typeString()] = CircleValve;
 
 module.exports = CircleValve;
 
-},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],6:[function(require,module,exports){
+},{"../../view/colors":31,"../../view/paperPrimitives":38,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -692,6 +702,7 @@ var Feature = require("../feature");
 var Registry = require("../registry");
 var Params = require("../params");
 var Parameters = require("../parameters");
+var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -720,27 +731,10 @@ var HollowChannel = (function (_Feature) {
                 width = HollowChannel.getDefaultValues()["width"];
             }
 
-            var startPoint = new paper.Point(start[0], start[1]);
-            var endPoint = new paper.Point(end[0], end[1]);
-
-            var vec = endPoint.subtract(startPoint);
-            var ori = new paper.Path.Rectangle({
-                size: [vec.length + width, width],
-                point: start,
-                radius: width / 2
-            });
-            ori.translate([-width / 2, -width / 2]);
-            ori.rotate(vec.angle, start);
-
-            var rec = new paper.Path.Rectangle({
-                size: [vec.length + width / 2, width / 2],
-                point: start,
-                radius: width / 4
-            });
-            rec.translate([-width / 4, -width / 4]);
-            rec.rotate(vec.angle, start);
+            var r1 = PaperPrimitives.RoundedRect(start, end, width);
+            var r2 = PaperPrimitives.RoundedRect(start, end, width / 2);
             var comp = new paper.CompoundPath({
-                children: [ori, rec],
+                children: [r1, r2],
                 fillColor: new paper.Color(0, 0, 0)
             });
             comp.featureID = this.id;
@@ -784,7 +778,7 @@ Registry.registeredFeatures[HollowChannel.typeString()] = HollowChannel;
 
 module.exports = HollowChannel;
 
-},{"../feature":4,"../parameters":16,"../params":20,"../registry":21}],7:[function(require,module,exports){
+},{"../../view/paperPrimitives":38,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],7:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -799,7 +793,8 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
+var Colors = require('../../view/colors');
+var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -821,17 +816,17 @@ var Port = (function (_Feature) {
         key: 'render2D',
         value: function render2D() {
             var position = this.params.getValue("position");
-            var radius1 = undefined;
+            var radius = undefined;
 
             //TODO: figure out inheritance pattern for values!
 
             try {
-                radius1 = this.params.getValue("radius1");
+                radius = this.params.getValue("radius1");
             } catch (err) {
-                radius1 = Port.getDefaultValues()["radius1"];
+                radius = Port.getDefaultValues()["radius1"];
             }
 
-            var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
+            var c1 = PaperPrimitives.Circle(position, radius);
             c1.fillColor = Colors.DEEP_PURPLE_500;
             c1.featureID = this.id;
             return c1;
@@ -874,7 +869,7 @@ Registry.registeredFeatures[Port.typeString()] = Port;
 
 module.exports = Port;
 
-},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],8:[function(require,module,exports){
+},{"../../view/colors":31,"../../view/paperPrimitives":38,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -889,7 +884,8 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
+var Colors = require('../../view/colors');
+var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -911,17 +907,17 @@ var Via = (function (_Feature) {
         key: 'render2D',
         value: function render2D() {
             var position = this.params.getValue("position");
-            var radius1 = undefined;
+            var radius = undefined;
 
             //TODO: figure out inheritance pattern for values!
 
             try {
-                radius1 = this.params.getValue("radius1");
+                radius = this.params.getValue("radius1");
             } catch (err) {
-                radius1 = Via.getDefaultValues()["radius1"];
+                radius = Via.getDefaultValues()["radius1"];
             }
 
-            var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
+            var c1 = PaperPrimitives.Circle(position, radius);
             c1.fillColor = Colors.GREEN_500;
             c1.featureID = this.id;
             return c1;
@@ -965,7 +961,7 @@ Registry.registeredFeatures[Via.typeString()] = Via;
 
 module.exports = Via;
 
-},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],9:[function(require,module,exports){
+},{"../../view/colors":31,"../../view/paperPrimitives":38,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -980,7 +976,8 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
+var Colors = require('../../view/colors');
+var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -1002,28 +999,15 @@ var Channel = (function (_Feature) {
         value: function render2D() {
             var start = this.params.getValue("start");
             var end = this.params.getValue("end");
-            //TODO: figure out inheritance pattern for values!
             var width = undefined;
             try {
                 width = this.params.getValue("width");
             } catch (err) {
                 width = Channel.getDefaultValues()["width"];
             }
-
-            var startPoint = new paper.Point(start[0], start[1]);
-            var endPoint = new paper.Point(end[0], end[1]);
-
-            var vec = endPoint.subtract(startPoint);
-            var rec = new paper.Path.Rectangle({
-                size: [vec.length + width, width],
-                point: start,
-                radius: width / 2
-            });
-
-            rec.translate([-width / 2, -width / 2]);
-            rec.rotate(vec.angle, start);
-            rec.fillColor = Colors.INDIGO_500;
+            var rec = PaperPrimitives.RoundedRect(start, end, width);
             rec.featureID = this.id;
+            rec.fillColor = Colors.INDIGO_500;
             return rec;
         }
     }], [{
@@ -1064,7 +1048,7 @@ Registry.registeredFeatures[Channel.typeString()] = Channel;
 
 module.exports = Channel;
 
-},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],10:[function(require,module,exports){
+},{"../../view/colors":31,"../../view/paperPrimitives":38,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],10:[function(require,module,exports){
 /*
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
 var requireDirectory = require('require-directory');
@@ -1126,6 +1110,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Params = require('./params');
 var Parameters = require('./parameters');
 var Feature = require('./feature');
+var Registry = require("./registry");
 
 var FloatValue = Parameters.FloatValue;
 var BooleanValue = Parameters.BooleanValue;
@@ -1149,6 +1134,8 @@ var Layer = (function () {
             this.__ensureIsAFeature(feature);
             this.features[feature.id] = feature;
             this.featureCount += 1;
+            feature.layer = this;
+            feature.updateView();
         }
     }, {
         key: '__ensureIsAFeature',
@@ -1174,16 +1161,18 @@ var Layer = (function () {
     }, {
         key: 'removeFeature',
         value: function removeFeature(feature) {
-            this.__ensureFeatureExists(feature);
-            delete this.features[feature.id];
-            this.featureCount -= 1;
+            this.removeFeatureByID(feature.id);
         }
+
+        //TODO: Stop using delete, it's slow!
     }, {
         key: 'removeFeatureByID',
         value: function removeFeatureByID(featureID) {
             this.__ensureFeatureIDExists(featureID);
-            delete this.features[featureID];
+            var feature = this.features[featureID];
             this.featureCount -= 1;
+            Registry.view.removeFeature(feature);
+            delete this.features[featureID];
         }
     }, {
         key: 'containsFeature',
@@ -1269,7 +1258,7 @@ var Layer = (function () {
 
 module.exports = Layer;
 
-},{"./feature":4,"./parameters":16,"./params":20}],13:[function(require,module,exports){
+},{"./feature":4,"./parameters":16,"./params":20,"./registry":21}],13:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1406,7 +1395,7 @@ var FloatValue = (function (_Parameter) {
 Parameter.registerParamType(FloatValue.typeString(), FloatValue);
 module.exports = FloatValue;
 
-},{"../../utils/numberUtils":31,"../parameter":13}],16:[function(require,module,exports){
+},{"../../utils/numberUtils":30,"../parameter":13}],16:[function(require,module,exports){
 /*
 
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
@@ -1465,7 +1454,7 @@ var IntegerValue = (function (_Parameter) {
 Parameter.registerParamType(IntegerValue.typeString(), IntegerValue);
 module.exports = IntegerValue;
 
-},{"../../utils/numberUtils":31,"../parameter":13}],18:[function(require,module,exports){
+},{"../../utils/numberUtils":30,"../parameter":13}],18:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1507,7 +1496,7 @@ var PointValue = (function (_Parameter) {
 Parameter.registerParamType(PointValue.typeString(), PointValue);
 module.exports = PointValue;
 
-},{"../../utils/numberUtils":31,"../parameter":13}],19:[function(require,module,exports){
+},{"../../utils/numberUtils":30,"../parameter":13}],19:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1679,16 +1668,20 @@ module.exports = Params;
 "use strict";
 
 var registeredParams = {};
+var featureRenderers = {};
 var registeredFeatures = {};
 var currentDevice = null;
 var canvasManager = null;
 var currentLayer = null;
+var view = null;
 
+exports.featureRenderers = featureRenderers;
 exports.registeredFeatures = registeredFeatures;
 exports.registeredParams = registeredParams;
 exports.currentDevice = currentDevice;
 exports.currentLayer = currentLayer;
 exports.canvasManager = canvasManager;
+exports.view = view;
 
 },{}],22:[function(require,module,exports){
 "use strict";
@@ -1703,7 +1696,7 @@ var PanAndZoom = require("./panAndZoom");
 var Features = require("../core/features");
 var Tools = require("./tools");
 var Device = require("../core/device");
-var Colors = require("./colors");
+var Colors = require("../view/colors");
 
 var Channel = Features.Channel;
 var HollowChannel = Features.HollowChannel;
@@ -1729,7 +1722,7 @@ var CanvasManager = (function () {
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
         this.gridSpacing = 1000;
-        this.thickCount = 5;
+        this.thickCount = 10;
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.currentTool = null;
@@ -1921,7 +1914,7 @@ var CanvasManager = (function () {
             var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
             this.renderBackground();
-            this.renderDevice();
+            //this.renderDevice();
             this.renderGrid();
             paper.view.update(forceUpdate);
         }
@@ -2075,25 +2068,14 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/device":3,"../core/features":10,"../core/registry":21,"./colors":23,"./gridGenerator":24,"./panAndZoom":25,"./tools":28}],23:[function(require,module,exports){
-"use strict";
-
-module.exports.RED_500 = "#F44336";
-module.exports.INDIGO_500 = "#3F51B5";
-module.exports.GREEN_500 = "#4CAF50";
-module.exports.DEEP_PURPLE_500 = "#673AB7";
-module.exports.BLUE_100 = "#BBDEFB";
-module.exports.GREY_700 = "#616161";
-module.exports.GREY_500 = "#9E9E9E";
-
-},{}],24:[function(require,module,exports){
+},{"../core/device":3,"../core/features":10,"../core/registry":21,"../view/colors":31,"./gridGenerator":23,"./panAndZoom":24,"./tools":27}],23:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var Colors = require('./colors');
+var Colors = require('../view/colors');
 var lineColor = Colors.BLUE_100;
 
 //TODO: Fix fifth-line highlighting at low/high zooms!
@@ -2221,7 +2203,7 @@ var GridGenerator = (function () {
 
 module.exports = GridGenerator;
 
-},{"./colors":23}],25:[function(require,module,exports){
+},{"../view/colors":31}],24:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2277,7 +2259,7 @@ var PanAndZoom = (function () {
 
 module.exports = PanAndZoom;
 
-},{"../core/registry":21}],26:[function(require,module,exports){
+},{"../core/registry":21}],25:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2432,7 +2414,7 @@ var SelectTool = (function (_paper$Tool) {
 
 module.exports = SelectTool;
 
-},{"../../core/registry":21}],27:[function(require,module,exports){
+},{"../../core/registry":21}],26:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2560,7 +2542,7 @@ var ChannelTool = (function (_paper$Tool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/features":10,"../../core/registry":21}],28:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21}],27:[function(require,module,exports){
 "use strict";
 
 module.exports.ChannelTool = require("./channelTool");
@@ -2568,7 +2550,7 @@ module.exports.ValveTool = require("./valveTool");
 module.exports.PanTool = require("./panTool");
 module.exports.SelectTool = require("./SelectTool");
 
-},{"./SelectTool":26,"./channelTool":27,"./panTool":29,"./valveTool":30}],29:[function(require,module,exports){
+},{"./SelectTool":25,"./channelTool":26,"./panTool":28,"./valveTool":29}],28:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2617,7 +2599,7 @@ var PanTool = (function (_paper$Tool) {
 
 module.exports = PanTool;
 
-},{"../../core/registry":21}],30:[function(require,module,exports){
+},{"../../core/registry":21}],29:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2666,7 +2648,7 @@ var ValveTool = (function (_paper$Tool) {
 
 module.exports = ValveTool;
 
-},{"../../core/features":10,"../../core/registry":21}],31:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21}],30:[function(require,module,exports){
 "use strict";
 
 function isFloat(n) {
@@ -2685,4 +2667,232 @@ module.exports.isFloat = isFloat;
 module.exports.isInteger = isInteger;
 module.exports.isFloatOrInt = isFloatOrInt;
 
-},{}]},{},[2]);
+},{}],31:[function(require,module,exports){
+"use strict";
+
+module.exports.RED_500 = "#F44336";
+module.exports.INDIGO_500 = "#3F51B5";
+module.exports.GREEN_500 = "#4CAF50";
+module.exports.DEEP_PURPLE_500 = "#673AB7";
+module.exports.BLUE_100 = "#BBDEFB";
+module.exports.GREY_700 = "#616161";
+module.exports.GREY_500 = "#9E9E9E";
+
+},{}],32:[function(require,module,exports){
+"use strict";
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var Channel = require("../../core/features").Channel;
+var Colors = require("../colors");
+
+var renderChannel = function renderChannel(channel) {
+    var start = channel.params.getValue("start");
+    var end = channel.params.getValue("end");
+    var width = undefined;
+    try {
+        width = channel.params.getValue("width");
+    } catch (err) {
+        width = Channel.getDefaultValues()["width"];
+    }
+    var rec = PaperPrimitives.RoundedRect(start, end, width);
+    rec.featureID = channel.id;
+    rec.fillColor = Colors.INDIGO_500;
+    return rec;
+};
+
+module.exports = renderChannel;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":31,"../paperPrimitives":38}],33:[function(require,module,exports){
+"use strict";
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var CircleValve = require("../../core/features").CircleValve;
+var Colors = require("../colors");
+
+var renderCircleValve = function renderCircleValve(circleValve) {
+    var position = circleValve.params.getValue("position");
+    var radius = undefined;
+
+    //TODO: figure out inheritance pattern for values!
+
+    try {
+        radius = circleValve.params.getValue("radius1");
+    } catch (err) {
+        radius = CircleValve.getDefaultValues()["radius1"];
+    }
+
+    var c1 = PaperPrimitives.Circle(position, radius);
+    c1.fillColor = Colors.RED_500;
+    c1.featureID = circleValve.id;
+    return c1;
+};
+
+module.exports = renderCircleValve;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":31,"../paperPrimitives":38}],34:[function(require,module,exports){
+"use strict";
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var HollowChannel = require("../../core/features").HollowChannel;
+var Colors = require("../colors");
+
+var renderHollowChannel = function renderHollowChannel(hollowChannel) {
+    var start = hollowChannel.params.getValue("start");
+    var end = hollowChannel.params.getValue("end");
+    var width = undefined;
+    try {
+        width = hollowChannel.params.getValue("width");
+    } catch (err) {
+        width = HollowChannel.getDefaultValues()["width"];
+    }
+    var r1 = PaperPrimitives.RoundedRect(start, end, width);
+    var r2 = PaperPrimitives.RoundedRect(start, end, width / 2);
+    var comp = new paper.CompoundPath({
+        children: [r1, r2],
+        fillColor: Colors.GREY_700
+    });
+    comp.featureID = hollowChannel.id;
+    return comp;
+};
+
+module.exports = renderHollowChannel;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":31,"../paperPrimitives":38}],35:[function(require,module,exports){
+"use strict";
+
+module.exports.Channel = require("./channelRenderer");
+module.exports.Via = require("./viaRenderer");
+module.exports.CircleValve = require("./circleValveRenderer");
+module.exports.HollowChannel = require("./hollowChannelRenderer");
+module.exports.Port = require("./portRenderer");
+
+},{"./channelRenderer":32,"./circleValveRenderer":33,"./hollowChannelRenderer":34,"./portRenderer":36,"./viaRenderer":37}],36:[function(require,module,exports){
+"use strict";
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var Port = require("../../core/features").Port;
+var Colors = require("../colors");
+
+var renderPort = function renderPort(port) {
+    var position = port.params.getValue("position");
+    var radius = undefined;
+
+    //TODO: figure out inheritance pattern for values!
+
+    try {
+        radius = port.params.getValue("radius1");
+    } catch (err) {
+        1;
+        radius = Port.getDefaultValues()["radius1"];
+    }
+
+    var c1 = PaperPrimitives.Circle(position, radius);
+    c1.fillColor = Colors.DEEP_PURPLE_500;
+    c1.featureID = port.id;
+    return c1;
+};
+
+module.exports = renderPort;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":31,"../paperPrimitives":38}],37:[function(require,module,exports){
+"use strict";
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var Via = require("../../core/features").Via;
+var Colors = require("../colors");
+
+var renderVia = function renderVia(via) {
+    var position = via.params.getValue("position");
+    var radius = undefined;
+
+    //TODO: figure out inheritance pattern for values!
+
+    try {
+        radius = via.params.getValue("radius1");
+    } catch (err) {
+        radius = Via.getDefaultValues()["radius1"];
+    }
+
+    var c1 = PaperPrimitives.Circle(position, radius);
+    c1.fillColor = Colors.GREEN_500;
+    c1.featureID = via.id;
+    return c1;
+};
+
+module.exports = renderVia;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":31,"../paperPrimitives":38}],38:[function(require,module,exports){
+"use strict";
+
+var RoundedRect = function RoundedRect(start, end, width) {
+    var startPoint = new paper.Point(start[0], start[1]);
+    var endPoint = new paper.Point(end[0], end[1]);
+    var vec = endPoint.subtract(startPoint);
+    var rec = paper.Path.Rectangle({
+        size: [vec.length + width, width],
+        point: start,
+        radius: width / 2
+    });
+    rec.translate([-width / 2, -width / 2]);
+    rec.rotate(vec.angle, start);
+    return rec;
+};
+
+var Circle = function Circle(position, radius) {
+    var pos = new paper.Point(position);
+    var circ = new paper.Path.Circle(pos, radius);
+    return circ;
+};
+
+module.exports.RoundedRect = RoundedRect;
+module.exports.Circle = Circle;
+
+},{}],39:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../core/registry");
+var FeatureRenderers = require("./featureRenderers");
+
+var PaperView = (function () {
+    function PaperView() {
+        _classCallCheck(this, PaperView);
+
+        this.paperFeatures = {};
+    }
+
+    _createClass(PaperView, [{
+        key: "updateFeature",
+        value: function updateFeature(feature) {
+            if (feature.layer.device == Registry.currentDevice) {
+                console.log("updating feature ID: " + feature.id);
+                this.removeFeature(feature);
+                this.paperFeatures[feature.id] = FeatureRenderers[feature.type](feature);
+                paper.view.update(true);
+            }
+        }
+    }, {
+        key: "removeFeature",
+        value: function removeFeature(feature) {
+            if (feature.layer.device == Registry.currentDevice) {
+                var paperFeature = this.paperFeatures[feature.id];
+                if (paperFeature) paperFeature.remove();
+                paper.view.update(true);
+            }
+        }
+    }]);
+
+    return PaperView;
+})();
+
+module.exports = PaperView;
+
+},{"../core/registry":21,"./featureRenderers":35}]},{},[2]);
