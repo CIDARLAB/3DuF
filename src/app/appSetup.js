@@ -4,6 +4,7 @@ var Registry = require("./core/registry");
 var Device = require('./core/device');
 var Layer = require('./core/layer');
 var Features = require('./core/features');
+var PaperView = require("./view/paperView");
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
@@ -47,12 +48,15 @@ paper.setup("c");
 
 window.onload = function(){
     manager = new CanvasManager(document.getElementById("c"));
+    Registry.view = new PaperView();
 
-    window.dev = dev;
+    manager.loadDeviceFromJSON(dev.toJSON());
+
+
+    window.dev = Registry.currentDevice;
     window.Channel = Channel;
     window.man = manager;
     window.Features = Features;
     window.Registry = Registry;
 
-    manager.loadDeviceFromJSON(dev.toJSON());
 };

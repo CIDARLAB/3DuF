@@ -1,6 +1,7 @@
 var Params = require('./params');
 var Parameters = require('./parameters');
 var Feature = require('./feature');
+var Registry = require("./registry");
 
 var FloatValue = Parameters.FloatValue;
 var BooleanValue = Parameters.BooleanValue;
@@ -18,6 +19,8 @@ class Layer {
         this.__ensureIsAFeature(feature);
         this.features[feature.id] = feature;
         this.featureCount += 1;
+        feature.layer = this;
+        feature.updateView();
     }
 
     __ensureIsAFeature(feature) {
@@ -50,15 +53,16 @@ class Layer {
     }
 
     removeFeature(feature) {
-        this.__ensureFeatureExists(feature);
-        delete this.features[feature.id];
-        this.featureCount -= 1;
+        this.removeFeatureByID(feature.id);
     }
 
+    //TODO: Stop using delete, it's slow!
     removeFeatureByID(featureID){
         this.__ensureFeatureIDExists(featureID);
-        delete this.features[featureID];
+        let feature = this.features[featureID];
         this.featureCount -= 1;
+        Registry.view.removeFeature(feature);
+        delete this.features[featureID];
     }
 
     containsFeature(feature) {

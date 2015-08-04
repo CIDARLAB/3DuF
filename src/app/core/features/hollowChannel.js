@@ -2,6 +2,7 @@ var Feature = require("../feature");
 var Registry = require("../registry");
 var Params = require("../params");
 var Parameters = require("../parameters");
+var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -48,28 +49,11 @@ class HollowChannel extends Feature {
             width = HollowChannel.getDefaultValues()["width"];
         }
 
-        let startPoint = new paper.Point(start[0], start[1]);
-        let endPoint = new paper.Point(end[0], end[1]);
-
-        let vec = endPoint.subtract(startPoint);
-        let ori = new paper.Path.Rectangle({
-            size: [vec.length + width, width],
-            point: start,
-            radius: width/2
-        });
-        ori.translate([-width/2, -width / 2]);
-        ori.rotate(vec.angle, start);
-
-        let rec = new paper.Path.Rectangle({
-            size: [vec.length + width/2, width/2],
-            point: start,
-            radius: width/4
-        });
-        rec.translate([-width/4, -width / 4]);
-        rec.rotate(vec.angle, start);
+        let r1 = PaperPrimitives.RoundedRect(start, end, width);
+        let r2 = PaperPrimitives.RoundedRect(start, end, width/2);
         let comp = new paper.CompoundPath({
-            children: [ori, rec],
-            fillColor: new paper.Color(0,0,0)  
+            children: [r1,r2],
+            fillColor: new paper.Color(0,0,0)
         });
         comp.featureID = this.id;
         return comp;
