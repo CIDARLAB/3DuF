@@ -11,19 +11,20 @@ class GridGenerator {
     }
 
     static getTopLeft(){
-        return paper.view.viewToProject(new paper.Point(0,0));
+        return paper.view.bounds.topLeft;
     }
 
     static getBottomLeft(){
-        return paper.view.viewToProject(new paper.Point(0, paper.view.bounds.height * paper.view.zoom));
+        return paper.view.bounds.bottomLeft;
     }
 
     static getBottomRight(){
-        return paper.view.viewToProject(new paper.Point(paper.view.bounds.width * paper.view.zoom, paper.view.bounds.height * paper.view.zoom));
+        return paper.view.bounds.bottomRight;
     }
 
     static getTopRight(){
-        return paper.view.viewToProject(new paper.Point(paper.view.bounds.width * paper.view.zoom, 0));
+        console.log(paper.view.bounds.topRight);
+        return paper.view.bounds.topRight;
     }
 
     static makeVerticalGrid(spacing, thickCount){
