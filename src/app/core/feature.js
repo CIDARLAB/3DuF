@@ -48,7 +48,7 @@ class Feature {
     }
 
     updateView(){
-        if(Registry.view) Registry.view.updateFeature(this);
+        if(Registry.viewManager) Registry.viewManager.updateFeature(this);
     }
 
     //I wish I had abstract methods. :(

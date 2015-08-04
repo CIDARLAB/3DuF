@@ -4,6 +4,7 @@ var Parameter =require("./parameter");
 var Feature = require('./feature')
 var Layer = require('./layer');
 var Group = require('./group');
+var Registry = require("./registry");
 
 var StringValue = Parameters.StringValue;
 var FloatValue = Parameters.FloatValue;
@@ -16,6 +17,16 @@ class Device {
         this.groups = [];
         this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
         this.name = new StringValue(name);
+    }
+
+    setName(name){
+        this.name = new StringValue(name);
+        this.updateView();
+    }
+
+    updateParameter(key, value){
+        this.params.updateParameter(key, value);
+        this.updateView();
     }
 
     /* Sort the layers such that they are ordered from lowest to highest z_offset. */
@@ -64,6 +75,10 @@ class Device {
     addDefault(def) {
         this.defaults.push(def);
         //TODO: Establish what defaults are. Params?
+    }
+
+    updateView(){
+        if (Registry.viewManager) Registry.viewManager.updateDevice(this);
     }
 
     static getUniqueParameters(){
