@@ -4,7 +4,7 @@ var PanAndZoom = require("./panAndZoom");
 var Features = require("../core/features");
 var Tools = require("./tools");
 var Device = require("../core/device");
-var Colors = require("./colors");
+var Colors = require("../view/colors");
 
 var Channel = Features.Channel;
 var HollowChannel = Features.HollowChannel;
@@ -28,7 +28,7 @@ class CanvasManager {
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
         this.gridSpacing = 1000;
-        this.thickCount = 5;
+        this.thickCount = 10;
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.currentTool = null;
@@ -202,7 +202,7 @@ class CanvasManager {
 
     render(forceUpdate = true) {
         this.renderBackground();
-        this.renderDevice();
+        //this.renderDevice();
         this.renderGrid();
         paper.view.update(forceUpdate);
     }

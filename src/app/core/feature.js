@@ -20,6 +20,7 @@ class Feature {
 
     updateParameter(key, value){
         this.params.updateParameter(key, value);
+        this.updateView();
     }
 
     toJSON() {
@@ -44,6 +45,10 @@ class Feature {
         } else {
             throw new Error("Feature " + type + " has not been registered.");
         }
+    }
+
+    updateView(){
+        if(Registry.view) Registry.view.updateFeature(this);
     }
 
     //I wish I had abstract methods. :(

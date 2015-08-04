@@ -2,7 +2,8 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
+var Colors = require('../../view/colors');
+var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -41,28 +42,15 @@ class Channel extends Feature {
     render2D() {
         let start = this.params.getValue("start");
         let end = this.params.getValue("end");
-        //TODO: figure out inheritance pattern for values!
         let width;
         try {
             width = this.params.getValue("width");
         } catch (err) {
             width = Channel.getDefaultValues()["width"];
         }
-
-        let startPoint = new paper.Point(start[0], start[1]);
-        let endPoint = new paper.Point(end[0], end[1]);
-
-        let vec = endPoint.subtract(startPoint);
-        let rec = new paper.Path.Rectangle({
-            size: [vec.length + width, width],
-            point: start,
-            radius: width/2
-        });
-
-        rec.translate([-width/2, -width / 2]);
-        rec.rotate(vec.angle, start);
-        rec.fillColor = Colors.INDIGO_500;
+        let rec = PaperPrimitives.RoundedRect(start, end, width);
         rec.featureID = this.id;
+        rec.fillColor = Colors.INDIGO_500;
         return rec;
     }
 }

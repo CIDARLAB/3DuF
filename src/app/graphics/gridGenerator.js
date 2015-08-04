@@ -1,4 +1,4 @@
-var Colors = require('./colors');
+var Colors = require('../view/colors');
 var lineColor = Colors.BLUE_100;
 
 //TODO: Fix fifth-line highlighting at low/high zooms!
