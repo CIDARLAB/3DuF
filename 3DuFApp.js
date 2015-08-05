@@ -3567,9 +3567,9 @@ var ViewManager = (function () {
         var chan = new ChannelTool(Features.Channel);
         var pan = new PanTool();
         var reference = this;
-        this.view.setMouseDownFunction(this.constructMouseDownEvent(chan, pan, new MouseTool()));
-        this.view.setMouseUpFunction(this.constructMouseUpEvent(chan, pan, new MouseTool()));
-        this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, new MouseTool()));
+        this.view.setMouseDownFunction(this.constructMouseDownEvent(chan, pan, pan));
+        this.view.setMouseUpFunction(this.constructMouseUpEvent(chan, pan, pan));
+        this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, pan));
         this.view.setResizeFunction(function () {
             reference.updateGrid();
             reference.updateDevice(Registry.currentDevice);
