@@ -9,4 +9,5 @@ module.exports.DEEP_PURPLE_500 = hexStringToPaperColor("#673AB7");
 module.exports.BLUE_100 = hexStringToPaperColor("#BBDEFB");
 module.exports.GREY_700 = hexStringToPaperColor("#616161");
 module.exports.GREY_500 = hexStringToPaperColor("#9E9E9E");
+module.exports.AMBER_50 = hexStringToPaperColor("#FFF8E1");
 

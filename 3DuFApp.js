@@ -1766,7 +1766,7 @@ var CanvasManager = (function () {
 
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
 
-        this.setupZoomEvent();
+        //this.setupZoomEvent();
         this.setupContextEvent();
         this.setupResizeEvent();
     }
@@ -2262,7 +2262,7 @@ var PanAndZoom = (function () {
 			var pc = p.subtract(c);
 			var a = p.subtract(pc.multiply(beta)).subtract(c);
 			var newCenter = this.calcCenter(a.x, a.y);
-			Registry.canvasManager.setCenter(newCenter.x, newCenter.y, 1 / beta);
+			Registry.canvasManager.setCenter(newCenter.x, newCenter.y);
 			Registry.canvasManager.setZoom(newZoom);
 		}
 	}, {
@@ -2743,9 +2743,8 @@ var PanAndZoom = (function () {
             var beta = paper.view.zoom / newZoom;
             var pc = p.subtract(c);
             var a = p.subtract(pc.multiply(beta)).subtract(c);
-            var newCenter = this.calcCenter(a.x, a.y);
-            Registry.viewManager.setCenter(newCenter.x, newCenter.y, 1 / beta);
-            Registry.viewManager.setZoom(newZoom);
+            paper.view.center = paper.view.center.add(a);
+            paper.view.zoom = newZoom;
         }
     }, {
         key: "adjustZoom",
@@ -2763,11 +2762,9 @@ var PanAndZoom = (function () {
             if (delta < 0) return paper.view.zoom * multiplier;else if (delta > 0) return paper.view.zoom / multiplier;else return paper.view.zoom;
         }
     }, {
-        key: "calcCenter",
-        value: function calcCenter(deltaX, deltaY, factor) {
-            var offset = new paper.Point(deltaX, deltaY);
-            //offset = offset.multiply(factor);
-            return paper.view.center.add(offset);
+        key: "moveCenter",
+        value: function moveCenter(delta) {
+            paper.view.center = PanAndZoom.calcCenter(delta);
         }
     }, {
         key: "calcCenter",
@@ -2795,16 +2792,17 @@ module.exports.DEEP_PURPLE_500 = hexStringToPaperColor("#673AB7");
 module.exports.BLUE_100 = hexStringToPaperColor("#BBDEFB");
 module.exports.GREY_700 = hexStringToPaperColor("#616161");
 module.exports.GREY_500 = hexStringToPaperColor("#9E9E9E");
+module.exports.AMBER_50 = hexStringToPaperColor("#FFF8E1");
 
 },{"../utils/colorUtils":30}],34:[function(require,module,exports){
 "use strict";
 
 var Colors = require("./colors");
-var DEFAULT_COLOR = Colors.GREY_700;
-var BORDER_THICKNESS = 3; // pixels
+var DEFAULT_STROKE_COLOR = Colors.GREY_700;
+var BORDER_THICKNESS = 5; // pixels
 
 function renderDevice(device) {
-    var color = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_COLOR : arguments[1];
+    var strokeColor = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_STROKE_COLOR : arguments[1];
 
     var thickness = BORDER_THICKNESS / paper.view.zoom;
     var width = device.params.getValue("width");
@@ -2813,7 +2811,7 @@ function renderDevice(device) {
         from: new paper.Point(0, 0),
         to: new paper.Point(width, height),
         fillColor: null,
-        strokeColor: color,
+        strokeColor: strokeColor,
         strokeWidth: thickness
     });
     return border;
@@ -3206,6 +3204,7 @@ var Registry = require("../core/registry");
 var FeatureRenderers = require("./featureRenderers");
 var GridRenderer = require("./grid/GridRenderer");
 var DeviceRenderer = require("./deviceRenderer");
+var PanAndZoom = require("./PanAndZoom");
 
 var PaperView = (function () {
     function PaperView(canvas) {
@@ -3222,8 +3221,6 @@ var PaperView = (function () {
         this.featureLayer.insertAbove(this.deviceLayer);
         this.uiLayer = new paper.Layer();
         this.uiLayer.insertAbove(this.featureLayer);
-        this.mouseEvents = {};
-        this.setResizeFunction();
     }
 
     _createClass(PaperView, [{
@@ -3242,7 +3239,7 @@ var PaperView = (function () {
     }, {
         key: "setMouseWheelFunction",
         value: function setMouseWheelFunction(func) {
-            this.canvas.wheel = func;
+            this.canvas.addEventListener("wheel", func);
         }
     }, {
         key: "setMouseDownFunction",
@@ -3294,7 +3291,7 @@ var PaperView = (function () {
             this.removeFeature(feature);
             var newPaperFeature = FeatureRenderers[feature.type](feature);
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
-            this.deviceLayer.addChild(newPaperFeature);
+            this.featureLayer.addChild(newPaperFeature);
         }
     }, {
         key: "removeGrid",
@@ -3308,6 +3305,16 @@ var PaperView = (function () {
             var newPaperGrid = GridRenderer.renderGrid(grid);
             this.paperGrid = newPaperGrid;
             this.gridLayer.addChild(newPaperGrid);
+        }
+    }, {
+        key: "moveCenter",
+        value: function moveCenter(delta) {
+            PanAndZoom.moveCenter(delta);
+        }
+    }, {
+        key: "adjustZoom",
+        value: function adjustZoom(delta, point) {
+            PanAndZoom.adjustZoom(delta, point);
         }
     }, {
         key: "setZoom",
@@ -3326,7 +3333,7 @@ var PaperView = (function () {
 
 module.exports = PaperView;
 
-},{"../core/registry":21,"./deviceRenderer":34,"./featureRenderers":38,"./grid/GridRenderer":41}],45:[function(require,module,exports){
+},{"../core/registry":21,"./PanAndZoom":32,"./deviceRenderer":34,"./featureRenderers":38,"./grid/GridRenderer":41}],45:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3565,7 +3572,14 @@ var ViewManager = (function () {
         this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, new MouseTool()));
         this.view.setResizeFunction(function () {
             reference.updateGrid();
+            reference.updateDevice(Registry.currentDevice);
         });
+        var func = function func(event) {
+            reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
+        };
+        this.view.setMouseWheelFunction(func);
+        this.minZoom = .0001;
+        this.maxZoom = 5;
     }
 
     _createClass(ViewManager, [{
@@ -3573,7 +3587,6 @@ var ViewManager = (function () {
         value: function updateDevice(device) {
             if (this.__isCurrentDevice(device)) {
                 this.view.updateDevice(device);
-                this.updateGrid();
                 this.view.refresh();
             }
         }
@@ -3614,18 +3627,34 @@ var ViewManager = (function () {
         value: function setZoom(zoom) {
             this.view.setZoom(zoom);
             this.updateGrid();
+            this.updateDevice(Registry.currentDevice);
+        }
+    }, {
+        key: "adjustZoom",
+        value: function adjustZoom(delta, point) {
+            var belowMin = paper.view.zoom >= this.maxZoom && event.deltaY < 0;
+            var aboveMax = paper.view.zoom <= this.minZoom && event.deltaY > 0;
+            if (!aboveMax && !belowMin) {
+                this.view.adjustZoom(delta, point);
+                this.updateGrid();
+                this.updateDevice(Registry.currentDevice);
+            } else {
+                console.log("Too big or too small!");
+            }
         }
     }, {
         key: "setCenter",
         value: function setCenter(center) {
             this.view.setCenter(center);
             this.updateGrid();
+            this.updateDevice(Registry.currentDevice);
         }
     }, {
         key: "moveCenter",
         value: function moveCenter(delta) {
-            this.view.setCenter(PanAndZoom.calcCenter(delta));
+            this.view.moveCenter(delta);
             this.updateGrid();
+            this.updateDevice(Registry.currentDevice);
         }
     }, {
         key: "getEventPosition",
