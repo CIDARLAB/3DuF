@@ -8,9 +8,8 @@ class PanAndZoom {
         let beta = paper.view.zoom / newZoom;
         let pc = p.subtract(c);
         let a = p.subtract(pc.multiply(beta)).subtract(c);
-        let newCenter = this.calcCenter(a.x, a.y);
-        Registry.viewManager.setCenter(newCenter.x, newCenter.y, 1 / beta);
-        Registry.viewManager.setZoom(newZoom);
+        paper.view.center = paper.view.center.add(a);
+        paper.view.zoom = newZoom;
     }
 
     static adjustZoom(delta, position) {
@@ -25,10 +24,8 @@ class PanAndZoom {
         else return paper.view.zoom;
     }
 
-    static calcCenter(deltaX, deltaY, factor) {
-        let offset = new paper.Point(deltaX, deltaY);
-        //offset = offset.multiply(factor);
-        return paper.view.center.add(offset);
+    static moveCenter(delta){
+        paper.view.center = PanAndZoom.calcCenter(delta);
     }
 
     static calcCenter(delta){

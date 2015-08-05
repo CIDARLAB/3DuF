@@ -40,7 +40,7 @@ class CanvasManager {
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
 
-        this.setupZoomEvent();
+        //this.setupZoomEvent();
         this.setupContextEvent();
         this.setupResizeEvent();
     }
@@ -65,8 +65,6 @@ class CanvasManager {
             target.appendChild(btn);
             componentHandler.upgradeElement(btn);
         }
-
-
     }
 
     generateButton(toolName){

@@ -16,13 +16,19 @@ class ViewManager {
         this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, new MouseTool()));
         this.view.setResizeFunction(function(){
             reference.updateGrid();
+            reference.updateDevice(Registry.currentDevice);
         })
+        let func = function(event){
+            reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
+        };
+        this.view.setMouseWheelFunction(func);
+        this.minZoom = .0001;
+        this.maxZoom = 5;
     }
 
     updateDevice(device){
         if(this.__isCurrentDevice(device)){
             this.view.updateDevice(device);
-            this.updateGrid();
             this.view.refresh();
         }
     }
@@ -58,16 +64,31 @@ class ViewManager {
     setZoom(zoom){
         this.view.setZoom(zoom);
         this.updateGrid();
+        this.updateDevice(Registry.currentDevice);
+    }
+
+    adjustZoom(delta, point){
+        let belowMin = (paper.view.zoom >= this.maxZoom && event.deltaY < 0);
+        let aboveMax = (paper.view.zoom <= this.minZoom && event.deltaY > 0);
+        if (!aboveMax && !belowMin) {
+            this.view.adjustZoom(delta, point);
+            this.updateGrid();
+            this.updateDevice(Registry.currentDevice);
+        } else {
+            console.log("Too big or too small!");
+        }
     }
 
     setCenter(center){
         this.view.setCenter(center);
         this.updateGrid();
+        this.updateDevice(Registry.currentDevice);
     }
 
     moveCenter(delta){
-        this.view.setCenter(PanAndZoom.calcCenter(delta));
+        this.view.moveCenter(delta);
         this.updateGrid();
+        this.updateDevice(Registry.currentDevice);
     }
 
     getEventPosition(event){

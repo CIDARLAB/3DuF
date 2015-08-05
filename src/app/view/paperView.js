@@ -2,6 +2,7 @@ var Registry = require("../core/registry");
 var FeatureRenderers = require("./featureRenderers");
 var GridRenderer = require("./grid/GridRenderer");
 var DeviceRenderer = require("./deviceRenderer");
+var PanAndZoom = require("./PanAndZoom");
 
 class PaperView {
     constructor(canvas){
@@ -16,8 +17,6 @@ class PaperView {
         this.featureLayer.insertAbove(this.deviceLayer);
         this.uiLayer = new paper.Layer();
         this.uiLayer.insertAbove(this.featureLayer);
-        this.mouseEvents = {};
-        this.setResizeFunction();
     }
 
     canvasToProject(x,y){
@@ -32,7 +31,7 @@ class PaperView {
     }
 
     setMouseWheelFunction(func){
-        this.canvas.wheel = func;
+        this.canvas.addEventListener("wheel", func);
     }
 
     setMouseDownFunction(func){
@@ -75,7 +74,7 @@ class PaperView {
         this.removeFeature(feature);
         let newPaperFeature = FeatureRenderers[feature.type](feature);
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
-        this.deviceLayer.addChild(newPaperFeature);
+        this.featureLayer.addChild(newPaperFeature);
     }
 
     removeGrid(){
@@ -87,6 +86,14 @@ class PaperView {
         let newPaperGrid = GridRenderer.renderGrid(grid);
         this.paperGrid = newPaperGrid;
         this.gridLayer.addChild(newPaperGrid);
+    }
+
+    moveCenter(delta){
+        PanAndZoom.moveCenter(delta);
+    }
+
+    adjustZoom(delta, point){
+        PanAndZoom.adjustZoom(delta, point);
     }
 
     setZoom(zoom){
