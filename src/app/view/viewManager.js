@@ -6,7 +6,7 @@ var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
 
 class ViewManager {
-    constructor(view){
+    constructor(view) {
         this.view = view;
         let chan = new ChannelTool(Features.Channel);
         let pan = new PanTool();
@@ -14,11 +14,13 @@ class ViewManager {
         this.view.setMouseDownFunction(this.constructMouseDownEvent(chan, pan, new MouseTool()));
         this.view.setMouseUpFunction(this.constructMouseUpEvent(chan, pan, new MouseTool()));
         this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, new MouseTool()));
-        this.view.setResizeFunction(function(){
+        this.timer = false;
+        this.queue = false;
+        this.view.setResizeFunction(function() {
             reference.updateGrid();
             reference.updateDevice(Registry.currentDevice);
         })
-        let func = function(event){
+        let func = function(event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
         this.view.setMouseWheelFunction(func);
@@ -26,112 +28,242 @@ class ViewManager {
         this.maxZoom = 5;
     }
 
-    updateDevice(device){
-        if(this.__isCurrentDevice(device)){
-            this.view.updateDevice(device);
-            this.view.refresh();
+    addDevice(device, refresh = true) {
+        this.view.addDevice(device);
+        this.__addAllDeviceLayers(device, false);
+        this.refresh(refresh);
+    }
+
+    __addAllDeviceLayers(device, refresh = true) {
+        for (let i = 0; i < device.layers.length; i++) {
+            let layer = device.layers[i];
+            this.addLayer(layer, i, false);
         }
     }
 
-    updateFeature(feature){
-        if(this.__isInCurrentDevice(feature)){
+    __removeAllDeviceLayers(device, refresh = true) {
+        for (let i = 0; i < device.layers.length; i++) {
+            let layer = device.layers[i];
+            this.removeLayer(layer, i, false);
+        }
+    }
+
+    removeDevice(device, refresh = true) {
+        this.view.removeDevice(device);
+        this.__removeAllDeviceLayers(device, false);
+        this.refresh(refresh);
+    }
+
+    updateDevice(device, refresh = true) {
+        this.view.updateDevice(device);
+        this.refresh(refresh);
+    }
+
+    addFeature(feature, refresh = true) {
+        if (this.__isFeatureInCurrentDevice(feature)) {
+            this.view.addFeature(feature);
+            this.refresh(refresh);
+        }
+    }
+
+    updateFeature(feature, refresh = true) {
+        if (this.__isFeatureInCurrentDevice(feature)) {
             this.view.updateFeature(feature);
-            this.view.refresh();   
+            this.refresh(refresh);
         }
     }
 
-    removeFeature(feature){
-        if(this.__isInCurrentDevice(feature)){
+    removeFeature(feature, refresh = true) {
+        if (this.__isFeatureInCurrentDevice(feature)) {
             this.view.removeFeature(feature);
-            this.view.refresh(); 
+            this.refresh(refresh);
         }
     }
 
-    removeGrid(){
-        if (this.__hasCurrentGrid()){
+    addLayer(layer, index, refresh = true) {
+        if (this.__isLayerInCurrentDevice(layer)) {
+            this.view.addLayer(layer, index, false);
+            this.__addAllLayerFeatures(layer, false);
+            this.refresh(refresh);
+        }
+    }
+
+    updateLayer(layer, index, refresh = true) {
+        if (this.__isLayerInCurrentDevice(layer)) {
+            this.view.updateLayer(layer);
+            this.refresh(refresh);
+        }
+    }
+
+    removeLayer(layer, index, refresh = true) {
+        if (this.__isLayerInCurrentDevice(layer)) {
+            this.view.removeLayer(layer, index);
+            this.__removeAllLayerFeatures(layer);
+            this.refresh(refresh);
+        }
+    }
+
+    __addAllLayerFeatures(layer, refresh = true) {
+        for (let key in layer.features) {
+            let feature = layer.features[key];
+            this.addFeature(feature, false);
+            this.refresh(refresh)
+        }
+    }
+
+    __removeAllLayerFeatures(layer, refresh = true) {
+        for (let key in layer.features) {
+            let feature = layer.features[key];
+            this.removeFeature(feature, false);
+            this.refresh(refresh);
+        }
+    }
+
+    updateLayer(layer, refresh = true) {
+        if (this.__isCurrentDevice(device)) {
+            this.view.updateLayer(layer);
+            this.refresh(refresh);
+        }
+    }
+
+    removeGrid(refresh = true) {
+        if (this.__hasCurrentGrid()) {
             this.view.removeGrid();
-            this.view.refresh(); 
-        }    
-    }
-
-    updateGrid(){
-        if (this.__hasCurrentGrid()){
-            this.view.updateGrid(Registry.currentGrid);
-            this.view.refresh(); 
+            this.refresh(refresh);
         }
     }
 
-    setZoom(zoom){
-        this.view.setZoom(zoom);
-        this.updateGrid();
-        this.updateDevice(Registry.currentDevice);
+    updateGrid(refresh = true) {
+        if (this.__hasCurrentGrid()) {
+            this.view.updateGrid(Registry.currentGrid);
+            this.refresh(refresh);
+        }
     }
 
-    adjustZoom(delta, point){
-        let belowMin = (paper.view.zoom >= this.maxZoom && event.deltaY < 0);
-        let aboveMax = (paper.view.zoom <= this.minZoom && event.deltaY > 0);
+    setZoom(zoom, refresh = true) {
+        this.view.setZoom(zoom);
+        this.updateGrid(false);
+        this.updateDevice(Registry.currentDevice, false);
+        this.refresh(refresh);
+    }
+
+    adjustZoom(delta, point, refresh = true) {
+        let belowMin = (paper.view.zoom >= this.maxZoom && delta < 0);
+        let aboveMax = (paper.view.zoom <= this.minZoom && delta > 0);
         if (!aboveMax && !belowMin) {
             this.view.adjustZoom(delta, point);
-            this.updateGrid();
-            this.updateDevice(Registry.currentDevice);
+            this.updateGrid(false);
+            this.updateDevice(Registry.currentDevice, false);
         } else {
-            console.log("Too big or too small!");
+            //console.log("Too big or too small!");
+        }
+        this.refresh(refresh);
+    }
+
+    setCenter(center, refresh = true) {
+        this.view.setCenter(center);
+        this.updateGrid(false);
+        this.updateDevice(Registry.currentDevice, false);
+        this.refresh(refresh);
+    }
+
+    moveCenter(delta, refresh = true) {
+        this.view.moveCenter(delta);
+        this.updateGrid(false);
+        this.updateDevice(Registry.currentDevice, false);
+        this.refresh(refresh);
+    }
+
+    refresh(refresh = true) {
+        //if (refresh) this.view.refresh();
+
+        if (this.timer){
+            if (!this.queue){
+                this.queue = true;
+            } else {
+            }
+        } else {
+            this.view.refresh();
+            this.createTimer();
         }
     }
 
-    setCenter(center){
-        this.view.setCenter(center);
-        this.updateGrid();
-        this.updateDevice(Registry.currentDevice);
+
+    createTimer(){
+        let ref = this;
+        this.timer = true;
+        window.setTimeout(function(){
+            ref.endRefreshTimer();
+        }, 20);
     }
 
-    moveCenter(delta){
-        this.view.moveCenter(delta);
-        this.updateGrid();
-        this.updateDevice(Registry.currentDevice);
+    endRefreshTimer(){
+        this.timer = false;
+        if (this.queue){
+            this.queue = false;
+            this.refresh();
+        }
     }
 
-    getEventPosition(event){
+    getEventPosition(event) {
         return this.view.getProjectPosition(event.clientX, event.clientY);
     }
 
-    __hasCurrentGrid(){
+    __hasCurrentGrid() {
         if (Registry.currentGrid) return true;
         else return false;
     }
 
-    __isCurrentDevice(device){
-        if (device == Registry.currentDevice) return true;
+    __isLayerInCurrentDevice(layer) {
+        if (Registry.currentDevice && layer.device == Registry.currentDevice) return true;
         else return false;
     }
 
-    __isInCurrentDevice(feature){
-        if (feature.layer.device == Registry.currentDevice) return true;
+    __isFeatureInCurrentDevice(feature) {
+        if (Registry.currentDevice && this.__isLayerInCurrentDevice(feature.layer)) return true;
         else return false;
     }
 
-    constructMouseDownEvent(tool1, tool2, tool3){
+    constructMouseDownEvent(tool1, tool2, tool3) {
         return this.constructMouseEvent(tool1.down, tool2.down, tool3.down);
     }
 
-    constructMouseMoveEvent(tool1,tool2,tool3){
+    constructMouseMoveEvent(tool1, tool2, tool3) {
         return this.constructMouseEvent(tool1.move, tool2.move, tool3.move);
     }
 
-    constructMouseUpEvent(tool1, tool2, tool3){
+    constructMouseUpEvent(tool1, tool2, tool3) {
         return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
     }
 
-    constructMouseEvent(func1, func2, func3){
-        return function(event){
-            if (event.which ==2) func2(event);
-            else if (event.which ==3) func3(event);
-            else func1(event);
-        } 
+    static __eventButtonsToWhich(num){
+        if (num == 1){
+            return 1;
+        } else if (num ==2){
+            return 3;
+        } else if (num == 4){
+            return 2;
+        } else if (num == 3){
+            return 2;
+        }
     }
 
-    snapToGrid(point){
-        if(Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);
+    constructMouseEvent(func1, func2, func3) {
+        return function(event) {
+            let target;
+            if (event.buttons){
+                target = ViewManager.__eventButtonsToWhich(event.buttons);
+            } else {
+                target = event.which;
+            }
+            if (target == 2) func2(event);
+            else if (target == 3) func3(event);
+            else if(target == 1 || target == 0) func1(event);
+        }
+    }
+
+    snapToGrid(point) {
+        if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);
         else return point;
     }
 }

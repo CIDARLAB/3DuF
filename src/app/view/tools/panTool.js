@@ -9,6 +9,7 @@ class PanTool extends MouseTool {
         this.down = function(event){
             ref.dragging = true;
             ref.startPoint = MouseTool.getEventPosition(event);
+
         }
         this.up = function(event){
             ref.dragging = false;

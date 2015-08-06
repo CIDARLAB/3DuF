@@ -53,9 +53,10 @@ class Device {
 
     /* Add a layer, and re-sort the layers array.*/
     addLayer(layer) {
+        layer.device = this;
         this.layers.push(layer);
         this.sortLayers();
-        layer.device = this;
+        if (Registry.viewManager) Registry.viewManager.addLayer(this.layers.indexOf(layer));
     }
     
     removeFeature(feature){
@@ -75,6 +76,10 @@ class Device {
     addDefault(def) {
         this.defaults.push(def);
         //TODO: Establish what defaults are. Params?
+    }
+
+    updateViewLayers(){
+        if (Registry.viewManager) Registry.viewManager.updateLayers(this);
     }
 
     updateView(){
@@ -118,8 +123,10 @@ class Device {
     }
 
     __loadLayersFromJSON(json) {
+        console.log("Loading layers from JSON");
         for (let i in json) {
-            this.addLayer(Layer.fromJSON(json[i]));
+            let newLayer = Layer.fromJSON(json[i]);
+            this.addLayer(newLayer);
         }
     }
 
