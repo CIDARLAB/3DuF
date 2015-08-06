@@ -2090,9 +2090,10 @@ var CanvasManager = (function () {
         value: function loadDeviceFromJSON(json) {
             Registry.currentDevice = Device.fromJSON(json);
             Registry.currentLayer = Registry.currentDevice.layers[0];
+            Registry.viewManager.addDevice(Registry.currentDevice);
             this.initializeView();
-            this.updateGridSpacing();
-            this.render();
+            //this.updateGridSpacing();
+            //this.render();
         }
     }, {
         key: "saveToStorage",
