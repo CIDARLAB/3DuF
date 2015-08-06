@@ -13,6 +13,7 @@ class Layer {
         this.name = new StringValue(name);
         this.features = {};
         this.featureCount = 0;
+        this.device = undefined;
     }
 
     addFeature(feature) {
@@ -20,7 +21,7 @@ class Layer {
         this.features[feature.id] = feature;
         this.featureCount += 1;
         feature.layer = this;
-        feature.updateView();
+        if (Registry.viewManager) Registry.viewManager.addFeature(feature);
     }
 
     __ensureIsAFeature(feature) {
