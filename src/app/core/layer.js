@@ -62,7 +62,7 @@ class Layer {
         this.__ensureFeatureIDExists(featureID);
         let feature = this.features[featureID];
         this.featureCount -= 1;
-        Registry.viewManager.removeFeature(feature);
+        if (Registry.viewManager) Registry.viewManager.removeFeature(feature);
         delete this.features[featureID];
     }
 

@@ -15,7 +15,8 @@ class Feature {
     }
 
     static generateID() {
-        return uuid.v1();
+        //return uuid.v1();
+        return Registry.generateID();
     }
 
     updateParameter(key, value){

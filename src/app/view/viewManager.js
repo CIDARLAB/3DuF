@@ -4,18 +4,22 @@ var MouseTool = require("./tools/mouseTool");
 var Features = require("../core/features");
 var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
+var SelectTool = require("./tools/selectTool");
+var SimpleQueue = require("../utils/SimpleQueue");
 
 class ViewManager {
     constructor(view) {
         this.view = view;
         let chan = new ChannelTool(Features.Channel);
         let pan = new PanTool();
+        let sel = new SelectTool();
         let reference = this;
-        this.view.setMouseDownFunction(this.constructMouseDownEvent(chan, pan, new MouseTool()));
-        this.view.setMouseUpFunction(this.constructMouseUpEvent(chan, pan, new MouseTool()));
-        this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, new MouseTool()));
-        this.timer = false;
-        this.queue = false;
+        this.view.setMouseDownFunction(this.constructMouseDownEvent(chan, pan, sel));
+        this.view.setMouseUpFunction(this.constructMouseUpEvent(chan, pan, sel));
+        this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, sel));
+        this.updateQueue = new SimpleQueue(function(){
+            reference.view.refresh();
+        }, 20);
         this.view.setResizeFunction(function() {
             reference.updateGrid();
             reference.updateDevice(Registry.currentDevice);
@@ -148,8 +152,8 @@ class ViewManager {
     }
 
     adjustZoom(delta, point, refresh = true) {
-        let belowMin = (paper.view.zoom >= this.maxZoom && delta < 0);
-        let aboveMax = (paper.view.zoom <= this.minZoom && delta > 0);
+        let belowMin = (this.view.getZoom() >= this.maxZoom && delta < 0);
+        let aboveMax = (this.view.getZoom() <= this.minZoom && delta > 0);
         if (!aboveMax && !belowMin) {
             this.view.adjustZoom(delta, point);
             this.updateGrid(false);
@@ -175,34 +179,8 @@ class ViewManager {
     }
 
     refresh(refresh = true) {
-        //if (refresh) this.view.refresh();
-
-        if (this.timer){
-            if (!this.queue){
-                this.queue = true;
-            } else {
-            }
-        } else {
-            this.view.refresh();
-            this.createTimer();
-        }
-    }
-
-
-    createTimer(){
-        let ref = this;
-        this.timer = true;
-        window.setTimeout(function(){
-            ref.endRefreshTimer();
-        }, 20);
-    }
-
-    endRefreshTimer(){
-        this.timer = false;
-        if (this.queue){
-            this.queue = false;
-            this.refresh();
-        }
+        //this.view.refresh();
+        this.updateQueue.run();
     }
 
     getEventPosition(event) {
@@ -265,6 +243,14 @@ class ViewManager {
     snapToGrid(point) {
         if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);
         else return point;
+    }
+
+    hitFeature(point){
+        return this.view.hitFeature(point);
+    }
+
+    hitFeaturesWithPaperElement(element){
+        return this.view.hitFeaturesWithPaperElement(element);
     }
 }
 

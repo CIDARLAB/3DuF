@@ -2,7 +2,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../view/colors');
 var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
@@ -55,7 +54,6 @@ class Via extends Feature {
 
 
         let c1 = PaperPrimitives.Circle(position, radius);
-        c1.fillColor = Colors.GREEN_500;
         c1.featureID = this.id;
         return c1;
     }
