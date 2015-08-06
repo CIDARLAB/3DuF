@@ -61,7 +61,7 @@ window.onload = function(){
 
     manager.loadDeviceFromJSON(dev.toJSON());
     
-    viewManager.updateGrid(grid);
+    viewManager.updateGrid();
     Registry.currentDevice.updateView();
 
     window.dev = Registry.currentDevice;

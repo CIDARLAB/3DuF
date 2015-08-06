@@ -3,9 +3,14 @@ var FeatureRenderers = require("./featureRenderers");
 var GridRenderer = require("./grid/GridRenderer");
 var DeviceRenderer = require("./deviceRenderer");
 var PanAndZoom = require("./PanAndZoom");
+var SimpleQueue = require("../utils/simpleQueue");
 
 class PaperView {
-    constructor(canvas){
+    constructor(canvas) {
+        this.panAndZoom = new PanAndZoom(this);
+        this.center = paper.view.center;
+        let ref = this;
+        this.zoom = paper.view.zoom;
         this.canvas = canvas;
         this.paperFeatures = {};
         this.paperGrid = null;
@@ -20,84 +25,110 @@ class PaperView {
         this.setMouseDragFunction();
     }
 
-    canvasToProject(x,y){
+    getCenter() {
+        return this.center;
+    }
+
+    setCenter(point) {
+        this.center = point;
+        this.updateCenter();
+    }
+
+    updateCenter() {
+        paper.view.center = this.center;
+    }
+
+    getZoom() {
+        return this.zoom;
+    }
+
+    setZoom(zoom) {
+        this.zoom = zoom;
+        this.updateZoom();
+    }
+
+    updateZoom() {
+        paper.view.zoom = this.zoom;
+    }
+
+    canvasToProject(x, y) {
         let rect = this.canvas.getBoundingClientRect();
         let projX = x - rect.left;
         let projY = y - rect.top;
         return (paper.view.viewToProject(new paper.Point(projX, projY)));
     }
 
-    getProjectPosition(x,y){
+    getProjectPosition(x, y) {
         return this.canvasToProject(x, y);
     }
 
-    setMouseWheelFunction(func){
+    setMouseWheelFunction(func) {
         this.canvas.addEventListener("wheel", func);
     }
 
-    setMouseDownFunction(func){
+    setMouseDownFunction(func) {
         this.canvas.addEventListener("mousedown", func);
     }
 
-    setMouseUpFunction(func){
+    setMouseUpFunction(func) {
         this.canvas.addEventListener("mouseup", func);
     }
 
-    setMouseMoveFunction(func){
+    setMouseMoveFunction(func) {
         this.canvas.addEventListener("mousemove", func);
     }
 
-    setMouseDragFunction(){
-        this.canvas.addEventListener("drag", function(){
+    setMouseDragFunction() {
+        this.canvas.addEventListener("drag", function() {
             console.log("dragging");
         }, false);
     }
 
-    setResizeFunction(func){
+    setResizeFunction(func) {
         paper.view.onResize = func;
     }
 
-    refresh(){
+    refresh() {
         paper.view.update();
     }
 
     /* Rendering Devices */
-    addDevice(device){
+    addDevice(device) {
         this.updateDevice(device);
     }
 
-    updateDevice(device){
+    updateDevice(device) {
         this.removeDevice(device);
         let newPaperDevice = DeviceRenderer.renderDevice(device);
         this.paperDevice = newPaperDevice;
         this.deviceLayer.addChild(newPaperDevice);
-    }   
+    }
 
-    removeDevice(){
+    removeDevice() {
         if (this.paperDevice) this.paperDevice.remove();
     }
 
     /* Rendering Layers */
 
-    addLayer(layer, index){
+    addLayer(layer, index) {
         this.featureLayer.insertChild(index, new paper.Group());
     }
 
-    updateLayer(layer, index){
+    updateLayer(layer, index) {
         // do nothing, for now
     }
 
-    removeLayer(layer, index){
+    removeLayer(layer, index) {
         // do nothing, for now
     }
 
     /* Rendering Features */
 
-    addFeature(feature){
+    addFeature(feature) {
         this.updateFeature(feature);
     }
 
-    updateFeature(feature){
+    updateFeature(feature) {
         this.removeFeature(feature);
         let newPaperFeature = FeatureRenderers[feature.type](feature);
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
@@ -106,36 +137,56 @@ class PaperView {
         this.featureLayer.children[index].addChild(newPaperFeature);
     }
 
-    removeFeature(feature){
+    removeFeature(feature) {
         let paperFeature = this.paperFeatures[feature.id];
         if (paperFeature) paperFeature.remove();
     }
 
-    removeGrid(){
+    removeGrid() {
         if (this.paperGrid) this.paperGrid.remove();
     }
 
-    updateGrid(grid){
+    updateGrid(grid) {
         this.removeGrid();
         let newPaperGrid = GridRenderer.renderGrid(grid);
         this.paperGrid = newPaperGrid;
         this.gridLayer.addChild(newPaperGrid);
     }
 
-    moveCenter(delta){
-        PanAndZoom.moveCenter(delta);
+    moveCenter(delta) {
+        this.panAndZoom.moveCenter(delta);
     }
 
-    adjustZoom(delta, point){
-        PanAndZoom.adjustZoom(delta, point);
+    adjustZoom(delta, point) {
+        this.panAndZoom.adjustZoom(delta, point);
     }
 
-    setZoom(zoom){
-        paper.view.zoom = zoom;
+    hitFeature(point) {
+        let hitOptions = {
+            fill: true,
+            tolerance: 5,
+            guides: false
+        }
+
+        let result = this.featureLayer.hitTest(point, hitOptions);
+        if (result) {
+            console.log(result);
+            return result.item;
+        }
     }
 
-    setCenter(center){
-        paper.view.center = center;
+    hitFeaturesWithPaperElement(paperElement) {
+        let output = [];
+        for (let i = 0; i < this.featureLayer.children.length; i++) {
+            let layer = this.featureLayer.children[i];
+            for (let j = 0; j < layer.children.length; j++) {
+                let child = layer.children[j];
+                if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
+                    output.push(child);
+                }
+            }
+        }
+        return output;
     }
 }
 

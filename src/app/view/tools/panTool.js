@@ -1,26 +1,52 @@
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
+var SimpleQueue = require("../../utils/simpleQueue");
 
 class PanTool extends MouseTool {
     constructor(){
         super();
         this.startPoint = null;
+        this.lastPoint = null;
+        this.startCenter = null;
         let ref = this;
+        this.updateQueue = new SimpleQueue(function(){
+            ref.pan();
+        }, 10);
         this.down = function(event){
-            ref.dragging = true;
-            ref.startPoint = MouseTool.getEventPosition(event);
-
+            ref.startPan(MouseTool.getEventPosition(event));
         }
         this.up = function(event){
-            ref.dragging = false;
-            ref.startPoint = null;
+            ref.endPan(MouseTool.getEventPosition(event));
         }
         this.move = function(event){
-            if(ref.dragging){
-                let point = MouseTool.getEventPosition(event);
-                let delta = point.subtract(ref.startPoint);
-                Registry.viewManager.moveCenter(delta);
-            }
+            ref.moveHandler(MouseTool.getEventPosition(event));
+        }
+    }
+
+    startPan(point){
+        this.dragging = true;
+        this.startPoint = point;
+    }
+
+    moveHandler(point){
+        if (this.dragging){
+            this.lastPoint = point;
+            this.updateQueue.run();
+           // this.pan();
+        }
+    }
+
+    endPan(point){
+        this.pan();
+        this.lastPoint = null;
+        this.dragging = false;
+        this.startPoint = null;
+    }
+
+    pan(){
+        if(this.lastPoint){
+            let delta = this.lastPoint.subtract(this.startPoint);
+            Registry.viewManager.moveCenter(delta);
         }
     }
 }

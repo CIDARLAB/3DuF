@@ -313,7 +313,7 @@ window.onload = function () {
 
     manager.loadDeviceFromJSON(dev.toJSON());
 
-    viewManager.updateGrid(grid);
+    viewManager.updateGrid();
     Registry.currentDevice.updateView();
 
     window.dev = Registry.currentDevice;
@@ -323,7 +323,7 @@ window.onload = function () {
     window.Registry = Registry;
 };
 
-},{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22,"./view/grid/adaptiveGrid":42,"./view/paperView":44,"./view/viewManager":48}],3:[function(require,module,exports){
+},{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22,"./view/grid/adaptiveGrid":44,"./view/paperView":46,"./view/viewManager":52}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -611,7 +611,8 @@ var Feature = (function () {
     }], [{
         key: 'generateID',
         value: function generateID() {
-            return uuid.v1();
+            //return uuid.v1();
+            return Registry.generateID();
         }
     }, {
         key: 'fromJSON',
@@ -649,7 +650,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../view/colors');
 var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
@@ -682,7 +682,6 @@ var CircleValve = (function (_Feature) {
             }
 
             var c1 = PaperPrimitives.Circle(position, radius);
-            c1.fillColor = Colors.RED_500;
             c1.featureID = this.id;
             return c1;
         }
@@ -725,7 +724,7 @@ Registry.registeredFeatures[CircleValve.typeString()] = CircleValve;
 
 module.exports = CircleValve;
 
-},{"../../view/colors":33,"../../view/paperPrimitives":43,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],6:[function(require,module,exports){
+},{"../../view/paperPrimitives":45,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -816,7 +815,7 @@ Registry.registeredFeatures[HollowChannel.typeString()] = HollowChannel;
 
 module.exports = HollowChannel;
 
-},{"../../view/paperPrimitives":43,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],7:[function(require,module,exports){
+},{"../../view/paperPrimitives":45,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],7:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -831,7 +830,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../view/colors');
 var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
@@ -865,7 +863,6 @@ var Port = (function (_Feature) {
             }
 
             var c1 = PaperPrimitives.Circle(position, radius);
-            c1.fillColor = Colors.DEEP_PURPLE_500;
             c1.featureID = this.id;
             return c1;
         }
@@ -907,7 +904,7 @@ Registry.registeredFeatures[Port.typeString()] = Port;
 
 module.exports = Port;
 
-},{"../../view/colors":33,"../../view/paperPrimitives":43,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],8:[function(require,module,exports){
+},{"../../view/paperPrimitives":45,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -922,7 +919,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../view/colors');
 var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
@@ -956,7 +952,6 @@ var Via = (function (_Feature) {
             }
 
             var c1 = PaperPrimitives.Circle(position, radius);
-            c1.fillColor = Colors.GREEN_500;
             c1.featureID = this.id;
             return c1;
         }
@@ -999,7 +994,7 @@ Registry.registeredFeatures[Via.typeString()] = Via;
 
 module.exports = Via;
 
-},{"../../view/colors":33,"../../view/paperPrimitives":43,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],9:[function(require,module,exports){
+},{"../../view/paperPrimitives":45,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1014,7 +1009,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../view/colors');
 var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
@@ -1045,7 +1039,6 @@ var Channel = (function (_Feature) {
             }
             var rec = PaperPrimitives.RoundedRect(start, end, width);
             rec.featureID = this.id;
-            rec.fillColor = Colors.INDIGO_500;
             return rec;
         }
     }], [{
@@ -1086,7 +1079,7 @@ Registry.registeredFeatures[Channel.typeString()] = Channel;
 
 module.exports = Channel;
 
-},{"../../view/colors":33,"../../view/paperPrimitives":43,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],10:[function(require,module,exports){
+},{"../../view/paperPrimitives":45,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],10:[function(require,module,exports){
 /*
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
 var requireDirectory = require('require-directory');
@@ -1210,7 +1203,7 @@ var Layer = (function () {
             this.__ensureFeatureIDExists(featureID);
             var feature = this.features[featureID];
             this.featureCount -= 1;
-            Registry.viewManager.removeFeature(feature);
+            if (Registry.viewManager) Registry.viewManager.removeFeature(feature);
             delete this.features[featureID];
         }
     }, {
@@ -1434,7 +1427,7 @@ var FloatValue = (function (_Parameter) {
 Parameter.registerParamType(FloatValue.typeString(), FloatValue);
 module.exports = FloatValue;
 
-},{"../../utils/numberUtils":31,"../parameter":13}],16:[function(require,module,exports){
+},{"../../utils/numberUtils":32,"../parameter":13}],16:[function(require,module,exports){
 /*
 
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
@@ -1493,7 +1486,7 @@ var IntegerValue = (function (_Parameter) {
 Parameter.registerParamType(IntegerValue.typeString(), IntegerValue);
 module.exports = IntegerValue;
 
-},{"../../utils/numberUtils":31,"../parameter":13}],18:[function(require,module,exports){
+},{"../../utils/numberUtils":32,"../parameter":13}],18:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1535,7 +1528,7 @@ var PointValue = (function (_Parameter) {
 Parameter.registerParamType(PointValue.typeString(), PointValue);
 module.exports = PointValue;
 
-},{"../../utils/numberUtils":31,"../parameter":13}],19:[function(require,module,exports){
+},{"../../utils/numberUtils":32,"../parameter":13}],19:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1715,7 +1708,15 @@ var currentLayer = null;
 var currentGrid = null;
 var view = null;
 var viewManager = null;
+var id_counter = 0;
 
+var generateID = function generateID() {
+	var id = id_counter;
+	id_counter++;
+	return id;
+};
+
+exports.generateID = generateID;
 exports.featureRenderers = featureRenderers;
 exports.registeredFeatures = registeredFeatures;
 exports.registeredParams = registeredParams;
@@ -1954,14 +1955,14 @@ var CanvasManager = (function () {
         key: "render",
         value: function render() {
             var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-            //this.renderBackground();
-            //this.renderDevice();
-            //this.renderGrid();
-            paper.view.update(forceUpdate);
         }
     }, {
         key: "renderGrid",
+
+        //this.renderBackground();
+        //this.renderDevice();
+        //this.renderGrid();
+        //paper.view.update(forceUpdate);
         value: function renderGrid() {
             var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
@@ -2082,8 +2083,8 @@ var CanvasManager = (function () {
     }, {
         key: "initializeView",
         value: function initializeView() {
-            this.setZoom(this.calculateOptimalZoom());
-            this.setCenter(this.calculateMidpoint());
+            Registry.viewManager.setZoom(this.calculateOptimalZoom());
+            Registry.viewManager.setCenter(this.calculateMidpoint());
         }
     }, {
         key: "loadDeviceFromJSON",
@@ -2112,7 +2113,7 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/device":3,"../core/features":10,"../core/registry":21,"../view/colors":33,"./gridGenerator":23,"./panAndZoom":24,"./tools":27}],23:[function(require,module,exports){
+},{"../core/device":3,"../core/features":10,"../core/registry":21,"../view/colors":35,"./gridGenerator":23,"./panAndZoom":24,"./tools":27}],23:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2248,7 +2249,7 @@ var GridGenerator = (function () {
 
 module.exports = GridGenerator;
 
-},{"../view/colors":33}],24:[function(require,module,exports){
+},{"../view/colors":35}],24:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2694,6 +2695,67 @@ var ValveTool = (function (_paper$Tool) {
 module.exports = ValveTool;
 
 },{"../../core/features":10,"../../core/registry":21}],30:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SimpleQueue = (function () {
+	function SimpleQueue(func, timeout) {
+		var report = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+		_classCallCheck(this, SimpleQueue);
+
+		this.timeout = timeout;
+		this.func = func;
+		this.waiting = false;
+		this.queued = true;
+		this.counter = 0;
+		this.report = report;
+	}
+
+	_createClass(SimpleQueue, [{
+		key: "run",
+		value: function run() {
+			if (this.waiting) {
+				this.counter++;
+				if (!this.queued) {
+					this.queued = true;
+				}
+			} else {
+				if (this.report) console.log("Waited " + this.counter + " times.");
+				this.func();
+				this.startTimer();
+				this.counter = 0;
+			}
+		}
+	}, {
+		key: "endTimer",
+		value: function endTimer() {
+			this.waiting = false;
+			if (this.queued) {
+				this.queued = false;
+				this.run();
+			}
+		}
+	}, {
+		key: "startTimer",
+		value: function startTimer() {
+			var ref = this;
+			this.waiting = true;
+			window.setTimeout(function () {
+				ref.endTimer();
+			}, this.timeout);
+		}
+	}]);
+
+	return SimpleQueue;
+})();
+
+module.exports = SimpleQueue;
+
+},{}],31:[function(require,module,exports){
 //From http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
 "use strict";
 
@@ -2711,7 +2773,7 @@ function hexStringToPaperColor(hexString) {
 
 module.exports.hexStringToPaperColor = hexStringToPaperColor;
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 "use strict";
 
 function isFloat(n) {
@@ -2730,7 +2792,68 @@ module.exports.isFloat = isFloat;
 module.exports.isInteger = isInteger;
 module.exports.isFloatOrInt = isFloatOrInt;
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SimpleQueue = (function () {
+	function SimpleQueue(func, timeout) {
+		var report = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+		_classCallCheck(this, SimpleQueue);
+
+		this.timeout = timeout;
+		this.func = func;
+		this.waiting = false;
+		this.queued = true;
+		this.counter = 0;
+		this.report = report;
+	}
+
+	_createClass(SimpleQueue, [{
+		key: "run",
+		value: function run() {
+			if (this.waiting) {
+				this.counter++;
+				if (!this.queued) {
+					this.queued = true;
+				}
+			} else {
+				if (this.report) console.log("Waited " + this.counter + " times.");
+				this.func();
+				this.startTimer();
+				this.counter = 0;
+			}
+		}
+	}, {
+		key: "endTimer",
+		value: function endTimer() {
+			this.waiting = false;
+			if (this.queued) {
+				this.queued = false;
+				this.run();
+			}
+		}
+	}, {
+		key: "startTimer",
+		value: function startTimer() {
+			var ref = this;
+			this.waiting = true;
+			window.setTimeout(function () {
+				ref.endTimer();
+			}, this.timeout);
+		}
+	}]);
+
+	return SimpleQueue;
+})();
+
+module.exports = SimpleQueue;
+
+},{}],34:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2740,21 +2863,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Registry = require("../core/registry");
 
 var PanAndZoom = (function () {
-    function PanAndZoom() {
+    function PanAndZoom(paperView) {
         _classCallCheck(this, PanAndZoom);
+
+        this.view = paperView;
     }
 
-    _createClass(PanAndZoom, null, [{
+    _createClass(PanAndZoom, [{
         key: "stableZoom",
         value: function stableZoom(zoom, position) {
             var newZoom = zoom;
             var p = position;
-            var c = paper.view.center;
-            var beta = paper.view.zoom / newZoom;
+            var c = this.view.getCenter();
+            var beta = this.view.getZoom() / newZoom;
             var pc = p.subtract(c);
             var a = p.subtract(pc.multiply(beta)).subtract(c);
-            paper.view.center = paper.view.center.add(a);
-            paper.view.zoom = newZoom;
+            this.view.setCenter(this.view.getCenter().add(a));
+            this.view.setZoom(newZoom);
         }
     }, {
         key: "adjustZoom",
@@ -2769,17 +2894,17 @@ var PanAndZoom = (function () {
         value: function calcZoom(delta) {
             var multiplier = arguments.length <= 1 || arguments[1] === undefined ? 1.177827941003 : arguments[1];
 
-            if (delta < 0) return paper.view.zoom * multiplier;else if (delta > 0) return paper.view.zoom / multiplier;else return paper.view.zoom;
+            if (delta < 0) return this.view.getZoom() * multiplier;else if (delta > 0) return this.view.getZoom() / multiplier;else return this.view.getZoom();
         }
     }, {
         key: "moveCenter",
         value: function moveCenter(delta) {
-            paper.view.center = PanAndZoom.calcCenter(delta);
+            this.view.setCenter(this.calcCenter(delta));
         }
     }, {
         key: "calcCenter",
         value: function calcCenter(delta) {
-            return paper.view.center.subtract(delta);
+            return this.view.getCenter().subtract(delta);
         }
     }]);
 
@@ -2788,7 +2913,7 @@ var PanAndZoom = (function () {
 
 module.exports = PanAndZoom;
 
-},{"../core/registry":21}],33:[function(require,module,exports){
+},{"../core/registry":21}],35:[function(require,module,exports){
 "use strict";
 
 var ColorUtils = require("../utils/colorUtils");
@@ -2804,7 +2929,7 @@ module.exports.GREY_700 = hexStringToPaperColor("#616161");
 module.exports.GREY_500 = hexStringToPaperColor("#9E9E9E");
 module.exports.AMBER_50 = hexStringToPaperColor("#FFF8E1");
 
-},{"../utils/colorUtils":30}],34:[function(require,module,exports){
+},{"../utils/colorUtils":31}],36:[function(require,module,exports){
 "use strict";
 
 var Colors = require("./colors");
@@ -2829,7 +2954,7 @@ function renderDevice(device) {
 
 module.exports.renderDevice = renderDevice;
 
-},{"./colors":33}],35:[function(require,module,exports){
+},{"./colors":35}],37:[function(require,module,exports){
 "use strict";
 
 var Registry = require("../../core/registry");
@@ -2854,7 +2979,7 @@ var renderChannel = function renderChannel(channel) {
 
 module.exports = renderChannel;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":33,"../paperPrimitives":43}],36:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":45}],38:[function(require,module,exports){
 "use strict";
 
 var Registry = require("../../core/registry");
@@ -2882,7 +3007,7 @@ var renderCircleValve = function renderCircleValve(circleValve) {
 
 module.exports = renderCircleValve;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":33,"../paperPrimitives":43}],37:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":45}],39:[function(require,module,exports){
 "use strict";
 
 var Registry = require("../../core/registry");
@@ -2911,7 +3036,7 @@ var renderHollowChannel = function renderHollowChannel(hollowChannel) {
 
 module.exports = renderHollowChannel;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":33,"../paperPrimitives":43}],38:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":45}],40:[function(require,module,exports){
 "use strict";
 
 module.exports.Channel = require("./channelRenderer");
@@ -2920,7 +3045,7 @@ module.exports.CircleValve = require("./circleValveRenderer");
 module.exports.HollowChannel = require("./hollowChannelRenderer");
 module.exports.Port = require("./portRenderer");
 
-},{"./channelRenderer":35,"./circleValveRenderer":36,"./hollowChannelRenderer":37,"./portRenderer":39,"./viaRenderer":40}],39:[function(require,module,exports){
+},{"./channelRenderer":37,"./circleValveRenderer":38,"./hollowChannelRenderer":39,"./portRenderer":41,"./viaRenderer":42}],41:[function(require,module,exports){
 "use strict";
 
 var Registry = require("../../core/registry");
@@ -2949,7 +3074,7 @@ var renderPort = function renderPort(port) {
 
 module.exports = renderPort;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":33,"../paperPrimitives":43}],40:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":45}],42:[function(require,module,exports){
 "use strict";
 
 var Registry = require("../../core/registry");
@@ -2977,7 +3102,7 @@ var renderVia = function renderVia(via) {
 
 module.exports = renderVia;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":33,"../paperPrimitives":43}],41:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":45}],43:[function(require,module,exports){
 "use strict";
 
 var Colors = require("../colors");
@@ -3064,7 +3189,7 @@ function makeHorizontalLines(grid) {
 
 module.exports.renderGrid = renderGrid;
 
-},{"../colors":33}],42:[function(require,module,exports){
+},{"../colors":35}],44:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3177,7 +3302,7 @@ var AdaptiveGrid = (function () {
 
 module.exports = AdaptiveGrid;
 
-},{"../../core/registry":21,"../colors":33}],43:[function(require,module,exports){
+},{"../../core/registry":21,"../colors":35}],45:[function(require,module,exports){
 "use strict";
 
 var RoundedRect = function RoundedRect(start, end, width) {
@@ -3203,7 +3328,7 @@ var Circle = function Circle(position, radius) {
 module.exports.RoundedRect = RoundedRect;
 module.exports.Circle = Circle;
 
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3215,11 +3340,16 @@ var FeatureRenderers = require("./featureRenderers");
 var GridRenderer = require("./grid/GridRenderer");
 var DeviceRenderer = require("./deviceRenderer");
 var PanAndZoom = require("./PanAndZoom");
+var SimpleQueue = require("../utils/simpleQueue");
 
 var PaperView = (function () {
     function PaperView(canvas) {
         _classCallCheck(this, PaperView);
 
+        this.panAndZoom = new PanAndZoom(this);
+        this.center = paper.view.center;
+        var ref = this;
+        this.zoom = paper.view.zoom;
         this.canvas = canvas;
         this.paperFeatures = {};
         this.paperGrid = null;
@@ -3235,6 +3365,38 @@ var PaperView = (function () {
     }
 
     _createClass(PaperView, [{
+        key: "getCenter",
+        value: function getCenter() {
+            return this.center;
+        }
+    }, {
+        key: "setCenter",
+        value: function setCenter(point) {
+            this.center = point;
+            this.updateCenter();
+        }
+    }, {
+        key: "updateCenter",
+        value: function updateCenter() {
+            paper.view.center = this.center;
+        }
+    }, {
+        key: "getZoom",
+        value: function getZoom() {
+            return this.zoom;
+        }
+    }, {
+        key: "setZoom",
+        value: function setZoom(zoom) {
+            this.zoom = zoom;
+            this.updateZoom();
+        }
+    }, {
+        key: "updateZoom",
+        value: function updateZoom() {
+            paper.view.zoom = this.zoom;
+        }
+    }, {
         key: "canvasToProject",
         value: function canvasToProject(x, y) {
             var rect = this.canvas.getBoundingClientRect();
@@ -3361,22 +3523,42 @@ var PaperView = (function () {
     }, {
         key: "moveCenter",
         value: function moveCenter(delta) {
-            PanAndZoom.moveCenter(delta);
+            this.panAndZoom.moveCenter(delta);
         }
     }, {
         key: "adjustZoom",
         value: function adjustZoom(delta, point) {
-            PanAndZoom.adjustZoom(delta, point);
+            this.panAndZoom.adjustZoom(delta, point);
         }
     }, {
-        key: "setZoom",
-        value: function setZoom(zoom) {
-            paper.view.zoom = zoom;
+        key: "hitFeature",
+        value: function hitFeature(point) {
+            var hitOptions = {
+                fill: true,
+                tolerance: 5,
+                guides: false
+            };
+
+            var result = this.featureLayer.hitTest(point, hitOptions);
+            if (result) {
+                console.log(result);
+                return result.item;
+            }
         }
     }, {
-        key: "setCenter",
-        value: function setCenter(center) {
-            paper.view.center = center;
+        key: "hitFeaturesWithPaperElement",
+        value: function hitFeaturesWithPaperElement(paperElement) {
+            var output = [];
+            for (var i = 0; i < this.featureLayer.children.length; i++) {
+                var layer = this.featureLayer.children[i];
+                for (var j = 0; j < layer.children.length; j++) {
+                    var child = layer.children[j];
+                    if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
+                        output.push(child);
+                    }
+                }
+            }
+            return output;
         }
     }]);
 
@@ -3385,139 +3567,7 @@ var PaperView = (function () {
 
 module.exports = PaperView;
 
-},{"../core/registry":21,"./PanAndZoom":32,"./deviceRenderer":34,"./featureRenderers":38,"./grid/GridRenderer":41}],45:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Features = require("../../core/features");
-var Registry = require("../../core/registry");
-var MouseTool = require("./mouseTool");
-
-var ChannelTool = (function (_MouseTool) {
-	_inherits(ChannelTool, _MouseTool);
-
-	function ChannelTool(channelClass) {
-		_classCallCheck(this, ChannelTool);
-
-		_get(Object.getPrototypeOf(ChannelTool.prototype), "constructor", this).call(this);
-		this.channelClass = channelClass;
-		this.startPoint = null;
-		this.currentChannelID = null;
-		this.currentTarget = null;
-		this.dragging = false;
-		var ref = this;
-
-		this.down = function (event) {
-			ref.dragging = true;
-			ref.initChannel(MouseTool.getEventPosition(event));
-		};
-		this.up = function (event) {
-			ref.dragging = false;
-			ref.finishChannel(MouseTool.getEventPosition(event));
-		};
-		this.move = function (event) {
-			if (ref.dragging) {
-				ref.updateChannel(MouseTool.getEventPosition(event));
-				ref.showTarget(MouseTool.getEventPosition(event));
-			}
-			ref.showTarget(MouseTool.getEventPosition(event));
-		};
-	}
-
-	_createClass(ChannelTool, [{
-		key: "abort",
-		value: function abort() {
-			ref.dragging = false;
-			if (this.currentTarget) {
-				this.currentTarget.remove();
-			}
-			if (this.currentChannelID) {
-				Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-			}
-			Registry.canvasManager.render();
-		}
-	}, {
-		key: "showTarget",
-		value: function showTarget(point) {
-			if (this.currentTarget) {
-				this.currentTarget.remove();
-			}
-			point = ChannelTool.getTarget(point);
-			this.currentTarget = ChannelTool.makeReticle(point);
-		}
-	}, {
-		key: "initChannel",
-		value: function initChannel(point) {
-			this.startPoint = ChannelTool.getTarget(point);
-		}
-
-		//TODO: Re-render only the current channel, to improve perforamnce
-	}, {
-		key: "updateChannel",
-		value: function updateChannel(point) {
-			if (this.currentChannelID) {
-				var target = ChannelTool.getTarget(point);
-				var feat = Registry.currentLayer.getFeature(this.currentChannelID);
-				feat.updateParameter("end", [target.x, target.y]);
-				Registry.canvasManager.render();
-			} else {
-				var newChannel = this.createChannel(this.startPoint, this.startPoint);
-				this.currentChannelID = newChannel.id;
-				Registry.currentLayer.addFeature(newChannel);
-			}
-		}
-	}, {
-		key: "finishChannel",
-		value: function finishChannel(point) {
-			var target = ChannelTool.getTarget(point);
-			if (this.currentChannelID) {
-				if (this.startPoint.x == target.x && this.startPoint.y == target.y) {
-					Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-					//TODO: This will be slow for complex devices, since it re-renders everything
-					Registry.canvasManager.render();
-				}
-			}
-			this.currentChannelID = null;
-			this.startPoint = null;
-		}
-	}, {
-		key: "createChannel",
-		value: function createChannel(start, end) {
-			return new this.channelClass({
-				"start": [start.x, start.y],
-				"end": [end.x, end.y]
-			});
-		}
-
-		//TODO: Re-establish target selection logic from earlier demo
-	}], [{
-		key: "makeReticle",
-		value: function makeReticle(point) {
-			var size = 10 / paper.view.zoom;
-			var ret = paper.Path.Circle(point, size);
-			ret.fillColor = new paper.Color(.5, 0, 1, .5);
-			return ret;
-		}
-	}, {
-		key: "getTarget",
-		value: function getTarget(point) {
-			return Registry.viewManager.snapToGrid(point);
-		}
-	}]);
-
-	return ChannelTool;
-})(MouseTool);
-
-module.exports = ChannelTool;
-
-},{"../../core/features":10,"../../core/registry":21,"./mouseTool":46}],46:[function(require,module,exports){
+},{"../core/registry":21,"../utils/simpleQueue":33,"./PanAndZoom":34,"./deviceRenderer":36,"./featureRenderers":40,"./grid/GridRenderer":43}],47:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3554,8 +3604,191 @@ var MouseTool = (function () {
 
 module.exports = MouseTool;
 
-},{"../../core/registry":21}],47:[function(require,module,exports){
+},{"../../core/registry":21}],48:[function(require,module,exports){
 "use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Features = require("../../core/features");
+var Registry = require("../../core/registry");
+var MouseTool = require("./mouseTool");
+var SimpleQueue = require("../../utils/simpleQueue");
+
+var ChannelTool = (function (_MouseTool) {
+	_inherits(ChannelTool, _MouseTool);
+
+	function ChannelTool(channelClass) {
+		_classCallCheck(this, ChannelTool);
+
+		_get(Object.getPrototypeOf(ChannelTool.prototype), "constructor", this).call(this);
+		this.channelClass = channelClass;
+		this.startPoint = null;
+		this.lastPoint = null;
+		this.currentChannelID = null;
+		this.currentTarget = null;
+		this.dragging = false;
+		var ref = this;
+
+		this.updateQueue = new SimpleQueue(function () {
+			ref.updateChannel();
+		}, 20, false);
+
+		this.down = function (event) {
+			ref.dragging = true;
+			ref.initChannel(MouseTool.getEventPosition(event));
+		};
+		this.up = function (event) {
+			ref.dragging = false;
+			ref.finishChannel(MouseTool.getEventPosition(event));
+		};
+		this.move = function (event) {
+			if (ref.dragging) {
+				ref.lastPoint = MouseTool.getEventPosition(event);
+				ref.updateQueue.run();
+				//ref.updateChannel();
+				ref.showTarget(MouseTool.getEventPosition(event));
+			}
+			ref.showTarget(MouseTool.getEventPosition(event));
+		};
+	}
+
+	_createClass(ChannelTool, [{
+		key: "abort",
+		value: function abort() {
+			ref.dragging = false;
+			if (this.currentTarget) {
+				this.currentTarget.remove();
+			}
+			if (this.currentChannelID) {
+				Registry.currentLayer.removeFeatureByID(this.currentChannelID);
+			}
+			Registry.canvasManager.render();
+		}
+	}, {
+		key: "showTarget",
+		value: function showTarget(point) {
+			if (this.currentTarget) {
+				this.currentTarget.remove();
+			}
+			point = ChannelTool.getTarget(point);
+			this.currentTarget = ChannelTool.makeReticle(point);
+		}
+	}, {
+		key: "initChannel",
+		value: function initChannel(point) {
+			this.startPoint = ChannelTool.getTarget(point);
+		}
+
+		//TODO: Re-render only the current channel, to improve perforamnce
+	}, {
+		key: "updateChannel",
+		value: function updateChannel() {
+			if (this.lastPoint && this.startPoint) {
+				if (this.currentChannelID) {
+					var target = ChannelTool.getTarget(this.lastPoint);
+					var feat = Registry.currentLayer.getFeature(this.currentChannelID);
+					feat.updateParameter("end", [target.x, target.y]);
+					Registry.canvasManager.render();
+				} else {
+					var newChannel = this.createChannel(this.startPoint, this.startPoint);
+					this.currentChannelID = newChannel.id;
+					Registry.currentLayer.addFeature(newChannel);
+				}
+			}
+		}
+	}, {
+		key: "finishChannel",
+		value: function finishChannel(point) {
+			var target = ChannelTool.getTarget(point);
+			if (this.currentChannelID) {
+				if (this.startPoint.x == target.x && this.startPoint.y == target.y) {
+					Registry.currentLayer.removeFeatureByID(this.currentChannelID);
+					//TODO: This will be slow for complex devices, since it re-renders everything
+					Registry.canvasManager.render();
+				}
+			} else {
+				this.updateChannel(point);
+			}
+			this.currentChannelID = null;
+			this.startPoint = null;
+		}
+	}, {
+		key: "createChannel",
+		value: function createChannel(start, end) {
+			return new this.channelClass({
+				"start": [start.x, start.y],
+				"end": [end.x, end.y]
+			});
+		}
+
+		//TODO: Re-establish target selection logic from earlier demo
+	}], [{
+		key: "makeReticle",
+		value: function makeReticle(point) {
+			var size = 10 / paper.view.zoom;
+			var ret = paper.Path.Circle(point, size);
+			ret.fillColor = new paper.Color(.5, 0, 1, .5);
+			return ret;
+		}
+	}, {
+		key: "getTarget",
+		value: function getTarget(point) {
+			return Registry.viewManager.snapToGrid(point);
+		}
+	}]);
+
+	return ChannelTool;
+})(MouseTool);
+
+module.exports = ChannelTool;
+
+},{"../../core/features":10,"../../core/registry":21,"../../utils/simpleQueue":33,"./mouseTool":49}],49:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+
+var MouseTool = (function () {
+    function MouseTool() {
+        _classCallCheck(this, MouseTool);
+
+        this.up = MouseTool.defaultFunction("up");
+        this.down = MouseTool.defaultFunction("down");
+        this.move = MouseTool.defaultFunction("move");
+    }
+
+    _createClass(MouseTool, null, [{
+        key: "defaultFunction",
+        value: function defaultFunction(string) {
+            return function () {
+                console.log("No " + string + " function set.");
+            };
+        }
+    }, {
+        key: "getEventPosition",
+        value: function getEventPosition(event) {
+            return Registry.viewManager.getEventPosition(event);
+        }
+    }]);
+
+    return MouseTool;
+})();
+
+module.exports = MouseTool;
+
+},{"../../core/registry":21}],50:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
@@ -3565,6 +3798,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
+var SimpleQueue = require("../../utils/simpleQueue");
 
 var PanTool = (function (_MouseTool) {
     _inherits(PanTool, _MouseTool);
@@ -3574,30 +3808,224 @@ var PanTool = (function (_MouseTool) {
 
         _get(Object.getPrototypeOf(PanTool.prototype), "constructor", this).call(this);
         this.startPoint = null;
+        this.lastPoint = null;
+        this.startCenter = null;
         var ref = this;
+        this.updateQueue = new SimpleQueue(function () {
+            ref.pan();
+        }, 10);
         this.down = function (event) {
-            ref.dragging = true;
-            ref.startPoint = MouseTool.getEventPosition(event);
+            ref.startPan(MouseTool.getEventPosition(event));
         };
         this.up = function (event) {
-            ref.dragging = false;
-            ref.startPoint = null;
+            ref.endPan(MouseTool.getEventPosition(event));
         };
         this.move = function (event) {
-            if (ref.dragging) {
-                var point = MouseTool.getEventPosition(event);
-                var delta = point.subtract(ref.startPoint);
-                Registry.viewManager.moveCenter(delta);
-            }
+            ref.moveHandler(MouseTool.getEventPosition(event));
         };
     }
+
+    _createClass(PanTool, [{
+        key: "startPan",
+        value: function startPan(point) {
+            this.dragging = true;
+            this.startPoint = point;
+        }
+    }, {
+        key: "moveHandler",
+        value: function moveHandler(point) {
+            if (this.dragging) {
+                this.lastPoint = point;
+                this.updateQueue.run();
+                // this.pan();
+            }
+        }
+    }, {
+        key: "endPan",
+        value: function endPan(point) {
+            this.pan();
+            this.lastPoint = null;
+            this.dragging = false;
+            this.startPoint = null;
+        }
+    }, {
+        key: "pan",
+        value: function pan() {
+            if (this.lastPoint) {
+                var delta = this.lastPoint.subtract(this.startPoint);
+                Registry.viewManager.moveCenter(delta);
+            }
+        }
+    }]);
 
     return PanTool;
 })(MouseTool);
 
 module.exports = PanTool;
 
-},{"../../core/registry":21,"./mouseTool":46}],48:[function(require,module,exports){
+},{"../../core/registry":21,"../../utils/simpleQueue":33,"./mouseTool":49}],51:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Registry = require("../../core/registry");
+var MouseTool = require("./MouseTool");
+var SimpleQueue = require("../../utils/simpleQueue");
+
+var SelectTool = (function (_MouseTool) {
+	_inherits(SelectTool, _MouseTool);
+
+	function SelectTool() {
+		_classCallCheck(this, SelectTool);
+
+		_get(Object.getPrototypeOf(SelectTool.prototype), "constructor", this).call(this);
+		this.dragging = false;
+		this.dragStart = null;
+		this.lastPoint = null;
+		this.currentSelectBox = null;
+		this.currentSelection = [];
+		var ref = this;
+		this.updateQueue = new SimpleQueue(function () {
+			ref.dragHandler();
+		}, 20);
+		this.down = function (event) {
+			ref.mouseDownHandler(MouseTool.getEventPosition(event));
+			ref.dragging = true;
+		};
+		this.move = function (event) {
+			if (ref.dragging) {
+				ref.lastPoint = MouseTool.getEventPosition(event);
+				ref.updateQueue.run();
+			}
+		};
+		this.up = function (event) {
+			ref.dragging = false;
+			ref.mouseUpHandler(MouseTool.getEventPosition(event));
+		};
+	}
+
+	_createClass(SelectTool, [{
+		key: "keyHandler",
+		value: function keyHandler(event) {
+			if (event.key == "delete" || event.key == "backspace") {
+				this.removeFeatures();
+			}
+		}
+	}, {
+		key: "dragHandler",
+		value: function dragHandler() {
+			if (this.dragStart) {
+				if (this.currentSelectBox) {
+					this.currentSelectBox.remove();
+				}
+				this.currentSelectBox = this.rectSelect(this.dragStart, this.lastPoint);
+			}
+		}
+	}, {
+		key: "mouseUpHandler",
+		value: function mouseUpHandler(point) {
+			if (this.currentSelectBox) {
+				this.currentSelection = Registry.viewManager.hitFeaturesWithPaperElement(this.currentSelectBox);
+				this.selectFeatures();
+			}
+			this.killSelectBox();
+		}
+	}, {
+		key: "removeFeatures",
+		value: function removeFeatures() {
+			if (this.currentSelection.length > 0) {
+				for (var i = 0; i < this.currentSelection.length; i++) {
+					var paperFeature = this.currentSelection[i];
+					Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
+				}
+				this.currentSelection = [];
+				Registry.canvasManager.render();
+			}
+		}
+	}, {
+		key: "mouseDownHandler",
+		value: function mouseDownHandler(point) {
+			var target = this.hitFeature(point);
+			if (target) {
+				this.deselectFeatures();
+				this.selectFeature(target);
+			} else {
+				this.deselectFeatures();
+				this.dragStart = point;
+			}
+		}
+	}, {
+		key: "killSelectBox",
+		value: function killSelectBox() {
+			if (this.currentSelectBox) {
+				this.currentSelectBox.remove();
+				this.currentSelectBox = null;
+			}
+			this.dragStart = null;
+		}
+	}, {
+		key: "hitFeature",
+		value: function hitFeature(point) {
+			var target = Registry.viewManager.hitFeature(point);
+			return target;
+		}
+	}, {
+		key: "selectFeature",
+		value: function selectFeature(paperElement) {
+			this.currentSelection.push(paperElement);
+			paperElement.selected = true;
+		}
+	}, {
+		key: "selectFeatures",
+		value: function selectFeatures() {
+			if (this.currentSelection) {
+				for (var i = 0; i < this.currentSelection.length; i++) {
+					var paperFeature = this.currentSelection[i];
+					paperFeature.selected = true;
+				}
+			}
+		}
+	}, {
+		key: "deselectFeatures",
+		value: function deselectFeatures() {
+			if (this.currentSelection) {
+				for (var i = 0; i < this.currentSelection.length; i++) {
+					var paperFeature = this.currentSelection[i];
+					paperFeature.selected = false;
+				}
+			}
+			this.currentSelection = [];
+		}
+	}, {
+		key: "abort",
+		value: function abort() {
+			this.deselectFeatures();
+			this.killSelectBox();
+		}
+	}, {
+		key: "rectSelect",
+		value: function rectSelect(point1, point2) {
+			var rect = new paper.Path.Rectangle(point1, point2);
+			rect.fillColor = new paper.Color(0, .3, 1, .4);
+			rect.strokeColor = new paper.Color(0, 0, 0);
+			rect.strokeWidth = 2;
+			rect.selected = true;
+			return rect;
+		}
+	}]);
+
+	return SelectTool;
+})(MouseTool);
+
+module.exports = SelectTool;
+
+},{"../../core/registry":21,"../../utils/simpleQueue":33,"./MouseTool":47}],52:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3610,6 +4038,8 @@ var MouseTool = require("./tools/mouseTool");
 var Features = require("../core/features");
 var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
+var SelectTool = require("./tools/selectTool");
+var SimpleQueue = require("../utils/SimpleQueue");
 
 var ViewManager = (function () {
     function ViewManager(view) {
@@ -3618,12 +4048,14 @@ var ViewManager = (function () {
         this.view = view;
         var chan = new ChannelTool(Features.Channel);
         var pan = new PanTool();
+        var sel = new SelectTool();
         var reference = this;
-        this.view.setMouseDownFunction(this.constructMouseDownEvent(chan, pan, new MouseTool()));
-        this.view.setMouseUpFunction(this.constructMouseUpEvent(chan, pan, new MouseTool()));
-        this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, new MouseTool()));
-        this.timer = false;
-        this.queue = false;
+        this.view.setMouseDownFunction(this.constructMouseDownEvent(chan, pan, sel));
+        this.view.setMouseUpFunction(this.constructMouseUpEvent(chan, pan, sel));
+        this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, sel));
+        this.updateQueue = new SimpleQueue(function () {
+            reference.view.refresh();
+        }, 20);
         this.view.setResizeFunction(function () {
             reference.updateGrid();
             reference.updateDevice(Registry.currentDevice);
@@ -3811,8 +4243,8 @@ var ViewManager = (function () {
         value: function adjustZoom(delta, point) {
             var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
-            var belowMin = paper.view.zoom >= this.maxZoom && delta < 0;
-            var aboveMax = paper.view.zoom <= this.minZoom && delta > 0;
+            var belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
+            var aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
             if (!aboveMax && !belowMin) {
                 this.view.adjustZoom(delta, point);
                 this.updateGrid(false);
@@ -3847,34 +4279,8 @@ var ViewManager = (function () {
         value: function refresh() {
             var _refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
-            //if (refresh) this.view.refresh();
-
-            if (this.timer) {
-                if (!this.queue) {
-                    this.queue = true;
-                } else {}
-            } else {
-                this.view.refresh();
-                this.createTimer();
-            }
-        }
-    }, {
-        key: "createTimer",
-        value: function createTimer() {
-            var ref = this;
-            this.timer = true;
-            window.setTimeout(function () {
-                ref.endRefreshTimer();
-            }, 20);
-        }
-    }, {
-        key: "endRefreshTimer",
-        value: function endRefreshTimer() {
-            this.timer = false;
-            if (this.queue) {
-                this.queue = false;
-                this.refresh();
-            }
+            //this.view.refresh();
+            this.updateQueue.run();
         }
     }, {
         key: "getEventPosition",
@@ -3929,6 +4335,16 @@ var ViewManager = (function () {
         value: function snapToGrid(point) {
             if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);else return point;
         }
+    }, {
+        key: "hitFeature",
+        value: function hitFeature(point) {
+            return this.view.hitFeature(point);
+        }
+    }, {
+        key: "hitFeaturesWithPaperElement",
+        value: function hitFeaturesWithPaperElement(element) {
+            return this.view.hitFeaturesWithPaperElement(element);
+        }
     }], [{
         key: "__eventButtonsToWhich",
         value: function __eventButtonsToWhich(num) {
@@ -3949,4 +4365,4 @@ var ViewManager = (function () {
 
 module.exports = ViewManager;
 
-},{"../core/features":10,"../core/registry":21,"./PanAndZoom":32,"./tools/channelTool":45,"./tools/mouseTool":46,"./tools/panTool":47}]},{},[2]);
+},{"../core/features":10,"../core/registry":21,"../utils/SimpleQueue":30,"./PanAndZoom":34,"./tools/channelTool":48,"./tools/mouseTool":49,"./tools/panTool":50,"./tools/selectTool":51}]},{},[2]);
