@@ -399,9 +399,10 @@ var Device = (function () {
     }, {
         key: "addLayer",
         value: function addLayer(layer) {
+            layer.device = this;
             this.layers.push(layer);
             this.sortLayers();
-            layer.device = this;
+            if (Registry.viewManager) Registry.viewManager.addLayer(this.layers.indexOf(layer));
         }
     }, {
         key: "removeFeature",
@@ -425,6 +426,11 @@ var Device = (function () {
         value: function addDefault(def) {
             this.defaults.push(def);
             //TODO: Establish what defaults are. Params?
+        }
+    }, {
+        key: "updateViewLayers",
+        value: function updateViewLayers() {
+            if (Registry.viewManager) Registry.viewManager.updateLayers(this);
         }
     }, {
         key: "updateView",
@@ -461,8 +467,10 @@ var Device = (function () {
     }, {
         key: "__loadLayersFromJSON",
         value: function __loadLayersFromJSON(json) {
+            console.log("Loading layers from JSON");
             for (var i in json) {
-                this.addLayer(Layer.fromJSON(json[i]));
+                var newLayer = Layer.fromJSON(json[i]);
+                this.addLayer(newLayer);
             }
         }
 
@@ -1156,6 +1164,7 @@ var Layer = (function () {
         this.name = new StringValue(name);
         this.features = {};
         this.featureCount = 0;
+        this.device = undefined;
     }
 
     _createClass(Layer, [{
@@ -1165,7 +1174,7 @@ var Layer = (function () {
             this.features[feature.id] = feature;
             this.featureCount += 1;
             feature.layer = this;
-            feature.updateView();
+            if (Registry.viewManager) Registry.viewManager.addFeature(feature);
         }
     }, {
         key: '__ensureIsAFeature',
@@ -2081,9 +2090,10 @@ var CanvasManager = (function () {
         value: function loadDeviceFromJSON(json) {
             Registry.currentDevice = Device.fromJSON(json);
             Registry.currentLayer = Registry.currentDevice.layers[0];
+            Registry.viewManager.addDevice(Registry.currentDevice);
             this.initializeView();
-            this.updateGridSpacing();
-            this.render();
+            //this.updateGridSpacing();
+            //this.render();
         }
     }, {
         key: "saveToStorage",
@@ -3214,13 +3224,14 @@ var PaperView = (function () {
         this.paperFeatures = {};
         this.paperGrid = null;
         this.paperDevice = null;
-        this.gridLayer = new paper.Layer();
-        this.deviceLayer = new paper.Layer();
+        this.gridLayer = new paper.Group();
+        this.deviceLayer = new paper.Group();
         this.deviceLayer.insertAbove(this.gridLayer);
-        this.featureLayer = new paper.Layer();
+        this.featureLayer = new paper.Group();
         this.featureLayer.insertAbove(this.deviceLayer);
-        this.uiLayer = new paper.Layer();
+        this.uiLayer = new paper.Group();
         this.uiLayer.insertAbove(this.featureLayer);
+        this.setMouseDragFunction();
     }
 
     _createClass(PaperView, [{
@@ -3244,17 +3255,24 @@ var PaperView = (function () {
     }, {
         key: "setMouseDownFunction",
         value: function setMouseDownFunction(func) {
-            this.canvas.onmousedown = func;
+            this.canvas.addEventListener("mousedown", func);
         }
     }, {
         key: "setMouseUpFunction",
         value: function setMouseUpFunction(func) {
-            this.canvas.onmouseup = func;
+            this.canvas.addEventListener("mouseup", func);
         }
     }, {
         key: "setMouseMoveFunction",
         value: function setMouseMoveFunction(func) {
-            this.canvas.onmousemove = func;
+            this.canvas.addEventListener("mousemove", func);
+        }
+    }, {
+        key: "setMouseDragFunction",
+        value: function setMouseDragFunction() {
+            this.canvas.addEventListener("drag", function () {
+                console.log("dragging");
+            }, false);
         }
     }, {
         key: "setResizeFunction",
@@ -3266,10 +3284,12 @@ var PaperView = (function () {
         value: function refresh() {
             paper.view.update();
         }
+
+        /* Rendering Devices */
     }, {
-        key: "removeDevice",
-        value: function removeDevice() {
-            if (this.paperDevice) this.paperDevice.remove();
+        key: "addDevice",
+        value: function addDevice(device) {
+            this.updateDevice(device);
         }
     }, {
         key: "updateDevice",
@@ -3280,10 +3300,34 @@ var PaperView = (function () {
             this.deviceLayer.addChild(newPaperDevice);
         }
     }, {
-        key: "removeFeature",
-        value: function removeFeature(feature) {
-            var paperFeature = this.paperFeatures[feature.id];
-            if (paperFeature) paperFeature.remove();
+        key: "removeDevice",
+        value: function removeDevice() {
+            if (this.paperDevice) this.paperDevice.remove();
+        }
+
+        /* Rendering Layers */
+
+    }, {
+        key: "addLayer",
+        value: function addLayer(layer, index) {
+            this.featureLayer.insertChild(index, new paper.Group());
+        }
+    }, {
+        key: "updateLayer",
+        value: function updateLayer(layer, index) {
+            // do nothing, for now
+        }
+    }, {
+        key: "removeLayer",
+        value: function removeLayer(layer, index) {}
+        // do nothing, for now
+
+        /* Rendering Features */
+
+    }, {
+        key: "addFeature",
+        value: function addFeature(feature) {
+            this.updateFeature(feature);
         }
     }, {
         key: "updateFeature",
@@ -3291,7 +3335,15 @@ var PaperView = (function () {
             this.removeFeature(feature);
             var newPaperFeature = FeatureRenderers[feature.type](feature);
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
-            this.featureLayer.addChild(newPaperFeature);
+            //TODO: This is terrible. Fix it. Fix it now.
+            var index = feature.layer.device.layers.indexOf(feature.layer);
+            this.featureLayer.children[index].addChild(newPaperFeature);
+        }
+    }, {
+        key: "removeFeature",
+        value: function removeFeature(feature) {
+            var paperFeature = this.paperFeatures[feature.id];
+            if (paperFeature) paperFeature.remove();
         }
     }, {
         key: "removeGrid",
@@ -3570,6 +3622,8 @@ var ViewManager = (function () {
         this.view.setMouseDownFunction(this.constructMouseDownEvent(chan, pan, new MouseTool()));
         this.view.setMouseUpFunction(this.constructMouseUpEvent(chan, pan, new MouseTool()));
         this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, new MouseTool()));
+        this.timer = false;
+        this.queue = false;
         this.view.setResizeFunction(function () {
             reference.updateGrid();
             reference.updateDevice(Registry.currentDevice);
@@ -3583,78 +3637,244 @@ var ViewManager = (function () {
     }
 
     _createClass(ViewManager, [{
+        key: "addDevice",
+        value: function addDevice(device) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            this.view.addDevice(device);
+            this.__addAllDeviceLayers(device, false);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "__addAllDeviceLayers",
+        value: function __addAllDeviceLayers(device) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            for (var i = 0; i < device.layers.length; i++) {
+                var layer = device.layers[i];
+                this.addLayer(layer, i, false);
+            }
+        }
+    }, {
+        key: "__removeAllDeviceLayers",
+        value: function __removeAllDeviceLayers(device) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            for (var i = 0; i < device.layers.length; i++) {
+                var layer = device.layers[i];
+                this.removeLayer(layer, i, false);
+            }
+        }
+    }, {
+        key: "removeDevice",
+        value: function removeDevice(device) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            this.view.removeDevice(device);
+            this.__removeAllDeviceLayers(device, false);
+            this.refresh(refresh);
+        }
+    }, {
         key: "updateDevice",
         value: function updateDevice(device) {
-            if (this.__isCurrentDevice(device)) {
-                this.view.updateDevice(device);
-                this.view.refresh();
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            this.view.updateDevice(device);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "addFeature",
+        value: function addFeature(feature) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            if (this.__isFeatureInCurrentDevice(feature)) {
+                this.view.addFeature(feature);
+                this.refresh(refresh);
             }
         }
     }, {
         key: "updateFeature",
         value: function updateFeature(feature) {
-            if (this.__isInCurrentDevice(feature)) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            if (this.__isFeatureInCurrentDevice(feature)) {
                 this.view.updateFeature(feature);
-                this.view.refresh();
+                this.refresh(refresh);
             }
         }
     }, {
         key: "removeFeature",
         value: function removeFeature(feature) {
-            if (this.__isInCurrentDevice(feature)) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            if (this.__isFeatureInCurrentDevice(feature)) {
                 this.view.removeFeature(feature);
-                this.view.refresh();
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "addLayer",
+        value: function addLayer(layer, index) {
+            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+            if (this.__isLayerInCurrentDevice(layer)) {
+                this.view.addLayer(layer, index, false);
+                this.__addAllLayerFeatures(layer, false);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "updateLayer",
+        value: function updateLayer(layer, index) {
+            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+            if (this.__isLayerInCurrentDevice(layer)) {
+                this.view.updateLayer(layer);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "removeLayer",
+        value: function removeLayer(layer, index) {
+            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+            if (this.__isLayerInCurrentDevice(layer)) {
+                this.view.removeLayer(layer, index);
+                this.__removeAllLayerFeatures(layer);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "__addAllLayerFeatures",
+        value: function __addAllLayerFeatures(layer) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            for (var key in layer.features) {
+                var feature = layer.features[key];
+                this.addFeature(feature, false);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "__removeAllLayerFeatures",
+        value: function __removeAllLayerFeatures(layer) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            for (var key in layer.features) {
+                var feature = layer.features[key];
+                this.removeFeature(feature, false);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "updateLayer",
+        value: function updateLayer(layer) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            if (this.__isCurrentDevice(device)) {
+                this.view.updateLayer(layer);
+                this.refresh(refresh);
             }
         }
     }, {
         key: "removeGrid",
         value: function removeGrid() {
+            var refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
             if (this.__hasCurrentGrid()) {
                 this.view.removeGrid();
-                this.view.refresh();
+                this.refresh(refresh);
             }
         }
     }, {
         key: "updateGrid",
         value: function updateGrid() {
+            var refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
             if (this.__hasCurrentGrid()) {
                 this.view.updateGrid(Registry.currentGrid);
-                this.view.refresh();
+                this.refresh(refresh);
             }
         }
     }, {
         key: "setZoom",
         value: function setZoom(zoom) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
             this.view.setZoom(zoom);
-            this.updateGrid();
-            this.updateDevice(Registry.currentDevice);
+            this.updateGrid(false);
+            this.updateDevice(Registry.currentDevice, false);
+            this.refresh(refresh);
         }
     }, {
         key: "adjustZoom",
         value: function adjustZoom(delta, point) {
-            var belowMin = paper.view.zoom >= this.maxZoom && event.deltaY < 0;
-            var aboveMax = paper.view.zoom <= this.minZoom && event.deltaY > 0;
+            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+            var belowMin = paper.view.zoom >= this.maxZoom && delta < 0;
+            var aboveMax = paper.view.zoom <= this.minZoom && delta > 0;
             if (!aboveMax && !belowMin) {
                 this.view.adjustZoom(delta, point);
-                this.updateGrid();
-                this.updateDevice(Registry.currentDevice);
+                this.updateGrid(false);
+                this.updateDevice(Registry.currentDevice, false);
             } else {
-                console.log("Too big or too small!");
+                //console.log("Too big or too small!");
             }
+            this.refresh(refresh);
         }
     }, {
         key: "setCenter",
         value: function setCenter(center) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
             this.view.setCenter(center);
-            this.updateGrid();
-            this.updateDevice(Registry.currentDevice);
+            this.updateGrid(false);
+            this.updateDevice(Registry.currentDevice, false);
+            this.refresh(refresh);
         }
     }, {
         key: "moveCenter",
         value: function moveCenter(delta) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
             this.view.moveCenter(delta);
-            this.updateGrid();
-            this.updateDevice(Registry.currentDevice);
+            this.updateGrid(false);
+            this.updateDevice(Registry.currentDevice, false);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "refresh",
+        value: function refresh() {
+            var _refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+            //if (refresh) this.view.refresh();
+
+            if (this.timer) {
+                if (!this.queue) {
+                    this.queue = true;
+                } else {}
+            } else {
+                this.view.refresh();
+                this.createTimer();
+            }
+        }
+    }, {
+        key: "createTimer",
+        value: function createTimer() {
+            var ref = this;
+            this.timer = true;
+            window.setTimeout(function () {
+                ref.endRefreshTimer();
+            }, 20);
+        }
+    }, {
+        key: "endRefreshTimer",
+        value: function endRefreshTimer() {
+            this.timer = false;
+            if (this.queue) {
+                this.queue = false;
+                this.refresh();
+            }
         }
     }, {
         key: "getEventPosition",
@@ -3667,14 +3887,14 @@ var ViewManager = (function () {
             if (Registry.currentGrid) return true;else return false;
         }
     }, {
-        key: "__isCurrentDevice",
-        value: function __isCurrentDevice(device) {
-            if (device == Registry.currentDevice) return true;else return false;
+        key: "__isLayerInCurrentDevice",
+        value: function __isLayerInCurrentDevice(layer) {
+            if (Registry.currentDevice && layer.device == Registry.currentDevice) return true;else return false;
         }
     }, {
-        key: "__isInCurrentDevice",
-        value: function __isInCurrentDevice(feature) {
-            if (feature.layer.device == Registry.currentDevice) return true;else return false;
+        key: "__isFeatureInCurrentDevice",
+        value: function __isFeatureInCurrentDevice(feature) {
+            if (Registry.currentDevice && this.__isLayerInCurrentDevice(feature.layer)) return true;else return false;
         }
     }, {
         key: "constructMouseDownEvent",
@@ -3695,13 +3915,32 @@ var ViewManager = (function () {
         key: "constructMouseEvent",
         value: function constructMouseEvent(func1, func2, func3) {
             return function (event) {
-                if (event.which == 2) func2(event);else if (event.which == 3) func3(event);else func1(event);
+                var target = undefined;
+                if (event.buttons) {
+                    target = ViewManager.__eventButtonsToWhich(event.buttons);
+                } else {
+                    target = event.which;
+                }
+                if (target == 2) func2(event);else if (target == 3) func3(event);else if (target == 1 || target == 0) func1(event);
             };
         }
     }, {
         key: "snapToGrid",
         value: function snapToGrid(point) {
             if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);else return point;
+        }
+    }], [{
+        key: "__eventButtonsToWhich",
+        value: function __eventButtonsToWhich(num) {
+            if (num == 1) {
+                return 1;
+            } else if (num == 2) {
+                return 3;
+            } else if (num == 4) {
+                return 2;
+            } else if (num == 3) {
+                return 2;
+            }
         }
     }]);
 
