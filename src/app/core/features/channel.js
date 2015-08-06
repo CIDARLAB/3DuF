@@ -2,7 +2,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../view/colors');
 var PaperPrimitives = require('../../view/paperPrimitives');
 
 var PointValue = Parameters.PointValue;
@@ -50,7 +49,6 @@ class Channel extends Feature {
         }
         let rec = PaperPrimitives.RoundedRect(start, end, width);
         rec.featureID = this.id;
-        rec.fillColor = Colors.INDIGO_500;
         return rec;
     }
 }

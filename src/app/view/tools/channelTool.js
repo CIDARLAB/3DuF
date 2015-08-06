@@ -1,16 +1,22 @@
 var Features = require("../../core/features");
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
+var SimpleQueue = require("../../utils/simpleQueue");
 
 class ChannelTool extends MouseTool {
 	constructor(channelClass) {
 		super();
 		this.channelClass = channelClass;
 		this.startPoint = null;
+		this.lastPoint = null;
 		this.currentChannelID = null;
 		this.currentTarget = null;
 		this.dragging = false;
 		let ref = this;
+
+		this.updateQueue = new SimpleQueue(function(){
+			ref.updateChannel();
+		}, 20, false);
 
 		this.down = function(event) {
 			ref.dragging = true;
@@ -22,7 +28,9 @@ class ChannelTool extends MouseTool {
 		};
 		this.move = function(event) {
 			if (ref.dragging) {
-				ref.updateChannel(MouseTool.getEventPosition(event));
+				ref.lastPoint = MouseTool.getEventPosition(event);
+				ref.updateQueue.run();
+				//ref.updateChannel();
 				ref.showTarget(MouseTool.getEventPosition(event));
 			}
 			ref.showTarget(MouseTool.getEventPosition(event));
@@ -60,18 +68,19 @@ class ChannelTool extends MouseTool {
 	}
 
 	//TODO: Re-render only the current channel, to improve perforamnce
-	updateChannel(point) {
-		if (this.currentChannelID) {
-			let target = ChannelTool.getTarget(point);
+	updateChannel() {
+		if(this.lastPoint && this.startPoint){
+			if (this.currentChannelID) {
+			let target = ChannelTool.getTarget(this.lastPoint);
 			let feat = Registry.currentLayer.getFeature(this.currentChannelID);
 			feat.updateParameter("end", [target.x, target.y]);
 			Registry.canvasManager.render();
-		} else {
-			let newChannel = this.createChannel(this.startPoint, this.startPoint);
-			this.currentChannelID = newChannel.id;
-			Registry.currentLayer.addFeature(newChannel);
+			} else {
+				let newChannel = this.createChannel(this.startPoint, this.startPoint);
+				this.currentChannelID = newChannel.id;
+				Registry.currentLayer.addFeature(newChannel);
+			}
 		}
-
 	}
 
 	finishChannel(point) {
@@ -82,6 +91,8 @@ class ChannelTool extends MouseTool {
 				//TODO: This will be slow for complex devices, since it re-renders everything
 				Registry.canvasManager.render();
 			}
+		} else {
+			this.updateChannel(point);
 		}
 		this.currentChannelID = null;
 		this.startPoint = null;

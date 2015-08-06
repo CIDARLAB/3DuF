@@ -201,7 +201,7 @@ class CanvasManager {
         //this.renderBackground();
         //this.renderDevice();
         //this.renderGrid();
-        paper.view.update(forceUpdate);
+        //paper.view.update(forceUpdate);
     }
 
     renderGrid(forceUpdate = true) {
@@ -308,8 +308,8 @@ class CanvasManager {
     }
 
     initializeView(){
-        this.setZoom(this.calculateOptimalZoom());
-        this.setCenter(this.calculateMidpoint());
+        Registry.viewManager.setZoom(this.calculateOptimalZoom());
+        Registry.viewManager.setCenter(this.calculateMidpoint());
     }
     
     loadDeviceFromJSON(json){
