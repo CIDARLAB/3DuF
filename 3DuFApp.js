@@ -260,6 +260,7 @@ var PaperView = require("./view/paperView");
 var ViewManager = require("./view/viewManager");
 var AdaptiveGrid = require("./view/grid/adaptiveGrid");
 var PageSetup = require("./view/pageSetup");
+var Colors = require("./view/colors");
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
@@ -302,6 +303,9 @@ flow.addFeature(chan2);
 
 paper.setup("c");
 
+flow.setColor("indigo");
+control.setColor("red");
+
 window.onload = function () {
     manager = new CanvasManager(document.getElementById("c"));
     view = new PaperView(document.getElementById("c"));
@@ -321,10 +325,10 @@ window.onload = function () {
     window.Features = Features;
     window.Registry = Registry;
 
-    var channelButton = document.getElementById("channel_button");
+    PageSetup.setupAppPage();
 };
 
-},{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22,"./view/grid/adaptiveGrid":45,"./view/pageSetup":46,"./view/paperView":48,"./view/viewManager":55}],3:[function(require,module,exports){
+},{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22,"./view/colors":35,"./view/grid/adaptiveGrid":45,"./view/pageSetup":46,"./view/paperView":48,"./view/viewManager":55}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -691,9 +695,9 @@ var CircleValve = (function (_Feature) {
         key: 'getDefaultValues',
         value: function getDefaultValues() {
             return {
-                "radius1": 1.2 * 1000,
-                "radius2": 1 * 1000,
-                "height": .4 * 1000
+                "radius1": 1.4 * 1000,
+                "radius2": 1.2 * 1000,
+                "height": 1 * 1000
             };
         }
     }]);
@@ -757,7 +761,7 @@ var HollowChannel = (function (_Feature) {
         value: function getDefaultValues() {
             return {
                 "width": .4 * 1000,
-                "height": .4 * 1000
+                "height": .1 * 1000
             };
         }
     }, {
@@ -830,9 +834,9 @@ var Port = (function (_Feature) {
         key: 'getDefaultValues',
         value: function getDefaultValues() {
             return {
-                "radius1": .6 * 1000,
-                "radius2": .6 * 1000,
-                "height": .8 * 1000
+                "radius1": .7 * 1000,
+                "radius2": .7 * 1000,
+                "height": .1 * 1000
             };
         }
     }]);
@@ -901,9 +905,9 @@ var Via = (function (_Feature) {
         key: 'getDefaultValues',
         value: function getDefaultValues() {
             return {
-                "radius1": .6 * 1000,
-                "radius2": .4 * 1000,
-                "height": .8 * 1000
+                "radius1": .8 * 1000,
+                "radius2": .7 * 1000,
+                "height": 1 * 1000
             };
         }
     }]);
@@ -972,7 +976,7 @@ var Channel = (function (_Feature) {
         value: function getDefaultValues() {
             return {
                 "width": .4 * 1000,
-                "height": .4 * 1000
+                "height": .1 * 1000
             };
         }
     }]);
@@ -1063,6 +1067,7 @@ var Layer = (function () {
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
+        this.color = undefined;
     }
 
     _createClass(Layer, [{
@@ -1073,6 +1078,45 @@ var Layer = (function () {
             this.featureCount += 1;
             feature.layer = this;
             if (Registry.viewManager) Registry.viewManager.addFeature(feature);
+        }
+    }, {
+        key: 'updateParameter',
+        value: function updateParameter(key, value) {
+            this.params.updateParameter(key, value);
+            if (Registry.viewManager) Registry.viewManager.updateLayer(this);
+        }
+    }, {
+        key: 'setColor',
+        value: function setColor(layerColor) {
+            this.color = layerColor;
+            if (Registry.viewManager) Registry.viewManager.updateLayer(this);
+        }
+    }, {
+        key: 'getIndex',
+        value: function getIndex() {
+            if (this.device) return this.device.layers.indexOf(this);
+        }
+    }, {
+        key: 'estimateLayerHeight',
+        value: function estimateLayerHeight() {
+            var dev = this.device;
+            var flip = this.params.getValue("flip");
+            var offset = this.params.getValue("z_offset");
+            if (dev) {
+                var thisIndex = this.getIndex();
+                var targetIndex = undefined;
+                if (flip) targetIndex = thisIndex - 1;else targetIndex = thisIndex + 1;
+                if (thisIndex >= 0 || thisIndex <= dev.layers.length - 1) {
+                    var targetLayer = dev.layers[targetIndex];
+                    return Math.abs(offset - targetLayer.params.getValue("z_offset"));
+                } else {
+                    if (thisIndex - 1 >= 0) {
+                        var targetLayer = dev.layers[thisIndex - 1];
+                        return targetLayer.estimateLayerHeight();
+                    }
+                }
+            }
+            return 0;
         }
     }, {
         key: '__ensureIsAFeature',
@@ -1157,6 +1201,7 @@ var Layer = (function () {
         value: function toJSON() {
             var output = {};
             output.name = this.name.toJSON();
+            output.color = this.color;
             output.params = this.params.toJSON();
             output.features = this.__featuresToJSON();
             return output;
@@ -1189,6 +1234,7 @@ var Layer = (function () {
             }
             var newLayer = new Layer(json.params, json.name);
             newLayer.__loadFeaturesFromJSON(json.features);
+            if (json.color) newLayer.color = json.color;
             return newLayer;
         }
     }]);
@@ -1335,7 +1381,7 @@ var FloatValue = (function (_Parameter) {
 Parameter.registerParamType(FloatValue.typeString(), FloatValue);
 module.exports = FloatValue;
 
-},{"../../utils/numberUtils":33,"../parameter":13}],16:[function(require,module,exports){
+},{"../../utils/numberUtils":32,"../parameter":13}],16:[function(require,module,exports){
 /*
 
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
@@ -1394,7 +1440,7 @@ var IntegerValue = (function (_Parameter) {
 Parameter.registerParamType(IntegerValue.typeString(), IntegerValue);
 module.exports = IntegerValue;
 
-},{"../../utils/numberUtils":33,"../parameter":13}],18:[function(require,module,exports){
+},{"../../utils/numberUtils":32,"../parameter":13}],18:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1436,7 +1482,7 @@ var PointValue = (function (_Parameter) {
 Parameter.registerParamType(PointValue.typeString(), PointValue);
 module.exports = PointValue;
 
-},{"../../utils/numberUtils":33,"../parameter":13}],19:[function(require,module,exports){
+},{"../../utils/numberUtils":32,"../parameter":13}],19:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2013,6 +2059,7 @@ var CanvasManager = (function () {
         key: "loadFromStorage",
         value: function loadFromStorage() {
             this.loadDeviceFromJSON(JSON.parse(localStorage.getItem("currentDevice")));
+            this.viewManager.updateActiveLayer();
         }
     }]);
 
@@ -2021,7 +2068,7 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/device":3,"../core/features":10,"../core/registry":21,"../view/colors":36,"./gridGenerator":23,"./panAndZoom":24,"./tools":27}],23:[function(require,module,exports){
+},{"../core/device":3,"../core/features":10,"../core/registry":21,"../view/colors":35,"./gridGenerator":23,"./panAndZoom":24,"./tools":27}],23:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2157,7 +2204,7 @@ var GridGenerator = (function () {
 
 module.exports = GridGenerator;
 
-},{"../view/colors":36}],24:[function(require,module,exports){
+},{"../view/colors":35}],24:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2652,24 +2699,6 @@ var SimpleQueue = (function () {
 module.exports = SimpleQueue;
 
 },{}],31:[function(require,module,exports){
-//From http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-"use strict";
-
-function hexStringToPaperColor(hexString) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexString);
-    var color = result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-    if (color) {
-        return new paper.Color(color.r / 255, color.g / 255, color.b / 255);
-    }
-}
-
-module.exports.hexStringToPaperColor = hexStringToPaperColor;
-
-},{}],32:[function(require,module,exports){
 'use strict';
 
 var removeClass = function removeClass(el, className) {
@@ -2683,7 +2712,7 @@ var addClass = function addClass(el, className) {
 module.exports.removeClass = removeClass;
 module.exports.addClass = addClass;
 
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 "use strict";
 
 function isFloat(n) {
@@ -2702,7 +2731,7 @@ module.exports.isFloat = isFloat;
 module.exports.isInteger = isInteger;
 module.exports.isFloatOrInt = isFloatOrInt;
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2763,7 +2792,7 @@ var SimpleQueue = (function () {
 
 module.exports = SimpleQueue;
 
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2823,30 +2852,126 @@ var PanAndZoom = (function () {
 
 module.exports = PanAndZoom;
 
-},{"../core/registry":21}],36:[function(require,module,exports){
-"use strict";
-
-var ColorUtils = require("../utils/colorUtils");
-var hexStringToPaperColor = ColorUtils.hexStringToPaperColor;
+},{"../core/registry":21}],35:[function(require,module,exports){
 
 //Colors taken from: http://www.google.ch/design/spec/style/color.html
-module.exports.RED_500 = hexStringToPaperColor("#F44336");
-module.exports.INDIGO_500 = hexStringToPaperColor("#3F51B5");
-module.exports.GREEN_500 = hexStringToPaperColor("#4CAF50");
-module.exports.DEEP_PURPLE_500 = hexStringToPaperColor("#673AB7");
-module.exports.BLUE_50 = hexStringToPaperColor("#e3f2fd");
-module.exports.BLUE_100 = hexStringToPaperColor("#BBDEFB");
-module.exports.BLUE_300 = hexStringToPaperColor("#64B5F6");
-module.exports.BLUE_500 = hexStringToPaperColor("#2196F3");
-module.exports.GREY_700 = hexStringToPaperColor("#616161");
-module.exports.GREY_500 = hexStringToPaperColor("#9E9E9E");
-module.exports.AMBER_50 = hexStringToPaperColor("#FFF8E1");
-module.exports.PINK_500 = hexStringToPaperColor("#E91E63");
-module.exports.PINK_300 = hexStringToPaperColor("#F06292");
-module.exports.BLACK = hexStringToPaperColor("#000000");
-module.exports.WHITE = hexStringToPaperColor("#FFFFFF");
+"use strict";
 
-},{"../utils/colorUtils":31}],37:[function(require,module,exports){
+module.exports.RED_500 = "#F44336";
+module.exports.INDIGO_500 = "#3F51B5";
+module.exports.GREEN_500 = "#4CAF50";
+module.exports.DEEP_PURPLE_500 = "#673AB7";
+module.exports.BLUE_50 = "#e3f2fd";
+module.exports.BLUE_100 = "#BBDEFB";
+module.exports.BLUE_300 = "#64B5F6";
+module.exports.BLUE_500 = "#2196F3";
+module.exports.GREY_200 = "#EEEEEE";
+module.exports.GREY_700 = "#616161";
+module.exports.GREY_500 = "#9E9E9E";
+module.exports.AMBER_50 = "#FFF8E1";
+module.exports.PINK_500 = "#E91E63";
+module.exports.PINK_300 = "#F06292";
+module.exports.BLACK = "#000000";
+module.exports.WHITE = "#FFFFFF";
+
+var defaultColorKeys = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
+var darkColorKeys = ["300", "400", "500", "600", "700", "800", "900"];
+
+var indigo = {
+	"900": "#" + "1A237E",
+	"800": "#" + "283593",
+	"700": "#" + "303F9F",
+	"600": "#" + "3949AB",
+	"500": "#" + "3F51B5",
+	"400": "#" + "5C6BC0",
+	"300": "#" + "7986CB",
+	"200": "#" + "9FA8DA",
+	"100": "#" + "C5CAE9",
+	"50": "#" + "E8EAF6",
+	"A100": "#" + "8C9EFF",
+	"A200": "#" + "536DFE",
+	"A400": "#" + "3D5AFE",
+	"A700": "#" + "304FFE"
+};
+
+var red = {
+	"900": "#" + "B71C1C",
+	"800": "#" + "C62828",
+	"700": "#" + "D32F2F",
+	"600": "#" + "E53935",
+	"500": "#" + "F44336",
+	"400": "#" + "EF5350",
+	"300": "#" + "E57373",
+	"200": "#" + "EF9A9A",
+	"100": "#" + "FFCDD2",
+	"50": "#" + "FFEBEE",
+	"A100": "#" + "FF8A80",
+	"A200": "#" + "FF5252",
+	"A400": "#" + "FF1744",
+	"A700": "#" + "D50000"
+};
+
+var layerColors = {
+	"indigo": indigo,
+	"red": red
+};
+
+var decimalToIndex = function decimalToIndex(decimal, indices) {
+	return Math.round((indices - 1) * decimal);
+};
+
+var decimalToLayerColor = function decimalToLayerColor(decimal, layerColors, orderedKeys) {
+	var index = decimalToIndex(decimal, orderedKeys.length);
+	var key = orderedKeys[index];
+	return layerColors[key];
+};
+
+var renderAllColors = function renderAllColors(layer, orderedKeys) {
+	for (var i = 0; i < orderedKeys.length; i++) {
+
+		new paper.Path.Circle({
+			position: new paper.Point(0 + i * 1000, 0),
+			fillColor: layer[orderedKeys[i]],
+			radius: 500
+		});
+	}
+
+	for (var i = 0; i < orderedKeys.length; i++) {
+		var color = decimalToLayerColor(i / orderedKeys.length, layer, orderedKeys);
+		new paper.Path.Circle({
+			position: new paper.Point(0 + i * 1000, 2000),
+			fillColor: layer[orderedKeys[i]],
+			radius: 500
+		});
+	}
+};
+
+var getLayerColors = function getLayerColors(layer) {
+	if (layer.color) return layerColors[layer.color];else return layerColors["red"];
+};
+
+var getDefaultLayerColor = function getDefaultLayerColor(layer) {
+	return getLayerColors(layer)["500"];
+};
+
+var getDefaultFeatureColor = function getDefaultFeatureColor(featureClass, layer) {
+	var height = featureClass.getDefaultValues()["height"];
+	var decimal = height / layer.estimateLayerHeight();
+	if (!layer.flip) decimal = 1 - decimal;
+	var colors = getLayerColors(layer);
+	return decimalToLayerColor(decimal, colors, darkColorKeys);
+};
+
+module.exports.getDefaultLayerColor = getDefaultLayerColor;
+module.exports.getDefaultFeatureColor = getDefaultFeatureColor;
+module.exports.getLayerColors = getLayerColors;
+module.exports.decimalToLayerColor = decimalToLayerColor;
+module.exports.defaultColorKeys = defaultColorKeys;
+module.exports.darkColorKeys = darkColorKeys;
+module.exports.layerColors = layerColors;
+module.exports.renderAllColors = renderAllColors;
+
+},{}],36:[function(require,module,exports){
 "use strict";
 
 var Colors = require("./colors");
@@ -2856,36 +2981,90 @@ var BORDER_THICKNESS = 5; // pixels
 function renderDevice(device) {
     var strokeColor = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_STROKE_COLOR : arguments[1];
 
+    var background = new paper.Path.Rectangle({
+        from: paper.view.bounds.topLeft,
+        to: paper.view.bounds.bottomRight,
+        fillColor: Colors.GREY_200,
+        strokeColor: null
+    });
     var thickness = BORDER_THICKNESS / paper.view.zoom;
     var width = device.params.getValue("width");
     var height = device.params.getValue("height");
     var border = new paper.Path.Rectangle({
         from: new paper.Point(0, 0),
         to: new paper.Point(width, height),
-        fillColor: null,
+        fillColor: Colors.WHITE,
         strokeColor: strokeColor,
         strokeWidth: thickness
     });
-    return border;
+
+    var group = new paper.Group([background, border]);
+
+    return group;
 }
 
 module.exports.renderDevice = renderDevice;
 
-},{"./colors":36}],38:[function(require,module,exports){
+},{"./colors":35}],37:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var Colors = require("../colors");
+
+var FeatureRenderer = (function () {
+    function FeatureRenderer() {
+        _classCallCheck(this, FeatureRenderer);
+    }
+
+    _createClass(FeatureRenderer, null, [{
+        key: "getLayerColor",
+        value: function getLayerColor(feature, featureClass) {
+            var height = undefined;
+            try {
+                height = feature.params.getValue("height");
+            } catch (err) {
+                height = featureClass.getDefaultValues()["height"];
+            }
+            var layerHeight = feature.layer.estimateLayerHeight();
+            var decimal = height / layerHeight;
+            if (!feature.layer.flip) decimal = 1 - decimal;
+            var targetColorSet = Colors.getLayerColors(feature.layer);
+            return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
+        }
+    }]);
+
+    return FeatureRenderer;
+})();
+
+module.exports = FeatureRenderer;
+
+},{"../colors":35}],38:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
 var Channel = require("../../core/features").Channel;
 var Colors = require("../colors");
+var FeatureRenderer = require("./FeatureRenderer");
 
-var ChannelRenderer = (function () {
+var ChannelRenderer = (function (_FeatureRenderer) {
+    _inherits(ChannelRenderer, _FeatureRenderer);
+
     function ChannelRenderer() {
         _classCallCheck(this, ChannelRenderer);
+
+        _get(Object.getPrototypeOf(ChannelRenderer.prototype), "constructor", this).apply(this, arguments);
     }
 
     _createClass(ChannelRenderer, null, [{
@@ -2901,7 +3080,7 @@ var ChannelRenderer = (function () {
             }
             var rec = PaperPrimitives.RoundedRect(start, end, width);
             rec.featureID = channel.id;
-            rec.fillColor = Colors.INDIGO_500;
+            rec.fillColor = FeatureRenderer.getLayerColor(channel, Channel);
             return rec;
         }
     }, {
@@ -2914,25 +3093,34 @@ var ChannelRenderer = (function () {
     }]);
 
     return ChannelRenderer;
-})();
+})(FeatureRenderer);
 
 module.exports = ChannelRenderer;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],39:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":47,"./FeatureRenderer":37}],39:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
 var CircleValve = require("../../core/features").CircleValve;
 var Colors = require("../colors");
+var FeatureRenderer = require("./FeatureRenderer");
 
-var CircleValveRenderer = (function () {
+var CircleValveRenderer = (function (_FeatureRenderer) {
+    _inherits(CircleValveRenderer, _FeatureRenderer);
+
     function CircleValveRenderer() {
         _classCallCheck(this, CircleValveRenderer);
+
+        _get(Object.getPrototypeOf(CircleValveRenderer.prototype), "constructor", this).apply(this, arguments);
     }
 
     _createClass(CircleValveRenderer, null, [{
@@ -2950,7 +3138,7 @@ var CircleValveRenderer = (function () {
             }
 
             var c1 = PaperPrimitives.Circle(position, radius);
-            c1.fillColor = Colors.RED_500;
+            c1.fillColor = FeatureRenderer.getLayerColor(circleValve, CircleValve);
             c1.featureID = circleValve.id;
             return c1;
         }
@@ -2964,25 +3152,34 @@ var CircleValveRenderer = (function () {
     }]);
 
     return CircleValveRenderer;
-})();
+})(FeatureRenderer);
 
 module.exports = CircleValveRenderer;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],40:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":47,"./FeatureRenderer":37}],40:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
 var HollowChannel = require("../../core/features").HollowChannel;
 var Colors = require("../colors");
+var FeatureRenderer = require("./FeatureRenderer");
 
-var HollowChannelRenderer = (function () {
+var HollowChannelRenderer = (function (_FeatureRenderer) {
+    _inherits(HollowChannelRenderer, _FeatureRenderer);
+
     function HollowChannelRenderer() {
         _classCallCheck(this, HollowChannelRenderer);
+
+        _get(Object.getPrototypeOf(HollowChannelRenderer.prototype), "constructor", this).apply(this, arguments);
     }
 
     _createClass(HollowChannelRenderer, null, [{
@@ -2998,7 +3195,7 @@ var HollowChannelRenderer = (function () {
             }
             var rec = PaperPrimitives.RoundedRect(start, end, width);
             rec.featureID = hollowChannel.id;
-            rec.fillColor = Colors.GREY_700;
+            rec.fillColor = FeatureRenderer.getLayerColor(hollowChannel, HollowChannel);
             return rec;
         }
     }, {
@@ -3011,11 +3208,11 @@ var HollowChannelRenderer = (function () {
     }]);
 
     return HollowChannelRenderer;
-})();
+})(FeatureRenderer);
 
 module.exports = HollowChannelRenderer;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],41:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":47,"./FeatureRenderer":37}],41:[function(require,module,exports){
 "use strict";
 
 module.exports.Channel = require("./channelRenderer");
@@ -3029,16 +3226,25 @@ module.exports.Port = require("./portRenderer");
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
 var Port = require("../../core/features").Port;
 var Colors = require("../colors");
+var FeatureRenderer = require("./FeatureRenderer");
 
-var PortRenderer = (function () {
+var PortRenderer = (function (_FeatureRenderer) {
+    _inherits(PortRenderer, _FeatureRenderer);
+
     function PortRenderer() {
         _classCallCheck(this, PortRenderer);
+
+        _get(Object.getPrototypeOf(PortRenderer.prototype), "constructor", this).apply(this, arguments);
     }
 
     _createClass(PortRenderer, null, [{
@@ -3056,7 +3262,7 @@ var PortRenderer = (function () {
             }
 
             var c1 = PaperPrimitives.Circle(position, radius);
-            c1.fillColor = Colors.DEEP_PURPLE_500;
+            c1.fillColor = FeatureRenderer.getLayerColor(port, Port);
             c1.featureID = port.id;
             console.log("foo");
             return c1;
@@ -3071,25 +3277,34 @@ var PortRenderer = (function () {
     }]);
 
     return PortRenderer;
-})();
+})(FeatureRenderer);
 
 module.exports = PortRenderer;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],43:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":47,"./FeatureRenderer":37}],43:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
 var Via = require("../../core/features").Via;
 var Colors = require("../colors");
+var FeatureRenderer = require("./FeatureRenderer");
 
-var ViaRenderer = (function () {
+var ViaRenderer = (function (_FeatureRenderer) {
+    _inherits(ViaRenderer, _FeatureRenderer);
+
     function ViaRenderer() {
         _classCallCheck(this, ViaRenderer);
+
+        _get(Object.getPrototypeOf(ViaRenderer.prototype), "constructor", this).apply(this, arguments);
     }
 
     _createClass(ViaRenderer, null, [{
@@ -3107,7 +3322,7 @@ var ViaRenderer = (function () {
             }
 
             var c1 = PaperPrimitives.Circle(position, radius);
-            c1.fillColor = Colors.GREEN_500;
+            c1.fillColor = FeatureRenderer.getLayerColor(via, Via);
             c1.featureID = via.id;
             return c1;
         }
@@ -3121,11 +3336,11 @@ var ViaRenderer = (function () {
     }]);
 
     return ViaRenderer;
-})();
+})(FeatureRenderer);
 
 module.exports = ViaRenderer;
 
-},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],44:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../colors":35,"../paperPrimitives":47,"./FeatureRenderer":37}],44:[function(require,module,exports){
 "use strict";
 
 var Colors = require("../colors");
@@ -3212,7 +3427,7 @@ function makeHorizontalLines(grid) {
 
 module.exports.renderGrid = renderGrid;
 
-},{"../colors":36}],45:[function(require,module,exports){
+},{"../colors":35}],45:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3325,88 +3540,108 @@ var AdaptiveGrid = (function () {
 
 module.exports = AdaptiveGrid;
 
-},{"../../core/registry":21,"../colors":36}],46:[function(require,module,exports){
+},{"../../core/registry":21,"../colors":35}],46:[function(require,module,exports){
 "use strict";
 
 var HTMLUtils = require("../utils/htmlUtils");
 var Registry = require("../core/registry");
 var Colors = require("./colors");
+var Features = require("../core/features");
 
 var activeButton = null;
+var activeLayer = null;
 var channelButton = document.getElementById("channel_button");
 var circleValveButton = document.getElementById("circleValve_button");
 var portButton = document.getElementById("port_button");
 var viaButton = document.getElementById("via_button");
 
-var channelColorClass = "mdl-color--indigo-500";
-var circleValveColorClass = "mdl-color--red-500";
-var portColorClass = "mdl-color--deep-purple-500";
-var viaColorClass = "mdl-color--green-500";
+var flowButton = document.getElementById("flow_button");
+var controlButton = document.getElementById("control_button");
 
-var typeColors = {
-    Channel: channelColorClass,
-    CircleValve: circleValveColorClass,
-    Port: portColorClass,
-    Via: viaColorClass
-};
+var inactiveBackground = Colors.GREY_200;
+var inactiveText = Colors.BLACK;
+var activeText = Colors.WHITE;
 
 var buttons = {
-    Channel: channelButton,
-    CircleValve: circleValveButton,
-    Port: portButton,
-    Via: viaButton
+    "Channel": channelButton,
+    "Via": viaButton,
+    "Port": portButton,
+    "CircleValve": circleValveButton
 };
 
-var activeTextColor = "mdl-color-text--white";
-
-var inactiveClass = "mdl-color--grey-200";
-var inactiveText = "mdl-color-text--black";
-
-var addClasses = function addClasses(button, color, text) {
-    HTMLUtils.addClass(button, color);
-    HTMLUtils.addClass(button, text);
+var layerButtons = {
+    "0": flowButton,
+    "1": controlButton
 };
 
-var removeClasses = function removeClasses(button, color, text) {
-    HTMLUtils.removeClass(button, color);
-    HTMLUtils.removeClass(button, text);
+var layerIndices = {
+    "0": 0,
+    "1": 1
 };
 
-var setNewActiveButton = function setNewActiveButton(button) {
-    if (activeButton) {
-        removeClasses(buttons[activeButton], typeColors[activeButton], activeTextColor);
-        addClasses(buttons[activeButton], inactiveClass, inactiveText);
-    }
-    activeButton = button;
-    console.log(activeButton);
-    console.log(buttons[activeButton]);
-    removeClasses(buttons[activeButton], inactiveClass, inactiveText);
-    addClasses(buttons[activeButton], typeColors[activeButton], activeTextColor);
-};
+function setButtonColor(button, background, text) {
+    button.style.background = background;
+    button.style.color = text;
+}
 
-channelButton.onclick = function () {
-    Registry.viewManager.activateTool("Channel");
-    setNewActiveButton("Channel");
-};
+function setActiveButton(feature) {
+    if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
+    activeButton = feature;
+    setButtonColor(buttons[activeButton], Colors.getDefaultFeatureColor(Features[activeButton], Registry.currentLayer), activeText);
+}
 
-circleValveButton.onclick = function () {
-    Registry.viewManager.activateTool("CircleValve");
-    setNewActiveButton("CircleValve");
-};
+function setActiveLayer(layerName) {
+    if (activeLayer) setButtonColor(layerButtons[activeLayer], inactiveBackground, inactiveText);
+    activeLayer = layerName;
+    setActiveButton(activeButton);
+    var bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
+    setButtonColor(layerButtons[activeLayer], bgColor, activeText);
+}
 
-portButton.onclick = function () {
-    Registry.viewManager.activateTool("Port");
-    setNewActiveButton("Port");
-};
+function setupAppPage() {
+    channelButton.onclick = function () {
+        Registry.viewManager.activateTool("Channel");
+        var bg = Colors.getDefaultFeatureColor(Features.Channel, Registry.currentLayer);
+        setActiveButton("Channel");
+    };
 
-viaButton.onclick = function () {
-    Registry.viewManager.activateTool("Via");
-    setNewActiveButton("Via");
-};
+    circleValveButton.onclick = function () {
+        Registry.viewManager.activateTool("CircleValve");
+        var bg = Colors.getDefaultFeatureColor(Features.CircleValve, Registry.currentLayer);
+        setActiveButton("CircleValve");
+    };
 
-setNewActiveButton("Channel");
+    portButton.onclick = function () {
+        Registry.viewManager.activateTool("Port");
+        var bg = Colors.getDefaultFeatureColor(Features.Port, Registry.currentLayer);
+        setActiveButton("Port");
+    };
 
-},{"../core/registry":21,"../utils/htmlUtils":32,"./colors":36}],47:[function(require,module,exports){
+    viaButton.onclick = function () {
+        Registry.viewManager.activateTool("Via");
+        var bg = Colors.getDefaultFeatureColor(Features.Via, Registry.currentLayer);
+        setActiveButton("Via");
+    };
+
+    flowButton.onclick = function () {
+        Registry.currentLayer = Registry.currentDevice.layers[0];
+        setActiveLayer("0");
+        Registry.viewManager.updateActiveLayer();
+    };
+
+    controlButton.onclick = function () {
+        Registry.currentLayer = Registry.currentDevice.layers[1];
+        setActiveLayer("1");
+        Registry.viewManager.updateActiveLayer();
+    };
+
+    setActiveButton("Channel");
+    setActiveLayer("0");
+}
+
+module.exports.setupAppPage = setupAppPage;
+
+},{"../core/features":10,"../core/registry":21,"../utils/htmlUtils":31,"./colors":35}],47:[function(require,module,exports){
 "use strict";
 
 var Colors = require("./colors");
@@ -3446,7 +3681,7 @@ module.exports.RoundedRect = RoundedRect;
 module.exports.Circle = Circle;
 module.exports.CircleTarget = CircleTarget;
 
-},{"./colors":36}],48:[function(require,module,exports){
+},{"./colors":35}],48:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3472,16 +3707,18 @@ var PaperView = (function () {
         this.paperFeatures = {};
         this.paperGrid = null;
         this.paperDevice = null;
+        this.activeLayer = null;
         this.gridLayer = new paper.Group();
         this.deviceLayer = new paper.Group();
-        this.deviceLayer.insertAbove(this.gridLayer);
+        this.gridLayer.insertAbove(this.deviceLayer);
         this.featureLayer = new paper.Group();
-        this.featureLayer.insertAbove(this.deviceLayer);
+        this.featureLayer.insertAbove(this.gridLayer);
         this.uiLayer = new paper.Group();
         this.uiLayer.insertAbove(this.featureLayer);
         this.currentTarget = null;
         this.lastTargetType = null;
         this.lastTargetPosition = null;
+        this.inactiveAlpha = .5;
     }
 
     _createClass(PaperView, [{
@@ -3616,6 +3853,70 @@ var PaperView = (function () {
             this.updateFeature(feature);
         }
     }, {
+        key: "setActiveLayer",
+        value: function setActiveLayer(index) {
+            this.activeLayer = index;
+            this.showActiveLayer();
+        }
+    }, {
+        key: "showActiveLayer",
+        value: function showActiveLayer() {
+            var layers = this.featureLayer.children;
+
+            for (var i = 0; i < layers.length; i++) {
+                var layer = layers[i];
+                var targetAlpha = undefined;
+                if (i != this.activeLayer) {
+                    targetAlpha = this.inactiveAlpha;
+                } else {
+                    targetAlpha = 1;
+                }
+                for (var j = 0; j < layer.children.length; j++) {
+                    layer.children[j].fillColor.alpha = targetAlpha;
+                }
+            }
+        }
+    }, {
+        key: "comparePaperFeatureHeights",
+        value: function comparePaperFeatureHeights(a, b) {
+            var aFeature = Registry.currentDevice.getFeatureByID(a.featureID);
+            var bFeature = Registry.currentDevice.getFeatureByID(b.featureID);
+            var aHeight = undefined;
+            var bHeight = undefined;
+            try {
+                aHeight = aFeature.params.getValue("height");
+            } catch (err) {
+                aHeight = Registry.registeredFeatures[aFeature.type].getDefaultValues()["height"];
+            }
+
+            try {
+                bHeight = bFeature.params.getValue("height");
+            } catch (err) {
+                bHeight = Registry.registeredFeatures[bFeature.type].getDefaultValues()["height"];
+            }
+            return aHeight - bHeight;
+        }
+    }, {
+        key: "insertChildByHeight",
+        value: function insertChildByHeight(group, newChild) {
+            this.getIndexByHeight(group.children, newChild);
+            var index = this.getIndexByHeight(group.children, newChild);
+            group.insertChild(index, newChild);
+        }
+
+        // TODO: Could be done faster with a binary search. Probably not needed!
+    }, {
+        key: "getIndexByHeight",
+        value: function getIndexByHeight(children, newChild) {
+            for (var i = 0; i < children.length; i++) {
+                var test = this.comparePaperFeatureHeights(children[i], newChild);
+                if (test >= 0) {
+                    return i;
+                }
+            }
+            return children.length;
+        }
+    }, {
         key: "updateFeature",
         value: function updateFeature(feature) {
             this.removeFeature(feature);
@@ -3623,7 +3924,9 @@ var PaperView = (function () {
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
             //TODO: This is terrible. Fix it. Fix it now.
             var index = feature.layer.device.layers.indexOf(feature.layer);
-            this.featureLayer.children[index].addChild(newPaperFeature);
+            var layer = this.featureLayer.children[index];
+            this.insertChildByHeight(layer, newPaperFeature);
+            if (index != this.activeLayer && this.activeLayer != null) newPaperFeature.fillColor.alpha = this.inactiveAlpha;
         }
     }, {
         key: "removeTarget",
@@ -3693,31 +3996,51 @@ var PaperView = (function () {
     }, {
         key: "hitFeature",
         value: function hitFeature(point) {
+            var onlyHitActiveLayer = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
             var hitOptions = {
                 fill: true,
                 tolerance: 5,
                 guides: false
             };
 
-            var result = this.featureLayer.hitTest(point, hitOptions);
+            var target = undefined;
+
+            if (onlyHitActiveLayer && this.activeLayer != null) {
+                target = this.featureLayer.children[this.activeLayer];
+            } else target = this.featureLayer.hitTest(point, hitOptions);
+
+            var result = target.hitTest(point, hitOptions);
             if (result) {
-                console.log(result);
                 return result.item;
             }
         }
     }, {
         key: "hitFeaturesWithViewElement",
         value: function hitFeaturesWithViewElement(paperElement) {
+            var onlyHitActiveLayer = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
             var output = [];
-            for (var i = 0; i < this.featureLayer.children.length; i++) {
-                var layer = this.featureLayer.children[i];
-                for (var j = 0; j < layer.children.length; j++) {
-                    var child = layer.children[j];
+            if (onlyHitActiveLayer && this.activeLayer != null) {
+                var layer = this.featureLayer.children[this.activeLayer];
+                for (var i = 0; i < layer.children.length; i++) {
+                    var child = layer.children[i];
                     if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
                         output.push(child);
                     }
                 }
+            } else {
+                for (var i = 0; i < this.featureLayer.children.length; i++) {
+                    var layer = this.featureLayer.children[i];
+                    for (var j = 0; j < layer.children.length; j++) {
+                        var child = layer.children[j];
+                        if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
+                            output.push(child);
+                        }
+                    }
+                }
             }
+
             return output;
         }
     }]);
@@ -3727,7 +4050,7 @@ var PaperView = (function () {
 
 module.exports = PaperView;
 
-},{"../core/registry":21,"../utils/simpleQueue":34,"./PanAndZoom":35,"./deviceRenderer":37,"./featureRenderers":41,"./grid/GridRenderer":44}],49:[function(require,module,exports){
+},{"../core/registry":21,"../utils/simpleQueue":33,"./PanAndZoom":34,"./deviceRenderer":36,"./featureRenderers":41,"./grid/GridRenderer":44}],49:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3907,7 +4230,7 @@ var ChannelTool = (function (_MouseTool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/features":10,"../../core/registry":21,"../../utils/simpleQueue":34,"./mouseTool":51}],51:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21,"../../utils/simpleQueue":33,"./mouseTool":51}],51:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4030,7 +4353,7 @@ var PanTool = (function (_MouseTool) {
 
 module.exports = PanTool;
 
-},{"../../core/registry":21,"../../utils/simpleQueue":34,"./mouseTool":51}],53:[function(require,module,exports){
+},{"../../core/registry":21,"../../utils/simpleQueue":33,"./mouseTool":51}],53:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4269,7 +4592,7 @@ var SelectTool = (function (_MouseTool) {
 
 module.exports = SelectTool;
 
-},{"../../core/registry":21,"../../utils/simpleQueue":34,"./MouseTool":49}],55:[function(require,module,exports){
+},{"../../core/registry":21,"../../utils/simpleQueue":33,"./MouseTool":49}],55:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4444,6 +4767,17 @@ var ViewManager = (function () {
             }
         }
     }, {
+        key: "__updateAllLayerFeatures",
+        value: function __updateAllLayerFeatures(layer) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            for (var key in layer.features) {
+                var feature = layer.features[key];
+                this.updateFeature(feature, false);
+                this.refresh(refresh);
+            }
+        }
+    }, {
         key: "__removeAllLayerFeatures",
         value: function __removeAllLayerFeatures(layer) {
             var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
@@ -4459,10 +4793,18 @@ var ViewManager = (function () {
         value: function updateLayer(layer) {
             var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
-            if (this.__isCurrentDevice(device)) {
+            if (this.__isLayerInCurrentDevice(layer)) {
                 this.view.updateLayer(layer);
                 this.refresh(refresh);
             }
+        }
+    }, {
+        key: "updateActiveLayer",
+        value: function updateActiveLayer() {
+            var refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+            this.view.setActiveLayer(Registry.currentDevice.layers.indexOf(Registry.currentLayer));
+            this.refresh(refresh);
         }
     }, {
         key: "removeGrid",
@@ -4676,4 +5018,4 @@ var ViewManager = (function () {
 
 module.exports = ViewManager;
 
-},{"../core/features":10,"../core/registry":21,"../utils/SimpleQueue":30,"./PanAndZoom":35,"./tools/channelTool":50,"./tools/mouseTool":51,"./tools/panTool":52,"./tools/positionTool":53,"./tools/selectTool":54}]},{},[2]);
+},{"../core/features":10,"../core/registry":21,"../utils/SimpleQueue":30,"./PanAndZoom":34,"./tools/channelTool":50,"./tools/mouseTool":51,"./tools/panTool":52,"./tools/positionTool":53,"./tools/selectTool":54}]},{},[2]);
