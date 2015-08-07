@@ -33,9 +33,9 @@ class CircleValve extends Feature {
 
     static getDefaultValues() {
         return {
-            "radius1": 1.2 * 1000,
-            "radius2": 1 * 1000,
-            "height": .4 * 1000
+            "radius1": 1.4 * 1000,
+            "radius2": 1.2 * 1000,
+            "height": 1 * 1000
         };
     }
 }

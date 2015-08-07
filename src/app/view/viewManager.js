@@ -129,6 +129,14 @@ class ViewManager {
         }
     }
 
+    __updateAllLayerFeatures(layer, refresh = true){
+        for (let key in layer.features) {
+            let feature = layer.features[key];
+            this.updateFeature(feature, false);
+            this.refresh(refresh);
+        }
+    }
+
     __removeAllLayerFeatures(layer, refresh = true) {
         for (let key in layer.features) {
             let feature = layer.features[key];
@@ -138,10 +146,15 @@ class ViewManager {
     }
 
     updateLayer(layer, refresh = true) {
-        if (this.__isCurrentDevice(device)) {
+        if (this.__isLayerInCurrentDevice(layer)) {
             this.view.updateLayer(layer);
             this.refresh(refresh);
         }
+    }
+
+    updateActiveLayer(refresh = true){
+        this.view.setActiveLayer(Registry.currentDevice.layers.indexOf(Registry.currentLayer));
+        this.refresh(refresh);
     }
 
     removeGrid(refresh = true) {

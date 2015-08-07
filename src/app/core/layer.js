@@ -14,6 +14,7 @@ class Layer {
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
+        this.color = undefined;
     }
 
     addFeature(feature) {
@@ -22,6 +23,42 @@ class Layer {
         this.featureCount += 1;
         feature.layer = this;
         if (Registry.viewManager) Registry.viewManager.addFeature(feature);
+    }
+
+    updateParameter(key, value){
+        this.params.updateParameter(key, value);
+        if (Registry.viewManager) Registry.viewManager.updateLayer(this);
+    }
+
+    setColor(layerColor){
+        this.color = layerColor;
+        if (Registry.viewManager) Registry.viewManager.updateLayer(this); 
+    }
+
+    getIndex(){
+        if(this.device) return this.device.layers.indexOf(this);
+    }
+
+    estimateLayerHeight(){
+        let dev = this.device;
+        let flip = this.params.getValue("flip");
+        let offset = this.params.getValue("z_offset");
+        if (dev){
+            let thisIndex = this.getIndex();
+            let targetIndex;
+            if (flip) targetIndex = thisIndex - 1;
+            else targetIndex = thisIndex + 1;
+            if (thisIndex >= 0 || thisIndex <= (dev.layers.length -1)){
+                let targetLayer = dev.layers[targetIndex];
+                return Math.abs(offset - targetLayer.params.getValue("z_offset"));
+            } else {
+                if (thisIndex -1 >= 0){
+                    let targetLayer = dev.layers[thisIndex -1];
+                    return targetLayer.estimateLayerHeight();
+                } 
+            }
+        }
+        return 0;
     }
 
     __ensureIsAFeature(feature) {
@@ -104,6 +141,7 @@ class Layer {
     toJSON() {
         let output = {};
         output.name = this.name.toJSON();
+        output.color = this.color;
         output.params = this.params.toJSON();
         output.features = this.__featuresToJSON();
         return output;
@@ -115,6 +153,7 @@ class Layer {
         }
         let newLayer = new Layer(json.params, json.name);
         newLayer.__loadFeaturesFromJSON(json.features);
+        if(json.color) newLayer.color = json.color;
         return newLayer;
     }
 
