@@ -3,23 +3,31 @@ var PaperPrimitives = require("../paperPrimitives");
 var CircleValve = require("../../core/features").CircleValve;
 var Colors = require("../colors");
 
-var renderCircleValve = function(circleValve){
-    let position = circleValve.params.getValue("position");
-    let radius;
+class CircleValveRenderer{
+    static renderFeature(circleValve){
+       let position = circleValve.params.getValue("position");
+        let radius;
 
-    //TODO: figure out inheritance pattern for values!
+        //TODO: figure out inheritance pattern for values!
 
-    try {
-        radius = circleValve.params.getValue("radius1");
-    } catch (err) {
-        radius = CircleValve.getDefaultValues()["radius1"];
+        try {
+            radius = circleValve.params.getValue("radius1");
+        } catch (err) {
+            radius = CircleValve.getDefaultValues()["radius1"];
+        }
+
+
+        let c1 = PaperPrimitives.Circle(position, radius);
+        c1.fillColor = Colors.RED_500;
+        c1.featureID = circleValve.id;
+        return c1; 
     }
 
-
-    let c1 = PaperPrimitives.Circle(position, radius);
-    c1.fillColor = Colors.RED_500;
-    c1.featureID = circleValve.id;
-    return c1;
+    static renderTarget(position){
+        let width = CircleValve.getDefaultValues()["radius1"];
+        let circ = PaperPrimitives.CircleTarget(position, width);
+        return circ;
+    }
 }
 
-module.exports = renderCircleValve;
+module.exports = CircleValveRenderer;

@@ -6,30 +6,44 @@ var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
 var SimpleQueue = require("../utils/SimpleQueue");
+var PositionTool = require("./tools/positionTool");
 
 class ViewManager {
     constructor(view) {
         this.view = view;
-        let chan = new ChannelTool(Features.Channel);
-        let pan = new PanTool();
-        let sel = new SelectTool();
+        this.tools = {};
+        this.middleMouseTool = new PanTool();
+        this.rightMouseTool = new SelectTool();
         let reference = this;
-        this.view.setMouseDownFunction(this.constructMouseDownEvent(chan, pan, sel));
-        this.view.setMouseUpFunction(this.constructMouseUpEvent(chan, pan, sel));
-        this.view.setMouseMoveFunction(this.constructMouseMoveEvent(chan, pan, sel));
         this.updateQueue = new SimpleQueue(function(){
             reference.view.refresh();
         }, 20);
+        window.onkeydown = function(event){
+            let key = event.keyCode || event.which;
+            if (key == 46 || key == 8){
+                event.preventDefault();
+            }
+        }
+        this.view.setKeyDownFunction(function(event){
+            let key = event.keyCode || event.which;
+            if (key== 46 || key == 8){
+                
+            }
+        });
+
         this.view.setResizeFunction(function() {
             reference.updateGrid();
             reference.updateDevice(Registry.currentDevice);
-        })
+        });
+
         let func = function(event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
         this.view.setMouseWheelFunction(func);
         this.minZoom = .0001;
         this.maxZoom = 5;
+        this.setupTools();
+        this.activateTool("Channel");
     }
 
     addDevice(device, refresh = true) {
@@ -148,6 +162,21 @@ class ViewManager {
         this.view.setZoom(zoom);
         this.updateGrid(false);
         this.updateDevice(Registry.currentDevice, false);
+        this.__updateViewTarget(false);
+        this.refresh(refresh);
+    }
+
+    removeTarget(){
+        this.view.removeTarget();
+    }
+
+    updateTarget(featureType, position, refresh = true){
+        this.view.addTarget(featureType, position);
+        this.refresh(refresh);
+    }
+
+    __updateViewTarget(refresh = true){
+        this.view.updateTarget();
         this.refresh(refresh);
     }
 
@@ -158,6 +187,7 @@ class ViewManager {
             this.view.adjustZoom(delta, point);
             this.updateGrid(false);
             this.updateDevice(Registry.currentDevice, false);
+            this.__updateViewTarget(false);
         } else {
             //console.log("Too big or too small!");
         }
@@ -214,6 +244,17 @@ class ViewManager {
         return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
     }
 
+
+    removeFeaturesByPaperElements(paperElements){
+        if (paperElements.length > 0){
+            for (let i =0; i < paperElements.length; i ++){
+                let paperFeature = paperElements[i];
+                Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
+            }
+            this.currentSelection = [];
+        }
+    }
+
     static __eventButtonsToWhich(num){
         if (num == 1){
             return 1;
@@ -249,8 +290,26 @@ class ViewManager {
         return this.view.hitFeature(point);
     }
 
-    hitFeaturesWithPaperElement(element){
-        return this.view.hitFeaturesWithPaperElement(element);
+    hitFeaturesWithViewElement(element){
+        return this.view.hitFeaturesWithViewElement(element);
+    }
+
+    __updateViewMouseEvents(){
+        this.view.setMouseDownFunction(this.constructMouseDownEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
+        this.view.setMouseUpFunction(this.constructMouseUpEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
+        this.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
+    }
+
+    activateTool(toolString){
+        this.leftMouseTool = this.tools[toolString];
+        this.__updateViewMouseEvents();
+    }
+
+    setupTools(){
+        this.tools["Channel"] = new ChannelTool(Features.Channel);
+        this.tools["CircleValve"] = new PositionTool(Features.CircleValve);
+        this.tools["Port"] = new PositionTool(Features.Port);
+        this.tools["Via"] = new PositionTool(Features.Via);
     }
 }
 
