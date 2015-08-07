@@ -4,6 +4,7 @@ var GridRenderer = require("./grid/GridRenderer");
 var DeviceRenderer = require("./deviceRenderer");
 var PanAndZoom = require("./PanAndZoom");
 var SimpleQueue = require("../utils/simpleQueue");
+var Colors = require("./colors");
 
 class PaperView {
     constructor(canvas) {
@@ -137,7 +138,7 @@ class PaperView {
 
     setActiveLayer(index) {
         this.activeLayer = index;
-        this.showActiveLayer();
+        //this.showActiveLayer();
     }
 
     showActiveLayer() {
@@ -274,7 +275,7 @@ class PaperView {
         if (onlyHitActiveLayer && this.activeLayer != null) {
             target = this.featureLayer.children[this.activeLayer];
         }
-        else target = this.featureLayer.hitTest(point, hitOptions);
+        else target = this.featureLayer;
 
         let result = target.hitTest(point, hitOptions);
         if (result) {

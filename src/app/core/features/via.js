@@ -9,6 +9,7 @@ var StringValue = Parameters.StringValue;
 
 class Via extends Feature {
     constructor(values, name = "New Via") {
+        Feature.checkDefaults(values, Via);
         let params = new Params(values, Via.getUniqueParameters(), Via.getHeritableParameters());
         super(Via.typeString(), params, name);
     }
