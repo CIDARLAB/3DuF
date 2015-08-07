@@ -15,11 +15,13 @@ class Feature {
     }
 
     static generateID() {
-        return uuid.v1();
+        //return uuid.v1();
+        return Registry.generateID();
     }
 
     updateParameter(key, value){
         this.params.updateParameter(key, value);
+        this.updateView();
     }
 
     toJSON() {
@@ -44,6 +46,10 @@ class Feature {
         } else {
             throw new Error("Feature " + type + " has not been registered.");
         }
+    }
+
+    updateView(){
+        if(Registry.viewManager) Registry.viewManager.updateFeature(this);
     }
 
     //I wish I had abstract methods. :(

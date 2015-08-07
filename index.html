@@ -14,21 +14,28 @@
     <script src="lib/material/material.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
 </head>
 
 <body>
-  <div id="main_grid" class="mdl-grid mdl-grid--no-spacing">
-    <div id="button_block" class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone mdl-cell--stretch">
-      <img class='logo' src='img/3DuF_placeholder_logo.png'>
-      <h3>Controls</h2>
-      <div id="param-controls"></div>
-        <button id="features-menu-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored mdl-button--raised">Tools</button>
-        <ul id="features-menu" class="mdl-menu mdl-js-menu" for="features-menu-button">
-        </ul>
-      </div>
-    <div id="canvas_block" class="mdl-cell mdl-cell--10-col mdl-cell--stretch">
-      <canvas id="c" resize></canvas>
+  <div id="main_window" class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+            mdl-layout--overlay-drawer-button ">
+    <div id="button_drawer" class="mdl-layout__drawer">
+      <img class="logo" src="img/logo.png">
+      <nav class="mdl-navigation" id="param-controls">
+          <a id="channel_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Channel</a>
+          <a id="circleValve_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">CircleValve</a>
+          <a id="port_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Port</a>
+          <a id="via_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Via</a>
+      </nav>
     </div>
+    <main class="mdl-layout__content">
+      <div id="canvas_block" class="page-content">
+        <canvas id="c" tabindex="0" resize></canvas>
+      </div>
+    </main>
   <div>
 
 
