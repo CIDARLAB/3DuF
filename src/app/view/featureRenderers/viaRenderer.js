@@ -2,8 +2,9 @@ var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
 var Via = require("../../core/features").Via;
 var Colors = require("../colors");
+var FeatureRenderer = require("./FeatureRenderer");
 
-class ViaRenderer{
+class ViaRenderer extends FeatureRenderer{
     static renderFeature(via){
        let position = via.params.getValue("position");
         let radius;
@@ -18,7 +19,7 @@ class ViaRenderer{
 
 
         let c1 = PaperPrimitives.Circle(position, radius);
-        c1.fillColor = Colors.GREEN_500;
+        c1.fillColor = FeatureRenderer.getLayerColor(via, Via);
         c1.featureID = via.id;
         return c1; 
     }
