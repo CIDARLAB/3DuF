@@ -7,26 +7,35 @@ var FeatureRenderer = require("./FeatureRenderer");
 class PortRenderer extends FeatureRenderer {
     static renderFeature(port){
        let position = port.params.getValue("position");
-        let radius;
+        let radius1;
+        let radius2;
 
         //TODO: figure out inheritance pattern for values!
 
         try {
-            radius = port.params.getValue("radius1");
+            radius1 = port.params.getValue("radius1");
         } catch (err) {
-            radius = Port.getDefaultValues()["radius1"];
+            radius1 = Port.getDefaultValues()["radius1"];
         }
 
-        let c1 = PaperPrimitives.Circle(position, radius);
-        c1.fillColor = FeatureRenderer.getLayerColor(port, Port);
+        try {
+            radius2 = port.params.getValue("radius2");
+        } catch (err) {
+            radius2 = Port.getDefaultValues()["radius2"];
+        }
+
+        let innerColor = FeatureRenderer.getLayerColor(port, Port);
+        let outerColor = FeatureRenderer.getBottomColor(port);
+
+        let c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
         c1.featureID = port.id;
-        console.log("foo");
         return c1; 
     }
 
     static renderTarget(position){
+        let color = Colors.getDefaultFeatureColor(Port, Registry.currentLayer)
         let width = Port.getDefaultValues()["radius1"];
-        let circ = PaperPrimitives.CircleTarget(position, width);
+        let circ = PaperPrimitives.CircleTarget(position, width, color);
         return circ;
     }
 }

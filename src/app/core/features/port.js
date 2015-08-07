@@ -9,6 +9,7 @@ var StringValue = Parameters.StringValue;
 
 class Port extends Feature {
     constructor(values, name = "New Port") {
+        Feature.checkDefaults(values, Port);
         let params = new Params(values, Port.getUniqueParameters(), Port.getHeritableParameters());
         super(Port.typeString(), params, name);
     }
@@ -25,7 +26,8 @@ class Port extends Feature {
 
     static getHeritableParameters(){
         return { 
-            "radius": FloatValue.typeString(),
+            "radius1": FloatValue.typeString(),
+            "radius2": FloatValue.typeString(),
             "height": FloatValue.typeString()
         };
     }
