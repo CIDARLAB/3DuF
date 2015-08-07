@@ -123,7 +123,6 @@ class Device {
     }
 
     __loadLayersFromJSON(json) {
-        console.log("Loading layers from JSON");
         for (let i in json) {
             let newLayer = Layer.fromJSON(json[i]);
             this.addLayer(newLayer);

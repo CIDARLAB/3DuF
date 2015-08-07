@@ -37,21 +37,10 @@ class SelectTool extends paper.Tool{
 
 	mouseUpHandler(point){
 		if (this.currentSelectBox){
-			this.currentSelection = Registry.canvasManager.hitFeaturesWithPaperElement(this.currentSelectBox)
+			this.currentSelection = Registry.canvasManager.hitFeaturesWithViewElement(this.currentSelectBox)
 			this.selectFeatures();
 		}
 		this.killSelectBox();
-	}
-
-	removeFeatures(){
-		if (this.currentSelection.length > 0){
-			for (let i =0; i < this.currentSelection.length; i ++){
-				let paperFeature = this.currentSelection[i];
-				Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
-			}
-			this.currentSelection = [];
-			Registry.canvasManager.render();
-		}
 	}
 
 	mouseDownHandler(point){

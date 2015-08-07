@@ -22,7 +22,9 @@ class PaperView {
         this.featureLayer.insertAbove(this.deviceLayer);
         this.uiLayer = new paper.Group();
         this.uiLayer.insertAbove(this.featureLayer);
-        this.setMouseDragFunction();
+        this.currentTarget = null;
+        this.lastTargetType = null;
+        this.lastTargetPosition = null;
     }
 
     getCenter() {
@@ -67,21 +69,23 @@ class PaperView {
     }
 
     setMouseDownFunction(func) {
-        this.canvas.addEventListener("mousedown", func);
+        this.canvas.onmousedown = func;
     }
 
     setMouseUpFunction(func) {
-        this.canvas.addEventListener("mouseup", func);
+        this.canvas.onmouseup =func;
     }
 
     setMouseMoveFunction(func) {
-        this.canvas.addEventListener("mousemove", func);
+        this.canvas.onmousemove = func;
     }
 
-    setMouseDragFunction() {
-        this.canvas.addEventListener("drag", function() {
-            console.log("dragging");
-        }, false);
+    setKeyPressFunction(func) {
+        this.canvas.onkeypress = func;
+    }
+
+    setKeyDownFunction(func){
+        this.canvas.onkeydown = func;
     }
 
     setResizeFunction(func) {
@@ -106,6 +110,7 @@ class PaperView {
 
     removeDevice() {
         if (this.paperDevice) this.paperDevice.remove();
+        this.paperDevice = null;
     }
 
     /* Rendering Layers */
@@ -130,20 +135,44 @@ class PaperView {
 
     updateFeature(feature) {
         this.removeFeature(feature);
-        let newPaperFeature = FeatureRenderers[feature.type](feature);
+        let newPaperFeature = FeatureRenderers[feature.type].renderFeature(feature);
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
         //TODO: This is terrible. Fix it. Fix it now.
         let index = feature.layer.device.layers.indexOf(feature.layer);
         this.featureLayer.children[index].addChild(newPaperFeature);
     }
 
+    removeTarget(){
+        if (this.currentTarget) this.currentTarget.remove();
+        this.currentTarget = null;
+    }
+
+    addTarget(featureType, position){
+        this.removeTarget();
+        this.lastTargetType = featureType;
+        this.lastTargetPosition = position;
+        this.updateTarget();
+    }
+
+    updateTarget(){
+        this.removeTarget();
+        if (this.lastTargetType && this.lastTargetPosition){
+            let renderer = FeatureRenderers[this.lastTargetType];
+            //console.log(renderer.renderTarget.toSource());
+            this.currentTarget = FeatureRenderers[this.lastTargetType].renderTarget(this.lastTargetPosition);
+            this.uiLayer.addChild(this.currentTarget);
+        }
+    }
+
     removeFeature(feature) {
         let paperFeature = this.paperFeatures[feature.id];
         if (paperFeature) paperFeature.remove();
+        this.paperFeatures[feature.id] = null;
     }
 
     removeGrid() {
         if (this.paperGrid) this.paperGrid.remove();
+        this.paperGrid = null;
     }
 
     updateGrid(grid) {
@@ -161,6 +190,14 @@ class PaperView {
         this.panAndZoom.adjustZoom(delta, point);
     }
 
+    getFeaturesByViewElements(paperFeatures){
+        let output = [];
+        for (let i = 0; i < paperFeatures.length; i ++){
+            output.push(Registry.currentDevice.getFeatureByID(paperFeatures[i].featureID));
+        }
+        return output;
+    }
+
     hitFeature(point) {
         let hitOptions = {
             fill: true,
@@ -175,7 +212,7 @@ class PaperView {
         }
     }
 
-    hitFeaturesWithPaperElement(paperElement) {
+    hitFeaturesWithViewElement(paperElement) {
         let output = [];
         for (let i = 0; i < this.featureLayer.children.length; i++) {
             let layer = this.featureLayer.children[i];

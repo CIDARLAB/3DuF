@@ -7,6 +7,7 @@ var Features = require('./core/features');
 var PaperView = require("./view/paperView");
 var ViewManager = require("./view/viewManager");
 var AdaptiveGrid = require("./view/grid/adaptiveGrid");
+var PageSetup = require("./view/pageSetup");
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
@@ -34,12 +35,10 @@ dev.addLayer(control);
 var chan1 = new Channel({
     "start": [20 * 1000, 20 * 1000],
     "end": [40 * 1000, 40 * 1000],
-    "width": .4 * 1000
 });
 flow.addFeature(chan1);
 var circ1 = new CircleValve({
     "position": [30 * 1000,30 * 1000],
-    "radius1": .8 * 1000
 });
 control.addFeature(circ1);
 var chan2 = new Channel({
@@ -69,5 +68,7 @@ window.onload = function(){
     window.man = manager;
     window.Features = Features;
     window.Registry = Registry;
+
+    let channelButton = document.getElementById("channel_button");
 
 };
