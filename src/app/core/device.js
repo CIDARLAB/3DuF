@@ -46,6 +46,13 @@ class Device {
         throw new Error("FeatureID " + featureID + " not found in any layer.");
     }
 
+    containsFeatureID(featureID){
+        for (let i = 0; i < this.layers.length; i ++){
+            if (this.layers[i].containsFeatureID(featureID)) return true;
+        }
+        return false;
+    }
+
     getFeatureByID(featureID){
         let layer =  this.getLayerFromFeatureID(featureID);
         return layer.getFeature(featureID);
