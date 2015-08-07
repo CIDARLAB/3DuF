@@ -256,12 +256,19 @@ var Registry = require("./core/registry");
 var Device = require('./core/device');
 var Layer = require('./core/layer');
 var Features = require('./core/features');
+var PaperView = require("./view/paperView");
+var ViewManager = require("./view/viewManager");
+var AdaptiveGrid = require("./view/grid/adaptiveGrid");
+var PageSetup = require("./view/pageSetup");
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
 var HollowChannel = Features.HollowChannel;
 
 var manager;
+var view;
+var viewManager;
+var grid;
 
 var dev = new Device({
     "width": 75.8 * 1000,
@@ -279,13 +286,11 @@ dev.addLayer(flow);
 dev.addLayer(control);
 var chan1 = new Channel({
     "start": [20 * 1000, 20 * 1000],
-    "end": [40 * 1000, 40 * 1000],
-    "width": .4 * 1000
+    "end": [40 * 1000, 40 * 1000]
 });
 flow.addFeature(chan1);
 var circ1 = new CircleValve({
-    "position": [30 * 1000, 30 * 1000],
-    "radius1": .8 * 1000
+    "position": [30 * 1000, 30 * 1000]
 });
 control.addFeature(circ1);
 var chan2 = new Channel({
@@ -299,17 +304,27 @@ paper.setup("c");
 
 window.onload = function () {
     manager = new CanvasManager(document.getElementById("c"));
+    view = new PaperView(document.getElementById("c"));
+    viewManager = new ViewManager(view);
+    grid = new AdaptiveGrid();
 
-    window.dev = dev;
+    Registry.viewManager = viewManager;
+
+    manager.loadDeviceFromJSON(dev.toJSON());
+
+    viewManager.updateGrid();
+    Registry.currentDevice.updateView();
+
+    window.dev = Registry.currentDevice;
     window.Channel = Channel;
     window.man = manager;
     window.Features = Features;
     window.Registry = Registry;
 
-    manager.loadDeviceFromJSON(dev.toJSON());
+    var channelButton = document.getElementById("channel_button");
 };
 
-},{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22}],3:[function(require,module,exports){
+},{"./core/device":3,"./core/features":10,"./core/layer":12,"./core/registry":21,"./graphics/CanvasManager":22,"./view/grid/adaptiveGrid":45,"./view/pageSetup":46,"./view/paperView":48,"./view/viewManager":55}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -322,6 +337,7 @@ var Parameter = require("./parameter");
 var Feature = require('./feature');
 var Layer = require('./layer');
 var Group = require('./group');
+var Registry = require("./registry");
 
 var StringValue = Parameters.StringValue;
 var FloatValue = Parameters.FloatValue;
@@ -341,9 +357,21 @@ var Device = (function () {
         this.name = new StringValue(name);
     }
 
-    /* Sort the layers such that they are ordered from lowest to highest z_offset. */
-
     _createClass(Device, [{
+        key: "setName",
+        value: function setName(name) {
+            this.name = new StringValue(name);
+            this.updateView();
+        }
+    }, {
+        key: "updateParameter",
+        value: function updateParameter(key, value) {
+            this.params.updateParameter(key, value);
+            this.updateView();
+        }
+
+        /* Sort the layers such that they are ordered from lowest to highest z_offset. */
+    }, {
         key: "sortLayers",
         value: function sortLayers() {
             this.layers.sort(function (a, b) {
@@ -372,8 +400,10 @@ var Device = (function () {
     }, {
         key: "addLayer",
         value: function addLayer(layer) {
+            layer.device = this;
             this.layers.push(layer);
             this.sortLayers();
+            if (Registry.viewManager) Registry.viewManager.addLayer(this.layers.indexOf(layer));
         }
     }, {
         key: "removeFeature",
@@ -397,6 +427,16 @@ var Device = (function () {
         value: function addDefault(def) {
             this.defaults.push(def);
             //TODO: Establish what defaults are. Params?
+        }
+    }, {
+        key: "updateViewLayers",
+        value: function updateViewLayers() {
+            if (Registry.viewManager) Registry.viewManager.updateLayers(this);
+        }
+    }, {
+        key: "updateView",
+        value: function updateView() {
+            if (Registry.viewManager) Registry.viewManager.updateDevice(this);
         }
     }, {
         key: "__renderLayers2D",
@@ -429,7 +469,8 @@ var Device = (function () {
         key: "__loadLayersFromJSON",
         value: function __loadLayersFromJSON(json) {
             for (var i in json) {
-                this.addLayer(Layer.fromJSON(json[i]));
+                var newLayer = Layer.fromJSON(json[i]);
+                this.addLayer(newLayer);
             }
         }
 
@@ -507,7 +548,7 @@ var Device = (function () {
 
 module.exports = Device;
 
-},{"./feature":4,"./group":11,"./layer":12,"./parameter":13,"./parameters":16,"./params":20}],4:[function(require,module,exports){
+},{"./feature":4,"./group":11,"./layer":12,"./parameter":13,"./parameters":16,"./params":20,"./registry":21}],4:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -539,6 +580,7 @@ var Feature = (function () {
         key: 'updateParameter',
         value: function updateParameter(key, value) {
             this.params.updateParameter(key, value);
+            this.updateView();
         }
     }, {
         key: 'toJSON',
@@ -555,16 +597,22 @@ var Feature = (function () {
 
         //TODO: This needs to return the right subclass of Feature, not just the right data!
     }, {
-        key: 'render2D',
+        key: 'updateView',
+        value: function updateView() {
+            if (Registry.viewManager) Registry.viewManager.updateFeature(this);
+        }
 
         //I wish I had abstract methods. :(
+    }, {
+        key: 'render2D',
         value: function render2D() {
             throw new Error("Base class Feature cannot be rendered in 2D.");
         }
     }], [{
         key: 'generateID',
         value: function generateID() {
-            return uuid.v1();
+            //return uuid.v1();
+            return Registry.generateID();
         }
     }, {
         key: 'fromJSON',
@@ -602,7 +650,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -619,26 +666,7 @@ var CircleValve = (function (_Feature) {
         _get(Object.getPrototypeOf(CircleValve.prototype), 'constructor', this).call(this, CircleValve.typeString(), params, name);
     }
 
-    _createClass(CircleValve, [{
-        key: 'render2D',
-        value: function render2D() {
-            var position = this.params.getValue("position");
-            var radius1 = undefined;
-
-            //TODO: figure out inheritance pattern for values!
-
-            try {
-                radius1 = this.params.getValue("radius1");
-            } catch (err) {
-                radius1 = CircleValve.getDefaultValues()["radius1"];
-            }
-
-            var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
-            c1.fillColor = Colors.RED_500;
-            c1.featureID = this.id;
-            return c1;
-        }
-    }], [{
+    _createClass(CircleValve, null, [{
         key: 'typeString',
         value: function typeString() {
             return "CircleValve";
@@ -677,7 +705,7 @@ Registry.registeredFeatures[CircleValve.typeString()] = CircleValve;
 
 module.exports = CircleValve;
 
-},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],6:[function(require,module,exports){
+},{"../feature":4,"../parameters":16,"../params":20,"../registry":21}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -708,45 +736,7 @@ var HollowChannel = (function (_Feature) {
         _get(Object.getPrototypeOf(HollowChannel.prototype), "constructor", this).call(this, HollowChannel.typeString(), params, name);
     }
 
-    _createClass(HollowChannel, [{
-        key: "render2D",
-        value: function render2D() {
-            var start = this.params.getValue("start");
-            var end = this.params.getValue("end");
-            var width = undefined;
-            try {
-                width = this.params.getValue("width");
-            } catch (err) {
-                width = HollowChannel.getDefaultValues()["width"];
-            }
-
-            var startPoint = new paper.Point(start[0], start[1]);
-            var endPoint = new paper.Point(end[0], end[1]);
-
-            var vec = endPoint.subtract(startPoint);
-            var ori = new paper.Path.Rectangle({
-                size: [vec.length + width, width],
-                point: start,
-                radius: width / 2
-            });
-            ori.translate([-width / 2, -width / 2]);
-            ori.rotate(vec.angle, start);
-
-            var rec = new paper.Path.Rectangle({
-                size: [vec.length + width / 2, width / 2],
-                point: start,
-                radius: width / 4
-            });
-            rec.translate([-width / 4, -width / 4]);
-            rec.rotate(vec.angle, start);
-            var comp = new paper.CompoundPath({
-                children: [ori, rec],
-                fillColor: new paper.Color(0, 0, 0)
-            });
-            comp.featureID = this.id;
-            return comp;
-        }
-    }], [{
+    _createClass(HollowChannel, null, [{
         key: "getUniqueParameters",
         value: function getUniqueParameters() {
             return {
@@ -799,7 +789,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -817,26 +806,7 @@ var Port = (function (_Feature) {
         _get(Object.getPrototypeOf(Port.prototype), 'constructor', this).call(this, Port.typeString(), params, name);
     }
 
-    _createClass(Port, [{
-        key: 'render2D',
-        value: function render2D() {
-            var position = this.params.getValue("position");
-            var radius1 = undefined;
-
-            //TODO: figure out inheritance pattern for values!
-
-            try {
-                radius1 = this.params.getValue("radius1");
-            } catch (err) {
-                radius1 = Port.getDefaultValues()["radius1"];
-            }
-
-            var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
-            c1.fillColor = Colors.DEEP_PURPLE_500;
-            c1.featureID = this.id;
-            return c1;
-        }
-    }], [{
+    _createClass(Port, null, [{
         key: 'typeString',
         value: function typeString() {
             return "Port";
@@ -874,7 +844,7 @@ Registry.registeredFeatures[Port.typeString()] = Port;
 
 module.exports = Port;
 
-},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],8:[function(require,module,exports){
+},{"../feature":4,"../parameters":16,"../params":20,"../registry":21}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -889,7 +859,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -907,26 +876,7 @@ var Via = (function (_Feature) {
         _get(Object.getPrototypeOf(Via.prototype), 'constructor', this).call(this, Via.typeString(), params, name);
     }
 
-    _createClass(Via, [{
-        key: 'render2D',
-        value: function render2D() {
-            var position = this.params.getValue("position");
-            var radius1 = undefined;
-
-            //TODO: figure out inheritance pattern for values!
-
-            try {
-                radius1 = this.params.getValue("radius1");
-            } catch (err) {
-                radius1 = Via.getDefaultValues()["radius1"];
-            }
-
-            var c1 = new paper.Path.Circle(new paper.Point(position), radius1);
-            c1.fillColor = Colors.GREEN_500;
-            c1.featureID = this.id;
-            return c1;
-        }
-    }], [{
+    _createClass(Via, null, [{
         key: 'typeString',
         value: function typeString() {
             return "Via";
@@ -965,7 +915,7 @@ Registry.registeredFeatures[Via.typeString()] = Via;
 
 module.exports = Via;
 
-},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],9:[function(require,module,exports){
+},{"../feature":4,"../parameters":16,"../params":20,"../registry":21}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -980,7 +930,6 @@ var Feature = require('../feature');
 var Registry = require('../registry');
 var Parameters = require('../parameters');
 var Params = require('../params');
-var Colors = require('../../graphics/colors');
 
 var PointValue = Parameters.PointValue;
 var FloatValue = Parameters.FloatValue;
@@ -997,36 +946,7 @@ var Channel = (function (_Feature) {
         _get(Object.getPrototypeOf(Channel.prototype), 'constructor', this).call(this, Channel.typeString(), params, name);
     }
 
-    _createClass(Channel, [{
-        key: 'render2D',
-        value: function render2D() {
-            var start = this.params.getValue("start");
-            var end = this.params.getValue("end");
-            //TODO: figure out inheritance pattern for values!
-            var width = undefined;
-            try {
-                width = this.params.getValue("width");
-            } catch (err) {
-                width = Channel.getDefaultValues()["width"];
-            }
-
-            var startPoint = new paper.Point(start[0], start[1]);
-            var endPoint = new paper.Point(end[0], end[1]);
-
-            var vec = endPoint.subtract(startPoint);
-            var rec = new paper.Path.Rectangle({
-                size: [vec.length + width, width],
-                point: start,
-                radius: width / 2
-            });
-
-            rec.translate([-width / 2, -width / 2]);
-            rec.rotate(vec.angle, start);
-            rec.fillColor = Colors.INDIGO_500;
-            rec.featureID = this.id;
-            return rec;
-        }
-    }], [{
+    _createClass(Channel, null, [{
         key: 'typeString',
         value: function typeString() {
             return "Channel";
@@ -1064,7 +984,7 @@ Registry.registeredFeatures[Channel.typeString()] = Channel;
 
 module.exports = Channel;
 
-},{"../../graphics/colors":23,"../feature":4,"../parameters":16,"../params":20,"../registry":21}],10:[function(require,module,exports){
+},{"../feature":4,"../parameters":16,"../params":20,"../registry":21}],10:[function(require,module,exports){
 /*
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
 var requireDirectory = require('require-directory');
@@ -1126,6 +1046,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Params = require('./params');
 var Parameters = require('./parameters');
 var Feature = require('./feature');
+var Registry = require("./registry");
 
 var FloatValue = Parameters.FloatValue;
 var BooleanValue = Parameters.BooleanValue;
@@ -1141,6 +1062,7 @@ var Layer = (function () {
         this.name = new StringValue(name);
         this.features = {};
         this.featureCount = 0;
+        this.device = undefined;
     }
 
     _createClass(Layer, [{
@@ -1149,11 +1071,16 @@ var Layer = (function () {
             this.__ensureIsAFeature(feature);
             this.features[feature.id] = feature;
             this.featureCount += 1;
+            feature.layer = this;
+            if (Registry.viewManager) Registry.viewManager.addFeature(feature);
         }
     }, {
         key: '__ensureIsAFeature',
         value: function __ensureIsAFeature(feature) {
-            if (!(feature instanceof Feature)) throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
+            if (!(feature.hasOwnProperty("id") && feature.hasOwnProperty("type") && feature.hasOwnProperty("params"))) {
+                console.log(feature.toJSON());
+                throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
+            }
         }
     }, {
         key: '__ensureFeatureExists',
@@ -1174,16 +1101,18 @@ var Layer = (function () {
     }, {
         key: 'removeFeature',
         value: function removeFeature(feature) {
-            this.__ensureFeatureExists(feature);
-            delete this.features[feature.id];
-            this.featureCount -= 1;
+            this.removeFeatureByID(feature.id);
         }
+
+        //TODO: Stop using delete, it's slow!
     }, {
         key: 'removeFeatureByID',
         value: function removeFeatureByID(featureID) {
             this.__ensureFeatureIDExists(featureID);
-            delete this.features[featureID];
+            var feature = this.features[featureID];
             this.featureCount -= 1;
+            if (Registry.viewManager) Registry.viewManager.removeFeature(feature);
+            delete this.features[featureID];
         }
     }, {
         key: 'containsFeature',
@@ -1269,7 +1198,7 @@ var Layer = (function () {
 
 module.exports = Layer;
 
-},{"./feature":4,"./parameters":16,"./params":20}],13:[function(require,module,exports){
+},{"./feature":4,"./parameters":16,"./params":20,"./registry":21}],13:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1406,7 +1335,7 @@ var FloatValue = (function (_Parameter) {
 Parameter.registerParamType(FloatValue.typeString(), FloatValue);
 module.exports = FloatValue;
 
-},{"../../utils/numberUtils":31,"../parameter":13}],16:[function(require,module,exports){
+},{"../../utils/numberUtils":33,"../parameter":13}],16:[function(require,module,exports){
 /*
 
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
@@ -1465,7 +1394,7 @@ var IntegerValue = (function (_Parameter) {
 Parameter.registerParamType(IntegerValue.typeString(), IntegerValue);
 module.exports = IntegerValue;
 
-},{"../../utils/numberUtils":31,"../parameter":13}],18:[function(require,module,exports){
+},{"../../utils/numberUtils":33,"../parameter":13}],18:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1507,7 +1436,7 @@ var PointValue = (function (_Parameter) {
 Parameter.registerParamType(PointValue.typeString(), PointValue);
 module.exports = PointValue;
 
-},{"../../utils/numberUtils":31,"../parameter":13}],19:[function(require,module,exports){
+},{"../../utils/numberUtils":33,"../parameter":13}],19:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1679,16 +1608,31 @@ module.exports = Params;
 "use strict";
 
 var registeredParams = {};
+var featureRenderers = {};
 var registeredFeatures = {};
 var currentDevice = null;
 var canvasManager = null;
 var currentLayer = null;
+var currentGrid = null;
+var view = null;
+var viewManager = null;
+var id_counter = 0;
 
+var generateID = function generateID() {
+	var id = id_counter;
+	id_counter++;
+	return id;
+};
+
+exports.generateID = generateID;
+exports.featureRenderers = featureRenderers;
 exports.registeredFeatures = registeredFeatures;
 exports.registeredParams = registeredParams;
 exports.currentDevice = currentDevice;
 exports.currentLayer = currentLayer;
 exports.canvasManager = canvasManager;
+exports.viewManager = viewManager;
+exports.currentGrid = currentGrid;
 
 },{}],22:[function(require,module,exports){
 "use strict";
@@ -1703,7 +1647,7 @@ var PanAndZoom = require("./panAndZoom");
 var Features = require("../core/features");
 var Tools = require("./tools");
 var Device = require("../core/device");
-var Colors = require("./colors");
+var Colors = require("../view/colors");
 
 var Channel = Features.Channel;
 var HollowChannel = Features.HollowChannel;
@@ -1729,18 +1673,18 @@ var CanvasManager = (function () {
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
         this.gridSpacing = 1000;
-        this.thickCount = 5;
+        this.thickCount = 10;
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.currentTool = null;
-        this.setupMouseEvents();
-        this.generateTools();
-        this.generateToolButtons();
-        this.selectTool("Select");
+        //this.setupMouseEvents();
+        //this.generateTools();
+        //this.generateToolButtons();
+        //this.selectTool("Select");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
 
-        this.setupZoomEvent();
+        //this.setupZoomEvent();
         this.setupContextEvent();
         this.setupResizeEvent();
     }
@@ -1919,14 +1863,14 @@ var CanvasManager = (function () {
         key: "render",
         value: function render() {
             var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-            this.renderBackground();
-            this.renderDevice();
-            this.renderGrid();
-            paper.view.update(forceUpdate);
         }
     }, {
         key: "renderGrid",
+
+        //this.renderBackground();
+        //this.renderDevice();
+        //this.renderGrid();
+        //paper.view.update(forceUpdate);
         value: function renderGrid() {
             var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
@@ -1946,7 +1890,7 @@ var CanvasManager = (function () {
             var forceUpdate = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
             this.gridSpacing = size;
-            this.renderGrid(forceUpdate);
+            //this.renderGrid(forceUpdate);
         }
 
         //TODO: This is a hacky way to clear everything.
@@ -1993,7 +1937,7 @@ var CanvasManager = (function () {
             while (this.gridSpacing > max) {
                 this.gridSpacing = this.gridSpacing / 10;
             }
-            this.renderGrid();
+            //this.renderGrid();
         }
     }, {
         key: "adjustZoom",
@@ -2004,9 +1948,9 @@ var CanvasManager = (function () {
         key: "setZoom",
         value: function setZoom(zoom) {
             paper.view.zoom = zoom;
-            this.updateGridSpacing();
-            this.renderGrid();
-            this.renderBackground();
+            //this.updateGridSpacing();
+            Registry.viewManager.updateGrid();
+            //this.renderBackground();
         }
     }, {
         key: "calculateOptimalZoom",
@@ -2040,23 +1984,25 @@ var CanvasManager = (function () {
         key: "setCenter",
         value: function setCenter(x, y) {
             paper.view.center = new paper.Point(x, y);
-            this.renderGrid();
-            this.renderBackground();
+            //this.renderGrid();
+            Registry.viewManager.updateGrid();
+            //this.renderBackground();
         }
     }, {
         key: "initializeView",
         value: function initializeView() {
-            this.setZoom(this.calculateOptimalZoom());
-            this.setCenter(this.calculateMidpoint());
+            Registry.viewManager.setZoom(this.calculateOptimalZoom());
+            Registry.viewManager.setCenter(this.calculateMidpoint());
         }
     }, {
         key: "loadDeviceFromJSON",
         value: function loadDeviceFromJSON(json) {
             Registry.currentDevice = Device.fromJSON(json);
             Registry.currentLayer = Registry.currentDevice.layers[0];
+            Registry.viewManager.addDevice(Registry.currentDevice);
             this.initializeView();
-            this.updateGridSpacing();
-            this.render();
+            //this.updateGridSpacing();
+            //this.render();
         }
     }, {
         key: "saveToStorage",
@@ -2075,25 +2021,14 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/device":3,"../core/features":10,"../core/registry":21,"./colors":23,"./gridGenerator":24,"./panAndZoom":25,"./tools":28}],23:[function(require,module,exports){
-"use strict";
-
-module.exports.RED_500 = "#F44336";
-module.exports.INDIGO_500 = "#3F51B5";
-module.exports.GREEN_500 = "#4CAF50";
-module.exports.DEEP_PURPLE_500 = "#673AB7";
-module.exports.BLUE_100 = "#BBDEFB";
-module.exports.GREY_700 = "#616161";
-module.exports.GREY_500 = "#9E9E9E";
-
-},{}],24:[function(require,module,exports){
+},{"../core/device":3,"../core/features":10,"../core/registry":21,"../view/colors":36,"./gridGenerator":23,"./panAndZoom":24,"./tools":27}],23:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var Colors = require('./colors');
+var Colors = require('../view/colors');
 var lineColor = Colors.BLUE_100;
 
 //TODO: Fix fifth-line highlighting at low/high zooms!
@@ -2113,22 +2048,23 @@ var GridGenerator = (function () {
     }, {
         key: 'getTopLeft',
         value: function getTopLeft() {
-            return paper.view.viewToProject(new paper.Point(0, 0));
+            return paper.view.bounds.topLeft;
         }
     }, {
         key: 'getBottomLeft',
         value: function getBottomLeft() {
-            return paper.view.viewToProject(new paper.Point(0, paper.view.bounds.height * paper.view.zoom));
+            return paper.view.bounds.bottomLeft;
         }
     }, {
         key: 'getBottomRight',
         value: function getBottomRight() {
-            return paper.view.viewToProject(new paper.Point(paper.view.bounds.width * paper.view.zoom, paper.view.bounds.height * paper.view.zoom));
+            return paper.view.bounds.bottomRight;
         }
     }, {
         key: 'getTopRight',
         value: function getTopRight() {
-            return paper.view.viewToProject(new paper.Point(paper.view.bounds.width * paper.view.zoom, 0));
+            console.log(paper.view.bounds.topRight);
+            return paper.view.bounds.topRight;
         }
     }, {
         key: 'makeVerticalGrid',
@@ -2221,7 +2157,7 @@ var GridGenerator = (function () {
 
 module.exports = GridGenerator;
 
-},{"./colors":23}],25:[function(require,module,exports){
+},{"../view/colors":36}],24:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2245,7 +2181,7 @@ var PanAndZoom = (function () {
 			var pc = p.subtract(c);
 			var a = p.subtract(pc.multiply(beta)).subtract(c);
 			var newCenter = this.calcCenter(a.x, a.y);
-			Registry.canvasManager.setCenter(newCenter.x, newCenter.y, 1 / beta);
+			Registry.canvasManager.setCenter(newCenter.x, newCenter.y);
 			Registry.canvasManager.setZoom(newZoom);
 		}
 	}, {
@@ -2277,7 +2213,7 @@ var PanAndZoom = (function () {
 
 module.exports = PanAndZoom;
 
-},{"../core/registry":21}],26:[function(require,module,exports){
+},{"../core/registry":21}],25:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2335,22 +2271,10 @@ var SelectTool = (function (_paper$Tool) {
 		key: "mouseUpHandler",
 		value: function mouseUpHandler(point) {
 			if (this.currentSelectBox) {
-				this.currentSelection = Registry.canvasManager.hitFeaturesWithPaperElement(this.currentSelectBox);
+				this.currentSelection = Registry.canvasManager.hitFeaturesWithViewElement(this.currentSelectBox);
 				this.selectFeatures();
 			}
 			this.killSelectBox();
-		}
-	}, {
-		key: "removeFeatures",
-		value: function removeFeatures() {
-			if (this.currentSelection.length > 0) {
-				for (var i = 0; i < this.currentSelection.length; i++) {
-					var paperFeature = this.currentSelection[i];
-					Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
-				}
-				this.currentSelection = [];
-				Registry.canvasManager.render();
-			}
 		}
 	}, {
 		key: "mouseDownHandler",
@@ -2432,7 +2356,7 @@ var SelectTool = (function (_paper$Tool) {
 
 module.exports = SelectTool;
 
-},{"../../core/registry":21}],27:[function(require,module,exports){
+},{"../../core/registry":21}],26:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2560,7 +2484,7 @@ var ChannelTool = (function (_paper$Tool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/features":10,"../../core/registry":21}],28:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21}],27:[function(require,module,exports){
 "use strict";
 
 module.exports.ChannelTool = require("./channelTool");
@@ -2568,7 +2492,7 @@ module.exports.ValveTool = require("./valveTool");
 module.exports.PanTool = require("./panTool");
 module.exports.SelectTool = require("./SelectTool");
 
-},{"./SelectTool":26,"./channelTool":27,"./panTool":29,"./valveTool":30}],29:[function(require,module,exports){
+},{"./SelectTool":25,"./channelTool":26,"./panTool":28,"./valveTool":29}],28:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2617,7 +2541,7 @@ var PanTool = (function (_paper$Tool) {
 
 module.exports = PanTool;
 
-},{"../../core/registry":21}],30:[function(require,module,exports){
+},{"../../core/registry":21}],29:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2666,7 +2590,100 @@ var ValveTool = (function (_paper$Tool) {
 
 module.exports = ValveTool;
 
-},{"../../core/features":10,"../../core/registry":21}],31:[function(require,module,exports){
+},{"../../core/features":10,"../../core/registry":21}],30:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SimpleQueue = (function () {
+	function SimpleQueue(func, timeout) {
+		var report = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+		_classCallCheck(this, SimpleQueue);
+
+		this.timeout = timeout;
+		this.func = func;
+		this.waiting = false;
+		this.queued = true;
+		this.counter = 0;
+		this.report = report;
+	}
+
+	_createClass(SimpleQueue, [{
+		key: "run",
+		value: function run() {
+			if (this.waiting) {
+				this.counter++;
+				if (!this.queued) {
+					this.queued = true;
+				}
+			} else {
+				if (this.report) console.log("Waited " + this.counter + " times.");
+				this.func();
+				this.startTimer();
+				this.counter = 0;
+			}
+		}
+	}, {
+		key: "endTimer",
+		value: function endTimer() {
+			this.waiting = false;
+			if (this.queued) {
+				this.queued = false;
+				this.run();
+			}
+		}
+	}, {
+		key: "startTimer",
+		value: function startTimer() {
+			var ref = this;
+			this.waiting = true;
+			window.setTimeout(function () {
+				ref.endTimer();
+			}, this.timeout);
+		}
+	}]);
+
+	return SimpleQueue;
+})();
+
+module.exports = SimpleQueue;
+
+},{}],31:[function(require,module,exports){
+//From http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+"use strict";
+
+function hexStringToPaperColor(hexString) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexString);
+    var color = result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+    if (color) {
+        return new paper.Color(color.r / 255, color.g / 255, color.b / 255);
+    }
+}
+
+module.exports.hexStringToPaperColor = hexStringToPaperColor;
+
+},{}],32:[function(require,module,exports){
+'use strict';
+
+var removeClass = function removeClass(el, className) {
+    if (el.classList) el.classList.remove(className);else el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+};
+
+var addClass = function addClass(el, className) {
+    if (el.classList) el.classList.add(className);else el.className += ' ' + className;
+};
+
+module.exports.removeClass = removeClass;
+module.exports.addClass = addClass;
+
+},{}],33:[function(require,module,exports){
 "use strict";
 
 function isFloat(n) {
@@ -2685,4 +2702,1978 @@ module.exports.isFloat = isFloat;
 module.exports.isInteger = isInteger;
 module.exports.isFloatOrInt = isFloatOrInt;
 
-},{}]},{},[2]);
+},{}],34:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SimpleQueue = (function () {
+	function SimpleQueue(func, timeout) {
+		var report = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+		_classCallCheck(this, SimpleQueue);
+
+		this.timeout = timeout;
+		this.func = func;
+		this.waiting = false;
+		this.queued = true;
+		this.counter = 0;
+		this.report = report;
+	}
+
+	_createClass(SimpleQueue, [{
+		key: "run",
+		value: function run() {
+			if (this.waiting) {
+				this.counter++;
+				if (!this.queued) {
+					this.queued = true;
+				}
+			} else {
+				if (this.report) console.log("Waited " + this.counter + " times.");
+				this.func();
+				this.startTimer();
+				this.counter = 0;
+			}
+		}
+	}, {
+		key: "endTimer",
+		value: function endTimer() {
+			this.waiting = false;
+			if (this.queued) {
+				this.queued = false;
+				this.run();
+			}
+		}
+	}, {
+		key: "startTimer",
+		value: function startTimer() {
+			var ref = this;
+			this.waiting = true;
+			window.setTimeout(function () {
+				ref.endTimer();
+			}, this.timeout);
+		}
+	}]);
+
+	return SimpleQueue;
+})();
+
+module.exports = SimpleQueue;
+
+},{}],35:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../core/registry");
+
+var PanAndZoom = (function () {
+    function PanAndZoom(paperView) {
+        _classCallCheck(this, PanAndZoom);
+
+        this.view = paperView;
+    }
+
+    _createClass(PanAndZoom, [{
+        key: "stableZoom",
+        value: function stableZoom(zoom, position) {
+            var newZoom = zoom;
+            var p = position;
+            var c = this.view.getCenter();
+            var beta = this.view.getZoom() / newZoom;
+            var pc = p.subtract(c);
+            var a = p.subtract(pc.multiply(beta)).subtract(c);
+            this.view.setCenter(this.view.getCenter().add(a));
+            this.view.setZoom(newZoom);
+        }
+    }, {
+        key: "adjustZoom",
+        value: function adjustZoom(delta, position) {
+            this.stableZoom(this.calcZoom(delta), position);
+        }
+
+        // Stable pan and zoom modified from: http://matthiasberth.com/articles/stable-zoom-and-pan-in-paperjs/
+
+    }, {
+        key: "calcZoom",
+        value: function calcZoom(delta) {
+            var multiplier = arguments.length <= 1 || arguments[1] === undefined ? 1.177827941003 : arguments[1];
+
+            if (delta < 0) return this.view.getZoom() * multiplier;else if (delta > 0) return this.view.getZoom() / multiplier;else return this.view.getZoom();
+        }
+    }, {
+        key: "moveCenter",
+        value: function moveCenter(delta) {
+            this.view.setCenter(this.calcCenter(delta));
+        }
+    }, {
+        key: "calcCenter",
+        value: function calcCenter(delta) {
+            return this.view.getCenter().subtract(delta);
+        }
+    }]);
+
+    return PanAndZoom;
+})();
+
+module.exports = PanAndZoom;
+
+},{"../core/registry":21}],36:[function(require,module,exports){
+"use strict";
+
+var ColorUtils = require("../utils/colorUtils");
+var hexStringToPaperColor = ColorUtils.hexStringToPaperColor;
+
+//Colors taken from: http://www.google.ch/design/spec/style/color.html
+module.exports.RED_500 = hexStringToPaperColor("#F44336");
+module.exports.INDIGO_500 = hexStringToPaperColor("#3F51B5");
+module.exports.GREEN_500 = hexStringToPaperColor("#4CAF50");
+module.exports.DEEP_PURPLE_500 = hexStringToPaperColor("#673AB7");
+module.exports.BLUE_50 = hexStringToPaperColor("#e3f2fd");
+module.exports.BLUE_100 = hexStringToPaperColor("#BBDEFB");
+module.exports.BLUE_300 = hexStringToPaperColor("#64B5F6");
+module.exports.BLUE_500 = hexStringToPaperColor("#2196F3");
+module.exports.GREY_700 = hexStringToPaperColor("#616161");
+module.exports.GREY_500 = hexStringToPaperColor("#9E9E9E");
+module.exports.AMBER_50 = hexStringToPaperColor("#FFF8E1");
+module.exports.PINK_500 = hexStringToPaperColor("#E91E63");
+module.exports.PINK_300 = hexStringToPaperColor("#F06292");
+module.exports.BLACK = hexStringToPaperColor("#000000");
+module.exports.WHITE = hexStringToPaperColor("#FFFFFF");
+
+},{"../utils/colorUtils":31}],37:[function(require,module,exports){
+"use strict";
+
+var Colors = require("./colors");
+var DEFAULT_STROKE_COLOR = Colors.GREY_700;
+var BORDER_THICKNESS = 5; // pixels
+
+function renderDevice(device) {
+    var strokeColor = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_STROKE_COLOR : arguments[1];
+
+    var thickness = BORDER_THICKNESS / paper.view.zoom;
+    var width = device.params.getValue("width");
+    var height = device.params.getValue("height");
+    var border = new paper.Path.Rectangle({
+        from: new paper.Point(0, 0),
+        to: new paper.Point(width, height),
+        fillColor: null,
+        strokeColor: strokeColor,
+        strokeWidth: thickness
+    });
+    return border;
+}
+
+module.exports.renderDevice = renderDevice;
+
+},{"./colors":36}],38:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var Channel = require("../../core/features").Channel;
+var Colors = require("../colors");
+
+var ChannelRenderer = (function () {
+    function ChannelRenderer() {
+        _classCallCheck(this, ChannelRenderer);
+    }
+
+    _createClass(ChannelRenderer, null, [{
+        key: "renderFeature",
+        value: function renderFeature(channel) {
+            var start = channel.params.getValue("start");
+            var end = channel.params.getValue("end");
+            var width = undefined;
+            try {
+                width = channel.params.getValue("width");
+            } catch (err) {
+                width = Channel.getDefaultValues()["width"];
+            }
+            var rec = PaperPrimitives.RoundedRect(start, end, width);
+            rec.featureID = channel.id;
+            rec.fillColor = Colors.INDIGO_500;
+            return rec;
+        }
+    }, {
+        key: "renderTarget",
+        value: function renderTarget(position) {
+            var width = Channel.getDefaultValues()["width"];
+            var circ = PaperPrimitives.CircleTarget(position, width / 2);
+            return circ;
+        }
+    }]);
+
+    return ChannelRenderer;
+})();
+
+module.exports = ChannelRenderer;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],39:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var CircleValve = require("../../core/features").CircleValve;
+var Colors = require("../colors");
+
+var CircleValveRenderer = (function () {
+    function CircleValveRenderer() {
+        _classCallCheck(this, CircleValveRenderer);
+    }
+
+    _createClass(CircleValveRenderer, null, [{
+        key: "renderFeature",
+        value: function renderFeature(circleValve) {
+            var position = circleValve.params.getValue("position");
+            var radius = undefined;
+
+            //TODO: figure out inheritance pattern for values!
+
+            try {
+                radius = circleValve.params.getValue("radius1");
+            } catch (err) {
+                radius = CircleValve.getDefaultValues()["radius1"];
+            }
+
+            var c1 = PaperPrimitives.Circle(position, radius);
+            c1.fillColor = Colors.RED_500;
+            c1.featureID = circleValve.id;
+            return c1;
+        }
+    }, {
+        key: "renderTarget",
+        value: function renderTarget(position) {
+            var width = CircleValve.getDefaultValues()["radius1"];
+            var circ = PaperPrimitives.CircleTarget(position, width);
+            return circ;
+        }
+    }]);
+
+    return CircleValveRenderer;
+})();
+
+module.exports = CircleValveRenderer;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],40:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var HollowChannel = require("../../core/features").HollowChannel;
+var Colors = require("../colors");
+
+var HollowChannelRenderer = (function () {
+    function HollowChannelRenderer() {
+        _classCallCheck(this, HollowChannelRenderer);
+    }
+
+    _createClass(HollowChannelRenderer, null, [{
+        key: "renderFeature",
+        value: function renderFeature(hollowChannel) {
+            var start = hollowChannel.params.getValue("start");
+            var end = hollowChannel.params.getValue("end");
+            var width = undefined;
+            try {
+                width = hollowChannel.params.getValue("width");
+            } catch (err) {
+                width = HollowChannel.getDefaultValues()["width"];
+            }
+            var rec = PaperPrimitives.RoundedRect(start, end, width);
+            rec.featureID = hollowChannel.id;
+            rec.fillColor = Colors.GREY_700;
+            return rec;
+        }
+    }, {
+        key: "renderTarget",
+        value: function renderTarget(position) {
+            var width = HollowChannel.getDefaultValues()["width"];
+            var circ = PaperPrimitives.CircleTarget(position, width / 2);
+            return circ;
+        }
+    }]);
+
+    return HollowChannelRenderer;
+})();
+
+module.exports = HollowChannelRenderer;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],41:[function(require,module,exports){
+"use strict";
+
+module.exports.Channel = require("./channelRenderer");
+module.exports.Via = require("./viaRenderer");
+module.exports.CircleValve = require("./circleValveRenderer");
+module.exports.HollowChannel = require("./hollowChannelRenderer");
+module.exports.Port = require("./portRenderer");
+
+},{"./channelRenderer":38,"./circleValveRenderer":39,"./hollowChannelRenderer":40,"./portRenderer":42,"./viaRenderer":43}],42:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var Port = require("../../core/features").Port;
+var Colors = require("../colors");
+
+var PortRenderer = (function () {
+    function PortRenderer() {
+        _classCallCheck(this, PortRenderer);
+    }
+
+    _createClass(PortRenderer, null, [{
+        key: "renderFeature",
+        value: function renderFeature(port) {
+            var position = port.params.getValue("position");
+            var radius = undefined;
+
+            //TODO: figure out inheritance pattern for values!
+
+            try {
+                radius = port.params.getValue("radius1");
+            } catch (err) {
+                radius = Port.getDefaultValues()["radius1"];
+            }
+
+            var c1 = PaperPrimitives.Circle(position, radius);
+            c1.fillColor = Colors.DEEP_PURPLE_500;
+            c1.featureID = port.id;
+            console.log("foo");
+            return c1;
+        }
+    }, {
+        key: "renderTarget",
+        value: function renderTarget(position) {
+            var width = Port.getDefaultValues()["radius1"];
+            var circ = PaperPrimitives.CircleTarget(position, width);
+            return circ;
+        }
+    }]);
+
+    return PortRenderer;
+})();
+
+module.exports = PortRenderer;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],43:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+var PaperPrimitives = require("../paperPrimitives");
+var Via = require("../../core/features").Via;
+var Colors = require("../colors");
+
+var ViaRenderer = (function () {
+    function ViaRenderer() {
+        _classCallCheck(this, ViaRenderer);
+    }
+
+    _createClass(ViaRenderer, null, [{
+        key: "renderFeature",
+        value: function renderFeature(via) {
+            var position = via.params.getValue("position");
+            var radius = undefined;
+
+            //TODO: figure out inheritance pattern for values!
+
+            try {
+                radius = via.params.getValue("radius1");
+            } catch (err) {
+                radius = Via.getDefaultValues()["radius1"];
+            }
+
+            var c1 = PaperPrimitives.Circle(position, radius);
+            c1.fillColor = Colors.GREEN_500;
+            c1.featureID = via.id;
+            return c1;
+        }
+    }, {
+        key: "renderTarget",
+        value: function renderTarget(position) {
+            var width = Via.getDefaultValues()["radius1"];
+            var circ = PaperPrimitives.CircleTarget(position, width);
+            return circ;
+        }
+    }]);
+
+    return ViaRenderer;
+})();
+
+module.exports = ViaRenderer;
+
+},{"../../core/features":10,"../../core/registry":21,"../colors":36,"../paperPrimitives":47}],44:[function(require,module,exports){
+"use strict";
+
+var Colors = require("../colors");
+
+function renderGrid(grid) {
+    var gridGroup = new paper.Group();
+    gridGroup.addChild(makeHorizontalLines(grid));
+    gridGroup.addChild(makeVerticalLines(grid));
+    return gridGroup;
+}
+
+function vertLineSymbol(width, color) {
+    return lineSymbol(paper.view.bounds.topLeft, paper.view.bounds.bottomLeft, width, color);
+}
+
+function horizLineSymbol(width, color) {
+    return lineSymbol(paper.view.bounds.topLeft, paper.view.bounds.topRight, width, color);
+}
+
+function lineSymbol(start, end, width, color) {
+    var line = paper.Path.Line({
+        from: start,
+        to: end,
+        strokeWidth: width,
+        strokeColor: color
+    });
+    line.remove();
+    return new paper.Symbol(line);
+}
+
+function isThick(val, origin, spacing, thickCount) {
+    var diff = Math.abs(val - origin);
+    var remainder = diff % (spacing * thickCount);
+    if (remainder < spacing) {
+        return true;
+    } else return false;
+}
+
+function makeVerticalLines(grid) {
+    var spacing = grid.getSpacing();
+    var sym = vertLineSymbol(grid.getThinWidth(), grid.color);
+    var thickSym = vertLineSymbol(grid.getThickWidth(), grid.color);
+    var start = paper.view.bounds.topLeft;
+    var end = paper.view.bounds.topRight;
+    var height = paper.view.bounds.height;
+    var group = new paper.Group();
+
+    var startX = Math.floor((start.x - grid.origin.x) / spacing) * spacing + grid.origin.x;
+
+    for (var i = startX; i < end.x; i += spacing) {
+        var pos = new paper.Point(i, start.y + height / 2);
+        if (isThick(i, grid.origin.x, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
+    }
+
+    for (var i = startX; i >= end.x; i -= spacing) {
+        var pos = new paper.Point(i, start.y + height / 2);
+        if (isThick(i, grid.origin.x, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
+    }
+    return group;
+}
+
+function makeHorizontalLines(grid) {
+    var spacing = grid.getSpacing();
+    var sym = horizLineSymbol(grid.getThinWidth(), grid.color);
+    var thickSym = horizLineSymbol(grid.getThickWidth(), grid.color);
+    var start = paper.view.bounds.topLeft;
+    var end = paper.view.bounds.bottomLeft;
+    var width = paper.view.bounds.width;
+    var group = new paper.Group();
+
+    var startY = Math.floor((start.y - grid.origin.y) / spacing) * spacing + grid.origin.y;
+
+    for (var i = startY; i < end.y; i += spacing) {
+        var pos = new paper.Point(start.x + width / 2, i);
+        if (isThick(i, grid.origin.y, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
+    }
+
+    for (var i = startY; i >= end.y; i -= spacing) {
+        var pos = new paper.Point(start.x + width / 2, i);
+        if (isThick(i, grid.origin.y, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
+    }
+    return group;
+}
+
+module.exports.renderGrid = renderGrid;
+
+},{"../colors":36}],45:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+var Colors = require("../colors");
+
+var AdaptiveGrid = (function () {
+    function AdaptiveGrid() {
+        var minSpacing = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
+        var maxSpacing = arguments.length <= 1 || arguments[1] === undefined ? 100 : arguments[1];
+        var thickCount = arguments.length <= 2 || arguments[2] === undefined ? 10 : arguments[2];
+        var origin = arguments.length <= 3 || arguments[3] === undefined ? [0, 0] : arguments[3];
+        var thinWidth = arguments.length <= 4 || arguments[4] === undefined ? 1 : arguments[4];
+        var thickWidth = arguments.length <= 5 || arguments[5] === undefined ? 3 : arguments[5];
+        var color = arguments.length <= 6 || arguments[6] === undefined ? Colors.BLUE_100 : arguments[6];
+
+        _classCallCheck(this, AdaptiveGrid);
+
+        this.origin = new paper.Point(origin[0], origin[1]);
+        this.thinWidth = thinWidth; //pixel
+        this.thickWidth = thickWidth; // pixels
+        this.minSpacing = minSpacing; //pixels
+        this.maxSpacing = maxSpacing; //pixels
+        this.thickCount = thickCount;
+        this.spacing = 1000;
+        this.color = color;
+
+        if (Registry.currentGrid) throw new Error("Cannot instantiate more than one AdaptiveGrid!");
+        Registry.currentGrid = this;
+    }
+
+    _createClass(AdaptiveGrid, [{
+        key: "getClosestGridPoint",
+        value: function getClosestGridPoint(point) {
+            var x = Math.round((point.x - this.origin.x) / this.spacing) * this.spacing + this.origin.x;
+            var y = Math.round((point.y - this.origin.y) / this.spacing) * this.spacing + this.origin.y;
+            return new paper.Point(x, y);
+        }
+    }, {
+        key: "setOrigin",
+        value: function setOrigin(origin) {
+            this.origin = new paper.Point(origin[0], origin[1]);
+            this.updateView();
+        }
+    }, {
+        key: "setThinWidth",
+        value: function setThinWidth(width) {
+            this.thinWidth = width;
+            this.updateView();
+        }
+    }, {
+        key: "setThickWidth",
+        value: function setThickWidth(width) {
+            this.thickWidth = width;
+            this.updateView();
+        }
+    }, {
+        key: "setMinSpacing",
+        value: function setMinSpacing(pixels) {
+            this.spacing = pixels;
+            this.updateView();
+        }
+    }, {
+        key: "setMaxSpacing",
+        value: function setMaxSpacing(pixels) {
+            this.maxSpacing = pixels;
+            this.updateView();
+        }
+    }, {
+        key: "setColor",
+        value: function setColor(color) {
+            this.color = color;
+            this.updateView();
+        }
+    }, {
+        key: "getSpacing",
+        value: function getSpacing() {
+            var min = this.minSpacing / paper.view.zoom;
+            var max = this.maxSpacing / paper.view.zoom;
+            while (this.spacing < min) {
+                this.spacing = this.spacing * 10;
+            }
+            while (this.spacing > max) {
+                this.spacing = this.spacing / 10;
+            }
+            return this.spacing;
+        }
+    }, {
+        key: "getThinWidth",
+        value: function getThinWidth() {
+            return this.thinWidth / paper.view.zoom;
+        }
+    }, {
+        key: "getThickWidth",
+        value: function getThickWidth() {
+            return this.thickWidth / paper.view.zoom;
+        }
+    }, {
+        key: "updateView",
+        value: function updateView() {
+            if (Registry.viewManager) Registry.viewManager.updateGrid();
+        }
+    }]);
+
+    return AdaptiveGrid;
+})();
+
+module.exports = AdaptiveGrid;
+
+},{"../../core/registry":21,"../colors":36}],46:[function(require,module,exports){
+"use strict";
+
+var HTMLUtils = require("../utils/htmlUtils");
+var Registry = require("../core/registry");
+var Colors = require("./colors");
+
+var activeButton = null;
+var channelButton = document.getElementById("channel_button");
+var circleValveButton = document.getElementById("circleValve_button");
+var portButton = document.getElementById("port_button");
+var viaButton = document.getElementById("via_button");
+
+var channelColorClass = "mdl-color--indigo-500";
+var circleValveColorClass = "mdl-color--red-500";
+var portColorClass = "mdl-color--deep-purple-500";
+var viaColorClass = "mdl-color--green-500";
+
+var typeColors = {
+    Channel: channelColorClass,
+    CircleValve: circleValveColorClass,
+    Port: portColorClass,
+    Via: viaColorClass
+};
+
+var buttons = {
+    Channel: channelButton,
+    CircleValve: circleValveButton,
+    Port: portButton,
+    Via: viaButton
+};
+
+var activeTextColor = "mdl-color-text--white";
+
+var inactiveClass = "mdl-color--grey-200";
+var inactiveText = "mdl-color-text--black";
+
+var addClasses = function addClasses(button, color, text) {
+    HTMLUtils.addClass(button, color);
+    HTMLUtils.addClass(button, text);
+};
+
+var removeClasses = function removeClasses(button, color, text) {
+    HTMLUtils.removeClass(button, color);
+    HTMLUtils.removeClass(button, text);
+};
+
+var setNewActiveButton = function setNewActiveButton(button) {
+    if (activeButton) {
+        removeClasses(buttons[activeButton], typeColors[activeButton], activeTextColor);
+        addClasses(buttons[activeButton], inactiveClass, inactiveText);
+    }
+    activeButton = button;
+    console.log(activeButton);
+    console.log(buttons[activeButton]);
+    removeClasses(buttons[activeButton], inactiveClass, inactiveText);
+    addClasses(buttons[activeButton], typeColors[activeButton], activeTextColor);
+};
+
+channelButton.onclick = function () {
+    Registry.viewManager.activateTool("Channel");
+    setNewActiveButton("Channel");
+};
+
+circleValveButton.onclick = function () {
+    Registry.viewManager.activateTool("CircleValve");
+    setNewActiveButton("CircleValve");
+};
+
+portButton.onclick = function () {
+    Registry.viewManager.activateTool("Port");
+    setNewActiveButton("Port");
+};
+
+viaButton.onclick = function () {
+    Registry.viewManager.activateTool("Via");
+    setNewActiveButton("Via");
+};
+
+setNewActiveButton("Channel");
+
+},{"../core/registry":21,"../utils/htmlUtils":32,"./colors":36}],47:[function(require,module,exports){
+"use strict";
+
+var Colors = require("./colors");
+
+var RoundedRect = function RoundedRect(start, end, width) {
+    var startPoint = new paper.Point(start[0], start[1]);
+    var endPoint = new paper.Point(end[0], end[1]);
+    var vec = endPoint.subtract(startPoint);
+    var rec = paper.Path.Rectangle({
+        size: [vec.length + width, width],
+        point: start,
+        radius: width / 2
+    });
+    rec.translate([-width / 2, -width / 2]);
+    rec.rotate(vec.angle, start);
+    return rec;
+};
+
+var Circle = function Circle(position, radius) {
+    var pos = new paper.Point(position);
+    var circ = new paper.Path.Circle(pos, radius);
+    return circ;
+};
+
+var CircleTarget = function CircleTarget(position, radius) {
+    if (radius < 8 / paper.view.zoom) radius = 8 / paper.view.zoom;
+    var circ = Circle(position, radius);
+    circ.fillColor = Colors.BLUE_300;
+    circ.fillColor.alpha = .5;
+    circ.strokeColor = Colors.WHITE;
+    circ.strokeWidth = 3 / paper.view.zoom;
+    if (circ.strokeWidth > radius / 2) circ.strokeWidth = radius / 2;
+    return circ;
+};
+
+module.exports.RoundedRect = RoundedRect;
+module.exports.Circle = Circle;
+module.exports.CircleTarget = CircleTarget;
+
+},{"./colors":36}],48:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../core/registry");
+var FeatureRenderers = require("./featureRenderers");
+var GridRenderer = require("./grid/GridRenderer");
+var DeviceRenderer = require("./deviceRenderer");
+var PanAndZoom = require("./PanAndZoom");
+var SimpleQueue = require("../utils/simpleQueue");
+
+var PaperView = (function () {
+    function PaperView(canvas) {
+        _classCallCheck(this, PaperView);
+
+        this.panAndZoom = new PanAndZoom(this);
+        this.center = paper.view.center;
+        var ref = this;
+        this.zoom = paper.view.zoom;
+        this.canvas = canvas;
+        this.paperFeatures = {};
+        this.paperGrid = null;
+        this.paperDevice = null;
+        this.gridLayer = new paper.Group();
+        this.deviceLayer = new paper.Group();
+        this.deviceLayer.insertAbove(this.gridLayer);
+        this.featureLayer = new paper.Group();
+        this.featureLayer.insertAbove(this.deviceLayer);
+        this.uiLayer = new paper.Group();
+        this.uiLayer.insertAbove(this.featureLayer);
+        this.currentTarget = null;
+        this.lastTargetType = null;
+        this.lastTargetPosition = null;
+    }
+
+    _createClass(PaperView, [{
+        key: "getCenter",
+        value: function getCenter() {
+            return this.center;
+        }
+    }, {
+        key: "setCenter",
+        value: function setCenter(point) {
+            this.center = point;
+            this.updateCenter();
+        }
+    }, {
+        key: "updateCenter",
+        value: function updateCenter() {
+            paper.view.center = this.center;
+        }
+    }, {
+        key: "getZoom",
+        value: function getZoom() {
+            return this.zoom;
+        }
+    }, {
+        key: "setZoom",
+        value: function setZoom(zoom) {
+            this.zoom = zoom;
+            this.updateZoom();
+        }
+    }, {
+        key: "updateZoom",
+        value: function updateZoom() {
+            paper.view.zoom = this.zoom;
+        }
+    }, {
+        key: "canvasToProject",
+        value: function canvasToProject(x, y) {
+            var rect = this.canvas.getBoundingClientRect();
+            var projX = x - rect.left;
+            var projY = y - rect.top;
+            return paper.view.viewToProject(new paper.Point(projX, projY));
+        }
+    }, {
+        key: "getProjectPosition",
+        value: function getProjectPosition(x, y) {
+            return this.canvasToProject(x, y);
+        }
+    }, {
+        key: "setMouseWheelFunction",
+        value: function setMouseWheelFunction(func) {
+            this.canvas.addEventListener("wheel", func);
+        }
+    }, {
+        key: "setMouseDownFunction",
+        value: function setMouseDownFunction(func) {
+            this.canvas.onmousedown = func;
+        }
+    }, {
+        key: "setMouseUpFunction",
+        value: function setMouseUpFunction(func) {
+            this.canvas.onmouseup = func;
+        }
+    }, {
+        key: "setMouseMoveFunction",
+        value: function setMouseMoveFunction(func) {
+            this.canvas.onmousemove = func;
+        }
+    }, {
+        key: "setKeyPressFunction",
+        value: function setKeyPressFunction(func) {
+            this.canvas.onkeypress = func;
+        }
+    }, {
+        key: "setKeyDownFunction",
+        value: function setKeyDownFunction(func) {
+            this.canvas.onkeydown = func;
+        }
+    }, {
+        key: "setResizeFunction",
+        value: function setResizeFunction(func) {
+            paper.view.onResize = func;
+        }
+    }, {
+        key: "refresh",
+        value: function refresh() {
+            paper.view.update();
+        }
+
+        /* Rendering Devices */
+    }, {
+        key: "addDevice",
+        value: function addDevice(device) {
+            this.updateDevice(device);
+        }
+    }, {
+        key: "updateDevice",
+        value: function updateDevice(device) {
+            this.removeDevice(device);
+            var newPaperDevice = DeviceRenderer.renderDevice(device);
+            this.paperDevice = newPaperDevice;
+            this.deviceLayer.addChild(newPaperDevice);
+        }
+    }, {
+        key: "removeDevice",
+        value: function removeDevice() {
+            if (this.paperDevice) this.paperDevice.remove();
+            this.paperDevice = null;
+        }
+
+        /* Rendering Layers */
+
+    }, {
+        key: "addLayer",
+        value: function addLayer(layer, index) {
+            this.featureLayer.insertChild(index, new paper.Group());
+        }
+    }, {
+        key: "updateLayer",
+        value: function updateLayer(layer, index) {
+            // do nothing, for now
+        }
+    }, {
+        key: "removeLayer",
+        value: function removeLayer(layer, index) {}
+        // do nothing, for now
+
+        /* Rendering Features */
+
+    }, {
+        key: "addFeature",
+        value: function addFeature(feature) {
+            this.updateFeature(feature);
+        }
+    }, {
+        key: "updateFeature",
+        value: function updateFeature(feature) {
+            this.removeFeature(feature);
+            var newPaperFeature = FeatureRenderers[feature.type].renderFeature(feature);
+            this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
+            //TODO: This is terrible. Fix it. Fix it now.
+            var index = feature.layer.device.layers.indexOf(feature.layer);
+            this.featureLayer.children[index].addChild(newPaperFeature);
+        }
+    }, {
+        key: "removeTarget",
+        value: function removeTarget() {
+            if (this.currentTarget) this.currentTarget.remove();
+            this.currentTarget = null;
+        }
+    }, {
+        key: "addTarget",
+        value: function addTarget(featureType, position) {
+            this.removeTarget();
+            this.lastTargetType = featureType;
+            this.lastTargetPosition = position;
+            this.updateTarget();
+        }
+    }, {
+        key: "updateTarget",
+        value: function updateTarget() {
+            this.removeTarget();
+            if (this.lastTargetType && this.lastTargetPosition) {
+                var renderer = FeatureRenderers[this.lastTargetType];
+                //console.log(renderer.renderTarget.toSource());
+                this.currentTarget = FeatureRenderers[this.lastTargetType].renderTarget(this.lastTargetPosition);
+                this.uiLayer.addChild(this.currentTarget);
+            }
+        }
+    }, {
+        key: "removeFeature",
+        value: function removeFeature(feature) {
+            var paperFeature = this.paperFeatures[feature.id];
+            if (paperFeature) paperFeature.remove();
+            this.paperFeatures[feature.id] = null;
+        }
+    }, {
+        key: "removeGrid",
+        value: function removeGrid() {
+            if (this.paperGrid) this.paperGrid.remove();
+            this.paperGrid = null;
+        }
+    }, {
+        key: "updateGrid",
+        value: function updateGrid(grid) {
+            this.removeGrid();
+            var newPaperGrid = GridRenderer.renderGrid(grid);
+            this.paperGrid = newPaperGrid;
+            this.gridLayer.addChild(newPaperGrid);
+        }
+    }, {
+        key: "moveCenter",
+        value: function moveCenter(delta) {
+            this.panAndZoom.moveCenter(delta);
+        }
+    }, {
+        key: "adjustZoom",
+        value: function adjustZoom(delta, point) {
+            this.panAndZoom.adjustZoom(delta, point);
+        }
+    }, {
+        key: "getFeaturesByViewElements",
+        value: function getFeaturesByViewElements(paperFeatures) {
+            var output = [];
+            for (var i = 0; i < paperFeatures.length; i++) {
+                output.push(Registry.currentDevice.getFeatureByID(paperFeatures[i].featureID));
+            }
+            return output;
+        }
+    }, {
+        key: "hitFeature",
+        value: function hitFeature(point) {
+            var hitOptions = {
+                fill: true,
+                tolerance: 5,
+                guides: false
+            };
+
+            var result = this.featureLayer.hitTest(point, hitOptions);
+            if (result) {
+                console.log(result);
+                return result.item;
+            }
+        }
+    }, {
+        key: "hitFeaturesWithViewElement",
+        value: function hitFeaturesWithViewElement(paperElement) {
+            var output = [];
+            for (var i = 0; i < this.featureLayer.children.length; i++) {
+                var layer = this.featureLayer.children[i];
+                for (var j = 0; j < layer.children.length; j++) {
+                    var child = layer.children[j];
+                    if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
+                        output.push(child);
+                    }
+                }
+            }
+            return output;
+        }
+    }]);
+
+    return PaperView;
+})();
+
+module.exports = PaperView;
+
+},{"../core/registry":21,"../utils/simpleQueue":34,"./PanAndZoom":35,"./deviceRenderer":37,"./featureRenderers":41,"./grid/GridRenderer":44}],49:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+
+var MouseTool = (function () {
+    function MouseTool() {
+        _classCallCheck(this, MouseTool);
+
+        this.up = MouseTool.defaultFunction("up");
+        this.down = MouseTool.defaultFunction("down");
+        this.move = MouseTool.defaultFunction("move");
+    }
+
+    _createClass(MouseTool, null, [{
+        key: "defaultFunction",
+        value: function defaultFunction(string) {
+            return function () {
+                console.log("No " + string + " function set.");
+            };
+        }
+    }, {
+        key: "getEventPosition",
+        value: function getEventPosition(event) {
+            return Registry.viewManager.getEventPosition(event);
+        }
+    }]);
+
+    return MouseTool;
+})();
+
+module.exports = MouseTool;
+
+},{"../../core/registry":21}],50:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Features = require("../../core/features");
+var Registry = require("../../core/registry");
+var MouseTool = require("./mouseTool");
+var SimpleQueue = require("../../utils/simpleQueue");
+
+var ChannelTool = (function (_MouseTool) {
+	_inherits(ChannelTool, _MouseTool);
+
+	function ChannelTool(channelClass) {
+		_classCallCheck(this, ChannelTool);
+
+		_get(Object.getPrototypeOf(ChannelTool.prototype), "constructor", this).call(this);
+		this.channelClass = channelClass;
+		this.startPoint = null;
+		this.lastPoint = null;
+		this.currentChannelID = null;
+		this.currentTarget = null;
+		this.dragging = false;
+		var ref = this;
+
+		this.showQueue = new SimpleQueue(function () {
+			ref.showTarget();
+		}, 20, false);
+
+		this.updateQueue = new SimpleQueue(function () {
+			ref.updateChannel();
+		}, 20, false);
+
+		this.down = function (event) {
+			ref.dragging = true;
+			ref.initChannel();
+		};
+		this.up = function (event) {
+			ref.dragging = false;
+			ref.finishChannel(MouseTool.getEventPosition(event));
+		};
+		this.move = function (event) {
+			ref.lastPoint = MouseTool.getEventPosition(event);
+			if (ref.dragging) {
+				ref.updateQueue.run();
+			}
+			ref.showQueue.run();
+		};
+	}
+
+	_createClass(ChannelTool, [{
+		key: "abort",
+		value: function abort() {
+			ref.dragging = false;
+			if (this.currentTarget) {
+				this.currentTarget.remove();
+			}
+			if (this.currentChannelID) {
+				Registry.currentLayer.removeFeatureByID(this.currentChannelID);
+			}
+		}
+	}, {
+		key: "showTarget",
+		value: function showTarget(point) {
+			var target = ChannelTool.getTarget(this.lastPoint);
+			Registry.viewManager.updateTarget(this.channelClass.typeString(), [target.x, target.y]);
+		}
+	}, {
+		key: "initChannel",
+		value: function initChannel() {
+			this.startPoint = ChannelTool.getTarget(this.lastPoint);
+			this.lastPoint = this.startPoint;
+		}
+
+		//TODO: Re-render only the current channel, to improve perforamnce
+	}, {
+		key: "updateChannel",
+		value: function updateChannel() {
+			if (this.lastPoint && this.startPoint) {
+				if (this.currentChannelID) {
+					var target = ChannelTool.getTarget(this.lastPoint);
+					var feat = Registry.currentLayer.getFeature(this.currentChannelID);
+					feat.updateParameter("end", [target.x, target.y]);
+					Registry.canvasManager.render();
+				} else {
+					var newChannel = this.createChannel(this.startPoint, this.startPoint);
+					this.currentChannelID = newChannel.id;
+					Registry.currentLayer.addFeature(newChannel);
+				}
+			}
+		}
+	}, {
+		key: "finishChannel",
+		value: function finishChannel(point) {
+			var target = ChannelTool.getTarget(point);
+			if (this.currentChannelID) {
+				if (this.startPoint.x == target.x && this.startPoint.y == target.y) {
+					Registry.currentLayer.removeFeatureByID(this.currentChannelID);
+					//TODO: This will be slow for complex devices, since it re-renders everything
+					Registry.canvasManager.render();
+				}
+			} else {
+				this.updateChannel(point);
+			}
+			this.currentChannelID = null;
+			this.startPoint = null;
+		}
+	}, {
+		key: "createChannel",
+		value: function createChannel(start, end) {
+			return new this.channelClass({
+				"start": [start.x, start.y],
+				"end": [end.x, end.y]
+			});
+		}
+
+		//TODO: Re-establish target selection logic from earlier demo
+	}], [{
+		key: "makeReticle",
+		value: function makeReticle(point) {
+			var size = 10 / paper.view.zoom;
+			var ret = paper.Path.Circle(point, size);
+			ret.fillColor = new paper.Color(.5, 0, 1, .5);
+			return ret;
+		}
+	}, {
+		key: "getTarget",
+		value: function getTarget(point) {
+			return Registry.viewManager.snapToGrid(point);
+		}
+	}]);
+
+	return ChannelTool;
+})(MouseTool);
+
+module.exports = ChannelTool;
+
+},{"../../core/features":10,"../../core/registry":21,"../../utils/simpleQueue":34,"./mouseTool":51}],51:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+
+var MouseTool = (function () {
+    function MouseTool() {
+        _classCallCheck(this, MouseTool);
+
+        this.up = MouseTool.defaultFunction("up");
+        this.down = MouseTool.defaultFunction("down");
+        this.move = MouseTool.defaultFunction("move");
+    }
+
+    _createClass(MouseTool, null, [{
+        key: "defaultFunction",
+        value: function defaultFunction(string) {
+            return function () {
+                console.log("No " + string + " function set.");
+            };
+        }
+    }, {
+        key: "getEventPosition",
+        value: function getEventPosition(event) {
+            return Registry.viewManager.getEventPosition(event);
+        }
+    }]);
+
+    return MouseTool;
+})();
+
+module.exports = MouseTool;
+
+},{"../../core/registry":21}],52:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Registry = require("../../core/registry");
+var MouseTool = require("./mouseTool");
+var SimpleQueue = require("../../utils/simpleQueue");
+
+var PanTool = (function (_MouseTool) {
+    _inherits(PanTool, _MouseTool);
+
+    function PanTool() {
+        _classCallCheck(this, PanTool);
+
+        _get(Object.getPrototypeOf(PanTool.prototype), "constructor", this).call(this);
+        this.startPoint = null;
+        this.lastPoint = null;
+        this.startCenter = null;
+        var ref = this;
+        this.updateQueue = new SimpleQueue(function () {
+            ref.pan();
+        }, 10);
+        this.down = function (event) {
+            ref.startPan(MouseTool.getEventPosition(event));
+            ref.showTarget();
+        };
+        this.up = function (event) {
+            ref.endPan(MouseTool.getEventPosition(event));
+            ref.showTarget();
+        };
+        this.move = function (event) {
+            ref.moveHandler(MouseTool.getEventPosition(event));
+            ref.showTarget();
+        };
+    }
+
+    _createClass(PanTool, [{
+        key: "startPan",
+        value: function startPan(point) {
+            this.dragging = true;
+            this.startPoint = point;
+        }
+    }, {
+        key: "moveHandler",
+        value: function moveHandler(point) {
+            if (this.dragging) {
+                this.lastPoint = point;
+                this.updateQueue.run();
+                // this.pan();
+            }
+        }
+    }, {
+        key: "endPan",
+        value: function endPan(point) {
+            this.pan();
+            this.lastPoint = null;
+            this.dragging = false;
+            this.startPoint = null;
+        }
+    }, {
+        key: "showTarget",
+        value: function showTarget() {
+            Registry.viewManager.removeTarget();
+        }
+    }, {
+        key: "pan",
+        value: function pan() {
+            if (this.lastPoint) {
+                var delta = this.lastPoint.subtract(this.startPoint);
+                Registry.viewManager.moveCenter(delta);
+            }
+        }
+    }]);
+
+    return PanTool;
+})(MouseTool);
+
+module.exports = PanTool;
+
+},{"../../core/registry":21,"../../utils/simpleQueue":34,"./mouseTool":51}],53:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MouseTool = require("./mouseTool");
+var Registry = require("../../core/registry");
+var SimpleQueue = require("../../utils/SimpleQueue");
+
+var PositionTool = (function (_MouseTool) {
+    _inherits(PositionTool, _MouseTool);
+
+    function PositionTool(featureClass) {
+        _classCallCheck(this, PositionTool);
+
+        _get(Object.getPrototypeOf(PositionTool.prototype), "constructor", this).call(this);
+        this.featureClass = featureClass;
+        this.currentFeatureID = null;
+        var ref = this;
+        this.lastPoint = null;
+        this.showQueue = new SimpleQueue(function () {
+            ref.showTarget();
+        }, 20, false);
+        this.up = function (event) {
+            // do nothing
+        };
+        this.move = function (event) {
+            ref.lastPoint = MouseTool.getEventPosition(event);
+            ref.showQueue.run();
+        };
+        this.down = function (event) {
+            ref.createNewFeature(MouseTool.getEventPosition(event));
+        };
+    }
+
+    _createClass(PositionTool, [{
+        key: "createNewFeature",
+        value: function createNewFeature(point) {
+            var target = PositionTool.getTarget(point);
+            var newFeature = new this.featureClass({
+                position: [target.x, target.y]
+            });
+            this.currentFeatureID = newFeature.id;
+            Registry.currentLayer.addFeature(newFeature);
+        }
+    }, {
+        key: "showTarget",
+        value: function showTarget() {
+            var target = PositionTool.getTarget(this.lastPoint);
+            Registry.viewManager.updateTarget(this.featureClass.typeString(), [target.x, target.y]);
+        }
+    }], [{
+        key: "getTarget",
+        value: function getTarget(point) {
+            return Registry.viewManager.snapToGrid(point);
+        }
+    }]);
+
+    return PositionTool;
+})(MouseTool);
+
+module.exports = PositionTool;
+
+},{"../../core/registry":21,"../../utils/SimpleQueue":30,"./mouseTool":51}],54:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Registry = require("../../core/registry");
+var MouseTool = require("./MouseTool");
+var SimpleQueue = require("../../utils/simpleQueue");
+
+var SelectTool = (function (_MouseTool) {
+	_inherits(SelectTool, _MouseTool);
+
+	function SelectTool() {
+		_classCallCheck(this, SelectTool);
+
+		_get(Object.getPrototypeOf(SelectTool.prototype), "constructor", this).call(this);
+		this.dragging = false;
+		this.dragStart = null;
+		this.lastPoint = null;
+		this.currentSelectBox = null;
+		this.currentSelection = [];
+		var ref = this;
+		this.updateQueue = new SimpleQueue(function () {
+			ref.dragHandler();
+		}, 20);
+		this.down = function (event) {
+			ref.mouseDownHandler(MouseTool.getEventPosition(event));
+			ref.dragging = true;
+			ref.showTarget();
+		};
+		this.move = function (event) {
+			if (ref.dragging) {
+				ref.lastPoint = MouseTool.getEventPosition(event);
+				ref.updateQueue.run();
+			}
+			ref.showTarget();
+		};
+		this.up = function (event) {
+			ref.dragging = false;
+			ref.mouseUpHandler(MouseTool.getEventPosition(event));
+			ref.showTarget();
+		};
+	}
+
+	_createClass(SelectTool, [{
+		key: "keyHandler",
+		value: function keyHandler(event) {
+			if (event.key == "delete" || event.key == "backspace") {
+				this.removeFeatures();
+			}
+		}
+	}, {
+		key: "dragHandler",
+		value: function dragHandler() {
+			if (this.dragStart) {
+				if (this.currentSelectBox) {
+					this.currentSelectBox.remove();
+				}
+				this.currentSelectBox = this.rectSelect(this.dragStart, this.lastPoint);
+			}
+		}
+	}, {
+		key: "showTarget",
+		value: function showTarget() {
+			Registry.viewManager.removeTarget();
+		}
+	}, {
+		key: "mouseUpHandler",
+		value: function mouseUpHandler(point) {
+			if (this.currentSelectBox) {
+				this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox);
+				this.selectFeatures();
+			}
+			this.killSelectBox();
+		}
+	}, {
+		key: "removeFeatures",
+		value: function removeFeatures() {
+			if (this.currentSelection.length > 0) {
+				for (var i = 0; i < this.currentSelection.length; i++) {
+					var paperFeature = this.currentSelection[i];
+					Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
+				}
+				this.currentSelection = [];
+				Registry.canvasManager.render();
+			}
+		}
+	}, {
+		key: "mouseDownHandler",
+		value: function mouseDownHandler(point) {
+			var target = this.hitFeature(point);
+			if (target) {
+				this.deselectFeatures();
+				this.selectFeature(target);
+			} else {
+				this.deselectFeatures();
+				this.dragStart = point;
+			}
+		}
+	}, {
+		key: "killSelectBox",
+		value: function killSelectBox() {
+			if (this.currentSelectBox) {
+				this.currentSelectBox.remove();
+				this.currentSelectBox = null;
+			}
+			this.dragStart = null;
+		}
+	}, {
+		key: "hitFeature",
+		value: function hitFeature(point) {
+			var target = Registry.viewManager.hitFeature(point);
+			return target;
+		}
+	}, {
+		key: "selectFeature",
+		value: function selectFeature(paperElement) {
+			this.currentSelection.push(paperElement);
+			paperElement.selected = true;
+		}
+	}, {
+		key: "selectFeatures",
+		value: function selectFeatures() {
+			if (this.currentSelection) {
+				for (var i = 0; i < this.currentSelection.length; i++) {
+					var paperFeature = this.currentSelection[i];
+					paperFeature.selected = true;
+				}
+			}
+		}
+	}, {
+		key: "deselectFeatures",
+		value: function deselectFeatures() {
+			if (this.currentSelection) {
+				for (var i = 0; i < this.currentSelection.length; i++) {
+					var paperFeature = this.currentSelection[i];
+					paperFeature.selected = false;
+				}
+			}
+			this.currentSelection = [];
+		}
+	}, {
+		key: "abort",
+		value: function abort() {
+			this.deselectFeatures();
+			this.killSelectBox();
+		}
+	}, {
+		key: "rectSelect",
+		value: function rectSelect(point1, point2) {
+			var rect = new paper.Path.Rectangle(point1, point2);
+			rect.fillColor = new paper.Color(0, .3, 1, .4);
+			rect.strokeColor = new paper.Color(0, 0, 0);
+			rect.strokeWidth = 2;
+			rect.selected = true;
+			return rect;
+		}
+	}]);
+
+	return SelectTool;
+})(MouseTool);
+
+module.exports = SelectTool;
+
+},{"../../core/registry":21,"../../utils/simpleQueue":34,"./MouseTool":49}],55:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../core/registry");
+var ChannelTool = require("./tools/channelTool");
+var MouseTool = require("./tools/mouseTool");
+var Features = require("../core/features");
+var PanTool = require("./tools/panTool");
+var PanAndZoom = require("./PanAndZoom");
+var SelectTool = require("./tools/selectTool");
+var SimpleQueue = require("../utils/SimpleQueue");
+var PositionTool = require("./tools/positionTool");
+
+var ViewManager = (function () {
+    function ViewManager(view) {
+        _classCallCheck(this, ViewManager);
+
+        this.view = view;
+        this.tools = {};
+        this.middleMouseTool = new PanTool();
+        this.rightMouseTool = new SelectTool();
+        var reference = this;
+        this.updateQueue = new SimpleQueue(function () {
+            reference.view.refresh();
+        }, 20);
+        window.onkeydown = function (event) {
+            var key = event.keyCode || event.which;
+            if (key == 46 || key == 8) {
+                event.preventDefault();
+            }
+        };
+        this.view.setKeyDownFunction(function (event) {
+            var key = event.keyCode || event.which;
+            if (key == 46 || key == 8) {}
+        });
+
+        this.view.setResizeFunction(function () {
+            reference.updateGrid();
+            reference.updateDevice(Registry.currentDevice);
+        });
+
+        var func = function func(event) {
+            reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
+        };
+        this.view.setMouseWheelFunction(func);
+        this.minZoom = .0001;
+        this.maxZoom = 5;
+        this.setupTools();
+        this.activateTool("Channel");
+    }
+
+    _createClass(ViewManager, [{
+        key: "addDevice",
+        value: function addDevice(device) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            this.view.addDevice(device);
+            this.__addAllDeviceLayers(device, false);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "__addAllDeviceLayers",
+        value: function __addAllDeviceLayers(device) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            for (var i = 0; i < device.layers.length; i++) {
+                var layer = device.layers[i];
+                this.addLayer(layer, i, false);
+            }
+        }
+    }, {
+        key: "__removeAllDeviceLayers",
+        value: function __removeAllDeviceLayers(device) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            for (var i = 0; i < device.layers.length; i++) {
+                var layer = device.layers[i];
+                this.removeLayer(layer, i, false);
+            }
+        }
+    }, {
+        key: "removeDevice",
+        value: function removeDevice(device) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            this.view.removeDevice(device);
+            this.__removeAllDeviceLayers(device, false);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "updateDevice",
+        value: function updateDevice(device) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            this.view.updateDevice(device);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "addFeature",
+        value: function addFeature(feature) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            if (this.__isFeatureInCurrentDevice(feature)) {
+                this.view.addFeature(feature);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "updateFeature",
+        value: function updateFeature(feature) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            if (this.__isFeatureInCurrentDevice(feature)) {
+                this.view.updateFeature(feature);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "removeFeature",
+        value: function removeFeature(feature) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            if (this.__isFeatureInCurrentDevice(feature)) {
+                this.view.removeFeature(feature);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "addLayer",
+        value: function addLayer(layer, index) {
+            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+            if (this.__isLayerInCurrentDevice(layer)) {
+                this.view.addLayer(layer, index, false);
+                this.__addAllLayerFeatures(layer, false);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "updateLayer",
+        value: function updateLayer(layer, index) {
+            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+            if (this.__isLayerInCurrentDevice(layer)) {
+                this.view.updateLayer(layer);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "removeLayer",
+        value: function removeLayer(layer, index) {
+            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+            if (this.__isLayerInCurrentDevice(layer)) {
+                this.view.removeLayer(layer, index);
+                this.__removeAllLayerFeatures(layer);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "__addAllLayerFeatures",
+        value: function __addAllLayerFeatures(layer) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            for (var key in layer.features) {
+                var feature = layer.features[key];
+                this.addFeature(feature, false);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "__removeAllLayerFeatures",
+        value: function __removeAllLayerFeatures(layer) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            for (var key in layer.features) {
+                var feature = layer.features[key];
+                this.removeFeature(feature, false);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "updateLayer",
+        value: function updateLayer(layer) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            if (this.__isCurrentDevice(device)) {
+                this.view.updateLayer(layer);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "removeGrid",
+        value: function removeGrid() {
+            var refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+            if (this.__hasCurrentGrid()) {
+                this.view.removeGrid();
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "updateGrid",
+        value: function updateGrid() {
+            var refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+            if (this.__hasCurrentGrid()) {
+                this.view.updateGrid(Registry.currentGrid);
+                this.refresh(refresh);
+            }
+        }
+    }, {
+        key: "setZoom",
+        value: function setZoom(zoom) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            this.view.setZoom(zoom);
+            this.updateGrid(false);
+            this.updateDevice(Registry.currentDevice, false);
+            this.__updateViewTarget(false);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "removeTarget",
+        value: function removeTarget() {
+            this.view.removeTarget();
+        }
+    }, {
+        key: "updateTarget",
+        value: function updateTarget(featureType, position) {
+            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+            this.view.addTarget(featureType, position);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "__updateViewTarget",
+        value: function __updateViewTarget() {
+            var refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+            this.view.updateTarget();
+            this.refresh(refresh);
+        }
+    }, {
+        key: "adjustZoom",
+        value: function adjustZoom(delta, point) {
+            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+            var belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
+            var aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
+            if (!aboveMax && !belowMin) {
+                this.view.adjustZoom(delta, point);
+                this.updateGrid(false);
+                this.updateDevice(Registry.currentDevice, false);
+                this.__updateViewTarget(false);
+            } else {
+                //console.log("Too big or too small!");
+            }
+            this.refresh(refresh);
+        }
+    }, {
+        key: "setCenter",
+        value: function setCenter(center) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            this.view.setCenter(center);
+            this.updateGrid(false);
+            this.updateDevice(Registry.currentDevice, false);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "moveCenter",
+        value: function moveCenter(delta) {
+            var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            this.view.moveCenter(delta);
+            this.updateGrid(false);
+            this.updateDevice(Registry.currentDevice, false);
+            this.refresh(refresh);
+        }
+    }, {
+        key: "refresh",
+        value: function refresh() {
+            var _refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+            //this.view.refresh();
+            this.updateQueue.run();
+        }
+    }, {
+        key: "getEventPosition",
+        value: function getEventPosition(event) {
+            return this.view.getProjectPosition(event.clientX, event.clientY);
+        }
+    }, {
+        key: "__hasCurrentGrid",
+        value: function __hasCurrentGrid() {
+            if (Registry.currentGrid) return true;else return false;
+        }
+    }, {
+        key: "__isLayerInCurrentDevice",
+        value: function __isLayerInCurrentDevice(layer) {
+            if (Registry.currentDevice && layer.device == Registry.currentDevice) return true;else return false;
+        }
+    }, {
+        key: "__isFeatureInCurrentDevice",
+        value: function __isFeatureInCurrentDevice(feature) {
+            if (Registry.currentDevice && this.__isLayerInCurrentDevice(feature.layer)) return true;else return false;
+        }
+    }, {
+        key: "constructMouseDownEvent",
+        value: function constructMouseDownEvent(tool1, tool2, tool3) {
+            return this.constructMouseEvent(tool1.down, tool2.down, tool3.down);
+        }
+    }, {
+        key: "constructMouseMoveEvent",
+        value: function constructMouseMoveEvent(tool1, tool2, tool3) {
+            return this.constructMouseEvent(tool1.move, tool2.move, tool3.move);
+        }
+    }, {
+        key: "constructMouseUpEvent",
+        value: function constructMouseUpEvent(tool1, tool2, tool3) {
+            return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
+        }
+    }, {
+        key: "removeFeaturesByPaperElements",
+        value: function removeFeaturesByPaperElements(paperElements) {
+            if (paperElements.length > 0) {
+                for (var i = 0; i < paperElements.length; i++) {
+                    var paperFeature = paperElements[i];
+                    Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
+                }
+                this.currentSelection = [];
+            }
+        }
+    }, {
+        key: "constructMouseEvent",
+        value: function constructMouseEvent(func1, func2, func3) {
+            return function (event) {
+                var target = undefined;
+                if (event.buttons) {
+                    target = ViewManager.__eventButtonsToWhich(event.buttons);
+                } else {
+                    target = event.which;
+                }
+                if (target == 2) func2(event);else if (target == 3) func3(event);else if (target == 1 || target == 0) func1(event);
+            };
+        }
+    }, {
+        key: "snapToGrid",
+        value: function snapToGrid(point) {
+            if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);else return point;
+        }
+    }, {
+        key: "hitFeature",
+        value: function hitFeature(point) {
+            return this.view.hitFeature(point);
+        }
+    }, {
+        key: "hitFeaturesWithViewElement",
+        value: function hitFeaturesWithViewElement(element) {
+            return this.view.hitFeaturesWithViewElement(element);
+        }
+    }, {
+        key: "__updateViewMouseEvents",
+        value: function __updateViewMouseEvents() {
+            this.view.setMouseDownFunction(this.constructMouseDownEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
+            this.view.setMouseUpFunction(this.constructMouseUpEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
+            this.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
+        }
+    }, {
+        key: "activateTool",
+        value: function activateTool(toolString) {
+            this.leftMouseTool = this.tools[toolString];
+            this.__updateViewMouseEvents();
+        }
+    }, {
+        key: "setupTools",
+        value: function setupTools() {
+            this.tools["Channel"] = new ChannelTool(Features.Channel);
+            this.tools["CircleValve"] = new PositionTool(Features.CircleValve);
+            this.tools["Port"] = new PositionTool(Features.Port);
+            this.tools["Via"] = new PositionTool(Features.Via);
+        }
+    }], [{
+        key: "__eventButtonsToWhich",
+        value: function __eventButtonsToWhich(num) {
+            if (num == 1) {
+                return 1;
+            } else if (num == 2) {
+                return 3;
+            } else if (num == 4) {
+                return 2;
+            } else if (num == 3) {
+                return 2;
+            }
+        }
+    }]);
+
+    return ViewManager;
+})();
+
+module.exports = ViewManager;
+
+},{"../core/features":10,"../core/registry":21,"../utils/SimpleQueue":30,"./PanAndZoom":35,"./tools/channelTool":50,"./tools/mouseTool":51,"./tools/panTool":52,"./tools/positionTool":53,"./tools/selectTool":54}]},{},[2]);

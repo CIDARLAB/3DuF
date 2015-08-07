@@ -1,1 +1,0 @@
-rectangularOutline.js

@@ -4,7 +4,7 @@ var PanAndZoom = require("./panAndZoom");
 var Features = require("../core/features");
 var Tools = require("./tools");
 var Device = require("../core/device");
-var Colors = require("./colors");
+var Colors = require("../view/colors");
 
 var Channel = Features.Channel;
 var HollowChannel = Features.HollowChannel;
@@ -28,19 +28,19 @@ class CanvasManager {
         this.minPixelSpacing = 10;
         this.maxPixelSpacing = 100;
         this.gridSpacing = 1000;
-        this.thickCount = 5;
+        this.thickCount = 10;
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.currentTool = null;
-        this.setupMouseEvents();
-        this.generateTools();
-        this.generateToolButtons();
-        this.selectTool("Select");
+        //this.setupMouseEvents();
+        //this.generateTools();
+        //this.generateToolButtons();
+        //this.selectTool("Select");
 
         if (!Registry.canvasManager) Registry.canvasManager = this;
         else throw new Error("Cannot register more than one CanvasManager");
 
-        this.setupZoomEvent();
+        //this.setupZoomEvent();
         this.setupContextEvent();
         this.setupResizeEvent();
     }
@@ -65,8 +65,6 @@ class CanvasManager {
             target.appendChild(btn);
             componentHandler.upgradeElement(btn);
         }
-
-
     }
 
     generateButton(toolName){
@@ -172,7 +170,6 @@ class CanvasManager {
             else if (paper.view.zoom <= min && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");
             else PanAndZoom.adjustZoom(event.deltaY, manager.canvasToProject(event.clientX, event.clientY));
             }, false);
-
     }
 
     canvasToProject(x, y) {
@@ -201,10 +198,10 @@ class CanvasManager {
     }
 
     render(forceUpdate = true) {
-        this.renderBackground();
-        this.renderDevice();
-        this.renderGrid();
-        paper.view.update(forceUpdate);
+        //this.renderBackground();
+        //this.renderDevice();
+        //this.renderGrid();
+        //paper.view.update(forceUpdate);
     }
 
     renderGrid(forceUpdate = true) {
@@ -221,7 +218,7 @@ class CanvasManager {
 
     setGridSize(size, forceUpdate = true) {
         this.gridSpacing = size;
-        this.renderGrid(forceUpdate);
+        //this.renderGrid(forceUpdate);
     }
 
     //TODO: This is a hacky way to clear everything.
@@ -261,7 +258,7 @@ class CanvasManager {
         while (this.gridSpacing > max) {
             this.gridSpacing = this.gridSpacing / 10;
         }
-        this.renderGrid();
+        //this.renderGrid();
     }
 
     adjustZoom(delta, position) {
@@ -270,9 +267,9 @@ class CanvasManager {
 
     setZoom(zoom) {
         paper.view.zoom = zoom;
-        this.updateGridSpacing();
-        this.renderGrid();
-        this.renderBackground();
+        //this.updateGridSpacing();
+        Registry.viewManager.updateGrid();
+        //this.renderBackground();
 
     }
 
@@ -305,21 +302,23 @@ class CanvasManager {
 
     setCenter(x, y) {
         paper.view.center = new paper.Point(x, y);
-        this.renderGrid();
-        this.renderBackground();
+        //this.renderGrid();
+        Registry.viewManager.updateGrid();
+        //this.renderBackground();
     }
 
     initializeView(){
-        this.setZoom(this.calculateOptimalZoom());
-        this.setCenter(this.calculateMidpoint());
+        Registry.viewManager.setZoom(this.calculateOptimalZoom());
+        Registry.viewManager.setCenter(this.calculateMidpoint());
     }
     
     loadDeviceFromJSON(json){
         Registry.currentDevice = Device.fromJSON(json);
         Registry.currentLayer = Registry.currentDevice.layers[0];
+        Registry.viewManager.addDevice(Registry.currentDevice);
         this.initializeView();
-        this.updateGridSpacing();
-        this.render();
+        //this.updateGridSpacing();
+        //this.render();
     }
 
     saveToStorage(){
