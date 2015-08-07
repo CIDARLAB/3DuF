@@ -1,6 +1,7 @@
 var Params = require('./params');
 var Parameters = require('./parameters');
 var Feature = require('./feature');
+var Registry = require("./registry");
 
 var FloatValue = Parameters.FloatValue;
 var BooleanValue = Parameters.BooleanValue;
@@ -12,16 +13,22 @@ class Layer {
         this.name = new StringValue(name);
         this.features = {};
         this.featureCount = 0;
+        this.device = undefined;
     }
 
     addFeature(feature) {
         this.__ensureIsAFeature(feature);
         this.features[feature.id] = feature;
         this.featureCount += 1;
+        feature.layer = this;
+        if (Registry.viewManager) Registry.viewManager.addFeature(feature);
     }
 
     __ensureIsAFeature(feature) {
-        if (!(feature instanceof Feature)) throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
+        if (!(feature.hasOwnProperty("id") && feature.hasOwnProperty("type") && feature.hasOwnProperty("params"))) {
+            console.log(feature.toJSON());
+            throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
+        }
     }
 
     __ensureFeatureExists(feature) {
@@ -32,7 +39,7 @@ class Layer {
         if (!this.containsFeatureID(featureID)) throw new Error("Layer does not contain a feature with the specified ID!");
     }
 
-    static getUniqueParameters(){
+    static getUniqueParameters() {
         return {
             "z_offset": FloatValue.typeString(),
             "flip": BooleanValue.typeString()
@@ -40,7 +47,7 @@ class Layer {
     }
 
     //TODO: Figure out whether this is ever needed
-    static getHeritableParameters(){
+    static getHeritableParameters() {
         return {};
     }
 
@@ -50,15 +57,16 @@ class Layer {
     }
 
     removeFeature(feature) {
-        this.__ensureFeatureExists(feature);
-        delete this.features[feature.id];
-        this.featureCount -= 1;
+        this.removeFeatureByID(feature.id);
     }
 
-    removeFeatureByID(featureID){
+    //TODO: Stop using delete, it's slow!
+    removeFeatureByID(featureID) {
         this.__ensureFeatureIDExists(featureID);
-        delete this.features[featureID];
+        let feature = this.features[featureID];
         this.featureCount -= 1;
+        if (Registry.viewManager) Registry.viewManager.removeFeature(feature);
+        delete this.features[featureID];
     }
 
     containsFeature(feature) {
@@ -70,9 +78,9 @@ class Layer {
         return this.features.hasOwnProperty(featureID);
     }
 
-    __renderFeatures2D(){
+    __renderFeatures2D() {
         let output = [];
-        for (let i in this.features){
+        for (let i in this.features) {
             output.push(this.features[i].render2D());
         }
         return output;
@@ -110,7 +118,7 @@ class Layer {
         return newLayer;
     }
 
-    render2D(paperScope){
+    render2D(paperScope) {
         return this.__renderFeatures2D();
     }
 }

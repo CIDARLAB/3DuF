@@ -9,7 +9,7 @@ class PanAndZoom {
 		let pc = p.subtract(c);
 		let a = p.subtract(pc.multiply(beta)).subtract(c);
 		let newCenter = this.calcCenter(a.x, a.y);
-		Registry.canvasManager.setCenter(newCenter.x, newCenter.y, 1 / beta);
+		Registry.canvasManager.setCenter(newCenter.x, newCenter.y);
 		Registry.canvasManager.setZoom(newZoom);
 	}
 
