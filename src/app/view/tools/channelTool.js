@@ -14,26 +14,28 @@ class ChannelTool extends MouseTool {
 		this.dragging = false;
 		let ref = this;
 
+		this.showQueue = new SimpleQueue(function(){
+			ref.showTarget();
+		}, 20, false)
+
 		this.updateQueue = new SimpleQueue(function(){
 			ref.updateChannel();
 		}, 20, false);
 
 		this.down = function(event) {
 			ref.dragging = true;
-			ref.initChannel(MouseTool.getEventPosition(event));
+			ref.initChannel();
 		};
 		this.up = function(event) {
 			ref.dragging = false;
 			ref.finishChannel(MouseTool.getEventPosition(event))
 		};
 		this.move = function(event) {
+			ref.lastPoint = MouseTool.getEventPosition(event);
 			if (ref.dragging) {
-				ref.lastPoint = MouseTool.getEventPosition(event);
 				ref.updateQueue.run();
-				//ref.updateChannel();
-				ref.showTarget(MouseTool.getEventPosition(event));
 			}
-			ref.showTarget(MouseTool.getEventPosition(event));
+			ref.showQueue.run();
 		}
 	}
 
@@ -52,19 +54,16 @@ class ChannelTool extends MouseTool {
 		if (this.currentChannelID) {
 			Registry.currentLayer.removeFeatureByID(this.currentChannelID);
 		}
-		Registry.canvasManager.render();
 	}
 
 	showTarget(point) {
-		if (this.currentTarget) {
-			this.currentTarget.remove();
-		}
-		point = ChannelTool.getTarget(point);
-		this.currentTarget = ChannelTool.makeReticle(point);
+		let target = ChannelTool.getTarget(this.lastPoint);
+		Registry.viewManager.updateTarget(this.channelClass.typeString(), [target.x, target.y]);
 	}
 
-	initChannel(point) {
-		this.startPoint = ChannelTool.getTarget(point);
+	initChannel() {
+		this.startPoint = ChannelTool.getTarget(this.lastPoint);
+		this.lastPoint = this.startPoint;
 	}
 
 	//TODO: Re-render only the current channel, to improve perforamnce

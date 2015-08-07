@@ -25,7 +25,10 @@ class Layer {
     }
 
     __ensureIsAFeature(feature) {
-        if (!(feature instanceof Feature)) throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
+        if (!(feature.hasOwnProperty("id") && feature.hasOwnProperty("type") && feature.hasOwnProperty("params"))) {
+            console.log(feature.toJSON());
+            throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
+        }
     }
 
     __ensureFeatureExists(feature) {
@@ -36,7 +39,7 @@ class Layer {
         if (!this.containsFeatureID(featureID)) throw new Error("Layer does not contain a feature with the specified ID!");
     }
 
-    static getUniqueParameters(){
+    static getUniqueParameters() {
         return {
             "z_offset": FloatValue.typeString(),
             "flip": BooleanValue.typeString()
@@ -44,7 +47,7 @@ class Layer {
     }
 
     //TODO: Figure out whether this is ever needed
-    static getHeritableParameters(){
+    static getHeritableParameters() {
         return {};
     }
 
@@ -58,7 +61,7 @@ class Layer {
     }
 
     //TODO: Stop using delete, it's slow!
-    removeFeatureByID(featureID){
+    removeFeatureByID(featureID) {
         this.__ensureFeatureIDExists(featureID);
         let feature = this.features[featureID];
         this.featureCount -= 1;
@@ -75,9 +78,9 @@ class Layer {
         return this.features.hasOwnProperty(featureID);
     }
 
-    __renderFeatures2D(){
+    __renderFeatures2D() {
         let output = [];
-        for (let i in this.features){
+        for (let i in this.features) {
             output.push(this.features[i].render2D());
         }
         return output;
@@ -115,7 +118,7 @@ class Layer {
         return newLayer;
     }
 
-    render2D(paperScope){
+    render2D(paperScope) {
         return this.__renderFeatures2D();
     }
 }

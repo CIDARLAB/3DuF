@@ -17,17 +17,21 @@ class SelectTool extends MouseTool {
 		this.down = function(event) {
 			ref.mouseDownHandler(MouseTool.getEventPosition(event));
 			ref.dragging = true;
+			ref.showTarget();
 		};
 		this.move = function(event) {
 			if (ref.dragging) {
 				ref.lastPoint = MouseTool.getEventPosition(event);
 				ref.updateQueue.run();
 			}
+			ref.showTarget();
 		}
 		this.up = function(event) {
 			ref.dragging = false;
 			ref.mouseUpHandler(MouseTool.getEventPosition(event));
+			ref.showTarget();
 		}
+
 	}
 
 	keyHandler(event) {
@@ -45,9 +49,13 @@ class SelectTool extends MouseTool {
 		}
 	}
 
+    showTarget(){
+        Registry.viewManager.removeTarget();
+    }
+
 	mouseUpHandler(point) {
 		if (this.currentSelectBox) {
-			this.currentSelection = Registry.viewManager.hitFeaturesWithPaperElement(this.currentSelectBox)
+			this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox)
 			this.selectFeatures();
 		}
 		this.killSelectBox();
