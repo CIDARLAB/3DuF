@@ -2,8 +2,9 @@ var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
 var Port = require("../../core/features").Port;
 var Colors = require("../colors");
+var FeatureRenderer = require("./FeatureRenderer");
 
-class PortRenderer{
+class PortRenderer extends FeatureRenderer {
     static renderFeature(port){
        let position = port.params.getValue("position");
         let radius;
@@ -17,7 +18,7 @@ class PortRenderer{
         }
 
         let c1 = PaperPrimitives.Circle(position, radius);
-        c1.fillColor = Colors.DEEP_PURPLE_500;
+        c1.fillColor = FeatureRenderer.getLayerColor(port, Port);
         c1.featureID = port.id;
         console.log("foo");
         return c1; 

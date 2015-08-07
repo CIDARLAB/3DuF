@@ -8,6 +8,7 @@ var PaperView = require("./view/paperView");
 var ViewManager = require("./view/viewManager");
 var AdaptiveGrid = require("./view/grid/adaptiveGrid");
 var PageSetup = require("./view/pageSetup");
+var Colors = require("./view/colors");
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
@@ -50,6 +51,9 @@ flow.addFeature(chan2);
 
 paper.setup("c");
 
+flow.setColor("indigo");
+control.setColor("red");
+
 window.onload = function(){
     manager = new CanvasManager(document.getElementById("c"));
     view = new PaperView(document.getElementById("c"));
@@ -69,6 +73,6 @@ window.onload = function(){
     window.Features = Features;
     window.Registry = Registry;
 
-    let channelButton = document.getElementById("channel_button");
+    PageSetup.setupAppPage();
 
 };

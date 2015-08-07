@@ -1,77 +1,97 @@
 var HTMLUtils = require("../utils/htmlUtils");
 var Registry = require("../core/registry");
 var Colors = require("./colors");
+var Features = require("../core/features");
 
 let activeButton = null;
+let activeLayer = null;
 let channelButton = document.getElementById("channel_button");
 let circleValveButton = document.getElementById("circleValve_button")
 let portButton = document.getElementById("port_button")
 let viaButton = document.getElementById("via_button")
 
-let channelColorClass = "mdl-color--indigo-500";
-let circleValveColorClass = "mdl-color--red-500";
-let portColorClass = "mdl-color--deep-purple-500";
-let viaColorClass = "mdl-color--green-500";
+let flowButton = document.getElementById("flow_button");
+let controlButton = document.getElementById("control_button");
 
-let typeColors = {
-    Channel: channelColorClass,
-    CircleValve: circleValveColorClass,
-    Port: portColorClass,
-    Via: viaColorClass
-};
+let inactiveBackground = Colors.GREY_200;
+let inactiveText = Colors.BLACK;
+let activeText = Colors.WHITE;
 
 let buttons = {
-    Channel: channelButton,
-    CircleValve: circleValveButton,
-    Port: portButton,
-    Via: viaButton
-};
-
-let activeTextColor = "mdl-color-text--white";
-
-let inactiveClass = "mdl-color--grey-200";
-let inactiveText = "mdl-color-text--black";
-
-let addClasses = function(button, color, text){
-    HTMLUtils.addClass(button, color);
-    HTMLUtils.addClass(button, text);
+    "Channel": channelButton,
+    "Via": viaButton,
+    "Port": portButton,
+    "CircleValve": circleValveButton
 }
 
-let removeClasses = function(button, color, text){
-    HTMLUtils.removeClass(button, color);
-    HTMLUtils.removeClass(button, text);
+let layerButtons = {
+    "0": flowButton,
+    "1": controlButton
 }
 
-let setNewActiveButton = function(button){
-    if (activeButton) {
-        removeClasses(buttons[activeButton], typeColors[activeButton], activeTextColor);
-        addClasses(buttons[activeButton], inactiveClass, inactiveText);
+let layerIndices = {
+    "0": 0,
+    "1": 1
+}
+
+function setButtonColor(button, background, text) {
+    button.style.background = background;
+    button.style.color = text;
+}
+
+function setActiveButton(feature) {
+    if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
+    activeButton = feature;
+    setButtonColor(buttons[activeButton], Colors.getDefaultFeatureColor(Features[activeButton], Registry.currentLayer), activeText);
+}
+
+function setActiveLayer(layerName){
+    if (activeLayer) setButtonColor(layerButtons[activeLayer], inactiveBackground, inactiveText);
+    activeLayer = layerName;
+    setActiveButton(activeButton);
+    let bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
+    setButtonColor(layerButtons[activeLayer], bgColor, activeText);
+}
+
+function setupAppPage() {
+    channelButton.onclick = function() {
+        Registry.viewManager.activateTool("Channel");
+        let bg = Colors.getDefaultFeatureColor(Features.Channel, Registry.currentLayer);
+        setActiveButton("Channel");
+    };
+
+    circleValveButton.onclick = function() {
+        Registry.viewManager.activateTool("CircleValve");
+        let bg = Colors.getDefaultFeatureColor(Features.CircleValve, Registry.currentLayer);
+        setActiveButton("CircleValve");
+    };
+
+    portButton.onclick = function() {
+        Registry.viewManager.activateTool("Port");
+        let bg = Colors.getDefaultFeatureColor(Features.Port, Registry.currentLayer);
+        setActiveButton("Port");
+    };
+
+    viaButton.onclick = function() {
+        Registry.viewManager.activateTool("Via");
+        let bg = Colors.getDefaultFeatureColor(Features.Via, Registry.currentLayer);
+        setActiveButton("Via");
+    };
+
+    flowButton.onclick = function() {
+        Registry.currentLayer = Registry.currentDevice.layers[0];
+        setActiveLayer("0");
+        Registry.viewManager.updateActiveLayer();
     }
-    activeButton = button;
-    console.log(activeButton);
-    console.log(buttons[activeButton]);
-    removeClasses(buttons[activeButton], inactiveClass, inactiveText);
-    addClasses(buttons[activeButton], typeColors[activeButton], activeTextColor);
+
+    controlButton.onclick = function() {
+        Registry.currentLayer = Registry.currentDevice.layers[1];
+        setActiveLayer("1");
+        Registry.viewManager.updateActiveLayer();
+    }
+
+    setActiveButton("Channel");
+    setActiveLayer("0");
 }
 
-channelButton.onclick = function(){
-    Registry.viewManager.activateTool("Channel");
-    setNewActiveButton("Channel");
-};
-
-circleValveButton.onclick = function(){
-    Registry.viewManager.activateTool("CircleValve");
-    setNewActiveButton("CircleValve");
-};
-
-portButton.onclick = function(){
-    Registry.viewManager.activateTool("Port");
-    setNewActiveButton("Port");
-};
-
-viaButton.onclick = function(){
-    Registry.viewManager.activateTool("Via");
-    setNewActiveButton("Via");
-};
-
-setNewActiveButton("Channel");
+module.exports.setupAppPage = setupAppPage;

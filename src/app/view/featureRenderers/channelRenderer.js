@@ -2,9 +2,10 @@ var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
 var Channel = require("../../core/features").Channel;
 var Colors = require("../colors");
+var FeatureRenderer = require("./FeatureRenderer");
 
-class ChannelRenderer{
-    static renderFeature(channel){
+class ChannelRenderer extends FeatureRenderer{
+    static renderFeature(channel) {
         let start = channel.params.getValue("start");
         let end = channel.params.getValue("end");
         let width;
@@ -15,13 +16,13 @@ class ChannelRenderer{
         }
         let rec = PaperPrimitives.RoundedRect(start, end, width);
         rec.featureID = channel.id;
-        rec.fillColor = Colors.INDIGO_500;
+        rec.fillColor = FeatureRenderer.getLayerColor(channel, Channel);
         return rec;
     }
 
-    static renderTarget(position){
+    static renderTarget(position) {
         let width = Channel.getDefaultValues()["width"];
-        let circ = PaperPrimitives.CircleTarget(position, width/2);
+        let circ = PaperPrimitives.CircleTarget(position, width / 2);
         return circ;
     }
 }
