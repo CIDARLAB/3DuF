@@ -2,8 +2,9 @@ var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
 var CircleValve = require("../../core/features").CircleValve;
 var Colors = require("../colors");
+var FeatureRenderer = require("./FeatureRenderer");
 
-class CircleValveRenderer{
+class CircleValveRenderer extends FeatureRenderer{
     static renderFeature(circleValve){
        let position = circleValve.params.getValue("position");
         let radius;
@@ -18,7 +19,7 @@ class CircleValveRenderer{
 
 
         let c1 = PaperPrimitives.Circle(position, radius);
-        c1.fillColor = Colors.RED_500;
+        c1.fillColor = FeatureRenderer.getLayerColor(circleValve, CircleValve);
         c1.featureID = circleValve.id;
         return c1; 
     }

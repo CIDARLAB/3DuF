@@ -327,6 +327,7 @@ class CanvasManager {
 
     loadFromStorage(){
         this.loadDeviceFromJSON(JSON.parse(localStorage.getItem("currentDevice")));
+        this.viewManager.updateActiveLayer();
     }
 }
 
