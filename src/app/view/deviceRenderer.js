@@ -4,8 +4,8 @@ var BORDER_THICKNESS = 5; // pixels
 
 function renderDevice(device, strokeColor = DEFAULT_STROKE_COLOR) {
     let background = new paper.Path.Rectangle({
-        from: paper.view.bounds.topLeft,
-        to: paper.view.bounds.bottomRight,
+        from: paper.view.bounds.topLeft.subtract(paper.view.size),
+        to: paper.view.bounds.bottomRight.add(paper.view.size),
         fillColor: Colors.GREY_200,
         strokeColor: null
     })

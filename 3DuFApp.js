@@ -266,6 +266,15 @@ var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
 var HollowChannel = Features.HollowChannel;
 
+var createPort = function createPort(position, radius1, radius2, height) {
+    var port = new Features.Port({
+        position: position,
+        radius1: radius1,
+        radius2: radius2,
+        height: height
+    });
+    Registry.currentLayer.addFeature(port);
+};
 var manager;
 var view;
 var viewManager;
@@ -289,17 +298,17 @@ var chan1 = new Channel({
     "start": [20 * 1000, 20 * 1000],
     "end": [40 * 1000, 40 * 1000]
 });
-flow.addFeature(chan1);
+//flow.addFeature(chan1);
 var circ1 = new CircleValve({
     "position": [30 * 1000, 30 * 1000]
 });
-control.addFeature(circ1);
+//control.addFeature(circ1);
 var chan2 = new Channel({
     "start": [25 * 1000, 20 * 1000],
     "end": [45 * 1000, 40 * 1000],
     "width": 10
 });
-flow.addFeature(chan2);
+//flow.addFeature(chan2);
 
 paper.setup("c");
 
@@ -311,6 +320,7 @@ window.onload = function () {
     view = new PaperView(document.getElementById("c"));
     viewManager = new ViewManager(view);
     grid = new AdaptiveGrid();
+    grid.setColor(Colors.TEAL_100);
 
     Registry.viewManager = viewManager;
 
@@ -324,6 +334,7 @@ window.onload = function () {
     window.man = manager;
     window.Features = Features;
     window.Registry = Registry;
+    window.Port = createPort;
 
     PageSetup.setupAppPage();
 };
@@ -392,6 +403,14 @@ var Device = (function () {
                 }
             }
             throw new Error("FeatureID " + featureID + " not found in any layer.");
+        }
+    }, {
+        key: "containsFeatureID",
+        value: function containsFeatureID(featureID) {
+            for (var i = 0; i < this.layers.length; i++) {
+                if (this.layers[i].containsFeatureID(featureID)) return true;
+            }
+            return false;
         }
     }, {
         key: "getFeatureByID",
@@ -562,6 +581,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var uuid = require('node-uuid');
 var Params = require('./params');
 var Parameters = require('./parameters');
+var Parameter = require("./parameter");
 var StringValue = Parameters.StringValue;
 var Registry = require("./registry");
 
@@ -598,8 +618,6 @@ var Feature = (function () {
             //output.group = this.group.toJSON();
             return output;
         }
-
-        //TODO: This needs to return the right subclass of Feature, not just the right data!
     }, {
         key: 'updateView',
         value: function updateView() {
@@ -618,6 +636,18 @@ var Feature = (function () {
             //return uuid.v1();
             return Registry.generateID();
         }
+    }, {
+        key: 'checkDefaults',
+        value: function checkDefaults(values, featureClass) {
+            var defaults = featureClass.getDefaultValues();
+            var heritable = featureClass.getHeritableParameters();
+            for (var key in heritable) {
+                if (!values.hasOwnProperty(key)) values[key] = defaults[key];
+            }
+            return values;
+        }
+
+        //TODO: This needs to return the right subclass of Feature, not just the right data!
     }, {
         key: 'fromJSON',
         value: function fromJSON(json) {
@@ -639,7 +669,7 @@ var Feature = (function () {
 
 module.exports = Feature;
 
-},{"./parameters":16,"./params":20,"./registry":21,"node-uuid":1}],5:[function(require,module,exports){
+},{"./parameter":13,"./parameters":16,"./params":20,"./registry":21,"node-uuid":1}],5:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -666,6 +696,7 @@ var CircleValve = (function (_Feature) {
 
         _classCallCheck(this, CircleValve);
 
+        Feature.checkDefaults(values, CircleValve);
         var params = new Params(values, CircleValve.getUniqueParameters(), CircleValve.getHeritableParameters());
         _get(Object.getPrototypeOf(CircleValve.prototype), 'constructor', this).call(this, CircleValve.typeString(), params, name);
     }
@@ -697,7 +728,7 @@ var CircleValve = (function (_Feature) {
             return {
                 "radius1": 1.4 * 1000,
                 "radius2": 1.2 * 1000,
-                "height": 1 * 1000
+                "height": .8 * 1000
             };
         }
     }]);
@@ -736,6 +767,7 @@ var HollowChannel = (function (_Feature) {
 
         _classCallCheck(this, HollowChannel);
 
+        Feature.checkDefaults(values, HollowChannel);
         var params = new Params(values, HollowChannel.getUniqueParameters(), HollowChannel.getHeritableParameters());
         _get(Object.getPrototypeOf(HollowChannel.prototype), "constructor", this).call(this, HollowChannel.typeString(), params, name);
     }
@@ -806,6 +838,7 @@ var Port = (function (_Feature) {
 
         _classCallCheck(this, Port);
 
+        Feature.checkDefaults(values, Port);
         var params = new Params(values, Port.getUniqueParameters(), Port.getHeritableParameters());
         _get(Object.getPrototypeOf(Port.prototype), 'constructor', this).call(this, Port.typeString(), params, name);
     }
@@ -826,7 +859,8 @@ var Port = (function (_Feature) {
         key: 'getHeritableParameters',
         value: function getHeritableParameters() {
             return {
-                "radius": FloatValue.typeString(),
+                "radius1": FloatValue.typeString(),
+                "radius2": FloatValue.typeString(),
                 "height": FloatValue.typeString()
             };
         }
@@ -876,6 +910,7 @@ var Via = (function (_Feature) {
 
         _classCallCheck(this, Via);
 
+        Feature.checkDefaults(values, Via);
         var params = new Params(values, Via.getUniqueParameters(), Via.getHeritableParameters());
         _get(Object.getPrototypeOf(Via.prototype), 'constructor', this).call(this, Via.typeString(), params, name);
     }
@@ -946,6 +981,7 @@ var Channel = (function (_Feature) {
 
         _classCallCheck(this, Channel);
 
+        Feature.checkDefaults(values, Channel);
         var params = new Params(values, Channel.getUniqueParameters(), Channel.getHeritableParameters());
         _get(Object.getPrototypeOf(Channel.prototype), 'constructor', this).call(this, Channel.typeString(), params, name);
     }
@@ -1595,9 +1631,11 @@ var Params = (function () {
                 if (this.__isUnique(key)) {
                     newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
                 } else if (this.__isHeritable(key)) {
-                    newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
+                    if (values[key]) {
+                        newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
+                    }
                 } else {
-                    throw new Error(key + " does not exist in this set of ParamTypes.");
+                    throw new Error(key + " does not exist in this set of ParamTypes: " + Object.keys(this.unique) + Object.keys(this.heritable));
                 }
             }
             this.__checkParams(newParams);
@@ -1651,7 +1689,9 @@ var Params = (function () {
 module.exports = Params;
 
 },{"./parameter":13}],21:[function(require,module,exports){
-"use strict";
+'use strict';
+
+var uuid = require('node-uuid');
 
 var registeredParams = {};
 var featureRenderers = {};
@@ -1665,9 +1705,7 @@ var viewManager = null;
 var id_counter = 0;
 
 var generateID = function generateID() {
-	var id = id_counter;
-	id_counter++;
-	return id;
+    return uuid.v1();
 };
 
 exports.generateID = generateID;
@@ -1680,7 +1718,7 @@ exports.canvasManager = canvasManager;
 exports.viewManager = viewManager;
 exports.currentGrid = currentGrid;
 
-},{}],22:[function(require,module,exports){
+},{"node-uuid":1}],22:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2043,12 +2081,15 @@ var CanvasManager = (function () {
     }, {
         key: "loadDeviceFromJSON",
         value: function loadDeviceFromJSON(json) {
+            Registry.viewManager.clear();
             Registry.currentDevice = Device.fromJSON(json);
             Registry.currentLayer = Registry.currentDevice.layers[0];
-            Registry.viewManager.addDevice(Registry.currentDevice);
-            this.initializeView();
+            var newMan = Registry.viewManager;
+            console.log("newMan: " + newMan);
+            newMan.addDevice(Registry.currentDevice);
             //this.updateGridSpacing();
             //this.render();
+            this.initializeView();
         }
     }, {
         key: "saveToStorage",
@@ -2059,7 +2100,7 @@ var CanvasManager = (function () {
         key: "loadFromStorage",
         value: function loadFromStorage() {
             this.loadDeviceFromJSON(JSON.parse(localStorage.getItem("currentDevice")));
-            this.viewManager.updateActiveLayer();
+            Registry.viewManager.updateActiveLayer();
         }
     }]);
 
@@ -2702,15 +2743,52 @@ module.exports = SimpleQueue;
 'use strict';
 
 var removeClass = function removeClass(el, className) {
-    if (el.classList) el.classList.remove(className);else el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+  if (el.classList) el.classList.remove(className);else el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
 };
 
 var addClass = function addClass(el, className) {
-    if (el.classList) el.classList.add(className);else el.className += ' ' + className;
+  if (el.classList) el.classList.add(className);else el.className += ' ' + className;
+};
+
+// From http://stackoverflow.com/questions/8869403/drag-drop-json-into-chrome
+function DnDFileController(selector, onDropCallback) {
+  var el_ = document.querySelector(selector);
+
+  this.dragenter = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    el_.classList.add('dropping');
+  };
+
+  this.dragover = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  this.dragleave = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    //el_.classList.remove('dropping');
+  };
+
+  this.drop = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    el_.classList.remove('dropping');
+
+    onDropCallback(e.dataTransfer.files, e);
+  };
+
+  el_.addEventListener('dragenter', this.dragenter, false);
+  el_.addEventListener('dragover', this.dragover, false);
+  el_.addEventListener('dragleave', this.dragleave, false);
+  el_.addEventListener('drop', this.drop, false);
 };
 
 module.exports.removeClass = removeClass;
 module.exports.addClass = addClass;
+module.exports.DnDFileController = DnDFileController;
 
 },{}],32:[function(require,module,exports){
 "use strict";
@@ -2860,12 +2938,18 @@ module.exports = PanAndZoom;
 module.exports.RED_500 = "#F44336";
 module.exports.INDIGO_500 = "#3F51B5";
 module.exports.GREEN_500 = "#4CAF50";
+module.exports.GREEN_100 = "#C8E6C9";
+module.exports.GREEN_A200 = "#69F0AE";
 module.exports.DEEP_PURPLE_500 = "#673AB7";
+module.exports.PURPLE_200 = "#E1BEE7";
+module.exports.PURPLE_100 = "#E1BEE7";
+module.exports.TEAL_100 = "#B2DFDB";
 module.exports.BLUE_50 = "#e3f2fd";
 module.exports.BLUE_100 = "#BBDEFB";
 module.exports.BLUE_300 = "#64B5F6";
 module.exports.BLUE_500 = "#2196F3";
 module.exports.GREY_200 = "#EEEEEE";
+module.exports.LIGHT_GREEN_100 = "#DCEDC8";
 module.exports.GREY_700 = "#616161";
 module.exports.GREY_500 = "#9E9E9E";
 module.exports.AMBER_50 = "#FFF8E1";
@@ -2947,7 +3031,7 @@ var renderAllColors = function renderAllColors(layer, orderedKeys) {
 };
 
 var getLayerColors = function getLayerColors(layer) {
-	if (layer.color) return layerColors[layer.color];else return layerColors["red"];
+	if (layer && layer.color) return layerColors[layer.color];else return layerColors["red"];
 };
 
 var getDefaultLayerColor = function getDefaultLayerColor(layer) {
@@ -2955,11 +3039,15 @@ var getDefaultLayerColor = function getDefaultLayerColor(layer) {
 };
 
 var getDefaultFeatureColor = function getDefaultFeatureColor(featureClass, layer) {
-	var height = featureClass.getDefaultValues()["height"];
-	var decimal = height / layer.estimateLayerHeight();
-	if (!layer.flip) decimal = 1 - decimal;
-	var colors = getLayerColors(layer);
-	return decimalToLayerColor(decimal, colors, darkColorKeys);
+	if (layer) {
+		var height = featureClass.getDefaultValues()["height"];
+		var decimal = height / layer.estimateLayerHeight();
+		if (!layer.flip) decimal = 1 - decimal;
+		var colors = getLayerColors(layer);
+		return decimalToLayerColor(decimal, colors, darkColorKeys);
+	} else {
+		return decimalToLayerColor(0, layerColors["indigo"], darkColorKeys);
+	}
 };
 
 module.exports.getDefaultLayerColor = getDefaultLayerColor;
@@ -2982,8 +3070,8 @@ function renderDevice(device) {
     var strokeColor = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_STROKE_COLOR : arguments[1];
 
     var background = new paper.Path.Rectangle({
-        from: paper.view.bounds.topLeft,
-        to: paper.view.bounds.bottomRight,
+        from: paper.view.bounds.topLeft.subtract(paper.view.size),
+        to: paper.view.bounds.bottomRight.add(paper.view.size),
         fillColor: Colors.GREY_200,
         strokeColor: null
     });
@@ -3030,6 +3118,14 @@ var FeatureRenderer = (function () {
             }
             var layerHeight = feature.layer.estimateLayerHeight();
             var decimal = height / layerHeight;
+            if (!feature.layer.flip) decimal = 1 - decimal;
+            var targetColorSet = Colors.getLayerColors(feature.layer);
+            return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
+        }
+    }, {
+        key: "getBottomColor",
+        value: function getBottomColor(feature) {
+            var decimal = 0;
             if (!feature.layer.flip) decimal = 1 - decimal;
             var targetColorSet = Colors.getLayerColors(feature.layer);
             return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
@@ -3081,13 +3177,15 @@ var ChannelRenderer = (function (_FeatureRenderer) {
             var rec = PaperPrimitives.RoundedRect(start, end, width);
             rec.featureID = channel.id;
             rec.fillColor = FeatureRenderer.getLayerColor(channel, Channel);
+            rec.shadowColor = Colors.BLACK;
             return rec;
         }
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
             var width = Channel.getDefaultValues()["width"];
-            var circ = PaperPrimitives.CircleTarget(position, width / 2);
+            var color = Colors.getDefaultFeatureColor(Channel, Registry.currentLayer);
+            var circ = PaperPrimitives.CircleTarget(position, width / 2, color);
             return circ;
         }
     }]);
@@ -3127,18 +3225,27 @@ var CircleValveRenderer = (function (_FeatureRenderer) {
         key: "renderFeature",
         value: function renderFeature(circleValve) {
             var position = circleValve.params.getValue("position");
-            var radius = undefined;
+            var radius1 = undefined;
+            var radius2 = undefined;
 
             //TODO: figure out inheritance pattern for values!
 
             try {
-                radius = circleValve.params.getValue("radius1");
+                radius1 = circleValve.params.getValue("radius1");
             } catch (err) {
-                radius = CircleValve.getDefaultValues()["radius1"];
+                radius1 = CircleValve.getDefaultValues()["radius1"];
             }
 
-            var c1 = PaperPrimitives.Circle(position, radius);
-            c1.fillColor = FeatureRenderer.getLayerColor(circleValve, CircleValve);
+            try {
+                radius2 = circleValve.params.getValue("radius2");
+            } catch (err) {
+                radius2 = CircleValve.getDefaultValues()["radius2"];
+            }
+
+            var innerColor = FeatureRenderer.getLayerColor(circleValve, CircleValve);
+            var outerColor = FeatureRenderer.getBottomColor(circleValve);
+
+            var c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
             c1.featureID = circleValve.id;
             return c1;
         }
@@ -3146,7 +3253,8 @@ var CircleValveRenderer = (function (_FeatureRenderer) {
         key: "renderTarget",
         value: function renderTarget(position) {
             var width = CircleValve.getDefaultValues()["radius1"];
-            var circ = PaperPrimitives.CircleTarget(position, width);
+            var color = Colors.getDefaultFeatureColor(CircleValve, Registry.currentLayer);
+            var circ = PaperPrimitives.CircleTarget(position, width, color);
             return circ;
         }
     }]);
@@ -3201,8 +3309,9 @@ var HollowChannelRenderer = (function (_FeatureRenderer) {
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
+            var color = Colors.getDefaultFeatureColor(HollowChannel, Registry.currentLayer);
             var width = HollowChannel.getDefaultValues()["width"];
-            var circ = PaperPrimitives.CircleTarget(position, width / 2);
+            var circ = PaperPrimitives.CircleTarget(position, width / 2, color);
             return circ;
         }
     }]);
@@ -3251,27 +3360,36 @@ var PortRenderer = (function (_FeatureRenderer) {
         key: "renderFeature",
         value: function renderFeature(port) {
             var position = port.params.getValue("position");
-            var radius = undefined;
+            var radius1 = undefined;
+            var radius2 = undefined;
 
             //TODO: figure out inheritance pattern for values!
 
             try {
-                radius = port.params.getValue("radius1");
+                radius1 = port.params.getValue("radius1");
             } catch (err) {
-                radius = Port.getDefaultValues()["radius1"];
+                radius1 = Port.getDefaultValues()["radius1"];
             }
 
-            var c1 = PaperPrimitives.Circle(position, radius);
-            c1.fillColor = FeatureRenderer.getLayerColor(port, Port);
+            try {
+                radius2 = port.params.getValue("radius2");
+            } catch (err) {
+                radius2 = Port.getDefaultValues()["radius2"];
+            }
+
+            var innerColor = FeatureRenderer.getLayerColor(port, Port);
+            var outerColor = FeatureRenderer.getBottomColor(port);
+
+            var c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
             c1.featureID = port.id;
-            console.log("foo");
             return c1;
         }
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
+            var color = Colors.getDefaultFeatureColor(Port, Registry.currentLayer);
             var width = Port.getDefaultValues()["radius1"];
-            var circ = PaperPrimitives.CircleTarget(position, width);
+            var circ = PaperPrimitives.CircleTarget(position, width, color);
             return circ;
         }
     }]);
@@ -3311,26 +3429,36 @@ var ViaRenderer = (function (_FeatureRenderer) {
         key: "renderFeature",
         value: function renderFeature(via) {
             var position = via.params.getValue("position");
-            var radius = undefined;
+            var radius1 = undefined;
+            var radius2 = undefined;
 
             //TODO: figure out inheritance pattern for values!
 
             try {
-                radius = via.params.getValue("radius1");
+                radius1 = via.params.getValue("radius1");
             } catch (err) {
-                radius = Via.getDefaultValues()["radius1"];
+                radius1 = Via.getDefaultValues()["radius1"];
             }
 
-            var c1 = PaperPrimitives.Circle(position, radius);
-            c1.fillColor = FeatureRenderer.getLayerColor(via, Via);
+            try {
+                radius2 = via.params.getValue("radius2");
+            } catch (err) {
+                radius2 = Via.getDefaultValues()["radius2"];
+            }
+
+            var innerColor = FeatureRenderer.getLayerColor(via, Via);
+            var outerColor = FeatureRenderer.getBottomColor(via);
+
+            var c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
             c1.featureID = via.id;
             return c1;
         }
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
+            var color = Colors.getDefaultFeatureColor(Via, Registry.currentLayer);
             var width = Via.getDefaultValues()["radius1"];
-            var circ = PaperPrimitives.CircleTarget(position, width);
+            var circ = PaperPrimitives.CircleTarget(position, width, color);
             return circ;
         }
     }]);
@@ -3555,12 +3683,17 @@ var circleValveButton = document.getElementById("circleValve_button");
 var portButton = document.getElementById("port_button");
 var viaButton = document.getElementById("via_button");
 
+var jsonButton = document.getElementById("json_button");
+var svgButton = document.getElementById("svg_button");
+
 var flowButton = document.getElementById("flow_button");
 var controlButton = document.getElementById("control_button");
 
 var inactiveBackground = Colors.GREY_200;
 var inactiveText = Colors.BLACK;
 var activeText = Colors.WHITE;
+
+var canvas = document.getElementById("c");
 
 var buttons = {
     "Channel": channelButton,
@@ -3578,6 +3711,12 @@ var layerIndices = {
     "0": 0,
     "1": 1
 };
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+}
 
 function setButtonColor(button, background, text) {
     button.style.background = background;
@@ -3635,6 +3774,51 @@ function setupAppPage() {
         Registry.viewManager.updateActiveLayer();
     };
 
+    jsonButton.onclick = function () {
+        var json = new Blob([JSON.stringify(Registry.currentDevice.toJSON())], {
+            type: "application/json"
+        });
+        saveAs(json, "device.json");
+    };
+
+    svgButton.onclick = function () {
+        var svg = Registry.viewManager.layersToSVGStrings();
+        //let svg = paper.project.exportSVG({asString: true});
+
+        for (var i = 0; i < svg.length; i++) {
+            var blob = new Blob([svg[i]], {
+                type: "image/svg+xml;charset=utf-8"
+            });
+            saveAs(blob, "device_layer_" + i);
+        }
+
+        //
+        /*
+        for (let i =0; i < svg.length; i++){
+            let blob = new Blob([svg], {
+                type: "image/svg+xml;charset=utf-8"
+            });
+            saveAs(blob, "device_layer_" + i + ".svg")
+        };
+        */
+        //saveAs(blob, "device.svg");
+    };
+
+    var dnd = new HTMLUtils.DnDFileController("#c", function (files) {
+        var f = files[0];
+
+        var reader = new FileReader();
+        reader.onloadend = function (e) {
+            var result = JSON.parse(this.result);
+            Registry.canvasManager.loadDeviceFromJSON(result);
+        };
+        try {
+            reader.readAsText(f);
+        } catch (err) {
+            console.log("unable to load JSON: " + f);
+        }
+    });
+
     setActiveButton("Channel");
     setActiveLayer("0");
 }
@@ -3666,10 +3850,27 @@ var Circle = function Circle(position, radius) {
     return circ;
 };
 
+var GradientCircle = function GradientCircle(position, radius1, radius2, color1, color2) {
+    var pos = new paper.Point(position);
+    var ratio = radius2 / radius1;
+    var outerCircle = Circle(position, radius1);
+    outerCircle.fillColor = {
+        gradient: {
+            stops: [[color2, ratio], [color1, ratio]],
+            radial: true
+        },
+        origin: pos,
+        destination: outerCircle.bounds.rightCenter
+    };
+    return outerCircle;
+};
+
 var CircleTarget = function CircleTarget(position, radius) {
+    var color = arguments.length <= 2 || arguments[2] === undefined ? Colors.BLUE_300 : arguments[2];
+
     if (radius < 8 / paper.view.zoom) radius = 8 / paper.view.zoom;
     var circ = Circle(position, radius);
-    circ.fillColor = Colors.BLUE_300;
+    circ.fillColor = color;
     circ.fillColor.alpha = .5;
     circ.strokeColor = Colors.WHITE;
     circ.strokeWidth = 3 / paper.view.zoom;
@@ -3680,6 +3881,7 @@ var CircleTarget = function CircleTarget(position, radius) {
 module.exports.RoundedRect = RoundedRect;
 module.exports.Circle = Circle;
 module.exports.CircleTarget = CircleTarget;
+module.exports.GradientCircle = GradientCircle;
 
 },{"./colors":35}],48:[function(require,module,exports){
 "use strict";
@@ -3694,6 +3896,7 @@ var GridRenderer = require("./grid/GridRenderer");
 var DeviceRenderer = require("./deviceRenderer");
 var PanAndZoom = require("./PanAndZoom");
 var SimpleQueue = require("../utils/simpleQueue");
+var Colors = require("./colors");
 
 var PaperView = (function () {
     function PaperView(canvas) {
@@ -3711,7 +3914,7 @@ var PaperView = (function () {
         this.gridLayer = new paper.Group();
         this.deviceLayer = new paper.Group();
         this.gridLayer.insertAbove(this.deviceLayer);
-        this.featureLayer = new paper.Group();
+        this.featureLayer = new paper.Layer();
         this.featureLayer.insertAbove(this.gridLayer);
         this.uiLayer = new paper.Group();
         this.uiLayer.insertAbove(this.featureLayer);
@@ -3722,6 +3925,42 @@ var PaperView = (function () {
     }
 
     _createClass(PaperView, [{
+        key: "layersToSVGStrings",
+        value: function layersToSVGStrings() {
+            var output = [];
+            for (var i = 0; i < this.featureLayer.children.length; i++) {
+                var layer = this.featureLayer.children[i];
+                var svg = this.postProcessLayerToSVG(layer);
+                output.push(svg);
+            }
+            return output;
+        }
+    }, {
+        key: "postProcessLayerToSVG",
+        value: function postProcessLayerToSVG(layer) {
+            var layerCopy = layer.clone();
+            layerCopy.bounds.topLeft = new paper.Point(0, 0);
+            var deviceWidth = Registry.currentDevice.params.getValue("width");
+            var deviceHeight = Registry.currentDevice.params.getValue("height");
+            layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
+            var svg = layer.exportSVG({ asString: true });
+            var width = layerCopy.bounds.width;
+            var height = layerCopy.bounds.height;
+            var widthInMillimeters = width / 1000;
+            var heightInMilliMeters = height / 1000;
+            var insertString = 'width="' + widthInMillimeters + 'mm" ' + 'height="' + heightInMilliMeters + 'mm" ' + 'viewBox="0 0 ' + width + ' ' + height + '" ';
+            var newSVG = svg.slice(0, 5) + insertString + svg.slice(5);
+            layerCopy.remove();
+            return newSVG;
+        }
+    }, {
+        key: "clear",
+        value: function clear() {
+            this.activeLayer = null;
+            this.featureLayer.removeChildren();
+            this.featureLayer.clear();
+        }
+    }, {
         key: "getCenter",
         value: function getCenter() {
             return this.center;
@@ -3833,6 +4072,7 @@ var PaperView = (function () {
     }, {
         key: "addLayer",
         value: function addLayer(layer, index) {
+            console.log("Adding layer: " + index);
             this.featureLayer.insertChild(index, new paper.Group());
         }
     }, {
@@ -3856,7 +4096,7 @@ var PaperView = (function () {
         key: "setActiveLayer",
         value: function setActiveLayer(index) {
             this.activeLayer = index;
-            this.showActiveLayer();
+            //this.showActiveLayer();
         }
     }, {
         key: "showActiveLayer",
@@ -4008,7 +4248,7 @@ var PaperView = (function () {
 
             if (onlyHitActiveLayer && this.activeLayer != null) {
                 target = this.featureLayer.children[this.activeLayer];
-            } else target = this.featureLayer.hitTest(point, hitOptions);
+            } else target = this.featureLayer;
 
             var result = target.hitTest(point, hitOptions);
             if (result) {
@@ -4050,7 +4290,7 @@ var PaperView = (function () {
 
 module.exports = PaperView;
 
-},{"../core/registry":21,"../utils/simpleQueue":33,"./PanAndZoom":34,"./deviceRenderer":36,"./featureRenderers":41,"./grid/GridRenderer":44}],49:[function(require,module,exports){
+},{"../core/registry":21,"../utils/simpleQueue":33,"./PanAndZoom":34,"./colors":35,"./deviceRenderer":36,"./featureRenderers":41,"./grid/GridRenderer":44}],49:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4756,6 +4996,11 @@ var ViewManager = (function () {
             }
         }
     }, {
+        key: "layersToSVGStrings",
+        value: function layersToSVGStrings() {
+            return this.view.layersToSVGStrings();
+        }
+    }, {
         key: "__addAllLayerFeatures",
         value: function __addAllLayerFeatures(layer) {
             var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
@@ -4825,6 +5070,11 @@ var ViewManager = (function () {
                 this.view.updateGrid(Registry.currentGrid);
                 this.refresh(refresh);
             }
+        }
+    }, {
+        key: "clear",
+        value: function clear() {
+            this.view.clear();
         }
     }, {
         key: "setZoom",

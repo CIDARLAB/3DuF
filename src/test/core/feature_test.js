@@ -36,13 +36,13 @@ describe("Feature", function() {
             feat2.updateParameter("position", [13,25]);
         });
         it("should allow a parameter to be updated if a heritable value is missing", function(){
-            feat1.updateParameter("radius", 13);
+            feat1.updateParameter("radius1", 13);
         })
         it("should not allow a heritable parameter to be set to an invalid value", function(){
-            (function(){feat1.updateParameter("radius", [0,0])}).should.throwError();
+            (function(){feat1.updateParameter("radius1", [0,0])}).should.throwError();
         })
         it("should not allow a parameter to be updated to an invalid value", function(){
-            (function(){feat1.updateParameter("radius", "foobar")}).should.throwError();
+            (function(){feat1.updateParameter("radius1", "foobar")}).should.throwError();
             (function(){feat2.updateParameter("position", 5)}).should.throwError();
         });
         it("should not allow updates to parameters that do not exist", function(){

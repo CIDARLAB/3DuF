@@ -1,6 +1,7 @@
 var uuid = require('node-uuid');
 var Params = require('./params');
 var Parameters = require('./parameters');
+var Parameter = require("./parameter");
 var StringValue = Parameters.StringValue;
 var Registry = require("./registry");
 
@@ -33,6 +34,15 @@ class Feature {
         //TODO: Fix groups!
         //output.group = this.group.toJSON();
         return output;
+    }
+
+    static checkDefaults(values, featureClass){
+        let defaults = featureClass.getDefaultValues();
+        let heritable = featureClass.getHeritableParameters();
+        for (let key in heritable){
+            if (!values.hasOwnProperty(key)) values[key] = defaults[key];
+        }
+        return values;
     }
 
     //TODO: This needs to return the right subclass of Feature, not just the right data! 

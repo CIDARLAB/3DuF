@@ -3,12 +3,18 @@
 module.exports.RED_500 = "#F44336";
 module.exports.INDIGO_500 = "#3F51B5";
 module.exports.GREEN_500 = "#4CAF50";
+module.exports.GREEN_100 = "#C8E6C9";
+module.exports.GREEN_A200 = "#69F0AE";
 module.exports.DEEP_PURPLE_500 = "#673AB7";
+module.exports.PURPLE_200 = "#E1BEE7";
+module.exports.PURPLE_100 = "#E1BEE7";
+module.exports.TEAL_100 = "#B2DFDB";
 module.exports.BLUE_50 = "#e3f2fd";
 module.exports.BLUE_100 = "#BBDEFB";
 module.exports.BLUE_300 = "#64B5F6";
 module.exports.BLUE_500 = "#2196F3";
 module.exports.GREY_200 = "#EEEEEE";
+module.exports.LIGHT_GREEN_100 = "#DCEDC8"
 module.exports.GREY_700 = "#616161";
 module.exports.GREY_500 = "#9E9E9E";
 module.exports.AMBER_50 = "#FFF8E1";
@@ -90,7 +96,7 @@ var renderAllColors = function(layer, orderedKeys){
 }
 
 var getLayerColors = function(layer){
-	if (layer.color) return layerColors[layer.color];
+	if (layer && layer.color) return layerColors[layer.color];
 	else return layerColors["red"]
 }
 
@@ -99,11 +105,16 @@ var getDefaultLayerColor = function(layer){
 }
 
 var getDefaultFeatureColor = function(featureClass, layer){
-	let height = featureClass.getDefaultValues()["height"];
-	let decimal = height / layer.estimateLayerHeight();
-	if (!layer.flip) decimal = 1-decimal;
-	let colors = getLayerColors(layer);
-	return decimalToLayerColor(decimal, colors, darkColorKeys);
+	if (layer){
+		let height = featureClass.getDefaultValues()["height"];
+		let decimal = height / layer.estimateLayerHeight();
+		if (!layer.flip) decimal = 1-decimal;
+		let colors = getLayerColors(layer);
+		return decimalToLayerColor(decimal, colors, darkColorKeys);
+	}
+	else {
+		return decimalToLayerColor(0,layerColors["indigo"], darkColorKeys);
+	}
 }
 
 module.exports.getDefaultLayerColor = getDefaultLayerColor;
