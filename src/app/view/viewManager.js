@@ -121,6 +121,10 @@ class ViewManager {
         }
     }
 
+    layersToSVGStrings(){
+        return this.view.layersToSVGStrings();
+    }
+
     __addAllLayerFeatures(layer, refresh = true) {
         for (let key in layer.features) {
             let feature = layer.features[key];
@@ -169,6 +173,10 @@ class ViewManager {
             this.view.updateGrid(Registry.currentGrid);
             this.refresh(refresh);
         }
+    }
+
+    clear(){
+        this.view.clear();
     }
 
     setZoom(zoom, refresh = true) {

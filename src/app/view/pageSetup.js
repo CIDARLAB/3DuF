@@ -11,6 +11,7 @@ let portButton = document.getElementById("port_button")
 let viaButton = document.getElementById("via_button")
 
 let jsonButton = document.getElementById("json_button");
+let svgButton = document.getElementById("svg_button");
 
 let flowButton = document.getElementById("flow_button");
 let controlButton = document.getElementById("control_button");
@@ -105,6 +106,29 @@ function setupAppPage() {
             type: "application/json"
         });
         saveAs(json, "device.json");
+    }
+
+    svgButton.onclick = function() {
+        let svg = Registry.viewManager.layersToSVGStrings();
+        //let svg = paper.project.exportSVG({asString: true});
+
+        for (let i = 0; i < svg.length; i++){
+            let blob = new Blob([svg[i]], {
+            type: "image/svg+xml;charset=utf-8"
+            });
+            saveAs(blob, "device_layer_" + i);
+        }
+
+        //
+        /*
+        for (let i =0; i < svg.length; i++){
+            let blob = new Blob([svg], {
+                type: "image/svg+xml;charset=utf-8"
+            });
+            saveAs(blob, "device_layer_" + i + ".svg")
+        };
+        */
+        //saveAs(blob, "device.svg");
     }
 
     let dnd = new HTMLUtils.DnDFileController("#c", function(files) {

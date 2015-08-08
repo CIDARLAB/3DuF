@@ -2081,14 +2081,15 @@ var CanvasManager = (function () {
     }, {
         key: "loadDeviceFromJSON",
         value: function loadDeviceFromJSON(json) {
+            Registry.viewManager.clear();
             Registry.currentDevice = Device.fromJSON(json);
             Registry.currentLayer = Registry.currentDevice.layers[0];
             var newMan = Registry.viewManager;
             console.log("newMan: " + newMan);
             newMan.addDevice(Registry.currentDevice);
-            this.initializeView();
             //this.updateGridSpacing();
             //this.render();
+            this.initializeView();
         }
     }, {
         key: "saveToStorage",
@@ -3683,6 +3684,7 @@ var portButton = document.getElementById("port_button");
 var viaButton = document.getElementById("via_button");
 
 var jsonButton = document.getElementById("json_button");
+var svgButton = document.getElementById("svg_button");
 
 var flowButton = document.getElementById("flow_button");
 var controlButton = document.getElementById("control_button");
@@ -3777,6 +3779,29 @@ function setupAppPage() {
             type: "application/json"
         });
         saveAs(json, "device.json");
+    };
+
+    svgButton.onclick = function () {
+        var svg = Registry.viewManager.layersToSVGStrings();
+        //let svg = paper.project.exportSVG({asString: true});
+
+        for (var i = 0; i < svg.length; i++) {
+            var blob = new Blob([svg[i]], {
+                type: "image/svg+xml;charset=utf-8"
+            });
+            saveAs(blob, "device_layer_" + i);
+        }
+
+        //
+        /*
+        for (let i =0; i < svg.length; i++){
+            let blob = new Blob([svg], {
+                type: "image/svg+xml;charset=utf-8"
+            });
+            saveAs(blob, "device_layer_" + i + ".svg")
+        };
+        */
+        //saveAs(blob, "device.svg");
     };
 
     var dnd = new HTMLUtils.DnDFileController("#c", function (files) {
@@ -3889,7 +3914,7 @@ var PaperView = (function () {
         this.gridLayer = new paper.Group();
         this.deviceLayer = new paper.Group();
         this.gridLayer.insertAbove(this.deviceLayer);
-        this.featureLayer = new paper.Group();
+        this.featureLayer = new paper.Layer();
         this.featureLayer.insertAbove(this.gridLayer);
         this.uiLayer = new paper.Group();
         this.uiLayer.insertAbove(this.featureLayer);
@@ -3900,6 +3925,42 @@ var PaperView = (function () {
     }
 
     _createClass(PaperView, [{
+        key: "layersToSVGStrings",
+        value: function layersToSVGStrings() {
+            var output = [];
+            for (var i = 0; i < this.featureLayer.children.length; i++) {
+                var layer = this.featureLayer.children[i];
+                var svg = this.postProcessLayerToSVG(layer);
+                output.push(svg);
+            }
+            return output;
+        }
+    }, {
+        key: "postProcessLayerToSVG",
+        value: function postProcessLayerToSVG(layer) {
+            var layerCopy = layer.clone();
+            layerCopy.bounds.topLeft = new paper.Point(0, 0);
+            var deviceWidth = Registry.currentDevice.params.getValue("width");
+            var deviceHeight = Registry.currentDevice.params.getValue("height");
+            layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
+            var svg = layer.exportSVG({ asString: true });
+            var width = layerCopy.bounds.width;
+            var height = layerCopy.bounds.height;
+            var widthInMillimeters = width / 1000;
+            var heightInMilliMeters = height / 1000;
+            var insertString = 'width="' + widthInMillimeters + 'mm" ' + 'height="' + heightInMilliMeters + 'mm" ' + 'viewBox="0 0 ' + width + ' ' + height + '" ';
+            var newSVG = svg.slice(0, 5) + insertString + svg.slice(5);
+            layerCopy.remove();
+            return newSVG;
+        }
+    }, {
+        key: "clear",
+        value: function clear() {
+            this.activeLayer = null;
+            this.featureLayer.removeChildren();
+            this.featureLayer.clear();
+        }
+    }, {
         key: "getCenter",
         value: function getCenter() {
             return this.center;
@@ -4011,6 +4072,7 @@ var PaperView = (function () {
     }, {
         key: "addLayer",
         value: function addLayer(layer, index) {
+            console.log("Adding layer: " + index);
             this.featureLayer.insertChild(index, new paper.Group());
         }
     }, {
@@ -4934,6 +4996,11 @@ var ViewManager = (function () {
             }
         }
     }, {
+        key: "layersToSVGStrings",
+        value: function layersToSVGStrings() {
+            return this.view.layersToSVGStrings();
+        }
+    }, {
         key: "__addAllLayerFeatures",
         value: function __addAllLayerFeatures(layer) {
             var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
@@ -5003,6 +5070,11 @@ var ViewManager = (function () {
                 this.view.updateGrid(Registry.currentGrid);
                 this.refresh(refresh);
             }
+        }
+    }, {
+        key: "clear",
+        value: function clear() {
+            this.view.clear();
         }
     }, {
         key: "setZoom",
