@@ -20,7 +20,7 @@ class PaperView {
         this.gridLayer = new paper.Group();
         this.deviceLayer = new paper.Group();
         this.gridLayer.insertAbove(this.deviceLayer);
-        this.featureLayer = new paper.Layer();
+        this.featureLayer = new paper.Group();
         this.featureLayer.insertAbove(this.gridLayer);
         this.uiLayer = new paper.Group();
         this.uiLayer.insertAbove(this.featureLayer);
