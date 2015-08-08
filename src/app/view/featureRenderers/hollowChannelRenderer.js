@@ -21,8 +21,9 @@ class HollowChannelRenderer extends FeatureRenderer{
     }
 
     static renderTarget(position){
+        let color = Colors.getDefaultFeatureColor(HollowChannel, Registry.currentLayer)
         let width = HollowChannel.getDefaultValues()["width"];
-        let circ = PaperPrimitives.CircleTarget(position, width/2);
+        let circ = PaperPrimitives.CircleTarget(position, width/2, color);
         return circ;
     }
 }

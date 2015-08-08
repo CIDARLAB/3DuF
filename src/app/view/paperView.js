@@ -4,6 +4,7 @@ var GridRenderer = require("./grid/GridRenderer");
 var DeviceRenderer = require("./deviceRenderer");
 var PanAndZoom = require("./PanAndZoom");
 var SimpleQueue = require("../utils/simpleQueue");
+var Colors = require("./colors");
 
 class PaperView {
     constructor(canvas) {
@@ -19,7 +20,7 @@ class PaperView {
         this.gridLayer = new paper.Group();
         this.deviceLayer = new paper.Group();
         this.gridLayer.insertAbove(this.deviceLayer);
-        this.featureLayer = new paper.Group();
+        this.featureLayer = new paper.Layer();
         this.featureLayer.insertAbove(this.gridLayer);
         this.uiLayer = new paper.Group();
         this.uiLayer.insertAbove(this.featureLayer);
@@ -27,6 +28,41 @@ class PaperView {
         this.lastTargetType = null;
         this.lastTargetPosition = null;
         this.inactiveAlpha = .5;
+    }
+
+    layersToSVGStrings(){
+        let output = [];  
+        for (let i =0; i < this.featureLayer.children.length; i ++){
+            let layer = this.featureLayer.children[i];
+            let svg = this.postProcessLayerToSVG(layer);
+            output.push(svg);
+        }
+        return output;
+    }
+
+    postProcessLayerToSVG(layer){
+        let layerCopy = layer.clone();
+        layerCopy.bounds.topLeft = new paper.Point(0,0);
+        let deviceWidth = Registry.currentDevice.params.getValue("width");
+        let deviceHeight = Registry.currentDevice.params.getValue("height");
+        layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
+        let svg = layer.exportSVG({asString: true});
+        let width = layerCopy.bounds.width;
+        let height = layerCopy.bounds.height;
+        let widthInMillimeters = width / 1000;
+        let heightInMilliMeters = height / 1000;
+        let insertString = 'width="'+ widthInMillimeters + 'mm" ' + 
+            'height="' + heightInMilliMeters + 'mm" ' +
+            'viewBox="0 0 ' + width + ' ' + height + '" ';
+        let newSVG = svg.slice(0,5) + insertString + svg.slice(5);
+        layerCopy.remove();
+        return newSVG;
+    }
+
+    clear() {
+        this.activeLayer = null;
+        this.featureLayer.removeChildren();
+        this.featureLayer.clear();
     }
 
     getCenter() {
@@ -118,6 +154,7 @@ class PaperView {
     /* Rendering Layers */
 
     addLayer(layer, index) {
+        console.log("Adding layer: " + index);
         this.featureLayer.insertChild(index, new paper.Group());
     }
 
@@ -137,7 +174,7 @@ class PaperView {
 
     setActiveLayer(index) {
         this.activeLayer = index;
-        this.showActiveLayer();
+        //this.showActiveLayer();
     }
 
     showActiveLayer() {
@@ -274,7 +311,7 @@ class PaperView {
         if (onlyHitActiveLayer && this.activeLayer != null) {
             target = this.featureLayer.children[this.activeLayer];
         }
-        else target = this.featureLayer.hitTest(point, hitOptions);
+        else target = this.featureLayer;
 
         let result = target.hitTest(point, hitOptions);
         if (result) {

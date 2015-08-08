@@ -8,6 +8,7 @@ var FloatValue = Parameters.FloatValue;
 
 class CircleValve extends Feature {
     constructor(values, name = "New CircleValve") {
+        Feature.checkDefaults(values, CircleValve);
         let params = new Params(values, CircleValve.getUniqueParameters(), CircleValve.getHeritableParameters());
         super(CircleValve.typeString(), params, name);
     }
@@ -35,7 +36,7 @@ class CircleValve extends Feature {
         return {
             "radius1": 1.4 * 1000,
             "radius2": 1.2 * 1000,
-            "height": 1 * 1000
+            "height": .8 * 1000
         };
     }
 }

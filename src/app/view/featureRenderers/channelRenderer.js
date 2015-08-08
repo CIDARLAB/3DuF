@@ -17,12 +17,14 @@ class ChannelRenderer extends FeatureRenderer{
         let rec = PaperPrimitives.RoundedRect(start, end, width);
         rec.featureID = channel.id;
         rec.fillColor = FeatureRenderer.getLayerColor(channel, Channel);
+        rec.shadowColor = Colors.BLACK;
         return rec;
     }
 
     static renderTarget(position) {
         let width = Channel.getDefaultValues()["width"];
-        let circ = PaperPrimitives.CircleTarget(position, width / 2);
+        let color = Colors.getDefaultFeatureColor(Channel, Registry.currentLayer)
+        let circ = PaperPrimitives.CircleTarget(position, width / 2, color);
         return circ;
     }
 }

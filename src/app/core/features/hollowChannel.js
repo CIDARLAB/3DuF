@@ -9,6 +9,7 @@ var FloatValue = Parameters.FloatValue;
 
 class HollowChannel extends Feature {
     constructor(values, name = "New HollowChannel") {
+        Feature.checkDefaults(values, HollowChannel);
         let params = new Params(values, HollowChannel.getUniqueParameters(), HollowChannel.getHeritableParameters());
         super(HollowChannel.typeString(), params, name);
     }
