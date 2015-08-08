@@ -2,6 +2,7 @@ var HTMLUtils = require("../utils/htmlUtils");
 var Registry = require("../core/registry");
 var Colors = require("./colors");
 var Features = require("../core/features");
+var JSZip = require("jszip");
 
 let activeButton = null;
 let activeLayer = null;
@@ -37,6 +38,14 @@ let layerButtons = {
 let layerIndices = {
     "0": 0,
     "1": 1
+}
+
+let zipper = new JSZip();
+
+function saveBlobs(blobs){
+    for (let i =0 ; i < blobs.length; i++){
+        saveAs(blobs[i], "device_layer_" + i + ".svg");
+    }
 }
 
 function drop(ev) {
@@ -109,26 +118,16 @@ function setupAppPage() {
     }
 
     svgButton.onclick = function() {
-        let svg = Registry.viewManager.layersToSVGStrings();
+        let svgs = Registry.viewManager.layersToSVGStrings();
         //let svg = paper.project.exportSVG({asString: true});
-
-        for (let i = 0; i < svg.length; i++){
-            let blob = new Blob([svg[i]], {
-            type: "image/svg+xml;charset=utf-8"
-            });
-            saveAs(blob, "device_layer_" + i);
+        let blobs = [];
+        let zipper = new JSZip();
+        for (let i =0; i < svgs.length; i++){
+            zipper.file("Device_layer_" + i + ".svg", svgs[i]);
         }
 
-        //
-        /*
-        for (let i =0; i < svg.length; i++){
-            let blob = new Blob([svg], {
-                type: "image/svg+xml;charset=utf-8"
-            });
-            saveAs(blob, "device_layer_" + i + ".svg")
-        };
-        */
-        //saveAs(blob, "device.svg");
+        let content = zipper.generate({type: "blob"});
+        saveAs(content, "device_layers");
     }
 
     let dnd = new HTMLUtils.DnDFileController("#c", function(files) {
@@ -141,7 +140,7 @@ function setupAppPage() {
         };
         try {
             reader.readAsText(f);
-        } catch (err){
+        } catch (err) {
             console.log("unable to load JSON: " + f);
         }
     });
