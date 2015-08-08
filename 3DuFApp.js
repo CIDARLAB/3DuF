@@ -14665,13 +14665,21 @@ function setupAppPage() {
         var svgs = Registry.viewManager.layersToSVGStrings();
         //let svg = paper.project.exportSVG({asString: true});
         var blobs = [];
+        var success = 0;
         var zipper = new JSZip();
         for (var i = 0; i < svgs.length; i++) {
-            if (svgs[i].slice(0, 4) == "<svg") zipper.file("Device_layer_" + i + ".svg", svgs[i]);else throw new Error("SVG cannot be created from the current layers.");
+            if (svgs[i].slice(0, 4) == "<svg") {
+                zipper.file("Device_layer_" + i + ".svg", svgs[i]);
+                success++;
+            }
         }
 
-        var content = zipper.generate({ type: "blob" });
-        saveAs(content, "device_layers");
+        if (success == 0) throw new Error("Unable to generate any valid SVGs. Do all layers have at least one non-channel item in them?");else {
+            var content = zipper.generate({
+                type: "blob"
+            });
+            saveAs(content, "device_layers.zip");
+        }
     };
 
     var dnd = new HTMLUtils.DnDFileController("#c", function (files) {
@@ -14784,7 +14792,7 @@ var PaperView = (function () {
         this.gridLayer = new paper.Group();
         this.deviceLayer = new paper.Group();
         this.gridLayer.insertAbove(this.deviceLayer);
-        this.featureLayer = new paper.Layer();
+        this.featureLayer = new paper.Group();
         this.featureLayer.insertAbove(this.gridLayer);
         this.uiLayer = new paper.Group();
         this.uiLayer.insertAbove(this.featureLayer);
