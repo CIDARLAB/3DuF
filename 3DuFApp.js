@@ -14667,7 +14667,7 @@ function setupAppPage() {
         var blobs = [];
         var zipper = new JSZip();
         for (var i = 0; i < svgs.length; i++) {
-            zipper.file("Device_layer_" + i + ".svg", svgs[i]);
+            if (svgs[i].slice(0, 4) == "<svg") zipper.file("Device_layer_" + i + ".svg", svgs[i]);else throw new Error("SVG cannot be created from the current layers.");
         }
 
         var content = zipper.generate({ type: "blob" });
