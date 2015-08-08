@@ -42,8 +42,8 @@ let layerIndices = {
 
 let zipper = new JSZip();
 
-function saveBlobs(blobs){
-    for (let i =0 ; i < blobs.length; i++){
+function saveBlobs(blobs) {
+    for (let i = 0; i < blobs.length; i++) {
         saveAs(blobs[i], "device_layer_" + i + ".svg");
     }
 }
@@ -121,14 +121,22 @@ function setupAppPage() {
         let svgs = Registry.viewManager.layersToSVGStrings();
         //let svg = paper.project.exportSVG({asString: true});
         let blobs = [];
+        let success = 0;
         let zipper = new JSZip();
-        for (let i =0; i < svgs.length; i++){
-            if(svgs[i].slice(0,4) == "<svg") zipper.file("Device_layer_" + i + ".svg", svgs[i]);
-            else throw new Error("SVG cannot be created from the current layers.")
+        for (let i = 0; i < svgs.length; i++) {
+            if (svgs[i].slice(0, 4) == "<svg") {
+                zipper.file("Device_layer_" + i + ".svg", svgs[i]);
+                success++;
+            }
         }
 
-        let content = zipper.generate({type: "blob"});
-        saveAs(content, "device_layers");
+        if (success == 0) throw new Error("Unable to generate any valid SVGs. Do all layers have at least one non-channel item in them?");
+        else {
+            let content = zipper.generate({
+                type: "blob"
+            });
+            saveAs(content, "device_layers.zip");    
+        }
     }
 
     let dnd = new HTMLUtils.DnDFileController("#c", function(files) {
