@@ -313,14 +313,16 @@ class CanvasManager {
     }
     
     loadDeviceFromJSON(json){
+        Registry.viewManager.clear();
         Registry.currentDevice = Device.fromJSON(json);
         Registry.currentLayer = Registry.currentDevice.layers[0];
         let newMan = Registry.viewManager;
         console.log("newMan: " + newMan);
         newMan.addDevice(Registry.currentDevice);
-        this.initializeView();
         //this.updateGridSpacing();
         //this.render();
+        this.initializeView();
+
     }
 
     saveToStorage(){
