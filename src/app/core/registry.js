@@ -1,3 +1,5 @@
+var uuid = require('node-uuid');
+
 var registeredParams = {};
 var featureRenderers = {};
 var registeredFeatures = {};
@@ -9,10 +11,8 @@ var view = null;
 var viewManager = null;
 var id_counter = 0;
 
-var generateID = function(){
-	let id = id_counter;
-	id_counter ++;
-	return id;
+var generateID = function() {
+    return uuid.v1();
 }
 
 exports.generateID = generateID;

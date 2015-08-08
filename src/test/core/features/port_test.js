@@ -8,8 +8,8 @@ describe('Port', function(){
 			let circ = new Port({"position": [0,0]});
 		});
 		it("can be initialized with position, radius, and height", function(){
-			let circ = new Port({"position": [0,0], "radius": .6, "height": .6});
-			circ.params.getValue('radius').should.equal(.6);
+			let circ = new Port({"position": [0,0], "radius1": .6, "height": .6});
+			circ.params.getValue('radius1').should.equal(.6);
 			circ.params.getValue('height').should.equal(.6);
 		});
 		it("channot be initalized without position", function(){
@@ -21,7 +21,7 @@ describe('Port', function(){
 		});
 		it("cannot be initialized with malformed parameters", function(){
 			(function(){let circ = new Port({"position": [4,-5], "height": "foobar"})}).should.throwError();
-			(function(){let circ = new Port({"position": [13,3], "height": .5, "radius": "foobar"})}).should.throwError();
+			(function(){let circ = new Port({"position": [13,3], "height": .5, "radius1": "foobar"})}).should.throwError();
 			(function(){let circ = new Port({"position": [25,4], "end": [0,1]})}).should.throwError();
 			(function(){let circ = new Port({"start": [0,0], "end": [1,1], "heght": 23.5})}).should.throwError();
 			(function(){let circ = new Port({"start": [0], "end": [1]})}).should.throwError();

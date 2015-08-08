@@ -55,9 +55,11 @@ class Params {
             if (this.__isUnique(key)) {
                 newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
             } else if (this.__isHeritable(key)) {
-                newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
+                if (values[key]){
+                    newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
+                }
             } else {
-                throw new Error(key + " does not exist in this set of ParamTypes.");
+                throw new Error(key + " does not exist in this set of ParamTypes: " + Object.keys(this.unique) + Object.keys(this.heritable));
             }
         }
         this.__checkParams(newParams);

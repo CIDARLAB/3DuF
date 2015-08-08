@@ -8,6 +8,7 @@ var FloatValue = Parameters.FloatValue;
 
 class Channel extends Feature {
     constructor(values, name = "New Channel") {
+        Feature.checkDefaults(values, Channel);
         let params = new Params(values, Channel.getUniqueParameters(), Channel.getHeritableParameters());
         super(Channel.typeString(), params, name);
     }

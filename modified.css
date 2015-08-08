@@ -10,6 +10,10 @@
 	margin-top: 0;
 }
 
+.button-spacer {
+	padding: 20;
+}
+
 .logo {
 	position: relative;
 	max-width: 80%;
