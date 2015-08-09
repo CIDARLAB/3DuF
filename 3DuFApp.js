@@ -14509,30 +14509,27 @@ var ThreeDeviceRenderer = (function () {
 		}
 	}, {
 		key: "getLayerSTL",
-		value: function getLayerSTL(index) {
-			if (this.layers && this.layers[index] && this.json) {
-				var scene = new THREE.Scene();
-				scene.add(this.layers[index]);
-				this.renderer.render(scene, this.camera);
-				return getSTLString(scene);
-			} else return false;
+		value: function getLayerSTL(json, index) {
+			var scene = this.emptyScene();
+			var layer = json.layers[index];
+			scene.add(this.renderLayer(json, index, false));
+			var string = getSTLString(scene);
+			return getSTLString(scene);
 		}
 	}, {
 		key: "getLayerSTLStrings",
-		value: function getLayerSTLStrings() {
+		value: function getLayerSTLStrings(json) {
 			var output = [];
-			if (this.layers && this.json) {
-				for (var i = 0; i < this.layers.length; i++) {
-					output.push(this.getLayerSTL(i));
-				}
-				return output;
-			} else return false;
+			for (var i = 0; i < json.layers.length; i++) {
+				output.push(this.getLayerSTL(json, i));
+			}
+			return output;
 		}
 	}, {
 		key: "getSTL",
 		value: function getSTL(json) {
-			this.loadJSON(json);
-			return this.getLayerSTLStrings();
+			ThreeDeviceRenderer.sanitizeJSON(json);
+			return this.getLayerSTLStrings(json);
 		}
 	}, {
 		key: "initCamera",
@@ -14564,7 +14561,7 @@ var ThreeDeviceRenderer = (function () {
 			light2.position.set(-1, -1, -1);
 			scene.add(light2);
 
-			var light3 = new THREE.AmbientLight(0x222222);
+			var light3 = new THREE.AmbientLight(0x333333);
 			scene.add(light3);
 			return scene;
 		}
@@ -14665,11 +14662,6 @@ var ThreeDeviceRenderer = (function () {
 		value: function showLayer(index) {
 			if (this.layers && this.json) {
 				var layer = this.layers[index].clone();
-				if (this.json.layers[index].params.flip) {
-					layer.rotation.x += Math.PI;
-					layer.position.y += this.json.params.height;
-					layer.position.z += this.json.layers[index].params.z_offset;
-				}
 				this.loadDevice(layer);
 				this.showingLayer = true;
 			}
@@ -14704,19 +14696,18 @@ var ThreeDeviceRenderer = (function () {
 	}, {
 		key: "renderLayer",
 		value: function renderLayer(json, layerIndex) {
-			var renderSlide = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+			var viewOnly = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
 			var width = json.params.width;
 			var height = json.params.height;
 			var layer = json.layers[layerIndex];
 			var renderedFeatures = new THREE.Group();
 			var renderedLayer = new THREE.Group();
-			renderedFeatures.add(this.renderFeatures(layer, 0));
-			if (layer.params.flip) {
-				this.flipLayer(renderedFeatures, height, layer.params.z_offset);
-			}
+			if (viewOnly) renderedFeatures.add(this.renderFeatures(layer, layer.params.z_offset));else renderedFeatures.add(this.renderFeatures(layer, 0));
+			if (layer.params.flip && !viewOnly) this.flipLayer(renderedFeatures, height, layer.params.z_offset);
 			renderedLayer.add(renderedFeatures);
-			renderedLayer.add(ThreeFeatures.SlideHolder(width, height, renderSlide));
+			console.log("adding slide holder!");
+			renderedLayer.add(ThreeFeatures.SlideHolder(width, height, viewOnly));
 			return renderedLayer;
 		}
 	}, {
@@ -14803,7 +14794,8 @@ var SLIDE_THICKNESS = 1.20;
 
 var defaultMaterial = new THREE.MeshBasicMaterial();
 var whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, shading: THREE.FlatShading });
-var slideMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF, opacity: 0.1, transparent: true });
+var slideMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF, opacity: 0.0, transparent: true });
+slideMaterial.specular = 0xFFFFFF;
 var holderMaterial = new THREE.MeshLambertMaterial({ color: 0x9E9E9E, shading: THREE.FlatShading });
 
 var layerMaterials = {
@@ -14820,12 +14812,12 @@ function getFeatureMaterial(feature, layer) {
 	} else return layerMaterials["grey"];
 }
 
-function DevicePlane(width, height, offset) {
+function DevicePlane(width, height) {
 	var plane = new THREE.PlaneBufferGeometry(width, height);
 	var material = whiteMaterial;
 	var mesh = new THREE.Mesh(plane, material);
 	var matrix = new THREE.Matrix4();
-	mesh.geometry.applyMatrix(matrix.makeTranslation(width / 2, height / 2, -offset));
+	mesh.geometry.applyMatrix(matrix.makeTranslation(width / 2, height / 2, 0));
 	return mesh;
 }
 
@@ -14935,20 +14927,23 @@ function Slide(width, height, thickness) {
 	slide.applyMatrix(matrix.makeTranslation(width / 2, height / 2, -thickness / 2));
 	var mesh = new THREE.Mesh(slide, material);
 	group.add(mesh);
-	group.add(DevicePlane(width, height, thickness + .001));
-	var frontPlane = DevicePlane(width, height, thickness + .001);
-	frontPlane.rotation.x += Math.PI;
-	frontPlane.position.y += height;
-	frontPlane.position.z -= thickness;
-	group.add(frontPlane);
+	var bottomPlane = new DevicePlane(width, height);
+	bottomPlane.position.z -= thickness;
+	group.add(bottomPlane);
 	return group;
 }
 
 function SlideHolder(width, height, slide) {
+	console.log("Width: " + width);
+	console.log("Height: " + height);
+	console.log("Slide:" + slide);
 	var renderedHolder = new THREE.Group();
 	var w = HOLDER_BORDER_WIDTH = .41;
 	var i = INTERLOCK_TOLERANCE;
 	var h = SLIDE_THICKNESS;
+	console.log("W: " + w);
+	console.log("i" + i);
+	console.log("h" + h);
 	var bottomLeft = [-w / 2 - i, -w / 2 - i];
 	var topLeft = [-w / 2 - i, height + w / 2 + i];
 	var topRight = [width + w / 2 + i, height + w / 2 + i];
@@ -14961,10 +14956,11 @@ function SlideHolder(width, height, slide) {
 	var borderMesh = new THREE.Mesh(border, holderMaterial);
 	borderMesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -h));
 	renderedHolder.add(borderMesh);
+	console.log("in holder, slide:" + slide);
 	if (slide) {
 		renderedHolder.add(Slide(width, height, h));
-	}
-	return renderedHolder;
+		return renderedHolder;
+	} else return borderMesh;
 }
 
 function TwoPointRoundedBox(start, end, width, height) {

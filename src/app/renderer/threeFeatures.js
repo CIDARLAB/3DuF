@@ -12,7 +12,8 @@ var SLIDE_THICKNESS = 1.20;
 
 var defaultMaterial = new THREE.MeshBasicMaterial();
 var whiteMaterial = new THREE.MeshBasicMaterial( { color: 0xFFFFFF, shading: THREE.FlatShading});
-var slideMaterial = new THREE.MeshLambertMaterial( { color: 0xFFFFFF, opacity: 0.1, transparent: true});
+var slideMaterial = new THREE.MeshLambertMaterial( { color: 0xFFFFFF, opacity: 0.0, transparent: true});
+slideMaterial.specular = 0xFFFFFF;
 var holderMaterial = new THREE.MeshLambertMaterial( { color: 0x9E9E9E, shading: THREE.FlatShading});
 
 var layerMaterials = {
@@ -29,12 +30,12 @@ function getFeatureMaterial(feature, layer){
 	} else return layerMaterials["grey"];
 }
 
-function DevicePlane(width, height, offset){
+function DevicePlane(width, height){
 	var plane = new THREE.PlaneBufferGeometry(width, height);
 	var material = whiteMaterial;
 	var mesh = new THREE.Mesh(plane, material);
 	var matrix = new THREE.Matrix4();
-	mesh.geometry.applyMatrix(matrix.makeTranslation(width/2, height/2, -offset));
+	mesh.geometry.applyMatrix(matrix.makeTranslation(width/2, height/2, 0));
 	return mesh;
 }
 
@@ -144,20 +145,23 @@ function Slide(width, height, thickness){
 	slide.applyMatrix(matrix.makeTranslation(width/2, height/2, -thickness/2));
 	var mesh = new THREE.Mesh(slide, material);
 	group.add(mesh);
-	group.add(DevicePlane(width, height, thickness + .001));
-	let frontPlane = DevicePlane(width, height, thickness + .001);
-	frontPlane.rotation.x += Math.PI;
-	frontPlane.position.y += height;
-	frontPlane.position.z -= thickness;
-	group.add(frontPlane);
+	let bottomPlane = new DevicePlane(width, height);
+	bottomPlane.position.z -= thickness;
+	group.add(bottomPlane);
 	return group;
 }
 
 function SlideHolder(width, height, slide){
+	console.log("Width: "+ width);
+	console.log("Height: "+ height);
+	console.log("Slide:" + slide);
 	var renderedHolder = new THREE.Group();
 	var w = HOLDER_BORDER_WIDTH = .41;
 	var i = INTERLOCK_TOLERANCE;
 	var h = SLIDE_THICKNESS;
+	console.log("W: "+ w);
+	console.log("i" + i);
+	console.log("h" + h);
 	var bottomLeft = [-w/2 - i, -w/2 - i];
 	var topLeft = [-w/2 - i, height + w/2 + i];
 	var topRight = [width + w/2 + i, height+w/2 + i];
@@ -170,10 +174,11 @@ function SlideHolder(width, height, slide){
 	var borderMesh = new THREE.Mesh(border, holderMaterial);
 	borderMesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0,-h));
 	renderedHolder.add(borderMesh);
+	console.log("in holder, slide:" + slide);
 	if (slide) {
 		renderedHolder.add(Slide(width, height, h));	
-	}
-	return renderedHolder;
+		return renderedHolder;
+	} else return borderMesh;
 }
 
 function TwoPointRoundedBox(start, end, width, height){
