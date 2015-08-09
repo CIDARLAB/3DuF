@@ -30,6 +30,16 @@ class PaperView {
         this.inactiveAlpha = .5;
     }
 
+    deleteSelectedFeatures(){
+        let items = paper.project.selectedItems;
+        if (items && items.length > 0){
+            for (let i =0 ; i < items.length; i++){
+                console.log(items);
+                Registry.currentDevice.removeFeatureByID(items[i].featureID);
+            }
+        }
+    }
+
     layersToSVGStrings() {
         let output = [];
         for (let i = 0; i < this.featureLayer.children.length; i++) {
