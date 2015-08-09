@@ -14,6 +14,11 @@
 	padding: 20;
 }
 
+#renderContainer { 
+    width: 100%;
+    height: 100%;
+}
+
 .logo {
 	position: relative;
 	max-width: 80%;

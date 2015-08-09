@@ -1,3 +1,8 @@
+var OrbitControls = require("./OrbitControls");
+var device_json = require("./device_json");
+var STLExporter = require("./STLExporter");
+var saveSTL = STLExporter.saveSTL;
+
 var container = document.getElementById('renderContainer');
 var camera, controls, scene, renderer;
 
@@ -84,7 +89,7 @@ function renderFeature(feature, layer, z_offset){
 }
 
 function renderLayers(json){
-	renderedLayers = [];
+	var renderedLayers = [];
 	for (var i= 0; i < json.layers.length; i ++){
 		renderedLayers.push(renderLayer(json, i));
 	}
@@ -97,7 +102,7 @@ function renderLayer(json, layerIndex){
 	var height = json.params.height;
 	var layer = json.layers[layerIndex];
 	var renderedFeatures = new THREE.Group();
-	renderedLayer = new THREE.Group();
+	var renderedLayer = new THREE.Group();
 	renderedFeatures.add(renderFeatures(layer, 0));
 	if (layer.params.flip) {
 		flipLayer(renderedFeatures, height, layer.params.z_offset);
@@ -118,7 +123,7 @@ function renderMockup(json){
 	var renderedMockup = new THREE.Group();
 	var layers = json.layers;
 	for (var i = 0; i < layers.length; i ++){
-		layer = layers[i];
+		var layer = layers[i];
 		var renderedLayer = renderFeatures(layer, layer.params.z_offset);
 		renderedMockup.add(renderedLayer);
 	}
@@ -200,7 +205,7 @@ function init() {
 	light1.position.set( 1, 1, 1 );
 	scene.add( light1 );
 
-	light2 = new THREE.DirectionalLight( 0x002288 );
+	var light2 = new THREE.DirectionalLight( 0x002288 );
 	light2.position.set( -1, -1, -1 );
 	scene.add( light2 );
 
