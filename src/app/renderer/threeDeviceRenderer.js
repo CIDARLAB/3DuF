@@ -1,5 +1,4 @@
 var OrbitControls = require("./OrbitControls");
-var device_json = require("./device_json");
 var STLExporter = require("./STLExporter");
 var ThreeFeatures = require("./threeFeatures");
 var Detector = require("./Detector");
@@ -15,6 +14,8 @@ class ThreeDeviceRenderer {
 		this.backgroundColor = 0xEEEEEE;
 		this.mockup = null;
 		this.layers = null;
+		this.json = null;
+		this.initialY = 0;
 
 		this.init();
 		this.render();
@@ -109,9 +110,24 @@ class ThreeDeviceRenderer {
 		this.controls.panLeft(-centerX);
 		this.controls.panUp(-centerY + deviceHeight);
 		this.controls.update();
+		this.initialY = this.camera.position.y;
+	}
+
+	getCameraCenterInMicrometers(){
+		let position = this.camera.position;
+		return [position.x * 1000, (this.camera.position.y - this.initialY) * 1000];
+	}
+
+	getZoom(){
+		let height = this.json.params.height / 1000;
+		let distance = this.camera.position.z;
+		let pixels = this.computeHeightInPixels(height, distance);
+		let zoom = pixels / this.json.params.height;
+		return zoom;
 	}
 
 	getCameraDistance(objectHeight, pixelHeight) {
+		console.log(pixelHeight);
 		var vFOV = this.camera.fov * Math.PI / 180;
 		var ratio = pixelHeight / this.container.clientHeight;
 		var height = objectHeight / ratio;
@@ -146,6 +162,7 @@ class ThreeDeviceRenderer {
 	}
 
 	loadJSON(json) {
+		this.json = json;
 		ThreeDeviceRenderer.sanitizeJSON(json);
 		this.mockup = this.renderMockup(json);
 		this.layers = this.renderLayers(json);

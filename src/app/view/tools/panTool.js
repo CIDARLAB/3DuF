@@ -54,7 +54,7 @@ class PanTool extends MouseTool {
     pan(){
         if(this.lastPoint){
             let delta = this.lastPoint.subtract(this.startPoint);
-            Registry.viewManager.moveCenter(delta);
+            Registry.viewManager.moveCenter([delta.x, delta.y]);
         }
     }
 }
