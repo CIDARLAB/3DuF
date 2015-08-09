@@ -14,6 +14,9 @@ let viaButton = document.getElementById("via_button")
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
 
+let button2D = document.getElementById("button_2D");
+let button3D = document.getElementById("button_3D");
+
 let flowButton = document.getElementById("flow_button");
 let controlButton = document.getElementById("control_button");
 
@@ -22,6 +25,12 @@ let inactiveText = Colors.BLACK;
 let activeText = Colors.WHITE;
 
 let canvas = document.getElementById("c");
+
+let canvasBlock = document.getElementById("canvas_block");
+let renderBlock = document.getElementById("renderContainer");
+
+let renderer;
+let view;
 
 let buttons = {
     "Channel": channelButton,
@@ -73,29 +82,83 @@ function setActiveLayer(layerName) {
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
 }
 
+function switchTo3D(){
+    renderer.loadJSON(Registry.currentDevice.toJSON());
+    let cameraCenter = view.getViewCenterInMillimeters();
+    let height = Registry.currentDevice.params.getValue("height")/1000;
+    let pixels = view.getDeviceHeightInPixels();
+    renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels);
+    renderer.showMockup();
+    HTMLUtils.removeClass(renderBlock,"hidden-block");
+    HTMLUtils.removeClass(button_2D,"hidden-button");
+    HTMLUtils.addClass(canvasBlock,"hidden-block");
+    HTMLUtils.addClass(button_3D,"hidden-button");
+    HTMLUtils.addClass(renderBlock,"shown-block");
+    HTMLUtils.addClass(button_2D,"shown-button");
+    HTMLUtils.removeClass(canvasBlock,"shown-block");
+    HTMLUtils.removeClass(button_3D,"shown-button");
+}
+
+
+//TODO: transition backwards is super hacky. Fix it!
+function switchTo2D(){
+    let center = renderer.getCameraCenterInMicrometers();
+    let zoom = renderer.getZoom();
+    let newCenterX = center[0];
+    if (newCenterX < 0) {
+        newCenterX = 0
+    } else if (newCenterX > Registry.currentDevice.params.getValue("width")){
+        newCenterX = Registry.currentDevice.params.getValue("width");
+    }
+    let newCenterY = paper.view.center.y - center[1];
+    if (newCenterY < 0){
+        newCenterY = 0;
+    } else if (newCenterY > Registry.currentDevice.params.getValue("height")){
+        newCenterY = Registry.currentDevice.params.getValue("height")
+    }
+    Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
+    Registry.viewManager.setZoom(zoom);
+    HTMLUtils.addClass(renderBlock,"hidden-block");
+    HTMLUtils.addClass(button_2D,"hidden-button");
+    HTMLUtils.removeClass(canvasBlock,"hidden-block");
+    HTMLUtils.removeClass(button_3D,"hidden-button");
+    HTMLUtils.removeClass(renderBlock,"shown-block");
+    HTMLUtils.removeClass(button_2D,"shown-button");
+    HTMLUtils.addClass(canvasBlock,"shown-block");
+    HTMLUtils.addClass(button_3D,"shown-button");
+}
+
 function setupAppPage() {
+
+    view = Registry.viewManager.view;
+    renderer = Registry.threeRenderer;
     channelButton.onclick = function() {
         Registry.viewManager.activateTool("Channel");
         let bg = Colors.getDefaultFeatureColor(Features.Channel, Registry.currentLayer);
         setActiveButton("Channel");
+        switchTo2D();
     };
 
     circleValveButton.onclick = function() {
         Registry.viewManager.activateTool("CircleValve");
         let bg = Colors.getDefaultFeatureColor(Features.CircleValve, Registry.currentLayer);
         setActiveButton("CircleValve");
+        switchTo2D();
+
     };
 
     portButton.onclick = function() {
         Registry.viewManager.activateTool("Port");
         let bg = Colors.getDefaultFeatureColor(Features.Port, Registry.currentLayer);
         setActiveButton("Port");
+        switchTo2D();
     };
 
     viaButton.onclick = function() {
         Registry.viewManager.activateTool("Via");
         let bg = Colors.getDefaultFeatureColor(Features.Via, Registry.currentLayer);
         setActiveButton("Via");
+        switchTo2D();
     };
 
     flowButton.onclick = function() {
@@ -137,6 +200,14 @@ function setupAppPage() {
             });
             saveAs(content, "device_layers.zip");    
         }
+    }
+
+    button2D.onclick = function() {
+        switchTo2D();
+    }
+
+    button3D.onclick = function() {
+        switchTo3D();
     }
 
     let dnd = new HTMLUtils.DnDFileController("#c", function(files) {

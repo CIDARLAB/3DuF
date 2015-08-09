@@ -9,6 +9,7 @@ var ViewManager = require("./view/viewManager");
 var AdaptiveGrid = require("./view/grid/adaptiveGrid");
 var PageSetup = require("./view/pageSetup");
 var Colors = require("./view/colors");
+var ThreeDeviceRenderer = require("./renderer/ThreeDeviceRenderer");
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
@@ -84,6 +85,10 @@ window.onload = function(){
     window.Registry = Registry;
     window.Port = createPort;
 
+    console.log("foo");
+    window.view = Registry.viewManager.view;
+
+    Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
     PageSetup.setupAppPage();
 
 };
