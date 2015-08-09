@@ -39,29 +39,25 @@ class ThreeDeviceRenderer {
 		else this.showLayer(index);
 	}
 
-	getLayerSTL(index){
-		if (this.layers && this.layers[index] && this.json) {
-			let scene = new THREE.Scene();
-			scene.add(this.layers[index]);
-			this.renderer.render(scene, this.camera);
-			return getSTLString(scene);
-		} else return false;
+	getLayerSTL(json, index){
+		let scene = this.emptyScene();
+		let layer = json.layers[index];
+		scene.add(this.renderLayer(json, index, false));
+		let string = getSTLString(scene);
+		return getSTLString(scene);
 	}
 
-	getLayerSTLStrings(){
+	getLayerSTLStrings(json){
 		let output = [];
-		if (this.layers && this.json){
-			for (let i =0 ;i < this.layers.length; i++){
-				output.push(this.getLayerSTL(i));
-			}
-			return output;
-		}	
-		else return false;
+		for (let i =0 ;i < json.layers.length; i++){
+			output.push(this.getLayerSTL(json, i));
+		}
+		return output;
 	}
 
 	getSTL(json){
-		this.loadJSON(json);
-		return this.getLayerSTLStrings();
+		ThreeDeviceRenderer.sanitizeJSON(json);
+		return this.getLayerSTLStrings(json);
 	}
 
 	initCamera() {
@@ -90,7 +86,7 @@ class ThreeDeviceRenderer {
 		light2.position.set(-1, -1, -1);
 		scene.add(light2);
 
-		var light3 = new THREE.AmbientLight(0x222222);
+		var light3 = new THREE.AmbientLight(0x333333);
 		scene.add(light3);
 		return scene;
 	}
@@ -201,11 +197,6 @@ class ThreeDeviceRenderer {
 	showLayer(index) {
 		if (this.layers && this.json) {
 			let layer = this.layers[index].clone();
-			if (this.json.layers[index].params.flip){
-				layer.rotation.x += Math.PI;
-				layer.position.y += this.json.params.height;
-				layer.position.z += this.json.layers[index].params.z_offset;
-			}
 			this.loadDevice(layer);
 			this.showingLayer = true;
 		}
@@ -235,18 +226,18 @@ class ThreeDeviceRenderer {
 		return renderedLayers;
 	}
 
-	renderLayer(json, layerIndex, renderSlide = false) {
+	renderLayer(json, layerIndex, viewOnly = false) {
 		var width = json.params.width;
 		var height = json.params.height;
 		var layer = json.layers[layerIndex];
 		var renderedFeatures = new THREE.Group();
 		var renderedLayer = new THREE.Group();
-		renderedFeatures.add(this.renderFeatures(layer, 0));
-		if (layer.params.flip) {
-			this.flipLayer(renderedFeatures, height, layer.params.z_offset);
-		}
+		if (viewOnly) renderedFeatures.add(this.renderFeatures(layer, layer.params.z_offset));
+		else renderedFeatures.add(this.renderFeatures(layer, 0));
+		if (layer.params.flip && !viewOnly) this.flipLayer(renderedFeatures, height, layer.params.z_offset);
 		renderedLayer.add(renderedFeatures);
-		renderedLayer.add(ThreeFeatures.SlideHolder(width, height, renderSlide));
+		console.log("adding slide holder!");
+		renderedLayer.add(ThreeFeatures.SlideHolder(width, height, viewOnly));
 		return renderedLayer;
 	}
 
