@@ -14421,6 +14421,12 @@ THREE.STLExporter.prototype = {
 	})()
 };
 
+function getSTLString(scene) {
+	var exporter = new THREE.STLExporter();
+	var stlString = exporter.parse(scene);
+	return stlString;
+}
+
 function saveSTL(scene, name) {
 	var exporter = new THREE.STLExporter();
 	var stlString = exporter.parse(scene);
@@ -14448,6 +14454,7 @@ var exportString = function exportString(output, filename) {
 
 module.exports.saveSTL = saveSTL;
 module.exports.exportString = exportString;
+module.exports.getSTLString = getSTLString;
 
 },{}],77:[function(require,module,exports){
 "use strict";
@@ -14460,7 +14467,7 @@ var OrbitControls = require("./OrbitControls");
 var STLExporter = require("./STLExporter");
 var ThreeFeatures = require("./threeFeatures");
 var Detector = require("./Detector");
-var saveSTL = STLExporter.saveSTL;
+var getSTLString = STLExporter.getSTLString;
 
 var ThreeDeviceRenderer = (function () {
 	function ThreeDeviceRenderer(renderContainer) {
@@ -14476,6 +14483,7 @@ var ThreeDeviceRenderer = (function () {
 		this.layers = null;
 		this.json = null;
 		this.initialY = 0;
+		this.showingLayer = false;
 
 		this.init();
 		this.render();
@@ -14495,6 +14503,38 @@ var ThreeDeviceRenderer = (function () {
 			}, false);
 		}
 	}, {
+		key: "toggleLayerView",
+		value: function toggleLayerView(index) {
+			if (this.showingLayer) this.showMockup();else this.showLayer(index);
+		}
+	}, {
+		key: "getLayerSTL",
+		value: function getLayerSTL(index) {
+			if (this.layers && this.layers[index] && this.json) {
+				var scene = new THREE.Scene();
+				scene.add(this.layers[index]);
+				this.renderer.render(scene, this.camera);
+				return getSTLString(scene);
+			} else return false;
+		}
+	}, {
+		key: "getLayerSTLStrings",
+		value: function getLayerSTLStrings() {
+			var output = [];
+			if (this.layers && this.json) {
+				for (var i = 0; i < this.layers.length; i++) {
+					output.push(this.getLayerSTL(i));
+				}
+				return output;
+			} else return false;
+		}
+	}, {
+		key: "getSTL",
+		value: function getSTL(json) {
+			this.loadJSON(json);
+			return this.getLayerSTLStrings();
+		}
+	}, {
 		key: "initCamera",
 		value: function initCamera() {
 			this.camera = new THREE.PerspectiveCamera(60, this.container.clientWidth / this.container.clientHeight, 1, 1000);
@@ -14503,7 +14543,7 @@ var ThreeDeviceRenderer = (function () {
 	}, {
 		key: "initControls",
 		value: function initControls() {
-			this.controls = new THREE.OrbitControls(this.camera);
+			this.controls = new THREE.OrbitControls(this.camera, this.container);
 			this.controls.damping = 0.2;
 			var reference = this;
 			this.controls.addEventListener('change', function () {
@@ -14511,21 +14551,27 @@ var ThreeDeviceRenderer = (function () {
 			});
 		}
 	}, {
-		key: "initScene",
-		value: function initScene() {
-			this.scene = null;
-			this.scene = new THREE.Scene();
+		key: "emptyScene",
+		value: function emptyScene() {
+			var scene = new THREE.Scene();
+			scene = new THREE.Scene();
 			//lights
 			var light1 = new THREE.DirectionalLight(0xffffff);
 			light1.position.set(1, 1, 1);
-			this.scene.add(light1);
+			scene.add(light1);
 
-			var light2 = new THREE.DirectionalLight(0x002288);
+			var light2 = new THREE.DirectionalLight(0xffffff);
 			light2.position.set(-1, -1, -1);
-			this.scene.add(light2);
+			scene.add(light2);
 
 			var light3 = new THREE.AmbientLight(0x222222);
-			this.scene.add(light3);
+			scene.add(light3);
+			return scene;
+		}
+	}, {
+		key: "initScene",
+		value: function initScene() {
+			this.scene = this.emptyScene();
 		}
 	}, {
 		key: "initRenderer",
@@ -14610,14 +14656,22 @@ var ThreeDeviceRenderer = (function () {
 		key: "showMockup",
 		value: function showMockup() {
 			if (this.mockup) {
+				this.showingLayer = false;
 				this.loadDevice(this.mockup);
 			}
 		}
 	}, {
 		key: "showLayer",
 		value: function showLayer(index) {
-			if (this.layers) {
-				this.loadDevice(this.layers[index]);
+			if (this.layers && this.json) {
+				var layer = this.layers[index].clone();
+				if (this.json.layers[index].params.flip) {
+					layer.rotation.x += Math.PI;
+					layer.position.y += this.json.params.height;
+					layer.position.z += this.json.layers[index].params.z_offset;
+				}
+				this.loadDevice(layer);
+				this.showingLayer = true;
 			}
 		}
 	}, {
@@ -14643,13 +14697,15 @@ var ThreeDeviceRenderer = (function () {
 		value: function renderLayers(json) {
 			var renderedLayers = [];
 			for (var i = 0; i < json.layers.length; i++) {
-				renderedLayers.push(this.renderLayer(json, i));
+				renderedLayers.push(this.renderLayer(json, i, true));
 			}
 			return renderedLayers;
 		}
 	}, {
 		key: "renderLayer",
 		value: function renderLayer(json, layerIndex) {
+			var renderSlide = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
 			var width = json.params.width;
 			var height = json.params.height;
 			var layer = json.layers[layerIndex];
@@ -14660,7 +14716,7 @@ var ThreeDeviceRenderer = (function () {
 				this.flipLayer(renderedFeatures, height, layer.params.z_offset);
 			}
 			renderedLayer.add(renderedFeatures);
-			renderedLayer.add(ThreeFeatures.SlideHolder(width, height, true));
+			renderedLayer.add(ThreeFeatures.SlideHolder(width, height, renderSlide));
 			return renderedLayer;
 		}
 	}, {
@@ -14880,13 +14936,33 @@ function Slide(width, height, thickness) {
 	var mesh = new THREE.Mesh(slide, material);
 	group.add(mesh);
 	group.add(DevicePlane(width, height, thickness + .001));
+	var frontPlane = DevicePlane(width, height, thickness + .001);
+	frontPlane.rotation.x += Math.PI;
+	frontPlane.position.y += height;
+	frontPlane.position.z -= thickness;
+	group.add(frontPlane);
 	return group;
 }
 
 function SlideHolder(width, height, slide) {
 	var renderedHolder = new THREE.Group();
+	var w = HOLDER_BORDER_WIDTH = .41;
+	var i = INTERLOCK_TOLERANCE;
+	var h = SLIDE_THICKNESS;
+	var bottomLeft = [-w / 2 - i, -w / 2 - i];
+	var topLeft = [-w / 2 - i, height + w / 2 + i];
+	var topRight = [width + w / 2 + i, height + w / 2 + i];
+	var bottomRight = [width + w / 2 + i, -w / 2 - i];
+	var leftBar = TwoPointRoundedBox(bottomLeft, topLeft, w, h);
+	var topBar = TwoPointRoundedBox(topLeft, topRight, w, h);
+	var rightBar = TwoPointRoundedBox(topRight, bottomRight, w, h);
+	var bottomBar = TwoPointRoundedBox(bottomRight, bottomLeft, w, h);
+	var border = mergeGeometries([leftBar, topBar, rightBar, bottomBar]);
+	var borderMesh = new THREE.Mesh(border, holderMaterial);
+	borderMesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -h));
+	renderedHolder.add(borderMesh);
 	if (slide) {
-		renderedHolder.add(Slide(width, height, SLIDE_THICKNESS));
+		renderedHolder.add(Slide(width, height, h));
 	}
 	return renderedHolder;
 }
@@ -15932,6 +16008,7 @@ var viaButton = document.getElementById("via_button");
 
 var jsonButton = document.getElementById("json_button");
 var svgButton = document.getElementById("svg_button");
+var stlButton = document.getElementById("stl_button");
 
 var button2D = document.getElementById("button_2D");
 var button3D = document.getElementById("button_3D");
@@ -15972,12 +16049,6 @@ var layerIndices = {
 
 var zipper = new JSZip();
 
-function saveBlobs(blobs) {
-    for (var i = 0; i < blobs.length; i++) {
-        saveAs(blobs[i], "device_layer_" + i + ".svg");
-    }
-}
-
 function drop(ev) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
@@ -16001,11 +16072,20 @@ function setActiveLayer(layerName) {
     setActiveButton(activeButton);
     var bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
+    if (threeD) {
+        setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button2D, inactiveBackground, inactiveText);
+    } else {
+        setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button3D, inactiveBackground, inactiveText);
+    }
 }
 
 function switchTo3D() {
     if (!threeD) {
         threeD = true;
+        setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button2D, inactiveBackground, inactiveText);
         renderer.loadJSON(Registry.currentDevice.toJSON());
         var cameraCenter = view.getViewCenterInMillimeters();
         var height = Registry.currentDevice.params.getValue("height") / 1000;
@@ -16013,13 +16093,9 @@ function switchTo3D() {
         renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
         renderer.showMockup();
         HTMLUtils.removeClass(renderBlock, "hidden-block");
-        HTMLUtils.removeClass(button_2D, "hidden-button");
         HTMLUtils.addClass(canvasBlock, "hidden-block");
-        HTMLUtils.addClass(button_3D, "hidden-button");
         HTMLUtils.addClass(renderBlock, "shown-block");
-        HTMLUtils.addClass(button_2D, "shown-button");
         HTMLUtils.removeClass(canvasBlock, "shown-block");
-        HTMLUtils.removeClass(button_3D, "shown-button");
     }
 }
 
@@ -16043,16 +16119,14 @@ function switchTo2D() {
         } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
             newCenterY = Registry.currentDevice.params.getValue("height");
         }
+        setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button3D, inactiveBackground, inactiveText);
         Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
         Registry.viewManager.setZoom(zoom);
         HTMLUtils.addClass(renderBlock, "hidden-block");
-        HTMLUtils.addClass(button_2D, "hidden-button");
         HTMLUtils.removeClass(canvasBlock, "hidden-block");
-        HTMLUtils.removeClass(button_3D, "hidden-button");
         HTMLUtils.removeClass(renderBlock, "shown-block");
-        HTMLUtils.removeClass(button_2D, "shown-button");
         HTMLUtils.addClass(canvasBlock, "shown-block");
-        HTMLUtils.addClass(button_3D, "shown-button");
     }
 }
 
@@ -16089,12 +16163,18 @@ function setupAppPage() {
     };
 
     flowButton.onclick = function () {
+        if (threeD) {
+            if (activeLayer == "0") renderer.toggleLayerView(0);else renderer.showLayer(0);
+        }
         Registry.currentLayer = Registry.currentDevice.layers[0];
         setActiveLayer("0");
         Registry.viewManager.updateActiveLayer();
     };
 
     controlButton.onclick = function () {
+        if (threeD) {
+            if (activeLayer == "1") renderer.toggleLayerView(1);else renderer.showLayer(1);
+        }
         Registry.currentLayer = Registry.currentDevice.layers[1];
         setActiveLayer("1");
         Registry.viewManager.updateActiveLayer();
@@ -16105,6 +16185,21 @@ function setupAppPage() {
             type: "application/json"
         });
         saveAs(json, "device.json");
+    };
+
+    stlButton.onclick = function () {
+        var json = Registry.currentDevice.toJSON();
+        var stls = renderer.getSTL(json);
+        var blobs = [];
+        var zipper = new JSZip();
+        for (var i = 0; i < stls.length; i++) {
+            var _name = "" + i + "_" + json.name + "_" + json.layers[i].name + ".stl";
+            zipper.file(_name, stls[i]);
+        }
+        var content = zipper.generate({
+            type: "blob"
+        });
+        saveAs(content, json.name + "_layers.zip");
     };
 
     svgButton.onclick = function () {
@@ -16153,6 +16248,7 @@ function setupAppPage() {
 
     setActiveButton("Channel");
     setActiveLayer("0");
+    switchTo2D();
 }
 
 module.exports.setupAppPage = setupAppPage;
@@ -17431,6 +17527,7 @@ var ViewManager = (function () {
         value: function setZoom(zoom) {
             var refresh = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
+            if (zoom > this.maxZoom) zoom = this.maxZoom;else if (zoom < this.minZoom) zoom = this.minZoom;
             this.view.setZoom(zoom);
             this.updateGrid(false);
             this.updateDevice(Registry.currentDevice, false);

@@ -2,7 +2,7 @@ var OrbitControls = require("./OrbitControls");
 var STLExporter = require("./STLExporter");
 var ThreeFeatures = require("./threeFeatures");
 var Detector = require("./Detector");
-var saveSTL = STLExporter.saveSTL;
+var getSTLString = STLExporter.getSTLString;
 
 class ThreeDeviceRenderer {
 	constructor(renderContainer) {
@@ -16,6 +16,7 @@ class ThreeDeviceRenderer {
 		this.layers = null;
 		this.json = null;
 		this.initialY = 0;
+		this.showingLayer = false;
 
 		this.init();
 		this.render();
@@ -33,13 +34,43 @@ class ThreeDeviceRenderer {
 		}, false);
 	}
 
+	toggleLayerView(index){
+		if (this.showingLayer) this.showMockup();
+		else this.showLayer(index);
+	}
+
+	getLayerSTL(index){
+		if (this.layers && this.layers[index] && this.json) {
+			let scene = new THREE.Scene();
+			scene.add(this.layers[index]);
+			this.renderer.render(scene, this.camera);
+			return getSTLString(scene);
+		} else return false;
+	}
+
+	getLayerSTLStrings(){
+		let output = [];
+		if (this.layers && this.json){
+			for (let i =0 ;i < this.layers.length; i++){
+				output.push(this.getLayerSTL(i));
+			}
+			return output;
+		}	
+		else return false;
+	}
+
+	getSTL(json){
+		this.loadJSON(json);
+		return this.getLayerSTLStrings();
+	}
+
 	initCamera() {
 		this.camera = new THREE.PerspectiveCamera(60, this.container.clientWidth / this.container.clientHeight, 1, 1000);
 		this.camera.position.z = 100;
 	}
 
 	initControls() {
-		this.controls = new THREE.OrbitControls(this.camera);
+		this.controls = new THREE.OrbitControls(this.camera, this.container);
 		this.controls.damping = 0.2;
 		let reference = this;
 		this.controls.addEventListener('change', function() {
@@ -47,20 +78,26 @@ class ThreeDeviceRenderer {
 		});
 	}
 
-	initScene() {
-		this.scene = null;
-		this.scene = new THREE.Scene();
+	emptyScene(){
+		let scene = new THREE.Scene();
+		scene = new THREE.Scene();
 		//lights
 		var light1 = new THREE.DirectionalLight(0xffffff);
 		light1.position.set(1, 1, 1);
-		this.scene.add(light1);
+		scene.add(light1);
 
-		var light2 = new THREE.DirectionalLight(0x002288);
+		var light2 = new THREE.DirectionalLight(0xffffff);
 		light2.position.set(-1, -1, -1);
-		this.scene.add(light2);
+		scene.add(light2);
 
 		var light3 = new THREE.AmbientLight(0x222222);
-		this.scene.add(light3);
+		scene.add(light3);
+		return scene;
+	}
+
+	initScene() {
+		this.scene = this.emptyScene();
+		
 	}
 
 	initRenderer() {
@@ -156,13 +193,21 @@ class ThreeDeviceRenderer {
 
 	showMockup() {
 		if (this.mockup) {
+			this.showingLayer = false;
 			this.loadDevice(this.mockup);
 		}
 	}
 
 	showLayer(index) {
-		if (this.layers) {
-			this.loadDevice(this.layers[index]);
+		if (this.layers && this.json) {
+			let layer = this.layers[index].clone();
+			if (this.json.layers[index].params.flip){
+				layer.rotation.x += Math.PI;
+				layer.position.y += this.json.params.height;
+				layer.position.z += this.json.layers[index].params.z_offset;
+			}
+			this.loadDevice(layer);
+			this.showingLayer = true;
 		}
 	}
 
@@ -185,12 +230,12 @@ class ThreeDeviceRenderer {
 	renderLayers(json) {
 		var renderedLayers = [];
 		for (var i = 0; i < json.layers.length; i++) {
-			renderedLayers.push(this.renderLayer(json, i));
+			renderedLayers.push(this.renderLayer(json, i, true));
 		}
 		return renderedLayers;
 	}
 
-	renderLayer(json, layerIndex) {
+	renderLayer(json, layerIndex, renderSlide = false) {
 		var width = json.params.width;
 		var height = json.params.height;
 		var layer = json.layers[layerIndex];
@@ -201,7 +246,7 @@ class ThreeDeviceRenderer {
 			this.flipLayer(renderedFeatures, height, layer.params.z_offset);
 		}
 		renderedLayer.add(renderedFeatures);
-		renderedLayer.add(ThreeFeatures.SlideHolder(width, height, true));
+		renderedLayer.add(ThreeFeatures.SlideHolder(width, height, renderSlide));
 		return renderedLayer;
 	}
 
