@@ -11215,7 +11215,7 @@ window.onload = function () {
     PageSetup.setupAppPage();
 };
 
-},{"./core/device":46,"./core/features":53,"./core/layer":55,"./core/registry":64,"./graphics/CanvasManager":65,"./renderer/ThreeDeviceRenderer":76,"./view/colors":85,"./view/grid/adaptiveGrid":95,"./view/pageSetup":96,"./view/paperView":98,"./view/viewManager":105}],46:[function(require,module,exports){
+},{"./core/device":46,"./core/features":53,"./core/layer":55,"./core/registry":64,"./graphics/CanvasManager":65,"./renderer/ThreeDeviceRenderer":76,"./view/colors":84,"./view/grid/adaptiveGrid":94,"./view/pageSetup":95,"./view/paperView":97,"./view/viewManager":104}],46:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -12293,7 +12293,7 @@ var FloatValue = (function (_Parameter) {
 Parameter.registerParamType(FloatValue.typeString(), FloatValue);
 module.exports = FloatValue;
 
-},{"../../utils/numberUtils":82,"../parameter":56}],59:[function(require,module,exports){
+},{"../../utils/numberUtils":81,"../parameter":56}],59:[function(require,module,exports){
 /*
 
 var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
@@ -12352,7 +12352,7 @@ var IntegerValue = (function (_Parameter) {
 Parameter.registerParamType(IntegerValue.typeString(), IntegerValue);
 module.exports = IntegerValue;
 
-},{"../../utils/numberUtils":82,"../parameter":56}],61:[function(require,module,exports){
+},{"../../utils/numberUtils":81,"../parameter":56}],61:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -12394,7 +12394,7 @@ var PointValue = (function (_Parameter) {
 Parameter.registerParamType(PointValue.typeString(), PointValue);
 module.exports = PointValue;
 
-},{"../../utils/numberUtils":82,"../parameter":56}],62:[function(require,module,exports){
+},{"../../utils/numberUtils":81,"../parameter":56}],62:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -12987,7 +12987,7 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/device":46,"../core/features":53,"../core/registry":64,"../view/colors":85,"./gridGenerator":66,"./panAndZoom":67,"./tools":70}],66:[function(require,module,exports){
+},{"../core/device":46,"../core/features":53,"../core/registry":64,"../view/colors":84,"./gridGenerator":66,"./panAndZoom":67,"./tools":70}],66:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -13123,7 +13123,7 @@ var GridGenerator = (function () {
 
 module.exports = GridGenerator;
 
-},{"../view/colors":85}],67:[function(require,module,exports){
+},{"../view/colors":84}],67:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -14473,7 +14473,6 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var OrbitControls = require("./OrbitControls");
-var device_json = require("./device_json");
 var STLExporter = require("./STLExporter");
 var ThreeFeatures = require("./threeFeatures");
 var Detector = require("./Detector");
@@ -14491,6 +14490,8 @@ var ThreeDeviceRenderer = (function () {
 		this.backgroundColor = 0xEEEEEE;
 		this.mockup = null;
 		this.layers = null;
+		this.json = null;
+		this.initialY = 0;
 
 		this.init();
 		this.render();
@@ -14573,10 +14574,27 @@ var ThreeDeviceRenderer = (function () {
 			this.controls.panLeft(-centerX);
 			this.controls.panUp(-centerY + deviceHeight);
 			this.controls.update();
+			this.initialY = this.camera.position.y;
+		}
+	}, {
+		key: "getCameraCenterInMicrometers",
+		value: function getCameraCenterInMicrometers() {
+			var position = this.camera.position;
+			return [position.x * 1000, (this.camera.position.y - this.initialY) * 1000];
+		}
+	}, {
+		key: "getZoom",
+		value: function getZoom() {
+			var height = this.json.params.height / 1000;
+			var distance = this.camera.position.z;
+			var pixels = this.computeHeightInPixels(height, distance);
+			var zoom = pixels / this.json.params.height;
+			return zoom;
 		}
 	}, {
 		key: "getCameraDistance",
 		value: function getCameraDistance(objectHeight, pixelHeight) {
+			console.log(pixelHeight);
 			var vFOV = this.camera.fov * Math.PI / 180;
 			var ratio = pixelHeight / this.container.clientHeight;
 			var height = objectHeight / ratio;
@@ -14616,6 +14634,7 @@ var ThreeDeviceRenderer = (function () {
 	}, {
 		key: "loadJSON",
 		value: function loadJSON(json) {
+			this.json = json;
 			ThreeDeviceRenderer.sanitizeJSON(json);
 			this.mockup = this.renderMockup(json);
 			this.layers = this.renderLayers(json);
@@ -14722,14 +14741,7 @@ var ThreeDeviceRenderer = (function () {
 
 module.exports = ThreeDeviceRenderer;
 
-},{"./Detector":73,"./OrbitControls":74,"./STLExporter":75,"./device_json":77,"./threeFeatures":78}],77:[function(require,module,exports){
-'use strict';
-
-var device_json = JSON.parse('{"name":"My Device","params":{"width":75800,"height":51000},"layers":[{"name":"flow","color":"indigo","params":{"z_offset":0,"flip":false},"features":{"6bb96ad0-3d80-11e5-898a-2de600a0e2af":{"id":"6bb96ad0-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[30000,40000],"radius1":700,"radius2":700,"height":100}},"6bb96ad1-3d80-11e5-898a-2de600a0e2af":{"id":"6bb96ad1-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[40000,40000],"radius1":700,"radius2":700,"height":100}},"6bb96ad2-3d80-11e5-898a-2de600a0e2af":{"id":"6bb96ad2-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[50000,40000],"radius1":700,"radius2":700,"height":100}},"6bb96ad3-3d80-11e5-898a-2de600a0e2af":{"id":"6bb96ad3-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[20000,40000],"radius1":700,"radius2":700,"height":100}},"6bb991e0-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e0-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[20000,40000],"end":[20000,35000],"width":400,"height":100}},"6bb991e1-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e1-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[20000,38000],"end":[17000,38000],"width":400,"height":100}},"6bb991e2-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e2-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[17000,38000],"end":[17000,35000],"width":400,"height":100}},"6bb991e3-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e3-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[20000,35000],"end":[20000,20000],"width":400,"height":100}},"6bb991e4-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e4-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[20000,20000],"end":[10000,10000],"width":400,"height":100}},"6bb991e5-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e5-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[17000,35000],"end":[15000,30000],"width":400,"height":100}},"6bb991e6-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e6-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[15000,30000],"end":[10000,30000],"width":400,"height":100}},"6bb991e7-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e7-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[10000,30000],"end":[10000,28000],"width":400,"height":100}},"6bb991e8-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e8-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[10000,28000],"end":[15000,28000],"width":400,"height":100}},"6bb991e9-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991e9-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[15000,28000],"end":[15000,25000],"width":400,"height":100}},"6bb991ea-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991ea-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[15000,25000],"end":[8000,25000],"width":400,"height":100}},"6bb991eb-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991eb-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[8000,25000],"radius1":700,"radius2":700,"height":100}},"6bb991ec-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991ec-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[10000,10000],"radius1":700,"radius2":700,"height":100}},"6bb991ed-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991ed-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[30000,40000],"end":[30000,20000],"width":400,"height":100}},"6bb991ee-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991ee-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[30000,20000],"end":[20000,10000],"width":400,"height":100}},"6bb991ef-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991ef-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[20000,10000],"radius1":700,"radius2":700,"height":100}},"6bb991f0-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f0-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[30000,38000],"end":[27000,38000],"width":400,"height":100}},"6bb991f1-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f1-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[27000,38000],"end":[27000,30000],"width":400,"height":100}},"6bb991f2-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f2-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[27000,30000],"end":[22000,30000],"width":400,"height":100}},"6bb991f3-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f3-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[22000,30000],"end":[22000,28000],"width":400,"height":100}},"6bb991f4-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f4-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[22000,28000],"end":[27000,28000],"width":400,"height":100}},"6bb991f5-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f5-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[27000,28000],"end":[27000,26000],"width":400,"height":100}},"6bb991f6-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f6-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[27000,26000],"end":[22000,26000],"width":400,"height":100}},"6bb991f7-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f7-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[22000,26000],"end":[22000,24000],"width":400,"height":100}},"6bb991f8-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f8-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[22000,24000],"end":[27000,24000],"width":400,"height":100}},"6bb991f9-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991f9-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[27000,24000],"end":[27000,22000],"width":400,"height":100}},"6bb991fa-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991fa-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[27000,22000],"end":[22000,22000],"width":400,"height":100}},"6bb991fb-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991fb-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[22000,22000],"end":[22000,20000],"width":400,"height":100}},"6bb991fc-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991fc-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[22000,20000],"end":[25000,20000],"width":400,"height":100}},"6bb991fd-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991fd-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[25000,17000],"width":400,"height":100}},"6bb991fe-3d80-11e5-898a-2de600a0e2af":{"id":"6bb991fe-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[25000,17000],"end":[21000,17000],"width":400,"height":100}},"6bb9b8f0-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f0-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[21000,17000],"radius1":700,"radius2":700,"height":100}},"6bb9b8f1-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f1-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[40000,40000],"end":[40000,20000],"width":400,"height":100}},"6bb9b8f2-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f2-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[40000,20000],"end":[50000,10000],"width":400,"height":100}},"6bb9b8f3-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f3-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[40000,38000],"end":[43000,38000],"width":400,"height":100}},"6bb9b8f4-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f4-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[43000,38000],"end":[43000,30000],"width":400,"height":100}},"6bb9b8f5-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f5-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[43000,30000],"end":[48000,30000],"width":400,"height":100}},"6bb9b8f6-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f6-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[48000,30000],"end":[48000,28000],"width":400,"height":100}},"6bb9b8f7-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f7-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[48000,28000],"end":[43000,28000],"width":400,"height":100}},"6bb9b8f8-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f8-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[43000,28000],"end":[43000,26000],"width":400,"height":100}},"6bb9b8f9-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8f9-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[43000,26000],"end":[48000,26000],"width":400,"height":100}},"6bb9b8fa-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8fa-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[48000,26000],"end":[48000,24000],"width":400,"height":100}},"6bb9b8fb-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8fb-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[48000,24000],"end":[43000,24000],"width":400,"height":100}},"6bb9b8fc-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8fc-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[43000,24000],"end":[43000,22000],"width":400,"height":100}},"6bb9b8fd-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8fd-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[43000,22000],"end":[48000,22000],"width":400,"height":100}},"6bb9b8fe-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8fe-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[48000,22000],"end":[48000,20000],"width":400,"height":100}},"6bb9b8ff-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b8ff-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[48000,20000],"end":[45000,20000],"width":400,"height":100}},"6bb9b900-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b900-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[45000,17000],"width":400,"height":100}},"6bb9b901-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b901-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[45000,17000],"end":[49000,17000],"width":400,"height":100}},"6bb9b902-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b902-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[50000,10000],"radius1":700,"radius2":700,"height":100}},"6bb9b903-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b903-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[49000,17000],"radius1":700,"radius2":700,"height":100}},"6bb9b904-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b904-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[50000,40000],"end":[50000,20000],"width":400,"height":100}},"6bb9b905-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b905-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[50000,20000],"end":[60000,10000],"width":400,"height":100}},"6bb9b906-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9b906-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[60000,10000],"radius1":700,"radius2":700,"height":100}},"6bb9e000-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e000-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[50000,38000],"end":[53000,38000],"width":400,"height":100}},"6bb9e001-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e001-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[53000,38000],"end":[53000,35000],"width":400,"height":100}},"6bb9e002-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e002-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[53000,35000],"end":[55000,30000],"width":400,"height":100}},"6bb9e003-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e003-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[55000,30000],"end":[60000,30000],"width":400,"height":100}},"6bb9e004-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e004-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[60000,30000],"end":[60000,28000],"width":400,"height":100}},"6bb9e005-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e005-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[60000,28000],"end":[55000,28000],"width":400,"height":100}},"6bb9e006-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e006-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[55000,28000],"end":[55000,25000],"width":400,"height":100}},"6bb9e007-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e007-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[55000,25000],"end":[62000,25000],"width":400,"height":100}},"6bb9e008-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e008-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[62000,25000],"radius1":700,"radius2":700,"height":100}},"6bb9e009-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e009-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[15000,15000],"end":[15000,12000],"width":400,"height":100}},"6bb9e00a-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e00a-3d80-11e5-898a-2de600a0e2af","name":"New Via","type":"Via","params":{"position":[15000,12000],"radius1":800,"radius2":700,"height":1000}},"6bb9e00b-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e00b-3d80-11e5-898a-2de600a0e2af","name":"New Via","type":"Via","params":{"position":[26000,12000],"radius1":800,"radius2":700,"height":1000}},"6bb9e00c-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e00c-3d80-11e5-898a-2de600a0e2af","name":"New Via","type":"Via","params":{"position":[44000,12000],"radius1":800,"radius2":700,"height":1000}},"6bb9e00d-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e00d-3d80-11e5-898a-2de600a0e2af","name":"New Via","type":"Via","params":{"position":[55000,12000],"radius1":800,"radius2":700,"height":1000}},"6bb9e00e-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e00e-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[55000,12000],"end":[55000,15000],"width":400,"height":100}},"6bb9e00f-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e00f-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[26000,12000],"end":[30000,10000],"width":400,"height":100}},"6bb9e010-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e010-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[40000,10000],"width":400,"height":100}},"6bb9e011-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e011-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[40000,10000],"end":[38000,7000],"width":400,"height":100}},"6bb9e012-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e012-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[30000,10000],"end":[32000,7000],"width":400,"height":100}},"6bb9e013-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e013-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[32000,7000],"radius1":700,"radius2":700,"height":100}},"6bb9e014-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e014-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[38000,7000],"radius1":700,"radius2":700,"height":100}},"6bb9e015-3d80-11e5-898a-2de600a0e2af":{"id":"6bb9e015-3d80-11e5-898a-2de600a0e2af","name":"New CircleValve","type":"CircleValve","params":{"position":[35000,10000],"radius1":1400,"radius2":1200,"height":800}},"6bba0710-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0710-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[35000,10000],"end":[35000,30000],"width":400,"height":100}},"6bba0711-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0711-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[35000,30000],"radius1":700,"radius2":700,"height":100}},"6bba0712-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0712-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[38000,23000],"width":400,"height":100}},"6bba0713-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0713-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[36000,25000],"width":400,"height":100}},"6bba0714-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0714-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[36000,25000],"end":[35000,30000],"width":400,"height":100}},"6bba0715-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0715-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[32000,23000],"width":400,"height":100}},"6bba0716-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0716-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[34000,25000],"width":400,"height":100}},"6bba0717-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0717-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[34000,25000],"end":[35000,30000],"width":400,"height":100}},"6bba0718-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0718-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[35000,24000],"width":400,"height":100}},"6bba0719-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0719-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[35000,24000],"width":400,"height":100}},"6bba071a-3d80-11e5-898a-2de600a0e2af":{"id":"6bba071a-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[28000,20000],"width":400,"height":100}},"6bba071b-3d80-11e5-898a-2de600a0e2af":{"id":"6bba071b-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[28000,20000],"end":[28000,22000],"width":400,"height":100}},"6bba071c-3d80-11e5-898a-2de600a0e2af":{"id":"6bba071c-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[28000,22000],"end":[27000,22000],"width":400,"height":100}},"6bba071d-3d80-11e5-898a-2de600a0e2af":{"id":"6bba071d-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[42000,20000],"width":400,"height":100}},"6bba071e-3d80-11e5-898a-2de600a0e2af":{"id":"6bba071e-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[42000,20000],"end":[42000,22000],"width":400,"height":100}},"6bba071f-3d80-11e5-898a-2de600a0e2af":{"id":"6bba071f-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[42000,22000],"end":[44000,22000],"width":400,"height":100}},"8d30ec10-3d80-11e5-898a-2de600a0e2af":{"id":"8d30ec10-3d80-11e5-898a-2de600a0e2af","name":"New Via","type":"Via","params":{"position":[35000,30000],"radius1":800,"radius2":700,"height":1000}},"9b26fd00-3d80-11e5-898a-2de600a0e2af":{"id":"9b26fd00-3d80-11e5-898a-2de600a0e2af","name":"New Via","type":"Via","params":{"position":[32000,20000],"radius1":800,"radius2":700,"height":1000}},"9c3deb40-3d80-11e5-898a-2de600a0e2af":{"id":"9c3deb40-3d80-11e5-898a-2de600a0e2af","name":"New Via","type":"Via","params":{"position":[38000,20000],"radius1":800,"radius2":700,"height":1000}}}},{"name":"control","color":"red","params":{"z_offset":1200,"flip":true},"features":{"6bba0720-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0720-3d80-11e5-898a-2de600a0e2af","name":"New CircleValve","type":"CircleValve","params":{"position":[20000,34000],"radius1":1400,"radius2":1200,"height":800}},"6bba0721-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0721-3d80-11e5-898a-2de600a0e2af","name":"New CircleValve","type":"CircleValve","params":{"position":[30000,34000],"radius1":1400,"radius2":1200,"height":800}},"6bba0722-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0722-3d80-11e5-898a-2de600a0e2af","name":"New CircleValve","type":"CircleValve","params":{"position":[40000,34000],"radius1":1400,"radius2":1200,"height":800}},"6bba0723-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0723-3d80-11e5-898a-2de600a0e2af","name":"New CircleValve","type":"CircleValve","params":{"position":[50000,34000],"radius1":1400,"radius2":1200,"height":800}},"6bba0724-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0724-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[20000,34000],"end":[24000,34000],"width":400,"height":100}},"6bba0725-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0725-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[24000,34000],"end":[24000,47000],"width":400,"height":100}},"6bba0726-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0726-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[30000,34000],"end":[34000,34000],"width":400,"height":100}},"6bba0727-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0727-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[34000,34000],"end":[34000,47000],"width":400,"height":100}},"6bba0728-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0728-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[40000,34000],"end":[37000,34000],"width":400,"height":100}},"6bba0729-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0729-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[37000,34000],"end":[36000,34000],"width":400,"height":100}},"6bba072a-3d80-11e5-898a-2de600a0e2af":{"id":"6bba072a-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[36000,34000],"end":[36000,47000],"width":400,"height":100}},"6bba072b-3d80-11e5-898a-2de600a0e2af":{"id":"6bba072b-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[50000,34000],"end":[46000,34000],"width":400,"height":100}},"6bba072c-3d80-11e5-898a-2de600a0e2af":{"id":"6bba072c-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[46000,34000],"end":[46000,47000],"width":400,"height":100}},"6bba072d-3d80-11e5-898a-2de600a0e2af":{"id":"6bba072d-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[24000,47000],"radius1":700,"radius2":700,"height":100}},"6bba072e-3d80-11e5-898a-2de600a0e2af":{"id":"6bba072e-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[34000,47000],"radius1":700,"radius2":700,"height":100}},"6bba072f-3d80-11e5-898a-2de600a0e2af":{"id":"6bba072f-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[36000,47000],"radius1":700,"radius2":700,"height":100}},"6bba0730-3d80-11e5-898a-2de600a0e2af":{"id":"6bba0730-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[46000,47000],"radius1":700,"radius2":700,"height":100}},"6bba2e20-3d80-11e5-898a-2de600a0e2af":{"id":"6bba2e20-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[15000,12000],"end":[26000,12000],"width":400,"height":100}},"6bba2e21-3d80-11e5-898a-2de600a0e2af":{"id":"6bba2e21-3d80-11e5-898a-2de600a0e2af","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[55000,12000],"width":400,"height":100}},"6bba2e22-3d80-11e5-898a-2de600a0e2af":{"id":"6bba2e22-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[15000,12000],"radius1":700,"radius2":700,"height":100}},"6bba2e23-3d80-11e5-898a-2de600a0e2af":{"id":"6bba2e23-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[26000,12000],"radius1":700,"radius2":700,"height":100}},"6bba2e24-3d80-11e5-898a-2de600a0e2af":{"id":"6bba2e24-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[44000,12000],"radius1":700,"radius2":700,"height":100}},"6bba2e25-3d80-11e5-898a-2de600a0e2af":{"id":"6bba2e25-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[55000,12000],"radius1":700,"radius2":700,"height":100}},"6bba2e26-3d80-11e5-898a-2de600a0e2af":{"id":"6bba2e26-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[25000,21000],"radius1":700,"radius2":700,"height":100}},"6bba2e27-3d80-11e5-898a-2de600a0e2af":{"id":"6bba2e27-3d80-11e5-898a-2de600a0e2af","name":"New Port","type":"Port","params":{"position":[45000,21000],"radius1":700,"radius2":700,"height":100}}}}],"groups":[],"defaults":{}}');
-
-module.exports = device_json;
-
-},{}],78:[function(require,module,exports){
+},{"./Detector":73,"./OrbitControls":74,"./STLExporter":75,"./threeFeatures":77}],77:[function(require,module,exports){
 "use strict";
 
 var ThreeUtils = require("./threeUtils");
@@ -14910,7 +14922,7 @@ function renderFeature(feature, layer, z_offset) {
 module.exports.renderFeature = renderFeature;
 module.exports.SlideHolder = SlideHolder;
 
-},{"./threeUtils":79}],79:[function(require,module,exports){
+},{"./threeUtils":78}],78:[function(require,module,exports){
 "use strict";
 
 function mergeGeometries(geometries) {
@@ -14923,7 +14935,7 @@ function mergeGeometries(geometries) {
 
 module.exports.mergeGeometries = mergeGeometries;
 
-},{}],80:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -14984,7 +14996,7 @@ var SimpleQueue = (function () {
 
 module.exports = SimpleQueue;
 
-},{}],81:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 'use strict';
 
 var removeClass = function removeClass(el, className) {
@@ -15035,7 +15047,7 @@ module.exports.removeClass = removeClass;
 module.exports.addClass = addClass;
 module.exports.DnDFileController = DnDFileController;
 
-},{}],82:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 "use strict";
 
 function isFloat(n) {
@@ -15054,7 +15066,7 @@ module.exports.isFloat = isFloat;
 module.exports.isInteger = isInteger;
 module.exports.isFloatOrInt = isFloatOrInt;
 
-},{}],83:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15115,7 +15127,7 @@ var SimpleQueue = (function () {
 
 module.exports = SimpleQueue;
 
-},{}],84:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15175,7 +15187,7 @@ var PanAndZoom = (function () {
 
 module.exports = PanAndZoom;
 
-},{"../core/registry":64}],85:[function(require,module,exports){
+},{"../core/registry":64}],84:[function(require,module,exports){
 
 //Colors taken from: http://www.google.ch/design/spec/style/color.html
 "use strict";
@@ -15304,7 +15316,7 @@ module.exports.darkColorKeys = darkColorKeys;
 module.exports.layerColors = layerColors;
 module.exports.renderAllColors = renderAllColors;
 
-},{}],86:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 "use strict";
 
 var Colors = require("./colors");
@@ -15338,7 +15350,7 @@ function renderDevice(device) {
 
 module.exports.renderDevice = renderDevice;
 
-},{"./colors":85}],87:[function(require,module,exports){
+},{"./colors":84}],86:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15382,7 +15394,7 @@ var FeatureRenderer = (function () {
 
 module.exports = FeatureRenderer;
 
-},{"../colors":85}],88:[function(require,module,exports){
+},{"../colors":84}],87:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15440,7 +15452,7 @@ var ChannelRenderer = (function (_FeatureRenderer) {
 
 module.exports = ChannelRenderer;
 
-},{"../../core/features":53,"../../core/registry":64,"../colors":85,"../paperPrimitives":97,"./FeatureRenderer":87}],89:[function(require,module,exports){
+},{"../../core/features":53,"../../core/registry":64,"../colors":84,"../paperPrimitives":96,"./FeatureRenderer":86}],88:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15509,7 +15521,7 @@ var CircleValveRenderer = (function (_FeatureRenderer) {
 
 module.exports = CircleValveRenderer;
 
-},{"../../core/features":53,"../../core/registry":64,"../colors":85,"../paperPrimitives":97,"./FeatureRenderer":87}],90:[function(require,module,exports){
+},{"../../core/features":53,"../../core/registry":64,"../colors":84,"../paperPrimitives":96,"./FeatureRenderer":86}],89:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15566,7 +15578,7 @@ var HollowChannelRenderer = (function (_FeatureRenderer) {
 
 module.exports = HollowChannelRenderer;
 
-},{"../../core/features":53,"../../core/registry":64,"../colors":85,"../paperPrimitives":97,"./FeatureRenderer":87}],91:[function(require,module,exports){
+},{"../../core/features":53,"../../core/registry":64,"../colors":84,"../paperPrimitives":96,"./FeatureRenderer":86}],90:[function(require,module,exports){
 "use strict";
 
 module.exports.Channel = require("./channelRenderer");
@@ -15575,7 +15587,7 @@ module.exports.CircleValve = require("./circleValveRenderer");
 module.exports.HollowChannel = require("./hollowChannelRenderer");
 module.exports.Port = require("./portRenderer");
 
-},{"./channelRenderer":88,"./circleValveRenderer":89,"./hollowChannelRenderer":90,"./portRenderer":92,"./viaRenderer":93}],92:[function(require,module,exports){
+},{"./channelRenderer":87,"./circleValveRenderer":88,"./hollowChannelRenderer":89,"./portRenderer":91,"./viaRenderer":92}],91:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15644,7 +15656,7 @@ var PortRenderer = (function (_FeatureRenderer) {
 
 module.exports = PortRenderer;
 
-},{"../../core/features":53,"../../core/registry":64,"../colors":85,"../paperPrimitives":97,"./FeatureRenderer":87}],93:[function(require,module,exports){
+},{"../../core/features":53,"../../core/registry":64,"../colors":84,"../paperPrimitives":96,"./FeatureRenderer":86}],92:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15713,7 +15725,7 @@ var ViaRenderer = (function (_FeatureRenderer) {
 
 module.exports = ViaRenderer;
 
-},{"../../core/features":53,"../../core/registry":64,"../colors":85,"../paperPrimitives":97,"./FeatureRenderer":87}],94:[function(require,module,exports){
+},{"../../core/features":53,"../../core/registry":64,"../colors":84,"../paperPrimitives":96,"./FeatureRenderer":86}],93:[function(require,module,exports){
 "use strict";
 
 var Colors = require("../colors");
@@ -15800,7 +15812,7 @@ function makeHorizontalLines(grid) {
 
 module.exports.renderGrid = renderGrid;
 
-},{"../colors":85}],95:[function(require,module,exports){
+},{"../colors":84}],94:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15913,7 +15925,7 @@ var AdaptiveGrid = (function () {
 
 module.exports = AdaptiveGrid;
 
-},{"../../core/registry":64,"../colors":85}],96:[function(require,module,exports){
+},{"../../core/registry":64,"../colors":84}],95:[function(require,module,exports){
 "use strict";
 
 var HTMLUtils = require("../utils/htmlUtils");
@@ -15946,6 +15958,9 @@ var canvas = document.getElementById("c");
 
 var canvasBlock = document.getElementById("canvas_block");
 var renderBlock = document.getElementById("renderContainer");
+
+var renderer = undefined;
+var view = undefined;
 
 var buttons = {
     "Channel": channelButton,
@@ -15997,29 +16012,81 @@ function setActiveLayer(layerName) {
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
 }
 
+function switchTo3D() {
+    renderer.loadJSON(Registry.currentDevice.toJSON());
+    var cameraCenter = view.getViewCenterInMillimeters();
+    var height = Registry.currentDevice.params.getValue("height") / 1000;
+    var pixels = view.getDeviceHeightInPixels();
+    renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels);
+    renderer.showMockup();
+    HTMLUtils.removeClass(renderBlock, "hidden-block");
+    HTMLUtils.removeClass(button_2D, "hidden-button");
+    HTMLUtils.addClass(canvasBlock, "hidden-block");
+    HTMLUtils.addClass(button_3D, "hidden-button");
+    HTMLUtils.addClass(renderBlock, "shown-block");
+    HTMLUtils.addClass(button_2D, "shown-button");
+    HTMLUtils.removeClass(canvasBlock, "shown-block");
+    HTMLUtils.removeClass(button_3D, "shown-button");
+}
+
+//TODO: transition backwards is super hacky. Fix it!
+function switchTo2D() {
+    var center = renderer.getCameraCenterInMicrometers();
+    var zoom = renderer.getZoom();
+    var newCenterX = center[0];
+    if (newCenterX < 0) {
+        newCenterX = 0;
+    } else if (newCenterX > Registry.currentDevice.params.getValue("width")) {
+        newCenterX = Registry.currentDevice.params.getValue("width");
+    }
+    var newCenterY = paper.view.center.y - center[1];
+    if (newCenterY < 0) {
+        newCenterY = 0;
+    } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
+        newCenterY = Registry.currentDevice.params.getValue("height");
+    }
+    Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
+    Registry.viewManager.setZoom(zoom);
+    HTMLUtils.addClass(renderBlock, "hidden-block");
+    HTMLUtils.addClass(button_2D, "hidden-button");
+    HTMLUtils.removeClass(canvasBlock, "hidden-block");
+    HTMLUtils.removeClass(button_3D, "hidden-button");
+    HTMLUtils.removeClass(renderBlock, "shown-block");
+    HTMLUtils.removeClass(button_2D, "shown-button");
+    HTMLUtils.addClass(canvasBlock, "shown-block");
+    HTMLUtils.addClass(button_3D, "shown-button");
+}
+
 function setupAppPage() {
+
+    view = Registry.viewManager.view;
+    renderer = Registry.threeRenderer;
     channelButton.onclick = function () {
         Registry.viewManager.activateTool("Channel");
         var bg = Colors.getDefaultFeatureColor(Features.Channel, Registry.currentLayer);
         setActiveButton("Channel");
+        switchTo2D();
     };
 
     circleValveButton.onclick = function () {
         Registry.viewManager.activateTool("CircleValve");
         var bg = Colors.getDefaultFeatureColor(Features.CircleValve, Registry.currentLayer);
         setActiveButton("CircleValve");
+        switchTo2D();
     };
 
     portButton.onclick = function () {
         Registry.viewManager.activateTool("Port");
         var bg = Colors.getDefaultFeatureColor(Features.Port, Registry.currentLayer);
         setActiveButton("Port");
+        switchTo2D();
     };
 
     viaButton.onclick = function () {
         Registry.viewManager.activateTool("Via");
         var bg = Colors.getDefaultFeatureColor(Features.Via, Registry.currentLayer);
         setActiveButton("Via");
+        switchTo2D();
     };
 
     flowButton.onclick = function () {
@@ -16062,36 +16129,12 @@ function setupAppPage() {
         }
     };
 
-    var view = Registry.viewManager.view;
-    var renderer = Registry.threeRenderer;
-
     button2D.onclick = function () {
-        HTMLUtils.addClass(renderBlock, "hidden-block");
-        HTMLUtils.addClass(button_2D, "hidden-button");
-        HTMLUtils.removeClass(canvasBlock, "hidden-block");
-        HTMLUtils.removeClass(button_3D, "hidden-button");
-        HTMLUtils.removeClass(renderBlock, "shown-block");
-        HTMLUtils.removeClass(button_2D, "shown-button");
-        HTMLUtils.addClass(canvasBlock, "shown-block");
-        HTMLUtils.addClass(button_3D, "shown-button");
+        switchTo2D();
     };
 
     button3D.onclick = function () {
-
-        renderer.loadJSON(Registry.currentDevice.toJSON());
-        var cameraCenter = view.getViewCenterInMillimeters();
-        var height = Registry.currentDevice.params.getValue("height") / 1000;
-        var pixels = view.getDeviceHeightInPixels();
-        renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels);
-        renderer.showMockup();
-        HTMLUtils.removeClass(renderBlock, "hidden-block");
-        HTMLUtils.removeClass(button_2D, "hidden-button");
-        HTMLUtils.addClass(canvasBlock, "hidden-block");
-        HTMLUtils.addClass(button_3D, "hidden-button");
-        HTMLUtils.addClass(renderBlock, "shown-block");
-        HTMLUtils.addClass(button_2D, "shown-button");
-        HTMLUtils.removeClass(canvasBlock, "shown-block");
-        HTMLUtils.removeClass(button_3D, "shown-button");
+        switchTo3D();
     };
 
     var dnd = new HTMLUtils.DnDFileController("#c", function (files) {
@@ -16115,7 +16158,7 @@ function setupAppPage() {
 
 module.exports.setupAppPage = setupAppPage;
 
-},{"../core/features":53,"../core/registry":64,"../utils/htmlUtils":81,"./colors":85,"jszip":13}],97:[function(require,module,exports){
+},{"../core/features":53,"../core/registry":64,"../utils/htmlUtils":80,"./colors":84,"jszip":13}],96:[function(require,module,exports){
 "use strict";
 
 var Colors = require("./colors");
@@ -16173,7 +16216,7 @@ module.exports.Circle = Circle;
 module.exports.CircleTarget = CircleTarget;
 module.exports.GradientCircle = GradientCircle;
 
-},{"./colors":85}],98:[function(require,module,exports){
+},{"./colors":84}],97:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16598,7 +16641,7 @@ var PaperView = (function () {
 
 module.exports = PaperView;
 
-},{"../core/registry":64,"../utils/simpleQueue":83,"./PanAndZoom":84,"./colors":85,"./deviceRenderer":86,"./featureRenderers":91,"./grid/GridRenderer":94}],99:[function(require,module,exports){
+},{"../core/registry":64,"../utils/simpleQueue":82,"./PanAndZoom":83,"./colors":84,"./deviceRenderer":85,"./featureRenderers":90,"./grid/GridRenderer":93}],98:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16635,7 +16678,7 @@ var MouseTool = (function () {
 
 module.exports = MouseTool;
 
-},{"../../core/registry":64}],100:[function(require,module,exports){
+},{"../../core/registry":64}],99:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16778,7 +16821,7 @@ var ChannelTool = (function (_MouseTool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/features":53,"../../core/registry":64,"../../utils/simpleQueue":83,"./mouseTool":101}],101:[function(require,module,exports){
+},{"../../core/features":53,"../../core/registry":64,"../../utils/simpleQueue":82,"./mouseTool":100}],100:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16815,7 +16858,7 @@ var MouseTool = (function () {
 
 module.exports = MouseTool;
 
-},{"../../core/registry":64}],102:[function(require,module,exports){
+},{"../../core/registry":64}],101:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16891,7 +16934,7 @@ var PanTool = (function (_MouseTool) {
         value: function pan() {
             if (this.lastPoint) {
                 var delta = this.lastPoint.subtract(this.startPoint);
-                Registry.viewManager.moveCenter(delta);
+                Registry.viewManager.moveCenter([delta.x, delta.y]);
             }
         }
     }]);
@@ -16901,7 +16944,7 @@ var PanTool = (function (_MouseTool) {
 
 module.exports = PanTool;
 
-},{"../../core/registry":64,"../../utils/simpleQueue":83,"./mouseTool":101}],103:[function(require,module,exports){
+},{"../../core/registry":64,"../../utils/simpleQueue":82,"./mouseTool":100}],102:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16970,7 +17013,7 @@ var PositionTool = (function (_MouseTool) {
 
 module.exports = PositionTool;
 
-},{"../../core/registry":64,"../../utils/SimpleQueue":80,"./mouseTool":101}],104:[function(require,module,exports){
+},{"../../core/registry":64,"../../utils/SimpleQueue":79,"./mouseTool":100}],103:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -17140,7 +17183,7 @@ var SelectTool = (function (_MouseTool) {
 
 module.exports = SelectTool;
 
-},{"../../core/registry":64,"../../utils/simpleQueue":83,"./MouseTool":99}],105:[function(require,module,exports){
+},{"../../core/registry":64,"../../utils/simpleQueue":82,"./MouseTool":98}],104:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -17497,6 +17540,17 @@ var ViewManager = (function () {
             return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
         }
     }, {
+        key: "getDeviceCenter",
+        value: function getDeviceCenter() {
+            var dev = Registry.currentDevice;
+            var width = dev.params.getValue("width");
+            var height = dev.params.getValue("height");
+            return new paper.Point(width / 2, height / 2);
+        }
+    }, {
+        key: "computeOptimalZoom",
+        value: function computeOptimalZoom() {}
+    }, {
         key: "removeFeaturesByPaperElements",
         value: function removeFeaturesByPaperElements(paperElements) {
             if (paperElements.length > 0) {
@@ -17576,4 +17630,4 @@ var ViewManager = (function () {
 
 module.exports = ViewManager;
 
-},{"../core/features":53,"../core/registry":64,"../utils/SimpleQueue":80,"./PanAndZoom":84,"./tools/channelTool":100,"./tools/mouseTool":101,"./tools/panTool":102,"./tools/positionTool":103,"./tools/selectTool":104}]},{},[45]);
+},{"../core/features":53,"../core/registry":64,"../utils/SimpleQueue":79,"./PanAndZoom":83,"./tools/channelTool":99,"./tools/mouseTool":100,"./tools/panTool":101,"./tools/positionTool":102,"./tools/selectTool":103}]},{},[45]);
