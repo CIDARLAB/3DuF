@@ -27,7 +27,7 @@ class ViewManager {
         this.view.setKeyDownFunction(function(event){
             let key = event.keyCode || event.which;
             if (key== 46 || key == 8){
-                
+                reference.view.deleteSelectedFeatures();
             }
         });
 
