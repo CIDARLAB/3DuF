@@ -32,6 +32,8 @@ let renderBlock = document.getElementById("renderContainer");
 let renderer;
 let view;
 
+let threeD = false;
+
 let buttons = {
     "Channel": channelButton,
     "Via": viaButton,
@@ -82,50 +84,56 @@ function setActiveLayer(layerName) {
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
 }
 
-function switchTo3D(){
-    renderer.loadJSON(Registry.currentDevice.toJSON());
-    let cameraCenter = view.getViewCenterInMillimeters();
-    let height = Registry.currentDevice.params.getValue("height")/1000;
-    let pixels = view.getDeviceHeightInPixels();
-    renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels);
-    renderer.showMockup();
-    HTMLUtils.removeClass(renderBlock,"hidden-block");
-    HTMLUtils.removeClass(button_2D,"hidden-button");
-    HTMLUtils.addClass(canvasBlock,"hidden-block");
-    HTMLUtils.addClass(button_3D,"hidden-button");
-    HTMLUtils.addClass(renderBlock,"shown-block");
-    HTMLUtils.addClass(button_2D,"shown-button");
-    HTMLUtils.removeClass(canvasBlock,"shown-block");
-    HTMLUtils.removeClass(button_3D,"shown-button");
+function switchTo3D() {
+    if (!threeD) {
+        threeD = true;
+        renderer.loadJSON(Registry.currentDevice.toJSON());
+        let cameraCenter = view.getViewCenterInMillimeters();
+        let height = Registry.currentDevice.params.getValue("height") / 1000;
+        let pixels = view.getDeviceHeightInPixels();
+        renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels);
+        renderer.showMockup();
+        HTMLUtils.removeClass(renderBlock, "hidden-block");
+        HTMLUtils.removeClass(button_2D, "hidden-button");
+        HTMLUtils.addClass(canvasBlock, "hidden-block");
+        HTMLUtils.addClass(button_3D, "hidden-button");
+        HTMLUtils.addClass(renderBlock, "shown-block");
+        HTMLUtils.addClass(button_2D, "shown-button");
+        HTMLUtils.removeClass(canvasBlock, "shown-block");
+        HTMLUtils.removeClass(button_3D, "shown-button");
+    }
 }
 
 
 //TODO: transition backwards is super hacky. Fix it!
-function switchTo2D(){
-    let center = renderer.getCameraCenterInMicrometers();
-    let zoom = renderer.getZoom();
-    let newCenterX = center[0];
-    if (newCenterX < 0) {
-        newCenterX = 0
-    } else if (newCenterX > Registry.currentDevice.params.getValue("width")){
-        newCenterX = Registry.currentDevice.params.getValue("width");
+function switchTo2D() {
+    if (threeD) {
+        threeD = false;
+        let center = renderer.getCameraCenterInMicrometers();
+        let zoom = renderer.getZoom();
+        let newCenterX = center[0];
+        if (newCenterX < 0) {
+            newCenterX = 0
+        } else if (newCenterX > Registry.currentDevice.params.getValue("width")) {
+            newCenterX = Registry.currentDevice.params.getValue("width");
+        }
+        let newCenterY = paper.view.center.y - center[1];
+        if (newCenterY < 0) {
+            newCenterY = 0;
+        } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
+            newCenterY = Registry.currentDevice.params.getValue("height")
+        }
+        Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
+        Registry.viewManager.setZoom(zoom);
+        HTMLUtils.addClass(renderBlock, "hidden-block");
+        HTMLUtils.addClass(button_2D, "hidden-button");
+        HTMLUtils.removeClass(canvasBlock, "hidden-block");
+        HTMLUtils.removeClass(button_3D, "hidden-button");
+        HTMLUtils.removeClass(renderBlock, "shown-block");
+        HTMLUtils.removeClass(button_2D, "shown-button");
+        HTMLUtils.addClass(canvasBlock, "shown-block");
+        HTMLUtils.addClass(button_3D, "shown-button");
     }
-    let newCenterY = paper.view.center.y - center[1];
-    if (newCenterY < 0){
-        newCenterY = 0;
-    } else if (newCenterY > Registry.currentDevice.params.getValue("height")){
-        newCenterY = Registry.currentDevice.params.getValue("height")
-    }
-    Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
-    Registry.viewManager.setZoom(zoom);
-    HTMLUtils.addClass(renderBlock,"hidden-block");
-    HTMLUtils.addClass(button_2D,"hidden-button");
-    HTMLUtils.removeClass(canvasBlock,"hidden-block");
-    HTMLUtils.removeClass(button_3D,"hidden-button");
-    HTMLUtils.removeClass(renderBlock,"shown-block");
-    HTMLUtils.removeClass(button_2D,"shown-button");
-    HTMLUtils.addClass(canvasBlock,"shown-block");
-    HTMLUtils.addClass(button_3D,"shown-button");
 }
 
 function setupAppPage() {
@@ -198,7 +206,7 @@ function setupAppPage() {
             let content = zipper.generate({
                 type: "blob"
             });
-            saveAs(content, "device_layers.zip");    
+            saveAs(content, "device_layers.zip");
         }
     }
 
