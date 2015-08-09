@@ -11207,6 +11207,9 @@ window.onload = function () {
     window.Registry = Registry;
     window.Port = createPort;
 
+    console.log("foo");
+    window.view = Registry.viewManager.view;
+
     PageSetup.setupAppPage();
 };
 
@@ -14821,7 +14824,9 @@ var PaperView = (function () {
             var deviceWidth = Registry.currentDevice.params.getValue("width");
             var deviceHeight = Registry.currentDevice.params.getValue("height");
             layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
-            var svg = layer.exportSVG({ asString: true });
+            var svg = layer.exportSVG({
+                asString: true
+            });
             var width = layerCopy.bounds.width;
             var height = layerCopy.bounds.height;
             var widthInMillimeters = width / 1000;
@@ -14830,6 +14835,30 @@ var PaperView = (function () {
             var newSVG = svg.slice(0, 5) + insertString + svg.slice(5);
             layerCopy.remove();
             return newSVG;
+        }
+    }, {
+        key: "getDeviceCenter",
+        value: function getDeviceCenter() {
+            var dev = Registry.currentDevice;
+            var width = dev.params.getValue("width");
+            var height = dev.params.getValue("height");
+            return new paper.Point(width / 2, height / 2);
+        }
+    }, {
+        key: "getViewCenterInMillimeters",
+        value: function getViewCenterInMillimeters() {
+            return [paper.view.center.x / 1000, paper.view.center.y / 1000];
+        }
+    }, {
+        key: "getDeviceHeightInPixels",
+        value: function getDeviceHeightInPixels() {
+            return Registry.currentDevice.params.getValue("height") * paper.view.zoom;
+        }
+    }, {
+        key: "reportRenderSetupData",
+        value: function reportRenderSetupData() {
+            console.log("Center: " + this.getViewCenterInMillimeters());
+            console.log("Height: " + this.getDeviceHeightInPixels());
         }
     }, {
         key: "clear",

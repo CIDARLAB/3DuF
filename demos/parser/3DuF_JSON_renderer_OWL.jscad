@@ -98,7 +98,7 @@ function renderFeaturesNew(layer, z_offset) {
 	} else color = "red";
 	for (var featureID in layer.features) {
 		var feature = layer.features[featureID];
-		renderedFeatures = renderedFeatures.union(renderFeatureNew(feature, layer.params.flip, layer.params.z_offset, color));
+		renderedFeatures = renderedFeatures.union(renderFeatureNew(feature, layer.params.flip, z_offset, color));
 	}
 	return renderedFeatures;
 }
