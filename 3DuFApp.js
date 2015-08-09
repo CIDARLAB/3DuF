@@ -16349,6 +16349,17 @@ var PaperView = (function () {
     }
 
     _createClass(PaperView, [{
+        key: "deleteSelectedFeatures",
+        value: function deleteSelectedFeatures() {
+            var items = paper.project.selectedItems;
+            if (items && items.length > 0) {
+                for (var i = 0; i < items.length; i++) {
+                    console.log(items);
+                    Registry.currentDevice.removeFeatureByID(items[i].featureID);
+                }
+            }
+        }
+    }, {
         key: "layersToSVGStrings",
         value: function layersToSVGStrings() {
             var output = [];
@@ -17311,7 +17322,9 @@ var ViewManager = (function () {
         };
         this.view.setKeyDownFunction(function (event) {
             var key = event.keyCode || event.which;
-            if (key == 46 || key == 8) {}
+            if (key == 46 || key == 8) {
+                reference.view.deleteSelectedFeatures();
+            }
         });
 
         this.view.setResizeFunction(function () {
