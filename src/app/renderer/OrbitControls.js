@@ -402,7 +402,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			dollyStart.set( event.clientX, event.clientY );
 
-		} else if ( event.button === scope.mouseButtons.PAN ) {
+		// map left mouse and middle mouse both to pan. Because I'm terrible.
+		} else if ( event.button === scope.mouseButtons.PAN || event.button == THREE.MOUSE.LEFT) {
 			if ( scope.noPan === true ) return;
 
 			state = STATE.PAN;

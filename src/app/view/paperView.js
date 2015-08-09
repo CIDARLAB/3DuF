@@ -61,19 +61,12 @@ class PaperView {
         return newSVG;
     }
 
-    getDeviceCenter() {
-        let dev = Registry.currentDevice;
-        let width = dev.params.getValue("width");
-        let height = dev.params.getValue("height");
-        return new paper.Point(width/2, height/2);
-    }
-
     getViewCenterInMillimeters() {
         return [paper.view.center.x / 1000, paper.view.center.y / 1000];
     }
 
     getDeviceHeightInPixels() {
-        return Registry.currentDevice.params.getValue("height") * paper.view.zoom;
+        return Registry.currentDevice.params.getValue("height") * paper.view.zoom ;
     }
 
     reportRenderSetupData() {
