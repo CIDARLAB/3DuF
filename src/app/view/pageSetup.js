@@ -13,6 +13,7 @@ let viaButton = document.getElementById("via_button")
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
+let stlButton = document.getElementById("stl_button");
 
 let button2D = document.getElementById("button_2D");
 let button3D = document.getElementById("button_3D");
@@ -51,13 +52,9 @@ let layerIndices = {
     "1": 1
 }
 
-let zipper = new JSZip();
 
-function saveBlobs(blobs) {
-    for (let i = 0; i < blobs.length; i++) {
-        saveAs(blobs[i], "device_layer_" + i + ".svg");
-    }
-}
+
+let zipper = new JSZip();
 
 function drop(ev) {
     ev.preventDefault();
@@ -82,11 +79,20 @@ function setActiveLayer(layerName) {
     setActiveButton(activeButton);
     let bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
+    if (threeD){
+        setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button2D, inactiveBackground, inactiveText);
+    } else {
+        setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button3D, inactiveBackground, inactiveText);
+    }
 }
 
 function switchTo3D() {
     if (!threeD) {
         threeD = true;
+        setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button2D, inactiveBackground, inactiveText);
         renderer.loadJSON(Registry.currentDevice.toJSON());
         let cameraCenter = view.getViewCenterInMillimeters();
         let height = Registry.currentDevice.params.getValue("height") / 1000;
@@ -94,13 +100,9 @@ function switchTo3D() {
         renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
         renderer.showMockup();
         HTMLUtils.removeClass(renderBlock, "hidden-block");
-        HTMLUtils.removeClass(button_2D, "hidden-button");
         HTMLUtils.addClass(canvasBlock, "hidden-block");
-        HTMLUtils.addClass(button_3D, "hidden-button");
         HTMLUtils.addClass(renderBlock, "shown-block");
-        HTMLUtils.addClass(button_2D, "shown-button");
         HTMLUtils.removeClass(canvasBlock, "shown-block");
-        HTMLUtils.removeClass(button_3D, "shown-button");
     }
 }
 
@@ -125,16 +127,14 @@ function switchTo2D() {
         } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
             newCenterY = Registry.currentDevice.params.getValue("height")
         }
+        setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button3D, inactiveBackground, inactiveText);
         Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
         Registry.viewManager.setZoom(zoom);
         HTMLUtils.addClass(renderBlock, "hidden-block");
-        HTMLUtils.addClass(button_2D, "hidden-button");
         HTMLUtils.removeClass(canvasBlock, "hidden-block");
-        HTMLUtils.removeClass(button_3D, "hidden-button");
         HTMLUtils.removeClass(renderBlock, "shown-block");
-        HTMLUtils.removeClass(button_2D, "shown-button");
         HTMLUtils.addClass(canvasBlock, "shown-block");
-        HTMLUtils.addClass(button_3D, "shown-button");
     }
 }
 
@@ -172,12 +172,21 @@ function setupAppPage() {
     };
 
     flowButton.onclick = function() {
+        if (threeD){
+            if (activeLayer == "0") renderer.toggleLayerView(0);
+            else renderer.showLayer(0);
+        }
         Registry.currentLayer = Registry.currentDevice.layers[0];
         setActiveLayer("0");
         Registry.viewManager.updateActiveLayer();
+
     }
 
     controlButton.onclick = function() {
+        if (threeD){
+            if (activeLayer == "1") renderer.toggleLayerView(1);
+            else renderer.showLayer(1);
+        }
         Registry.currentLayer = Registry.currentDevice.layers[1];
         setActiveLayer("1");
         Registry.viewManager.updateActiveLayer();
@@ -188,6 +197,21 @@ function setupAppPage() {
             type: "application/json"
         });
         saveAs(json, "device.json");
+    }
+
+    stlButton.onclick = function() {
+        let json = Registry.currentDevice.toJSON();
+        let stls = renderer.getSTL(json);
+        let blobs = [];
+        let zipper = new JSZip();
+        for (let i =0 ; i < stls.length; i++){
+            let name = "" + i + "_" + json.name + "_" + json.layers[i].name + ".stl";
+            zipper.file(name, stls[i]);
+        }
+        let content = zipper.generate({
+            type: "blob"
+        });
+        saveAs(content, json.name + "_layers.zip");
     }
 
     svgButton.onclick = function() {
@@ -237,6 +261,7 @@ function setupAppPage() {
 
     setActiveButton("Channel");
     setActiveLayer("0");
+    switchTo2D();
 }
 
 module.exports.setupAppPage = setupAppPage;
