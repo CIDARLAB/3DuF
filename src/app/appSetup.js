@@ -10,16 +10,17 @@ var AdaptiveGrid = require("./view/grid/adaptiveGrid");
 var PageSetup = require("./view/pageSetup");
 var Colors = require("./view/colors");
 var ThreeDeviceRenderer = require("./renderer/ThreeDeviceRenderer");
+var Examples = require("./examples/jsonExamples");
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
 var HollowChannel = Features.HollowChannel;
 
-var createPort = function(position, radius1, radius2, height){
+var createPort = function(position, radius1, radius2, height) {
     let port = new Features.Port({
         position: position,
         radius1: radius1,
-        radius2: radius2, 
+        radius2: radius2,
         height: height
     });
     Registry.currentLayer.addFeature(port);
@@ -29,52 +30,33 @@ var view;
 var viewManager;
 var grid;
 
-var dev = new Device({
-    "width": 75.8 * 1000,
-    "height": 51 * 1000
-    }, "My Device");
-var flow = new Layer({
-    "z_offset": 0,
-    "flip": false
-}, "flow");
-var control = new Layer({
-    "z_offset": 1.2 * 1000,
-    "flip": true
-}, "control");
-dev.addLayer(flow);
-dev.addLayer(control);
-var chan1 = new Channel({
-    "start": [20 * 1000, 20 * 1000],
-    "end": [40 * 1000, 40 * 1000],
-});
-//flow.addFeature(chan1);
-var circ1 = new CircleValve({
-    "position": [30 * 1000,30 * 1000],
-});
-//control.addFeature(circ1);
-var chan2 = new Channel({
-    "start": [25 * 1000, 20 * 1000],
-    "end": [45*1000, 40*1000],
-    "width": 10
-});
-//flow.addFeature(chan2);
-
 paper.setup("c");
 
-flow.setColor("indigo");
-control.setColor("red");
-
-window.onload = function(){
+window.onload = function() {
     manager = new CanvasManager(document.getElementById("c"));
     view = new PaperView(document.getElementById("c"));
     viewManager = new ViewManager(view);
     grid = new AdaptiveGrid();
     grid.setColor(Colors.TEAL_100);
 
+
     Registry.viewManager = viewManager;
 
-    manager.loadDeviceFromJSON(dev.toJSON());
-    
+    if (!localStorage){
+        manager.loadDeviceFromJSON(JSON.parse(Examples.example1));
+    }
+    else if (!localStorage.getItem('currentDevice')) {
+        localStorage.setItem('currentDevice', Examples.example1);
+    } else {
+        try {
+            manager.loadFromStorage();
+        } catch (err) {
+            localStorage.setItem('currentDevice', Examples.example1);
+            manager.loadFromStorage();
+        }
+    }
+
+
     viewManager.updateGrid();
     Registry.currentDevice.updateView();
 
