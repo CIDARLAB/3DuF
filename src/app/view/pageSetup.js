@@ -91,7 +91,7 @@ function switchTo3D() {
         let cameraCenter = view.getViewCenterInMillimeters();
         let height = Registry.currentDevice.params.getValue("height") / 1000;
         let pixels = view.getDeviceHeightInPixels();
-        renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels);
+        renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
         renderer.showMockup();
         HTMLUtils.removeClass(renderBlock, "hidden-block");
         HTMLUtils.removeClass(button_2D, "hidden-button");
@@ -110,7 +110,9 @@ function switchTo2D() {
     if (threeD) {
         threeD = false;
         let center = renderer.getCameraCenterInMicrometers();
+        console.log(center);
         let zoom = renderer.getZoom();
+        console.log("ZOOM: " + zoom);
         let newCenterX = center[0];
         if (newCenterX < 0) {
             newCenterX = 0
