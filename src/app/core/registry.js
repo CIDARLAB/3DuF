@@ -10,6 +10,7 @@ var currentGrid = null;
 var view = null;
 var viewManager = null;
 var id_counter = 0;
+var threeRenderer = null;
 
 var generateID = function() {
     return uuid.v1();
@@ -24,3 +25,4 @@ exports.currentLayer = currentLayer;
 exports.canvasManager = canvasManager;
 exports.viewManager = viewManager;
 exports.currentGrid = currentGrid;
+exports.threeRenderer = threeRenderer;

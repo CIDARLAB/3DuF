@@ -19,6 +19,7 @@
   "description": "User-friendly CAD tool for designing microfluidic devices.",
   "main": "3DuFApp.js",
   "scripts": {
+    "compile_orbit": "node_modules/.bin/browserify ./src/app/renderer/orbit_demo.js -t babelify --outfile ./orbit_bundle.js",
     "compile": "node_modules/.bin/browserify ./src/app/appSetup.js -t babelify --outfile ./3DuFapp.js",
     "test": "node_modules/.bin/mocha --recursive --compilers js:babel/register -R spec ./src/test/",
     "prepublish": "npm run compile",
