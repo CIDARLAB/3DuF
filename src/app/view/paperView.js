@@ -30,9 +30,9 @@ class PaperView {
         this.inactiveAlpha = .5;
     }
 
-    layersToSVGStrings(){
-        let output = [];  
-        for (let i =0; i < this.featureLayer.children.length; i ++){
+    layersToSVGStrings() {
+        let output = [];
+        for (let i = 0; i < this.featureLayer.children.length; i++) {
             let layer = this.featureLayer.children[i];
             let svg = this.postProcessLayerToSVG(layer);
             output.push(svg);
@@ -40,23 +40,38 @@ class PaperView {
         return output;
     }
 
-    postProcessLayerToSVG(layer){
+    postProcessLayerToSVG(layer) {
         let layerCopy = layer.clone();
-        layerCopy.bounds.topLeft = new paper.Point(0,0);
+        layerCopy.bounds.topLeft = new paper.Point(0, 0);
         let deviceWidth = Registry.currentDevice.params.getValue("width");
         let deviceHeight = Registry.currentDevice.params.getValue("height");
         layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
-        let svg = layer.exportSVG({asString: true});
+        let svg = layer.exportSVG({
+            asString: true
+        });
         let width = layerCopy.bounds.width;
         let height = layerCopy.bounds.height;
         let widthInMillimeters = width / 1000;
         let heightInMilliMeters = height / 1000;
-        let insertString = 'width="'+ widthInMillimeters + 'mm" ' + 
+        let insertString = 'width="' + widthInMillimeters + 'mm" ' +
             'height="' + heightInMilliMeters + 'mm" ' +
             'viewBox="0 0 ' + width + ' ' + height + '" ';
-        let newSVG = svg.slice(0,5) + insertString + svg.slice(5);
+        let newSVG = svg.slice(0, 5) + insertString + svg.slice(5);
         layerCopy.remove();
         return newSVG;
+    }
+
+    getViewCenterInMillimeters() {
+        return [paper.view.center.x / 1000, paper.view.center.y / 1000];
+    }
+
+    getDeviceHeightInPixels() {
+        return Registry.currentDevice.params.getValue("height") * paper.view.zoom;
+    }
+
+    reportRenderSetupData() {
+        console.log("Center: " + this.getViewCenterInMillimeters());
+        console.log("Height: " + this.getDeviceHeightInPixels());
     }
 
     clear() {
@@ -185,8 +200,7 @@ class PaperView {
             let targetAlpha;
             if (i != this.activeLayer) {
                 targetAlpha = this.inactiveAlpha;
-            } 
-            else {
+            } else {
                 targetAlpha = 1;
             }
             for (let j = 0; j < layer.children.length; j++) {
@@ -310,8 +324,7 @@ class PaperView {
 
         if (onlyHitActiveLayer && this.activeLayer != null) {
             target = this.featureLayer.children[this.activeLayer];
-        }
-        else target = this.featureLayer;
+        } else target = this.featureLayer;
 
         let result = target.hitTest(point, hitOptions);
         if (result) {

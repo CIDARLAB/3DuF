@@ -265,6 +265,17 @@ class ViewManager {
         return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
     }
 
+    getDeviceCenter() {
+        let dev = Registry.currentDevice;
+        let width = dev.params.getValue("width");
+        let height = dev.params.getValue("height");
+        return new paper.Point(width/2, height/2);
+    }
+
+    computeOptimalZoom() {
+
+    }
+
 
     removeFeaturesByPaperElements(paperElements){
         if (paperElements.length > 0){
