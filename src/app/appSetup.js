@@ -84,6 +84,9 @@ window.onload = function(){
     window.Registry = Registry;
     window.Port = createPort;
 
+    console.log("foo");
+    window.view = Registry.viewManager.view;
+
     PageSetup.setupAppPage();
 
 };
