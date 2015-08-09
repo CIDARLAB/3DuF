@@ -14,6 +14,9 @@ let viaButton = document.getElementById("via_button")
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
 
+let button2D = document.getElementById("button_2D");
+let button3D = document.getElementById("button_3D");
+
 let flowButton = document.getElementById("flow_button");
 let controlButton = document.getElementById("control_button");
 
@@ -22,6 +25,9 @@ let inactiveText = Colors.BLACK;
 let activeText = Colors.WHITE;
 
 let canvas = document.getElementById("c");
+
+let canvasBlock = document.getElementById("canvas_block");
+let renderBlock = document.getElementById("renderContainer");
 
 let buttons = {
     "Channel": channelButton,
@@ -137,6 +143,38 @@ function setupAppPage() {
             });
             saveAs(content, "device_layers.zip");    
         }
+    }
+
+    let view = Registry.viewManager.view;
+    let renderer = Registry.threeRenderer;
+
+    button2D.onclick = function() {
+        HTMLUtils.addClass(renderBlock,"hidden-block");
+        HTMLUtils.addClass(button_2D,"hidden-button");
+        HTMLUtils.removeClass(canvasBlock,"hidden-block");
+        HTMLUtils.removeClass(button_3D,"hidden-button");
+        HTMLUtils.removeClass(renderBlock,"shown-block");
+        HTMLUtils.removeClass(button_2D,"shown-button");
+        HTMLUtils.addClass(canvasBlock,"shown-block");
+        HTMLUtils.addClass(button_3D,"shown-button");
+    }
+
+    button3D.onclick = function() {
+        
+        renderer.loadJSON(Registry.currentDevice.toJSON());
+        let cameraCenter = view.getViewCenterInMillimeters();
+        let height = Registry.currentDevice.params.getValue("height")/1000;
+        let pixels = view.getDeviceHeightInPixels();
+        renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels);
+        renderer.showMockup();
+        HTMLUtils.removeClass(renderBlock,"hidden-block");
+        HTMLUtils.removeClass(button_2D,"hidden-button");
+        HTMLUtils.addClass(canvasBlock,"hidden-block");
+        HTMLUtils.addClass(button_3D,"hidden-button");
+        HTMLUtils.addClass(renderBlock,"shown-block");
+        HTMLUtils.addClass(button_2D,"shown-button");
+        HTMLUtils.removeClass(canvasBlock,"shown-block");
+        HTMLUtils.removeClass(button_3D,"shown-button");
     }
 
     let dnd = new HTMLUtils.DnDFileController("#c", function(files) {

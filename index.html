@@ -9,7 +9,6 @@
     <script src="lib/filesaver/FileSaver.min.js"></script>
     <script src="lib/three/three.min.js"></script>
 
-    <link rel="stylesheet" href="modified.css">
     <link rel="stylesheet" href="lib/nouislider/nouislider.min.css">
 
     <link rel="stylesheet" href="lib/material/material.min.css">
@@ -18,6 +17,8 @@
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="modified.css">
+
 
 </head>
 
@@ -38,16 +39,17 @@
         <a id="flow_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Flow</a>
         <a id="control_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Control</a>
       </nav>
-      <span class="mdl-layout-title">Download</span>
-      <a id="json_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">JSON</a>
-      <a id="svg_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">SVG</a>
+      <a id="json_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Download JSON</a>
+      <a id="svg_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Download SVG</a>
+      <a id="button_3D" class="shown-button mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">3D View</a>
+      <a id="button_2D" class="hidden-button mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">2D View</a>
     </div>
     <main class="mdl-layout__content">
-      <div id="canvas_block" class="page-content">
+      <div id="view_container" class="page-content">
+      <div id="canvas_block" class="shown-block fade-transition">
         <canvas id="c" tabindex="0" resize></canvas>
       </div>
-      <div id="renderContainer">
-      <script src="orbit_bundle.js"></script>
+      <div id="renderContainer" class="hidden-block fade-transition">
     </main>
   <div>
 

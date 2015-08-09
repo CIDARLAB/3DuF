@@ -372,7 +372,7 @@ THREE.OrbitControls = function (object, domElement) {
 			state = STATE.DOLLY;
 
 			dollyStart.set(event.clientX, event.clientY);
-		} else if (event.button === scope.mouseButtons.PAN) {
+		} else if (event.button === scope.mouseButtons.PAN || event.button == THREE.MOUSE.LEFT) {
 			if (scope.noPan === true) return;
 
 			state = STATE.PAN;
