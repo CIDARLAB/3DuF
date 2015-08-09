@@ -148,6 +148,12 @@ THREE.STLExporter.prototype = {
 		())
 };
 
+function getSTLString(scene){
+	var exporter = new THREE.STLExporter();
+	var stlString = exporter.parse(scene);
+	return stlString;
+}
+
 function saveSTL(scene, name) {
 	var exporter = new THREE.STLExporter();
 	var stlString = exporter.parse(scene);
@@ -176,3 +182,4 @@ var exportString = function (output, filename) {
 
 module.exports.saveSTL = saveSTL;
 module.exports.exportString = exportString;
+module.exports.getSTLString = getSTLString;
