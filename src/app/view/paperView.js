@@ -66,7 +66,7 @@ class PaperView {
     }
 
     getDeviceHeightInPixels() {
-        return Registry.currentDevice.params.getValue("height") * paper.view.zoom ;
+        return Registry.currentDevice.params.getValue("height") * paper.view.zoom;
     }
 
     reportRenderSetupData() {
