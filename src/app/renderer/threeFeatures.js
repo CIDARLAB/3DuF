@@ -145,13 +145,33 @@ function Slide(width, height, thickness){
 	var mesh = new THREE.Mesh(slide, material);
 	group.add(mesh);
 	group.add(DevicePlane(width, height, thickness + .001));
+	let frontPlane = DevicePlane(width, height, thickness + .001);
+	frontPlane.rotation.x += Math.PI;
+	frontPlane.position.y += height;
+	frontPlane.position.z -= thickness;
+	group.add(frontPlane);
 	return group;
 }
 
 function SlideHolder(width, height, slide){
 	var renderedHolder = new THREE.Group();
+	var w = HOLDER_BORDER_WIDTH = .41;
+	var i = INTERLOCK_TOLERANCE;
+	var h = SLIDE_THICKNESS;
+	var bottomLeft = [-w/2 - i, -w/2 - i];
+	var topLeft = [-w/2 - i, height + w/2 + i];
+	var topRight = [width + w/2 + i, height+w/2 + i];
+	var bottomRight = [width + w/2 + i, -w/2 - i];
+	var leftBar = TwoPointRoundedBox(bottomLeft, topLeft, w, h);
+	var topBar = TwoPointRoundedBox(topLeft, topRight, w, h);
+	var rightBar = TwoPointRoundedBox(topRight, bottomRight, w, h);
+	var bottomBar = TwoPointRoundedBox(bottomRight, bottomLeft, w, h);
+	var border = mergeGeometries([leftBar, topBar, rightBar, bottomBar]);
+	var borderMesh = new THREE.Mesh(border, holderMaterial);
+	borderMesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0,-h));
+	renderedHolder.add(borderMesh);
 	if (slide) {
-		renderedHolder.add(Slide(width, height, SLIDE_THICKNESS));	
+		renderedHolder.add(Slide(width, height, h));	
 	}
 	return renderedHolder;
 }
