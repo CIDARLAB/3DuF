@@ -180,6 +180,8 @@ class ViewManager {
     }
 
     setZoom(zoom, refresh = true) {
+        if (zoom > this.maxZoom) zoom = this.maxZoom;
+        else if (zoom < this.minZoom) zoom = this.minZoom;
         this.view.setZoom(zoom);
         this.updateGrid(false);
         this.updateDevice(Registry.currentDevice, false);
