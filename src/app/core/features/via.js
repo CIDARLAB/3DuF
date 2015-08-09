@@ -36,7 +36,7 @@ class Via extends Feature {
         return {
             "radius1": .8 * 1000,
             "radius2": .7 * 1000,
-            "height": 1 * 1000
+            "height": 1.1 * 1000
         };
     }
 }

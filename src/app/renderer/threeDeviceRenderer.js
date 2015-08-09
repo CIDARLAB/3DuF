@@ -104,13 +104,14 @@ class ThreeDeviceRenderer {
 		this.renderer.render(this.scene, this.camera);
 	}
 
-	setupCamera(centerX, centerY, deviceHeight, pixelHeight) {
+	setupCamera(centerX, centerY, deviceHeight, pixelHeight, initialZoom) {
 		this.controls.reset();
 		this.camera.position.z = this.getCameraDistance(deviceHeight, pixelHeight);
 		this.controls.panLeft(-centerX);
 		this.controls.panUp(-centerY + deviceHeight);
 		this.controls.update();
 		this.initialY = this.camera.position.y;
+		this.initialZoom = initialZoom;
 	}
 
 	getCameraCenterInMicrometers(){
@@ -121,8 +122,12 @@ class ThreeDeviceRenderer {
 	getZoom(){
 		let height = this.json.params.height / 1000;
 		let distance = this.camera.position.z;
+		if (distance < 0){
+			return this.initialZoom;
+		}
 		let pixels = this.computeHeightInPixels(height, distance);
 		let zoom = pixels / this.json.params.height;
+		console.log(zoom);
 		return zoom;
 	}
 

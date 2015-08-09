@@ -16,10 +16,10 @@ var slideMaterial = new THREE.MeshLambertMaterial( { color: 0xFFFFFF, opacity: 0
 var holderMaterial = new THREE.MeshLambertMaterial( { color: 0x9E9E9E, shading: THREE.FlatShading});
 
 var layerMaterials = {
-	"red": new THREE.MeshLambertMaterial( { color: 0xF44336, shading: THREE.FlatShading}),
-	"indigo": new THREE.MeshLambertMaterial( { color: 0x3F51B5, shading: THREE.FlatShading}),
-	"purple": new THREE.MeshLambertMaterial( { color: 0x673AB7, shading: THREE.FlatShading}),
-	"grey": new THREE.MeshLambertMaterial( { color: 0x9E9E9E, shading: THREE.FlatShading})
+	"red": new THREE.MeshLambertMaterial( { color: 0xF44336, shading: THREE.SmoothShading}),
+	"indigo": new THREE.MeshLambertMaterial( { color: 0x3F51B5, shading: THREE.SmoothShading}),
+	"purple": new THREE.MeshLambertMaterial( { color: 0x673AB7, shading: THREE.SmoothShading}),
+	"grey": new THREE.MeshLambertMaterial( { color: 0x9E9E9E, shading: THREE.SmoothShading})
 }
 
 function getFeatureMaterial(feature, layer){
