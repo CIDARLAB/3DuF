@@ -160,12 +160,10 @@ class ThreeDeviceRenderer {
 		}
 		let pixels = this.computeHeightInPixels(height, distance);
 		let zoom = pixels / this.json.params.height;
-		console.log(zoom);
 		return zoom;
 	}
 
 	getCameraDistance(objectHeight, pixelHeight) {
-		console.log(pixelHeight);
 		var vFOV = this.camera.fov * Math.PI / 180;
 		var ratio = pixelHeight / this.container.clientHeight;
 		var height = objectHeight / ratio;
@@ -236,7 +234,6 @@ class ThreeDeviceRenderer {
 		else renderedFeatures.add(this.renderFeatures(layer, 0));
 		if (layer.params.flip && !viewOnly) this.flipLayer(renderedFeatures, height, layer.params.z_offset);
 		renderedLayer.add(renderedFeatures);
-		console.log("adding slide holder!");
 		renderedLayer.add(ThreeFeatures.SlideHolder(width, height, viewOnly));
 		return renderedLayer;
 	}
