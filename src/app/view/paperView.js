@@ -34,7 +34,6 @@ class PaperView {
         let items = paper.project.selectedItems;
         if (items && items.length > 0){
             for (let i =0 ; i < items.length; i++){
-                console.log(items);
                 Registry.currentDevice.removeFeatureByID(items[i].featureID);
             }
         }
@@ -77,11 +76,6 @@ class PaperView {
 
     getDeviceHeightInPixels() {
         return Registry.currentDevice.params.getValue("height") * paper.view.zoom;
-    }
-
-    reportRenderSetupData() {
-        console.log("Center: " + this.getViewCenterInMillimeters());
-        console.log("Height: " + this.getDeviceHeightInPixels());
     }
 
     clear() {
@@ -179,7 +173,6 @@ class PaperView {
     /* Rendering Layers */
 
     addLayer(layer, index) {
-        console.log("Adding layer: " + index);
         this.featureLayer.insertChild(index, new paper.Group());
     }
 
@@ -283,7 +276,6 @@ class PaperView {
         this.removeTarget();
         if (this.lastTargetType && this.lastTargetPosition) {
             let renderer = FeatureRenderers[this.lastTargetType];
-            //console.log(renderer.renderTarget.toSource());
             this.currentTarget = FeatureRenderers[this.lastTargetType].renderTarget(this.lastTargetPosition);
             this.uiLayer.addChild(this.currentTarget);
         }

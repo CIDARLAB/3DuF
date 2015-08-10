@@ -100,6 +100,32 @@ function TwoPointBoxFeature(start, end, width, height, flip, z_offset){
 	return box;
 }
 
+function ChamberFeature(start, end, borderWidth, height, flip, z_offset){
+	var box = RoundedChamber(start, end, borderWidth, height);
+	var matrix = new THREE.Matrix4();
+	if (flip){
+		box.applyMatrix(matrix.makeTranslation(0,0,-height));
+	}
+	box.applyMatrix(matrix.makeTranslation(0,0,z_offset));
+	return box;
+}
+
+function Chamber(chamber, layer, z_offset){
+	
+	var start = chamber.params.start;
+	var end = chamber.params.end;
+	var width = chamber.params.borderWidth;
+	var height = chamber.params.height;
+	var flip = layer.params.flip;
+	var z_offset = layer.params.z_offset;
+	
+	var geom = ChamberFeature(start, end, width, height, flip, z_offset);
+	var material = getFeatureMaterial(chamber, layer);
+	var mesh = new THREE.Mesh(geom, material);
+	
+	return mesh;
+}
+
 function Channel(channel, layer, z_offset){
 	var start = channel.params.start;
 	var end = channel.params.end;
@@ -152,16 +178,10 @@ function Slide(width, height, thickness){
 }
 
 function SlideHolder(width, height, slide){
-	console.log("Width: "+ width);
-	console.log("Height: "+ height);
-	console.log("Slide:" + slide);
 	var renderedHolder = new THREE.Group();
 	var w = HOLDER_BORDER_WIDTH = .41;
 	var i = INTERLOCK_TOLERANCE;
 	var h = SLIDE_THICKNESS;
-	console.log("W: "+ w);
-	console.log("i" + i);
-	console.log("h" + h);
 	var bottomLeft = [-w/2 - i, -w/2 - i];
 	var topLeft = [-w/2 - i, height + w/2 + i];
 	var topRight = [width + w/2 + i, height+w/2 + i];
@@ -174,11 +194,50 @@ function SlideHolder(width, height, slide){
 	var borderMesh = new THREE.Mesh(border, holderMaterial);
 	borderMesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0,-h));
 	renderedHolder.add(borderMesh);
-	console.log("in holder, slide:" + slide);
 	if (slide) {
 		renderedHolder.add(Slide(width, height, h));	
 		return renderedHolder;
 	} else return borderMesh;
+}
+
+function RoundedChamber(start, end, borderWidth, height){
+	let startX;
+    let startY;
+    let endX;
+    let endY;
+
+    if (start[0] < end[0]){
+        startX = start[0];
+        endX = end[0];
+    } else {
+        startX = end[0];
+        endX = start[0];
+    }
+    if (start[1] < end[1]){
+        startY = start[1];
+        endY = end[1];
+    } else {
+        startY = end[1];
+        endY = start[1];
+    }
+
+    let w = endX - startX;
+    let h = endY - startY;
+    let bottomLeft = [start[0], start[1]];
+    let bottomRight = [end[0],start[1]];
+    let topLeft = [start[0], end[1]];
+    let topRight = [end[0], end[1]];
+
+	var core = new THREE.BoxGeometry(w,h,height);
+	var matrix = new THREE.Matrix4();
+	core.applyMatrix(matrix.makeTranslation(w/2,h/2,height/2));
+	core.applyMatrix(matrix.makeTranslation(topLeft[0], topLeft[1],0));
+	var left = new TwoPointRoundedBox(bottomLeft, topLeft, borderWidth, height);
+	var top = new TwoPointRoundedBox(topLeft, topRight, borderWidth, height);
+	var right = new TwoPointRoundedBox(topRight, bottomRight, borderWidth, height);
+	var down = new TwoPointRoundedBox(bottomRight, bottomLeft, borderWidth, height);
+	let geom = mergeGeometries([core, left, top, right, down]);
+	return geom;
 }
 
 function TwoPointRoundedBox(start, end, width, height){
@@ -197,6 +256,7 @@ function renderFeature(feature, layer, z_offset){
 	else if (type == "CircleValve") renderedFeature = CircleValve(feature, layer, z_offset); 
 	else if (type == "Via") renderedFeature = Via(feature, layer, z_offset); 
 	else if (type == "Port") renderedFeature = Port(feature, layer, z_offset); 
+	else if (type == "Chamber") renderedFeature = Chamber(feature, layer, z_offset);
 	else console.log("Feature type not recognized: " + type);
 
 	return renderedFeature;

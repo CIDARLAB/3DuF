@@ -67,7 +67,6 @@ window.onload = function() {
     window.Registry = Registry;
     window.Port = createPort;
 
-    console.log("foo");
     window.view = Registry.viewManager.view;
 
     Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
