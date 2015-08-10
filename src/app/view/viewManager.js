@@ -15,18 +15,21 @@ class ViewManager {
         this.middleMouseTool = new PanTool();
         this.rightMouseTool = new SelectTool();
         let reference = this;
-        this.updateQueue = new SimpleQueue(function(){
+        this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
         }, 20);
-        window.onkeydown = function(event){
+        this.saveQueue = new SimpleQueue(function() {
+            reference.saveToStorage();
+        })
+        window.onkeydown = function(event) {
             let key = event.keyCode || event.which;
-            if (key == 46 || key == 8){
+            if (key == 46 || key == 8) {
                 event.preventDefault();
             }
         }
-        this.view.setKeyDownFunction(function(event){
+        this.view.setKeyDownFunction(function(event) {
             let key = event.keyCode || event.which;
-            if (key== 46 || key == 8){
+            if (key == 46 || key == 8) {
                 reference.view.deleteSelectedFeatures();
             }
         });
@@ -121,7 +124,7 @@ class ViewManager {
         }
     }
 
-    layersToSVGStrings(){
+    layersToSVGStrings() {
         return this.view.layersToSVGStrings();
     }
 
@@ -133,7 +136,7 @@ class ViewManager {
         }
     }
 
-    __updateAllLayerFeatures(layer, refresh = true){
+    __updateAllLayerFeatures(layer, refresh = true) {
         for (let key in layer.features) {
             let feature = layer.features[key];
             this.updateFeature(feature, false);
@@ -156,7 +159,7 @@ class ViewManager {
         }
     }
 
-    updateActiveLayer(refresh = true){
+    updateActiveLayer(refresh = true) {
         this.view.setActiveLayer(Registry.currentDevice.layers.indexOf(Registry.currentLayer));
         this.refresh(refresh);
     }
@@ -175,7 +178,7 @@ class ViewManager {
         }
     }
 
-    clear(){
+    clear() {
         this.view.clear();
     }
 
@@ -189,16 +192,16 @@ class ViewManager {
         this.refresh(refresh);
     }
 
-    removeTarget(){
+    removeTarget() {
         this.view.removeTarget();
     }
 
-    updateTarget(featureType, position, refresh = true){
+    updateTarget(featureType, position, refresh = true) {
         this.view.addTarget(featureType, position);
         this.refresh(refresh);
     }
 
-    __updateViewTarget(refresh = true){
+    __updateViewTarget(refresh = true) {
         this.view.updateTarget();
         this.refresh(refresh);
     }
@@ -231,9 +234,18 @@ class ViewManager {
         this.refresh(refresh);
     }
 
+    saveToStorage() {
+        try {
+            localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
+        } catch (err){
+            // can't save, so.. don't?
+        }
+    }
+
     refresh(refresh = true) {
         //this.view.refresh();
         this.updateQueue.run();
+        this.saveQueue.run();
     }
 
     getEventPosition(event) {
@@ -271,7 +283,7 @@ class ViewManager {
         let dev = Registry.currentDevice;
         let width = dev.params.getValue("width");
         let height = dev.params.getValue("height");
-        return new paper.Point(width/2, height/2);
+        return new paper.Point(width / 2, height / 2);
     }
 
     computeOptimalZoom() {
@@ -279,9 +291,9 @@ class ViewManager {
     }
 
 
-    removeFeaturesByPaperElements(paperElements){
-        if (paperElements.length > 0){
-            for (let i =0; i < paperElements.length; i ++){
+    removeFeaturesByPaperElements(paperElements) {
+        if (paperElements.length > 0) {
+            for (let i = 0; i < paperElements.length; i++) {
                 let paperFeature = paperElements[i];
                 Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
             }
@@ -289,14 +301,14 @@ class ViewManager {
         }
     }
 
-    static __eventButtonsToWhich(num){
-        if (num == 1){
+    static __eventButtonsToWhich(num) {
+        if (num == 1) {
             return 1;
-        } else if (num ==2){
+        } else if (num == 2) {
             return 3;
-        } else if (num == 4){
+        } else if (num == 4) {
             return 2;
-        } else if (num == 3){
+        } else if (num == 3) {
             return 2;
         }
     }
@@ -304,14 +316,14 @@ class ViewManager {
     constructMouseEvent(func1, func2, func3) {
         return function(event) {
             let target;
-            if (event.buttons){
+            if (event.buttons) {
                 target = ViewManager.__eventButtonsToWhich(event.buttons);
             } else {
                 target = event.which;
             }
             if (target == 2) func2(event);
             else if (target == 3) func3(event);
-            else if(target == 1 || target == 0) func1(event);
+            else if (target == 1 || target == 0) func1(event);
         }
     }
 
@@ -320,26 +332,26 @@ class ViewManager {
         else return point;
     }
 
-    hitFeature(point){
+    hitFeature(point) {
         return this.view.hitFeature(point);
     }
 
-    hitFeaturesWithViewElement(element){
+    hitFeaturesWithViewElement(element) {
         return this.view.hitFeaturesWithViewElement(element);
     }
 
-    __updateViewMouseEvents(){
+    __updateViewMouseEvents() {
         this.view.setMouseDownFunction(this.constructMouseDownEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
         this.view.setMouseUpFunction(this.constructMouseUpEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
         this.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
     }
 
-    activateTool(toolString){
+    activateTool(toolString) {
         this.leftMouseTool = this.tools[toolString];
         this.__updateViewMouseEvents();
     }
 
-    setupTools(){
+    setupTools() {
         this.tools["Chamber"] = new ChannelTool(Features.Chamber);
         this.tools["Channel"] = new ChannelTool(Features.Channel);
         this.tools["CircleValve"] = new PositionTool(Features.CircleValve);
