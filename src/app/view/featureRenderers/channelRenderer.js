@@ -17,7 +17,6 @@ class ChannelRenderer extends FeatureRenderer{
         let rec = PaperPrimitives.RoundedRect(start, end, width);
         rec.featureID = channel.id;
         rec.fillColor = FeatureRenderer.getLayerColor(channel, Channel);
-        rec.shadowColor = Colors.BLACK;
         return rec;
     }
 
