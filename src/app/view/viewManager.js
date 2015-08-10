@@ -43,7 +43,7 @@ class ViewManager {
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.setupTools();
-        this.activateTool("Channel");
+        this.activateTool("Chamber");
     }
 
     addDevice(device, refresh = true) {
@@ -340,6 +340,7 @@ class ViewManager {
     }
 
     setupTools(){
+        this.tools["Chamber"] = new ChannelTool(Features.Chamber);
         this.tools["Channel"] = new ChannelTool(Features.Channel);
         this.tools["CircleValve"] = new PositionTool(Features.CircleValve);
         this.tools["Port"] = new PositionTool(Features.Port);

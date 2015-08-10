@@ -9,4 +9,4 @@ module.exports.CircleValve = require("./CircleValve");
 module.exports.Port = require("./Port");
 module.exports.Via = require("./Via");
 module.exports.HollowChannel = require("./HollowChannel");
-
+module.exports.Chamber = require("./chamber");
