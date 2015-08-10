@@ -14317,8 +14317,11 @@ var ThreeDeviceRenderer = (function () {
 		value: function getLayerSTL(json, index) {
 			var scene = this.emptyScene();
 			var layer = json.layers[index];
+			console.log(json.layers[index].params);
 			scene.add(this.renderLayer(json, index, false));
+			this.renderer.render(scene, this.camera);
 			var string = getSTLString(scene);
+			this.renderer.render(this.scene, this.camera);
 			return getSTLString(scene);
 		}
 	}, {
@@ -14515,6 +14518,7 @@ var ThreeDeviceRenderer = (function () {
 	}, {
 		key: "flipLayer",
 		value: function flipLayer(layer, height, z_offset) {
+			console.log("Flipping layer");
 			layer.rotation.x += Math.PI;
 			layer.position.y += height;
 			layer.position.z += z_offset;
