@@ -1,20 +1,12 @@
 var Parameter = require("../parameter");
 
-class BooleanValue extends Parameter {
-    constructor(value, reference) {
-        super(BooleanValue.typeString(), value);
-        if (BooleanValue.isInvalid(value)) throw new Error("BooleanValue must be true or false.");
-    }
+let typeString = "Boolean";
 
-    static isInvalid(value) {
-        if (value === false || value === true) return false;
-        else return true;
-    }
+let description="BooleanValue must be true or false.";
 
-    static typeString() {
-        return "Boolean";
-    }
+function isValid(value){
+    if (typeof value === "boolean") return true;
+    else return false;
 }
 
-Parameter.registerParamType(BooleanValue.typeString(), BooleanValue);
-module.exports = BooleanValue;
+Parameter.registerParamType(typeString, isValid, description);

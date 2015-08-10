@@ -4,9 +4,9 @@ var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
 
 class ChannelTool extends MouseTool {
-	constructor(channelClass) {
+	constructor(typeString) {
 		super();
-		this.channelClass = channelClass;
+		this.typeString = typeString;
 		this.startPoint = null;
 		this.lastPoint = null;
 		this.currentChannelID = null;
@@ -58,7 +58,7 @@ class ChannelTool extends MouseTool {
 
 	showTarget(point) {
 		let target = ChannelTool.getTarget(this.lastPoint);
-		Registry.viewManager.updateTarget(this.channelClass.typeString(), [target.x, target.y]);
+		Registry.viewManager.updateTarget(this.typeString, target);
 	}
 
 	initChannel() {
@@ -72,11 +72,11 @@ class ChannelTool extends MouseTool {
 			if (this.currentChannelID) {
 			let target = ChannelTool.getTarget(this.lastPoint);
 			let feat = Registry.currentLayer.getFeature(this.currentChannelID);
-			feat.updateParameter("end", [target.x, target.y]);
+			feat.updateParameter("end", target);
 			Registry.canvasManager.render();
 			} else {
 				let newChannel = this.createChannel(this.startPoint, this.startPoint);
-				this.currentChannelID = newChannel.id;
+				this.currentChannelID = newChannel.getID();
 				Registry.currentLayer.addFeature(newChannel);
 			}
 		}
@@ -85,7 +85,7 @@ class ChannelTool extends MouseTool {
 	finishChannel(point) {
 		let target = ChannelTool.getTarget(point);
 		if (this.currentChannelID) {
-			if (this.startPoint.x == target.x && this.startPoint.y == target.y) {
+			if (this.startPoint.x == target[0] && this.startPoint.y == target[1]) {
 				Registry.currentLayer.removeFeatureByID(this.currentChannelID);
 				//TODO: This will be slow for complex devices, since it re-renders everything
 				Registry.canvasManager.render();
@@ -98,15 +98,16 @@ class ChannelTool extends MouseTool {
 	}
 
 	createChannel(start, end) {
-		return new this.channelClass({
-			"start": [start.x, start.y],
-			"end": [end.x, end.y]
+		return Features[this.typeString]({
+			start: start,
+			end: end
 		});
 	}
 
 	//TODO: Re-establish target selection logic from earlier demo
 	static getTarget(point) {
-		return Registry.viewManager.snapToGrid(point);
+		let target =  Registry.viewManager.snapToGrid(point);
+		return [target.x, target.y]
 	}
 }
 
