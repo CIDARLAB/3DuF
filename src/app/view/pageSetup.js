@@ -10,6 +10,7 @@ let channelButton = document.getElementById("channel_button");
 let circleValveButton = document.getElementById("circleValve_button")
 let portButton = document.getElementById("port_button")
 let viaButton = document.getElementById("via_button")
+let chamberButton = document.getElementById("chamber_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -39,7 +40,8 @@ let buttons = {
     "Channel": channelButton,
     "Via": viaButton,
     "Port": portButton,
-    "CircleValve": circleValveButton
+    "CircleValve": circleValveButton,
+    "Chamber": chamberButton
 }
 
 let layerButtons = {
@@ -168,6 +170,13 @@ function setupAppPage() {
         Registry.viewManager.activateTool("Via");
         let bg = Colors.getDefaultFeatureColor(Features.Via, Registry.currentLayer);
         setActiveButton("Via");
+        switchTo2D();
+    };
+
+    chamberButton.onclick = function() {
+        Registry.viewManager.activateTool("Chamber");
+        let bg = Colors.getDefaultFeatureColor(Features.Chamber, Registry.currentLayer);
+        setActiveButton("Chamber");
         switchTo2D();
     };
 
