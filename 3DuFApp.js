@@ -15630,7 +15630,7 @@ var ChamberRenderer = (function (_FeatureRenderer) {
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
-            var width = Channel.getDefaultValues()["borderWidth"];
+            var width = Chamber.getDefaultValues()["borderWidth"];
             var color = Colors.getDefaultFeatureColor(Chamber, Registry.currentLayer);
             var circ = PaperPrimitives.CircleTarget(position, width / 2, color);
             return circ;
