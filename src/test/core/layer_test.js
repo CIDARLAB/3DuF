@@ -48,11 +48,11 @@ describe("Layer", function() {
         it("should start with the correct z_offset, flip, and name", function() {
             lay1.params.getValue("z_offset").should.equal(0);
             lay1.params.getValue("flip").should.equal(false);
-            lay1.name.value.should.equal("layer1");
+            lay1.name.getValue().should.equal("layer1");
 
             lay2.params.getValue("z_offset").should.equal(1.2);
             lay2.params.getValue("flip").should.equal(true);
-            lay2.name.value.should.equal("layer2");
+            lay2.name.getValue().should.equal("layer2");
         });
         it("should be able to be constructed without a name", function() {
             (function() {
@@ -116,7 +116,7 @@ describe("Layer", function() {
         it("should not let the user remove a feature by ID", function() {
             lay1.addFeature(feat1);
             (function() {
-                lay1.removeFeature(feat1.id)
+                lay1.removeFeature(feat1.getID())
             }).should.throwError();
         });
         it("should not let the user remove a feature when empty", function() {
@@ -169,7 +169,7 @@ describe("Layer", function() {
     describe("#getFeature", function() {
         it("should return a feature when passed an ID", function() {
             lay1.addFeature(feat1);
-            lay1.getFeature(feat1.id).should.be.exactly(feat1);
+            lay1.getFeature(feat1.getID()).should.be.exactly(feat1);
         });
         it("should not allow the user to retrieve a feature for an ID that does not exist in the layer", function() {
             (function() {
@@ -185,7 +185,7 @@ describe("Layer", function() {
         it("can produce JSON when containing a feature", function() {
             lay1.addFeature(feat1);
             let json = lay1.toJSON();
-            json["features"][feat1.id]["id"].should.equal(feat1.id);
+            json["features"][feat1.getID()]["id"].should.equal(feat1.getID());
         });
         it("can produce JSON when containing multiple features", function() {
             lay1.addFeature(feat1);
@@ -209,7 +209,7 @@ describe("Layer", function() {
         it("cannot construct a layer form invalid JSON", function() {
             let json = {
                 "name": {
-                    "type": StringValue.typeString(),
+                    "type": "String",
                     "value": "layer3"
                 },
                 "params": layerParams

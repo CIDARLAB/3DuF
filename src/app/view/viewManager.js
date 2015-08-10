@@ -354,11 +354,11 @@ class ViewManager {
     }
 
     setupTools() {
-        this.tools["Chamber"] = new ChannelTool(Features.Chamber);
-        this.tools["Channel"] = new ChannelTool(Features.Channel);
-        this.tools["CircleValve"] = new PositionTool(Features.CircleValve);
-        this.tools["Port"] = new PositionTool(Features.Port);
-        this.tools["Via"] = new PositionTool(Features.Via);
+        this.tools["Chamber"] = new ChannelTool("Chamber");
+        this.tools["Channel"] = new ChannelTool("Channel");
+        this.tools["CircleValve"] = new PositionTool("CircleValve");
+        this.tools["Port"] = new PositionTool("Port");
+        this.tools["Via"] = new PositionTool("Via");
     }
 }
 
