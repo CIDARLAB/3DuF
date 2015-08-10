@@ -34,11 +34,11 @@ var initDevice = function() {
         "z_offset": 1.2,
         "flip": true
     }, "layer2");
-    feat1 = new Channel({
+    feat1 = Channel({
         "start": [0,0],
         "end": [2,2]
     });
-    feat2 = new CircleValve({
+    feat2 = CircleValve({
         "position": [3,5]
     });
 }
@@ -53,7 +53,7 @@ describe("Device", function() {
             dev.layers.length.should.equal(0);
         });
         it("should start with the correct width, height, and name", function() {
-            dev.name.value.should.equal("dev1");
+            dev.name.getValue().should.equal("dev1");
             dev.params.getValue("width").should.equal(50);
             dev.params.getValue("height").should.equal(60);
         });
@@ -139,12 +139,12 @@ describe("Device", function() {
             let json = {
                 "params": {
                     "height": {
-                        "type": FloatValue.typeString(),
+                        "type": "Float",
                         "value": 23.5
                     }
                 },
                 "name": {
-                    "type": StringValue.typeString(),
+                    "type": "String",
                     "value": "myDevice"
                 },
                 "layers": {

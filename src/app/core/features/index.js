@@ -1,12 +1,27 @@
-/*
-var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
-var requireDirectory = require('require-directory');
-module.exports = requireDirectory(module, {rename: capitalizeFirstLetter});
+var Feature = require("../feature");
 
-*/
-module.exports.Channel = require("./channel");
-module.exports.CircleValve = require("./CircleValve");
-module.exports.Port = require("./Port");
-module.exports.Via = require("./Via");
-module.exports.HollowChannel = require("./HollowChannel");
-module.exports.Chamber = require("./chamber");
+require("./channel");
+require("./hollowChannel");
+require("./circleValve");
+require("./chamber");
+require("./port");
+require("./via");
+
+module.exports.Channel = function(values, name = "New Channel") {
+	return Feature.makeFeature("Channel", values, name);
+}
+module.exports.HollowChannel = function(values, name="New HollowChannel") {
+	return Feature.makeFeature("HollowChannel", values, name);
+}
+module.exports.Chamber = function(values, name="New Chamber") {
+	return Feature.makeFeature("Chamber", values, name);
+}
+module.exports.Port = function(values, name="New Port") {
+	return Feature.makeFeature("Port", values, name);
+}
+module.exports.Via = function(values, name="New Via") {
+	return Feature.makeFeature("Via", values, name);
+}
+module.exports.CircleValve = function(values, name="New CircleValve") {
+	return Feature.makeFeature("CircleValve", values, name);
+}
