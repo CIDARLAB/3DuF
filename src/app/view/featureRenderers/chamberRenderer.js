@@ -21,7 +21,7 @@ class ChamberRenderer extends FeatureRenderer{
     }
 
     static renderTarget(position) {
-        let width = Channel.getDefaultValues()["borderWidth"];
+        let width = Chamber.getDefaultValues()["borderWidth"];
         let color = Colors.getDefaultFeatureColor(Chamber, Registry.currentLayer)
         let circ = PaperPrimitives.CircleTarget(position, width / 2, color);
         return circ;
