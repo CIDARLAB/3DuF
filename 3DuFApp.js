@@ -17559,7 +17559,7 @@ var ViewManager = (function () {
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.setupTools();
-        this.activateTool("Chamber");
+        this.activateTool("Channel");
     }
 
     _createClass(ViewManager, [{
