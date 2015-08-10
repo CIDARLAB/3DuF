@@ -10,28 +10,32 @@ class Params {
     updateParameter(key, value){
         if(this.parameters.hasOwnProperty(key)) this.parameters[key].updateValue(value);
         else {
-            if(this.__isHeritable(key)){
+            if(this.isHeritable(key)){
                 this.parameters[key] = Parameter.makeParam(this.heritable[key], value);
             } 
             else throw new Error(key + "parameter does not exist in Params object");
         }
     }
 
+    __ensureHasKey(key){
+        if (!this.parameters.hasOwnProperty(key)) throw new Error(key + " parameter not found in Params object.");
+    }
+
     getValue(key) {
-        if (this.parameters.hasOwnProperty(key)) return this.parameters[key].value;
-        else throw new Error(key + " parameter does not exist in Params object.");
+        this.__ensureHasKey(key);
+        return this.parameters[key].getValue();
     }
 
     getParameter(key) {
-        if (this.parameters.hasOwnProperty(key)) return this.parameters[key];
-        else throw new Error(key + " parameter does not exist in Params object.");
+        this.__ensureHasKey(key);
+        return this.parameters[key];
     }
 
-    __isUnique(key) {
+    isUnique(key) {
         return (this.unique.hasOwnProperty(key));
     }
 
-    __isHeritable(key) {
+    isHeritable(key) {
         return (this.heritable.hasOwnProperty(key));
     }
 
@@ -40,9 +44,9 @@ class Params {
             if (!params.hasOwnProperty(key)) return false;
         return true;
     }
-    WrongTypeError(key, expected, actual) {
+    wrongTypeError(key, expected, actual) {
         return new Error("Parameter " + key + " is the wrong type. " +
-            "Expected: " + this.unique[key] + ", Actual: " + param.type);
+            "Expected: " + this.unique[key] + ", Actual: " + actual);
     }
 
     /* Turns the raw key:value pairs passed into a user-written Feature declaration
@@ -52,9 +56,9 @@ class Params {
         let newParams = {};
         for (let key in values) {
             let oldParam = values[key];
-            if (this.__isUnique(key)) {
+            if (this.isUnique(key)) {
                 newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
-            } else if (this.__isHeritable(key)) {
+            } else if (this.isHeritable(key)) {
                 if (values[key]){
                     newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
                 }
@@ -73,13 +77,13 @@ class Params {
             let param = parameters[key];
             if (!(param instanceof Parameter)) {
                 throw new Error(key + " is not a ParameterValue.");
-            } else if (this.__isUnique(key)) {
+            } else if (this.isUnique(key)) {
                 if (param.type != this.unique[key]) {
-                    throw wrongTypeError(key, this.unique[key], param.type);
+                    this.wrongTypeError(key, this.unique[key], param.type);
                 }
-            } else if (this.__isHeritable(key)) {
+            } else if (this.isHeritable(key)) {
                 if (param.type != this.heritable[key]) {
-                    throw wrongTypeError(key, this.heritable[key], param.type)
+                    this.wrongTypeError(key, this.heritable[key], param.type)
                 }
             } else {
                 throw new Error(key + " does not exist in this set of ParamTypes.");
@@ -93,7 +97,7 @@ class Params {
     toJSON() {
         let json = {};
         for (let key in this.parameters) {
-            json[key] = this.parameters[key].value;
+            json[key] = this.parameters[key].getValue();
         }
         return json;
     }

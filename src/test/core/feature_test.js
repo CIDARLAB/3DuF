@@ -28,7 +28,7 @@ describe("Feature", function() {
     });
     describe("#init", function() {
         it("should be given a unique ID on initialization", function() {
-            feat1.id.should.not.equal(feat2.id);
+            feat1.getID().should.not.equal(feat2.getID());
         });
     });
     describe("#updateParameter", function(){
@@ -52,8 +52,7 @@ describe("Feature", function() {
     });
     describe("#toJSON", function() {
         it("can produce JSON when containing multiple parameters", function() {
-            feat1.toJSON();
-            console.log(feat1.toJSON());
+            let json = feat1.toJSON();
             feat2.toJSON();
         });
     });
@@ -79,11 +78,11 @@ describe("Feature", function() {
             let json = {
                 "params": {
                     "width": {
-                        "type": FloatValue.typeString(),
+                        "type": "Float",
                         "value": 5.1
                     },
                     "height": {
-                        "type": IntegerValue.typeString(),
+                        "type": "Integer",
                         "value": 3
                     }
                 }

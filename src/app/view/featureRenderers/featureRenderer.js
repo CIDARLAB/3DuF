@@ -1,12 +1,12 @@
 var Colors = require("../colors");
 
 class FeatureRenderer {
-	static getLayerColor(feature, featureClass){
+	static getLayerColor(feature){
 		let height;
         try {
-            height = feature.params.getValue("height");
+            height = feature.getValue("height");
         } catch (err) {
-            height = featureClass.getDefaultValues()["height"];
+            height = feature.getDefaults()["height"];
         }
         let layerHeight = feature.layer.estimateLayerHeight();
         let decimal = height / layerHeight;
