@@ -17534,6 +17534,9 @@ var ViewManager = (function () {
         this.updateQueue = new SimpleQueue(function () {
             reference.view.refresh();
         }, 20);
+        this.saveQueue = new SimpleQueue(function () {
+            reference.saveToStorage();
+        });
         window.onkeydown = function (event) {
             var key = event.keyCode || event.which;
             if (key == 46 || key == 8) {
@@ -17822,12 +17825,22 @@ var ViewManager = (function () {
             this.refresh(refresh);
         }
     }, {
+        key: "saveToStorage",
+        value: function saveToStorage() {
+            try {
+                localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
+            } catch (err) {
+                // can't save, so.. don't?
+            }
+        }
+    }, {
         key: "refresh",
         value: function refresh() {
             var _refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
             //this.view.refresh();
             this.updateQueue.run();
+            this.saveQueue.run();
         }
     }, {
         key: "getEventPosition",
