@@ -20,6 +20,43 @@ var Circle = function(position, radius){
     return circ;
 }
 
+var RoundedChamber = function(start, end, borderWidth){
+    let startX;
+    let startY;
+    let endX;
+    let endY;
+
+    if (start[0] < end[0]){
+        startX = start[0];
+        endX = end[0];
+    } else {
+        startX = end[0];
+        endX = start[0];
+    }
+    if (start[1] < end[1]){
+        startY = start[1];
+        endY = end[1];
+    } else {
+        startY = end[1];
+        endY = start[1];
+    }
+
+    startX -= borderWidth/2;
+    startY -= borderWidth/2;
+    endX += borderWidth/2;
+    endY += borderWidth/2;
+
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: borderWidth/2
+    });
+    return rec;
+}
+
 var GradientCircle = function(position, radius1, radius2, color1, color2){
     let pos = new paper.Point(position);
     let ratio = radius2 / radius1;
@@ -50,3 +87,4 @@ module.exports.RoundedRect = RoundedRect;
 module.exports.Circle = Circle;
 module.exports.CircleTarget = CircleTarget;
 module.exports.GradientCircle = GradientCircle;
+module.exports.RoundedChamber = RoundedChamber;
