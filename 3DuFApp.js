@@ -15071,15 +15071,15 @@ function RoundedChamber(start, end, borderWidth, height) {
 
 	var w = endX - startX;
 	var h = endY - startY;
-	var bottomLeft = [start[0], start[1]];
-	var bottomRight = [end[0], start[1]];
-	var topLeft = [start[0], end[1]];
-	var topRight = [end[0], end[1]];
+	var bottomLeft = [startX, startY];
+	var bottomRight = [endX, startY];
+	var topLeft = [startX, endY];
+	var topRight = [endX, endY];
 
 	var core = new THREE.BoxGeometry(w, h, height);
 	var matrix = new THREE.Matrix4();
 	core.applyMatrix(matrix.makeTranslation(w / 2, h / 2, height / 2));
-	core.applyMatrix(matrix.makeTranslation(topLeft[0], topLeft[1], 0));
+	core.applyMatrix(matrix.makeTranslation(bottomLeft[0], bottomLeft[1], 0));
 	var left = new TwoPointRoundedBox(bottomLeft, topLeft, borderWidth, height);
 	var top = new TwoPointRoundedBox(topLeft, topRight, borderWidth, height);
 	var right = new TwoPointRoundedBox(topRight, bottomRight, borderWidth, height);
