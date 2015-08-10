@@ -11581,21 +11581,17 @@ var CircleValve = (function (_Feature) {
                 "height": FloatValue.typeString()
             };
         }
-    }, {
-        key: 'getDefaultValues',
-        value: function getDefaultValues() {
-            return {
-                "radius1": 1.4 * 1000,
-                "radius2": 1.2 * 1000,
-                "height": .8 * 1000
-            };
-        }
     }]);
 
     return CircleValve;
 })(Feature);
 
 Registry.registeredFeatures[CircleValve.typeString()] = CircleValve;
+Registry.featureDefaults[CircleValve.typeString()] = {
+    "radius1": 1.4 * 1000,
+    "radius2": 1.2 * 1000,
+    "height": .8 * 1000
+};
 
 module.exports = CircleValve;
 
@@ -11795,21 +11791,17 @@ var Via = (function (_Feature) {
                 "height": FloatValue.typeString()
             };
         }
-    }, {
-        key: 'getDefaultValues',
-        value: function getDefaultValues() {
-            return {
-                "radius1": .8 * 1000,
-                "radius2": .7 * 1000,
-                "height": 1.1 * 1000
-            };
-        }
     }]);
 
     return Via;
 })(Feature);
 
 Registry.registeredFeatures[Via.typeString()] = Via;
+Registry.featureDefaults[Via.typeString()] = {
+    "radius1": .8 * 1000,
+    "radius2": .7 * 1000,
+    "height": 1.1 * 1000
+};
 
 module.exports = Via;
 
