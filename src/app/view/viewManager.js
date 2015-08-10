@@ -43,7 +43,7 @@ class ViewManager {
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.setupTools();
-        this.activateTool("Chamber");
+        this.activateTool("Channel");
     }
 
     addDevice(device, refresh = true) {
