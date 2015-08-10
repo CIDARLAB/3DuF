@@ -17827,10 +17827,12 @@ var ViewManager = (function () {
     }, {
         key: "saveToStorage",
         value: function saveToStorage() {
-            try {
-                localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
-            } catch (err) {
-                // can't save, so.. don't?
+            if (Registry.currentDevice) {
+                try {
+                    localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
+                } catch (err) {
+                    // can't save, so.. don't?
+                }
             }
         }
     }, {
