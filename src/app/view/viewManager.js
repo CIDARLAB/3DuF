@@ -235,17 +235,19 @@ class ViewManager {
     }
 
     saveToStorage() {
-        try {
-            localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
-        } catch (err){
-            // can't save, so.. don't?
+        if (Registry.currentDevice) {
+            try {
+                localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
+            } catch (err) {
+                // can't save, so.. don't?
+            }
         }
     }
 
     refresh(refresh = true) {
         //this.view.refresh();
         this.updateQueue.run();
-        this.saveQueue.run();
+        //this.saveQueue.run();
     }
 
     getEventPosition(event) {
