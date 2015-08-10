@@ -11164,9 +11164,11 @@ window.onload = function () {
 
     Registry.viewManager = viewManager;
 
-    if (!localStorage) {
+    /*
+    if (!localStorage){
         manager.loadDeviceFromJSON(JSON.parse(Examples.example1));
-    } else if (!localStorage.getItem('currentDevice')) {
+    }
+    else if (!localStorage.getItem('currentDevice')) {
         localStorage.setItem('currentDevice', Examples.example1);
     } else {
         try {
@@ -11176,6 +11178,9 @@ window.onload = function () {
             manager.loadFromStorage();
         }
     }
+    */
+
+    manager.loadDeviceFromJSON(JSON.parse(Examples.example1));
 
     viewManager.updateGrid();
     Registry.currentDevice.updateView();
@@ -17842,7 +17847,7 @@ var ViewManager = (function () {
 
             //this.view.refresh();
             this.updateQueue.run();
-            this.saveQueue.run();
+            //this.saveQueue.run();
         }
     }, {
         key: "getEventPosition",

@@ -42,6 +42,7 @@ window.onload = function() {
 
     Registry.viewManager = viewManager;
 
+    /*
     if (!localStorage){
         manager.loadDeviceFromJSON(JSON.parse(Examples.example1));
     }
@@ -55,6 +56,9 @@ window.onload = function() {
             manager.loadFromStorage();
         }
     }
+    */
+
+    manager.loadDeviceFromJSON(JSON.parse(Examples.example1));
 
 
     viewManager.updateGrid();

@@ -247,7 +247,7 @@ class ViewManager {
     refresh(refresh = true) {
         //this.view.refresh();
         this.updateQueue.run();
-        this.saveQueue.run();
+        //this.saveQueue.run();
     }
 
     getEventPosition(event) {
