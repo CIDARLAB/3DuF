@@ -42,7 +42,6 @@ class ThreeDeviceRenderer {
 	getLayerSTL(json, index){
 		let scene = this.emptyScene();
 		let layer = json.layers[index];
-		console.log(json.layers[index].params);
 		scene.add(this.renderLayer(json, index, false));
 		this.renderer.render(scene, this.camera);
 		let string = getSTLString(scene);
@@ -242,7 +241,6 @@ class ThreeDeviceRenderer {
 	}
 
 	flipLayer(layer, height, z_offset) {
-		console.log("Flipping layer");
 		layer.rotation.x += Math.PI;
 		layer.position.y += height;
 		layer.position.z += z_offset;
