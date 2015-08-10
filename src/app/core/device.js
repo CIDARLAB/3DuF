@@ -16,11 +16,11 @@ class Device {
         this.layers = [];
         this.groups = [];
         this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
-        this.name = new StringValue(name);
+        this.name = StringValue(name);
     }
 
     setName(name){
-        this.name = new StringValue(name);
+        this.name = StringValue(name);
         this.updateView();
     }
 
@@ -67,7 +67,7 @@ class Device {
     }
     
     removeFeature(feature){
-        this.removeFeatureByID(feature.id);
+        this.removeFeatureByID(feature.getID());
     }
 
     removeFeatureByID(featureID){
@@ -95,8 +95,8 @@ class Device {
 
     static getUniqueParameters(){
         return {
-            "height": FloatValue.typeString(),
-            "width": FloatValue.typeString()
+            "height": "Float",
+            "width": "Float"
         }
     }
 

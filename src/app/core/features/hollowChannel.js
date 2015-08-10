@@ -1,45 +1,17 @@
-var Feature = require("../feature");
-var Registry = require("../registry");
-var Params = require("../params");
-var Parameters = require("../parameters");
+var Feature = require('../feature');
 
-var PointValue = Parameters.PointValue;
-var FloatValue = Parameters.FloatValue;
-
-
-class HollowChannel extends Feature {
-    constructor(values, name = "New HollowChannel") {
-        Feature.checkDefaults(values, HollowChannel);
-        let params = new Params(values, HollowChannel.getUniqueParameters(), HollowChannel.getHeritableParameters());
-        super(HollowChannel.typeString(), params, name);
-    }
-
-    static getUniqueParameters() {
-        return {
-            "start": PointValue.typeString(),
-            "end": PointValue.typeString()
-        }
-    }
-
-    static getHeritableParameters() {
-        return {
-            "width": FloatValue.typeString(),
-            "height": FloatValue.typeString()
-        };
-    }
-
-    static getDefaultValues() {
-        return {
-            "width": .4 * 1000,
-            "height": .1 * 1000
-        };
-    }
-
-    static typeString() {
-        return "HollowChannel";
-    }
+let typeString = "HollowChannel";
+let unique = {
+    "start": "Point",
+    "end": "Point"
+};
+let heritable = {
+    "width": "Float",
+    "height": "Float"
+};
+let defaults = {
+    "width": .41 * 1000,
+    "height": .1 * 1000
 }
 
-Registry.registeredFeatures[HollowChannel.typeString()] = HollowChannel;
-
-module.exports = HollowChannel;
+Feature.registerFeature(typeString, unique, heritable, defaults);

@@ -216,19 +216,8 @@ class PaperView {
     comparePaperFeatureHeights(a, b) {
         let aFeature = Registry.currentDevice.getFeatureByID(a.featureID);
         let bFeature = Registry.currentDevice.getFeatureByID(b.featureID);
-        let aHeight;
-        let bHeight;
-        try {
-            aHeight = aFeature.params.getValue("height");
-        } catch (err) {
-            aHeight = Registry.registeredFeatures[aFeature.type].getDefaultValues()["height"];
-        }
-
-        try {
-            bHeight = bFeature.params.getValue("height");
-        } catch (err) {
-            bHeight = Registry.registeredFeatures[bFeature.type].getDefaultValues()["height"];
-        }
+        let aHeight = aFeature.getValue("height");
+        let bHeight = bFeature.getValue("height");
         return aHeight - bHeight;
     }
 
@@ -251,7 +240,7 @@ class PaperView {
 
     updateFeature(feature) {
         this.removeFeature(feature);
-        let newPaperFeature = FeatureRenderers[feature.type].renderFeature(feature);
+        let newPaperFeature = FeatureRenderers[feature.getType()].renderFeature(feature);
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
         //TODO: This is terrible. Fix it. Fix it now.
         let index = feature.layer.device.layers.indexOf(feature.layer);
@@ -282,9 +271,9 @@ class PaperView {
     }
 
     removeFeature(feature) {
-        let paperFeature = this.paperFeatures[feature.id];
+        let paperFeature = this.paperFeatures[feature.getID()];
         if (paperFeature) paperFeature.remove();
-        this.paperFeatures[feature.id] = null;
+        this.paperFeatures[feature.getID()] = null;
     }
 
     removeGrid() {

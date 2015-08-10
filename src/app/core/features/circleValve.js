@@ -1,46 +1,18 @@
 var Feature = require('../feature');
-var Registry = require('../registry');
-var Parameters = require('../parameters');
-var Params = require('../params');
 
-var PointValue = Parameters.PointValue;
-var FloatValue = Parameters.FloatValue;
-
-class CircleValve extends Feature {
-    constructor(values, name = "New CircleValve") {
-        Feature.checkDefaults(values, CircleValve);
-        let params = new Params(values, CircleValve.getUniqueParameters(), CircleValve.getHeritableParameters());
-        super(CircleValve.typeString(), params, name);
-    }
-
-    static typeString() {
-        return "CircleValve";
-    }
-
-
-    static getUniqueParameters() {
-        return {
-            "position": PointValue.typeString(),
-        }
-    }
-
-    static getHeritableParameters() {
-        return {
-            "radius1": FloatValue.typeString(),
-            "radius2": FloatValue.typeString(),
-            "height": FloatValue.typeString()
-        };
-    }
-
-    static getDefaultValues() {
-        return {
-            "radius1": 1.4 * 1000,
-            "radius2": 1.2 * 1000,
-            "height": .8 * 1000
-        };
-    }
+let typeString = "CircleValve";
+let unique = {
+    "position": "Point"
+};
+let heritable = {
+    "radius1": "Float",
+    "radius2": "Float",
+    "height": "Float"
+};
+let defaults = {
+    "radius1": 1.4 * 1000,
+    "radius2": 1.2 * 1000,
+    "height": .8 * 1000
 }
 
-Registry.registeredFeatures[CircleValve.typeString()] = CircleValve;
-
-module.exports = CircleValve;
+Feature.registerFeature(typeString, unique, heritable, defaults);

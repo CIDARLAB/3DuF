@@ -11198,7 +11198,7 @@ window.onload = function () {
     PageSetup.setupAppPage();
 };
 
-},{"./core/device":46,"./core/features":54,"./core/layer":56,"./core/registry":65,"./examples/jsonExamples":66,"./graphics/CanvasManager":67,"./renderer/ThreeDeviceRenderer":78,"./view/colors":86,"./view/grid/adaptiveGrid":97,"./view/pageSetup":98,"./view/paperView":100,"./view/viewManager":107}],46:[function(require,module,exports){
+},{"./core/device":46,"./core/features":52,"./core/layer":56,"./core/registry":65,"./examples/jsonExamples":66,"./graphics/CanvasManager":67,"./renderer/ThreeDeviceRenderer":78,"./view/colors":86,"./view/grid/adaptiveGrid":97,"./view/pageSetup":98,"./view/paperView":100,"./view/viewManager":107}],46:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -11228,13 +11228,13 @@ var Device = (function () {
         this.layers = [];
         this.groups = [];
         this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
-        this.name = new StringValue(name);
+        this.name = StringValue(name);
     }
 
     _createClass(Device, [{
         key: "setName",
         value: function setName(name) {
-            this.name = new StringValue(name);
+            this.name = StringValue(name);
             this.updateView();
         }
     }, {
@@ -11290,7 +11290,7 @@ var Device = (function () {
     }, {
         key: "removeFeature",
         value: function removeFeature(feature) {
-            this.removeFeatureByID(feature.id);
+            this.removeFeatureByID(feature.getID());
         }
     }, {
         key: "removeFeatureByID",
@@ -11399,8 +11399,8 @@ var Device = (function () {
         key: "getUniqueParameters",
         value: function getUniqueParameters() {
             return {
-                "height": FloatValue.typeString(),
-                "width": FloatValue.typeString()
+                "height": "Float",
+                "width": "Float"
             };
         }
 
@@ -11451,31 +11451,101 @@ var Feature = (function () {
 
         _classCallCheck(this, Feature);
 
-        this.type = type;
-        this.params = params;
-        this.name = new StringValue(name);
-        this.id = id;
-        this.group = group;
-        this.type = type;
+        this.__type = type;
+        this.__params = params;
+        this.__name = StringValue(name);
+        this.__id = id;
+        this.__group = group;
+        this.__type = type;
     }
 
     _createClass(Feature, [{
         key: 'updateParameter',
         value: function updateParameter(key, value) {
-            this.params.updateParameter(key, value);
+            this.__params.updateParameter(key, value);
             this.updateView();
         }
     }, {
         key: 'toJSON',
         value: function toJSON() {
             var output = {};
-            output.id = this.id;
-            output.name = this.name.toJSON();
-            output.type = this.type;
-            output.params = this.params.toJSON();
-            //TODO: Fix groups!
+            output.id = this.__id;
+            output.name = this.__name.toJSON();
+            output.type = this.__type;
+            output.params = this.__params.toJSON();
+
+            //TODO: Implement Groups!
             //output.group = this.group.toJSON();
             return output;
+        }
+    }, {
+        key: 'setGroup',
+        value: function setGroup(group) {
+            //TODO: implement this!
+        }
+    }, {
+        key: 'getGroup',
+        value: function getGroup() {
+            return this.__group;
+        }
+    }, {
+        key: 'getID',
+        value: function getID() {
+            return this.__id;
+        }
+    }, {
+        key: 'setName',
+        value: function setName(name) {
+            this.__name = StringValue(name);
+        }
+    }, {
+        key: 'getName',
+        value: function getName() {
+            return this.__name.getValue();
+        }
+    }, {
+        key: 'getType',
+        value: function getType() {
+            return this.__type;
+        }
+    }, {
+        key: 'getValue',
+        value: function getValue(key) {
+            try {
+                return this.__params.getValue(key);
+            } catch (err) {
+                if (this.hasDefaultParam(key)) return this.getDefaults()[key];else throw new Error("Unable to get value for key: " + key);
+            }
+        }
+    }, {
+        key: 'hasDefaultParam',
+        value: function hasDefaultParam(key) {
+            if (this.getDefaults().hasOwnProperty(key)) return true;else return false;
+        }
+    }, {
+        key: 'hasUniqueParam',
+        value: function hasUniqueParam(key) {
+            return this.__params.isUnique(key);
+        }
+    }, {
+        key: 'hasHeritableParam',
+        value: function hasHeritableParam(key) {
+            return this.__params.isHeritable(key);
+        }
+    }, {
+        key: 'getHeritableParams',
+        value: function getHeritableParams() {
+            return this.getFeatureType().heritable;
+        }
+    }, {
+        key: 'getUniqueParams',
+        value: function getUniqueParams() {
+            return this.getFeatureType().unique;
+        }
+    }, {
+        key: 'getDefaults',
+        value: function getDefaults() {
+            return this.getFeatureType().defaults;
         }
     }, {
         key: 'updateView',
@@ -11492,14 +11562,34 @@ var Feature = (function () {
     }], [{
         key: 'generateID',
         value: function generateID() {
-            //return uuid.v1();
             return Registry.generateID();
         }
     }, {
+        key: 'getDefaultsForType',
+        value: function getDefaultsForType(typeString) {
+            return Registry.registeredFeatures[typeString].defaults;
+        }
+    }, {
+        key: '__ensureTypeExists',
+        value: function __ensureTypeExists(type) {
+            if (Registry.registeredFeatures.hasOwnProperty(type)) {
+                return true;
+            } else {
+                throw new Error("Feature " + type + " has not been registered.");
+            }
+        }
+    }, {
+        key: 'registerFeature',
+        value: function registerFeature(typeString, unique, heritable, defaults) {
+            Registry.registeredFeatures[typeString] = {
+                unique: unique,
+                heritable: heritable,
+                defaults: defaults
+            };
+        }
+    }, {
         key: 'checkDefaults',
-        value: function checkDefaults(values, featureClass) {
-            var defaults = featureClass.getDefaultValues();
-            var heritable = featureClass.getHeritableParameters();
+        value: function checkDefaults(values, heritable, defaults) {
             for (var key in heritable) {
                 if (!values.hasOwnProperty(key)) values[key] = defaults[key];
             }
@@ -11514,12 +11604,14 @@ var Feature = (function () {
         }
     }, {
         key: 'makeFeature',
-        value: function makeFeature(type, values, name) {
-            if (Registry.registeredFeatures.hasOwnProperty(type)) {
-                return new Registry.registeredFeatures[type](values, name);
-            } else {
-                throw new Error("Feature " + type + " has not been registered.");
-            }
+        value: function makeFeature(type, values) {
+            var name = arguments.length <= 2 || arguments[2] === undefined ? "New Feature" : arguments[2];
+
+            Feature.__ensureTypeExists(type);
+            var featureType = Registry.registeredFeatures[type];
+            Feature.checkDefaults(values, featureType.heritable, featureType.defaults);
+            var params = new Params(values, featureType.unique, featureType.heritable);
+            return new Feature(type, params, name);
         }
     }]);
 
@@ -11529,439 +11621,178 @@ var Feature = (function () {
 module.exports = Feature;
 
 },{"./parameter":57,"./parameters":60,"./params":64,"./registry":65,"node-uuid":44}],48:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+"use strict";
 
 var Feature = require('../feature');
-var Registry = require('../registry');
-var Parameters = require('../parameters');
-var Params = require('../params');
 
-var PointValue = Parameters.PointValue;
-var FloatValue = Parameters.FloatValue;
+var typeString = "Chamber";
+var unique = {
+    "start": "Point",
+    "end": "Point"
+};
+var heritable = {
+    "borderWidth": "Float",
+    "height": "Float"
+};
+var defaults = {
+    "borderWidth": .41 * 1000,
+    "height": .1 * 1000
+};
 
-var CircleValve = (function (_Feature) {
-    _inherits(CircleValve, _Feature);
+Feature.registerFeature(typeString, unique, heritable, defaults);
 
-    function CircleValve(values) {
-        var name = arguments.length <= 1 || arguments[1] === undefined ? "New CircleValve" : arguments[1];
+},{"../feature":47}],49:[function(require,module,exports){
+"use strict";
 
-        _classCallCheck(this, CircleValve);
+var Feature = require('../feature');
 
-        Feature.checkDefaults(values, CircleValve);
-        var params = new Params(values, CircleValve.getUniqueParameters(), CircleValve.getHeritableParameters());
-        _get(Object.getPrototypeOf(CircleValve.prototype), 'constructor', this).call(this, CircleValve.typeString(), params, name);
-    }
+var typeString = "Channel";
+var unique = {
+    "start": "Point",
+    "end": "Point"
+};
+var heritable = {
+    "width": "Float",
+    "height": "Float"
+};
+var defaults = {
+    "width": .41 * 1000,
+    "height": .1 * 1000
+};
 
-    _createClass(CircleValve, null, [{
-        key: 'typeString',
-        value: function typeString() {
-            return "CircleValve";
-        }
-    }, {
-        key: 'getUniqueParameters',
-        value: function getUniqueParameters() {
-            return {
-                "position": PointValue.typeString()
-            };
-        }
-    }, {
-        key: 'getHeritableParameters',
-        value: function getHeritableParameters() {
-            return {
-                "radius1": FloatValue.typeString(),
-                "radius2": FloatValue.typeString(),
-                "height": FloatValue.typeString()
-            };
-        }
-    }]);
+Feature.registerFeature(typeString, unique, heritable, defaults);
 
-    return CircleValve;
-})(Feature);
+},{"../feature":47}],50:[function(require,module,exports){
+"use strict";
 
-Registry.registeredFeatures[CircleValve.typeString()] = CircleValve;
-Registry.featureDefaults[CircleValve.typeString()] = {
+var Feature = require('../feature');
+
+var typeString = "CircleValve";
+var unique = {
+    "position": "Point"
+};
+var heritable = {
+    "radius1": "Float",
+    "radius2": "Float",
+    "height": "Float"
+};
+var defaults = {
     "radius1": 1.4 * 1000,
     "radius2": 1.2 * 1000,
     "height": .8 * 1000
 };
 
-module.exports = CircleValve;
+Feature.registerFeature(typeString, unique, heritable, defaults);
 
-},{"../feature":47,"../parameters":60,"../params":64,"../registry":65}],49:[function(require,module,exports){
+},{"../feature":47}],51:[function(require,module,exports){
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var Feature = require('../feature');
 
-var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var typeString = "HollowChannel";
+var unique = {
+    "start": "Point",
+    "end": "Point"
+};
+var heritable = {
+    "width": "Float",
+    "height": "Float"
+};
+var defaults = {
+    "width": .41 * 1000,
+    "height": .1 * 1000
+};
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+Feature.registerFeature(typeString, unique, heritable, defaults);
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+},{"../feature":47}],52:[function(require,module,exports){
+"use strict";
 
 var Feature = require("../feature");
-var Registry = require("../registry");
-var Params = require("../params");
-var Parameters = require("../parameters");
 
-var PointValue = Parameters.PointValue;
-var FloatValue = Parameters.FloatValue;
+require("./channel");
+require("./hollowChannel");
+require("./circleValve");
+require("./chamber");
+require("./port");
+require("./via");
 
-var HollowChannel = (function (_Feature) {
-    _inherits(HollowChannel, _Feature);
+module.exports.Channel = function (values) {
+	var name = arguments.length <= 1 || arguments[1] === undefined ? "New Channel" : arguments[1];
 
-    function HollowChannel(values) {
-        var name = arguments.length <= 1 || arguments[1] === undefined ? "New HollowChannel" : arguments[1];
+	return Feature.makeFeature("Channel", values, name);
+};
+module.exports.HollowChannel = function (values) {
+	var name = arguments.length <= 1 || arguments[1] === undefined ? "New HollowChannel" : arguments[1];
 
-        _classCallCheck(this, HollowChannel);
+	return Feature.makeFeature("HollowChannel", values, name);
+};
+module.exports.Chamber = function (values) {
+	var name = arguments.length <= 1 || arguments[1] === undefined ? "New Chamber" : arguments[1];
 
-        Feature.checkDefaults(values, HollowChannel);
-        var params = new Params(values, HollowChannel.getUniqueParameters(), HollowChannel.getHeritableParameters());
-        _get(Object.getPrototypeOf(HollowChannel.prototype), "constructor", this).call(this, HollowChannel.typeString(), params, name);
-    }
+	return Feature.makeFeature("Chamber", values, name);
+};
+module.exports.Port = function (values) {
+	var name = arguments.length <= 1 || arguments[1] === undefined ? "New Port" : arguments[1];
 
-    _createClass(HollowChannel, null, [{
-        key: "getUniqueParameters",
-        value: function getUniqueParameters() {
-            return {
-                "start": PointValue.typeString(),
-                "end": PointValue.typeString()
-            };
-        }
-    }, {
-        key: "getHeritableParameters",
-        value: function getHeritableParameters() {
-            return {
-                "width": FloatValue.typeString(),
-                "height": FloatValue.typeString()
-            };
-        }
-    }, {
-        key: "getDefaultValues",
-        value: function getDefaultValues() {
-            return {
-                "width": .4 * 1000,
-                "height": .1 * 1000
-            };
-        }
-    }, {
-        key: "typeString",
-        value: function typeString() {
-            return "HollowChannel";
-        }
-    }]);
+	return Feature.makeFeature("Port", values, name);
+};
+module.exports.Via = function (values) {
+	var name = arguments.length <= 1 || arguments[1] === undefined ? "New Via" : arguments[1];
 
-    return HollowChannel;
-})(Feature);
+	return Feature.makeFeature("Via", values, name);
+};
+module.exports.CircleValve = function (values) {
+	var name = arguments.length <= 1 || arguments[1] === undefined ? "New CircleValve" : arguments[1];
 
-Registry.registeredFeatures[HollowChannel.typeString()] = HollowChannel;
+	return Feature.makeFeature("CircleValve", values, name);
+};
 
-module.exports = HollowChannel;
-
-},{"../feature":47,"../parameters":60,"../params":64,"../registry":65}],50:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+},{"../feature":47,"./chamber":48,"./channel":49,"./circleValve":50,"./hollowChannel":51,"./port":53,"./via":54}],53:[function(require,module,exports){
+"use strict";
 
 var Feature = require('../feature');
-var Registry = require('../registry');
-var Parameters = require('../parameters');
-var Params = require('../params');
 
-var PointValue = Parameters.PointValue;
-var FloatValue = Parameters.FloatValue;
-var StringValue = Parameters.StringValue;
+var typeString = "Port";
+var unique = {
+    "position": "Point"
+};
+var heritable = {
+    "radius1": "Float",
+    "radius2": "Float",
+    "height": "Float"
+};
+var defaults = {
+    "radius1": .7 * 1000,
+    "radius2": .7 * 1000,
+    "height": .1 * 1000
+};
 
-var Port = (function (_Feature) {
-    _inherits(Port, _Feature);
+Feature.registerFeature(typeString, unique, heritable, defaults);
 
-    function Port(values) {
-        var name = arguments.length <= 1 || arguments[1] === undefined ? "New Port" : arguments[1];
-
-        _classCallCheck(this, Port);
-
-        Feature.checkDefaults(values, Port);
-        var params = new Params(values, Port.getUniqueParameters(), Port.getHeritableParameters());
-        _get(Object.getPrototypeOf(Port.prototype), 'constructor', this).call(this, Port.typeString(), params, name);
-    }
-
-    _createClass(Port, null, [{
-        key: 'typeString',
-        value: function typeString() {
-            return "Port";
-        }
-    }, {
-        key: 'getUniqueParameters',
-        value: function getUniqueParameters() {
-            return {
-                "position": PointValue.typeString()
-            };
-        }
-    }, {
-        key: 'getHeritableParameters',
-        value: function getHeritableParameters() {
-            return {
-                "radius1": FloatValue.typeString(),
-                "radius2": FloatValue.typeString(),
-                "height": FloatValue.typeString()
-            };
-        }
-    }, {
-        key: 'getDefaultValues',
-        value: function getDefaultValues() {
-            return {
-                "radius1": .7 * 1000,
-                "radius2": .7 * 1000,
-                "height": .1 * 1000
-            };
-        }
-    }]);
-
-    return Port;
-})(Feature);
-
-Registry.registeredFeatures[Port.typeString()] = Port;
-
-module.exports = Port;
-
-},{"../feature":47,"../parameters":60,"../params":64,"../registry":65}],51:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+},{"../feature":47}],54:[function(require,module,exports){
+"use strict";
 
 var Feature = require('../feature');
-var Registry = require('../registry');
-var Parameters = require('../parameters');
-var Params = require('../params');
 
-var PointValue = Parameters.PointValue;
-var FloatValue = Parameters.FloatValue;
-var StringValue = Parameters.StringValue;
-
-var Via = (function (_Feature) {
-    _inherits(Via, _Feature);
-
-    function Via(values) {
-        var name = arguments.length <= 1 || arguments[1] === undefined ? "New Via" : arguments[1];
-
-        _classCallCheck(this, Via);
-
-        Feature.checkDefaults(values, Via);
-        var params = new Params(values, Via.getUniqueParameters(), Via.getHeritableParameters());
-        _get(Object.getPrototypeOf(Via.prototype), 'constructor', this).call(this, Via.typeString(), params, name);
-    }
-
-    _createClass(Via, null, [{
-        key: 'typeString',
-        value: function typeString() {
-            return "Via";
-        }
-    }, {
-        key: 'getUniqueParameters',
-        value: function getUniqueParameters() {
-            return {
-                "position": PointValue.typeString()
-            };
-        }
-    }, {
-        key: 'getHeritableParameters',
-        value: function getHeritableParameters() {
-            return {
-                "radius1": FloatValue.typeString(),
-                "radius2": FloatValue.typeString(),
-                "height": FloatValue.typeString()
-            };
-        }
-    }]);
-
-    return Via;
-})(Feature);
-
-Registry.registeredFeatures[Via.typeString()] = Via;
-Registry.featureDefaults[Via.typeString()] = {
+var typeString = "Via";
+var unique = {
+    "position": "Point"
+};
+var heritable = {
+    "radius1": "Float",
+    "radius2": "Float",
+    "height": "Float"
+};
+var defaults = {
     "radius1": .8 * 1000,
     "radius2": .7 * 1000,
     "height": 1.1 * 1000
 };
 
-module.exports = Via;
+Feature.registerFeature(typeString, unique, heritable, defaults);
 
-},{"../feature":47,"../parameters":60,"../params":64,"../registry":65}],52:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Feature = require('../feature');
-var Registry = require('../registry');
-var Parameters = require('../parameters');
-var Params = require('../params');
-
-var PointValue = Parameters.PointValue;
-var FloatValue = Parameters.FloatValue;
-
-var Chamber = (function (_Feature) {
-    _inherits(Chamber, _Feature);
-
-    function Chamber(values) {
-        var name = arguments.length <= 1 || arguments[1] === undefined ? "New Chamber" : arguments[1];
-
-        _classCallCheck(this, Chamber);
-
-        Feature.checkDefaults(values, Chamber);
-        var params = new Params(values, Chamber.getUniqueParameters(), Chamber.getHeritableParameters());
-        _get(Object.getPrototypeOf(Chamber.prototype), 'constructor', this).call(this, Chamber.typeString(), params, name);
-    }
-
-    _createClass(Chamber, null, [{
-        key: 'typeString',
-        value: function typeString() {
-            return "Chamber";
-        }
-    }, {
-        key: 'getUniqueParameters',
-        value: function getUniqueParameters() {
-            return {
-                "start": PointValue.typeString(),
-                "end": PointValue.typeString()
-            };
-        }
-    }, {
-        key: 'getHeritableParameters',
-        value: function getHeritableParameters() {
-            return {
-                "borderWidth": FloatValue.typeString(),
-                "height": FloatValue.typeString()
-            };
-        }
-    }, {
-        key: 'getDefaultValues',
-        value: function getDefaultValues() {
-            return {
-                "borderWidth": .4 * 1000,
-                "height": .1 * 1000
-            };
-        }
-    }]);
-
-    return Chamber;
-})(Feature);
-
-Registry.registeredFeatures[Chamber.typeString()] = Chamber;
-
-module.exports = Chamber;
-
-},{"../feature":47,"../parameters":60,"../params":64,"../registry":65}],53:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Feature = require('../feature');
-var Registry = require('../registry');
-var Parameters = require('../parameters');
-var Params = require('../params');
-
-var PointValue = Parameters.PointValue;
-var FloatValue = Parameters.FloatValue;
-
-var Channel = (function (_Feature) {
-    _inherits(Channel, _Feature);
-
-    function Channel(values) {
-        var name = arguments.length <= 1 || arguments[1] === undefined ? "New Channel" : arguments[1];
-
-        _classCallCheck(this, Channel);
-
-        Feature.checkDefaults(values, Channel);
-        var params = new Params(values, Channel.getUniqueParameters(), Channel.getHeritableParameters());
-        _get(Object.getPrototypeOf(Channel.prototype), 'constructor', this).call(this, Channel.typeString(), params, name);
-    }
-
-    _createClass(Channel, null, [{
-        key: 'typeString',
-        value: function typeString() {
-            return "Channel";
-        }
-    }, {
-        key: 'getUniqueParameters',
-        value: function getUniqueParameters() {
-            return {
-                "start": PointValue.typeString(),
-                "end": PointValue.typeString()
-            };
-        }
-    }, {
-        key: 'getHeritableParameters',
-        value: function getHeritableParameters() {
-            return {
-                "width": FloatValue.typeString(),
-                "height": FloatValue.typeString()
-            };
-        }
-    }, {
-        key: 'getDefaultValues',
-        value: function getDefaultValues() {
-            return {
-                "width": .4 * 1000,
-                "height": .1 * 1000
-            };
-        }
-    }]);
-
-    return Channel;
-})(Feature);
-
-Registry.registeredFeatures[Channel.typeString()] = Channel;
-
-module.exports = Channel;
-
-},{"../feature":47,"../parameters":60,"../params":64,"../registry":65}],54:[function(require,module,exports){
-/*
-var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
-var requireDirectory = require('require-directory');
-module.exports = requireDirectory(module, {rename: capitalizeFirstLetter});
-
-*/
-"use strict";
-
-module.exports.Channel = require("./channel");
-module.exports.CircleValve = require("./CircleValve");
-module.exports.Port = require("./Port");
-module.exports.Via = require("./Via");
-module.exports.HollowChannel = require("./HollowChannel");
-module.exports.Chamber = require("./chamber");
-
-},{"./CircleValve":48,"./HollowChannel":49,"./Port":50,"./Via":51,"./chamber":52,"./channel":53}],55:[function(require,module,exports){
+},{"../feature":47}],55:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -12021,7 +11852,7 @@ var Layer = (function () {
         _classCallCheck(this, Layer);
 
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
-        this.name = new StringValue(name);
+        this.name = StringValue(name);
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
@@ -12032,7 +11863,7 @@ var Layer = (function () {
         key: 'addFeature',
         value: function addFeature(feature) {
             this.__ensureIsAFeature(feature);
-            this.features[feature.id] = feature;
+            this.features[feature.getID()] = feature;
             this.featureCount += 1;
             feature.layer = this;
             if (Registry.viewManager) Registry.viewManager.addFeature(feature);
@@ -12079,8 +11910,7 @@ var Layer = (function () {
     }, {
         key: '__ensureIsAFeature',
         value: function __ensureIsAFeature(feature) {
-            if (!(feature.hasOwnProperty("id") && feature.hasOwnProperty("type") && feature.hasOwnProperty("params"))) {
-                console.log(feature.toJSON());
+            if (!(feature instanceof Feature)) {
                 throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
             }
         }
@@ -12103,7 +11933,7 @@ var Layer = (function () {
     }, {
         key: 'removeFeature',
         value: function removeFeature(feature) {
-            this.removeFeatureByID(feature.id);
+            this.removeFeatureByID(feature.getID());
         }
 
         //TODO: Stop using delete, it's slow!
@@ -12120,7 +11950,7 @@ var Layer = (function () {
         key: 'containsFeature',
         value: function containsFeature(feature) {
             this.__ensureIsAFeature(feature);
-            return this.features.hasOwnProperty(feature.id);
+            return this.features.hasOwnProperty(feature.getID());
         }
     }, {
         key: 'containsFeatureID',
@@ -12173,8 +12003,8 @@ var Layer = (function () {
         key: 'getUniqueParameters',
         value: function getUniqueParameters() {
             return {
-                "z_offset": FloatValue.typeString(),
-                "flip": BooleanValue.typeString()
+                "z_offset": "Float",
+                "flip": "Boolean"
             };
         }
 
@@ -12215,30 +12045,55 @@ var Parameter = (function () {
     function Parameter(type, value) {
         _classCallCheck(this, Parameter);
 
-        this.type = type;
-        this.value = value;
+        Parameter.checkValue(type, value);
+        this.__type = type;
+        this.__value = value;
     }
 
     _createClass(Parameter, [{
         key: "toJSON",
         value: function toJSON() {
-            return this.value;
+            return this.__value;
+        }
+    }, {
+        key: "getValue",
+        value: function getValue() {
+            return this.__value;
+        }
+    }, {
+        key: "getType",
+        value: function getType() {
+            return this.__type;
         }
     }, {
         key: "updateValue",
         value: function updateValue(value) {
-            if (Registry.registeredParams[this.type].isInvalid(value)) throw new Error("Input value " + value + "does not match the type: " + this.type);else this.value = value;
+            Parameter.checkValue(this.__type, value);
+            this.__value = value;
         }
+
+        //Takes a typestring to recognize that param type, and
+        // an isValid function which returns true if a value is OK for
+        // that type.
     }], [{
+        key: "checkValue",
+        value: function checkValue(type, value) {
+            var paramType = Registry.registeredParams[type];
+            if (paramType.isValid(value)) return true;else throw new Error("Saw value: " + value + ". " + paramType.description);
+        }
+    }, {
         key: "registerParamType",
-        value: function registerParamType(type, func) {
-            Registry.registeredParams[type] = func;
+        value: function registerParamType(typeString, isValid, description) {
+            Registry.registeredParams[typeString] = {
+                isValid: isValid,
+                description: description
+            };
         }
     }, {
         key: "makeParam",
         value: function makeParam(type, value) {
             if (Registry.registeredParams.hasOwnProperty(type)) {
-                return new Registry.registeredParams[type](value);
+                return new Parameter(type, value);
             } else {
                 throw new Error("Type " + type + " has not been registered.");
             }
@@ -12258,228 +12113,105 @@ module.exports = Parameter;
 },{"./registry":65}],58:[function(require,module,exports){
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 var Parameter = require("../parameter");
 
-var BooleanValue = (function (_Parameter) {
-    _inherits(BooleanValue, _Parameter);
+var typeString = "Boolean";
 
-    function BooleanValue(value, reference) {
-        _classCallCheck(this, BooleanValue);
+var description = "BooleanValue must be true or false.";
 
-        _get(Object.getPrototypeOf(BooleanValue.prototype), "constructor", this).call(this, BooleanValue.typeString(), value);
-        if (BooleanValue.isInvalid(value)) throw new Error("BooleanValue must be true or false.");
-    }
+function isValid(value) {
+    if (typeof value === "boolean") return true;else return false;
+}
 
-    _createClass(BooleanValue, null, [{
-        key: "isInvalid",
-        value: function isInvalid(value) {
-            if (value === false || value === true) return false;else return true;
-        }
-    }, {
-        key: "typeString",
-        value: function typeString() {
-            return "Boolean";
-        }
-    }]);
-
-    return BooleanValue;
-})(Parameter);
-
-Parameter.registerParamType(BooleanValue.typeString(), BooleanValue);
-module.exports = BooleanValue;
+Parameter.registerParamType(typeString, isValid, description);
 
 },{"../parameter":57}],59:[function(require,module,exports){
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 var Parameter = require("../parameter");
 var NumberUtils = require("../../utils/numberUtils");
 
-var FloatValue = (function (_Parameter) {
-    _inherits(FloatValue, _Parameter);
+var typeString = "Float";
 
-    function FloatValue(value) {
-        _classCallCheck(this, FloatValue);
+var description = 'FloatValue must be a number >= 0, such as 3.827';
 
-        _get(Object.getPrototypeOf(FloatValue.prototype), "constructor", this).call(this, FloatValue.typeString(), value);
-        if (FloatValue.isInvalid(value)) throw new Error("FloatValue must be a finite number >= 0. Saw: " + value);
-    }
+function isValid(value) {
+    if (typeof value === "number" && NumberUtils.isFloatOrInt(value) && value >= 0) return true;else return false;
+}
 
-    _createClass(FloatValue, null, [{
-        key: "isInvalid",
-        value: function isInvalid(value) {
-            //if (!Number.isFinite(value) || value < 0) return true;
-            if (value < 0 || !NumberUtils.isFloat(value) && !NumberUtils.isInteger(value)) return true;else return false;
-        }
-    }, {
-        key: "typeString",
-        value: function typeString() {
-            return "Float";
-        }
-    }]);
-
-    return FloatValue;
-})(Parameter);
-
-Parameter.registerParamType(FloatValue.typeString(), FloatValue);
-module.exports = FloatValue;
+Parameter.registerParamType(typeString, isValid, description);
 
 },{"../../utils/numberUtils":83,"../parameter":57}],60:[function(require,module,exports){
-/*
-
-var capitalizeFirstLetter = require("../../utils/stringUtils").capitalizeFirstLetter;
-var requireDirectory = require('require-directory');
-module.exports = requireDirectory(module, {rename: capitalizeFirstLetter});
-
-*/
-
 "use strict";
 
-module.exports.BooleanValue = require("./booleanValue");
-module.exports.FloatValue = require("./floatValue");
-module.exports.IntegerValue = require("./integerValue");
-module.exports.PointValue = require("./pointValue");
-module.exports.StringValue = require("./stringValue");
+var Parameter = require("../parameter");
 
-},{"./booleanValue":58,"./floatValue":59,"./integerValue":61,"./pointValue":62,"./stringValue":63}],61:[function(require,module,exports){
+require("./floatValue");
+require("./booleanValue");
+require("./integerValue");
+require("./pointValue");
+require("./stringValue");
+
+module.exports.BooleanValue = function (value) {
+	return Parameter.makeParam("Boolean", value);
+};
+module.exports.FloatValue = function (value) {
+	return Parameter.makeParam("Float", value);
+};
+module.exports.IntegerValue = function (value) {
+	return Parameter.makeParam("Integer", value);
+};
+module.exports.PointValue = function (value) {
+	return Parameter.makeParam("Point", value);
+};
+module.exports.StringValue = function (value) {
+	return Parameter.makeParam("String", value);
+};
+
+},{"../parameter":57,"./booleanValue":58,"./floatValue":59,"./integerValue":61,"./pointValue":62,"./stringValue":63}],61:[function(require,module,exports){
 "use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Parameter = require("../parameter");
 var NumberUtils = require("../../utils/numberUtils");
 
-var IntegerValue = (function (_Parameter) {
-    _inherits(IntegerValue, _Parameter);
+var typeString = "Integer";
 
-    function IntegerValue(value) {
-        _classCallCheck(this, IntegerValue);
+var description = "FloatValue must be an integer >= 0.";
 
-        _get(Object.getPrototypeOf(IntegerValue.prototype), "constructor", this).call(this, IntegerValue.typeString(), value);
-        if (IntegerValue.isInvalid(value)) throw new Error("IntegerValue must be an integer >= 0.");
-    }
+function isValid(value) {
+    if (typeof value === 'number' && NumberUtils.isInteger(value) && value >= 0) return true;else return false;
+}
 
-    _createClass(IntegerValue, null, [{
-        key: "isInvalid",
-        value: function isInvalid(value) {
-            if (!NumberUtils.isInteger(value) || value < 0) return true;else return false;
-        }
-    }, {
-        key: "typeString",
-        value: function typeString() {
-            return "Integer";
-        }
-    }]);
-
-    return IntegerValue;
-})(Parameter);
-
-Parameter.registerParamType(IntegerValue.typeString(), IntegerValue);
-module.exports = IntegerValue;
+Parameter.registerParamType(typeString, isValid, description);
 
 },{"../../utils/numberUtils":83,"../parameter":57}],62:[function(require,module,exports){
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 var Parameter = require("../parameter");
 var NumberUtils = require("../../utils/numberUtils");
 
-var PointValue = (function (_Parameter) {
-    _inherits(PointValue, _Parameter);
+var typeString = "Point";
+var description = "PointValue must be an array containing exactly two numbers, such as [3,-5]";
 
-    function PointValue(value, reference) {
-        _classCallCheck(this, PointValue);
+function isValid(value) {
+    if (value instanceof Array && value.length == 2 && NumberUtils.isFloatOrInt(value[0]) && NumberUtils.isFloatOrInt(value[1])) return true;else return false;
+}
 
-        _get(Object.getPrototypeOf(PointValue.prototype), "constructor", this).call(this, PointValue.typeString(), value);
-        if (PointValue.isInvalid(value)) throw new Error("PointValue must be a coordinate represented by a two-member array of finite numbers, ex. [1,3]");
-    }
-
-    _createClass(PointValue, null, [{
-        key: "isInvalid",
-        value: function isInvalid(value) {
-            if (value.length != 2 || !NumberUtils.isFloatOrInt(value[0]) || !NumberUtils.isFloatOrInt(value[1])) return true;else return false;
-        }
-    }, {
-        key: "typeString",
-        value: function typeString() {
-            return "Point";
-        }
-    }]);
-
-    return PointValue;
-})(Parameter);
-
-Parameter.registerParamType(PointValue.typeString(), PointValue);
-module.exports = PointValue;
+Parameter.registerParamType(typeString, isValid, description);
 
 },{"../../utils/numberUtils":83,"../parameter":57}],63:[function(require,module,exports){
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 var Parameter = require("../parameter");
 
-var StringValue = (function (_Parameter) {
-    _inherits(StringValue, _Parameter);
+var typeString = "String";
+var description = "StringValue must be a String, such as 'foobar'";
 
-    function StringValue(value) {
-        _classCallCheck(this, StringValue);
+function isValid(value) {
+    if (typeof value === 'string') return true;else return false;
+}
 
-        _get(Object.getPrototypeOf(StringValue.prototype), "constructor", this).call(this, StringValue.typeString(), value);
-        if (StringValue.isInvalid(value)) throw new Error("StringValue must be a string, got: " + value);
-    }
-
-    _createClass(StringValue, null, [{
-        key: "isInvalid",
-        value: function isInvalid(value) {
-            if (typeof value != "string") return true;else return false;
-        }
-    }, {
-        key: "typeString",
-        value: function typeString() {
-            return "String";
-        }
-    }]);
-
-    return StringValue;
-})(Parameter);
-
-Parameter.registerParamType(StringValue.typeString(), StringValue);
-module.exports = StringValue;
+Parameter.registerParamType(typeString, isValid, description);
 
 },{"../parameter":57}],64:[function(require,module,exports){
 "use strict";
@@ -12503,29 +12235,36 @@ var Params = (function () {
         key: "updateParameter",
         value: function updateParameter(key, value) {
             if (this.parameters.hasOwnProperty(key)) this.parameters[key].updateValue(value);else {
-                if (this.__isHeritable(key)) {
+                if (this.isHeritable(key)) {
                     this.parameters[key] = Parameter.makeParam(this.heritable[key], value);
                 } else throw new Error(key + "parameter does not exist in Params object");
             }
         }
     }, {
+        key: "__ensureHasKey",
+        value: function __ensureHasKey(key) {
+            if (!this.parameters.hasOwnProperty(key)) throw new Error(key + " parameter not found in Params object.");
+        }
+    }, {
         key: "getValue",
         value: function getValue(key) {
-            if (this.parameters.hasOwnProperty(key)) return this.parameters[key].value;else throw new Error(key + " parameter does not exist in Params object.");
+            this.__ensureHasKey(key);
+            return this.parameters[key].getValue();
         }
     }, {
         key: "getParameter",
         value: function getParameter(key) {
-            if (this.parameters.hasOwnProperty(key)) return this.parameters[key];else throw new Error(key + " parameter does not exist in Params object.");
+            this.__ensureHasKey(key);
+            return this.parameters[key];
         }
     }, {
-        key: "__isUnique",
-        value: function __isUnique(key) {
+        key: "isUnique",
+        value: function isUnique(key) {
             return this.unique.hasOwnProperty(key);
         }
     }, {
-        key: "__isHeritable",
-        value: function __isHeritable(key) {
+        key: "isHeritable",
+        value: function isHeritable(key) {
             return this.heritable.hasOwnProperty(key);
         }
     }, {
@@ -12536,9 +12275,9 @@ var Params = (function () {
             }return true;
         }
     }, {
-        key: "WrongTypeError",
-        value: function WrongTypeError(key, expected, actual) {
-            return new Error("Parameter " + key + " is the wrong type. " + "Expected: " + this.unique[key] + ", Actual: " + param.type);
+        key: "wrongTypeError",
+        value: function wrongTypeError(key, expected, actual) {
+            return new Error("Parameter " + key + " is the wrong type. " + "Expected: " + this.unique[key] + ", Actual: " + actual);
         }
 
         /* Turns the raw key:value pairs passed into a user-written Feature declaration
@@ -12550,9 +12289,9 @@ var Params = (function () {
             var newParams = {};
             for (var key in values) {
                 var oldParam = values[key];
-                if (this.__isUnique(key)) {
+                if (this.isUnique(key)) {
                     newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
-                } else if (this.__isHeritable(key)) {
+                } else if (this.isHeritable(key)) {
                     if (values[key]) {
                         newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
                     }
@@ -12570,16 +12309,16 @@ var Params = (function () {
         key: "__checkParams",
         value: function __checkParams(parameters) {
             for (var key in parameters) {
-                var _param = parameters[key];
-                if (!(_param instanceof Parameter)) {
+                var param = parameters[key];
+                if (!(param instanceof Parameter)) {
                     throw new Error(key + " is not a ParameterValue.");
-                } else if (this.__isUnique(key)) {
-                    if (_param.type != this.unique[key]) {
-                        throw wrongTypeError(key, this.unique[key], _param.type);
+                } else if (this.isUnique(key)) {
+                    if (param.type != this.unique[key]) {
+                        this.wrongTypeError(key, this.unique[key], param.type);
                     }
-                } else if (this.__isHeritable(key)) {
-                    if (_param.type != this.heritable[key]) {
-                        throw wrongTypeError(key, this.heritable[key], _param.type);
+                } else if (this.isHeritable(key)) {
+                    if (param.type != this.heritable[key]) {
+                        this.wrongTypeError(key, this.heritable[key], param.type);
                     }
                 } else {
                     throw new Error(key + " does not exist in this set of ParamTypes.");
@@ -12594,7 +12333,7 @@ var Params = (function () {
         value: function toJSON() {
             var json = {};
             for (var key in this.parameters) {
-                json[key] = this.parameters[key].value;
+                json[key] = this.parameters[key].getValue();
             }
             return json;
         }
@@ -13037,7 +12776,7 @@ var CanvasManager = (function () {
 
 module.exports = CanvasManager;
 
-},{"../core/device":46,"../core/features":54,"../core/registry":65,"../view/colors":86,"./gridGenerator":68,"./panAndZoom":69,"./tools":72}],68:[function(require,module,exports){
+},{"../core/device":46,"../core/features":52,"../core/registry":65,"../view/colors":86,"./gridGenerator":68,"./panAndZoom":69,"./tools":72}],68:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -13500,7 +13239,7 @@ var ChannelTool = (function (_paper$Tool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/features":54,"../../core/registry":65}],72:[function(require,module,exports){
+},{"../../core/features":52,"../../core/registry":65}],72:[function(require,module,exports){
 "use strict";
 
 module.exports.ChannelTool = require("./channelTool");
@@ -13606,7 +13345,7 @@ var ValveTool = (function (_paper$Tool) {
 
 module.exports = ValveTool;
 
-},{"../../core/features":54,"../../core/registry":65}],75:[function(require,module,exports){
+},{"../../core/features":52,"../../core/registry":65}],75:[function(require,module,exports){
 /**
  * @author alteredq / http://alteredqualia.com/
  * @author mr.doob / http://mrdoob.com/
@@ -15371,10 +15110,11 @@ var PanAndZoom = (function () {
 module.exports = PanAndZoom;
 
 },{"../core/registry":65}],86:[function(require,module,exports){
-
-//Colors taken from: http://www.google.ch/design/spec/style/color.html
 "use strict";
 
+var Features = require("../core/features");
+var Feature = require("../core/feature");
+//Colors taken from: http://www.google.ch/design/spec/style/color.html
 module.exports.RED_500 = "#F44336";
 module.exports.INDIGO_500 = "#3F51B5";
 module.exports.GREEN_500 = "#4CAF50";
@@ -15478,9 +15218,9 @@ var getDefaultLayerColor = function getDefaultLayerColor(layer) {
 	return getLayerColors(layer)["500"];
 };
 
-var getDefaultFeatureColor = function getDefaultFeatureColor(featureClass, layer) {
+var getDefaultFeatureColor = function getDefaultFeatureColor(typeString, layer) {
 	if (layer) {
-		var height = featureClass.getDefaultValues()["height"];
+		var height = Feature.getDefaultsForType(typeString)["height"];
 		var decimal = height / layer.estimateLayerHeight();
 		if (!layer.flip) decimal = 1 - decimal;
 		var colors = getLayerColors(layer);
@@ -15499,7 +15239,7 @@ module.exports.darkColorKeys = darkColorKeys;
 module.exports.layerColors = layerColors;
 module.exports.renderAllColors = renderAllColors;
 
-},{}],87:[function(require,module,exports){
+},{"../core/feature":47,"../core/features":52}],87:[function(require,module,exports){
 "use strict";
 
 var Colors = require("./colors");
@@ -15549,12 +15289,12 @@ var FeatureRenderer = (function () {
 
     _createClass(FeatureRenderer, null, [{
         key: "getLayerColor",
-        value: function getLayerColor(feature, featureClass) {
+        value: function getLayerColor(feature) {
             var height = undefined;
             try {
-                height = feature.params.getValue("height");
+                height = feature.getValue("height");
             } catch (err) {
-                height = featureClass.getDefaultValues()["height"];
+                height = feature.getDefaults()["height"];
             }
             var layerHeight = feature.layer.estimateLayerHeight();
             var decimal = height / layerHeight;
@@ -15590,9 +15330,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
-var Chamber = require("../../core/features").Chamber;
 var Colors = require("../colors");
 var FeatureRenderer = require("./FeatureRenderer");
+var Feature = require("../../core/feature");
 
 var ChamberRenderer = (function (_FeatureRenderer) {
     _inherits(ChamberRenderer, _FeatureRenderer);
@@ -15606,24 +15346,19 @@ var ChamberRenderer = (function (_FeatureRenderer) {
     _createClass(ChamberRenderer, null, [{
         key: "renderFeature",
         value: function renderFeature(chamber) {
-            var start = chamber.params.getValue("start");
-            var end = chamber.params.getValue("end");
-            var width = undefined;
-            try {
-                width = chamber.params.getValue("borderWidth");
-            } catch (err) {
-                width = Chamber.getDefaultValues()["borderWidth"];
-            }
+            var start = chamber.getValue("start");
+            var end = chamber.getValue("end");
+            var width = chamber.getValue("borderWidth");
             var rec = PaperPrimitives.RoundedChamber(start, end, width);
-            rec.featureID = chamber.id;
-            rec.fillColor = FeatureRenderer.getLayerColor(chamber, Chamber);
+            rec.featureID = chamber.getID();
+            rec.fillColor = FeatureRenderer.getLayerColor(chamber);
             return rec;
         }
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
-            var width = Chamber.getDefaultValues()["borderWidth"];
-            var color = Colors.getDefaultFeatureColor(Chamber, Registry.currentLayer);
+            var width = Feature.getDefaultsForType("Chamber")["borderWidth"];
+            var color = Colors.getDefaultFeatureColor("Chamber", Registry.currentLayer);
             var circ = PaperPrimitives.CircleTarget(position, width / 2, color);
             return circ;
         }
@@ -15634,7 +15369,7 @@ var ChamberRenderer = (function (_FeatureRenderer) {
 
 module.exports = ChamberRenderer;
 
-},{"../../core/features":54,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],90:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],90:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15647,9 +15382,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
-var Channel = require("../../core/features").Channel;
 var Colors = require("../colors");
 var FeatureRenderer = require("./FeatureRenderer");
+var Feature = require("../../core/feature");
 
 var ChannelRenderer = (function (_FeatureRenderer) {
     _inherits(ChannelRenderer, _FeatureRenderer);
@@ -15663,24 +15398,19 @@ var ChannelRenderer = (function (_FeatureRenderer) {
     _createClass(ChannelRenderer, null, [{
         key: "renderFeature",
         value: function renderFeature(channel) {
-            var start = channel.params.getValue("start");
-            var end = channel.params.getValue("end");
-            var width = undefined;
-            try {
-                width = channel.params.getValue("width");
-            } catch (err) {
-                width = Channel.getDefaultValues()["width"];
-            }
+            var start = channel.getValue("start");
+            var end = channel.getValue("end");
+            var width = channel.getValue("width");
             var rec = PaperPrimitives.RoundedRect(start, end, width);
-            rec.featureID = channel.id;
-            rec.fillColor = FeatureRenderer.getLayerColor(channel, Channel);
+            rec.featureID = channel.getID();
+            rec.fillColor = FeatureRenderer.getLayerColor(channel);
             return rec;
         }
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
-            var width = Channel.getDefaultValues()["width"];
-            var color = Colors.getDefaultFeatureColor(Channel, Registry.currentLayer);
+            var width = Feature.getDefaultsForType("Channel")["width"];
+            var color = Colors.getDefaultFeatureColor("Channel", Registry.currentLayer);
             var circ = PaperPrimitives.CircleTarget(position, width / 2, color);
             return circ;
         }
@@ -15691,7 +15421,7 @@ var ChannelRenderer = (function (_FeatureRenderer) {
 
 module.exports = ChannelRenderer;
 
-},{"../../core/features":54,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],91:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],91:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15704,9 +15434,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
-var CircleValve = require("../../core/features").CircleValve;
 var Colors = require("../colors");
 var FeatureRenderer = require("./FeatureRenderer");
+var Feature = require("../../core/feature");
 
 var CircleValveRenderer = (function (_FeatureRenderer) {
     _inherits(CircleValveRenderer, _FeatureRenderer);
@@ -15720,36 +15450,22 @@ var CircleValveRenderer = (function (_FeatureRenderer) {
     _createClass(CircleValveRenderer, null, [{
         key: "renderFeature",
         value: function renderFeature(circleValve) {
-            var position = circleValve.params.getValue("position");
-            var radius1 = undefined;
-            var radius2 = undefined;
+            var position = circleValve.getValue("position");
+            var radius1 = circleValve.getValue("radius1");
+            var radius2 = circleValve.getValue("radius2");
 
-            //TODO: figure out inheritance pattern for values!
-
-            try {
-                radius1 = circleValve.params.getValue("radius1");
-            } catch (err) {
-                radius1 = CircleValve.getDefaultValues()["radius1"];
-            }
-
-            try {
-                radius2 = circleValve.params.getValue("radius2");
-            } catch (err) {
-                radius2 = CircleValve.getDefaultValues()["radius2"];
-            }
-
-            var innerColor = FeatureRenderer.getLayerColor(circleValve, CircleValve);
+            var innerColor = FeatureRenderer.getLayerColor(circleValve);
             var outerColor = FeatureRenderer.getBottomColor(circleValve);
 
             var c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
-            c1.featureID = circleValve.id;
+            c1.featureID = circleValve.getID();
             return c1;
         }
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
-            var width = CircleValve.getDefaultValues()["radius1"];
-            var color = Colors.getDefaultFeatureColor(CircleValve, Registry.currentLayer);
+            var width = Feature.getDefaultsForType("CircleValve")["radius1"];
+            var color = Colors.getDefaultFeatureColor("CircleValve", Registry.currentLayer);
             var circ = PaperPrimitives.CircleTarget(position, width, color);
             return circ;
         }
@@ -15760,7 +15476,7 @@ var CircleValveRenderer = (function (_FeatureRenderer) {
 
 module.exports = CircleValveRenderer;
 
-},{"../../core/features":54,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],92:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],92:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15773,9 +15489,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
-var HollowChannel = require("../../core/features").HollowChannel;
 var Colors = require("../colors");
 var FeatureRenderer = require("./FeatureRenderer");
+var Feature = require("../../core/feature");
 
 var HollowChannelRenderer = (function (_FeatureRenderer) {
     _inherits(HollowChannelRenderer, _FeatureRenderer);
@@ -15789,24 +15505,19 @@ var HollowChannelRenderer = (function (_FeatureRenderer) {
     _createClass(HollowChannelRenderer, null, [{
         key: "renderFeature",
         value: function renderFeature(hollowChannel) {
-            var start = hollowChannel.params.getValue("start");
-            var end = hollowChannel.params.getValue("end");
-            var width = undefined;
-            try {
-                width = hollowChannel.params.getValue("width");
-            } catch (err) {
-                width = HollowChannel.getDefaultValues()["width"];
-            }
+            var start = hollowChannel.getValue("start");
+            var end = hollowChannel.getValue("end");
+            var width = hollowChannel.getValue("width");
             var rec = PaperPrimitives.RoundedRect(start, end, width);
-            rec.featureID = hollowChannel.id;
-            rec.fillColor = FeatureRenderer.getLayerColor(hollowChannel, HollowChannel);
+            rec.featureID = hollowChannel.getID();
+            rec.fillColor = FeatureRenderer.getLayerColor(hollowChannel);
             return rec;
         }
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
-            var color = Colors.getDefaultFeatureColor(HollowChannel, Registry.currentLayer);
-            var width = HollowChannel.getDefaultValues()["width"];
+            var color = Colors.getDefaultFeatureColor("HollowChannel", Registry.currentLayer);
+            var width = Feature.getDefaultsForType("HollowChannel")["width"];
             var circ = PaperPrimitives.CircleTarget(position, width / 2, color);
             return circ;
         }
@@ -15817,7 +15528,7 @@ var HollowChannelRenderer = (function (_FeatureRenderer) {
 
 module.exports = HollowChannelRenderer;
 
-},{"../../core/features":54,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],93:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],93:[function(require,module,exports){
 "use strict";
 
 module.exports.Channel = require("./channelRenderer");
@@ -15840,7 +15551,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
-var Port = require("../../core/features").Port;
+var Feature = require("../../core/feature");
 var Colors = require("../colors");
 var FeatureRenderer = require("./FeatureRenderer");
 
@@ -15856,36 +15567,21 @@ var PortRenderer = (function (_FeatureRenderer) {
     _createClass(PortRenderer, null, [{
         key: "renderFeature",
         value: function renderFeature(port) {
-            var position = port.params.getValue("position");
-            var radius1 = undefined;
-            var radius2 = undefined;
-
-            //TODO: figure out inheritance pattern for values!
-
-            try {
-                radius1 = port.params.getValue("radius1");
-            } catch (err) {
-                radius1 = Port.getDefaultValues()["radius1"];
-            }
-
-            try {
-                radius2 = port.params.getValue("radius2");
-            } catch (err) {
-                radius2 = Port.getDefaultValues()["radius2"];
-            }
-
-            var innerColor = FeatureRenderer.getLayerColor(port, Port);
+            var position = port.getValue("position");
+            var radius1 = port.getValue("radius1");
+            var radius2 = port.getValue("radius2");
+            var innerColor = FeatureRenderer.getLayerColor(port);
             var outerColor = FeatureRenderer.getBottomColor(port);
 
             var c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
-            c1.featureID = port.id;
+            c1.featureID = port.getID();
             return c1;
         }
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
-            var color = Colors.getDefaultFeatureColor(Port, Registry.currentLayer);
-            var width = Port.getDefaultValues()["radius1"];
+            var color = Colors.getDefaultFeatureColor("Port", Registry.currentLayer);
+            var width = Feature.getDefaultsForType("Port")["radius1"];
             var circ = PaperPrimitives.CircleTarget(position, width, color);
             return circ;
         }
@@ -15896,7 +15592,7 @@ var PortRenderer = (function (_FeatureRenderer) {
 
 module.exports = PortRenderer;
 
-},{"../../core/features":54,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],95:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],95:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -15909,7 +15605,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Registry = require("../../core/registry");
 var PaperPrimitives = require("../paperPrimitives");
-var Via = require("../../core/features").Via;
+var Feature = require("../../core/feature");
 var Colors = require("../colors");
 var FeatureRenderer = require("./FeatureRenderer");
 
@@ -15925,36 +15621,21 @@ var ViaRenderer = (function (_FeatureRenderer) {
     _createClass(ViaRenderer, null, [{
         key: "renderFeature",
         value: function renderFeature(via) {
-            var position = via.params.getValue("position");
-            var radius1 = undefined;
-            var radius2 = undefined;
-
-            //TODO: figure out inheritance pattern for values!
-
-            try {
-                radius1 = via.params.getValue("radius1");
-            } catch (err) {
-                radius1 = Via.getDefaultValues()["radius1"];
-            }
-
-            try {
-                radius2 = via.params.getValue("radius2");
-            } catch (err) {
-                radius2 = Via.getDefaultValues()["radius2"];
-            }
-
-            var innerColor = FeatureRenderer.getLayerColor(via, Via);
+            var position = via.getValue("position");
+            var radius1 = via.getValue("radius1");;
+            var radius2 = via.getValue("radius2");;
+            var innerColor = FeatureRenderer.getLayerColor(via);
             var outerColor = FeatureRenderer.getBottomColor(via);
 
             var c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
-            c1.featureID = via.id;
+            c1.featureID = via.getID();
             return c1;
         }
     }, {
         key: "renderTarget",
         value: function renderTarget(position) {
-            var color = Colors.getDefaultFeatureColor(Via, Registry.currentLayer);
-            var width = Via.getDefaultValues()["radius1"];
+            var color = Colors.getDefaultFeatureColor("Via", Registry.currentLayer);
+            var width = Feature.getDefaultsForType("Via")["radius1"];
             var circ = PaperPrimitives.CircleTarget(position, width, color);
             return circ;
         }
@@ -15965,7 +15646,7 @@ var ViaRenderer = (function (_FeatureRenderer) {
 
 module.exports = ViaRenderer;
 
-},{"../../core/features":54,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],96:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],96:[function(require,module,exports){
 "use strict";
 
 var Colors = require("../colors");
@@ -16171,7 +15852,6 @@ module.exports = AdaptiveGrid;
 var HTMLUtils = require("../utils/htmlUtils");
 var Registry = require("../core/registry");
 var Colors = require("./colors");
-var Features = require("../core/features");
 var JSZip = require("jszip");
 
 var activeButton = null;
@@ -16240,7 +15920,7 @@ function setButtonColor(button, background, text) {
 function setActiveButton(feature) {
     if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
     activeButton = feature;
-    setButtonColor(buttons[activeButton], Colors.getDefaultFeatureColor(Features[activeButton], Registry.currentLayer), activeText);
+    setButtonColor(buttons[activeButton], Colors.getDefaultFeatureColor(activeButton, Registry.currentLayer), activeText);
 }
 
 function setActiveLayer(layerName) {
@@ -16281,9 +15961,7 @@ function switchTo2D() {
     if (threeD) {
         threeD = false;
         var center = renderer.getCameraCenterInMicrometers();
-        console.log(center);
         var zoom = renderer.getZoom();
-        console.log("ZOOM: " + zoom);
         var newCenterX = center[0];
         if (newCenterX < 0) {
             newCenterX = 0;
@@ -16313,35 +15991,35 @@ function setupAppPage() {
     renderer = Registry.threeRenderer;
     channelButton.onclick = function () {
         Registry.viewManager.activateTool("Channel");
-        var bg = Colors.getDefaultFeatureColor(Features.Channel, Registry.currentLayer);
+        var bg = Colors.getDefaultFeatureColor("Channel", Registry.currentLayer);
         setActiveButton("Channel");
         switchTo2D();
     };
 
     circleValveButton.onclick = function () {
         Registry.viewManager.activateTool("CircleValve");
-        var bg = Colors.getDefaultFeatureColor(Features.CircleValve, Registry.currentLayer);
+        var bg = Colors.getDefaultFeatureColor("CircleValve", Registry.currentLayer);
         setActiveButton("CircleValve");
         switchTo2D();
     };
 
     portButton.onclick = function () {
         Registry.viewManager.activateTool("Port");
-        var bg = Colors.getDefaultFeatureColor(Features.Port, Registry.currentLayer);
+        var bg = Colors.getDefaultFeatureColor("Port", Registry.currentLayer);
         setActiveButton("Port");
         switchTo2D();
     };
 
     viaButton.onclick = function () {
         Registry.viewManager.activateTool("Via");
-        var bg = Colors.getDefaultFeatureColor(Features.Via, Registry.currentLayer);
+        var bg = Colors.getDefaultFeatureColor("Via", Registry.currentLayer);
         setActiveButton("Via");
         switchTo2D();
     };
 
     chamberButton.onclick = function () {
         Registry.viewManager.activateTool("Chamber");
-        var bg = Colors.getDefaultFeatureColor(Features.Chamber, Registry.currentLayer);
+        var bg = Colors.getDefaultFeatureColor("Chamber", Registry.currentLayer);
         setActiveButton("Chamber");
         switchTo2D();
     };
@@ -16437,7 +16115,7 @@ function setupAppPage() {
 
 module.exports.setupAppPage = setupAppPage;
 
-},{"../core/features":54,"../core/registry":65,"../utils/htmlUtils":82,"./colors":86,"jszip":13}],99:[function(require,module,exports){
+},{"../core/registry":65,"../utils/htmlUtils":82,"./colors":86,"jszip":13}],99:[function(require,module,exports){
 "use strict";
 
 var Colors = require("./colors");
@@ -16792,19 +16470,8 @@ var PaperView = (function () {
         value: function comparePaperFeatureHeights(a, b) {
             var aFeature = Registry.currentDevice.getFeatureByID(a.featureID);
             var bFeature = Registry.currentDevice.getFeatureByID(b.featureID);
-            var aHeight = undefined;
-            var bHeight = undefined;
-            try {
-                aHeight = aFeature.params.getValue("height");
-            } catch (err) {
-                aHeight = Registry.registeredFeatures[aFeature.type].getDefaultValues()["height"];
-            }
-
-            try {
-                bHeight = bFeature.params.getValue("height");
-            } catch (err) {
-                bHeight = Registry.registeredFeatures[bFeature.type].getDefaultValues()["height"];
-            }
+            var aHeight = aFeature.getValue("height");
+            var bHeight = bFeature.getValue("height");
             return aHeight - bHeight;
         }
     }, {
@@ -16831,7 +16498,7 @@ var PaperView = (function () {
         key: "updateFeature",
         value: function updateFeature(feature) {
             this.removeFeature(feature);
-            var newPaperFeature = FeatureRenderers[feature.type].renderFeature(feature);
+            var newPaperFeature = FeatureRenderers[feature.getType()].renderFeature(feature);
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
             //TODO: This is terrible. Fix it. Fix it now.
             var index = feature.layer.device.layers.indexOf(feature.layer);
@@ -16866,9 +16533,9 @@ var PaperView = (function () {
     }, {
         key: "removeFeature",
         value: function removeFeature(feature) {
-            var paperFeature = this.paperFeatures[feature.id];
+            var paperFeature = this.paperFeatures[feature.getID()];
             if (paperFeature) paperFeature.remove();
-            this.paperFeatures[feature.id] = null;
+            this.paperFeatures[feature.getID()] = null;
         }
     }, {
         key: "removeGrid",
@@ -17016,11 +16683,11 @@ var SimpleQueue = require("../../utils/simpleQueue");
 var ChannelTool = (function (_MouseTool) {
 	_inherits(ChannelTool, _MouseTool);
 
-	function ChannelTool(channelClass) {
+	function ChannelTool(typeString) {
 		_classCallCheck(this, ChannelTool);
 
 		_get(Object.getPrototypeOf(ChannelTool.prototype), "constructor", this).call(this);
-		this.channelClass = channelClass;
+		this.typeString = typeString;
 		this.startPoint = null;
 		this.lastPoint = null;
 		this.currentChannelID = null;
@@ -17068,7 +16735,7 @@ var ChannelTool = (function (_MouseTool) {
 		key: "showTarget",
 		value: function showTarget(point) {
 			var target = ChannelTool.getTarget(this.lastPoint);
-			Registry.viewManager.updateTarget(this.channelClass.typeString(), [target.x, target.y]);
+			Registry.viewManager.updateTarget(this.typeString, target);
 		}
 	}, {
 		key: "initChannel",
@@ -17085,11 +16752,11 @@ var ChannelTool = (function (_MouseTool) {
 				if (this.currentChannelID) {
 					var target = ChannelTool.getTarget(this.lastPoint);
 					var feat = Registry.currentLayer.getFeature(this.currentChannelID);
-					feat.updateParameter("end", [target.x, target.y]);
+					feat.updateParameter("end", target);
 					Registry.canvasManager.render();
 				} else {
 					var newChannel = this.createChannel(this.startPoint, this.startPoint);
-					this.currentChannelID = newChannel.id;
+					this.currentChannelID = newChannel.getID();
 					Registry.currentLayer.addFeature(newChannel);
 				}
 			}
@@ -17099,7 +16766,7 @@ var ChannelTool = (function (_MouseTool) {
 		value: function finishChannel(point) {
 			var target = ChannelTool.getTarget(point);
 			if (this.currentChannelID) {
-				if (this.startPoint.x == target.x && this.startPoint.y == target.y) {
+				if (this.startPoint.x == target[0] && this.startPoint.y == target[1]) {
 					Registry.currentLayer.removeFeatureByID(this.currentChannelID);
 					//TODO: This will be slow for complex devices, since it re-renders everything
 					Registry.canvasManager.render();
@@ -17113,9 +16780,9 @@ var ChannelTool = (function (_MouseTool) {
 	}, {
 		key: "createChannel",
 		value: function createChannel(start, end) {
-			return new this.channelClass({
-				"start": [start.x, start.y],
-				"end": [end.x, end.y]
+			return Features[this.typeString]({
+				start: start,
+				end: end
 			});
 		}
 
@@ -17131,7 +16798,8 @@ var ChannelTool = (function (_MouseTool) {
 	}, {
 		key: "getTarget",
 		value: function getTarget(point) {
-			return Registry.viewManager.snapToGrid(point);
+			var target = Registry.viewManager.snapToGrid(point);
+			return [target.x, target.y];
 		}
 	}]);
 
@@ -17140,7 +16808,7 @@ var ChannelTool = (function (_MouseTool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/features":54,"../../core/registry":65,"../../utils/simpleQueue":84,"./mouseTool":103}],103:[function(require,module,exports){
+},{"../../core/features":52,"../../core/registry":65,"../../utils/simpleQueue":84,"./mouseTool":103}],103:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -17277,15 +16945,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MouseTool = require("./mouseTool");
 var Registry = require("../../core/registry");
 var SimpleQueue = require("../../utils/SimpleQueue");
+var Features = require("../../core/features");
 
 var PositionTool = (function (_MouseTool) {
     _inherits(PositionTool, _MouseTool);
 
-    function PositionTool(featureClass) {
+    function PositionTool(typeString) {
         _classCallCheck(this, PositionTool);
 
         _get(Object.getPrototypeOf(PositionTool.prototype), "constructor", this).call(this);
-        this.featureClass = featureClass;
+        this.typeString = typeString;
         this.currentFeatureID = null;
         var ref = this;
         this.lastPoint = null;
@@ -17307,23 +16976,23 @@ var PositionTool = (function (_MouseTool) {
     _createClass(PositionTool, [{
         key: "createNewFeature",
         value: function createNewFeature(point) {
-            var target = PositionTool.getTarget(point);
-            var newFeature = new this.featureClass({
-                position: [target.x, target.y]
+            var newFeature = Features[this.typeString]({
+                "position": PositionTool.getTarget(point)
             });
-            this.currentFeatureID = newFeature.id;
+            this.currentFeatureID = newFeature.getID();
             Registry.currentLayer.addFeature(newFeature);
         }
     }, {
         key: "showTarget",
         value: function showTarget() {
             var target = PositionTool.getTarget(this.lastPoint);
-            Registry.viewManager.updateTarget(this.featureClass.typeString(), [target.x, target.y]);
+            Registry.viewManager.updateTarget(this.typeString, target);
         }
     }], [{
         key: "getTarget",
         value: function getTarget(point) {
-            return Registry.viewManager.snapToGrid(point);
+            var target = Registry.viewManager.snapToGrid(point);
+            return [target.x, target.y];
         }
     }]);
 
@@ -17332,7 +17001,7 @@ var PositionTool = (function (_MouseTool) {
 
 module.exports = PositionTool;
 
-},{"../../core/registry":65,"../../utils/SimpleQueue":81,"./mouseTool":103}],106:[function(require,module,exports){
+},{"../../core/features":52,"../../core/registry":65,"../../utils/SimpleQueue":81,"./mouseTool":103}],106:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -17942,11 +17611,11 @@ var ViewManager = (function () {
     }, {
         key: "setupTools",
         value: function setupTools() {
-            this.tools["Chamber"] = new ChannelTool(Features.Chamber);
-            this.tools["Channel"] = new ChannelTool(Features.Channel);
-            this.tools["CircleValve"] = new PositionTool(Features.CircleValve);
-            this.tools["Port"] = new PositionTool(Features.Port);
-            this.tools["Via"] = new PositionTool(Features.Via);
+            this.tools["Chamber"] = new ChannelTool("Chamber");
+            this.tools["Channel"] = new ChannelTool("Channel");
+            this.tools["CircleValve"] = new PositionTool("CircleValve");
+            this.tools["Port"] = new PositionTool("Port");
+            this.tools["Via"] = new PositionTool("Via");
         }
     }], [{
         key: "__eventButtonsToWhich",
@@ -17968,4 +17637,4 @@ var ViewManager = (function () {
 
 module.exports = ViewManager;
 
-},{"../core/features":54,"../core/registry":65,"../utils/SimpleQueue":81,"./PanAndZoom":85,"./tools/channelTool":102,"./tools/mouseTool":103,"./tools/panTool":104,"./tools/positionTool":105,"./tools/selectTool":106}]},{},[45]);
+},{"../core/features":52,"../core/registry":65,"../utils/SimpleQueue":81,"./PanAndZoom":85,"./tools/channelTool":102,"./tools/mouseTool":103,"./tools/panTool":104,"./tools/positionTool":105,"./tools/selectTool":106}]},{},[45]);
