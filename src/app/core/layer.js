@@ -10,7 +10,7 @@ var StringValue = Parameters.StringValue;
 class Layer {
     constructor(values, name = "New Layer") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
-        this.name = new StringValue(name);
+        this.name = StringValue(name);
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
@@ -19,7 +19,7 @@ class Layer {
 
     addFeature(feature) {
         this.__ensureIsAFeature(feature);
-        this.features[feature.id] = feature;
+        this.features[feature.getID()] = feature;
         this.featureCount += 1;
         feature.layer = this;
         if (Registry.viewManager) Registry.viewManager.addFeature(feature);
@@ -62,8 +62,7 @@ class Layer {
     }
 
     __ensureIsAFeature(feature) {
-        if (!(feature.hasOwnProperty("id") && feature.hasOwnProperty("type") && feature.hasOwnProperty("params"))) {
-            console.log(feature.toJSON());
+        if (!(feature instanceof Feature)) {
             throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
         }
     }
@@ -78,8 +77,8 @@ class Layer {
 
     static getUniqueParameters() {
         return {
-            "z_offset": FloatValue.typeString(),
-            "flip": BooleanValue.typeString()
+            "z_offset": "Float",
+            "flip": "Boolean"
         }
     }
 
@@ -94,7 +93,7 @@ class Layer {
     }
 
     removeFeature(feature) {
-        this.removeFeatureByID(feature.id);
+        this.removeFeatureByID(feature.getID());
     }
 
     //TODO: Stop using delete, it's slow!
@@ -108,7 +107,7 @@ class Layer {
 
     containsFeature(feature) {
         this.__ensureIsAFeature(feature);
-        return (this.features.hasOwnProperty(feature.id));
+        return (this.features.hasOwnProperty(feature.getID()));
     }
 
     containsFeatureID(featureID) {

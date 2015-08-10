@@ -27,13 +27,13 @@ function initValues(){
 		"str": "foobar"
 	};
 	unique = {
-		"flo": FloatValue.typeString(),
-		"int": IntegerValue.typeString()
+		"flo": "Float",
+		"int": "Integer"
 	};
 	heritable = {
-		"poi": PointValue.typeString(),
-		"boo": BooleanValue.typeString(),
-		"str": StringValue.typeString()
+		"poi": "Point",
+		"boo": "Boolean",
+		"str": "String"
 	};
     params = new Params(values, unique, heritable);
 }
@@ -47,7 +47,7 @@ describe("Params", function() {
 			let params = new Params(values, unique, heritable);
 			params.getValue("flo").should.be.approximately(12.3, .0001);
 			params.getValue("str").should.equal("foobar");
-			params.getParameter("boo").type.should.equal(BooleanValue.typeString());
+			params.getParameter("boo").getType().should.equal("Boolean");
 		});
 		it("cannot be initialized if unique values are missing", function(){
 			delete values["flo"];
@@ -79,7 +79,7 @@ describe("Params", function() {
             delete values["poi"];
             params = new Params(values, unique, heritable);
             params.updateParameter("poi", [0,17]);
-            params.getParameter("poi").type.should.equal(PointValue.typeString());
+            params.getParameter("poi").getType().should.equal("Point");
             params.getValue("poi")[1].should.equal(17);
         });
         it("should not allow a parameter to be updated to an invalid value", function(){
@@ -101,8 +101,8 @@ describe("Params", function() {
         it("should return the correct parameter when given a valid key", function(){
             let p = params.getParameter("boo");
             (p instanceof Parameter).should.equal(true);
-            p.value.should.equal(true);
-            p.type.should.equal(BooleanValue.typeString());
+            p.getValue().should.equal(true);
+            p.getType().should.equal("Boolean");
         });
         it("should throw an error for an invalid key", function(){
             (function(){let p = params.getParameter("invalidKey")}).should.throwError();
@@ -122,7 +122,7 @@ describe("Params", function() {
         	let json = values; // they happen to be the same structure!
         	let params = Params.fromJSON(json, unique, heritable);
         	params.getValue("boo").should.equal(true);
-        	params.getParameter("str").type.should.equal(StringValue.typeString());
+        	params.getParameter("str").getType().should.equal("String");
         });
         it("should not allow fromJSON to be called without unique and heritable types", function(){
 			(function(){
@@ -140,7 +140,7 @@ describe("Params", function() {
         	let json = params.toJSON();
         	let newParams = Params.fromJSON(json, unique, heritable);
         	newParams.getValue("boo").should.equal(true);
-        	newParams.getParameter("str").type.should.equal(StringValue.typeString());
+        	newParams.getParameter("str").getType().should.equal("String");
         });
     });
 });

@@ -1,11 +1,12 @@
 var MouseTool = require("./mouseTool");
 var Registry = require("../../core/registry");
 var SimpleQueue = require("../../utils/SimpleQueue");
+var Features = require("../../core/features");
 
 class PositionTool extends MouseTool{
-    constructor(featureClass){
+    constructor(typeString){
         super();
-        this.featureClass = featureClass;
+        this.typeString = typeString;
         this.currentFeatureID = null;
         let ref = this;
         this.lastPoint = null;
@@ -25,21 +26,21 @@ class PositionTool extends MouseTool{
     }
 
     createNewFeature(point){
-        let target = PositionTool.getTarget(point);
-        let newFeature = new this.featureClass({
-            position: [target.x, target.y]
+        let newFeature = Features[this.typeString]({
+            "position": PositionTool.getTarget(point)
         });
-        this.currentFeatureID = newFeature.id;
+        this.currentFeatureID = newFeature.getID();
         Registry.currentLayer.addFeature(newFeature); 
     }
 
     static getTarget(point){
-        return Registry.viewManager.snapToGrid(point);
+        let target = Registry.viewManager.snapToGrid(point);
+        return [target.x, target.y];
     }
 
     showTarget(){
         let target = PositionTool.getTarget(this.lastPoint);
-        Registry.viewManager.updateTarget(this.featureClass.typeString(), [target.x, target.y]);
+        Registry.viewManager.updateTarget(this.typeString, target);
     }
 }
 
