@@ -8,13 +8,14 @@ var Registry = require("./registry");
 var registeredFeatureTypes = {};
 
 class Feature {
-    constructor(type, params, name, id = Feature.generateID(), group = null){
+    constructor(type, set, params, name, id = Feature.generateID(), group = null){
         this.__type = type;
         this.__params = params;
         this.__name = StringValue(name);
         this.__id = id;
         this.__group = group;
         this.__type = type;
+        this.__set = set;
     }
 
     static generateID() {
@@ -31,11 +32,16 @@ class Feature {
         output.id = this.__id;
         output.name = this.__name.toJSON();
         output.type = this.__type;
+        output.set = this.__set;
         output.params = this.__params.toJSON();
 
         //TODO: Implement Groups!
         //output.group = this.group.toJSON();
         return output;
+    }
+
+    getSet(){
+        return this.__set;
     }
 
     setGroup(group){
@@ -96,29 +102,9 @@ class Feature {
         return this.getFeatureType().defaults;
     }
 
-    static getDefaultsForType(typeString){
-        return FeatureTypes.getDefinition(typeString).defaults;
+    static getDefaultsForType(typeString, setString){
+        return FeatureSets.getDefinition(typeString, setString).defaults;
     }
-
-    static registerFeatureType(typeString, unique, heritable, defaults){
-        registeredFeatureTypes[typeString] = {
-            unique: unique,
-            heritable: heritable,
-            defaults: defaults
-        };
-    }
-
-    /*
-
-    static __ensureTypeExists(type){
-         if(ure.hasOwnProperty(type)){
-            return true;
-        } else {
-            throw new Error("Feature " + type + " has not been registered.");
-        }
-    }
-    */
-
 
     static checkDefaults(values, heritable, defaults){
         for (let key in heritable){
@@ -127,17 +113,18 @@ class Feature {
         return values;
     }
 
-    //TODO: This needs to return the right subclass of Feature, not just the right data! 
     static fromJSON(json) {
-        return Feature.makeFeature(json.type, json.params, json.name);
+        let set;
+        if (json.hasOwnProperty("set")) set = json.set;
+        else set = "Basic";
+        return Feature.makeFeature(json.type, set, json.params, json.name, json.id);
     }
 
-    static makeFeature(type, values, name = "New Feature"){
-        //Feature.__ensureTypeExists(type);
-        let featureType = FeatureSets.getDefinition(type);
+    static makeFeature(typeString, setString, values, name = "New Feature", id=undefined){
+        let featureType = FeatureSets.getDefinition(typeString, setString);
         Feature.checkDefaults(values, featureType.heritable, featureType.defaults);
         let params = new Params(values, featureType.unique, featureType.heritable);
-        return new Feature(type, params, name)
+        return new Feature(typeString, setString, params, name, id)
     }
 
     updateView(){
