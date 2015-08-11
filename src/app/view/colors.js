@@ -1,4 +1,3 @@
-var Features = require("../core/features");
 var Feature = require("../core/feature");
 //Colors taken from: http://www.google.ch/design/spec/style/color.html
 module.exports.RED_500 = "#F44336";
@@ -105,9 +104,9 @@ var getDefaultLayerColor = function(layer){
 	return getLayerColors(layer)["500"];
 }
 
-var getDefaultFeatureColor = function(typeString, layer){
+var getDefaultFeatureColor = function(typeString, setString, layer){
 	if (layer){
-		let height = Feature.getDefaultsForType(typeString)["height"];
+		let height = Feature.getDefaultsForType(typeString, setString)["height"];
 		let decimal = height / layer.estimateLayerHeight();
 		if (!layer.flip) decimal = 1-decimal;
 		let colors = getLayerColors(layer);

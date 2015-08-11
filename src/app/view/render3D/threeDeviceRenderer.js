@@ -1,7 +1,8 @@
-var OrbitControls = require("./OrbitControls");
-var STLExporter = require("./STLExporter");
+var OrbitControls = require("./orbitControls");
+var STLExporter = require("./stlExporter");
+var ThreeFeatureRenderer = require("./threeFeatureRenderer");
 var ThreeFeatures = require("./threeFeatures");
-var Detector = require("./Detector");
+var Detector = require("./detector");
 var getSTLString = STLExporter.getSTLString;
 
 class ThreeDeviceRenderer {

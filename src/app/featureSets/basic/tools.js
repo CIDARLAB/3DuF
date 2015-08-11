@@ -1,4 +1,4 @@
-let tools2D = {
+let tools = {
     Via: {
         toolParams: {
             position: "position",
@@ -33,4 +33,4 @@ let tools2D = {
     }
 };
 
-module.exports = tools2D;
+module.exports = tools;

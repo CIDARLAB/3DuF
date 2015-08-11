@@ -1,5 +1,5 @@
 var Registry = require("../core/registry");
-var FeatureRenderer = require("./render2D/featureRenderer");
+var FeatureRenderer2D = require("./render2D/featureRenderer2D");
 var GridRenderer = require("./render2D/GridRenderer");
 var DeviceRenderer = require("./render2D/deviceRenderer");
 var PanAndZoom = require("./PanAndZoom");
@@ -240,7 +240,7 @@ class PaperView {
 
     updateFeature(feature) {
         this.removeFeature(feature);
-        let newPaperFeature = FeatureRenderer.renderFeature(feature);
+        let newPaperFeature = FeatureRenderer2D.renderFeature(feature);
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
         //TODO: This is terrible. Fix it. Fix it now.
         let index = feature.layer.device.layers.indexOf(feature.layer);
@@ -254,17 +254,18 @@ class PaperView {
         this.currentTarget = null;
     }
 
-    addTarget(featureType, position) {
+    addTarget(featureType, set, position) {
         this.removeTarget();
         this.lastTargetType = featureType;
         this.lastTargetPosition = position;
+        this.lastTargetSet = set;
         this.updateTarget();
     }
 
     updateTarget() {
         this.removeTarget();
         if (this.lastTargetType && this.lastTargetPosition) {
-            this.currentTarget = FeatureRenderer.renderTarget(this.lastTargetType, this.lastTargetPosition);
+            this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
             this.uiLayer.addChild(this.currentTarget);
         }
     }

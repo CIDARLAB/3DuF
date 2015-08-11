@@ -1,4 +1,4 @@
-let renderers3D = {
+let render3D = {
     Via: {
         featureParams: {
             position: "position",
@@ -6,6 +6,7 @@ let renderers3D = {
             radius2: "radius2",
             height: "height"
         },
+        featurePrimitveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
     Port: {
@@ -15,6 +16,7 @@ let renderers3D = {
             radius2: "radius2",
             height: "height"
         },
+        featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
     CircleValve: {
@@ -33,7 +35,8 @@ let renderers3D = {
             width: "width",
             height: "height"
         },
-        featurePrimitive: "TwoPointRoundedLineFeature",
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "TwoPointRoundedLineFeature"
     },
     Chamber: {
         featureParams: {
@@ -42,8 +45,9 @@ let renderers3D = {
             borderWidth: "borderWidth",
             height: "height"
         },
-        featurePrimitive: "TwoPointRoundedBoxFeature",
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "TwoPointRoundedBoxFeature"
     }
 };
 
-module.exports = renderers3D;
+module.exports = render3D;

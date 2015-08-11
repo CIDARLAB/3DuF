@@ -143,14 +143,14 @@ function setupAppPage() {
     renderer = Registry.threeRenderer;
     channelButton.onclick = function() {
         Registry.viewManager.activateTool("Channel");
-        let bg = Colors.getDefaultFeatureColor("Channel", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("Channel", "Basic",Registry.currentLayer);
         setActiveButton("Channel");
         switchTo2D();
     };
 
     circleValveButton.onclick = function() {
         Registry.viewManager.activateTool("CircleValve");
-        let bg = Colors.getDefaultFeatureColor("CircleValve", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("CircleValve", "Basic", Registry.currentLayer);
         setActiveButton("CircleValve");
         switchTo2D();
 
@@ -158,21 +158,21 @@ function setupAppPage() {
 
     portButton.onclick = function() {
         Registry.viewManager.activateTool("Port");
-        let bg = Colors.getDefaultFeatureColor("Port", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("Port", "Basic", Registry.currentLayer);
         setActiveButton("Port");
         switchTo2D();
     };
 
     viaButton.onclick = function() {
         Registry.viewManager.activateTool("Via");
-        let bg = Colors.getDefaultFeatureColor("Via", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("Via", "Basic", Registry.currentLayer);
         setActiveButton("Via");
         switchTo2D();
     };
 
     chamberButton.onclick = function() {
         Registry.viewManager.activateTool("Chamber");
-        let bg = Colors.getDefaultFeatureColor("Chamber", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("Chamber", "Basic", Registry.currentLayer);
         setActiveButton("Chamber");
         switchTo2D();
     };
