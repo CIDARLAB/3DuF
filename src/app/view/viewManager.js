@@ -1,7 +1,6 @@
 var Registry = require("../core/registry");
 var ChannelTool = require("./tools/channelTool");
 var MouseTool = require("./tools/mouseTool");
-var Features = require("../core/features");
 var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
@@ -196,8 +195,8 @@ class ViewManager {
         this.view.removeTarget();
     }
 
-    updateTarget(featureType, position, refresh = true) {
-        this.view.addTarget(featureType, position);
+    updateTarget(featureType, featureSet, position, refresh = true) {
+        this.view.addTarget(featureType, featureSet, position);
         this.refresh(refresh);
     }
 
@@ -354,11 +353,11 @@ class ViewManager {
     }
 
     setupTools() {
-        this.tools["Chamber"] = new ChannelTool("Chamber");
-        this.tools["Channel"] = new ChannelTool("Channel");
-        this.tools["CircleValve"] = new PositionTool("CircleValve");
-        this.tools["Port"] = new PositionTool("Port");
-        this.tools["Via"] = new PositionTool("Via");
+        this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
+        this.tools["Channel"] = new ChannelTool("Channel", "Basic");
+        this.tools["CircleValve"] = new PositionTool("CircleValve", "Basic");
+        this.tools["Port"] = new PositionTool("Port", "Basic");
+        this.tools["Via"] = new PositionTool("Via", "Basic");
     }
 }
 

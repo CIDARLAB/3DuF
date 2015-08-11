@@ -1,12 +1,13 @@
-var Features = require("../../core/features");
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
+var Feature = require("../../core/feature");
 
 class ChannelTool extends MouseTool {
-	constructor(typeString) {
+	constructor(typeString, setString) {
 		super();
 		this.typeString = typeString;
+		this.setString = setString;
 		this.startPoint = null;
 		this.lastPoint = null;
 		this.currentChannelID = null;
@@ -58,7 +59,7 @@ class ChannelTool extends MouseTool {
 
 	showTarget(point) {
 		let target = ChannelTool.getTarget(this.lastPoint);
-		Registry.viewManager.updateTarget(this.typeString, target);
+		Registry.viewManager.updateTarget(this.typeString, this.setString, target);
 	}
 
 	initChannel() {
@@ -98,7 +99,7 @@ class ChannelTool extends MouseTool {
 	}
 
 	createChannel(start, end) {
-		return Features[this.typeString]({
+		return Feature.makeFeature(this.typeString, this.setString, {
 			start: start,
 			end: end
 		});

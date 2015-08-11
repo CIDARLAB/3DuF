@@ -3,28 +3,14 @@ var CanvasManager = require("./graphics/CanvasManager");
 var Registry = require("./core/registry");
 var Device = require('./core/device');
 var Layer = require('./core/layer');
-var Features = require('./core/features');
 var PaperView = require("./view/paperView");
 var ViewManager = require("./view/viewManager");
 var AdaptiveGrid = require("./view/grid/adaptiveGrid");
 var PageSetup = require("./view/pageSetup");
 var Colors = require("./view/colors");
-var ThreeDeviceRenderer = require("./renderer/ThreeDeviceRenderer");
+var ThreeDeviceRenderer = require("./view/render3D/ThreeDeviceRenderer");
 var Examples = require("./examples/jsonExamples");
 
-var Channel = Features.Channel;
-var CircleValve = Features.CircleValve;
-var HollowChannel = Features.HollowChannel;
-
-var createPort = function(position, radius1, radius2, height) {
-    let port = new Features.Port({
-        position: position,
-        radius1: radius1,
-        radius2: radius2,
-        height: height
-    });
-    Registry.currentLayer.addFeature(port);
-}
 var manager;
 var view;
 var viewManager;
@@ -65,11 +51,8 @@ window.onload = function() {
     Registry.currentDevice.updateView();
 
     window.dev = Registry.currentDevice;
-    window.Channel = Channel;
     window.man = manager;
-    window.Features = Features;
     window.Registry = Registry;
-    window.Port = createPort;
 
     window.view = Registry.viewManager.view;
 

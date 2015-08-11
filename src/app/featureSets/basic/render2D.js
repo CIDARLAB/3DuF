@@ -1,4 +1,4 @@
-let renderers2D = {
+let render2D = {
     Via: {
         featureParams: {
             position: "position",
@@ -8,8 +8,10 @@ let renderers2D = {
         targetParams: {
             radius: "radius1"
         },
-        featurePrimitive: "GradientCircle",
-        targetPrimitive: "CircleTarget"
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GradientCircle",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
     },
     Port: {
         featureParams: {
@@ -20,8 +22,10 @@ let renderers2D = {
         targetParams: {
             radius: "radius1"
         },
-        featurePrimitive: "GradientCircle",
-        targetPrimitive: "PaperPrimitives"
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GradientCircle",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
     },
     CircleValve: {
         featureParams: {
@@ -32,8 +36,10 @@ let renderers2D = {
         targetParams: {
             radius: "radius1"
         },
-        featurePrimitive: "GradientCircle",
-        targetPrimitive: "CircleTarget"
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GradientCircle",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
     },
     Channel: {
         featureParams: {
@@ -44,8 +50,10 @@ let renderers2D = {
         targetParams: {
             diameter: "width"
         },
-        featurePrimitive: "RoundedRectLine",
-        targetPrimitive: "CircleTarget"
+        featurePrimitiveType: "RoundedRectLine",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
     },
     Chamber: {
         featureParams: {
@@ -56,9 +64,11 @@ let renderers2D = {
         targetParams: {
             diameter: "borderWidth"
         },
-        featurePrimitive: "RoundedRect",
-        targetPrimitive: "CircleTarget"
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "RoundedRect",
+        targetPrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CircleTarget"
     }
 };
 
-module.exports = renderers2D;
+module.exports = render2D;

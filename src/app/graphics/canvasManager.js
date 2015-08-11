@@ -1,21 +1,6 @@
 var Registry = require("../core/registry");
-var GridGenerator = require("./gridGenerator");
-var PanAndZoom = require("./panAndZoom");
-var Features = require("../core/features");
-var Tools = require("./tools");
 var Device = require("../core/device");
 var Colors = require("../view/colors");
-
-var Channel = Features.Channel;
-var HollowChannel = Features.HollowChannel;
-var Port = Features.Port;
-var CircleValve = Features.CircleValve;
-var Via = Features.Via;
-
-var ChannelTool = Tools.ChannelTool;
-var ValveTool = Tools.ValveTool;
-var PanTool = Tools.PanTool;
-var SelectTool = Tools.SelectTool;
 
 class CanvasManager {
     constructor(canvas) {

@@ -1,10 +1,12 @@
+var Feature = require("../core/feature");
+
 class FeatureSet {
-    constructor(name, definitions, tools, renderers2D, renderers3D) {
-        this.__name;
+    constructor(definitions, tools, render2D, render3D, setString) {
         this.__definitions = definitions;
+        this.__setString = setString;
         this.__tools = tools;
-        this.__renderers2D = renderers2D;
-        this.__renderers3D = renderers3D;
+        this.__render2D = render2D;
+        this.__render3D = render3D;
         this.__checkDefinitions();
     }
 
@@ -13,45 +15,44 @@ class FeatureSet {
         else return false;
     }
 
+    getFeatureType(typeString){
+        let setString = this.name;
+        let defaultName = "New " + setString + "." + typeString;
+        return function(values, name = defaultName){
+            return Feature.makeFeature(typeString, setString, values, name);
+        }
+    }
+
+    getSetString(){
+        return this.setString;
+    }
+
     getDefinition(typeString){
         return this.__definitions[typeString];
     }
 
-    getRenderer3D(typeString){
-        return this.__renderers3D[typeString];
+    getRender3D(typeString){
+        return this.__render3D[typeString];
     }
 
-    getRenderer2D(typeString){
-        return this.__renderers2D[typeString];
+    getRender2D(typeString){
+        return this.__render2D[typeString];
     }
 
     getTool(typeString){
         return this.__tools[typeString];
     }
 
-    getDefinitions() {
-        return this.__definitions;
-    }
-
-    getName() {
-        return this.__name;
-    }
-
-    getTools() {
-        return this.__tools;
-    }
-
-    getRenderers2D() {
-        return this.__renderers2D;
-    }
-
-    getRenderers3D() {
-        return this.__renderers3D;
+    makeFeature(typeString, setString, values, name){
+        console.log(setString);
+        let set = getSet(setString);
+        let featureType = getFeatureType(typeString);
+        return featureType(values, name);
     }
 
     __checkDefinitions() {
         for (let key in this.__definitions) {
-            if (!this.__tools.hasOwnProperty(key) || !this.__renderers2D.hasOwnProperty(key) || !this.__renderers3D.hasOwnProperty(key)) {
+            if (!this.__tools.hasOwnProperty(key) || !this.__render2D.hasOwnProperty(key) || !this.__render3D.hasOwnProperty(key)) {
                 throw new Error("Feature set does not contain a renderer or tool definition for: " + key);
             }
         }

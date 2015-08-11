@@ -1,4 +1,4 @@
 module.exports.definitions = require("./definitions");
-module.exports.renderers2D = require("./renderers2D");
-module.exports.renderers3D = require("./renderers3D");
-module.exports.tools2D = require("./tools2D");
+module.exports.render2D = require("./render2D");
+module.exports.render3D = require("./render3D");
+module.exports.tools = require("./tools");
