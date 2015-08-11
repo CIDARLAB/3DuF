@@ -89,7 +89,7 @@ function ConeFeature(position, radius1, radius2, height, flip, z_offset){
 	return cone;
 }
 
-function TwoPointBoxFeature(start, end, width, height, flip, z_offset){
+function TwoPointRoundedLineFeature(start, end, width, height, flip, z_offset){
 	var box = TwoPointRoundedBox(start, end, width, height);
 	var matrix = new THREE.Matrix4();
 	
@@ -100,7 +100,7 @@ function TwoPointBoxFeature(start, end, width, height, flip, z_offset){
 	return box;
 }
 
-function ChamberFeature(start, end, borderWidth, height, flip, z_offset){
+function TwoPointRoundedBoxFeature(start, end, borderWidth, height, flip, z_offset){
 	var box = RoundedChamber(start, end, borderWidth, height);
 	var matrix = new THREE.Matrix4();
 	if (flip){
@@ -119,7 +119,7 @@ function Chamber(chamber, layer, z_offset){
 	var flip = layer.params.flip;
 	var z_offset = layer.params.z_offset;
 	
-	var geom = ChamberFeature(start, end, width, height, flip, z_offset);
+	var geom = TwoPointRoundedBoxFeature(start, end, width, height, flip, z_offset);
 	var material = getFeatureMaterial(chamber, layer);
 	var mesh = new THREE.Mesh(geom, material);
 	
@@ -133,7 +133,7 @@ function Channel(channel, layer, z_offset){
 	var height = channel.params.height;
 	var flip = layer.params.flip;
 	var z_offset = layer.params.z_offset;
-	var geom = TwoPointBoxFeature(start, end, width, height, flip, z_offset);
+	var geom = TwoPointRoundedLineFeature(start, end, width, height, flip, z_offset);
 	var material = getFeatureMaterial(channel, layer);
 	var mesh = new THREE.Mesh(geom, material);
 	return mesh;
