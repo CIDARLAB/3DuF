@@ -11580,15 +11580,17 @@ var Feature = (function () {
                 defaults: defaults
             };
         }
-    }, {
-        key: '__ensureTypeExists',
-        value: function __ensureTypeExists(type) {
-            if (registeredFeatureTypes.hasOwnProperty(type)) {
+
+        /*
+          static __ensureTypeExists(type){
+             if(ure.hasOwnProperty(type)){
                 return true;
             } else {
                 throw new Error("Feature " + type + " has not been registered.");
             }
         }
+        */
+
     }, {
         key: 'checkDefaults',
         value: function checkDefaults(values, heritable, defaults) {
@@ -11609,7 +11611,7 @@ var Feature = (function () {
         value: function makeFeature(type, values) {
             var name = arguments.length <= 2 || arguments[2] === undefined ? "New Feature" : arguments[2];
 
-            Feature.__ensureTypeExists(type);
+            //Feature.__ensureTypeExists(type);
             var featureType = FeatureSets.getDefinition(type);
             Feature.checkDefaults(values, featureType.heritable, featureType.defaults);
             var params = new Params(values, featureType.unique, featureType.heritable);
@@ -11631,14 +11633,15 @@ var FeatureSets = require("../featureSets");
 function importFeatureSet(featureSet) {
     for (var type in featureSet.getDefinitions()) {
         var definition = featureSet.getDefinitions()[type];
-        Feature.registerFeatureType(type, definition.unique, definition.heritable, definition.defaults);
+        //Feature.registerFeatureType(type, definition.unique, definition.heritable, definition.defaults);
         module.exports[type] = createFeatureExport(type);
     }
 }
-
-for (var setKey in FeatureSets) {
+/*
+for (let setKey in FeatureSets) {
     importFeatureSet(FeatureSets[setKey]);
 }
+*/
 
 function createFeatureExport(typeString) {
     var defaultName = "New " + typeString;
@@ -11648,6 +11651,8 @@ function createFeatureExport(typeString) {
         return Feature.makeFeature(typeString, values, name);
     };
 }
+
+importFeatureSet(FeatureSets["Basic"]);
 
 },{"../featureSets":67,"./feature":47}],49:[function(require,module,exports){
 "use strict";
@@ -12624,14 +12629,17 @@ function checkForDuplicates() {
 function findContainingSet(typeString) {
     for (var setName in registeredFeatureSets) {
         var set = registeredFeatureSets[setName];
-        if (set.containsDefinition(typeString)) return set.getDefinition(typeString);
+        if (set.containsDefinition(typeString)) {
+            return set;
+        }
     }
     throw new Error("Unable to find a definition for: " + typeString + " in any registered FeatureSet.");
 }
 
 function getDefinition(typeString) {
     var set = findContainingSet(typeString);
-    return set.getDefinition(typeString);
+    var def = set.getDefinition(typeString);
+    return def;
 }
 
 function getTool(typeString) {
@@ -12648,6 +12656,12 @@ function getRenderer3D(typeString) {
     var set = findContainingSet(typeString);
     return set.getTool(typeString);
 }
+
+module.exports.getDefinition = getDefinition;
+module.exports.getTool = getTool;
+module.exports.getRenderer2D = getRenderer2D;
+module.exports.getRenderer3D = getRenderer3D;
+module.exports.Basic = makeFeatureSet(requiredSets["Basic"]);
 
 },{"./basic":62,"./featureSet":66}],68:[function(require,module,exports){
 "use strict";
@@ -16432,7 +16446,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Colors = require("../colors");
 var Feature = require("../../core/feature");
 var PaperPrimitives = require("./paperPrimitives");
-var Basic = require("../../featureSets");
+var FeatureSets = require("../../featureSets");
 var registeredFeatureRenderers = {};
 
 var FeatureRenderer = (function () {
