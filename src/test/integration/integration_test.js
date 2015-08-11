@@ -2,7 +2,7 @@ var should = require("should");
 var appRoot = "../../app/";
 var Device = require(appRoot + '/core/device')
 var Layer = require(appRoot + '/core/layer')
-var Features = require(appRoot + '/core/features/');
+var Features = require(appRoot + '/core/features');
 
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
@@ -28,6 +28,7 @@ describe("Integration", function() {
                 "start": [0, 0],
                 "end": [10, 10]
             });
+            console.log(chan1);
             flow.addFeature(chan1);
             let valve1 = new CircleValve({
                 "position": [5, 5]
