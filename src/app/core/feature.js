@@ -1,9 +1,11 @@
-var uuid = require('node-uuid');
 var Params = require('./params');
 var Parameters = require('./parameters');
 var Parameter = require("./parameter");
 var StringValue = Parameters.StringValue;
+var FeatureSets = require("../featureSets");
 var Registry = require("./registry");
+
+var registeredFeatureTypes = {};
 
 class Feature {
     constructor(type, params, name, id = Feature.generateID(), group = null){
@@ -95,22 +97,22 @@ class Feature {
     }
 
     static getDefaultsForType(typeString){
-        return Registry.registeredFeatures[typeString].defaults;
+        return FeatureTypes.getDefinition(typeString).defaults;
     }
 
-    static __ensureTypeExists(type){
-         if(Registry.registeredFeatures.hasOwnProperty(type)){
-            return true;
-        } else {
-            throw new Error("Feature " + type + " has not been registered.");
-        }
-    }
-
-    static registerFeature(typeString, unique, heritable, defaults){
-        Registry.registeredFeatures[typeString] = {
+    static registerFeatureType(typeString, unique, heritable, defaults){
+        registeredFeatureTypes[typeString] = {
             unique: unique,
             heritable: heritable,
             defaults: defaults
+        };
+    }
+
+    static __ensureTypeExists(type){
+         if(registeredFeatureTypes.hasOwnProperty(type)){
+            return true;
+        } else {
+            throw new Error("Feature " + type + " has not been registered.");
         }
     }
 
@@ -128,7 +130,7 @@ class Feature {
 
     static makeFeature(type, values, name = "New Feature"){
         Feature.__ensureTypeExists(type);
-        let featureType = Registry.registeredFeatures[type];
+        let featureType = FeatureSets.getDefinition(type);
         Feature.checkDefaults(values, featureType.heritable, featureType.defaults);
         let params = new Params(values, featureType.unique, featureType.heritable);
         return new Feature(type, params, name)

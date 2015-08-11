@@ -8,7 +8,7 @@ var FloatValue = Parameters.FloatValue;
 var StringValue = Parameters.StringValue;
 var BooleanValue = Parameters.BooleanValue;
 
-var Features = require(appRoot + "core/features/");
+var Features = require(appRoot + "core/features");
 var Channel = Features.Channel;
 var CircleValve = Features.CircleValve;
 //var Channel = require(appRoot + "core/features/channel");
