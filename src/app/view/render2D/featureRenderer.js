@@ -1,7 +1,7 @@
 var Colors = require("../colors");
 var Feature = require("../../core/feature");
 var PaperPrimitives = require("./paperPrimitives");
-var Basic = require("../../featureSets");
+var FeatureSets = require("../../featureSets");
 var registeredFeatureRenderers = {};
 
 class FeatureRenderer {
