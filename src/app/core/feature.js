@@ -108,13 +108,17 @@ class Feature {
         };
     }
 
+    /*
+
     static __ensureTypeExists(type){
-         if(registeredFeatureTypes.hasOwnProperty(type)){
+         if(ure.hasOwnProperty(type)){
             return true;
         } else {
             throw new Error("Feature " + type + " has not been registered.");
         }
     }
+    */
+
 
     static checkDefaults(values, heritable, defaults){
         for (let key in heritable){
@@ -129,7 +133,7 @@ class Feature {
     }
 
     static makeFeature(type, values, name = "New Feature"){
-        Feature.__ensureTypeExists(type);
+        //Feature.__ensureTypeExists(type);
         let featureType = FeatureSets.getDefinition(type);
         Feature.checkDefaults(values, featureType.heritable, featureType.defaults);
         let params = new Params(values, featureType.unique, featureType.heritable);

@@ -40,14 +40,17 @@ function checkForDuplicates() {
 function findContainingSet(typeString) {
     for (let setName in registeredFeatureSets) {
         let set = registeredFeatureSets[setName];
-        if (set.containsDefinition(typeString)) return set.getDefinition(typeString);
+        if (set.containsDefinition(typeString)){
+            return set;
+        } 
     }
     throw new Error("Unable to find a definition for: " + typeString + " in any registered FeatureSet.");
 }
 
 function getDefinition(typeString) {
-    let set = findContainingSet(typeString);
-    return set.getDefinition(typeString);
+    var set = findContainingSet(typeString);
+    let def = set.getDefinition(typeString);
+    return def;
 }
 
 function getTool(typeString){
@@ -64,3 +67,9 @@ function getRenderer3D(typeString){
     let set = findContainingSet(typeString);
     return set.getTool(typeString);
 }
+
+module.exports.getDefinition = getDefinition;
+module.exports.getTool = getTool;
+module.exports.getRenderer2D = getRenderer2D;
+module.exports.getRenderer3D = getRenderer3D;
+module.exports.Basic = makeFeatureSet(requiredSets["Basic"]);
