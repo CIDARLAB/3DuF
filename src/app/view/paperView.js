@@ -1,7 +1,7 @@
 var Registry = require("../core/registry");
 var FeatureRenderer2D = require("./render2D/featureRenderer2D");
 var GridRenderer = require("./render2D/GridRenderer");
-var DeviceRenderer = require("./render2D/deviceRenderer");
+var DeviceRenderer = require("./render2D/deviceRenderer2D");
 var PanAndZoom = require("./PanAndZoom");
 var SimpleQueue = require("../utils/simpleQueue");
 var Colors = require("./colors");
@@ -10,7 +10,6 @@ class PaperView {
     constructor(canvas) {
         this.panAndZoom = new PanAndZoom(this);
         this.center = paper.view.center;
-        let ref = this;
         this.zoom = paper.view.zoom;
         this.canvas = canvas;
         this.paperFeatures = {};
@@ -30,10 +29,10 @@ class PaperView {
         this.inactiveAlpha = .5;
     }
 
-    deleteSelectedFeatures(){
+    deleteSelectedFeatures() {
         let items = paper.project.selectedItems;
-        if (items && items.length > 0){
-            for (let i =0 ; i < items.length; i++){
+        if (items && items.length > 0) {
+            for (let i = 0; i < items.length; i++) {
                 Registry.currentDevice.removeFeatureByID(items[i].featureID);
             }
         }
@@ -68,6 +67,14 @@ class PaperView {
         let newSVG = svg.slice(0, 5) + insertString + svg.slice(5);
         layerCopy.remove();
         return newSVG;
+    }
+
+    getCanvasWidth() {
+        return this.canvas.clientWidth;
+    }
+
+    getCanvasHeight() {
+        return this.canvas.clientHeight;
     }
 
     getViewCenterInMillimeters() {
@@ -302,6 +309,39 @@ class PaperView {
             output.push(Registry.currentDevice.getFeatureByID(paperFeatures[i].featureID));
         }
         return output;
+    }
+
+    initializeView() {
+        let center = this.getDeviceCenter();
+        let zoom = this.computeOptimalZoom();
+        this.setCenter(center);
+        this.setZoom(zoom);
+    }
+
+    getDeviceCenter() {
+        let dev = Registry.currentDevice;
+        let width = dev.params.getValue("width");
+        let height = dev.params.getValue("height");
+        return new paper.Point(width / 2, height / 2);
+    }
+
+    computeOptimalZoom() {
+        let borderMargin = 200; // pixels
+        let dev = Registry.currentDevice;
+        let deviceWidth = dev.params.getValue("width");
+        let deviceHeight = dev.params.getValue("height");
+        let canvasWidth = this.getCanvasWidth();
+        let canvasHeight = this.getCanvasHeight();
+        let maxWidth;
+        let maxHeight;
+        if (canvasWidth - borderMargin <= 0) maxWidth = canvasWidth;
+        else maxWidth = canvasWidth - borderMargin;
+        if (canvasHeight - borderMargin <= 0) maxHeight = canvasHeight;
+        else maxHeight = canvasHeight - borderMargin;
+        let widthRatio = deviceWidth / maxWidth;
+        let heightRatio = height / maxHeight;
+        if (widthRatio > heightRatio) return 1 / widthRatio;
+        else return 1 / heightRatio;
     }
 
     hitFeature(point, onlyHitActiveLayer = true) {

@@ -1,9 +1,27 @@
-var OrbitControls = require("./orbitControls");
-var STLExporter = require("./stlExporter");
-var ThreeFeatureRenderer = require("./threeFeatureRenderer");
-var ThreeFeatures = require("./threeFeatures");
-var Detector = require("./detector");
+var OrbitControls = require("./threeLib/orbitControls");
+var STLExporter = require("./threeLib/stlExporter");
+var Detector = require("./threeLib/detector");
 var getSTLString = STLExporter.getSTLString;
+var Device3D = require("./primitiveSets3D").Device3D;
+var renderFeature = require("./threeFeatureRenderer").renderFeature;
+
+var SLIDE_HOLDER_MATERIAL = new THREE.MeshLambertMaterial({
+	color: 0x9E9E9E,
+	shading: THREE.SmoothShading
+});
+var SLIDE_GLASS_MATERIAL = new THREE.MeshLambertMaterial({
+	color: 0xFFFFFF,
+	opacity: 0.0,
+	transparent: true
+});
+var DEVICE_PLANE_MATERIAL = new THREE.MeshBasicMaterial({
+	color: 0xFFFFFF,
+	shading: THREE.FlatShading
+});
+
+var HOLDER_BORDER_WIDTH = .41;
+var INTERLOCK_TOLERANCE = .125;
+var SLIDE_THICKNESS = 1.2;
 
 class ThreeDeviceRenderer {
 	constructor(renderContainer) {
@@ -24,7 +42,7 @@ class ThreeDeviceRenderer {
 	}
 
 	init() {
-		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+		if (!Detector.webgl) Detector.addGetWebGLMessage();
 		this.initCamera();
 		this.initControls();
 		this.initScene();
@@ -35,12 +53,12 @@ class ThreeDeviceRenderer {
 		}, false);
 	}
 
-	toggleLayerView(index){
+	toggleLayerView(index) {
 		if (this.showingLayer) this.showMockup();
 		else this.showLayer(index);
 	}
 
-	getLayerSTL(json, index){
+	getLayerSTL(json, index) {
 		let scene = this.emptyScene();
 		let layer = json.layers[index];
 		scene.add(this.renderLayer(json, index, false));
@@ -50,15 +68,15 @@ class ThreeDeviceRenderer {
 		return getSTLString(scene);
 	}
 
-	getLayerSTLStrings(json){
+	getLayerSTLStrings(json) {
 		let output = [];
-		for (let i =0 ;i < json.layers.length; i++){
+		for (let i = 0; i < json.layers.length; i++) {
 			output.push(this.getLayerSTL(json, i));
 		}
 		return output;
 	}
 
-	getSTL(json){
+	getSTL(json) {
 		ThreeDeviceRenderer.sanitizeJSON(json);
 		return this.getLayerSTLStrings(json);
 	}
@@ -77,7 +95,7 @@ class ThreeDeviceRenderer {
 		});
 	}
 
-	emptyScene(){
+	emptyScene() {
 		let scene = new THREE.Scene();
 		scene = new THREE.Scene();
 		//lights
@@ -96,7 +114,7 @@ class ThreeDeviceRenderer {
 
 	initScene() {
 		this.scene = this.emptyScene();
-		
+
 	}
 
 	initRenderer() {
@@ -150,15 +168,15 @@ class ThreeDeviceRenderer {
 		this.initialZoom = initialZoom;
 	}
 
-	getCameraCenterInMicrometers(){
+	getCameraCenterInMicrometers() {
 		let position = this.camera.position;
 		return [position.x * 1000, (this.camera.position.y - this.initialY) * 1000];
 	}
 
-	getZoom(){
+	getZoom() {
 		let height = this.json.params.height / 1000;
 		let distance = this.camera.position.z;
-		if (distance < 0){
+		if (distance < 0) {
 			return this.initialZoom;
 		}
 		let pixels = this.computeHeightInPixels(height, distance);
@@ -214,7 +232,7 @@ class ThreeDeviceRenderer {
 		var renderedFeatures = new THREE.Group();
 		for (var featureID in layer.features) {
 			var feature = layer.features[featureID];
-			renderedFeatures.add(ThreeFeatures.renderFeature(feature, layer, z_offset));
+			renderedFeatures.add(renderFeature(feature, layer, z_offset));
 		}
 		return renderedFeatures;
 	}
@@ -227,6 +245,53 @@ class ThreeDeviceRenderer {
 		return renderedLayers;
 	}
 
+	renderSlide(width, height, thickness, slideMaterial = SLIDE_GLASS_MATERIAL, planeMaterial = DEVICE_PLANE_MATERIAL) {
+		let slideParams = {
+			width: width,
+			height: height,
+			thickness: thickness
+		}
+
+		let planeParams = {
+			width: width,
+			height: height
+		}
+		let slideGeometry = Device3D.Slide(slideParams);
+		let planeGeometry = Device3D.DevicePlane(planeParams);
+		let group = new THREE.Group();
+		let planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+		let slideMesh = new THREE.Mesh(slideGeometry, slideMaterial);
+		group.add(planeMesh);
+		group.add(slideMesh);
+		return group;
+	}
+
+	renderSlideHolder(width, height, slideThickness, borderWidth, interlock, material = SLIDE_HOLDER_MATERIAL) {
+		let holderParams = {
+			width: width,
+			height: height,
+			slideThickness: slideThickness,
+			borderWidth: borderWidth,
+			interlock: interlock
+		}
+
+		let holderGeometry = Device3D.SlideHolder(holderParams);
+		let holderMesh = new THREE.Mesh(holderGeometry, material);
+		return holderMesh;
+	}
+
+	renderSlideAssembly(width, height, slide = false, slideThickness = SLIDE_THICKNESS, borderWidth = HOLDER_BORDER_WIDTH, interlock = INTERLOCK_TOLERANCE) {
+		let assembly = new THREE.Group();
+		let holder = this.renderSlideHolder(width, height, slideThickness, borderWidth, interlock);
+		assembly.add(holder);
+		if (slide) {
+			let slide = this.renderSlide(width, height, slideThickness);
+			assembly.add(slide);
+		}
+		assembly.position.z -= slideThickness;
+		return assembly;
+	}
+
 	renderLayer(json, layerIndex, viewOnly = false) {
 		var width = json.params.width;
 		var height = json.params.height;
@@ -237,7 +302,8 @@ class ThreeDeviceRenderer {
 		else renderedFeatures.add(this.renderFeatures(layer, 0));
 		if (layer.params.flip && !viewOnly) this.flipLayer(renderedFeatures, height, layer.params.z_offset);
 		renderedLayer.add(renderedFeatures);
-		renderedLayer.add(ThreeFeatures.SlideHolder(width, height, viewOnly));
+		let assembly = this.renderSlideAssembly(width, height, viewOnly);
+		renderedLayer.add(assembly);
 		return renderedLayer;
 	}
 
@@ -248,6 +314,8 @@ class ThreeDeviceRenderer {
 	}
 
 	renderMockup(json) {
+		let width = json.params.width;
+		let height = json.params.height;
 		var renderedMockup = new THREE.Group();
 		var layers = json.layers;
 		for (var i = 0; i < layers.length; i++) {
@@ -255,7 +323,7 @@ class ThreeDeviceRenderer {
 			var renderedLayer = this.renderFeatures(layer, layer.params.z_offset);
 			renderedMockup.add(renderedLayer);
 		}
-		var renderedHolder = ThreeFeatures.SlideHolder(json.params.width, json.params.height, true);
+		var renderedHolder = this.renderSlideAssembly(width, height, true);
 		renderedMockup.add(renderedHolder);
 		return renderedMockup;
 	}

@@ -1,9 +1,6 @@
 var uuid = require('node-uuid');
 
 var registeredParams = {};
-var featureRenderers = {};
-var registeredFeatures = {};
-var registeredFeatureRenderers = {};
 var currentDevice = null;
 var canvasManager = null;
 var currentLayer = null;
@@ -18,9 +15,6 @@ var generateID = function() {
 }
 
 exports.generateID = generateID;
-exports.featureRenderers = featureRenderers;
-exports.registeredFeatureRenderers = registeredFeatureRenderers;
-exports.registeredFeatures = registeredFeatures;
 exports.registeredParams = registeredParams;
 exports.currentDevice = currentDevice;
 exports.currentLayer = currentLayer;
