@@ -27,6 +27,7 @@ class PaperView {
         this.lastTargetType = null;
         this.lastTargetPosition = null;
         this.inactiveAlpha = .5;
+        this.disableContextMenu();
     }
 
     deleteSelectedFeatures() {
@@ -156,6 +157,12 @@ class PaperView {
 
     setResizeFunction(func) {
         paper.view.onResize = func;
+    }
+
+    disableContextMenu(func) {
+        this.canvas.oncontextmenu = function(event) {
+            event.preventDefault();
+        }
     }
 
     refresh() {

@@ -74,7 +74,6 @@ class ChannelTool extends MouseTool {
 			let target = ChannelTool.getTarget(this.lastPoint);
 			let feat = Registry.currentLayer.getFeature(this.currentChannelID);
 			feat.updateParameter("end", target);
-			Registry.canvasManager.render();
 			} else {
 				let newChannel = this.createChannel(this.startPoint, this.startPoint);
 				this.currentChannelID = newChannel.getID();
@@ -88,8 +87,6 @@ class ChannelTool extends MouseTool {
 		if (this.currentChannelID) {
 			if (this.startPoint.x == target[0] && this.startPoint.y == target[1]) {
 				Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-				//TODO: This will be slow for complex devices, since it re-renders everything
-				Registry.canvasManager.render();
 			}
 		} else {
 			this.updateChannel(point);

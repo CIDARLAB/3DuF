@@ -8,9 +8,9 @@ var FloatValue = Parameters.FloatValue;
 var StringValue = Parameters.StringValue;
 var BooleanValue = Parameters.BooleanValue;
 
-var Features = require(appRoot + "core/features");
-var Channel = Features.Channel;
-var CircleValve = Features.CircleValve;
+//var Features = require(appRoot + "core/features");
+var Channel = Feature.getFeatureGenerator("Channel", "Basic");
+var CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
 //var Channel = require(appRoot + "core/features/channel");
 //var CircleValve = require(appRoot + "core/features/circleValve");
 

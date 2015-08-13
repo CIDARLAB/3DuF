@@ -1,11 +1,12 @@
 var should = require("should");
 var appRoot = "../../app/";
+var Feature = require("../../app/core/feature");
 var Device = require(appRoot + '/core/device')
 var Layer = require(appRoot + '/core/layer')
-var Features = require(appRoot + '/core/features');
+//var Features = require(appRoot + '/core/features');
 
-var Channel = Features.Channel;
-var CircleValve = Features.CircleValve;
+var Channel = Feature.getFeatureGenerator("Channel", "Basic");
+var CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
 
 describe("Integration", function() {
     describe("#core", function() {

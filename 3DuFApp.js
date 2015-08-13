@@ -11535,6 +11535,13 @@ var Feature = (function () {
             return Registry.generateID();
         }
     }, {
+        key: 'getFeatureGenerator',
+        value: function getFeatureGenerator(typeString, setString) {
+            return function (values) {
+                return Feature.makeFeature(typeString, setString, values);
+            };
+        }
+    }, {
         key: 'getDefaultsForType',
         value: function getDefaultsForType(typeString, setString) {
             return FeatureSets.getDefinition(typeString, setString).defaults;
@@ -13375,6 +13382,7 @@ var PaperView = (function () {
         this.lastTargetType = null;
         this.lastTargetPosition = null;
         this.inactiveAlpha = .5;
+        this.disableContextMenu();
     }
 
     _createClass(PaperView, [{
@@ -13526,6 +13534,13 @@ var PaperView = (function () {
         key: "setResizeFunction",
         value: function setResizeFunction(func) {
             paper.view.onResize = func;
+        }
+    }, {
+        key: "disableContextMenu",
+        value: function disableContextMenu(func) {
+            this.canvas.oncontextmenu = function (event) {
+                event.preventDefault();
+            };
         }
     }, {
         key: "refresh",
@@ -15906,7 +15921,6 @@ var ChannelTool = (function (_MouseTool) {
 					var target = ChannelTool.getTarget(this.lastPoint);
 					var feat = Registry.currentLayer.getFeature(this.currentChannelID);
 					feat.updateParameter("end", target);
-					Registry.canvasManager.render();
 				} else {
 					var newChannel = this.createChannel(this.startPoint, this.startPoint);
 					this.currentChannelID = newChannel.getID();
@@ -15921,8 +15935,6 @@ var ChannelTool = (function (_MouseTool) {
 			if (this.currentChannelID) {
 				if (this.startPoint.x == target[0] && this.startPoint.y == target[1]) {
 					Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-					//TODO: This will be slow for complex devices, since it re-renders everything
-					Registry.canvasManager.render();
 				}
 			} else {
 				this.updateChannel(point);
