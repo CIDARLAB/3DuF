@@ -285,6 +285,9 @@ class ViewManager {
         Registry.currentLayer = Registry.currentDevice.layers[0];
         Registry.viewManager.addDevice(Registry.currentDevice);
         this.view.initializeView();
+        this.updateGrid();
+        this.updateDevice(Registry.currentDevice);
+        this.refresh(true);
     }
 
     removeFeaturesByPaperElements(paperElements) {

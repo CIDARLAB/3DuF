@@ -89,6 +89,8 @@ class PaperView {
         this.activeLayer = null;
         this.featureLayer.removeChildren();
         this.featureLayer.clear();
+        this.deviceLayer.clear();
+        this.gridLayer.clear();
     }
 
     getCenter() {
@@ -339,7 +341,7 @@ class PaperView {
         if (canvasHeight - borderMargin <= 0) maxHeight = canvasHeight;
         else maxHeight = canvasHeight - borderMargin;
         let widthRatio = deviceWidth / maxWidth;
-        let heightRatio = height / maxHeight;
+        let heightRatio = deviceHeight / maxHeight;
         if (widthRatio > heightRatio) return 1 / widthRatio;
         else return 1 / heightRatio;
     }
