@@ -1,4 +1,5 @@
 var Registry = require("../core/registry");
+var Device = require("../core/device");
 var ChannelTool = require("./tools/channelTool");
 var MouseTool = require("./tools/mouseTool");
 var PanTool = require("./tools/panTool");
@@ -244,9 +245,7 @@ class ViewManager {
     }
 
     refresh(refresh = true) {
-        //this.view.refresh();
         this.updateQueue.run();
-        //this.saveQueue.run();
     }
 
     getEventPosition(event) {
@@ -280,17 +279,13 @@ class ViewManager {
         return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
     }
 
-    getDeviceCenter() {
-        let dev = Registry.currentDevice;
-        let width = dev.params.getValue("width");
-        let height = dev.params.getValue("height");
-        return new paper.Point(width / 2, height / 2);
+    loadDeviceFromJSON(json) {
+        Registry.viewManager.clear();
+        Registry.currentDevice = Device.fromJSON(json);
+        Registry.currentLayer = Registry.currentDevice.layers[0];
+        Registry.viewManager.addDevice(Registry.currentDevice);
+        this.view.initializeView();
     }
-
-    computeOptimalZoom() {
-
-    }
-
 
     removeFeaturesByPaperElements(paperElements) {
         if (paperElements.length > 0) {

@@ -80,7 +80,7 @@ function setActiveLayer(layerName) {
     setActiveButton(activeButton);
     let bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
-    if (threeD){
+    if (threeD) {
         setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
         setButtonColor(button2D, inactiveBackground, inactiveText);
     } else {
@@ -143,7 +143,7 @@ function setupAppPage() {
     renderer = Registry.threeRenderer;
     channelButton.onclick = function() {
         Registry.viewManager.activateTool("Channel");
-        let bg = Colors.getDefaultFeatureColor("Channel", "Basic",Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("Channel", "Basic", Registry.currentLayer);
         setActiveButton("Channel");
         switchTo2D();
     };
@@ -178,7 +178,7 @@ function setupAppPage() {
     };
 
     flowButton.onclick = function() {
-        if (threeD){
+        if (threeD) {
             if (activeLayer == "0") renderer.toggleLayerView(0);
             else renderer.showLayer(0);
         }
@@ -189,7 +189,7 @@ function setupAppPage() {
     }
 
     controlButton.onclick = function() {
-        if (threeD){
+        if (threeD) {
             if (activeLayer == "1") renderer.toggleLayerView(1);
             else renderer.showLayer(1);
         }
@@ -210,7 +210,7 @@ function setupAppPage() {
         let stls = renderer.getSTL(json);
         let blobs = [];
         let zipper = new JSZip();
-        for (let i =0 ; i < stls.length; i++){
+        for (let i = 0; i < stls.length; i++) {
             let name = "" + i + "_" + json.name + "_" + json.layers[i].name + ".stl";
             zipper.file(name, stls[i]);
         }
@@ -250,21 +250,26 @@ function setupAppPage() {
         switchTo3D();
     }
 
-    let dnd = new HTMLUtils.DnDFileController("#c", function(files) {
-        var f = files[0];
+    function setupDragAndDropLoad(selector) {
+        let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+            var f = files[0];
 
-        var reader = new FileReader();
-        reader.onloadend = function(e) {
-            var result = JSON.parse(this.result);
-            Registry.canvasManager.loadDeviceFromJSON(result);
-        };
-        try {
-            reader.readAsText(f);
-        } catch (err) {
-            console.log("unable to load JSON: " + f);
-        }
-    });
+            var reader = new FileReader();
+            reader.onloadend = function(e) {
+                var result = JSON.parse(this.result);
+                Registry.viewManager.loadDeviceFromJSON(result);
+                switchTo2D();
+            };
+            try {
+                reader.readAsText(f);
+            } catch (err) {
+                console.log("unable to load JSON: " + f);
+            }
+        });
+    }
 
+    setupDragAndDropLoad("#c");
+    setupDragAndDropLoad("#renderContainer");
     setActiveButton("Channel");
     setActiveLayer("0");
     switchTo2D();
