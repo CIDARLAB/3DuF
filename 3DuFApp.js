@@ -11181,7 +11181,7 @@ window.onload = function () {
     PageSetup.setupAppPage();
 };
 
-},{"./core/device":46,"./core/layer":49,"./core/registry":58,"./examples/jsonExamples":59,"./graphics/CanvasManager":67,"./view/colors":73,"./view/grid/adaptiveGrid":74,"./view/pageSetup":75,"./view/paperView":76,"./view/render3D/ThreeDeviceRenderer":82,"./view/viewManager":95}],46:[function(require,module,exports){
+},{"./core/device":46,"./core/layer":49,"./core/registry":58,"./examples/jsonExamples":59,"./graphics/CanvasManager":67,"./view/colors":73,"./view/grid/adaptiveGrid":74,"./view/pageSetup":75,"./view/paperView":76,"./view/render3D/ThreeDeviceRenderer":82,"./view/viewManager":97}],46:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -12157,9 +12157,6 @@ module.exports = Params;
 var uuid = require('node-uuid');
 
 var registeredParams = {};
-var featureRenderers = {};
-var registeredFeatures = {};
-var registeredFeatureRenderers = {};
 var currentDevice = null;
 var canvasManager = null;
 var currentLayer = null;
@@ -12174,9 +12171,6 @@ var generateID = function generateID() {
 };
 
 exports.generateID = generateID;
-exports.featureRenderers = featureRenderers;
-exports.registeredFeatureRenderers = registeredFeatureRenderers;
-exports.registeredFeatures = registeredFeatures;
 exports.registeredParams = registeredParams;
 exports.currentDevice = currentDevice;
 exports.currentLayer = currentLayer;
@@ -12368,7 +12362,7 @@ var render3D = {
             radius2: "radius2",
             height: "height"
         },
-        featurePrimitveSet: "Basic3D",
+        featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
     Port: {
@@ -12388,6 +12382,7 @@ var render3D = {
             radius2: "radius2",
             height: "height"
         },
+        featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
     Channel: {
@@ -13712,21 +13707,26 @@ function setupAppPage() {
         switchTo3D();
     };
 
-    var dnd = new HTMLUtils.DnDFileController("#c", function (files) {
-        var f = files[0];
+    function setupDragAndDropLoad(selector) {
+        var dnd = new HTMLUtils.DnDFileController(selector, function (files) {
+            var f = files[0];
 
-        var reader = new FileReader();
-        reader.onloadend = function (e) {
-            var result = JSON.parse(this.result);
-            Registry.canvasManager.loadDeviceFromJSON(result);
-        };
-        try {
-            reader.readAsText(f);
-        } catch (err) {
-            console.log("unable to load JSON: " + f);
-        }
-    });
+            var reader = new FileReader();
+            reader.onloadend = function (e) {
+                var result = JSON.parse(this.result);
+                Registry.viewManager.loadDeviceFromJSON(result);
+                switchTo2D();
+            };
+            try {
+                reader.readAsText(f);
+            } catch (err) {
+                console.log("unable to load JSON: " + f);
+            }
+        });
+    }
 
+    setupDragAndDropLoad("#c");
+    setupDragAndDropLoad("#renderContainer");
     setActiveButton("Channel");
     setActiveLayer("0");
     switchTo2D();
@@ -13744,7 +13744,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Registry = require("../core/registry");
 var FeatureRenderer2D = require("./render2D/featureRenderer2D");
 var GridRenderer = require("./render2D/GridRenderer");
-var DeviceRenderer = require("./render2D/deviceRenderer");
+var DeviceRenderer = require("./render2D/deviceRenderer2D");
 var PanAndZoom = require("./PanAndZoom");
 var SimpleQueue = require("../utils/simpleQueue");
 var Colors = require("./colors");
@@ -13755,7 +13755,6 @@ var PaperView = (function () {
 
         this.panAndZoom = new PanAndZoom(this);
         this.center = paper.view.center;
-        var ref = this;
         this.zoom = paper.view.zoom;
         this.canvas = canvas;
         this.paperFeatures = {};
@@ -13815,6 +13814,16 @@ var PaperView = (function () {
             var newSVG = svg.slice(0, 5) + insertString + svg.slice(5);
             layerCopy.remove();
             return newSVG;
+        }
+    }, {
+        key: "getCanvasWidth",
+        value: function getCanvasWidth() {
+            return this.canvas.clientWidth;
+        }
+    }, {
+        key: "getCanvasHeight",
+        value: function getCanvasHeight() {
+            return this.canvas.clientHeight;
         }
     }, {
         key: "getViewCenterInMillimeters",
@@ -14094,6 +14103,39 @@ var PaperView = (function () {
             return output;
         }
     }, {
+        key: "initializeView",
+        value: function initializeView() {
+            var center = this.getDeviceCenter();
+            var zoom = this.computeOptimalZoom();
+            this.setCenter(center);
+            this.setZoom(zoom);
+        }
+    }, {
+        key: "getDeviceCenter",
+        value: function getDeviceCenter() {
+            var dev = Registry.currentDevice;
+            var width = dev.params.getValue("width");
+            var height = dev.params.getValue("height");
+            return new paper.Point(width / 2, height / 2);
+        }
+    }, {
+        key: "computeOptimalZoom",
+        value: function computeOptimalZoom() {
+            var borderMargin = 200; // pixels
+            var dev = Registry.currentDevice;
+            var deviceWidth = dev.params.getValue("width");
+            var deviceHeight = dev.params.getValue("height");
+            var canvasWidth = this.getCanvasWidth();
+            var canvasHeight = this.getCanvasHeight();
+            var maxWidth = undefined;
+            var maxHeight = undefined;
+            if (canvasWidth - borderMargin <= 0) maxWidth = canvasWidth;else maxWidth = canvasWidth - borderMargin;
+            if (canvasHeight - borderMargin <= 0) maxHeight = canvasHeight;else maxHeight = canvasHeight - borderMargin;
+            var widthRatio = deviceWidth / maxWidth;
+            var heightRatio = height / maxHeight;
+            if (widthRatio > heightRatio) return 1 / widthRatio;else return 1 / heightRatio;
+        }
+    }, {
         key: "hitFeature",
         value: function hitFeature(point) {
             var onlyHitActiveLayer = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
@@ -14150,7 +14192,7 @@ var PaperView = (function () {
 
 module.exports = PaperView;
 
-},{"../core/registry":58,"../utils/simpleQueue":71,"./PanAndZoom":72,"./colors":73,"./render2D/GridRenderer":77,"./render2D/deviceRenderer":78,"./render2D/featureRenderer2D":79}],77:[function(require,module,exports){
+},{"../core/registry":58,"../utils/simpleQueue":71,"./PanAndZoom":72,"./colors":73,"./render2D/GridRenderer":77,"./render2D/deviceRenderer2D":78,"./render2D/featureRenderer2D":79}],77:[function(require,module,exports){
 "use strict";
 
 var Colors = require("../colors");
@@ -14419,7 +14461,7 @@ var GradientCircle = function GradientCircle(params) {
     var outerCircle = new paper.Path.Circle(pos, radius1);
     outerCircle.fillColor = {
         gradient: {
-            stops: [[color2, ratio], [color1, ratio]],
+            stops: [[color1, ratio], [color2, ratio]],
             radial: true
         },
         origin: pos,
@@ -14463,12 +14505,30 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var OrbitControls = require("./orbitControls");
-var STLExporter = require("./stlExporter");
-var ThreeFeatureRenderer = require("./threeFeatureRenderer");
-var ThreeFeatures = require("./threeFeatures");
-var Detector = require("./detector");
+var OrbitControls = require("./threeLib/orbitControls");
+var STLExporter = require("./threeLib/stlExporter");
+var Detector = require("./threeLib/detector");
 var getSTLString = STLExporter.getSTLString;
+var Device3D = require("./primitiveSets3D").Device3D;
+var renderFeature = require("./threeFeatureRenderer").renderFeature;
+
+var SLIDE_HOLDER_MATERIAL = new THREE.MeshLambertMaterial({
+	color: 0x9E9E9E,
+	shading: THREE.SmoothShading
+});
+var SLIDE_GLASS_MATERIAL = new THREE.MeshLambertMaterial({
+	color: 0xFFFFFF,
+	opacity: 0.0,
+	transparent: true
+});
+var DEVICE_PLANE_MATERIAL = new THREE.MeshBasicMaterial({
+	color: 0xFFFFFF,
+	shading: THREE.FlatShading
+});
+
+var HOLDER_BORDER_WIDTH = .41;
+var INTERLOCK_TOLERANCE = .125;
+var SLIDE_THICKNESS = 1.2;
 
 var ThreeDeviceRenderer = (function () {
 	function ThreeDeviceRenderer(renderContainer) {
@@ -14681,7 +14741,7 @@ var ThreeDeviceRenderer = (function () {
 			var renderedFeatures = new THREE.Group();
 			for (var featureID in layer.features) {
 				var feature = layer.features[featureID];
-				renderedFeatures.add(ThreeFeatures.renderFeature(feature, layer, z_offset));
+				renderedFeatures.add(renderFeature(feature, layer, z_offset));
 			}
 			return renderedFeatures;
 		}
@@ -14693,6 +14753,66 @@ var ThreeDeviceRenderer = (function () {
 				renderedLayers.push(this.renderLayer(json, i, true));
 			}
 			return renderedLayers;
+		}
+	}, {
+		key: "renderSlide",
+		value: function renderSlide(width, height, thickness) {
+			var slideMaterial = arguments.length <= 3 || arguments[3] === undefined ? SLIDE_GLASS_MATERIAL : arguments[3];
+			var planeMaterial = arguments.length <= 4 || arguments[4] === undefined ? DEVICE_PLANE_MATERIAL : arguments[4];
+
+			var slideParams = {
+				width: width,
+				height: height,
+				thickness: thickness
+			};
+
+			var planeParams = {
+				width: width,
+				height: height
+			};
+			var slideGeometry = Device3D.Slide(slideParams);
+			var planeGeometry = Device3D.DevicePlane(planeParams);
+			var group = new THREE.Group();
+			var planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+			var slideMesh = new THREE.Mesh(slideGeometry, slideMaterial);
+			group.add(planeMesh);
+			group.add(slideMesh);
+			return group;
+		}
+	}, {
+		key: "renderSlideHolder",
+		value: function renderSlideHolder(width, height, slideThickness, borderWidth, interlock) {
+			var material = arguments.length <= 5 || arguments[5] === undefined ? SLIDE_HOLDER_MATERIAL : arguments[5];
+
+			var holderParams = {
+				width: width,
+				height: height,
+				slideThickness: slideThickness,
+				borderWidth: borderWidth,
+				interlock: interlock
+			};
+
+			var holderGeometry = Device3D.SlideHolder(holderParams);
+			var holderMesh = new THREE.Mesh(holderGeometry, material);
+			return holderMesh;
+		}
+	}, {
+		key: "renderSlideAssembly",
+		value: function renderSlideAssembly(width, height) {
+			var slide = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+			var slideThickness = arguments.length <= 3 || arguments[3] === undefined ? SLIDE_THICKNESS : arguments[3];
+			var borderWidth = arguments.length <= 4 || arguments[4] === undefined ? HOLDER_BORDER_WIDTH : arguments[4];
+			var interlock = arguments.length <= 5 || arguments[5] === undefined ? INTERLOCK_TOLERANCE : arguments[5];
+
+			var assembly = new THREE.Group();
+			var holder = this.renderSlideHolder(width, height, slideThickness, borderWidth, interlock);
+			assembly.add(holder);
+			if (slide) {
+				var _slide = this.renderSlide(width, height, slideThickness);
+				assembly.add(_slide);
+			}
+			assembly.position.z -= slideThickness;
+			return assembly;
 		}
 	}, {
 		key: "renderLayer",
@@ -14707,7 +14827,8 @@ var ThreeDeviceRenderer = (function () {
 			if (viewOnly) renderedFeatures.add(this.renderFeatures(layer, layer.params.z_offset));else renderedFeatures.add(this.renderFeatures(layer, 0));
 			if (layer.params.flip && !viewOnly) this.flipLayer(renderedFeatures, height, layer.params.z_offset);
 			renderedLayer.add(renderedFeatures);
-			renderedLayer.add(ThreeFeatures.SlideHolder(width, height, viewOnly));
+			var assembly = this.renderSlideAssembly(width, height, viewOnly);
+			renderedLayer.add(assembly);
 			return renderedLayer;
 		}
 	}, {
@@ -14720,6 +14841,8 @@ var ThreeDeviceRenderer = (function () {
 	}, {
 		key: "renderMockup",
 		value: function renderMockup(json) {
+			var width = json.params.width;
+			var height = json.params.height;
 			var renderedMockup = new THREE.Group();
 			var layers = json.layers;
 			for (var i = 0; i < layers.length; i++) {
@@ -14727,7 +14850,7 @@ var ThreeDeviceRenderer = (function () {
 				var renderedLayer = this.renderFeatures(layer, layer.params.z_offset);
 				renderedMockup.add(renderedLayer);
 			}
-			var renderedHolder = ThreeFeatures.SlideHolder(json.params.width, json.params.height, true);
+			var renderedHolder = this.renderSlideAssembly(width, height, true);
 			renderedMockup.add(renderedHolder);
 			return renderedMockup;
 		}
@@ -14777,7 +14900,352 @@ var ThreeDeviceRenderer = (function () {
 
 module.exports = ThreeDeviceRenderer;
 
-},{"./detector":83,"./orbitControls":84,"./stlExporter":85,"./threeFeatureRenderer":86,"./threeFeatures":87}],83:[function(require,module,exports){
+},{"./primitiveSets3D":85,"./threeFeatureRenderer":86,"./threeLib/detector":87,"./threeLib/orbitControls":88,"./threeLib/stlExporter":89}],83:[function(require,module,exports){
+"use strict";
+
+var mergeGeometries = require("../threeUtils").mergeGeometries;
+var CONE_SEGMENTS = 16;
+
+function TwoPointRoundedLineFeature(params, flip, z_offset) {
+	var start = params.start;
+	var end = params.end;
+	var width = params.width;
+	var height = params.height;
+	var box = TwoPointRoundedLine({
+		start: start,
+		end: end,
+		width: width,
+		height: height
+	});
+	var matrix = new THREE.Matrix4();
+
+	if (flip) {
+		box.applyMatrix(matrix.makeTranslation(0, 0, -height));
+	}
+	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+	return box;
+}
+
+function TwoPointRoundedBoxFeature(params, flip, z_offset) {
+	var start = params.start;
+	var end = params.end;
+	var borderWidth = params.borderWidth;
+	var height = params.height;
+	var box = TwoPointRoundedBox({
+		start: start,
+		end: end,
+		borderWidth: borderWidth,
+		height: height
+	});
+	var matrix = new THREE.Matrix4();
+	if (flip) {
+		box.applyMatrix(matrix.makeTranslation(0, 0, -height));
+	}
+	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+	return box;
+}
+
+function Cone(params) {
+	var position = params.position;
+	var radius1 = params.radius1;
+	var radius2 = params.radius2;
+	var height = params.height;
+	var cyl = new THREE.CylinderGeometry(radius2, radius1, height, CONE_SEGMENTS);
+	var matrix = new THREE.Matrix4();
+	cyl.applyMatrix(matrix.makeRotationX(Math.PI / 2));
+	cyl.applyMatrix(matrix.makeTranslation(position[0], position[1], height / 2));
+	return cyl;
+}
+
+function TwoPointLine(params) {
+	var start = params.start;
+	var end = params.end;
+	var width = params.width;
+	var height = params.height;
+	var dX = end[0] - start[0];
+	var dY = end[1] - start[1];
+	var boxAngle = Math.atan2(dY, dX);
+	var dXPow = Math.pow(dX, 2);
+	var dYPow = Math.pow(dY, 2);
+	var length = Math.sqrt(dXPow + dYPow);
+	var box = new THREE.BoxGeometry(length, width, height);
+	var matrix = new THREE.Matrix4();
+	box.applyMatrix(matrix.makeRotationZ(boxAngle));
+	box.applyMatrix(matrix.makeTranslation(start[0], start[1], height / 2));
+	box.applyMatrix(matrix.makeTranslation(dX / 2, dY / 2, 0));
+	return box;
+}
+
+function TwoPointRoundedBox(params) {
+	var start = params.start;
+	var end = params.end;
+	var borderWidth = params.borderWidth;
+	var height = params.height;
+	var startX = undefined;
+	var startY = undefined;
+	var endX = undefined;
+	var endY = undefined;
+
+	if (start[0] < end[0]) {
+		startX = start[0];
+		endX = end[0];
+	} else {
+		startX = end[0];
+		endX = start[0];
+	}
+	if (start[1] < end[1]) {
+		startY = start[1];
+		endY = end[1];
+	} else {
+		startY = end[1];
+		endY = start[1];
+	}
+
+	var w = endX - startX;
+	var h = endY - startY;
+	var bottomLeft = [startX, startY];
+	var bottomRight = [endX, startY];
+	var topLeft = [startX, endY];
+	var topRight = [endX, endY];
+
+	var core = new THREE.BoxGeometry(w, h, height);
+	var matrix = new THREE.Matrix4();
+	core.applyMatrix(matrix.makeTranslation(w / 2, h / 2, height / 2));
+	core.applyMatrix(matrix.makeTranslation(bottomLeft[0], bottomLeft[1], 0));
+	var left = TwoPointRoundedLine({
+		start: bottomLeft,
+		end: topLeft,
+		width: borderWidth,
+		height: height
+	});
+	var top = TwoPointRoundedLine({
+		start: topleft,
+		end: topRight,
+		width: borderWidth,
+		height: height
+	});
+	var right = TwoPointRoundedLine({
+		start: topRight,
+		end: bottomRight,
+		width: borderWidth,
+		height: height
+	});
+	var down = TwoPointRoundedLine({
+		start: bottomRight,
+		end: bottomLeft,
+		width: borderWidth,
+		height: height
+	});
+	var geom = mergeGeometries([core, left, top, right, down]);
+	return geom;
+}
+
+function ConeFeature(params, flip, z_offset) {
+	var position = params.position;
+	var radius1 = params.radius1;
+	var radius2 = params.radius2;
+	var height = params.height;
+	var cone = Cone({
+		position: position,
+		radius1: radius1,
+		radius2: radius2,
+		height: height
+	});
+	var matrix = new THREE.Matrix4();
+	if (flip) {
+		cone.applyMatrix(matrix.makeRotationX(Math.PI));
+		cone.applyMatrix(matrix.makeTranslation(0, position[1] * 2, 0));
+	}
+	cone.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+	return cone;
+}
+
+function TwoPointRoundedLine(params) {
+	var start = params.start;
+	var end = params.end;
+	var width = params.width;
+	var height = params.height;
+	var box = TwoPointLine({
+		start: start,
+		end: end,
+		width: width,
+		height: height
+	});
+	var cone1 = Cone({
+		position: start,
+		radius1: width / 2,
+		radius2: width / 2,
+		height: height
+	});
+	var cone2 = Cone({
+		position: end,
+		radius1: width / 2,
+		radius2: width / 2,
+		height: height
+	});
+	var merged = mergeGeometries([box, cone1, cone2]);
+	return merged;
+}
+
+module.exports.TwoPointRoundedLine = TwoPointRoundedLine;
+module.exports.TwoPointRoundedBox = TwoPointRoundedBox;
+module.exports.TwoPointRoundedBoxFeature = TwoPointRoundedBoxFeature;
+module.exports.TwoPointRoundedLineFeature = TwoPointRoundedLineFeature;
+module.exports.TwoPointLine = TwoPointLine;
+module.exports.ConeFeature = ConeFeature;
+
+},{"../threeUtils":90}],84:[function(require,module,exports){
+"use strict";
+
+var Basic3D = require("./basic3D");
+var ThreeUtils = require("../threeUtils");
+var TwoPointRoundedLine = Basic3D.TwoPointRoundedLine;
+var mergeGeometries = ThreeUtils.mergeGeometries;
+
+var HOLDER_BORDER_WIDTH = .41;
+var INTERLOCK_TOLERANCE = .125;
+var SLIDE_THICKNESS = 1.2;
+
+function Slide(params) {
+	var width = params.width;
+	var height = params.height;
+	var thickness = params.thickness;
+	var slide = new THREE.BoxGeometry(width, height, thickness);
+	var matrix = new THREE.Matrix4();
+	slide.applyMatrix(matrix.makeTranslation(width / 2, height / 2, thickness / 2));
+	return slide;
+}
+
+function SlideHolder(params) {
+	var width = params.width;
+	var height = params.height;
+	var slideThickness = params.slideThickness;
+	var borderWidth = params.borderWidth;
+	var interlock = params.interlock;
+	var w = borderWidth;
+	var i = interlock;
+	var h = slideThickness;
+	var bottomLeft = [-w / 2 - i, -w / 2 - i];
+	var topLeft = [-w / 2 - i, height + w / 2 + i];
+	var topRight = [width + w / 2 + i, height + w / 2 + i];
+	var bottomRight = [width + w / 2 + i, -w / 2 - i];
+	var leftBar = TwoPointRoundedLine({
+		start: bottomLeft,
+		end: topLeft,
+		width: w,
+		height: h
+	});
+	var topBar = TwoPointRoundedLine({
+		start: topLeft,
+		end: topRight,
+		width: w,
+		height: h
+	});
+
+	var rightBar = TwoPointRoundedLine({
+		start: topRight,
+		end: bottomRight,
+		width: w,
+		height: h
+	});
+
+	var bottomBar = TwoPointRoundedLine({
+		start: bottomRight,
+		end: bottomLeft,
+		width: w,
+		height: h
+	});
+
+	var border = mergeGeometries([leftBar, topBar, rightBar, bottomBar]);
+	return border;
+}
+
+function DevicePlane(params) {
+	var width = params.width;
+	var height = params.height;
+	var plane = new THREE.PlaneBufferGeometry(width, height);
+	var matrix = new THREE.Matrix4();
+	plane.applyMatrix(matrix.makeTranslation(width / 2, height / 2, 0));
+	return plane;
+}
+
+module.exports.Slide = Slide;
+module.exports.DevicePlane = DevicePlane;
+module.exports.SlideHolder = SlideHolder;
+
+},{"../threeUtils":90,"./basic3D":83}],85:[function(require,module,exports){
+"use strict";
+
+module.exports.Basic3D = require("./basic3D");
+module.exports.Device3D = require("./device3D");
+
+},{"./basic3D":83,"./device3D":84}],86:[function(require,module,exports){
+"use strict";
+
+var PrimitiveSets3D = require("./primitiveSets3D");
+var FeatureSets = require("../../featureSets");
+
+var layerMaterials = {
+	"red": new THREE.MeshLambertMaterial({
+		color: 0xF44336,
+		shading: THREE.SmoothShading
+	}),
+	"indigo": new THREE.MeshLambertMaterial({
+		color: 0x3F51B5,
+		shading: THREE.SmoothShading
+	}),
+	"purple": new THREE.MeshLambertMaterial({
+		color: 0x673AB7,
+		shading: THREE.SmoothShading
+	}),
+	"grey": new THREE.MeshLambertMaterial({
+		color: 0x9E9E9E,
+		shading: THREE.SmoothShading
+	})
+};
+
+function getFeatureMaterial(layer) {
+	var colorString = layer.color;
+	if (colorString && layerMaterials.hasOwnProperty(colorString)) {
+		return layerMaterials[colorString];
+	} else return layerMaterials["grey"];
+}
+
+function makeParams(feature, renderInfo) {
+	var params = {};
+	var featureParams = renderInfo.featureParams;
+	for (var key in featureParams) {
+		var target = featureParams[key];
+		if (target == undefined || !feature.params.hasOwnProperty(target)) throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
+		var value = feature.params[target];
+		params[key] = value;
+	}
+	return params;
+}
+
+function getRenderInfo(type, set) {
+	return FeatureSets.getRender3D(type, set);
+}
+
+function renderFeature(feature, layer, z_offset) {
+	var flip = layer.params.flip;
+	var type = feature.type;
+	var set = feature.set;
+	var renderInfo = getRenderInfo(type, set);
+	var renderingSet = renderInfo.featurePrimitiveSet;
+	var renderingPrimitive = renderInfo.featurePrimitive;
+	var primSet = PrimitiveSets3D[renderingSet];
+	var targetFunction = PrimitiveSets3D[renderingSet][renderingPrimitive];
+	var params = makeParams(feature, renderInfo);
+	var geom = targetFunction(params, flip, z_offset);
+	var material = getFeatureMaterial(layer);
+	var renderedFeature = new THREE.Mesh(geom, material);
+	return renderedFeature;
+}
+
+module.exports.renderFeature = renderFeature;
+
+},{"../../featureSets":66,"./primitiveSets3D":85}],87:[function(require,module,exports){
 /**
  * @author alteredq / http://alteredqualia.com/
  * @author mr.doob / http://mrdoob.com/
@@ -14843,7 +15311,7 @@ if (typeof module === 'object') {
 		module.exports = Detector;
 }
 
-},{}],84:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /**
  * @author qiao / https://github.com/qiao
  * @author mrdoob / http://mrdoob.com
@@ -15513,7 +15981,7 @@ THREE.OrbitControls = function (object, domElement) {
 THREE.OrbitControls.prototype = Object.create(THREE.EventDispatcher.prototype);
 THREE.OrbitControls.prototype.constructor = THREE.OrbitControls;
 
-},{}],85:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 /**
  * Based on https://github.com/mrdoob/three.js/blob/a72347515fa34e892f7a9bfa66a34fdc0df55954/examples/js/exporters/STLExporter.js
  * Tested on r68 and r70
@@ -15693,279 +16161,7 @@ module.exports.saveSTL = saveSTL;
 module.exports.exportString = exportString;
 module.exports.getSTLString = getSTLString;
 
-},{}],86:[function(require,module,exports){
-"use strict";
-
-function renderFeature() {}
-
-module.exports.renderFeature = renderFeature;
-
-},{}],87:[function(require,module,exports){
-"use strict";
-
-var ThreeUtils = require("./threeUtils");
-
-var mergeGeometries = ThreeUtils.mergeGeometries;
-
-var INTERLOCK_TOLERANCE = .125;
-var HOLDER_BORDER_WIDTH = .41;
-var SLIDE_Z_OFFSET = 1.20;
-var HOLDER_SKIRT_WIDTH = .8;
-var HOLDER_SKIRT_HEIGHT = .2;
-var CORNER_DISTANCE = 10;
-var SLIDE_THICKNESS = 1.20;
-
-var defaultMaterial = new THREE.MeshBasicMaterial();
-var whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, shading: THREE.FlatShading });
-var slideMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF, opacity: 0.0, transparent: true });
-slideMaterial.specular = 0xFFFFFF;
-var holderMaterial = new THREE.MeshLambertMaterial({ color: 0x9E9E9E, shading: THREE.FlatShading });
-
-var layerMaterials = {
-	"red": new THREE.MeshLambertMaterial({ color: 0xF44336, shading: THREE.SmoothShading }),
-	"indigo": new THREE.MeshLambertMaterial({ color: 0x3F51B5, shading: THREE.SmoothShading }),
-	"purple": new THREE.MeshLambertMaterial({ color: 0x673AB7, shading: THREE.SmoothShading }),
-	"grey": new THREE.MeshLambertMaterial({ color: 0x9E9E9E, shading: THREE.SmoothShading })
-};
-
-function getFeatureMaterial(feature, layer) {
-	var colorString = layer.color;
-	if (colorString && layerMaterials.hasOwnProperty(colorString)) {
-		return layerMaterials[colorString];
-	} else return layerMaterials["grey"];
-}
-
-function DevicePlane(width, height) {
-	var plane = new THREE.PlaneBufferGeometry(width, height);
-	var material = whiteMaterial;
-	var mesh = new THREE.Mesh(plane, material);
-	var matrix = new THREE.Matrix4();
-	mesh.geometry.applyMatrix(matrix.makeTranslation(width / 2, height / 2, 0));
-	return mesh;
-}
-
-function Via(via, layer, z_offset) {
-	var radius1 = via.params.radius1;
-	var radius2 = via.params.radius2;
-	var height = via.params.height;
-	var position = via.params.position;
-	var z_offset = layer.params.z_offset;
-	var flip = layer.params.flip;
-	var geom = ConeFeature(position, radius1, radius2, height, flip, z_offset);
-	var material = getFeatureMaterial(via, layer);
-	var mesh = new THREE.Mesh(geom, material);
-	return mesh;
-}
-
-function Port(port, layer, z_offset) {
-	var radius1 = port.params.radius1;
-	var radius2 = port.params.radius2;
-	var height = port.params.height;
-	var position = port.params.position;
-	var z_offset = layer.params.z_offset;
-	var flip = layer.params.flip;
-	var geom = ConeFeature(position, radius1, radius2, height, flip, z_offset);
-	var material = getFeatureMaterial(port, layer);
-	var mesh = new THREE.Mesh(geom, material);
-	return mesh;
-}
-
-function CircleValve(circleValve, layer, z_offset) {
-	var radius1 = circleValve.params.radius1;
-	var radius2 = circleValve.params.radius2;
-	var height = circleValve.params.height;
-	var position = circleValve.params.position;
-	var z_offset = layer.params.z_offset;
-	var flip = layer.params.flip;
-	var geom = ConeFeature(position, radius1, radius2, height, flip, z_offset);
-	var material = getFeatureMaterial(circleValve, layer);
-	var mesh = new THREE.Mesh(geom, material);
-	return mesh;
-}
-
-function ConeFeature(position, radius1, radius2, height, flip, z_offset) {
-	var cone = Cone(position, radius1, radius2, height);
-	var matrix = new THREE.Matrix4();
-	if (flip) {
-		cone.applyMatrix(matrix.makeRotationX(Math.PI));
-		cone.applyMatrix(matrix.makeTranslation(0, position[1] * 2, 0));
-	}
-	cone.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
-	return cone;
-}
-
-function TwoPointRoundedLineFeature(start, end, width, height, flip, z_offset) {
-	var box = TwoPointRoundedBox(start, end, width, height);
-	var matrix = new THREE.Matrix4();
-
-	if (flip) {
-		box.applyMatrix(matrix.makeTranslation(0, 0, -height));
-	}
-	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
-	return box;
-}
-
-function TwoPointRoundedBoxFeature(start, end, borderWidth, height, flip, z_offset) {
-	var box = RoundedChamber(start, end, borderWidth, height);
-	var matrix = new THREE.Matrix4();
-	if (flip) {
-		box.applyMatrix(matrix.makeTranslation(0, 0, -height));
-	}
-	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
-	return box;
-}
-
-function Chamber(chamber, layer, z_offset) {
-
-	var start = chamber.params.start;
-	var end = chamber.params.end;
-	var width = chamber.params.borderWidth;
-	var height = chamber.params.height;
-	var flip = layer.params.flip;
-	var z_offset = layer.params.z_offset;
-
-	var geom = TwoPointRoundedBoxFeature(start, end, width, height, flip, z_offset);
-	var material = getFeatureMaterial(chamber, layer);
-	var mesh = new THREE.Mesh(geom, material);
-
-	return mesh;
-}
-
-function Channel(channel, layer, z_offset) {
-	var start = channel.params.start;
-	var end = channel.params.end;
-	var width = channel.params.width;
-	var height = channel.params.height;
-	var flip = layer.params.flip;
-	var z_offset = layer.params.z_offset;
-	var geom = TwoPointRoundedLineFeature(start, end, width, height, flip, z_offset);
-	var material = getFeatureMaterial(channel, layer);
-	var mesh = new THREE.Mesh(geom, material);
-	return mesh;
-}
-
-function Cone(position, radius1, radius2, height) {
-	var cyl = new THREE.CylinderGeometry(radius2, radius1, height, 16);
-	var matrix = new THREE.Matrix4();
-	cyl.applyMatrix(matrix.makeRotationX(Math.PI / 2));
-	cyl.applyMatrix(matrix.makeTranslation(position[0], position[1], height / 2));
-	return cyl;
-}
-
-function TwoPointBox(start, end, width, height) {
-	var dX = end[0] - start[0];
-	var dY = end[1] - start[1];
-	var boxAngle = Math.atan2(dY, dX);
-	var dXPow = Math.pow(dX, 2);
-	var dYPow = Math.pow(dY, 2);
-	var length = Math.sqrt(dXPow + dYPow);
-	var material = defaultMaterial;
-	var box = new THREE.BoxGeometry(length, width, height);
-	var matrix = new THREE.Matrix4();
-	box.applyMatrix(matrix.makeRotationZ(boxAngle));
-	box.applyMatrix(matrix.makeTranslation(start[0], start[1], height / 2));
-	box.applyMatrix(matrix.makeTranslation(dX / 2, dY / 2, 0));
-	return box;
-}
-
-function Slide(width, height, thickness) {
-	var group = new THREE.Group();
-	var slide = new THREE.BoxGeometry(width, height, thickness);
-	var material = slideMaterial;
-	var matrix = new THREE.Matrix4();
-	slide.applyMatrix(matrix.makeTranslation(width / 2, height / 2, -thickness / 2));
-	var mesh = new THREE.Mesh(slide, material);
-	group.add(mesh);
-	var bottomPlane = new DevicePlane(width, height);
-	bottomPlane.position.z -= thickness;
-	group.add(bottomPlane);
-	return group;
-}
-
-function SlideHolder(width, height, slide) {
-	var renderedHolder = new THREE.Group();
-	var w = HOLDER_BORDER_WIDTH = .41;
-	var i = INTERLOCK_TOLERANCE;
-	var h = SLIDE_THICKNESS;
-	var bottomLeft = [-w / 2 - i, -w / 2 - i];
-	var topLeft = [-w / 2 - i, height + w / 2 + i];
-	var topRight = [width + w / 2 + i, height + w / 2 + i];
-	var bottomRight = [width + w / 2 + i, -w / 2 - i];
-	var leftBar = TwoPointRoundedBox(bottomLeft, topLeft, w, h);
-	var topBar = TwoPointRoundedBox(topLeft, topRight, w, h);
-	var rightBar = TwoPointRoundedBox(topRight, bottomRight, w, h);
-	var bottomBar = TwoPointRoundedBox(bottomRight, bottomLeft, w, h);
-	var border = mergeGeometries([leftBar, topBar, rightBar, bottomBar]);
-	var borderMesh = new THREE.Mesh(border, holderMaterial);
-	borderMesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -h));
-	renderedHolder.add(borderMesh);
-	if (slide) {
-		renderedHolder.add(Slide(width, height, h));
-		return renderedHolder;
-	} else return borderMesh;
-}
-
-function RoundedChamber(start, end, borderWidth, height) {
-	var startX = undefined;
-	var startY = undefined;
-	var endX = undefined;
-	var endY = undefined;
-
-	if (start[0] < end[0]) {
-		startX = start[0];
-		endX = end[0];
-	} else {
-		startX = end[0];
-		endX = start[0];
-	}
-	if (start[1] < end[1]) {
-		startY = start[1];
-		endY = end[1];
-	} else {
-		startY = end[1];
-		endY = start[1];
-	}
-
-	var w = endX - startX;
-	var h = endY - startY;
-	var bottomLeft = [startX, startY];
-	var bottomRight = [endX, startY];
-	var topLeft = [startX, endY];
-	var topRight = [endX, endY];
-
-	var core = new THREE.BoxGeometry(w, h, height);
-	var matrix = new THREE.Matrix4();
-	core.applyMatrix(matrix.makeTranslation(w / 2, h / 2, height / 2));
-	core.applyMatrix(matrix.makeTranslation(bottomLeft[0], bottomLeft[1], 0));
-	var left = new TwoPointRoundedBox(bottomLeft, topLeft, borderWidth, height);
-	var top = new TwoPointRoundedBox(topLeft, topRight, borderWidth, height);
-	var right = new TwoPointRoundedBox(topRight, bottomRight, borderWidth, height);
-	var down = new TwoPointRoundedBox(bottomRight, bottomLeft, borderWidth, height);
-	var geom = mergeGeometries([core, left, top, right, down]);
-	return geom;
-}
-
-function TwoPointRoundedBox(start, end, width, height) {
-	var box = TwoPointBox(start, end, width, height);
-	var cone1 = Cone(start, width / 2, width / 2, height);
-	var cone2 = Cone(end, width / 2, width / 2, height);
-	var merged = mergeGeometries([box, cone1, cone2]);
-	return merged;
-}
-
-function renderFeature(feature, layer, z_offset) {
-	var type = feature.type;
-	var renderedFeature;
-
-	if (type == "Channel") renderedFeature = Channel(feature, layer, z_offset);else if (type == "CircleValve") renderedFeature = CircleValve(feature, layer, z_offset);else if (type == "Via") renderedFeature = Via(feature, layer, z_offset);else if (type == "Port") renderedFeature = Port(feature, layer, z_offset);else if (type == "Chamber") renderedFeature = Chamber(feature, layer, z_offset);else console.log("Feature type not recognized: " + type);
-
-	return renderedFeature;
-}
-
-module.exports.renderFeature = renderFeature;
-module.exports.SlideHolder = SlideHolder;
-
-},{"./threeUtils":88}],88:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 "use strict";
 
 function mergeGeometries(geometries) {
@@ -15978,7 +16174,7 @@ function mergeGeometries(geometries) {
 
 module.exports.mergeGeometries = mergeGeometries;
 
-},{}],89:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16015,7 +16211,7 @@ var MouseTool = (function () {
 
 module.exports = MouseTool;
 
-},{"../../core/registry":58}],90:[function(require,module,exports){
+},{"../../core/registry":58}],92:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16160,7 +16356,7 @@ var ChannelTool = (function (_MouseTool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/feature":47,"../../core/registry":58,"../../utils/simpleQueue":71,"./mouseTool":91}],91:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":58,"../../utils/simpleQueue":71,"./mouseTool":93}],93:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16197,7 +16393,7 @@ var MouseTool = (function () {
 
 module.exports = MouseTool;
 
-},{"../../core/registry":58}],92:[function(require,module,exports){
+},{"../../core/registry":58}],94:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16283,7 +16479,7 @@ var PanTool = (function (_MouseTool) {
 
 module.exports = PanTool;
 
-},{"../../core/registry":58,"../../utils/simpleQueue":71,"./mouseTool":91}],93:[function(require,module,exports){
+},{"../../core/registry":58,"../../utils/simpleQueue":71,"./mouseTool":93}],95:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16354,7 +16550,7 @@ var PositionTool = (function (_MouseTool) {
 
 module.exports = PositionTool;
 
-},{"../../core/feature":47,"../../core/registry":58,"../../utils/simpleQueue":71,"./mouseTool":91}],94:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":58,"../../utils/simpleQueue":71,"./mouseTool":93}],96:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16524,7 +16720,7 @@ var SelectTool = (function (_MouseTool) {
 
 module.exports = SelectTool;
 
-},{"../../core/registry":58,"../../utils/simpleQueue":71,"./MouseTool":89}],95:[function(require,module,exports){
+},{"../../core/registry":58,"../../utils/simpleQueue":71,"./MouseTool":91}],97:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16532,6 +16728,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Registry = require("../core/registry");
+var Device = require("../core/device");
 var ChannelTool = require("./tools/channelTool");
 var MouseTool = require("./tools/mouseTool");
 var PanTool = require("./tools/panTool");
@@ -16858,9 +17055,7 @@ var ViewManager = (function () {
         value: function refresh() {
             var _refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
-            //this.view.refresh();
             this.updateQueue.run();
-            //this.saveQueue.run();
         }
     }, {
         key: "getEventPosition",
@@ -16898,16 +17093,14 @@ var ViewManager = (function () {
             return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
         }
     }, {
-        key: "getDeviceCenter",
-        value: function getDeviceCenter() {
-            var dev = Registry.currentDevice;
-            var width = dev.params.getValue("width");
-            var height = dev.params.getValue("height");
-            return new paper.Point(width / 2, height / 2);
+        key: "loadDeviceFromJSON",
+        value: function loadDeviceFromJSON(json) {
+            Registry.viewManager.clear();
+            Registry.currentDevice = Device.fromJSON(json);
+            Registry.currentLayer = Registry.currentDevice.layers[0];
+            Registry.viewManager.addDevice(Registry.currentDevice);
+            this.view.initializeView();
         }
-    }, {
-        key: "computeOptimalZoom",
-        value: function computeOptimalZoom() {}
     }, {
         key: "removeFeaturesByPaperElements",
         value: function removeFeaturesByPaperElements(paperElements) {
@@ -16989,4 +17182,4 @@ var ViewManager = (function () {
 
 module.exports = ViewManager;
 
-},{"../core/registry":58,"../utils/SimpleQueue":68,"./PanAndZoom":72,"./tools/channelTool":90,"./tools/mouseTool":91,"./tools/panTool":92,"./tools/positionTool":93,"./tools/selectTool":94}]},{},[45]);
+},{"../core/device":46,"../core/registry":58,"../utils/SimpleQueue":68,"./PanAndZoom":72,"./tools/channelTool":92,"./tools/mouseTool":93,"./tools/panTool":94,"./tools/positionTool":95,"./tools/selectTool":96}]},{},[45]);

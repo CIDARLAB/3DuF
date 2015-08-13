@@ -72,7 +72,7 @@ var GradientCircle = function(params){
     let outerCircle = new paper.Path.Circle(pos, radius1);
     outerCircle.fillColor = {
         gradient: {
-            stops: [[color2, ratio], [color1, ratio]],
+            stops: [[color1, ratio], [color2, ratio]],
             radial: true
         },
         origin: pos,

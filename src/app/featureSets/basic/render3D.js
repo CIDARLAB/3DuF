@@ -6,7 +6,7 @@ let render3D = {
             radius2: "radius2",
             height: "height"
         },
-        featurePrimitveSet: "Basic3D",
+        featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
     Port: {
@@ -26,6 +26,7 @@ let render3D = {
             radius2: "radius2",
             height: "height"
         },
+        featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
     Channel: {
