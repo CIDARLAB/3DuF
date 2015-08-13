@@ -68,6 +68,12 @@ class Feature {
         return this.__type;
     }
 
+    static getFeatureGenerator(typeString, setString){
+        return function(values){
+            return Feature.makeFeature(typeString, setString, values);
+        }
+    }
+
     getValue(key){
         try {
             return this.__params.getValue(key);
