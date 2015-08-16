@@ -11119,36 +11119,19 @@ module.exports = ZStream;
 }).call(this);
 
 },{}],45:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var CanvasManager = require("./graphics/CanvasManager");
-//var CanvasManager = require("./graphics/CanvasManager");
 var Registry = require("./core/registry");
 var Device = require('./core/device');
 var Layer = require('./core/layer');
-var Features = require('./core/features');
 var PaperView = require("./view/paperView");
 var ViewManager = require("./view/viewManager");
 var AdaptiveGrid = require("./view/grid/adaptiveGrid");
 var PageSetup = require("./view/pageSetup");
 var Colors = require("./view/colors");
-var ThreeDeviceRenderer = require("./renderer/ThreeDeviceRenderer");
+var ThreeDeviceRenderer = require("./view/render3D/ThreeDeviceRenderer");
 var Examples = require("./examples/jsonExamples");
 
-var Channel = Features.Channel;
-var CircleValve = Features.CircleValve;
-var HollowChannel = Features.HollowChannel;
-
-var createPort = function createPort(position, radius1, radius2, height) {
-    var port = new Features.Port({
-        position: position,
-        radius1: radius1,
-        radius2: radius2,
-        height: height
-    });
-    Registry.currentLayer.addFeature(port);
-};
-var manager;
 var view;
 var viewManager;
 var grid;
@@ -11156,41 +11139,19 @@ var grid;
 paper.setup("c");
 
 window.onload = function () {
-    manager = new CanvasManager(document.getElementById("c"));
     view = new PaperView(document.getElementById("c"));
     viewManager = new ViewManager(view);
     grid = new AdaptiveGrid();
-    grid.setColor(Colors.TEAL_100);
+    grid.setColor(Colors.BLUE_500);
 
     Registry.viewManager = viewManager;
 
-    /*
-    if (!localStorage){
-        manager.loadDeviceFromJSON(JSON.parse(Examples.example1));
-    }
-    else if (!localStorage.getItem('currentDevice')) {
-        localStorage.setItem('currentDevice', Examples.example1);
-    } else {
-        try {
-            manager.loadFromStorage();
-        } catch (err) {
-            localStorage.setItem('currentDevice', Examples.example1);
-            manager.loadFromStorage();
-        }
-    }
-    */
-
-    manager.loadDeviceFromJSON(JSON.parse(Examples.example1));
-
+    viewManager.loadDeviceFromJSON(JSON.parse(Examples.example1));
     viewManager.updateGrid();
     Registry.currentDevice.updateView();
 
     window.dev = Registry.currentDevice;
-    window.Channel = Channel;
-    window.man = manager;
-    window.Features = Features;
     window.Registry = Registry;
-    window.Port = createPort;
 
     window.view = Registry.viewManager.view;
 
@@ -11198,7 +11159,7 @@ window.onload = function () {
     PageSetup.setupAppPage();
 };
 
-},{"./core/device":46,"./core/features":52,"./core/layer":56,"./core/registry":65,"./examples/jsonExamples":66,"./graphics/CanvasManager":67,"./renderer/ThreeDeviceRenderer":78,"./view/colors":86,"./view/grid/adaptiveGrid":97,"./view/pageSetup":98,"./view/paperView":100,"./view/viewManager":107}],46:[function(require,module,exports){
+},{"./core/device":46,"./core/layer":49,"./core/registry":58,"./examples/jsonExamples":59,"./view/colors":73,"./view/grid/adaptiveGrid":74,"./view/pageSetup":75,"./view/paperView":76,"./view/render3D/ThreeDeviceRenderer":82,"./view/viewManager":97}],46:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -11430,24 +11391,26 @@ var Device = (function () {
 
 module.exports = Device;
 
-},{"./feature":47,"./group":55,"./layer":56,"./parameter":57,"./parameters":60,"./params":64,"./registry":65}],47:[function(require,module,exports){
+},{"./feature":47,"./group":48,"./layer":49,"./parameter":50,"./parameters":53,"./params":57,"./registry":58}],47:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var uuid = require('node-uuid');
 var Params = require('./params');
 var Parameters = require('./parameters');
 var Parameter = require("./parameter");
 var StringValue = Parameters.StringValue;
+var FeatureSets = require("../featureSets");
 var Registry = require("./registry");
 
+var registeredFeatureTypes = {};
+
 var Feature = (function () {
-    function Feature(type, params, name) {
-        var id = arguments.length <= 3 || arguments[3] === undefined ? Feature.generateID() : arguments[3];
-        var group = arguments.length <= 4 || arguments[4] === undefined ? null : arguments[4];
+    function Feature(type, set, params, name) {
+        var id = arguments.length <= 4 || arguments[4] === undefined ? Feature.generateID() : arguments[4];
+        var group = arguments.length <= 5 || arguments[5] === undefined ? null : arguments[5];
 
         _classCallCheck(this, Feature);
 
@@ -11457,6 +11420,7 @@ var Feature = (function () {
         this.__id = id;
         this.__group = group;
         this.__type = type;
+        this.__set = set;
     }
 
     _createClass(Feature, [{
@@ -11472,11 +11436,17 @@ var Feature = (function () {
             output.id = this.__id;
             output.name = this.__name.toJSON();
             output.type = this.__type;
+            output.set = this.__set;
             output.params = this.__params.toJSON();
 
             //TODO: Implement Groups!
             //output.group = this.group.toJSON();
             return output;
+        }
+    }, {
+        key: 'getSet',
+        value: function getSet() {
+            return this.__set;
         }
     }, {
         key: 'setGroup',
@@ -11535,17 +11505,17 @@ var Feature = (function () {
     }, {
         key: 'getHeritableParams',
         value: function getHeritableParams() {
-            return this.getFeatureType().heritable;
+            return Feature.getDefinitionForType(this.getType(), this.getSet()).heritable;
         }
     }, {
         key: 'getUniqueParams',
         value: function getUniqueParams() {
-            return this.getFeatureType().unique;
+            return Feature.getDefinitionForType(this.getType(), this.getSet()).unique;
         }
     }, {
         key: 'getDefaults',
         value: function getDefaults() {
-            return this.getFeatureType().defaults;
+            return Feature.getDefaultsForType(this.getType(), this.getSet());
         }
     }, {
         key: 'updateView',
@@ -11565,27 +11535,21 @@ var Feature = (function () {
             return Registry.generateID();
         }
     }, {
-        key: 'getDefaultsForType',
-        value: function getDefaultsForType(typeString) {
-            return Registry.registeredFeatures[typeString].defaults;
-        }
-    }, {
-        key: '__ensureTypeExists',
-        value: function __ensureTypeExists(type) {
-            if (Registry.registeredFeatures.hasOwnProperty(type)) {
-                return true;
-            } else {
-                throw new Error("Feature " + type + " has not been registered.");
-            }
-        }
-    }, {
-        key: 'registerFeature',
-        value: function registerFeature(typeString, unique, heritable, defaults) {
-            Registry.registeredFeatures[typeString] = {
-                unique: unique,
-                heritable: heritable,
-                defaults: defaults
+        key: 'getFeatureGenerator',
+        value: function getFeatureGenerator(typeString, setString) {
+            return function (values) {
+                return Feature.makeFeature(typeString, setString, values);
             };
+        }
+    }, {
+        key: 'getDefaultsForType',
+        value: function getDefaultsForType(typeString, setString) {
+            return Registry.featureDefaults[setString][typeString];
+        }
+    }, {
+        key: 'getDefinitionForType',
+        value: function getDefinitionForType(typeString, setString) {
+            return FeatureSets.getDefinition(typeString, setString);
         }
     }, {
         key: 'checkDefaults',
@@ -11595,23 +11559,23 @@ var Feature = (function () {
             }
             return values;
         }
-
-        //TODO: This needs to return the right subclass of Feature, not just the right data!
     }, {
         key: 'fromJSON',
         value: function fromJSON(json) {
-            return Feature.makeFeature(json.type, json.params, json.name);
+            var set = undefined;
+            if (json.hasOwnProperty("set")) set = json.set;else set = "Basic";
+            return Feature.makeFeature(json.type, set, json.params, json.name, json.id);
         }
     }, {
         key: 'makeFeature',
-        value: function makeFeature(type, values) {
-            var name = arguments.length <= 2 || arguments[2] === undefined ? "New Feature" : arguments[2];
+        value: function makeFeature(typeString, setString, values) {
+            var name = arguments.length <= 3 || arguments[3] === undefined ? "New Feature" : arguments[3];
+            var id = arguments.length <= 4 || arguments[4] === undefined ? undefined : arguments[4];
 
-            Feature.__ensureTypeExists(type);
-            var featureType = Registry.registeredFeatures[type];
-            Feature.checkDefaults(values, featureType.heritable, featureType.defaults);
+            var featureType = FeatureSets.getDefinition(typeString, setString);
+            Feature.checkDefaults(values, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
             var params = new Params(values, featureType.unique, featureType.heritable);
-            return new Feature(type, params, name);
+            return new Feature(typeString, setString, params, name, id);
         }
     }]);
 
@@ -11620,179 +11584,7 @@ var Feature = (function () {
 
 module.exports = Feature;
 
-},{"./parameter":57,"./parameters":60,"./params":64,"./registry":65,"node-uuid":44}],48:[function(require,module,exports){
-"use strict";
-
-var Feature = require('../feature');
-
-var typeString = "Chamber";
-var unique = {
-    "start": "Point",
-    "end": "Point"
-};
-var heritable = {
-    "borderWidth": "Float",
-    "height": "Float"
-};
-var defaults = {
-    "borderWidth": .41 * 1000,
-    "height": .1 * 1000
-};
-
-Feature.registerFeature(typeString, unique, heritable, defaults);
-
-},{"../feature":47}],49:[function(require,module,exports){
-"use strict";
-
-var Feature = require('../feature');
-
-var typeString = "Channel";
-var unique = {
-    "start": "Point",
-    "end": "Point"
-};
-var heritable = {
-    "width": "Float",
-    "height": "Float"
-};
-var defaults = {
-    "width": .41 * 1000,
-    "height": .1 * 1000
-};
-
-Feature.registerFeature(typeString, unique, heritable, defaults);
-
-},{"../feature":47}],50:[function(require,module,exports){
-"use strict";
-
-var Feature = require('../feature');
-
-var typeString = "CircleValve";
-var unique = {
-    "position": "Point"
-};
-var heritable = {
-    "radius1": "Float",
-    "radius2": "Float",
-    "height": "Float"
-};
-var defaults = {
-    "radius1": 1.4 * 1000,
-    "radius2": 1.2 * 1000,
-    "height": .8 * 1000
-};
-
-Feature.registerFeature(typeString, unique, heritable, defaults);
-
-},{"../feature":47}],51:[function(require,module,exports){
-"use strict";
-
-var Feature = require('../feature');
-
-var typeString = "HollowChannel";
-var unique = {
-    "start": "Point",
-    "end": "Point"
-};
-var heritable = {
-    "width": "Float",
-    "height": "Float"
-};
-var defaults = {
-    "width": .41 * 1000,
-    "height": .1 * 1000
-};
-
-Feature.registerFeature(typeString, unique, heritable, defaults);
-
-},{"../feature":47}],52:[function(require,module,exports){
-"use strict";
-
-var Feature = require("../feature");
-
-require("./channel");
-require("./hollowChannel");
-require("./circleValve");
-require("./chamber");
-require("./port");
-require("./via");
-
-module.exports.Channel = function (values) {
-	var name = arguments.length <= 1 || arguments[1] === undefined ? "New Channel" : arguments[1];
-
-	return Feature.makeFeature("Channel", values, name);
-};
-module.exports.HollowChannel = function (values) {
-	var name = arguments.length <= 1 || arguments[1] === undefined ? "New HollowChannel" : arguments[1];
-
-	return Feature.makeFeature("HollowChannel", values, name);
-};
-module.exports.Chamber = function (values) {
-	var name = arguments.length <= 1 || arguments[1] === undefined ? "New Chamber" : arguments[1];
-
-	return Feature.makeFeature("Chamber", values, name);
-};
-module.exports.Port = function (values) {
-	var name = arguments.length <= 1 || arguments[1] === undefined ? "New Port" : arguments[1];
-
-	return Feature.makeFeature("Port", values, name);
-};
-module.exports.Via = function (values) {
-	var name = arguments.length <= 1 || arguments[1] === undefined ? "New Via" : arguments[1];
-
-	return Feature.makeFeature("Via", values, name);
-};
-module.exports.CircleValve = function (values) {
-	var name = arguments.length <= 1 || arguments[1] === undefined ? "New CircleValve" : arguments[1];
-
-	return Feature.makeFeature("CircleValve", values, name);
-};
-
-},{"../feature":47,"./chamber":48,"./channel":49,"./circleValve":50,"./hollowChannel":51,"./port":53,"./via":54}],53:[function(require,module,exports){
-"use strict";
-
-var Feature = require('../feature');
-
-var typeString = "Port";
-var unique = {
-    "position": "Point"
-};
-var heritable = {
-    "radius1": "Float",
-    "radius2": "Float",
-    "height": "Float"
-};
-var defaults = {
-    "radius1": .7 * 1000,
-    "radius2": .7 * 1000,
-    "height": .1 * 1000
-};
-
-Feature.registerFeature(typeString, unique, heritable, defaults);
-
-},{"../feature":47}],54:[function(require,module,exports){
-"use strict";
-
-var Feature = require('../feature');
-
-var typeString = "Via";
-var unique = {
-    "position": "Point"
-};
-var heritable = {
-    "radius1": "Float",
-    "radius2": "Float",
-    "height": "Float"
-};
-var defaults = {
-    "radius1": .8 * 1000,
-    "radius2": .7 * 1000,
-    "height": 1.1 * 1000
-};
-
-Feature.registerFeature(typeString, unique, heritable, defaults);
-
-},{"../feature":47}],55:[function(require,module,exports){
+},{"../featureSets":66,"./parameter":50,"./parameters":53,"./params":57,"./registry":58}],48:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -11829,7 +11621,7 @@ var Group = (function () {
 
 module.exports = Group;
 
-},{}],56:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -12032,7 +11824,7 @@ var Layer = (function () {
 
 module.exports = Layer;
 
-},{"./feature":47,"./parameters":60,"./params":64,"./registry":65}],57:[function(require,module,exports){
+},{"./feature":47,"./parameters":53,"./params":57,"./registry":58}],50:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -12110,7 +11902,7 @@ var Parameter = (function () {
 
 module.exports = Parameter;
 
-},{"./registry":65}],58:[function(require,module,exports){
+},{"./registry":58}],51:[function(require,module,exports){
 "use strict";
 
 var Parameter = require("../parameter");
@@ -12125,7 +11917,7 @@ function isValid(value) {
 
 Parameter.registerParamType(typeString, isValid, description);
 
-},{"../parameter":57}],59:[function(require,module,exports){
+},{"../parameter":50}],52:[function(require,module,exports){
 "use strict";
 
 var Parameter = require("../parameter");
@@ -12141,7 +11933,7 @@ function isValid(value) {
 
 Parameter.registerParamType(typeString, isValid, description);
 
-},{"../../utils/numberUtils":83,"../parameter":57}],60:[function(require,module,exports){
+},{"../../utils/numberUtils":69,"../parameter":50}],53:[function(require,module,exports){
 "use strict";
 
 var Parameter = require("../parameter");
@@ -12168,7 +11960,7 @@ module.exports.StringValue = function (value) {
 	return Parameter.makeParam("String", value);
 };
 
-},{"../parameter":57,"./booleanValue":58,"./floatValue":59,"./integerValue":61,"./pointValue":62,"./stringValue":63}],61:[function(require,module,exports){
+},{"../parameter":50,"./booleanValue":51,"./floatValue":52,"./integerValue":54,"./pointValue":55,"./stringValue":56}],54:[function(require,module,exports){
 "use strict";
 
 var Parameter = require("../parameter");
@@ -12184,7 +11976,7 @@ function isValid(value) {
 
 Parameter.registerParamType(typeString, isValid, description);
 
-},{"../../utils/numberUtils":83,"../parameter":57}],62:[function(require,module,exports){
+},{"../../utils/numberUtils":69,"../parameter":50}],55:[function(require,module,exports){
 "use strict";
 
 var Parameter = require("../parameter");
@@ -12199,7 +11991,7 @@ function isValid(value) {
 
 Parameter.registerParamType(typeString, isValid, description);
 
-},{"../../utils/numberUtils":83,"../parameter":57}],63:[function(require,module,exports){
+},{"../../utils/numberUtils":69,"../parameter":50}],56:[function(require,module,exports){
 "use strict";
 
 var Parameter = require("../parameter");
@@ -12213,7 +12005,7 @@ function isValid(value) {
 
 Parameter.registerParamType(typeString, isValid, description);
 
-},{"../parameter":57}],64:[function(require,module,exports){
+},{"../parameter":50}],57:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -12349,14 +12141,13 @@ var Params = (function () {
 
 module.exports = Params;
 
-},{"./parameter":57}],65:[function(require,module,exports){
+},{"./parameter":50}],58:[function(require,module,exports){
 'use strict';
 
 var uuid = require('node-uuid');
 
 var registeredParams = {};
-var featureRenderers = {};
-var registeredFeatures = {};
+var featureDefaults = {};
 var currentDevice = null;
 var canvasManager = null;
 var currentLayer = null;
@@ -12371,22 +12162,682 @@ var generateID = function generateID() {
 };
 
 exports.generateID = generateID;
-exports.featureRenderers = featureRenderers;
-exports.registeredFeatures = registeredFeatures;
 exports.registeredParams = registeredParams;
 exports.currentDevice = currentDevice;
 exports.currentLayer = currentLayer;
 exports.canvasManager = canvasManager;
 exports.viewManager = viewManager;
 exports.currentGrid = currentGrid;
+exports.featureDefaults = featureDefaults;
 exports.threeRenderer = threeRenderer;
 
-},{"node-uuid":44}],66:[function(require,module,exports){
+},{"node-uuid":44}],59:[function(require,module,exports){
 'use strict';
 
 module.exports.example1 = '{"name":"My Device","params":{"width":75800,"height":51000},"layers":[{"name":"flow","color":"indigo","params":{"z_offset":0,"flip":false},"features":{"97f1fd20-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f1fd20-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[30000,40000],"radius1":700,"radius2":700,"height":100}},"97f1fd21-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f1fd21-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[40000,40000],"radius1":700,"radius2":700,"height":100}},"97f22430-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22430-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[50000,40000],"radius1":700,"radius2":700,"height":100}},"97f22431-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22431-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[20000,40000],"radius1":700,"radius2":700,"height":100}},"97f22432-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22432-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,40000],"end":[20000,35000],"width":400,"height":100}},"97f22433-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22433-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,38000],"end":[17000,38000],"width":400,"height":100}},"97f22434-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22434-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[17000,38000],"end":[17000,35000],"width":400,"height":100}},"97f22435-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22435-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,35000],"end":[20000,20000],"width":400,"height":100}},"97f22436-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22436-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,20000],"end":[10000,10000],"width":400,"height":100}},"97f22437-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22437-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[17000,35000],"end":[15000,30000],"width":400,"height":100}},"97f22438-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22438-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,30000],"end":[10000,30000],"width":400,"height":100}},"97f22439-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22439-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,30000],"end":[10000,28000],"width":400,"height":100}},"97f2243a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,28000],"end":[15000,28000],"width":400,"height":100}},"97f2243b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,28000],"end":[15000,25000],"width":400,"height":100}},"97f2243c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,25000],"end":[8000,25000],"width":400,"height":100}},"97f2243d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[8000,25000],"radius1":700,"radius2":700,"height":100}},"97f2243e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243e-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[10000,10000],"radius1":700,"radius2":700,"height":100}},"97f2243f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,40000],"end":[30000,20000],"width":400,"height":100}},"97f22440-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22440-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,20000],"end":[20000,10000],"width":400,"height":100}},"97f22441-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22441-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[20000,10000],"radius1":700,"radius2":700,"height":100}},"97f22442-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22442-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,38000],"end":[27000,38000],"width":400,"height":100}},"97f22443-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22443-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,38000],"end":[27000,30000],"width":400,"height":100}},"97f22444-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22444-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,30000],"end":[22000,30000],"width":400,"height":100}},"97f22445-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22445-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,30000],"end":[22000,28000],"width":400,"height":100}},"97f22446-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22446-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,28000],"end":[27000,28000],"width":400,"height":100}},"97f24b40-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b40-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,28000],"end":[27000,26000],"width":400,"height":100}},"97f24b41-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b41-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,26000],"end":[22000,26000],"width":400,"height":100}},"97f24b42-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b42-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,26000],"end":[22000,24000],"width":400,"height":100}},"97f24b43-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b43-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,24000],"end":[27000,24000],"width":400,"height":100}},"97f24b44-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b44-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,24000],"end":[27000,22000],"width":400,"height":100}},"97f24b45-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b45-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,22000],"end":[22000,22000],"width":400,"height":100}},"97f24b46-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b46-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,22000],"end":[22000,20000],"width":400,"height":100}},"97f24b47-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b47-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,20000],"end":[25000,20000],"width":400,"height":100}},"97f24b48-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b48-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[25000,17000],"width":400,"height":100}},"97f24b49-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b49-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,17000],"end":[21000,17000],"width":400,"height":100}},"97f24b4a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4a-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[21000,17000],"radius1":700,"radius2":700,"height":100}},"97f24b4b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,40000],"end":[40000,20000],"width":400,"height":100}},"97f24b4c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,20000],"end":[50000,10000],"width":400,"height":100}},"97f24b4d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,38000],"end":[43000,38000],"width":400,"height":100}},"97f24b4e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,38000],"end":[43000,30000],"width":400,"height":100}},"97f24b4f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,30000],"end":[48000,30000],"width":400,"height":100}},"97f24b50-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b50-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,30000],"end":[48000,28000],"width":400,"height":100}},"97f24b51-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b51-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,28000],"end":[43000,28000],"width":400,"height":100}},"97f24b52-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b52-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,28000],"end":[43000,26000],"width":400,"height":100}},"97f24b53-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b53-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,26000],"end":[48000,26000],"width":400,"height":100}},"97f24b54-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b54-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,26000],"end":[48000,24000],"width":400,"height":100}},"97f24b55-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b55-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,24000],"end":[43000,24000],"width":400,"height":100}},"97f24b56-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b56-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,24000],"end":[43000,22000],"width":400,"height":100}},"97f24b57-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b57-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,22000],"end":[48000,22000],"width":400,"height":100}},"97f24b58-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b58-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,22000],"end":[48000,20000],"width":400,"height":100}},"97f24b59-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b59-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,20000],"end":[45000,20000],"width":400,"height":100}},"97f24b5a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[45000,17000],"width":400,"height":100}},"97f24b5b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,17000],"end":[49000,17000],"width":400,"height":100}},"97f24b5c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5c-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[50000,10000],"radius1":700,"radius2":700,"height":100}},"97f24b5d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[49000,17000],"radius1":700,"radius2":700,"height":100}},"97f24b5e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,40000],"end":[50000,20000],"width":400,"height":100}},"97f24b5f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,20000],"end":[60000,10000],"width":400,"height":100}},"97f24b60-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b60-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[60000,10000],"radius1":700,"radius2":700,"height":100}},"97f27250-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27250-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,38000],"end":[53000,38000],"width":400,"height":100}},"97f27251-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27251-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[53000,38000],"end":[53000,35000],"width":400,"height":100}},"97f27252-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27252-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[53000,35000],"end":[55000,30000],"width":400,"height":100}},"97f27253-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27253-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,30000],"end":[60000,30000],"width":400,"height":100}},"97f27254-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27254-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[60000,30000],"end":[60000,28000],"width":400,"height":100}},"97f27255-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27255-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[60000,28000],"end":[55000,28000],"width":400,"height":100}},"97f27256-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27256-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,28000],"end":[55000,25000],"width":400,"height":100}},"97f27257-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27257-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,25000],"end":[62000,25000],"width":400,"height":100}},"97f27258-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27258-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[62000,25000],"radius1":700,"radius2":700,"height":100}},"97f27259-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27259-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,15000],"end":[15000,12000],"width":400,"height":100}},"97f2725a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725a-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[15000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725b-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[26000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725c-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[44000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725d-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[55000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,12000],"end":[55000,15000],"width":400,"height":100}},"97f2725f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[26000,12000],"end":[30000,10000],"width":400,"height":100}},"97f27260-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27260-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[40000,10000],"width":400,"height":100}},"97f27261-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27261-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,10000],"end":[38000,7000],"width":400,"height":100}},"97f27262-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27262-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,10000],"end":[32000,7000],"width":400,"height":100}},"97f27263-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27263-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[32000,7000],"radius1":700,"radius2":700,"height":100}},"97f27264-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27264-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[38000,7000],"radius1":700,"radius2":700,"height":100}},"97f27265-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27265-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[35000,10000],"radius1":1400,"radius2":1200,"height":800}},"97f27266-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27266-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,10000],"end":[35000,30000],"width":400,"height":100}},"97f27267-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27267-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[35000,30000],"radius1":700,"radius2":700,"height":100}},"97f27268-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27268-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[38000,23000],"width":400,"height":100}},"97f27269-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27269-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[36000,25000],"width":400,"height":100}},"97f2726a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[36000,25000],"end":[35000,30000],"width":400,"height":100}},"97f2726b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[32000,23000],"width":400,"height":100}},"97f2726c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[34000,25000],"width":400,"height":100}},"97f2726d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[34000,25000],"end":[35000,30000],"width":400,"height":100}},"97f2726e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[35000,24000],"width":400,"height":100}},"97f2726f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[35000,24000],"width":400,"height":100}},"97f27270-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27270-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[28000,20000],"width":400,"height":100}},"97f27271-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27271-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[28000,20000],"end":[28000,22000],"width":400,"height":100}},"97f27272-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27272-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[28000,22000],"end":[27000,22000],"width":400,"height":100}},"97f27273-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27273-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[42000,20000],"width":400,"height":100}},"97f27274-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27274-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[42000,20000],"end":[42000,22000],"width":400,"height":100}},"97f27275-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27275-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[42000,22000],"end":[44000,22000],"width":400,"height":100}},"97f27276-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27276-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[35000,30000],"radius1":800,"radius2":700,"height":1100}},"97f27277-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27277-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[32000,20000],"radius1":800,"radius2":700,"height":1100}},"97f27278-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27278-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[38000,20000],"radius1":800,"radius2":700,"height":1100}},"a2de7790-3ea6-11e5-8298-1b576ed4eb08":{"id":"a2de7790-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[10000,20000],"radius1":1400,"radius2":1200,"height":800}},"a3d819d0-3ea6-11e5-8298-1b576ed4eb08":{"id":"a3d819d0-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[60000,20000],"radius1":1400,"radius2":1200,"height":800}}}},{"name":"control","color":"red","params":{"z_offset":1200,"flip":true},"features":{"97f27279-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27279-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[20000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727a-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[30000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727b-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[40000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727c-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[50000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,34000],"end":[24000,34000],"width":400,"height":100}},"97f2727e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[24000,34000],"end":[24000,47000],"width":400,"height":100}},"97f29960-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29960-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,34000],"end":[34000,34000],"width":400,"height":100}},"97f29961-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29961-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[34000,34000],"end":[34000,47000],"width":400,"height":100}},"97f29962-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29962-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,34000],"end":[37000,34000],"width":400,"height":100}},"97f29963-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29963-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[37000,34000],"end":[36000,34000],"width":400,"height":100}},"97f29964-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29964-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[36000,34000],"end":[36000,47000],"width":400,"height":100}},"97f29965-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29965-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,34000],"end":[46000,34000],"width":400,"height":100}},"97f29966-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29966-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[46000,34000],"end":[46000,47000],"width":400,"height":100}},"97f29967-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29967-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[24000,47000],"radius1":700,"radius2":700,"height":100}},"97f29968-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29968-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[34000,47000],"radius1":700,"radius2":700,"height":100}},"97f29969-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29969-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[36000,47000],"radius1":700,"radius2":700,"height":100}},"97f2996a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996a-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[46000,47000],"radius1":700,"radius2":700,"height":100}},"97f2996b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,12000],"end":[26000,12000],"width":400,"height":100}},"97f2996c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[55000,12000],"width":400,"height":100}},"97f2996d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[15000,12000],"radius1":700,"radius2":700,"height":100}},"97f2996e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996e-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[26000,12000],"radius1":700,"radius2":700,"height":100}},"97f2996f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996f-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[44000,12000],"radius1":700,"radius2":700,"height":100}},"97f29970-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29970-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[55000,12000],"radius1":700,"radius2":700,"height":100}},"97f29971-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29971-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[25000,21000],"radius1":700,"radius2":700,"height":100}},"97f29972-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29972-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[45000,21000],"radius1":700,"radius2":700,"height":100}},"a54e6620-3ea6-11e5-8298-1b576ed4eb08":{"id":"a54e6620-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,20000],"end":[15000,12000],"width":400,"height":100}},"a63ff210-3ea6-11e5-8298-1b576ed4eb08":{"id":"a63ff210-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,12000],"end":[60000,20000],"width":400,"height":100}},"a7efc4f0-3ea6-11e5-8298-1b576ed4eb08":{"id":"a7efc4f0-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[10000,20000],"radius1":700,"radius2":700,"height":100}},"a8879820-3ea6-11e5-8298-1b576ed4eb08":{"id":"a8879820-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[60000,20000],"radius1":700,"radius2":700,"height":100}}}}],"groups":[],"defaults":{}}';
 
-},{}],67:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
+"use strict";
+
+var basicFeatures = {
+    "Channel": {
+        unique: {
+            "start": "Point",
+            "end": "Point"
+        },
+        heritable: {
+            "width": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "width": .41 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "width": 10,
+            "height": 10
+        },
+        maximum: {
+            "width": 2000,
+            "height": 1200
+        }
+    },
+    "Chamber": {
+        unique: {
+            "start": "Point",
+            "end": "Point"
+        },
+        heritable: {
+            "borderWidth": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "borderWidth": .41 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "borderWidth": 10,
+            "height": 10
+        },
+        maximum: {
+            "borderWidth": 2000,
+            "height": 1200
+        }
+    },
+    "CircleValve": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "radius1": "Float",
+            "radius2": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "radius1": 1.4 * 1000,
+            "radius2": 1.2 * 1000,
+            "height": .8 * 1000
+        },
+        minimum: {
+            "radius1": 10,
+            "radius2": 10,
+            "height": 10
+        },
+        maximum: {
+            "radius1": 2000,
+            "radius2": 2000,
+            "height": 1200
+        }
+    },
+    "Via": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "radius1": "Float",
+            "radius2": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "radius1": .8 * 1000,
+            "radius2": .7 * 1000,
+            "height": 1.1 * 1000
+        },
+        minimum: {
+            "radius1": 10,
+            "radius2": 10,
+            "height": 10
+        },
+        maximum: {
+            "radius1": 2000,
+            "radius2": 2000,
+            "height": 1200
+        }
+    },
+    "Port": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "radius1": "Float",
+            "radius2": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "radius1": .7 * 1000,
+            "radius2": .7 * 1000,
+            "height": 1.1 * 1000
+        },
+        minimum: {
+            "radius1": 10,
+            "radius2": 10,
+            "height": 10
+        },
+        maximum: {
+            "radius1": 2000,
+            "radius2": 2000,
+            "height": 1200
+        }
+    }
+};
+
+module.exports = basicFeatures;
+
+},{}],61:[function(require,module,exports){
+"use strict";
+
+module.exports.definitions = require("./definitions");
+module.exports.render2D = require("./render2D");
+module.exports.render3D = require("./render3D");
+module.exports.tools = require("./tools");
+
+},{"./definitions":60,"./render2D":62,"./render3D":63,"./tools":64}],62:[function(require,module,exports){
+"use strict";
+
+var render2D = {
+    Via: {
+        featureParams: {
+            position: "position",
+            radius1: "radius1",
+            radius2: "radius2"
+        },
+        targetParams: {
+            radius1: "radius1",
+            radius2: "radius2"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GradientCircle",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Port: {
+        featureParams: {
+            position: "position",
+            radius1: "radius1",
+            radius2: "radius2"
+        },
+        targetParams: {
+            radius1: "radius1",
+            radius2: "radius2"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GradientCircle",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    CircleValve: {
+        featureParams: {
+            position: "position",
+            radius1: "radius1",
+            radius2: "radius2"
+        },
+        targetParams: {
+            radius1: "radius1",
+            radius2: "radius2"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GradientCircle",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Channel: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            width: "width"
+        },
+        targetParams: {
+            diameter: "width"
+        },
+        featurePrimitiveType: "RoundedRectLine",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Chamber: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            borderWidth: "borderWidth"
+        },
+        targetParams: {
+            diameter: "borderWidth"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "RoundedRect",
+        targetPrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CircleTarget"
+    }
+};
+
+module.exports = render2D;
+
+},{}],63:[function(require,module,exports){
+"use strict";
+
+var render3D = {
+    Via: {
+        featureParams: {
+            position: "position",
+            radius1: "radius1",
+            radius2: "radius2",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Port: {
+        featureParams: {
+            position: "position",
+            radius1: "radius1",
+            radius2: "radius2",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    CircleValve: {
+        featureParams: {
+            position: "position",
+            radius1: "radius1",
+            radius2: "radius2",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Channel: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            width: "width",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "TwoPointRoundedLineFeature"
+    },
+    Chamber: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            borderWidth: "borderWidth",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "TwoPointRoundedBoxFeature"
+    }
+};
+
+module.exports = render3D;
+
+},{}],64:[function(require,module,exports){
+"use strict";
+
+var tools = {
+    Via: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    Port: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    CircleValve: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    Channel: {
+        toolParams: {
+            start: "start",
+            end: "end"
+        },
+        placementTool: "DragTool"
+    },
+    Chamber: {
+        toolParams: {
+            start: "start",
+            end: "end"
+        },
+        placementTool: "DragTool"
+    }
+};
+
+module.exports = tools;
+
+},{}],65:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Feature = require("../core/feature");
+
+var FeatureSet = (function () {
+    function FeatureSet(definitions, tools, render2D, render3D, setString) {
+        _classCallCheck(this, FeatureSet);
+
+        this.__definitions = definitions;
+        this.__setString = setString;
+        this.__tools = tools;
+        this.__render2D = render2D;
+        this.__render3D = render3D;
+        this.__checkDefinitions();
+    }
+
+    _createClass(FeatureSet, [{
+        key: "containsDefinition",
+        value: function containsDefinition(featureTypeString) {
+            if (this.__definitions.hasOwnProperty(featureTypeString)) return true;else return false;
+        }
+    }, {
+        key: "getDefaults",
+        value: function getDefaults() {
+            var output = {};
+            var defs = this.__definitions;
+            for (var key in defs) {
+                output[key] = defs[key]["defaults"];
+            }
+            return output;
+        }
+    }, {
+        key: "getFeatureType",
+        value: function getFeatureType(typeString) {
+            var setString = this.name;
+            var defaultName = "New " + setString + "." + typeString;
+            return function (values) {
+                var name = arguments.length <= 1 || arguments[1] === undefined ? defaultName : arguments[1];
+
+                return Feature.makeFeature(typeString, setString, values, name);
+            };
+        }
+    }, {
+        key: "getSetString",
+        value: function getSetString() {
+            return this.setString;
+        }
+    }, {
+        key: "getDefinition",
+        value: function getDefinition(typeString) {
+            return this.__definitions[typeString];
+        }
+    }, {
+        key: "getRender3D",
+        value: function getRender3D(typeString) {
+            return this.__render3D[typeString];
+        }
+    }, {
+        key: "getRender2D",
+        value: function getRender2D(typeString) {
+            return this.__render2D[typeString];
+        }
+    }, {
+        key: "getTool",
+        value: function getTool(typeString) {
+            return this.__tools[typeString];
+        }
+    }, {
+        key: "makeFeature",
+        value: function makeFeature(typeString, setString, values, name) {
+            console.log(setString);
+            var set = getSet(setString);
+            var featureType = getFeatureType(typeString);
+            return featureType(values, name);
+        }
+    }, {
+        key: "__checkDefinitions",
+        value: function __checkDefinitions() {
+            for (var key in this.__definitions) {
+                if (!this.__tools.hasOwnProperty(key) || !this.__render2D.hasOwnProperty(key) || !this.__render3D.hasOwnProperty(key)) {
+                    throw new Error("Feature set does not contain a renderer or tool definition for: " + key);
+                }
+            }
+        }
+    }]);
+
+    return FeatureSet;
+})();
+
+module.exports = FeatureSet;
+
+},{"../core/feature":47}],66:[function(require,module,exports){
+"use strict";
+
+var FeatureSet = require("./featureSet");
+var registeredFeatureSets = {};
+var typeStrings = {};
+var Registry = require("../core/registry");
+
+// add more sets here!
+var requiredSets = {
+    "Basic": require("./basic")
+};
+
+registerSets(requiredSets);
+
+function makeFeatureSet(set, name) {
+    var newSet = new FeatureSet(set.definitions, set.tools, set.render2D, set.render3D, name);
+    return newSet;
+}
+
+function registerSets(sets) {
+    for (var key in sets) {
+        var newSet = makeFeatureSet(sets[key], key);
+        registeredFeatureSets[key] = newSet;
+        Registry.featureDefaults[key] = newSet.getDefaults();
+    }
+}
+
+function getSet(setString) {
+    return registeredFeatureSets[setString];
+}
+
+function getDefinition(typeString, setString) {
+    var set = getSet(setString);
+    var def = set.getDefinition(typeString);
+    return def;
+}
+
+function getTool(typeString, setString) {
+    var set = getSet(setString);
+    return set.getTool(typeString);
+}
+
+function getRender2D(typeString, setString) {
+    var set = getSet(setString);
+    return set.getRender2D(typeString);
+}
+
+function getRender3D(typeString, setString) {
+    var set = getSet(setString);
+    return set.getRender3D(typeString);
+}
+
+module.exports.getSet = getSet;
+module.exports.getDefinition = getDefinition;
+module.exports.getTool = getTool;
+module.exports.getRender2D = getRender2D;
+module.exports.getRender3D = getRender3D;
+
+},{"../core/registry":58,"./basic":61,"./featureSet":65}],67:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SimpleQueue = (function () {
+	function SimpleQueue(func, timeout) {
+		var report = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+		_classCallCheck(this, SimpleQueue);
+
+		this.timeout = timeout;
+		this.func = func;
+		this.waiting = false;
+		this.queued = true;
+		this.counter = 0;
+		this.report = report;
+	}
+
+	_createClass(SimpleQueue, [{
+		key: "run",
+		value: function run() {
+			if (this.waiting) {
+				this.counter++;
+				if (!this.queued) {
+					this.queued = true;
+				}
+			} else {
+				if (this.report) console.log("Waited " + this.counter + " times.");
+				this.func();
+				this.startTimer();
+				this.counter = 0;
+			}
+		}
+	}, {
+		key: "endTimer",
+		value: function endTimer() {
+			this.waiting = false;
+			if (this.queued) {
+				this.queued = false;
+				this.run();
+			}
+		}
+	}, {
+		key: "startTimer",
+		value: function startTimer() {
+			var ref = this;
+			this.waiting = true;
+			window.setTimeout(function () {
+				ref.endTimer();
+			}, this.timeout);
+		}
+	}]);
+
+	return SimpleQueue;
+})();
+
+module.exports = SimpleQueue;
+
+},{}],68:[function(require,module,exports){
+'use strict';
+
+var removeClass = function removeClass(el, className) {
+  if (el.classList) el.classList.remove(className);else el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+};
+
+var addClass = function addClass(el, className) {
+  if (el.classList) el.classList.add(className);else el.className += ' ' + className;
+};
+
+// From http://stackoverflow.com/questions/8869403/drag-drop-json-into-chrome
+function DnDFileController(selector, onDropCallback) {
+  var el_ = document.querySelector(selector);
+
+  this.dragenter = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    el_.classList.add('dropping');
+  };
+
+  this.dragover = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  this.dragleave = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    //el_.classList.remove('dropping');
+  };
+
+  this.drop = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    el_.classList.remove('dropping');
+
+    onDropCallback(e.dataTransfer.files, e);
+  };
+
+  el_.addEventListener('dragenter', this.dragenter, false);
+  el_.addEventListener('dragover', this.dragover, false);
+  el_.addEventListener('dragleave', this.dragleave, false);
+  el_.addEventListener('drop', this.drop, false);
+};
+
+module.exports.removeClass = removeClass;
+module.exports.addClass = addClass;
+module.exports.DnDFileController = DnDFileController;
+
+},{}],69:[function(require,module,exports){
+"use strict";
+
+function isFloat(n) {
+    return n === +n && n !== (n | 0);
+}
+
+function isInteger(n) {
+    return n === +n && n === (n | 0);
+}
+
+function isFloatOrInt(n) {
+    return isFloat(n) || isInteger(n);
+}
+
+module.exports.isFloat = isFloat;
+module.exports.isInteger = isInteger;
+module.exports.isFloatOrInt = isFloatOrInt;
+
+},{}],70:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SimpleQueue = (function () {
+	function SimpleQueue(func, timeout) {
+		var report = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+		_classCallCheck(this, SimpleQueue);
+
+		this.timeout = timeout;
+		this.func = func;
+		this.waiting = false;
+		this.queued = true;
+		this.counter = 0;
+		this.report = report;
+	}
+
+	_createClass(SimpleQueue, [{
+		key: "run",
+		value: function run() {
+			if (this.waiting) {
+				this.counter++;
+				if (!this.queued) {
+					this.queued = true;
+				}
+			} else {
+				if (this.report) console.log("Waited " + this.counter + " times.");
+				this.func();
+				this.startTimer();
+				this.counter = 0;
+			}
+		}
+	}, {
+		key: "endTimer",
+		value: function endTimer() {
+			this.waiting = false;
+			if (this.queued) {
+				this.queued = false;
+				this.run();
+			}
+		}
+	}, {
+		key: "startTimer",
+		value: function startTimer() {
+			var ref = this;
+			this.waiting = true;
+			window.setTimeout(function () {
+				ref.endTimer();
+			}, this.timeout);
+		}
+	}]);
+
+	return SimpleQueue;
+})();
+
+module.exports = SimpleQueue;
+
+},{}],71:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -12394,190 +12845,1033 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Registry = require("../core/registry");
-var GridGenerator = require("./gridGenerator");
-var PanAndZoom = require("./panAndZoom");
-var Features = require("../core/features");
-var Tools = require("./tools");
-var Device = require("../core/device");
-var Colors = require("../view/colors");
 
-var Channel = Features.Channel;
-var HollowChannel = Features.HollowChannel;
-var Port = Features.Port;
-var CircleValve = Features.CircleValve;
-var Via = Features.Via;
+var PanAndZoom = (function () {
+    function PanAndZoom(paperView) {
+        _classCallCheck(this, PanAndZoom);
 
-var ChannelTool = Tools.ChannelTool;
-var ValveTool = Tools.ValveTool;
-var PanTool = Tools.PanTool;
-var SelectTool = Tools.SelectTool;
-
-var CanvasManager = (function () {
-    function CanvasManager(canvas) {
-        _classCallCheck(this, CanvasManager);
-
-        this.canvas = canvas;
-        this.layers = [];
-        this.backgroundLayer = new paper.Group();
-        this.gridLayer = undefined;
-        this.selectLayer = new paper.Group();
-        this.tools = {};
-        this.minPixelSpacing = 10;
-        this.maxPixelSpacing = 100;
-        this.gridSpacing = 1000;
-        this.thickCount = 10;
-        this.minZoom = .0001;
-        this.maxZoom = 5;
-        this.currentTool = null;
-        //this.setupMouseEvents();
-        //this.generateTools();
-        //this.generateToolButtons();
-        //this.selectTool("Select");
-
-        if (!Registry.canvasManager) Registry.canvasManager = this;else throw new Error("Cannot register more than one CanvasManager");
-
-        //this.setupZoomEvent();
-        this.setupContextEvent();
-        this.setupResizeEvent();
+        this.view = paperView;
     }
 
-    //TODO: Find a non-manual way to do this
-
-    _createClass(CanvasManager, [{
-        key: "generateTools",
-        value: function generateTools() {
-            this.tools[Channel.typeString()] = new ChannelTool(Channel);
-            this.tools[HollowChannel.typeString()] = new ChannelTool(HollowChannel);
-            this.tools[Port.typeString()] = new ValveTool(Port);
-            this.tools[CircleValve.typeString()] = new ValveTool(CircleValve);
-            this.tools[Via.typeString()] = new ValveTool(Via);
-            this.tools["Pan"] = new PanTool();
-            this.tools["Select"] = new SelectTool();
-            //this.tools["none"] = new paper.Tool();
+    _createClass(PanAndZoom, [{
+        key: "stableZoom",
+        value: function stableZoom(zoom, position) {
+            var newZoom = zoom;
+            var p = position;
+            var c = this.view.getCenter();
+            var beta = this.view.getZoom() / newZoom;
+            var pc = p.subtract(c);
+            var a = p.subtract(pc.multiply(beta)).subtract(c);
+            this.view.setCenter(this.view.getCenter().add(a));
+            this.view.setZoom(newZoom);
         }
     }, {
-        key: "generateToolButtons",
-        value: function generateToolButtons() {
-            var target = document.getElementById("features-menu");
+        key: "adjustZoom",
+        value: function adjustZoom(delta, position) {
+            this.stableZoom(this.calcZoom(delta), position);
+        }
 
-            for (var toolName in this.tools) {
-                var btn = this.generateButton(toolName);
-                target.appendChild(btn);
-                componentHandler.upgradeElement(btn);
+        // Stable pan and zoom modified from: http://matthiasberth.com/articles/stable-zoom-and-pan-in-paperjs/
+
+    }, {
+        key: "calcZoom",
+        value: function calcZoom(delta) {
+            var multiplier = arguments.length <= 1 || arguments[1] === undefined ? 1.177827941003 : arguments[1];
+
+            if (delta < 0) return this.view.getZoom() * multiplier;else if (delta > 0) return this.view.getZoom() / multiplier;else return this.view.getZoom();
+        }
+    }, {
+        key: "moveCenter",
+        value: function moveCenter(delta) {
+            this.view.setCenter(this.calcCenter(delta));
+        }
+    }, {
+        key: "calcCenter",
+        value: function calcCenter(delta) {
+            return this.view.getCenter().subtract(delta);
+        }
+    }]);
+
+    return PanAndZoom;
+})();
+
+module.exports = PanAndZoom;
+
+},{"../core/registry":58}],72:[function(require,module,exports){
+"use strict";
+
+var HTMLUtils = require("../../utils/htmlUtils");
+var Feature = require("../../core/feature");
+var Registry = require("../../core/registry");
+var Parameters = require("../../core/parameters");
+var FeatureSets = require("../../featureSets");
+
+var FloatValue = Parameters.FloatValue;
+var BooleanValue = Parameters.BooleanValue;
+
+var createSlider = function createSlider(min, max, step, start, id) {
+  var div = document.createElement("div");
+  var p = document.createElement("p");
+  p.setAttribute("style", "min-width: 240px");
+  var slider = document.createElement("input");
+  slider.className = "mdl-slider mdl-js-slider";
+  slider.setAttribute("type", "range");
+  slider.setAttribute("id", id);
+  slider.setAttribute("min", min);
+  slider.setAttribute("max", max);
+  slider.setAttribute("value", start);
+  slider.setAttribute("step", step);
+  p.appendChild(slider);
+  componentHandler.upgradeElement(slider, "MaterialSlider");
+  div.appendChild(p);
+  return div;
+};
+
+var createButton = function createButton(iconString) {
+  var button = document.createElement("button");
+  button.className = "mdl-button mdl-js-button mdl-button--icon";
+  var icon = document.createElement("i");
+  icon.className = "material-icons";
+  icon.innerHTML = iconString;
+  button.appendChild(icon);
+  componentHandler.upgradeElement(button, "MaterialButton");
+  return button;
+};
+
+var createValueField = function createValueField(start, id) {
+  var div = document.createElement("div");
+  var error = document.createElement("span");
+  var span = document.createElement("span");
+  span.innerHTML = "μm";
+  span.style.fontSize = "14px";
+  error.className = "mdl-textfield__error";
+  error.innerHTML = "Digits only";
+  div.className = "mdl-textfield mdl-js-textfield";
+  var field = document.createElement("input");
+  field.className = "mdl-textfield__input";
+  field.setAttribute("type", "text");
+  field.setAttribute("id", id);
+  field.setAttribute("value", start);
+  field.setAttribute("pattern", "[0-9]*");
+  field.style.paddingTop = "0px";
+  div.appendChild(field);
+  div.appendChild(span);
+  div.appendChild(error);
+  div.setAttribute("style", "margin-left: auto; margin-right: auto; display: block;width:65px;padding-top:0px;padding-bottom:5px;");
+  componentHandler.upgradeElement(div, "MaterialTextfield");
+  return div;
+};
+
+var createTableElement = function createTableElement(child) {
+  var td = document.createElement("td");
+  td.appendChild(child);
+  return td;
+};
+
+var createCheckbox = function createCheckbox(checked, id) {
+  var div = document.createElement("div");
+  var label = document.createElement("label");
+  label.className = "mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect";
+  label.setAttribute("for", id);
+  var input = document.createElement("input");
+  input.setAttribute("type", "checkbox");
+  input.setAttribute("id", id);
+  if (checked) input.checked = true;
+  input.className = "mdl-checkbox__input";
+  label.appendChild(input);
+  componentHandler.upgradeElement(label, "MaterialCheckbox");
+  div.setAttribute("style", "margin-left: auto; margin-right: auto; display: block;width:12px;position:relative;");
+  div.appendChild(label);
+  return div;
+};
+
+var createSpan = function createSpan(value, id) {
+  var div = document.createElement("div");
+  var span = document.createElement("span");
+  span.innerHTML = value;
+  span.setAttribute("id", id);
+  span.setAttribute("style", "font-size: 16px;");
+  div.setAttribute("style", "margin-left: none; margin-right: auto; display: block;width:24px;");
+  div.appendChild(span);
+  return div;
+};
+
+var createTableRow = function createTableRow(one, two, three) {
+  var tr = document.createElement("tr");
+  one.style.borderBottom = "none";
+  tr.appendChild(one);
+  tr.appendChild(two);
+  tr.appendChild(three);
+  return tr;
+};
+
+var generateUpdateFunction = function generateUpdateFunction(sourceID, targetID, typeString, setString, paramString) {
+  return function () {
+    var source = document.getElementById(sourceID);
+    var target = document.getElementById(targetID);
+    var param;
+    try {
+      param = new FloatValue(parseFloat(source.value));
+    } catch (err) {
+      console.log("Invalid Float value.");
+      return;
+    }
+    target.value = String(param.getValue());
+    Registry.viewManager.adjustParams(typeString, setString, paramString, param.getValue());
+  };
+};
+
+var generateCheckFunction = function generateCheckFunction(sourceID, targetID, typeString, setString, paramString) {
+  return function () {
+    var source = document.getElementById(sourceID);
+    var target = document.getElementById(targetID);
+    var param;
+    try {
+      param = new BooleanValue(source.checked);
+    } catch (err) {
+      console.log("Invalid Boolean value.");
+      return;
+    }
+    if (param.getValue()) target.innerHTML = "true";else target.innerHTML = "false";
+    Registry.viewManager.adjustParams(typeString, setString, paramString, param.getValue());
+  };
+};
+
+var createSliderRow = function createSliderRow(featureID, typeString, setString, key) {
+  var definition = FeatureSets.getDefinition(typeString, setString);
+  var min = definition.minimum[key];
+  var max = definition.maximum[key];
+  var value = Feature.getDefaultsForType(typeString, setString)[key];
+  var step = 10;
+  var titleID = featureID + "_" + key + "_title";
+  var sliderID = featureID + "_" + key + "_slider";
+  var fieldID = featureID + "_" + key + "_value";
+  var title = createSpan(key, titleID);
+  var titleContainer = createTableElement(title);
+  titleContainer.style.borderBottom = "none";
+  var slider = createSlider(min, max, step, value, sliderID);
+  var sliderContainer = createTableElement(slider);
+  sliderContainer.setAttribute("style", "padding-left: 0px; padding-right: 0px");
+  var field = createValueField(value, fieldID);
+  var fieldContainer = createTableElement(field);
+  var row = createTableRow(sliderContainer, titleContainer, fieldContainer);
+  field.oninput = generateUpdateFunction(fieldID, sliderID, typeString, setString, key);
+  slider.oninput = generateUpdateFunction(sliderID, fieldID, typeString, setString, key);
+  return row;
+};
+
+var createCheckboxRow = function createCheckboxRow(featureID, typeString, setString, key) {
+  var title = createSpan(key);
+  var checkID = featureID + "_" + key + "_checkbox";
+  var spanID = featureID + "_" + key + "_span";
+  var value = Feature.getDefaultsForType(typeString, setString)[key];
+  var checkBox = createCheckbox(value, checkID);
+  var spanValue;
+  if (value) spanValue = "true";else spanValue = "false";
+  var span = createSpan(spanValue, spanID);
+  var titleContainer = createTableElement(title);
+  var checkContainer = createTableElement(checkBox);
+  var spanContainer = createTableElement(span);
+  var row = createTableRow(checkContainer, titleContainer, spanContainer);
+  checkBox.onchange = generateCheckFunction(checkID, spanID, typeString, setString, key);
+  return row;
+};
+
+var createFeatureTableRows = function createFeatureTableRows(typeString, setString) {
+  var def = FeatureSets.getDefinition(typeString, setString);
+  var heritable = def.heritable;
+  var id = "fake_ID";
+  var rows = [];
+  for (var key in heritable) {
+    var row;
+    var type = heritable[key];
+    if (type == "Float" || type == "Integer") row = createSliderRow(id, typeString, setString, key);else if (type == "Boolean") row = createCheckboxRow(id, typeString, setString, key);
+    rows.push(row);
+  }
+  return rows;
+};
+
+var createFeatureTableHeaders = function createFeatureTableHeaders(typeString) {
+  var thead = document.createElement("thead");
+  var tr = document.createElement("tr");
+  thead.appendChild(tr);
+  var param = document.createElement("th");
+  param.className = "mdl-data-table__cell--non-numeric";
+  param.innerHTML = "Parameter";
+  var value = document.createElement("th");
+  value.className = "mdl-data-table__cell--non-numeric";
+  value.innerHTML = "Value";
+  var type = document.createElement("th");
+  type.className = "mdl-data-table__cell--non-numeric";
+  type.innerHTML = typeString + " Parameters";
+  type.style.fontSize = "18px";
+  type.style.color = "#000000";
+  //type.style.right = "35px";
+  tr.appendChild(type);
+  tr.appendChild(param);
+  tr.appendChild(value);
+  return thead;
+};
+
+var createFeatureTableBody = function createFeatureTableBody(typeString, setString) {
+  var body = document.createElement("tbody");
+  body.setAttribute("id", "featureTable");
+  var rows = createFeatureTableRows(typeString, setString);
+  for (var i = 0; i < rows.length; i++) {
+    body.appendChild(rows[i]);
+  }
+  return body;
+};
+
+var createFeatureTable = function createFeatureTable(typeString, setString, position) {
+  var table = document.createElement("table");
+  table.className = "mdl-data-table mdl-js-data-table mdl-shadow--2dp feature-table fade-transition";
+  var head = createFeatureTableHeaders(typeString);
+  table.appendChild(head);
+  var body = createFeatureTableBody(typeString, setString);
+  table.appendChild(body);
+  var closeButton = createCloseButton();
+  closeButton.style.position = "absolute";
+  closeButton.style.right = "0px";
+  closeButton.style.top = "0px";
+  //table.appendChild(closeButton);
+  closeButton.onclick = function () {
+    table.parentElement.removeChild(table);
+  };
+  HTMLUtils.addClass(table, "hidden-block");
+  table.style.zIndex = 999999;
+  return table;
+};
+
+var createCloseButton = function createCloseButton() {
+  var button = createButton("close");
+  button.style.color = "#313131";
+  return button;
+};
+
+var generateTableFunction = function generateTableFunction(tableID, typeString, setString) {
+  return function (event) {
+    var table = document.getElementById(tableID);
+    if (table) {
+      table.parentElement.removeChild(table);
+    } else {
+      table = createFeatureTable(typeString, setString);
+      table.id = tableID;
+      table.style.position = "absolute";
+      table.style.left = "" + (event.clientX + 30) + "px";
+      table.style.top = "" + (event.clientY - 20) + "px";
+      HTMLUtils.removeClass(table, "hidden-block");
+      HTMLUtils.addClass(table, "shown-block");
+      document.body.appendChild(table);
+    }
+  };
+};
+
+module.exports.generateTableFunction = generateTableFunction;
+
+},{"../../core/feature":47,"../../core/parameters":53,"../../core/registry":58,"../../featureSets":66,"../../utils/htmlUtils":68}],73:[function(require,module,exports){
+"use strict";
+
+var Feature = require("../core/feature");
+//Colors taken from: http://www.google.ch/design/spec/style/color.html
+module.exports.RED_500 = "#F44336";
+module.exports.INDIGO_500 = "#3F51B5";
+module.exports.GREEN_500 = "#4CAF50";
+module.exports.GREEN_100 = "#C8E6C9";
+module.exports.GREEN_A200 = "#69F0AE";
+module.exports.DEEP_PURPLE_500 = "#673AB7";
+module.exports.PURPLE_200 = "#E1BEE7";
+module.exports.PURPLE_100 = "#E1BEE7";
+module.exports.TEAL_100 = "#B2DFDB";
+module.exports.BLUE_50 = "#e3f2fd";
+module.exports.BLUE_100 = "#BBDEFB";
+module.exports.BLUE_200 = "#90CAF9";
+module.exports.BLUE_300 = "#64B5F6";
+module.exports.BLUE_500 = "#2196F3";
+module.exports.GREY_200 = "#EEEEEE";
+module.exports.GREY_300 = "#E0E0E0";
+module.exports.GREY_400 = "#BDBDBD";
+module.exports.LIGHT_GREEN_100 = "#DCEDC8";
+module.exports.GREY_700 = "#616161";
+module.exports.GREY_500 = "#9E9E9E";
+module.exports.AMBER_50 = "#FFF8E1";
+module.exports.PINK_500 = "#E91E63";
+module.exports.PINK_300 = "#F06292";
+module.exports.BLACK = "#000000";
+module.exports.WHITE = "#FFFFFF";
+
+var defaultColorKeys = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
+var darkColorKeys = ["300", "400", "500", "600", "700", "800", "900"];
+
+var indigo = {
+	"900": "#" + "1A237E",
+	"800": "#" + "283593",
+	"700": "#" + "303F9F",
+	"600": "#" + "3949AB",
+	"500": "#" + "3F51B5",
+	"400": "#" + "5C6BC0",
+	"300": "#" + "7986CB",
+	"200": "#" + "9FA8DA",
+	"100": "#" + "C5CAE9",
+	"50": "#" + "E8EAF6",
+	"A100": "#" + "8C9EFF",
+	"A200": "#" + "536DFE",
+	"A400": "#" + "3D5AFE",
+	"A700": "#" + "304FFE"
+};
+
+var red = {
+	"900": "#" + "B71C1C",
+	"800": "#" + "C62828",
+	"700": "#" + "D32F2F",
+	"600": "#" + "E53935",
+	"500": "#" + "F44336",
+	"400": "#" + "EF5350",
+	"300": "#" + "E57373",
+	"200": "#" + "EF9A9A",
+	"100": "#" + "FFCDD2",
+	"50": "#" + "FFEBEE",
+	"A100": "#" + "FF8A80",
+	"A200": "#" + "FF5252",
+	"A400": "#" + "FF1744",
+	"A700": "#" + "D50000"
+};
+
+var layerColors = {
+	"indigo": indigo,
+	"red": red
+};
+
+var decimalToIndex = function decimalToIndex(decimal, indices) {
+	return Math.round((indices - 1) * decimal);
+};
+
+var decimalToLayerColor = function decimalToLayerColor(decimal, layerColors, orderedKeys) {
+	var index = decimalToIndex(decimal, orderedKeys.length);
+	var key = orderedKeys[index];
+	return layerColors[key];
+};
+
+var renderAllColors = function renderAllColors(layer, orderedKeys) {
+	for (var i = 0; i < orderedKeys.length; i++) {
+
+		new paper.Path.Circle({
+			position: new paper.Point(0 + i * 1000, 0),
+			fillColor: layer[orderedKeys[i]],
+			radius: 500
+		});
+	}
+
+	for (var i = 0; i < orderedKeys.length; i++) {
+		var color = decimalToLayerColor(i / orderedKeys.length, layer, orderedKeys);
+		new paper.Path.Circle({
+			position: new paper.Point(0 + i * 1000, 2000),
+			fillColor: layer[orderedKeys[i]],
+			radius: 500
+		});
+	}
+};
+
+var getLayerColors = function getLayerColors(layer) {
+	if (layer && layer.color) return layerColors[layer.color];else return layerColors["red"];
+};
+
+var getDefaultLayerColor = function getDefaultLayerColor(layer) {
+	return getLayerColors(layer)["500"];
+};
+
+var getDefaultFeatureColor = function getDefaultFeatureColor(typeString, setString, layer) {
+	if (layer) {
+		var height = Feature.getDefaultsForType(typeString, setString)["height"];
+		var decimal = height / layer.estimateLayerHeight();
+		if (!layer.flip) decimal = 1 - decimal;
+		var colors = getLayerColors(layer);
+		return decimalToLayerColor(decimal, colors, darkColorKeys);
+	} else {
+		return decimalToLayerColor(0, layerColors["indigo"], darkColorKeys);
+	}
+};
+
+module.exports.getDefaultLayerColor = getDefaultLayerColor;
+module.exports.getDefaultFeatureColor = getDefaultFeatureColor;
+module.exports.getLayerColors = getLayerColors;
+module.exports.decimalToLayerColor = decimalToLayerColor;
+module.exports.defaultColorKeys = defaultColorKeys;
+module.exports.darkColorKeys = darkColorKeys;
+module.exports.layerColors = layerColors;
+module.exports.renderAllColors = renderAllColors;
+
+},{"../core/feature":47}],74:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../../core/registry");
+var Colors = require("../colors");
+
+var AdaptiveGrid = (function () {
+    function AdaptiveGrid() {
+        var minSpacing = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
+        var maxSpacing = arguments.length <= 1 || arguments[1] === undefined ? 100 : arguments[1];
+        var thickCount = arguments.length <= 2 || arguments[2] === undefined ? 10 : arguments[2];
+        var origin = arguments.length <= 3 || arguments[3] === undefined ? [0, 0] : arguments[3];
+        var thinWidth = arguments.length <= 4 || arguments[4] === undefined ? 1 : arguments[4];
+        var thickWidth = arguments.length <= 5 || arguments[5] === undefined ? 3 : arguments[5];
+        var color = arguments.length <= 6 || arguments[6] === undefined ? Colors.BLUE_100 : arguments[6];
+
+        _classCallCheck(this, AdaptiveGrid);
+
+        this.origin = new paper.Point(origin[0], origin[1]);
+        this.thinWidth = thinWidth; //pixel
+        this.thickWidth = thickWidth; // pixels
+        this.minSpacing = minSpacing; //pixels
+        this.maxSpacing = maxSpacing; //pixels
+        this.thickCount = thickCount;
+        this.spacing = 1000;
+        this.color = color;
+
+        if (Registry.currentGrid) throw new Error("Cannot instantiate more than one AdaptiveGrid!");
+        Registry.currentGrid = this;
+    }
+
+    _createClass(AdaptiveGrid, [{
+        key: "getClosestGridPoint",
+        value: function getClosestGridPoint(point) {
+            var x = Math.round((point.x - this.origin.x) / this.spacing) * this.spacing + this.origin.x;
+            var y = Math.round((point.y - this.origin.y) / this.spacing) * this.spacing + this.origin.y;
+            return new paper.Point(x, y);
+        }
+    }, {
+        key: "setOrigin",
+        value: function setOrigin(origin) {
+            this.origin = new paper.Point(origin[0], origin[1]);
+            this.updateView();
+        }
+    }, {
+        key: "setThinWidth",
+        value: function setThinWidth(width) {
+            this.thinWidth = width;
+            this.updateView();
+        }
+    }, {
+        key: "setThickWidth",
+        value: function setThickWidth(width) {
+            this.thickWidth = width;
+            this.updateView();
+        }
+    }, {
+        key: "setMinSpacing",
+        value: function setMinSpacing(pixels) {
+            this.spacing = pixels;
+            this.updateView();
+        }
+    }, {
+        key: "setMaxSpacing",
+        value: function setMaxSpacing(pixels) {
+            this.maxSpacing = pixels;
+            this.updateView();
+        }
+    }, {
+        key: "setColor",
+        value: function setColor(color) {
+            this.color = color;
+            this.updateView();
+        }
+    }, {
+        key: "getSpacing",
+        value: function getSpacing() {
+            var min = this.minSpacing / paper.view.zoom;
+            var max = this.maxSpacing / paper.view.zoom;
+            while (this.spacing < min) {
+                this.spacing = this.spacing * 10;
+            }
+            while (this.spacing > max) {
+                this.spacing = this.spacing / 10;
+            }
+            return this.spacing;
+        }
+    }, {
+        key: "getThinWidth",
+        value: function getThinWidth() {
+            return this.thinWidth / paper.view.zoom;
+        }
+    }, {
+        key: "getThickWidth",
+        value: function getThickWidth() {
+            return this.thickWidth / paper.view.zoom;
+        }
+    }, {
+        key: "updateView",
+        value: function updateView() {
+            if (Registry.viewManager) Registry.viewManager.updateGrid();
+        }
+    }]);
+
+    return AdaptiveGrid;
+})();
+
+module.exports = AdaptiveGrid;
+
+},{"../../core/registry":58,"../colors":73}],75:[function(require,module,exports){
+"use strict";
+
+var HTMLUtils = require("../utils/htmlUtils");
+var Registry = require("../core/registry");
+var Colors = require("./colors");
+var JSZip = require("jszip");
+var ParameterMenu = require("./UI/parameterMenu");
+
+var activeButton = null;
+var activeLayer = null;
+var channelButton = document.getElementById("channel_button");
+var circleValveButton = document.getElementById("circleValve_button");
+var portButton = document.getElementById("port_button");
+var viaButton = document.getElementById("via_button");
+var chamberButton = document.getElementById("chamber_button");
+
+var channelParams = document.getElementById("channel_params_button");
+var circleValveParams = document.getElementById("circleValve_params_button");
+var portParams = document.getElementById("port_params_button");
+var viaParams = document.getElementById("via_params_button");
+var chamberParams = document.getElementById("chamber_params_button");
+
+var jsonButton = document.getElementById("json_button");
+var svgButton = document.getElementById("svg_button");
+var stlButton = document.getElementById("stl_button");
+
+var button2D = document.getElementById("button_2D");
+var button3D = document.getElementById("button_3D");
+
+var flowButton = document.getElementById("flow_button");
+var controlButton = document.getElementById("control_button");
+
+var inactiveBackground = Colors.GREY_200;
+var inactiveText = Colors.BLACK;
+var activeText = Colors.WHITE;
+
+var canvas = document.getElementById("c");
+
+var canvasBlock = document.getElementById("canvas_block");
+var renderBlock = document.getElementById("renderContainer");
+
+var renderer = undefined;
+var view = undefined;
+
+var threeD = false;
+
+var buttons = {
+    "Channel": channelButton,
+    "Via": viaButton,
+    "Port": portButton,
+    "CircleValve": circleValveButton,
+    "Chamber": chamberButton
+};
+
+var layerButtons = {
+    "0": flowButton,
+    "1": controlButton
+};
+
+var layerIndices = {
+    "0": 0,
+    "1": 1
+};
+
+var zipper = new JSZip();
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+}
+
+function setButtonColor(button, background, text) {
+    button.style.background = background;
+    button.style.color = text;
+}
+
+function setActiveButton(feature) {
+    killParamsWindow();
+    if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
+    activeButton = feature;
+    var color = Colors.getDefaultFeatureColor(activeButton, "Basic", Registry.currentLayer);
+    setButtonColor(buttons[activeButton], color, activeText);
+}
+
+function setActiveLayer(layerName) {
+    if (activeLayer) setButtonColor(layerButtons[activeLayer], inactiveBackground, inactiveText);
+    activeLayer = layerName;
+    setActiveButton(activeButton);
+    var bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
+    setButtonColor(layerButtons[activeLayer], bgColor, activeText);
+    if (threeD) {
+        setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button2D, inactiveBackground, inactiveText);
+    } else {
+        setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button3D, inactiveBackground, inactiveText);
+    }
+}
+
+function switchTo3D() {
+    if (!threeD) {
+        threeD = true;
+        setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button2D, inactiveBackground, inactiveText);
+        renderer.loadJSON(Registry.currentDevice.toJSON());
+        var cameraCenter = view.getViewCenterInMillimeters();
+        var height = Registry.currentDevice.params.getValue("height") / 1000;
+        var pixels = view.getDeviceHeightInPixels();
+        renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
+        renderer.showMockup();
+        HTMLUtils.removeClass(renderBlock, "hidden-block");
+        HTMLUtils.addClass(canvasBlock, "hidden-block");
+        HTMLUtils.addClass(renderBlock, "shown-block");
+        HTMLUtils.removeClass(canvasBlock, "shown-block");
+    }
+}
+
+//TODO: transition backwards is super hacky. Fix it!
+function switchTo2D() {
+    if (threeD) {
+        threeD = false;
+        var center = renderer.getCameraCenterInMicrometers();
+        var zoom = renderer.getZoom();
+        var newCenterX = center[0];
+        if (newCenterX < 0) {
+            newCenterX = 0;
+        } else if (newCenterX > Registry.currentDevice.params.getValue("width")) {
+            newCenterX = Registry.currentDevice.params.getValue("width");
+        }
+        var newCenterY = paper.view.center.y - center[1];
+        if (newCenterY < 0) {
+            newCenterY = 0;
+        } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
+            newCenterY = Registry.currentDevice.params.getValue("height");
+        }
+        setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+        setButtonColor(button3D, inactiveBackground, inactiveText);
+        Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
+        Registry.viewManager.setZoom(zoom);
+        HTMLUtils.addClass(renderBlock, "hidden-block");
+        HTMLUtils.removeClass(canvasBlock, "hidden-block");
+        HTMLUtils.removeClass(renderBlock, "shown-block");
+        HTMLUtils.addClass(canvasBlock, "shown-block");
+    }
+}
+
+function paramsWindowFunction(typeString, setString) {
+    var makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString);
+    return function (event) {
+        killParamsWindow();
+        makeTable(event);
+    };
+}
+
+function killParamsWindow() {
+    var paramsWindow = document.getElementById("parameter_menu");
+    if (paramsWindow) paramsWindow.parentElement.removeChild(paramsWindow);
+}
+
+function setupAppPage() {
+
+    view = Registry.viewManager.view;
+    renderer = Registry.threeRenderer;
+    channelButton.onclick = function () {
+        Registry.viewManager.activateTool("Channel");
+        var bg = Colors.getDefaultFeatureColor("Channel", "Basic", Registry.currentLayer);
+        setActiveButton("Channel");
+        switchTo2D();
+    };
+
+    circleValveButton.onclick = function () {
+        Registry.viewManager.activateTool("CircleValve");
+        var bg = Colors.getDefaultFeatureColor("CircleValve", "Basic", Registry.currentLayer);
+        setActiveButton("CircleValve");
+        switchTo2D();
+    };
+
+    portButton.onclick = function () {
+        Registry.viewManager.activateTool("Port");
+        var bg = Colors.getDefaultFeatureColor("Port", "Basic", Registry.currentLayer);
+        setActiveButton("Port");
+        switchTo2D();
+    };
+
+    viaButton.onclick = function () {
+        Registry.viewManager.activateTool("Via");
+        var bg = Colors.getDefaultFeatureColor("Via", "Basic", Registry.currentLayer);
+        setActiveButton("Via");
+        switchTo2D();
+    };
+
+    chamberButton.onclick = function () {
+        Registry.viewManager.activateTool("Chamber");
+        var bg = Colors.getDefaultFeatureColor("Chamber", "Basic", Registry.currentLayer);
+        setActiveButton("Chamber");
+        switchTo2D();
+    };
+
+    flowButton.onclick = function () {
+        if (threeD) {
+            if (activeLayer == "0") renderer.toggleLayerView(0);else renderer.showLayer(0);
+        }
+        Registry.currentLayer = Registry.currentDevice.layers[0];
+        setActiveLayer("0");
+        Registry.viewManager.updateActiveLayer();
+    };
+
+    controlButton.onclick = function () {
+        if (threeD) {
+            if (activeLayer == "1") renderer.toggleLayerView(1);else renderer.showLayer(1);
+        }
+        Registry.currentLayer = Registry.currentDevice.layers[1];
+        setActiveLayer("1");
+        Registry.viewManager.updateActiveLayer();
+    };
+
+    jsonButton.onclick = function () {
+        var json = new Blob([JSON.stringify(Registry.currentDevice.toJSON())], {
+            type: "application/json"
+        });
+        saveAs(json, "device.json");
+    };
+
+    stlButton.onclick = function () {
+        var json = Registry.currentDevice.toJSON();
+        var stls = renderer.getSTL(json);
+        var blobs = [];
+        var zipper = new JSZip();
+        for (var i = 0; i < stls.length; i++) {
+            var _name = "" + i + "_" + json.name + "_" + json.layers[i].name + ".stl";
+            zipper.file(_name, stls[i]);
+        }
+        var content = zipper.generate({
+            type: "blob"
+        });
+        saveAs(content, json.name + "_layers.zip");
+    };
+
+    svgButton.onclick = function () {
+        var svgs = Registry.viewManager.layersToSVGStrings();
+        //let svg = paper.project.exportSVG({asString: true});
+        var blobs = [];
+        var success = 0;
+        var zipper = new JSZip();
+        for (var i = 0; i < svgs.length; i++) {
+            if (svgs[i].slice(0, 4) == "<svg") {
+                zipper.file("Device_layer_" + i + ".svg", svgs[i]);
+                success++;
             }
         }
-    }, {
-        key: "generateButton",
-        value: function generateButton(toolName) {
-            var btn = document.createElement("li");
-            var t = document.createTextNode(toolName);
-            var manager = this;
-            btn.appendChild(t);
-            btn.onclick = function () {
-                manager.selectTool(toolName);
-            };
-            btn.className = 'mdl-menu__item';
-            return btn;
+
+        if (success == 0) throw new Error("Unable to generate any valid SVGs. Do all layers have at least one non-channel item in them?");else {
+            var content = zipper.generate({
+                type: "blob"
+            });
+            saveAs(content, "device_layers.zip");
         }
-    }, {
-        key: "selectTool",
-        value: function selectTool(typeString) {
-            if (this.currentTool) this.currentTool.abort();
-            this.tools[typeString].activate();
-            this.currentTool = this.tools[typeString];
-        }
+    };
 
-        //TODO: Hit test only features instead of the whole device
-    }, {
-        key: "hitFeatureInDevice",
-        value: function hitFeatureInDevice(point) {
-            var hitOptions = {
-                fill: true,
-                tolerance: 5,
-                guides: false
+    button2D.onclick = function () {
+        killParamsWindow();
+        switchTo2D();
+    };
+
+    button3D.onclick = function () {
+        killParamsWindow();
+        switchTo3D();
+    };
+
+    channelParams.onclick = paramsWindowFunction("Channel", "Basic");
+    circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
+    portParams.onclick = paramsWindowFunction("Port", "Basic");
+    viaParams.onclick = paramsWindowFunction("Via", "Basic");
+    chamberParams.onclick = paramsWindowFunction("Chamber", "Basic");
+
+    function setupDragAndDropLoad(selector) {
+        var dnd = new HTMLUtils.DnDFileController(selector, function (files) {
+            var f = files[0];
+
+            var reader = new FileReader();
+            reader.onloadend = function (e) {
+                var result = JSON.parse(this.result);
+                Registry.viewManager.loadDeviceFromJSON(result);
+                switchTo2D();
             };
-
-            var output = [];
-
-            for (var i = this.layers.length - 1; i >= 0; i--) {
-                var layer = this.layers[i];
-                var result = layer.hitTest(point, hitOptions);
-                if (result) {
-                    return result.item;
-                }
+            try {
+                reader.readAsText(f);
+            } catch (err) {
+                console.log("unable to load JSON: " + f);
             }
-        }
-    }, {
-        key: "hitFeaturesWithPaperElement",
-        value: function hitFeaturesWithPaperElement(paperElement) {
+        });
+    }
+
+    setupDragAndDropLoad("#c");
+    setupDragAndDropLoad("#renderContainer");
+    setActiveButton("Channel");
+    setActiveLayer("0");
+    switchTo2D();
+}
+
+module.exports.setupAppPage = setupAppPage;
+module.exports.paramsWindowFunction = paramsWindowFunction;
+module.exports.killParamsWindow = killParamsWindow;
+
+},{"../core/registry":58,"../utils/htmlUtils":68,"./UI/parameterMenu":72,"./colors":73,"jszip":13}],76:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Registry = require("../core/registry");
+var FeatureRenderer2D = require("./render2D/featureRenderer2D");
+var GridRenderer = require("./render2D/GridRenderer");
+var DeviceRenderer = require("./render2D/deviceRenderer2D");
+var PanAndZoom = require("./PanAndZoom");
+var SimpleQueue = require("../utils/simpleQueue");
+var Colors = require("./colors");
+
+var PaperView = (function () {
+    function PaperView(canvas) {
+        _classCallCheck(this, PaperView);
+
+        this.panAndZoom = new PanAndZoom(this);
+        this.center = paper.view.center;
+        this.zoom = paper.view.zoom;
+        this.canvas = canvas;
+        this.paperFeatures = {};
+        this.paperGrid = null;
+        this.paperDevice = null;
+        this.activeLayer = null;
+        this.gridLayer = new paper.Group();
+        this.deviceLayer = new paper.Group();
+        this.gridLayer.insertAbove(this.deviceLayer);
+        this.featureLayer = new paper.Group();
+        this.featureLayer.insertAbove(this.gridLayer);
+        this.uiLayer = new paper.Group();
+        this.uiLayer.insertAbove(this.featureLayer);
+        this.currentTarget = null;
+        this.lastTargetType = null;
+        this.lastTargetPosition = null;
+        this.inactiveAlpha = .5;
+        this.disableContextMenu();
+    }
+
+    _createClass(PaperView, [{
+        key: "getSelectedFeatures",
+        value: function getSelectedFeatures() {
             var output = [];
-            for (var i = 0; i < this.layers.length; i++) {
-                var layer = this.layers[i];
-                for (var j = 0; j < layer.children.length; j++) {
-                    var child = layer.children[j];
-                    if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
-                        output.push(child);
-                    }
-                }
+            var items = paper.project.selectedItems;
+            for (var i = 0; i < items.length; i++) {
+                output.push(Registry.currentDevice.getFeatureByID(items[i].featureID));
             }
             return output;
         }
     }, {
-        key: "snapToGrid",
-        value: function snapToGrid(point) {
-            return GridGenerator.snapToGrid(point, this.gridSpacing);
-        }
-    }, {
-        key: "setupResizeEvent",
-        value: function setupResizeEvent() {
-            var man = this;
-            paper.view.onResize = function (event) {
-                man.render();
-            };
-        }
-    }, {
-        key: "setupMouseEvents",
-        value: function setupMouseEvents() {
-            var manager = this;
-            this.canvas.onmousedown = function (e) {
-                if (e.which == 2) {
-                    manager.currentTool.abort();
-                    manager.tools["Pan"].activate();
-                    manager.tools["Pan"].startPoint = manager.canvasToProject(e.clientX, e.clientY);
-                } else if (e.which == 3) {
-                    man.currentTool.abort();
-                    var point = manager.canvasToProject(e.clientX, e.clientY);
-                    var target = manager.hitFeatureInDevice(point);
-                    if (target) {
-                        console.log(Registry.currentDevice.getFeatureByID(target.featureID));
-                    }
-                    manager.currentTool.abort();
+        key: "deleteSelectedFeatures",
+        value: function deleteSelectedFeatures() {
+            var items = paper.project.selectedItems;
+            if (items && items.length > 0) {
+                for (var i = 0; i < items.length; i++) {
+                    Registry.currentDevice.removeFeatureByID(items[i].featureID);
                 }
-            };
-            this.canvas.onmouseup = function (e) {
-                if (e.which == 2 || 3) {
-                    manager.currentTool.activate();
-                }
-            };
+            }
         }
     }, {
-        key: "setupContextEvent",
-        value: function setupContextEvent() {
-            this.canvas.oncontextmenu = function (e) {
-                e.preventDefault();
-            };
+        key: "layersToSVGStrings",
+        value: function layersToSVGStrings() {
+            var output = [];
+            for (var i = 0; i < this.featureLayer.children.length; i++) {
+                var layer = this.featureLayer.children[i];
+                var svg = this.postProcessLayerToSVG(layer);
+                output.push(svg);
+            }
+            return output;
         }
     }, {
-        key: "setupZoomEvent",
-        value: function setupZoomEvent() {
-            var min = this.minZoom;
-            var max = this.maxZoom;
-            var canvas = this.canvas;
-            var manager = this;
-
-            this.canvas.addEventListener("wheel", function (event) {
-                if (paper.view.zoom >= max && event.deltaY < 0) console.log("Whoa! Zoom is way too big.");else if (paper.view.zoom <= min && event.deltaY > 0) console.log("Whoa! Zoom is way too small.");else PanAndZoom.adjustZoom(event.deltaY, manager.canvasToProject(event.clientX, event.clientY));
-            }, false);
+        key: "postProcessLayerToSVG",
+        value: function postProcessLayerToSVG(layer) {
+            var layerCopy = layer.clone();
+            layerCopy.bounds.topLeft = new paper.Point(0, 0);
+            var deviceWidth = Registry.currentDevice.params.getValue("width");
+            var deviceHeight = Registry.currentDevice.params.getValue("height");
+            layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
+            var svg = layer.exportSVG({
+                asString: true
+            });
+            var width = layerCopy.bounds.width;
+            var height = layerCopy.bounds.height;
+            var widthInMillimeters = width / 1000;
+            var heightInMilliMeters = height / 1000;
+            var insertString = 'width="' + widthInMillimeters + 'mm" ' + 'height="' + heightInMilliMeters + 'mm" ' + 'viewBox="0 0 ' + width + ' ' + height + '" ';
+            var newSVG = svg.slice(0, 5) + insertString + svg.slice(5);
+            layerCopy.remove();
+            return newSVG;
+        }
+    }, {
+        key: "getCanvasWidth",
+        value: function getCanvasWidth() {
+            return this.canvas.clientWidth;
+        }
+    }, {
+        key: "getCanvasHeight",
+        value: function getCanvasHeight() {
+            return this.canvas.clientHeight;
+        }
+    }, {
+        key: "getViewCenterInMillimeters",
+        value: function getViewCenterInMillimeters() {
+            return [paper.view.center.x / 1000, paper.view.center.y / 1000];
+        }
+    }, {
+        key: "getDeviceHeightInPixels",
+        value: function getDeviceHeightInPixels() {
+            return Registry.currentDevice.params.getValue("height") * paper.view.zoom;
+        }
+    }, {
+        key: "clear",
+        value: function clear() {
+            this.activeLayer = null;
+            this.featureLayer.removeChildren();
+            this.featureLayer.clear();
+            this.deviceLayer.clear();
+            this.gridLayer.clear();
+        }
+    }, {
+        key: "getCenter",
+        value: function getCenter() {
+            return this.center;
+        }
+    }, {
+        key: "setCenter",
+        value: function setCenter(point) {
+            this.center = point;
+            this.updateCenter();
+        }
+    }, {
+        key: "updateCenter",
+        value: function updateCenter() {
+            paper.view.center = this.center;
+        }
+    }, {
+        key: "getZoom",
+        value: function getZoom() {
+            return this.zoom;
+        }
+    }, {
+        key: "setZoom",
+        value: function setZoom(zoom) {
+            this.zoom = zoom;
+            this.updateZoom();
+        }
+    }, {
+        key: "updateZoom",
+        value: function updateZoom() {
+            paper.view.zoom = this.zoom;
         }
     }, {
         key: "canvasToProject",
@@ -12588,764 +13882,1396 @@ var CanvasManager = (function () {
             return paper.view.viewToProject(new paper.Point(projX, projY));
         }
     }, {
-        key: "renderFeature",
-        value: function renderFeature(feature) {
-            var forceUpdate = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-            feature.render2D();
-            paper.view.update(forceUpdate);
+        key: "getProjectPosition",
+        value: function getProjectPosition(x, y) {
+            return this.canvasToProject(x, y);
         }
     }, {
-        key: "renderBackground",
-        value: function renderBackground() {
-            var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-            this.backgroundLayer.clear();
-            var width = Registry.currentDevice.params.getValue("width");
-            var height = Registry.currentDevice.params.getValue("height");
-            var border = new paper.Path.Rectangle(new paper.Point(0, 0), new paper.Point(width, height));
-            border.fillColor = null;
-            border.strokeColor = Colors.GREY_700;
-            border.strokeWidth = 3 / paper.view.zoom;
-            this.backgroundLayer.addChild(border);
-            if (this.gridLayer) this.backgroundLayer.insertAbove(this.gridLayer);
-            paper.view.update(forceUpdate);
+        key: "setMouseWheelFunction",
+        value: function setMouseWheelFunction(func) {
+            this.canvas.addEventListener("wheel", func);
         }
     }, {
-        key: "render",
-        value: function render() {
-            var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+        key: "setMouseDownFunction",
+        value: function setMouseDownFunction(func) {
+            this.canvas.onmousedown = func;
         }
     }, {
-        key: "renderGrid",
-
-        //this.renderBackground();
-        //this.renderDevice();
-        //this.renderGrid();
-        //paper.view.update(forceUpdate);
-        value: function renderGrid() {
-            var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-            if (this.gridLayer) {
-                this.gridLayer.remove();
-            }
-            var grid = GridGenerator.makeGrid(this.gridSpacing, this.thickCount);
-            this.gridLayer = new paper.Group(grid);
-            if (this.layers.length > 0) this.gridLayer.insertBelow(this.layers[0]);
-            if (this.backgroundLayer) this.gridLayer.insertBelow(this.backgroundLayer);
-
-            paper.view.update(forceUpdate);
+        key: "setMouseUpFunction",
+        value: function setMouseUpFunction(func) {
+            this.canvas.onmouseup = func;
         }
     }, {
-        key: "setGridSize",
-        value: function setGridSize(size) {
-            var forceUpdate = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-            this.gridSpacing = size;
-            //this.renderGrid(forceUpdate);
+        key: "setMouseMoveFunction",
+        value: function setMouseMoveFunction(func) {
+            this.canvas.onmousemove = func;
+        }
+    }, {
+        key: "setKeyPressFunction",
+        value: function setKeyPressFunction(func) {
+            this.canvas.onkeypress = func;
+        }
+    }, {
+        key: "setKeyDownFunction",
+        value: function setKeyDownFunction(func) {
+            this.canvas.onkeydown = func;
+        }
+    }, {
+        key: "setResizeFunction",
+        value: function setResizeFunction(func) {
+            paper.view.onResize = func;
+        }
+    }, {
+        key: "disableContextMenu",
+        value: function disableContextMenu(func) {
+            this.canvas.oncontextmenu = function (event) {
+                event.preventDefault();
+            };
+        }
+    }, {
+        key: "refresh",
+        value: function refresh() {
+            paper.view.update();
         }
 
-        //TODO: This is a hacky way to clear everything.
+        /* Rendering Devices */
     }, {
-        key: "clearLayers",
-        value: function clearLayers() {
-            for (var i = 0; i < this.layers.length; i++) {
-                this.layers[i].remove();
-            }
+        key: "addDevice",
+        value: function addDevice(device) {
+            this.updateDevice(device);
+        }
+    }, {
+        key: "updateDevice",
+        value: function updateDevice(device) {
+            this.removeDevice(device);
+            var newPaperDevice = DeviceRenderer.renderDevice(device);
+            this.paperDevice = newPaperDevice;
+            this.deviceLayer.addChild(newPaperDevice);
+        }
+    }, {
+        key: "removeDevice",
+        value: function removeDevice() {
+            if (this.paperDevice) this.paperDevice.remove();
+            this.paperDevice = null;
         }
 
-        //TODO: Optimize this to re-render only things that changed?
-        // Or write another partial-rendering procedure?
-    }, {
-        key: "renderDevice",
-        value: function renderDevice() {
-            var forceUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+        /* Rendering Layers */
 
-            this.clearLayers();
-            var rendered = Registry.currentDevice.render2D(this.paper);
-            var layers = [];
-            for (var i = 0; i < rendered.length; i++) {
-                var layer = rendered[i];
-                var paperLayer = new paper.Group(layer);
-                if (this.gridLayer) paperLayer.insertAbove(this.gridLayer);
-                if (this.selectLayer) paperLayer.insertBelow(this.selectLayer);
-                if (this.backgroundLayer) paperLayer.insertAbove(this.backgroundLayer);
-                if (i > 0) {
-                    paperLayer.insertAbove(layers[i - 1]);
+    }, {
+        key: "addLayer",
+        value: function addLayer(layer, index) {
+            this.featureLayer.insertChild(index, new paper.Group());
+        }
+    }, {
+        key: "updateLayer",
+        value: function updateLayer(layer, index) {
+            // do nothing, for now
+        }
+    }, {
+        key: "removeLayer",
+        value: function removeLayer(layer, index) {}
+        // do nothing, for now
+
+        /* Rendering Features */
+
+    }, {
+        key: "addFeature",
+        value: function addFeature(feature) {
+            this.updateFeature(feature);
+        }
+    }, {
+        key: "setActiveLayer",
+        value: function setActiveLayer(index) {
+            this.activeLayer = index;
+            //this.showActiveLayer();
+        }
+    }, {
+        key: "showActiveLayer",
+        value: function showActiveLayer() {
+            var layers = this.featureLayer.children;
+
+            for (var i = 0; i < layers.length; i++) {
+                var layer = layers[i];
+                var targetAlpha = undefined;
+                if (i != this.activeLayer) {
+                    targetAlpha = this.inactiveAlpha;
+                } else {
+                    targetAlpha = 1;
                 }
-                layers.push(paperLayer);
+                for (var j = 0; j < layer.children.length; j++) {
+                    layer.children[j].fillColor.alpha = targetAlpha;
+                }
             }
-            this.layers = layers;
-            paper.view.update(forceUpdate);
         }
     }, {
-        key: "updateGridSpacing",
-        value: function updateGridSpacing() {
-            var min = this.minPixelSpacing / paper.view.zoom;
-            var max = this.maxPixelSpacing / paper.view.zoom;
-            while (this.gridSpacing < min) {
-                this.gridSpacing = this.gridSpacing * 10;
+        key: "comparePaperFeatureHeights",
+        value: function comparePaperFeatureHeights(a, b) {
+            var aFeature = Registry.currentDevice.getFeatureByID(a.featureID);
+            var bFeature = Registry.currentDevice.getFeatureByID(b.featureID);
+            var aHeight = aFeature.getValue("height");
+            var bHeight = bFeature.getValue("height");
+            return aHeight - bHeight;
+        }
+    }, {
+        key: "insertChildByHeight",
+        value: function insertChildByHeight(group, newChild) {
+            this.getIndexByHeight(group.children, newChild);
+            var index = this.getIndexByHeight(group.children, newChild);
+            group.insertChild(index, newChild);
+        }
+
+        // TODO: Could be done faster with a binary search. Probably not needed!
+    }, {
+        key: "getIndexByHeight",
+        value: function getIndexByHeight(children, newChild) {
+            for (var i = 0; i < children.length; i++) {
+                var test = this.comparePaperFeatureHeights(children[i], newChild);
+                if (test >= 0) {
+                    return i;
+                }
             }
-            while (this.gridSpacing > max) {
-                this.gridSpacing = this.gridSpacing / 10;
+            return children.length;
+        }
+    }, {
+        key: "updateFeature",
+        value: function updateFeature(feature) {
+            var existingFeature = this.paperFeatures[feature.getID()];
+            var selected = undefined;
+            if (existingFeature) selected = existingFeature.selected;else selected = false;
+            this.removeFeature(feature);
+            var newPaperFeature = FeatureRenderer2D.renderFeature(feature);
+            newPaperFeature.selected = selected;
+            this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
+            //TODO: This is terrible. Fix it. Fix it now.
+            var index = feature.layer.device.layers.indexOf(feature.layer);
+            var layer = this.featureLayer.children[index];
+            this.insertChildByHeight(layer, newPaperFeature);
+            if (index != this.activeLayer && this.activeLayer != null) newPaperFeature.fillColor.alpha = this.inactiveAlpha;
+        }
+    }, {
+        key: "removeTarget",
+        value: function removeTarget() {
+            if (this.currentTarget) this.currentTarget.remove();
+            this.currentTarget = null;
+        }
+    }, {
+        key: "addTarget",
+        value: function addTarget(featureType, set, position) {
+            this.removeTarget();
+            this.lastTargetType = featureType;
+            this.lastTargetPosition = position;
+            this.lastTargetSet = set;
+            this.updateTarget();
+        }
+    }, {
+        key: "updateTarget",
+        value: function updateTarget() {
+            this.removeTarget();
+            if (this.lastTargetType && this.lastTargetPosition) {
+                this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
+                this.uiLayer.addChild(this.currentTarget);
             }
-            //this.renderGrid();
+        }
+    }, {
+        key: "removeFeature",
+        value: function removeFeature(feature) {
+            var paperFeature = this.paperFeatures[feature.getID()];
+            if (paperFeature) paperFeature.remove();
+            this.paperFeatures[feature.getID()] = null;
+        }
+    }, {
+        key: "removeGrid",
+        value: function removeGrid() {
+            if (this.paperGrid) this.paperGrid.remove();
+            this.paperGrid = null;
+        }
+    }, {
+        key: "updateGrid",
+        value: function updateGrid(grid) {
+            this.removeGrid();
+            var newPaperGrid = GridRenderer.renderGrid(grid);
+            this.paperGrid = newPaperGrid;
+            this.gridLayer.addChild(newPaperGrid);
+        }
+    }, {
+        key: "moveCenter",
+        value: function moveCenter(delta) {
+            this.panAndZoom.moveCenter(delta);
         }
     }, {
         key: "adjustZoom",
-        value: function adjustZoom(delta, position) {
-            PanAndZoom.adjustZoom(delta, position);
+        value: function adjustZoom(delta, point) {
+            this.panAndZoom.adjustZoom(delta, point);
         }
     }, {
-        key: "setZoom",
-        value: function setZoom(zoom) {
-            paper.view.zoom = zoom;
-            //this.updateGridSpacing();
-            Registry.viewManager.updateGrid();
-            //this.renderBackground();
+        key: "getFeaturesByViewElements",
+        value: function getFeaturesByViewElements(paperFeatures) {
+            var output = [];
+            for (var i = 0; i < paperFeatures.length; i++) {
+                output.push(Registry.currentDevice.getFeatureByID(paperFeatures[i].featureID));
+            }
+            return output;
         }
     }, {
-        key: "calculateOptimalZoom",
-        value: function calculateOptimalZoom() {
-            var breathingRoom = 200; //pixels
-            var dev = Registry.currentDevice;
-            var width = dev.params.getValue("width");
-            var height = dev.params.getValue("height");
-            var rect = this.canvas.getBoundingClientRect();
-            if (rect.width - breathingRoom <= 0 || rect.height - breathingRoom <= 0) breathingRoom = 0;
-            var widthRatio = width / (rect.width - breathingRoom);
-            var heightRatio = height / (rect.height - breathingRoom);
-            var targetRatio = 0;
-            if (widthRatio > heightRatio) return 1 / widthRatio;else return 1 / heightRatio;
+        key: "initializeView",
+        value: function initializeView() {
+            var center = this.getDeviceCenter();
+            var zoom = this.computeOptimalZoom();
+            this.setCenter(center);
+            this.setZoom(zoom);
         }
     }, {
-        key: "calculateMidpoint",
-        value: function calculateMidpoint() {
+        key: "getDeviceCenter",
+        value: function getDeviceCenter() {
             var dev = Registry.currentDevice;
             var width = dev.params.getValue("width");
             var height = dev.params.getValue("height");
             return new paper.Point(width / 2, height / 2);
         }
     }, {
-        key: "moveCenter",
-        value: function moveCenter(delta) {
-            var newCenter = paper.view.center.subtract(delta);
-            this.setCenter(newCenter);
+        key: "computeOptimalZoom",
+        value: function computeOptimalZoom() {
+            var borderMargin = 200; // pixels
+            var dev = Registry.currentDevice;
+            var deviceWidth = dev.params.getValue("width");
+            var deviceHeight = dev.params.getValue("height");
+            var canvasWidth = this.getCanvasWidth();
+            var canvasHeight = this.getCanvasHeight();
+            var maxWidth = undefined;
+            var maxHeight = undefined;
+            if (canvasWidth - borderMargin <= 0) maxWidth = canvasWidth;else maxWidth = canvasWidth - borderMargin;
+            if (canvasHeight - borderMargin <= 0) maxHeight = canvasHeight;else maxHeight = canvasHeight - borderMargin;
+            var widthRatio = deviceWidth / maxWidth;
+            var heightRatio = deviceHeight / maxHeight;
+            if (widthRatio > heightRatio) return 1 / widthRatio;else return 1 / heightRatio;
         }
     }, {
-        key: "setCenter",
-        value: function setCenter(x, y) {
-            paper.view.center = new paper.Point(x, y);
-            //this.renderGrid();
-            Registry.viewManager.updateGrid();
-            //this.renderBackground();
+        key: "hitFeature",
+        value: function hitFeature(point) {
+            var onlyHitActiveLayer = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            var hitOptions = {
+                fill: true,
+                tolerance: 5,
+                guides: false
+            };
+
+            var target = undefined;
+
+            if (onlyHitActiveLayer && this.activeLayer != null) {
+                target = this.featureLayer.children[this.activeLayer];
+            } else target = this.featureLayer;
+
+            var result = target.hitTest(point, hitOptions);
+            if (result) {
+                return result.item;
+            }
         }
     }, {
-        key: "initializeView",
-        value: function initializeView() {
-            Registry.viewManager.setZoom(this.calculateOptimalZoom());
-            Registry.viewManager.setCenter(this.calculateMidpoint());
-        }
-    }, {
-        key: "loadDeviceFromJSON",
-        value: function loadDeviceFromJSON(json) {
-            Registry.viewManager.clear();
-            Registry.currentDevice = Device.fromJSON(json);
-            Registry.currentLayer = Registry.currentDevice.layers[0];
-            var newMan = Registry.viewManager;
-            newMan.addDevice(Registry.currentDevice);
-            //this.updateGridSpacing();
-            //this.render();
-            this.initializeView();
-        }
-    }, {
-        key: "saveToStorage",
-        value: function saveToStorage() {
-            localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
-        }
-    }, {
-        key: "loadFromStorage",
-        value: function loadFromStorage() {
-            this.loadDeviceFromJSON(JSON.parse(localStorage.getItem("currentDevice")));
-            Registry.viewManager.updateActiveLayer();
+        key: "hitFeaturesWithViewElement",
+        value: function hitFeaturesWithViewElement(paperElement) {
+            var onlyHitActiveLayer = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+            var output = [];
+            if (onlyHitActiveLayer && this.activeLayer != null) {
+                var layer = this.featureLayer.children[this.activeLayer];
+                for (var i = 0; i < layer.children.length; i++) {
+                    var child = layer.children[i];
+                    if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
+                        output.push(child);
+                    }
+                }
+            } else {
+                for (var i = 0; i < this.featureLayer.children.length; i++) {
+                    var layer = this.featureLayer.children[i];
+                    for (var j = 0; j < layer.children.length; j++) {
+                        var child = layer.children[j];
+                        if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
+                            output.push(child);
+                        }
+                    }
+                }
+            }
+
+            return output;
         }
     }]);
 
-    return CanvasManager;
+    return PaperView;
 })();
 
-module.exports = CanvasManager;
+module.exports = PaperView;
 
-},{"../core/device":46,"../core/features":52,"../core/registry":65,"../view/colors":86,"./gridGenerator":68,"./panAndZoom":69,"./tools":72}],68:[function(require,module,exports){
-'use strict';
+},{"../core/registry":58,"../utils/simpleQueue":70,"./PanAndZoom":71,"./colors":73,"./render2D/GridRenderer":77,"./render2D/deviceRenderer2D":78,"./render2D/featureRenderer2D":79}],77:[function(require,module,exports){
+"use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var Colors = require("../colors");
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function renderGrid(grid) {
+    var gridGroup = new paper.Group();
+    gridGroup.addChild(makeHorizontalLines(grid));
+    gridGroup.addChild(makeVerticalLines(grid));
+    return gridGroup;
+}
 
-var Colors = require('../view/colors');
-var lineColor = Colors.BLUE_100;
+function vertLineSymbol(width, color) {
+    return lineSymbol(paper.view.bounds.topLeft, paper.view.bounds.bottomLeft, width, color);
+}
 
-//TODO: Fix fifth-line highlighting at low/high zooms!
+function horizLineSymbol(width, color) {
+    return lineSymbol(paper.view.bounds.topLeft, paper.view.bounds.topRight, width, color);
+}
 
-var GridGenerator = (function () {
-    function GridGenerator() {
-        _classCallCheck(this, GridGenerator);
+function lineSymbol(start, end, width, color) {
+    var line = paper.Path.Line({
+        from: start,
+        to: end,
+        strokeWidth: width,
+        strokeColor: color
+    });
+    line.strokeColor.alpha = .25;
+    line.remove();
+    return new paper.Symbol(line);
+}
+
+function isThick(val, origin, spacing, thickCount) {
+    var diff = Math.abs(val - origin);
+    var remainder = diff % (spacing * thickCount);
+    if (remainder < spacing) {
+        return true;
+    } else return false;
+}
+
+function makeVerticalLines(grid) {
+    var spacing = grid.getSpacing();
+    var sym = vertLineSymbol(grid.getThinWidth(), grid.color);
+    var thickSym = vertLineSymbol(grid.getThickWidth(), grid.color);
+    var start = paper.view.bounds.topLeft;
+    var end = paper.view.bounds.topRight;
+    var height = paper.view.bounds.height;
+    var group = new paper.Group();
+
+    var startX = Math.floor((start.x - grid.origin.x) / spacing) * spacing + grid.origin.x;
+
+    for (var i = startX; i < end.x; i += spacing) {
+        var pos = new paper.Point(i, start.y + height / 2);
+        if (isThick(i, grid.origin.x, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
     }
 
-    _createClass(GridGenerator, null, [{
-        key: 'makeGrid',
-        value: function makeGrid(spacing, thickCount) {
-            var vert = GridGenerator.makeVerticalGrid(spacing, thickCount);
-            var horiz = GridGenerator.makeHorizontalGrid(spacing, thickCount);
-            return new paper.Group([vert, horiz]);
-        }
-    }, {
-        key: 'getTopLeft',
-        value: function getTopLeft() {
-            return paper.view.bounds.topLeft;
-        }
-    }, {
-        key: 'getBottomLeft',
-        value: function getBottomLeft() {
-            return paper.view.bounds.bottomLeft;
-        }
-    }, {
-        key: 'getBottomRight',
-        value: function getBottomRight() {
-            return paper.view.bounds.bottomRight;
-        }
-    }, {
-        key: 'getTopRight',
-        value: function getTopRight() {
-            console.log(paper.view.bounds.topRight);
-            return paper.view.bounds.topRight;
-        }
-    }, {
-        key: 'makeVerticalGrid',
-        value: function makeVerticalGrid(spacing, thickCount) {
-            var topLeft = GridGenerator.getTopLeft();
-            var bottomRight = GridGenerator.getBottomRight();
-            var height = bottomRight.y - topLeft.y;
-            var vertGroup = new paper.Group();
-            var sym = new paper.Symbol(GridGenerator.makeVerticalLineTemplate());
-            var thick = new paper.Symbol(GridGenerator.makeThickVerticalLineTemplate());
-            for (var i = Math.floor(topLeft.x / spacing) * spacing; i <= bottomRight.x; i += spacing) {
-                var pos = new paper.Point(i, topLeft.y + height / 2);
-                if (i % (spacing * thickCount) < spacing && i % (spacing * thickCount) > -spacing) vertGroup.addChild(thick.place(pos));else vertGroup.addChild(sym.place(pos));
-            }
-            for (var i = Math.floor(topLeft.x / spacing) * spacing; i >= topLeft.x; i -= spacing) {
-                var pos = new paper.Point(i, topLeft.y + height / 2);
-                if (i % (spacing * thickCount) < spacing && i % (spacing * thickCount) > -spacing) vertGroup.addChild(thick.place(pos));else vertGroup.addChild(sym.place(pos));
-            }
-            return vertGroup;
-        }
-    }, {
-        key: 'makeHorizontalGrid',
-        value: function makeHorizontalGrid(spacing, thickCount) {
-            var topLeft = GridGenerator.getTopLeft();
-            var bottomRight = GridGenerator.getBottomRight();
-            var width = bottomRight.x - topLeft.x;
-            var horizGroup = new paper.Group();
-            var sym = new paper.Symbol(GridGenerator.makeHorizontalLineTemplate());
-            var thick = new paper.Symbol(GridGenerator.makeThickHorizontalLineTemplate());
-            for (var i = Math.floor(topLeft.y / spacing) * spacing; i < bottomRight.y; i += spacing) {
-                var pos = new paper.Point(topLeft.x + width / 2, i);
-                if (i % (spacing * thickCount) < spacing && i % (spacing * thickCount) > -spacing) horizGroup.addChild(thick.place(pos));else horizGroup.addChild(sym.place(pos));
-            }
-            for (var i = Math.floor(topLeft.y / spacing) * spacing; i >= topLeft.y; i -= spacing) {
-                var pos = new paper.Point(topLeft.x + width / 2, i);
-                if (i % (spacing * thickCount) < spacing && i % (spacing * thickCount) > -spacing) horizGroup.addChild(thick.place(pos));else horizGroup.addChild(sym.place(pos));
-            }
-            return horizGroup;
-        }
-    }, {
-        key: 'makeVerticalLineTemplate',
-        value: function makeVerticalLineTemplate() {
-            return GridGenerator.gridLineTemplate(GridGenerator.getTopLeft(), GridGenerator.getBottomLeft());
-        }
-    }, {
-        key: 'makeThickVerticalLineTemplate',
-        value: function makeThickVerticalLineTemplate() {
-            var line = GridGenerator.makeVerticalLineTemplate();
-            line.strokeWidth = GridGenerator.getStrokeWidth() * 3;
-            return line;
-        }
-    }, {
-        key: 'makeHorizontalLineTemplate',
-        value: function makeHorizontalLineTemplate() {
-            return GridGenerator.gridLineTemplate(GridGenerator.getTopLeft(), GridGenerator.getTopRight());
-        }
-    }, {
-        key: 'makeThickHorizontalLineTemplate',
-        value: function makeThickHorizontalLineTemplate() {
-            var line = GridGenerator.makeHorizontalLineTemplate();
-            line.strokeWidth = GridGenerator.getStrokeWidth() * 3;
-            return line;
-        }
-    }, {
-        key: 'snapToGrid',
-        value: function snapToGrid(point, spacing) {
-            var x = Math.round(point.x / spacing) * spacing;
-            var y = Math.round(point.y / spacing) * spacing;
-            return new paper.Point(x, y);
-        }
-    }, {
-        key: 'gridLineTemplate',
-        value: function gridLineTemplate(start, end) {
-            var line = paper.Path.Line(start, end);
-            line.strokeColor = lineColor;
-            line.strokeWidth = GridGenerator.getStrokeWidth();
-            line.remove();
-            return line;
-        }
-    }, {
-        key: 'getStrokeWidth',
-        value: function getStrokeWidth() {
-            var width = 1 / paper.view.zoom;
-            return width;
-        }
-    }]);
+    for (var i = startX; i >= end.x; i -= spacing) {
+        var pos = new paper.Point(i, start.y + height / 2);
+        if (isThick(i, grid.origin.x, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
+    }
+    return group;
+}
 
-    return GridGenerator;
-})();
+function makeHorizontalLines(grid) {
+    var spacing = grid.getSpacing();
+    var sym = horizLineSymbol(grid.getThinWidth(), grid.color);
+    var thickSym = horizLineSymbol(grid.getThickWidth(), grid.color);
+    var start = paper.view.bounds.topLeft;
+    var end = paper.view.bounds.bottomLeft;
+    var width = paper.view.bounds.width;
+    var group = new paper.Group();
 
-module.exports = GridGenerator;
+    var startY = Math.floor((start.y - grid.origin.y) / spacing) * spacing + grid.origin.y;
 
-},{"../view/colors":86}],69:[function(require,module,exports){
+    for (var i = startY; i < end.y; i += spacing) {
+        var pos = new paper.Point(start.x + width / 2, i);
+        if (isThick(i, grid.origin.y, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
+    }
+
+    for (var i = startY; i >= end.y; i -= spacing) {
+        var pos = new paper.Point(start.x + width / 2, i);
+        if (isThick(i, grid.origin.y, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
+    }
+    return group;
+}
+
+module.exports.renderGrid = renderGrid;
+
+},{"../colors":73}],78:[function(require,module,exports){
+"use strict";
+
+var Colors = require("../colors");
+var DEFAULT_STROKE_COLOR = Colors.GREY_700;
+var BORDER_THICKNESS = 5; // pixels
+
+function renderDevice(device) {
+    var strokeColor = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_STROKE_COLOR : arguments[1];
+
+    var background = new paper.Path.Rectangle({
+        from: paper.view.bounds.topLeft.subtract(paper.view.size),
+        to: paper.view.bounds.bottomRight.add(paper.view.size),
+        fillColor: Colors.BLUE_50,
+        strokeColor: null
+    });
+    var thickness = BORDER_THICKNESS / paper.view.zoom;
+    var width = device.params.getValue("width");
+    var height = device.params.getValue("height");
+    var border = new paper.Path.Rectangle({
+        from: new paper.Point(0, 0),
+        to: new paper.Point(width, height),
+        fillColor: Colors.WHITE,
+        strokeColor: strokeColor,
+        strokeWidth: thickness
+    });
+
+    var group = new paper.Group([background, border]);
+
+    return group;
+}
+
+module.exports.renderDevice = renderDevice;
+
+},{"../colors":73}],79:[function(require,module,exports){
+"use strict";
+
+var Colors = require("../colors");
+var Feature = require("../../core/feature");
+var PrimitiveSets2D = require("./primitiveSets2D");
+var FeatureSets = require("../../featureSets");
+
+function getLayerColor(feature) {
+    var height = feature.getValue("height");
+    var layerHeight = feature.layer.estimateLayerHeight();
+    var decimal = height / layerHeight;
+    if (decimal > 1) decimal = 1;
+    if (!feature.layer.flip) decimal = 1 - decimal;
+    var targetColorSet = Colors.getLayerColors(feature.layer);
+    return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
+}
+
+function getBaseColor(feature) {
+    var decimal = 0;
+    if (!feature.layer.flip) decimal = 1 - decimal;
+    var targetColorSet = Colors.getLayerColors(feature.layer);
+    return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
+}
+
+function getDefaultValueForType(typeString, setString, key) {
+    return Feature.getDefaultsForType(typeString, setString)[key];
+}
+
+function getFeatureRenderer(typeString, setString) {
+    var rendererInfo = FeatureSets.getRender2D(typeString, setString);
+    return rendererInfo;
+}
+
+function getPrimitive2D(typeString, setString) {
+    return PrimitiveSets2D[setString][typeString];
+}
+
+function renderTarget(typeString, setString, position) {
+    var renderer = getFeatureRenderer(typeString, setString);
+    var params = renderer.targetParams;
+    var prim = getPrimitive2D(renderer.targetPrimitiveType, renderer.targetPrimitiveSet);
+    var primParams = {};
+    for (var key in params) {
+        primParams[key] = getDefaultValueForType(typeString, setString, params[key]);
+    }
+    primParams["position"] = position;
+    primParams["color"] = Colors.getDefaultFeatureColor(typeString, Registry.currentLayer);
+    var rendered = prim(primParams);
+    return rendered;
+}
+
+function renderFeature(feature) {
+    var type = feature.getType();
+    var set = feature.getSet();
+    var renderer = getFeatureRenderer(type, set);
+    var params = renderer.featureParams;
+    var prim = getPrimitive2D(renderer.featurePrimitiveType, renderer.featurePrimitiveSet);
+    var primParams = {};
+    for (var key in params) {
+        primParams[key] = feature.getValue(params[key]);
+    }
+    primParams["color"] = getLayerColor(feature);
+    primParams["baseColor"] = getBaseColor(feature);
+    var rendered = prim(primParams);
+    rendered.featureID = feature.getID();
+    return rendered;
+}
+
+module.exports.renderFeature = renderFeature;
+module.exports.renderTarget = renderTarget;
+
+},{"../../core/feature":47,"../../featureSets":66,"../colors":73,"./primitiveSets2D":81}],80:[function(require,module,exports){
+"use strict";
+
+var RoundedRectLine = function RoundedRectLine(params) {
+    var start = params["start"];
+    var end = params["end"];
+    var color = params["color"];
+    var width = params["width"];
+    var baseColor = params["baseColor"];
+    var startPoint = new paper.Point(start[0], start[1]);
+    var endPoint = new paper.Point(end[0], end[1]);
+    var vec = endPoint.subtract(startPoint);
+    var rec = paper.Path.Rectangle({
+        size: [vec.length + width, width],
+        point: start,
+        radius: width / 2,
+        fillColor: color
+    });
+    rec.translate([-width / 2, -width / 2]);
+    rec.rotate(vec.angle, start);
+    return rec;
+};
+
+var RoundedRect = function RoundedRect(params) {
+    var start = params["start"];
+    var end = params["end"];
+    var borderWidth = params["borderWidth"];
+    var color = params["color"];
+    var baseColor = params["baseColor"];
+    var startX = undefined;
+    var startY = undefined;
+    var endX = undefined;
+    var endY = undefined;
+
+    if (start[0] < end[0]) {
+        startX = start[0];
+        endX = end[0];
+    } else {
+        startX = end[0];
+        endX = start[0];
+    }
+    if (start[1] < end[1]) {
+        startY = start[1];
+        endY = end[1];
+    } else {
+        startY = end[1];
+        endY = start[1];
+    }
+
+    startX -= borderWidth / 2;
+    startY -= borderWidth / 2;
+    endX += borderWidth / 2;
+    endY += borderWidth / 2;
+
+    var startPoint = new paper.Point(startX, startY);
+    var endPoint = new paper.Point(endX, endY);
+
+    var rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: borderWidth / 2,
+        fillColor: color
+    });
+    return rec;
+};
+
+var GradientCircle = function GradientCircle(params) {
+    var position = params["position"];
+    var radius1 = params["radius1"];
+    var radius2 = params["radius2"];
+    var color1 = params["color"];
+    var color2 = params["baseColor"];
+    var pos = new paper.Point(position);
+    var ratio = radius2 / radius1;
+    var targetRatio = undefined;
+    var targetRadius = undefined;
+    if (ratio > 1) {
+        targetRatio = 1;
+        targetRadius = radius2;
+    } else {
+        targetRatio = ratio;
+        targetRadius = radius1;
+    }
+    var outerCircle = new paper.Path.Circle(pos, targetRadius);
+    outerCircle.fillColor = {
+        gradient: {
+            stops: [[color1, targetRatio], [color2, targetRatio]],
+            radial: true
+        },
+        origin: pos,
+        destination: outerCircle.bounds.rightCenter
+    };
+    return outerCircle;
+};
+
+var CircleTarget = function CircleTarget(params) {
+    var targetRadius = undefined;
+    if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"] / 2;else {
+        var radius1 = params["radius1"];
+        var radius2 = params["radius2"];
+        if (radius1 > radius2) targetRadius = radius1;else targetRadius = radius2;
+    }
+    var minSize = 8; //pixels
+    var minSizeInMicrometers = 8 / paper.view.zoom;
+    var position = params["position"];
+    var color = params["color"];
+    var pos = new paper.Point(position[0], position[1]);
+    if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
+    var circ = new paper.Path.Circle(pos, targetRadius);
+    circ.fillColor = color;
+    circ.fillColor.alpha = .5;
+    circ.strokeColor = "#FFFFFF";
+    circ.strokeWidth = 3 / paper.view.zoom;
+    if (circ.strokeWidth > targetRadius / 2) circ.strokeWidth = targetRadius / 2;
+    return circ;
+};
+
+module.exports.RoundedRectLine = RoundedRectLine;
+module.exports.GradientCircle = GradientCircle;
+module.exports.RoundedRect = RoundedRect;
+module.exports.CircleTarget = CircleTarget;
+
+},{}],81:[function(require,module,exports){
+"use strict";
+
+module.exports.Basic2D = require("./basic2D");
+
+},{"./basic2D":80}],82:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Registry = require("../core/registry");
+var OrbitControls = require("./threeLib/orbitControls");
+var STLExporter = require("./threeLib/stlExporter");
+var Detector = require("./threeLib/detector");
+var getSTLString = STLExporter.getSTLString;
+var Device3D = require("./primitiveSets3D").Device3D;
+var renderFeature = require("./threeFeatureRenderer").renderFeature;
+var Colors = require("../colors");
 
-var PanAndZoom = (function () {
-	function PanAndZoom() {
-		_classCallCheck(this, PanAndZoom);
+var SLIDE_HOLDER_MATERIAL = new THREE.MeshLambertMaterial({
+	color: 0x9E9E9E,
+	shading: THREE.SmoothShading
+});
+var SLIDE_GLASS_MATERIAL = new THREE.MeshLambertMaterial({
+	color: 0xFFFFFF,
+	opacity: 0.0,
+	transparent: true
+});
+var DEVICE_PLANE_MATERIAL = new THREE.MeshBasicMaterial({
+	color: 0xFFFFFF,
+	shading: THREE.FlatShading
+});
+
+var HOLDER_BORDER_WIDTH = .41;
+var INTERLOCK_TOLERANCE = .125;
+var SLIDE_THICKNESS = 1.2;
+
+var ThreeDeviceRenderer = (function () {
+	function ThreeDeviceRenderer(renderContainer) {
+		_classCallCheck(this, ThreeDeviceRenderer);
+
+		this.container = renderContainer;
+		this.camera;
+		this.controls;
+		this.scene;
+		this.renderer;
+		this.backgroundColor = Colors.BLUE_50;
+		this.mockup = null;
+		this.layers = null;
+		this.json = null;
+		this.initialY = 0;
+		this.showingLayer = false;
+
+		this.init();
+		this.render();
 	}
 
-	_createClass(PanAndZoom, null, [{
-		key: "stableZoom",
-		value: function stableZoom(zoom, position) {
-			var newZoom = zoom;
-			var p = position;
-			var c = paper.view.center;
-			var beta = paper.view.zoom / newZoom;
-			var pc = p.subtract(c);
-			var a = p.subtract(pc.multiply(beta)).subtract(c);
-			var newCenter = this.calcCenter(a.x, a.y);
-			Registry.canvasManager.setCenter(newCenter.x, newCenter.y);
-			Registry.canvasManager.setZoom(newZoom);
+	_createClass(ThreeDeviceRenderer, [{
+		key: "init",
+		value: function init() {
+			if (!Detector.webgl) Detector.addGetWebGLMessage();
+			this.initCamera();
+			this.initControls();
+			this.initScene();
+			this.initRenderer();
+			var reference = this;
+			window.addEventListener('resize', function () {
+				reference.onWindowResize();
+			}, false);
 		}
 	}, {
-		key: "adjustZoom",
-		value: function adjustZoom(delta, position) {
-			this.stableZoom(this.calcZoom(delta), position);
-		}
-
-		// Stable pan and zoom modified from: http://matthiasberth.com/articles/stable-zoom-and-pan-in-paperjs/
-
-	}, {
-		key: "calcZoom",
-		value: function calcZoom(delta) {
-			var multiplier = arguments.length <= 1 || arguments[1] === undefined ? 1.177827941003 : arguments[1];
-
-			if (delta < 0) return paper.view.zoom * multiplier;else if (delta > 0) return paper.view.zoom / multiplier;else return paper.view.zoom;
+		key: "toggleLayerView",
+		value: function toggleLayerView(index) {
+			if (this.showingLayer) this.showMockup();else this.showLayer(index);
 		}
 	}, {
-		key: "calcCenter",
-		value: function calcCenter(deltaX, deltaY, factor) {
-			var offset = new paper.Point(deltaX, deltaY);
-			//offset = offset.multiply(factor);
-			return paper.view.center.add(offset);
+		key: "getLayerSTL",
+		value: function getLayerSTL(json, index) {
+			var scene = this.emptyScene();
+			var layer = json.layers[index];
+			scene.add(this.renderLayer(json, index, false));
+			this.renderer.render(scene, this.camera);
+			var string = getSTLString(scene);
+			this.renderer.render(this.scene, this.camera);
+			return getSTLString(scene);
 		}
-	}]);
-
-	return PanAndZoom;
-})();
-
-module.exports = PanAndZoom;
-
-},{"../core/registry":65}],70:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Registry = require("../../core/registry");
-
-var SelectTool = (function (_paper$Tool) {
-	_inherits(SelectTool, _paper$Tool);
-
-	function SelectTool() {
-		_classCallCheck(this, SelectTool);
-
-		_get(Object.getPrototypeOf(SelectTool.prototype), "constructor", this).call(this);
-		this.dragStart = null;
-		this.currentSelectBox = null;
-		this.currentSelection = [];
-		this.onMouseDown = function (event) {
-			this.mouseDownHandler(event.point);
-		};
-		this.onKeyDown = function (event) {
-			this.keyHandler(event);
-		};
-		this.onMouseDrag = function (event) {
-			this.dragHandler(event.point);
-		};
-		this.onMouseUp = function (event) {
-			this.mouseUpHandler(event.point);
-		};
-	}
-
-	_createClass(SelectTool, [{
-		key: "keyHandler",
-		value: function keyHandler(event) {
-			if (event.key == "delete" || event.key == "backspace") {
-				this.removeFeatures();
+	}, {
+		key: "getLayerSTLStrings",
+		value: function getLayerSTLStrings(json) {
+			var output = [];
+			for (var i = 0; i < json.layers.length; i++) {
+				output.push(this.getLayerSTL(json, i));
 			}
+			return output;
 		}
 	}, {
-		key: "dragHandler",
-		value: function dragHandler(point) {
-			if (this.dragStart) {
-				if (this.currentSelectBox) {
-					this.currentSelectBox.remove();
-				}
-				this.currentSelectBox = this.rectSelect(this.dragStart, point);
-			}
+		key: "getSTL",
+		value: function getSTL(json) {
+			ThreeDeviceRenderer.sanitizeJSON(json);
+			return this.getLayerSTLStrings(json);
 		}
 	}, {
-		key: "mouseUpHandler",
-		value: function mouseUpHandler(point) {
-			if (this.currentSelectBox) {
-				this.currentSelection = Registry.canvasManager.hitFeaturesWithViewElement(this.currentSelectBox);
-				this.selectFeatures();
-			}
-			this.killSelectBox();
+		key: "initCamera",
+		value: function initCamera() {
+			this.camera = new THREE.PerspectiveCamera(60, this.container.clientWidth / this.container.clientHeight, 1, 1000);
+			this.camera.position.z = 100;
 		}
 	}, {
-		key: "mouseDownHandler",
-		value: function mouseDownHandler(point) {
-			var target = this.hitFeature(point);
-			if (target) {
-				if (target.selected) console.log("Doubleclick?");else {
-					this.deselectFeatures();
-					this.selectFeature(target);
-				}
-			} else {
-				this.deselectFeatures();
-				this.dragStart = point;
-			}
-		}
-	}, {
-		key: "killSelectBox",
-		value: function killSelectBox() {
-			if (this.currentSelectBox) {
-				this.currentSelectBox.remove();
-				this.currentSelectBox = null;
-			}
-			this.dragStart = null;
-		}
-	}, {
-		key: "hitFeature",
-		value: function hitFeature(point) {
-			var target = Registry.canvasManager.hitFeatureInDevice(point);
-			return target;
-		}
-	}, {
-		key: "selectFeature",
-		value: function selectFeature(paperElement) {
-			this.currentSelection.push(paperElement);
-			paperElement.selected = true;
-		}
-	}, {
-		key: "selectFeatures",
-		value: function selectFeatures() {
-			if (this.currentSelection) {
-				for (var i = 0; i < this.currentSelection.length; i++) {
-					var paperFeature = this.currentSelection[i];
-					paperFeature.selected = true;
-				}
-			}
-		}
-	}, {
-		key: "deselectFeatures",
-		value: function deselectFeatures() {
-			if (this.currentSelection) {
-				for (var i = 0; i < this.currentSelection.length; i++) {
-					var paperFeature = this.currentSelection[i];
-					paperFeature.selected = false;
-				}
-			}
-			this.currentSelection = [];
-		}
-	}, {
-		key: "abort",
-		value: function abort() {
-			this.deselectFeatures();
-			this.killSelectBox();
-			Registry.canvasManager.render();
-		}
-	}, {
-		key: "rectSelect",
-		value: function rectSelect(point1, point2) {
-			var rect = new paper.Path.Rectangle(point1, point2);
-			rect.fillColor = new paper.Color(0, .3, 1, .4);
-			rect.strokeColor = new paper.Color(0, 0, 0);
-			rect.strokeWidth = 2;
-			rect.selected = true;
-			return rect;
-		}
-	}]);
-
-	return SelectTool;
-})(paper.Tool);
-
-module.exports = SelectTool;
-
-},{"../../core/registry":65}],71:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Features = require("../../core/features");
-var Registry = require("../../core/registry");
-
-var ChannelTool = (function (_paper$Tool) {
-	_inherits(ChannelTool, _paper$Tool);
-
-	function ChannelTool(channelClass) {
-		_classCallCheck(this, ChannelTool);
-
-		_get(Object.getPrototypeOf(ChannelTool.prototype), "constructor", this).call(this);
-		this.channelClass = channelClass;
-		this.startPoint = null;
-		this.currentChannelID = null;
-		this.currentTarget = null;
-
-		this.onMouseDown = function (event) {
-			this.initChannel(event.point);
-			this.showTarget(event.point);
-		};
-		this.onMouseDrag = function (event) {
-			this.updateChannel(event.point);
-			this.showTarget(event.point);
-		};
-		this.onMouseUp = function (event) {
-			this.finishChannel(event.point);
-			this.showTarget(event.point);
-		};
-		this.onMouseMove = function (event) {
-			this.showTarget(event.point);
-		};
-	}
-
-	_createClass(ChannelTool, [{
-		key: "abort",
-		value: function abort() {
-			if (this.currentTarget) {
-				this.currentTarget.remove();
-			}
-			if (this.currentChannelID) {
-				Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-			}
-			Registry.canvasManager.render();
-		}
-	}, {
-		key: "showTarget",
-		value: function showTarget(point) {
-			if (this.currentTarget) {
-				this.currentTarget.remove();
-			}
-			point = ChannelTool.getTarget(point);
-			this.currentTarget = ChannelTool.makeReticle(point);
-		}
-	}, {
-		key: "initChannel",
-		value: function initChannel(point) {
-			this.startPoint = ChannelTool.getTarget(point);
-		}
-
-		//TODO: Re-render only the current channel, to improve perforamnce
-	}, {
-		key: "updateChannel",
-		value: function updateChannel(point) {
-			if (this.currentChannelID) {
-				var target = ChannelTool.getTarget(point);
-				var feat = Registry.currentLayer.getFeature(this.currentChannelID);
-				feat.updateParameter("end", [target.x, target.y]);
-				Registry.canvasManager.render();
-			} else {
-				var newChannel = this.createChannel(this.startPoint, this.startPoint);
-				this.currentChannelID = newChannel.id;
-				Registry.currentLayer.addFeature(newChannel);
-			}
-		}
-	}, {
-		key: "finishChannel",
-		value: function finishChannel(point) {
-			var target = ChannelTool.getTarget(point);
-			if (this.currentChannelID) {
-				if (this.startPoint.x == target.x && this.startPoint.y == target.y) {
-					Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-					//TODO: This will be slow for complex devices, since it re-renders everything
-					Registry.canvasManager.render();
-				}
-			}
-			this.currentChannelID = null;
-			this.startPoint = null;
-		}
-	}, {
-		key: "createChannel",
-		value: function createChannel(start, end) {
-			return new this.channelClass({
-				"start": [start.x, start.y],
-				"end": [end.x, end.y]
+		key: "initControls",
+		value: function initControls() {
+			this.controls = new THREE.OrbitControls(this.camera, this.container);
+			this.controls.damping = 0.2;
+			var reference = this;
+			this.controls.addEventListener('change', function () {
+				reference.render();
 			});
 		}
+	}, {
+		key: "emptyScene",
+		value: function emptyScene() {
+			var scene = new THREE.Scene();
+			scene = new THREE.Scene();
+			//lights
+			var light1 = new THREE.DirectionalLight(0xffffff);
+			light1.position.set(1, 1, 1);
+			scene.add(light1);
 
-		//TODO: Re-establish target selection logic from earlier demo
+			var light2 = new THREE.DirectionalLight(0xffffff);
+			light2.position.set(-1, -1, -1);
+			scene.add(light2);
+
+			var light3 = new THREE.AmbientLight(0x333333);
+			scene.add(light3);
+			return scene;
+		}
+	}, {
+		key: "initScene",
+		value: function initScene() {
+			this.scene = this.emptyScene();
+		}
+	}, {
+		key: "initRenderer",
+		value: function initRenderer() {
+			this.renderer = new THREE.WebGLRenderer({
+				antialias: true
+			});
+			this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+			this.renderer.setClearColor(this.backgroundColor, 1);
+			this.container.appendChild(this.renderer.domElement);
+		}
+	}, {
+		key: "onWindowResize",
+		value: function onWindowResize() {
+			this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
+			this.camera.updateProjectionMatrix();
+			this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+			this.render();
+		}
+	}, {
+		key: "render",
+		value: function render() {
+			this.renderer.render(this.scene, this.camera);
+		}
+	}, {
+		key: "setupCamera",
+		value: function setupCamera(centerX, centerY, deviceHeight, pixelHeight, initialZoom) {
+			this.controls.reset();
+			this.camera.position.z = this.getCameraDistance(deviceHeight, pixelHeight);
+			this.controls.panLeft(-centerX);
+			this.controls.panUp(-centerY + deviceHeight);
+			this.controls.update();
+			this.initialY = this.camera.position.y;
+			this.initialZoom = initialZoom;
+		}
+	}, {
+		key: "getCameraCenterInMicrometers",
+		value: function getCameraCenterInMicrometers() {
+			var position = this.camera.position;
+			return [position.x * 1000, (this.camera.position.y - this.initialY) * 1000];
+		}
+	}, {
+		key: "getZoom",
+		value: function getZoom() {
+			var height = this.json.params.height / 1000;
+			var distance = this.camera.position.z;
+			if (distance < 0) {
+				return this.initialZoom;
+			}
+			var pixels = this.computeHeightInPixels(height, distance);
+			var zoom = pixels / this.json.params.height;
+			return zoom;
+		}
+	}, {
+		key: "getCameraDistance",
+		value: function getCameraDistance(objectHeight, pixelHeight) {
+			var vFOV = this.camera.fov * Math.PI / 180;
+			var ratio = pixelHeight / this.container.clientHeight;
+			var height = objectHeight / ratio;
+			var distance = height / (2 * Math.tan(vFOV / 2));
+			return distance;
+		}
+	}, {
+		key: "computeHeightInPixels",
+		value: function computeHeightInPixels(objectHeight, distance) {
+			var vFOV = this.camera.fov * Math.PI / 180; //
+			var height = 2 * Math.tan(vFOV / 2) * distance; // visible height
+			var ratio = objectHeight / height;
+			var pixels = this.container.clientHeight * ratio;
+			return pixels;
+		}
+	}, {
+		key: "loadDevice",
+		value: function loadDevice(renderedDevice) {
+			this.initScene();
+			this.scene.add(renderedDevice);
+			this.render();
+		}
+	}, {
+		key: "showMockup",
+		value: function showMockup() {
+			if (this.mockup) {
+				this.showingLayer = false;
+				this.loadDevice(this.mockup);
+			}
+		}
+	}, {
+		key: "showLayer",
+		value: function showLayer(index) {
+			if (this.layers && this.json) {
+				var layer = this.layers[index].clone();
+				this.loadDevice(layer);
+				this.showingLayer = true;
+			}
+		}
+	}, {
+		key: "loadJSON",
+		value: function loadJSON(json) {
+			this.json = json;
+			ThreeDeviceRenderer.sanitizeJSON(json);
+			this.mockup = this.renderMockup(json);
+			this.layers = this.renderLayers(json);
+		}
+	}, {
+		key: "renderFeatures",
+		value: function renderFeatures(layer, z_offset) {
+			var renderedFeatures = new THREE.Group();
+			for (var featureID in layer.features) {
+				var feature = layer.features[featureID];
+				renderedFeatures.add(renderFeature(feature, layer, z_offset));
+			}
+			return renderedFeatures;
+		}
+	}, {
+		key: "renderLayers",
+		value: function renderLayers(json) {
+			var renderedLayers = [];
+			for (var i = 0; i < json.layers.length; i++) {
+				renderedLayers.push(this.renderLayer(json, i, true));
+			}
+			return renderedLayers;
+		}
+	}, {
+		key: "renderSlide",
+		value: function renderSlide(width, height, thickness) {
+			var slideMaterial = arguments.length <= 3 || arguments[3] === undefined ? SLIDE_GLASS_MATERIAL : arguments[3];
+			var planeMaterial = arguments.length <= 4 || arguments[4] === undefined ? DEVICE_PLANE_MATERIAL : arguments[4];
+
+			var slideParams = {
+				width: width,
+				height: height,
+				thickness: thickness
+			};
+
+			var planeParams = {
+				width: width,
+				height: height
+			};
+			var slideGeometry = Device3D.Slide(slideParams);
+			var planeGeometry = Device3D.DevicePlane(planeParams);
+			var group = new THREE.Group();
+			var planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+			var slideMesh = new THREE.Mesh(slideGeometry, slideMaterial);
+			group.add(planeMesh);
+			group.add(slideMesh);
+			return group;
+		}
+	}, {
+		key: "renderSlideHolder",
+		value: function renderSlideHolder(width, height, slideThickness, borderWidth, interlock) {
+			var material = arguments.length <= 5 || arguments[5] === undefined ? SLIDE_HOLDER_MATERIAL : arguments[5];
+
+			var holderParams = {
+				width: width,
+				height: height,
+				slideThickness: slideThickness,
+				borderWidth: borderWidth,
+				interlock: interlock
+			};
+
+			var holderGeometry = Device3D.SlideHolder(holderParams);
+			var holderMesh = new THREE.Mesh(holderGeometry, material);
+			return holderMesh;
+		}
+	}, {
+		key: "renderSlideAssembly",
+		value: function renderSlideAssembly(width, height) {
+			var slide = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+			var slideThickness = arguments.length <= 3 || arguments[3] === undefined ? SLIDE_THICKNESS : arguments[3];
+			var borderWidth = arguments.length <= 4 || arguments[4] === undefined ? HOLDER_BORDER_WIDTH : arguments[4];
+			var interlock = arguments.length <= 5 || arguments[5] === undefined ? INTERLOCK_TOLERANCE : arguments[5];
+
+			var assembly = new THREE.Group();
+			var holder = this.renderSlideHolder(width, height, slideThickness, borderWidth, interlock);
+			assembly.add(holder);
+			if (slide) {
+				var _slide = this.renderSlide(width, height, slideThickness);
+				assembly.add(_slide);
+			}
+			assembly.position.z -= slideThickness;
+			return assembly;
+		}
+	}, {
+		key: "renderLayer",
+		value: function renderLayer(json, layerIndex) {
+			var viewOnly = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+			var width = json.params.width;
+			var height = json.params.height;
+			var layer = json.layers[layerIndex];
+			var renderedFeatures = new THREE.Group();
+			var renderedLayer = new THREE.Group();
+			if (viewOnly) renderedFeatures.add(this.renderFeatures(layer, layer.params.z_offset));else renderedFeatures.add(this.renderFeatures(layer, 0));
+			if (layer.params.flip && !viewOnly) this.flipLayer(renderedFeatures, height, layer.params.z_offset);
+			renderedLayer.add(renderedFeatures);
+			var assembly = this.renderSlideAssembly(width, height, viewOnly);
+			renderedLayer.add(assembly);
+			return renderedLayer;
+		}
+	}, {
+		key: "flipLayer",
+		value: function flipLayer(layer, height, z_offset) {
+			layer.rotation.x += Math.PI;
+			layer.position.y += height;
+			layer.position.z += z_offset;
+		}
+	}, {
+		key: "renderMockup",
+		value: function renderMockup(json) {
+			var width = json.params.width;
+			var height = json.params.height;
+			var renderedMockup = new THREE.Group();
+			var layers = json.layers;
+			for (var i = 0; i < layers.length; i++) {
+				var layer = layers[i];
+				var renderedLayer = this.renderFeatures(layer, layer.params.z_offset);
+				renderedMockup.add(renderedLayer);
+			}
+			var renderedHolder = this.renderSlideAssembly(width, height, true);
+			renderedMockup.add(renderedHolder);
+			return renderedMockup;
+		}
+	}, {
+		key: "animate",
+		value: (function (_animate) {
+			function animate() {
+				return _animate.apply(this, arguments);
+			}
+
+			animate.toString = function () {
+				return _animate.toString();
+			};
+
+			return animate;
+		})(function () {
+			requestAnimationFrame(animate);
+			this.controls.update();
+		})
 	}], [{
-		key: "makeReticle",
-		value: function makeReticle(point) {
-			var size = 10 / paper.view.zoom;
-			var ret = paper.Path.Circle(point, size);
-			ret.fillColor = new paper.Color(.5, 0, 1, .5);
-			return ret;
+		key: "sanitizeJSON",
+		value: function sanitizeJSON(json) {
+			ThreeDeviceRenderer.sanitizeParams(json.params);
+			for (var i = 0; i < json.layers.length; i++) {
+				ThreeDeviceRenderer.sanitizeParams(json.layers[i].params, json.params.height);
+				for (var key in json.layers[i].features) {
+					ThreeDeviceRenderer.sanitizeParams(json.layers[i].features[key].params, json.params.height);
+				}
+			}
 		}
 	}, {
-		key: "getTarget",
-		value: function getTarget(point) {
-			return Registry.canvasManager.snapToGrid(point);
-		}
-	}]);
-
-	return ChannelTool;
-})(paper.Tool);
-
-module.exports = ChannelTool;
-
-},{"../../core/features":52,"../../core/registry":65}],72:[function(require,module,exports){
-"use strict";
-
-module.exports.ChannelTool = require("./channelTool");
-module.exports.ValveTool = require("./valveTool");
-module.exports.PanTool = require("./panTool");
-module.exports.SelectTool = require("./SelectTool");
-
-},{"./SelectTool":70,"./channelTool":71,"./panTool":73,"./valveTool":74}],73:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Registry = require("../../core/registry");
-
-var PanTool = (function (_paper$Tool) {
-	_inherits(PanTool, _paper$Tool);
-
-	function PanTool() {
-		_classCallCheck(this, PanTool);
-
-		_get(Object.getPrototypeOf(PanTool.prototype), "constructor", this).call(this);
-		this.startPoint = null;
-
-		this.onMouseDown = function (event) {
-			this.startPoint = event.point;
-		};
-
-		this.onMouseDrag = function (event) {
-			if (this.startPoint) {
-				var delta = event.point.subtract(this.startPoint);
-				Registry.canvasManager.moveCenter(delta);
+		key: "sanitizeParams",
+		value: function sanitizeParams(params, height) {
+			for (var key in params) {
+				if (key == "start" || key == "end" || key == "position") {
+					var pos = params[key];
+					params[key] = [pos[0] / 1000, height - pos[1] / 1000];
+				} else {
+					params[key] = params[key] / 1000;
+				}
 			}
-		};
-		this.onMouseUp = function (event) {
-			this.startPoint = null;
-		};
-	}
-
-	_createClass(PanTool, [{
-		key: "abort",
-		value: function abort() {
-			this.startPoint = null;
 		}
 	}]);
 
-	return PanTool;
-})(paper.Tool);
+	return ThreeDeviceRenderer;
+})();
 
-module.exports = PanTool;
+module.exports = ThreeDeviceRenderer;
 
-},{"../../core/registry":65}],74:[function(require,module,exports){
+},{"../colors":73,"./primitiveSets3D":85,"./threeFeatureRenderer":86,"./threeLib/detector":87,"./threeLib/orbitControls":88,"./threeLib/stlExporter":89}],83:[function(require,module,exports){
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var mergeGeometries = require("../threeUtils").mergeGeometries;
+var CONE_SEGMENTS = 16;
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+function TwoPointRoundedLineFeature(params, flip, z_offset) {
+	var start = params.start;
+	var end = params.end;
+	var width = params.width;
+	var height = params.height;
+	var box = TwoPointRoundedLine({
+		start: start,
+		end: end,
+		width: width,
+		height: height
+	});
+	var matrix = new THREE.Matrix4();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	if (flip) {
+		box.applyMatrix(matrix.makeTranslation(0, 0, -height));
+	}
+	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+	return box;
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function TwoPointRoundedBoxFeature(params, flip, z_offset) {
+	var start = params.start;
+	var end = params.end;
+	var borderWidth = params.borderWidth;
+	var height = params.height;
+	var box = TwoPointRoundedBox({
+		start: start,
+		end: end,
+		borderWidth: borderWidth,
+		height: height
+	});
+	var matrix = new THREE.Matrix4();
+	if (flip) {
+		box.applyMatrix(matrix.makeTranslation(0, 0, -height));
+	}
+	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+	return box;
+}
 
-var Features = require("../../core/features");
-var Registry = require("../../core/registry");
+function Cone(params) {
+	var position = params.position;
+	var radius1 = params.radius1;
+	var radius2 = params.radius2;
+	var height = params.height;
+	var cyl = new THREE.CylinderGeometry(radius2, radius1, height, CONE_SEGMENTS);
+	var matrix = new THREE.Matrix4();
+	cyl.applyMatrix(matrix.makeRotationX(Math.PI / 2));
+	cyl.applyMatrix(matrix.makeTranslation(position[0], position[1], height / 2));
+	return cyl;
+}
 
-var ValveTool = (function (_paper$Tool) {
-	_inherits(ValveTool, _paper$Tool);
+function TwoPointLine(params) {
+	var start = params.start;
+	var end = params.end;
+	var width = params.width;
+	var height = params.height;
+	var dX = end[0] - start[0];
+	var dY = end[1] - start[1];
+	var boxAngle = Math.atan2(dY, dX);
+	var dXPow = Math.pow(dX, 2);
+	var dYPow = Math.pow(dY, 2);
+	var length = Math.sqrt(dXPow + dYPow);
+	var box = new THREE.BoxGeometry(length, width, height);
+	var matrix = new THREE.Matrix4();
+	box.applyMatrix(matrix.makeRotationZ(boxAngle));
+	box.applyMatrix(matrix.makeTranslation(start[0], start[1], height / 2));
+	box.applyMatrix(matrix.makeTranslation(dX / 2, dY / 2, 0));
+	return box;
+}
 
-	function ValveTool(valveClass) {
-		_classCallCheck(this, ValveTool);
+function TwoPointRoundedBox(params) {
+	var start = params.start;
+	var end = params.end;
+	var borderWidth = params.borderWidth;
+	var height = params.height;
+	var startX = undefined;
+	var startY = undefined;
+	var endX = undefined;
+	var endY = undefined;
 
-		_get(Object.getPrototypeOf(ValveTool.prototype), "constructor", this).call(this);
-		this.valveClass = valveClass;
-		this.currentValveID = null;
-		this.onMouseDown = function (event) {
-			var newValve = new this.valveClass({
-				"position": [event.point.x, event.point.y]
-			});
-			this.currentValveID = newValve.id;
-			Registry.currentLayer.addFeature(newValve);
-			Registry.canvasManager.render();
-		};
-		this.onMouseUp = function (event) {
-			this.currentValveID = null;
-		};
+	if (start[0] < end[0]) {
+		startX = start[0];
+		endX = end[0];
+	} else {
+		startX = end[0];
+		endX = start[0];
+	}
+	if (start[1] < end[1]) {
+		startY = start[1];
+		endY = end[1];
+	} else {
+		startY = end[1];
+		endY = start[1];
 	}
 
-	_createClass(ValveTool, [{
-		key: "abort",
-		value: function abort() {
-			if (this.currentValveID) Registry.currentLayer.removeFeatureByID(this.currentValveID);
-			Registry.canvasManager.render();
-		}
-	}]);
+	var w = endX - startX;
+	var h = endY - startY;
+	var bottomLeft = [startX, startY];
+	var bottomRight = [endX, startY];
+	var topLeft = [startX, endY];
+	var topRight = [endX, endY];
 
-	return ValveTool;
-})(paper.Tool);
+	var core = new THREE.BoxGeometry(w, h, height);
+	var matrix = new THREE.Matrix4();
+	core.applyMatrix(matrix.makeTranslation(w / 2, h / 2, height / 2));
+	core.applyMatrix(matrix.makeTranslation(bottomLeft[0], bottomLeft[1], 0));
+	var left = TwoPointRoundedLine({
+		start: bottomLeft,
+		end: topLeft,
+		width: borderWidth,
+		height: height
+	});
+	var top = TwoPointRoundedLine({
+		start: topLeft,
+		end: topRight,
+		width: borderWidth,
+		height: height
+	});
+	var right = TwoPointRoundedLine({
+		start: topRight,
+		end: bottomRight,
+		width: borderWidth,
+		height: height
+	});
+	var down = TwoPointRoundedLine({
+		start: bottomRight,
+		end: bottomLeft,
+		width: borderWidth,
+		height: height
+	});
+	var geom = mergeGeometries([core, left, top, right, down]);
+	return geom;
+}
 
-module.exports = ValveTool;
+function ConeFeature(params, flip, z_offset) {
+	var position = params.position;
+	var radius1 = params.radius1;
+	var radius2 = params.radius2;
+	var height = params.height;
+	var cone = Cone({
+		position: position,
+		radius1: radius1,
+		radius2: radius2,
+		height: height
+	});
+	var matrix = new THREE.Matrix4();
+	if (flip) {
+		cone.applyMatrix(matrix.makeRotationX(Math.PI));
+		cone.applyMatrix(matrix.makeTranslation(0, position[1] * 2, 0));
+	}
+	cone.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+	return cone;
+}
 
-},{"../../core/features":52,"../../core/registry":65}],75:[function(require,module,exports){
+function TwoPointRoundedLine(params) {
+	var start = params.start;
+	var end = params.end;
+	var width = params.width;
+	var height = params.height;
+	var box = TwoPointLine({
+		start: start,
+		end: end,
+		width: width,
+		height: height
+	});
+	var cone1 = Cone({
+		position: start,
+		radius1: width / 2,
+		radius2: width / 2,
+		height: height
+	});
+	var cone2 = Cone({
+		position: end,
+		radius1: width / 2,
+		radius2: width / 2,
+		height: height
+	});
+	var merged = mergeGeometries([box, cone1, cone2]);
+	return merged;
+}
+
+module.exports.TwoPointRoundedLine = TwoPointRoundedLine;
+module.exports.TwoPointRoundedBox = TwoPointRoundedBox;
+module.exports.TwoPointRoundedBoxFeature = TwoPointRoundedBoxFeature;
+module.exports.TwoPointRoundedLineFeature = TwoPointRoundedLineFeature;
+module.exports.TwoPointLine = TwoPointLine;
+module.exports.ConeFeature = ConeFeature;
+
+},{"../threeUtils":90}],84:[function(require,module,exports){
+"use strict";
+
+var Basic3D = require("./basic3D");
+var ThreeUtils = require("../threeUtils");
+var TwoPointRoundedLine = Basic3D.TwoPointRoundedLine;
+var mergeGeometries = ThreeUtils.mergeGeometries;
+
+var HOLDER_BORDER_WIDTH = .41;
+var INTERLOCK_TOLERANCE = .125;
+var SLIDE_THICKNESS = 1.2;
+
+function Slide(params) {
+	var width = params.width;
+	var height = params.height;
+	var thickness = params.thickness;
+	var slide = new THREE.BoxGeometry(width, height, thickness);
+	var matrix = new THREE.Matrix4();
+	slide.applyMatrix(matrix.makeTranslation(width / 2, height / 2, thickness / 2));
+	return slide;
+}
+
+function SlideHolder(params) {
+	var width = params.width;
+	var height = params.height;
+	var slideThickness = params.slideThickness;
+	var borderWidth = params.borderWidth;
+	var interlock = params.interlock;
+	var w = borderWidth;
+	var i = interlock;
+	var h = slideThickness;
+	var bottomLeft = [-w / 2 - i, -w / 2 - i];
+	var topLeft = [-w / 2 - i, height + w / 2 + i];
+	var topRight = [width + w / 2 + i, height + w / 2 + i];
+	var bottomRight = [width + w / 2 + i, -w / 2 - i];
+	var leftBar = TwoPointRoundedLine({
+		start: bottomLeft,
+		end: topLeft,
+		width: w,
+		height: h
+	});
+	var topBar = TwoPointRoundedLine({
+		start: topLeft,
+		end: topRight,
+		width: w,
+		height: h
+	});
+
+	var rightBar = TwoPointRoundedLine({
+		start: topRight,
+		end: bottomRight,
+		width: w,
+		height: h
+	});
+
+	var bottomBar = TwoPointRoundedLine({
+		start: bottomRight,
+		end: bottomLeft,
+		width: w,
+		height: h
+	});
+
+	var border = mergeGeometries([leftBar, topBar, rightBar, bottomBar]);
+	return border;
+}
+
+function DevicePlane(params) {
+	var width = params.width;
+	var height = params.height;
+	var plane = new THREE.PlaneBufferGeometry(width, height);
+	var matrix = new THREE.Matrix4();
+	plane.applyMatrix(matrix.makeTranslation(width / 2, height / 2, 0));
+	return plane;
+}
+
+module.exports.Slide = Slide;
+module.exports.DevicePlane = DevicePlane;
+module.exports.SlideHolder = SlideHolder;
+
+},{"../threeUtils":90,"./basic3D":83}],85:[function(require,module,exports){
+"use strict";
+
+module.exports.Basic3D = require("./basic3D");
+module.exports.Device3D = require("./device3D");
+
+},{"./basic3D":83,"./device3D":84}],86:[function(require,module,exports){
+"use strict";
+
+var PrimitiveSets3D = require("./primitiveSets3D");
+var FeatureSets = require("../../featureSets");
+
+var layerMaterials = {
+	"red": new THREE.MeshLambertMaterial({
+		color: 0xF44336,
+		shading: THREE.SmoothShading
+	}),
+	"indigo": new THREE.MeshLambertMaterial({
+		color: 0x3F51B5,
+		shading: THREE.SmoothShading
+	}),
+	"purple": new THREE.MeshLambertMaterial({
+		color: 0x673AB7,
+		shading: THREE.SmoothShading
+	}),
+	"grey": new THREE.MeshLambertMaterial({
+		color: 0x9E9E9E,
+		shading: THREE.SmoothShading
+	})
+};
+
+function getFeatureMaterial(layer) {
+	var colorString = layer.color;
+	if (colorString && layerMaterials.hasOwnProperty(colorString)) {
+		return layerMaterials[colorString];
+	} else return layerMaterials["grey"];
+}
+
+function makeParams(feature, renderInfo) {
+	var params = {};
+	var featureParams = renderInfo.featureParams;
+	for (var key in featureParams) {
+		var target = featureParams[key];
+		if (target == undefined || !feature.params.hasOwnProperty(target)) throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
+		var value = feature.params[target];
+		params[key] = value;
+	}
+	return params;
+}
+
+function getRenderInfo(type, set) {
+	return FeatureSets.getRender3D(type, set);
+}
+
+function renderFeature(feature, layer, z_offset) {
+	var flip = layer.params.flip;
+	var type = feature.type;
+	var set = feature.set;
+	var renderInfo = getRenderInfo(type, set);
+	var renderingSet = renderInfo.featurePrimitiveSet;
+	var renderingPrimitive = renderInfo.featurePrimitive;
+	var primSet = PrimitiveSets3D[renderingSet];
+	var targetFunction = PrimitiveSets3D[renderingSet][renderingPrimitive];
+	var params = makeParams(feature, renderInfo);
+	var geom = targetFunction(params, flip, z_offset);
+	var material = getFeatureMaterial(layer);
+	var renderedFeature = new THREE.Mesh(geom, material);
+	return renderedFeature;
+}
+
+module.exports.renderFeature = renderFeature;
+
+},{"../../featureSets":66,"./primitiveSets3D":85}],87:[function(require,module,exports){
 /**
  * @author alteredq / http://alteredqualia.com/
  * @author mr.doob / http://mrdoob.com/
@@ -13411,7 +15337,7 @@ if (typeof module === 'object') {
 		module.exports = Detector;
 }
 
-},{}],76:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /**
  * @author qiao / https://github.com/qiao
  * @author mrdoob / http://mrdoob.com
@@ -14081,7 +16007,7 @@ THREE.OrbitControls = function (object, domElement) {
 THREE.OrbitControls.prototype = Object.create(THREE.EventDispatcher.prototype);
 THREE.OrbitControls.prototype.constructor = THREE.OrbitControls;
 
-},{}],77:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 /**
  * Based on https://github.com/mrdoob/three.js/blob/a72347515fa34e892f7a9bfa66a34fdc0df55954/examples/js/exporters/STLExporter.js
  * Tested on r68 and r70
@@ -14261,590 +16187,7 @@ module.exports.saveSTL = saveSTL;
 module.exports.exportString = exportString;
 module.exports.getSTLString = getSTLString;
 
-},{}],78:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var OrbitControls = require("./OrbitControls");
-var STLExporter = require("./STLExporter");
-var ThreeFeatures = require("./threeFeatures");
-var Detector = require("./Detector");
-var getSTLString = STLExporter.getSTLString;
-
-var ThreeDeviceRenderer = (function () {
-	function ThreeDeviceRenderer(renderContainer) {
-		_classCallCheck(this, ThreeDeviceRenderer);
-
-		this.container = renderContainer;
-		this.camera;
-		this.controls;
-		this.scene;
-		this.renderer;
-		this.backgroundColor = 0xEEEEEE;
-		this.mockup = null;
-		this.layers = null;
-		this.json = null;
-		this.initialY = 0;
-		this.showingLayer = false;
-
-		this.init();
-		this.render();
-	}
-
-	_createClass(ThreeDeviceRenderer, [{
-		key: "init",
-		value: function init() {
-			if (!Detector.webgl) Detector.addGetWebGLMessage();
-			this.initCamera();
-			this.initControls();
-			this.initScene();
-			this.initRenderer();
-			var reference = this;
-			window.addEventListener('resize', function () {
-				reference.onWindowResize();
-			}, false);
-		}
-	}, {
-		key: "toggleLayerView",
-		value: function toggleLayerView(index) {
-			if (this.showingLayer) this.showMockup();else this.showLayer(index);
-		}
-	}, {
-		key: "getLayerSTL",
-		value: function getLayerSTL(json, index) {
-			var scene = this.emptyScene();
-			var layer = json.layers[index];
-			scene.add(this.renderLayer(json, index, false));
-			var string = getSTLString(scene);
-			return getSTLString(scene);
-		}
-	}, {
-		key: "getLayerSTLStrings",
-		value: function getLayerSTLStrings(json) {
-			var output = [];
-			for (var i = 0; i < json.layers.length; i++) {
-				output.push(this.getLayerSTL(json, i));
-			}
-			return output;
-		}
-	}, {
-		key: "getSTL",
-		value: function getSTL(json) {
-			ThreeDeviceRenderer.sanitizeJSON(json);
-			return this.getLayerSTLStrings(json);
-		}
-	}, {
-		key: "initCamera",
-		value: function initCamera() {
-			this.camera = new THREE.PerspectiveCamera(60, this.container.clientWidth / this.container.clientHeight, 1, 1000);
-			this.camera.position.z = 100;
-		}
-	}, {
-		key: "initControls",
-		value: function initControls() {
-			this.controls = new THREE.OrbitControls(this.camera, this.container);
-			this.controls.damping = 0.2;
-			var reference = this;
-			this.controls.addEventListener('change', function () {
-				reference.render();
-			});
-		}
-	}, {
-		key: "emptyScene",
-		value: function emptyScene() {
-			var scene = new THREE.Scene();
-			scene = new THREE.Scene();
-			//lights
-			var light1 = new THREE.DirectionalLight(0xffffff);
-			light1.position.set(1, 1, 1);
-			scene.add(light1);
-
-			var light2 = new THREE.DirectionalLight(0xffffff);
-			light2.position.set(-1, -1, -1);
-			scene.add(light2);
-
-			var light3 = new THREE.AmbientLight(0x333333);
-			scene.add(light3);
-			return scene;
-		}
-	}, {
-		key: "initScene",
-		value: function initScene() {
-			this.scene = this.emptyScene();
-		}
-	}, {
-		key: "initRenderer",
-		value: function initRenderer() {
-			this.renderer = new THREE.WebGLRenderer({
-				antialias: true
-			});
-			this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-			this.renderer.setClearColor(this.backgroundColor, 1);
-			this.container.appendChild(this.renderer.domElement);
-		}
-	}, {
-		key: "onWindowResize",
-		value: function onWindowResize() {
-			this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
-			this.camera.updateProjectionMatrix();
-			this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-			this.render();
-		}
-	}, {
-		key: "render",
-		value: function render() {
-			this.renderer.render(this.scene, this.camera);
-		}
-	}, {
-		key: "setupCamera",
-		value: function setupCamera(centerX, centerY, deviceHeight, pixelHeight, initialZoom) {
-			this.controls.reset();
-			this.camera.position.z = this.getCameraDistance(deviceHeight, pixelHeight);
-			this.controls.panLeft(-centerX);
-			this.controls.panUp(-centerY + deviceHeight);
-			this.controls.update();
-			this.initialY = this.camera.position.y;
-			this.initialZoom = initialZoom;
-		}
-	}, {
-		key: "getCameraCenterInMicrometers",
-		value: function getCameraCenterInMicrometers() {
-			var position = this.camera.position;
-			return [position.x * 1000, (this.camera.position.y - this.initialY) * 1000];
-		}
-	}, {
-		key: "getZoom",
-		value: function getZoom() {
-			var height = this.json.params.height / 1000;
-			var distance = this.camera.position.z;
-			if (distance < 0) {
-				return this.initialZoom;
-			}
-			var pixels = this.computeHeightInPixels(height, distance);
-			var zoom = pixels / this.json.params.height;
-			return zoom;
-		}
-	}, {
-		key: "getCameraDistance",
-		value: function getCameraDistance(objectHeight, pixelHeight) {
-			var vFOV = this.camera.fov * Math.PI / 180;
-			var ratio = pixelHeight / this.container.clientHeight;
-			var height = objectHeight / ratio;
-			var distance = height / (2 * Math.tan(vFOV / 2));
-			return distance;
-		}
-	}, {
-		key: "computeHeightInPixels",
-		value: function computeHeightInPixels(objectHeight, distance) {
-			var vFOV = this.camera.fov * Math.PI / 180; //
-			var height = 2 * Math.tan(vFOV / 2) * distance; // visible height
-			var ratio = objectHeight / height;
-			var pixels = this.container.clientHeight * ratio;
-			return pixels;
-		}
-	}, {
-		key: "loadDevice",
-		value: function loadDevice(renderedDevice) {
-			this.initScene();
-			this.scene.add(renderedDevice);
-			this.render();
-		}
-	}, {
-		key: "showMockup",
-		value: function showMockup() {
-			if (this.mockup) {
-				this.showingLayer = false;
-				this.loadDevice(this.mockup);
-			}
-		}
-	}, {
-		key: "showLayer",
-		value: function showLayer(index) {
-			if (this.layers && this.json) {
-				var layer = this.layers[index].clone();
-				this.loadDevice(layer);
-				this.showingLayer = true;
-			}
-		}
-	}, {
-		key: "loadJSON",
-		value: function loadJSON(json) {
-			this.json = json;
-			ThreeDeviceRenderer.sanitizeJSON(json);
-			this.mockup = this.renderMockup(json);
-			this.layers = this.renderLayers(json);
-		}
-	}, {
-		key: "renderFeatures",
-		value: function renderFeatures(layer, z_offset) {
-			var renderedFeatures = new THREE.Group();
-			for (var featureID in layer.features) {
-				var feature = layer.features[featureID];
-				renderedFeatures.add(ThreeFeatures.renderFeature(feature, layer, z_offset));
-			}
-			return renderedFeatures;
-		}
-	}, {
-		key: "renderLayers",
-		value: function renderLayers(json) {
-			var renderedLayers = [];
-			for (var i = 0; i < json.layers.length; i++) {
-				renderedLayers.push(this.renderLayer(json, i, true));
-			}
-			return renderedLayers;
-		}
-	}, {
-		key: "renderLayer",
-		value: function renderLayer(json, layerIndex) {
-			var viewOnly = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-
-			var width = json.params.width;
-			var height = json.params.height;
-			var layer = json.layers[layerIndex];
-			var renderedFeatures = new THREE.Group();
-			var renderedLayer = new THREE.Group();
-			if (viewOnly) renderedFeatures.add(this.renderFeatures(layer, layer.params.z_offset));else renderedFeatures.add(this.renderFeatures(layer, 0));
-			if (layer.params.flip && !viewOnly) this.flipLayer(renderedFeatures, height, layer.params.z_offset);
-			renderedLayer.add(renderedFeatures);
-			renderedLayer.add(ThreeFeatures.SlideHolder(width, height, viewOnly));
-			return renderedLayer;
-		}
-	}, {
-		key: "flipLayer",
-		value: function flipLayer(layer, height, z_offset) {
-			layer.rotation.x += Math.PI;
-			layer.position.y += height;
-			layer.position.z += z_offset;
-		}
-	}, {
-		key: "renderMockup",
-		value: function renderMockup(json) {
-			var renderedMockup = new THREE.Group();
-			var layers = json.layers;
-			for (var i = 0; i < layers.length; i++) {
-				var layer = layers[i];
-				var renderedLayer = this.renderFeatures(layer, layer.params.z_offset);
-				renderedMockup.add(renderedLayer);
-			}
-			var renderedHolder = ThreeFeatures.SlideHolder(json.params.width, json.params.height, true);
-			renderedMockup.add(renderedHolder);
-			return renderedMockup;
-		}
-	}, {
-		key: "animate",
-		value: (function (_animate) {
-			function animate() {
-				return _animate.apply(this, arguments);
-			}
-
-			animate.toString = function () {
-				return _animate.toString();
-			};
-
-			return animate;
-		})(function () {
-			requestAnimationFrame(animate);
-			this.controls.update();
-		})
-	}], [{
-		key: "sanitizeJSON",
-		value: function sanitizeJSON(json) {
-			ThreeDeviceRenderer.sanitizeParams(json.params);
-			for (var i = 0; i < json.layers.length; i++) {
-				ThreeDeviceRenderer.sanitizeParams(json.layers[i].params, json.params.height);
-				for (var key in json.layers[i].features) {
-					ThreeDeviceRenderer.sanitizeParams(json.layers[i].features[key].params, json.params.height);
-				}
-			}
-		}
-	}, {
-		key: "sanitizeParams",
-		value: function sanitizeParams(params, height) {
-			for (var key in params) {
-				if (key == "start" || key == "end" || key == "position") {
-					var pos = params[key];
-					params[key] = [pos[0] / 1000, height - pos[1] / 1000];
-				} else {
-					params[key] = params[key] / 1000;
-				}
-			}
-		}
-	}]);
-
-	return ThreeDeviceRenderer;
-})();
-
-module.exports = ThreeDeviceRenderer;
-
-},{"./Detector":75,"./OrbitControls":76,"./STLExporter":77,"./threeFeatures":79}],79:[function(require,module,exports){
-"use strict";
-
-var ThreeUtils = require("./threeUtils");
-
-var mergeGeometries = ThreeUtils.mergeGeometries;
-
-var INTERLOCK_TOLERANCE = .125;
-var HOLDER_BORDER_WIDTH = .41;
-var SLIDE_Z_OFFSET = 1.20;
-var HOLDER_SKIRT_WIDTH = .8;
-var HOLDER_SKIRT_HEIGHT = .2;
-var CORNER_DISTANCE = 10;
-var SLIDE_THICKNESS = 1.20;
-
-var defaultMaterial = new THREE.MeshBasicMaterial();
-var whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, shading: THREE.FlatShading });
-var slideMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF, opacity: 0.0, transparent: true });
-slideMaterial.specular = 0xFFFFFF;
-var holderMaterial = new THREE.MeshLambertMaterial({ color: 0x9E9E9E, shading: THREE.FlatShading });
-
-var layerMaterials = {
-	"red": new THREE.MeshLambertMaterial({ color: 0xF44336, shading: THREE.SmoothShading }),
-	"indigo": new THREE.MeshLambertMaterial({ color: 0x3F51B5, shading: THREE.SmoothShading }),
-	"purple": new THREE.MeshLambertMaterial({ color: 0x673AB7, shading: THREE.SmoothShading }),
-	"grey": new THREE.MeshLambertMaterial({ color: 0x9E9E9E, shading: THREE.SmoothShading })
-};
-
-function getFeatureMaterial(feature, layer) {
-	var colorString = layer.color;
-	if (colorString && layerMaterials.hasOwnProperty(colorString)) {
-		return layerMaterials[colorString];
-	} else return layerMaterials["grey"];
-}
-
-function DevicePlane(width, height) {
-	var plane = new THREE.PlaneBufferGeometry(width, height);
-	var material = whiteMaterial;
-	var mesh = new THREE.Mesh(plane, material);
-	var matrix = new THREE.Matrix4();
-	mesh.geometry.applyMatrix(matrix.makeTranslation(width / 2, height / 2, 0));
-	return mesh;
-}
-
-function Via(via, layer, z_offset) {
-	var radius1 = via.params.radius1;
-	var radius2 = via.params.radius2;
-	var height = via.params.height;
-	var position = via.params.position;
-	var z_offset = layer.params.z_offset;
-	var flip = layer.params.flip;
-	var geom = ConeFeature(position, radius1, radius2, height, flip, z_offset);
-	var material = getFeatureMaterial(via, layer);
-	var mesh = new THREE.Mesh(geom, material);
-	return mesh;
-}
-
-function Port(port, layer, z_offset) {
-	var radius1 = port.params.radius1;
-	var radius2 = port.params.radius2;
-	var height = port.params.height;
-	var position = port.params.position;
-	var z_offset = layer.params.z_offset;
-	var flip = layer.params.flip;
-	var geom = ConeFeature(position, radius1, radius2, height, flip, z_offset);
-	var material = getFeatureMaterial(port, layer);
-	var mesh = new THREE.Mesh(geom, material);
-	return mesh;
-}
-
-function CircleValve(circleValve, layer, z_offset) {
-	var radius1 = circleValve.params.radius1;
-	var radius2 = circleValve.params.radius2;
-	var height = circleValve.params.height;
-	var position = circleValve.params.position;
-	var z_offset = layer.params.z_offset;
-	var flip = layer.params.flip;
-	var geom = ConeFeature(position, radius1, radius2, height, flip, z_offset);
-	var material = getFeatureMaterial(circleValve, layer);
-	var mesh = new THREE.Mesh(geom, material);
-	return mesh;
-}
-
-function ConeFeature(position, radius1, radius2, height, flip, z_offset) {
-	var cone = Cone(position, radius1, radius2, height);
-	var matrix = new THREE.Matrix4();
-	if (flip) {
-		cone.applyMatrix(matrix.makeRotationX(Math.PI));
-		cone.applyMatrix(matrix.makeTranslation(0, position[1] * 2, 0));
-	}
-	cone.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
-	return cone;
-}
-
-function TwoPointBoxFeature(start, end, width, height, flip, z_offset) {
-	var box = TwoPointRoundedBox(start, end, width, height);
-	var matrix = new THREE.Matrix4();
-
-	if (flip) {
-		box.applyMatrix(matrix.makeTranslation(0, 0, -height));
-	}
-	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
-	return box;
-}
-
-function ChamberFeature(start, end, borderWidth, height, flip, z_offset) {
-	var box = RoundedChamber(start, end, borderWidth, height);
-	var matrix = new THREE.Matrix4();
-	if (flip) {
-		box.applyMatrix(matrix.makeTranslation(0, 0, -height));
-	}
-	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
-	return box;
-}
-
-function Chamber(chamber, layer, z_offset) {
-
-	var start = chamber.params.start;
-	var end = chamber.params.end;
-	var width = chamber.params.borderWidth;
-	var height = chamber.params.height;
-	var flip = layer.params.flip;
-	var z_offset = layer.params.z_offset;
-
-	var geom = ChamberFeature(start, end, width, height, flip, z_offset);
-	var material = getFeatureMaterial(chamber, layer);
-	var mesh = new THREE.Mesh(geom, material);
-
-	return mesh;
-}
-
-function Channel(channel, layer, z_offset) {
-	var start = channel.params.start;
-	var end = channel.params.end;
-	var width = channel.params.width;
-	var height = channel.params.height;
-	var flip = layer.params.flip;
-	var z_offset = layer.params.z_offset;
-	var geom = TwoPointBoxFeature(start, end, width, height, flip, z_offset);
-	var material = getFeatureMaterial(channel, layer);
-	var mesh = new THREE.Mesh(geom, material);
-	return mesh;
-}
-
-function Cone(position, radius1, radius2, height) {
-	var cyl = new THREE.CylinderGeometry(radius2, radius1, height, 16);
-	var matrix = new THREE.Matrix4();
-	cyl.applyMatrix(matrix.makeRotationX(Math.PI / 2));
-	cyl.applyMatrix(matrix.makeTranslation(position[0], position[1], height / 2));
-	return cyl;
-}
-
-function TwoPointBox(start, end, width, height) {
-	var dX = end[0] - start[0];
-	var dY = end[1] - start[1];
-	var boxAngle = Math.atan2(dY, dX);
-	var dXPow = Math.pow(dX, 2);
-	var dYPow = Math.pow(dY, 2);
-	var length = Math.sqrt(dXPow + dYPow);
-	var material = defaultMaterial;
-	var box = new THREE.BoxGeometry(length, width, height);
-	var matrix = new THREE.Matrix4();
-	box.applyMatrix(matrix.makeRotationZ(boxAngle));
-	box.applyMatrix(matrix.makeTranslation(start[0], start[1], height / 2));
-	box.applyMatrix(matrix.makeTranslation(dX / 2, dY / 2, 0));
-	return box;
-}
-
-function Slide(width, height, thickness) {
-	var group = new THREE.Group();
-	var slide = new THREE.BoxGeometry(width, height, thickness);
-	var material = slideMaterial;
-	var matrix = new THREE.Matrix4();
-	slide.applyMatrix(matrix.makeTranslation(width / 2, height / 2, -thickness / 2));
-	var mesh = new THREE.Mesh(slide, material);
-	group.add(mesh);
-	var bottomPlane = new DevicePlane(width, height);
-	bottomPlane.position.z -= thickness;
-	group.add(bottomPlane);
-	return group;
-}
-
-function SlideHolder(width, height, slide) {
-	var renderedHolder = new THREE.Group();
-	var w = HOLDER_BORDER_WIDTH = .41;
-	var i = INTERLOCK_TOLERANCE;
-	var h = SLIDE_THICKNESS;
-	var bottomLeft = [-w / 2 - i, -w / 2 - i];
-	var topLeft = [-w / 2 - i, height + w / 2 + i];
-	var topRight = [width + w / 2 + i, height + w / 2 + i];
-	var bottomRight = [width + w / 2 + i, -w / 2 - i];
-	var leftBar = TwoPointRoundedBox(bottomLeft, topLeft, w, h);
-	var topBar = TwoPointRoundedBox(topLeft, topRight, w, h);
-	var rightBar = TwoPointRoundedBox(topRight, bottomRight, w, h);
-	var bottomBar = TwoPointRoundedBox(bottomRight, bottomLeft, w, h);
-	var border = mergeGeometries([leftBar, topBar, rightBar, bottomBar]);
-	var borderMesh = new THREE.Mesh(border, holderMaterial);
-	borderMesh.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -h));
-	renderedHolder.add(borderMesh);
-	if (slide) {
-		renderedHolder.add(Slide(width, height, h));
-		return renderedHolder;
-	} else return borderMesh;
-}
-
-function RoundedChamber(start, end, borderWidth, height) {
-	var startX = undefined;
-	var startY = undefined;
-	var endX = undefined;
-	var endY = undefined;
-
-	if (start[0] < end[0]) {
-		startX = start[0];
-		endX = end[0];
-	} else {
-		startX = end[0];
-		endX = start[0];
-	}
-	if (start[1] < end[1]) {
-		startY = start[1];
-		endY = end[1];
-	} else {
-		startY = end[1];
-		endY = start[1];
-	}
-
-	var w = endX - startX;
-	var h = endY - startY;
-	var bottomLeft = [startX, startY];
-	var bottomRight = [endX, startY];
-	var topLeft = [startX, endY];
-	var topRight = [endX, endY];
-
-	var core = new THREE.BoxGeometry(w, h, height);
-	var matrix = new THREE.Matrix4();
-	core.applyMatrix(matrix.makeTranslation(w / 2, h / 2, height / 2));
-	core.applyMatrix(matrix.makeTranslation(bottomLeft[0], bottomLeft[1], 0));
-	var left = new TwoPointRoundedBox(bottomLeft, topLeft, borderWidth, height);
-	var top = new TwoPointRoundedBox(topLeft, topRight, borderWidth, height);
-	var right = new TwoPointRoundedBox(topRight, bottomRight, borderWidth, height);
-	var down = new TwoPointRoundedBox(bottomRight, bottomLeft, borderWidth, height);
-	var geom = mergeGeometries([core, left, top, right, down]);
-	return geom;
-}
-
-function TwoPointRoundedBox(start, end, width, height) {
-	var box = TwoPointBox(start, end, width, height);
-	var cone1 = Cone(start, width / 2, width / 2, height);
-	var cone2 = Cone(end, width / 2, width / 2, height);
-	var merged = mergeGeometries([box, cone1, cone2]);
-	return merged;
-}
-
-function renderFeature(feature, layer, z_offset) {
-	var type = feature.type;
-	var renderedFeature;
-
-	if (type == "Channel") renderedFeature = Channel(feature, layer, z_offset);else if (type == "CircleValve") renderedFeature = CircleValve(feature, layer, z_offset);else if (type == "Via") renderedFeature = Via(feature, layer, z_offset);else if (type == "Port") renderedFeature = Port(feature, layer, z_offset);else if (type == "Chamber") renderedFeature = Chamber(feature, layer, z_offset);else console.log("Feature type not recognized: " + type);
-
-	return renderedFeature;
-}
-
-module.exports.renderFeature = renderFeature;
-module.exports.SlideHolder = SlideHolder;
-
-},{"./threeUtils":80}],80:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 "use strict";
 
 function mergeGeometries(geometries) {
@@ -14857,1777 +16200,7 @@ function mergeGeometries(geometries) {
 
 module.exports.mergeGeometries = mergeGeometries;
 
-},{}],81:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var SimpleQueue = (function () {
-	function SimpleQueue(func, timeout) {
-		var report = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-
-		_classCallCheck(this, SimpleQueue);
-
-		this.timeout = timeout;
-		this.func = func;
-		this.waiting = false;
-		this.queued = true;
-		this.counter = 0;
-		this.report = report;
-	}
-
-	_createClass(SimpleQueue, [{
-		key: "run",
-		value: function run() {
-			if (this.waiting) {
-				this.counter++;
-				if (!this.queued) {
-					this.queued = true;
-				}
-			} else {
-				if (this.report) console.log("Waited " + this.counter + " times.");
-				this.func();
-				this.startTimer();
-				this.counter = 0;
-			}
-		}
-	}, {
-		key: "endTimer",
-		value: function endTimer() {
-			this.waiting = false;
-			if (this.queued) {
-				this.queued = false;
-				this.run();
-			}
-		}
-	}, {
-		key: "startTimer",
-		value: function startTimer() {
-			var ref = this;
-			this.waiting = true;
-			window.setTimeout(function () {
-				ref.endTimer();
-			}, this.timeout);
-		}
-	}]);
-
-	return SimpleQueue;
-})();
-
-module.exports = SimpleQueue;
-
-},{}],82:[function(require,module,exports){
-'use strict';
-
-var removeClass = function removeClass(el, className) {
-  if (el.classList) el.classList.remove(className);else el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-};
-
-var addClass = function addClass(el, className) {
-  if (el.classList) el.classList.add(className);else el.className += ' ' + className;
-};
-
-// From http://stackoverflow.com/questions/8869403/drag-drop-json-into-chrome
-function DnDFileController(selector, onDropCallback) {
-  var el_ = document.querySelector(selector);
-
-  this.dragenter = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    el_.classList.add('dropping');
-  };
-
-  this.dragover = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  this.dragleave = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    //el_.classList.remove('dropping');
-  };
-
-  this.drop = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    el_.classList.remove('dropping');
-
-    onDropCallback(e.dataTransfer.files, e);
-  };
-
-  el_.addEventListener('dragenter', this.dragenter, false);
-  el_.addEventListener('dragover', this.dragover, false);
-  el_.addEventListener('dragleave', this.dragleave, false);
-  el_.addEventListener('drop', this.drop, false);
-};
-
-module.exports.removeClass = removeClass;
-module.exports.addClass = addClass;
-module.exports.DnDFileController = DnDFileController;
-
-},{}],83:[function(require,module,exports){
-"use strict";
-
-function isFloat(n) {
-    return n === +n && n !== (n | 0);
-}
-
-function isInteger(n) {
-    return n === +n && n === (n | 0);
-}
-
-function isFloatOrInt(n) {
-    return isFloat(n) || isInteger(n);
-}
-
-module.exports.isFloat = isFloat;
-module.exports.isInteger = isInteger;
-module.exports.isFloatOrInt = isFloatOrInt;
-
-},{}],84:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var SimpleQueue = (function () {
-	function SimpleQueue(func, timeout) {
-		var report = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-
-		_classCallCheck(this, SimpleQueue);
-
-		this.timeout = timeout;
-		this.func = func;
-		this.waiting = false;
-		this.queued = true;
-		this.counter = 0;
-		this.report = report;
-	}
-
-	_createClass(SimpleQueue, [{
-		key: "run",
-		value: function run() {
-			if (this.waiting) {
-				this.counter++;
-				if (!this.queued) {
-					this.queued = true;
-				}
-			} else {
-				if (this.report) console.log("Waited " + this.counter + " times.");
-				this.func();
-				this.startTimer();
-				this.counter = 0;
-			}
-		}
-	}, {
-		key: "endTimer",
-		value: function endTimer() {
-			this.waiting = false;
-			if (this.queued) {
-				this.queued = false;
-				this.run();
-			}
-		}
-	}, {
-		key: "startTimer",
-		value: function startTimer() {
-			var ref = this;
-			this.waiting = true;
-			window.setTimeout(function () {
-				ref.endTimer();
-			}, this.timeout);
-		}
-	}]);
-
-	return SimpleQueue;
-})();
-
-module.exports = SimpleQueue;
-
-},{}],85:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Registry = require("../core/registry");
-
-var PanAndZoom = (function () {
-    function PanAndZoom(paperView) {
-        _classCallCheck(this, PanAndZoom);
-
-        this.view = paperView;
-    }
-
-    _createClass(PanAndZoom, [{
-        key: "stableZoom",
-        value: function stableZoom(zoom, position) {
-            var newZoom = zoom;
-            var p = position;
-            var c = this.view.getCenter();
-            var beta = this.view.getZoom() / newZoom;
-            var pc = p.subtract(c);
-            var a = p.subtract(pc.multiply(beta)).subtract(c);
-            this.view.setCenter(this.view.getCenter().add(a));
-            this.view.setZoom(newZoom);
-        }
-    }, {
-        key: "adjustZoom",
-        value: function adjustZoom(delta, position) {
-            this.stableZoom(this.calcZoom(delta), position);
-        }
-
-        // Stable pan and zoom modified from: http://matthiasberth.com/articles/stable-zoom-and-pan-in-paperjs/
-
-    }, {
-        key: "calcZoom",
-        value: function calcZoom(delta) {
-            var multiplier = arguments.length <= 1 || arguments[1] === undefined ? 1.177827941003 : arguments[1];
-
-            if (delta < 0) return this.view.getZoom() * multiplier;else if (delta > 0) return this.view.getZoom() / multiplier;else return this.view.getZoom();
-        }
-    }, {
-        key: "moveCenter",
-        value: function moveCenter(delta) {
-            this.view.setCenter(this.calcCenter(delta));
-        }
-    }, {
-        key: "calcCenter",
-        value: function calcCenter(delta) {
-            return this.view.getCenter().subtract(delta);
-        }
-    }]);
-
-    return PanAndZoom;
-})();
-
-module.exports = PanAndZoom;
-
-},{"../core/registry":65}],86:[function(require,module,exports){
-"use strict";
-
-var Features = require("../core/features");
-var Feature = require("../core/feature");
-//Colors taken from: http://www.google.ch/design/spec/style/color.html
-module.exports.RED_500 = "#F44336";
-module.exports.INDIGO_500 = "#3F51B5";
-module.exports.GREEN_500 = "#4CAF50";
-module.exports.GREEN_100 = "#C8E6C9";
-module.exports.GREEN_A200 = "#69F0AE";
-module.exports.DEEP_PURPLE_500 = "#673AB7";
-module.exports.PURPLE_200 = "#E1BEE7";
-module.exports.PURPLE_100 = "#E1BEE7";
-module.exports.TEAL_100 = "#B2DFDB";
-module.exports.BLUE_50 = "#e3f2fd";
-module.exports.BLUE_100 = "#BBDEFB";
-module.exports.BLUE_300 = "#64B5F6";
-module.exports.BLUE_500 = "#2196F3";
-module.exports.GREY_200 = "#EEEEEE";
-module.exports.LIGHT_GREEN_100 = "#DCEDC8";
-module.exports.GREY_700 = "#616161";
-module.exports.GREY_500 = "#9E9E9E";
-module.exports.AMBER_50 = "#FFF8E1";
-module.exports.PINK_500 = "#E91E63";
-module.exports.PINK_300 = "#F06292";
-module.exports.BLACK = "#000000";
-module.exports.WHITE = "#FFFFFF";
-
-var defaultColorKeys = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
-var darkColorKeys = ["300", "400", "500", "600", "700", "800", "900"];
-
-var indigo = {
-	"900": "#" + "1A237E",
-	"800": "#" + "283593",
-	"700": "#" + "303F9F",
-	"600": "#" + "3949AB",
-	"500": "#" + "3F51B5",
-	"400": "#" + "5C6BC0",
-	"300": "#" + "7986CB",
-	"200": "#" + "9FA8DA",
-	"100": "#" + "C5CAE9",
-	"50": "#" + "E8EAF6",
-	"A100": "#" + "8C9EFF",
-	"A200": "#" + "536DFE",
-	"A400": "#" + "3D5AFE",
-	"A700": "#" + "304FFE"
-};
-
-var red = {
-	"900": "#" + "B71C1C",
-	"800": "#" + "C62828",
-	"700": "#" + "D32F2F",
-	"600": "#" + "E53935",
-	"500": "#" + "F44336",
-	"400": "#" + "EF5350",
-	"300": "#" + "E57373",
-	"200": "#" + "EF9A9A",
-	"100": "#" + "FFCDD2",
-	"50": "#" + "FFEBEE",
-	"A100": "#" + "FF8A80",
-	"A200": "#" + "FF5252",
-	"A400": "#" + "FF1744",
-	"A700": "#" + "D50000"
-};
-
-var layerColors = {
-	"indigo": indigo,
-	"red": red
-};
-
-var decimalToIndex = function decimalToIndex(decimal, indices) {
-	return Math.round((indices - 1) * decimal);
-};
-
-var decimalToLayerColor = function decimalToLayerColor(decimal, layerColors, orderedKeys) {
-	var index = decimalToIndex(decimal, orderedKeys.length);
-	var key = orderedKeys[index];
-	return layerColors[key];
-};
-
-var renderAllColors = function renderAllColors(layer, orderedKeys) {
-	for (var i = 0; i < orderedKeys.length; i++) {
-
-		new paper.Path.Circle({
-			position: new paper.Point(0 + i * 1000, 0),
-			fillColor: layer[orderedKeys[i]],
-			radius: 500
-		});
-	}
-
-	for (var i = 0; i < orderedKeys.length; i++) {
-		var color = decimalToLayerColor(i / orderedKeys.length, layer, orderedKeys);
-		new paper.Path.Circle({
-			position: new paper.Point(0 + i * 1000, 2000),
-			fillColor: layer[orderedKeys[i]],
-			radius: 500
-		});
-	}
-};
-
-var getLayerColors = function getLayerColors(layer) {
-	if (layer && layer.color) return layerColors[layer.color];else return layerColors["red"];
-};
-
-var getDefaultLayerColor = function getDefaultLayerColor(layer) {
-	return getLayerColors(layer)["500"];
-};
-
-var getDefaultFeatureColor = function getDefaultFeatureColor(typeString, layer) {
-	if (layer) {
-		var height = Feature.getDefaultsForType(typeString)["height"];
-		var decimal = height / layer.estimateLayerHeight();
-		if (!layer.flip) decimal = 1 - decimal;
-		var colors = getLayerColors(layer);
-		return decimalToLayerColor(decimal, colors, darkColorKeys);
-	} else {
-		return decimalToLayerColor(0, layerColors["indigo"], darkColorKeys);
-	}
-};
-
-module.exports.getDefaultLayerColor = getDefaultLayerColor;
-module.exports.getDefaultFeatureColor = getDefaultFeatureColor;
-module.exports.getLayerColors = getLayerColors;
-module.exports.decimalToLayerColor = decimalToLayerColor;
-module.exports.defaultColorKeys = defaultColorKeys;
-module.exports.darkColorKeys = darkColorKeys;
-module.exports.layerColors = layerColors;
-module.exports.renderAllColors = renderAllColors;
-
-},{"../core/feature":47,"../core/features":52}],87:[function(require,module,exports){
-"use strict";
-
-var Colors = require("./colors");
-var DEFAULT_STROKE_COLOR = Colors.GREY_700;
-var BORDER_THICKNESS = 5; // pixels
-
-function renderDevice(device) {
-    var strokeColor = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_STROKE_COLOR : arguments[1];
-
-    var background = new paper.Path.Rectangle({
-        from: paper.view.bounds.topLeft.subtract(paper.view.size),
-        to: paper.view.bounds.bottomRight.add(paper.view.size),
-        fillColor: Colors.GREY_200,
-        strokeColor: null
-    });
-    var thickness = BORDER_THICKNESS / paper.view.zoom;
-    var width = device.params.getValue("width");
-    var height = device.params.getValue("height");
-    var border = new paper.Path.Rectangle({
-        from: new paper.Point(0, 0),
-        to: new paper.Point(width, height),
-        fillColor: Colors.WHITE,
-        strokeColor: strokeColor,
-        strokeWidth: thickness
-    });
-
-    var group = new paper.Group([background, border]);
-
-    return group;
-}
-
-module.exports.renderDevice = renderDevice;
-
-},{"./colors":86}],88:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Colors = require("../colors");
-
-var FeatureRenderer = (function () {
-    function FeatureRenderer() {
-        _classCallCheck(this, FeatureRenderer);
-    }
-
-    _createClass(FeatureRenderer, null, [{
-        key: "getLayerColor",
-        value: function getLayerColor(feature) {
-            var height = undefined;
-            try {
-                height = feature.getValue("height");
-            } catch (err) {
-                height = feature.getDefaults()["height"];
-            }
-            var layerHeight = feature.layer.estimateLayerHeight();
-            var decimal = height / layerHeight;
-            if (!feature.layer.flip) decimal = 1 - decimal;
-            var targetColorSet = Colors.getLayerColors(feature.layer);
-            return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
-        }
-    }, {
-        key: "getBottomColor",
-        value: function getBottomColor(feature) {
-            var decimal = 0;
-            if (!feature.layer.flip) decimal = 1 - decimal;
-            var targetColorSet = Colors.getLayerColors(feature.layer);
-            return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
-        }
-    }]);
-
-    return FeatureRenderer;
-})();
-
-module.exports = FeatureRenderer;
-
-},{"../colors":86}],89:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Registry = require("../../core/registry");
-var PaperPrimitives = require("../paperPrimitives");
-var Colors = require("../colors");
-var FeatureRenderer = require("./FeatureRenderer");
-var Feature = require("../../core/feature");
-
-var ChamberRenderer = (function (_FeatureRenderer) {
-    _inherits(ChamberRenderer, _FeatureRenderer);
-
-    function ChamberRenderer() {
-        _classCallCheck(this, ChamberRenderer);
-
-        _get(Object.getPrototypeOf(ChamberRenderer.prototype), "constructor", this).apply(this, arguments);
-    }
-
-    _createClass(ChamberRenderer, null, [{
-        key: "renderFeature",
-        value: function renderFeature(chamber) {
-            var start = chamber.getValue("start");
-            var end = chamber.getValue("end");
-            var width = chamber.getValue("borderWidth");
-            var rec = PaperPrimitives.RoundedChamber(start, end, width);
-            rec.featureID = chamber.getID();
-            rec.fillColor = FeatureRenderer.getLayerColor(chamber);
-            return rec;
-        }
-    }, {
-        key: "renderTarget",
-        value: function renderTarget(position) {
-            var width = Feature.getDefaultsForType("Chamber")["borderWidth"];
-            var color = Colors.getDefaultFeatureColor("Chamber", Registry.currentLayer);
-            var circ = PaperPrimitives.CircleTarget(position, width / 2, color);
-            return circ;
-        }
-    }]);
-
-    return ChamberRenderer;
-})(FeatureRenderer);
-
-module.exports = ChamberRenderer;
-
-},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],90:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Registry = require("../../core/registry");
-var PaperPrimitives = require("../paperPrimitives");
-var Colors = require("../colors");
-var FeatureRenderer = require("./FeatureRenderer");
-var Feature = require("../../core/feature");
-
-var ChannelRenderer = (function (_FeatureRenderer) {
-    _inherits(ChannelRenderer, _FeatureRenderer);
-
-    function ChannelRenderer() {
-        _classCallCheck(this, ChannelRenderer);
-
-        _get(Object.getPrototypeOf(ChannelRenderer.prototype), "constructor", this).apply(this, arguments);
-    }
-
-    _createClass(ChannelRenderer, null, [{
-        key: "renderFeature",
-        value: function renderFeature(channel) {
-            var start = channel.getValue("start");
-            var end = channel.getValue("end");
-            var width = channel.getValue("width");
-            var rec = PaperPrimitives.RoundedRect(start, end, width);
-            rec.featureID = channel.getID();
-            rec.fillColor = FeatureRenderer.getLayerColor(channel);
-            return rec;
-        }
-    }, {
-        key: "renderTarget",
-        value: function renderTarget(position) {
-            var width = Feature.getDefaultsForType("Channel")["width"];
-            var color = Colors.getDefaultFeatureColor("Channel", Registry.currentLayer);
-            var circ = PaperPrimitives.CircleTarget(position, width / 2, color);
-            return circ;
-        }
-    }]);
-
-    return ChannelRenderer;
-})(FeatureRenderer);
-
-module.exports = ChannelRenderer;
-
-},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],91:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Registry = require("../../core/registry");
-var PaperPrimitives = require("../paperPrimitives");
-var Colors = require("../colors");
-var FeatureRenderer = require("./FeatureRenderer");
-var Feature = require("../../core/feature");
-
-var CircleValveRenderer = (function (_FeatureRenderer) {
-    _inherits(CircleValveRenderer, _FeatureRenderer);
-
-    function CircleValveRenderer() {
-        _classCallCheck(this, CircleValveRenderer);
-
-        _get(Object.getPrototypeOf(CircleValveRenderer.prototype), "constructor", this).apply(this, arguments);
-    }
-
-    _createClass(CircleValveRenderer, null, [{
-        key: "renderFeature",
-        value: function renderFeature(circleValve) {
-            var position = circleValve.getValue("position");
-            var radius1 = circleValve.getValue("radius1");
-            var radius2 = circleValve.getValue("radius2");
-
-            var innerColor = FeatureRenderer.getLayerColor(circleValve);
-            var outerColor = FeatureRenderer.getBottomColor(circleValve);
-
-            var c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
-            c1.featureID = circleValve.getID();
-            return c1;
-        }
-    }, {
-        key: "renderTarget",
-        value: function renderTarget(position) {
-            var width = Feature.getDefaultsForType("CircleValve")["radius1"];
-            var color = Colors.getDefaultFeatureColor("CircleValve", Registry.currentLayer);
-            var circ = PaperPrimitives.CircleTarget(position, width, color);
-            return circ;
-        }
-    }]);
-
-    return CircleValveRenderer;
-})(FeatureRenderer);
-
-module.exports = CircleValveRenderer;
-
-},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],92:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Registry = require("../../core/registry");
-var PaperPrimitives = require("../paperPrimitives");
-var Colors = require("../colors");
-var FeatureRenderer = require("./FeatureRenderer");
-var Feature = require("../../core/feature");
-
-var HollowChannelRenderer = (function (_FeatureRenderer) {
-    _inherits(HollowChannelRenderer, _FeatureRenderer);
-
-    function HollowChannelRenderer() {
-        _classCallCheck(this, HollowChannelRenderer);
-
-        _get(Object.getPrototypeOf(HollowChannelRenderer.prototype), "constructor", this).apply(this, arguments);
-    }
-
-    _createClass(HollowChannelRenderer, null, [{
-        key: "renderFeature",
-        value: function renderFeature(hollowChannel) {
-            var start = hollowChannel.getValue("start");
-            var end = hollowChannel.getValue("end");
-            var width = hollowChannel.getValue("width");
-            var rec = PaperPrimitives.RoundedRect(start, end, width);
-            rec.featureID = hollowChannel.getID();
-            rec.fillColor = FeatureRenderer.getLayerColor(hollowChannel);
-            return rec;
-        }
-    }, {
-        key: "renderTarget",
-        value: function renderTarget(position) {
-            var color = Colors.getDefaultFeatureColor("HollowChannel", Registry.currentLayer);
-            var width = Feature.getDefaultsForType("HollowChannel")["width"];
-            var circ = PaperPrimitives.CircleTarget(position, width / 2, color);
-            return circ;
-        }
-    }]);
-
-    return HollowChannelRenderer;
-})(FeatureRenderer);
-
-module.exports = HollowChannelRenderer;
-
-},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],93:[function(require,module,exports){
-"use strict";
-
-module.exports.Channel = require("./channelRenderer");
-module.exports.Via = require("./viaRenderer");
-module.exports.CircleValve = require("./circleValveRenderer");
-module.exports.HollowChannel = require("./hollowChannelRenderer");
-module.exports.Port = require("./portRenderer");
-module.exports.Chamber = require("./chamberRenderer");
-
-},{"./chamberRenderer":89,"./channelRenderer":90,"./circleValveRenderer":91,"./hollowChannelRenderer":92,"./portRenderer":94,"./viaRenderer":95}],94:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Registry = require("../../core/registry");
-var PaperPrimitives = require("../paperPrimitives");
-var Feature = require("../../core/feature");
-var Colors = require("../colors");
-var FeatureRenderer = require("./FeatureRenderer");
-
-var PortRenderer = (function (_FeatureRenderer) {
-    _inherits(PortRenderer, _FeatureRenderer);
-
-    function PortRenderer() {
-        _classCallCheck(this, PortRenderer);
-
-        _get(Object.getPrototypeOf(PortRenderer.prototype), "constructor", this).apply(this, arguments);
-    }
-
-    _createClass(PortRenderer, null, [{
-        key: "renderFeature",
-        value: function renderFeature(port) {
-            var position = port.getValue("position");
-            var radius1 = port.getValue("radius1");
-            var radius2 = port.getValue("radius2");
-            var innerColor = FeatureRenderer.getLayerColor(port);
-            var outerColor = FeatureRenderer.getBottomColor(port);
-
-            var c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
-            c1.featureID = port.getID();
-            return c1;
-        }
-    }, {
-        key: "renderTarget",
-        value: function renderTarget(position) {
-            var color = Colors.getDefaultFeatureColor("Port", Registry.currentLayer);
-            var width = Feature.getDefaultsForType("Port")["radius1"];
-            var circ = PaperPrimitives.CircleTarget(position, width, color);
-            return circ;
-        }
-    }]);
-
-    return PortRenderer;
-})(FeatureRenderer);
-
-module.exports = PortRenderer;
-
-},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],95:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Registry = require("../../core/registry");
-var PaperPrimitives = require("../paperPrimitives");
-var Feature = require("../../core/feature");
-var Colors = require("../colors");
-var FeatureRenderer = require("./FeatureRenderer");
-
-var ViaRenderer = (function (_FeatureRenderer) {
-    _inherits(ViaRenderer, _FeatureRenderer);
-
-    function ViaRenderer() {
-        _classCallCheck(this, ViaRenderer);
-
-        _get(Object.getPrototypeOf(ViaRenderer.prototype), "constructor", this).apply(this, arguments);
-    }
-
-    _createClass(ViaRenderer, null, [{
-        key: "renderFeature",
-        value: function renderFeature(via) {
-            var position = via.getValue("position");
-            var radius1 = via.getValue("radius1");;
-            var radius2 = via.getValue("radius2");;
-            var innerColor = FeatureRenderer.getLayerColor(via);
-            var outerColor = FeatureRenderer.getBottomColor(via);
-
-            var c1 = PaperPrimitives.GradientCircle(position, radius1, radius2, outerColor, innerColor);
-            c1.featureID = via.getID();
-            return c1;
-        }
-    }, {
-        key: "renderTarget",
-        value: function renderTarget(position) {
-            var color = Colors.getDefaultFeatureColor("Via", Registry.currentLayer);
-            var width = Feature.getDefaultsForType("Via")["radius1"];
-            var circ = PaperPrimitives.CircleTarget(position, width, color);
-            return circ;
-        }
-    }]);
-
-    return ViaRenderer;
-})(FeatureRenderer);
-
-module.exports = ViaRenderer;
-
-},{"../../core/feature":47,"../../core/registry":65,"../colors":86,"../paperPrimitives":99,"./FeatureRenderer":88}],96:[function(require,module,exports){
-"use strict";
-
-var Colors = require("../colors");
-
-function renderGrid(grid) {
-    var gridGroup = new paper.Group();
-    gridGroup.addChild(makeHorizontalLines(grid));
-    gridGroup.addChild(makeVerticalLines(grid));
-    return gridGroup;
-}
-
-function vertLineSymbol(width, color) {
-    return lineSymbol(paper.view.bounds.topLeft, paper.view.bounds.bottomLeft, width, color);
-}
-
-function horizLineSymbol(width, color) {
-    return lineSymbol(paper.view.bounds.topLeft, paper.view.bounds.topRight, width, color);
-}
-
-function lineSymbol(start, end, width, color) {
-    var line = paper.Path.Line({
-        from: start,
-        to: end,
-        strokeWidth: width,
-        strokeColor: color
-    });
-    line.remove();
-    return new paper.Symbol(line);
-}
-
-function isThick(val, origin, spacing, thickCount) {
-    var diff = Math.abs(val - origin);
-    var remainder = diff % (spacing * thickCount);
-    if (remainder < spacing) {
-        return true;
-    } else return false;
-}
-
-function makeVerticalLines(grid) {
-    var spacing = grid.getSpacing();
-    var sym = vertLineSymbol(grid.getThinWidth(), grid.color);
-    var thickSym = vertLineSymbol(grid.getThickWidth(), grid.color);
-    var start = paper.view.bounds.topLeft;
-    var end = paper.view.bounds.topRight;
-    var height = paper.view.bounds.height;
-    var group = new paper.Group();
-
-    var startX = Math.floor((start.x - grid.origin.x) / spacing) * spacing + grid.origin.x;
-
-    for (var i = startX; i < end.x; i += spacing) {
-        var pos = new paper.Point(i, start.y + height / 2);
-        if (isThick(i, grid.origin.x, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
-    }
-
-    for (var i = startX; i >= end.x; i -= spacing) {
-        var pos = new paper.Point(i, start.y + height / 2);
-        if (isThick(i, grid.origin.x, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
-    }
-    return group;
-}
-
-function makeHorizontalLines(grid) {
-    var spacing = grid.getSpacing();
-    var sym = horizLineSymbol(grid.getThinWidth(), grid.color);
-    var thickSym = horizLineSymbol(grid.getThickWidth(), grid.color);
-    var start = paper.view.bounds.topLeft;
-    var end = paper.view.bounds.bottomLeft;
-    var width = paper.view.bounds.width;
-    var group = new paper.Group();
-
-    var startY = Math.floor((start.y - grid.origin.y) / spacing) * spacing + grid.origin.y;
-
-    for (var i = startY; i < end.y; i += spacing) {
-        var pos = new paper.Point(start.x + width / 2, i);
-        if (isThick(i, grid.origin.y, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
-    }
-
-    for (var i = startY; i >= end.y; i -= spacing) {
-        var pos = new paper.Point(start.x + width / 2, i);
-        if (isThick(i, grid.origin.y, spacing, grid.thickCount)) group.addChild(thickSym.place(pos));else group.addChild(sym.place(pos));
-    }
-    return group;
-}
-
-module.exports.renderGrid = renderGrid;
-
-},{"../colors":86}],97:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Registry = require("../../core/registry");
-var Colors = require("../colors");
-
-var AdaptiveGrid = (function () {
-    function AdaptiveGrid() {
-        var minSpacing = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
-        var maxSpacing = arguments.length <= 1 || arguments[1] === undefined ? 100 : arguments[1];
-        var thickCount = arguments.length <= 2 || arguments[2] === undefined ? 10 : arguments[2];
-        var origin = arguments.length <= 3 || arguments[3] === undefined ? [0, 0] : arguments[3];
-        var thinWidth = arguments.length <= 4 || arguments[4] === undefined ? 1 : arguments[4];
-        var thickWidth = arguments.length <= 5 || arguments[5] === undefined ? 3 : arguments[5];
-        var color = arguments.length <= 6 || arguments[6] === undefined ? Colors.BLUE_100 : arguments[6];
-
-        _classCallCheck(this, AdaptiveGrid);
-
-        this.origin = new paper.Point(origin[0], origin[1]);
-        this.thinWidth = thinWidth; //pixel
-        this.thickWidth = thickWidth; // pixels
-        this.minSpacing = minSpacing; //pixels
-        this.maxSpacing = maxSpacing; //pixels
-        this.thickCount = thickCount;
-        this.spacing = 1000;
-        this.color = color;
-
-        if (Registry.currentGrid) throw new Error("Cannot instantiate more than one AdaptiveGrid!");
-        Registry.currentGrid = this;
-    }
-
-    _createClass(AdaptiveGrid, [{
-        key: "getClosestGridPoint",
-        value: function getClosestGridPoint(point) {
-            var x = Math.round((point.x - this.origin.x) / this.spacing) * this.spacing + this.origin.x;
-            var y = Math.round((point.y - this.origin.y) / this.spacing) * this.spacing + this.origin.y;
-            return new paper.Point(x, y);
-        }
-    }, {
-        key: "setOrigin",
-        value: function setOrigin(origin) {
-            this.origin = new paper.Point(origin[0], origin[1]);
-            this.updateView();
-        }
-    }, {
-        key: "setThinWidth",
-        value: function setThinWidth(width) {
-            this.thinWidth = width;
-            this.updateView();
-        }
-    }, {
-        key: "setThickWidth",
-        value: function setThickWidth(width) {
-            this.thickWidth = width;
-            this.updateView();
-        }
-    }, {
-        key: "setMinSpacing",
-        value: function setMinSpacing(pixels) {
-            this.spacing = pixels;
-            this.updateView();
-        }
-    }, {
-        key: "setMaxSpacing",
-        value: function setMaxSpacing(pixels) {
-            this.maxSpacing = pixels;
-            this.updateView();
-        }
-    }, {
-        key: "setColor",
-        value: function setColor(color) {
-            this.color = color;
-            this.updateView();
-        }
-    }, {
-        key: "getSpacing",
-        value: function getSpacing() {
-            var min = this.minSpacing / paper.view.zoom;
-            var max = this.maxSpacing / paper.view.zoom;
-            while (this.spacing < min) {
-                this.spacing = this.spacing * 10;
-            }
-            while (this.spacing > max) {
-                this.spacing = this.spacing / 10;
-            }
-            return this.spacing;
-        }
-    }, {
-        key: "getThinWidth",
-        value: function getThinWidth() {
-            return this.thinWidth / paper.view.zoom;
-        }
-    }, {
-        key: "getThickWidth",
-        value: function getThickWidth() {
-            return this.thickWidth / paper.view.zoom;
-        }
-    }, {
-        key: "updateView",
-        value: function updateView() {
-            if (Registry.viewManager) Registry.viewManager.updateGrid();
-        }
-    }]);
-
-    return AdaptiveGrid;
-})();
-
-module.exports = AdaptiveGrid;
-
-},{"../../core/registry":65,"../colors":86}],98:[function(require,module,exports){
-"use strict";
-
-var HTMLUtils = require("../utils/htmlUtils");
-var Registry = require("../core/registry");
-var Colors = require("./colors");
-var JSZip = require("jszip");
-
-var activeButton = null;
-var activeLayer = null;
-var channelButton = document.getElementById("channel_button");
-var circleValveButton = document.getElementById("circleValve_button");
-var portButton = document.getElementById("port_button");
-var viaButton = document.getElementById("via_button");
-var chamberButton = document.getElementById("chamber_button");
-
-var jsonButton = document.getElementById("json_button");
-var svgButton = document.getElementById("svg_button");
-var stlButton = document.getElementById("stl_button");
-
-var button2D = document.getElementById("button_2D");
-var button3D = document.getElementById("button_3D");
-
-var flowButton = document.getElementById("flow_button");
-var controlButton = document.getElementById("control_button");
-
-var inactiveBackground = Colors.GREY_200;
-var inactiveText = Colors.BLACK;
-var activeText = Colors.WHITE;
-
-var canvas = document.getElementById("c");
-
-var canvasBlock = document.getElementById("canvas_block");
-var renderBlock = document.getElementById("renderContainer");
-
-var renderer = undefined;
-var view = undefined;
-
-var threeD = false;
-
-var buttons = {
-    "Channel": channelButton,
-    "Via": viaButton,
-    "Port": portButton,
-    "CircleValve": circleValveButton,
-    "Chamber": chamberButton
-};
-
-var layerButtons = {
-    "0": flowButton,
-    "1": controlButton
-};
-
-var layerIndices = {
-    "0": 0,
-    "1": 1
-};
-
-var zipper = new JSZip();
-
-function drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    ev.target.appendChild(document.getElementById(data));
-}
-
-function setButtonColor(button, background, text) {
-    button.style.background = background;
-    button.style.color = text;
-}
-
-function setActiveButton(feature) {
-    if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
-    activeButton = feature;
-    setButtonColor(buttons[activeButton], Colors.getDefaultFeatureColor(activeButton, Registry.currentLayer), activeText);
-}
-
-function setActiveLayer(layerName) {
-    if (activeLayer) setButtonColor(layerButtons[activeLayer], inactiveBackground, inactiveText);
-    activeLayer = layerName;
-    setActiveButton(activeButton);
-    var bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
-    setButtonColor(layerButtons[activeLayer], bgColor, activeText);
-    if (threeD) {
-        setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-        setButtonColor(button2D, inactiveBackground, inactiveText);
-    } else {
-        setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-        setButtonColor(button3D, inactiveBackground, inactiveText);
-    }
-}
-
-function switchTo3D() {
-    if (!threeD) {
-        threeD = true;
-        setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-        setButtonColor(button2D, inactiveBackground, inactiveText);
-        renderer.loadJSON(Registry.currentDevice.toJSON());
-        var cameraCenter = view.getViewCenterInMillimeters();
-        var height = Registry.currentDevice.params.getValue("height") / 1000;
-        var pixels = view.getDeviceHeightInPixels();
-        renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
-        renderer.showMockup();
-        HTMLUtils.removeClass(renderBlock, "hidden-block");
-        HTMLUtils.addClass(canvasBlock, "hidden-block");
-        HTMLUtils.addClass(renderBlock, "shown-block");
-        HTMLUtils.removeClass(canvasBlock, "shown-block");
-    }
-}
-
-//TODO: transition backwards is super hacky. Fix it!
-function switchTo2D() {
-    if (threeD) {
-        threeD = false;
-        var center = renderer.getCameraCenterInMicrometers();
-        var zoom = renderer.getZoom();
-        var newCenterX = center[0];
-        if (newCenterX < 0) {
-            newCenterX = 0;
-        } else if (newCenterX > Registry.currentDevice.params.getValue("width")) {
-            newCenterX = Registry.currentDevice.params.getValue("width");
-        }
-        var newCenterY = paper.view.center.y - center[1];
-        if (newCenterY < 0) {
-            newCenterY = 0;
-        } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
-            newCenterY = Registry.currentDevice.params.getValue("height");
-        }
-        setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-        setButtonColor(button3D, inactiveBackground, inactiveText);
-        Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
-        Registry.viewManager.setZoom(zoom);
-        HTMLUtils.addClass(renderBlock, "hidden-block");
-        HTMLUtils.removeClass(canvasBlock, "hidden-block");
-        HTMLUtils.removeClass(renderBlock, "shown-block");
-        HTMLUtils.addClass(canvasBlock, "shown-block");
-    }
-}
-
-function setupAppPage() {
-
-    view = Registry.viewManager.view;
-    renderer = Registry.threeRenderer;
-    channelButton.onclick = function () {
-        Registry.viewManager.activateTool("Channel");
-        var bg = Colors.getDefaultFeatureColor("Channel", Registry.currentLayer);
-        setActiveButton("Channel");
-        switchTo2D();
-    };
-
-    circleValveButton.onclick = function () {
-        Registry.viewManager.activateTool("CircleValve");
-        var bg = Colors.getDefaultFeatureColor("CircleValve", Registry.currentLayer);
-        setActiveButton("CircleValve");
-        switchTo2D();
-    };
-
-    portButton.onclick = function () {
-        Registry.viewManager.activateTool("Port");
-        var bg = Colors.getDefaultFeatureColor("Port", Registry.currentLayer);
-        setActiveButton("Port");
-        switchTo2D();
-    };
-
-    viaButton.onclick = function () {
-        Registry.viewManager.activateTool("Via");
-        var bg = Colors.getDefaultFeatureColor("Via", Registry.currentLayer);
-        setActiveButton("Via");
-        switchTo2D();
-    };
-
-    chamberButton.onclick = function () {
-        Registry.viewManager.activateTool("Chamber");
-        var bg = Colors.getDefaultFeatureColor("Chamber", Registry.currentLayer);
-        setActiveButton("Chamber");
-        switchTo2D();
-    };
-
-    flowButton.onclick = function () {
-        if (threeD) {
-            if (activeLayer == "0") renderer.toggleLayerView(0);else renderer.showLayer(0);
-        }
-        Registry.currentLayer = Registry.currentDevice.layers[0];
-        setActiveLayer("0");
-        Registry.viewManager.updateActiveLayer();
-    };
-
-    controlButton.onclick = function () {
-        if (threeD) {
-            if (activeLayer == "1") renderer.toggleLayerView(1);else renderer.showLayer(1);
-        }
-        Registry.currentLayer = Registry.currentDevice.layers[1];
-        setActiveLayer("1");
-        Registry.viewManager.updateActiveLayer();
-    };
-
-    jsonButton.onclick = function () {
-        var json = new Blob([JSON.stringify(Registry.currentDevice.toJSON())], {
-            type: "application/json"
-        });
-        saveAs(json, "device.json");
-    };
-
-    stlButton.onclick = function () {
-        var json = Registry.currentDevice.toJSON();
-        var stls = renderer.getSTL(json);
-        var blobs = [];
-        var zipper = new JSZip();
-        for (var i = 0; i < stls.length; i++) {
-            var _name = "" + i + "_" + json.name + "_" + json.layers[i].name + ".stl";
-            zipper.file(_name, stls[i]);
-        }
-        var content = zipper.generate({
-            type: "blob"
-        });
-        saveAs(content, json.name + "_layers.zip");
-    };
-
-    svgButton.onclick = function () {
-        var svgs = Registry.viewManager.layersToSVGStrings();
-        //let svg = paper.project.exportSVG({asString: true});
-        var blobs = [];
-        var success = 0;
-        var zipper = new JSZip();
-        for (var i = 0; i < svgs.length; i++) {
-            if (svgs[i].slice(0, 4) == "<svg") {
-                zipper.file("Device_layer_" + i + ".svg", svgs[i]);
-                success++;
-            }
-        }
-
-        if (success == 0) throw new Error("Unable to generate any valid SVGs. Do all layers have at least one non-channel item in them?");else {
-            var content = zipper.generate({
-                type: "blob"
-            });
-            saveAs(content, "device_layers.zip");
-        }
-    };
-
-    button2D.onclick = function () {
-        switchTo2D();
-    };
-
-    button3D.onclick = function () {
-        switchTo3D();
-    };
-
-    var dnd = new HTMLUtils.DnDFileController("#c", function (files) {
-        var f = files[0];
-
-        var reader = new FileReader();
-        reader.onloadend = function (e) {
-            var result = JSON.parse(this.result);
-            Registry.canvasManager.loadDeviceFromJSON(result);
-        };
-        try {
-            reader.readAsText(f);
-        } catch (err) {
-            console.log("unable to load JSON: " + f);
-        }
-    });
-
-    setActiveButton("Channel");
-    setActiveLayer("0");
-    switchTo2D();
-}
-
-module.exports.setupAppPage = setupAppPage;
-
-},{"../core/registry":65,"../utils/htmlUtils":82,"./colors":86,"jszip":13}],99:[function(require,module,exports){
-"use strict";
-
-var Colors = require("./colors");
-
-var RoundedRect = function RoundedRect(start, end, width) {
-    var startPoint = new paper.Point(start[0], start[1]);
-    var endPoint = new paper.Point(end[0], end[1]);
-    var vec = endPoint.subtract(startPoint);
-    var rec = paper.Path.Rectangle({
-        size: [vec.length + width, width],
-        point: start,
-        radius: width / 2
-    });
-    rec.translate([-width / 2, -width / 2]);
-    rec.rotate(vec.angle, start);
-    return rec;
-};
-
-var Circle = function Circle(position, radius) {
-    var pos = new paper.Point(position);
-    var circ = new paper.Path.Circle(pos, radius);
-    return circ;
-};
-
-var RoundedChamber = function RoundedChamber(start, end, borderWidth) {
-    var startX = undefined;
-    var startY = undefined;
-    var endX = undefined;
-    var endY = undefined;
-
-    if (start[0] < end[0]) {
-        startX = start[0];
-        endX = end[0];
-    } else {
-        startX = end[0];
-        endX = start[0];
-    }
-    if (start[1] < end[1]) {
-        startY = start[1];
-        endY = end[1];
-    } else {
-        startY = end[1];
-        endY = start[1];
-    }
-
-    startX -= borderWidth / 2;
-    startY -= borderWidth / 2;
-    endX += borderWidth / 2;
-    endY += borderWidth / 2;
-
-    var startPoint = new paper.Point(startX, startY);
-    var endPoint = new paper.Point(endX, endY);
-
-    var rec = paper.Path.Rectangle({
-        from: startPoint,
-        to: endPoint,
-        radius: borderWidth / 2
-    });
-    return rec;
-};
-
-var GradientCircle = function GradientCircle(position, radius1, radius2, color1, color2) {
-    var pos = new paper.Point(position);
-    var ratio = radius2 / radius1;
-    var outerCircle = Circle(position, radius1);
-    outerCircle.fillColor = {
-        gradient: {
-            stops: [[color2, ratio], [color1, ratio]],
-            radial: true
-        },
-        origin: pos,
-        destination: outerCircle.bounds.rightCenter
-    };
-    return outerCircle;
-};
-
-var CircleTarget = function CircleTarget(position, radius) {
-    var color = arguments.length <= 2 || arguments[2] === undefined ? Colors.BLUE_300 : arguments[2];
-
-    if (radius < 8 / paper.view.zoom) radius = 8 / paper.view.zoom;
-    var circ = Circle(position, radius);
-    circ.fillColor = color;
-    circ.fillColor.alpha = .5;
-    circ.strokeColor = Colors.WHITE;
-    circ.strokeWidth = 3 / paper.view.zoom;
-    if (circ.strokeWidth > radius / 2) circ.strokeWidth = radius / 2;
-    return circ;
-};
-
-module.exports.RoundedRect = RoundedRect;
-module.exports.Circle = Circle;
-module.exports.CircleTarget = CircleTarget;
-module.exports.GradientCircle = GradientCircle;
-module.exports.RoundedChamber = RoundedChamber;
-
-},{"./colors":86}],100:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Registry = require("../core/registry");
-var FeatureRenderers = require("./featureRenderers");
-var GridRenderer = require("./grid/GridRenderer");
-var DeviceRenderer = require("./deviceRenderer");
-var PanAndZoom = require("./PanAndZoom");
-var SimpleQueue = require("../utils/simpleQueue");
-var Colors = require("./colors");
-
-var PaperView = (function () {
-    function PaperView(canvas) {
-        _classCallCheck(this, PaperView);
-
-        this.panAndZoom = new PanAndZoom(this);
-        this.center = paper.view.center;
-        var ref = this;
-        this.zoom = paper.view.zoom;
-        this.canvas = canvas;
-        this.paperFeatures = {};
-        this.paperGrid = null;
-        this.paperDevice = null;
-        this.activeLayer = null;
-        this.gridLayer = new paper.Group();
-        this.deviceLayer = new paper.Group();
-        this.gridLayer.insertAbove(this.deviceLayer);
-        this.featureLayer = new paper.Group();
-        this.featureLayer.insertAbove(this.gridLayer);
-        this.uiLayer = new paper.Group();
-        this.uiLayer.insertAbove(this.featureLayer);
-        this.currentTarget = null;
-        this.lastTargetType = null;
-        this.lastTargetPosition = null;
-        this.inactiveAlpha = .5;
-    }
-
-    _createClass(PaperView, [{
-        key: "deleteSelectedFeatures",
-        value: function deleteSelectedFeatures() {
-            var items = paper.project.selectedItems;
-            if (items && items.length > 0) {
-                for (var i = 0; i < items.length; i++) {
-                    Registry.currentDevice.removeFeatureByID(items[i].featureID);
-                }
-            }
-        }
-    }, {
-        key: "layersToSVGStrings",
-        value: function layersToSVGStrings() {
-            var output = [];
-            for (var i = 0; i < this.featureLayer.children.length; i++) {
-                var layer = this.featureLayer.children[i];
-                var svg = this.postProcessLayerToSVG(layer);
-                output.push(svg);
-            }
-            return output;
-        }
-    }, {
-        key: "postProcessLayerToSVG",
-        value: function postProcessLayerToSVG(layer) {
-            var layerCopy = layer.clone();
-            layerCopy.bounds.topLeft = new paper.Point(0, 0);
-            var deviceWidth = Registry.currentDevice.params.getValue("width");
-            var deviceHeight = Registry.currentDevice.params.getValue("height");
-            layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
-            var svg = layer.exportSVG({
-                asString: true
-            });
-            var width = layerCopy.bounds.width;
-            var height = layerCopy.bounds.height;
-            var widthInMillimeters = width / 1000;
-            var heightInMilliMeters = height / 1000;
-            var insertString = 'width="' + widthInMillimeters + 'mm" ' + 'height="' + heightInMilliMeters + 'mm" ' + 'viewBox="0 0 ' + width + ' ' + height + '" ';
-            var newSVG = svg.slice(0, 5) + insertString + svg.slice(5);
-            layerCopy.remove();
-            return newSVG;
-        }
-    }, {
-        key: "getViewCenterInMillimeters",
-        value: function getViewCenterInMillimeters() {
-            return [paper.view.center.x / 1000, paper.view.center.y / 1000];
-        }
-    }, {
-        key: "getDeviceHeightInPixels",
-        value: function getDeviceHeightInPixels() {
-            return Registry.currentDevice.params.getValue("height") * paper.view.zoom;
-        }
-    }, {
-        key: "clear",
-        value: function clear() {
-            this.activeLayer = null;
-            this.featureLayer.removeChildren();
-            this.featureLayer.clear();
-        }
-    }, {
-        key: "getCenter",
-        value: function getCenter() {
-            return this.center;
-        }
-    }, {
-        key: "setCenter",
-        value: function setCenter(point) {
-            this.center = point;
-            this.updateCenter();
-        }
-    }, {
-        key: "updateCenter",
-        value: function updateCenter() {
-            paper.view.center = this.center;
-        }
-    }, {
-        key: "getZoom",
-        value: function getZoom() {
-            return this.zoom;
-        }
-    }, {
-        key: "setZoom",
-        value: function setZoom(zoom) {
-            this.zoom = zoom;
-            this.updateZoom();
-        }
-    }, {
-        key: "updateZoom",
-        value: function updateZoom() {
-            paper.view.zoom = this.zoom;
-        }
-    }, {
-        key: "canvasToProject",
-        value: function canvasToProject(x, y) {
-            var rect = this.canvas.getBoundingClientRect();
-            var projX = x - rect.left;
-            var projY = y - rect.top;
-            return paper.view.viewToProject(new paper.Point(projX, projY));
-        }
-    }, {
-        key: "getProjectPosition",
-        value: function getProjectPosition(x, y) {
-            return this.canvasToProject(x, y);
-        }
-    }, {
-        key: "setMouseWheelFunction",
-        value: function setMouseWheelFunction(func) {
-            this.canvas.addEventListener("wheel", func);
-        }
-    }, {
-        key: "setMouseDownFunction",
-        value: function setMouseDownFunction(func) {
-            this.canvas.onmousedown = func;
-        }
-    }, {
-        key: "setMouseUpFunction",
-        value: function setMouseUpFunction(func) {
-            this.canvas.onmouseup = func;
-        }
-    }, {
-        key: "setMouseMoveFunction",
-        value: function setMouseMoveFunction(func) {
-            this.canvas.onmousemove = func;
-        }
-    }, {
-        key: "setKeyPressFunction",
-        value: function setKeyPressFunction(func) {
-            this.canvas.onkeypress = func;
-        }
-    }, {
-        key: "setKeyDownFunction",
-        value: function setKeyDownFunction(func) {
-            this.canvas.onkeydown = func;
-        }
-    }, {
-        key: "setResizeFunction",
-        value: function setResizeFunction(func) {
-            paper.view.onResize = func;
-        }
-    }, {
-        key: "refresh",
-        value: function refresh() {
-            paper.view.update();
-        }
-
-        /* Rendering Devices */
-    }, {
-        key: "addDevice",
-        value: function addDevice(device) {
-            this.updateDevice(device);
-        }
-    }, {
-        key: "updateDevice",
-        value: function updateDevice(device) {
-            this.removeDevice(device);
-            var newPaperDevice = DeviceRenderer.renderDevice(device);
-            this.paperDevice = newPaperDevice;
-            this.deviceLayer.addChild(newPaperDevice);
-        }
-    }, {
-        key: "removeDevice",
-        value: function removeDevice() {
-            if (this.paperDevice) this.paperDevice.remove();
-            this.paperDevice = null;
-        }
-
-        /* Rendering Layers */
-
-    }, {
-        key: "addLayer",
-        value: function addLayer(layer, index) {
-            this.featureLayer.insertChild(index, new paper.Group());
-        }
-    }, {
-        key: "updateLayer",
-        value: function updateLayer(layer, index) {
-            // do nothing, for now
-        }
-    }, {
-        key: "removeLayer",
-        value: function removeLayer(layer, index) {}
-        // do nothing, for now
-
-        /* Rendering Features */
-
-    }, {
-        key: "addFeature",
-        value: function addFeature(feature) {
-            this.updateFeature(feature);
-        }
-    }, {
-        key: "setActiveLayer",
-        value: function setActiveLayer(index) {
-            this.activeLayer = index;
-            //this.showActiveLayer();
-        }
-    }, {
-        key: "showActiveLayer",
-        value: function showActiveLayer() {
-            var layers = this.featureLayer.children;
-
-            for (var i = 0; i < layers.length; i++) {
-                var layer = layers[i];
-                var targetAlpha = undefined;
-                if (i != this.activeLayer) {
-                    targetAlpha = this.inactiveAlpha;
-                } else {
-                    targetAlpha = 1;
-                }
-                for (var j = 0; j < layer.children.length; j++) {
-                    layer.children[j].fillColor.alpha = targetAlpha;
-                }
-            }
-        }
-    }, {
-        key: "comparePaperFeatureHeights",
-        value: function comparePaperFeatureHeights(a, b) {
-            var aFeature = Registry.currentDevice.getFeatureByID(a.featureID);
-            var bFeature = Registry.currentDevice.getFeatureByID(b.featureID);
-            var aHeight = aFeature.getValue("height");
-            var bHeight = bFeature.getValue("height");
-            return aHeight - bHeight;
-        }
-    }, {
-        key: "insertChildByHeight",
-        value: function insertChildByHeight(group, newChild) {
-            this.getIndexByHeight(group.children, newChild);
-            var index = this.getIndexByHeight(group.children, newChild);
-            group.insertChild(index, newChild);
-        }
-
-        // TODO: Could be done faster with a binary search. Probably not needed!
-    }, {
-        key: "getIndexByHeight",
-        value: function getIndexByHeight(children, newChild) {
-            for (var i = 0; i < children.length; i++) {
-                var test = this.comparePaperFeatureHeights(children[i], newChild);
-                if (test >= 0) {
-                    return i;
-                }
-            }
-            return children.length;
-        }
-    }, {
-        key: "updateFeature",
-        value: function updateFeature(feature) {
-            this.removeFeature(feature);
-            var newPaperFeature = FeatureRenderers[feature.getType()].renderFeature(feature);
-            this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
-            //TODO: This is terrible. Fix it. Fix it now.
-            var index = feature.layer.device.layers.indexOf(feature.layer);
-            var layer = this.featureLayer.children[index];
-            this.insertChildByHeight(layer, newPaperFeature);
-            if (index != this.activeLayer && this.activeLayer != null) newPaperFeature.fillColor.alpha = this.inactiveAlpha;
-        }
-    }, {
-        key: "removeTarget",
-        value: function removeTarget() {
-            if (this.currentTarget) this.currentTarget.remove();
-            this.currentTarget = null;
-        }
-    }, {
-        key: "addTarget",
-        value: function addTarget(featureType, position) {
-            this.removeTarget();
-            this.lastTargetType = featureType;
-            this.lastTargetPosition = position;
-            this.updateTarget();
-        }
-    }, {
-        key: "updateTarget",
-        value: function updateTarget() {
-            this.removeTarget();
-            if (this.lastTargetType && this.lastTargetPosition) {
-                var renderer = FeatureRenderers[this.lastTargetType];
-                this.currentTarget = FeatureRenderers[this.lastTargetType].renderTarget(this.lastTargetPosition);
-                this.uiLayer.addChild(this.currentTarget);
-            }
-        }
-    }, {
-        key: "removeFeature",
-        value: function removeFeature(feature) {
-            var paperFeature = this.paperFeatures[feature.getID()];
-            if (paperFeature) paperFeature.remove();
-            this.paperFeatures[feature.getID()] = null;
-        }
-    }, {
-        key: "removeGrid",
-        value: function removeGrid() {
-            if (this.paperGrid) this.paperGrid.remove();
-            this.paperGrid = null;
-        }
-    }, {
-        key: "updateGrid",
-        value: function updateGrid(grid) {
-            this.removeGrid();
-            var newPaperGrid = GridRenderer.renderGrid(grid);
-            this.paperGrid = newPaperGrid;
-            this.gridLayer.addChild(newPaperGrid);
-        }
-    }, {
-        key: "moveCenter",
-        value: function moveCenter(delta) {
-            this.panAndZoom.moveCenter(delta);
-        }
-    }, {
-        key: "adjustZoom",
-        value: function adjustZoom(delta, point) {
-            this.panAndZoom.adjustZoom(delta, point);
-        }
-    }, {
-        key: "getFeaturesByViewElements",
-        value: function getFeaturesByViewElements(paperFeatures) {
-            var output = [];
-            for (var i = 0; i < paperFeatures.length; i++) {
-                output.push(Registry.currentDevice.getFeatureByID(paperFeatures[i].featureID));
-            }
-            return output;
-        }
-    }, {
-        key: "hitFeature",
-        value: function hitFeature(point) {
-            var onlyHitActiveLayer = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-            var hitOptions = {
-                fill: true,
-                tolerance: 5,
-                guides: false
-            };
-
-            var target = undefined;
-
-            if (onlyHitActiveLayer && this.activeLayer != null) {
-                target = this.featureLayer.children[this.activeLayer];
-            } else target = this.featureLayer;
-
-            var result = target.hitTest(point, hitOptions);
-            if (result) {
-                return result.item;
-            }
-        }
-    }, {
-        key: "hitFeaturesWithViewElement",
-        value: function hitFeaturesWithViewElement(paperElement) {
-            var onlyHitActiveLayer = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-            var output = [];
-            if (onlyHitActiveLayer && this.activeLayer != null) {
-                var layer = this.featureLayer.children[this.activeLayer];
-                for (var i = 0; i < layer.children.length; i++) {
-                    var child = layer.children[i];
-                    if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
-                        output.push(child);
-                    }
-                }
-            } else {
-                for (var i = 0; i < this.featureLayer.children.length; i++) {
-                    var layer = this.featureLayer.children[i];
-                    for (var j = 0; j < layer.children.length; j++) {
-                        var child = layer.children[j];
-                        if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
-                            output.push(child);
-                        }
-                    }
-                }
-            }
-
-            return output;
-        }
-    }]);
-
-    return PaperView;
-})();
-
-module.exports = PaperView;
-
-},{"../core/registry":65,"../utils/simpleQueue":84,"./PanAndZoom":85,"./colors":86,"./deviceRenderer":87,"./featureRenderers":93,"./grid/GridRenderer":96}],101:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16664,7 +16237,7 @@ var MouseTool = (function () {
 
 module.exports = MouseTool;
 
-},{"../../core/registry":65}],102:[function(require,module,exports){
+},{"../../core/registry":58}],92:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16675,19 +16248,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Features = require("../../core/features");
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
+var Feature = require("../../core/feature");
+var PageSetup = require("../pageSetup");
 
 var ChannelTool = (function (_MouseTool) {
 	_inherits(ChannelTool, _MouseTool);
 
-	function ChannelTool(typeString) {
+	function ChannelTool(typeString, setString) {
 		_classCallCheck(this, ChannelTool);
 
 		_get(Object.getPrototypeOf(ChannelTool.prototype), "constructor", this).call(this);
 		this.typeString = typeString;
+		this.setString = setString;
 		this.startPoint = null;
 		this.lastPoint = null;
 		this.currentChannelID = null;
@@ -16704,6 +16279,8 @@ var ChannelTool = (function (_MouseTool) {
 		}, 20, false);
 
 		this.down = function (event) {
+			PageSetup.killParamsWindow();
+			paper.project.deselectAll();
 			ref.dragging = true;
 			ref.initChannel();
 		};
@@ -16735,7 +16312,7 @@ var ChannelTool = (function (_MouseTool) {
 		key: "showTarget",
 		value: function showTarget(point) {
 			var target = ChannelTool.getTarget(this.lastPoint);
-			Registry.viewManager.updateTarget(this.typeString, target);
+			Registry.viewManager.updateTarget(this.typeString, this.setString, target);
 		}
 	}, {
 		key: "initChannel",
@@ -16753,7 +16330,6 @@ var ChannelTool = (function (_MouseTool) {
 					var target = ChannelTool.getTarget(this.lastPoint);
 					var feat = Registry.currentLayer.getFeature(this.currentChannelID);
 					feat.updateParameter("end", target);
-					Registry.canvasManager.render();
 				} else {
 					var newChannel = this.createChannel(this.startPoint, this.startPoint);
 					this.currentChannelID = newChannel.getID();
@@ -16768,8 +16344,6 @@ var ChannelTool = (function (_MouseTool) {
 			if (this.currentChannelID) {
 				if (this.startPoint.x == target[0] && this.startPoint.y == target[1]) {
 					Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-					//TODO: This will be slow for complex devices, since it re-renders everything
-					Registry.canvasManager.render();
 				}
 			} else {
 				this.updateChannel(point);
@@ -16780,7 +16354,7 @@ var ChannelTool = (function (_MouseTool) {
 	}, {
 		key: "createChannel",
 		value: function createChannel(start, end) {
-			return Features[this.typeString]({
+			return Feature.makeFeature(this.typeString, this.setString, {
 				start: start,
 				end: end
 			});
@@ -16808,7 +16382,7 @@ var ChannelTool = (function (_MouseTool) {
 
 module.exports = ChannelTool;
 
-},{"../../core/features":52,"../../core/registry":65,"../../utils/simpleQueue":84,"./mouseTool":103}],103:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":58,"../../utils/simpleQueue":70,"../pageSetup":75,"./mouseTool":93}],93:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16845,7 +16419,7 @@ var MouseTool = (function () {
 
 module.exports = MouseTool;
 
-},{"../../core/registry":65}],104:[function(require,module,exports){
+},{"../../core/registry":58}],94:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16931,7 +16505,7 @@ var PanTool = (function (_MouseTool) {
 
 module.exports = PanTool;
 
-},{"../../core/registry":65,"../../utils/simpleQueue":84,"./mouseTool":103}],105:[function(require,module,exports){
+},{"../../core/registry":58,"../../utils/simpleQueue":70,"./mouseTool":93}],95:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -16944,17 +16518,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var MouseTool = require("./mouseTool");
 var Registry = require("../../core/registry");
-var SimpleQueue = require("../../utils/SimpleQueue");
-var Features = require("../../core/features");
+var Feature = require("../../core/feature");
+var SimpleQueue = require("../../utils/simpleQueue");
+var PageSetup = require("../pageSetup");
 
 var PositionTool = (function (_MouseTool) {
     _inherits(PositionTool, _MouseTool);
 
-    function PositionTool(typeString) {
+    function PositionTool(typeString, setString) {
         _classCallCheck(this, PositionTool);
 
         _get(Object.getPrototypeOf(PositionTool.prototype), "constructor", this).call(this);
         this.typeString = typeString;
+        this.setString = setString;
         this.currentFeatureID = null;
         var ref = this;
         this.lastPoint = null;
@@ -16969,6 +16545,8 @@ var PositionTool = (function (_MouseTool) {
             ref.showQueue.run();
         };
         this.down = function (event) {
+            PageSetup.killParamsWindow();
+            paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
         };
     }
@@ -16976,7 +16554,7 @@ var PositionTool = (function (_MouseTool) {
     _createClass(PositionTool, [{
         key: "createNewFeature",
         value: function createNewFeature(point) {
-            var newFeature = Features[this.typeString]({
+            var newFeature = Feature.makeFeature(this.typeString, this.setString, {
                 "position": PositionTool.getTarget(point)
             });
             this.currentFeatureID = newFeature.getID();
@@ -16986,7 +16564,7 @@ var PositionTool = (function (_MouseTool) {
         key: "showTarget",
         value: function showTarget() {
             var target = PositionTool.getTarget(this.lastPoint);
-            Registry.viewManager.updateTarget(this.typeString, target);
+            Registry.viewManager.updateTarget(this.typeString, this.setString, target);
         }
     }], [{
         key: "getTarget",
@@ -17001,7 +16579,7 @@ var PositionTool = (function (_MouseTool) {
 
 module.exports = PositionTool;
 
-},{"../../core/features":52,"../../core/registry":65,"../../utils/SimpleQueue":81,"./mouseTool":103}],106:[function(require,module,exports){
+},{"../../core/feature":47,"../../core/registry":58,"../../utils/simpleQueue":70,"../pageSetup":75,"./mouseTool":93}],96:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -17015,6 +16593,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Registry = require("../../core/registry");
 var MouseTool = require("./MouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
+var PageSetup = require("../pageSetup");
 
 var SelectTool = (function (_MouseTool) {
 	_inherits(SelectTool, _MouseTool);
@@ -17033,7 +16612,8 @@ var SelectTool = (function (_MouseTool) {
 			ref.dragHandler();
 		}, 20);
 		this.down = function (event) {
-			ref.mouseDownHandler(MouseTool.getEventPosition(event));
+			PageSetup.killParamsWindow();
+			ref.mouseDownHandler(event);
 			ref.dragging = true;
 			ref.showTarget();
 		};
@@ -17096,11 +16676,19 @@ var SelectTool = (function (_MouseTool) {
 		}
 	}, {
 		key: "mouseDownHandler",
-		value: function mouseDownHandler(point) {
+		value: function mouseDownHandler(event) {
+			var point = MouseTool.getEventPosition(event);
 			var target = this.hitFeature(point);
 			if (target) {
-				this.deselectFeatures();
-				this.selectFeature(target);
+				if (target.selected) {
+					var feat = Registry.currentDevice.getFeatureByID(target.featureID);
+					Registry.viewManager.updateDefaultsFromFeature(feat);
+					var func = PageSetup.paramsWindowFunction(feat.getType(), feat.getSet());
+					func(event);
+				} else {
+					this.deselectFeatures();
+					this.selectFeature(target);
+				}
 			} else {
 				this.deselectFeatures();
 				this.dragStart = point;
@@ -17140,12 +16728,7 @@ var SelectTool = (function (_MouseTool) {
 	}, {
 		key: "deselectFeatures",
 		value: function deselectFeatures() {
-			if (this.currentSelection) {
-				for (var i = 0; i < this.currentSelection.length; i++) {
-					var paperFeature = this.currentSelection[i];
-					paperFeature.selected = false;
-				}
-			}
+			paper.project.deselectAll();
 			this.currentSelection = [];
 		}
 	}, {
@@ -17171,7 +16754,7 @@ var SelectTool = (function (_MouseTool) {
 
 module.exports = SelectTool;
 
-},{"../../core/registry":65,"../../utils/simpleQueue":84,"./MouseTool":101}],107:[function(require,module,exports){
+},{"../../core/registry":58,"../../utils/simpleQueue":70,"../pageSetup":75,"./MouseTool":91}],97:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -17179,9 +16762,9 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Registry = require("../core/registry");
+var Device = require("../core/device");
 var ChannelTool = require("./tools/channelTool");
 var MouseTool = require("./tools/mouseTool");
-var Features = require("../core/features");
 var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
@@ -17205,7 +16788,7 @@ var ViewManager = (function () {
         });
         window.onkeydown = function (event) {
             var key = event.keyCode || event.which;
-            if (key == 46 || key == 8) {
+            if (key == 46) {
                 event.preventDefault();
             }
         };
@@ -17439,10 +17022,10 @@ var ViewManager = (function () {
         }
     }, {
         key: "updateTarget",
-        value: function updateTarget(featureType, position) {
-            var refresh = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+        value: function updateTarget(featureType, featureSet, position) {
+            var refresh = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
 
-            this.view.addTarget(featureType, position);
+            this.view.addTarget(featureType, featureSet, position);
             this.refresh(refresh);
         }
     }, {
@@ -17506,9 +17089,7 @@ var ViewManager = (function () {
         value: function refresh() {
             var _refresh = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
-            //this.view.refresh();
             this.updateQueue.run();
-            //this.saveQueue.run();
         }
     }, {
         key: "getEventPosition",
@@ -17546,16 +17127,17 @@ var ViewManager = (function () {
             return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
         }
     }, {
-        key: "getDeviceCenter",
-        value: function getDeviceCenter() {
-            var dev = Registry.currentDevice;
-            var width = dev.params.getValue("width");
-            var height = dev.params.getValue("height");
-            return new paper.Point(width / 2, height / 2);
+        key: "loadDeviceFromJSON",
+        value: function loadDeviceFromJSON(json) {
+            Registry.viewManager.clear();
+            Registry.currentDevice = Device.fromJSON(json);
+            Registry.currentLayer = Registry.currentDevice.layers[0];
+            Registry.viewManager.addDevice(Registry.currentDevice);
+            this.view.initializeView();
+            this.updateGrid();
+            this.updateDevice(Registry.currentDevice);
+            this.refresh(true);
         }
-    }, {
-        key: "computeOptimalZoom",
-        value: function computeOptimalZoom() {}
     }, {
         key: "removeFeaturesByPaperElements",
         value: function removeFeaturesByPaperElements(paperElements) {
@@ -17586,6 +17168,51 @@ var ViewManager = (function () {
             if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);else return point;
         }
     }, {
+        key: "getFeaturesOfType",
+        value: function getFeaturesOfType(typeString, setString, features) {
+            var output = [];
+            for (var i = 0; i < features.length; i++) {
+                var feature = features[i];
+                if (feature.getType() == typeString && feature.getSet() == setString) {
+                    output.push(feature);
+                }
+            }
+            return output;
+        }
+    }, {
+        key: "adjustAllFeatureParams",
+        value: function adjustAllFeatureParams(valueString, value, features) {
+            for (var i = 0; i < features.length; i++) {
+                var feature = features[i];
+                feature.updateParameter(valueString, value);
+            }
+        }
+    }, {
+        key: "adjustParams",
+        value: function adjustParams(typeString, setString, valueString, value) {
+            var selectedFeatures = this.view.getSelectedFeatures();
+            if (selectedFeatures.length > 0) {
+                var correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
+                if (correctType.length > 0) {
+                    this.adjustAllFeatureParams(valueString, value, correctType);
+                }
+            }
+            this.updateDefault(typeString, setString, valueString, value);
+        }
+    }, {
+        key: "updateDefault",
+        value: function updateDefault(typeString, setString, valueString, value) {
+            Registry.featureDefaults[setString][typeString][valueString] = value;
+        }
+    }, {
+        key: "updateDefaultsFromFeature",
+        value: function updateDefaultsFromFeature(feature) {
+            var heritable = feature.getHeritableParams();
+            for (var key in heritable) {
+                this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
+            }
+        }
+    }, {
         key: "hitFeature",
         value: function hitFeature(point) {
             return this.view.hitFeature(point);
@@ -17611,11 +17238,11 @@ var ViewManager = (function () {
     }, {
         key: "setupTools",
         value: function setupTools() {
-            this.tools["Chamber"] = new ChannelTool("Chamber");
-            this.tools["Channel"] = new ChannelTool("Channel");
-            this.tools["CircleValve"] = new PositionTool("CircleValve");
-            this.tools["Port"] = new PositionTool("Port");
-            this.tools["Via"] = new PositionTool("Via");
+            this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
+            this.tools["Channel"] = new ChannelTool("Channel", "Basic");
+            this.tools["CircleValve"] = new PositionTool("CircleValve", "Basic");
+            this.tools["Port"] = new PositionTool("Port", "Basic");
+            this.tools["Via"] = new PositionTool("Via", "Basic");
         }
     }], [{
         key: "__eventButtonsToWhich",
@@ -17637,4 +17264,4 @@ var ViewManager = (function () {
 
 module.exports = ViewManager;
 
-},{"../core/features":52,"../core/registry":65,"../utils/SimpleQueue":81,"./PanAndZoom":85,"./tools/channelTool":102,"./tools/mouseTool":103,"./tools/panTool":104,"./tools/positionTool":105,"./tools/selectTool":106}]},{},[45]);
+},{"../core/device":46,"../core/registry":58,"../utils/SimpleQueue":67,"./PanAndZoom":71,"./tools/channelTool":92,"./tools/mouseTool":93,"./tools/panTool":94,"./tools/positionTool":95,"./tools/selectTool":96}]},{},[45]);
