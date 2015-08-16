@@ -1,12 +1,14 @@
-var Features = require("../../core/features");
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
+var Feature = require("../../core/feature");
+var PageSetup = require("../pageSetup");
 
 class ChannelTool extends MouseTool {
-	constructor(typeString) {
+	constructor(typeString, setString) {
 		super();
 		this.typeString = typeString;
+		this.setString = setString;
 		this.startPoint = null;
 		this.lastPoint = null;
 		this.currentChannelID = null;
@@ -23,6 +25,8 @@ class ChannelTool extends MouseTool {
 		}, 20, false);
 
 		this.down = function(event) {
+			PageSetup.killParamsWindow();
+			paper.project.deselectAll();
 			ref.dragging = true;
 			ref.initChannel();
 		};
@@ -58,7 +62,7 @@ class ChannelTool extends MouseTool {
 
 	showTarget(point) {
 		let target = ChannelTool.getTarget(this.lastPoint);
-		Registry.viewManager.updateTarget(this.typeString, target);
+		Registry.viewManager.updateTarget(this.typeString, this.setString, target);
 	}
 
 	initChannel() {
@@ -73,7 +77,6 @@ class ChannelTool extends MouseTool {
 			let target = ChannelTool.getTarget(this.lastPoint);
 			let feat = Registry.currentLayer.getFeature(this.currentChannelID);
 			feat.updateParameter("end", target);
-			Registry.canvasManager.render();
 			} else {
 				let newChannel = this.createChannel(this.startPoint, this.startPoint);
 				this.currentChannelID = newChannel.getID();
@@ -87,8 +90,6 @@ class ChannelTool extends MouseTool {
 		if (this.currentChannelID) {
 			if (this.startPoint.x == target[0] && this.startPoint.y == target[1]) {
 				Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-				//TODO: This will be slow for complex devices, since it re-renders everything
-				Registry.canvasManager.render();
 			}
 		} else {
 			this.updateChannel(point);
@@ -98,7 +99,7 @@ class ChannelTool extends MouseTool {
 	}
 
 	createChannel(start, end) {
-		return Features[this.typeString]({
+		return Feature.makeFeature(this.typeString, this.setString, {
 			start: start,
 			end: end
 		});

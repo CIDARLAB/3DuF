@@ -1,7 +1,7 @@
 var Registry = require("../core/registry");
-var FeatureRenderers = require("./featureRenderers");
-var GridRenderer = require("./grid/GridRenderer");
-var DeviceRenderer = require("./deviceRenderer");
+var FeatureRenderer2D = require("./render2D/featureRenderer2D");
+var GridRenderer = require("./render2D/GridRenderer");
+var DeviceRenderer = require("./render2D/deviceRenderer2D");
 var PanAndZoom = require("./PanAndZoom");
 var SimpleQueue = require("../utils/simpleQueue");
 var Colors = require("./colors");
@@ -10,7 +10,6 @@ class PaperView {
     constructor(canvas) {
         this.panAndZoom = new PanAndZoom(this);
         this.center = paper.view.center;
-        let ref = this;
         this.zoom = paper.view.zoom;
         this.canvas = canvas;
         this.paperFeatures = {};
@@ -28,12 +27,22 @@ class PaperView {
         this.lastTargetType = null;
         this.lastTargetPosition = null;
         this.inactiveAlpha = .5;
+        this.disableContextMenu();
     }
 
-    deleteSelectedFeatures(){
+    getSelectedFeatures() {
+        let output = [];
         let items = paper.project.selectedItems;
-        if (items && items.length > 0){
-            for (let i =0 ; i < items.length; i++){
+        for (let i = 0; i < items.length; i ++){
+            output.push(Registry.currentDevice.getFeatureByID(items[i].featureID));
+        }
+        return output;
+    }
+
+    deleteSelectedFeatures() {
+        let items = paper.project.selectedItems;
+        if (items && items.length > 0) {
+            for (let i = 0; i < items.length; i++) {
                 Registry.currentDevice.removeFeatureByID(items[i].featureID);
             }
         }
@@ -70,6 +79,14 @@ class PaperView {
         return newSVG;
     }
 
+    getCanvasWidth() {
+        return this.canvas.clientWidth;
+    }
+
+    getCanvasHeight() {
+        return this.canvas.clientHeight;
+    }
+
     getViewCenterInMillimeters() {
         return [paper.view.center.x / 1000, paper.view.center.y / 1000];
     }
@@ -82,6 +99,8 @@ class PaperView {
         this.activeLayer = null;
         this.featureLayer.removeChildren();
         this.featureLayer.clear();
+        this.deviceLayer.clear();
+        this.gridLayer.clear();
     }
 
     getCenter() {
@@ -147,6 +166,12 @@ class PaperView {
 
     setResizeFunction(func) {
         paper.view.onResize = func;
+    }
+
+    disableContextMenu(func) {
+        this.canvas.oncontextmenu = function(event) {
+            event.preventDefault();
+        }
     }
 
     refresh() {
@@ -239,8 +264,13 @@ class PaperView {
     }
 
     updateFeature(feature) {
+        let existingFeature = this.paperFeatures[feature.getID()];
+        let selected;
+        if (existingFeature) selected = existingFeature.selected;
+        else selected = false;
         this.removeFeature(feature);
-        let newPaperFeature = FeatureRenderers[feature.getType()].renderFeature(feature);
+        let newPaperFeature = FeatureRenderer2D.renderFeature(feature);
+        newPaperFeature.selected = selected;
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
         //TODO: This is terrible. Fix it. Fix it now.
         let index = feature.layer.device.layers.indexOf(feature.layer);
@@ -254,18 +284,18 @@ class PaperView {
         this.currentTarget = null;
     }
 
-    addTarget(featureType, position) {
+    addTarget(featureType, set, position) {
         this.removeTarget();
         this.lastTargetType = featureType;
         this.lastTargetPosition = position;
+        this.lastTargetSet = set;
         this.updateTarget();
     }
 
     updateTarget() {
         this.removeTarget();
         if (this.lastTargetType && this.lastTargetPosition) {
-            let renderer = FeatureRenderers[this.lastTargetType];
-            this.currentTarget = FeatureRenderers[this.lastTargetType].renderTarget(this.lastTargetPosition);
+            this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
             this.uiLayer.addChild(this.currentTarget);
         }
     }
@@ -302,6 +332,39 @@ class PaperView {
             output.push(Registry.currentDevice.getFeatureByID(paperFeatures[i].featureID));
         }
         return output;
+    }
+
+    initializeView() {
+        let center = this.getDeviceCenter();
+        let zoom = this.computeOptimalZoom();
+        this.setCenter(center);
+        this.setZoom(zoom);
+    }
+
+    getDeviceCenter() {
+        let dev = Registry.currentDevice;
+        let width = dev.params.getValue("width");
+        let height = dev.params.getValue("height");
+        return new paper.Point(width / 2, height / 2);
+    }
+
+    computeOptimalZoom() {
+        let borderMargin = 200; // pixels
+        let dev = Registry.currentDevice;
+        let deviceWidth = dev.params.getValue("width");
+        let deviceHeight = dev.params.getValue("height");
+        let canvasWidth = this.getCanvasWidth();
+        let canvasHeight = this.getCanvasHeight();
+        let maxWidth;
+        let maxHeight;
+        if (canvasWidth - borderMargin <= 0) maxWidth = canvasWidth;
+        else maxWidth = canvasWidth - borderMargin;
+        if (canvasHeight - borderMargin <= 0) maxHeight = canvasHeight;
+        else maxHeight = canvasHeight - borderMargin;
+        let widthRatio = deviceWidth / maxWidth;
+        let heightRatio = deviceHeight / maxHeight;
+        if (widthRatio > heightRatio) return 1 / widthRatio;
+        else return 1 / heightRatio;
     }
 
     hitFeature(point, onlyHitActiveLayer = true) {

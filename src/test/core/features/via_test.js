@@ -1,5 +1,6 @@
 var should = require("should");
-var Via = require("../../../app/core/features").Via;
+var Feature = require("../../../app/core/feature");
+var Via = Feature.getFeatureGenerator("Via", "Basic");
 
 describe('Via', function() {
     describe("#init", function() {

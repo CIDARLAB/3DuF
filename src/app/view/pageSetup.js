@@ -2,6 +2,7 @@ var HTMLUtils = require("../utils/htmlUtils");
 var Registry = require("../core/registry");
 var Colors = require("./colors");
 var JSZip = require("jszip");
+var ParameterMenu = require("./UI/parameterMenu");
 
 let activeButton = null;
 let activeLayer = null;
@@ -10,6 +11,12 @@ let circleValveButton = document.getElementById("circleValve_button")
 let portButton = document.getElementById("port_button")
 let viaButton = document.getElementById("via_button")
 let chamberButton = document.getElementById("chamber_button");
+
+let channelParams = document.getElementById("channel_params_button");
+let circleValveParams = document.getElementById("circleValve_params_button");
+let portParams = document.getElementById("port_params_button");
+let viaParams = document.getElementById("via_params_button");
+let chamberParams = document.getElementById("chamber_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -53,8 +60,6 @@ let layerIndices = {
     "1": 1
 }
 
-
-
 let zipper = new JSZip();
 
 function drop(ev) {
@@ -69,9 +74,11 @@ function setButtonColor(button, background, text) {
 }
 
 function setActiveButton(feature) {
+    killParamsWindow();
     if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
     activeButton = feature;
-    setButtonColor(buttons[activeButton], Colors.getDefaultFeatureColor(activeButton, Registry.currentLayer), activeText);
+    let color = Colors.getDefaultFeatureColor(activeButton, "Basic", Registry.currentLayer);
+    setButtonColor(buttons[activeButton], color, activeText);
 }
 
 function setActiveLayer(layerName) {
@@ -80,7 +87,7 @@ function setActiveLayer(layerName) {
     setActiveButton(activeButton);
     let bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
-    if (threeD){
+    if (threeD) {
         setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
         setButtonColor(button2D, inactiveBackground, inactiveText);
     } else {
@@ -137,48 +144,60 @@ function switchTo2D() {
     }
 }
 
+function paramsWindowFunction(typeString, setString) {
+    var makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString);
+    return function(event) {
+        killParamsWindow();
+        makeTable(event);
+    }
+}
+
+function killParamsWindow() {
+    let paramsWindow = document.getElementById("parameter_menu");
+    if (paramsWindow) paramsWindow.parentElement.removeChild(paramsWindow);
+}
+
 function setupAppPage() {
 
     view = Registry.viewManager.view;
     renderer = Registry.threeRenderer;
     channelButton.onclick = function() {
         Registry.viewManager.activateTool("Channel");
-        let bg = Colors.getDefaultFeatureColor("Channel", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("Channel", "Basic", Registry.currentLayer);
         setActiveButton("Channel");
         switchTo2D();
     };
 
     circleValveButton.onclick = function() {
         Registry.viewManager.activateTool("CircleValve");
-        let bg = Colors.getDefaultFeatureColor("CircleValve", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("CircleValve", "Basic", Registry.currentLayer);
         setActiveButton("CircleValve");
         switchTo2D();
-
     };
 
     portButton.onclick = function() {
         Registry.viewManager.activateTool("Port");
-        let bg = Colors.getDefaultFeatureColor("Port", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("Port", "Basic", Registry.currentLayer);
         setActiveButton("Port");
         switchTo2D();
     };
 
     viaButton.onclick = function() {
         Registry.viewManager.activateTool("Via");
-        let bg = Colors.getDefaultFeatureColor("Via", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("Via", "Basic", Registry.currentLayer);
         setActiveButton("Via");
         switchTo2D();
     };
 
     chamberButton.onclick = function() {
         Registry.viewManager.activateTool("Chamber");
-        let bg = Colors.getDefaultFeatureColor("Chamber", Registry.currentLayer);
+        let bg = Colors.getDefaultFeatureColor("Chamber", "Basic", Registry.currentLayer);
         setActiveButton("Chamber");
         switchTo2D();
     };
 
     flowButton.onclick = function() {
-        if (threeD){
+        if (threeD) {
             if (activeLayer == "0") renderer.toggleLayerView(0);
             else renderer.showLayer(0);
         }
@@ -189,7 +208,7 @@ function setupAppPage() {
     }
 
     controlButton.onclick = function() {
-        if (threeD){
+        if (threeD) {
             if (activeLayer == "1") renderer.toggleLayerView(1);
             else renderer.showLayer(1);
         }
@@ -210,7 +229,7 @@ function setupAppPage() {
         let stls = renderer.getSTL(json);
         let blobs = [];
         let zipper = new JSZip();
-        for (let i =0 ; i < stls.length; i++){
+        for (let i = 0; i < stls.length; i++) {
             let name = "" + i + "_" + json.name + "_" + json.layers[i].name + ".stl";
             zipper.file(name, stls[i]);
         }
@@ -243,31 +262,47 @@ function setupAppPage() {
     }
 
     button2D.onclick = function() {
+        killParamsWindow();
         switchTo2D();
     }
 
     button3D.onclick = function() {
+        killParamsWindow();
         switchTo3D();
     }
 
-    let dnd = new HTMLUtils.DnDFileController("#c", function(files) {
-        var f = files[0];
+    channelParams.onclick = paramsWindowFunction("Channel", "Basic");
+    circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
+    portParams.onclick = paramsWindowFunction("Port", "Basic");
+    viaParams.onclick = paramsWindowFunction("Via", "Basic");
+    chamberParams.onclick = paramsWindowFunction("Chamber", "Basic");
 
-        var reader = new FileReader();
-        reader.onloadend = function(e) {
-            var result = JSON.parse(this.result);
-            Registry.canvasManager.loadDeviceFromJSON(result);
-        };
-        try {
-            reader.readAsText(f);
-        } catch (err) {
-            console.log("unable to load JSON: " + f);
-        }
-    });
+    function setupDragAndDropLoad(selector) {
+        let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+            var f = files[0];
 
+            var reader = new FileReader();
+            reader.onloadend = function(e) {
+                var result = JSON.parse(this.result);
+                Registry.viewManager.loadDeviceFromJSON(result);
+                switchTo2D();
+            };
+            try {
+                reader.readAsText(f);
+            } catch (err) {
+                console.log("unable to load JSON: " + f);
+            }
+        });
+    }
+
+    setupDragAndDropLoad("#c");
+    setupDragAndDropLoad("#renderContainer");
     setActiveButton("Channel");
     setActiveLayer("0");
     switchTo2D();
+
 }
 
 module.exports.setupAppPage = setupAppPage;
+module.exports.paramsWindowFunction = paramsWindowFunction;
+module.exports.killParamsWindow = killParamsWindow;

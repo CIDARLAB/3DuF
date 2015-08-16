@@ -2,10 +2,11 @@ var appRoot = "../../app/";
 var should = require("should");
 var Parameters = require(appRoot + "core/parameters");
 var Parameter = require(appRoot + "core/parameter");
-var Features = require(appRoot + "core/features");
+var Feature = require("../../app/core/feature");
+//var Features = require(appRoot + "core/features");
 var Params = require(appRoot + "core/params");
 
-var Channel = Features.Channel;
+var Channel = Feature.getFeatureGenerator("Channel", "Basic");
 
 var FloatValue = Parameters.FloatValue;
 var IntegerValue = Parameters.IntegerValue;

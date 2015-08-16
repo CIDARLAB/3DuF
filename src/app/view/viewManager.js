@@ -1,7 +1,7 @@
 var Registry = require("../core/registry");
+var Device = require("../core/device");
 var ChannelTool = require("./tools/channelTool");
 var MouseTool = require("./tools/mouseTool");
-var Features = require("../core/features");
 var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
@@ -23,7 +23,7 @@ class ViewManager {
         })
         window.onkeydown = function(event) {
             let key = event.keyCode || event.which;
-            if (key == 46 || key == 8) {
+            if (key == 46) {
                 event.preventDefault();
             }
         }
@@ -196,8 +196,8 @@ class ViewManager {
         this.view.removeTarget();
     }
 
-    updateTarget(featureType, position, refresh = true) {
-        this.view.addTarget(featureType, position);
+    updateTarget(featureType, featureSet, position, refresh = true) {
+        this.view.addTarget(featureType, featureSet, position);
         this.refresh(refresh);
     }
 
@@ -245,9 +245,7 @@ class ViewManager {
     }
 
     refresh(refresh = true) {
-        //this.view.refresh();
         this.updateQueue.run();
-        //this.saveQueue.run();
     }
 
     getEventPosition(event) {
@@ -281,17 +279,16 @@ class ViewManager {
         return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
     }
 
-    getDeviceCenter() {
-        let dev = Registry.currentDevice;
-        let width = dev.params.getValue("width");
-        let height = dev.params.getValue("height");
-        return new paper.Point(width / 2, height / 2);
+    loadDeviceFromJSON(json) {
+        Registry.viewManager.clear();
+        Registry.currentDevice = Device.fromJSON(json);
+        Registry.currentLayer = Registry.currentDevice.layers[0];
+        Registry.viewManager.addDevice(Registry.currentDevice);
+        this.view.initializeView();
+        this.updateGrid();
+        this.updateDevice(Registry.currentDevice);
+        this.refresh(true);
     }
-
-    computeOptimalZoom() {
-
-    }
-
 
     removeFeaturesByPaperElements(paperElements) {
         if (paperElements.length > 0) {
@@ -334,6 +331,46 @@ class ViewManager {
         else return point;
     }
 
+    getFeaturesOfType(typeString, setString, features){
+        let output = [];
+        for (let i =0; i < features.length; i++){
+            let feature = features[i];
+            if (feature.getType() == typeString && feature.getSet() == setString){
+                output.push(feature);
+            }
+        }
+        return output;
+    }
+
+    adjustAllFeatureParams(valueString, value, features){
+        for (let i = 0 ; i < features.length; i++){
+            let feature = features[i];
+            feature.updateParameter(valueString, value);
+        }
+    }
+
+    adjustParams(typeString, setString, valueString, value){
+        let selectedFeatures = this.view.getSelectedFeatures();
+        if (selectedFeatures.length > 0){
+            let correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
+            if (correctType.length >0 ){
+                this.adjustAllFeatureParams(valueString, value, correctType);
+            }
+        }
+        this.updateDefault(typeString, setString, valueString, value);
+    }
+
+    updateDefault(typeString, setString, valueString, value){
+        Registry.featureDefaults[setString][typeString][valueString] = value;
+    }
+
+    updateDefaultsFromFeature(feature){
+        let heritable = feature.getHeritableParams();
+        for (let key in heritable){
+            this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
+        }
+    }
+
     hitFeature(point) {
         return this.view.hitFeature(point);
     }
@@ -354,11 +391,11 @@ class ViewManager {
     }
 
     setupTools() {
-        this.tools["Chamber"] = new ChannelTool("Chamber");
-        this.tools["Channel"] = new ChannelTool("Channel");
-        this.tools["CircleValve"] = new PositionTool("CircleValve");
-        this.tools["Port"] = new PositionTool("Port");
-        this.tools["Via"] = new PositionTool("Via");
+        this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
+        this.tools["Channel"] = new ChannelTool("Channel", "Basic");
+        this.tools["CircleValve"] = new PositionTool("CircleValve", "Basic");
+        this.tools["Port"] = new PositionTool("Port", "Basic");
+        this.tools["Via"] = new PositionTool("Via", "Basic");
     }
 }
 

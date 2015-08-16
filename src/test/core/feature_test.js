@@ -2,13 +2,13 @@ var appRoot = "../../app/";
 var should = require('should');
 var Feature = require(appRoot + "core/feature");
 var Parameters = require(appRoot + "core/parameters");
-var Features = require(appRoot + "core/features");
+//var Features = require(appRoot + "core/features");
 
 var FloatValue = Parameters.FloatValue;
 var IntegerValue = Parameters.IntegerValue;
 
-var CircleValve = Features.CircleValve;
-var Port = Features.Port;
+var CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
+var Port = Feature.getFeatureGenerator("Port", "Basic");
 
 var feat1;
 var feat2;
