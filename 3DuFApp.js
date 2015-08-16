@@ -11505,17 +11505,17 @@ var Feature = (function () {
     }, {
         key: 'getHeritableParams',
         value: function getHeritableParams() {
-            return this.getFeatureType().heritable;
+            return Feature.getDefinitionForType(this.getType(), this.getSet()).heritable;
         }
     }, {
         key: 'getUniqueParams',
         value: function getUniqueParams() {
-            return this.getFeatureType().unique;
+            return Feature.getDefinitionForType(this.getType(), this.getSet()).unique;
         }
     }, {
         key: 'getDefaults',
         value: function getDefaults() {
-            return getDefaultsForType(this.getType(), this.getSet());
+            return Feature.getDefaultsForType(this.getType(), this.getSet());
         }
     }, {
         key: 'updateView',
@@ -11545,6 +11545,11 @@ var Feature = (function () {
         key: 'getDefaultsForType',
         value: function getDefaultsForType(typeString, setString) {
             return Registry.featureDefaults[setString][typeString];
+        }
+    }, {
+        key: 'getDefinitionForType',
+        value: function getDefinitionForType(typeString, setString) {
+            return FeatureSets.getDefinition(typeString, setString);
         }
     }, {
         key: 'checkDefaults',
@@ -12907,7 +12912,7 @@ var BooleanValue = Parameters.BooleanValue;
 var createSlider = function createSlider(min, max, step, start, id) {
   var div = document.createElement("div");
   var p = document.createElement("p");
-  p.setAttribute("style", "width: 240px");
+  p.setAttribute("style", "min-width: 240px");
   var slider = document.createElement("input");
   slider.className = "mdl-slider mdl-js-slider";
   slider.setAttribute("type", "range");
@@ -12991,11 +12996,12 @@ var createSpan = function createSpan(value, id) {
   return div;
 };
 
-var createTableRow = function createTableRow(title, slider, field) {
+var createTableRow = function createTableRow(one, two, three) {
   var tr = document.createElement("tr");
-  tr.appendChild(title);
-  tr.appendChild(slider);
-  tr.appendChild(field);
+  one.style.borderBottom = "none";
+  tr.appendChild(one);
+  tr.appendChild(two);
+  tr.appendChild(three);
   return tr;
 };
 
@@ -13048,7 +13054,7 @@ var createSliderRow = function createSliderRow(featureID, typeString, setString,
   sliderContainer.setAttribute("style", "padding-left: 0px; padding-right: 0px");
   var field = createValueField(value, fieldID);
   var fieldContainer = createTableElement(field);
-  var row = createTableRow(titleContainer, fieldContainer, sliderContainer);
+  var row = createTableRow(sliderContainer, titleContainer, fieldContainer);
   field.oninput = generateUpdateFunction(fieldID, sliderID, typeString, setString, key);
   slider.oninput = generateUpdateFunction(sliderID, fieldID, typeString, setString, key);
   return row;
@@ -13064,10 +13070,9 @@ var createCheckboxRow = function createCheckboxRow(featureID, typeString, setStr
   if (value) spanValue = "true";else spanValue = "false";
   var span = createSpan(spanValue, spanID);
   var titleContainer = createTableElement(title);
-  titleContainer.style.borderBottom = "none";
   var checkContainer = createTableElement(checkBox);
   var spanContainer = createTableElement(span);
-  var row = createTableRow(titleContainer, spanContainer, checkContainer);
+  var row = createTableRow(checkContainer, titleContainer, spanContainer);
   checkBox.onchange = generateCheckFunction(checkID, spanID, typeString, setString, key);
   return row;
 };
@@ -13099,12 +13104,12 @@ var createFeatureTableHeaders = function createFeatureTableHeaders(typeString) {
   var type = document.createElement("th");
   type.className = "mdl-data-table__cell--non-numeric";
   type.innerHTML = typeString + " Parameters";
-  type.style.fontSize = "20px";
+  type.style.fontSize = "18px";
   type.style.color = "#000000";
-  type.style.right = "35px";
+  //type.style.right = "35px";
+  tr.appendChild(type);
   tr.appendChild(param);
   tr.appendChild(value);
-  tr.appendChild(type);
   return thead;
 };
 
@@ -13127,9 +13132,9 @@ var createFeatureTable = function createFeatureTable(typeString, setString, posi
   table.appendChild(body);
   var closeButton = createCloseButton();
   closeButton.style.position = "absolute";
-  closeButton.style.right = "10px";
-  closeButton.style.top = "10px";
-  table.appendChild(closeButton);
+  closeButton.style.right = "0px";
+  closeButton.style.top = "0px";
+  //table.appendChild(closeButton);
   closeButton.onclick = function () {
     table.parentElement.removeChild(table);
   };
@@ -13140,7 +13145,7 @@ var createFeatureTable = function createFeatureTable(typeString, setString, posi
 
 var createCloseButton = function createCloseButton() {
   var button = createButton("close");
-  button.style.color = "#F44336";
+  button.style.color = "#313131";
   return button;
 };
 
@@ -13154,7 +13159,7 @@ var generateTableFunction = function generateTableFunction(tableID, typeString, 
       table.id = tableID;
       table.style.position = "absolute";
       table.style.left = "" + (event.clientX + 30) + "px";
-      table.style.top = "" + (event.clientY - 18) + "px";
+      table.style.top = "" + (event.clientY - 20) + "px";
       HTMLUtils.removeClass(table, "hidden-block");
       HTMLUtils.addClass(table, "shown-block");
       document.body.appendChild(table);
@@ -13491,7 +13496,8 @@ function setActiveButton(feature) {
     killParamsWindow();
     if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
     activeButton = feature;
-    setButtonColor(buttons[activeButton], Colors.getDefaultFeatureColor(activeButton, Registry.currentLayer), activeText);
+    var color = Colors.getDefaultFeatureColor(activeButton, "Basic", Registry.currentLayer);
+    setButtonColor(buttons[activeButton], color, activeText);
 }
 
 function setActiveLayer(layerName) {
@@ -16676,6 +16682,7 @@ var SelectTool = (function (_MouseTool) {
 			if (target) {
 				if (target.selected) {
 					var feat = Registry.currentDevice.getFeatureByID(target.featureID);
+					Registry.viewManager.updateDefaultsFromFeature(feat);
 					var func = PageSetup.paramsWindowFunction(feat.getType(), feat.getSet());
 					func(event);
 				} else {
@@ -17196,6 +17203,14 @@ var ViewManager = (function () {
         key: "updateDefault",
         value: function updateDefault(typeString, setString, valueString, value) {
             Registry.featureDefaults[setString][typeString][valueString] = value;
+        }
+    }, {
+        key: "updateDefaultsFromFeature",
+        value: function updateDefaultsFromFeature(feature) {
+            var heritable = feature.getHeritableParams();
+            for (var key in heritable) {
+                this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
+            }
         }
     }, {
         key: "hitFeature",

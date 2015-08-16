@@ -364,6 +364,13 @@ class ViewManager {
         Registry.featureDefaults[setString][typeString][valueString] = value;
     }
 
+    updateDefaultsFromFeature(feature){
+        let heritable = feature.getHeritableParams();
+        for (let key in heritable){
+            this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
+        }
+    }
+
     hitFeature(point) {
         return this.view.hitFeature(point);
     }
