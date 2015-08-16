@@ -1,1 +1,0 @@
-var Registry = require("../../../core/Registry");
