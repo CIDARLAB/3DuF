@@ -6,7 +6,8 @@ let render2D = {
             radius2: "radius2"
         },
         targetParams: {
-            radius: "radius1"
+            radius1: "radius1",
+            radius2: "radius2"
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "GradientCircle",
@@ -20,7 +21,8 @@ let render2D = {
             radius2: "radius2"
         },
         targetParams: {
-            radius: "radius1"
+            radius1: "radius1",
+            radius2: "radius2"
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "GradientCircle",
@@ -34,7 +36,8 @@ let render2D = {
             radius2: "radius2"
         },
         targetParams: {
-            radius: "radius1"
+            radius1: "radius1",
+            radius2: "radius2"
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "GradientCircle",

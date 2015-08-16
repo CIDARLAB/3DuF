@@ -30,6 +30,15 @@ class PaperView {
         this.disableContextMenu();
     }
 
+    getSelectedFeatures() {
+        let output = [];
+        let items = paper.project.selectedItems;
+        for (let i = 0; i < items.length; i ++){
+            output.push(Registry.currentDevice.getFeatureByID(items[i].featureID));
+        }
+        return output;
+    }
+
     deleteSelectedFeatures() {
         let items = paper.project.selectedItems;
         if (items && items.length > 0) {
@@ -255,8 +264,13 @@ class PaperView {
     }
 
     updateFeature(feature) {
+        let existingFeature = this.paperFeatures[feature.getID()];
+        let selected;
+        if (existingFeature) selected = existingFeature.selected;
+        else selected = false;
         this.removeFeature(feature);
         let newPaperFeature = FeatureRenderer2D.renderFeature(feature);
+        newPaperFeature.selected = selected;
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
         //TODO: This is terrible. Fix it. Fix it now.
         let index = feature.layer.device.layers.indexOf(feature.layer);

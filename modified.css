@@ -1,4 +1,5 @@
 #c {
+	z-index: 0;
 	position: absolute;
 	left: 0px;
 	top: 0px;
@@ -7,11 +8,17 @@
 	height: 100%;
 }
 
-.floating_button {
-	z-index: 1;
-	position: absolute;
-	top: 0px;
-	left: 0px;
+.params-button {
+	color: #BBBBBB;
+	margin-left: auto;
+	margin-right: auto;
+	bottom: 6px;
+	right: 1px;
+}
+
+.button-row {
+	margin-left: auto;
+	margin-right: 15;
 }
 
 #view_container {
@@ -52,8 +59,15 @@
 }
 
 .feature-button {
+	margin-left: 15;
+	margin-bottom: 15;
+	width: 170;
+	margin-top: 0;
+	margin-right: 0;
+}
+
+.view-button {
 	margin: 15;
-	width: auto;
 	margin-top: 0;
 }
 
@@ -62,6 +76,7 @@
 }
 
 #renderContainer { 
+	z-index: 0;
 	position: absolute;
 	left: 0px;
 	top: 0px;

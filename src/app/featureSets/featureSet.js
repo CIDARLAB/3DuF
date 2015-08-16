@@ -15,6 +15,15 @@ class FeatureSet {
         else return false;
     }
 
+    getDefaults() {
+        let output = {};
+        let defs = this.__definitions;
+        for (let key in defs){
+            output[key] = defs[key]["defaults"];
+        }
+        return output;
+    }
+
     getFeatureType(typeString){
         let setString = this.name;
         let defaultName = "New " + setString + "." + typeString;

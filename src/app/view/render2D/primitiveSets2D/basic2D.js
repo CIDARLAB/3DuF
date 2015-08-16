@@ -69,10 +69,20 @@ var GradientCircle = function(params){
     let color2 = params["baseColor"];
     let pos = new paper.Point(position);
     let ratio = radius2 / radius1;
-    let outerCircle = new paper.Path.Circle(pos, radius1);
+    let targetRatio;
+    let targetRadius;
+    if (ratio > 1) {
+        targetRatio = 1;
+        targetRadius = radius2;
+    }
+    else {
+        targetRatio = ratio;
+        targetRadius = radius1;
+    }
+    let outerCircle = new paper.Path.Circle(pos, targetRadius);
     outerCircle.fillColor = {
         gradient: {
-            stops: [[color1, ratio], [color2, ratio]],
+            stops: [[color1, targetRatio], [color2, targetRatio]],
             radial: true
         },
         origin: pos,
@@ -82,21 +92,26 @@ var GradientCircle = function(params){
 }
 
 var CircleTarget = function(params){
-    let radius;
-    if (params["radius"]) radius = params["radius"];
-    else radius = params["diameter"]/2;
+    let targetRadius;
+    if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"]/2;
+    else {
+        let radius1 = params["radius1"];
+        let radius2 = params["radius2"];
+        if (radius1 > radius2) targetRadius = radius1;
+        else targetRadius = radius2;
+    }
     let minSize = 8; //pixels
-    let minSizeInMicrometers = 8/minSize;
+    let minSizeInMicrometers = 8/paper.view.zoom;
     let position = params["position"];
     let color = params["color"];
     let pos = new paper.Point(position[0], position[1]);
-    if (radius < minSizeInMicrometers) radius = minSizeInMicrometers;
-    let circ = new paper.Path.Circle(pos, radius);
+    if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
+    let circ = new paper.Path.Circle(pos, targetRadius);
     circ.fillColor = color
     circ.fillColor.alpha = .5;
     circ.strokeColor = "#FFFFFF";
     circ.strokeWidth = 3 / paper.view.zoom;
-    if(circ.strokeWidth > radius/2) circ.strokeWidth = radius/2;
+    if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
     return circ;
 }
 

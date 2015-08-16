@@ -23,7 +23,7 @@ class ViewManager {
         })
         window.onkeydown = function(event) {
             let key = event.keyCode || event.which;
-            if (key == 46 || key == 8) {
+            if (key == 46) {
                 event.preventDefault();
             }
         }
@@ -329,6 +329,39 @@ class ViewManager {
     snapToGrid(point) {
         if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);
         else return point;
+    }
+
+    getFeaturesOfType(typeString, setString, features){
+        let output = [];
+        for (let i =0; i < features.length; i++){
+            let feature = features[i];
+            if (feature.getType() == typeString && feature.getSet() == setString){
+                output.push(feature);
+            }
+        }
+        return output;
+    }
+
+    adjustAllFeatureParams(valueString, value, features){
+        for (let i = 0 ; i < features.length; i++){
+            let feature = features[i];
+            feature.updateParameter(valueString, value);
+        }
+    }
+
+    adjustParams(typeString, setString, valueString, value){
+        let selectedFeatures = this.view.getSelectedFeatures();
+        if (selectedFeatures.length > 0){
+            let correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
+            if (correctType.length >0 ){
+                this.adjustAllFeatureParams(valueString, value, correctType);
+            }
+        }
+        this.updateDefault(typeString, setString, valueString, value);
+    }
+
+    updateDefault(typeString, setString, valueString, value){
+        Registry.featureDefaults[setString][typeString][valueString] = value;
     }
 
     hitFeature(point) {
