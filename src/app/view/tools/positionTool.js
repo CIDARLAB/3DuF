@@ -1,12 +1,14 @@
 var MouseTool = require("./mouseTool");
 var Registry = require("../../core/registry");
-var SimpleQueue = require("../../utils/SimpleQueue");
-var Features = require("../../core/features");
+var Feature = require("../../core/feature");
+var SimpleQueue = require("../../utils/simpleQueue");
+var PageSetup = require("../pageSetup");
 
 class PositionTool extends MouseTool{
-    constructor(typeString){
+    constructor(typeString, setString){
         super();
         this.typeString = typeString;
+        this.setString = setString;
         this.currentFeatureID = null;
         let ref = this;
         this.lastPoint = null;
@@ -21,12 +23,14 @@ class PositionTool extends MouseTool{
             ref.showQueue.run();
         }
         this.down = function(event){
+            PageSetup.killParamsWindow();
+            paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
         }
     }
 
     createNewFeature(point){
-        let newFeature = Features[this.typeString]({
+        let newFeature = Feature.makeFeature(this.typeString, this.setString, {
             "position": PositionTool.getTarget(point)
         });
         this.currentFeatureID = newFeature.getID();
@@ -40,7 +44,7 @@ class PositionTool extends MouseTool{
 
     showTarget(){
         let target = PositionTool.getTarget(this.lastPoint);
-        Registry.viewManager.updateTarget(this.typeString, target);
+        Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }
 

@@ -1,5 +1,7 @@
 var should = require("should");
-var Channel = require("../../../app/core/features").Channel;
+var Feature = require("../../../app/core/feature");
+var Channel = Feature.getFeatureGenerator("Channel", "Basic");
+
 describe('Channel', function() {
     describe("#init", function() {
         it("can be initialized with only start and end points", function() {
