@@ -19,7 +19,7 @@ window.onload = function() {
     view = new PaperView(document.getElementById("c"));
     viewManager = new ViewManager(view);
     grid = new AdaptiveGrid();
-    grid.setColor(Colors.TEAL_100);
+    grid.setColor(Colors.BLUE_500);
 
 
     Registry.viewManager = viewManager;

@@ -45,7 +45,7 @@ class Feature {
     }
 
     setGroup(group){
-        //TODO: implement this!
+        //TODO: implement this! 
     }
 
     getGroup(){
@@ -105,11 +105,11 @@ class Feature {
     }
 
     getDefaults(){
-        return this.getFeatureType().defaults;
+        return getDefaultsForType(this.getType(), this.getSet());
     }
 
     static getDefaultsForType(typeString, setString){
-        return FeatureSets.getDefinition(typeString, setString).defaults;
+        return Registry.featureDefaults[setString][typeString];
     }
 
     static checkDefaults(values, heritable, defaults){
@@ -128,7 +128,7 @@ class Feature {
 
     static makeFeature(typeString, setString, values, name = "New Feature", id=undefined){
         let featureType = FeatureSets.getDefinition(typeString, setString);
-        Feature.checkDefaults(values, featureType.heritable, featureType.defaults);
+        Feature.checkDefaults(values, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
         let params = new Params(values, featureType.unique, featureType.heritable);
         return new Feature(typeString, setString, params, name, id)
     }

@@ -1,6 +1,7 @@
 var Registry = require("../../core/registry");
 var MouseTool = require("./MouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
+var PageSetup = require("../pageSetup");
 
 class SelectTool extends MouseTool {
 	constructor() {
@@ -15,7 +16,8 @@ class SelectTool extends MouseTool {
 			ref.dragHandler();
 		}, 20);
 		this.down = function(event) {
-			ref.mouseDownHandler(MouseTool.getEventPosition(event));
+			PageSetup.killParamsWindow();
+			ref.mouseDownHandler(event);
 			ref.dragging = true;
 			ref.showTarget();
 		};
@@ -49,9 +51,9 @@ class SelectTool extends MouseTool {
 		}
 	}
 
-    showTarget(){
-        Registry.viewManager.removeTarget();
-    }
+	showTarget() {
+		Registry.viewManager.removeTarget();
+	}
 
 	mouseUpHandler(point) {
 		if (this.currentSelectBox) {
@@ -72,11 +74,20 @@ class SelectTool extends MouseTool {
 		}
 	}
 
-	mouseDownHandler(point) {
+	mouseDownHandler(event) {
+		let point = MouseTool.getEventPosition(event);
 		let target = this.hitFeature(point);
 		if (target) {
-			this.deselectFeatures();
-			this.selectFeature(target);
+			if (target.selected) {
+				let feat = Registry.currentDevice.getFeatureByID(target.featureID);
+				let func = PageSetup.paramsWindowFunction(feat.getType(), feat.getSet());
+				func(event);
+			} else {
+				this.deselectFeatures();
+				this.selectFeature(target);
+			}
+
+
 		} else {
 			this.deselectFeatures();
 			this.dragStart = point;
@@ -111,12 +122,7 @@ class SelectTool extends MouseTool {
 	}
 
 	deselectFeatures() {
-		if (this.currentSelection) {
-			for (let i = 0; i < this.currentSelection.length; i++) {
-				let paperFeature = this.currentSelection[i];
-				paperFeature.selected = false;
-			}
-		}
+		paper.project.deselectAll();
 		this.currentSelection = [];
 	}
 

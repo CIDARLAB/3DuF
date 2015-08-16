@@ -2,6 +2,7 @@ var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
 var Feature = require("../../core/feature");
+var PageSetup = require("../pageSetup");
 
 class ChannelTool extends MouseTool {
 	constructor(typeString, setString) {
@@ -24,6 +25,8 @@ class ChannelTool extends MouseTool {
 		}, 20, false);
 
 		this.down = function(event) {
+			PageSetup.killParamsWindow();
+			paper.project.deselectAll();
 			ref.dragging = true;
 			ref.initChannel();
 		};

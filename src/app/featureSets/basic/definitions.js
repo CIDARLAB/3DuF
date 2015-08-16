@@ -11,6 +11,14 @@ let basicFeatures = {
         defaults: {
             "width": .41 * 1000,
             "height": .1 * 1000
+        },
+        minimum: {
+            "width": 10,
+            "height": 10,
+        },
+        maximum: {
+            "width": 2000,
+            "height": 1200,
         }
     },
     "Chamber": {
@@ -25,6 +33,14 @@ let basicFeatures = {
         defaults: {
             "borderWidth": .41 * 1000,
             "height": .1 * 1000
+        },
+        minimum: {
+            "borderWidth": 10,
+            "height": 10,
+        },
+        maximum: {
+            "borderWidth": 2000,
+            "height": 1200,
         }
     },
     "CircleValve": {
@@ -40,6 +56,16 @@ let basicFeatures = {
             "radius1": 1.4 * 1000,
             "radius2": 1.2 * 1000,
             "height": .8 * 1000
+        },
+        minimum: {
+            "radius1": 10,
+            "radius2": 10,
+            "height": 10
+        },
+        maximum: {
+            "radius1": 2000,
+            "radius2": 2000,
+            "height": 1200
         }
     },
     "Via": {
@@ -55,6 +81,16 @@ let basicFeatures = {
             "radius1": .8 * 1000,
             "radius2": .7 * 1000,
             "height": 1.1 * 1000
+        },
+        minimum: {
+            "radius1": 10,
+            "radius2": 10,
+            "height": 10
+        },
+        maximum: {
+            "radius1": 2000,
+            "radius2": 2000,
+            "height": 1200
         }
     },
     "Port": {
@@ -70,6 +106,16 @@ let basicFeatures = {
             "radius1": .7 * 1000,
             "radius2": .7 * 1000,
             "height": 1.1 * 1000
+        },
+        minimum: {
+            "radius1": 10,
+            "radius2": 10,
+            "height": 10
+        },
+        maximum: {
+            "radius1": 2000,
+            "radius2": 2000,
+            "height": 1200
         }
     }
 }

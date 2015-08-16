@@ -22,6 +22,7 @@ function lineSymbol(start, end, width, color){
         strokeWidth: width,
         strokeColor: color
     });
+    line.strokeColor.alpha = .25;
     line.remove();
     return new paper.Symbol(line);
 }
