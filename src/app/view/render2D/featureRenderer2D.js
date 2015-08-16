@@ -7,6 +7,7 @@ function getLayerColor(feature) {
     let height = feature.getValue("height");
     let layerHeight = feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
+    if (decimal >1) decimal = 1;
     if (!feature.layer.flip) decimal = 1 - decimal;
     let targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);

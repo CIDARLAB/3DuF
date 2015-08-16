@@ -4,6 +4,7 @@ var Detector = require("./threeLib/detector");
 var getSTLString = STLExporter.getSTLString;
 var Device3D = require("./primitiveSets3D").Device3D;
 var renderFeature = require("./threeFeatureRenderer").renderFeature;
+var Colors = require("../colors");
 
 var SLIDE_HOLDER_MATERIAL = new THREE.MeshLambertMaterial({
 	color: 0x9E9E9E,
@@ -30,7 +31,7 @@ class ThreeDeviceRenderer {
 		this.controls;
 		this.scene;
 		this.renderer;
-		this.backgroundColor = 0xEEEEEE;
+		this.backgroundColor = Colors.BLUE_50;
 		this.mockup = null;
 		this.layers = null;
 		this.json = null;

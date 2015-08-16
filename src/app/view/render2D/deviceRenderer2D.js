@@ -6,7 +6,7 @@ function renderDevice(device, strokeColor = DEFAULT_STROKE_COLOR) {
     let background = new paper.Path.Rectangle({
         from: paper.view.bounds.topLeft.subtract(paper.view.size),
         to: paper.view.bounds.bottomRight.add(paper.view.size),
-        fillColor: Colors.GREY_200,
+        fillColor: Colors.BLUE_50,
         strokeColor: null
     })
     let thickness = BORDER_THICKNESS / paper.view.zoom;

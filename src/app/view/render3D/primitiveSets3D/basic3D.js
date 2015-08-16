@@ -114,7 +114,7 @@ function TwoPointRoundedBox(params) {
 		height: height
 	});
 	var top = TwoPointRoundedLine({
-		start: topleft,
+		start: topLeft,
 		end: topRight,
 		width: borderWidth,
 		height: height

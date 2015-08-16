@@ -2,6 +2,7 @@ var HTMLUtils = require("../utils/htmlUtils");
 var Registry = require("../core/registry");
 var Colors = require("./colors");
 var JSZip = require("jszip");
+var ParameterMenu = require("./UI/parameterMenu");
 
 let activeButton = null;
 let activeLayer = null;
@@ -10,6 +11,12 @@ let circleValveButton = document.getElementById("circleValve_button")
 let portButton = document.getElementById("port_button")
 let viaButton = document.getElementById("via_button")
 let chamberButton = document.getElementById("chamber_button");
+
+let channelParams = document.getElementById("channel_params_button");
+let circleValveParams = document.getElementById("circleValve_params_button");
+let portParams = document.getElementById("port_params_button");
+let viaParams = document.getElementById("via_params_button");
+let chamberParams = document.getElementById("chamber_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -53,8 +60,6 @@ let layerIndices = {
     "1": 1
 }
 
-
-
 let zipper = new JSZip();
 
 function drop(ev) {
@@ -69,6 +74,7 @@ function setButtonColor(button, background, text) {
 }
 
 function setActiveButton(feature) {
+    killParamsWindow();
     if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
     activeButton = feature;
     setButtonColor(buttons[activeButton], Colors.getDefaultFeatureColor(activeButton, Registry.currentLayer), activeText);
@@ -137,6 +143,19 @@ function switchTo2D() {
     }
 }
 
+function paramsWindowFunction(typeString, setString) {
+    var makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString);
+    return function(event) {
+        killParamsWindow();
+        makeTable(event);
+    }
+}
+
+function killParamsWindow() {
+    let paramsWindow = document.getElementById("parameter_menu");
+    if (paramsWindow) paramsWindow.parentElement.removeChild(paramsWindow);
+}
+
 function setupAppPage() {
 
     view = Registry.viewManager.view;
@@ -153,7 +172,6 @@ function setupAppPage() {
         let bg = Colors.getDefaultFeatureColor("CircleValve", "Basic", Registry.currentLayer);
         setActiveButton("CircleValve");
         switchTo2D();
-
     };
 
     portButton.onclick = function() {
@@ -243,12 +261,20 @@ function setupAppPage() {
     }
 
     button2D.onclick = function() {
+        killParamsWindow();
         switchTo2D();
     }
 
     button3D.onclick = function() {
+        killParamsWindow();
         switchTo3D();
     }
+
+    channelParams.onclick = paramsWindowFunction("Channel", "Basic");
+    circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
+    portParams.onclick = paramsWindowFunction("Port", "Basic");
+    viaParams.onclick = paramsWindowFunction("Via", "Basic");
+    chamberParams.onclick = paramsWindowFunction("Chamber", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
@@ -273,6 +299,9 @@ function setupAppPage() {
     setActiveButton("Channel");
     setActiveLayer("0");
     switchTo2D();
+
 }
 
 module.exports.setupAppPage = setupAppPage;
+module.exports.paramsWindowFunction = paramsWindowFunction;
+module.exports.killParamsWindow = killParamsWindow;

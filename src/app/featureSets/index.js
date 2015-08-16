@@ -1,6 +1,7 @@
 var FeatureSet = require("./featureSet");
 var registeredFeatureSets = {};
 var typeStrings = {};
+var Registry = require("../core/registry");
 
 // add more sets here!
 var requiredSets = {
@@ -16,7 +17,9 @@ function makeFeatureSet(set, name) {
 
 function registerSets(sets) {
     for (let key in sets) {
-        registeredFeatureSets[key] = makeFeatureSet(sets[key], key);
+        let newSet = makeFeatureSet(sets[key], key);
+        registeredFeatureSets[key] = newSet;
+        Registry.featureDefaults[key] = newSet.getDefaults();
     }
 }
 

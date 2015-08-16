@@ -1,6 +1,7 @@
 var uuid = require('node-uuid');
 
 var registeredParams = {};
+var featureDefaults = {};
 var currentDevice = null;
 var canvasManager = null;
 var currentLayer = null;
@@ -21,4 +22,5 @@ exports.currentLayer = currentLayer;
 exports.canvasManager = canvasManager;
 exports.viewManager = viewManager;
 exports.currentGrid = currentGrid;
+exports.featureDefaults = featureDefaults;
 exports.threeRenderer = threeRenderer;

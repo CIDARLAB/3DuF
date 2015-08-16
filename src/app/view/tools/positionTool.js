@@ -2,6 +2,7 @@ var MouseTool = require("./mouseTool");
 var Registry = require("../../core/registry");
 var Feature = require("../../core/feature");
 var SimpleQueue = require("../../utils/simpleQueue");
+var PageSetup = require("../pageSetup");
 
 class PositionTool extends MouseTool{
     constructor(typeString, setString){
@@ -22,6 +23,8 @@ class PositionTool extends MouseTool{
             ref.showQueue.run();
         }
         this.down = function(event){
+            PageSetup.killParamsWindow();
+            paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
         }
     }
