@@ -97,19 +97,23 @@ class Feature {
     }
 
     getHeritableParams(){
-        return this.getFeatureType().heritable;
+        return Feature.getDefinitionForType(this.getType(), this.getSet()).heritable;
     }
 
     getUniqueParams(){
-        return this.getFeatureType().unique;
+        return Feature.getDefinitionForType(this.getType(), this.getSet()).unique;
     }
 
     getDefaults(){
-        return getDefaultsForType(this.getType(), this.getSet());
+        return Feature.getDefaultsForType(this.getType(), this.getSet());
     }
 
     static getDefaultsForType(typeString, setString){
         return Registry.featureDefaults[setString][typeString];
+    }
+
+    static getDefinitionForType(typeString, setString){
+        return FeatureSets.getDefinition(typeString, setString);
     }
 
     static checkDefaults(values, heritable, defaults){

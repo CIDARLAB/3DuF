@@ -77,7 +77,8 @@ function setActiveButton(feature) {
     killParamsWindow();
     if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
     activeButton = feature;
-    setButtonColor(buttons[activeButton], Colors.getDefaultFeatureColor(activeButton, Registry.currentLayer), activeText);
+    let color = Colors.getDefaultFeatureColor(activeButton, "Basic", Registry.currentLayer);
+    setButtonColor(buttons[activeButton], color, activeText);
 }
 
 function setActiveLayer(layerName) {

@@ -10,7 +10,7 @@ var BooleanValue = Parameters.BooleanValue;
 var createSlider = function(min, max, step, start, id) {
   var div = document.createElement("div");
   var p = document.createElement("p");
-  p.setAttribute("style", "width: 240px");
+  p.setAttribute("style", "min-width: 240px");
   var slider = document.createElement("input");
   slider.className = "mdl-slider mdl-js-slider";
   slider.setAttribute("type", "range");
@@ -94,11 +94,12 @@ var createSpan = function(value, id) {
   return div;
 }
 
-var createTableRow = function(title, slider, field) {
+var createTableRow = function(one, two, three) {
   var tr = document.createElement("tr");
-  tr.appendChild(title);
-  tr.appendChild(slider);
-  tr.appendChild(field);
+  one.style.borderBottom = "none";
+  tr.appendChild(one);
+  tr.appendChild(two);
+  tr.appendChild(three);
   return tr;
 }
 
@@ -152,7 +153,7 @@ var createSliderRow = function(featureID, typeString, setString, key) {
   sliderContainer.setAttribute("style", "padding-left: 0px; padding-right: 0px")
   var field = createValueField(value, fieldID);
   var fieldContainer = createTableElement(field);
-  var row = createTableRow(titleContainer, fieldContainer, sliderContainer);
+  var row = createTableRow(sliderContainer, titleContainer, fieldContainer);
   field.oninput = generateUpdateFunction(fieldID, sliderID, typeString, setString, key);
   slider.oninput = generateUpdateFunction(sliderID, fieldID, typeString, setString, key);
   return row;
@@ -169,10 +170,9 @@ var createCheckboxRow = function(featureID, typeString, setString, key) {
   else spanValue = "false";
   var span = createSpan(spanValue, spanID);
   var titleContainer = createTableElement(title);
-  titleContainer.style.borderBottom = "none";
   var checkContainer = createTableElement(checkBox);
   var spanContainer = createTableElement(span);
-  var row = createTableRow(titleContainer, spanContainer, checkContainer);
+  var row = createTableRow(checkContainer, titleContainer, spanContainer);
   checkBox.onchange = generateCheckFunction(checkID, spanID, typeString, setString, key);
   return row;
 }
@@ -205,12 +205,12 @@ var createFeatureTableHeaders = function(typeString) {
   var type = document.createElement("th");
   type.className = "mdl-data-table__cell--non-numeric";
   type.innerHTML = typeString + " Parameters";
-  type.style.fontSize = "20px";
+  type.style.fontSize = "18px";
   type.style.color = "#000000";
-  type.style.right = "35px";
+  //type.style.right = "35px";
+  tr.appendChild(type);
   tr.appendChild(param);
   tr.appendChild(value);
-  tr.appendChild(type);
   return thead;
 }
 
@@ -233,9 +233,9 @@ var createFeatureTable = function(typeString, setString, position) {
   table.appendChild(body);
   var closeButton = createCloseButton();
   closeButton.style.position = "absolute";
-  closeButton.style.right = "10px";
-  closeButton.style.top = "10px";
-  table.appendChild(closeButton);
+  closeButton.style.right = "0px";
+  closeButton.style.top = "0px";
+  //table.appendChild(closeButton);
   closeButton.onclick = function() {
     table.parentElement.removeChild(table);
   }
@@ -247,7 +247,7 @@ var createFeatureTable = function(typeString, setString, position) {
 
 var createCloseButton = function() {
   var button = createButton("close");
-  button.style.color = "#F44336";
+  button.style.color = "#313131";
   return button;
 }
 
@@ -261,7 +261,7 @@ var generateTableFunction = function(tableID, typeString, setString) {
       table.id = tableID;
       table.style.position = "absolute";
       table.style.left = "" + (event.clientX + 30)+ "px";
-      table.style.top = "" + (event.clientY - 18) +   "px";
+      table.style.top = "" + (event.clientY - 20) +   "px";
       HTMLUtils.removeClass(table, "hidden-block");
       HTMLUtils.addClass(table, "shown-block");
       document.body.appendChild(table);

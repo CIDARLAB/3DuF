@@ -9,16 +9,16 @@
 }
 
 .params-button {
-	color: #BBBBBB;
-	margin-left: auto;
-	margin-right: auto;
-	bottom: 6px;
-	right: 1px;
+	margin: 0px;
+	position: absolute;
+	top: 2px;
+	right: 17px;
+	color: #FFFFFF;
 }
 
-.button-row {
-	margin-left: auto;
-	margin-right: 15;
+.button_row {
+	position: relative;
+	width: 100%;
 }
 
 #view_container {
@@ -59,11 +59,12 @@
 }
 
 .feature-button {
-	margin-left: 15;
-	margin-bottom: 15;
-	width: 170;
+	display: block;
+	width: auto;
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-bottom: 15px;
 	margin-top: 0;
-	margin-right: 0;
 }
 
 .view-button {

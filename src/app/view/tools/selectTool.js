@@ -80,6 +80,7 @@ class SelectTool extends MouseTool {
 		if (target) {
 			if (target.selected) {
 				let feat = Registry.currentDevice.getFeatureByID(target.featureID);
+				Registry.viewManager.updateDefaultsFromFeature(feat);
 				let func = PageSetup.paramsWindowFunction(feat.getType(), feat.getSet());
 				func(event);
 			} else {
