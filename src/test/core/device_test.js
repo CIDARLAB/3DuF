@@ -4,16 +4,14 @@ var Layer = require(appRoot + "core/layer");
 var Feature = require(appRoot + "core/feature");
 var Device = require(appRoot + "core/device");
 var Parameters = require(appRoot + "core/parameters");
-var Features = require(appRoot + "core/features");
-
 var FloatValue = Parameters.FloatValue;
 var BooleanValue = Parameters.BooleanValue;
 var StringValue = Parameters.StringValue;
 var IntegerValue = Parameters.IntegerValue;
 var PointValue = Parameters.PointValue;
 
-var Channel = Features.Channel;
-var CircleValve = Features.CircleValve;
+var Channel = Feature.getFeatureGenerator("Channel", "Basic");
+var CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
 
 var dev;
 var lay1;
