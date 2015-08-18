@@ -13744,6 +13744,7 @@ var PaperView = (function () {
         this.zoom = paper.view.zoom;
         this.canvas = canvas;
         this.paperFeatures = {};
+        this.paperLayers = [];
         this.paperGrid = null;
         this.paperDevice = null;
         this.activeLayer = null;
@@ -13960,7 +13961,9 @@ var PaperView = (function () {
     }, {
         key: "addLayer",
         value: function addLayer(layer, index) {
-            this.featureLayer.insertChild(index, new paper.Group());
+            this.paperLayers[index] = new paper.Group();
+            this.featureLayer.addChild(this.paperLayers[index]);
+            // this.setActiveLayer(index);
         }
     }, {
         key: "updateLayer",
@@ -13983,25 +13986,21 @@ var PaperView = (function () {
         key: "setActiveLayer",
         value: function setActiveLayer(index) {
             this.activeLayer = index;
-            //this.showActiveLayer();
+            if (this.activeLayer != null && this.activeLayer >= 0) this.showActiveLayer();
         }
     }, {
         key: "showActiveLayer",
         value: function showActiveLayer() {
-            var layers = this.featureLayer.children;
-
-            for (var i = 0; i < layers.length; i++) {
-                var layer = layers[i];
-                var targetAlpha = undefined;
-                if (i != this.activeLayer) {
-                    targetAlpha = this.inactiveAlpha;
-                } else {
-                    targetAlpha = 1;
-                }
-                for (var j = 0; j < layer.children.length; j++) {
-                    layer.children[j].fillColor.alpha = targetAlpha;
-                }
+            this.featureLayer.remove();
+            this.featureLayer = new paper.Group();
+            for (var i = 0; i < this.paperLayers.length; i++) {
+                this.featureLayer.addChild(this.paperLayers[i]);
             }
+            if (this.layerMask) this.layerMask.remove();
+            this.layerMask = DeviceRenderer.renderLayerMask(Registry.currentDevice);
+            this.featureLayer.addChild(this.layerMask);
+            var activeLayer = this.paperLayers[this.activeLayer];
+            activeLayer.bringToFront();
         }
     }, {
         key: "comparePaperFeatureHeights",
@@ -14044,9 +14043,8 @@ var PaperView = (function () {
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
             //TODO: This is terrible. Fix it. Fix it now.
             var index = feature.layer.device.layers.indexOf(feature.layer);
-            var layer = this.featureLayer.children[index];
+            var layer = this.paperLayers[index];
             this.insertChildByHeight(layer, newPaperFeature);
-            if (index != this.activeLayer && this.activeLayer != null) newPaperFeature.fillColor.alpha = this.inactiveAlpha;
         }
     }, {
         key: "removeTarget",
@@ -14159,13 +14157,22 @@ var PaperView = (function () {
             var target = undefined;
 
             if (onlyHitActiveLayer && this.activeLayer != null) {
-                target = this.featureLayer.children[this.activeLayer];
-            } else target = this.featureLayer;
+                target = this.paperLayers[this.activeLayer];
 
-            var result = target.hitTest(point, hitOptions);
-            if (result) {
-                return result.item;
+                var result = target.hitTest(point, hitOptions);
+                if (result) {
+                    return result.item;
+                }
+            } else {
+                for (var i = this.paperLayers.length - 1; i >= 0; i--) {
+                    target = this.paperLayers[i];
+                    var result = target.hitTest(point, hitOptions);
+                    if (result) {
+                        return result.item;
+                    }
+                }
             }
+            return false;
         }
     }, {
         key: "hitFeaturesWithViewElement",
@@ -14174,7 +14181,7 @@ var PaperView = (function () {
 
             var output = [];
             if (onlyHitActiveLayer && this.activeLayer != null) {
-                var layer = this.featureLayer.children[this.activeLayer];
+                var layer = this.paperLayers[this.activeLayer];
                 for (var i = 0; i < layer.children.length; i++) {
                     var child = layer.children[i];
                     if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
@@ -14182,8 +14189,8 @@ var PaperView = (function () {
                     }
                 }
             } else {
-                for (var i = 0; i < this.featureLayer.children.length; i++) {
-                    var layer = this.featureLayer.children[i];
+                for (var i = 0; i < this.paperLayers.length; i++) {
+                    var layer = this.paperLayers[i];
                     for (var j = 0; j < layer.children.length; j++) {
                         var child = layer.children[j];
                         if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
@@ -14192,7 +14199,6 @@ var PaperView = (function () {
                     }
                 }
             }
-
             return output;
         }
     }]);
@@ -14297,6 +14303,19 @@ var Colors = require("../colors");
 var DEFAULT_STROKE_COLOR = Colors.GREY_700;
 var BORDER_THICKNESS = 5; // pixels
 
+function renderLayerMask(device) {
+    var width = device.params.getValue("width");
+    var height = device.params.getValue("height");
+    var mask = new paper.Path.Rectangle({
+        from: new paper.Point(0, 0),
+        to: new paper.Point(width, height),
+        fillColor: Colors.WHITE,
+        strokeColor: null
+    });
+    mask.fillColor.alpha = .5;
+    return mask;
+}
+
 function renderDevice(device) {
     var strokeColor = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_STROKE_COLOR : arguments[1];
 
@@ -14323,6 +14342,7 @@ function renderDevice(device) {
 }
 
 module.exports.renderDevice = renderDevice;
+module.exports.renderLayerMask = renderLayerMask;
 
 },{"../colors":73}],79:[function(require,module,exports){
 "use strict";

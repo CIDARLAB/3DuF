@@ -13,6 +13,7 @@ class PaperView {
         this.zoom = paper.view.zoom;
         this.canvas = canvas;
         this.paperFeatures = {};
+        this.paperLayers = [];
         this.paperGrid = null;
         this.paperDevice = null;
         this.activeLayer = null;
@@ -33,7 +34,7 @@ class PaperView {
     getSelectedFeatures() {
         let output = [];
         let items = paper.project.selectedItems;
-        for (let i = 0; i < items.length; i ++){
+        for (let i = 0; i < items.length; i++) {
             output.push(Registry.currentDevice.getFeatureByID(items[i].featureID));
         }
         return output;
@@ -198,7 +199,9 @@ class PaperView {
     /* Rendering Layers */
 
     addLayer(layer, index) {
-        this.featureLayer.insertChild(index, new paper.Group());
+        this.paperLayers[index] = new paper.Group();
+        this.featureLayer.addChild(this.paperLayers[index]);
+       // this.setActiveLayer(index);
     }
 
     updateLayer(layer, index) {
@@ -217,25 +220,20 @@ class PaperView {
 
     setActiveLayer(index) {
         this.activeLayer = index;
-        //this.showActiveLayer();
+        if (this.activeLayer != null && this.activeLayer >= 0) this.showActiveLayer();
     }
 
     showActiveLayer() {
-        let layers = this.featureLayer.children;
-
-        for (let i = 0; i < layers.length; i++) {
-            let layer = layers[i];
-            let targetAlpha;
-            if (i != this.activeLayer) {
-                targetAlpha = this.inactiveAlpha;
-            } else {
-                targetAlpha = 1;
-            }
-            for (let j = 0; j < layer.children.length; j++) {
-                layer.children[j].fillColor.alpha = targetAlpha;
-            }
+        this.featureLayer.remove();
+        this.featureLayer = new paper.Group();
+        for (let i = 0; i < this.paperLayers.length; i++) {
+            this.featureLayer.addChild(this.paperLayers[i]);
         }
-
+        if (this.layerMask) this.layerMask.remove();
+        this.layerMask = DeviceRenderer.renderLayerMask(Registry.currentDevice);
+        this.featureLayer.addChild(this.layerMask);
+        let activeLayer = this.paperLayers[this.activeLayer];
+        activeLayer.bringToFront();
     }
 
     comparePaperFeatureHeights(a, b) {
@@ -274,9 +272,8 @@ class PaperView {
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
         //TODO: This is terrible. Fix it. Fix it now.
         let index = feature.layer.device.layers.indexOf(feature.layer);
-        let layer = this.featureLayer.children[index];
+        let layer = this.paperLayers[index];
         this.insertChildByHeight(layer, newPaperFeature);
-        if (index != this.activeLayer && this.activeLayer != null) newPaperFeature.fillColor.alpha = this.inactiveAlpha;
     }
 
     removeTarget() {
@@ -377,19 +374,28 @@ class PaperView {
         let target;
 
         if (onlyHitActiveLayer && this.activeLayer != null) {
-            target = this.featureLayer.children[this.activeLayer];
-        } else target = this.featureLayer;
+            target = this.paperLayers[this.activeLayer];
 
-        let result = target.hitTest(point, hitOptions);
-        if (result) {
-            return result.item;
+            let result = target.hitTest(point, hitOptions);
+            if (result) {
+                return result.item;
+            }
+        } else {
+            for (let i = this.paperLayers.length-1; i >= 0; i--){
+                target = this.paperLayers[i];
+                let result = target.hitTest(point, hitOptions);
+                if (result) {
+                    return result.item;
+                }
+            }
         }
+        return false;
     }
 
     hitFeaturesWithViewElement(paperElement, onlyHitActiveLayer = true) {
         let output = [];
         if (onlyHitActiveLayer && this.activeLayer != null) {
-            let layer = this.featureLayer.children[this.activeLayer];
+            let layer = this.paperLayers[this.activeLayer];
             for (let i = 0; i < layer.children.length; i++) {
                 let child = layer.children[i];
                 if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
@@ -397,8 +403,8 @@ class PaperView {
                 }
             }
         } else {
-            for (let i = 0; i < this.featureLayer.children.length; i++) {
-                let layer = this.featureLayer.children[i];
+            for (let i = 0; i < this.paperLayers.length; i++) {
+                let layer = this.paperLayers[i];
                 for (let j = 0; j < layer.children.length; j++) {
                     let child = layer.children[j];
                     if (paperElement.intersects(child) || child.isInside(paperElement.bounds)) {
@@ -407,7 +413,6 @@ class PaperView {
                 }
             }
         }
-
         return output;
     }
 }
