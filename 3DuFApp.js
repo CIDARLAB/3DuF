@@ -14391,7 +14391,7 @@ function renderTarget(typeString, setString, position) {
         primParams[key] = getDefaultValueForType(typeString, setString, params[key]);
     }
     primParams["position"] = position;
-    primParams["color"] = Colors.getDefaultFeatureColor(typeString, Registry.currentLayer);
+    primParams["color"] = Colors.getDefaultFeatureColor(typeString, setString, Registry.currentLayer);
     var rendered = prim(primParams);
     return rendered;
 }
