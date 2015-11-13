@@ -1,49 +1,149 @@
-var appRoot = "../";
-var uuid = require('node-uuid');
-var Params = require(appRoot + 'core/params');
-var Parameters = require(appRoot + 'core/parameters');
+var Params = require('./params');
+var Parameters = require('./parameters');
+var Parameter = require("./parameter");
 var StringValue = Parameters.StringValue;
-var Registry = require(appRoot + "core/registry");
+var FeatureSets = require("../featureSets");
+var Registry = require("./registry");
+
+var registeredFeatureTypes = {};
 
 class Feature {
-    constructor(type, params, name, id = Feature.generateID(), group = null){
-        if (id == undefined || name == undefined || type == undefined || params == undefined){
-            throw new Error("Cannot create feature with undefined values. id: " + id + " name: " + name + " type: " + type + "params: " + params);
-        }
-        this.type = type;
-        this.params = params;
-        this.name = new StringValue(name);
-        this.id = id;
-        this.group = group;
-        this.type = type;
+    constructor(type, set, params, name, id = Feature.generateID(), group = null){
+        this.__type = type;
+        this.__params = params;
+        this.__name = StringValue(name);
+        this.__id = id;
+        this.__group = group;
+        this.__type = type;
+        this.__set = set;
     }
 
     static generateID() {
-        return uuid.v1();
+        return Registry.generateID();
+    }
+
+    updateParameter(key, value){
+        this.__params.updateParameter(key, value);
+        this.updateView();
     }
 
     toJSON() {
         let output = {};
-        output.id = this.id;
-        output.name = this.name.toJSON();
-        output.type = this.type;
-        output.params = this.params.toJSON();
-        //TODO: Fix groups!
+        output.id = this.__id;
+        output.name = this.__name.toJSON();
+        output.type = this.__type;
+        output.set = this.__set;
+        output.params = this.__params.toJSON();
+
+        //TODO: Implement Groups!
         //output.group = this.group.toJSON();
         return output;
     }
 
-    //TODO: This needs to return the right subclass of Feature, not just the right data! 
-    static fromJSON(json) {
-        return Feature.makeFeature(json.type, json.params, json.name);
+    getSet(){
+        return this.__set;
     }
 
-    static makeFeature(type, values, name){
-        if(Registry.registeredFeatures.hasOwnProperty(type)){
-            return new Registry.registeredFeatures[type](values, name);
-        } else {
-            throw new Error("Feature " + type + " has not been registered.");
+    setGroup(group){
+        //TODO: implement this! 
+    }
+
+    getGroup(){
+        return this.__group;
+    }
+
+    getID(){
+        return this.__id;
+    }
+
+    setName(name){
+        this.__name = StringValue(name);
+    }
+
+    getName(){
+        return this.__name.getValue();
+    }
+
+    getType(){
+        return this.__type;
+    }
+
+    static getFeatureGenerator(typeString, setString){
+        return function(values){
+            return Feature.makeFeature(typeString, setString, values);
         }
+    }
+
+    getValue(key){
+        try {
+            return this.__params.getValue(key);
+        } catch (err){
+            if (this.hasDefaultParam(key)) return this.getDefaults()[key];
+            else throw new Error("Unable to get value for key: " + key);
+        }
+    }
+
+    hasDefaultParam(key){
+        if (this.getDefaults().hasOwnProperty(key)) return true;
+        else return false;
+    }
+
+    hasUniqueParam(key){
+        return this.__params.isUnique(key);
+    }
+
+    hasHeritableParam(key){
+        return this.__params.isHeritable(key);
+    }
+
+    getHeritableParams(){
+        return Feature.getDefinitionForType(this.getType(), this.getSet()).heritable;
+    }
+
+    getUniqueParams(){
+        return Feature.getDefinitionForType(this.getType(), this.getSet()).unique;
+    }
+
+    getDefaults(){
+        return Feature.getDefaultsForType(this.getType(), this.getSet());
+    }
+
+    static getDefaultsForType(typeString, setString){
+        return Registry.featureDefaults[setString][typeString];
+    }
+
+    static getDefinitionForType(typeString, setString){
+        return FeatureSets.getDefinition(typeString, setString);
+    }
+
+    static checkDefaults(values, heritable, defaults){
+        for (let key in heritable){
+            if (!values.hasOwnProperty(key)) values[key] = defaults[key];
+        }
+        return values;
+    }
+
+    static fromJSON(json) {
+        let set;
+        if (json.hasOwnProperty("set")) set = json.set;
+        else set = "Basic";
+        return Feature.makeFeature(json.type, set, json.params, json.name, json.id);
+    }
+
+    static makeFeature(typeString, setString, values, name = "New Feature", id=undefined){
+        let featureType = FeatureSets.getDefinition(typeString, setString);
+        Feature.checkDefaults(values, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
+        let params = new Params(values, featureType.unique, featureType.heritable);
+        return new Feature(typeString, setString, params, name, id)
+    }
+
+    updateView(){
+        if(Registry.viewManager) Registry.viewManager.updateFeature(this);
+    }
+
+    //I wish I had abstract methods. :(
+    render2D(){
+        throw new Error("Base class Feature cannot be rendered in 2D.");
     }
 }
 

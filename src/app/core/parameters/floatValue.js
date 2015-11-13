@@ -1,22 +1,13 @@
-var appRoot = "../../";
-var Parameter = require(appRoot + "/core/parameter");
-var Registry = require(appRoot + "/core/registry");
+var Parameter = require("../parameter");
+var NumberUtils = require("../../utils/numberUtils");
 
-class FloatValue extends Parameter {
-    constructor(value) {
-        super(FloatValue.typeString(), value);
-        if (FloatValue.isInvalid(value)) throw new Error("FloatValue must be a finite number >= 0. Saw: " + value);
-    }
+let typeString = "Float";
 
-    static isInvalid(value) {
-        if (!Number.isFinite(value) || value < 0) return true;
-        else return false;
-    }
+let description='FloatValue must be a number >= 0, such as 3.827';
 
-    static typeString() {
-        return "Float";
-    }
+function isValid(value){
+    if (typeof value === "number" && NumberUtils.isFloatOrInt(value) && value >= 0) return true;
+    else return false;
 }
 
-Parameter.registerParamType(FloatValue.typeString(), FloatValue);
-module.exports = FloatValue;
+Parameter.registerParamType(typeString, isValid, description);
