@@ -1,10 +1,10 @@
-var appRoot = "../";
-var Params = require(appRoot + "core/params");
-var Parameters = require(appRoot + "core/parameters");
-var Parameter =require(appRoot + "core/parameter");
+var Params = require("./params");
+var Parameters = require("./parameters");
+var Parameter =require("./parameter");
 var Feature = require('./feature')
 var Layer = require('./layer');
 var Group = require('./group');
+var Registry = require("./registry");
 
 var StringValue = Parameters.StringValue;
 var FloatValue = Parameters.FloatValue;
@@ -16,7 +16,17 @@ class Device {
         this.layers = [];
         this.groups = [];
         this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
-        this.name = new StringValue(name);
+        this.name = StringValue(name);
+    }
+
+    setName(name){
+        this.name = StringValue(name);
+        this.updateView();
+    }
+
+    updateParameter(key, value){
+        this.params.updateParameter(key, value);
+        this.updateView();
     }
 
     /* Sort the layers such that they are ordered from lowest to highest z_offset. */
@@ -26,10 +36,43 @@ class Device {
         });
     }
 
+    getLayerFromFeatureID(featureID){
+        for (let i = 0; i < this.layers.length; i ++){
+            let layer = this.layers[i];
+            if (layer.containsFeatureID(featureID)){
+                return layer;
+            } 
+        } 
+        throw new Error("FeatureID " + featureID + " not found in any layer.");
+    }
+
+    containsFeatureID(featureID){
+        for (let i = 0; i < this.layers.length; i ++){
+            if (this.layers[i].containsFeatureID(featureID)) return true;
+        }
+        return false;
+    }
+
+    getFeatureByID(featureID){
+        let layer =  this.getLayerFromFeatureID(featureID);
+        return layer.getFeature(featureID);
+    }
+
     /* Add a layer, and re-sort the layers array.*/
     addLayer(layer) {
+        layer.device = this;
         this.layers.push(layer);
         this.sortLayers();
+        if (Registry.viewManager) Registry.viewManager.addLayer(this.layers.indexOf(layer));
+    }
+    
+    removeFeature(feature){
+        this.removeFeatureByID(feature.getID());
+    }
+
+    removeFeatureByID(featureID){
+        let layer = this.getLayerFromFeatureID(featureID);
+        layer.removeFeatureByID(featureID);
     }
 
     addGroup(group) {
@@ -42,16 +85,32 @@ class Device {
         //TODO: Establish what defaults are. Params?
     }
 
+    updateViewLayers(){
+        if (Registry.viewManager) Registry.viewManager.updateLayers(this);
+    }
+
+    updateView(){
+        if (Registry.viewManager) Registry.viewManager.updateDevice(this);
+    }
+
     static getUniqueParameters(){
         return {
-            "height": FloatValue.typeString(),
-            "width": FloatValue.typeString()
+            "height": "Float",
+            "width": "Float"
         }
     }
 
     //TODO: Figure out whether this is ever needed
     static getHeritableParameters(){
         return {};
+    }
+
+    __renderLayers2D(){
+        let output = [];
+        for (let i = 0; i < this.layers.length; i++){
+            output.push(this.layers[i].render2D())
+        }
+        return output;
     }
 
     __groupsToJSON() {
@@ -72,7 +131,8 @@ class Device {
 
     __loadLayersFromJSON(json) {
         for (let i in json) {
-            this.addLayer(Layer.fromJSON(json[i]));
+            let newLayer = Layer.fromJSON(json[i]);
+            this.addLayer(newLayer);
         }
     }
 
@@ -115,6 +175,10 @@ class Device {
         newDevice.__loadGroupsFromJSON(json.groups);
         newDevice.__loadDefaultsFromJSON(json.defaults);
         return newDevice;
+    }
+
+    render2D(paperScope){
+        return this.__renderLayers2D();
     }
 }
 
