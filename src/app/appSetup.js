@@ -1,23 +1,39 @@
-// to build me, run: watchify appSetup.js -t babelify -v --outfile "../../3DuFapp.js"
-// from the src/app folder!
+var Registry = require("./core/registry");
+var Device = require('./core/device');
+var Layer = require('./core/layer');
+var PaperView = require("./view/paperView");
+var ViewManager = require("./view/viewManager");
+var AdaptiveGrid = require("./view/grid/adaptiveGrid");
+var PageSetup = require("./view/pageSetup");
+var Colors = require("./view/colors");
+var ThreeDeviceRenderer = require("./view/render3D/ThreeDeviceRenderer");
+var Examples = require("./examples/jsonExamples");
 
-var paperFunctions = require("./paperFunctions");
+var view;
+var viewManager;
+var grid;
 
-paper.install(window);
 paper.setup("c");
 
-window.onload = function(){
-    paperFunctions.setup()
-    //paperFunctions.channel([100,100],[200,200],20);
+window.onload = function() {
+    view = new PaperView(document.getElementById("c"));
+    viewManager = new ViewManager(view);
+    grid = new AdaptiveGrid();
+    grid.setColor(Colors.BLUE_500);
+
+
+    Registry.viewManager = viewManager;
+
+    viewManager.loadDeviceFromJSON(JSON.parse(Examples.example1));
+    viewManager.updateGrid();
+    Registry.currentDevice.updateView();
+
+    window.dev = Registry.currentDevice;
+    window.Registry = Registry;
+
+    window.view = Registry.viewManager.view;
+
+    Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
+    PageSetup.setupAppPage();
+
 };
-
-document.getElementById("c").onmousewheel = function(event){
-    view.zoom = paperFunctions.changeZoom(view.zoom, event.wheelDelta);
-    console.log(event.offsetX);
-}
-
-
-
-
-
-

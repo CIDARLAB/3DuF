@@ -1,22 +1,13 @@
-var appRoot = "../../";
-var Parameter = require(appRoot + "/core/parameter");
-var Registry = require(appRoot + "/core/registry");
+var Parameter = require("../parameter");
+var NumberUtils = require("../../utils/numberUtils");
 
-class PointValue extends Parameter {
-    constructor(value, reference) {
-        super(PointValue.typeString(), value);
-        if (PointValue.isInvalid(value)) throw new Error("PointValue must be a coordinate represented by a two-member array of finite numbers, ex. [1,3]");
-    }
+let typeString = "Point";
+let description="PointValue must be an array containing exactly two numbers, such as [3,-5]";
 
-    static isInvalid(value) {
-        if (value.length != 2 || !Number.isFinite(value[0]) || !Number.isFinite(value[1])) return true;
-        else return false;
-    }
-
-    static typeString() {
-        return "Point";
-    }
+function isValid(value){
+    if ((value instanceof Array) && value.length == 2 &&
+        NumberUtils.isFloatOrInt(value[0]) && NumberUtils.isFloatOrInt(value[1])) return true;
+    else return false;
 }
 
-Parameter.registerParamType(PointValue.typeString(), PointValue);
-module.exports = PointValue;
+Parameter.registerParamType(typeString, isValid, description);

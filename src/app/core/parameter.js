@@ -1,23 +1,48 @@
-var appRoot = "../";
-var Registry = require(appRoot + "core/registry");
+var Registry = require("./registry");
 
 class Parameter {
     constructor(type, value) {
-        this.type = type;
-        this.value = value;
+        Parameter.checkValue(type, value);
+        this.__type = type;
+        this.__value = value;
     }
 
     toJSON() {
-        return this.value;
+        return this.__value;
     }
 
-    static registerParamType(type, func) {
-        Registry.registeredParams[type] = func;
+    getValue(){
+        return this.__value;
+    }
+
+    getType(){
+        return this.__type;
+    }
+
+    static checkValue(type, value){
+        let paramType = Registry.registeredParams[type];
+        if (paramType.isValid(value)) return true;
+        else throw new Error("Saw value: " + value +". " + paramType.description);
+    }
+
+    updateValue(value){
+        Parameter.checkValue(this.__type, value);
+        this.__value = value;
+    }
+
+    //Takes a typestring to recognize that param type, and
+    // an isValid function which returns true if a value is OK for
+    // that type.
+    static registerParamType(typeString, isValid, description) {
+        Registry.registeredParams[typeString] = {
+            isValid: isValid,
+            description: description
+        }
     }
 
     static makeParam(type, value) {
         if (Registry.registeredParams.hasOwnProperty(type)) {
-            return new Registry.registeredParams[type](value);
+            return new Parameter(type, value);
         } else {
             throw new Error("Type " + type + " has not been registered.");
         }

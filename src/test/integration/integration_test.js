@@ -1,15 +1,16 @@
 var should = require("should");
 var appRoot = "../../app/";
+var Feature = require("../../app/core/feature");
 var Device = require(appRoot + '/core/device')
 var Layer = require(appRoot + '/core/layer')
-var Features = require(appRoot + '/core/features/');
+//var Features = require(appRoot + '/core/features');
 
-var Channel = Features.Channel;
-var CircleValve = Features.CircleValve;
+var Channel = Feature.getFeatureGenerator("Channel", "Basic");
+var CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
 
 describe("Integration", function() {
     describe("#core", function() {
-        it("Create a device, add layers and features, export, import", function() {
+        it("Create a device, add layers and features, toJSON, fromJSON", function() {
             let dev = new Device({
                 "width": 60,
                 "height": 30
@@ -28,6 +29,7 @@ describe("Integration", function() {
                 "start": [0, 0],
                 "end": [10, 10]
             });
+            console.log(chan1);
             flow.addFeature(chan1);
             let valve1 = new CircleValve({
                 "position": [5, 5]

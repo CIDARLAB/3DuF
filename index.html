@@ -6,59 +6,87 @@
     <script src="lib/jquery/jquery-1.11.3.min.js"></script>
     <script src="lib/nouislider/nouislider.min.js"></script>
     <script src="lib/paper/paper-full.min.js"></script>
-    <script src="lib/bootstrap/bootstrap.min.js"></script>
-    <script src="lib/fabric/fabric.min.js"></script>
-    <script src="lib/fabric/fabricjs_viewport.js"></script>
+    <script src="lib/filesaver/FileSaver.min.js"></script>
+    <script src="lib/three/three.min.js"></script>
 
-
-    <link rel="stylesheet" href="demo.css">
     <link rel="stylesheet" href="lib/nouislider/nouislider.min.css">
-    <link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="lib/bootstrap/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="lib/material/material.min.css">
+    <script src="lib/material/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="modified.css">
+
 
 </head>
 
 <body>
-  <div class="container">
-    <div class="row">
-      <div id="canvas_block" class="container"> 
-        <canvas id="c" resize></canvas>
-      </div>
-      <div id="button_block" class="text-center">
-        <img class='logo' src='img/3DuF_placeholder_logo.png'>
-        <h3 class='btn-label'>Controls</h3>
-          <div id="param-controls">
+  <div id="main_window" class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+            mdl-layout--overlay-drawer-button ">
+    <div id="button_drawer" class="mdl-layout__drawer">
+      <img class="logo" src="img/logo.png">
+      <span class="mdl-layout-title">Select Feature</span>
+      <nav class="mdl-navigation" id="feature-controls">
+          <div class="button_row">
+            <a id="channel_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Channel</a>
+            <button id="channel_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings</i>
+            </button>
           </div>
-        <!--
-        <h3 class='btn-label'>Download</h3>
-        <div class="btn-group" class="center-block">
-          <a href="" id="link" download="test.svg">
-            <button type="button" class="btn btn-default" role="group">Download SVG</button>
-          </a>
-        </div>
-        <h3 class='btn-label'>Select Active Layer</h3>
-        <input id="ex1" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>
-        <div class="btn-group btn-group-vertical" id="layer_buttons">
-        </div>
-
-        <h3 class='btn-label'>Open Examples</h3>
-        <div class="btn-group btn-group-vertical" id="example_buttons">
-          <button type="button" id="ex_4" class='btn btn-default'>transposer_large_MOD</button>
-        </div>
-        -->
-      </div>
+                    <div class="button_row">
+            <a id="circleValve_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">CircleValve</a>
+            <button id="circleValve_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings</i>
+            </button>
+          </div>
+                    <div class="button_row">
+            <a id="port_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Port</a>
+            <button id="port_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings</i>
+            </button>
+          </div>
+                    <div class="button_row">
+            <a id="via_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Via</a>
+            <button id="via_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings</i>
+            </button>
+          </div>
+                    <div class="button_row">
+            <a id="chamber_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Chamber</a>
+            <button id="chamber_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings</i>
+            </button>
+          </div>
+      </nav>
+      <span class="mdl-layout-title">Select Layer</span>
+      <nav class="mdl-navigation" id="layer-controls">
+        <a id="flow_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised view-button">Flow</a> 
+        <a id="control_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised view-button">Control</a>
+      </nav>
+      <span class="mdl-layout-title">Select View</span>
+      <nav class="mdl-navigation">
+        <a id="button_2D" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised view-button">2D</a>
+        <a id="button_3D" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised view-button">3D</a>
+      </nav>
+      <span class="mdl-layout-title">Save</span>
+      <nav class="mdl-navigation">
+        <a id="json_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">Design (.json)</a>
+        <a id="svg_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">Vector Art (.svg)</a>
+        <a id="stl_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">3D Model (.stl)</a>
+      </nav>
     </div>
-  </div>
+    <main class="mdl-layout__content">
+      <div id="view_container" class="page-content">
+      <div id="canvas_block" class="shown-block fade-transition">
+        <canvas id="c" tabindex="0" resize></canvas>
+      </div>
+      <div id="renderContainer" class="hidden-block fade-transition">
+    </main>
+  <div>
+
+
 </body>
 
-<script>
-console.log($(window).width());
-var leftoverWidth = $(window).width() - $('#button_block').width();
-console.log(leftoverWidth);
-$('#canvas_block').width(leftoverWidth);
-
-</script>
-
 <script src="3DuFApp.js"></script>
-
- <script>//load_example("{{ url_for('static', filename='examples/transposer_large_MOD.json')}}");</script>
