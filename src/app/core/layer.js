@@ -82,7 +82,6 @@ class Layer {
         }
     }
 
-    //TODO: Figure out whether this is ever needed
     static getHeritableParameters() {
         return {};
     }
