@@ -70,7 +70,6 @@ class ChannelTool extends MouseTool {
 		this.lastPoint = this.startPoint;
 	}
 
-	//TODO: Re-render only the current channel, to improve perforamnce
 	updateChannel() {
 		if(this.lastPoint && this.startPoint){
 			if (this.currentChannelID) {
