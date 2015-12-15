@@ -3,7 +3,6 @@ var Parameters = require("./parameters");
 var Parameter =require("./parameter");
 var Feature = require('./feature')
 var Layer = require('./layer');
-var Group = require('./group');
 var Registry = require("./registry");
 
 var StringValue = Parameters.StringValue;
@@ -12,9 +11,7 @@ var FloatValue = Parameters.FloatValue;
 /* The Device stores information about a design. */
 class Device {
     constructor(values, name = "New Device") {
-        this.defaults = {};
         this.layers = [];
-        this.groups = [];
         this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
         this.name = StringValue(name);
     }
@@ -75,16 +72,6 @@ class Device {
         layer.removeFeatureByID(featureID);
     }
 
-    addGroup(group) {
-        this.groups.push(group);
-        //TODO: Check to make sure that's OK!
-    }
-
-    addDefault(def) {
-        this.defaults.push(def);
-        //TODO: Establish what defaults are. Params?
-    }
-
     updateViewLayers(){
         if (Registry.viewManager) Registry.viewManager.updateLayers(this);
     }
@@ -100,7 +87,6 @@ class Device {
         }
     }
 
-    //TODO: Figure out whether this is ever needed
     static getHeritableParameters(){
         return {};
     }
@@ -136,25 +122,6 @@ class Device {
         }
     }
 
-    //TODO: Figure this out!
-    __loadGroupsFromJSON(json) {
-        /*
-        for (let i in json){
-            this.addGroup(Group.fromJSON(json[i]));
-        }
-        */
-    }
-
-    //TODO: Figure this out!
-    __loadDefaultsFromJSON(json) {
-        /*
-        for(let i in json){
-            this.addDefault(json[i]);
-        }
-        */
-    }
-
-    //TODO: Replace Params and remove static method
     toJSON() {
         let output = {};
         output.name = this.name.toJSON();
@@ -172,12 +139,10 @@ class Device {
             "height": json.params.height
         }, json.name);
         newDevice.__loadLayersFromJSON(json.layers);
-        newDevice.__loadGroupsFromJSON(json.groups);
-        newDevice.__loadDefaultsFromJSON(json.defaults);
         return newDevice;
     }
 
-    render2D(paperScope){
+    render2D(){
         return this.__renderLayers2D();
     }
 }

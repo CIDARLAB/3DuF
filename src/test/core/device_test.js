@@ -84,19 +84,18 @@ describe("Device", function() {
     });
 
     describe("#toJSON", function() {
-        it("can output JSON with no layers or groups", function() {
+        it("can output JSON with no layers", function() {
             dev.toJSON();
         });
-        it("can output JSON with one layer, no groups", function() {
+        it("can output JSON with one layer", function() {
             dev.addLayer(lay1);
             dev.toJSON();
         });
-        it("can output JSON with two layers, no groups", function() {
+        it("can output JSON with two layers", function() {
             dev.addLayer(lay1);
             dev.addLayer(lay2);
             dev.toJSON();
         });
-        it("can output JSON with layers and groups");
         it("can output JSON with layers which contain features", function() {
             dev.addLayer(lay1);
             lay1.addFeature(feat1);
@@ -116,8 +115,6 @@ describe("Device", function() {
                     "height": 23.5
                 },
                 "name": "myDevice",
-                "groups": [],
-                "defaults": {},
                 "layers": {
                     "lay1": lay1.toJSON(),
                     "lay2": lay2.toJSON()

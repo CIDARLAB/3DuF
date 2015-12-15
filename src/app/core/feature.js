@@ -8,12 +8,11 @@ var Registry = require("./registry");
 var registeredFeatureTypes = {};
 
 class Feature {
-    constructor(type, set, params, name, id = Feature.generateID(), group = null){
+    constructor(type, set, params, name, id = Feature.generateID()){
         this.__type = type;
         this.__params = params;
         this.__name = StringValue(name);
         this.__id = id;
-        this.__group = group;
         this.__type = type;
         this.__set = set;
     }
@@ -34,22 +33,11 @@ class Feature {
         output.type = this.__type;
         output.set = this.__set;
         output.params = this.__params.toJSON();
-
-        //TODO: Implement Groups!
-        //output.group = this.group.toJSON();
         return output;
     }
 
     getSet(){
         return this.__set;
-    }
-
-    setGroup(group){
-        //TODO: implement this! 
-    }
-
-    getGroup(){
-        return this.__group;
     }
 
     getID(){
