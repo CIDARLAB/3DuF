@@ -12,6 +12,16 @@ let render3D = {
     Port: {
         featureParams: {
             position: "position",
+            radius1: "portRadius",
+            radius2: "portRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Node: {
+        featureParams: {
+            position: "position",
             radius1: "radius1",
             radius2: "radius2",
             height: "height"
@@ -29,11 +39,22 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    Valve3D: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     Channel: {
         featureParams: {
             start: "start",
             end: "end",
-            width: "width",
+            width: "channelWidth",
             height: "height"
         },
         featurePrimitiveSet: "Basic3D",
@@ -48,7 +69,47 @@ let render3D = {
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "TwoPointRoundedBoxFeature"
-    }
+    },
+    DiamondReactionChamber: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            channelWidth: "channelWidth",
+            radius1: "length",
+            radius2: "width",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Mixer: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Tree: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            height: "height",
+            radius1: "width",
+            radius2: "length"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D",
+    },
 };
 
 module.exports = render3D;

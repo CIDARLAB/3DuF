@@ -11,7 +11,19 @@ let tools = {
         },
         placementTool: "PositionTool"
     },
+    Node: {
+        toolParams: {
+            position: "position",
+        },
+        placementTool: "PositionTool"
+    },
     CircleValve: {
+        toolParams: {
+            position: "position",
+        },
+        placementTool: "PositionTool"
+    },
+    Valve3D: {
         toolParams: {
             position: "position",
         },
@@ -30,6 +42,24 @@ let tools = {
             end: "end"
         },
         placementTool: "DragTool"
+    },
+    DiamondReactionChamber: {
+        toolParams: {
+            position: "position",
+        },
+        placementTool: "PositionTool"
+    },
+    Mixer: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    Tree: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
     }
 };
 
