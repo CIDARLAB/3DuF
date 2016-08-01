@@ -14,7 +14,7 @@ let basicFeatures = {
             "height": .1 * 1000
         },
         minimum: {
-            "channelWidth": 8,
+            "channelWidth": 3,
             "height": 10,
         },
         maximum: {
@@ -56,20 +56,20 @@ let basicFeatures = {
             "length": "Float"
         },
         defaults: {
-            "radius1": .41 * 1000,
-            "radius2": .41 * 1000,
+            "radius1": 0,
+            "radius2": 0,
             "width": 0,
             "length": 0,
-            "height": .1 * 1000
+            "height": 0
         },
         minimum: {
-            "radius1": 10,
-            "radius2": 10,
+            "radius1": 0,
+            "radius2": 0,
             "height": 10
         },
         maximum: {
-            "radius1": 2000,
-            "radius2": 2000,
+            "radius1": 200,
+            "radius2": 200,
             "height": 1200
         }
     },
@@ -236,10 +236,10 @@ let basicFeatures = {
         },
         minimum: {
             "channelWidth": 10,
-            "bendSpacing": 30,
+            "bendSpacing": 10,
             "numberOfBends": 1,
             "orientation": "H",
-            "bendLength": 60,
+            "bendLength": 10,
             "height": 10,
         },
         maximum: {
@@ -259,6 +259,7 @@ let basicFeatures = {
             "flowChannelWidth": "Float",
             "orientation": "String",
             "spacing": "Float",
+            "leafs": "Float",
             "width": "Float",
             "length": "Float",
             "height": "Float",
@@ -268,6 +269,7 @@ let basicFeatures = {
             "flowChannelWidth": .41 * 1000,
             "orientation": "H",
             "spacing": 1.23 * 1000,
+            "leafs": 2,
             "width": 2.46 * 1000,
             "length": 2.46 * 1000,
             "height": .1 * 1000,
@@ -276,6 +278,7 @@ let basicFeatures = {
         minimum: {
             "flowChannelWidth": 10,
             "spacing": 30,
+            "leafs": 2,
             "width": 60,
             "length": 60,
             "height": 10
@@ -283,6 +286,7 @@ let basicFeatures = {
         maximum: {
             "flowChannelWidth": 2000,
             "spacing": 6000,
+            "leafs": 64,
             "width": 12 * 1000,
             "length": 12 * 1000,
             "height": 1200
