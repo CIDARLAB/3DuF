@@ -103,6 +103,7 @@ let render3D = {
             spacing: "spacing",
             width: "width",
             length: "length",
+            leafs: "leafs",
             height: "height",
             radius1: "width",
             radius2: "length"

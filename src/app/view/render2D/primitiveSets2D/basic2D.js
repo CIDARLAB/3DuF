@@ -81,35 +81,36 @@ var RoundedRect = function(params){
 }
 
 var EdgedRect = function(params){
-    let start = params["start"];
-    let end = params["end"];
+    let length  = params["length"];
+    let width = params["width"];
+    let start = params["position"];
     let borderWidth = params["borderWidth"];
     let color = params["color"];
     let baseColor = params["baseColor"];
-    let startX;
-    let startY;
-    let endX;
-    let endY;
+    let startX = start[0];
+    let startY = start[1];
+    let endX = startX + width;
+    let endY = startY + length;
+    //
+    // if (start[0] < end[0]){
+    //     startX = start[0];
+    //     endX = end[0];
+    // } else {
+    //     startX = end[0];
+    //     endX = start[0];
+    // }
+    // if (start[1] < end[1]){
+    //     startY = start[1];
+    //     endY = end[1];
+    // } else {
+    //     startY = end[1];
+    //     endY = start[1];
+    // }
 
-    if (start[0] < end[0]){
-        startX = start[0];
-        endX = end[0];
-    } else {
-        startX = end[0];
-        endX = start[0];
-    }
-    if (start[1] < end[1]){
-        startY = start[1];
-        endY = end[1];
-    } else {
-        startY = end[1];
-        endY = start[1];
-    }
-
-    startX -= borderWidth/2;
-    startY -= borderWidth/2;
-    endX += borderWidth/2;
-    endY += borderWidth/2;
+    // startX -= borderWidth/2;
+    // startY -= borderWidth/2;
+    // endX += borderWidth/2;
+    // endY += borderWidth/2;
 
     let startPoint = new paper.Point(startX, startY);
     let endPoint = new paper.Point(endX, endY);
@@ -164,7 +165,7 @@ var GroverValve = function(params){
    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
     var circ = new paper.Path.Circle(center, radius);
     //circ.fillColor = color;
-   // if (String(color) == "3F51B5") {
+ //   if (String(color) == "3F51B5") {
         var cutout;
         if (orientation == "H") {
             cutout = paper.Path.Rectangle({
@@ -184,11 +185,11 @@ var GroverValve = function(params){
         valve.fillRule = 'evenodd';
         console.log(color);
         return valve;
-  //  }
-  //  else {
-  //      circ.FillColor = color;
-  //      return circ;
-  //  }
+ //   }
+ //   else {
+ //       circ.FillColor = color;
+ //       return circ;
+ //   }
 }
 
 var CircleTarget = function(params){
@@ -293,6 +294,7 @@ var DiamondTarget = function(params){
     hex.strokeColor = "#FFFFFF";
     hex.strokeWidth = 3 / paper.view.zoom;
     if(hex.strokeWidth > w/2) hex.strokeWidth = w/2;
+    //console.log(Math.ceil(Math.log2(7)));
     return hex;
 }
 
@@ -320,14 +322,14 @@ var Mixer = function(params){
     }
     else {
         startX = position[0];
-        startY = position[1] + 0.5*bendLength;
+        startY = position[1] + 0.5*bendLength + 0.5*channelWidth;
         serpentine.add(new paper.Point(startX, startY));
         for (i = 0; i < numBends; i++) {
-            serpentine.add(new paper.Point(startX + 2*i*bendSpacing , startY - 0.5*bendLength));
-            serpentine.add(new paper.Point(startX + (2*i+1)*bendSpacing, startY - 0.5*bendLength));
-            serpentine.add(new paper.Point(startX + (2*i+1)*bendSpacing, startY + 0.5*bendLength));
-            serpentine.add(new paper.Point(startX + (2*i+2)*bendSpacing, startY + 0.5*bendLength));
-            serpentine.add(new paper.Point(startX + (2*i+2)*bendSpacing, startY));
+            serpentine.add(new paper.Point(startX + 2*i*(bendSpacing + channelWidth) , startY - 0.5*bendLength));
+            serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY - 0.5*bendLength));
+            serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
+            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
+            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY));
         }
     }
     serpentine.strokeColor = color;
@@ -375,6 +377,36 @@ var MixerTarget = function(params){
     return serpentine;
 }
 
+var Tree = function(params) {
+    position  = params["position"];
+    cw = params["flowChannelWidth"];
+    orientation = params["orientation"];
+    spacing = params["spacing"];
+    leafs = params["leafs"];
+    startX = position[0];
+    startY = position[1];
+    //var tree = new paper.Path();
+    var pathList = [];
+    var inNodes = [];
+    var currentPath = new paper.Path();
+    for (i = 0; i < leafs; i++) {
+        inNodes.push(new paper.Point(startX + i*(cw + spacing), startY));
+    }
+ //   for (i = 0; i < Math.ceil(Math.log2(leafs)); i++) {
+ //
+ //   }
+    while (inNodes.length > 1) {
+        for (i = 0; i < inNodes.length; i += 2) {
+            currentPath.add(inNodes[i]);
+            currentPath.add(new paper.Point(inNodes[i][0], inNodes[i][1] + 3*cw));
+            currentPath.add(new paper.Point(inNodes[i+1][0], inNodes[i+1] + 3*cw));
+            currentPath.add(new paper.Point(inNodes[i+1]));
+
+        }
+    }
+
+}
+
 module.exports.RoundedRectLine = RoundedRectLine;
 module.exports.EdgedRectLine = EdgedRectLine;
 module.exports.GradientCircle = GradientCircle;
@@ -387,3 +419,4 @@ module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
 module.exports.Mixer = Mixer;
 module.exports.MixerTarget = MixerTarget;
+module.exports.EdgedRect = EdgedRect;

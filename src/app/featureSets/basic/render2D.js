@@ -153,6 +153,7 @@ let render2D = {
             spacing: "spacing",
             width: "width",
             length: "length",
+            leafs: "leafs",
             radius1: "width",
             radius2: "length"
         },
@@ -162,10 +163,11 @@ let render2D = {
             spacing: "spacing",
             width: "width",
             length: "length",
+            leafs: "leafs",
             radius1: "width",
             radius2: "length"
         },
-        featurePrimitiveType: "GradientCircle",
+        featurePrimitiveType: "EdgedRect",
         featurePrimitiveSet: "Basic2D",
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
