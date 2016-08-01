@@ -31020,7 +31020,6 @@ class Layer {
         this.featureCount = 0;
         this.device = undefined;
         this.color = undefined;
-        this.type = undefined;
     }
 
     addFeature(feature) {
@@ -31038,10 +31037,6 @@ class Layer {
 
     setColor(layerColor) {
         this.color = layerColor;
-        if (Registry.viewManager) Registry.viewManager.updateLayer(this);
-    }
-    setType(layerType) {
-        this.type = layerType;
         if (Registry.viewManager) Registry.viewManager.updateLayer(this);
     }
 
@@ -31475,7 +31470,7 @@ let basicFeatures = {
             "height": .1 * 1000
         },
         minimum: {
-            "channelWidth": 8,
+            "channelWidth": 3,
             "height": 10
         },
         maximum: {
@@ -31517,20 +31512,20 @@ let basicFeatures = {
             "length": "Float"
         },
         defaults: {
-            "radius1": .41 * 1000,
-            "radius2": .41 * 1000,
+            "radius1": 0,
+            "radius2": 0,
             "width": 0,
             "length": 0,
-            "height": .1 * 1000
+            "height": 0
         },
         minimum: {
-            "radius1": 10,
-            "radius2": 10,
+            "radius1": 0,
+            "radius2": 0,
             "height": 10
         },
         maximum: {
-            "radius1": 2000,
-            "radius2": 2000,
+            "radius1": 200,
+            "radius2": 200,
             "height": 1200
         }
     },
@@ -31697,10 +31692,10 @@ let basicFeatures = {
         },
         minimum: {
             "channelWidth": 10,
-            "bendSpacing": 30,
+            "bendSpacing": 10,
             "numberOfBends": 1,
             "orientation": "H",
-            "bendLength": 60,
+            "bendLength": 10,
             "height": 10
         },
         maximum: {
@@ -31720,6 +31715,7 @@ let basicFeatures = {
             "flowChannelWidth": "Float",
             "orientation": "String",
             "spacing": "Float",
+            "leafs": "Float",
             "width": "Float",
             "length": "Float",
             "height": "Float",
@@ -31729,6 +31725,7 @@ let basicFeatures = {
             "flowChannelWidth": .41 * 1000,
             "orientation": "H",
             "spacing": 1.23 * 1000,
+            "leafs": 2,
             "width": 2.46 * 1000,
             "length": 2.46 * 1000,
             "height": .1 * 1000,
@@ -31737,6 +31734,7 @@ let basicFeatures = {
         minimum: {
             "flowChannelWidth": 10,
             "spacing": 30,
+            "leafs": 2,
             "width": 60,
             "length": 60,
             "height": 10
@@ -31744,6 +31742,7 @@ let basicFeatures = {
         maximum: {
             "flowChannelWidth": 2000,
             "spacing": 6000,
+            "leafs": 64,
             "width": 12 * 1000,
             "length": 12 * 1000,
             "height": 1200
@@ -31915,6 +31914,7 @@ let render2D = {
             spacing: "spacing",
             width: "width",
             length: "length",
+            leafs: "leafs",
             radius1: "width",
             radius2: "length"
         },
@@ -31924,10 +31924,11 @@ let render2D = {
             spacing: "spacing",
             width: "width",
             length: "length",
+            leafs: "leafs",
             radius1: "width",
             radius2: "length"
         },
-        featurePrimitiveType: "GradientCircle",
+        featurePrimitiveType: "EdgedRect",
         featurePrimitiveSet: "Basic2D",
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
@@ -32042,6 +32043,7 @@ let render3D = {
             spacing: "spacing",
             width: "width",
             length: "length",
+            leafs: "leafs",
             height: "height",
             radius1: "width",
             radius2: "length"
@@ -32604,6 +32606,28 @@ var generateCheckFunction = function (sourceID, targetID, typeString, setString,
     Registry.viewManager.adjustParams(typeString, setString, paramString, param_to_pass.getValue());
   };
 };
+var generateCheckFunctionDir = function (sourceID, targetID, typeString, setString, paramString) {
+  return function () {
+    var source = document.getElementById(sourceID);
+    var target = document.getElementById(targetID);
+    var param;
+    var param_to_pass;
+    try {
+      param = new BooleanValue(source.checked);
+    } catch (err) {
+      console.log("Invalid Boolean value.");
+      return;
+    }
+    if (param.getValue()) {
+      target.innerHTML = "IN";
+      param_to_pass = new StringValue("IN");
+    } else {
+      target.innerHTML = "OUT";
+      param_to_pass = new StringValue("OUT");
+    }
+    Registry.viewManager.adjustParams(typeString, setString, paramString, param_to_pass.getValue());
+  };
+};
 
 var createSliderRow = function (featureID, typeString, setString, key) {
   var definition = FeatureSets.getDefinition(typeString, setString);
@@ -32659,6 +32683,23 @@ var createCheckboxRow = function (featureID, typeString, setString, key) {
   checkBox.onchange = generateCheckFunction(checkID, spanID, typeString, setString, key);
   return row;
 };
+var createInOutRow = function (featureID, typeString, setString, key) {
+  var title = createSpan(key);
+  var checkID = featureID + "_" + key + "_checkbox";
+  var spanID = featureID + "_" + key + "_span";
+  var value = Feature.getDefaultsForType(typeString, setString)[key];
+  var checkBox = createCheckbox(value, checkID);
+  var spanValue = value;
+  //if (value == "IN") spanValue = "IN";
+  //else spanValue = "OUT";
+  var span = createSpan(spanValue, spanID);
+  var titleContainer = createTableElement(title);
+  var checkContainer = createTableElement(checkBox);
+  var spanContainer = createTableElement(span);
+  var row = createTableRow(checkContainer, titleContainer, spanContainer);
+  checkBox.onchange = generateCheckFunctionDir(checkID, spanID, typeString, setString, key);
+  return row;
+};
 
 var createFeatureTableRows = function (typeString, setString) {
   var def = FeatureSets.getDefinition(typeString, setString);
@@ -32668,7 +32709,7 @@ var createFeatureTableRows = function (typeString, setString) {
   for (var key in heritable) {
     var row;
     var type = heritable[key];
-    if (type == "Float" || type == "Integer") row = createSliderRow(id, typeString, setString, key);else if (type == "Boolean" || type == "String") row = createCheckboxRow(id, typeString, setString, key);
+    if (type == "Float" || type == "Integer") row = createSliderRow(id, typeString, setString, key);else if (key == "orientation") row = createCheckboxRow(id, typeString, setString, key);else if (key == "direction") row = createInOutRow(id, typeString, setString, key);
     rows.push(row);
   }
   return rows;
@@ -34008,35 +34049,36 @@ var RoundedRect = function (params) {
 };
 
 var EdgedRect = function (params) {
-    let start = params["start"];
-    let end = params["end"];
+    let length = params["length"];
+    let width = params["width"];
+    let start = params["position"];
     let borderWidth = params["borderWidth"];
     let color = params["color"];
     let baseColor = params["baseColor"];
-    let startX;
-    let startY;
-    let endX;
-    let endY;
+    let startX = start[0];
+    let startY = start[1];
+    let endX = startX + width;
+    let endY = startY + length;
+    //
+    // if (start[0] < end[0]){
+    //     startX = start[0];
+    //     endX = end[0];
+    // } else {
+    //     startX = end[0];
+    //     endX = start[0];
+    // }
+    // if (start[1] < end[1]){
+    //     startY = start[1];
+    //     endY = end[1];
+    // } else {
+    //     startY = end[1];
+    //     endY = start[1];
+    // }
 
-    if (start[0] < end[0]) {
-        startX = start[0];
-        endX = end[0];
-    } else {
-        startX = end[0];
-        endX = start[0];
-    }
-    if (start[1] < end[1]) {
-        startY = start[1];
-        endY = end[1];
-    } else {
-        startY = end[1];
-        endY = start[1];
-    }
-
-    startX -= borderWidth / 2;
-    startY -= borderWidth / 2;
-    endX += borderWidth / 2;
-    endY += borderWidth / 2;
+    // startX -= borderWidth/2;
+    // startY -= borderWidth/2;
+    // endX += borderWidth/2;
+    // endY += borderWidth/2;
 
     let startPoint = new paper.Point(startX, startY);
     let endPoint = new paper.Point(endX, endY);
@@ -34090,7 +34132,7 @@ var GroverValve = function (params) {
     // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
     var circ = new paper.Path.Circle(center, radius);
     //circ.fillColor = color;
-    // if (String(color) == "3F51B5") {
+    //   if (String(color) == "3F51B5") {
     var cutout;
     if (orientation == "H") {
         cutout = paper.Path.Rectangle({
@@ -34109,11 +34151,11 @@ var GroverValve = function (params) {
     valve.fillRule = 'evenodd';
     console.log(color);
     return valve;
-    //  }
-    //  else {
-    //      circ.FillColor = color;
-    //      return circ;
-    //  }
+    //   }
+    //   else {
+    //       circ.FillColor = color;
+    //       return circ;
+    //   }
 };
 
 var CircleTarget = function (params) {
@@ -34214,6 +34256,7 @@ var DiamondTarget = function (params) {
     hex.strokeColor = "#FFFFFF";
     hex.strokeWidth = 3 / paper.view.zoom;
     if (hex.strokeWidth > w / 2) hex.strokeWidth = w / 2;
+    //console.log(Math.ceil(Math.log2(7)));
     return hex;
 };
 
@@ -34240,14 +34283,14 @@ var Mixer = function (params) {
         }
     } else {
         startX = position[0];
-        startY = position[1] + 0.5 * bendLength;
+        startY = position[1] + 0.5 * bendLength + 0.5 * channelWidth;
         serpentine.add(new paper.Point(startX, startY));
         for (i = 0; i < numBends; i++) {
-            serpentine.add(new paper.Point(startX + 2 * i * bendSpacing, startY - 0.5 * bendLength));
-            serpentine.add(new paper.Point(startX + (2 * i + 1) * bendSpacing, startY - 0.5 * bendLength));
-            serpentine.add(new paper.Point(startX + (2 * i + 1) * bendSpacing, startY + 0.5 * bendLength));
-            serpentine.add(new paper.Point(startX + (2 * i + 2) * bendSpacing, startY + 0.5 * bendLength));
-            serpentine.add(new paper.Point(startX + (2 * i + 2) * bendSpacing, startY));
+            serpentine.add(new paper.Point(startX + 2 * i * (bendSpacing + channelWidth), startY - 0.5 * bendLength));
+            serpentine.add(new paper.Point(startX + (2 * i + 1) * (bendSpacing + channelWidth), startY - 0.5 * bendLength));
+            serpentine.add(new paper.Point(startX + (2 * i + 1) * (bendSpacing + channelWidth), startY + 0.5 * bendLength));
+            serpentine.add(new paper.Point(startX + (2 * i + 2) * (bendSpacing + channelWidth), startY + 0.5 * bendLength));
+            serpentine.add(new paper.Point(startX + (2 * i + 2) * (bendSpacing + channelWidth), startY));
         }
     }
     serpentine.strokeColor = color;
@@ -34294,6 +34337,34 @@ var MixerTarget = function (params) {
     return serpentine;
 };
 
+var Tree = function (params) {
+    position = params["position"];
+    cw = params["flowChannelWidth"];
+    orientation = params["orientation"];
+    spacing = params["spacing"];
+    leafs = params["leafs"];
+    startX = position[0];
+    startY = position[1];
+    //var tree = new paper.Path();
+    var pathList = [];
+    var inNodes = [];
+    var currentPath = new paper.Path();
+    for (i = 0; i < leafs; i++) {
+        inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
+    }
+    //   for (i = 0; i < Math.ceil(Math.log2(leafs)); i++) {
+    //
+    //   }
+    while (inNodes.length > 1) {
+        for (i = 0; i < inNodes.length; i += 2) {
+            currentPath.add(inNodes[i]);
+            currentPath.add(new paper.Point(inNodes[i][0], inNodes[i][1] + 3 * cw));
+            currentPath.add(new paper.Point(inNodes[i + 1][0], inNodes[i + 1] + 3 * cw));
+            currentPath.add(new paper.Point(inNodes[i + 1]));
+        }
+    }
+};
+
 module.exports.RoundedRectLine = RoundedRectLine;
 module.exports.EdgedRectLine = EdgedRectLine;
 module.exports.GradientCircle = GradientCircle;
@@ -34306,6 +34377,7 @@ module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
 module.exports.Mixer = Mixer;
 module.exports.MixerTarget = MixerTarget;
+module.exports.EdgedRect = EdgedRect;
 
 },{}],297:[function(require,module,exports){
 module.exports.Basic2D = require("./basic2D");

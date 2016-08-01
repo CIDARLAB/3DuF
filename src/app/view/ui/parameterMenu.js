@@ -159,6 +159,29 @@ var generateCheckFunction = function(sourceID, targetID, typeString, setString, 
     Registry.viewManager.adjustParams(typeString, setString, paramString, param_to_pass.getValue());
   }
 }
+var generateCheckFunctionDir = function(sourceID, targetID, typeString, setString, paramString) {
+  return function() {
+    var source = document.getElementById(sourceID);
+    var target = document.getElementById(targetID);
+    var param;
+    var param_to_pass;
+    try {
+      param = new BooleanValue(source.checked);
+    } catch (err){
+      console.log("Invalid Boolean value.");
+      return;
+    }
+    if (param.getValue()) {
+      target.innerHTML = "IN";
+      param_to_pass = new StringValue("IN");
+    }
+    else {
+      target.innerHTML = "OUT";
+      param_to_pass = new StringValue("OUT");
+    }
+    Registry.viewManager.adjustParams(typeString, setString, paramString, param_to_pass.getValue());
+  }
+}
 
 var createSliderRow = function(featureID, typeString, setString, key) {
   var definition = FeatureSets.getDefinition(typeString, setString);
@@ -215,6 +238,23 @@ var createCheckboxRow = function(featureID, typeString, setString, key) {
   checkBox.onchange = generateCheckFunction(checkID, spanID, typeString, setString, key);
   return row;
 }
+var createInOutRow = function(featureID, typeString, setString, key) {
+  var title = createSpan(key);
+  var checkID = (featureID + "_" + key + "_checkbox");
+  var spanID = (featureID + "_" + key + "_span");
+  var value = Feature.getDefaultsForType(typeString, setString)[key];
+  var checkBox = createCheckbox(value, checkID);
+  var spanValue = value;
+  //if (value == "IN") spanValue = "IN";
+  //else spanValue = "OUT";
+  var span = createSpan(spanValue, spanID);
+  var titleContainer = createTableElement(title);
+  var checkContainer = createTableElement(checkBox);
+  var spanContainer = createTableElement(span);
+  var row = createTableRow(checkContainer, titleContainer, spanContainer);
+  checkBox.onchange = generateCheckFunctionDir(checkID, spanID, typeString, setString, key);
+  return row;
+}
 
 var createFeatureTableRows = function(typeString, setString) {
   var def = FeatureSets.getDefinition(typeString, setString);
@@ -225,7 +265,8 @@ var createFeatureTableRows = function(typeString, setString) {
     var row;
     var type = heritable[key];
     if (type == "Float" || type == "Integer") row = createSliderRow(id, typeString, setString, key);
-    else if (type == "Boolean" || type == "String") row = createCheckboxRow(id, typeString, setString, key);
+    else if (key == "orientation") row = createCheckboxRow(id, typeString, setString, key);
+    else if (key == "direction") row = createInOutRow(id, typeString, setString, key);
     rows.push(row);
   }
   return rows;
