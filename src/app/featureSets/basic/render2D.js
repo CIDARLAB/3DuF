@@ -167,9 +167,9 @@ let render2D = {
             radius1: "width",
             radius2: "length"
         },
-        featurePrimitiveType: "EdgedRect",
+        featurePrimitiveType: "Tree",
         featurePrimitiveSet: "Basic2D",
-        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveType: "TreeTarget",
         targetPrimitiveSet: "Basic2D"
     },
 };
