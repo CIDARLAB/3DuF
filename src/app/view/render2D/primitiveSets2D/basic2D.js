@@ -388,24 +388,7 @@ var Tree = function(params) {
     var pathList = [];
     var inNodes = [];
     var currentPath = new paper.Path();
-    for (i = 0; i < leafs; i++) {
-        inNodes.push(new paper.Point(startX + i*(cw + spacing), startY));
-    }
-    while (inNodes.length > 1) {
-        var outNodes = [];
-        for (i = 0; i < inNodes.length; i += 2) {
-            currentPath.add(inNodes[i]);
-            currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3*cw));
-            currentPath.add(new paper.Point(inNodes[i+1].x, inNodes[i+1].y + 3*cw));
-            currentPath.add(new paper.Point(inNodes[i+1]));
-            outNodes.push(new paper.Point((inNodes[i].x + inNodes[i+1].x)/2, inNodes[i].y + 3*cw));
-        }
 
-        pathList.push(currentPath);
-        currentPath = new paper.Path();
-        inNodes = outNodes;
-    }
-/*
     if (orientation == "V") {
         for (i = 0; i < leafs; i++) {
             inNodes.push(new paper.Point(startX, startY + i*(cw + spacing)));
@@ -414,17 +397,36 @@ var Tree = function(params) {
             var outNodes = [];
             for (i = 0; i < inNodes.length; i += 2) {
                 currentPath.add(inNodes[i]);
-                currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3*cw));
-                currentPath.add(new paper.Point(inNodes[i+1].x, inNodes[i+1].y + 3*cw));
+                currentPath.add(new paper.Point(inNodes[i].x + 3*cw, inNodes[i].y));
+                currentPath.add(new paper.Point(inNodes[i+1].x + 3*cw, inNodes[i+1].y));
                 currentPath.add(new paper.Point(inNodes[i+1]));
-                outNodes.push(new paper.Point((inNodes[i].x + inNodes[i+1].x)/2, inNodes[i].y + 3*cw));
+                outNodes.push(new paper.Point((inNodes[i].x + 3*cw, inNodes[i].y + inNodes[i+1].y)/2));
             }
 
             pathList.push(currentPath);
             currentPath = new paper.Path();
             inNodes = outNodes;
         }
-    }*/
+    }
+    else {
+        for (i = 0; i < leafs; i++) {
+            inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
+        }
+        while (inNodes.length > 1) {
+            var outNodes = [];
+            for (i = 0; i < inNodes.length; i += 2) {
+                currentPath.add(inNodes[i]);
+                currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3 * cw));
+                currentPath.add(new paper.Point(inNodes[i + 1].x, inNodes[i + 1].y + 3 * cw));
+                currentPath.add(new paper.Point(inNodes[i + 1]));
+                outNodes.push(new paper.Point((inNodes[i].x + inNodes[i + 1].x) / 2, inNodes[i].y + 3 * cw));
+            }
+
+            pathList.push(currentPath);
+            currentPath = new paper.Path();
+            inNodes = outNodes;
+        }
+    }
     tree_path = new paper.CompoundPath(pathList);
     tree_path.strokeColor = color;
     tree_path.strokeWidth = cw;
@@ -444,27 +446,50 @@ var TreeTarget = function(params) {
     var pathList = [];
     var inNodes = [];
     var currentPath = new paper.Path();
-    for (i = 0; i < leafs; i++) {
-        inNodes.push(new paper.Point(startX + i*(cw + spacing), startY));
-    }
-    while (inNodes.length > 1) {
-        var outNodes = [];
-        for (i = 0; i < inNodes.length; i += 2) {
-            currentPath.add(inNodes[i]);
-            currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3*cw));
-            currentPath.add(new paper.Point(inNodes[i+1].x, inNodes[i+1].y + 3*cw));
-            currentPath.add(new paper.Point(inNodes[i+1]));
-            outNodes.push(new paper.Point((inNodes[i].x + inNodes[i+1].x)/2, inNodes[i].y + 3*cw));
-        }
 
-        pathList.push(currentPath);
-        currentPath = new paper.Path();
-        inNodes = outNodes;
+    if (orientation == "V") {
+        for (i = 0; i < leafs; i++) {
+            inNodes.push(new paper.Point(startX, startY + i*(cw + spacing)));
+        }
+        while (inNodes.length > 1) {
+            var outNodes = [];
+            for (i = 0; i < inNodes.length; i += 2) {
+                currentPath.add(inNodes[i]);
+                currentPath.add(new paper.Point(inNodes[i].x + 3*cw, inNodes[i].y));
+                currentPath.add(new paper.Point(inNodes[i+1].x + 3*cw, inNodes[i+1].y));
+                currentPath.add(new paper.Point(inNodes[i+1]));
+                outNodes.push(new paper.Point((inNodes[i].x + 3*cw, inNodes[i].y + inNodes[i+1].y)/2));
+            }
+
+            pathList.push(currentPath);
+            currentPath = new paper.Path();
+            inNodes = outNodes;
+        }
+    }
+    else {
+        for (i = 0; i < leafs; i++) {
+            inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
+        }
+        while (inNodes.length > 1) {
+            var outNodes = [];
+            for (i = 0; i < inNodes.length; i += 2) {
+                currentPath.add(inNodes[i]);
+                currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3 * cw));
+                currentPath.add(new paper.Point(inNodes[i + 1].x, inNodes[i + 1].y + 3 * cw));
+                currentPath.add(new paper.Point(inNodes[i + 1]));
+                outNodes.push(new paper.Point((inNodes[i].x + inNodes[i + 1].x) / 2, inNodes[i].y + 3 * cw));
+            }
+
+            pathList.push(currentPath);
+            currentPath = new paper.Path();
+            inNodes = outNodes;
+        }
     }
     tree_path = new paper.CompoundPath(pathList);
     tree_path.strokeColor = color;
     tree_path.strokeColor.alpha = 0.5;
     tree_path.strokeWidth = cw;
+
     return tree_path;
 }
 
