@@ -15,6 +15,7 @@ let chamberButton = document.getElementById("chamber_button")
 let diamondButton = document.getElementById("diamond_button")
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
+let celltraplButton = document.getElementById("celltrapl_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
@@ -25,6 +26,7 @@ let chamberParams = document.getElementById("chamber_params_button");
 let diamondParams = document.getElementById("diamond_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
+let celltraplParams = document.getElementById("celltrapl_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -35,6 +37,7 @@ let button3D = document.getElementById("button_3D");
 
 let flowButton = document.getElementById("flow_button");
 let controlButton = document.getElementById("control_button");
+let cellsButton = document.getElementById("cells_button");
 
 let inactiveBackground = Colors.GREY_200;
 let inactiveText = Colors.BLACK;
@@ -59,17 +62,20 @@ let buttons = {
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
     "Mixer": mixerButton,
-    "Tree": treeButton
+    "Tree": treeButton,
+    "CellTrapL": celltraplButton
 }
 
 let layerButtons = {
     "0": flowButton,
-    "1": controlButton
+    "1": controlButton,
+    "2": cellsButton
 }
 
 let layerIndices = {
     "0": 0,
-    "1": 1
+    "1": 1,
+    "2": 2
 }
 
 let zipper = new JSZip();
@@ -231,6 +237,12 @@ function setupAppPage() {
         setActiveButton("Tree");
         switchTo2D();
     };
+    celltraplButton.onclick = function() {
+        Registry.viewManager.activateTool("CellTrapL");
+        let bg = Colors.getDefaultFeatureColor("CellTrapL", "Basic", Registry.currentLayer);
+        setActiveButton("CellTrapL");
+        switchTo2D();
+    };
 
     flowButton.onclick = function() {
         if (threeD) {
@@ -251,6 +263,17 @@ function setupAppPage() {
         Registry.currentLayer = Registry.currentDevice.layers[1];
         setActiveLayer("1");
         Registry.viewManager.updateActiveLayer();
+    }
+
+    cellsButton.onclick = function() {
+        if (threeD) {
+            if (activeLayer == "2") renderer.toggleLayerView(2);
+            else renderer.showLayer(2);
+        }
+        Registry.currentLayer = Registry.currentDevice.layers[2];
+        setActiveLayer("2");
+        Registry.viewManager.updateActiveLayer();
+
     }
 
     jsonButton.onclick = function() {
@@ -316,6 +339,7 @@ function setupAppPage() {
     diamondParams.onclick = paramsWindowFunction("DiamondReactionChamber", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
+    celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {

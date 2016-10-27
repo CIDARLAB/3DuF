@@ -31451,7 +31451,8 @@ exports.featureDefaults = featureDefaults;
 exports.threeRenderer = threeRenderer;
 
 },{"node-uuid":261}],275:[function(require,module,exports){
-module.exports.example1 = '{"name":"My Device","params":{"width":75800,"height":51000},"layers":[{"name":"flow","color":"indigo","params":{"z_offset":0,"flip":false},"features":{"97f1fd20-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f1fd20-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[30000,40000],"radius1":700,"radius2":700,"height":100}},"97f1fd21-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f1fd21-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[40000,40000],"radius1":700,"radius2":700,"height":100}},"97f22430-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22430-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[50000,40000],"radius1":700,"radius2":700,"height":100}},"97f22431-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22431-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[20000,40000],"radius1":700,"radius2":700,"height":100}},"97f22432-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22432-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,40000],"end":[20000,35000],"width":400,"height":100}},"97f22433-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22433-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,38000],"end":[17000,38000],"width":400,"height":100}},"97f22434-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22434-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[17000,38000],"end":[17000,35000],"width":400,"height":100}},"97f22435-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22435-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,35000],"end":[20000,20000],"width":400,"height":100}},"97f22436-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22436-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,20000],"end":[10000,10000],"width":400,"height":100}},"97f22437-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22437-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[17000,35000],"end":[15000,30000],"width":400,"height":100}},"97f22438-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22438-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,30000],"end":[10000,30000],"width":400,"height":100}},"97f22439-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22439-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,30000],"end":[10000,28000],"width":400,"height":100}},"97f2243a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,28000],"end":[15000,28000],"width":400,"height":100}},"97f2243b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,28000],"end":[15000,25000],"width":400,"height":100}},"97f2243c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,25000],"end":[8000,25000],"width":400,"height":100}},"97f2243d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[8000,25000],"radius1":700,"radius2":700,"height":100}},"97f2243e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243e-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[10000,10000],"radius1":700,"radius2":700,"height":100}},"97f2243f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,40000],"end":[30000,20000],"width":400,"height":100}},"97f22440-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22440-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,20000],"end":[20000,10000],"width":400,"height":100}},"97f22441-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22441-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[20000,10000],"radius1":700,"radius2":700,"height":100}},"97f22442-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22442-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,38000],"end":[27000,38000],"width":400,"height":100}},"97f22443-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22443-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,38000],"end":[27000,30000],"width":400,"height":100}},"97f22444-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22444-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,30000],"end":[22000,30000],"width":400,"height":100}},"97f22445-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22445-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,30000],"end":[22000,28000],"width":400,"height":100}},"97f22446-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22446-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,28000],"end":[27000,28000],"width":400,"height":100}},"97f24b40-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b40-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,28000],"end":[27000,26000],"width":400,"height":100}},"97f24b41-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b41-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,26000],"end":[22000,26000],"width":400,"height":100}},"97f24b42-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b42-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,26000],"end":[22000,24000],"width":400,"height":100}},"97f24b43-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b43-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,24000],"end":[27000,24000],"width":400,"height":100}},"97f24b44-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b44-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,24000],"end":[27000,22000],"width":400,"height":100}},"97f24b45-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b45-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,22000],"end":[22000,22000],"width":400,"height":100}},"97f24b46-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b46-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,22000],"end":[22000,20000],"width":400,"height":100}},"97f24b47-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b47-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,20000],"end":[25000,20000],"width":400,"height":100}},"97f24b48-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b48-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[25000,17000],"width":400,"height":100}},"97f24b49-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b49-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,17000],"end":[21000,17000],"width":400,"height":100}},"97f24b4a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4a-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[21000,17000],"radius1":700,"radius2":700,"height":100}},"97f24b4b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,40000],"end":[40000,20000],"width":400,"height":100}},"97f24b4c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,20000],"end":[50000,10000],"width":400,"height":100}},"97f24b4d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,38000],"end":[43000,38000],"width":400,"height":100}},"97f24b4e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,38000],"end":[43000,30000],"width":400,"height":100}},"97f24b4f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,30000],"end":[48000,30000],"width":400,"height":100}},"97f24b50-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b50-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,30000],"end":[48000,28000],"width":400,"height":100}},"97f24b51-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b51-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,28000],"end":[43000,28000],"width":400,"height":100}},"97f24b52-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b52-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,28000],"end":[43000,26000],"width":400,"height":100}},"97f24b53-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b53-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,26000],"end":[48000,26000],"width":400,"height":100}},"97f24b54-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b54-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,26000],"end":[48000,24000],"width":400,"height":100}},"97f24b55-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b55-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,24000],"end":[43000,24000],"width":400,"height":100}},"97f24b56-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b56-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,24000],"end":[43000,22000],"width":400,"height":100}},"97f24b57-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b57-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,22000],"end":[48000,22000],"width":400,"height":100}},"97f24b58-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b58-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,22000],"end":[48000,20000],"width":400,"height":100}},"97f24b59-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b59-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,20000],"end":[45000,20000],"width":400,"height":100}},"97f24b5a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[45000,17000],"width":400,"height":100}},"97f24b5b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,17000],"end":[49000,17000],"width":400,"height":100}},"97f24b5c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5c-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[50000,10000],"radius1":700,"radius2":700,"height":100}},"97f24b5d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[49000,17000],"radius1":700,"radius2":700,"height":100}},"97f24b5e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,40000],"end":[50000,20000],"width":400,"height":100}},"97f24b5f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,20000],"end":[60000,10000],"width":400,"height":100}},"97f24b60-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b60-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[60000,10000],"radius1":700,"radius2":700,"height":100}},"97f27250-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27250-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,38000],"end":[53000,38000],"width":400,"height":100}},"97f27251-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27251-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[53000,38000],"end":[53000,35000],"width":400,"height":100}},"97f27252-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27252-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[53000,35000],"end":[55000,30000],"width":400,"height":100}},"97f27253-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27253-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,30000],"end":[60000,30000],"width":400,"height":100}},"97f27254-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27254-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[60000,30000],"end":[60000,28000],"width":400,"height":100}},"97f27255-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27255-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[60000,28000],"end":[55000,28000],"width":400,"height":100}},"97f27256-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27256-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,28000],"end":[55000,25000],"width":400,"height":100}},"97f27257-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27257-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,25000],"end":[62000,25000],"width":400,"height":100}},"97f27258-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27258-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[62000,25000],"radius1":700,"radius2":700,"height":100}},"97f27259-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27259-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,15000],"end":[15000,12000],"width":400,"height":100}},"97f2725a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725a-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[15000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725b-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[26000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725c-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[44000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725d-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[55000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,12000],"end":[55000,15000],"width":400,"height":100}},"97f2725f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[26000,12000],"end":[30000,10000],"width":400,"height":100}},"97f27260-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27260-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[40000,10000],"width":400,"height":100}},"97f27261-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27261-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,10000],"end":[38000,7000],"width":400,"height":100}},"97f27262-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27262-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,10000],"end":[32000,7000],"width":400,"height":100}},"97f27263-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27263-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[32000,7000],"radius1":700,"radius2":700,"height":100}},"97f27264-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27264-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[38000,7000],"radius1":700,"radius2":700,"height":100}},"97f27265-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27265-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[35000,10000],"radius1":1400,"radius2":1200,"height":800}},"97f27266-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27266-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,10000],"end":[35000,30000],"width":400,"height":100}},"97f27267-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27267-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[35000,30000],"radius1":700,"radius2":700,"height":100}},"97f27268-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27268-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[38000,23000],"width":400,"height":100}},"97f27269-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27269-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[36000,25000],"width":400,"height":100}},"97f2726a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[36000,25000],"end":[35000,30000],"width":400,"height":100}},"97f2726b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[32000,23000],"width":400,"height":100}},"97f2726c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[34000,25000],"width":400,"height":100}},"97f2726d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[34000,25000],"end":[35000,30000],"width":400,"height":100}},"97f2726e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[35000,24000],"width":400,"height":100}},"97f2726f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[35000,24000],"width":400,"height":100}},"97f27270-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27270-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[28000,20000],"width":400,"height":100}},"97f27271-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27271-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[28000,20000],"end":[28000,22000],"width":400,"height":100}},"97f27272-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27272-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[28000,22000],"end":[27000,22000],"width":400,"height":100}},"97f27273-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27273-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[42000,20000],"width":400,"height":100}},"97f27274-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27274-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[42000,20000],"end":[42000,22000],"width":400,"height":100}},"97f27275-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27275-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[42000,22000],"end":[44000,22000],"width":400,"height":100}},"97f27276-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27276-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[35000,30000],"radius1":800,"radius2":700,"height":1100}},"97f27277-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27277-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[32000,20000],"radius1":800,"radius2":700,"height":1100}},"97f27278-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27278-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[38000,20000],"radius1":800,"radius2":700,"height":1100}},"a2de7790-3ea6-11e5-8298-1b576ed4eb08":{"id":"a2de7790-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[10000,20000],"radius1":1400,"radius2":1200,"height":800}},"a3d819d0-3ea6-11e5-8298-1b576ed4eb08":{"id":"a3d819d0-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[60000,20000],"radius1":1400,"radius2":1200,"height":800}}}},{"name":"control","color":"red","params":{"z_offset":1200,"flip":true},"features":{"97f27279-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27279-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[20000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727a-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[30000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727b-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[40000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727c-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[50000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,34000],"end":[24000,34000],"width":400,"height":100}},"97f2727e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[24000,34000],"end":[24000,47000],"width":400,"height":100}},"97f29960-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29960-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,34000],"end":[34000,34000],"width":400,"height":100}},"97f29961-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29961-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[34000,34000],"end":[34000,47000],"width":400,"height":100}},"97f29962-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29962-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,34000],"end":[37000,34000],"width":400,"height":100}},"97f29963-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29963-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[37000,34000],"end":[36000,34000],"width":400,"height":100}},"97f29964-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29964-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[36000,34000],"end":[36000,47000],"width":400,"height":100}},"97f29965-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29965-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,34000],"end":[46000,34000],"width":400,"height":100}},"97f29966-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29966-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[46000,34000],"end":[46000,47000],"width":400,"height":100}},"97f29967-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29967-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[24000,47000],"radius1":700,"radius2":700,"height":100}},"97f29968-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29968-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[34000,47000],"radius1":700,"radius2":700,"height":100}},"97f29969-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29969-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[36000,47000],"radius1":700,"radius2":700,"height":100}},"97f2996a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996a-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[46000,47000],"radius1":700,"radius2":700,"height":100}},"97f2996b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,12000],"end":[26000,12000],"width":400,"height":100}},"97f2996c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[55000,12000],"width":400,"height":100}},"97f2996d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[15000,12000],"radius1":700,"radius2":700,"height":100}},"97f2996e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996e-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[26000,12000],"radius1":700,"radius2":700,"height":100}},"97f2996f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996f-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[44000,12000],"radius1":700,"radius2":700,"height":100}},"97f29970-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29970-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[55000,12000],"radius1":700,"radius2":700,"height":100}},"97f29971-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29971-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[25000,21000],"radius1":700,"radius2":700,"height":100}},"97f29972-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29972-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[45000,21000],"radius1":700,"radius2":700,"height":100}},"a54e6620-3ea6-11e5-8298-1b576ed4eb08":{"id":"a54e6620-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,20000],"end":[15000,12000],"width":400,"height":100}},"a63ff210-3ea6-11e5-8298-1b576ed4eb08":{"id":"a63ff210-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,12000],"end":[60000,20000],"width":400,"height":100}},"a7efc4f0-3ea6-11e5-8298-1b576ed4eb08":{"id":"a7efc4f0-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[10000,20000],"radius1":700,"radius2":700,"height":100}},"a8879820-3ea6-11e5-8298-1b576ed4eb08":{"id":"a8879820-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[60000,20000],"radius1":700,"radius2":700,"height":100}}}}],"groups":[],"defaults":{}}';
+module.exports.example2 = '{"name":"My Device","params":{"width":75800,"height":51000},"layers":[{"name":"flow","color":"indigo","params":{"z_offset":0,"flip":false},"features":{"97f1fd20-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f1fd20-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[30000,40000],"radius1":700,"radius2":700,"height":100}},"97f1fd21-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f1fd21-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[40000,40000],"radius1":700,"radius2":700,"height":100}},"97f22430-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22430-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[50000,40000],"radius1":700,"radius2":700,"height":100}},"97f22431-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22431-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[20000,40000],"radius1":700,"radius2":700,"height":100}},"97f22432-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22432-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,40000],"end":[20000,35000],"width":400,"height":100}},"97f22433-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22433-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,38000],"end":[17000,38000],"width":400,"height":100}},"97f22434-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22434-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[17000,38000],"end":[17000,35000],"width":400,"height":100}},"97f22435-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22435-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,35000],"end":[20000,20000],"width":400,"height":100}},"97f22436-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22436-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,20000],"end":[10000,10000],"width":400,"height":100}},"97f22437-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22437-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[17000,35000],"end":[15000,30000],"width":400,"height":100}},"97f22438-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22438-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,30000],"end":[10000,30000],"width":400,"height":100}},"97f22439-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22439-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,30000],"end":[10000,28000],"width":400,"height":100}},"97f2243a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,28000],"end":[15000,28000],"width":400,"height":100}},"97f2243b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,28000],"end":[15000,25000],"width":400,"height":100}},"97f2243c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,25000],"end":[8000,25000],"width":400,"height":100}},"97f2243d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[8000,25000],"radius1":700,"radius2":700,"height":100}},"97f2243e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243e-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[10000,10000],"radius1":700,"radius2":700,"height":100}},"97f2243f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,40000],"end":[30000,20000],"width":400,"height":100}},"97f22440-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22440-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,20000],"end":[20000,10000],"width":400,"height":100}},"97f22441-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22441-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[20000,10000],"radius1":700,"radius2":700,"height":100}},"97f22442-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22442-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,38000],"end":[27000,38000],"width":400,"height":100}},"97f22443-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22443-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,38000],"end":[27000,30000],"width":400,"height":100}},"97f22444-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22444-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,30000],"end":[22000,30000],"width":400,"height":100}},"97f22445-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22445-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,30000],"end":[22000,28000],"width":400,"height":100}},"97f22446-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22446-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,28000],"end":[27000,28000],"width":400,"height":100}},"97f24b40-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b40-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,28000],"end":[27000,26000],"width":400,"height":100}},"97f24b41-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b41-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,26000],"end":[22000,26000],"width":400,"height":100}},"97f24b42-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b42-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,26000],"end":[22000,24000],"width":400,"height":100}},"97f24b43-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b43-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,24000],"end":[27000,24000],"width":400,"height":100}},"97f24b44-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b44-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,24000],"end":[27000,22000],"width":400,"height":100}},"97f24b45-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b45-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,22000],"end":[22000,22000],"width":400,"height":100}},"97f24b46-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b46-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,22000],"end":[22000,20000],"width":400,"height":100}},"97f24b47-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b47-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,20000],"end":[25000,20000],"width":400,"height":100}},"97f24b48-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b48-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[25000,17000],"width":400,"height":100}},"97f24b49-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b49-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,17000],"end":[21000,17000],"width":400,"height":100}},"97f24b4a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4a-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[21000,17000],"radius1":700,"radius2":700,"height":100}},"97f24b4b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,40000],"end":[40000,20000],"width":400,"height":100}},"97f24b4c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,20000],"end":[50000,10000],"width":400,"height":100}},"97f24b4d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,38000],"end":[43000,38000],"width":400,"height":100}},"97f24b4e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,38000],"end":[43000,30000],"width":400,"height":100}},"97f24b4f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,30000],"end":[48000,30000],"width":400,"height":100}},"97f24b50-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b50-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,30000],"end":[48000,28000],"width":400,"height":100}},"97f24b51-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b51-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,28000],"end":[43000,28000],"width":400,"height":100}},"97f24b52-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b52-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,28000],"end":[43000,26000],"width":400,"height":100}},"97f24b53-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b53-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,26000],"end":[48000,26000],"width":400,"height":100}},"97f24b54-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b54-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,26000],"end":[48000,24000],"width":400,"height":100}},"97f24b55-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b55-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,24000],"end":[43000,24000],"width":400,"height":100}},"97f24b56-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b56-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,24000],"end":[43000,22000],"width":400,"height":100}},"97f24b57-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b57-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,22000],"end":[48000,22000],"width":400,"height":100}},"97f24b58-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b58-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,22000],"end":[48000,20000],"width":400,"height":100}},"97f24b59-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b59-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,20000],"end":[45000,20000],"width":400,"height":100}},"97f24b5a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[45000,17000],"width":400,"height":100}},"97f24b5b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,17000],"end":[49000,17000],"width":400,"height":100}},"97f24b5c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5c-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[50000,10000],"radius1":700,"radius2":700,"height":100}},"97f24b5d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[49000,17000],"radius1":700,"radius2":700,"height":100}},"97f24b5e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,40000],"end":[50000,20000],"width":400,"height":100}},"97f24b5f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,20000],"end":[60000,10000],"width":400,"height":100}},"97f24b60-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b60-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[60000,10000],"radius1":700,"radius2":700,"height":100}},"97f27250-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27250-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,38000],"end":[53000,38000],"width":400,"height":100}},"97f27251-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27251-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[53000,38000],"end":[53000,35000],"width":400,"height":100}},"97f27252-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27252-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[53000,35000],"end":[55000,30000],"width":400,"height":100}},"97f27253-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27253-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,30000],"end":[60000,30000],"width":400,"height":100}},"97f27254-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27254-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[60000,30000],"end":[60000,28000],"width":400,"height":100}},"97f27255-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27255-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[60000,28000],"end":[55000,28000],"width":400,"height":100}},"97f27256-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27256-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,28000],"end":[55000,25000],"width":400,"height":100}},"97f27257-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27257-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,25000],"end":[62000,25000],"width":400,"height":100}},"97f27258-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27258-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[62000,25000],"radius1":700,"radius2":700,"height":100}},"97f27259-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27259-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,15000],"end":[15000,12000],"width":400,"height":100}},"97f2725a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725a-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[15000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725b-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[26000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725c-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[44000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725d-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[55000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,12000],"end":[55000,15000],"width":400,"height":100}},"97f2725f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[26000,12000],"end":[30000,10000],"width":400,"height":100}},"97f27260-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27260-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[40000,10000],"width":400,"height":100}},"97f27261-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27261-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,10000],"end":[38000,7000],"width":400,"height":100}},"97f27262-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27262-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,10000],"end":[32000,7000],"width":400,"height":100}},"97f27263-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27263-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[32000,7000],"radius1":700,"radius2":700,"height":100}},"97f27264-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27264-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[38000,7000],"radius1":700,"radius2":700,"height":100}},"97f27265-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27265-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[35000,10000],"radius1":1400,"radius2":1200,"height":800}},"97f27266-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27266-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,10000],"end":[35000,30000],"width":400,"height":100}},"97f27267-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27267-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[35000,30000],"radius1":700,"radius2":700,"height":100}},"97f27268-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27268-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[38000,23000],"width":400,"height":100}},"97f27269-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27269-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[36000,25000],"width":400,"height":100}},"97f2726a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[36000,25000],"end":[35000,30000],"width":400,"height":100}},"97f2726b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[32000,23000],"width":400,"height":100}},"97f2726c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[34000,25000],"width":400,"height":100}},"97f2726d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[34000,25000],"end":[35000,30000],"width":400,"height":100}},"97f2726e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[35000,24000],"width":400,"height":100}},"97f2726f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[35000,24000],"width":400,"height":100}},"97f27270-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27270-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[28000,20000],"width":400,"height":100}},"97f27271-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27271-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[28000,20000],"end":[28000,22000],"width":400,"height":100}},"97f27272-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27272-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[28000,22000],"end":[27000,22000],"width":400,"height":100}},"97f27273-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27273-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[42000,20000],"width":400,"height":100}},"97f27274-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27274-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[42000,20000],"end":[42000,22000],"width":400,"height":100}},"97f27275-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27275-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[42000,22000],"end":[44000,22000],"width":400,"height":100}},"97f27276-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27276-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[35000,30000],"radius1":800,"radius2":700,"height":1100}},"97f27277-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27277-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[32000,20000],"radius1":800,"radius2":700,"height":1100}},"97f27278-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27278-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[38000,20000],"radius1":800,"radius2":700,"height":1100}},"a2de7790-3ea6-11e5-8298-1b576ed4eb08":{"id":"a2de7790-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[10000,20000],"radius1":1400,"radius2":1200,"height":800}},"a3d819d0-3ea6-11e5-8298-1b576ed4eb08":{"id":"a3d819d0-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[60000,20000],"radius1":1400,"radius2":1200,"height":800}}}},{"name":"control","color":"red","params":{"z_offset":1200,"flip":true},"features":{"97f27279-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27279-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[20000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727a-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[30000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727b-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[40000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727c-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[50000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,34000],"end":[24000,34000],"width":400,"height":100}},"97f2727e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[24000,34000],"end":[24000,47000],"width":400,"height":100}},"97f29960-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29960-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,34000],"end":[34000,34000],"width":400,"height":100}},"97f29961-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29961-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[34000,34000],"end":[34000,47000],"width":400,"height":100}},"97f29962-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29962-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,34000],"end":[37000,34000],"width":400,"height":100}},"97f29963-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29963-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[37000,34000],"end":[36000,34000],"width":400,"height":100}},"97f29964-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29964-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[36000,34000],"end":[36000,47000],"width":400,"height":100}},"97f29965-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29965-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,34000],"end":[46000,34000],"width":400,"height":100}},"97f29966-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29966-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[46000,34000],"end":[46000,47000],"width":400,"height":100}},"97f29967-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29967-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[24000,47000],"radius1":700,"radius2":700,"height":100}},"97f29968-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29968-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[34000,47000],"radius1":700,"radius2":700,"height":100}},"97f29969-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29969-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[36000,47000],"radius1":700,"radius2":700,"height":100}},"97f2996a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996a-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[46000,47000],"radius1":700,"radius2":700,"height":100}},"97f2996b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,12000],"end":[26000,12000],"width":400,"height":100}},"97f2996c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[55000,12000],"width":400,"height":100}},"97f2996d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[15000,12000],"radius1":700,"radius2":700,"height":100}},"97f2996e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996e-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[26000,12000],"radius1":700,"radius2":700,"height":100}},"97f2996f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996f-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[44000,12000],"radius1":700,"radius2":700,"height":100}},"97f29970-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29970-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[55000,12000],"radius1":700,"radius2":700,"height":100}},"97f29971-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29971-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[25000,21000],"radius1":700,"radius2":700,"height":100}},"97f29972-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29972-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[45000,21000],"radius1":700,"radius2":700,"height":100}},"a54e6620-3ea6-11e5-8298-1b576ed4eb08":{"id":"a54e6620-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,20000],"end":[15000,12000],"width":400,"height":100}},"a63ff210-3ea6-11e5-8298-1b576ed4eb08":{"id":"a63ff210-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,12000],"end":[60000,20000],"width":400,"height":100}},"a7efc4f0-3ea6-11e5-8298-1b576ed4eb08":{"id":"a7efc4f0-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[10000,20000],"radius1":700,"radius2":700,"height":100}},"a8879820-3ea6-11e5-8298-1b576ed4eb08":{"id":"a8879820-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[60000,20000],"radius1":700,"radius2":700,"height":100}}}}],"groups":[],"defaults":{}}';
+module.exports.example1 = '{"name": "My Other Device","params": {"width": 80000,"height": 45000},"layers": [{ "name": "flow","color": "indigo","params": {"z_offset": 0,"flip": false},"features": {}},{"name": "control","color": "red","params": {"z_offset": 1200,"flip": true},"features": {}}],"groups": [],"defaults": {}}';
 
 },{}],276:[function(require,module,exports){
 let basicFeatures = {
@@ -31747,6 +31748,45 @@ let basicFeatures = {
             "length": 12 * 1000,
             "height": 1200
         }
+    },
+    "CellTrapL": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "chamberLength": "Float",
+            "feedingChannelWidth": "Float",
+            "orientation": "String",
+            "chamberWidth": "Float",
+            "numberOfChambers": "Float",
+            "chamberSpacing": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "chamberLength": 1.2 * 1000,
+            "feedingChannelWidth": .41 * 1000,
+            "orientation": "H",
+            "chamberWidth": 1.23 * 1000,
+            "numberOfChambers": 3,
+            "chamberSpacing": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "chamberLength": 30,
+            "feedingChannelWidth": 10,
+            "chamberWidth": 30,
+            "numberOfChambers": 1,
+            "chamberSpacing": 60,
+            "height": 10
+        },
+        maximum: {
+            "chamberLength": 6000,
+            "feedingChannelWidth": 2000,
+            "chamberWidth": 6000,
+            "numberOfChambers": 10,
+            "chamberSpacing": 12 * 1000,
+            "height": 1200
+        }
     }
 };
 
@@ -31932,6 +31972,33 @@ let render2D = {
         featurePrimitiveSet: "Basic2D",
         targetPrimitiveType: "TreeTarget",
         targetPrimitiveSet: "Basic2D"
+    },
+    CellTrapL: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberWidth",
+            radius2: "chamberSpacing"
+        },
+        targetParams: {
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing"
+        },
+        featurePrimitiveType: "CellTrapL",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CellTrapLTarget",
+        targetPrimitiveSet: "Basic2D"
     }
 };
 
@@ -32050,6 +32117,22 @@ let render3D = {
         },
         featurePrimitive: "ConeFeature",
         featurePrimitiveSet: "Basic3D"
+    },
+    CellTrapL: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing",
+            height: "height"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
     }
 };
 
@@ -32114,6 +32197,12 @@ let tools = {
         placementTool: "PositionTool"
     },
     Tree: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    CellTrapL: {
         toolParams: {
             position: "position"
         },
@@ -33023,6 +33112,7 @@ let chamberButton = document.getElementById("chamber_button");
 let diamondButton = document.getElementById("diamond_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
+let celltraplButton = document.getElementById("celltrapl_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
@@ -33033,6 +33123,7 @@ let chamberParams = document.getElementById("chamber_params_button");
 let diamondParams = document.getElementById("diamond_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
+let celltraplParams = document.getElementById("celltrapl_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -33043,6 +33134,7 @@ let button3D = document.getElementById("button_3D");
 
 let flowButton = document.getElementById("flow_button");
 let controlButton = document.getElementById("control_button");
+let cellsButton = document.getElementById("cells_button");
 
 let inactiveBackground = Colors.GREY_200;
 let inactiveText = Colors.BLACK;
@@ -33067,17 +33159,20 @@ let buttons = {
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
     "Mixer": mixerButton,
-    "Tree": treeButton
+    "Tree": treeButton,
+    "CellTrapL": celltraplButton
 };
 
 let layerButtons = {
     "0": flowButton,
-    "1": controlButton
+    "1": controlButton,
+    "2": cellsButton
 };
 
 let layerIndices = {
     "0": 0,
-    "1": 1
+    "1": 1,
+    "2": 2
 };
 
 let zipper = new JSZip();
@@ -33238,6 +33333,12 @@ function setupAppPage() {
         setActiveButton("Tree");
         switchTo2D();
     };
+    celltraplButton.onclick = function () {
+        Registry.viewManager.activateTool("CellTrapL");
+        let bg = Colors.getDefaultFeatureColor("CellTrapL", "Basic", Registry.currentLayer);
+        setActiveButton("CellTrapL");
+        switchTo2D();
+    };
 
     flowButton.onclick = function () {
         if (threeD) {
@@ -33254,6 +33355,15 @@ function setupAppPage() {
         }
         Registry.currentLayer = Registry.currentDevice.layers[1];
         setActiveLayer("1");
+        Registry.viewManager.updateActiveLayer();
+    };
+
+    cellsButton.onclick = function () {
+        if (threeD) {
+            if (activeLayer == "2") renderer.toggleLayerView(2);else renderer.showLayer(2);
+        }
+        Registry.currentLayer = Registry.currentDevice.layers[2];
+        setActiveLayer("2");
         Registry.viewManager.updateActiveLayer();
     };
 
@@ -33319,6 +33429,7 @@ function setupAppPage() {
     diamondParams.onclick = paramsWindowFunction("DiamondReactionChamber", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
+    celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function (files) {
@@ -34169,7 +34280,7 @@ var CircleTarget = function (params) {
     let minSizeInMicrometers = 8 / paper.view.zoom;
     let position = params["position"];
     let color = params["color"];
-    let pos = new paper.Point(position[0], position[1]);
+    let pos = new paper.Point(position[0] + targetRadius, position[1] + targetRadius);
     if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
     let circ = new paper.Path.Circle(pos, targetRadius);
     circ.fillColor = color;
@@ -34343,6 +34454,7 @@ var Tree = function (params) {
     spacing = params["spacing"];
     leafs = params["leafs"];
     color = params["color"];
+    width = params["width"];
     startX = position[0];
     startY = position[1];
     var pathList = [];
@@ -34367,6 +34479,7 @@ var Tree = function (params) {
             currentPath = new paper.Path();
             inNodes = outNodes;
         }
+        pathList.push(new paper.Point(width, pathList[pathList.length - 1].y));
     } else {
         for (i = 0; i < leafs; i++) {
             inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
@@ -34451,10 +34564,115 @@ var TreeTarget = function (params) {
     return tree_path;
 };
 
+var CellTrapL = function (params) {
+    let orientation = params["orientation"] == "V";
+    let position = params["position"];
+    let chamberLength = params["chamberLength"];
+    let numChambers = params["numChambers"];
+    let chamberWidth = params["chamberWidth"];
+    let feedingChannelWidth = params["feedingChannelWidth"];
+    let chamberSpacing = params["chamberSpacing"];
+    let color = params["color"];
+    let x = position[0];
+    let y = position[1];
+    let chamberList = [];
+    var rec;
+    var traps;
+    var channels;
+
+    if (orientation) {
+        for (i = 0; i < numChambers / 2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
+                point: [x, y + i * (chamberWidth + chamberSpacing)],
+                fillColor: color
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x + chamberLength, y],
+            size: [feedingChannelWidth, numChambers / 2 * (chamberWidth + chamberSpacing)],
+            fillColor: color
+        });
+        chamberList.push(channels);
+    } else {
+        for (i = 0; i < numChambers / 2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
+                point: [x + i * (chamberWidth + chamberSpacing), y],
+                fillColor: color
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x, y + chamberLength],
+            size: [numChambers / 2 * (chamberWidth + chamberSpacing), feedingChannelWidth],
+            fillColor: color
+        });
+        chamberList.push(channels);
+    }
+    traps = new paper.CompoundPath(chamberList);
+    traps.fillColor = color;
+    return traps;
+};
+
+var CellTrapLTarget = function (params) {
+    let orientation = params["orientation"] == "V";
+    let position = params["position"];
+    let chamberLength = params["chamberLength"];
+    let numChambers = params["numChambers"];
+    let chamberWidth = params["chamberWidth"];
+    let feedingChannelWidth = params["feedingChannelWidth"];
+    let chamberSpacing = params["chamberSpacing"];
+    let color = params["color"];
+    let x = position[0];
+    let y = position[1];
+
+    let chamberList = [];
+    var rec;
+    var traps;
+    var channels;
+
+    if (orientation) {
+        for (i = 0; i < numChambers / 2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
+                point: [x, y + i * (chamberWidth + chamberSpacing)],
+                fillColor: color
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x + chamberLength, y],
+            size: [feedingChannelWidth, numChambers / 2 * (chamberWidth + chamberSpacing)],
+            fillColor: color
+        });
+        chamberList.push(channels);
+    } else {
+        for (i = 0; i < numChambers / 2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
+                point: [x + i * (chamberWidth + chamberSpacing), y],
+                fillColor: color
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x, y + chamberLength],
+            size: [numChambers / 2 * (chamberWidth + chamberSpacing), feedingChannelWidth],
+            fillColor: color
+        });
+        chamberList.push(channels);
+    }
+    traps = new paper.CompoundPath(chamberList);
+    traps.fillColor = color;
+    traps.fillColor.alpha = 0.5;
+    return traps;
+};
+
 module.exports.RoundedRectLine = RoundedRectLine;
 module.exports.EdgedRectLine = EdgedRectLine;
 module.exports.GradientCircle = GradientCircle;
-module.exports.GroverValve = GroverValve;
 module.exports.RoundedRect = RoundedRect;
 module.exports.EdgedRect = EdgedRect;
 module.exports.CircleTarget = CircleTarget;
@@ -34466,6 +34684,8 @@ module.exports.MixerTarget = MixerTarget;
 module.exports.EdgedRect = EdgedRect;
 module.exports.Tree = Tree;
 module.exports.TreeTarget = TreeTarget;
+module.exports.CellTrapL = CellTrapL;
+module.exports.CellTrapLTarget = CellTrapLTarget;
 
 },{}],297:[function(require,module,exports){
 module.exports.Basic2D = require("./basic2D");
@@ -36884,6 +37104,7 @@ class ViewManager {
         this.tools["DiamondReactionChamber"] = new PositionTool("DiamondReactionChamber", "Basic");
         this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
+        this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
     }
 }
 

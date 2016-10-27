@@ -109,7 +109,23 @@ let render3D = {
             radius2: "length"
         },
         featurePrimitive: "ConeFeature",
-        featurePrimitiveSet: "Basic3D",
+        featurePrimitiveSet: "Basic3D"
+    },
+    CellTrapL: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing",
+            height: "height"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
     },
 };
 
