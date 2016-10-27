@@ -172,6 +172,33 @@ let render2D = {
         targetPrimitiveType: "TreeTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    CellTrapL: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberWidth",
+            radius2: "chamberSpacing"
+        },
+        targetParams: {
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing"
+        },
+        featurePrimitiveType: "CellTrapL",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CellTrapLTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
 };
 
 module.exports = render2D;

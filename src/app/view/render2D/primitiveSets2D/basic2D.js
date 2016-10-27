@@ -205,7 +205,7 @@ var CircleTarget = function(params){
     let minSizeInMicrometers = 8/paper.view.zoom;
     let position = params["position"];
     let color = params["color"];
-    let pos = new paper.Point(position[0], position[1]);
+    let pos = new paper.Point(position[0] + targetRadius, position[1] + targetRadius);
     if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
     let circ = new paper.Path.Circle(pos, targetRadius);
     circ.fillColor = color
@@ -383,6 +383,7 @@ var Tree = function(params) {
     spacing = params["spacing"];
     leafs = params["leafs"];
     color = params["color"];
+    width = params["width"];
     startX = position[0];
     startY = position[1];
     var pathList = [];
@@ -407,6 +408,7 @@ var Tree = function(params) {
             currentPath = new paper.Path();
             inNodes = outNodes;
         }
+        pathList.push(new paper.Point(width, pathList[pathList.length-1].y));
     }
     else {
         for (i = 0; i < leafs; i++) {
@@ -491,12 +493,119 @@ var TreeTarget = function(params) {
     tree_path.strokeWidth = cw;
 
     return tree_path;
+};
+
+var CellTrapL = function(params) {
+    let orientation = (params["orientation"] == "V");
+    let position = params["position"];
+    let chamberLength = params["chamberLength"];
+    let numChambers = params["numChambers"];
+    let chamberWidth = params["chamberWidth"];
+    let feedingChannelWidth = params["feedingChannelWidth"];
+    let chamberSpacing = params["chamberSpacing"];
+    let color = params["color"];
+    let x = position[0];
+    let y = position[1];
+    let chamberList = [];
+    var rec;
+    var traps;
+    var channels;
+
+    if (orientation) {
+        for (i = 0; i < numChambers/2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [2*chamberLength + feedingChannelWidth, chamberWidth],
+                point: [x, y + i*(chamberWidth + chamberSpacing)],
+                fillColor: color
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x + chamberLength, y],
+            size: [feedingChannelWidth, numChambers/2*(chamberWidth + chamberSpacing)],
+            fillColor: color
+        });
+        chamberList.push(channels);
+    }
+    else {
+        for (i = 0; i < numChambers/2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [chamberWidth, 2*chamberLength + feedingChannelWidth],
+                point: [x + i*(chamberWidth + chamberSpacing), y],
+                fillColor: color
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x, y + chamberLength],
+            size: [numChambers/2*(chamberWidth + chamberSpacing), feedingChannelWidth],
+            fillColor: color
+        });
+        chamberList.push(channels);
+    }
+    traps = new paper.CompoundPath(chamberList);
+    traps.fillColor = color;
+    return traps;
+};
+
+var CellTrapLTarget = function(params) {
+    let orientation = (params["orientation"] == "V");
+    let position = params["position"];
+    let chamberLength = params["chamberLength"];
+    let numChambers = params["numChambers"];
+    let chamberWidth = params["chamberWidth"];
+    let feedingChannelWidth = params["feedingChannelWidth"];
+    let chamberSpacing = params["chamberSpacing"];
+    let color = params["color"];
+    let x = position[0];
+    let y = position[1];
+
+    let chamberList = [];
+    var rec;
+    var traps;
+    var channels;
+
+    if (orientation) {
+        for (i = 0; i < numChambers/2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [2*chamberLength + feedingChannelWidth, chamberWidth],
+                point: [x, y + i*(chamberWidth + chamberSpacing)],
+                fillColor: color
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x + chamberLength, y],
+            size: [feedingChannelWidth, numChambers/2*(chamberWidth + chamberSpacing)],
+            fillColor: color
+        });
+        chamberList.push(channels);
+    }
+    else {
+        for (i = 0; i < numChambers/2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [chamberWidth, 2*chamberLength + feedingChannelWidth],
+                point: [x + i*(chamberWidth + chamberSpacing), y],
+                fillColor: color
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x, y + chamberLength],
+            size: [numChambers/2*(chamberWidth + chamberSpacing), feedingChannelWidth],
+            fillColor: color
+        });
+        chamberList.push(channels);
+    }
+    traps = new paper.CompoundPath(chamberList);
+    traps.fillColor = color;
+    traps.fillColor.alpha = 0.5;
+    return traps;
 }
 
 module.exports.RoundedRectLine = RoundedRectLine;
 module.exports.EdgedRectLine = EdgedRectLine;
 module.exports.GradientCircle = GradientCircle;
-module.exports.GroverValve = GroverValve;
 module.exports.RoundedRect = RoundedRect;
 module.exports.EdgedRect = EdgedRect;
 module.exports.CircleTarget = CircleTarget;
@@ -508,3 +617,5 @@ module.exports.MixerTarget = MixerTarget;
 module.exports.EdgedRect = EdgedRect;
 module.exports.Tree = Tree;
 module.exports.TreeTarget = TreeTarget;
+module.exports.CellTrapL = CellTrapL;
+module.exports.CellTrapLTarget = CellTrapLTarget;
