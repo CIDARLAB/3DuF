@@ -10,7 +10,7 @@ let basicFeatures = {
             "width": "Float"
         },
         defaults: {
-            "channelWidth": .41 * 1000,
+            "channelWidth": .75 * 1000,
             "height": .1 * 1000
         },
         minimum: {
@@ -196,7 +196,7 @@ let basicFeatures = {
         },
         defaults: {
             "orientation": "H",
-            "channelWidth": .41 * 1000,
+            "channelWidth": .75 * 1000,
             "width": 1.23 * 1000,
             "length": 4.92 * 1000,
             "height": .1 * 1000
@@ -227,7 +227,7 @@ let basicFeatures = {
             "height": "Float"
         },
         defaults: {
-            "channelWidth": .41 * 1000,
+            "channelWidth": .75 * 1000,
             "bendSpacing": 1.23 * 1000,
             "numberOfBends": 1,
             "orientation": "H",
@@ -266,7 +266,7 @@ let basicFeatures = {
             "direction": "String"
         },
         defaults: {
-            "flowChannelWidth": .41 * 1000,
+            "flowChannelWidth": .75 * 1000,
             "orientation": "H",
             "spacing": 1.23 * 1000,
             "leafs": 2,
@@ -286,7 +286,7 @@ let basicFeatures = {
         maximum: {
             "flowChannelWidth": 2000,
             "spacing": 6000,
-            "leafs": 64,
+            "leafs": 2,
             "width": 12 * 1000,
             "length": 12 * 1000,
             "height": 1200

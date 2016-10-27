@@ -31467,7 +31467,7 @@ let basicFeatures = {
             "width": "Float"
         },
         defaults: {
-            "channelWidth": .41 * 1000,
+            "channelWidth": .75 * 1000,
             "height": .1 * 1000
         },
         minimum: {
@@ -31653,7 +31653,7 @@ let basicFeatures = {
         },
         defaults: {
             "orientation": "H",
-            "channelWidth": .41 * 1000,
+            "channelWidth": .75 * 1000,
             "width": 1.23 * 1000,
             "length": 4.92 * 1000,
             "height": .1 * 1000
@@ -31684,7 +31684,7 @@ let basicFeatures = {
             "height": "Float"
         },
         defaults: {
-            "channelWidth": .41 * 1000,
+            "channelWidth": .75 * 1000,
             "bendSpacing": 1.23 * 1000,
             "numberOfBends": 1,
             "orientation": "H",
@@ -31723,7 +31723,7 @@ let basicFeatures = {
             "direction": "String"
         },
         defaults: {
-            "flowChannelWidth": .41 * 1000,
+            "flowChannelWidth": .75 * 1000,
             "orientation": "H",
             "spacing": 1.23 * 1000,
             "leafs": 2,
@@ -31743,7 +31743,7 @@ let basicFeatures = {
         maximum: {
             "flowChannelWidth": 2000,
             "spacing": 6000,
-            "leafs": 64,
+            "leafs": 2,
             "width": 12 * 1000,
             "length": 12 * 1000,
             "height": 1200
@@ -32520,7 +32520,9 @@ class PanAndZoom {
     // Stable pan and zoom modified from: http://matthiasberth.com/articles/stable-zoom-and-pan-in-paperjs/
 
     calcZoom(delta, multiplier = 1.177827941003) {
-        if (delta < 0) return this.view.getZoom() * multiplier;else if (delta > 0) return this.view.getZoom() / multiplier;else return this.view.getZoom();
+        if (delta < 0) return this.view.getZoom(); // * multiplier;
+        else if (delta > 0) return this.view.getZoom(); // / multiplier;
+            else return this.view.getZoom();
     }
 
     moveCenter(delta) {
@@ -33112,7 +33114,7 @@ let chamberButton = document.getElementById("chamber_button");
 let diamondButton = document.getElementById("diamond_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
-let celltraplButton = document.getElementById("celltrapl_button");
+//let celltraplButton = document.getElementById("celltrapl_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
@@ -33123,7 +33125,7 @@ let chamberParams = document.getElementById("chamber_params_button");
 let diamondParams = document.getElementById("diamond_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
-let celltraplParams = document.getElementById("celltrapl_params_button");
+//let celltraplParams = document.getElementById("celltrapl_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -33159,8 +33161,7 @@ let buttons = {
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
     "Mixer": mixerButton,
-    "Tree": treeButton,
-    "CellTrapL": celltraplButton
+    "Tree": treeButton
 };
 
 let layerButtons = {
@@ -33333,38 +33334,43 @@ function setupAppPage() {
         setActiveButton("Tree");
         switchTo2D();
     };
-    celltraplButton.onclick = function () {
-        Registry.viewManager.activateTool("CellTrapL");
-        let bg = Colors.getDefaultFeatureColor("CellTrapL", "Basic", Registry.currentLayer);
-        setActiveButton("CellTrapL");
-        switchTo2D();
-    };
+    /*    celltraplButton.onclick = function() {
+            Registry.viewManager.activateTool("CellTrapL");
+            let bg = Colors.getDefaultFeatureColor("CellTrapL", "Basic", Registry.currentLayer);
+            setActiveButton("CellTrapL");
+            switchTo2D();
+        };*/
 
     flowButton.onclick = function () {
-        if (threeD) {
-            if (activeLayer == "0") renderer.toggleLayerView(0);else renderer.showLayer(0);
-        }
-        Registry.currentLayer = Registry.currentDevice.layers[0];
-        setActiveLayer("0");
-        Registry.viewManager.updateActiveLayer();
+        /*  if (threeD) {
+              if (activeLayer == "0") renderer.toggleLayerView(0);
+              else renderer.showLayer(0);
+          }
+          Registry.currentLayer = Registry.currentDevice.layers[0];
+          setActiveLayer("0");
+          Registry.viewManager.updateActiveLayer();*/
+
     };
 
     controlButton.onclick = function () {
-        if (threeD) {
-            if (activeLayer == "1") renderer.toggleLayerView(1);else renderer.showLayer(1);
-        }
-        Registry.currentLayer = Registry.currentDevice.layers[1];
-        setActiveLayer("1");
-        Registry.viewManager.updateActiveLayer();
+        /* if (threeD) {
+             if (activeLayer == "1") renderer.toggleLayerView(1);
+             else renderer.showLayer(1);
+         }
+         Registry.currentLayer = Registry.currentDevice.layers[1];
+         setActiveLayer("1");
+         Registry.viewManager.updateActiveLayer();*/
     };
 
     cellsButton.onclick = function () {
-        if (threeD) {
-            if (activeLayer == "2") renderer.toggleLayerView(2);else renderer.showLayer(2);
-        }
-        Registry.currentLayer = Registry.currentDevice.layers[2];
-        setActiveLayer("2");
-        Registry.viewManager.updateActiveLayer();
+        /*  if (threeD) {
+              if (activeLayer == "2") renderer.toggleLayerView(2);
+              else renderer.showLayer(2);
+          }
+          Registry.currentLayer = Registry.currentDevice.layers[2];
+          setActiveLayer("2");
+          Registry.viewManager.updateActiveLayer();*/
+
     };
 
     jsonButton.onclick = function () {
@@ -33411,13 +33417,13 @@ function setupAppPage() {
     };
 
     button2D.onclick = function () {
-        killParamsWindow();
-        switchTo2D();
+        /*  killParamsWindow();
+          switchTo2D();*/
     };
 
     button3D.onclick = function () {
-        killParamsWindow();
-        switchTo3D();
+        /* killParamsWindow();
+         switchTo3D();*/
     };
 
     channelParams.onclick = paramsWindowFunction("Channel", "Basic");
@@ -33429,7 +33435,7 @@ function setupAppPage() {
     diamondParams.onclick = paramsWindowFunction("DiamondReactionChamber", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
-    celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
+    // celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function (files) {
@@ -34209,7 +34215,7 @@ var GradientCircle = function (params) {
     let radius2 = params["radius2"];
     let color1 = params["color"];
     let color2 = params["baseColor"];
-    let pos = new paper.Point(position[0] + radius1, position[1] + radius1);
+    let pos = new paper.Point(position[0], position[1]);
     let ratio = radius2 / radius1;
     let targetRatio;
     let targetRadius;
@@ -34239,7 +34245,7 @@ var GroverValve = function (params) {
     let radius = params["valveRadius"];
     let color = params["color"];
     let orientation = params["orientation"];
-    let center = new paper.Point(position[0] + radius, position[1] + radius);
+    let center = new paper.Point(position[0], position[1]);
     // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
     var circ = new paper.Path.Circle(center, radius);
     //circ.fillColor = color;
@@ -34247,13 +34253,13 @@ var GroverValve = function (params) {
     var cutout;
     if (orientation == "H") {
         cutout = paper.Path.Rectangle({
-            from: new paper.Point(position[0] + radius - gap / 2, position[1]),
-            to: new paper.Point(position[0] + radius + gap / 2, position[1] + 2 * radius + 1)
+            from: new paper.Point(position[0] - gap / 2, position[1] - radius),
+            to: new paper.Point(position[0] + gap / 2, position[1] + radius)
         });
     } else {
         cutout = paper.Path.Rectangle({
-            from: new paper.Point(position[0], position[1] + radius - gap / 2),
-            to: new paper.Point(position[0] + 2 * radius + 1, position[1] + radius + gap / 2)
+            from: new paper.Point(position[0] - radius, position[1] - gap / 2),
+            to: new paper.Point(position[0] + radius, position[1] + gap / 2)
         });
     }
     //cutout.fillColor = "white";
@@ -34280,7 +34286,7 @@ var CircleTarget = function (params) {
     let minSizeInMicrometers = 8 / paper.view.zoom;
     let position = params["position"];
     let color = params["color"];
-    let pos = new paper.Point(position[0] + targetRadius, position[1] + targetRadius);
+    let pos = new paper.Point(position[0], position[1]);
     if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
     let circ = new paper.Path.Circle(pos, targetRadius);
     circ.fillColor = color;
@@ -34302,19 +34308,19 @@ var Diamond = function (params) {
     let color = params["color"];
     let p0, p1, p2, p3, p4, p5;
     if (orientation == "V") {
-        p0 = [px + w, py];
-        p1 = [px + w + cw, py];
-        p2 = [px + 2 * w + cw, py + 0.5 * l];
-        p3 = [px + w + cw, py + l];
-        p4 = [px + w, py + l];
-        p5 = [px, py + 0.5 * l];
+        p0 = [px - cw / 2, py - l / 2];
+        p1 = [px + cw / 2, py - l / 2];
+        p2 = [px + w + cw / 2, py];
+        p3 = [px + cw / 2, py + l / 2];
+        p4 = [px - cw / 2, py + l / 2];
+        p5 = [px - cw / 2 - w, py];
     } else {
-        p0 = [px, py + w];
-        p1 = [px + 0.5 * l, py];
-        p2 = [px + l, py + w];
-        p3 = [px + l, py + w + cw];
-        p4 = [px + 0.5 * l, py + cw + 2 * w];
-        p5 = [px, py + w + cw];
+        p0 = [px - l / 2, py - cw / 2];
+        p1 = [px - l / 2, py + cw / 2];
+        p2 = [px, py + w + cw / 2];
+        p3 = [px + l / 2, py + cw / 2];
+        p4 = [px + l / 2, py - cw / 2];
+        p5 = [px, py - cw / 2 - w];
     }
     var hex = new paper.Path();
     hex.add(new paper.Point(p0));
@@ -34339,19 +34345,19 @@ var DiamondTarget = function (params) {
     let color = params["color"];
     let p0, p1, p2, p3, p4, p5;
     if (orientation == "V") {
-        p0 = [px + w, py];
-        p1 = [px + w + cw, py];
-        p2 = [px + 2 * w + cw, py + 0.5 * l];
-        p3 = [px + w + cw, py + l];
-        p4 = [px + w, py + l];
-        p5 = [px, py + 0.5 * l];
+        p0 = [px - cw / 2, py - l / 2];
+        p1 = [px + cw / 2, py - l / 2];
+        p2 = [px + w + cw / 2, py];
+        p3 = [px + cw / 2, py + l / 2];
+        p4 = [px - cw / 2, py + l / 2];
+        p5 = [px - cw / 2 - w, py];
     } else {
-        p0 = [px, py + w];
-        p1 = [px + 0.5 * l, py];
-        p2 = [px + l, py + w];
-        p3 = [px + l, py + w + cw];
-        p4 = [px + 0.5 * l, py + cw + 2 * w];
-        p5 = [px, py + w + cw];
+        p0 = [px - l / 2, py - cw / 2];
+        p1 = [px - l / 2, py + cw / 2];
+        p2 = [px, py + w + cw / 2];
+        p3 = [px + l / 2, py + cw / 2];
+        p4 = [px + l / 2, py - cw / 2];
+        p5 = [px, py - cw / 2 - w];
     }
     var hex = new paper.Path();
     hex.add(new paper.Point(p0));
@@ -34423,22 +34429,22 @@ var MixerTarget = function (params) {
         startY = position[1];
         serpentine.add(new paper.Point(startX, startY));
         for (i = 0; i < numBends; i++) {
-            serpentine.add(new paper.Point(startX + 0.5 * bendLength, startY + 2 * i * bendSpacing));
-            serpentine.add(new paper.Point(startX + 0.5 * bendLength, startY + (2 * i + 1) * bendSpacing));
-            serpentine.add(new paper.Point(startX - 0.5 * bendLength, startY + (2 * i + 1) * bendSpacing));
-            serpentine.add(new paper.Point(startX - 0.5 * bendLength, startY + (2 * i + 2) * bendSpacing));
-            serpentine.add(new paper.Point(startX, startY + (2 * i + 2) * bendSpacing));
+            serpentine.add(new paper.Point(startX + 0.5 * bendLength, startY + 2 * i * (bendSpacing + channelWidth)));
+            serpentine.add(new paper.Point(startX + 0.5 * bendLength, startY + (2 * i + 1) * (bendSpacing + channelWidth)));
+            serpentine.add(new paper.Point(startX - 0.5 * bendLength, startY + (2 * i + 1) * (bendSpacing + channelWidth)));
+            serpentine.add(new paper.Point(startX - 0.5 * bendLength, startY + (2 * i + 2) * (bendSpacing + channelWidth)));
+            serpentine.add(new paper.Point(startX, startY + (2 * i + 2) * (bendSpacing + channelWidth)));
         }
     } else {
         startX = position[0];
-        startY = position[1] + 0.5 * bendLength;
+        startY = position[1] + 0.5 * bendLength + 0.5 * channelWidth;
         serpentine.add(new paper.Point(startX, startY));
         for (i = 0; i < numBends; i++) {
-            serpentine.add(new paper.Point(startX + 2 * i * bendSpacing, startY - 0.5 * bendLength));
-            serpentine.add(new paper.Point(startX + (2 * i + 1) * bendSpacing, startY - 0.5 * bendLength));
-            serpentine.add(new paper.Point(startX + (2 * i + 1) * bendSpacing, startY + 0.5 * bendLength));
-            serpentine.add(new paper.Point(startX + (2 * i + 2) * bendSpacing, startY + 0.5 * bendLength));
-            serpentine.add(new paper.Point(startX + (2 * i + 2) * bendSpacing, startY));
+            serpentine.add(new paper.Point(startX + 2 * i * (bendSpacing + channelWidth), startY - 0.5 * bendLength));
+            serpentine.add(new paper.Point(startX + (2 * i + 1) * (bendSpacing + channelWidth), startY - 0.5 * bendLength));
+            serpentine.add(new paper.Point(startX + (2 * i + 1) * (bendSpacing + channelWidth), startY + 0.5 * bendLength));
+            serpentine.add(new paper.Point(startX + (2 * i + 2) * (bendSpacing + channelWidth), startY + 0.5 * bendLength));
+            serpentine.add(new paper.Point(startX + (2 * i + 2) * (bendSpacing + channelWidth), startY));
         }
     }
     serpentine.strokeColor = color;
