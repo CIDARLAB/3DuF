@@ -291,6 +291,45 @@ let basicFeatures = {
             "length": 12 * 1000,
             "height": 1200
         }
+    },
+    "CellTrapL": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "chamberLength": "Float",
+            "feedingChannelWidth": "Float",
+            "orientation": "String",
+            "chamberWidth": "Float",
+            "numberOfChambers": "Float",
+            "chamberSpacing": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "chamberLength": 1.2 * 1000,
+            "feedingChannelWidth": .41 * 1000,
+            "orientation": "H",
+            "chamberWidth": 1.23 * 1000,
+            "numberOfChambers": 3,
+            "chamberSpacing": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "chamberLength": 30,
+            "feedingChannelWidth": 10,
+            "chamberWidth": 30,
+            "numberOfChambers": 1,
+            "chamberSpacing": 60,
+            "height": 10
+        },
+        maximum: {
+            "chamberLength": 6000,
+            "feedingChannelWidth": 2000,
+            "chamberWidth": 6000,
+            "numberOfChambers": 10,
+            "chamberSpacing": 12 * 1000,
+            "height": 1200
+        }
     }
 }
 
