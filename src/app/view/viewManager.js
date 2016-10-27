@@ -401,6 +401,7 @@ class ViewManager {
         this.tools["DiamondReactionChamber"] = new PositionTool("DiamondReactionChamber", "Basic");
         this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
+        this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
     }
 }
 
