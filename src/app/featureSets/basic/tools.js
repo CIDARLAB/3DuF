@@ -26,6 +26,7 @@ let tools = {
     Valve3D: {
         toolParams: {
             position: "position",
+
         },
         placementTool: "PositionTool"
     },
@@ -64,6 +65,12 @@ let tools = {
     CellTrapL: {
         toolParams: {
             position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    DropletGen: {
+        toolParams: {
+            position: "position",
         },
         placementTool: "PositionTool"
     }

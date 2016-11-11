@@ -601,6 +601,85 @@ var CellTrapLTarget = function(params) {
     traps.fillColor = color;
     traps.fillColor.alpha = 0.5;
     return traps;
+};
+
+var DropletGen = function(params) {
+    let pos = params["position"];
+    let color = params["color"];
+    let A = params["orificeSize"];
+    let B = 4.8*A;
+    let C = 6.71*A;
+    let D = 2.09*A;
+    let E = 4.85*A;
+    //var vertices = [];
+    let v1, v2, v3, v4, v5, v6, v7, v8, v9, v10;
+    v1 = [pos[0] - D/2, pos[1] - A/2];
+    v2 = [pos[0] - A/2, pos[1] - E/2];
+    v3 = [pos[0] + A/2, pos[1] - E/2];
+    v4 = [pos[0] + D/2, pos[1] - A/2];
+    v5 = [pos[0] + D/2 + C, pos[1] - B/2];
+    v6 = [pos[0] + D/2 + C, pos[1] + B/2];
+    v7 = [pos[0] + D/2, pos[1] + A/2];
+    v8 = [pos[0] + A/2, pos[1] + E/2];
+    v9 = [pos[0] - A/2, pos[1] + E/2];
+    v10 = [pos[0] - D/2, pos[1] + A/2];
+
+    var decahedron = new paper.Path();
+    decahedron.add(new paper.Point(v1));
+    decahedron.add(new paper.Point(v2));
+    decahedron.add(new paper.Point(v3));
+    decahedron.add(new paper.Point(v4));
+    decahedron.add(new paper.Point(v5));
+    decahedron.add(new paper.Point(v6));
+    decahedron.add(new paper.Point(v7));
+    decahedron.add(new paper.Point(v8));
+    decahedron.add(new paper.Point(v9));
+    decahedron.add(new paper.Point(v10));
+    decahedron.closed = true;
+    decahedron.fillColor = color;
+    //decahedron.strokeColor = "#FFFFFF";
+    //decahedron.strokeWidth = 3 / paper.view.zoom;
+    return decahedron;
+};
+
+var DropletGenTarget = function(params) {
+    let pos = params["position"];
+    let color = params["color"];
+    let A = params["orificeSize"];
+    let B = 4.8*A;
+    let C = 6.71*A;
+    let D = 2.09*A;
+    let E = 4.85*A;
+    //var vertices = [];
+    let v1, v2, v3, v4, v5, v6, v7, v8, v9, v10;
+    v1 = [pos[0] - D/2, pos[1] - A/2];
+    v2 = [pos[0] - A/2, pos[1] - E/2];
+    v3 = [pos[0] + A/2, pos[1] - E/2];
+    v4 = [pos[0] + D/2, pos[1] - A/2];
+    v5 = [pos[0] + D/2 + C, pos[1] - B/2];
+    v6 = [pos[0] + D/2 + C, pos[1] + B/2];
+    v7 = [pos[0] + D/2, pos[1] + A/2];
+    v8 = [pos[0] + A/2, pos[1] + E/2];
+    v9 = [pos[0] - A/2, pos[1] + E/2];
+    v10 = [pos[0] - D/2, pos[1] + A/2];
+
+    var decahedron = new paper.Path();
+    decahedron.add(new paper.Point(v1));
+    decahedron.add(new paper.Point(v2));
+    decahedron.add(new paper.Point(v3));
+    decahedron.add(new paper.Point(v4));
+    decahedron.add(new paper.Point(v5));
+    decahedron.add(new paper.Point(v6));
+    decahedron.add(new paper.Point(v7));
+    decahedron.add(new paper.Point(v8));
+    decahedron.add(new paper.Point(v9));
+    decahedron.add(new paper.Point(v10));
+    decahedron.closed = true;
+    decahedron.fillColor = color;
+    decahedron.fillColor.alpha = 0.5;
+    //decahedron.strokeColor = "#FFFFFF";
+    //decahedron.strokeWidth = 3 / paper.view.zoom;
+    return decahedron;
 }
 
 module.exports.RoundedRectLine = RoundedRectLine;
@@ -619,3 +698,5 @@ module.exports.Tree = Tree;
 module.exports.TreeTarget = TreeTarget;
 module.exports.CellTrapL = CellTrapL;
 module.exports.CellTrapLTarget = CellTrapLTarget;
+module.exports.DropletGen = DropletGen;
+module.exports.DropletGenTarget = DropletGenTarget;

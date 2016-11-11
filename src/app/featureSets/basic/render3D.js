@@ -127,6 +127,17 @@ let render3D = {
         featurePrimitive: "ConeFeature",
         featurePrimitiveSet: "Basic3D"
     },
+    DropletGen: {
+        featureParams: {
+            position: "position",
+            orificeSize: "orificeSize",
+            radius1: "orificeSize",
+            radius2: "orificeSize",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
 };
 
 module.exports = render3D;
