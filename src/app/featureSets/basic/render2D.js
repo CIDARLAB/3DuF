@@ -199,6 +199,19 @@ let render2D = {
         targetPrimitiveType: "CellTrapLTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    DropletGen: {
+        featureParams: {
+            position: "position",
+            orificeSize: "orificeSize"
+        },
+        targetParams: {
+            orificeSize: "orificeSize"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "DropletGen",
+        targetPrimitiveType: "DropletGenTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
 };
 
 module.exports = render2D;

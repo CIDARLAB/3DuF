@@ -15,7 +15,7 @@ let chamberButton = document.getElementById("chamber_button")
 let diamondButton = document.getElementById("diamond_button")
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
-//let celltraplButton = document.getElementById("celltrapl_button");
+let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
@@ -26,7 +26,7 @@ let chamberParams = document.getElementById("chamber_params_button");
 let diamondParams = document.getElementById("diamond_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
-//let celltraplParams = document.getElementById("celltrapl_params_button");
+let dropletgenParams = document.getElementById("dropletgen_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -63,7 +63,7 @@ let buttons = {
     "DiamondReactionChamber": diamondButton,
     "Mixer": mixerButton,
     "Tree": treeButton,
-   // "CellTrapL": celltraplButton
+    "DropletGen": dropletgenButton
 }
 
 let layerButtons = {
@@ -237,42 +237,42 @@ function setupAppPage() {
         setActiveButton("Tree");
         switchTo2D();
     };
-/*    celltraplButton.onclick = function() {
-        Registry.viewManager.activateTool("CellTrapL");
-        let bg = Colors.getDefaultFeatureColor("CellTrapL", "Basic", Registry.currentLayer);
-        setActiveButton("CellTrapL");
+    dropletgenButton.onclick = function() {
+        Registry.viewManager.activateTool("DropletGen");
+        let bg = Colors.getDefaultFeatureColor("DropletGen", "Basic", Registry.currentLayer);
+        setActiveButton("DropletGen");
         switchTo2D();
-    };*/
+    };
 
     flowButton.onclick = function() {
-      /*  if (threeD) {
+        if (threeD) {
             if (activeLayer == "0") renderer.toggleLayerView(0);
             else renderer.showLayer(0);
         }
         Registry.currentLayer = Registry.currentDevice.layers[0];
         setActiveLayer("0");
-        Registry.viewManager.updateActiveLayer();*/
+        Registry.viewManager.updateActiveLayer();
 
     }
 
     controlButton.onclick = function() {
-       /* if (threeD) {
+        if (threeD) {
             if (activeLayer == "1") renderer.toggleLayerView(1);
             else renderer.showLayer(1);
         }
         Registry.currentLayer = Registry.currentDevice.layers[1];
         setActiveLayer("1");
-        Registry.viewManager.updateActiveLayer();*/
+        Registry.viewManager.updateActiveLayer();
     }
 
     cellsButton.onclick = function() {
-      /*  if (threeD) {
+        if (threeD) {
             if (activeLayer == "2") renderer.toggleLayerView(2);
             else renderer.showLayer(2);
         }
         Registry.currentLayer = Registry.currentDevice.layers[2];
         setActiveLayer("2");
-        Registry.viewManager.updateActiveLayer();*/
+        Registry.viewManager.updateActiveLayer();
 
     }
 
@@ -339,7 +339,7 @@ function setupAppPage() {
     diamondParams.onclick = paramsWindowFunction("DiamondReactionChamber", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
-   // celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
+    dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
