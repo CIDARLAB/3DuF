@@ -330,6 +330,27 @@ let basicFeatures = {
             "chamberSpacing": 12 * 1000,
             "height": 1200
         }
+    },
+    "DropletGen": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orificeSize": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orificeSize": .75 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "orificeSize": 10,
+            "height": 10,
+        },
+        maximum: {
+            "orificeSize": 2000,
+            "height": 1200,
+        }
     }
 }
 

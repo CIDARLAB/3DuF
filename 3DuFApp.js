@@ -31787,6 +31787,27 @@ let basicFeatures = {
             "chamberSpacing": 12 * 1000,
             "height": 1200
         }
+    },
+    "DropletGen": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orificeSize": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orificeSize": .75 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "orificeSize": 10,
+            "height": 10
+        },
+        maximum: {
+            "orificeSize": 2000,
+            "height": 1200
+        }
     }
 };
 
@@ -31999,6 +32020,19 @@ let render2D = {
         featurePrimitiveSet: "Basic2D",
         targetPrimitiveType: "CellTrapLTarget",
         targetPrimitiveSet: "Basic2D"
+    },
+    DropletGen: {
+        featureParams: {
+            position: "position",
+            orificeSize: "orificeSize"
+        },
+        targetParams: {
+            orificeSize: "orificeSize"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "DropletGen",
+        targetPrimitiveType: "DropletGenTarget",
+        targetPrimitiveSet: "Basic2D"
     }
 };
 
@@ -32133,6 +32167,17 @@ let render3D = {
         },
         featurePrimitive: "ConeFeature",
         featurePrimitiveSet: "Basic3D"
+    },
+    DropletGen: {
+        featureParams: {
+            position: "position",
+            orificeSize: "orificeSize",
+            radius1: "orificeSize",
+            radius2: "orificeSize",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
     }
 };
 
@@ -32167,6 +32212,7 @@ let tools = {
     Valve3D: {
         toolParams: {
             position: "position"
+
         },
         placementTool: "PositionTool"
     },
@@ -32203,6 +32249,12 @@ let tools = {
         placementTool: "PositionTool"
     },
     CellTrapL: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    DropletGen: {
         toolParams: {
             position: "position"
         },
@@ -32520,9 +32572,7 @@ class PanAndZoom {
     // Stable pan and zoom modified from: http://matthiasberth.com/articles/stable-zoom-and-pan-in-paperjs/
 
     calcZoom(delta, multiplier = 1.177827941003) {
-        if (delta < 0) return this.view.getZoom(); // * multiplier;
-        else if (delta > 0) return this.view.getZoom(); // / multiplier;
-            else return this.view.getZoom();
+        if (delta < 0) return this.view.getZoom() * multiplier;else if (delta > 0) return this.view.getZoom() / multiplier;else return this.view.getZoom();
     }
 
     moveCenter(delta) {
@@ -33114,7 +33164,7 @@ let chamberButton = document.getElementById("chamber_button");
 let diamondButton = document.getElementById("diamond_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
-//let celltraplButton = document.getElementById("celltrapl_button");
+let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
@@ -33125,7 +33175,7 @@ let chamberParams = document.getElementById("chamber_params_button");
 let diamondParams = document.getElementById("diamond_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
-//let celltraplParams = document.getElementById("celltrapl_params_button");
+let dropletgenParams = document.getElementById("dropletgen_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -33161,7 +33211,8 @@ let buttons = {
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
     "Mixer": mixerButton,
-    "Tree": treeButton
+    "Tree": treeButton,
+    "DropletGen": dropletgenButton
 };
 
 let layerButtons = {
@@ -33334,43 +33385,38 @@ function setupAppPage() {
         setActiveButton("Tree");
         switchTo2D();
     };
-    /*    celltraplButton.onclick = function() {
-            Registry.viewManager.activateTool("CellTrapL");
-            let bg = Colors.getDefaultFeatureColor("CellTrapL", "Basic", Registry.currentLayer);
-            setActiveButton("CellTrapL");
-            switchTo2D();
-        };*/
+    dropletgenButton.onclick = function () {
+        Registry.viewManager.activateTool("DropletGen");
+        let bg = Colors.getDefaultFeatureColor("DropletGen", "Basic", Registry.currentLayer);
+        setActiveButton("DropletGen");
+        switchTo2D();
+    };
 
     flowButton.onclick = function () {
-        /*  if (threeD) {
-              if (activeLayer == "0") renderer.toggleLayerView(0);
-              else renderer.showLayer(0);
-          }
-          Registry.currentLayer = Registry.currentDevice.layers[0];
-          setActiveLayer("0");
-          Registry.viewManager.updateActiveLayer();*/
-
+        if (threeD) {
+            if (activeLayer == "0") renderer.toggleLayerView(0);else renderer.showLayer(0);
+        }
+        Registry.currentLayer = Registry.currentDevice.layers[0];
+        setActiveLayer("0");
+        Registry.viewManager.updateActiveLayer();
     };
 
     controlButton.onclick = function () {
-        /* if (threeD) {
-             if (activeLayer == "1") renderer.toggleLayerView(1);
-             else renderer.showLayer(1);
-         }
-         Registry.currentLayer = Registry.currentDevice.layers[1];
-         setActiveLayer("1");
-         Registry.viewManager.updateActiveLayer();*/
+        if (threeD) {
+            if (activeLayer == "1") renderer.toggleLayerView(1);else renderer.showLayer(1);
+        }
+        Registry.currentLayer = Registry.currentDevice.layers[1];
+        setActiveLayer("1");
+        Registry.viewManager.updateActiveLayer();
     };
 
     cellsButton.onclick = function () {
-        /*  if (threeD) {
-              if (activeLayer == "2") renderer.toggleLayerView(2);
-              else renderer.showLayer(2);
-          }
-          Registry.currentLayer = Registry.currentDevice.layers[2];
-          setActiveLayer("2");
-          Registry.viewManager.updateActiveLayer();*/
-
+        if (threeD) {
+            if (activeLayer == "2") renderer.toggleLayerView(2);else renderer.showLayer(2);
+        }
+        Registry.currentLayer = Registry.currentDevice.layers[2];
+        setActiveLayer("2");
+        Registry.viewManager.updateActiveLayer();
     };
 
     jsonButton.onclick = function () {
@@ -33435,7 +33481,7 @@ function setupAppPage() {
     diamondParams.onclick = paramsWindowFunction("DiamondReactionChamber", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
-    // celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
+    dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function (files) {
@@ -34676,6 +34722,85 @@ var CellTrapLTarget = function (params) {
     return traps;
 };
 
+var DropletGen = function (params) {
+    let pos = params["position"];
+    let color = params["color"];
+    let A = params["orificeSize"];
+    let B = 4.8 * A;
+    let C = 6.71 * A;
+    let D = 2.09 * A;
+    let E = 4.85 * A;
+    //var vertices = [];
+    let v1, v2, v3, v4, v5, v6, v7, v8, v9, v10;
+    v1 = [pos[0] - D / 2, pos[1] - A / 2];
+    v2 = [pos[0] - A / 2, pos[1] - E / 2];
+    v3 = [pos[0] + A / 2, pos[1] - E / 2];
+    v4 = [pos[0] + D / 2, pos[1] - A / 2];
+    v5 = [pos[0] + D / 2 + C, pos[1] - B / 2];
+    v6 = [pos[0] + D / 2 + C, pos[1] + B / 2];
+    v7 = [pos[0] + D / 2, pos[1] + A / 2];
+    v8 = [pos[0] + A / 2, pos[1] + E / 2];
+    v9 = [pos[0] - A / 2, pos[1] + E / 2];
+    v10 = [pos[0] - D / 2, pos[1] + A / 2];
+
+    var decahedron = new paper.Path();
+    decahedron.add(new paper.Point(v1));
+    decahedron.add(new paper.Point(v2));
+    decahedron.add(new paper.Point(v3));
+    decahedron.add(new paper.Point(v4));
+    decahedron.add(new paper.Point(v5));
+    decahedron.add(new paper.Point(v6));
+    decahedron.add(new paper.Point(v7));
+    decahedron.add(new paper.Point(v8));
+    decahedron.add(new paper.Point(v9));
+    decahedron.add(new paper.Point(v10));
+    decahedron.closed = true;
+    decahedron.fillColor = color;
+    //decahedron.strokeColor = "#FFFFFF";
+    //decahedron.strokeWidth = 3 / paper.view.zoom;
+    return decahedron;
+};
+
+var DropletGenTarget = function (params) {
+    let pos = params["position"];
+    let color = params["color"];
+    let A = params["orificeSize"];
+    let B = 4.8 * A;
+    let C = 6.71 * A;
+    let D = 2.09 * A;
+    let E = 4.85 * A;
+    //var vertices = [];
+    let v1, v2, v3, v4, v5, v6, v7, v8, v9, v10;
+    v1 = [pos[0] - D / 2, pos[1] - A / 2];
+    v2 = [pos[0] - A / 2, pos[1] - E / 2];
+    v3 = [pos[0] + A / 2, pos[1] - E / 2];
+    v4 = [pos[0] + D / 2, pos[1] - A / 2];
+    v5 = [pos[0] + D / 2 + C, pos[1] - B / 2];
+    v6 = [pos[0] + D / 2 + C, pos[1] + B / 2];
+    v7 = [pos[0] + D / 2, pos[1] + A / 2];
+    v8 = [pos[0] + A / 2, pos[1] + E / 2];
+    v9 = [pos[0] - A / 2, pos[1] + E / 2];
+    v10 = [pos[0] - D / 2, pos[1] + A / 2];
+
+    var decahedron = new paper.Path();
+    decahedron.add(new paper.Point(v1));
+    decahedron.add(new paper.Point(v2));
+    decahedron.add(new paper.Point(v3));
+    decahedron.add(new paper.Point(v4));
+    decahedron.add(new paper.Point(v5));
+    decahedron.add(new paper.Point(v6));
+    decahedron.add(new paper.Point(v7));
+    decahedron.add(new paper.Point(v8));
+    decahedron.add(new paper.Point(v9));
+    decahedron.add(new paper.Point(v10));
+    decahedron.closed = true;
+    decahedron.fillColor = color;
+    decahedron.fillColor.alpha = 0.5;
+    //decahedron.strokeColor = "#FFFFFF";
+    //decahedron.strokeWidth = 3 / paper.view.zoom;
+    return decahedron;
+};
+
 module.exports.RoundedRectLine = RoundedRectLine;
 module.exports.EdgedRectLine = EdgedRectLine;
 module.exports.GradientCircle = GradientCircle;
@@ -34692,6 +34817,8 @@ module.exports.Tree = Tree;
 module.exports.TreeTarget = TreeTarget;
 module.exports.CellTrapL = CellTrapL;
 module.exports.CellTrapLTarget = CellTrapLTarget;
+module.exports.DropletGen = DropletGen;
+module.exports.DropletGenTarget = DropletGenTarget;
 
 },{}],297:[function(require,module,exports){
 module.exports.Basic2D = require("./basic2D");
@@ -37111,6 +37238,7 @@ class ViewManager {
         this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
         this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
+        this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
     }
 }
 
