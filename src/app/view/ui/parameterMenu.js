@@ -6,6 +6,7 @@ var FeatureSets = require("../../featureSets");
 
 var FloatValue = Parameters.FloatValue;
 var BooleanValue = Parameters.BooleanValue;
+var StringValue = Parameters.StringValue;
 
 var createSlider = function(min, max, step, start, id) {
   var div = document.createElement("div");
@@ -118,21 +119,67 @@ var generateUpdateFunction = function(sourceID, targetID, typeString, setString,
     Registry.viewManager.adjustParams(typeString, setString, paramString, param.getValue());
   }
 }
-
+/*
+var generateUpdateFunctionString = function(sourceID, targetID, typeString, setString, paramString) {
+  return function() {
+    var source = document.getElementById(sourceID);
+    var target = document.getElementById(targetID);
+    var param;
+    try {
+      param = new StringValue(parseString(source.value));
+    } catch (err){
+      console.log("Invalid value.");
+      return;
+    }
+    target.value = String(param.getValue());
+    Registry.viewManager.adjustParams(typeString, setString, paramString, param.getValue());
+  }
+}
+*/
 var generateCheckFunction = function(sourceID, targetID, typeString, setString, paramString) {
   return function() {
     var source = document.getElementById(sourceID);
     var target = document.getElementById(targetID);
     var param;
+    var param_to_pass;
     try {
       param = new BooleanValue(source.checked);
     } catch (err){
         console.log("Invalid Boolean value.");
         return;
     }
-    if (param.getValue()) target.innerHTML = "true";
-    else target.innerHTML = "false";
-    Registry.viewManager.adjustParams(typeString, setString, paramString, param.getValue());
+    if (param.getValue()) {
+      target.innerHTML = "V";
+      param_to_pass = new StringValue("V");
+    }
+    else {
+      target.innerHTML = "H";
+      param_to_pass = new StringValue("H");
+    }
+    Registry.viewManager.adjustParams(typeString, setString, paramString, param_to_pass.getValue());
+  }
+}
+var generateCheckFunctionDir = function(sourceID, targetID, typeString, setString, paramString) {
+  return function() {
+    var source = document.getElementById(sourceID);
+    var target = document.getElementById(targetID);
+    var param;
+    var param_to_pass;
+    try {
+      param = new BooleanValue(source.checked);
+    } catch (err){
+      console.log("Invalid Boolean value.");
+      return;
+    }
+    if (param.getValue()) {
+      target.innerHTML = "IN";
+      param_to_pass = new StringValue("IN");
+    }
+    else {
+      target.innerHTML = "OUT";
+      param_to_pass = new StringValue("OUT");
+    }
+    Registry.viewManager.adjustParams(typeString, setString, paramString, param_to_pass.getValue());
   }
 }
 
@@ -158,7 +205,22 @@ var createSliderRow = function(featureID, typeString, setString, key) {
   slider.oninput = generateUpdateFunction(sliderID, fieldID, typeString, setString, key);
   return row;
 }
-
+/*
+var createStringRow = function(featureID, typeString, setString, key) {
+  var definition = FeatureSets.getDefinition(typeString, setString);
+  var value = Feature.getDefaultsForType(typeString, setString)[key];
+  var titleID = (featureID + "_" + key + "_title");
+  var fieldID = (featureID + "_" + key + "_value");
+  var title = createSpan(key, titleID);
+  var titleContainer = createTableElement(title);
+  titleContainer.style.borderBottom = "none";
+  var field = createValueField(value, fieldID);
+  var fieldContainer = createTableElement(field);
+  var row = createTableRow2(titleContainer, fieldContainer);
+  field.oninput = generateUpdateFunctionString(fieldID, typeString, setString, key);
+  return row;
+}
+*/
 var createCheckboxRow = function(featureID, typeString, setString, key) {
   var title = createSpan(key);
   var checkID = (featureID + "_" + key + "_checkbox");
@@ -166,14 +228,31 @@ var createCheckboxRow = function(featureID, typeString, setString, key) {
   var value = Feature.getDefaultsForType(typeString, setString)[key];
   var checkBox = createCheckbox(value, checkID);
   var spanValue;
-  if (value) spanValue = "true";
-  else spanValue = "false";
+  if (value == "V") spanValue = "V";
+  else spanValue = "H";
   var span = createSpan(spanValue, spanID);
   var titleContainer = createTableElement(title);
   var checkContainer = createTableElement(checkBox);
   var spanContainer = createTableElement(span);
   var row = createTableRow(checkContainer, titleContainer, spanContainer);
   checkBox.onchange = generateCheckFunction(checkID, spanID, typeString, setString, key);
+  return row;
+}
+var createInOutRow = function(featureID, typeString, setString, key) {
+  var title = createSpan(key);
+  var checkID = (featureID + "_" + key + "_checkbox");
+  var spanID = (featureID + "_" + key + "_span");
+  var value = Feature.getDefaultsForType(typeString, setString)[key];
+  var checkBox = createCheckbox(value, checkID);
+  var spanValue = value;
+  //if (value == "IN") spanValue = "IN";
+  //else spanValue = "OUT";
+  var span = createSpan(spanValue, spanID);
+  var titleContainer = createTableElement(title);
+  var checkContainer = createTableElement(checkBox);
+  var spanContainer = createTableElement(span);
+  var row = createTableRow(checkContainer, titleContainer, spanContainer);
+  checkBox.onchange = generateCheckFunctionDir(checkID, spanID, typeString, setString, key);
   return row;
 }
 
@@ -186,7 +265,8 @@ var createFeatureTableRows = function(typeString, setString) {
     var row;
     var type = heritable[key];
     if (type == "Float" || type == "Integer") row = createSliderRow(id, typeString, setString, key);
-    else if (type == "Boolean") row = createCheckboxRow(id, typeString, setString, key);
+    else if (key == "orientation") row = createCheckboxRow(id, typeString, setString, key);
+    else if (key == "direction") row = createInOutRow(id, typeString, setString, key);
     rows.push(row);
   }
   return rows;
