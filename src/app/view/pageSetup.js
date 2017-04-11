@@ -30,7 +30,7 @@ let dropletgenParams = document.getElementById("dropletgen_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
-let stlButton = document.getElementById("stl_button");
+//let stlButton = document.getElementById("stl_button");
 
 let button2D = document.getElementById("button_2D");
 let button3D = document.getElementById("button_3D");
@@ -282,7 +282,7 @@ function setupAppPage() {
         });
         saveAs(json, "device.json");
     }
-
+/*
     stlButton.onclick = function() {
         let json = Registry.currentDevice.toJSON();
         let stls = renderer.getSTL(json);
@@ -297,7 +297,7 @@ function setupAppPage() {
         });
         saveAs(content, json.name + "_layers.zip");
     }
-
+*/
     svgButton.onclick = function() {
         let svgs = Registry.viewManager.layersToSVGStrings();
         //let svg = paper.project.exportSVG({asString: true});
