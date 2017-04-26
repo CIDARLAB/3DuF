@@ -316,7 +316,7 @@ var Mixer = function(params){
             serpentine.add(new paper.Point(startX + 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)));
             serpentine.add(new paper.Point(startX - 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)));
             serpentine.add(new paper.Point(startX - 0.5*bendLength, startY + (2*i+2)*(bendSpacing + channelWidth)));
-            serpentine.add(new paper.Point(startX + 0.5*channelWidth, startY + (2*i+2)*(bendSpacing + channelWidth)));
+            serpentine.add(new paper.Point(startX + channelWidth, startY + (2*i+2)*(bendSpacing + channelWidth)));
         }
     }
     else {
@@ -328,7 +328,7 @@ var Mixer = function(params){
             serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY - 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
-            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY - 0.5*channelWidth));
+            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY - channelWidth));
         }
     }
     serpentine.strokeColor = color;
@@ -355,7 +355,7 @@ var MixerTarget = function(params){
             serpentine.add(new paper.Point(startX + 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)));
             serpentine.add(new paper.Point(startX - 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)));
             serpentine.add(new paper.Point(startX - 0.5*bendLength, startY + (2*i+2)*(bendSpacing + channelWidth)));
-            serpentine.add(new paper.Point(startX + 0.5*channelWidth, startY + (2*i+2)*(bendSpacing + channelWidth)));
+            serpentine.add(new paper.Point(startX + channelWidth, startY + (2*i+2)*(bendSpacing + channelWidth)));
         }
     }
     else {
@@ -367,7 +367,7 @@ var MixerTarget = function(params){
             serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY - 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
-            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY - 0.5*channelWidth));
+            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY - channelWidth));
         }
     }
     serpentine.strokeColor = color;
