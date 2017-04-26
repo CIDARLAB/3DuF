@@ -61,11 +61,12 @@ class PaperView {
 
     postProcessLayerToSVG(layer) {
         let layerCopy = layer.clone();
+        layerCopy.scale(-1,1);
         layerCopy.bounds.topLeft = new paper.Point(0, 0);
         let deviceWidth = Registry.currentDevice.params.getValue("width");
         let deviceHeight = Registry.currentDevice.params.getValue("height");
         layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
-        let svg = layer.exportSVG({
+        let svg = layerCopy.exportSVG({
             asString: true
         });
         let width = layerCopy.bounds.width;

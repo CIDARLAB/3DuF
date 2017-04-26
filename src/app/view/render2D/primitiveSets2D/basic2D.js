@@ -316,19 +316,19 @@ var Mixer = function(params){
             serpentine.add(new paper.Point(startX + 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)));
             serpentine.add(new paper.Point(startX - 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)));
             serpentine.add(new paper.Point(startX - 0.5*bendLength, startY + (2*i+2)*(bendSpacing + channelWidth)));
-            serpentine.add(new paper.Point(startX, startY + (2*i+2)*(bendSpacing + channelWidth)));
+            serpentine.add(new paper.Point(startX + 0.5*channelWidth, startY + (2*i+2)*(bendSpacing + channelWidth)));
         }
     }
     else {
         startX = position[0];
-        startY = position[1] + 0.5*bendLength + 0.5*channelWidth;
+        startY = position[1] + 0.5*bendLength;
         serpentine.add(new paper.Point(startX, startY));
         for (i = 0; i < numBends; i++) {
             serpentine.add(new paper.Point(startX + 2*i*(bendSpacing + channelWidth) , startY - 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY - 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
-            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY));
+            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY - 0.5*channelWidth));
         }
     }
     serpentine.strokeColor = color;
@@ -355,19 +355,19 @@ var MixerTarget = function(params){
             serpentine.add(new paper.Point(startX + 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)));
             serpentine.add(new paper.Point(startX - 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)));
             serpentine.add(new paper.Point(startX - 0.5*bendLength, startY + (2*i+2)*(bendSpacing + channelWidth)));
-            serpentine.add(new paper.Point(startX, startY + (2*i+2)*(bendSpacing + channelWidth)));
+            serpentine.add(new paper.Point(startX + 0.5*channelWidth, startY + (2*i+2)*(bendSpacing + channelWidth)));
         }
     }
     else {
         startX = position[0];
-        startY = position[1] + 0.5*bendLength + 0.5*channelWidth;
+        startY = position[1] + 0.5*bendLength;
         serpentine.add(new paper.Point(startX, startY));
         for (i = 0; i < numBends; i++) {
             serpentine.add(new paper.Point(startX + 2*i*(bendSpacing + channelWidth) , startY - 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY - 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
             serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY + 0.5*bendLength));
-            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY));
+            serpentine.add(new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY - 0.5*channelWidth));
         }
     }
     serpentine.strokeColor = color;
