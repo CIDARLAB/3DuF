@@ -33,7 +33,7 @@ let svgButton = document.getElementById("svg_button");
 //let stlButton = document.getElementById("stl_button");
 
 let button2D = document.getElementById("button_2D");
-let button3D = document.getElementById("button_3D");
+//let button3D = document.getElementById("button_3D");
 
 let flowButton = document.getElementById("flow_button");
 let controlButton = document.getElementById("control_button");
@@ -105,13 +105,13 @@ function setActiveLayer(layerName) {
     setActiveButton(activeButton);
     let bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
-    if (threeD) {
+   /* if (threeD) {
         setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
         setButtonColor(button2D, inactiveBackground, inactiveText);
-    } else {
+    } else {*/
         setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-        setButtonColor(button3D, inactiveBackground, inactiveText);
-    }
+        //setButtonColor(button3D, inactiveBackground, inactiveText);
+   // }
 }
 
 function switchTo3D() {
@@ -325,10 +325,10 @@ function setupAppPage() {
         switchTo2D();*/
     }
 
-    button3D.onclick = function() {
+  //  button3D.onclick = function() {
        /* killParamsWindow();
         switchTo3D();*/
-    }
+    //}
 
     channelParams.onclick = paramsWindowFunction("Channel", "Basic");
     circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
