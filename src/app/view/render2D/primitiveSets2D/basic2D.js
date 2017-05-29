@@ -154,6 +154,17 @@ var GradientCircle = function(params){
     return outerCircle;
 }
 
+var PortCircle = function(params){
+    let position = params["position"];
+    let portRadius = params["portRadius"];
+    let color1 = params["color"];
+    let pos = new paper.Point(position[0], position[1]);
+
+    let outerCircle = new paper.Path.Circle(pos, portRadius);
+    outerCircle.fillColor = color1;
+    return outerCircle;
+}
+
 var GroverValve = function(params){
     let minRadiusInMicrometers = 8/paper.view.zoom;
     let position = params["position"];
@@ -200,6 +211,28 @@ var CircleTarget = function(params){
         let radius2 = params["radius2"];
         if (radius1 > radius2) targetRadius = radius1;
         else targetRadius = radius2;
+    }
+    let minSize = 8; //pixels
+    let minSizeInMicrometers = 8/paper.view.zoom;
+    let position = params["position"];
+    let color = params["color"];
+    let pos = new paper.Point(position[0], position[1]);
+    if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
+    let circ = new paper.Path.Circle(pos, targetRadius);
+    circ.fillColor = color
+    circ.fillColor.alpha = .5;
+    circ.strokeColor = "#FFFFFF";
+    circ.strokeWidth = 3 / paper.view.zoom;
+    if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
+    return circ;
+}
+
+var PortTarget = function(params){
+    let targetRadius;
+    if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"]/2;
+    else {
+        let targetRadius = params["portRadius"];
+
     }
     let minSize = 8; //pixels
     let minSizeInMicrometers = 8/paper.view.zoom;
@@ -685,9 +718,11 @@ var DropletGenTarget = function(params) {
 module.exports.RoundedRectLine = RoundedRectLine;
 module.exports.EdgedRectLine = EdgedRectLine;
 module.exports.GradientCircle = GradientCircle;
+module.exports.PortCircle = PortCircle;
 module.exports.RoundedRect = RoundedRect;
 module.exports.EdgedRect = EdgedRect;
 module.exports.CircleTarget = CircleTarget;
+module.exports.PortTarget = PortTarget;
 module.exports.GroverValve = GroverValve;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;

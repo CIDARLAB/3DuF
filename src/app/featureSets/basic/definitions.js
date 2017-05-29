@@ -163,8 +163,6 @@ let basicFeatures = {
         },
         heritable: {
             "portRadius": "Float",
-            "radius1": "Float",
-            "radius2": "Float",
             "height": "Float"
         },
         defaults: {
