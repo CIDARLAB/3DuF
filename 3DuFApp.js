@@ -34980,7 +34980,7 @@ var CircleTarget = function (params) {
 var PortTarget = function (params) {
     let targetRadius;
     if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"] / 2;else {
-        let targetRadius = params["portRadius"];
+        targetRadius = params["portRadius"];
     }
     let minSize = 8; //pixels
     let minSizeInMicrometers = 8 / paper.view.zoom;
