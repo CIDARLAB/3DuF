@@ -41,7 +41,7 @@ var createValueField = function(start, id) {
   var div = document.createElement("div");
   var error = document.createElement("span");
   var span = document.createElement("span");
-  span.innerHTML = "μm";
+  span.innerHTML = " ";
   span.style.fontSize = "14px";
   error.className = "mdl-textfield__error";
   error.innerHTML = "Digits only";
@@ -278,7 +278,7 @@ var createFeatureTableHeaders = function(typeString) {
   thead.appendChild(tr);
   var param = document.createElement("th");
   param.className = "mdl-data-table__cell--non-numeric";
-  param.innerHTML = "Parameter";
+  param.innerHTML = "Parameter &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;";
   var value = document.createElement("th");
   value.className = "mdl-data-table__cell--non-numeric";
   value.innerHTML = "Value";
