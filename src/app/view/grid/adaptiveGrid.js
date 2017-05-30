@@ -2,7 +2,7 @@ var Registry = require("../../core/registry");
 var Colors = require("../colors");
 
 class AdaptiveGrid {
-    constructor(minSpacing = 10, maxSpacing = 100, thickCount = 10, origin = [0, 0], thinWidth = 1, thickWidth = 3, color = Colors.BLUE_100) {
+    constructor(minSpacing = 5, maxSpacing = 100, thickCount = 10, origin = [0, 0], thinWidth = 1, thickWidth = 3, color = Colors.BLUE_100) {
         this.origin = new paper.Point(origin[0], origin[1]);
         this.thinWidth = thinWidth; //pixel
         this.thickWidth = thickWidth; // pixels
