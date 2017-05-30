@@ -6,8 +6,7 @@ let basicFeatures = {
         },
         heritable: {
             "channelWidth": "Float",
-            "height": "Float",
-            "width": "Float"
+            "height": "Float"
         },
         defaults: {
             "channelWidth": .75 * 1000,
