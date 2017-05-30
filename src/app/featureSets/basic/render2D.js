@@ -17,14 +17,16 @@ let render2D = {
     Port: {
         featureParams: {
             position: "position",
-            portRadius: "portRadius"
+            radius1: "portRadius",
+            radius2: "portRadius"
         },
         targetParams: {
-            portRadius: "portRadius"
+            radius1: "portRadius",
+            radius2: "portRadius"
         },
         featurePrimitiveSet: "Basic2D",
-        featurePrimitiveType: "PortCircle",
-        targetPrimitiveType: "PortTarget",
+        featurePrimitiveType: "GradientCircle",
+        targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
     Node: {
