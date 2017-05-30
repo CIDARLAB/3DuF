@@ -193,7 +193,7 @@ let basicFeatures = {
         },
         defaults: {
             "orientation": "H",
-            "channelWidth": .75 * 1000,
+            "channelWidth": .80 * 1000,
             "width": 1.23 * 1000,
             "length": 4.92 * 1000,
             "height": .1 * 1000
