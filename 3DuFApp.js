@@ -32385,8 +32385,6 @@ let basicFeatures = {
         },
         heritable: {
             "portRadius": "Float",
-            "radius1": "Float",
-            "radius2": "Float",
             "height": "Float"
         },
         defaults: {
@@ -35088,10 +35086,17 @@ var GroverValve = function (params) {
 
 var CircleTarget = function (params) {
     let targetRadius;
+    let radius1;
+    let radius2;
     if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"] / 2;else {
-        let radius1 = params["radius1"];
-        let radius2 = params["radius2"];
-        if (radius1 > radius2) targetRadius = radius1;else targetRadius = radius2;
+        if (params.hasOwnProperty("portRadius")) {
+            radius1 = portRadius;
+            radius2 = portRadius;
+        } else {
+            radius1 = params["radius1"];
+            radius2 = params["radius2"];
+            if (radius1 > radius2) targetRadius = radius1;else targetRadius = radius2;
+        }
     }
     let minSize = 8; //pixels
     let minSizeInMicrometers = 8 / paper.view.zoom;
