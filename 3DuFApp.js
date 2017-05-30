@@ -32231,7 +32231,7 @@ let basicFeatures = {
             "height": "Float"
         },
         defaults: {
-            "channelWidth": .75 * 1000,
+            "channelWidth": .80 * 1000,
             "height": .1 * 1000
         },
         minimum: {
@@ -32446,7 +32446,7 @@ let basicFeatures = {
             "height": "Float"
         },
         defaults: {
-            "channelWidth": .75 * 1000,
+            "channelWidth": .80 * 1000,
             "bendSpacing": 1.23 * 1000,
             "numberOfBends": 1,
             "orientation": "H",
@@ -32485,7 +32485,7 @@ let basicFeatures = {
             "direction": "String"
         },
         defaults: {
-            "flowChannelWidth": .75 * 1000,
+            "flowChannelWidth": .80 * 1000,
             "orientation": "H",
             "spacing": 1.23 * 1000,
             "leafs": 2,
@@ -32559,7 +32559,7 @@ let basicFeatures = {
             "height": "Float"
         },
         defaults: {
-            "orificeSize": .75 * 1000,
+            "orificeSize": .80 * 1000,
             "height": .1 * 1000
         },
         minimum: {
