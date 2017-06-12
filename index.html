@@ -23,6 +23,14 @@
 </head>
 
 <body>
+<script>
+    // Warning before leaving the page (back button, or outgoinglink)
+    window.onbeforeunload = function() {
+        return "Do you really want to leave 3DuF?";
+        //if we return nothing here (just calling return;) then there will be no pop-up question at all
+        //return;
+    };
+</script>
   <div id="main_window" class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
             mdl-layout--overlay-drawer-button ">
     <div id="button_drawer" class="mdl-layout__drawer">
