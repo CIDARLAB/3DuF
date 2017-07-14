@@ -192,7 +192,7 @@ let basicFeatures = {
             "height": "Float"
         },
         defaults: {
-            "orientation": "H",
+            "orientation": "V",
             "channelWidth": .80 * 1000,
             "width": 1.23 * 1000,
             "length": 4.92 * 1000,
@@ -264,7 +264,7 @@ let basicFeatures = {
         },
         defaults: {
             "flowChannelWidth": .80 * 1000,
-            "orientation": "H",
+            "orientation": "V",
             "spacing": 1.23 * 1000,
             "leafs": 2,
             "width": 2.46 * 1000,
