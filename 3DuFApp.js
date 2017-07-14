@@ -32414,7 +32414,7 @@ let basicFeatures = {
             "height": "Float"
         },
         defaults: {
-            "orientation": "H",
+            "orientation": "V",
             "channelWidth": .80 * 1000,
             "width": 1.23 * 1000,
             "length": 4.92 * 1000,
@@ -32486,7 +32486,7 @@ let basicFeatures = {
         },
         defaults: {
             "flowChannelWidth": .80 * 1000,
-            "orientation": "H",
+            "orientation": "V",
             "spacing": 1.23 * 1000,
             "leafs": 2,
             "width": 2.46 * 1000,
@@ -35126,20 +35126,20 @@ var Diamond = function (params) {
     let orientation = params["orientation"];
     let color = params["color"];
     let p0, p1, p2, p3, p4, p5;
-    if (orientation == "V") {
-        p0 = [px - cw / 2, py - l / 2];
-        p1 = [px + cw / 2, py - l / 2];
-        p2 = [px + w + cw / 2, py];
-        p3 = [px + cw / 2, py + l / 2];
-        p4 = [px - cw / 2, py + l / 2];
-        p5 = [px - cw / 2 - w, py];
-    } else {
+    if (orientation == "H") {
         p0 = [px - l / 2, py - cw / 2];
         p1 = [px - l / 2, py + cw / 2];
         p2 = [px, py + w + cw / 2];
         p3 = [px + l / 2, py + cw / 2];
         p4 = [px + l / 2, py - cw / 2];
         p5 = [px, py - cw / 2 - w];
+    } else {
+        p0 = [px - cw / 2, py - l / 2];
+        p1 = [px + cw / 2, py - l / 2];
+        p2 = [px + w + cw / 2, py];
+        p3 = [px + cw / 2, py + l / 2];
+        p4 = [px - cw / 2, py + l / 2];
+        p5 = [px - cw / 2 - w, py];
     }
     var hex = new paper.Path();
     hex.add(new paper.Point(p0));
@@ -35163,20 +35163,20 @@ var DiamondTarget = function (params) {
     let orientation = params["orientation"];
     let color = params["color"];
     let p0, p1, p2, p3, p4, p5;
-    if (orientation == "V") {
-        p0 = [px - cw / 2, py - l / 2];
-        p1 = [px + cw / 2, py - l / 2];
-        p2 = [px + w + cw / 2, py];
-        p3 = [px + cw / 2, py + l / 2];
-        p4 = [px - cw / 2, py + l / 2];
-        p5 = [px - cw / 2 - w, py];
-    } else {
+    if (orientation == "H") {
         p0 = [px - l / 2, py - cw / 2];
         p1 = [px - l / 2, py + cw / 2];
         p2 = [px, py + w + cw / 2];
         p3 = [px + l / 2, py + cw / 2];
         p4 = [px + l / 2, py - cw / 2];
         p5 = [px, py - cw / 2 - w];
+    } else {
+        p0 = [px - cw / 2, py - l / 2];
+        p1 = [px + cw / 2, py - l / 2];
+        p2 = [px + w + cw / 2, py];
+        p3 = [px + cw / 2, py + l / 2];
+        p4 = [px - cw / 2, py + l / 2];
+        p5 = [px - cw / 2 - w, py];
     }
     var hex = new paper.Path();
     hex.add(new paper.Point(p0));

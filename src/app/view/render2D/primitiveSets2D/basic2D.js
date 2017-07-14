@@ -234,21 +234,21 @@ var Diamond = function(params){
     let orientation = params["orientation"];
     let color = params["color"];
     let p0, p1, p2, p3, p4, p5;
-    if (orientation == "V"){
-        p0 = [px - cw/2, py - l/2];
-        p1 = [px + cw/2, py - l/2];
-        p2 = [px + w + cw/2, py];
-        p3 = [px + cw/2, py + l/2];
-        p4 = [px - cw/2, py + l/2];
-        p5 = [px - cw/2 - w, py];
-    }
-    else{
+    if (orientation == "H"){
         p0 = [px - l/2, py - cw/2];
         p1 = [px  - l/2, py + cw/2];
         p2 = [px, py + w + cw/2];
         p3 = [px + l/2, py + cw/2];
         p4 = [px + l/2, py - cw/2];
         p5 = [px, py - cw/2 - w];
+    }
+    else{
+        p0 = [px - cw/2, py - l/2];
+        p1 = [px + cw/2, py - l/2];
+        p2 = [px + w + cw/2, py];
+        p3 = [px + cw/2, py + l/2];
+        p4 = [px - cw/2, py + l/2];
+        p5 = [px - cw/2 - w, py];
     }
     var hex = new paper.Path();
     hex.add(new paper.Point(p0));
@@ -272,21 +272,21 @@ var DiamondTarget = function(params){
     let orientation = params["orientation"];
     let color = params["color"];
     let p0, p1, p2, p3, p4, p5;
-    if (orientation == "V"){
-        p0 = [px - cw/2, py - l/2];
-        p1 = [px + cw/2, py - l/2];
-        p2 = [px + w + cw/2, py];
-        p3 = [px + cw/2, py + l/2];
-        p4 = [px - cw/2, py + l/2];
-        p5 = [px - cw/2 - w, py];
-    }
-    else{
+    if (orientation == "H"){
         p0 = [px - l/2, py - cw/2];
         p1 = [px  - l/2, py + cw/2];
         p2 = [px, py + w + cw/2];
         p3 = [px + l/2, py + cw/2];
         p4 = [px + l/2, py - cw/2];
         p5 = [px, py - cw/2 - w];
+    }
+    else{
+        p0 = [px - cw/2, py - l/2];
+        p1 = [px + cw/2, py - l/2];
+        p2 = [px + w + cw/2, py];
+        p3 = [px + cw/2, py + l/2];
+        p4 = [px - cw/2, py + l/2];
+        p5 = [px - cw/2 - w, py];
     }
     var hex = new paper.Path();
     hex.add(new paper.Point(p0));
