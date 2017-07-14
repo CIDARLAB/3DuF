@@ -227,7 +227,7 @@ let basicFeatures = {
             "channelWidth": .80 * 1000,
             "bendSpacing": 1.23 * 1000,
             "numberOfBends": 1,
-            "orientation": "H",
+            "orientation": "V",
             "bendLength": 2.46 * 1000,
             "height": .1 * 1000
         },

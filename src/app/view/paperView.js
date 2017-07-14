@@ -60,7 +60,11 @@ class PaperView {
     }
 
     postProcessLayerToSVG(layer) {
+        //var flip = layer.params["flip"];
         let layerCopy = layer.clone();
+        //if (flip == true) {
+        //    layerCopy.scale(-1,1);
+        //}
         layerCopy.bounds.topLeft = new paper.Point(0, 0);
         let deviceWidth = Registry.currentDevice.params.getValue("width");
         let deviceHeight = Registry.currentDevice.params.getValue("height");
