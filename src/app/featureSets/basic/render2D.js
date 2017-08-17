@@ -86,7 +86,7 @@ let render2D = {
         targetParams: {
             diameter: "channelWidth"
         },
-        featurePrimitiveType: "RoundedRectLine",
+        featurePrimitiveType: "EdgedRectLine",
         featurePrimitiveSet: "Basic2D",
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
