@@ -37,6 +37,13 @@ let tools = {
         },
         placementTool: "DragTool"
     },
+    RoundedChannel: {
+        toolParams: {
+            start: "start",
+            end: "end"
+        },
+        placementTool: "DragTool"
+    },
     Chamber: {
         toolParams: {
             start: "start",
