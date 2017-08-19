@@ -91,6 +91,20 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    RoundedChannel: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            width: "channelWidth"
+        },
+        targetParams: {
+            diameter: "channelWidth"
+        },
+        featurePrimitiveType: "RoundedRectLine",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Chamber: {
         featureParams: {
             start: "start",
