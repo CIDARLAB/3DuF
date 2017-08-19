@@ -32243,6 +32243,28 @@ let basicFeatures = {
             "height": 1200
         }
     },
+    "RoundedChannel": {
+        unique: {
+            "start": "Point",
+            "end": "Point"
+        },
+        heritable: {
+            "channelWidth": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "channelWidth": .80 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 3,
+            "height": 10
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "height": 1200
+        }
+    },
     "Chamber": {
         unique: {
             "start": "Point",
@@ -32675,6 +32697,20 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    RoundedChannel: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            width: "channelWidth"
+        },
+        targetParams: {
+            diameter: "channelWidth"
+        },
+        featurePrimitiveType: "RoundedRectLine",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Chamber: {
         featureParams: {
             start: "start",
@@ -32863,6 +32899,16 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "TwoPointRoundedLineFeature"
     },
+    RoundedChannel: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            width: "channelWidth",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "TwoPointRoundedLineFeature"
+    },
     Chamber: {
         featureParams: {
             start: "start",
@@ -32979,6 +33025,13 @@ let tools = {
         placementTool: "PositionTool"
     },
     Channel: {
+        toolParams: {
+            start: "start",
+            end: "end"
+        },
+        placementTool: "DragTool"
+    },
+    RoundedChannel: {
         toolParams: {
             start: "start",
             end: "end"
@@ -33918,6 +33971,7 @@ var ParameterMenu = require("./UI/parameterMenu");
 let activeButton = null;
 let activeLayer = null;
 let channelButton = document.getElementById("channel_button");
+let roundedChannelButton = document.getElementById("roundedchannel_button");
 let circleValveButton = document.getElementById("circleValve_button");
 let valve3dButton = document.getElementById("valve3d_button");
 let portButton = document.getElementById("port_button");
@@ -33929,6 +33983,7 @@ let treeButton = document.getElementById("tree_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
+let roundedChannelParams = document.getElementById("roundedchannel_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
 let valve3dParams = document.getElementById("valve3d_params_button");
 let portParams = document.getElementById("port_params_button");
@@ -33966,6 +34021,7 @@ let threeD = false;
 
 let buttons = {
     "Channel": channelButton,
+    "RoundedChannel": roundedChannelButton,
     "Via": viaButton,
     "Port": portButton,
     "CircleValve": circleValveButton,
@@ -34095,7 +34151,12 @@ function setupAppPage() {
         setActiveButton("Channel");
         switchTo2D();
     };
-
+    roundedChannelButton.onclick = function () {
+        Registry.viewManager.activateTool("RoundedChannel");
+        let bg = Colors.getDefaultFeatureColor("RoundedChannel", "Basic", Registry.currentLayer);
+        setActiveButton("RoundedChannel");
+        switchTo2D();
+    };
     circleValveButton.onclick = function () {
         Registry.viewManager.activateTool("CircleValve");
         let bg = Colors.getDefaultFeatureColor("CircleValve", "Basic", Registry.currentLayer);
@@ -34235,6 +34296,7 @@ function setupAppPage() {
     //}
 
     ;channelParams.onclick = paramsWindowFunction("Channel", "Basic");
+    roundedChannelParams.onclick = paramsWindowFunction("RoundedChannel", "Basic");
     circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
     valve3dParams.onclick = paramsWindowFunction("Valve3D", "Basic");
     portParams.onclick = paramsWindowFunction("Port", "Basic");
@@ -38238,6 +38300,7 @@ class ViewManager {
     setupTools() {
         this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
         this.tools["Channel"] = new ChannelTool("Channel", "Basic");
+        this.tools["RoundedChannel"] = new ChannelTool("RoundedChannel", "Basic");
         this.tools["Node"] = new PositionTool("Node", "Basic");
         this.tools["CircleValve"] = new PositionTool("CircleValve", "Basic");
         this.tools["Valve3D"] = new PositionTool("Valve3D", "Basic");

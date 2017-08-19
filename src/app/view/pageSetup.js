@@ -7,6 +7,7 @@ var ParameterMenu = require("./UI/parameterMenu");
 let activeButton = null;
 let activeLayer = null;
 let channelButton = document.getElementById("channel_button");
+let roundedChannelButton = document.getElementById("roundedchannel_button");
 let circleValveButton = document.getElementById("circleValve_button")
 let valve3dButton = document.getElementById("valve3d_button")
 let portButton = document.getElementById("port_button")
@@ -18,6 +19,7 @@ let treeButton = document.getElementById("tree_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
+let roundedChannelParams = document.getElementById("roundedchannel_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
 let valve3dParams = document.getElementById("valve3d_params_button");
 let portParams = document.getElementById("port_params_button");
@@ -55,6 +57,7 @@ let threeD = false;
 
 let buttons = {
     "Channel": channelButton,
+    "RoundedChannel": roundedChannelButton,
     "Via": viaButton,
     "Port": portButton,
     "CircleValve": circleValveButton,
@@ -185,7 +188,12 @@ function setupAppPage() {
         setActiveButton("Channel");
         switchTo2D();
     };
-
+    roundedChannelButton.onclick = function() {
+        Registry.viewManager.activateTool("RoundedChannel");
+        let bg = Colors.getDefaultFeatureColor("RoundedChannel", "Basic", Registry.currentLayer);
+        setActiveButton("RoundedChannel");
+        switchTo2D();
+    };
     circleValveButton.onclick = function() {
         Registry.viewManager.activateTool("CircleValve");
         let bg = Colors.getDefaultFeatureColor("CircleValve", "Basic", Registry.currentLayer);
@@ -331,6 +339,7 @@ function setupAppPage() {
     //}
 
     channelParams.onclick = paramsWindowFunction("Channel", "Basic");
+    roundedChannelParams.onclick = paramsWindowFunction("RoundedChannel", "Basic");
     circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
     valve3dParams.onclick = paramsWindowFunction("Valve3D", "Basic");
     portParams.onclick = paramsWindowFunction("Port", "Basic");

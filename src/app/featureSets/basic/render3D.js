@@ -60,6 +60,16 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "TwoPointRoundedLineFeature"
     },
+    RoundedChannel: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            width: "channelWidth",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "TwoPointRoundedLineFeature"
+    },
     Chamber: {
         featureParams: {
             start: "start",
