@@ -105,6 +105,25 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Transition: {
+        featureParams: {
+            position: "position",
+            cw1: "cw1",
+            cw2: "cw2",
+            length: "length",
+            orientation: "orientation"
+        },
+        targetParams: {
+            cw1: "cw1",
+            cw2: "cw2",
+            length: "length",
+            orientation: "orientation"
+        },
+        featurePrimitiveType: "Transition",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "TransitionTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Chamber: {
         featureParams: {
             start: "start",

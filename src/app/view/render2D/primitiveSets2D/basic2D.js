@@ -612,6 +612,62 @@ strokeWidth: 0
     return serpentine;
 }
 
+var Transition = function(params) {
+    position = params["position"];
+    cw1 = params["cw1"];
+    cw2 = params["cw2"];
+    length = params["length"];
+    orientation = params["orientation"];
+    color = params["color"];
+    trap = new paper.Path();
+
+    if (orientation == "V") {
+        trap.add(new paper.Point(position[0] - cw1/2, position[1]));
+        trap.add(new paper.Point(position[0] + cw1/2, position[1]));
+        trap.add(new paper.Point(position[0] + cw2/2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw2/2, position[1] + length));
+        //trap.add(new paper.Point(position[0] - cw1/2, position[1]));
+    }
+    else {
+        trap.add(new paper.Point(position[0], position[1] - cw1/2));
+        trap.add(new paper.Point(position[0], position[1] + cw1/2));
+        trap.add(new paper.Point(position[0] + length, position[1] + cw2/2));
+        trap.add(new paper.Point(position[0] + length, position[1] - cw2/2));
+        //trap.add(new paper.Point(position[0], position[1] - cw1/2));
+    }
+    trap.closed = true;
+    trap.fillColor = color;
+    return trap;
+}
+
+var TransitionTarget = function(params) {
+    position = params["position"];
+    cw1 = params["cw1"];
+    cw2 = params["cw2"];
+    length = params["length"];
+    orientation = params["orientation"];
+    color = params["color"];
+    trap = new paper.Path();
+    if (orientation == "V") {
+        trap.add(new paper.Point(position[0] - cw1/2, position[1]));
+        trap.add(new paper.Point(position[0] + cw1/2, position[1]));
+        trap.add(new paper.Point(position[0] + cw2/2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw2/2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw1/2, position[1]));
+    }
+    else {
+        trap.add(new paper.Point(position[0], position[1] - cw1/2));
+        trap.add(new paper.Point(position[0], position[1] + cw1/2));
+        trap.add(new paper.Point(position[0] + length, position[1] + cw2/2));
+        trap.add(new paper.Point(position[0] + length, position[1] - cw2/2));
+        trap.add(new paper.Point(position[0], position[1] - cw1/2));
+    }
+    trap.closed = true;
+    trap.fillColor = color;
+    trap.fillColor.alpha = 0.5;
+    return trap;
+}
+
 var Tree = function(params) {
     position  = params["position"];
     cw = params["flowChannelWidth"];
@@ -948,3 +1004,5 @@ module.exports.CellTrapL = CellTrapL;
 module.exports.CellTrapLTarget = CellTrapLTarget;
 module.exports.DropletGen = DropletGen;
 module.exports.DropletGenTarget = DropletGenTarget;
+module.exports.Transition = Transition;
+module.exports.TransitionTarget = TransitionTarget;

@@ -43,6 +43,37 @@ let basicFeatures = {
             "height": 1200,
         }
     },
+    "Transition": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "cw1": "Float",
+            "cw2": "Float",
+            "length": "Float",
+            "orientation": "String",
+            "height": "Float"
+        },
+        defaults: {
+            "cw1": .80 * 1000,
+            "cw2": .90 * 1000,
+            "length": 1.0 * 1000,
+            "orientation": "V",
+            "height": .1 * 1000
+        },
+        minimum: {
+            "cw1": 3,
+            "cw2": 3,
+            "length": 10,
+            "height": 10
+        },
+        maximum: {
+            "cw1": 2000,
+            "cw2": 2000,
+            "length": 1200,
+            "height": 1200
+        }
+    },
     "Chamber": {
         unique: {
             "start": "Point",
