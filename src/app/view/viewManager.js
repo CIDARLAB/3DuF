@@ -404,6 +404,7 @@ class ViewManager {
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
         this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
         this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
+        this.tools["Transition"] = new PositionTool("Transition", "Basic");
     }
 }
 

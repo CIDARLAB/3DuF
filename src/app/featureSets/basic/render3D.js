@@ -70,6 +70,18 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "TwoPointRoundedLineFeature"
     },
+    Transition: {
+        featureParams: {
+            position: "position",
+            radius1: "cw1",
+            radius2: "cw2",
+            length: "length",
+            orientation: "orientation",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     Chamber: {
         featureParams: {
             start: "start",

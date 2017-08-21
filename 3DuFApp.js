@@ -32265,6 +32265,37 @@ let basicFeatures = {
             "height": 1200
         }
     },
+    "Transition": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "cw1": "Float",
+            "cw2": "Float",
+            "length": "Float",
+            "orientation": "String",
+            "height": "Float"
+        },
+        defaults: {
+            "cw1": .80 * 1000,
+            "cw2": .90 * 1000,
+            "length": 1.0 * 1000,
+            "orientation": "V",
+            "height": .1 * 1000
+        },
+        minimum: {
+            "cw1": 3,
+            "cw2": 3,
+            "length": 10,
+            "height": 10
+        },
+        maximum: {
+            "cw1": 2000,
+            "cw2": 2000,
+            "length": 1200,
+            "height": 1200
+        }
+    },
     "Chamber": {
         unique: {
             "start": "Point",
@@ -32711,6 +32742,25 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Transition: {
+        featureParams: {
+            position: "position",
+            cw1: "cw1",
+            cw2: "cw2",
+            length: "length",
+            orientation: "orientation"
+        },
+        targetParams: {
+            cw1: "cw1",
+            cw2: "cw2",
+            length: "length",
+            orientation: "orientation"
+        },
+        featurePrimitiveType: "Transition",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "TransitionTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Chamber: {
         featureParams: {
             start: "start",
@@ -32909,6 +32959,18 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "TwoPointRoundedLineFeature"
     },
+    Transition: {
+        featureParams: {
+            position: "position",
+            radius1: "cw1",
+            radius2: "cw2",
+            length: "length",
+            orientation: "orientation",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     Chamber: {
         featureParams: {
             start: "start",
@@ -33037,6 +33099,12 @@ let tools = {
             end: "end"
         },
         placementTool: "DragTool"
+    },
+    Transition: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
     },
     Chamber: {
         toolParams: {
@@ -33972,6 +34040,7 @@ let activeButton = null;
 let activeLayer = null;
 let channelButton = document.getElementById("channel_button");
 let roundedChannelButton = document.getElementById("roundedchannel_button");
+let transitionButton = document.getElementById("transition_button");
 let circleValveButton = document.getElementById("circleValve_button");
 let valve3dButton = document.getElementById("valve3d_button");
 let portButton = document.getElementById("port_button");
@@ -33984,6 +34053,7 @@ let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
+let transitionParams = document.getElementById("transition_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
 let valve3dParams = document.getElementById("valve3d_params_button");
 let portParams = document.getElementById("port_params_button");
@@ -34022,6 +34092,7 @@ let threeD = false;
 let buttons = {
     "Channel": channelButton,
     "RoundedChannel": roundedChannelButton,
+    "Transition": transitionButton,
     "Via": viaButton,
     "Port": portButton,
     "CircleValve": circleValveButton,
@@ -34155,6 +34226,12 @@ function setupAppPage() {
         Registry.viewManager.activateTool("RoundedChannel");
         let bg = Colors.getDefaultFeatureColor("RoundedChannel", "Basic", Registry.currentLayer);
         setActiveButton("RoundedChannel");
+        switchTo2D();
+    };
+    transitionButton.onclick = function () {
+        Registry.viewManager.activateTool("Transition");
+        let bg = Colors.getDefaultFeatureColor("Transition", "Basic", Registry.currentLayer);
+        setActiveButton("Transition");
         switchTo2D();
     };
     circleValveButton.onclick = function () {
@@ -34306,6 +34383,7 @@ function setupAppPage() {
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
+    transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function (files) {
@@ -35558,6 +35636,60 @@ var MixerTarget = function (params) {
     return serpentine;
 };
 
+var Transition = function (params) {
+    position = params["position"];
+    cw1 = params["cw1"];
+    cw2 = params["cw2"];
+    length = params["length"];
+    orientation = params["orientation"];
+    color = params["color"];
+    trap = new paper.Path();
+
+    if (orientation == "V") {
+        trap.add(new paper.Point(position[0] - cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw2 / 2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw2 / 2, position[1] + length));
+        //trap.add(new paper.Point(position[0] - cw1/2, position[1]));
+    } else {
+        trap.add(new paper.Point(position[0], position[1] - cw1 / 2));
+        trap.add(new paper.Point(position[0], position[1] + cw1 / 2));
+        trap.add(new paper.Point(position[0] + length, position[1] + cw2 / 2));
+        trap.add(new paper.Point(position[0] + length, position[1] - cw2 / 2));
+        //trap.add(new paper.Point(position[0], position[1] - cw1/2));
+    }
+    trap.closed = true;
+    trap.fillColor = color;
+    return trap;
+};
+
+var TransitionTarget = function (params) {
+    position = params["position"];
+    cw1 = params["cw1"];
+    cw2 = params["cw2"];
+    length = params["length"];
+    orientation = params["orientation"];
+    color = params["color"];
+    trap = new paper.Path();
+    if (orientation == "V") {
+        trap.add(new paper.Point(position[0] - cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw2 / 2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw2 / 2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw1 / 2, position[1]));
+    } else {
+        trap.add(new paper.Point(position[0], position[1] - cw1 / 2));
+        trap.add(new paper.Point(position[0], position[1] + cw1 / 2));
+        trap.add(new paper.Point(position[0] + length, position[1] + cw2 / 2));
+        trap.add(new paper.Point(position[0] + length, position[1] - cw2 / 2));
+        trap.add(new paper.Point(position[0], position[1] - cw1 / 2));
+    }
+    trap.closed = true;
+    trap.fillColor = color;
+    trap.fillColor.alpha = 0.5;
+    return trap;
+};
+
 var Tree = function (params) {
     position = params["position"];
     cw = params["flowChannelWidth"];
@@ -35890,6 +36022,8 @@ module.exports.CellTrapL = CellTrapL;
 module.exports.CellTrapLTarget = CellTrapLTarget;
 module.exports.DropletGen = DropletGen;
 module.exports.DropletGenTarget = DropletGenTarget;
+module.exports.Transition = Transition;
+module.exports.TransitionTarget = TransitionTarget;
 
 },{}],221:[function(require,module,exports){
 module.exports.Basic2D = require("./basic2D");
@@ -38311,6 +38445,7 @@ class ViewManager {
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
         this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
         this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
+        this.tools["Transition"] = new PositionTool("Transition", "Basic");
     }
 }
 

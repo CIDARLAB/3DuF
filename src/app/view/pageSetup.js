@@ -8,6 +8,7 @@ let activeButton = null;
 let activeLayer = null;
 let channelButton = document.getElementById("channel_button");
 let roundedChannelButton = document.getElementById("roundedchannel_button");
+let transitionButton = document.getElementById("transition_button");
 let circleValveButton = document.getElementById("circleValve_button")
 let valve3dButton = document.getElementById("valve3d_button")
 let portButton = document.getElementById("port_button")
@@ -20,6 +21,7 @@ let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
+let transitionParams = document.getElementById("transition_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
 let valve3dParams = document.getElementById("valve3d_params_button");
 let portParams = document.getElementById("port_params_button");
@@ -58,6 +60,7 @@ let threeD = false;
 let buttons = {
     "Channel": channelButton,
     "RoundedChannel": roundedChannelButton,
+    "Transition": transitionButton,
     "Via": viaButton,
     "Port": portButton,
     "CircleValve": circleValveButton,
@@ -192,6 +195,12 @@ function setupAppPage() {
         Registry.viewManager.activateTool("RoundedChannel");
         let bg = Colors.getDefaultFeatureColor("RoundedChannel", "Basic", Registry.currentLayer);
         setActiveButton("RoundedChannel");
+        switchTo2D();
+    };
+    transitionButton.onclick = function() {
+        Registry.viewManager.activateTool("Transition");
+        let bg = Colors.getDefaultFeatureColor("Transition", "Basic", Registry.currentLayer);
+        setActiveButton("Transition");
         switchTo2D();
     };
     circleValveButton.onclick = function() {
@@ -349,6 +358,7 @@ function setupAppPage() {
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
+    transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {

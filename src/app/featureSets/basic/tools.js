@@ -44,6 +44,12 @@ let tools = {
         },
         placementTool: "DragTool"
     },
+    Transition: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
     Chamber: {
         toolParams: {
             start: "start",
