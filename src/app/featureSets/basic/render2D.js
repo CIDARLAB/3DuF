@@ -84,11 +84,12 @@ let render2D = {
             width: "channelWidth"
         },
         targetParams: {
-            diameter: "channelWidth"
+            diameter: "channelWidth",
+            channelWidth: "channelWidth"
         },
         featurePrimitiveType: "EdgedRectLine",
         featurePrimitiveSet: "Basic2D",
-        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveType: "CrossHairsTarget",
         targetPrimitiveSet: "Basic2D"
     },
     RoundedChannel: {
@@ -155,6 +156,27 @@ let render2D = {
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "Diamond",
         targetPrimitiveType: "DiamondTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    BetterMixer: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "BetterMixer",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "MixerTarget",
         targetPrimitiveSet: "Basic2D"
     },
     Mixer: {

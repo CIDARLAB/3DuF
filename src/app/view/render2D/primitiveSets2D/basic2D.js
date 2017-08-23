@@ -81,6 +81,19 @@ var RoundedRect = function(params){
 strokeWidth: 0
     });
     return rec;
+};
+
+var CrossHairsTarget = function(params){
+    let thickness = params["channelWidth"]/5;
+    let length = params["channelWidth"];
+    let x = params["position"][0];
+    let y = params["position"][1];
+    let color = params["color"];
+    var chair = new paper.Path.Rectangle(x - length/2, y - thickness/2, length, thickness);
+    chair = chair.unite(new paper.Path.Rectangle(x - thickness/2, y - length/2, thickness, length));
+    chair.fillColor = color;
+    chair.fillColor.alpha = 0.5;
+    return chair;
 }
 
 var EdgedRect = function(params){
@@ -307,6 +320,53 @@ var DiamondTarget = function(params){
     if(hex.strokeWidth > w/2) hex.strokeWidth = w/2;
     //console.log(Math.ceil(Math.log2(7)));
     return hex;
+}
+
+var BetterMixer = function(params) {
+    let channelWidth = params["channelWidth"];
+    let bendLength = params["bendLength"];
+    let bendSpacing = params["bendSpacing"];
+    let orientation = params["orientation"];
+    let numBends = params["numberOfBends"];
+    let x = params["position"][0];
+    let y = params["position"][1];
+    let color = params["color"];
+    let segHalf = bendLength/2 + channelWidth;
+    let segLength = bendLength + 2*channelWidth;
+    let segBend = bendSpacing + 2*channelWidth;
+    let vRepeat = 2*bendSpacing + 2*channelWidth;
+    let vOffset = bendSpacing + channelWidth;
+    let hOffset = bendLength/2 + channelWidth/2;
+    
+    var serp;
+    if (orientation == "V"){
+        //draw first segment
+        serp = new paper.Path.Rectangle(x, y, segHalf + channelWidth/2, channelWidth);
+        for(i = 0; i < numBends; i++){
+            serp = serp.unite(new paper.Path.Rectangle(x, y+vRepeat*i, channelWidth, segBend));
+            serp = serp.unite(new paper.Path.Rectangle(x, y+vOffset+vRepeat*i, segLength, channelWidth));
+            serp = serp.unite(new paper.Path.Rectangle(x+channelWidth+ bendLength, y+vOffset+vRepeat*i, channelWidth, segBend));
+            if (i == numBends-1){//draw half segment to close
+                serp = serp.unite(new paper.Path.Rectangle(x+hOffset, y+vRepeat*(i+1), segHalf, channelWidth));
+            } else{//draw full segment
+                serp = serp.unite(new paper.Path.Rectangle(x, y+vRepeat*(i+1), segLength, channelWidth));
+            }
+        }
+    } else {
+        serp = new paper.Path.Rectangle(x, y+hOffset, channelWidth, segHalf);
+        for(i = 0; i < numBends; i++){
+            serp = serp.unite(new paper.Path.Rectangle(x+vRepeat*i, y+channelWidth+bendLength, segBend, channelWidth));
+            serp = serp.unite(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, channelWidth, segLength));
+            serp = serp.unite(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, segBend, channelWidth));
+            if (i == numBends-1){//draw half segment to close
+                serp = serp.unite(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segHalf + channelWidth/2));
+            } else{//draw full segment
+                serp = serp.unite(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segLength));
+            }
+        }
+    }
+    serp.fillColor = color;
+    return serp;
 }
 
 var Mixer = function(params){
@@ -653,14 +713,12 @@ var TransitionTarget = function(params) {
         trap.add(new paper.Point(position[0] + cw1/2, position[1]));
         trap.add(new paper.Point(position[0] + cw2/2, position[1] + length));
         trap.add(new paper.Point(position[0] - cw2/2, position[1] + length));
-        trap.add(new paper.Point(position[0] - cw1/2, position[1]));
     }
     else {
         trap.add(new paper.Point(position[0], position[1] - cw1/2));
         trap.add(new paper.Point(position[0], position[1] + cw1/2));
         trap.add(new paper.Point(position[0] + length, position[1] + cw2/2));
         trap.add(new paper.Point(position[0] + length, position[1] - cw2/2));
-        trap.add(new paper.Point(position[0], position[1] - cw1/2));
     }
     trap.closed = true;
     trap.fillColor = color;
@@ -995,6 +1053,7 @@ module.exports.CircleTarget = CircleTarget;
 module.exports.GroverValve = GroverValve;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
+module.exports.BetterMixer = BetterMixer;
 module.exports.Mixer = Mixer;
 module.exports.MixerTarget = MixerTarget;
 module.exports.EdgedRect = EdgedRect;
@@ -1006,3 +1065,4 @@ module.exports.DropletGen = DropletGen;
 module.exports.DropletGenTarget = DropletGenTarget;
 module.exports.Transition = Transition;
 module.exports.TransitionTarget = TransitionTarget;
+module.exports.CrossHairsTarget = CrossHairsTarget;
