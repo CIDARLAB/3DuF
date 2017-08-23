@@ -32486,6 +32486,43 @@ let basicFeatures = {
             "height": 1200
         }
     },
+    "BetterMixer": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "bendSpacing": "Float",
+            "numberOfBends": "Float",
+            "channelWidth": "Float",
+            "bendLength": "Float",
+            "orientation": "String",
+            "height": "Float"
+        },
+        defaults: {
+            "channelWidth": .80 * 1000,
+            "bendSpacing": 1.23 * 1000,
+            "numberOfBends": 1,
+            "orientation": "V",
+            "bendLength": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 10,
+            "bendSpacing": 10,
+            "numberOfBends": 1,
+            "orientation": "H",
+            "bendLength": 10,
+            "height": 10
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "bendSpacing": 6000,
+            "numberOfBends": 20,
+            "orientation": "H",
+            "bendLength": 12 * 1000,
+            "height": 1200
+        }
+    },
     "Mixer": {
         unique: {
             "position": "Point"
@@ -32721,11 +32758,12 @@ let render2D = {
             width: "channelWidth"
         },
         targetParams: {
-            diameter: "channelWidth"
+            diameter: "channelWidth",
+            channelWidth: "channelWidth"
         },
         featurePrimitiveType: "EdgedRectLine",
         featurePrimitiveSet: "Basic2D",
-        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveType: "CrossHairsTarget",
         targetPrimitiveSet: "Basic2D"
     },
     RoundedChannel: {
@@ -32792,6 +32830,27 @@ let render2D = {
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "Diamond",
         targetPrimitiveType: "DiamondTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    BetterMixer: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "BetterMixer",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "MixerTarget",
         targetPrimitiveSet: "Basic2D"
     },
     Mixer: {
@@ -32993,6 +33052,19 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    BetterMixer: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     Mixer: {
         featureParams: {
             position: "position",
@@ -33114,6 +33186,12 @@ let tools = {
         placementTool: "DragTool"
     },
     DiamondReactionChamber: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    BetterMixer: {
         toolParams: {
             position: "position"
         },
@@ -34047,6 +34125,7 @@ let portButton = document.getElementById("port_button");
 let viaButton = document.getElementById("via_button");
 let chamberButton = document.getElementById("chamber_button");
 let diamondButton = document.getElementById("diamond_button");
+let bettermixerButton = document.getElementById("bettermixer_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
@@ -34060,6 +34139,7 @@ let portParams = document.getElementById("port_params_button");
 let viaParams = document.getElementById("via_params_button");
 let chamberParams = document.getElementById("chamber_params_button");
 let diamondParams = document.getElementById("diamond_params_button");
+let bettermixerParams = document.getElementById("bettermixer_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
 let dropletgenParams = document.getElementById("dropletgen_params_button");
@@ -34099,6 +34179,7 @@ let buttons = {
     "Valve3D": valve3dButton,
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
+    "BetterMixer": bettermixerButton,
     "Mixer": mixerButton,
     "Tree": treeButton,
     "DropletGen": dropletgenButton
@@ -34273,6 +34354,12 @@ function setupAppPage() {
         setActiveButton("DiamondReactionChamber");
         switchTo2D();
     };
+    bettermixerButton.onclick = function () {
+        Registry.viewManager.activateTool("BetterMixer");
+        let bg = Colors.getDefaultFeatureColor("BetterMixer", "Basic", Registry.currentLayer);
+        setActiveButton("BetterMixer");
+        switchTo2D();
+    };
     mixerButton.onclick = function () {
         Registry.viewManager.activateTool("Mixer");
         let bg = Colors.getDefaultFeatureColor("Mixer", "Basic", Registry.currentLayer);
@@ -34380,6 +34467,7 @@ function setupAppPage() {
     viaParams.onclick = paramsWindowFunction("Via", "Basic");
     chamberParams.onclick = paramsWindowFunction("Chamber", "Basic");
     diamondParams.onclick = paramsWindowFunction("DiamondReactionChamber", "Basic");
+    bettermixerParams.onclick = paramsWindowFunction("BetterMixer", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
@@ -35120,6 +35208,19 @@ var RoundedRect = function (params) {
     return rec;
 };
 
+var CrossHairsTarget = function (params) {
+    let thickness = params["channelWidth"] / 5;
+    let length = params["channelWidth"];
+    let x = params["position"][0];
+    let y = params["position"][1];
+    let color = params["color"];
+    var chair = new paper.Path.Rectangle(x - length / 2, y - thickness / 2, length, thickness);
+    chair = chair.unite(new paper.Path.Rectangle(x - thickness / 2, y - length / 2, thickness, length));
+    chair.fillColor = color;
+    chair.fillColor.alpha = 0.5;
+    return chair;
+};
+
 var EdgedRect = function (params) {
     let length = params["length"];
     let width = params["width"];
@@ -35337,6 +35438,57 @@ var DiamondTarget = function (params) {
     if (hex.strokeWidth > w / 2) hex.strokeWidth = w / 2;
     //console.log(Math.ceil(Math.log2(7)));
     return hex;
+};
+
+var BetterMixer = function (params) {
+    let channelWidth = params["channelWidth"];
+    let bendLength = params["bendLength"];
+    let bendSpacing = params["bendSpacing"];
+    let orientation = params["orientation"];
+    let numBends = params["numberOfBends"];
+    let x = params["position"][0];
+    let y = params["position"][1];
+    let color = params["color"];
+    let segHalf = bendLength / 2 + channelWidth;
+    let segLength = bendLength + 2 * channelWidth;
+    let segBend = bendSpacing + 2 * channelWidth;
+    let vRepeat = 2 * bendSpacing + 2 * channelWidth;
+    let vOffset = bendSpacing + channelWidth;
+    let hOffset = bendLength / 2 + channelWidth / 2;
+
+    var serp;
+    if (orientation == "V") {
+        //draw first segment
+        serp = new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth);
+        for (i = 0; i < numBends; i++) {
+            serp = serp.unite(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
+            serp = serp.unite(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
+            serp = serp.unite(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
+            if (i == numBends - 1) {
+                //draw half segment to close
+                serp = serp.unite(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
+            } else {
+                //draw full segment
+                serp = serp.unite(new paper.Path.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth));
+            }
+        }
+    } else {
+        serp = new paper.Path.Rectangle(x, y + hOffset, channelWidth, segHalf);
+        for (i = 0; i < numBends; i++) {
+            serp = serp.unite(new paper.Path.Rectangle(x + vRepeat * i, y + channelWidth + bendLength, segBend, channelWidth));
+            serp = serp.unite(new paper.Path.Rectangle(x + vOffset + vRepeat * i, y, channelWidth, segLength));
+            serp = serp.unite(new paper.Path.Rectangle(x + vOffset + vRepeat * i, y, segBend, channelWidth));
+            if (i == numBends - 1) {
+                //draw half segment to close
+                serp = serp.unite(new paper.Path.Rectangle(x + vRepeat * (i + 1), y, channelWidth, segHalf + channelWidth / 2));
+            } else {
+                //draw full segment
+                serp = serp.unite(new paper.Path.Rectangle(x + vRepeat * (i + 1), y, channelWidth, segLength));
+            }
+        }
+    }
+    serp.fillColor = color;
+    return serp;
 };
 
 var Mixer = function (params) {
@@ -35676,13 +35828,11 @@ var TransitionTarget = function (params) {
         trap.add(new paper.Point(position[0] + cw1 / 2, position[1]));
         trap.add(new paper.Point(position[0] + cw2 / 2, position[1] + length));
         trap.add(new paper.Point(position[0] - cw2 / 2, position[1] + length));
-        trap.add(new paper.Point(position[0] - cw1 / 2, position[1]));
     } else {
         trap.add(new paper.Point(position[0], position[1] - cw1 / 2));
         trap.add(new paper.Point(position[0], position[1] + cw1 / 2));
         trap.add(new paper.Point(position[0] + length, position[1] + cw2 / 2));
         trap.add(new paper.Point(position[0] + length, position[1] - cw2 / 2));
-        trap.add(new paper.Point(position[0], position[1] - cw1 / 2));
     }
     trap.closed = true;
     trap.fillColor = color;
@@ -36013,6 +36163,7 @@ module.exports.CircleTarget = CircleTarget;
 module.exports.GroverValve = GroverValve;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
+module.exports.BetterMixer = BetterMixer;
 module.exports.Mixer = Mixer;
 module.exports.MixerTarget = MixerTarget;
 module.exports.EdgedRect = EdgedRect;
@@ -36024,6 +36175,7 @@ module.exports.DropletGen = DropletGen;
 module.exports.DropletGenTarget = DropletGenTarget;
 module.exports.Transition = Transition;
 module.exports.TransitionTarget = TransitionTarget;
+module.exports.CrossHairsTarget = CrossHairsTarget;
 
 },{}],221:[function(require,module,exports){
 module.exports.Basic2D = require("./basic2D");
@@ -38441,6 +38593,7 @@ class ViewManager {
         this.tools["Port"] = new PositionTool("Port", "Basic");
         this.tools["Via"] = new PositionTool("Via", "Basic");
         this.tools["DiamondReactionChamber"] = new PositionTool("DiamondReactionChamber", "Basic");
+        this.tools["BetterMixer"] = new PositionTool("BetterMixer", "Basic");
         this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
         this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");

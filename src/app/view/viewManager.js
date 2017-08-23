@@ -400,6 +400,7 @@ class ViewManager {
         this.tools["Port"] = new PositionTool("Port", "Basic");
         this.tools["Via"] = new PositionTool("Via", "Basic");
         this.tools["DiamondReactionChamber"] = new PositionTool("DiamondReactionChamber", "Basic");
+        this.tools["BetterMixer"] = new PositionTool("BetterMixer", "Basic");
         this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
         this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
