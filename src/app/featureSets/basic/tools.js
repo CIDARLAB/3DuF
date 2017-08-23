@@ -63,6 +63,12 @@ let tools = {
         },
         placementTool: "PositionTool"
     },
+    BetterMixer: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
     Mixer: {
         toolParams: {
             position: "position"

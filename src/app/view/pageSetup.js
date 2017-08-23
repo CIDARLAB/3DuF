@@ -14,7 +14,8 @@ let valve3dButton = document.getElementById("valve3d_button")
 let portButton = document.getElementById("port_button")
 let viaButton = document.getElementById("via_button")
 let chamberButton = document.getElementById("chamber_button")
-let diamondButton = document.getElementById("diamond_button")
+let diamondButton = document.getElementById("diamond_button");
+let bettermixerButton = document.getElementById("bettermixer_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
@@ -28,6 +29,7 @@ let portParams = document.getElementById("port_params_button");
 let viaParams = document.getElementById("via_params_button");
 let chamberParams = document.getElementById("chamber_params_button");
 let diamondParams = document.getElementById("diamond_params_button");
+let bettermixerParams = document.getElementById("bettermixer_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
 let dropletgenParams = document.getElementById("dropletgen_params_button");
@@ -67,6 +69,7 @@ let buttons = {
     "Valve3D": valve3dButton,
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
+    "BetterMixer": bettermixerButton,
     "Mixer": mixerButton,
     "Tree": treeButton,
     "DropletGen": dropletgenButton
@@ -242,6 +245,12 @@ function setupAppPage() {
         setActiveButton("DiamondReactionChamber");
         switchTo2D();
     };
+    bettermixerButton.onclick = function() {
+        Registry.viewManager.activateTool("BetterMixer");
+        let bg = Colors.getDefaultFeatureColor("BetterMixer", "Basic", Registry.currentLayer);
+        setActiveButton("BetterMixer");
+        switchTo2D();
+    };
     mixerButton.onclick = function() {
         Registry.viewManager.activateTool("Mixer");
         let bg = Colors.getDefaultFeatureColor("Mixer", "Basic", Registry.currentLayer);
@@ -355,6 +364,7 @@ function setupAppPage() {
     viaParams.onclick = paramsWindowFunction("Via", "Basic");
     chamberParams.onclick = paramsWindowFunction("Chamber", "Basic");
     diamondParams.onclick = paramsWindowFunction("DiamondReactionChamber", "Basic");
+    bettermixerParams.onclick = paramsWindowFunction("BetterMixer", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
