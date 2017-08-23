@@ -176,7 +176,7 @@ let render2D = {
         },
         featurePrimitiveType: "BetterMixer",
         featurePrimitiveSet: "Basic2D",
-        targetPrimitiveType: "MixerTarget",
+        targetPrimitiveType: "BetterMixerTarget",
         targetPrimitiveSet: "Basic2D"
     },
     Mixer: {
