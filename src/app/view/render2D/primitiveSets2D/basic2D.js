@@ -337,33 +337,32 @@ var BetterMixer = function(params) {
     let vRepeat = 2*bendSpacing + 2*channelWidth;
     let vOffset = bendSpacing + channelWidth;
     let hOffset = bendLength/2 + channelWidth/2;
-    
-    var serp;
-    if (orientation == "V"){
-        //draw first segment
-        serp = new paper.Path.Rectangle(x, y, segHalf + channelWidth/2, channelWidth);
-        for(i = 0; i < numBends; i++){
-            serp = serp.unite(new paper.Path.Rectangle(x, y+vRepeat*i, channelWidth, segBend));
-            serp = serp.unite(new paper.Path.Rectangle(x, y+vOffset+vRepeat*i, segLength, channelWidth));
-            serp = serp.unite(new paper.Path.Rectangle(x+channelWidth+ bendLength, y+vOffset+vRepeat*i, channelWidth, segBend));
-            if (i == numBends-1){//draw half segment to close
-                serp = serp.unite(new paper.Path.Rectangle(x+hOffset, y+vRepeat*(i+1), segHalf, channelWidth));
-            } else{//draw full segment
-                serp = serp.unite(new paper.Path.Rectangle(x, y+vRepeat*(i+1), segLength, channelWidth));
+    var serp = new paper.CompoundPath();;
+        if (orientation == "V"){
+            //draw first segment
+            serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth/2, channelWidth));
+            for(i = 0; i < numBends; i++){
+                serp.addChild(new paper.Path.Rectangle(x, y+vRepeat*i, channelWidth, segBend));
+                serp.addChild(new paper.Path.Rectangle(x, y+vOffset+vRepeat*i, segLength, channelWidth));
+                serp.addChild(new paper.Path.Rectangle(x+channelWidth+ bendLength, y+vOffset+vRepeat*i, channelWidth, segBend));
+                if (i == numBends-1){//draw half segment to close
+                    serp.addChild(new paper.Path.Rectangle(x+hOffset, y+vRepeat*(i+1), segHalf, channelWidth));
+                } else{//draw full segment
+                    serp.addChild(new paper.Path.Rectangle(x, y+vRepeat*(i+1), segLength, channelWidth));
+                }
             }
-        }
-    } else {
-        serp = new paper.Path.Rectangle(x, y+hOffset, channelWidth, segHalf);
-        for(i = 0; i < numBends; i++){
-            serp = serp.unite(new paper.Path.Rectangle(x+vRepeat*i, y+channelWidth+bendLength, segBend, channelWidth));
-            serp = serp.unite(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, channelWidth, segLength));
-            serp = serp.unite(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, segBend, channelWidth));
-            if (i == numBends-1){//draw half segment to close
-                serp = serp.unite(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segHalf + channelWidth/2));
-            } else{//draw full segment
-                serp = serp.unite(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segLength));
+        } else {
+            serp.addChild(new paper.Path.Rectangle(x, y+hOffset, channelWidth, segHalf));
+            for(i = 0; i < numBends; i++){
+                serp.addChild(new paper.Path.Rectangle(x+vRepeat*i, y+channelWidth+bendLength, segBend, channelWidth));
+                serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, channelWidth, segLength));
+                serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, segBend, channelWidth));
+                if (i == numBends-1){//draw half segment to close
+                    serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segHalf + channelWidth/2));
+                } else{//draw full segment
+                    serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segLength));
+                }
             }
-        }
     }
     serp.fillColor = color;
     return serp;
@@ -385,30 +384,30 @@ var BetterMixerTarget = function(params) {
     let vOffset = bendSpacing + channelWidth;
     let hOffset = bendLength/2 + channelWidth/2;
 
-    var serp;
+    var serp = new paper.CompoundPath();
     if (orientation == "V"){
         //draw first segment
-        serp = new paper.Path.Rectangle(x, y, segHalf + channelWidth/2, channelWidth);
+        serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth/2, channelWidth));
         for(i = 0; i < numBends; i++){
-            serp = serp.unite(new paper.Path.Rectangle(x, y+vRepeat*i, channelWidth, segBend));
-            serp = serp.unite(new paper.Path.Rectangle(x, y+vOffset+vRepeat*i, segLength, channelWidth));
-            serp = serp.unite(new paper.Path.Rectangle(x+channelWidth+ bendLength, y+vOffset+vRepeat*i, channelWidth, segBend));
+            serp.addChild(new paper.Path.Rectangle(x, y+vRepeat*i, channelWidth, segBend));
+            serp.addChild(new paper.Path.Rectangle(x, y+vOffset+vRepeat*i, segLength, channelWidth));
+            serp.addChild(new paper.Path.Rectangle(x+channelWidth+ bendLength, y+vOffset+vRepeat*i, channelWidth, segBend));
             if (i == numBends-1){//draw half segment to close
-                serp = serp.unite(new paper.Path.Rectangle(x+hOffset, y+vRepeat*(i+1), segHalf, channelWidth));
+                serp.addChild(new paper.Path.Rectangle(x+hOffset, y+vRepeat*(i+1), segHalf, channelWidth));
             } else{//draw full segment
-                serp = serp.unite(new paper.Path.Rectangle(x, y+vRepeat*(i+1), segLength, channelWidth));
+                serp.addChild(new paper.Path.Rectangle(x, y+vRepeat*(i+1), segLength, channelWidth));
             }
         }
     } else {
-        serp = new paper.Path.Rectangle(x, y+hOffset, channelWidth, segHalf);
+        serp.addChild(new paper.Path.Rectangle(x, y+hOffset, channelWidth, segHalf));
         for(i = 0; i < numBends; i++){
-            serp = serp.unite(new paper.Path.Rectangle(x+vRepeat*i, y+channelWidth+bendLength, segBend, channelWidth));
-            serp = serp.unite(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, channelWidth, segLength));
-            serp = serp.unite(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, segBend, channelWidth));
+            serp.addChild(new paper.Path.Rectangle(x+vRepeat*i, y+channelWidth+bendLength, segBend, channelWidth));
+            serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, channelWidth, segLength));
+            serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, segBend, channelWidth));
             if (i == numBends-1){//draw half segment to close
-                serp = serp.unite(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segHalf + channelWidth/2));
+                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segHalf + channelWidth/2));
             } else{//draw full segment
-                serp = serp.unite(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segLength));
+                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segLength));
             }
         }
     }
