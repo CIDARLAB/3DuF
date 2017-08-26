@@ -65,6 +65,12 @@ let tools = {
     },
     BetterMixer: {
         toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    CurvedMixer: {
+        toolParams: {
             position: "position"
         },
         placementTool: "PositionTool"

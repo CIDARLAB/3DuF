@@ -301,6 +301,43 @@ let basicFeatures = {
             "height": 1200,
         }
     },
+    "CurvedMixer": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "bendSpacing": "Float",
+            "numberOfBends": "Float",
+            "channelWidth": "Float",
+            "bendLength": "Float",
+            "orientation": "String",
+            "height": "Float"
+        },
+        defaults: {
+            "channelWidth": .80 * 1000,
+            "bendSpacing": 1.23 * 1000,
+            "numberOfBends": 1,
+            "orientation": "V",
+            "bendLength": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 10,
+            "bendSpacing": 10,
+            "numberOfBends": 1,
+            "orientation": "H",
+            "bendLength": 10,
+            "height": 10,
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "bendSpacing": 6000,
+            "numberOfBends": 20,
+            "orientation": "H",
+            "bendLength": 12 * 1000,
+            "height": 1200,
+        }
+    },
     "Mixer": {
         unique: {
             "position": "Point",
