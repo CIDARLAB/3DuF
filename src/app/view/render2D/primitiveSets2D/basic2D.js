@@ -416,6 +416,219 @@ var BetterMixerTarget = function(params) {
     return serp;
 }
 
+var CurvedMixer = function(params) {
+    let channelWidth = params["channelWidth"];
+    let bendLength = params["bendLength"];
+    let bendSpacing = params["bendSpacing"];
+    let orientation = params["orientation"];
+    let numBends = params["numberOfBends"];
+    let x = params["position"][0];
+    let y = params["position"][1];
+    let color = params["color"];
+    let segHalf = bendLength/2 + channelWidth;
+    let segLength = bendLength + 2*channelWidth;
+    let segBend = bendSpacing + 2*channelWidth;
+    let vRepeat = 2*bendSpacing + 2*channelWidth;
+    let vOffset = bendSpacing + channelWidth;
+    let hOffset = bendLength/2 + channelWidth/2;
+    var serp = new paper.CompoundPath();
+
+    if (orientation == "V"){
+        //draw first segment
+        serp.addChild(new paper.Path.Rectangle(x + channelWidth, y, bendLength/2 + channelWidth/2, channelWidth));
+        for(i = 0; i < numBends; i++){
+            //draw left curved segment
+            leftCurve = new paper.Path.Arc({
+                from:[x + channelWidth, y + vRepeat*i],
+                through: [x + channelWidth - (channelWidth + bendSpacing/2), y + vRepeat*i + bendSpacing/2 + channelWidth],
+                to:[x + channelWidth, y + vRepeat*i + bendSpacing + 2*channelWidth]
+            });
+            leftCurve.closed = true;
+            leftCurveSmall = new paper.Path.Arc({
+                from: [x + channelWidth, y + vRepeat*i + bendSpacing + channelWidth],
+                through: [x + channelWidth - bendSpacing/2, y + vRepeat*i + bendSpacing/2 + channelWidth],
+                to: [x + channelWidth, y + vRepeat*i + channelWidth]
+            });
+            leftCurveSmall.closed = true;
+            leftCurve = leftCurve.subtract(leftCurveSmall);
+            serp.addChild(leftCurve);
+            //draw horizontal segment
+            serp.addChild(new paper.Path.Rectangle(x + channelWidth, y+vOffset+vRepeat*i, bendLength, channelWidth));
+            //draw right curved segment
+            rightCurve = new paper.Path.Arc({
+                from:[x + channelWidth + bendLength, y + vOffset + vRepeat*i],
+                through: [x + channelWidth + bendLength + (channelWidth + bendSpacing/2), y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
+                to:[x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + 2*channelWidth]
+            });
+            rightCurve.closed = true;
+            rightCurveSmall = new paper.Path.Arc({
+                from: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + channelWidth],
+                through: [x + channelWidth + bendLength + bendSpacing/2, y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
+                to: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + channelWidth]
+            });
+            rightCurveSmall.closed = true;
+            rightCurve = rightCurve.subtract(rightCurveSmall);
+            serp.addChild(rightCurve);
+
+            if (i == numBends-1){//draw half segment to close
+                serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength/2, y+vRepeat*(i+1), bendLength/2, channelWidth));
+            } else{//draw full segment
+                serp.addChild(new paper.Path.Rectangle(x + channelWidth, y+vRepeat*(i+1), bendLength, channelWidth));
+            }
+        }
+    } else {
+        serp.addChild(new paper.Path.Rectangle(x, y+hOffset, channelWidth, hOffset));
+        for(i = 0; i < numBends; i++){
+            //draw bottom curved segment
+            bottomCurve = new paper.Path.Arc({
+                from:[x  + vRepeat*i, y + channelWidth + bendLength],
+                through: [x + vRepeat*i + bendSpacing/2 + channelWidth, y + channelWidth + bendLength + (channelWidth + bendSpacing/2)],
+                to:[x + vRepeat*i + bendSpacing + 2*channelWidth, y + channelWidth + bendLength]
+            });
+            bottomCurve.closed = true;
+            bottomCurveSmall = new paper.Path.Arc({
+                from: [x + vRepeat*i + bendSpacing + channelWidth, y + channelWidth + bendLength],
+                through: [x + vRepeat*i + bendSpacing/2 + channelWidth, y + channelWidth + bendLength + bendSpacing/2],
+                to: [x + vRepeat*i + channelWidth, y + channelWidth + bendLength]
+            });
+            bottomCurveSmall.closed = true;
+            bottomCurve = bottomCurve.subtract(bottomCurveSmall);
+            serp.addChild(bottomCurve);
+            //draw vertical segment
+            serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y + channelWidth, channelWidth, bendLength));
+            //draw top curved segment
+            topCurve = new paper.Path.Arc({
+                from:[x + vOffset + vRepeat*i, y + channelWidth],
+                through: [x + vOffset + vRepeat*i + bendSpacing/2 + channelWidth, y + channelWidth - (channelWidth + bendSpacing/2)],
+                to:[x + vOffset + vRepeat*i + bendSpacing + 2*channelWidth, y + channelWidth]
+            });
+            topCurve.closed = true;
+            topCurveSmall = new paper.Path.Arc({
+                from: [x + vOffset + vRepeat*i + bendSpacing + channelWidth, y + channelWidth],
+                through: [x + vOffset + vRepeat*i + bendSpacing/2 + channelWidth, y + channelWidth- bendSpacing/2],
+                to: [x + vOffset + vRepeat*i + channelWidth, y + channelWidth]
+            });
+            topCurveSmall.closed = true;
+            topCurve = topCurve.subtract(topCurveSmall);
+            serp.addChild(topCurve);
+            if (i == numBends-1){//draw half segment to close
+                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y + channelWidth, channelWidth, (bendLength + channelWidth)/2));
+            } else{//draw full segment
+                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y + channelWidth, channelWidth, bendLength));
+            }
+        }
+    }
+    serp.fillColor = color;
+    return serp;
+}
+
+var CurvedMixerTarget = function(params) {
+    let channelWidth = params["channelWidth"];
+    let bendLength = params["bendLength"];
+    let bendSpacing = params["bendSpacing"];
+    let orientation = params["orientation"];
+    let numBends = params["numberOfBends"];
+    let x = params["position"][0];
+    let y = params["position"][1];
+    let color = params["color"];
+    let segHalf = bendLength/2 + channelWidth;
+    let segLength = bendLength + 2*channelWidth;
+    let segBend = bendSpacing + 2*channelWidth;
+    let vRepeat = 2*bendSpacing + 2*channelWidth;
+    let vOffset = bendSpacing + channelWidth;
+    let hOffset = bendLength/2 + channelWidth/2;
+    var serp = new paper.CompoundPath();
+
+    if (orientation == "V"){
+        //draw first segment
+        serp.addChild(new paper.Path.Rectangle(x + channelWidth, y, bendLength/2 + channelWidth/2, channelWidth));
+        for(i = 0; i < numBends; i++){
+            //draw left curved segment
+            leftCurve = new paper.Path.Arc({
+                from:[x + channelWidth, y + vRepeat*i],
+                through: [x + channelWidth - (channelWidth + bendSpacing/2), y + vRepeat*i + bendSpacing/2 + channelWidth],
+                to:[x + channelWidth, y + vRepeat*i + bendSpacing + 2*channelWidth]
+            });
+            leftCurve.closed = true;
+            leftCurveSmall = new paper.Path.Arc({
+                from: [x + channelWidth, y + vRepeat*i + bendSpacing + channelWidth],
+                through: [x + channelWidth - bendSpacing/2, y + vRepeat*i + bendSpacing/2 + channelWidth],
+                to: [x + channelWidth, y + vRepeat*i + channelWidth]
+            });
+            leftCurveSmall.closed = true;
+            leftCurve = leftCurve.subtract(leftCurveSmall);
+            serp.addChild(leftCurve);
+            //draw horizontal segment
+            serp.addChild(new paper.Path.Rectangle(x + channelWidth, y+vOffset+vRepeat*i, bendLength, channelWidth));
+            //draw right curved segment
+            rightCurve = new paper.Path.Arc({
+                from:[x + channelWidth + bendLength, y + vOffset + vRepeat*i],
+                through: [x + channelWidth + bendLength + (channelWidth + bendSpacing/2), y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
+                to:[x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + 2*channelWidth]
+            });
+            rightCurve.closed = true;
+            rightCurveSmall = new paper.Path.Arc({
+                from: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + channelWidth],
+                through: [x + channelWidth + bendLength + bendSpacing/2, y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
+                to: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + channelWidth]
+            });
+            rightCurveSmall.closed = true;
+            rightCurve = rightCurve.subtract(rightCurveSmall);
+            serp.addChild(rightCurve);
+
+            if (i == numBends-1){//draw half segment to close
+                serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength/2, y+vRepeat*(i+1), bendLength/2, channelWidth));
+            } else{//draw full segment
+                serp.addChild(new paper.Path.Rectangle(x + channelWidth, y+vRepeat*(i+1), bendLength, channelWidth));
+            }
+        }
+    } else {
+        serp.addChild(new paper.Path.Rectangle(x, y+hOffset, channelWidth, hOffset));
+        for(i = 0; i < numBends; i++){
+            //draw bottom curved segment
+            bottomCurve = new paper.Path.Arc({
+                from:[x  + vRepeat*i, y + channelWidth + bendLength],
+                through: [x + vRepeat*i + bendSpacing/2 + channelWidth, y + channelWidth + bendLength + (channelWidth + bendSpacing/2)],
+                to:[x + vRepeat*i + bendSpacing + 2*channelWidth, y + channelWidth + bendLength]
+            });
+            bottomCurve.closed = true;
+            bottomCurveSmall = new paper.Path.Arc({
+                from: [x + vRepeat*i + bendSpacing + channelWidth, y + channelWidth + bendLength],
+                through: [x + vRepeat*i + bendSpacing/2 + channelWidth, y + channelWidth + bendLength + bendSpacing/2],
+                to: [x + vRepeat*i + channelWidth, y + channelWidth + bendLength]
+            });
+            bottomCurveSmall.closed = true;
+            bottomCurve = bottomCurve.subtract(bottomCurveSmall);
+            serp.addChild(bottomCurve);
+            //draw vertical segment
+            serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y + channelWidth, channelWidth, bendLength));
+            //draw top curved segment
+            topCurve = new paper.Path.Arc({
+                from:[x + vOffset + vRepeat*i, y + channelWidth],
+                through: [x + vOffset + vRepeat*i + bendSpacing/2 + channelWidth, y + channelWidth - (channelWidth + bendSpacing/2)],
+                to:[x + vOffset + vRepeat*i + bendSpacing + 2*channelWidth, y + channelWidth]
+            });
+            topCurve.closed = true;
+            topCurveSmall = new paper.Path.Arc({
+                from: [x + vOffset + vRepeat*i + bendSpacing + channelWidth, y + channelWidth],
+                through: [x + vOffset + vRepeat*i + bendSpacing/2 + channelWidth, y + channelWidth- bendSpacing/2],
+                to: [x + vOffset + vRepeat*i + channelWidth, y + channelWidth]
+            });
+            topCurveSmall.closed = true;
+            topCurve = topCurve.subtract(topCurveSmall);
+            serp.addChild(topCurve);
+            if (i == numBends-1){//draw half segment to close
+                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y + channelWidth, channelWidth, (bendLength + channelWidth)/2));
+            } else{//draw full segment
+                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y + channelWidth, channelWidth, bendLength));
+            }
+        }
+    }
+    serp.fillColor = color;
+    serp.fillColor.alpha = 0.5;
+    return serp;
+}
+
 var Mixer = function(params){
     position = params["position"];
     bendSpacing = params["bendSpacing"];
@@ -1102,6 +1315,8 @@ module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
 module.exports.BetterMixer = BetterMixer;
 module.exports.BetterMixerTarget = BetterMixerTarget;
+module.exports.CurvedMixer = CurvedMixer;
+module.exports.CurvedMixerTarget = CurvedMixerTarget;
 module.exports.Mixer = Mixer;
 module.exports.MixerTarget = MixerTarget;
 module.exports.EdgedRect = EdgedRect;

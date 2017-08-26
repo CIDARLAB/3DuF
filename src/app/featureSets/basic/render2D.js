@@ -179,6 +179,27 @@ let render2D = {
         targetPrimitiveType: "BetterMixerTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    CurvedMixer: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "CurvedMixer",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CurvedMixerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Mixer: {
         featureParams: {
             position: "position",

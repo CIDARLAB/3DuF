@@ -117,6 +117,19 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    CurvedMixer: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     Mixer: {
         featureParams: {
             position: "position",
