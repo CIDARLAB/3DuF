@@ -471,7 +471,7 @@ var CurvedMixer = function(params) {
             serp.addChild(rightCurve);
 
             if (i == numBends-1){//draw half segment to close
-                serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength/2, y+vRepeat*(i+1), bendLength/2, channelWidth));
+                serp.addChild(new paper.Path.Rectangle(x + channelWidth/2 + bendLength/2, y+vRepeat*(i+1), (bendLength + channelWidth)/2, channelWidth));
             } else{//draw full segment
                 serp.addChild(new paper.Path.Rectangle(x + channelWidth, y+vRepeat*(i+1), bendLength, channelWidth));
             }
@@ -577,7 +577,7 @@ var CurvedMixerTarget = function(params) {
             serp.addChild(rightCurve);
 
             if (i == numBends-1){//draw half segment to close
-                serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength/2, y+vRepeat*(i+1), bendLength/2, channelWidth));
+                serp.addChild(new paper.Path.Rectangle(x + channelWidth/2 + bendLength/2, y+vRepeat*(i+1), (bendLength + channelWidth)/2, channelWidth));
             } else{//draw full segment
                 serp.addChild(new paper.Path.Rectangle(x + channelWidth, y+vRepeat*(i+1), bendLength, channelWidth));
             }
