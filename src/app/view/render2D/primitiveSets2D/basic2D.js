@@ -197,9 +197,9 @@ var GroverValve = function(params){
             });
         }
         //cutout.fillColor = "white";
-        var valve = new paper.CompoundPath(circ, cutout);
+        var valve = circ.subtract(cutout);
         valve.fillColor = color;
-        valve.fillRule = 'evenodd';
+        //valve.fillRule = 'evenodd';
         //console.log(color);
         return valve;
  //   }
