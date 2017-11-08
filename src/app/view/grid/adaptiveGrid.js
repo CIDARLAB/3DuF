@@ -53,14 +53,19 @@ class AdaptiveGrid {
     }
 
     getSpacing() {
-        let min = this.minSpacing / paper.view.zoom;
-        let max = this.maxSpacing / paper.view.zoom;
-        while(this.spacing < min){
-            this.spacing = this.spacing * 10;
-        } 
-        while(this.spacing > max){
-            this.spacing = this.spacing / 10;
+        let zoomlevel = paper.view.zoom;
+        if (zoomlevel <= 0.02) {
+            this.spacing = 1000;
+        }else if(zoomlevel <= 0.05){
+            this.spacing = 500;
+        }else if(zoomlevel <= 0.1){
+            this.spacing = 100;
+        }else if(zoomlevel <= 0.6){
+            this.spacing = 50;
+        }else{
+            this.spacing = 5;
         }
+        console.log("Zoom: " + paper.view.zoom + " Spacing: " + this.spacing);
         return this.spacing;
     }
 
