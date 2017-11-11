@@ -39,6 +39,16 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    RectValve: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            length: "length",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "EdgedBoxFeature"
+    },
     Valve3D: {
         featureParams: {
             position: "position",

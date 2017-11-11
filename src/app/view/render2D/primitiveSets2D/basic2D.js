@@ -103,30 +103,10 @@ var EdgedRect = function(params){
     let borderWidth = params["borderWidth"];
     let color = params["color"];
     let baseColor = params["baseColor"];
-    let startX = start[0];
-    let startY = start[1];
+    let startX = start[0] - width/2;
+    let startY = start[1] - length/2;
     let endX = startX + width;
     let endY = startY + length;
-    //
-    // if (start[0] < end[0]){
-    //     startX = start[0];
-    //     endX = end[0];
-    // } else {
-    //     startX = end[0];
-    //     endX = start[0];
-    // }
-    // if (start[1] < end[1]){
-    //     startY = start[1];
-    //     endY = end[1];
-    // } else {
-    //     startY = end[1];
-    //     endY = start[1];
-    // }
-
-    // startX -= borderWidth/2;
-    // startY -= borderWidth/2;
-    // endX += borderWidth/2;
-    // endY += borderWidth/2;
 
     let startPoint = new paper.Point(startX, startY);
     let endPoint = new paper.Point(endX, endY);
@@ -138,6 +118,32 @@ var EdgedRect = function(params){
         fillColor: color,
 strokeWidth: 0
     });
+    return rec;
+}
+
+var EdgedRectTarget = function(params){
+    let length  = params["length"];
+    let width = params["width"];
+    let start = params["position"];
+    let borderWidth = params["borderWidth"];
+    let color = params["color"];
+    let baseColor = params["baseColor"];
+    let startX = start[0] - width/2;
+    let startY = start[1] - length/2;
+    let endX = startX + width;
+    let endY = startY + length;
+
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        //   radius: borderWidth/2,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    rec.fillColor.alpha = 0.5;
     return rec;
 }
 
@@ -170,7 +176,46 @@ var GradientCircle = function(params){
     };
     return outerCircle;
 }
+/*
+var RectValve = function(params){
+    var position = params["position"];
+    var width = params["width"];
+    var length = params["length"];
+    var color = params["color"];
+    var startX = position[0] - width/2;
+    var startY = position[1] - length/2;
+    var endX = position[0] + width/2;
+    var endY = position[1] + width/2;
+    var startPoint = new paper.Point(startX, startY);
+    var endPoint = new paper.Point(endX, endY);
+    var rect = new paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        fillColor = color
+    });
+    return rect;
+}
 
+var RectValveTarget = function(params){
+    var position = params["position"];
+    var width = params["width"];
+    var length = params["length"];
+    var color = params["color"];
+    var startX = position[0] - width/2;
+    var startY = position[1] - length/2;
+    var endX = position[0] + width/2;
+    var endY = position[1] + width/2;
+    var startPoint = new paper.Point(startX, startY);
+    var endPoint = new paper.Point(endX, endY);
+    var rect = new paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        fillColor = color
+    });
+    rect.fillColor.alpha = 0.5;
+    return rect;
+}
+*/
 var GroverValve = function(params){
     let minRadiusInMicrometers = 8/paper.view.zoom;
     let position = params["position"];
@@ -1309,7 +1354,10 @@ module.exports.EdgedRectLine = EdgedRectLine;
 module.exports.GradientCircle = GradientCircle;
 module.exports.RoundedRect = RoundedRect;
 module.exports.EdgedRect = EdgedRect;
+module.exports.EdgedRectTarget = EdgedRectTarget;
 module.exports.CircleTarget = CircleTarget;
+//module.exports.RectValve = RectValve;
+//module.expors.RectValveTarget = RectValveTarget;
 module.exports.GroverValve = GroverValve;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;

@@ -150,6 +150,31 @@ let basicFeatures = {
             "height": 1200
         }
     },
+    "RectValve": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "width": "Float",
+            "length": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "width": 1.4 * 1000,
+            "length": 1.2 * 1000,
+            "height": .8 * 1000
+        },
+        minimum: {
+            "width": 10,
+            "length": 10,
+            "height": 10
+        },
+        maximum: {
+            "width": 2000,
+            "length": 2000,
+            "height": 1200
+        }
+    },
     "Valve3D": {
         unique: {
             "position": "Point"
