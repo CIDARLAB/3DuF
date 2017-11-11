@@ -54,7 +54,7 @@ window.onload = function() {
             .then((resp) => resp.json())
             .then(function(data) {
                 // Create and append the li's to the ul
-                alert(data);
+                //alert(data);
                 console.log(data);
                 viewManager.loadDeviceFromJSON(data);
                 viewManager.updateGrid();
