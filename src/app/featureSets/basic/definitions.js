@@ -183,7 +183,31 @@ let basicFeatures = {
             "gap": .1 * 10000
         }
     },
-
+    "Valve": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "length": "Float",
+            "width": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "width": 1.23 * 1000,
+            "length": 4.92 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "width": 30,
+            "length": 120,
+            "height": 10,
+        },
+        maximum: {
+            "width": 6000,
+            "length": 24 * 1000,
+            "height": 1200,
+        }
+    },
     "Via": {
         unique: {
             "position": "Point",
