@@ -23,6 +23,13 @@ let tools = {
         },
         placementTool: "PositionTool"
     },
+    RectValve: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "PositionTool"
+    },
     Valve3D: {
         toolParams: {
             position: "position",

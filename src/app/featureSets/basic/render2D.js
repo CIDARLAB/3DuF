@@ -59,6 +59,21 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    RectValve: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            length: "length"
+        },
+        targetParams: {
+            width: "width",
+            length: "length"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "EdgedRect",
+        targetPrimitiveType: "EdgedRectTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Valve3D: {
         featureParams: {
             position: "position",

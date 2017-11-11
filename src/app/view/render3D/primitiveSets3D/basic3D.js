@@ -21,10 +21,13 @@ function TwoPointRoundedLineFeature(params, flip, z_offset) {
 	return box;
 }
 
-function TwoPointRoundedBoxFeature(params, flip, z_offset) {
-	let start = params.start;
-	let end = params.end;
-	let borderWidth = params.borderWidth;
+function EdgedBoxFeature(params, flip, z_offset) {
+	var position = params.position;
+	var width = params.width;
+	var length = params.length;
+	let start = [position[0] - width/2, position[1] - width/2];
+	let end = [start[0] + width, start[1] + length];
+	let borderWidth = 0;
 	let height = params.height;
 	var box = TwoPointRoundedBox({
 		start: start,
@@ -38,6 +41,25 @@ function TwoPointRoundedBoxFeature(params, flip, z_offset) {
 	}
 	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
 	return box;
+}
+
+function TwoPointRoundedBoxFeature(params, flip, z_offset) {
+    let start = params.start;
+    let end = params.end;
+    let borderWidth = params.borderWidth;
+    let height = params.height;
+    var box = TwoPointRoundedBox({
+        start: start,
+        end: end,
+        borderWidth: borderWidth,
+        height: height
+    });
+    var matrix = new THREE.Matrix4();
+    if (flip) {
+        box.applyMatrix(matrix.makeTranslation(0, 0, -height));
+    }
+    box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+    return box;
 }
 
 function Cone(params) {
@@ -188,3 +210,4 @@ module.exports.TwoPointRoundedBoxFeature = TwoPointRoundedBoxFeature;
 module.exports.TwoPointRoundedLineFeature = TwoPointRoundedLineFeature;
 module.exports.TwoPointLine = TwoPointLine;
 module.exports.ConeFeature = ConeFeature;
+module.exports.EdgedBoxFeature = EdgedBoxFeature;

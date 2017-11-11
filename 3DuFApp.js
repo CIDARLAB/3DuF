@@ -32372,6 +32372,31 @@ let basicFeatures = {
             "height": 1200
         }
     },
+    "RectValve": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "width": "Float",
+            "length": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "width": 1.4 * 1000,
+            "length": 1.2 * 1000,
+            "height": .8 * 1000
+        },
+        minimum: {
+            "width": 10,
+            "length": 10,
+            "height": 10
+        },
+        maximum: {
+            "width": 2000,
+            "length": 2000,
+            "height": 1200
+        }
+    },
     "Valve3D": {
         unique: {
             "position": "Point"
@@ -32770,6 +32795,21 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    RectValve: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            length: "length"
+        },
+        targetParams: {
+            width: "width",
+            length: "length"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "EdgedRect",
+        targetPrimitiveType: "EdgedRectTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Valve3D: {
         featureParams: {
             position: "position",
@@ -33045,6 +33085,16 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    RectValve: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            length: "length",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "EdgedBoxFeature"
+    },
     Valve3D: {
         featureParams: {
             position: "position",
@@ -33219,6 +33269,13 @@ let tools = {
     CircleValve: {
         toolParams: {
             position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    RectValve: {
+        toolParams: {
+            position: "position"
+
         },
         placementTool: "PositionTool"
     },
@@ -34198,6 +34255,7 @@ let roundedChannelButton = document.getElementById("roundedchannel_button");
 let transitionButton = document.getElementById("transition_button");
 let circleValveButton = document.getElementById("circleValve_button");
 let valve3dButton = document.getElementById("valve3d_button");
+let rectvalveButton = document.getElementById("rectvalve_button");
 let portButton = document.getElementById("port_button");
 let viaButton = document.getElementById("via_button");
 let chamberButton = document.getElementById("chamber_button");
@@ -34212,6 +34270,7 @@ let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
 let transitionParams = document.getElementById("transition_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
+let rectvalveParams = document.getElementById("rectvalve_params_button");
 let valve3dParams = document.getElementById("valve3d_params_button");
 let portParams = document.getElementById("port_params_button");
 let viaParams = document.getElementById("via_params_button");
@@ -34255,6 +34314,7 @@ let buttons = {
     "Via": viaButton,
     "Port": portButton,
     "CircleValve": circleValveButton,
+    "RectValve": rectvalveButton,
     "Valve3D": valve3dButton,
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
@@ -34399,6 +34459,12 @@ function setupAppPage() {
         Registry.viewManager.activateTool("CircleValve");
         let bg = Colors.getDefaultFeatureColor("CircleValve", "Basic", Registry.currentLayer);
         setActiveButton("CircleValve");
+        switchTo2D();
+    };
+    rectvalveButton.onclick = function () {
+        Registry.viewManager.activateTool("RectValve");
+        let bg = Colors.getDefaultFeatureColor("RectValve", "Basic", Registry.currentLayer);
+        setActiveButton("RectValve");
         switchTo2D();
     };
     valve3dButton.onclick = function () {
@@ -34548,6 +34614,7 @@ function setupAppPage() {
     ;channelParams.onclick = paramsWindowFunction("Channel", "Basic");
     roundedChannelParams.onclick = paramsWindowFunction("RoundedChannel", "Basic");
     circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
+    rectvalveParams.onclick = paramsWindowFunction("RectValve", "Basic");
     valve3dParams.onclick = paramsWindowFunction("Valve3D", "Basic");
     portParams.onclick = paramsWindowFunction("Port", "Basic");
     viaParams.onclick = paramsWindowFunction("Via", "Basic");
@@ -35315,30 +35382,10 @@ var EdgedRect = function (params) {
     let borderWidth = params["borderWidth"];
     let color = params["color"];
     let baseColor = params["baseColor"];
-    let startX = start[0];
-    let startY = start[1];
+    let startX = start[0] - width / 2;
+    let startY = start[1] - length / 2;
     let endX = startX + width;
     let endY = startY + length;
-    //
-    // if (start[0] < end[0]){
-    //     startX = start[0];
-    //     endX = end[0];
-    // } else {
-    //     startX = end[0];
-    //     endX = start[0];
-    // }
-    // if (start[1] < end[1]){
-    //     startY = start[1];
-    //     endY = end[1];
-    // } else {
-    //     startY = end[1];
-    //     endY = start[1];
-    // }
-
-    // startX -= borderWidth/2;
-    // startY -= borderWidth/2;
-    // endX += borderWidth/2;
-    // endY += borderWidth/2;
 
     let startPoint = new paper.Point(startX, startY);
     let endPoint = new paper.Point(endX, endY);
@@ -35350,6 +35397,32 @@ var EdgedRect = function (params) {
         fillColor: color,
         strokeWidth: 0
     });
+    return rec;
+};
+
+var EdgedRectTarget = function (params) {
+    let length = params["length"];
+    let width = params["width"];
+    let start = params["position"];
+    let borderWidth = params["borderWidth"];
+    let color = params["color"];
+    let baseColor = params["baseColor"];
+    let startX = start[0] - width / 2;
+    let startY = start[1] - length / 2;
+    let endX = startX + width;
+    let endY = startY + length;
+
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        //   radius: borderWidth/2,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    rec.fillColor.alpha = 0.5;
     return rec;
 };
 
@@ -35381,7 +35454,46 @@ var GradientCircle = function (params) {
     };
     return outerCircle;
 };
+/*
+var RectValve = function(params){
+    var position = params["position"];
+    var width = params["width"];
+    var length = params["length"];
+    var color = params["color"];
+    var startX = position[0] - width/2;
+    var startY = position[1] - length/2;
+    var endX = position[0] + width/2;
+    var endY = position[1] + width/2;
+    var startPoint = new paper.Point(startX, startY);
+    var endPoint = new paper.Point(endX, endY);
+    var rect = new paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        fillColor = color
+    });
+    return rect;
+}
 
+var RectValveTarget = function(params){
+    var position = params["position"];
+    var width = params["width"];
+    var length = params["length"];
+    var color = params["color"];
+    var startX = position[0] - width/2;
+    var startY = position[1] - length/2;
+    var endX = position[0] + width/2;
+    var endY = position[1] + width/2;
+    var startPoint = new paper.Point(startX, startY);
+    var endPoint = new paper.Point(endX, endY);
+    var rect = new paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        fillColor = color
+    });
+    rect.fillColor.alpha = 0.5;
+    return rect;
+}
+*/
 var GroverValve = function (params) {
     let minRadiusInMicrometers = 8 / paper.view.zoom;
     let position = params["position"];
@@ -36518,7 +36630,10 @@ module.exports.EdgedRectLine = EdgedRectLine;
 module.exports.GradientCircle = GradientCircle;
 module.exports.RoundedRect = RoundedRect;
 module.exports.EdgedRect = EdgedRect;
+module.exports.EdgedRectTarget = EdgedRectTarget;
 module.exports.CircleTarget = CircleTarget;
+//module.exports.RectValve = RectValve;
+//module.expors.RectValveTarget = RectValveTarget;
 module.exports.GroverValve = GroverValve;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
@@ -36903,6 +37018,28 @@ function TwoPointRoundedLineFeature(params, flip, z_offset) {
 	return box;
 }
 
+function EdgedBoxFeature(params, flip, z_offset) {
+	var position = params.position;
+	var width = params.width;
+	var length = params.length;
+	let start = [position[0] - width / 2, position[1] - width / 2];
+	let end = [start[0] + width, start[1] + length];
+	let borderWidth = 0;
+	let height = params.height;
+	var box = TwoPointRoundedBox({
+		start: start,
+		end: end,
+		borderWidth: borderWidth,
+		height: height
+	});
+	var matrix = new THREE.Matrix4();
+	if (flip) {
+		box.applyMatrix(matrix.makeTranslation(0, 0, -height));
+	}
+	box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+	return box;
+}
+
 function TwoPointRoundedBoxFeature(params, flip, z_offset) {
 	let start = params.start;
 	let end = params.end;
@@ -37070,6 +37207,7 @@ module.exports.TwoPointRoundedBoxFeature = TwoPointRoundedBoxFeature;
 module.exports.TwoPointRoundedLineFeature = TwoPointRoundedLineFeature;
 module.exports.TwoPointLine = TwoPointLine;
 module.exports.ConeFeature = ConeFeature;
+module.exports.EdgedBoxFeature = EdgedBoxFeature;
 
 },{"../threeUtils":230}],224:[function(require,module,exports){
 var Basic3D = require("./basic3D");
@@ -38951,6 +39089,7 @@ class ViewManager {
         this.tools["RoundedChannel"] = new ChannelTool("RoundedChannel", "Basic");
         this.tools["Node"] = new PositionTool("Node", "Basic");
         this.tools["CircleValve"] = new PositionTool("CircleValve", "Basic");
+        this.tools["RectValve"] = new PositionTool("RectValve", "Basic");
         this.tools["Valve3D"] = new PositionTool("Valve3D", "Basic");
         this.tools["Port"] = new PositionTool("Port", "Basic");
         this.tools["Via"] = new PositionTool("Via", "Basic");
