@@ -322,6 +322,62 @@ var DiamondTarget = function(params){
     return hex;
 }
 
+var Valve = function(params){
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = params["length"];
+    let w = params["width"];
+    let color = params["color"];
+    let startX = px;
+    let startY = py;
+    let endX = px + w;
+    let endY = py + l;
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    return rec;
+}
+
+var ValveTarget = function(params){
+    // hex.fillColor.alpha = 0.5;
+    // hex.strokeColor = "#FFFFFF";
+    // hex.strokeWidth = 3 / paper.view.zoom;
+    // if(hex.strokeWidth > w/2) hex.strokeWidth = w/2;
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = params["length"];
+    let w = params["width"];
+    let color = params["color"];
+    let startX = px;
+    let startY = py;
+    let endX = px + w;
+    let endY = py + l;
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    rec.fillColor.alpha = 0.5;
+    return rec;
+
+}
+
+
+
 var BetterMixer = function(params) {
     let channelWidth = params["channelWidth"];
     let bendLength = params["bendLength"];
@@ -1314,6 +1370,7 @@ module.exports.GroverValve = GroverValve;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
 module.exports.BetterMixer = BetterMixer;
+module.exports.Valve = Valve;
 module.exports.BetterMixerTarget = BetterMixerTarget;
 module.exports.CurvedMixer = CurvedMixer;
 module.exports.CurvedMixerTarget = CurvedMixerTarget;
@@ -1329,3 +1386,4 @@ module.exports.DropletGenTarget = DropletGenTarget;
 module.exports.Transition = Transition;
 module.exports.TransitionTarget = TransitionTarget;
 module.exports.CrossHairsTarget = CrossHairsTarget;
+module.exports.ValveTarget = ValveTarget;
