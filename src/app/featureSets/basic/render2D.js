@@ -158,6 +158,21 @@ let render2D = {
         targetPrimitiveType: "DiamondTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Valve: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Valve",
+        targetPrimitiveType: "ValveTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     BetterMixer: {
         featureParams: {
             position: "position",
