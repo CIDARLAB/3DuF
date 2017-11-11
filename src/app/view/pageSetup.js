@@ -9,11 +9,12 @@ let activeLayer = null;
 let channelButton = document.getElementById("channel_button");
 let roundedChannelButton = document.getElementById("roundedchannel_button");
 let transitionButton = document.getElementById("transition_button");
-let circleValveButton = document.getElementById("circleValve_button")
-let valve3dButton = document.getElementById("valve3d_button")
-let portButton = document.getElementById("port_button")
-let viaButton = document.getElementById("via_button")
-let chamberButton = document.getElementById("chamber_button")
+let circleValveButton = document.getElementById("circleValve_button");
+let valve3dButton = document.getElementById("valve3d_button");
+let rectvalveButton = document.getElementById("rectvalve_button");
+let portButton = document.getElementById("port_button");
+let viaButton = document.getElementById("via_button");
+let chamberButton = document.getElementById("chamber_button");
 let diamondButton = document.getElementById("diamond_button");
 let bettermixerButton = document.getElementById("bettermixer_button");
 let curvedmixerButton = document.getElementById("curvedmixer_button");
@@ -25,6 +26,7 @@ let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
 let transitionParams = document.getElementById("transition_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
+let rectvalveParams = document.getElementById("rectvalve_params_button");
 let valve3dParams = document.getElementById("valve3d_params_button");
 let portParams = document.getElementById("port_params_button");
 let viaParams = document.getElementById("via_params_button");
@@ -68,6 +70,7 @@ let buttons = {
     "Via": viaButton,
     "Port": portButton,
     "CircleValve": circleValveButton,
+    "RectValve": rectvalveButton,
     "Valve3D": valve3dButton,
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
@@ -213,6 +216,12 @@ function setupAppPage() {
         Registry.viewManager.activateTool("CircleValve");
         let bg = Colors.getDefaultFeatureColor("CircleValve", "Basic", Registry.currentLayer);
         setActiveButton("CircleValve");
+        switchTo2D();
+    };
+    rectvalveButton.onclick = function() {
+        Registry.viewManager.activateTool("RectValve");
+        let bg = Colors.getDefaultFeatureColor("RectValve", "Basic", Registry.currentLayer);
+        setActiveButton("RectValve");
         switchTo2D();
     };
     valve3dButton.onclick = function() {
@@ -368,6 +377,7 @@ function setupAppPage() {
     channelParams.onclick = paramsWindowFunction("Channel", "Basic");
     roundedChannelParams.onclick = paramsWindowFunction("RoundedChannel", "Basic");
     circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
+    rectvalveParams.onclick = paramsWindowFunction("RectValve", "Basic");
     valve3dParams.onclick = paramsWindowFunction("Valve3D", "Basic");
     portParams.onclick = paramsWindowFunction("Port", "Basic");
     viaParams.onclick = paramsWindowFunction("Via", "Basic");
