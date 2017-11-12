@@ -323,6 +323,7 @@ var DiamondTarget = function(params){
 }
 
 var Valve = function(params){
+    let orientation = params["orientation"];
     let position = params["position"];
     let px = position[0];
     let py = position[1];
@@ -334,7 +335,12 @@ var Valve = function(params){
     let endX = px + w;
     let endY = py + l;
     let startPoint = new paper.Point(startX, startY);
-    let endPoint = new paper.Point(endX, endY);
+    let endPoint = null;
+    if(orientation == "H"){
+        endPoint = new paper.Point(startX + w, startY + l);
+    }else{
+        endPoint = new paper.Point(startX + l, startY + w);
+    }
 
     let rec = paper.Path.Rectangle({
         from: startPoint,
@@ -351,6 +357,7 @@ var ValveTarget = function(params){
     // hex.strokeColor = "#FFFFFF";
     // hex.strokeWidth = 3 / paper.view.zoom;
     // if(hex.strokeWidth > w/2) hex.strokeWidth = w/2;
+    let orientation = params["orientation"];
     let position = params["position"];
     let px = position[0];
     let py = position[1];
@@ -359,10 +366,15 @@ var ValveTarget = function(params){
     let color = params["color"];
     let startX = px;
     let startY = py;
-    let endX = px + w;
-    let endY = py + l;
     let startPoint = new paper.Point(startX, startY);
-    let endPoint = new paper.Point(endX, endY);
+    let endPoint = null;
+    if(orientation == "H"){
+        endPoint = new paper.Point(startX + w, startY + l);
+        console.log("H")
+    }else{
+        endPoint = new paper.Point(startX + l, startY + w);
+        console.log("V")
+    }
 
     let rec = paper.Path.Rectangle({
         from: startPoint,
