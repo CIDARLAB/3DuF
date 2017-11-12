@@ -33284,7 +33284,33 @@ let basicFeatures = {
             "gap": .1 * 10000
         }
     },
-
+    "Valve": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "length": "Float",
+            "width": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "width": 1.23 * 1000,
+            "length": 4.92 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "width": 30,
+            "length": 120,
+            "height": 10
+        },
+        maximum: {
+            "width": 6000,
+            "length": 24 * 1000,
+            "height": 1200
+        }
+    },
     "Via": {
         unique: {
             "position": "Point"
@@ -33748,6 +33774,41 @@ let render2D = {
         targetPrimitiveType: "DiamondTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Valve: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            orientation: "orientation"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            orientation: "orientation"
+
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Valve",
+        targetPrimitiveType: "ValveTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Circuit: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Circuit",
+        targetPrimitiveType: "CircuitTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     BetterMixer: {
         featureParams: {
             position: "position",
@@ -33989,6 +34050,15 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    Valve: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     BetterMixer: {
         featureParams: {
             position: "position",
@@ -34136,6 +34206,18 @@ let tools = {
         placementTool: "DragTool"
     },
     DiamondReactionChamber: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    Circuit: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    Valve: {
         toolParams: {
             position: "position"
         },
@@ -35081,6 +35163,7 @@ let channelButton = document.getElementById("channel_button");
 let roundedChannelButton = document.getElementById("roundedchannel_button");
 let transitionButton = document.getElementById("transition_button");
 let circleValveButton = document.getElementById("circleValve_button");
+let valveButton = document.getElementById("valve_button");
 let valve3dButton = document.getElementById("valve3d_button");
 let portButton = document.getElementById("port_button");
 let viaButton = document.getElementById("via_button");
@@ -35096,6 +35179,7 @@ let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
 let transitionParams = document.getElementById("transition_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
+let valveParams = document.getElementById("valve_params_button");
 let valve3dParams = document.getElementById("valve3d_params_button");
 let portParams = document.getElementById("port_params_button");
 let viaParams = document.getElementById("via_params_button");
@@ -35140,6 +35224,7 @@ let buttons = {
     "Port": portButton,
     "CircleValve": circleValveButton,
     "Valve3D": valve3dButton,
+    "Valve": valveButton,
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
     "BetterMixer": bettermixerButton,
@@ -35292,6 +35377,13 @@ function setupAppPage() {
         switchTo2D();
     };
 
+    valveButton.onclick = function () {
+        Registry.viewManager.activateTool("Valve");
+        let bg = Colors.getDefaultFeatureColor("Valve", "Basic", Registry.currentLayer);
+        setActiveButton("Valve");
+        switchTo2D();
+    };
+
     portButton.onclick = function () {
         Registry.viewManager.activateTool("Port");
         let bg = Colors.getDefaultFeatureColor("Port", "Basic", Registry.currentLayer);
@@ -35433,6 +35525,7 @@ function setupAppPage() {
     roundedChannelParams.onclick = paramsWindowFunction("RoundedChannel", "Basic");
     circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
     valve3dParams.onclick = paramsWindowFunction("Valve3D", "Basic");
+    valveParams.onclick = paramsWindowFunction("Valve", "Basic");
     portParams.onclick = paramsWindowFunction("Port", "Basic");
     viaParams.onclick = paramsWindowFunction("Via", "Basic");
     chamberParams.onclick = paramsWindowFunction("Chamber", "Basic");
@@ -36409,6 +36502,71 @@ var DiamondTarget = function (params) {
     if (hex.strokeWidth > w / 2) hex.strokeWidth = w / 2;
     //console.log(Math.ceil(Math.log2(7)));
     return hex;
+};
+
+var Valve = function (params) {
+    let orientation = params["orientation"];
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = params["length"];
+    let w = params["width"];
+    let color = params["color"];
+    let startX = px;
+    let startY = py;
+    let endX = px + w;
+    let endY = py + l;
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = null;
+    if (orientation == "H") {
+        endPoint = new paper.Point(startX + w, startY + l);
+    } else {
+        endPoint = new paper.Point(startX + l, startY + w);
+    }
+
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    return rec;
+};
+
+var ValveTarget = function (params) {
+    // hex.fillColor.alpha = 0.5;
+    // hex.strokeColor = "#FFFFFF";
+    // hex.strokeWidth = 3 / paper.view.zoom;
+    // if(hex.strokeWidth > w/2) hex.strokeWidth = w/2;
+    let orientation = params["orientation"];
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = params["length"];
+    let w = params["width"];
+    let color = params["color"];
+    let startX = px;
+    let startY = py;
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = null;
+    if (orientation == "H") {
+        endPoint = new paper.Point(startX + w, startY + l);
+        console.log("H");
+    } else {
+        endPoint = new paper.Point(startX + l, startY + w);
+        console.log("V");
+    }
+
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    rec.fillColor.alpha = 0.5;
+    return rec;
 };
 
 var BetterMixer = function (params) {
@@ -37407,6 +37565,7 @@ module.exports.GroverValve = GroverValve;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
 module.exports.BetterMixer = BetterMixer;
+module.exports.Valve = Valve;
 module.exports.BetterMixerTarget = BetterMixerTarget;
 module.exports.CurvedMixer = CurvedMixer;
 module.exports.CurvedMixerTarget = CurvedMixerTarget;
@@ -37422,6 +37581,7 @@ module.exports.DropletGenTarget = DropletGenTarget;
 module.exports.Transition = Transition;
 module.exports.TransitionTarget = TransitionTarget;
 module.exports.CrossHairsTarget = CrossHairsTarget;
+module.exports.ValveTarget = ValveTarget;
 
 },{}],232:[function(require,module,exports){
 module.exports.Basic2D = require("./basic2D");
@@ -39831,6 +39991,7 @@ class ViewManager {
 
     setupTools() {
         this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
+        this.tools["Valve"] = new PositionTool("Valve", "Basic");
         this.tools["Channel"] = new ChannelTool("Channel", "Basic");
         this.tools["RoundedChannel"] = new ChannelTool("RoundedChannel", "Basic");
         this.tools["Node"] = new PositionTool("Node", "Basic");

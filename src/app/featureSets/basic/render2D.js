@@ -176,6 +176,23 @@ let render2D = {
         targetPrimitiveType: "ValveTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Circuit: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Circuit",
+        targetPrimitiveType: "CircuitTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     BetterMixer: {
         featureParams: {
             position: "position",
