@@ -188,11 +188,13 @@ let basicFeatures = {
             "position": "Point",
         },
         heritable: {
+            "orientation": "String",
             "length": "Float",
             "width": "Float",
             "height": "Float"
         },
         defaults: {
+            "orientation": "V",
             "width": 1.23 * 1000,
             "length": 4.92 * 1000,
             "height": .1 * 1000
@@ -200,12 +202,12 @@ let basicFeatures = {
         minimum: {
             "width": 30,
             "length": 120,
-            "height": 10,
+            "height": 10
         },
         maximum: {
             "width": 6000,
             "length": 24 * 1000,
-            "height": 1200,
+            "height": 1200
         }
     },
     "Via": {

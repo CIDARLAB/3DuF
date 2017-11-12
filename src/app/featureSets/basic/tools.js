@@ -63,6 +63,12 @@ let tools = {
         },
         placementTool: "PositionTool"
     },
+    Circuit: {
+        toolParams: {
+            position: "position",
+        },
+        placementTool: "PositionTool"
+    },
     Valve: {
         toolParams: {
             position: "position",

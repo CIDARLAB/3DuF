@@ -162,11 +162,14 @@ let render2D = {
         featureParams: {
             position: "position",
             length: "length",
-            width: "width"
+            width: "width",
+            orientation: "orientation"
         },
         targetParams: {
             length: "length",
             width: "width",
+            orientation: "orientation"
+
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "Valve",
