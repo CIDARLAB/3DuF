@@ -1054,73 +1054,46 @@ var Tree = function(params) {
     position  = params["position"];
     cw = params["flowChannelWidth"];
     orientation = params["orientation"];
+    direction = params["direction"];
     spacing = params["spacing"];
     leafs = params["leafs"];
     color = params["color"];
-    width = params["width"];
-    startX = position[0];
-    startY = position[1];
-    // var pathList = [];
-    // var inNodes = [];
-    // var currentPath = new paper.Path();
-    // currentPath.strokeColor = color;
-    // currentPath.strokeWidth = cw;
-    //
-    // if (orientation == "V") {
-    //     for (i = 0; i < leafs; i++) {
-    //         inNodes.push(new paper.Point(startX, startY + i*(cw + spacing)));
-    //     }
-    //     while (inNodes.length > 1) {
-    //         var outNodes = [];
-    //         for (i = 0; i < inNodes.length; i += 2) {
-    //             currentPath.add(inNodes[i]);
-    //             currentPath.add(new paper.Point(inNodes[i].x + 3*cw, inNodes[i].y));
-    //             currentPath.add(new paper.Point(inNodes[i+1].x + 3*cw, inNodes[i+1].y));
-    //             currentPath.add(new paper.Point(inNodes[i+1]));
-    //             outNodes.push(new paper.Point((inNodes[i].x + 3*cw, inNodes[i].y + inNodes[i+1].y)/2));
-    //         }
-    //
-    //         pathList.push(currentPath);
-    //         currentPath = new paper.Path();
-    //         currentPath.strokeColor = color;
-    //         currentPath.strokeWidth = cw;
-    //         inNodes = outNodes;
-    //     }
-    //     pathList.push(new paper.Point(width, pathList[pathList.length-1].y));
-    // }
-    // else {
-    //     for (i = 0; i < leafs; i++) {
-    //         inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
-    //     }
-    //     while (inNodes.length > 1) {
-    //         var outNodes = [];
-    //         for (i = 0; i < inNodes.length; i += 2) {
-    //             currentPath.add(inNodes[i]);
-    //             currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3 * cw));
-    //             currentPath.add(new paper.Point(inNodes[i + 1].x, inNodes[i + 1].y + 3 * cw));
-    //             currentPath.add(new paper.Point(inNodes[i + 1]));
-    //             outNodes.push(new paper.Point((inNodes[i].x + inNodes[i + 1].x) / 2, inNodes[i].y + 3 * cw));
-    //         }
-    //
-    //         pathList.push(currentPath);
-    //         currentPath = new paper.Path();
-    //         inNodes = outNodes;
-    //     }
-    // }
-    // tree_path = new paper.CompoundPath(pathList);
-    // tree_path.strokeColor = color;
-    // tree_path.strokeWidth = cw;
-    let startPoint = new paper.Point(startX, startY);
-    let endPoint = new paper.Point(startX + 100, startY + 100)
-    let rec = paper.Path.Rectangle({
-        from: startPoint,
-        to: endPoint,
-        radius: 0,
-        fillColor: color,
-        strokeWidth: 0
-    });
-    rec.fillColor.alpha = 0.5;
-    return rec;
+    stagelength = params["stagelength"];
+    px = position[0];
+    py = position[1];
+
+    let levels = Math.ceil(Math.log2(leafs));
+    let isodd = false ; //This is used to figure out how many lines have to be made
+    if(leafs%2 == 0){
+        isodd = false;
+    }else{
+        isodd = true;
+    }
+    let w = spacing * (leafs/2 + 1);
+    let l = (levels + 1) * stagelength;
+
+    console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+
+    var treepath = new paper.CompoundPath();
+
+    generateTwig(treepath, px, py, cw, stagelength, w, 1, levels);
+
+
+
+    //Draw the tree
+
+    treepath.fillColor = color;
+    var rotation = 0;
+    console.log("Orientation: " + orientation);
+    console.log("Direction: " + direction);
+    if(orientation == "H" && direction=="OUT"){
+        rotation = 180;
+    }else if(orientation == "V" && direction =="IN"){
+        rotation = 270;
+    }else if(orientation == "V" && direction == "OUT"){
+        rotation = 90;
+    }
+    return treepath.rotate(rotation,px,py);
 }
 
 function drawtwig(treepath, px, py, cw, stagelength, spacing, drawleafs=false) {
