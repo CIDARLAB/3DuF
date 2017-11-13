@@ -33885,7 +33885,8 @@ let render2D = {
             width: "width",
             length: "length",
             leafs: "leafs",
-            stagelength: "stagelength"
+            stagelength: "stagelength",
+            direction: "direction"
         },
         targetParams: {
             flowChannelWidth: "flowChannelWidth",
@@ -33894,7 +33895,8 @@ let render2D = {
             width: "width",
             length: "length",
             leafs: "leafs",
-            stagelength: "stagelength"
+            stagelength: "stagelength",
+            direction: "direction"
         },
         featurePrimitiveType: "Tree",
         featurePrimitiveSet: "Basic2D",
@@ -37412,6 +37414,7 @@ var TreeTarget = function (params) {
     position = params["position"];
     cw = params["flowChannelWidth"];
     orientation = params["orientation"];
+    direction = params["direction"];
     spacing = params["spacing"];
     leafs = params["leafs"];
     color = params["color"];
@@ -37439,8 +37442,17 @@ var TreeTarget = function (params) {
 
     treepath.fillColor = color;
     treepath.fillColor.alpha = 0.5;
-
-    return treepath;
+    var rotation = 0;
+    console.log("Orientation: " + orientation);
+    console.log("Direction: " + direction);
+    if (orientation == "H" && direction == "OUT") {
+        rotation = 180;
+    } else if (orientation == "V" && direction == "IN") {
+        rotation = 270;
+    } else if (orientation == "V" && direction == "OUT") {
+        rotation = 90;
+    }
+    return treepath.rotate(rotation, px, py);
 };
 
 var CellTrapL = function (params) {
