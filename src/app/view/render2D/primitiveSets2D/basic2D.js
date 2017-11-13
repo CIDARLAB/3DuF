@@ -1064,58 +1064,161 @@ var Tree = function(params) {
     width = params["width"];
     startX = position[0];
     startY = position[1];
-    var pathList = [];
-    var inNodes = [];
-    var currentPath = new paper.Path();
-    currentPath.strokeColor = color;
-    currentPath.strokeWidth = cw;
+    // var pathList = [];
+    // var inNodes = [];
+    // var currentPath = new paper.Path();
+    // currentPath.strokeColor = color;
+    // currentPath.strokeWidth = cw;
+    //
+    // if (orientation == "V") {
+    //     for (i = 0; i < leafs; i++) {
+    //         inNodes.push(new paper.Point(startX, startY + i*(cw + spacing)));
+    //     }
+    //     while (inNodes.length > 1) {
+    //         var outNodes = [];
+    //         for (i = 0; i < inNodes.length; i += 2) {
+    //             currentPath.add(inNodes[i]);
+    //             currentPath.add(new paper.Point(inNodes[i].x + 3*cw, inNodes[i].y));
+    //             currentPath.add(new paper.Point(inNodes[i+1].x + 3*cw, inNodes[i+1].y));
+    //             currentPath.add(new paper.Point(inNodes[i+1]));
+    //             outNodes.push(new paper.Point((inNodes[i].x + 3*cw, inNodes[i].y + inNodes[i+1].y)/2));
+    //         }
+    //
+    //         pathList.push(currentPath);
+    //         currentPath = new paper.Path();
+    //         currentPath.strokeColor = color;
+    //         currentPath.strokeWidth = cw;
+    //         inNodes = outNodes;
+    //     }
+    //     pathList.push(new paper.Point(width, pathList[pathList.length-1].y));
+    // }
+    // else {
+    //     for (i = 0; i < leafs; i++) {
+    //         inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
+    //     }
+    //     while (inNodes.length > 1) {
+    //         var outNodes = [];
+    //         for (i = 0; i < inNodes.length; i += 2) {
+    //             currentPath.add(inNodes[i]);
+    //             currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3 * cw));
+    //             currentPath.add(new paper.Point(inNodes[i + 1].x, inNodes[i + 1].y + 3 * cw));
+    //             currentPath.add(new paper.Point(inNodes[i + 1]));
+    //             outNodes.push(new paper.Point((inNodes[i].x + inNodes[i + 1].x) / 2, inNodes[i].y + 3 * cw));
+    //         }
+    //
+    //         pathList.push(currentPath);
+    //         currentPath = new paper.Path();
+    //         inNodes = outNodes;
+    //     }
+    // }
+    // tree_path = new paper.CompoundPath(pathList);
+    // tree_path.strokeColor = color;
+    // tree_path.strokeWidth = cw;
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(startX + 100, startY + 100)
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    rec.fillColor.alpha = 0.5;
+    return rec;
+}
 
-    if (orientation == "V") {
-        for (i = 0; i < leafs; i++) {
-            inNodes.push(new paper.Point(startX, startY + i*(cw + spacing)));
-        }
-        while (inNodes.length > 1) {
-            var outNodes = [];
-            for (i = 0; i < inNodes.length; i += 2) {
-                currentPath.add(inNodes[i]);
-                currentPath.add(new paper.Point(inNodes[i].x + 3*cw, inNodes[i].y));
-                currentPath.add(new paper.Point(inNodes[i+1].x + 3*cw, inNodes[i+1].y));
-                currentPath.add(new paper.Point(inNodes[i+1]));
-                outNodes.push(new paper.Point((inNodes[i].x + 3*cw, inNodes[i].y + inNodes[i+1].y)/2));
-            }
+function drawtwig(treepath, px, py, cw, stagelength, spacing, drawleafs=false) {
+    //stem
+    let startPoint = new paper.Point(px - cw / 2, py);
+    let endPoint = new paper.Point(px + cw / 2, py + stagelength);
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
 
-            pathList.push(currentPath);
-            currentPath = new paper.Path();
-            currentPath.strokeColor = color;
-            currentPath.strokeWidth = cw;
-            inNodes = outNodes;
-        }
-        pathList.push(new paper.Point(width, pathList[pathList.length-1].y));
+    treepath.addChild(rec);
+
+    //Draw 2 leafs
+    //left leaf
+    lstartx = px - 0.5 * (cw + spacing);
+    lendx = lstartx + cw;
+    lstarty = py + stagelength + cw;
+    lendy = lstarty + stagelength;
+
+    // //right leaf
+    rstartx = px + 0.5 * (spacing - cw);
+    rendx = rstartx + cw;
+    rstarty = py + stagelength + cw;
+    rendy = rstarty + stagelength;
+
+    if(drawleafs){
+        startPoint = new paper.Point(lstartx, lstarty);
+        endPoint = new paper.Point(lendx, lendy);
+        rec = paper.Path.Rectangle({
+            from: startPoint,
+            to: endPoint,
+            radius: 0,
+            fillColor: color,
+            strokeWidth: 0
+        });
+        treepath.addChild(rec);
+
+        startPoint = new paper.Point(rstartx, rstarty);
+        endPoint = new paper.Point(rendx, rendy);
+        rec = paper.Path.Rectangle({
+            from: startPoint,
+            to: endPoint,
+            radius: 0,
+            fillColor: color,
+            strokeWidth: 0
+        });
+        treepath.addChild(rec);
+
     }
-    else {
-        for (i = 0; i < leafs; i++) {
-            inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
-        }
-        while (inNodes.length > 1) {
-            var outNodes = [];
-            for (i = 0; i < inNodes.length; i += 2) {
-                currentPath.add(inNodes[i]);
-                currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3 * cw));
-                currentPath.add(new paper.Point(inNodes[i + 1].x, inNodes[i + 1].y + 3 * cw));
-                currentPath.add(new paper.Point(inNodes[i + 1]));
-                outNodes.push(new paper.Point((inNodes[i].x + inNodes[i + 1].x) / 2, inNodes[i].y + 3 * cw));
-            }
 
-            pathList.push(currentPath);
-            currentPath = new paper.Path();
-            inNodes = outNodes;
-        }
+
+    //Horizontal bar
+    hstartx = px - 0.5 * (cw + spacing);
+    hendx = rendx;
+    hstarty = py + stagelength;
+    hendy = hstarty + cw;
+    startPoint = new paper.Point(hstartx, hstarty);
+    endPoint = new paper.Point(hendx, hendy);
+    rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    treepath.addChild(rec);
+    return treepath
+}
+
+function generateTwig(treepath, px, py,cw, stagelength , newspacing, level, maxlevel, islast=false) {
+    //var newspacing = 2 * (spacing + cw);
+    var hspacing = newspacing/2;
+    var lex = px - 0.5 * newspacing;
+    var ley = py + cw + stagelength;
+    var rex = px + 0.5 * newspacing;
+    var rey = py + cw + stagelength;
+
+    if(level == maxlevel){
+        islast = true;
     }
-    tree_path = new paper.CompoundPath(pathList);
-    tree_path.strokeColor = color;
-    tree_path.strokeWidth = cw;
 
-    return {pathList};
+    drawtwig(treepath, px, py, cw, stagelength, newspacing, islast);
+    // drawtwig(treepath, lex, ley, cw, stagelength, hspacing, islast);
+    // drawtwig(treepath, rex, rey, cw, stagelength, hspacing, islast);
+
+
+    if(!islast){
+        generateTwig(treepath, lex, ley, cw, stagelength, hspacing, level+1, maxlevel);
+        generateTwig(treepath, rex, rey, cw, stagelength, hspacing, level+1, maxlevel);
+    }
 }
 
 var TreeTarget = function(params) {
@@ -1125,56 +1228,35 @@ var TreeTarget = function(params) {
     spacing = params["spacing"];
     leafs = params["leafs"];
     color = params["color"];
-    startX = position[0];
-    startY = position[1];
-    var pathList = [];
-    var inNodes = [];
-    var currentPath = new paper.Path();
+    stagelength = params["stagelength"];
+    px = position[0];
+    py = position[1];
 
-    if (orientation == "V") {
-        for (i = 0; i < leafs; i++) {
-            inNodes.push(new paper.Point(startX, startY + i*(cw + spacing)));
-        }
-        while (inNodes.length > 1) {
-            var outNodes = [];
-            for (i = 0; i < inNodes.length; i += 2) {
-                currentPath.add(inNodes[i]);
-                currentPath.add(new paper.Point(inNodes[i].x + 3*cw, inNodes[i].y));
-                currentPath.add(new paper.Point(inNodes[i+1].x + 3*cw, inNodes[i+1].y));
-                currentPath.add(new paper.Point(inNodes[i+1]));
-                outNodes.push(new paper.Point((inNodes[i].x + 3*cw, inNodes[i].y + inNodes[i+1].y)/2));
-            }
-
-            pathList.push(currentPath);
-            currentPath = new paper.Path();
-            inNodes = outNodes;
-        }
+    let levels = Math.ceil(Math.log2(leafs));
+    let isodd = false ; //This is used to figure out how many lines have to be made
+    if(leafs%2 == 0){
+        isodd = false;
+    }else{
+        isodd = true;
     }
-    else {
-        for (i = 0; i < leafs; i++) {
-            inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
-        }
-        while (inNodes.length > 1) {
-            var outNodes = [];
-            for (i = 0; i < inNodes.length; i += 2) {
-                currentPath.add(inNodes[i]);
-                currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3 * cw));
-                currentPath.add(new paper.Point(inNodes[i + 1].x, inNodes[i + 1].y + 3 * cw));
-                currentPath.add(new paper.Point(inNodes[i + 1]));
-                outNodes.push(new paper.Point((inNodes[i].x + inNodes[i + 1].x) / 2, inNodes[i].y + 3 * cw));
-            }
+    let w = leafs *cw  + spacing * (leafs-1);
+    let l = (levels + 1) * stagelength;
 
-            pathList.push(currentPath);
-            currentPath = new paper.Path();
-            inNodes = outNodes;
-        }
-    }
-    tree_path = new paper.CompoundPath(pathList);
-    tree_path.strokeColor = color;
-    tree_path.strokeColor.alpha = 0.5;
-    tree_path.strokeWidth = cw;
+    console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
-    return tree_path;
+    var treepath = new paper.CompoundPath();
+
+    generateTwig(treepath, px, py, cw, stagelength, w, 1, levels);
+
+
+
+    //Draw the tree
+
+    treepath.fillColor = color;
+    treepath.fillColor.alpha = 0.5;
+
+    return treepath;
+
 };
 
 var CellTrapL = function(params) {
