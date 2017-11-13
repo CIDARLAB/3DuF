@@ -265,8 +265,7 @@ let render2D = {
             width: "width",
             length: "length",
             leafs: "leafs",
-            radius1: "width",
-            radius2: "length"
+            stagelength: "stagelength"
         },
         targetParams: {
             flowChannelWidth: "flowChannelWidth",
@@ -275,8 +274,7 @@ let render2D = {
             width: "width",
             length: "length",
             leafs: "leafs",
-            radius1: "width",
-            radius2: "length"
+            stagelength: "stagelength"
         },
         featurePrimitiveType: "Tree",
         featurePrimitiveSet: "Basic2D",
