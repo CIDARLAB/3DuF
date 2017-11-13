@@ -36516,18 +36516,12 @@ var Valve = function (params) {
     let l = params["length"];
     let w = params["width"];
     let color = params["color"];
-    let startX = px;
-    let startY = py;
-    let endX = px + w;
-    let endY = py + l;
+    let startX = px - w / 2;
+    let startY = py - l / 2;
+    let endX = px + w / 2;
+    let endY = py + l / 2;
     let startPoint = new paper.Point(startX, startY);
-    let endPoint = null;
-    if (orientation == "H") {
-        endPoint = new paper.Point(startX + w, startY + l);
-    } else {
-        endPoint = new paper.Point(startX + l, startY + w);
-    }
-
+    let endPoint = new paper.Point(endX, endY);
     let rec = paper.Path.Rectangle({
         from: startPoint,
         to: endPoint,
@@ -36535,14 +36529,16 @@ var Valve = function (params) {
         fillColor: color,
         strokeWidth: 0
     });
-    return rec;
+
+    var rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
+    }
+
+    return rec.rotate(rotation, px, py);
 };
 
 var ValveTarget = function (params) {
-    // hex.fillColor.alpha = 0.5;
-    // hex.strokeColor = "#FFFFFF";
-    // hex.strokeWidth = 3 / paper.view.zoom;
-    // if(hex.strokeWidth > w/2) hex.strokeWidth = w/2;
     let orientation = params["orientation"];
     let position = params["position"];
     let px = position[0];
@@ -36550,18 +36546,12 @@ var ValveTarget = function (params) {
     let l = params["length"];
     let w = params["width"];
     let color = params["color"];
-    let startX = px;
-    let startY = py;
+    let startX = px - w / 2;
+    let startY = py - l / 2;
+    let endX = px + w / 2;
+    let endY = py + l / 2;
     let startPoint = new paper.Point(startX, startY);
-    let endPoint = null;
-    if (orientation == "H") {
-        endPoint = new paper.Point(startX + w, startY + l);
-        console.log("H");
-    } else {
-        endPoint = new paper.Point(startX + l, startY + w);
-        console.log("V");
-    }
-
+    let endPoint = new paper.Point(endX, endY);
     let rec = paper.Path.Rectangle({
         from: startPoint,
         to: endPoint,
@@ -36569,8 +36559,14 @@ var ValveTarget = function (params) {
         fillColor: color,
         strokeWidth: 0
     });
+
     rec.fillColor.alpha = 0.5;
-    return rec;
+    var rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
+    }
+
+    return rec.rotate(rotation, px, py);
 };
 
 var BetterMixer = function (params) {
