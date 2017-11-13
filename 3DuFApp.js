@@ -37393,6 +37393,7 @@ function generateTwig(treepath, px, py, cw, stagelength, newspacing, level, maxl
 
     if (level == maxlevel) {
         islast = true;
+        console.log("Final Spacing: " + newspacing);
     }
 
     drawtwig(treepath, px, py, cw, stagelength, newspacing, islast);
@@ -37425,7 +37426,7 @@ var TreeTarget = function (params) {
     } else {
         isodd = true;
     }
-    let w = leafs * cw + spacing * (leafs - 1);
+    let w = spacing * (leafs / 2 + 1);
     let l = (levels + 1) * stagelength;
 
     console.log("CW: " + cw + " levels: " + levels + " width: " + w + " length: " + l);
