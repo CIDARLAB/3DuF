@@ -283,7 +283,23 @@ class ViewManager {
 
     loadDeviceFromJSON(json) {
         Registry.viewManager.clear();
-        Registry.currentDevice = Device.fromJSON(json);
+        //Check and see the version number if its 0 or none is present,
+        // its going the be the legacy format, else it'll be a new format
+        var version = json.version;
+        if(null == version || undefined == version){
+            console.log("Loading Legacy Format...")
+            Registry.currentDevice = Device.fromJSON(json);
+        }else{
+            console.log("Version Number: " + version);
+            switch (version){
+                case 1:
+                    Registry.currentDevice = Device.fromInterchangeV1(json);
+                    break;
+                default:
+                    alert("Version \'" + version + "\' is not supported by 3DuF !");
+            }
+        }
+        //Common Code for rendering stuff
         Registry.currentLayer = Registry.currentDevice.layers[0];
         Registry.viewManager.addDevice(Registry.currentDevice);
         this.view.initializeView();

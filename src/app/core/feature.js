@@ -36,6 +36,17 @@ class Feature {
         return output;
     }
 
+    toInterchangeV1(){
+        //TODO: We need to figure out what to do and what the final feature format will be
+        let output = {};
+        output.id = this.__id;
+        output.name = this.__name.toJSON();
+        output.type = this.__type;
+        output.set = this.__set;
+        output.params = this.__params.toJSON();
+        return output;
+    }
+
     getSet(){
         return this.__set;
     }
@@ -123,6 +134,14 @@ class Feature {
         let set;
         if (json.hasOwnProperty("set")) set = json.set;
         else set = "Basic";
+        return Feature.makeFeature(json.type, set, json.params, json.name, json.id);
+    }
+
+    static fromInterchangeV1(json){
+        let set;
+        if (json.hasOwnProperty("set")) set = json.set;
+        else set = "Basic";
+        //TODO: This will have to change soon when the thing is updated
         return Feature.makeFeature(json.type, set, json.params, json.name, json.id);
     }
 
