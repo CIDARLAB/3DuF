@@ -39,6 +39,7 @@
   "scripts": {
     "compile_orbit": "node_modules/.bin/browserify ./src/app/renderer/orbit_demo.js -t babelify --outfile ./orbit_bundle.js",
     "compile": "node_modules/.bin/browserify ./src/app/appSetup.js -t babelify --outfile ./3DuFapp.js",
+    "compile_control": "node_modules/.bin/browserify ./src/app/controlAppSetup.js -t babelify --outfile ./3DuFcontrol.js",
     "test": "node_modules/.bin/mocha --recursive --compilers js:babel/register -R spec ./src/test/",
     "prepublish": "npm run compile",
     "watch_compile": "node_modules/.bin/watchify ./src/app/appSetup.js -t babelify -v --outfile ./3DuFapp.js -d -t [ babelify ]",
