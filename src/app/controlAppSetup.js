@@ -79,3 +79,10 @@ window.onload = function() {
 
 };
 
+function loadJSON(json){
+    console.log('from 3duf');
+    console.log(json);
+}
+
+exports.loadJSON = loadJSON;
+

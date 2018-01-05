@@ -32396,6 +32396,13 @@ window.onload = function () {
     }
 };
 
+function loadJSON(json) {
+    console.log('from 3duf');
+    console.log(json);
+}
+
+exports.loadJSON = loadJSON;
+
 },{"./core/device":198,"./core/layer":200,"./core/registry":209,"./examples/jsonExamples":210,"./view/colors":224,"./view/grid/adaptiveGrid":225,"./view/pageSetup":226,"./view/paperView":227,"./view/render3D/ThreeDeviceRenderer":233,"./view/viewManager":248}],198:[function(require,module,exports){
 var Params = require("./params");
 var Parameters = require("./parameters");
