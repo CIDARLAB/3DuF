@@ -8,6 +8,7 @@
     <script src="lib/paper/paper-full.min.js"></script>
     <script src="lib/filesaver/FileSaver.min.js"></script>
     <script src="lib/three/three.min.js"></script>
+    <script src="lib/popdown/jquery.popdown.min.js"></script>
 
     <link rel="stylesheet" href="lib/nouislider/nouislider.min.css">
 
@@ -18,8 +19,6 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="modified.css">
-
-
 </head>
 
 <body>
@@ -35,7 +34,8 @@
             mdl-layout--overlay-drawer-button ">
     <div id="button_drawer" class="mdl-layout__drawer">
       <img class="logo" src="img/logo.png">
-      <span class="mdl-layout-title">Select Feature</span>
+        <a id="infobutton" href="info.html" class="popdown btn mdl-layout-title" title="Grumpy Demo">About</a>
+        <span class="mdl-layout-title">Select Feature</span>
       <nav class="mdl-navigation" id="feature-controls">
           <div class="button_row">
             <a id="channel_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Channel</a>
@@ -155,6 +155,23 @@
       <div id="renderContainer" class="hidden-block fade-transition">
     </main>
   <div>
+
+      <div id="animatedModal">
+          <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID  class="close-animatedModal" -->
+          <div class="close-animatedModal">
+              CLOSE MODAL
+          </div>
+
+          <div class="modal-content">
+              <!--Your modal content goes here-->
+          </div>
+      </div>
 </body>
 
 <script src="3DuFApp.js"></script>
+<script src="lib/animate/animatedModal.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.popdown').popdown();
+    });
+</script>
