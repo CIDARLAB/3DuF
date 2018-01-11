@@ -33347,7 +33347,33 @@ let basicFeatures = {
             "gap": .1 * 10000
         }
     },
-
+    "Valve": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "length": "Float",
+            "width": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "width": 1.23 * 1000,
+            "length": 4.92 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "width": 30,
+            "length": 120,
+            "height": 10
+        },
+        maximum: {
+            "width": 6000,
+            "length": 24 * 1000,
+            "height": 1200
+        }
+    },
     "Via": {
         unique: {
             "position": "Point"
@@ -33551,17 +33577,19 @@ let basicFeatures = {
             "width": "Float",
             "length": "Float",
             "height": "Float",
-            "direction": "String"
+            "direction": "String",
+            "stagelength": "Float"
         },
         defaults: {
             "flowChannelWidth": .80 * 1000,
             "orientation": "V",
-            "spacing": 1.23 * 1000,
-            "leafs": 2,
+            "spacing": 4 * 1000,
+            "leafs": 6,
             "width": 2.46 * 1000,
             "length": 2.46 * 1000,
             "height": .1 * 1000,
-            "direction": "IN"
+            "direction": "IN",
+            "stagelength": 4000
         },
         minimum: {
             "flowChannelWidth": 10,
@@ -33569,15 +33597,17 @@ let basicFeatures = {
             "leafs": 2,
             "width": 60,
             "length": 60,
-            "height": 10
+            "height": 10,
+            "stagelength": 100
         },
         maximum: {
             "flowChannelWidth": 2000,
-            "spacing": 6000,
+            "spacing": 12000,
             "leafs": 2,
             "width": 12 * 1000,
             "length": 12 * 1000,
-            "height": 1200
+            "height": 1200,
+            "stagelength": 6000
         }
     },
     "CellTrapL": {
@@ -33826,6 +33856,41 @@ let render2D = {
         targetPrimitiveType: "DiamondTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Valve: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            orientation: "orientation"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            orientation: "orientation"
+
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Valve",
+        targetPrimitiveType: "ValveTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Circuit: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Circuit",
+        targetPrimitiveType: "CircuitTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     BetterMixer: {
         featureParams: {
             position: "position",
@@ -33898,8 +33963,8 @@ let render2D = {
             width: "width",
             length: "length",
             leafs: "leafs",
-            radius1: "width",
-            radius2: "length"
+            stagelength: "stagelength",
+            direction: "direction"
         },
         targetParams: {
             flowChannelWidth: "flowChannelWidth",
@@ -33908,8 +33973,8 @@ let render2D = {
             width: "width",
             length: "length",
             leafs: "leafs",
-            radius1: "width",
-            radius2: "length"
+            stagelength: "stagelength",
+            direction: "direction"
         },
         featurePrimitiveType: "Tree",
         featurePrimitiveSet: "Basic2D",
@@ -34077,6 +34142,15 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    Valve: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     BetterMixer: {
         featureParams: {
             position: "position",
@@ -34231,6 +34305,18 @@ let tools = {
         placementTool: "DragTool"
     },
     DiamondReactionChamber: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    Circuit: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    Valve: {
         toolParams: {
             position: "position"
         },
@@ -35176,8 +35262,8 @@ let channelButton = document.getElementById("channel_button");
 let roundedChannelButton = document.getElementById("roundedchannel_button");
 let transitionButton = document.getElementById("transition_button");
 let circleValveButton = document.getElementById("circleValve_button");
+let valveButton = document.getElementById("valve_button");
 let valve3dButton = document.getElementById("valve3d_button");
-let rectvalveButton = document.getElementById("rectvalve_button");
 let portButton = document.getElementById("port_button");
 let viaButton = document.getElementById("via_button");
 let chamberButton = document.getElementById("chamber_button");
@@ -35192,7 +35278,7 @@ let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
 let transitionParams = document.getElementById("transition_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
-let rectvalveParams = document.getElementById("rectvalve_params_button");
+let valveParams = document.getElementById("valve_params_button");
 let valve3dParams = document.getElementById("valve3d_params_button");
 let portParams = document.getElementById("port_params_button");
 let viaParams = document.getElementById("via_params_button");
@@ -35236,8 +35322,8 @@ let buttons = {
     "Via": viaButton,
     "Port": portButton,
     "CircleValve": circleValveButton,
-    "RectValve": rectvalveButton,
     "Valve3D": valve3dButton,
+    "Valve": valveButton,
     "Chamber": chamberButton,
     "DiamondReactionChamber": diamondButton,
     "BetterMixer": bettermixerButton,
@@ -35383,16 +35469,17 @@ function setupAppPage() {
         setActiveButton("CircleValve");
         switchTo2D();
     };
-    rectvalveButton.onclick = function () {
-        Registry.viewManager.activateTool("RectValve");
-        let bg = Colors.getDefaultFeatureColor("RectValve", "Basic", Registry.currentLayer);
-        setActiveButton("RectValve");
-        switchTo2D();
-    };
     valve3dButton.onclick = function () {
         Registry.viewManager.activateTool("Valve3D");
         let bg = Colors.getDefaultFeatureColor("Valve3D", "Basic", Registry.currentLayer);
         setActiveButton("Valve3D");
+        switchTo2D();
+    };
+
+    valveButton.onclick = function () {
+        Registry.viewManager.activateTool("Valve");
+        let bg = Colors.getDefaultFeatureColor("Valve", "Basic", Registry.currentLayer);
+        setActiveButton("Valve");
         switchTo2D();
     };
 
@@ -35536,8 +35623,8 @@ function setupAppPage() {
     ;channelParams.onclick = paramsWindowFunction("Channel", "Basic");
     roundedChannelParams.onclick = paramsWindowFunction("RoundedChannel", "Basic");
     circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
-    rectvalveParams.onclick = paramsWindowFunction("RectValve", "Basic");
     valve3dParams.onclick = paramsWindowFunction("Valve3D", "Basic");
+    valveParams.onclick = paramsWindowFunction("Valve", "Basic");
     portParams.onclick = paramsWindowFunction("Port", "Basic");
     viaParams.onclick = paramsWindowFunction("Via", "Basic");
     chamberParams.onclick = paramsWindowFunction("Chamber", "Basic");
@@ -36561,6 +36648,67 @@ var DiamondTarget = function (params) {
     return hex;
 };
 
+var Valve = function (params) {
+    let orientation = params["orientation"];
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = params["length"];
+    let w = params["width"];
+    let color = params["color"];
+    let startX = px - w / 2;
+    let startY = py - l / 2;
+    let endX = px + w / 2;
+    let endY = py + l / 2;
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+
+    var rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
+    }
+
+    return rec.rotate(rotation, px, py);
+};
+
+var ValveTarget = function (params) {
+    let orientation = params["orientation"];
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = params["length"];
+    let w = params["width"];
+    let color = params["color"];
+    let startX = px - w / 2;
+    let startY = py - l / 2;
+    let endX = px + w / 2;
+    let endY = py + l / 2;
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+
+    rec.fillColor.alpha = 0.5;
+    var rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
+    }
+
+    return rec.rotate(rotation, px, py);
+};
+
 var BetterMixer = function (params) {
     let channelWidth = params["channelWidth"];
     let bendLength = params["bendLength"];
@@ -37237,121 +37385,182 @@ var Tree = function (params) {
     position = params["position"];
     cw = params["flowChannelWidth"];
     orientation = params["orientation"];
+    direction = params["direction"];
     spacing = params["spacing"];
     leafs = params["leafs"];
     color = params["color"];
-    width = params["width"];
-    startX = position[0];
-    startY = position[1];
-    var pathList = [];
-    var inNodes = [];
-    var currentPath = new paper.Path();
-    currentPath.strokeColor = color;
-    currentPath.strokeWidth = cw;
+    stagelength = params["stagelength"];
+    px = position[0];
+    py = position[1];
 
-    if (orientation == "V") {
-        for (i = 0; i < leafs; i++) {
-            inNodes.push(new paper.Point(startX, startY + i * (cw + spacing)));
-        }
-        while (inNodes.length > 1) {
-            var outNodes = [];
-            for (i = 0; i < inNodes.length; i += 2) {
-                currentPath.add(inNodes[i]);
-                currentPath.add(new paper.Point(inNodes[i].x + 3 * cw, inNodes[i].y));
-                currentPath.add(new paper.Point(inNodes[i + 1].x + 3 * cw, inNodes[i + 1].y));
-                currentPath.add(new paper.Point(inNodes[i + 1]));
-                outNodes.push(new paper.Point((inNodes[i].x + 3 * cw, inNodes[i].y + inNodes[i + 1].y) / 2));
-            }
-
-            pathList.push(currentPath);
-            currentPath = new paper.Path();
-            currentPath.strokeColor = color;
-            currentPath.strokeWidth = cw;
-            inNodes = outNodes;
-        }
-        pathList.push(new paper.Point(width, pathList[pathList.length - 1].y));
+    let levels = Math.ceil(Math.log2(leafs));
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
+        isodd = false;
     } else {
-        for (i = 0; i < leafs; i++) {
-            inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
-        }
-        while (inNodes.length > 1) {
-            var outNodes = [];
-            for (i = 0; i < inNodes.length; i += 2) {
-                currentPath.add(inNodes[i]);
-                currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3 * cw));
-                currentPath.add(new paper.Point(inNodes[i + 1].x, inNodes[i + 1].y + 3 * cw));
-                currentPath.add(new paper.Point(inNodes[i + 1]));
-                outNodes.push(new paper.Point((inNodes[i].x + inNodes[i + 1].x) / 2, inNodes[i].y + 3 * cw));
-            }
-
-            pathList.push(currentPath);
-            currentPath = new paper.Path();
-            inNodes = outNodes;
-        }
+        isodd = true;
     }
-    tree_path = new paper.CompoundPath(pathList);
-    tree_path.strokeColor = color;
-    tree_path.strokeWidth = cw;
+    let w = spacing * (leafs / 2 + 1);
+    let l = (levels + 1) * stagelength;
 
-    return { pathList };
+    console.log("CW: " + cw + " levels: " + levels + " width: " + w + " length: " + l);
+
+    var treepath = new paper.CompoundPath();
+
+    generateTwig(treepath, px, py, cw, stagelength, w, 1, levels);
+
+    //Draw the tree
+
+    treepath.fillColor = color;
+    var rotation = 0;
+    console.log("Orientation: " + orientation);
+    console.log("Direction: " + direction);
+    if (orientation == "H" && direction == "OUT") {
+        rotation = 180;
+    } else if (orientation == "V" && direction == "IN") {
+        rotation = 270;
+    } else if (orientation == "V" && direction == "OUT") {
+        rotation = 90;
+    }
+    return treepath.rotate(rotation, px, py);
 };
+
+function drawtwig(treepath, px, py, cw, stagelength, spacing, drawleafs = false) {
+    //stem
+    let startPoint = new paper.Point(px - cw / 2, py);
+    let endPoint = new paper.Point(px + cw / 2, py + stagelength);
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+
+    treepath.addChild(rec);
+
+    //Draw 2 leafs
+    //left leaf
+    lstartx = px - 0.5 * (cw + spacing);
+    lendx = lstartx + cw;
+    lstarty = py + stagelength + cw;
+    lendy = lstarty + stagelength;
+
+    // //right leaf
+    rstartx = px + 0.5 * (spacing - cw);
+    rendx = rstartx + cw;
+    rstarty = py + stagelength + cw;
+    rendy = rstarty + stagelength;
+
+    if (drawleafs) {
+        startPoint = new paper.Point(lstartx, lstarty);
+        endPoint = new paper.Point(lendx, lendy);
+        rec = paper.Path.Rectangle({
+            from: startPoint,
+            to: endPoint,
+            radius: 0,
+            fillColor: color,
+            strokeWidth: 0
+        });
+        treepath.addChild(rec);
+
+        startPoint = new paper.Point(rstartx, rstarty);
+        endPoint = new paper.Point(rendx, rendy);
+        rec = paper.Path.Rectangle({
+            from: startPoint,
+            to: endPoint,
+            radius: 0,
+            fillColor: color,
+            strokeWidth: 0
+        });
+        treepath.addChild(rec);
+    }
+
+    //Horizontal bar
+    hstartx = px - 0.5 * (cw + spacing);
+    hendx = rendx;
+    hstarty = py + stagelength;
+    hendy = hstarty + cw;
+    startPoint = new paper.Point(hstartx, hstarty);
+    endPoint = new paper.Point(hendx, hendy);
+    rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    treepath.addChild(rec);
+    return treepath;
+}
+
+function generateTwig(treepath, px, py, cw, stagelength, newspacing, level, maxlevel, islast = false) {
+    //var newspacing = 2 * (spacing + cw);
+    var hspacing = newspacing / 2;
+    var lex = px - 0.5 * newspacing;
+    var ley = py + cw + stagelength;
+    var rex = px + 0.5 * newspacing;
+    var rey = py + cw + stagelength;
+
+    if (level == maxlevel) {
+        islast = true;
+        console.log("Final Spacing: " + newspacing);
+    }
+
+    drawtwig(treepath, px, py, cw, stagelength, newspacing, islast);
+    // drawtwig(treepath, lex, ley, cw, stagelength, hspacing, islast);
+    // drawtwig(treepath, rex, rey, cw, stagelength, hspacing, islast);
+
+
+    if (!islast) {
+        generateTwig(treepath, lex, ley, cw, stagelength, hspacing, level + 1, maxlevel);
+        generateTwig(treepath, rex, rey, cw, stagelength, hspacing, level + 1, maxlevel);
+    }
+}
 
 var TreeTarget = function (params) {
     position = params["position"];
     cw = params["flowChannelWidth"];
     orientation = params["orientation"];
+    direction = params["direction"];
     spacing = params["spacing"];
     leafs = params["leafs"];
     color = params["color"];
-    startX = position[0];
-    startY = position[1];
-    var pathList = [];
-    var inNodes = [];
-    var currentPath = new paper.Path();
+    stagelength = params["stagelength"];
+    px = position[0];
+    py = position[1];
 
-    if (orientation == "V") {
-        for (i = 0; i < leafs; i++) {
-            inNodes.push(new paper.Point(startX, startY + i * (cw + spacing)));
-        }
-        while (inNodes.length > 1) {
-            var outNodes = [];
-            for (i = 0; i < inNodes.length; i += 2) {
-                currentPath.add(inNodes[i]);
-                currentPath.add(new paper.Point(inNodes[i].x + 3 * cw, inNodes[i].y));
-                currentPath.add(new paper.Point(inNodes[i + 1].x + 3 * cw, inNodes[i + 1].y));
-                currentPath.add(new paper.Point(inNodes[i + 1]));
-                outNodes.push(new paper.Point((inNodes[i].x + 3 * cw, inNodes[i].y + inNodes[i + 1].y) / 2));
-            }
-
-            pathList.push(currentPath);
-            currentPath = new paper.Path();
-            inNodes = outNodes;
-        }
+    let levels = Math.ceil(Math.log2(leafs));
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
+        isodd = false;
     } else {
-        for (i = 0; i < leafs; i++) {
-            inNodes.push(new paper.Point(startX + i * (cw + spacing), startY));
-        }
-        while (inNodes.length > 1) {
-            var outNodes = [];
-            for (i = 0; i < inNodes.length; i += 2) {
-                currentPath.add(inNodes[i]);
-                currentPath.add(new paper.Point(inNodes[i].x, inNodes[i].y + 3 * cw));
-                currentPath.add(new paper.Point(inNodes[i + 1].x, inNodes[i + 1].y + 3 * cw));
-                currentPath.add(new paper.Point(inNodes[i + 1]));
-                outNodes.push(new paper.Point((inNodes[i].x + inNodes[i + 1].x) / 2, inNodes[i].y + 3 * cw));
-            }
-
-            pathList.push(currentPath);
-            currentPath = new paper.Path();
-            inNodes = outNodes;
-        }
+        isodd = true;
     }
-    tree_path = new paper.CompoundPath(pathList);
-    tree_path.strokeColor = color;
-    tree_path.strokeColor.alpha = 0.5;
-    tree_path.strokeWidth = cw;
+    let w = spacing * (leafs / 2 + 1);
+    let l = (levels + 1) * stagelength;
 
-    return tree_path;
+    console.log("CW: " + cw + " levels: " + levels + " width: " + w + " length: " + l);
+
+    var treepath = new paper.CompoundPath();
+
+    generateTwig(treepath, px, py, cw, stagelength, w, 1, levels);
+
+    //Draw the tree
+
+    treepath.fillColor = color;
+    treepath.fillColor.alpha = 0.5;
+    var rotation = 0;
+    console.log("Orientation: " + orientation);
+    console.log("Direction: " + direction);
+    if (orientation == "H" && direction == "OUT") {
+        rotation = 180;
+    } else if (orientation == "V" && direction == "IN") {
+        rotation = 270;
+    } else if (orientation == "V" && direction == "OUT") {
+        rotation = 90;
+    }
+    return treepath.rotate(rotation, px, py);
 };
 
 var CellTrapL = function (params) {
@@ -37560,6 +37769,7 @@ module.exports.GroverValve = GroverValve;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
 module.exports.BetterMixer = BetterMixer;
+module.exports.Valve = Valve;
 module.exports.BetterMixerTarget = BetterMixerTarget;
 module.exports.CurvedMixer = CurvedMixer;
 module.exports.CurvedMixerTarget = CurvedMixerTarget;
@@ -37575,6 +37785,7 @@ module.exports.DropletGenTarget = DropletGenTarget;
 module.exports.Transition = Transition;
 module.exports.TransitionTarget = TransitionTarget;
 module.exports.CrossHairsTarget = CrossHairsTarget;
+module.exports.ValveTarget = ValveTarget;
 
 },{}],232:[function(require,module,exports){
 module.exports.Basic2D = require("./basic2D");
@@ -40007,6 +40218,7 @@ class ViewManager {
 
     setupTools() {
         this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
+        this.tools["Valve"] = new PositionTool("Valve", "Basic");
         this.tools["Channel"] = new ChannelTool("Channel", "Basic");
         this.tools["RoundedChannel"] = new ChannelTool("RoundedChannel", "Basic");
         this.tools["Node"] = new PositionTool("Node", "Basic");

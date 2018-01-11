@@ -114,6 +114,15 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    Valve: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     BetterMixer: {
         featureParams: {
             position: "position",

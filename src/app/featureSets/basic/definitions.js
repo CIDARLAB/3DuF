@@ -208,7 +208,33 @@ let basicFeatures = {
             "gap": .1 * 10000
         }
     },
-
+    "Valve": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "orientation": "String",
+            "length": "Float",
+            "width": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "width": 1.23 * 1000,
+            "length": 4.92 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "width": 30,
+            "length": 120,
+            "height": 10
+        },
+        maximum: {
+            "width": 6000,
+            "length": 24 * 1000,
+            "height": 1200
+        }
+    },
     "Via": {
         unique: {
             "position": "Point",
@@ -412,17 +438,19 @@ let basicFeatures = {
             "width": "Float",
             "length": "Float",
             "height": "Float",
-            "direction": "String"
+            "direction": "String",
+            "stagelength":"Float"
         },
         defaults: {
             "flowChannelWidth": .80 * 1000,
             "orientation": "V",
-            "spacing": 1.23 * 1000,
-            "leafs": 2,
+            "spacing": 4 * 1000,
+            "leafs": 6,
             "width": 2.46 * 1000,
             "length": 2.46 * 1000,
             "height": .1 * 1000,
-            "direction": "IN"
+            "direction": "IN",
+            "stagelength": 4000
         },
         minimum: {
             "flowChannelWidth": 10,
@@ -430,15 +458,17 @@ let basicFeatures = {
             "leafs": 2,
             "width": 60,
             "length": 60,
-            "height": 10
+            "height": 10,
+            "stagelength": 100
         },
         maximum: {
             "flowChannelWidth": 2000,
-            "spacing": 6000,
+            "spacing": 12000,
             "leafs": 2,
             "width": 12 * 1000,
             "length": 12 * 1000,
-            "height": 1200
+            "height": 1200,
+            "stagelength": 6000
         }
     },
     "CellTrapL": {
