@@ -156,7 +156,7 @@ class Device {
         // output.components = this.__componentsToInterchangeV1();
         // output.connections = this.__connectionToInterchangeV1();
         //TODO: Use this to render the device features
-        output.flayers = this.__featureLayersToInterchangeV1();
+        output.features = this.__featureLayersToInterchangeV1();
         output.version = 1;
         output.groups = this.__groupsToJSON();
         return output;
@@ -184,7 +184,7 @@ class Device {
         //newDevice.__loadComponentsFromInterchangeV1(json.layers);
         //newDevice.__loadConnectionsFromInterchangeV1(json.layers);
         //TODO: Use this to render the device features
-        newDevice.__loadFeatureLayersFromInterchangeV1(json.flayers);
+        newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         return newDevice;
     }
 
