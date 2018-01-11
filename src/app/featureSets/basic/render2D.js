@@ -17,6 +17,21 @@ let render2D = {
     Port: {
         featureParams: {
             position: "position",
+            radius1: "portRadius",
+            radius2: "portRadius"
+        },
+        targetParams: {
+            radius1: "portRadius",
+            radius2: "portRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GradientCircle",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Node: {
+        featureParams: {
+            position: "position",
             radius1: "radius1",
             radius2: "radius2"
         },
@@ -44,18 +59,85 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    RectValve: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            length: "length"
+        },
+        targetParams: {
+            width: "width",
+            length: "length"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "EdgedRect",
+        targetPrimitiveType: "EdgedRectTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Valve3D: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GroverValve",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Channel: {
         featureParams: {
             start: "start",
             end: "end",
-            width: "width"
+            width: "channelWidth"
         },
         targetParams: {
-            diameter: "width"
+            diameter: "channelWidth",
+            channelWidth: "channelWidth"
+        },
+        featurePrimitiveType: "EdgedRectLine",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CrossHairsTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    RoundedChannel: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            width: "channelWidth"
+        },
+        targetParams: {
+            diameter: "channelWidth"
         },
         featurePrimitiveType: "RoundedRectLine",
         featurePrimitiveSet: "Basic2D",
         targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Transition: {
+        featureParams: {
+            position: "position",
+            cw1: "cw1",
+            cw2: "cw2",
+            length: "length",
+            orientation: "orientation"
+        },
+        targetParams: {
+            cw1: "cw1",
+            cw2: "cw2",
+            length: "length",
+            orientation: "orientation"
+        },
+        featurePrimitiveType: "Transition",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "TransitionTarget",
         targetPrimitiveSet: "Basic2D"
     },
     Chamber: {
@@ -71,7 +153,191 @@ let render2D = {
         featurePrimitiveType: "RoundedRect",
         targetPrimitiveSet: "Basic2D",
         targetPrimitiveType: "CircleTarget"
-    }
+    },
+    DiamondReactionChamber: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            channelWidth: "channelWidth",
+            length: "length",
+            width: "width"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            length: "length",
+            width: "width",
+            orientation: "orientation"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Diamond",
+        targetPrimitiveType: "DiamondTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Valve: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            orientation: "orientation"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            orientation: "orientation"
+
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Valve",
+        targetPrimitiveType: "ValveTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Circuit: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Circuit",
+        targetPrimitiveType: "CircuitTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    BetterMixer: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "BetterMixer",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "BetterMixerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    CurvedMixer: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "CurvedMixer",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CurvedMixerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Mixer: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "Mixer",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "MixerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Tree: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stagelength: "stagelength",
+            direction : "direction"
+        },
+        targetParams: {
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stagelength: "stagelength",
+            direction:"direction"
+        },
+        featurePrimitiveType: "Tree",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "TreeTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    CellTrapL: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberWidth",
+            radius2: "chamberSpacing"
+        },
+        targetParams: {
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing"
+        },
+        featurePrimitiveType: "CellTrapL",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CellTrapLTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    DropletGen: {
+        featureParams: {
+            position: "position",
+            orificeSize: "orificeSize"
+        },
+        targetParams: {
+            orificeSize: "orificeSize"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "DropletGen",
+        targetPrimitiveType: "DropletGenTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
 };
 
 module.exports = render2D;
