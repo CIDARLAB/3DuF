@@ -173,6 +173,41 @@ let render2D = {
         targetPrimitiveType: "DiamondTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Valve: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            orientation: "orientation"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            orientation: "orientation"
+
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Valve",
+        targetPrimitiveType: "ValveTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Circuit: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            radius: "radius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Circuit",
+        targetPrimitiveType: "CircuitTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     BetterMixer: {
         featureParams: {
             position: "position",
@@ -245,8 +280,8 @@ let render2D = {
             width: "width",
             length: "length",
             leafs: "leafs",
-            radius1: "width",
-            radius2: "length"
+            stagelength: "stagelength",
+            direction : "direction"
         },
         targetParams: {
             flowChannelWidth: "flowChannelWidth",
@@ -255,8 +290,8 @@ let render2D = {
             width: "width",
             length: "length",
             leafs: "leafs",
-            radius1: "width",
-            radius2: "length"
+            stagelength: "stagelength",
+            direction:"direction"
         },
         featurePrimitiveType: "Tree",
         featurePrimitiveSet: "Basic2D",
