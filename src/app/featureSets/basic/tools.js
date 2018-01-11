@@ -11,9 +11,29 @@ let tools = {
         },
         placementTool: "PositionTool"
     },
+    Node: {
+        toolParams: {
+            position: "position",
+        },
+        placementTool: "PositionTool"
+    },
     CircleValve: {
         toolParams: {
             position: "position",
+        },
+        placementTool: "PositionTool"
+    },
+    RectValve: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "PositionTool"
+    },
+    Valve3D: {
+        toolParams: {
+            position: "position",
+
         },
         placementTool: "PositionTool"
     },
@@ -24,12 +44,79 @@ let tools = {
         },
         placementTool: "DragTool"
     },
+    RoundedChannel: {
+        toolParams: {
+            start: "start",
+            end: "end"
+        },
+        placementTool: "DragTool"
+    },
+    Transition: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
     Chamber: {
         toolParams: {
             start: "start",
             end: "end"
         },
         placementTool: "DragTool"
+    },
+    DiamondReactionChamber: {
+        toolParams: {
+            position: "position",
+        },
+        placementTool: "PositionTool"
+    },
+    Circuit: {
+        toolParams: {
+            position: "position",
+        },
+        placementTool: "PositionTool"
+    },
+    Valve: {
+        toolParams: {
+            position: "position",
+        },
+        placementTool: "PositionTool"
+    },
+    BetterMixer: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    CurvedMixer: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    Mixer: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    Tree: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    CellTrapL: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
+    DropletGen: {
+        toolParams: {
+            position: "position",
+        },
+        placementTool: "PositionTool"
     }
 };
 

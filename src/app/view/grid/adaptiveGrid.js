@@ -2,14 +2,14 @@ var Registry = require("../../core/registry");
 var Colors = require("../colors");
 
 class AdaptiveGrid {
-    constructor(minSpacing = 10, maxSpacing = 100, thickCount = 10, origin = [0, 0], thinWidth = 1, thickWidth = 3, color = Colors.BLUE_100) {
+    constructor(minSpacing = 5, maxSpacing = 100, thickCount = 10, origin = [0, 0], thinWidth = 1, thickWidth = 3, color = Colors.BLUE_100) {
         this.origin = new paper.Point(origin[0], origin[1]);
         this.thinWidth = thinWidth; //pixel
         this.thickWidth = thickWidth; // pixels
         this.minSpacing = minSpacing; //pixels
         this.maxSpacing = maxSpacing; //pixels
         this.thickCount = thickCount;
-        this.spacing = 1000;
+        this.spacing = 500;
         this.color = color;
 
         if (Registry.currentGrid) throw new Error("Cannot instantiate more than one AdaptiveGrid!");
@@ -53,14 +53,19 @@ class AdaptiveGrid {
     }
 
     getSpacing() {
-        let min = this.minSpacing / paper.view.zoom;
-        let max = this.maxSpacing / paper.view.zoom;
-        while(this.spacing < min){
-            this.spacing = this.spacing * 10;
-        } 
-        while(this.spacing > max){
-            this.spacing = this.spacing / 10;
+        let zoomlevel = paper.view.zoom;
+        if (zoomlevel <= 0.02) {
+            this.spacing = 1000;
+        }else if(zoomlevel <= 0.05){
+            this.spacing = 500;
+        }else if(zoomlevel <= 0.1){
+            this.spacing = 100;
+        }else if(zoomlevel <= 0.6){
+            this.spacing = 50;
+        }else{
+            this.spacing = 5;
         }
+        console.log("Zoom: " + paper.view.zoom + " Spacing: " + this.spacing);
         return this.spacing;
     }
 

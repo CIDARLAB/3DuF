@@ -7,26 +7,47 @@ var ParameterMenu = require("./UI/parameterMenu");
 let activeButton = null;
 let activeLayer = null;
 let channelButton = document.getElementById("channel_button");
-let circleValveButton = document.getElementById("circleValve_button")
-let portButton = document.getElementById("port_button")
-let viaButton = document.getElementById("via_button")
+let roundedChannelButton = document.getElementById("roundedchannel_button");
+let transitionButton = document.getElementById("transition_button");
+let circleValveButton = document.getElementById("circleValve_button");
+let valveButton = document.getElementById("valve_button");
+let valve3dButton = document.getElementById("valve3d_button");
+let portButton = document.getElementById("port_button");
+let viaButton = document.getElementById("via_button");
 let chamberButton = document.getElementById("chamber_button");
+let diamondButton = document.getElementById("diamond_button");
+let bettermixerButton = document.getElementById("bettermixer_button");
+let curvedmixerButton = document.getElementById("curvedmixer_button");
+let mixerButton = document.getElementById("mixer_button");
+let treeButton = document.getElementById("tree_button");
+let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
+let roundedChannelParams = document.getElementById("roundedchannel_params_button");
+let transitionParams = document.getElementById("transition_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
+let valveParams = document.getElementById("valve_params_button");
+let valve3dParams = document.getElementById("valve3d_params_button");
 let portParams = document.getElementById("port_params_button");
 let viaParams = document.getElementById("via_params_button");
 let chamberParams = document.getElementById("chamber_params_button");
+let diamondParams = document.getElementById("diamond_params_button");
+let bettermixerParams = document.getElementById("bettermixer_params_button");
+let curvedmixerParams = document.getElementById("curvedmixer_params_button");
+let mixerParams = document.getElementById("mixer_params_button");
+let treeParams = document.getElementById("tree_params_button");
+let dropletgenParams = document.getElementById("dropletgen_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
-let stlButton = document.getElementById("stl_button");
+//let stlButton = document.getElementById("stl_button");
 
 let button2D = document.getElementById("button_2D");
-let button3D = document.getElementById("button_3D");
+//let button3D = document.getElementById("button_3D");
 
 let flowButton = document.getElementById("flow_button");
 let controlButton = document.getElementById("control_button");
+let cellsButton = document.getElementById("cells_button");
 
 let inactiveBackground = Colors.GREY_200;
 let inactiveText = Colors.BLACK;
@@ -44,20 +65,32 @@ let threeD = false;
 
 let buttons = {
     "Channel": channelButton,
+    "RoundedChannel": roundedChannelButton,
+    "Transition": transitionButton,
     "Via": viaButton,
     "Port": portButton,
     "CircleValve": circleValveButton,
-    "Chamber": chamberButton
+    "Valve3D": valve3dButton,
+    "Valve":valveButton,
+    "Chamber": chamberButton,
+    "DiamondReactionChamber": diamondButton,
+    "BetterMixer": bettermixerButton,
+    "CurvedMixer": curvedmixerButton,
+    "Mixer": mixerButton,
+    "Tree": treeButton,
+    "DropletGen": dropletgenButton
 }
 
 let layerButtons = {
     "0": flowButton,
-    "1": controlButton
+    "1": controlButton,
+    "2": cellsButton
 }
 
 let layerIndices = {
     "0": 0,
-    "1": 1
+    "1": 1,
+    "2": 2
 }
 
 let zipper = new JSZip();
@@ -87,13 +120,13 @@ function setActiveLayer(layerName) {
     setActiveButton(activeButton);
     let bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
-    if (threeD) {
+   /* if (threeD) {
         setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
         setButtonColor(button2D, inactiveBackground, inactiveText);
-    } else {
+    } else {*/
         setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-        setButtonColor(button3D, inactiveBackground, inactiveText);
-    }
+        //setButtonColor(button3D, inactiveBackground, inactiveText);
+   // }
 }
 
 function switchTo3D() {
@@ -167,13 +200,38 @@ function setupAppPage() {
         setActiveButton("Channel");
         switchTo2D();
     };
-
+    roundedChannelButton.onclick = function() {
+        Registry.viewManager.activateTool("RoundedChannel");
+        let bg = Colors.getDefaultFeatureColor("RoundedChannel", "Basic", Registry.currentLayer);
+        setActiveButton("RoundedChannel");
+        switchTo2D();
+    };
+    transitionButton.onclick = function() {
+        Registry.viewManager.activateTool("Transition");
+        let bg = Colors.getDefaultFeatureColor("Transition", "Basic", Registry.currentLayer);
+        setActiveButton("Transition");
+        switchTo2D();
+    };
     circleValveButton.onclick = function() {
         Registry.viewManager.activateTool("CircleValve");
         let bg = Colors.getDefaultFeatureColor("CircleValve", "Basic", Registry.currentLayer);
         setActiveButton("CircleValve");
         switchTo2D();
     };
+    valve3dButton.onclick = function() {
+        Registry.viewManager.activateTool("Valve3D");
+        let bg = Colors.getDefaultFeatureColor("Valve3D", "Basic", Registry.currentLayer);
+        setActiveButton("Valve3D");
+        switchTo2D();
+    };
+
+    valveButton.onclick = function() {
+        Registry.viewManager.activateTool("Valve");
+        let bg = Colors.getDefaultFeatureColor("Valve", "Basic", Registry.currentLayer);
+        setActiveButton("Valve");
+        switchTo2D();
+    };
+
 
     portButton.onclick = function() {
         Registry.viewManager.activateTool("Port");
@@ -193,6 +251,42 @@ function setupAppPage() {
         Registry.viewManager.activateTool("Chamber");
         let bg = Colors.getDefaultFeatureColor("Chamber", "Basic", Registry.currentLayer);
         setActiveButton("Chamber");
+        switchTo2D();
+    };
+    diamondButton.onclick = function() {
+        Registry.viewManager.activateTool("DiamondReactionChamber");
+        let bg = Colors.getDefaultFeatureColor("DiamondReactionChamber", "Basic", Registry.currentLayer);
+        setActiveButton("DiamondReactionChamber");
+        switchTo2D();
+    };
+    bettermixerButton.onclick = function() {
+        Registry.viewManager.activateTool("BetterMixer");
+        let bg = Colors.getDefaultFeatureColor("BetterMixer", "Basic", Registry.currentLayer);
+        setActiveButton("BetterMixer");
+        switchTo2D();
+    };
+    curvedmixerButton.onclick = function() {
+        Registry.viewManager.activateTool("CurvedMixer");
+        let bg = Colors.getDefaultFeatureColor("CurvedMixer", "Basic", Registry.currentLayer);
+        setActiveButton("CurvedMixer");
+        switchTo2D();
+    };
+    mixerButton.onclick = function() {
+        Registry.viewManager.activateTool("Mixer");
+        let bg = Colors.getDefaultFeatureColor("Mixer", "Basic", Registry.currentLayer);
+        setActiveButton("Mixer");
+        switchTo2D();
+    };
+    treeButton.onclick = function() {
+        Registry.viewManager.activateTool("Tree");
+        let bg = Colors.getDefaultFeatureColor("Tree", "Basic", Registry.currentLayer);
+        setActiveButton("Tree");
+        switchTo2D();
+    };
+    dropletgenButton.onclick = function() {
+        Registry.viewManager.activateTool("DropletGen");
+        let bg = Colors.getDefaultFeatureColor("DropletGen", "Basic", Registry.currentLayer);
+        setActiveButton("DropletGen");
         switchTo2D();
     };
 
@@ -217,13 +311,24 @@ function setupAppPage() {
         Registry.viewManager.updateActiveLayer();
     }
 
+    cellsButton.onclick = function() {
+        if (threeD) {
+            if (activeLayer == "2") renderer.toggleLayerView(2);
+            else renderer.showLayer(2);
+        }
+        Registry.currentLayer = Registry.currentDevice.layers[2];
+        setActiveLayer("2");
+        Registry.viewManager.updateActiveLayer();
+
+    }
+
     jsonButton.onclick = function() {
         let json = new Blob([JSON.stringify(Registry.currentDevice.toJSON())], {
             type: "application/json"
         });
         saveAs(json, "device.json");
     }
-
+/*
     stlButton.onclick = function() {
         let json = Registry.currentDevice.toJSON();
         let stls = renderer.getSTL(json);
@@ -238,7 +343,7 @@ function setupAppPage() {
         });
         saveAs(content, json.name + "_layers.zip");
     }
-
+*/
     svgButton.onclick = function() {
         let svgs = Registry.viewManager.layersToSVGStrings();
         //let svg = paper.project.exportSVG({asString: true});
@@ -262,20 +367,30 @@ function setupAppPage() {
     }
 
     button2D.onclick = function() {
-        killParamsWindow();
-        switchTo2D();
+      /*  killParamsWindow();
+        switchTo2D();*/
     }
 
-    button3D.onclick = function() {
-        killParamsWindow();
-        switchTo3D();
-    }
+  //  button3D.onclick = function() {
+       /* killParamsWindow();
+        switchTo3D();*/
+    //}
 
     channelParams.onclick = paramsWindowFunction("Channel", "Basic");
+    roundedChannelParams.onclick = paramsWindowFunction("RoundedChannel", "Basic");
     circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
+    valve3dParams.onclick = paramsWindowFunction("Valve3D", "Basic");
+    valveParams.onclick = paramsWindowFunction("Valve", "Basic");
     portParams.onclick = paramsWindowFunction("Port", "Basic");
     viaParams.onclick = paramsWindowFunction("Via", "Basic");
     chamberParams.onclick = paramsWindowFunction("Chamber", "Basic");
+    diamondParams.onclick = paramsWindowFunction("DiamondReactionChamber", "Basic");
+    bettermixerParams.onclick = paramsWindowFunction("BetterMixer", "Basic");
+    curvedmixerParams.onclick = paramsWindowFunction("CurvedMixer", "Basic");
+    mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
+    treeParams.onclick = paramsWindowFunction("Tree", "Basic");
+    dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
+    transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {

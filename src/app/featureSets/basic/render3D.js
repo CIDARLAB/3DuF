@@ -12,6 +12,16 @@ let render3D = {
     Port: {
         featureParams: {
             position: "position",
+            radius1: "portRadius",
+            radius2: "portRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Node: {
+        featureParams: {
+            position: "position",
             radius1: "radius1",
             radius2: "radius2",
             height: "height"
@@ -29,15 +39,58 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    RectValve: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            length: "length",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "EdgedBoxFeature"
+    },
+    Valve3D: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     Channel: {
         featureParams: {
             start: "start",
             end: "end",
-            width: "width",
+            width: "channelWidth",
             height: "height"
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "TwoPointRoundedLineFeature"
+    },
+    RoundedChannel: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            width: "channelWidth",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "TwoPointRoundedLineFeature"
+    },
+    Transition: {
+        featureParams: {
+            position: "position",
+            radius1: "cw1",
+            radius2: "cw2",
+            length: "length",
+            orientation: "orientation",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
     },
     Chamber: {
         featureParams: {
@@ -48,7 +101,110 @@ let render3D = {
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "TwoPointRoundedBoxFeature"
-    }
+    },
+    DiamondReactionChamber: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            channelWidth: "channelWidth",
+            radius1: "length",
+            radius2: "width",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Valve: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    BetterMixer: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    CurvedMixer: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Mixer: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Tree: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            height: "height",
+            radius1: "width",
+            radius2: "length"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
+    CellTrapL: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing",
+            height: "height"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
+    DropletGen: {
+        featureParams: {
+            position: "position",
+            orificeSize: "orificeSize",
+            radius1: "orificeSize",
+            radius2: "orificeSize",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
 };
 
 module.exports = render3D;
