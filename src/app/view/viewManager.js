@@ -392,10 +392,23 @@ class ViewManager {
 
     setupTools() {
         this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
+        this.tools["Valve"] = new PositionTool("Valve", "Basic");
         this.tools["Channel"] = new ChannelTool("Channel", "Basic");
+        this.tools["RoundedChannel"] = new ChannelTool("RoundedChannel", "Basic");
+        this.tools["Node"] = new PositionTool("Node", "Basic");
         this.tools["CircleValve"] = new PositionTool("CircleValve", "Basic");
+        this.tools["RectValve"] = new PositionTool("RectValve", "Basic");
+        this.tools["Valve3D"] = new PositionTool("Valve3D", "Basic");
         this.tools["Port"] = new PositionTool("Port", "Basic");
         this.tools["Via"] = new PositionTool("Via", "Basic");
+        this.tools["DiamondReactionChamber"] = new PositionTool("DiamondReactionChamber", "Basic");
+        this.tools["BetterMixer"] = new PositionTool("BetterMixer", "Basic");
+        this.tools["CurvedMixer"] = new PositionTool("CurvedMixer", "Basic");
+        this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
+        this.tools["Tree"] = new PositionTool("Tree", "Basic");
+        this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
+        this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
+        this.tools["Transition"] = new PositionTool("Transition", "Basic");
     }
 }
 

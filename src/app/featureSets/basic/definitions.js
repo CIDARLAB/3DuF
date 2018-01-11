@@ -5,20 +5,73 @@ let basicFeatures = {
             "end": "Point"
         },
         heritable: {
-            "width": "Float",
+            "channelWidth": "Float",
             "height": "Float"
         },
         defaults: {
-            "width": .41 * 1000,
+            "channelWidth": .80 * 1000,
             "height": .1 * 1000
         },
         minimum: {
-            "width": 10,
+            "channelWidth": 3,
             "height": 10,
         },
         maximum: {
-            "width": 2000,
+            "channelWidth": 2000,
             "height": 1200,
+        }
+    },
+    "RoundedChannel": {
+        unique: {
+            "start": "Point",
+            "end": "Point"
+        },
+        heritable: {
+            "channelWidth": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "channelWidth": .80 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 3,
+            "height": 10,
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "height": 1200,
+        }
+    },
+    "Transition": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "cw1": "Float",
+            "cw2": "Float",
+            "length": "Float",
+            "orientation": "String",
+            "height": "Float"
+        },
+        defaults: {
+            "cw1": .80 * 1000,
+            "cw2": .90 * 1000,
+            "length": 1.0 * 1000,
+            "orientation": "V",
+            "height": .1 * 1000
+        },
+        minimum: {
+            "cw1": 3,
+            "cw2": 3,
+            "length": 10,
+            "height": 10
+        },
+        maximum: {
+            "cw1": 2000,
+            "cw2": 2000,
+            "length": 1200,
+            "height": 1200
         }
     },
     "Chamber": {
@@ -43,6 +96,35 @@ let basicFeatures = {
             "height": 1200,
         }
     },
+    "Node": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "radius1": "Float",
+            "radius2": "Float",
+            "height": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "radius1": 0,
+            "radius2": 0,
+            "width": 0,
+            "length": 0,
+            "height": 0
+        },
+        minimum: {
+            "radius1": 0,
+            "radius2": 0,
+            "height": 10
+        },
+        maximum: {
+            "radius1": 200,
+            "radius2": 200,
+            "height": 1200
+        }
+    },
     "CircleValve": {
         unique: {
             "position": "Point",
@@ -65,6 +147,91 @@ let basicFeatures = {
         maximum: {
             "radius1": 2000,
             "radius2": 2000,
+            "height": 1200
+        }
+    },
+    "RectValve": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "width": "Float",
+            "length": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "width": 1.4 * 1000,
+            "length": 1.2 * 1000,
+            "height": .8 * 1000
+        },
+        minimum: {
+            "width": 10,
+            "length": 10,
+            "height": 10
+        },
+        maximum: {
+            "width": 2000,
+            "length": 2000,
+            "height": 1200
+        }
+    },
+    "Valve3D": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000
+        },
+        minimum: {
+          //  "orientation": "V",
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10
+        },
+        maximum: {
+        //    "orientation": "H",
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000
+        }
+    },
+    "Valve": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "orientation": "String",
+            "length": "Float",
+            "width": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "width": 1.23 * 1000,
+            "length": 4.92 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "width": 30,
+            "length": 120,
+            "height": 10
+        },
+        maximum: {
+            "width": 6000,
+            "length": 24 * 1000,
             "height": 1200
         }
     },
@@ -98,24 +265,270 @@ let basicFeatures = {
             "position": "Point",
         },
         heritable: {
-            "radius1": "Float",
-            "radius2": "Float",
+            "portRadius": "Float",
             "height": "Float"
         },
         defaults: {
-            "radius1": .7 * 1000,
-            "radius2": .7 * 1000,
+            "portRadius": .7 * 1000,
+           // "radius2": .7 * 1000,
             "height": 1.1 * 1000
         },
         minimum: {
-            "radius1": 10,
-            "radius2": 10,
+            "portRadius": .8 * 10,
+         //   "radius2": 10,
             "height": 10
         },
         maximum: {
-            "radius1": 2000,
-            "radius2": 2000,
+            "portRadius": 2000,
+        //    "radius2": 2000,
             "height": 1200
+        }
+    },
+    "DiamondReactionChamber": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "orientation": "String",
+            "channelWidth": "Float",
+            "length": "Float",
+            "width": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "channelWidth": .80 * 1000,
+            "width": 1.23 * 1000,
+            "length": 4.92 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 10,
+            "width": 30,
+            "length": 120,
+            "height": 10,
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "width": 6000,
+            "length": 24 * 1000,
+            "height": 1200,
+        }
+    },
+    "BetterMixer": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "bendSpacing": "Float",
+            "numberOfBends": "Float",
+            "channelWidth": "Float",
+            "bendLength": "Float",
+            "orientation": "String",
+            "height": "Float"
+        },
+        defaults: {
+            "channelWidth": .80 * 1000,
+            "bendSpacing": 1.23 * 1000,
+            "numberOfBends": 1,
+            "orientation": "V",
+            "bendLength": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 10,
+            "bendSpacing": 10,
+            "numberOfBends": 1,
+            "orientation": "H",
+            "bendLength": 10,
+            "height": 10,
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "bendSpacing": 6000,
+            "numberOfBends": 20,
+            "orientation": "H",
+            "bendLength": 12 * 1000,
+            "height": 1200,
+        }
+    },
+    "CurvedMixer": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "bendSpacing": "Float",
+            "numberOfBends": "Float",
+            "channelWidth": "Float",
+            "bendLength": "Float",
+            "orientation": "String",
+            "height": "Float"
+        },
+        defaults: {
+            "channelWidth": .80 * 1000,
+            "bendSpacing": 1.23 * 1000,
+            "numberOfBends": 1,
+            "orientation": "V",
+            "bendLength": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 10,
+            "bendSpacing": 10,
+            "numberOfBends": 1,
+            "orientation": "H",
+            "bendLength": 10,
+            "height": 10,
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "bendSpacing": 6000,
+            "numberOfBends": 20,
+            "orientation": "H",
+            "bendLength": 12 * 1000,
+            "height": 1200,
+        }
+    },
+    "Mixer": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "bendSpacing": "Float",
+            "numberOfBends": "Float",
+            "channelWidth": "Float",
+            "bendLength": "Float",
+            "orientation": "String",
+            "height": "Float"
+        },
+        defaults: {
+            "channelWidth": .80 * 1000,
+            "bendSpacing": 1.23 * 1000,
+            "numberOfBends": 1,
+            "orientation": "V",
+            "bendLength": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 10,
+            "bendSpacing": 10,
+            "numberOfBends": 1,
+            "orientation": "H",
+            "bendLength": 10,
+            "height": 10,
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "bendSpacing": 6000,
+            "numberOfBends": 20,
+            "orientation": "H",
+            "bendLength": 12 * 1000,
+            "height": 1200,
+        }
+    },
+    "Tree": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "flowChannelWidth": "Float",
+            "orientation": "String",
+            "spacing": "Float",
+            "leafs": "Float",
+            "width": "Float",
+            "length": "Float",
+            "height": "Float",
+            "direction": "String",
+            "stagelength":"Float"
+        },
+        defaults: {
+            "flowChannelWidth": .80 * 1000,
+            "orientation": "V",
+            "spacing": 4 * 1000,
+            "leafs": 6,
+            "width": 2.46 * 1000,
+            "length": 2.46 * 1000,
+            "height": .1 * 1000,
+            "direction": "IN",
+            "stagelength": 4000
+        },
+        minimum: {
+            "flowChannelWidth": 10,
+            "spacing": 30,
+            "leafs": 2,
+            "width": 60,
+            "length": 60,
+            "height": 10,
+            "stagelength": 100
+        },
+        maximum: {
+            "flowChannelWidth": 2000,
+            "spacing": 12000,
+            "leafs": 2,
+            "width": 12 * 1000,
+            "length": 12 * 1000,
+            "height": 1200,
+            "stagelength": 6000
+        }
+    },
+    "CellTrapL": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "chamberLength": "Float",
+            "feedingChannelWidth": "Float",
+            "orientation": "String",
+            "chamberWidth": "Float",
+            "numberOfChambers": "Float",
+            "chamberSpacing": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "chamberLength": 1.2 * 1000,
+            "feedingChannelWidth": .41 * 1000,
+            "orientation": "H",
+            "chamberWidth": 1.23 * 1000,
+            "numberOfChambers": 3,
+            "chamberSpacing": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "chamberLength": 30,
+            "feedingChannelWidth": 10,
+            "chamberWidth": 30,
+            "numberOfChambers": 1,
+            "chamberSpacing": 60,
+            "height": 10
+        },
+        maximum: {
+            "chamberLength": 6000,
+            "feedingChannelWidth": 2000,
+            "chamberWidth": 6000,
+            "numberOfChambers": 10,
+            "chamberSpacing": 12 * 1000,
+            "height": 1200
+        }
+    },
+    "DropletGen": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orificeSize": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orificeSize": .80 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "orificeSize": 10,
+            "height": 10,
+        },
+        maximum: {
+            "orificeSize": 2000,
+            "height": 1200,
         }
     }
 }
