@@ -92,6 +92,24 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Valve3D_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GroverValve_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Channel: {
         featureParams: {
             start: "start",

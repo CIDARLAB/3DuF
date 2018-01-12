@@ -254,6 +254,20 @@ var GroverValve = function(params){
     //   }
 }
 
+var GroverValve_control = function(params){
+    let minRadiusInMicrometers = 8/paper.view.zoom;
+    let position = params["position"];
+    let gap = params["gap"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let center = new paper.Point(position[0], position[1]);
+    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    var circ = new paper.Path.Circle(center, radius);
+    circ.fillColor = color;
+    return circ;
+}
+
 var CircleTarget = function(params){
     let targetRadius;
     let radius1;
@@ -1707,6 +1721,7 @@ module.exports.CircleTarget = CircleTarget;
 //module.exports.RectValve = RectValve;
 //module.expors.RectValveTarget = RectValveTarget;
 module.exports.GroverValve = GroverValve;
+module.exports.GroverValve_control = GroverValve_control;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
 module.exports.BetterMixer = BetterMixer;
