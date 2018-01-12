@@ -21,6 +21,8 @@ let curvedmixerButton = document.getElementById("curvedmixer_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
 let muxButton = document.getElementById("mux_button");
+let transposerButton = document.getElementById("transposer_button");
+let rotarymixerButton = document.getElementById("rotarymixer_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
@@ -38,6 +40,8 @@ let curvedmixerParams = document.getElementById("curvedmixer_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
 let muxParams = document.getElementById("mux_params_button");
+let transposerParams = document.getElementById("transposer_params_button");
+let rotarymixerParams = document.getElementById("rotarymixer_params_button");
 let dropletgenParams = document.getElementById("dropletgen_params_button");
 
 let jsonButton = document.getElementById("json_button");
@@ -81,6 +85,8 @@ let buttons = {
     "Mixer": mixerButton,
     "Tree": treeButton,
     "Mux":muxButton,
+    "Transposer":transposerButton,
+    "RotaryMixer":rotarymixerButton,
     "DropletGen": dropletgenButton
 }
 
@@ -292,6 +298,18 @@ function setupAppPage() {
         setActiveButton("Mux");
         switchTo2D();
     };
+    transposerButton.onclick = function() {
+        Registry.viewManager.activateTool("Transposer");
+        let bg = Colors.getDefaultFeatureColor("Transposer", "Basic", Registry.currentLayer);
+        setActiveButton("Transposer");
+        switchTo2D();
+    };
+    rotarymixerButton.onclick = function() {
+        Registry.viewManager.activateTool("RotaryMixer");
+        let bg = Colors.getDefaultFeatureColor("RotaryMixer", "Basic", Registry.currentLayer);
+        setActiveButton("RotaryMixer");
+        switchTo2D();
+    };
     dropletgenButton.onclick = function() {
         Registry.viewManager.activateTool("DropletGen");
         let bg = Colors.getDefaultFeatureColor("DropletGen", "Basic", Registry.currentLayer);
@@ -399,6 +417,8 @@ function setupAppPage() {
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
     muxParams.onclick = paramsWindowFunction("Mux", "Basic");
+    transposerParams.onclick = paramsWindowFunction("Transposer", "Basic");
+    rotarymixerParams.onclick = paramsWindowFunction("RotaryMixer", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
     transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
 

@@ -268,6 +268,110 @@ var GroverValve_control = function(params){
     return circ;
 }
 
+//************************************
+var Transposer = function(params){
+    let minRadiusInMicrometers = 8/paper.view.zoom;
+    let position = params["position"];
+    let gap = params["gap"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let center = new paper.Point(position[0], position[1]);
+    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    var circ = new paper.Path.Circle(center, radius);
+    //circ.fillColor = color;
+    //   if (String(color) == "3F51B5") {
+    var cutout;
+    if (orientation == "H") {
+        cutout = paper.Path.Rectangle({
+            from: new paper.Point(position[0] - gap / 2, position[1] - radius),
+            to: new paper.Point(position[0] + gap / 2, position[1] + radius)
+        });
+    }
+    else {
+        cutout = paper.Path.Rectangle({
+            from: new paper.Point(position[0] - radius, position[1] - gap / 2),
+            to: new paper.Point(position[0] + radius, position[1] + gap / 2)
+        });
+    }
+    //cutout.fillColor = "white";
+    var valve = circ.subtract(cutout);
+    valve.fillColor = color;
+    //valve.fillRule = 'evenodd';
+    //console.log(color);
+    return valve;
+    //   }
+    //   else {
+    //       circ.FillColor = color;
+    //       return circ;
+    //   }
+}
+
+var Transposer_control = function(params){
+    let minRadiusInMicrometers = 8/paper.view.zoom;
+    let position = params["position"];
+    let gap = params["gap"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let center = new paper.Point(position[0], position[1]);
+    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    var circ = new paper.Path.Circle(center, radius);
+    circ.fillColor = color;
+    return circ;
+}
+var RotaryMixer = function(params){
+    let minRadiusInMicrometers = 8/paper.view.zoom;
+    let position = params["position"];
+    let gap = params["gap"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let center = new paper.Point(position[0], position[1]);
+    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    var circ = new paper.Path.Circle(center, radius);
+    //circ.fillColor = color;
+    //   if (String(color) == "3F51B5") {
+    var cutout;
+    if (orientation == "H") {
+        cutout = paper.Path.Rectangle({
+            from: new paper.Point(position[0] - gap / 2, position[1] - radius),
+            to: new paper.Point(position[0] + gap / 2, position[1] + radius)
+        });
+    }
+    else {
+        cutout = paper.Path.Rectangle({
+            from: new paper.Point(position[0] - radius, position[1] - gap / 2),
+            to: new paper.Point(position[0] + radius, position[1] + gap / 2)
+        });
+    }
+    //cutout.fillColor = "white";
+    var valve = circ.subtract(cutout);
+    valve.fillColor = color;
+    //valve.fillRule = 'evenodd';
+    //console.log(color);
+    return valve;
+    //   }
+    //   else {
+    //       circ.FillColor = color;
+    //       return circ;
+    //   }
+}
+
+var RotaryMixer_control = function(params){
+    let minRadiusInMicrometers = 8/paper.view.zoom;
+    let position = params["position"];
+    let gap = params["gap"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let center = new paper.Point(position[0], position[1]);
+    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    var circ = new paper.Path.Circle(center, radius);
+    circ.fillColor = color;
+    return circ;
+}
+//*********************************
 var CircleTarget = function(params){
     let targetRadius;
     let radius1;
@@ -299,6 +403,71 @@ var CircleTarget = function(params){
     if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
     return circ;
 }
+//***************************************************
+var TransposerTarget = function(params){
+    let targetRadius;
+    let radius1;
+    let radius2;
+    if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"]/2;
+    else {
+        if (params.hasOwnProperty("portRadius")) {
+            radius1 = portRadius;
+            radius2 = portRadius;
+        }
+        else {
+            radius1 = params["radius1"];
+            radius2 = params["radius2"];
+            if (radius1 > radius2) targetRadius = radius1;
+            else targetRadius = radius2;
+        }
+    }
+    let minSize = 8; //pixels
+    let minSizeInMicrometers = 8/paper.view.zoom;
+    let position = params["position"];
+    let color = params["color"];
+    let pos = new paper.Point(position[0], position[1]);
+    if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
+    let circ = new paper.Path.Circle(pos, targetRadius);
+    circ.fillColor = color
+    circ.fillColor.alpha = .5;
+    circ.strokeColor = "#FFFFFF";
+    circ.strokeWidth = 3 / paper.view.zoom;
+    if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
+    return circ;
+}
+
+var RotaryMixerTarget = function(params){
+    let targetRadius;
+    let radius1;
+    let radius2;
+    if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"]/2;
+    else {
+        if (params.hasOwnProperty("portRadius")) {
+            radius1 = portRadius;
+            radius2 = portRadius;
+        }
+        else {
+            radius1 = params["radius1"];
+            radius2 = params["radius2"];
+            if (radius1 > radius2) targetRadius = radius1;
+            else targetRadius = radius2;
+        }
+    }
+    let minSize = 8; //pixels
+    let minSizeInMicrometers = 8/paper.view.zoom;
+    let position = params["position"];
+    let color = params["color"];
+    let pos = new paper.Point(position[0], position[1]);
+    if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
+    let circ = new paper.Path.Circle(pos, targetRadius);
+    circ.fillColor = color
+    circ.fillColor.alpha = .5;
+    circ.strokeColor = "#FFFFFF";
+    circ.strokeWidth = 3 / paper.view.zoom;
+    if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
+    return circ;
+}
+//******************************************
 
 var Diamond = function(params){
     let position = params["position"];
@@ -1160,7 +1329,7 @@ var Tree = function(params) {
     let w = spacing * (leafs/2 + 1);
     let l = (levels + 1) * stagelength;
 
-    console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
     var treepath = new paper.CompoundPath();
 
@@ -1172,8 +1341,8 @@ var Tree = function(params) {
 
     treepath.fillColor = color;
     var rotation = 0;
-    console.log("Orientation: " + orientation);
-    console.log("Direction: " + direction);
+    // console.log("Orientation: " + orientation);
+    // console.log("Direction: " + direction);
     if(orientation == "H" && direction=="OUT"){
         rotation = 180;
     }else if(orientation == "V" && direction =="IN"){
@@ -1265,7 +1434,7 @@ function generateTwig(treepath, px, py,cw, stagelength , newspacing, level, maxl
 
     if(level == maxlevel){
         islast = true;
-        console.log("Final Spacing: " + newspacing)
+        // console.log("Final Spacing: " + newspacing)
     }
 
     drawtwig(treepath, px, py, cw, stagelength, newspacing, islast);
@@ -1737,6 +1906,12 @@ module.exports.TreeTarget = TreeTarget;
 module.exports.Mux = Mux;
 module.exports.Mux_control = Mux_control;
 module.exports.MuxTarget = MuxTarget;
+module.exports.Transposer = Transposer;
+module.exports.Transposer_control = Transposer_control;
+module.exports.TransposerTarget = TransposerTarget;
+module.exports.RotaryMixer = RotaryMixer;
+module.exports.RotaryMixer_control = RotaryMixer_control;
+module.exports.RotaryMixerTarget = RotaryMixerTarget;
 module.exports.CellTrapL = CellTrapL;
 module.exports.CellTrapLTarget = CellTrapLTarget;
 module.exports.DropletGen = DropletGen;

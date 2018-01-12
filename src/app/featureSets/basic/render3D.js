@@ -71,6 +71,50 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    Transposer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Transposer_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    RotaryMixer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    RotaryMixer_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     Channel: {
         featureParams: {
             start: "start",
