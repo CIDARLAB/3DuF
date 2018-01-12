@@ -35,7 +35,14 @@ let tools = {
             position: "position",
 
         },
-        placementTool: "PositionTool"
+        placementTool: "MultilayerPositionTool"
+    },
+    Valve3D_control: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
     },
     Channel: {
         toolParams: {
