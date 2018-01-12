@@ -241,6 +241,138 @@ let basicFeatures = {
             "gap": .1 * 10000
         }
     },
+    "Transposer": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000
+        },
+        minimum: {
+          //  "orientation": "V",
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10
+        },
+        maximum: {
+        //    "orientation": "H",
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000
+        }
+    },
+    "Transposer_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000
+        },
+        minimum: {
+          //  "orientation": "V",
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10
+        },
+        maximum: {
+        //    "orientation": "H",
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000
+        }
+    },
+    "RotaryMixer": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000
+        },
+        minimum: {
+          //  "orientation": "V",
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10
+        },
+        maximum: {
+        //    "orientation": "H",
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000
+        }
+    },
+    "RotaryMixer_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000
+        },
+        minimum: {
+          //  "orientation": "V",
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10
+        },
+        maximum: {
+        //    "orientation": "H",
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000
+        }
+    },
     "Valve": {
         unique: {
             "position": "Point",

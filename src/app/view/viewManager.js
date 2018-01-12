@@ -408,6 +408,8 @@ class ViewManager {
         this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
         this.tools["Mux"] = new MultilayerPositionTool("Mux", "Basic");
+        this.tools["Transposer"] = new MultilayerPositionTool("Transposer", "Basic");
+        this.tools["RotaryMixer"] = new MultilayerPositionTool("RotaryMixer", "Basic");
         this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
         this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");

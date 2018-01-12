@@ -44,6 +44,34 @@ let tools = {
         },
         placementTool: "MultilayerPositionTool"
     },
+    Transposer: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    Transposer_control: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    RotaryMixer: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    RotaryMixer_control: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
     Channel: {
         toolParams: {
             start: "start",
