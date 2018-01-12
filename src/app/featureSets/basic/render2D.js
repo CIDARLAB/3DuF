@@ -110,6 +110,78 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Transposer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Transposer",
+        targetPrimitiveType: "TransposerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Transposer_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Transposer_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    RotaryMixer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "RotaryMixer",
+        targetPrimitiveType: "RotaryMixerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    RotaryMixer_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "RotaryMixer_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Channel: {
         featureParams: {
             start: "start",
