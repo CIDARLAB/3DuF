@@ -178,6 +178,22 @@ let render3D = {
         featurePrimitive: "ConeFeature",
         featurePrimitiveSet: "Basic3D"
     },
+    Mux: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            height: "height",
+            radius1: "width",
+            radius2: "length"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
     CellTrapL: {
         featureParams: {
             position: "position",

@@ -106,6 +106,12 @@ let tools = {
         },
         placementTool: "PositionTool"
     },
+    Mux: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "PositionTool"
+    },
     CellTrapL: {
         toolParams: {
             position: "position"
