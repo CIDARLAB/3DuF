@@ -110,7 +110,7 @@ let tools = {
         toolParams: {
             position: "position"
         },
-        placementTool: "PositionTool"
+        placementTool: "MultilayerPositionTool"
     },
     CellTrapL: {
         toolParams: {
