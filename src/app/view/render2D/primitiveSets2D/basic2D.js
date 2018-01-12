@@ -1258,7 +1258,7 @@ var TreeTarget = function(params) {
     let w = spacing * (leafs/2 + 1);
     let l = (levels + 1) * stagelength;
 
-    console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
     var treepath = new paper.CompoundPath();
 
@@ -1306,7 +1306,7 @@ var Mux = function(params) {
     let w = spacing * (leafs/2 + 1);
     let l = (levels + 1) * stagelength;
 
-    console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
     var treepath = new paper.CompoundPath();
 
@@ -1318,8 +1318,8 @@ var Mux = function(params) {
 
     treepath.fillColor = color;
     var rotation = 0;
-    console.log("Orientation: " + orientation);
-    console.log("Direction: " + direction);
+    // console.log("Orientation: " + orientation);
+    // console.log("Direction: " + direction);
     if(orientation == "H" && direction=="OUT"){
         rotation = 180;
     }else if(orientation == "V" && direction =="IN"){
@@ -1411,7 +1411,7 @@ function generateMuxTwig(treepath, px, py,cw, stagelength , newspacing, level, m
 
     if(level == maxlevel){
         islast = true;
-        console.log("Final Spacing: " + newspacing)
+        // console.log("Final Spacing: " + newspacing)
     }
 
     drawmuxtwig(treepath, px, py, cw, stagelength, newspacing, islast);
@@ -1447,7 +1447,7 @@ var MuxTarget = function(params) {
     let w = spacing * (leafs/2 + 1);
     let l = (levels + 1) * stagelength;
 
-    console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
     var treepath = new paper.CompoundPath();
 
@@ -1460,8 +1460,8 @@ var MuxTarget = function(params) {
     treepath.fillColor = color;
     treepath.fillColor.alpha = 0.5;
     var rotation = 0;
-    console.log("Orientation: " + orientation);
-    console.log("Direction: " + direction);
+    // console.log("Orientation: " + orientation);
+    // console.log("Direction: " + direction);
     if(orientation == "H" && direction=="OUT"){
         rotation = 180;
     }else if(orientation == "V" && direction =="IN"){
