@@ -406,6 +406,7 @@ class ViewManager {
         this.tools["CurvedMixer"] = new PositionTool("CurvedMixer", "Basic");
         this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
+        this.tools["Mux"] = new PositionTool("Mux", "Basic");
         this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
         this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");

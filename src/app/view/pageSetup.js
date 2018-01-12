@@ -20,6 +20,7 @@ let bettermixerButton = document.getElementById("bettermixer_button");
 let curvedmixerButton = document.getElementById("curvedmixer_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
+let muxButton = document.getElementById("mux_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
@@ -36,6 +37,7 @@ let bettermixerParams = document.getElementById("bettermixer_params_button");
 let curvedmixerParams = document.getElementById("curvedmixer_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
+let muxParams = document.getElementById("mux_params_button");
 let dropletgenParams = document.getElementById("dropletgen_params_button");
 
 let jsonButton = document.getElementById("json_button");
@@ -78,6 +80,7 @@ let buttons = {
     "CurvedMixer": curvedmixerButton,
     "Mixer": mixerButton,
     "Tree": treeButton,
+    "Mux":muxButton,
     "DropletGen": dropletgenButton
 }
 
@@ -283,6 +286,12 @@ function setupAppPage() {
         setActiveButton("Tree");
         switchTo2D();
     };
+    muxButton.onclick = function() {
+        Registry.viewManager.activateTool("Mux");
+        let bg = Colors.getDefaultFeatureColor("Mux", "Basic", Registry.currentLayer);
+        setActiveButton("Mux");
+        switchTo2D();
+    };
     dropletgenButton.onclick = function() {
         Registry.viewManager.activateTool("DropletGen");
         let bg = Colors.getDefaultFeatureColor("DropletGen", "Basic", Registry.currentLayer);
@@ -389,6 +398,7 @@ function setupAppPage() {
     curvedmixerParams.onclick = paramsWindowFunction("CurvedMixer", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
+    muxParams.onclick = paramsWindowFunction("Mux", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
     transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
 
