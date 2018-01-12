@@ -120,6 +120,7 @@ class Feature {
 
     static makeFeature(typeString, setString, values, name = "New Feature", id=undefined){
         let featureType = FeatureSets.getDefinition(typeString, setString);
+        console.log("Feature Type: " + featureType);
         Feature.checkDefaults(values, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
         let params = new Params(values, featureType.unique, featureType.heritable);
         return new Feature(typeString, setString, params, name, id)

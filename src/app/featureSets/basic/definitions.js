@@ -516,6 +516,51 @@ let basicFeatures = {
             "stageLength": 6000
         }
     },
+    "Mux_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "flowChannelWidth": "Float",
+            "orientation": "String",
+            "spacing": "Float",
+            "leafs": "Float",
+            "width": "Float",
+            "length": "Float",
+            "height": "Float",
+            "direction": "String",
+            "stageLength":"Float"
+        },
+        defaults: {
+            "flowChannelWidth": .80 * 1000,
+            "orientation": "V",
+            "spacing": 4 * 1000,
+            "leafs": 6,
+            "width": 2.46 * 1000,
+            "length": 2.46 * 1000,
+            "height": .1 * 1000,
+            "direction": "IN",
+            "stageLength": 4000
+        },
+        minimum: {
+            "flowChannelWidth": 10,
+            "spacing": 30,
+            "leafs": 2,
+            "width": 60,
+            "length": 60,
+            "height": 10,
+            "stageLength": 100
+        },
+        maximum: {
+            "flowChannelWidth": 2000,
+            "spacing": 12000,
+            "leafs": 2,
+            "width": 12 * 1000,
+            "length": 12 * 1000,
+            "height": 1200,
+            "stageLength": 6000
+        }
+    },
     "CellTrapL": {
         unique: {
             "position": "Point"

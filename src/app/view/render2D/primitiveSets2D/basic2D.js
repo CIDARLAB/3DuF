@@ -396,6 +396,35 @@ var Valve = function(params){
 
     return rec.rotate(rotation, px, py);
 }
+var Mux_control = function(params){
+    let orientation = params["orientation"];
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = 10000; //params["length"];
+    let w = 10000; //params["width"];
+    let color = params["color"];
+    let startX = px - w/2;
+    let startY = py - l/2;
+    let endX = px + w/2;
+    let endY = py + l/2;
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+
+    var rotation = 0;
+    if(orientation == "V"){
+        rotation = 90;
+    }
+
+    return rec.rotate(rotation, px, py);
+}
 
 var ValveTarget = function(params){
     let orientation = params["orientation"];
@@ -1691,6 +1720,7 @@ module.exports.EdgedRect = EdgedRect;
 module.exports.Tree = Tree;
 module.exports.TreeTarget = TreeTarget;
 module.exports.Mux = Mux;
+module.exports.Mux_control = Mux_control;
 module.exports.MuxTarget = MuxTarget;
 module.exports.CellTrapL = CellTrapL;
 module.exports.CellTrapLTarget = CellTrapLTarget;

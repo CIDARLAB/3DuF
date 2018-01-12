@@ -325,6 +325,33 @@ let render2D = {
         targetPrimitiveType: "Mux",
         targetPrimitiveSet: "Basic2D"
     },
+    Mux_control: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction : "direction"
+        },
+        targetParams: {
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction:"direction"
+        },
+        featurePrimitiveType: "Mux_control",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "Mux_control",
+        targetPrimitiveSet: "Basic2D"
+    },
     CellTrapL: {
         featureParams: {
             position: "position",
