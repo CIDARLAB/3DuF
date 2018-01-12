@@ -112,6 +112,12 @@ let tools = {
         },
         placementTool: "MultilayerPositionTool"
     },
+    Mux_control: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "MultilayerPositionTool"
+    },
     CellTrapL: {
         toolParams: {
             position: "position"
