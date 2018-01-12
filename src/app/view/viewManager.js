@@ -399,7 +399,7 @@ class ViewManager {
         this.tools["Node"] = new PositionTool("Node", "Basic");
         this.tools["CircleValve"] = new PositionTool("CircleValve", "Basic");
         this.tools["RectValve"] = new PositionTool("RectValve", "Basic");
-        this.tools["Valve3D"] = new PositionTool("Valve3D", "Basic");
+        this.tools["Valve3D"] = new MultilayerPositionTool("Valve3D", "Basic");
         this.tools["Port"] = new PositionTool("Port", "Basic");
         this.tools["Via"] = new PositionTool("Via", "Basic");
         this.tools["DiamondReactionChamber"] = new PositionTool("DiamondReactionChamber", "Basic");
