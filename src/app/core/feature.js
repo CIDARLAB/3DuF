@@ -96,6 +96,14 @@ class Feature {
         return Feature.getDefaultsForType(this.getType(), this.getSet());
     }
 
+    getParams(){
+        return this.__params.parameters;
+    }
+
+    setParams(params){
+        this.__params.parameters = params;
+    }
+
     static getDefaultsForType(typeString, setString){
         return Registry.featureDefaults[setString][typeString];
     }

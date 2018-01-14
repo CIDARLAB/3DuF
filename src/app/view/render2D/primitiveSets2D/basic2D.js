@@ -328,11 +328,11 @@ var RotaryMixer = function(params){
     let orientation = params["orientation"];
     let valvespacing = params["valveSpacing"];
     let valvelength = params['valveLength'];
-    let flowchannelwidth = 1000; //params["flowChannelWidth"];
+    let flowchannelwidth = params['flowChannelWidth']; //params["flowChannelWidth"];
     let px = position[0];
     let py = position[1];
     let center = new paper.Point(px, py);
-    let channellength = radius + valvelength + 2 * valvespacing; //This needs to be a real expression
+    let channellength = radius + valvelength + 2 * valvespacing + flowchannelwidth; //This needs to be a real expression
 
     let rotarymixer = new paper.CompoundPath();
 
@@ -371,17 +371,64 @@ var RotaryMixer = function(params){
 }
 
 var RotaryMixer_control = function(params){
-    let minRadiusInMicrometers = 8/paper.view.zoom;
     let position = params["position"];
-    let gap = params["gap"];
-    let radius = params["valveRadius"];
+    let radius = params["radius"];
     let color = params["color"];
     let orientation = params["orientation"];
-    let center = new paper.Point(position[0], position[1]);
-    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
-    var circ = new paper.Path.Circle(center, radius);
-    circ.fillColor = color;
-    return circ;
+    let valvespacing = params["valveSpacing"];
+    let valvelength = params['valveLength'];
+    let valvewidth = params['valveWidth'];
+    let flowChannelWidth = params['flowChannelWidth'];
+    let controlChannelWidth = params['controlChannelWidth']; //params["flowChannelWidth"];
+    let px = position[0];
+    let py = position[1];
+
+    let rotarymixer = new paper.CompoundPath();
+    let topleft = null;
+    let bottomright = null;
+
+    //Draw top right valve
+    topleft = new paper.Point(px + radius + flowChannelWidth + valvespacing, py - radius - flowChannelWidth/2 - valvewidth/2 );
+    let topleftrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
+    rotarymixer.addChild(topleftrectangle);
+
+    //Draw top middle valve
+    topleft = new paper.Point(px - valvewidth/2, py - radius - flowChannelWidth/2 - valvewidth/2);
+    let topmiddlerectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
+    rotarymixer.addChild(topmiddlerectangle);
+
+    //Draw middle right valve
+    topleft = new paper.Point(px + radius + flowChannelWidth/2 - valvewidth/2, py - valvelength/2);
+    let middlerightrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvewidth, valvelength));
+    rotarymixer.addChild(middlerightrectangle);
+
+    //Draw Bottom middle valve
+    topleft = new paper.Point(px - valvelength/2, py + radius + flowChannelWidth/2 - valvewidth/2);
+    let bottommiddlerectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
+    rotarymixer.addChild(bottommiddlerectangle);
+
+    //Draw bottom left valve
+    topleft = new paper.Point(px - radius - valvespacing - valvelength - flowChannelWidth, py + radius + flowChannelWidth/2 - valvewidth/2);
+    let bottomleftrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
+    rotarymixer.addChild(bottomleftrectangle);
+
+    // //Draw the one channel going out
+    // topleft = new paper.Point(px + radius +flowChannelWidth/2 + valvewidth/2, py - controlChannelWidth/2);
+    // bottomright = new paper.Point(px + radius + flowChannelWidth + 2*valvespacing + valvelength, py+controlChannelWidth/2);
+    // let channelrect = new paper.Path.Rectangle(topleft, bottomright);
+    // rotarymixer.addChild(channelrect);
+    // console.log('added chanenel');
+
+    let rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
+    }
+    else {
+        rotation = 0;
+    }
+
+    rotarymixer.fillColor = color;
+    return rotarymixer.rotate(rotation, px, py);
 }
 //*********************************
 var CircleTarget = function(params){
