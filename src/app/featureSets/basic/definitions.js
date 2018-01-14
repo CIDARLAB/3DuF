@@ -313,31 +313,41 @@ let basicFeatures = {
         },
         heritable: {
             "orientation": "String",
-            "valveRadius": "Float",
-            "height": "Float",
-            "gap": "Float",
-            "width": "Float",
-            "length": "Float"
+            "radius": "Float",
+            "flowChannelWidth": "Float",
+            "valveWidth": "Float",
+            "valveLength": "Float",
+            "valveSpacing": "Float",
+            "height": "Float"
         },
         defaults: {
             "orientation": "V",
+            "radius": 2000,
+            "flowChannelWidth": 1000,
+            "valveWidth": 2.4 * 1000,
+            "valveLength": 2.4 * 1000,
+            "valveSpacing": 300,
             "valveRadius": 1.2 * 1000,
-            "height": .8 * 1000,
-            "gap": 0.6 * 1000,
-            "width": 2.4 * 1000,
-            "length": 2.4 * 1000
+            "height": 200
         },
         minimum: {
           //  "orientation": "V",
-            "valveRadius": .1 * 100,
-            "height": .1 * 100,
-            "gap": .5 * 10
+            "radius": 0.1 * 5000,
+            "flowChannelWidth": 0.1 * 1000,
+            "valveWidth": 0.1 * 2.4 * 1000,
+            "valveLength": 0.1 * 2.4 * 1000,
+            "valveSpacing": 0.1 * 300,
+            "valveRadius": 0.1 * 1.2 * 1000,
+            "height": 0.1 * 200
         },
         maximum: {
-        //    "orientation": "H",
-            "valveRadius": .2 * 10000,
-            "height": 1.2 * 1000,
-            "gap": .1 * 10000
+            "radius": 10 * 5000,
+            "flowChannelWidth": 10 * 1000,
+            "valveWidth": 10 * 2.4 * 1000,
+            "valveLength": 10 * 2.4 * 1000,
+            "valveSpacing": 10 * 300,
+            "valveRadius": 10 * 1.2 * 1000,
+            "height": 10 * 200
         }
     },
     "RotaryMixer_control": {
@@ -346,31 +356,41 @@ let basicFeatures = {
         },
         heritable: {
             "orientation": "String",
-            "valveRadius": "Float",
-            "height": "Float",
-            "gap": "Float",
-            "width": "Float",
-            "length": "Float"
+            "radius": "Float",
+            "flowChannelWidth": "Float",
+            "valveWidth": "Float",
+            "valveLength": "Float",
+            "valveSpacing": "Float",
+            "height": "Float"
         },
         defaults: {
             "orientation": "V",
+            "radius": 2000,
+            "flowChannelWidth": 1000,
+            "valveWidth": 2.4 * 1000,
+            "valveLength": 2.4 * 1000,
+            "valveSpacing": 300,
             "valveRadius": 1.2 * 1000,
-            "height": .8 * 1000,
-            "gap": 0.6 * 1000,
-            "width": 2.4 * 1000,
-            "length": 2.4 * 1000
+            "height": 200
         },
         minimum: {
-          //  "orientation": "V",
-            "valveRadius": .1 * 100,
-            "height": .1 * 100,
-            "gap": .5 * 10
+            //  "orientation": "V",
+            "radius": 0.1 * 5000,
+            "flowChannelWidth": 0.1 * 1000,
+            "valveWidth": 0.1 * 2.4 * 1000,
+            "valveLength": 0.1 * 2.4 * 1000,
+            "valveSpacing": 0.1 * 300,
+            "valveRadius": 0.1 * 1.2 * 1000,
+            "height": 0.1 * 200
         },
         maximum: {
-        //    "orientation": "H",
-            "valveRadius": .2 * 10000,
-            "height": 1.2 * 1000,
-            "gap": .1 * 10000
+            "radius": 10 * 5000,
+            "flowChannelWidth": 10 * 1000,
+            "valveWidth": 10 * 2.4 * 1000,
+            "valveLength": 10 * 2.4 * 1000,
+            "valveSpacing": 10 * 300,
+            "valveRadius": 10 * 1.2 * 1000,
+            "height": 10 * 200
         }
     },
     "Valve": {
