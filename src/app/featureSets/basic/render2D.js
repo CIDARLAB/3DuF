@@ -150,14 +150,22 @@ let render2D = {
         featureParams: {
             position: "position",
             orientation: "orientation",
-            radius1: "valveRadius",
-            radius2: "valveRadius",
-            valveRadius: "valveRadius",
-            gap: "gap"
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth:"valveWidth",
+            valveLength:"valveLength",
+            valveSpacing:"valveSpacing",
+            height: "height"
         },
         targetParams: {
-            radius1: "valveRadius",
-            radius2: "valveRadius"
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth:"valveWidth",
+            valveLength:"valveLength",
+            valveSpacing:"valveSpacing",
+            height: "height"
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "RotaryMixer",
@@ -168,14 +176,22 @@ let render2D = {
         featureParams: {
             position: "position",
             orientation: "orientation",
-            radius1: "valveRadius",
-            radius2: "valveRadius",
-            valveRadius: "valveRadius",
-            gap: "gap"
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth:"valveWidth",
+            valveLength:"valveLength",
+            valveSpacing:"valveSpacing",
+            height:"height"
         },
         targetParams: {
-            radius1: "valveRadius",
-            radius2: "valveRadius"
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth:"valveWidth",
+            valveLength:"valveLength",
+            valveSpacing:"valveSpacing",
+            height:"height"
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "RotaryMixer_control",

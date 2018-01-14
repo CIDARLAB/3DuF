@@ -321,41 +321,53 @@ var Transposer_control = function(params){
     return circ;
 }
 var RotaryMixer = function(params){
-    let minRadiusInMicrometers = 8/paper.view.zoom;
+
     let position = params["position"];
-    let gap = params["gap"];
-    let radius = params["valveRadius"];
+    let radius = params["radius"];
     let color = params["color"];
     let orientation = params["orientation"];
-    let center = new paper.Point(position[0], position[1]);
-    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
-    var circ = new paper.Path.Circle(center, radius);
-    //circ.fillColor = color;
-    //   if (String(color) == "3F51B5") {
-    var cutout;
-    if (orientation == "H") {
-        cutout = paper.Path.Rectangle({
-            from: new paper.Point(position[0] - gap / 2, position[1] - radius),
-            to: new paper.Point(position[0] + gap / 2, position[1] + radius)
-        });
+    let valvespacing = params["valveSpacing"];
+    let valvelength = params['valveLength'];
+    let flowchannelwidth = 1000; //params["flowChannelWidth"];
+    let px = position[0];
+    let py = position[1];
+    let center = new paper.Point(px, py);
+    let channellength = radius + valvelength + 2 * valvespacing; //This needs to be a real expression
+
+    let rotarymixer = new paper.CompoundPath();
+
+    let innercirc = new paper.Path.Circle(center, radius);
+    let outercirc = new paper.Path.Circle(center, radius + flowchannelwidth);
+
+    let rotary = outercirc.subtract(innercirc);
+
+    rotarymixer.addChild(rotary);
+
+    let point1 = new paper.Point(px, py - radius - flowchannelwidth);
+    let point2 = new paper.Point(px + channellength, py - radius);
+    let rectangle = new paper.Path.Rectangle(point1, point2);
+
+    rotarymixer.addChild(rectangle);
+
+    let point3 = new paper.Point(px-channellength, py + radius);
+    let point4 = new paper.Point(px, py + radius + flowchannelwidth);
+    let rectangle2 = new paper.Path.Rectangle(point3, point4);
+
+    rotarymixer.addChild(rectangle2);
+
+    let rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
     }
     else {
-        cutout = paper.Path.Rectangle({
-            from: new paper.Point(position[0] - radius, position[1] - gap / 2),
-            to: new paper.Point(position[0] + radius, position[1] + gap / 2)
-        });
+        rotation = 0;
     }
-    //cutout.fillColor = "white";
-    var valve = circ.subtract(cutout);
-    valve.fillColor = color;
-    //valve.fillRule = 'evenodd';
-    //console.log(color);
-    return valve;
-    //   }
-    //   else {
-    //       circ.FillColor = color;
-    //       return circ;
-    //   }
+    // cutout.fillColor = "white";
+
+    rotarymixer.fillColor = color;
+
+    return rotarymixer.rotate(rotation, px, py);
+
 }
 
 var RotaryMixer_control = function(params){
@@ -437,35 +449,55 @@ var TransposerTarget = function(params){
 }
 
 var RotaryMixerTarget = function(params){
-    let targetRadius;
-    let radius1;
-    let radius2;
-    if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"]/2;
-    else {
-        if (params.hasOwnProperty("portRadius")) {
-            radius1 = portRadius;
-            radius2 = portRadius;
-        }
-        else {
-            radius1 = params["radius1"];
-            radius2 = params["radius2"];
-            if (radius1 > radius2) targetRadius = radius1;
-            else targetRadius = radius2;
-        }
-    }
-    let minSize = 8; //pixels
-    let minSizeInMicrometers = 8/paper.view.zoom;
+
     let position = params["position"];
+    let radius = params["radius"];
     let color = params["color"];
-    let pos = new paper.Point(position[0], position[1]);
-    if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
-    let circ = new paper.Path.Circle(pos, targetRadius);
-    circ.fillColor = color
-    circ.fillColor.alpha = .5;
-    circ.strokeColor = "#FFFFFF";
-    circ.strokeWidth = 3 / paper.view.zoom;
-    if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
-    return circ;
+    let orientation = params["orientation"];
+    let valvespacing = params["valveSpacing"];
+    let valvelength = params['valveLength'];
+    let flowchannelwidth = 1000; //params["flowChannelWidth"];
+    let px = position[0];
+    let py = position[1];
+    let center = new paper.Point(px, py);
+    let channellength = radius + valvelength + 2 * valvespacing; //This needs to be a real expression
+
+    let rotarymixer = new paper.CompoundPath();
+
+    let innercirc = new paper.Path.Circle(center, radius);
+    let outercirc = new paper.Path.Circle(center, radius + flowchannelwidth);
+
+    let rotary = outercirc.subtract(innercirc);
+
+    rotarymixer.addChild(rotary);
+
+    let point1 = new paper.Point(px, py - radius - flowchannelwidth);
+    let point2 = new paper.Point(px + channellength, py - radius);
+    let rectangle = new paper.Path.Rectangle(point1, point2);
+
+    // rotary.unite(rectangle);
+    rotarymixer.addChild(rectangle);
+
+    let point3 = new paper.Point(px-channellength, py + radius);
+    let point4 = new paper.Point(px, py + radius + flowchannelwidth);
+    let rectangle2 = new paper.Path.Rectangle(point3, point4);
+
+    //rotary.unite(rectangle2);
+    rotarymixer.addChild(rectangle2);
+
+    let rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
+    }
+    else {
+        rotation = 0;
+    }
+
+    rotarymixer.fillColor = color;
+    rotarymixer.fillColor.alpha = 0.5;
+
+    return rotarymixer.rotate(rotation, px, py);
+
 }
 //******************************************
 
@@ -658,7 +690,7 @@ var BetterMixer = function(params) {
     let vRepeat = 2*bendSpacing + 2*channelWidth;
     let vOffset = bendSpacing + channelWidth;
     let hOffset = bendLength/2 + channelWidth/2;
-    var serp = new paper.CompoundPath();;
+    var serp = new paper.CompoundPath();
     if (orientation == "V"){
         //draw first segment
         serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth/2, channelWidth));
