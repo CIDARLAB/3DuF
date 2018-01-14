@@ -18,11 +18,13 @@ class MultilayerPositionTool extends PositionTool{
         });
         this.currentFeatureID = newFeature.getID();
         flowlayer.addFeature(newFeature);
-
         let newtypestring = this.typeString + "_control";
+        let paramstoadd = newFeature.getParams();
         newFeature = Feature.makeFeature(newtypestring, this.setString, {
             "position": PositionTool.getTarget(point)
         });
+        newFeature.setParams(paramstoadd);
+
         this.currentFeatureID = newFeature.getID();
         controllayer.addFeature(newFeature);
     }
