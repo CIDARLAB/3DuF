@@ -658,6 +658,8 @@ var Valve = function(params){
 
     return rec.rotate(rotation, px, py);
 }
+
+/*
 var Mux_control = function(params){
     let orientation = params["orientation"];
     let position = params["position"];
@@ -686,6 +688,158 @@ var Mux_control = function(params){
     }
 
     return rec.rotate(rotation, px, py);
+}
+
+*/
+
+var Mux_control = function(params) {
+    position  = params["position"];
+    cw = params["flowChannelWidth"];
+    orientation = params["orientation"];
+    direction = params["direction"];
+    spacing = params["spacing"];
+    leafs = params["leafs"];
+    color = params["color"];
+    stagelength = params["stageLength"];
+    let valvelength = params["length"];
+    let valvewidth =  params["width"];
+    px = position[0];
+    py = position[1];
+
+    let levels = Math.ceil(Math.log2(leafs));
+    let isodd = false ; //This is used to figure out how many lines have to be made
+    if(leafs%2 == 0){
+        isodd = false;
+    }else{
+        isodd = true;
+    }
+    let w = spacing * (leafs/2 + 1);
+    let l = (levels + 1) * stagelength;
+
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+
+    var treepath = new paper.CompoundPath();
+
+    generateMuxControlTwig(treepath, px, py, cw, stagelength, w, 1, levels, valvewidth, valvelength);
+
+
+
+    //Draw the tree
+
+    treepath.fillColor = color;
+    var rotation = 0;
+    // console.log("Orientation: " + orientation);
+    // console.log("Direction: " + direction);
+    if(orientation == "H" && direction=="OUT"){
+        rotation = 180;
+    }else if(orientation == "V" && direction =="IN"){
+        rotation = 270;
+    }else if(orientation == "V" && direction == "OUT"){
+        rotation = 90;
+    }
+    return treepath.rotate(rotation,px,py);
+}
+
+function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewidth, valvelength,  drawleafs=false) {
+    //stem - don't bother with valves
+
+    // let startPoint = new paper.Point(px - cw / 2, py);
+    // let endPoint = new paper.Point(px + cw / 2, py + stagelength);
+    // let rec = paper.Path.Rectangle({
+    //     from: startPoint,
+    //     to: endPoint,
+    //     radius: 0,
+    //     fillColor: color,
+    //     strokeWidth: 0
+    // });
+    //
+    // treepath.addChild(rec);
+
+    //Draw 2 valves
+    //left leaf
+    lstartx = px - 0.5 * (cw + spacing);
+    lendx = lstartx + cw;
+    lstarty = py + stagelength + cw;
+    lendy = lstarty + stagelength;
+
+    lcenterx = (lstartx + lendx)/2;
+    lcentery = lstarty + Math.abs(lstarty - lendy)/4;
+
+    // //right leaf
+    rstartx = px + 0.5 * (spacing - cw);
+    rendx = rstartx + cw;
+    rstarty = py + stagelength + cw;
+    rendy = rstarty + stagelength;
+
+    rcenterx = (rstartx + rendx)/2;
+    rcentery = rstarty + Math.abs(rstarty - rendy)*3/4;
+
+
+    startPoint = new paper.Point(lcenterx - valvewidth/2 , lcentery - valvelength/2);
+    endPoint = new paper.Point(lcenterx + valvewidth/2 , lcentery + valvewidth/2);
+    rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    treepath.addChild(rec);
+
+    startPoint = new paper.Point(rcenterx - valvewidth/2 , rcentery - valvelength/2);
+    endPoint = new paper.Point(rcenterx + valvewidth/2 , rcentery + valvewidth/2);
+    rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    treepath.addChild(rec);
+
+
+
+    // //Horizontal bar
+    // hstartx = px - 0.5 * (cw + spacing);
+    // hendx = rendx;
+    // hstarty = py + stagelength;
+    // hendy = hstarty + cw;
+    // startPoint = new paper.Point(hstartx, hstarty);
+    // endPoint = new paper.Point(hendx, hendy);
+    // rec = paper.Path.Rectangle({
+    //     from: startPoint,
+    //     to: endPoint,
+    //     radius: 0,
+    //     fillColor: color,
+    //     strokeWidth: 0
+    // });
+    // treepath.addChild(rec);
+    return treepath
+}
+
+function generateMuxControlTwig(treepath, px, py,cw, stagelength , newspacing, level, maxlevel, valvewidth, valvelength,
+                                islast=false) {
+    //var newspacing = 2 * (spacing + cw);
+    var hspacing = newspacing/2;
+    var lex = px - 0.5 * newspacing;
+    var ley = py + cw + stagelength;
+    var rex = px + 0.5 * newspacing;
+    var rey = py + cw + stagelength;
+
+    if(level == maxlevel){
+        islast = true;
+        // console.log("Final Spacing: " + newspacing)
+    }
+
+    drawmuxcontroltwig(treepath, px, py, cw, stagelength, newspacing, valvewidth, valvelength, islast);
+    // drawtwig(treepath, lex, ley, cw, stagelength, hspacing, islast);
+    // drawtwig(treepath, rex, rey, cw, stagelength, hspacing, islast);
+
+
+    if(!islast){
+        generateMuxControlTwig(treepath, lex, ley, cw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength);
+        generateMuxControlTwig(treepath, rex, rey, cw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength);
+    }
 }
 
 var ValveTarget = function(params){
