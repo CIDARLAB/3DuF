@@ -32395,7 +32395,7 @@ window.onload = function () {
     }
 };
 
-},{"./core/device":198,"./core/layer":200,"./core/registry":209,"./examples/jsonExamples":210,"./view/colors":224,"./view/grid/adaptiveGrid":225,"./view/pageSetup":226,"./view/paperView":227,"./view/render3D/ThreeDeviceRenderer":233,"./view/viewManager":248}],198:[function(require,module,exports){
+},{"./core/device":198,"./core/layer":200,"./core/registry":209,"./examples/jsonExamples":210,"./view/colors":224,"./view/grid/adaptiveGrid":225,"./view/pageSetup":226,"./view/paperView":227,"./view/render3D/ThreeDeviceRenderer":233,"./view/viewManager":249}],198:[function(require,module,exports){
 var Params = require("./params");
 var Parameters = require("./parameters");
 var Parameter = require("./parameter");
@@ -32642,6 +32642,14 @@ class Feature {
 
     getDefaults() {
         return Feature.getDefaultsForType(this.getType(), this.getSet());
+    }
+
+    getParams() {
+        return this.__params.parameters;
+    }
+
+    setParams(params) {
+        this.__params.parameters = params;
     }
 
     static getDefaultsForType(typeString, setString) {
@@ -33347,6 +33355,191 @@ let basicFeatures = {
             "gap": .1 * 10000
         }
     },
+    "Valve3D_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000
+        },
+        minimum: {
+            //  "orientation": "V",
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10
+        },
+        maximum: {
+            //    "orientation": "H",
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000
+        }
+    },
+    "Transposer": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000
+        },
+        minimum: {
+            //  "orientation": "V",
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10
+        },
+        maximum: {
+            //    "orientation": "H",
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000
+        }
+    },
+    "Transposer_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000
+        },
+        minimum: {
+            //  "orientation": "V",
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10
+        },
+        maximum: {
+            //    "orientation": "H",
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000
+        }
+    },
+    "RotaryMixer": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "radius": "Float",
+            "flowChannelWidth": "Float",
+            "valveWidth": "Float",
+            "valveLength": "Float",
+            "valveSpacing": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "radius": 2000,
+            "flowChannelWidth": 1000,
+            "valveWidth": 2.4 * 1000,
+            "valveLength": 2.4 * 1000,
+            "valveSpacing": 300,
+            "valveRadius": 1.2 * 1000,
+            "height": 200
+        },
+        minimum: {
+            //  "orientation": "V",
+            "radius": 0.1 * 5000,
+            "flowChannelWidth": 0.1 * 1000,
+            "valveWidth": 0.1 * 2.4 * 1000,
+            "valveLength": 0.1 * 2.4 * 1000,
+            "valveSpacing": 0.1 * 300,
+            "valveRadius": 0.1 * 1.2 * 1000,
+            "height": 0.1 * 200
+        },
+        maximum: {
+            "radius": 10 * 5000,
+            "flowChannelWidth": 10 * 1000,
+            "valveWidth": 10 * 2.4 * 1000,
+            "valveLength": 10 * 2.4 * 1000,
+            "valveSpacing": 10 * 300,
+            "valveRadius": 10 * 1.2 * 1000,
+            "height": 10 * 200
+        }
+    },
+    "RotaryMixer_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "radius": "Float",
+            "flowChannelWidth": "Float",
+            "valveWidth": "Float",
+            "valveLength": "Float",
+            "valveSpacing": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "radius": 2000,
+            "flowChannelWidth": 1000,
+            "valveWidth": 2.4 * 1000,
+            "valveLength": 2.4 * 1000,
+            "valveSpacing": 300,
+            "valveRadius": 1.2 * 1000,
+            "height": 200
+        },
+        minimum: {
+            //  "orientation": "V",
+            "radius": 0.1 * 5000,
+            "flowChannelWidth": 0.1 * 1000,
+            "valveWidth": 0.1 * 2.4 * 1000,
+            "valveLength": 0.1 * 2.4 * 1000,
+            "valveSpacing": 0.1 * 300,
+            "valveRadius": 0.1 * 1.2 * 1000,
+            "height": 0.1 * 200
+        },
+        maximum: {
+            "radius": 10 * 5000,
+            "flowChannelWidth": 10 * 1000,
+            "valveWidth": 10 * 2.4 * 1000,
+            "valveLength": 10 * 2.4 * 1000,
+            "valveSpacing": 10 * 300,
+            "valveRadius": 10 * 1.2 * 1000,
+            "height": 10 * 200
+        }
+    },
     "Valve": {
         unique: {
             "position": "Point"
@@ -33610,6 +33803,96 @@ let basicFeatures = {
             "stagelength": 6000
         }
     },
+    "Mux": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "flowChannelWidth": "Float",
+            "orientation": "String",
+            "spacing": "Float",
+            "leafs": "Float",
+            "width": "Float",
+            "length": "Float",
+            "height": "Float",
+            "direction": "String",
+            "stageLength": "Float"
+        },
+        defaults: {
+            "flowChannelWidth": .80 * 1000,
+            "orientation": "V",
+            "spacing": 4 * 1000,
+            "leafs": 6,
+            "width": 2.46 * 1000,
+            "length": 2.46 * 1000,
+            "height": .1 * 1000,
+            "direction": "IN",
+            "stageLength": 4000
+        },
+        minimum: {
+            "flowChannelWidth": 10,
+            "spacing": 30,
+            "leafs": 2,
+            "width": 60,
+            "length": 60,
+            "height": 10,
+            "stageLength": 100
+        },
+        maximum: {
+            "flowChannelWidth": 2000,
+            "spacing": 12000,
+            "leafs": 2,
+            "width": 12 * 1000,
+            "length": 12 * 1000,
+            "height": 1200,
+            "stageLength": 6000
+        }
+    },
+    "Mux_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "flowChannelWidth": "Float",
+            "orientation": "String",
+            "spacing": "Float",
+            "leafs": "Float",
+            "width": "Float",
+            "length": "Float",
+            "height": "Float",
+            "direction": "String",
+            "stageLength": "Float"
+        },
+        defaults: {
+            "flowChannelWidth": .80 * 1000,
+            "orientation": "V",
+            "spacing": 4 * 1000,
+            "leafs": 6,
+            "width": 2.46 * 1000,
+            "length": 2.46 * 1000,
+            "height": .1 * 1000,
+            "direction": "IN",
+            "stageLength": 4000
+        },
+        minimum: {
+            "flowChannelWidth": 10,
+            "spacing": 30,
+            "leafs": 2,
+            "width": 60,
+            "length": 60,
+            "height": 10,
+            "stageLength": 100
+        },
+        maximum: {
+            "flowChannelWidth": 2000,
+            "spacing": 12000,
+            "leafs": 2,
+            "width": 12 * 1000,
+            "length": 12 * 1000,
+            "height": 1200,
+            "stageLength": 6000
+        }
+    },
     "CellTrapL": {
         unique: {
             "position": "Point"
@@ -33772,6 +34055,112 @@ let render2D = {
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "GroverValve",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Valve3D_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GroverValve_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Transposer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Transposer",
+        targetPrimitiveType: "TransposerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Transposer_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Transposer_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    RotaryMixer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth: "valveWidth",
+            valveLength: "valveLength",
+            valveSpacing: "valveSpacing",
+            height: "height"
+        },
+        targetParams: {
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth: "valveWidth",
+            valveLength: "valveLength",
+            valveSpacing: "valveSpacing",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "RotaryMixer",
+        targetPrimitiveType: "RotaryMixerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    RotaryMixer_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth: "valveWidth",
+            valveLength: "valveLength",
+            valveSpacing: "valveSpacing",
+            height: "height"
+        },
+        targetParams: {
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth: "valveWidth",
+            valveLength: "valveLength",
+            valveSpacing: "valveSpacing",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "RotaryMixer_control",
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
@@ -33981,6 +34370,60 @@ let render2D = {
         targetPrimitiveType: "TreeTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Mux: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction: "direction"
+        },
+        targetParams: {
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction: "direction"
+        },
+        featurePrimitiveType: "Mux",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "Mux",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Mux_control: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction: "direction"
+        },
+        targetParams: {
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction: "direction"
+        },
+        featurePrimitiveType: "Mux_control",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "Mux_control",
+        targetPrimitiveSet: "Basic2D"
+    },
     CellTrapL: {
         featureParams: {
             position: "position",
@@ -34078,6 +34521,61 @@ let render3D = {
         featurePrimitive: "EdgedBoxFeature"
     },
     Valve3D: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Valve3D_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Transposer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Transposer_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    RotaryMixer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    RotaryMixer_control: {
         featureParams: {
             position: "position",
             orientation: "orientation",
@@ -34206,6 +34704,38 @@ let render3D = {
         featurePrimitive: "ConeFeature",
         featurePrimitiveSet: "Basic3D"
     },
+    Mux: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            height: "height",
+            radius1: "width",
+            radius2: "length"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
+    Mux_control: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            height: "height",
+            radius1: "width",
+            radius2: "length"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
     CellTrapL: {
         featureParams: {
             position: "position",
@@ -34275,7 +34805,42 @@ let tools = {
             position: "position"
 
         },
-        placementTool: "PositionTool"
+        placementTool: "MultilayerPositionTool"
+    },
+    Valve3D_control: {
+        toolParams: {
+            position: "position"
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    Transposer: {
+        toolParams: {
+            position: "position"
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    Transposer_control: {
+        toolParams: {
+            position: "position"
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    RotaryMixer: {
+        toolParams: {
+            position: "position"
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    RotaryMixer_control: {
+        toolParams: {
+            position: "position"
+
+        },
+        placementTool: "MultilayerPositionTool"
     },
     Channel: {
         toolParams: {
@@ -34345,6 +34910,18 @@ let tools = {
             position: "position"
         },
         placementTool: "PositionTool"
+    },
+    Mux: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    Mux_control: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "MultilayerPositionTool"
     },
     CellTrapL: {
         toolParams: {
@@ -35230,7 +35807,7 @@ class AdaptiveGrid {
         } else {
             this.spacing = 5;
         }
-        console.log("Zoom: " + paper.view.zoom + " Spacing: " + this.spacing);
+        // console.log("Zoom: " + paper.view.zoom + " Spacing: " + this.spacing);
         return this.spacing;
     }
 
@@ -35272,6 +35849,9 @@ let bettermixerButton = document.getElementById("bettermixer_button");
 let curvedmixerButton = document.getElementById("curvedmixer_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
+let muxButton = document.getElementById("mux_button");
+let transposerButton = document.getElementById("transposer_button");
+let rotarymixerButton = document.getElementById("rotarymixer_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
 
 let channelParams = document.getElementById("channel_params_button");
@@ -35288,6 +35868,9 @@ let bettermixerParams = document.getElementById("bettermixer_params_button");
 let curvedmixerParams = document.getElementById("curvedmixer_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
+let muxParams = document.getElementById("mux_params_button");
+let transposerParams = document.getElementById("transposer_params_button");
+let rotarymixerParams = document.getElementById("rotarymixer_params_button");
 let dropletgenParams = document.getElementById("dropletgen_params_button");
 
 let jsonButton = document.getElementById("json_button");
@@ -35330,6 +35913,9 @@ let buttons = {
     "CurvedMixer": curvedmixerButton,
     "Mixer": mixerButton,
     "Tree": treeButton,
+    "Mux": muxButton,
+    "Transposer": transposerButton,
+    "RotaryMixer": rotarymixerButton,
     "DropletGen": dropletgenButton
 };
 
@@ -35533,6 +36119,24 @@ function setupAppPage() {
         setActiveButton("Tree");
         switchTo2D();
     };
+    muxButton.onclick = function () {
+        Registry.viewManager.activateTool("Mux");
+        let bg = Colors.getDefaultFeatureColor("Mux", "Basic", Registry.currentLayer);
+        setActiveButton("Mux");
+        switchTo2D();
+    };
+    transposerButton.onclick = function () {
+        Registry.viewManager.activateTool("Transposer");
+        let bg = Colors.getDefaultFeatureColor("Transposer", "Basic", Registry.currentLayer);
+        setActiveButton("Transposer");
+        switchTo2D();
+    };
+    rotarymixerButton.onclick = function () {
+        Registry.viewManager.activateTool("RotaryMixer");
+        let bg = Colors.getDefaultFeatureColor("RotaryMixer", "Basic", Registry.currentLayer);
+        setActiveButton("RotaryMixer");
+        switchTo2D();
+    };
     dropletgenButton.onclick = function () {
         Registry.viewManager.activateTool("DropletGen");
         let bg = Colors.getDefaultFeatureColor("DropletGen", "Basic", Registry.currentLayer);
@@ -35633,6 +36237,9 @@ function setupAppPage() {
     curvedmixerParams.onclick = paramsWindowFunction("CurvedMixer", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
+    muxParams.onclick = paramsWindowFunction("Mux", "Basic");
+    transposerParams.onclick = paramsWindowFunction("Transposer", "Basic");
+    rotarymixerParams.onclick = paramsWindowFunction("RotaryMixer", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
     transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
 
@@ -36540,6 +37147,179 @@ var GroverValve = function (params) {
     //   }
 };
 
+var GroverValve_control = function (params) {
+    let minRadiusInMicrometers = 8 / paper.view.zoom;
+    let position = params["position"];
+    let gap = params["gap"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let center = new paper.Point(position[0], position[1]);
+    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    var circ = new paper.Path.Circle(center, radius);
+    circ.fillColor = color;
+    return circ;
+};
+
+//************************************
+var Transposer = function (params) {
+    let minRadiusInMicrometers = 8 / paper.view.zoom;
+    let position = params["position"];
+    let gap = params["gap"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let center = new paper.Point(position[0], position[1]);
+    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    var circ = new paper.Path.Circle(center, radius);
+    //circ.fillColor = color;
+    //   if (String(color) == "3F51B5") {
+    var cutout;
+    if (orientation == "H") {
+        cutout = paper.Path.Rectangle({
+            from: new paper.Point(position[0] - gap / 2, position[1] - radius),
+            to: new paper.Point(position[0] + gap / 2, position[1] + radius)
+        });
+    } else {
+        cutout = paper.Path.Rectangle({
+            from: new paper.Point(position[0] - radius, position[1] - gap / 2),
+            to: new paper.Point(position[0] + radius, position[1] + gap / 2)
+        });
+    }
+    //cutout.fillColor = "white";
+    var valve = circ.subtract(cutout);
+    valve.fillColor = color;
+    //valve.fillRule = 'evenodd';
+    //console.log(color);
+    return valve;
+    //   }
+    //   else {
+    //       circ.FillColor = color;
+    //       return circ;
+    //   }
+};
+
+var Transposer_control = function (params) {
+    let minRadiusInMicrometers = 8 / paper.view.zoom;
+    let position = params["position"];
+    let gap = params["gap"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let center = new paper.Point(position[0], position[1]);
+    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    var circ = new paper.Path.Circle(center, radius);
+    circ.fillColor = color;
+    return circ;
+};
+var RotaryMixer = function (params) {
+
+    let position = params["position"];
+    let radius = params["radius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let valvespacing = params["valveSpacing"];
+    let valvelength = params['valveLength'];
+    let flowchannelwidth = params['flowChannelWidth']; //params["flowChannelWidth"];
+    let px = position[0];
+    let py = position[1];
+    let center = new paper.Point(px, py);
+    let channellength = radius + valvelength + 2 * valvespacing + flowchannelwidth; //This needs to be a real expression
+
+    let rotarymixer = new paper.CompoundPath();
+
+    let innercirc = new paper.Path.Circle(center, radius);
+    let outercirc = new paper.Path.Circle(center, radius + flowchannelwidth);
+
+    let rotary = outercirc.subtract(innercirc);
+
+    rotarymixer.addChild(rotary);
+
+    let point1 = new paper.Point(px, py - radius - flowchannelwidth);
+    let point2 = new paper.Point(px + channellength, py - radius);
+    let rectangle = new paper.Path.Rectangle(point1, point2);
+
+    rotarymixer.addChild(rectangle);
+
+    let point3 = new paper.Point(px - channellength, py + radius);
+    let point4 = new paper.Point(px, py + radius + flowchannelwidth);
+    let rectangle2 = new paper.Path.Rectangle(point3, point4);
+
+    rotarymixer.addChild(rectangle2);
+
+    let rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
+    } else {
+        rotation = 0;
+    }
+    // cutout.fillColor = "white";
+
+    rotarymixer.fillColor = color;
+
+    return rotarymixer.rotate(rotation, px, py);
+};
+
+var RotaryMixer_control = function (params) {
+    let position = params["position"];
+    let radius = params["radius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let valvespacing = params["valveSpacing"];
+    let valvelength = params['valveLength'];
+    let valvewidth = params['valveWidth'];
+    let flowChannelWidth = params['flowChannelWidth'];
+    let controlChannelWidth = params['controlChannelWidth']; //params["flowChannelWidth"];
+    let px = position[0];
+    let py = position[1];
+
+    let rotarymixer = new paper.CompoundPath();
+    let topleft = null;
+    let bottomright = null;
+
+    //Draw top right valve
+    topleft = new paper.Point(px + radius + flowChannelWidth + valvespacing, py - radius - flowChannelWidth / 2 - valvewidth / 2);
+    let topleftrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
+    rotarymixer.addChild(topleftrectangle);
+
+    //Draw top middle valve
+    topleft = new paper.Point(px - valvewidth / 2, py - radius - flowChannelWidth / 2 - valvewidth / 2);
+    let topmiddlerectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
+    rotarymixer.addChild(topmiddlerectangle);
+
+    //Draw middle right valve
+    topleft = new paper.Point(px + radius + flowChannelWidth / 2 - valvewidth / 2, py - valvelength / 2);
+    let middlerightrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvewidth, valvelength));
+    rotarymixer.addChild(middlerightrectangle);
+
+    //Draw Bottom middle valve
+    topleft = new paper.Point(px - valvelength / 2, py + radius + flowChannelWidth / 2 - valvewidth / 2);
+    let bottommiddlerectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
+    rotarymixer.addChild(bottommiddlerectangle);
+
+    //Draw bottom left valve
+    topleft = new paper.Point(px - radius - valvespacing - valvelength - flowChannelWidth, py + radius + flowChannelWidth / 2 - valvewidth / 2);
+    let bottomleftrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
+    rotarymixer.addChild(bottomleftrectangle);
+
+    // //Draw the one channel going out
+    // topleft = new paper.Point(px + radius +flowChannelWidth/2 + valvewidth/2, py - controlChannelWidth/2);
+    // bottomright = new paper.Point(px + radius + flowChannelWidth + 2*valvespacing + valvelength, py+controlChannelWidth/2);
+    // let channelrect = new paper.Path.Rectangle(topleft, bottomright);
+    // rotarymixer.addChild(channelrect);
+    // console.log('added chanenel');
+
+    let rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
+    } else {
+        rotation = 0;
+    }
+
+    rotarymixer.fillColor = color;
+    return rotarymixer.rotate(rotation, px, py);
+};
+//*********************************
 var CircleTarget = function (params) {
     let targetRadius;
     let radius1;
@@ -36568,6 +37348,86 @@ var CircleTarget = function (params) {
     if (circ.strokeWidth > targetRadius / 2) circ.strokeWidth = targetRadius / 2;
     return circ;
 };
+//***************************************************
+var TransposerTarget = function (params) {
+    let targetRadius;
+    let radius1;
+    let radius2;
+    if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"] / 2;else {
+        if (params.hasOwnProperty("portRadius")) {
+            radius1 = portRadius;
+            radius2 = portRadius;
+        } else {
+            radius1 = params["radius1"];
+            radius2 = params["radius2"];
+            if (radius1 > radius2) targetRadius = radius1;else targetRadius = radius2;
+        }
+    }
+    let minSize = 8; //pixels
+    let minSizeInMicrometers = 8 / paper.view.zoom;
+    let position = params["position"];
+    let color = params["color"];
+    let pos = new paper.Point(position[0], position[1]);
+    if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
+    let circ = new paper.Path.Circle(pos, targetRadius);
+    circ.fillColor = color;
+    circ.fillColor.alpha = .5;
+    circ.strokeColor = "#FFFFFF";
+    circ.strokeWidth = 3 / paper.view.zoom;
+    if (circ.strokeWidth > targetRadius / 2) circ.strokeWidth = targetRadius / 2;
+    return circ;
+};
+
+var RotaryMixerTarget = function (params) {
+
+    let position = params["position"];
+    let radius = params["radius"];
+    let color = params["color"];
+    let orientation = params["orientation"];
+    let valvespacing = params["valveSpacing"];
+    let valvelength = params['valveLength'];
+    let flowchannelwidth = 1000; //params["flowChannelWidth"];
+    let px = position[0];
+    let py = position[1];
+    let center = new paper.Point(px, py);
+    let channellength = radius + valvelength + 2 * valvespacing; //This needs to be a real expression
+
+    let rotarymixer = new paper.CompoundPath();
+
+    let innercirc = new paper.Path.Circle(center, radius);
+    let outercirc = new paper.Path.Circle(center, radius + flowchannelwidth);
+
+    let rotary = outercirc.subtract(innercirc);
+
+    rotarymixer.addChild(rotary);
+
+    let point1 = new paper.Point(px, py - radius - flowchannelwidth);
+    let point2 = new paper.Point(px + channellength, py - radius);
+    let rectangle = new paper.Path.Rectangle(point1, point2);
+
+    // rotary.unite(rectangle);
+    rotarymixer.addChild(rectangle);
+
+    let point3 = new paper.Point(px - channellength, py + radius);
+    let point4 = new paper.Point(px, py + radius + flowchannelwidth);
+    let rectangle2 = new paper.Path.Rectangle(point3, point4);
+
+    //rotary.unite(rectangle2);
+    rotarymixer.addChild(rectangle2);
+
+    let rotation = 0;
+    if (orientation == "V") {
+        rotation = 90;
+    } else {
+        rotation = 0;
+    }
+
+    rotarymixer.fillColor = color;
+    rotarymixer.fillColor.alpha = 0.5;
+
+    return rotarymixer.rotate(rotation, px, py);
+};
+//******************************************
 
 var Diamond = function (params) {
     let position = params["position"];
@@ -36678,6 +37538,183 @@ var Valve = function (params) {
     return rec.rotate(rotation, px, py);
 };
 
+/*
+var Mux_control = function(params){
+    let orientation = params["orientation"];
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = 10000; //params["length"];
+    let w = 10000; //params["width"];
+    let color = params["color"];
+    let startX = px - w/2;
+    let startY = py - l/2;
+    let endX = px + w/2;
+    let endY = py + l/2;
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+
+    var rotation = 0;
+    if(orientation == "V"){
+        rotation = 90;
+    }
+
+    return rec.rotate(rotation, px, py);
+}
+
+*/
+
+var Mux_control = function (params) {
+    position = params["position"];
+    cw = params["flowChannelWidth"];
+    orientation = params["orientation"];
+    direction = params["direction"];
+    spacing = params["spacing"];
+    leafs = params["leafs"];
+    color = params["color"];
+    stagelength = params["stageLength"];
+    let valvelength = params["length"];
+    let valvewidth = params["width"];
+    px = position[0];
+    py = position[1];
+
+    let levels = Math.ceil(Math.log2(leafs));
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
+        isodd = false;
+    } else {
+        isodd = true;
+    }
+    let w = spacing * (leafs / 2 + 1);
+    let l = (levels + 1) * stagelength;
+
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+
+    var treepath = new paper.CompoundPath();
+
+    generateMuxControlTwig(treepath, px, py, cw, stagelength, w, 1, levels, valvewidth, valvelength);
+
+    //Draw the tree
+
+    treepath.fillColor = color;
+    var rotation = 0;
+    // console.log("Orientation: " + orientation);
+    // console.log("Direction: " + direction);
+    if (orientation == "H" && direction == "OUT") {
+        rotation = 180;
+    } else if (orientation == "V" && direction == "IN") {
+        rotation = 270;
+    } else if (orientation == "V" && direction == "OUT") {
+        rotation = 90;
+    }
+    return treepath.rotate(rotation, px, py);
+};
+
+function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewidth, valvelength, drawleafs = false) {
+    //stem - don't bother with valves
+
+    // let startPoint = new paper.Point(px - cw / 2, py);
+    // let endPoint = new paper.Point(px + cw / 2, py + stagelength);
+    // let rec = paper.Path.Rectangle({
+    //     from: startPoint,
+    //     to: endPoint,
+    //     radius: 0,
+    //     fillColor: color,
+    //     strokeWidth: 0
+    // });
+    //
+    // treepath.addChild(rec);
+
+    //Draw 2 valves
+    //left leaf
+    lstartx = px - 0.5 * (cw + spacing);
+    lendx = lstartx + cw;
+    lstarty = py + stagelength + cw;
+    lendy = lstarty + stagelength;
+
+    lcenterx = (lstartx + lendx) / 2;
+    lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
+
+    // //right leaf
+    rstartx = px + 0.5 * (spacing - cw);
+    rendx = rstartx + cw;
+    rstarty = py + stagelength + cw;
+    rendy = rstarty + stagelength;
+
+    rcenterx = (rstartx + rendx) / 2;
+    rcentery = rstarty + Math.abs(rstarty - rendy) * 3 / 4;
+
+    startPoint = new paper.Point(lcenterx - valvewidth / 2, lcentery - valvelength / 2);
+    endPoint = new paper.Point(lcenterx + valvewidth / 2, lcentery + valvewidth / 2);
+    rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    treepath.addChild(rec);
+
+    startPoint = new paper.Point(rcenterx - valvewidth / 2, rcentery - valvelength / 2);
+    endPoint = new paper.Point(rcenterx + valvewidth / 2, rcentery + valvewidth / 2);
+    rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    treepath.addChild(rec);
+
+    // //Horizontal bar
+    // hstartx = px - 0.5 * (cw + spacing);
+    // hendx = rendx;
+    // hstarty = py + stagelength;
+    // hendy = hstarty + cw;
+    // startPoint = new paper.Point(hstartx, hstarty);
+    // endPoint = new paper.Point(hendx, hendy);
+    // rec = paper.Path.Rectangle({
+    //     from: startPoint,
+    //     to: endPoint,
+    //     radius: 0,
+    //     fillColor: color,
+    //     strokeWidth: 0
+    // });
+    // treepath.addChild(rec);
+    return treepath;
+}
+
+function generateMuxControlTwig(treepath, px, py, cw, stagelength, newspacing, level, maxlevel, valvewidth, valvelength, islast = false) {
+    //var newspacing = 2 * (spacing + cw);
+    var hspacing = newspacing / 2;
+    var lex = px - 0.5 * newspacing;
+    var ley = py + cw + stagelength;
+    var rex = px + 0.5 * newspacing;
+    var rey = py + cw + stagelength;
+
+    if (level == maxlevel) {
+        islast = true;
+        // console.log("Final Spacing: " + newspacing)
+    }
+
+    drawmuxcontroltwig(treepath, px, py, cw, stagelength, newspacing, valvewidth, valvelength, islast);
+    // drawtwig(treepath, lex, ley, cw, stagelength, hspacing, islast);
+    // drawtwig(treepath, rex, rey, cw, stagelength, hspacing, islast);
+
+
+    if (!islast) {
+        generateMuxControlTwig(treepath, lex, ley, cw, stagelength, hspacing, level + 1, maxlevel, valvewidth, valvelength);
+        generateMuxControlTwig(treepath, rex, rey, cw, stagelength, hspacing, level + 1, maxlevel, valvewidth, valvelength);
+    }
+}
+
 var ValveTarget = function (params) {
     let orientation = params["orientation"];
     let position = params["position"];
@@ -36724,7 +37761,7 @@ var BetterMixer = function (params) {
     let vRepeat = 2 * bendSpacing + 2 * channelWidth;
     let vOffset = bendSpacing + channelWidth;
     let hOffset = bendLength / 2 + channelWidth / 2;
-    var serp = new paper.CompoundPath();;
+    var serp = new paper.CompoundPath();
     if (orientation == "V") {
         //draw first segment
         serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));
@@ -37403,7 +38440,7 @@ var Tree = function (params) {
     let w = spacing * (leafs / 2 + 1);
     let l = (levels + 1) * stagelength;
 
-    console.log("CW: " + cw + " levels: " + levels + " width: " + w + " length: " + l);
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
     var treepath = new paper.CompoundPath();
 
@@ -37413,8 +38450,8 @@ var Tree = function (params) {
 
     treepath.fillColor = color;
     var rotation = 0;
-    console.log("Orientation: " + orientation);
-    console.log("Direction: " + direction);
+    // console.log("Orientation: " + orientation);
+    // console.log("Direction: " + direction);
     if (orientation == "H" && direction == "OUT") {
         rotation = 180;
     } else if (orientation == "V" && direction == "IN") {
@@ -37504,7 +38541,7 @@ function generateTwig(treepath, px, py, cw, stagelength, newspacing, level, maxl
 
     if (level == maxlevel) {
         islast = true;
-        console.log("Final Spacing: " + newspacing);
+        // console.log("Final Spacing: " + newspacing)
     }
 
     drawtwig(treepath, px, py, cw, stagelength, newspacing, islast);
@@ -37540,7 +38577,7 @@ var TreeTarget = function (params) {
     let w = spacing * (leafs / 2 + 1);
     let l = (levels + 1) * stagelength;
 
-    console.log("CW: " + cw + " levels: " + levels + " width: " + w + " length: " + l);
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
     var treepath = new paper.CompoundPath();
 
@@ -37553,6 +38590,188 @@ var TreeTarget = function (params) {
     var rotation = 0;
     console.log("Orientation: " + orientation);
     console.log("Direction: " + direction);
+    if (orientation == "H" && direction == "OUT") {
+        rotation = 180;
+    } else if (orientation == "V" && direction == "IN") {
+        rotation = 270;
+    } else if (orientation == "V" && direction == "OUT") {
+        rotation = 90;
+    }
+    return treepath.rotate(rotation, px, py);
+};
+
+var Mux = function (params) {
+    position = params["position"];
+    cw = params["flowChannelWidth"];
+    orientation = params["orientation"];
+    direction = params["direction"];
+    spacing = params["spacing"];
+    leafs = params["leafs"];
+    color = params["color"];
+    stagelength = params["stageLength"];
+    px = position[0];
+    py = position[1];
+
+    let levels = Math.ceil(Math.log2(leafs));
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
+        isodd = false;
+    } else {
+        isodd = true;
+    }
+    let w = spacing * (leafs / 2 + 1);
+    let l = (levels + 1) * stagelength;
+
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+
+    var treepath = new paper.CompoundPath();
+
+    generateMuxTwig(treepath, px, py, cw, stagelength, w, 1, levels);
+
+    //Draw the tree
+
+    treepath.fillColor = color;
+    var rotation = 0;
+    // console.log("Orientation: " + orientation);
+    // console.log("Direction: " + direction);
+    if (orientation == "H" && direction == "OUT") {
+        rotation = 180;
+    } else if (orientation == "V" && direction == "IN") {
+        rotation = 270;
+    } else if (orientation == "V" && direction == "OUT") {
+        rotation = 90;
+    }
+    return treepath.rotate(rotation, px, py);
+};
+
+function drawmuxtwig(treepath, px, py, cw, stagelength, spacing, drawleafs = false) {
+    //stem
+    let startPoint = new paper.Point(px - cw / 2, py);
+    let endPoint = new paper.Point(px + cw / 2, py + stagelength);
+    let rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+
+    treepath.addChild(rec);
+
+    //Draw 2 leafs
+    //left leaf
+    lstartx = px - 0.5 * (cw + spacing);
+    lendx = lstartx + cw;
+    lstarty = py + stagelength + cw;
+    lendy = lstarty + stagelength;
+
+    // //right leaf
+    rstartx = px + 0.5 * (spacing - cw);
+    rendx = rstartx + cw;
+    rstarty = py + stagelength + cw;
+    rendy = rstarty + stagelength;
+
+    if (drawleafs) {
+        startPoint = new paper.Point(lstartx, lstarty);
+        endPoint = new paper.Point(lendx, lendy);
+        rec = paper.Path.Rectangle({
+            from: startPoint,
+            to: endPoint,
+            radius: 0,
+            fillColor: color,
+            strokeWidth: 0
+        });
+        treepath.addChild(rec);
+
+        startPoint = new paper.Point(rstartx, rstarty);
+        endPoint = new paper.Point(rendx, rendy);
+        rec = paper.Path.Rectangle({
+            from: startPoint,
+            to: endPoint,
+            radius: 0,
+            fillColor: color,
+            strokeWidth: 0
+        });
+        treepath.addChild(rec);
+    }
+
+    //Horizontal bar
+    hstartx = px - 0.5 * (cw + spacing);
+    hendx = rendx;
+    hstarty = py + stagelength;
+    hendy = hstarty + cw;
+    startPoint = new paper.Point(hstartx, hstarty);
+    endPoint = new paper.Point(hendx, hendy);
+    rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    treepath.addChild(rec);
+    return treepath;
+}
+
+function generateMuxTwig(treepath, px, py, cw, stagelength, newspacing, level, maxlevel, islast = false) {
+    //var newspacing = 2 * (spacing + cw);
+    var hspacing = newspacing / 2;
+    var lex = px - 0.5 * newspacing;
+    var ley = py + cw + stagelength;
+    var rex = px + 0.5 * newspacing;
+    var rey = py + cw + stagelength;
+
+    if (level == maxlevel) {
+        islast = true;
+        // console.log("Final Spacing: " + newspacing)
+    }
+
+    drawmuxtwig(treepath, px, py, cw, stagelength, newspacing, islast);
+    // drawtwig(treepath, lex, ley, cw, stagelength, hspacing, islast);
+    // drawtwig(treepath, rex, rey, cw, stagelength, hspacing, islast);
+
+
+    if (!islast) {
+        generateMuxTwig(treepath, lex, ley, cw, stagelength, hspacing, level + 1, maxlevel);
+        generateMuxTwig(treepath, rex, rey, cw, stagelength, hspacing, level + 1, maxlevel);
+    }
+}
+
+var MuxTarget = function (params) {
+    position = params["position"];
+    cw = params["flowChannelWidth"];
+    orientation = params["orientation"];
+    direction = params["direction"];
+    spacing = params["spacing"];
+    leafs = params["leafs"];
+    color = params["color"];
+    stagelength = params["stageLength"];
+    px = position[0];
+    py = position[1];
+
+    let levels = Math.ceil(Math.log2(leafs));
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
+        isodd = false;
+    } else {
+        isodd = true;
+    }
+    let w = spacing * (leafs / 2 + 1);
+    let l = (levels + 1) * stagelength;
+
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+
+    var treepath = new paper.CompoundPath();
+
+    generateMuxTwig(treepath, px, py, cw, stagelength, w, 1, levels);
+
+    //Draw the tree
+
+    treepath.fillColor = color;
+    treepath.fillColor.alpha = 0.5;
+    var rotation = 0;
+    // console.log("Orientation: " + orientation);
+    // console.log("Direction: " + direction);
     if (orientation == "H" && direction == "OUT") {
         rotation = 180;
     } else if (orientation == "V" && direction == "IN") {
@@ -37766,6 +38985,7 @@ module.exports.CircleTarget = CircleTarget;
 //module.exports.RectValve = RectValve;
 //module.expors.RectValveTarget = RectValveTarget;
 module.exports.GroverValve = GroverValve;
+module.exports.GroverValve_control = GroverValve_control;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
 module.exports.BetterMixer = BetterMixer;
@@ -37778,6 +38998,15 @@ module.exports.MixerTarget = MixerTarget;
 module.exports.EdgedRect = EdgedRect;
 module.exports.Tree = Tree;
 module.exports.TreeTarget = TreeTarget;
+module.exports.Mux = Mux;
+module.exports.Mux_control = Mux_control;
+module.exports.MuxTarget = MuxTarget;
+module.exports.Transposer = Transposer;
+module.exports.Transposer_control = Transposer_control;
+module.exports.TransposerTarget = TransposerTarget;
+module.exports.RotaryMixer = RotaryMixer;
+module.exports.RotaryMixer_control = RotaryMixer_control;
+module.exports.RotaryMixerTarget = RotaryMixerTarget;
 module.exports.CellTrapL = CellTrapL;
 module.exports.CellTrapLTarget = CellTrapLTarget;
 module.exports.DropletGen = DropletGen;
@@ -39571,6 +40800,51 @@ class MouseTool {
 module.exports = MouseTool;
 
 },{"../../core/registry":209}],245:[function(require,module,exports){
+var PositionTool = require('./positionTool');
+var Registry = require("../../core/registry");
+var Feature = require("../../core/feature");
+var SimpleQueue = require("../../utils/simpleQueue");
+var PageSetup = require("../pageSetup");
+
+class MultilayerPositionTool extends PositionTool {
+    constructor(typeString, setString) {
+        super(typeString, setString);
+    }
+
+    createNewFeature(point) {
+        let flowlayer = Registry.currentDevice.layers[0];
+        let controllayer = Registry.currentDevice.layers[1];
+
+        let newFeature = Feature.makeFeature(this.typeString, this.setString, {
+            "position": PositionTool.getTarget(point)
+        });
+        this.currentFeatureID = newFeature.getID();
+        flowlayer.addFeature(newFeature);
+        let newtypestring = this.typeString + "_control";
+        let paramstoadd = newFeature.getParams();
+        newFeature = Feature.makeFeature(newtypestring, this.setString, {
+            "position": PositionTool.getTarget(point)
+        });
+        newFeature.setParams(paramstoadd);
+
+        this.currentFeatureID = newFeature.getID();
+        controllayer.addFeature(newFeature);
+    }
+
+    static getTarget(point) {
+        let target = Registry.viewManager.snapToGrid(point);
+        return [target.x, target.y];
+    }
+
+    showTarget() {
+        let target = PositionTool.getTarget(this.lastPoint);
+        Registry.viewManager.updateTarget(this.typeString, this.setString, target);
+    }
+}
+
+module.exports = MultilayerPositionTool;
+
+},{"../../core/feature":199,"../../core/registry":209,"../../utils/simpleQueue":221,"../pageSetup":226,"./positionTool":247}],246:[function(require,module,exports){
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
@@ -39633,7 +40907,7 @@ class PanTool extends MouseTool {
 
 module.exports = PanTool;
 
-},{"../../core/registry":209,"../../utils/simpleQueue":221,"./mouseTool":244}],246:[function(require,module,exports){
+},{"../../core/registry":209,"../../utils/simpleQueue":221,"./mouseTool":244}],247:[function(require,module,exports){
 var MouseTool = require("./mouseTool");
 var Registry = require("../../core/registry");
 var Feature = require("../../core/feature");
@@ -39686,7 +40960,7 @@ class PositionTool extends MouseTool {
 
 module.exports = PositionTool;
 
-},{"../../core/feature":199,"../../core/registry":209,"../../utils/simpleQueue":221,"../pageSetup":226,"./mouseTool":244}],247:[function(require,module,exports){
+},{"../../core/feature":199,"../../core/registry":209,"../../utils/simpleQueue":221,"../pageSetup":226,"./mouseTool":244}],248:[function(require,module,exports){
 var Registry = require("../../core/registry");
 var MouseTool = require("./MouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
@@ -39830,7 +41104,7 @@ class SelectTool extends MouseTool {
 
 module.exports = SelectTool;
 
-},{"../../core/registry":209,"../../utils/simpleQueue":221,"../pageSetup":226,"./MouseTool":242}],248:[function(require,module,exports){
+},{"../../core/registry":209,"../../utils/simpleQueue":221,"../pageSetup":226,"./MouseTool":242}],249:[function(require,module,exports){
 var Registry = require("../core/registry");
 var Device = require("../core/device");
 var ChannelTool = require("./tools/channelTool");
@@ -39840,6 +41114,7 @@ var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
 var SimpleQueue = require("../utils/SimpleQueue");
 var PositionTool = require("./tools/positionTool");
+var MultilayerPositionTool = require('./tools/multilayerPositionTool');
 
 class ViewManager {
     constructor(view) {
@@ -40224,7 +41499,7 @@ class ViewManager {
         this.tools["Node"] = new PositionTool("Node", "Basic");
         this.tools["CircleValve"] = new PositionTool("CircleValve", "Basic");
         this.tools["RectValve"] = new PositionTool("RectValve", "Basic");
-        this.tools["Valve3D"] = new PositionTool("Valve3D", "Basic");
+        this.tools["Valve3D"] = new MultilayerPositionTool("Valve3D", "Basic");
         this.tools["Port"] = new PositionTool("Port", "Basic");
         this.tools["Via"] = new PositionTool("Via", "Basic");
         this.tools["DiamondReactionChamber"] = new PositionTool("DiamondReactionChamber", "Basic");
@@ -40232,6 +41507,9 @@ class ViewManager {
         this.tools["CurvedMixer"] = new PositionTool("CurvedMixer", "Basic");
         this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
+        this.tools["Mux"] = new MultilayerPositionTool("Mux", "Basic");
+        this.tools["Transposer"] = new MultilayerPositionTool("Transposer", "Basic");
+        this.tools["RotaryMixer"] = new MultilayerPositionTool("RotaryMixer", "Basic");
         this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
         this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
@@ -40240,4 +41518,4 @@ class ViewManager {
 
 module.exports = ViewManager;
 
-},{"../core/device":198,"../core/registry":209,"../utils/SimpleQueue":218,"./PanAndZoom":222,"./tools/channelTool":243,"./tools/mouseTool":244,"./tools/panTool":245,"./tools/positionTool":246,"./tools/selectTool":247}]},{},[197]);
+},{"../core/device":198,"../core/registry":209,"../utils/SimpleQueue":218,"./PanAndZoom":222,"./tools/channelTool":243,"./tools/mouseTool":244,"./tools/multilayerPositionTool":245,"./tools/panTool":246,"./tools/positionTool":247,"./tools/selectTool":248}]},{},[197]);
