@@ -706,13 +706,13 @@ var Mux_control = function(params) {
     px = position[0];
     py = position[1];
 
+    treeWidth = (leafs - 1)*spacing + leafs*cw + valvewidth;
+    leftEdge = px - treeWidth/2;
+    rightEdge = px + treeWidth/2;
+
     let levels = Math.ceil(Math.log2(leafs));
-    let isodd = false ; //This is used to figure out how many lines have to be made
-    if(leafs%2 == 0){
-        isodd = false;
-    }else{
-        isodd = true;
-    }
+
+    let isodd = !(leafs%2);
     let w = spacing * (leafs/2 + 1);
     let l = (levels + 1) * stagelength;
 
@@ -720,7 +720,7 @@ var Mux_control = function(params) {
 
     var treepath = new paper.CompoundPath();
 
-    generateMuxControlTwig(treepath, px, py, cw, stagelength, w, 1, levels, valvewidth, valvelength);
+    generateMuxControlTwig(treepath, px, py, cw, stagelength, w, 1, levels, valvewidth, valvelength, leftEdge, rightEdge);
 
 
 
@@ -740,7 +740,7 @@ var Mux_control = function(params) {
     return treepath.rotate(rotation,px,py);
 }
 
-function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewidth, valvelength,  drawleafs=false) {
+function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewidth, valvelength, leftEdge, rightEdge, drawleafs=false) {
     //stem - don't bother with valves
 
     // let startPoint = new paper.Point(px - cw / 2, py);
@@ -782,9 +782,22 @@ function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewid
         to: endPoint,
         radius: 0,
         fillColor: color,
+
         strokeWidth: 0
     });
     treepath.addChild(rec);
+
+    leftChannelStart = new paper.Point(startPoint.x, lcentery - cw/2);
+    leftChannelEnd = new paper.Point(leftEdge, lcentery + cw/2);
+
+    leftChannel = paper.Path.Rectangle({
+        from: leftChannelStart,
+        to: leftChannelEnd,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    treepath.addChild(leftChannel);
 
     startPoint = new paper.Point(rcenterx - valvewidth/2 , rcentery - valvelength/2);
     endPoint = new paper.Point(rcenterx + valvewidth/2 , rcentery + valvewidth/2);
@@ -796,7 +809,17 @@ function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewid
         strokeWidth: 0
     });
     treepath.addChild(rec);
+    rightChannelStart = new paper.Point(endPoint.x, rcentery - cw/2);
+    rightChannelEnd = new paper.Point(rightEdge, rcentery + cw/2);
 
+    rightChannel = paper.Path.Rectangle({
+        from: rightChannelStart,
+        to: rightChannelEnd,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+    treepath.addChild(rightChannel);
 
 
     // //Horizontal bar
@@ -818,7 +841,7 @@ function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewid
 }
 
 function generateMuxControlTwig(treepath, px, py,cw, stagelength , newspacing, level, maxlevel, valvewidth, valvelength,
-                                islast=false) {
+                                leftEdge, rightEdge, islast=false,) {
     //var newspacing = 2 * (spacing + cw);
     var hspacing = newspacing/2;
     var lex = px - 0.5 * newspacing;
@@ -831,14 +854,14 @@ function generateMuxControlTwig(treepath, px, py,cw, stagelength , newspacing, l
         // console.log("Final Spacing: " + newspacing)
     }
 
-    drawmuxcontroltwig(treepath, px, py, cw, stagelength, newspacing, valvewidth, valvelength, islast);
+    drawmuxcontroltwig(treepath, px, py, cw, stagelength, newspacing, valvewidth, valvelength, leftEdge, rightEdge, islast);
     // drawtwig(treepath, lex, ley, cw, stagelength, hspacing, islast);
     // drawtwig(treepath, rex, rey, cw, stagelength, hspacing, islast);
 
 
     if(!islast){
-        generateMuxControlTwig(treepath, lex, ley, cw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength);
-        generateMuxControlTwig(treepath, rex, rey, cw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength);
+        generateMuxControlTwig(treepath, lex, ley, cw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
+        generateMuxControlTwig(treepath, rex, rey, cw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
     }
 }
 
