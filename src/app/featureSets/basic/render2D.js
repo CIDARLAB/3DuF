@@ -117,7 +117,9 @@ let render2D = {
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
-            gap: "gap"
+            gap: "gap",
+            valveSpacing: "valveSpacing",
+            channelWidth: "channelWidth"
         },
         targetParams: {
             radius1: "valveRadius",
@@ -135,7 +137,9 @@ let render2D = {
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
-            gap: "gap"
+            gap: "gap",
+            valveSpacing: "valveSpacing",
+            channelWidth: "channelWidth"
         },
         targetParams: {
             radius1: "valveRadius",

@@ -200,7 +200,6 @@ function killParamsWindow() {
 }
 
 function setupAppPage() {
-
     view = Registry.viewManager.view;
     renderer = Registry.threeRenderer;
     channelButton.onclick = function() {
