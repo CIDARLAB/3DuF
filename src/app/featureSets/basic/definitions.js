@@ -250,28 +250,30 @@ let basicFeatures = {
             "valveRadius": "Float",
             "height": "Float",
             "gap": "Float",
-            "width": "Float",
-            "length": "Float"
+            "valveSpacing": "Float",
+            "channelWidth": "Float"
         },
         defaults: {
             "orientation": "V",
             "valveRadius": 1.2 * 1000,
             "height": .8 * 1000,
             "gap": 0.6 * 1000,
-            "width": 2.4 * 1000,
-            "length": 2.4 * 1000
+            "valveSpacing": 0.6 * 1000,
+            "channelWidth": 500
         },
         minimum: {
-          //  "orientation": "V",
             "valveRadius": .1 * 100,
             "height": .1 * 100,
-            "gap": .5 * 10
+            "gap": .5 * 10,
+            "valveSpacing": 0.1 * 1000,
+            "channelWidth" : 25
         },
         maximum: {
-        //    "orientation": "H",
             "valveRadius": .2 * 10000,
             "height": 1.2 * 1000,
-            "gap": .1 * 10000
+            "gap": .1 * 10000,
+            "valveSpacing": 0.1 * 10000,
+            "channelWidth" : 25e3
         }
     },
     "Transposer_control": {
@@ -283,28 +285,30 @@ let basicFeatures = {
             "valveRadius": "Float",
             "height": "Float",
             "gap": "Float",
-            "width": "Float",
-            "length": "Float"
+            "valveSpacing": "Float",
+            "channelWidth": "Float"
         },
         defaults: {
             "orientation": "V",
             "valveRadius": 1.2 * 1000,
             "height": .8 * 1000,
             "gap": 0.6 * 1000,
-            "width": 2.4 * 1000,
-            "length": 2.4 * 1000
+            "valveSpacing": 0.6 * 1000,
+            "channelWidth": 500
         },
         minimum: {
-          //  "orientation": "V",
             "valveRadius": .1 * 100,
             "height": .1 * 100,
-            "gap": .5 * 10
+            "gap": .5 * 10,
+            "valveSpacing": 0.1 * 1000,
+            "channelWidth": 25
         },
         maximum: {
-        //    "orientation": "H",
             "valveRadius": .2 * 10000,
             "height": 1.2 * 1000,
-            "gap": .1 * 10000
+            "gap": .1 * 10000,
+            "valveSpacing": 0.1 * 10000,
+            "channelWidth": 25e3
         }
     },
     "RotaryMixer": {
