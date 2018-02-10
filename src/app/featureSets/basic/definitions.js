@@ -669,18 +669,20 @@ let basicFeatures = {
             "length": "Float",
             "height": "Float",
             "direction": "String",
-            "stageLength":"Float"
+            "stageLength":"Float",
+            "controlChannelWidth": "Float"
         },
         defaults: {
             "flowChannelWidth": .80 * 1000,
             "orientation": "V",
             "spacing": 4 * 1000,
             "leafs": 8,
-            "width": 2.46 * 1000,
-            "length": 2.46 * 1000,
+            "width": 1.6 * 1000,
+            "length": 1.6 * 1000,
             "height": .1 * 1000,
             "direction": "IN",
-            "stageLength": 4000
+            "stageLength": 4000,
+            "controlChannelWidth": .40 * 1000
         },
         minimum: {
             "flowChannelWidth": 10,
@@ -689,7 +691,8 @@ let basicFeatures = {
             "width": 60,
             "length": 60,
             "height": 10,
-            "stageLength": 100
+            "stageLength": 100,
+            "controlChannelWidth": 10
         },
         maximum: {
             "flowChannelWidth": 2000,
@@ -698,7 +701,8 @@ let basicFeatures = {
             "width": 12 * 1000,
             "length": 12 * 1000,
             "height": 1200,
-            "stageLength": 6000
+            "stageLength": 6000,
+            "controlChannelWidth": 2000
         }
     },
     "Mux_control": {
@@ -714,18 +718,20 @@ let basicFeatures = {
             "length": "Float",
             "height": "Float",
             "direction": "String",
-            "stageLength":"Float"
+            "stageLength":"Float",
+            "controlChannelWidth": "Float"
         },
         defaults: {
             "flowChannelWidth": .80 * 1000,
             "orientation": "V",
             "spacing": 4 * 1000,
-            "leafs": 6,
-            "width": 2.46 * 1000,
-            "length": 2.46 * 1000,
+            "leafs": 8,
+            "width": 1.6 * 1000,
+            "length": 1.6 * 1000,
             "height": .1 * 1000,
             "direction": "IN",
-            "stageLength": 4000
+            "stageLength": 4000,
+            "controlChannelWidth": .40 * 1000
         },
         minimum: {
             "flowChannelWidth": 10,
@@ -734,7 +740,8 @@ let basicFeatures = {
             "width": 60,
             "length": 60,
             "height": 10,
-            "stageLength": 100
+            "stageLength": 100,
+            "controlChannelWidth": 10
         },
         maximum: {
             "flowChannelWidth": 2000,
@@ -743,7 +750,8 @@ let basicFeatures = {
             "width": 12 * 1000,
             "length": 12 * 1000,
             "height": 1200,
-            "stageLength": 6000
+            "stageLength": 6000,
+            "controlChannelWidth": 2000
         }
     },
     "CellTrapL": {

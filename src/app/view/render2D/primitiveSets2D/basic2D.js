@@ -695,6 +695,7 @@ var Mux_control = function(params){
 var Mux_control = function(params) {
     position  = params["position"];
     cw = params["flowChannelWidth"];
+    ctlcw = params["controlChannelWidth"];
     orientation = params["orientation"];
     direction = params["direction"];
     spacing = params["spacing"];
@@ -720,7 +721,7 @@ var Mux_control = function(params) {
 
     var treepath = new paper.CompoundPath();
 
-    generateMuxControlTwig(treepath, px, py, cw, stagelength, w, 1, levels, valvewidth, valvelength, leftEdge, rightEdge);
+    generateMuxControlTwig(treepath, px, py, cw, ctlcw, stagelength, w, 1, levels, valvewidth, valvelength, leftEdge, rightEdge);
 
 
 
@@ -740,7 +741,7 @@ var Mux_control = function(params) {
     return treepath.rotate(rotation,px,py);
 }
 
-function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewidth, valvelength, leftEdge, rightEdge, drawleafs=false) {
+function drawmuxcontroltwig(treepath, px, py, cw, ctlcw, stagelength, spacing, valvewidth, valvelength, leftEdge, rightEdge, drawleafs=false) {
     //stem - don't bother with valves
 
     // let startPoint = new paper.Point(px - cw / 2, py);
@@ -787,8 +788,8 @@ function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewid
     });
     treepath.addChild(rec);
 
-    leftChannelStart = new paper.Point(startPoint.x, lcentery - cw/2);
-    leftChannelEnd = new paper.Point(leftEdge, lcentery + cw/2);
+    leftChannelStart = new paper.Point(startPoint.x, lcentery - ctlcw/2);
+    leftChannelEnd = new paper.Point(leftEdge, lcentery + ctlcw/2);
 
     leftChannel = paper.Path.Rectangle({
         from: leftChannelStart,
@@ -808,9 +809,10 @@ function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewid
         fillColor: color,
         strokeWidth: 0
     });
+
     treepath.addChild(rec);
-    rightChannelStart = new paper.Point(endPoint.x, rcentery - cw/2);
-    rightChannelEnd = new paper.Point(rightEdge, rcentery + cw/2);
+    rightChannelStart = new paper.Point(endPoint.x, rcentery - ctlcw/2);
+    rightChannelEnd = new paper.Point(rightEdge, rcentery + ctlcw/2);
 
     rightChannel = paper.Path.Rectangle({
         from: rightChannelStart,
@@ -840,7 +842,7 @@ function drawmuxcontroltwig(treepath, px, py, cw, stagelength, spacing, valvewid
     return treepath
 }
 
-function generateMuxControlTwig(treepath, px, py,cw, stagelength , newspacing, level, maxlevel, valvewidth, valvelength,
+function generateMuxControlTwig(treepath, px, py,cw, ctlcw, stagelength , newspacing, level, maxlevel, valvewidth, valvelength,
                                 leftEdge, rightEdge, islast=false,) {
     //var newspacing = 2 * (spacing + cw);
     var hspacing = newspacing/2;
@@ -854,14 +856,14 @@ function generateMuxControlTwig(treepath, px, py,cw, stagelength , newspacing, l
         // console.log("Final Spacing: " + newspacing)
     }
 
-    drawmuxcontroltwig(treepath, px, py, cw, stagelength, newspacing, valvewidth, valvelength, leftEdge, rightEdge, islast);
+    drawmuxcontroltwig(treepath, px, py, cw, ctlcw, stagelength, newspacing, valvewidth, valvelength, leftEdge, rightEdge, islast);
     // drawtwig(treepath, lex, ley, cw, stagelength, hspacing, islast);
     // drawtwig(treepath, rex, rey, cw, stagelength, hspacing, islast);
 
 
     if(!islast){
-        generateMuxControlTwig(treepath, lex, ley, cw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
-        generateMuxControlTwig(treepath, rex, rey, cw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
+        generateMuxControlTwig(treepath, lex, ley, cw, ctlcw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
+        generateMuxControlTwig(treepath, rex, rey, cw, ctlcw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
     }
 }
 
