@@ -377,6 +377,19 @@ var Transposer = function(params){
 
     transposer_flow.fillColor = color;
 
+    let rotation = 0;
+
+    if (orientation == "V") {
+        rotation = 90;
+    }
+    else {
+        rotation = 0;
+    }
+
+    transposer_flow.rotate(rotation,
+        px + 3*valvespacing + 1.5*channelWidth + 2*radius,
+        py + channelWidth + 2*valvespacing + 2*radius
+        );
 
     return transposer_flow;
 }
@@ -459,6 +472,21 @@ var Transposer_control = function(params){
     let bottomleftpoint = new paper.Point(topleftpoint.x + + 4*valvespacing + 3*channelWidth + 4*radius, topleftpoint.y +channelWidth );
     let rectangle = new paper.Path.Rectangle(topleftpoint, bottomleftpoint);
     transposer_control.addChild(rectangle);
+
+
+    let rotation = 0;
+
+    if (orientation == "V") {
+        rotation = 90;
+    }
+    else {
+        rotation = 0;
+    }
+
+    transposer_control.rotate(rotation,
+        px + 3*valvespacing + 1.5*channelWidth + 2*radius,
+        py + channelWidth + 2*valvespacing + 2*radius
+    );
 
     transposer_control.fillColor = color;
     return transposer_control;
