@@ -2172,6 +2172,63 @@ var CellTrapL = function(params) {
     return traps;
 };
 
+var CellTrapL_cell = function(params) {
+    let orientation = (params["orientation"] == "V");
+    let position = params["position"];
+    let chamberLength = params["chamberLength"];
+    let numChambers = params["numChambers"];
+    let chamberWidth = params["chamberWidth"];
+    let feedingChannelWidth = params["feedingChannelWidth"];
+    let chamberSpacing = params["chamberSpacing"];
+    let color = params["color"];
+    let x = position[0];
+    let y = position[1];
+    let chamberList = [];
+    var rec;
+    var traps;
+    var channels;
+
+    if (orientation) {
+        for (i = 0; i < numChambers/2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [2*chamberLength + feedingChannelWidth, chamberWidth],
+                point: [x, y + i*(chamberWidth + chamberSpacing)],
+                fillColor: color,
+                strokeWidth: 0
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x + chamberLength, y],
+            size: [feedingChannelWidth, numChambers/2*(chamberWidth + chamberSpacing)],
+            fillColor: color,
+            strokeWidth: 0
+        });
+        chamberList.push(channels);
+    }
+    else {
+        for (i = 0; i < numChambers/2; i++) {
+            rec = paper.Path.Rectangle({
+                size: [chamberWidth, 2*chamberLength + feedingChannelWidth],
+                point: [x + i*(chamberWidth + chamberSpacing), y],
+                fillColor: color,
+                strokeWidth: 0
+            });
+            chamberList.push(rec);
+        }
+        channels = paper.Path.Rectangle({
+            point: [x, y + chamberLength],
+            size: [numChambers/2*(chamberWidth + chamberSpacing), feedingChannelWidth],
+            fillColor: color,
+            strokeWidth: 0
+        });
+        chamberList.push(channels);
+    }
+    traps = new paper.CompoundPath(chamberList);
+    traps.fillColor = color;
+    return traps;
+};
+
 var CellTrapLTarget = function(params) {
     let orientation = (params["orientation"] == "V");
     let position = params["position"];
@@ -2343,6 +2400,7 @@ module.exports.RotaryMixer = RotaryMixer;
 module.exports.RotaryMixer_control = RotaryMixer_control;
 module.exports.RotaryMixerTarget = RotaryMixerTarget;
 module.exports.CellTrapL = CellTrapL;
+module.exports.CellTrapL_cell = CellTrapL_cell
 module.exports.CellTrapLTarget = CellTrapLTarget;
 module.exports.DropletGen = DropletGen;
 module.exports.DropletGenTarget = DropletGenTarget;
