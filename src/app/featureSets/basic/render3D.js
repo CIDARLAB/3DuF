@@ -77,7 +77,8 @@ let render3D = {
             orientation: "orientation",
             radius1: "valveRadius",
             radius2: "valveRadius",
-            height: "height"
+            height: "height",
+            valveSpacing: "valveSpacing"
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
@@ -88,7 +89,8 @@ let render3D = {
             orientation: "orientation",
             radius1: "valveRadius",
             radius2: "valveRadius",
-            height: "height"
+            height: "height",
+            valveSpacing: "valveSpacing"
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"

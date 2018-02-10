@@ -275,10 +275,8 @@ var Transposer = function(params){
     let radius = params["valveRadius"];
     let color = params["color"];
     let orientation = params["orientation"];
-    let channelWidth = 500; //params["flowChannelWidth"];
-    let valvespacing = 1500;
-    let center = new paper.Point(position[0], position[1]);
-    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    let channelWidth = params["channelWidth"];
+    let valvespacing = params["valveSpacing"];
     let transposer_flow = new paper.CompoundPath();
 
     let px = position[0];
@@ -409,14 +407,14 @@ var createTransposerValve = function(compound_path, xpos, ypos, gap, radius, ori
 }
 
 var Transposer_control = function(params){
+    console.log("test")
     let position = params["position"];
     let gap = params["gap"];
     let radius = params["valveRadius"];
     let color = params["color"];
     let orientation = params["orientation"];
-    let channelWidth = 500; //params["flowChannelWidth"];
-    let valvespacing = 1500;
-    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    let channelWidth = params["channelWidth"];
+    let valvespacing = params["valveSpacing"];
     let transposer_control = new paper.CompoundPath();
 
     let px = position[0];
