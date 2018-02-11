@@ -65,7 +65,7 @@ class AdaptiveGrid {
         }else{
             this.spacing = 5;
         }
-        console.log("Zoom: " + paper.view.zoom + " Spacing: " + this.spacing);
+        // console.log("Zoom: " + paper.view.zoom + " Spacing: " + this.spacing);
         return this.spacing;
     }
 

@@ -35,7 +35,42 @@ let tools = {
             position: "position",
 
         },
-        placementTool: "PositionTool"
+        placementTool: "MultilayerPositionTool"
+    },
+    Valve3D_control: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    Transposer: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    Transposer_control: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    RotaryMixer: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    RotaryMixer_control: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
     },
     Channel: {
         toolParams: {
@@ -106,11 +141,29 @@ let tools = {
         },
         placementTool: "PositionTool"
     },
+    Mux: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    Mux_control: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "MultilayerPositionTool"
+    },
     CellTrapL: {
         toolParams: {
             position: "position"
         },
-        placementTool: "PositionTool"
+        placementTool: "CellPositionTool"
+    },
+    CellTrapL_cell: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "CellPositionTool"
     },
     DropletGen: {
         toolParams: {
