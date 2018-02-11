@@ -278,7 +278,7 @@ var createFeatureTableHeaders = function(typeString) {
   thead.appendChild(tr);
   var param = document.createElement("th");
   param.className = "mdl-data-table__cell--non-numeric";
-  param.innerHTML = "Parameter &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;";
+  param.innerHTML = "Parameter &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;";
   var value = document.createElement("th");
   value.className = "mdl-data-table__cell--non-numeric";
   value.innerHTML = "Value";

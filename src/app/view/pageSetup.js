@@ -20,7 +20,11 @@ let bettermixerButton = document.getElementById("bettermixer_button");
 let curvedmixerButton = document.getElementById("curvedmixer_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
+let muxButton = document.getElementById("mux_button");
+let transposerButton = document.getElementById("transposer_button");
+let rotarymixerButton = document.getElementById("rotarymixer_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
+let celltraplButton = document.getElementById("celltrapl_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
@@ -36,10 +40,16 @@ let bettermixerParams = document.getElementById("bettermixer_params_button");
 let curvedmixerParams = document.getElementById("curvedmixer_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
+let muxParams = document.getElementById("mux_params_button");
+let transposerParams = document.getElementById("transposer_params_button");
+let rotarymixerParams = document.getElementById("rotarymixer_params_button");
 let dropletgenParams = document.getElementById("dropletgen_params_button");
+let celltraplParams = document.getElementById("celltrapl_params_button");
 
 let jsonButton = document.getElementById("json_button");
+let interchangeV1Button = document.getElementById("interchange_button");
 let svgButton = document.getElementById("svg_button");
+
 //let stlButton = document.getElementById("stl_button");
 
 let button2D = document.getElementById("button_2D");
@@ -78,7 +88,11 @@ let buttons = {
     "CurvedMixer": curvedmixerButton,
     "Mixer": mixerButton,
     "Tree": treeButton,
-    "DropletGen": dropletgenButton
+    "Mux":muxButton,
+    "Transposer":transposerButton,
+    "RotaryMixer":rotarymixerButton,
+    "DropletGen": dropletgenButton,
+    "CellTrapL": celltraplButton
 }
 
 let layerButtons = {
@@ -191,7 +205,6 @@ function killParamsWindow() {
 }
 
 function setupAppPage() {
-
     view = Registry.viewManager.view;
     renderer = Registry.threeRenderer;
     channelButton.onclick = function() {
@@ -283,10 +296,34 @@ function setupAppPage() {
         setActiveButton("Tree");
         switchTo2D();
     };
+    muxButton.onclick = function() {
+        Registry.viewManager.activateTool("Mux");
+        let bg = Colors.getDefaultFeatureColor("Mux", "Basic", Registry.currentLayer);
+        setActiveButton("Mux");
+        switchTo2D();
+    };
+    transposerButton.onclick = function() {
+        Registry.viewManager.activateTool("Transposer");
+        let bg = Colors.getDefaultFeatureColor("Transposer", "Basic", Registry.currentLayer);
+        setActiveButton("Transposer");
+        switchTo2D();
+    };
+    rotarymixerButton.onclick = function() {
+        Registry.viewManager.activateTool("RotaryMixer");
+        let bg = Colors.getDefaultFeatureColor("RotaryMixer", "Basic", Registry.currentLayer);
+        setActiveButton("RotaryMixer");
+        switchTo2D();
+    };
     dropletgenButton.onclick = function() {
         Registry.viewManager.activateTool("DropletGen");
         let bg = Colors.getDefaultFeatureColor("DropletGen", "Basic", Registry.currentLayer);
         setActiveButton("DropletGen");
+        switchTo2D();
+    };
+    celltraplButton.onclick = function() {
+        Registry.viewManager.activateTool("CellTrapL");
+        let bg = Colors.getDefaultFeatureColor("CellTrapL", "Basic", Registry.currentLayer);
+        setActiveButton("CellTrapL");
         switchTo2D();
     };
 
@@ -328,22 +365,30 @@ function setupAppPage() {
         });
         saveAs(json, "device.json");
     }
-/*
-    stlButton.onclick = function() {
-        let json = Registry.currentDevice.toJSON();
-        let stls = renderer.getSTL(json);
-        let blobs = [];
-        let zipper = new JSZip();
-        for (let i = 0; i < stls.length; i++) {
-            let name = "" + i + "_" + json.name + "_" + json.layers[i].name + ".stl";
-            zipper.file(name, stls[i]);
-        }
-        let content = zipper.generate({
-            type: "blob"
+
+    interchangeV1Button.onclick = function() {
+        let json = new Blob([JSON.stringify(Registry.currentDevice.toInterchangeV1())], {
+            type: "application/json"
         });
-        saveAs(content, json.name + "_layers.zip");
+        saveAs(json, "device.json");
     }
-*/
+
+    /*
+        stlButton.onclick = function() {
+            let json = Registry.currentDevice.toJSON();
+            let stls = renderer.getSTL(json);
+            let blobs = [];
+            let zipper = new JSZip();
+            for (let i = 0; i < stls.length; i++) {
+                let name = "" + i + "_" + json.name + "_" + json.layers[i].name + ".stl";
+                zipper.file(name, stls[i]);
+            }
+            let content = zipper.generate({
+                type: "blob"
+            });
+            saveAs(content, json.name + "_layers.zip");
+        }
+    */
     svgButton.onclick = function() {
         let svgs = Registry.viewManager.layersToSVGStrings();
         //let svg = paper.project.exportSVG({asString: true});
@@ -389,8 +434,12 @@ function setupAppPage() {
     curvedmixerParams.onclick = paramsWindowFunction("CurvedMixer", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
+    muxParams.onclick = paramsWindowFunction("Mux", "Basic");
+    transposerParams.onclick = paramsWindowFunction("Transposer", "Basic");
+    rotarymixerParams.onclick = paramsWindowFunction("RotaryMixer", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
     transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
+    celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {

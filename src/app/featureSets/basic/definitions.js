@@ -208,6 +208,195 @@ let basicFeatures = {
             "gap": .1 * 10000
         }
     },
+    "Valve3D_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000
+        },
+        minimum: {
+          //  "orientation": "V",
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10
+        },
+        maximum: {
+        //    "orientation": "H",
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000
+        }
+    },
+    "Transposer": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "valveSpacing": "Float",
+            "channelWidth": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "valveSpacing": 0.6 * 1000,
+            "channelWidth": 500
+        },
+        minimum: {
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10,
+            "valveSpacing": 0.1 * 1000,
+            "channelWidth" : 25
+        },
+        maximum: {
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000,
+            "valveSpacing": 0.1 * 10000,
+            "channelWidth" : 25e3
+        }
+    },
+    "Transposer_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "valveSpacing": "Float",
+            "channelWidth": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "valveSpacing": 0.6 * 1000,
+            "channelWidth": 500
+        },
+        minimum: {
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10,
+            "valveSpacing": 0.1 * 1000,
+            "channelWidth": 25
+        },
+        maximum: {
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000,
+            "valveSpacing": 0.1 * 10000,
+            "channelWidth": 25e3
+        }
+    },
+    "RotaryMixer": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "radius": "Float",
+            "flowChannelWidth": "Float",
+            "valveWidth": "Float",
+            "valveLength": "Float",
+            "valveSpacing": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "radius": 2000,
+            "flowChannelWidth": 1000,
+            "valveWidth": 2.4 * 1000,
+            "valveLength": 2.4 * 1000,
+            "valveSpacing": 300,
+            "valveRadius": 1.2 * 1000,
+            "height": 200
+        },
+        minimum: {
+          //  "orientation": "V",
+            "radius": 0.1 * 5000,
+            "flowChannelWidth": 0.1 * 1000,
+            "valveWidth": 0.1 * 2.4 * 1000,
+            "valveLength": 0.1 * 2.4 * 1000,
+            "valveSpacing": 0.1 * 300,
+            "valveRadius": 0.1 * 1.2 * 1000,
+            "height": 0.1 * 200
+        },
+        maximum: {
+            "radius": 10 * 5000,
+            "flowChannelWidth": 10 * 1000,
+            "valveWidth": 10 * 2.4 * 1000,
+            "valveLength": 10 * 2.4 * 1000,
+            "valveSpacing": 10 * 300,
+            "valveRadius": 10 * 1.2 * 1000,
+            "height": 10 * 200
+        }
+    },
+    "RotaryMixer_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "radius": "Float",
+            "flowChannelWidth": "Float",
+            "valveWidth": "Float",
+            "valveLength": "Float",
+            "valveSpacing": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "orientation": "V",
+            "radius": 2000,
+            "flowChannelWidth": 1000,
+            "valveWidth": 2.4 * 1000,
+            "valveLength": 2.4 * 1000,
+            "valveSpacing": 300,
+            "valveRadius": 1.2 * 1000,
+            "height": 200
+        },
+        minimum: {
+            //  "orientation": "V",
+            "radius": 0.1 * 5000,
+            "flowChannelWidth": 0.1 * 1000,
+            "valveWidth": 0.1 * 2.4 * 1000,
+            "valveLength": 0.1 * 2.4 * 1000,
+            "valveSpacing": 0.1 * 300,
+            "valveRadius": 0.1 * 1.2 * 1000,
+            "height": 0.1 * 200
+        },
+        maximum: {
+            "radius": 10 * 5000,
+            "flowChannelWidth": 10 * 1000,
+            "valveWidth": 10 * 2.4 * 1000,
+            "valveLength": 10 * 2.4 * 1000,
+            "valveSpacing": 10 * 300,
+            "valveRadius": 10 * 1.2 * 1000,
+            "height": 10 * 200
+        }
+    },
     "Valve": {
         unique: {
             "position": "Point",
@@ -445,7 +634,7 @@ let basicFeatures = {
             "flowChannelWidth": .80 * 1000,
             "orientation": "V",
             "spacing": 4 * 1000,
-            "leafs": 6,
+            "leafs": 8,
             "width": 2.46 * 1000,
             "length": 2.46 * 1000,
             "height": .1 * 1000,
@@ -471,6 +660,104 @@ let basicFeatures = {
             "stagelength": 6000
         }
     },
+    "Mux": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "flowChannelWidth": "Float",
+            "orientation": "String",
+            "spacing": "Float",
+            "leafs": "Float",
+            "width": "Float",
+            "length": "Float",
+            "height": "Float",
+            "direction": "String",
+            "stageLength":"Float",
+            "controlChannelWidth": "Float"
+        },
+        defaults: {
+            "flowChannelWidth": .80 * 1000,
+            "orientation": "V",
+            "spacing": 4 * 1000,
+            "leafs": 8,
+            "width": 1.6 * 1000,
+            "length": 1.6 * 1000,
+            "height": .1 * 1000,
+            "direction": "IN",
+            "stageLength": 4000,
+            "controlChannelWidth": .40 * 1000
+        },
+        minimum: {
+            "flowChannelWidth": 10,
+            "spacing": 30,
+            "leafs": 2,
+            "width": 60,
+            "length": 60,
+            "height": 10,
+            "stageLength": 100,
+            "controlChannelWidth": 10
+        },
+        maximum: {
+            "flowChannelWidth": 2000,
+            "spacing": 12000,
+            "leafs": 2,
+            "width": 12 * 1000,
+            "length": 12 * 1000,
+            "height": 1200,
+            "stageLength": 6000,
+            "controlChannelWidth": 2000
+        }
+    },
+    "Mux_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "flowChannelWidth": "Float",
+            "orientation": "String",
+            "spacing": "Float",
+            "leafs": "Float",
+            "width": "Float",
+            "length": "Float",
+            "height": "Float",
+            "direction": "String",
+            "stageLength":"Float",
+            "controlChannelWidth": "Float"
+        },
+        defaults: {
+            "flowChannelWidth": .80 * 1000,
+            "orientation": "V",
+            "spacing": 4 * 1000,
+            "leafs": 8,
+            "width": 1.6 * 1000,
+            "length": 1.6 * 1000,
+            "height": .1 * 1000,
+            "direction": "IN",
+            "stageLength": 4000,
+            "controlChannelWidth": .40 * 1000
+        },
+        minimum: {
+            "flowChannelWidth": 10,
+            "spacing": 30,
+            "leafs": 2,
+            "width": 60,
+            "length": 60,
+            "height": 10,
+            "stageLength": 100,
+            "controlChannelWidth": 10
+        },
+        maximum: {
+            "flowChannelWidth": 2000,
+            "spacing": 12000,
+            "leafs": 2,
+            "width": 12 * 1000,
+            "length": 12 * 1000,
+            "height": 1200,
+            "stageLength": 6000,
+            "controlChannelWidth": 2000
+        }
+    },
     "CellTrapL": {
         unique: {
             "position": "Point"
@@ -489,7 +776,46 @@ let basicFeatures = {
             "feedingChannelWidth": .41 * 1000,
             "orientation": "H",
             "chamberWidth": 1.23 * 1000,
-            "numberOfChambers": 3,
+            "numberOfChambers": 6,
+            "chamberSpacing": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "chamberLength": 30,
+            "feedingChannelWidth": 10,
+            "chamberWidth": 30,
+            "numberOfChambers": 1,
+            "chamberSpacing": 60,
+            "height": 10
+        },
+        maximum: {
+            "chamberLength": 6000,
+            "feedingChannelWidth": 2000,
+            "chamberWidth": 6000,
+            "numberOfChambers": 10,
+            "chamberSpacing": 12 * 1000,
+            "height": 1200
+        }
+    },
+    "CellTrapL_cell": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "chamberLength": "Float",
+            "feedingChannelWidth": "Float",
+            "orientation": "String",
+            "chamberWidth": "Float",
+            "numberOfChambers": "Float",
+            "chamberSpacing": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "chamberLength": 1.2 * 1000,
+            "feedingChannelWidth": .41 * 1000,
+            "orientation": "H",
+            "chamberWidth": 1.23 * 1000,
+            "numberOfChambers": 6,
             "chamberSpacing": 2.46 * 1000,
             "height": .1 * 1000
         },

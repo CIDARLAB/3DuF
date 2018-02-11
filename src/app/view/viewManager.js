@@ -7,6 +7,8 @@ var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
 var SimpleQueue = require("../utils/SimpleQueue");
 var PositionTool = require("./tools/positionTool");
+var MultilayerPositionTool = require('./tools/multilayerPositionTool');
+var CellPositionTool = require('./tools/cellPositionTool');
 
 class ViewManager {
     constructor(view) {
@@ -281,13 +283,30 @@ class ViewManager {
 
     loadDeviceFromJSON(json) {
         Registry.viewManager.clear();
-        Registry.currentDevice = Device.fromJSON(json);
+        //Check and see the version number if its 0 or none is present,
+        // its going the be the legacy format, else it'll be a new format
+        var version = json.version;
+        if(null == version || undefined == version){
+            console.log("Loading Legacy Format...")
+            Registry.currentDevice = Device.fromJSON(json);
+        }else{
+            console.log("Version Number: " + version);
+            switch (version){
+                case 1:
+                    Registry.currentDevice = Device.fromInterchangeV1(json);
+                    break;
+                default:
+                    alert("Version \'" + version + "\' is not supported by 3DuF !");
+            }
+        }
+        //Common Code for rendering stuff
         Registry.currentLayer = Registry.currentDevice.layers[0];
         Registry.viewManager.addDevice(Registry.currentDevice);
         this.view.initializeView();
         this.updateGrid();
         this.updateDevice(Registry.currentDevice);
         this.refresh(true);
+        console.log(Registry.currentDevice.layers);
     }
 
     removeFeaturesByPaperElements(paperElements) {
@@ -398,7 +417,7 @@ class ViewManager {
         this.tools["Node"] = new PositionTool("Node", "Basic");
         this.tools["CircleValve"] = new PositionTool("CircleValve", "Basic");
         this.tools["RectValve"] = new PositionTool("RectValve", "Basic");
-        this.tools["Valve3D"] = new PositionTool("Valve3D", "Basic");
+        this.tools["Valve3D"] = new MultilayerPositionTool("Valve3D", "Basic");
         this.tools["Port"] = new PositionTool("Port", "Basic");
         this.tools["Via"] = new PositionTool("Via", "Basic");
         this.tools["DiamondReactionChamber"] = new PositionTool("DiamondReactionChamber", "Basic");
@@ -406,7 +425,10 @@ class ViewManager {
         this.tools["CurvedMixer"] = new PositionTool("CurvedMixer", "Basic");
         this.tools["Mixer"] = new PositionTool("Mixer", "Basic");
         this.tools["Tree"] = new PositionTool("Tree", "Basic");
-        this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
+        this.tools["Mux"] = new MultilayerPositionTool("Mux", "Basic");
+        this.tools["Transposer"] = new MultilayerPositionTool("Transposer", "Basic");
+        this.tools["RotaryMixer"] = new MultilayerPositionTool("RotaryMixer", "Basic");
+        this.tools["CellTrapL"] = new CellPositionTool("CellTrapL", "Basic");
         this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
     }
