@@ -8,14 +8,16 @@ var Registry = require("./registry");
 var registeredFeatureTypes = {};
 
 class Feature {
-    constructor(type, set, params, name, id = Feature.generateID()){
+    constructor(type, set, params, name, id = Feature.generateID(), fabtype="XY"){
         this.__type = type;
         this.__params = params;
         this.__name = StringValue(name);
         this.__id = id;
         this.__type = type;
         this.__set = set;
+        this.__fabtype = fabtype;
     }
+
 
     static generateID() {
         return Registry.generateID();
@@ -41,9 +43,10 @@ class Feature {
         let output = {};
         output.id = this.__id;
         output.name = this.__name.toJSON();
-        output.type = this.__type;
+        output.macro = this.__type;
         output.set = this.__set;
         output.params = this.__params.toJSON();
+        output.type = this.__fabtype;
         return output;
     }
 
@@ -142,7 +145,7 @@ class Feature {
         if (json.hasOwnProperty("set")) set = json.set;
         else set = "Basic";
         //TODO: This will have to change soon when the thing is updated
-        return Feature.makeFeature(json.type, set, json.params, json.name, json.id);
+        return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
     }
 
     static makeFeature(typeString, setString, values, name = "New Feature", id=undefined){
