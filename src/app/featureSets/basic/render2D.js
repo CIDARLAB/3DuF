@@ -92,6 +92,116 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Valve3D_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GroverValve_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Transposer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap",
+            valveSpacing: "valveSpacing",
+            channelWidth: "channelWidth"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Transposer",
+        targetPrimitiveType: "TransposerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Transposer_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap",
+            valveSpacing: "valveSpacing",
+            channelWidth: "channelWidth"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Transposer_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    RotaryMixer: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth:"valveWidth",
+            valveLength:"valveLength",
+            valveSpacing:"valveSpacing",
+            height: "height"
+        },
+        targetParams: {
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth:"valveWidth",
+            valveLength:"valveLength",
+            valveSpacing:"valveSpacing",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "RotaryMixer",
+        targetPrimitiveType: "RotaryMixerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    RotaryMixer_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth:"valveWidth",
+            valveLength:"valveLength",
+            valveSpacing:"valveSpacing",
+            height:"height"
+        },
+        targetParams: {
+            position: "position",
+            orientation: "orientation",
+            flowChannelWidth: "flowChannelWidth",
+            radius: "radius",
+            valveWidth:"valveWidth",
+            valveLength:"valveLength",
+            valveSpacing:"valveSpacing",
+            height:"height"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "RotaryMixer_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Channel: {
         featureParams: {
             start: "start",
@@ -298,6 +408,62 @@ let render2D = {
         targetPrimitiveType: "TreeTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Mux: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            controlchannelWidth: "controlChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction : "direction"
+        },
+        targetParams: {
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction:"direction"
+        },
+        featurePrimitiveType: "Mux",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "Mux",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Mux_control: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            controlChannelWidth: "controlChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction : "direction"
+        },
+        targetParams: {
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            length: "length",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction:"direction"
+        },
+        featurePrimitiveType: "Mux_control",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "Mux_control",
+        targetPrimitiveSet: "Basic2D"
+    },
     CellTrapL: {
         featureParams: {
             position: "position",
@@ -321,6 +487,33 @@ let render2D = {
             radius2: "chamberSpacing"
         },
         featurePrimitiveType: "CellTrapL",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CellTrapLTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    CellTrapL_cell: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberWidth",
+            radius2: "chamberSpacing"
+        },
+        targetParams: {
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing"
+        },
+        featurePrimitiveType: "CellTrapL_cell",
         featurePrimitiveSet: "Basic2D",
         targetPrimitiveType: "CellTrapLTarget",
         targetPrimitiveSet: "Basic2D"

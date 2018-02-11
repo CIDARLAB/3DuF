@@ -38,7 +38,7 @@ class Layer {
     getIndex(){
         if(this.device) return this.device.layers.indexOf(this);
     }
-
+/*
     estimateLayerHeight(){
         let dev = this.device;
         let flip = this.params.getValue("flip");
@@ -60,7 +60,7 @@ class Layer {
         }
         return 0;
     }
-
+*/
     __ensureIsAFeature(feature) {
         if (!(feature instanceof Feature)) {
             throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
@@ -129,9 +129,23 @@ class Layer {
         return output;
     }
 
+    __featuresInterchangeV1(){
+        let output = {};
+        for (let i in this.features) {
+            output[i] = this.features[i].toInterchangeV1();
+        }
+        return output;
+    }
+
     __loadFeaturesFromJSON(json) {
         for (let i in json) {
             this.addFeature(Feature.fromJSON(json[i]));
+        }
+    }
+
+    __loadFeaturesFromInterchangeV1(json){
+        for(let i in json){
+            this.addFeature(Feature.fromInterchangeV1(json[i]));
         }
     }
 
@@ -145,6 +159,15 @@ class Layer {
         return output;
     }
 
+    toInterchangeV1() {
+        let output = {};
+        output.name = this.name.toJSON();
+        output.color = this.color;
+        output.params = this.params.toJSON();
+        output.features = this.__featuresInterchangeV1();
+        return output;
+    }
+
     static fromJSON(json) {
         if (!json.hasOwnProperty("features")) {
             throw new Error("JSON layer has no features!");
@@ -153,6 +176,18 @@ class Layer {
         newLayer.__loadFeaturesFromJSON(json.features);
         if(json.color) newLayer.color = json.color;
         return newLayer;
+    }
+
+    static fromInterchangeV1(json){
+        //TODO: Need to be able to through all the features in the layer
+        if (!json.hasOwnProperty("features")) {
+            throw new Error("JSON layer has no features!");
+        }
+        let newLayer = new Layer(json.params, json.name);
+        newLayer.__loadFeaturesFromInterchangeV1(json.features);
+        if(json.color) newLayer.color = json.color; //TODO: Figure out if this needs to change in the future
+        return newLayer;
+
     }
 
     render2D(paperScope) {
