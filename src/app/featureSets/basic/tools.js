@@ -157,7 +157,13 @@ let tools = {
         toolParams: {
             position: "position"
         },
-        placementTool: "PositionTool"
+        placementTool: "CellPositionTool"
+    },
+    CellTrapL_cell: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "CellPositionTool"
     },
     DropletGen: {
         toolParams: {

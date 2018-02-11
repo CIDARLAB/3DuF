@@ -491,6 +491,33 @@ let render2D = {
         targetPrimitiveType: "CellTrapLTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    CellTrapL_cell: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberWidth",
+            radius2: "chamberSpacing"
+        },
+        targetParams: {
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing"
+        },
+        featurePrimitiveType: "CellTrapL_cell",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CellTrapLTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     DropletGen: {
         featureParams: {
             position: "position",

@@ -31477,7 +31477,7 @@ window.onload = function () {
 
     Registry.viewManager = viewManager;
 
-    viewManager.loadDeviceFromJSON(JSON.parse(Examples.example1));
+    viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
     viewManager.updateGrid();
     Registry.currentDevice.updateView();
 
@@ -31516,7 +31516,7 @@ window.onload = function () {
     }
 };
 
-},{"./core/device":187,"./core/layer":189,"./core/registry":198,"./examples/jsonExamples":199,"./view/colors":213,"./view/grid/adaptiveGrid":214,"./view/pageSetup":215,"./view/paperView":216,"./view/render3D/ThreeDeviceRenderer":222,"./view/viewManager":238}],187:[function(require,module,exports){
+},{"./core/device":187,"./core/layer":189,"./core/registry":198,"./examples/jsonExamples":199,"./view/colors":213,"./view/grid/adaptiveGrid":214,"./view/pageSetup":215,"./view/paperView":216,"./view/render3D/ThreeDeviceRenderer":222,"./view/viewManager":239}],187:[function(require,module,exports){
 var Params = require("./params");
 var Parameters = require("./parameters");
 var Parameter = require("./parameter");
@@ -31854,28 +31854,29 @@ class Layer {
     getIndex() {
         if (this.device) return this.device.layers.indexOf(this);
     }
-
-    estimateLayerHeight() {
-        let dev = this.device;
-        let flip = this.params.getValue("flip");
-        let offset = this.params.getValue("z_offset");
-        if (dev) {
-            let thisIndex = this.getIndex();
-            let targetIndex;
-            if (flip) targetIndex = thisIndex - 1;else targetIndex = thisIndex + 1;
-            if (thisIndex >= 0 || thisIndex <= dev.layers.length - 1) {
-                let targetLayer = dev.layers[targetIndex];
-                return Math.abs(offset - targetLayer.params.getValue("z_offset"));
-            } else {
-                if (thisIndex - 1 >= 0) {
-                    let targetLayer = dev.layers[thisIndex - 1];
-                    return targetLayer.estimateLayerHeight();
+    /*
+        estimateLayerHeight(){
+            let dev = this.device;
+            let flip = this.params.getValue("flip");
+            let offset = this.params.getValue("z_offset");
+            if (dev){
+                let thisIndex = this.getIndex();
+                let targetIndex;
+                if (flip) targetIndex = thisIndex - 1;
+                else targetIndex = thisIndex + 1;
+                if (thisIndex >= 0 || thisIndex <= (dev.layers.length -1)){
+                    let targetLayer = dev.layers[targetIndex];
+                    return Math.abs(offset - targetLayer.params.getValue("z_offset"));
+                } else {
+                    if (thisIndex -1 >= 0){
+                        let targetLayer = dev.layers[thisIndex -1];
+                        return targetLayer.estimateLayerHeight();
+                    } 
                 }
             }
+            return 0;
         }
-        return 0;
-    }
-
+    */
     __ensureIsAFeature(feature) {
         if (!(feature instanceof Feature)) {
             throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
@@ -32264,6 +32265,7 @@ exports.threeRenderer = threeRenderer;
 },{"node-uuid":124}],199:[function(require,module,exports){
 module.exports.example2 = '{"name":"My Device","params":{"width":75800,"height":51000},"layers":[{"name":"flow","color":"indigo","params":{"z_offset":0,"flip":false},"features":{"97f1fd20-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f1fd20-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[30000,40000],"radius1":700,"radius2":700,"height":100}},"97f1fd21-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f1fd21-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[40000,40000],"radius1":700,"radius2":700,"height":100}},"97f22430-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22430-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[50000,40000],"radius1":700,"radius2":700,"height":100}},"97f22431-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22431-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[20000,40000],"radius1":700,"radius2":700,"height":100}},"97f22432-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22432-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,40000],"end":[20000,35000],"width":400,"height":100}},"97f22433-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22433-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,38000],"end":[17000,38000],"width":400,"height":100}},"97f22434-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22434-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[17000,38000],"end":[17000,35000],"width":400,"height":100}},"97f22435-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22435-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,35000],"end":[20000,20000],"width":400,"height":100}},"97f22436-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22436-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,20000],"end":[10000,10000],"width":400,"height":100}},"97f22437-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22437-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[17000,35000],"end":[15000,30000],"width":400,"height":100}},"97f22438-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22438-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,30000],"end":[10000,30000],"width":400,"height":100}},"97f22439-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22439-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,30000],"end":[10000,28000],"width":400,"height":100}},"97f2243a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,28000],"end":[15000,28000],"width":400,"height":100}},"97f2243b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,28000],"end":[15000,25000],"width":400,"height":100}},"97f2243c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,25000],"end":[8000,25000],"width":400,"height":100}},"97f2243d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[8000,25000],"radius1":700,"radius2":700,"height":100}},"97f2243e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243e-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[10000,10000],"radius1":700,"radius2":700,"height":100}},"97f2243f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2243f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,40000],"end":[30000,20000],"width":400,"height":100}},"97f22440-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22440-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,20000],"end":[20000,10000],"width":400,"height":100}},"97f22441-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22441-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[20000,10000],"radius1":700,"radius2":700,"height":100}},"97f22442-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22442-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,38000],"end":[27000,38000],"width":400,"height":100}},"97f22443-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22443-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,38000],"end":[27000,30000],"width":400,"height":100}},"97f22444-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22444-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,30000],"end":[22000,30000],"width":400,"height":100}},"97f22445-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22445-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,30000],"end":[22000,28000],"width":400,"height":100}},"97f22446-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f22446-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,28000],"end":[27000,28000],"width":400,"height":100}},"97f24b40-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b40-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,28000],"end":[27000,26000],"width":400,"height":100}},"97f24b41-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b41-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,26000],"end":[22000,26000],"width":400,"height":100}},"97f24b42-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b42-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,26000],"end":[22000,24000],"width":400,"height":100}},"97f24b43-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b43-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,24000],"end":[27000,24000],"width":400,"height":100}},"97f24b44-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b44-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,24000],"end":[27000,22000],"width":400,"height":100}},"97f24b45-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b45-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[27000,22000],"end":[22000,22000],"width":400,"height":100}},"97f24b46-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b46-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,22000],"end":[22000,20000],"width":400,"height":100}},"97f24b47-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b47-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[22000,20000],"end":[25000,20000],"width":400,"height":100}},"97f24b48-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b48-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[25000,17000],"width":400,"height":100}},"97f24b49-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b49-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,17000],"end":[21000,17000],"width":400,"height":100}},"97f24b4a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4a-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[21000,17000],"radius1":700,"radius2":700,"height":100}},"97f24b4b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,40000],"end":[40000,20000],"width":400,"height":100}},"97f24b4c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,20000],"end":[50000,10000],"width":400,"height":100}},"97f24b4d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,38000],"end":[43000,38000],"width":400,"height":100}},"97f24b4e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,38000],"end":[43000,30000],"width":400,"height":100}},"97f24b4f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b4f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,30000],"end":[48000,30000],"width":400,"height":100}},"97f24b50-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b50-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,30000],"end":[48000,28000],"width":400,"height":100}},"97f24b51-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b51-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,28000],"end":[43000,28000],"width":400,"height":100}},"97f24b52-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b52-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,28000],"end":[43000,26000],"width":400,"height":100}},"97f24b53-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b53-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,26000],"end":[48000,26000],"width":400,"height":100}},"97f24b54-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b54-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,26000],"end":[48000,24000],"width":400,"height":100}},"97f24b55-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b55-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,24000],"end":[43000,24000],"width":400,"height":100}},"97f24b56-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b56-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,24000],"end":[43000,22000],"width":400,"height":100}},"97f24b57-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b57-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[43000,22000],"end":[48000,22000],"width":400,"height":100}},"97f24b58-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b58-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,22000],"end":[48000,20000],"width":400,"height":100}},"97f24b59-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b59-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[48000,20000],"end":[45000,20000],"width":400,"height":100}},"97f24b5a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[45000,17000],"width":400,"height":100}},"97f24b5b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,17000],"end":[49000,17000],"width":400,"height":100}},"97f24b5c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5c-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[50000,10000],"radius1":700,"radius2":700,"height":100}},"97f24b5d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[49000,17000],"radius1":700,"radius2":700,"height":100}},"97f24b5e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,40000],"end":[50000,20000],"width":400,"height":100}},"97f24b5f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b5f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,20000],"end":[60000,10000],"width":400,"height":100}},"97f24b60-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f24b60-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[60000,10000],"radius1":700,"radius2":700,"height":100}},"97f27250-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27250-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,38000],"end":[53000,38000],"width":400,"height":100}},"97f27251-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27251-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[53000,38000],"end":[53000,35000],"width":400,"height":100}},"97f27252-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27252-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[53000,35000],"end":[55000,30000],"width":400,"height":100}},"97f27253-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27253-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,30000],"end":[60000,30000],"width":400,"height":100}},"97f27254-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27254-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[60000,30000],"end":[60000,28000],"width":400,"height":100}},"97f27255-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27255-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[60000,28000],"end":[55000,28000],"width":400,"height":100}},"97f27256-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27256-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,28000],"end":[55000,25000],"width":400,"height":100}},"97f27257-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27257-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,25000],"end":[62000,25000],"width":400,"height":100}},"97f27258-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27258-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[62000,25000],"radius1":700,"radius2":700,"height":100}},"97f27259-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27259-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,15000],"end":[15000,12000],"width":400,"height":100}},"97f2725a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725a-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[15000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725b-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[26000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725c-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[44000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725d-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[55000,12000],"radius1":800,"radius2":700,"height":1100}},"97f2725e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,12000],"end":[55000,15000],"width":400,"height":100}},"97f2725f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2725f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[26000,12000],"end":[30000,10000],"width":400,"height":100}},"97f27260-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27260-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[40000,10000],"width":400,"height":100}},"97f27261-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27261-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,10000],"end":[38000,7000],"width":400,"height":100}},"97f27262-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27262-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,10000],"end":[32000,7000],"width":400,"height":100}},"97f27263-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27263-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[32000,7000],"radius1":700,"radius2":700,"height":100}},"97f27264-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27264-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[38000,7000],"radius1":700,"radius2":700,"height":100}},"97f27265-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27265-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[35000,10000],"radius1":1400,"radius2":1200,"height":800}},"97f27266-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27266-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,10000],"end":[35000,30000],"width":400,"height":100}},"97f27267-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27267-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[35000,30000],"radius1":700,"radius2":700,"height":100}},"97f27268-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27268-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[38000,23000],"width":400,"height":100}},"97f27269-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27269-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[36000,25000],"width":400,"height":100}},"97f2726a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726a-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[36000,25000],"end":[35000,30000],"width":400,"height":100}},"97f2726b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[35000,17000],"end":[32000,23000],"width":400,"height":100}},"97f2726c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[34000,25000],"width":400,"height":100}},"97f2726d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[34000,25000],"end":[35000,30000],"width":400,"height":100}},"97f2726e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[32000,23000],"end":[35000,24000],"width":400,"height":100}},"97f2726f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2726f-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[38000,23000],"end":[35000,24000],"width":400,"height":100}},"97f27270-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27270-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[25000,20000],"end":[28000,20000],"width":400,"height":100}},"97f27271-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27271-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[28000,20000],"end":[28000,22000],"width":400,"height":100}},"97f27272-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27272-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[28000,22000],"end":[27000,22000],"width":400,"height":100}},"97f27273-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27273-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[45000,20000],"end":[42000,20000],"width":400,"height":100}},"97f27274-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27274-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[42000,20000],"end":[42000,22000],"width":400,"height":100}},"97f27275-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27275-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[42000,22000],"end":[44000,22000],"width":400,"height":100}},"97f27276-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27276-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[35000,30000],"radius1":800,"radius2":700,"height":1100}},"97f27277-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27277-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[32000,20000],"radius1":800,"radius2":700,"height":1100}},"97f27278-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27278-3ea6-11e5-8298-1b576ed4eb08","name":"New Via","type":"Via","params":{"position":[38000,20000],"radius1":800,"radius2":700,"height":1100}},"a2de7790-3ea6-11e5-8298-1b576ed4eb08":{"id":"a2de7790-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[10000,20000],"radius1":1400,"radius2":1200,"height":800}},"a3d819d0-3ea6-11e5-8298-1b576ed4eb08":{"id":"a3d819d0-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[60000,20000],"radius1":1400,"radius2":1200,"height":800}}}},{"name":"control","color":"red","params":{"z_offset":1200,"flip":true},"features":{"97f27279-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f27279-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[20000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727a-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[30000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727b-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[40000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727c-3ea6-11e5-8298-1b576ed4eb08","name":"New CircleValve","type":"CircleValve","params":{"position":[50000,34000],"radius1":1400,"radius2":1200,"height":800}},"97f2727d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727d-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[20000,34000],"end":[24000,34000],"width":400,"height":100}},"97f2727e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2727e-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[24000,34000],"end":[24000,47000],"width":400,"height":100}},"97f29960-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29960-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[30000,34000],"end":[34000,34000],"width":400,"height":100}},"97f29961-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29961-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[34000,34000],"end":[34000,47000],"width":400,"height":100}},"97f29962-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29962-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[40000,34000],"end":[37000,34000],"width":400,"height":100}},"97f29963-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29963-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[37000,34000],"end":[36000,34000],"width":400,"height":100}},"97f29964-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29964-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[36000,34000],"end":[36000,47000],"width":400,"height":100}},"97f29965-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29965-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[50000,34000],"end":[46000,34000],"width":400,"height":100}},"97f29966-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29966-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[46000,34000],"end":[46000,47000],"width":400,"height":100}},"97f29967-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29967-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[24000,47000],"radius1":700,"radius2":700,"height":100}},"97f29968-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29968-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[34000,47000],"radius1":700,"radius2":700,"height":100}},"97f29969-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29969-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[36000,47000],"radius1":700,"radius2":700,"height":100}},"97f2996a-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996a-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[46000,47000],"radius1":700,"radius2":700,"height":100}},"97f2996b-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996b-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[15000,12000],"end":[26000,12000],"width":400,"height":100}},"97f2996c-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996c-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[44000,12000],"end":[55000,12000],"width":400,"height":100}},"97f2996d-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996d-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[15000,12000],"radius1":700,"radius2":700,"height":100}},"97f2996e-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996e-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[26000,12000],"radius1":700,"radius2":700,"height":100}},"97f2996f-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f2996f-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[44000,12000],"radius1":700,"radius2":700,"height":100}},"97f29970-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29970-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[55000,12000],"radius1":700,"radius2":700,"height":100}},"97f29971-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29971-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[25000,21000],"radius1":700,"radius2":700,"height":100}},"97f29972-3ea6-11e5-8298-1b576ed4eb08":{"id":"97f29972-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[45000,21000],"radius1":700,"radius2":700,"height":100}},"a54e6620-3ea6-11e5-8298-1b576ed4eb08":{"id":"a54e6620-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[10000,20000],"end":[15000,12000],"width":400,"height":100}},"a63ff210-3ea6-11e5-8298-1b576ed4eb08":{"id":"a63ff210-3ea6-11e5-8298-1b576ed4eb08","name":"New Channel","type":"Channel","params":{"start":[55000,12000],"end":[60000,20000],"width":400,"height":100}},"a7efc4f0-3ea6-11e5-8298-1b576ed4eb08":{"id":"a7efc4f0-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[10000,20000],"radius1":700,"radius2":700,"height":100}},"a8879820-3ea6-11e5-8298-1b576ed4eb08":{"id":"a8879820-3ea6-11e5-8298-1b576ed4eb08","name":"New Port","type":"Port","params":{"position":[60000,20000],"radius1":700,"radius2":700,"height":100}}}}],"groups":[],"defaults":{}}';
 module.exports.example1 = '{"name":"My Other Device","params":{"width":135000,"height":85000},"layers":[{"name":"flow","color":"indigo","params":{"z_offset":0,"flip":false},"features":{"7d4dce00-4f92-11e7-b516-0963e7d642b6":{"id":"7d4dce00-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,0],"end":[135000,0],"channelWidth":800,"height":100}},"802dbc70-4f92-11e7-b516-0963e7d642b6":{"id":"802dbc70-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,0],"end":[135000,85000],"channelWidth":800,"height":100}},"84122290-4f92-11e7-b516-0963e7d642b6":{"id":"84122290-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,85000],"end":[0,85000],"channelWidth":800,"height":100}},"8791ac60-4f92-11e7-b516-0963e7d642b6":{"id":"8791ac60-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,85000],"end":[0,0],"channelWidth":800,"height":100}}}},{"name":"control","color":"red","params":{"z_offset":1200,"flip":true},"features":{"a937dec0-4f92-11e7-b516-0963e7d642b6":{"id":"a937dec0-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,0],"end":[0,85000],"channelWidth":800,"height":100}},"ab87e940-4f92-11e7-b516-0963e7d642b6":{"id":"ab87e940-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,85000],"end":[135000,85000],"channelWidth":800,"height":100}},"ad94f750-4f92-11e7-b516-0963e7d642b6":{"id":"ad94f750-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,85000],"end":[135000,0],"channelWidth":800,"height":100}},"af694220-4f92-11e7-b516-0963e7d642b6":{"id":"af694220-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,0],"end":[0,0],"channelWidth":800,"height":100}}}}],"groups":[]}';
+module.exports.example2 = '{"name":"My Other Device","params":{"width":135000,"height":85000},"layers":[{"name":"flow","color":"indigo","params":{"z_offset":0,"flip":false},"features":{"7d4dce00-4f92-11e7-b516-0963e7d642b6":{"id":"7d4dce00-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,0],"end":[135000,0],"channelWidth":800,"height":100}},"802dbc70-4f92-11e7-b516-0963e7d642b6":{"id":"802dbc70-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,0],"end":[135000,85000],"channelWidth":800,"height":100}},"84122290-4f92-11e7-b516-0963e7d642b6":{"id":"84122290-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,85000],"end":[0,85000],"channelWidth":800,"height":100}},"8791ac60-4f92-11e7-b516-0963e7d642b6":{"id":"8791ac60-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,85000],"end":[0,0],"channelWidth":800,"height":100}}}},{"name":"control","color":"red","params":{"z_offset":1200,"flip":true},"features":{"a937dec0-4f92-11e7-b516-0963e7d642b6":{"id":"a937dec0-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,0],"end":[0,85000],"channelWidth":800,"height":100}},"ab87e940-4f92-11e7-b516-0963e7d642b6":{"id":"ab87e940-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,85000],"end":[135000,85000],"channelWidth":800,"height":100}},"ad94f750-4f92-11e7-b516-0963e7d642b6":{"id":"ad94f750-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,85000],"end":[135000,0],"channelWidth":800,"height":100}},"af694220-4f92-11e7-b516-0963e7d642b6":{"id":"af694220-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,0],"end":[0,0],"channelWidth":800,"height":100}}}},{"name":"cells","color":"indigo","params":{"z_offset":2000,"flip":false},"features":{"7d4dce00-4f92-11e7-b516-0963e7d642b6":{"id":"7d4dce00-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,0],"end":[135000,0],"channelWidth":800,"height":100}},"802dbc70-4f92-11e7-b516-0963e7d642b6":{"id":"802dbc70-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,0],"end":[135000,85000],"channelWidth":800,"height":100}},"84122290-4f92-11e7-b516-0963e7d642b6":{"id":"84122290-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[135000,85000],"end":[0,85000],"channelWidth":800,"height":100}},"8791ac60-4f92-11e7-b516-0963e7d642b6":{"id":"8791ac60-4f92-11e7-b516-0963e7d642b6","name":"New Feature","type":"Channel","set":"Basic","params":{"start":[0,85000],"end":[0,0],"channelWidth":800,"height":100}}}}],"groups":[]}';
 
 },{}],200:[function(require,module,exports){
 let basicFeatures = {
@@ -33040,7 +33042,46 @@ let basicFeatures = {
             "feedingChannelWidth": .41 * 1000,
             "orientation": "H",
             "chamberWidth": 1.23 * 1000,
-            "numberOfChambers": 3,
+            "numberOfChambers": 6,
+            "chamberSpacing": 2.46 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "chamberLength": 30,
+            "feedingChannelWidth": 10,
+            "chamberWidth": 30,
+            "numberOfChambers": 1,
+            "chamberSpacing": 60,
+            "height": 10
+        },
+        maximum: {
+            "chamberLength": 6000,
+            "feedingChannelWidth": 2000,
+            "chamberWidth": 6000,
+            "numberOfChambers": 10,
+            "chamberSpacing": 12 * 1000,
+            "height": 1200
+        }
+    },
+    "CellTrapL_cell": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "chamberLength": "Float",
+            "feedingChannelWidth": "Float",
+            "orientation": "String",
+            "chamberWidth": "Float",
+            "numberOfChambers": "Float",
+            "chamberSpacing": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "chamberLength": 1.2 * 1000,
+            "feedingChannelWidth": .41 * 1000,
+            "orientation": "H",
+            "chamberWidth": 1.23 * 1000,
+            "numberOfChambers": 6,
             "chamberSpacing": 2.46 * 1000,
             "height": .1 * 1000
         },
@@ -33582,6 +33623,33 @@ let render2D = {
         targetPrimitiveType: "CellTrapLTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    CellTrapL_cell: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberWidth",
+            radius2: "chamberSpacing"
+        },
+        targetParams: {
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing"
+        },
+        featurePrimitiveType: "CellTrapL_cell",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CellTrapLTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     DropletGen: {
         featureParams: {
             position: "position",
@@ -33883,6 +33951,22 @@ let render3D = {
         featurePrimitive: "ConeFeature",
         featurePrimitiveSet: "Basic3D"
     },
+    CellTrapL_cell: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing",
+            height: "height"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
     DropletGen: {
         featureParams: {
             position: "position",
@@ -34058,7 +34142,13 @@ let tools = {
         toolParams: {
             position: "position"
         },
-        placementTool: "PositionTool"
+        placementTool: "CellPositionTool"
+    },
+    CellTrapL_cell: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "CellPositionTool"
     },
     DropletGen: {
         toolParams: {
@@ -34806,9 +34896,27 @@ var red = {
 	"A700": "#" + "D50000"
 };
 
+var blue = {
+	"900": "#" + "1A237E",
+	"800": "#" + "283593",
+	"700": "#" + "303F9F",
+	"600": "#" + "3949AB",
+	"500": "#" + "3F51B5",
+	"400": "#" + "5C6BC0",
+	"300": "#" + "7986CB",
+	"200": "#" + "9FA8DA",
+	"100": "#" + "C5CAE9",
+	"50": "#" + "E8EAF6",
+	"A100": "#" + "8C9EFF",
+	"A200": "#" + "536DFE",
+	"A400": "#" + "3D5AFE",
+	"A700": "#" + "304FFE"
+};
+
 var layerColors = {
 	"indigo": indigo,
-	"red": red
+	"red": red,
+	"blue": blue
 };
 
 var decimalToIndex = function (decimal, indices) {
@@ -34818,7 +34926,7 @@ var decimalToIndex = function (decimal, indices) {
 var decimalToLayerColor = function (decimal, layerColors, orderedKeys) {
 	let index = decimalToIndex(decimal, orderedKeys.length);
 	let key = orderedKeys[index];
-	return layerColors[key];
+	return layerColors["700"];
 };
 
 var renderAllColors = function (layer, orderedKeys) {
@@ -34852,7 +34960,7 @@ var getDefaultLayerColor = function (layer) {
 var getDefaultFeatureColor = function (typeString, setString, layer) {
 	if (layer) {
 		let height = Feature.getDefaultsForType(typeString, setString)["height"];
-		let decimal = height / layer.estimateLayerHeight();
+		let decimal = height; // layer.estimateLayerHeight();
 		if (!layer.flip) decimal = 1 - decimal;
 		let colors = getLayerColors(layer);
 		return decimalToLayerColor(decimal, colors, darkColorKeys);
@@ -34984,6 +35092,7 @@ let muxButton = document.getElementById("mux_button");
 let transposerButton = document.getElementById("transposer_button");
 let rotarymixerButton = document.getElementById("rotarymixer_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
+let celltraplButton = document.getElementById("celltrapl_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
@@ -35003,6 +35112,7 @@ let muxParams = document.getElementById("mux_params_button");
 let transposerParams = document.getElementById("transposer_params_button");
 let rotarymixerParams = document.getElementById("rotarymixer_params_button");
 let dropletgenParams = document.getElementById("dropletgen_params_button");
+let celltraplParams = document.getElementById("celltrapl_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -35047,7 +35157,8 @@ let buttons = {
     "Mux": muxButton,
     "Transposer": transposerButton,
     "RotaryMixer": rotarymixerButton,
-    "DropletGen": dropletgenButton
+    "DropletGen": dropletgenButton,
+    "CellTrapL": celltraplButton
 };
 
 let layerButtons = {
@@ -35274,6 +35385,12 @@ function setupAppPage() {
         setActiveButton("DropletGen");
         switchTo2D();
     };
+    celltraplButton.onclick = function () {
+        Registry.viewManager.activateTool("CellTrapL");
+        let bg = Colors.getDefaultFeatureColor("CellTrapL", "Basic", Registry.currentLayer);
+        setActiveButton("CellTrapL");
+        switchTo2D();
+    };
 
     flowButton.onclick = function () {
         if (threeD) {
@@ -35373,6 +35490,7 @@ function setupAppPage() {
     rotarymixerParams.onclick = paramsWindowFunction("RotaryMixer", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
     transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
+    celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function (files) {
@@ -35961,7 +36079,7 @@ var FeatureSets = require("../../featureSets");
 
 function getLayerColor(feature) {
     let height = feature.getValue("height");
-    let layerHeight = feature.layer.estimateLayerHeight();
+    let layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
     if (decimal > 1) decimal = 1;
     if (!feature.layer.flip) decimal = 1 - decimal;
@@ -37940,66 +38058,141 @@ var MuxTarget = function (params) {
 };
 
 var CellTrapL = function (params) {
-    let orientation = params["orientation"] == "V";
+    let orientation = params["orientation"];
     let position = params["position"];
     let chamberLength = params["chamberLength"];
-    let numChambers = params["numChambers"];
+    let numChambers = params["numberOfChambers"];
     let chamberWidth = params["chamberWidth"];
     let feedingChannelWidth = params["feedingChannelWidth"];
     let chamberSpacing = params["chamberSpacing"];
     let color = params["color"];
     let x = position[0];
     let y = position[1];
-    let chamberList = [];
+    var chamberList = new paper.CompoundPath();
+    chamberList.fillColor = color;
     var rec;
     var traps;
     var channels;
-
-    if (orientation) {
-        for (i = 0; i < numChambers / 2; i++) {
+    if (orientation == "V") {
+        /*
+        for (i = 0; i < numChambers/2; i++) {
             rec = paper.Path.Rectangle({
-                size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
-                point: [x, y + i * (chamberWidth + chamberSpacing)],
+                size: [2*chamberLength + feedingChannelWidth, chamberWidth],
+                point: [x, y + i*(chamberWidth + chamberSpacing)],
                 fillColor: color,
                 strokeWidth: 0
             });
             chamberList.push(rec);
-        }
-        channels = paper.Path.Rectangle({
-            point: [x + chamberLength, y],
+         }*/
+        startPoint = new paper.Point(x + chamberLength, y);
+        channels = new paper.Path.Rectangle({
+            point: startPoint,
             size: [feedingChannelWidth, numChambers / 2 * (chamberWidth + chamberSpacing)],
             fillColor: color,
             strokeWidth: 0
         });
-        chamberList.push(channels);
+        chamberList.addChild(channels);
     } else {
-        for (i = 0; i < numChambers / 2; i++) {
+        /*
+        for (i = 0; i < numChambers/2; i++) {
             rec = paper.Path.Rectangle({
-                size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
-                point: [x + i * (chamberWidth + chamberSpacing), y],
+                size: [chamberWidth, 2*chamberLength + feedingChannelWidth],
+                point: [x + i*(chamberWidth + chamberSpacing), y],
                 fillColor: color,
                 strokeWidth: 0
             });
             chamberList.push(rec);
         }
-        channels = paper.Path.Rectangle({
-            point: [x, y + chamberLength],
+        */
+        startPoint = new paper.Point(x, y + chamberLength);
+        channels = new paper.Path.Rectangle({
+            point: startPoint,
             size: [numChambers / 2 * (chamberWidth + chamberSpacing), feedingChannelWidth],
             fillColor: color,
             strokeWidth: 0
         });
-        chamberList.push(channels);
+        chamberList.addChild(channels);
     }
     traps = new paper.CompoundPath(chamberList);
     traps.fillColor = color;
-    return traps;
+    center = new paper.Point(position[0], position[1]);
+    //test_circle = new paper.Path.Circle(center, 2000);
+    //test_circle.fillColor = color;
+    return channels;
+};
+
+var CellTrapL_cell = function (params) {
+    console.log("I got pressed");
+    let orientation = params["orientation"];
+    let position = params["position"];
+    let chamberLength = params["chamberLength"];
+    let numChambers = params["numberOfChambers"];
+    let chamberWidth = params["chamberWidth"];
+    let feedingChannelWidth = params["feedingChannelWidth"];
+    let chamberSpacing = params["chamberSpacing"];
+    let color = params["color"];
+    let x = position[0];
+    let y = position[1];
+    let chamberList = new paper.CompoundPath();
+    var rec;
+    var traps;
+    var channels;
+    if (orientation == "V") {
+        for (i = 0; i < numChambers / 2; i++) {
+            startPoint = new paper.Point(x, y + i * (chamberWidth + chamberSpacing));
+            rec = new paper.Path.Rectangle({
+                size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
+                point: startPoint,
+                fillColor: color,
+                strokeWidth: 0
+            });
+            chamberList.addChild(rec);
+        }
+        /*
+                channels = new paper.Path.Rectangle({
+                    point: [x + chamberLength, y],
+                    size: [0, numChambers/2*(chamberWidth + chamberSpacing)],
+                    fillColor: color,
+                    strokeWidth: 0
+                });
+                chamberList.push(channels);
+                */
+    } else {
+        for (i = 0; i < numChambers / 2; i++) {
+            startPoint = new paper.Point(x + i * (chamberWidth + chamberSpacing), y);
+            rec = paper.Path.Rectangle({
+                size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
+                point: startPoint,
+                fillColor: color,
+                strokeWidth: 0
+            });
+            chamberList.addChild(rec);
+        }
+        /*
+                channels = paper.Path.Rectangle({
+                    point: [x, y + chamberLength],
+                    size: [numChambers/2*(chamberWidth + chamberSpacing), 0],
+                    fillColor: color,
+                    strokeWidth: 0
+                });
+                chamberList.push(channels);
+        */
+    }
+    chamberList.fillColor = color;
+    //traps = new paper.CompoundPath(chamberList);
+    //traps.fillColor = color;
+    center = new paper.Point(x, y);
+    //test_circ = new paper.Path.Circle(center, 2000);
+    //test_circ.fillColor = color;
+    //console.log(chamberList);
+    return chamberList;
 };
 
 var CellTrapLTarget = function (params) {
-    let orientation = params["orientation"] == "V";
+    let orientation = params["orientation"];
     let position = params["position"];
     let chamberLength = params["chamberLength"];
-    let numChambers = params["numChambers"];
+    let numChambers = params["numberOfChambers"];
     let chamberWidth = params["chamberWidth"];
     let feedingChannelWidth = params["feedingChannelWidth"];
     let chamberSpacing = params["chamberSpacing"];
@@ -38012,7 +38205,7 @@ var CellTrapLTarget = function (params) {
     var traps;
     var channels;
 
-    if (orientation) {
+    if (orientation == "V") {
         for (i = 0; i < numChambers / 2; i++) {
             rec = paper.Path.Rectangle({
                 size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
@@ -38165,6 +38358,7 @@ module.exports.RotaryMixer = RotaryMixer;
 module.exports.RotaryMixer_control = RotaryMixer_control;
 module.exports.RotaryMixerTarget = RotaryMixerTarget;
 module.exports.CellTrapL = CellTrapL;
+module.exports.CellTrapL_cell = CellTrapL_cell;
 module.exports.CellTrapLTarget = CellTrapLTarget;
 module.exports.DropletGen = DropletGen;
 module.exports.DropletGenTarget = DropletGenTarget;
@@ -39818,6 +40012,51 @@ class MouseTool {
 module.exports = MouseTool;
 
 },{"../../core/registry":198}],232:[function(require,module,exports){
+var PositionTool = require('./positionTool');
+var Registry = require("../../core/registry");
+var Feature = require("../../core/feature");
+var SimpleQueue = require("../../utils/simpleQueue");
+var PageSetup = require("../pageSetup");
+
+class CellPositionTool extends PositionTool {
+    constructor(typeString, setString) {
+        super(typeString, setString);
+    }
+
+    createNewFeature(point) {
+        let flowlayer = Registry.currentDevice.layers[0];
+        let cell_layer = Registry.currentDevice.layers[2];
+
+        let newFeature = Feature.makeFeature(this.typeString, this.setString, {
+            "position": PositionTool.getTarget(point)
+        });
+        this.currentFeatureID = newFeature.getID();
+        flowlayer.addFeature(newFeature);
+        let newtypestring = this.typeString + "_cell";
+        let paramstoadd = newFeature.getParams();
+        newFeature = Feature.makeFeature(newtypestring, this.setString, {
+            "position": PositionTool.getTarget(point)
+        });
+        newFeature.setParams(paramstoadd);
+
+        this.currentFeatureID = newFeature.getID();
+        cell_layer.addFeature(newFeature);
+    }
+
+    static getTarget(point) {
+        let target = Registry.viewManager.snapToGrid(point);
+        return [target.x, target.y];
+    }
+
+    showTarget() {
+        let target = PositionTool.getTarget(this.lastPoint);
+        Registry.viewManager.updateTarget(this.typeString, this.setString, target);
+    }
+}
+
+module.exports = CellPositionTool;
+
+},{"../../core/feature":188,"../../core/registry":198,"../../utils/simpleQueue":210,"../pageSetup":215,"./positionTool":237}],233:[function(require,module,exports){
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
@@ -39933,7 +40172,7 @@ class ChannelTool extends MouseTool {
 
 module.exports = ChannelTool;
 
-},{"../../core/feature":188,"../../core/registry":198,"../../utils/simpleQueue":210,"../pageSetup":215,"./mouseTool":233}],233:[function(require,module,exports){
+},{"../../core/feature":188,"../../core/registry":198,"../../utils/simpleQueue":210,"../pageSetup":215,"./mouseTool":234}],234:[function(require,module,exports){
 var Registry = require("../../core/registry");
 
 class MouseTool {
@@ -39956,7 +40195,7 @@ class MouseTool {
 
 module.exports = MouseTool;
 
-},{"../../core/registry":198}],234:[function(require,module,exports){
+},{"../../core/registry":198}],235:[function(require,module,exports){
 var PositionTool = require('./positionTool');
 var Registry = require("../../core/registry");
 var Feature = require("../../core/feature");
@@ -40001,7 +40240,7 @@ class MultilayerPositionTool extends PositionTool {
 
 module.exports = MultilayerPositionTool;
 
-},{"../../core/feature":188,"../../core/registry":198,"../../utils/simpleQueue":210,"../pageSetup":215,"./positionTool":236}],235:[function(require,module,exports){
+},{"../../core/feature":188,"../../core/registry":198,"../../utils/simpleQueue":210,"../pageSetup":215,"./positionTool":237}],236:[function(require,module,exports){
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
@@ -40064,7 +40303,7 @@ class PanTool extends MouseTool {
 
 module.exports = PanTool;
 
-},{"../../core/registry":198,"../../utils/simpleQueue":210,"./mouseTool":233}],236:[function(require,module,exports){
+},{"../../core/registry":198,"../../utils/simpleQueue":210,"./mouseTool":234}],237:[function(require,module,exports){
 var MouseTool = require("./mouseTool");
 var Registry = require("../../core/registry");
 var Feature = require("../../core/feature");
@@ -40117,7 +40356,7 @@ class PositionTool extends MouseTool {
 
 module.exports = PositionTool;
 
-},{"../../core/feature":188,"../../core/registry":198,"../../utils/simpleQueue":210,"../pageSetup":215,"./mouseTool":233}],237:[function(require,module,exports){
+},{"../../core/feature":188,"../../core/registry":198,"../../utils/simpleQueue":210,"../pageSetup":215,"./mouseTool":234}],238:[function(require,module,exports){
 var Registry = require("../../core/registry");
 var MouseTool = require("./MouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
@@ -40261,7 +40500,7 @@ class SelectTool extends MouseTool {
 
 module.exports = SelectTool;
 
-},{"../../core/registry":198,"../../utils/simpleQueue":210,"../pageSetup":215,"./MouseTool":231}],238:[function(require,module,exports){
+},{"../../core/registry":198,"../../utils/simpleQueue":210,"../pageSetup":215,"./MouseTool":231}],239:[function(require,module,exports){
 var Registry = require("../core/registry");
 var Device = require("../core/device");
 var ChannelTool = require("./tools/channelTool");
@@ -40272,6 +40511,7 @@ var SelectTool = require("./tools/selectTool");
 var SimpleQueue = require("../utils/SimpleQueue");
 var PositionTool = require("./tools/positionTool");
 var MultilayerPositionTool = require('./tools/multilayerPositionTool');
+var CellPositionTool = require('./tools/cellPositionTool');
 
 class ViewManager {
     constructor(view) {
@@ -40549,6 +40789,7 @@ class ViewManager {
         this.updateGrid();
         this.updateDevice(Registry.currentDevice);
         this.refresh(true);
+        console.log(Registry.currentDevice.layers);
     }
 
     removeFeaturesByPaperElements(paperElements) {
@@ -40667,7 +40908,7 @@ class ViewManager {
         this.tools["Mux"] = new MultilayerPositionTool("Mux", "Basic");
         this.tools["Transposer"] = new MultilayerPositionTool("Transposer", "Basic");
         this.tools["RotaryMixer"] = new MultilayerPositionTool("RotaryMixer", "Basic");
-        this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
+        this.tools["CellTrapL"] = new CellPositionTool("CellTrapL", "Basic");
         this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
     }
@@ -40675,4 +40916,4 @@ class ViewManager {
 
 module.exports = ViewManager;
 
-},{"../core/device":187,"../core/registry":198,"../utils/SimpleQueue":207,"./PanAndZoom":211,"./tools/channelTool":232,"./tools/mouseTool":233,"./tools/multilayerPositionTool":234,"./tools/panTool":235,"./tools/positionTool":236,"./tools/selectTool":237}]},{},[186]);
+},{"../core/device":187,"../core/registry":198,"../utils/SimpleQueue":207,"./PanAndZoom":211,"./tools/cellPositionTool":232,"./tools/channelTool":233,"./tools/mouseTool":234,"./tools/multilayerPositionTool":235,"./tools/panTool":236,"./tools/positionTool":237,"./tools/selectTool":238}]},{},[186]);

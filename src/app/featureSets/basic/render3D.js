@@ -283,6 +283,22 @@ let render3D = {
         featurePrimitive: "ConeFeature",
         featurePrimitiveSet: "Basic3D"
     },
+    CellTrapL_cell: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing",
+            height: "height"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
     DropletGen: {
         featureParams: {
             position: "position",
