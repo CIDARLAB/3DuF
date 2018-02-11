@@ -24,6 +24,7 @@ let muxButton = document.getElementById("mux_button");
 let transposerButton = document.getElementById("transposer_button");
 let rotarymixerButton = document.getElementById("rotarymixer_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
+let celltraplButton = document.getElementById("celltrapl_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
@@ -43,6 +44,7 @@ let muxParams = document.getElementById("mux_params_button");
 let transposerParams = document.getElementById("transposer_params_button");
 let rotarymixerParams = document.getElementById("rotarymixer_params_button");
 let dropletgenParams = document.getElementById("dropletgen_params_button");
+let celltraplParams = document.getElementById("celltrapl_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let svgButton = document.getElementById("svg_button");
@@ -87,7 +89,8 @@ let buttons = {
     "Mux":muxButton,
     "Transposer":transposerButton,
     "RotaryMixer":rotarymixerButton,
-    "DropletGen": dropletgenButton
+    "DropletGen": dropletgenButton,
+    "CellTrapL": celltraplButton
 }
 
 let layerButtons = {
@@ -315,6 +318,12 @@ function setupAppPage() {
         setActiveButton("DropletGen");
         switchTo2D();
     };
+    celltraplButton.onclick = function() {
+        Registry.viewManager.activateTool("CellTrapL");
+        let bg = Colors.getDefaultFeatureColor("CellTrapL", "Basic", Registry.currentLayer);
+        setActiveButton("CellTrapL");
+        switchTo2D();
+    };
 
     flowButton.onclick = function() {
         if (threeD) {
@@ -420,6 +429,7 @@ function setupAppPage() {
     rotarymixerParams.onclick = paramsWindowFunction("RotaryMixer", "Basic");
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
     transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
+    celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {

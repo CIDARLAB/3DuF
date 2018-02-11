@@ -38,7 +38,7 @@ class Layer {
     getIndex(){
         if(this.device) return this.device.layers.indexOf(this);
     }
-
+/*
     estimateLayerHeight(){
         let dev = this.device;
         let flip = this.params.getValue("flip");
@@ -60,7 +60,7 @@ class Layer {
         }
         return 0;
     }
-
+*/
     __ensureIsAFeature(feature) {
         if (!(feature instanceof Feature)) {
             throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");

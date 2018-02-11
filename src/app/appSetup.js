@@ -35,7 +35,7 @@ window.onload = function() {
 
     Registry.viewManager = viewManager;
 
-    viewManager.loadDeviceFromJSON(JSON.parse(Examples.example1));
+    viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
     viewManager.updateGrid();
     Registry.currentDevice.updateView();
 

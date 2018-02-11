@@ -8,6 +8,7 @@ var SelectTool = require("./tools/selectTool");
 var SimpleQueue = require("../utils/SimpleQueue");
 var PositionTool = require("./tools/positionTool");
 var MultilayerPositionTool = require('./tools/multilayerPositionTool');
+var CellPositionTool = require('./tools/cellPositionTool');
 
 class ViewManager {
     constructor(view) {
@@ -289,6 +290,7 @@ class ViewManager {
         this.updateGrid();
         this.updateDevice(Registry.currentDevice);
         this.refresh(true);
+        console.log(Registry.currentDevice.layers);
     }
 
     removeFeaturesByPaperElements(paperElements) {
@@ -410,7 +412,7 @@ class ViewManager {
         this.tools["Mux"] = new MultilayerPositionTool("Mux", "Basic");
         this.tools["Transposer"] = new MultilayerPositionTool("Transposer", "Basic");
         this.tools["RotaryMixer"] = new MultilayerPositionTool("RotaryMixer", "Basic");
-        this.tools["CellTrapL"] = new PositionTool("CellTrapL", "Basic");
+        this.tools["CellTrapL"] = new CellPositionTool("CellTrapL", "Basic");
         this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
     }

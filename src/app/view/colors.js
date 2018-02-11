@@ -63,9 +63,27 @@ var red = {
 	"A700": "#" + "D50000"
 }
 
+var blue = {
+    "900": "#" + "1A237E",
+    "800": "#" + "283593",
+    "700": "#" + "303F9F",
+    "600": "#" + "3949AB",
+    "500": "#" + "3F51B5",
+    "400": "#" + "5C6BC0",
+    "300": "#" + "7986CB",
+    "200": "#" + "9FA8DA",
+    "100": "#" + "C5CAE9",
+    "50": "#" + "E8EAF6",
+    "A100": "#" + "8C9EFF",
+    "A200": "#" + "536DFE",
+    "A400": "#" + "3D5AFE",
+    "A700": "#" + "304FFE",
+}
+
 var layerColors = {
 	"indigo": indigo,
-	"red": red
+	"red": red,
+	"blue": blue
 }
 
 var decimalToIndex = function(decimal, indices){
@@ -75,7 +93,7 @@ var decimalToIndex = function(decimal, indices){
 var decimalToLayerColor = function(decimal, layerColors, orderedKeys){
 	let index = decimalToIndex(decimal, orderedKeys.length);
 	let key = orderedKeys[index];
-	return layerColors[key];
+	return layerColors["700"];
 }
 
 var renderAllColors = function(layer, orderedKeys){
@@ -110,7 +128,7 @@ var getDefaultLayerColor = function(layer){
 var getDefaultFeatureColor = function(typeString, setString, layer){
 	if (layer){
 		let height = Feature.getDefaultsForType(typeString, setString)["height"];
-		let decimal = height / layer.estimateLayerHeight();
+		let decimal = height // layer.estimateLayerHeight();
 		if (!layer.flip) decimal = 1-decimal;
 		let colors = getLayerColors(layer);
 		return decimalToLayerColor(decimal, colors, darkColorKeys);
