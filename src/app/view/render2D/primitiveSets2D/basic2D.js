@@ -2146,7 +2146,7 @@ var CellTrapL = function(params) {
         startPoint = new paper.Point(x + chamberLength, y);
         channels = new paper.Path.Rectangle({
             point: startPoint,
-            size: [feedingChannelWidth, numChambers/2*(chamberWidth + chamberSpacing)],
+            size: [feedingChannelWidth, numChambers/2*(chamberWidth + chamberSpacing) + chamberSpacing],
             fillColor: color,
             strokeWidth: 0
         });
@@ -2167,7 +2167,7 @@ var CellTrapL = function(params) {
         startPoint = new paper.Point(x, y + chamberLength);
         channels = new paper.Path.Rectangle({
             point: startPoint,
-            size: [numChambers/2*(chamberWidth + chamberSpacing), feedingChannelWidth],
+            size: [numChambers/2*(chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
             fillColor: color,
             strokeWidth: 0
         });
@@ -2199,7 +2199,7 @@ var CellTrapL_cell = function(params) {
     var channels;
     if (orientation == "V") {
         for (i = 0; i < numChambers/2; i++) {
-            startPoint = new paper.Point(x, y + i*(chamberWidth + chamberSpacing));
+            startPoint = new paper.Point(x, y + i*(chamberWidth + chamberSpacing) + chamberSpacing);
             rec = new paper.Path.Rectangle({
                 size: [2*chamberLength + feedingChannelWidth, chamberWidth],
                 point: startPoint,
@@ -2221,7 +2221,7 @@ var CellTrapL_cell = function(params) {
     }
     else {
         for (i = 0; i < numChambers/2; i++) {
-            startPoint = new paper.Point(x + i*(chamberWidth + chamberSpacing), y);
+            startPoint = new paper.Point(x + i*(chamberWidth + chamberSpacing) + chamberSpacing, y);
             rec = paper.Path.Rectangle({
                 size: [chamberWidth, 2*chamberLength + feedingChannelWidth],
                 point: startPoint,
@@ -2271,7 +2271,7 @@ var CellTrapLTarget = function(params) {
         for (i = 0; i < numChambers/2; i++) {
             rec = paper.Path.Rectangle({
                 size: [2*chamberLength + feedingChannelWidth, chamberWidth],
-                point: [x, y + i*(chamberWidth + chamberSpacing)],
+                point: [x, y + i*(chamberWidth + chamberSpacing) + chamberSpacing],
                 fillColor: color,
                 strokeWidth: 0
             });
@@ -2279,7 +2279,7 @@ var CellTrapLTarget = function(params) {
         }
         channels = paper.Path.Rectangle({
             point: [x + chamberLength, y],
-            size: [feedingChannelWidth, numChambers/2*(chamberWidth + chamberSpacing)],
+            size: [feedingChannelWidth, numChambers/2*(chamberWidth + chamberSpacing) + chamberSpacing],
             fillColor: color,
             strokeWidth: 0
         });
@@ -2289,7 +2289,7 @@ var CellTrapLTarget = function(params) {
         for (i = 0; i < numChambers/2; i++) {
             rec = paper.Path.Rectangle({
                 size: [chamberWidth, 2*chamberLength + feedingChannelWidth],
-                point: [x + i*(chamberWidth + chamberSpacing), y],
+                point: [x + i*(chamberWidth + chamberSpacing) + chamberSpacing, y],
                 fillColor: color,
                 strokeWidth: 0
             });
@@ -2297,7 +2297,7 @@ var CellTrapLTarget = function(params) {
         }
         channels = paper.Path.Rectangle({
             point: [x, y + chamberLength],
-            size: [numChambers/2*(chamberWidth + chamberSpacing), feedingChannelWidth],
+            size: [numChambers/2*(chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
             fillColor: color,
             strokeWidth: 0
         });
