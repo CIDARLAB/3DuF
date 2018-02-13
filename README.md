@@ -3,7 +3,7 @@ User-friendly CAD for microfluidic devices.
 
 ## Try it out
 
-[http://cidarlab.github.io/3DuF](http://cidarlab.github.io/3DuF)
+[3DuF.org](http://3duf.org)
 
 ## Usage
 
@@ -33,10 +33,6 @@ Right click on any selected feature to bring up a dialog box which will allow yo
 ### Switching between 2D and 3D views
 
 Under ```select view``` in the left menu, click ```3D``` to switch to a non-editable 3D view of your device. Click ```2D``` to switch back and continue editing.
-
-### 3D Navigation
-
-Hold left or middle mouse button to pan. Hold right mouse button to rotate. Scroll middle mouse to zoom.
 
 ### Saving Designs
 
