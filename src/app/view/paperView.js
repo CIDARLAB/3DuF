@@ -68,12 +68,14 @@ class PaperView {
         layerCopy.bounds.topLeft = new paper.Point(0, 0);
         let deviceWidth = Registry.currentDevice.params.getValue("width");
         let deviceHeight = Registry.currentDevice.params.getValue("height");
+        layerCopy.bounds.topLeft = new paper.Point(0,0);
         layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
         let svg = layer.exportSVG({
             asString: true
         });
-        let width = layerCopy.bounds.width;
-        let height = layerCopy.bounds.height;
+
+        let width = deviceWidth;
+        let height = deviceHeight;
         let widthInMillimeters = width / 1000;
         let heightInMilliMeters = height / 1000;
         let insertString = 'width="' + widthInMillimeters + 'mm" ' +
