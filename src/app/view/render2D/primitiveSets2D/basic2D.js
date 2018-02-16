@@ -420,7 +420,6 @@ var createTransposerValve = function(compound_path, xpos, ypos, gap, radius, ori
 }
 
 var Transposer_control = function(params){
-    console.log("test")
     let position = params["position"];
     let gap = params["gap"];
     let radius = params["valveRadius"];
@@ -1913,8 +1912,6 @@ var TreeTarget = function(params) {
     treepath.fillColor = color;
     treepath.fillColor.alpha = 0.5;
     var rotation = 0;
-    console.log("Orientation: " + orientation);
-    console.log("Direction: " + direction);
     if(orientation == "H" && direction=="OUT"){
         rotation = 180;
     }else if(orientation == "V" && direction =="IN"){
@@ -1960,8 +1957,6 @@ var Mux = function(params) {
 
     treepath.fillColor = color;
     var rotation = 0;
-    // console.log("Orientation: " + orientation);
-    // console.log("Direction: " + direction);
     if(orientation == "H" && direction=="OUT"){
         rotation = 180;
     }else if(orientation == "V" && direction =="IN"){
@@ -2182,7 +2177,6 @@ var CellTrapL = function(params) {
 };
 
 var CellTrapL_cell = function(params) {
-    console.log("I got pressed");
     let orientation = params["orientation"];
     let position = params["position"];
     let chamberLength = params["chamberLength"];
