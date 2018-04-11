@@ -2,6 +2,7 @@ var Registry = require("../core/registry");
 var FeatureRenderer2D = require("./render2D/featureRenderer2D");
 var GridRenderer = require("./render2D/GridRenderer");
 var DeviceRenderer = require("./render2D/deviceRenderer2D");
+var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
 var PanAndZoom = require("./PanAndZoom");
 var SimpleQueue = require("../utils/simpleQueue");
 var Colors = require("./colors");
