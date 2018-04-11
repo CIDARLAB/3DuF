@@ -34,6 +34,27 @@ class ViewManager {
             if (key == 46 || key == 8) {
                 reference.view.deleteSelectedFeatures();
             }
+
+            if(key == 37){
+                //console.log("left arrow");
+                reference.view.moveCenter(new paper.Point(1000,0));
+                reference.updateGrid();
+            }
+            if(key == 38){
+                //console.log("Up arrow");
+                reference.view.moveCenter(new paper.Point(0,1000));
+                reference.updateGrid();
+            }
+            if(key == 39){
+                //console.log("right arrow");
+                reference.view.moveCenter(new paper.Point(-1000,0));
+                reference.updateGrid();
+            }
+            if(key == 40){
+                //console.log("down arrow");
+                reference.view.moveCenter(new paper.Point(0,-1000));
+                reference.updateGrid();
+            }
         });
 
         this.view.setResizeFunction(function() {
