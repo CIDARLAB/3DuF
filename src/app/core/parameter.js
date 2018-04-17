@@ -29,6 +29,9 @@ class Parameter {
         Parameter.checkValue(this.__type, value);
         this.__value = value;
     }
+    resetValue(){
+
+    }
 
     //Takes a typestring to recognize that param type, and
     // an isValid function which returns true if a value is OK for

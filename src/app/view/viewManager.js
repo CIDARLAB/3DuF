@@ -23,6 +23,7 @@ class ViewManager {
         this.saveQueue = new SimpleQueue(function() {
             reference.saveToStorage();
         })
+        this.undoStack = [];
         window.onkeydown = function(event) {
             let key = event.keyCode || event.which;
             if (key == 46) {
@@ -32,9 +33,26 @@ class ViewManager {
         this.view.setKeyDownFunction(function(event) {
             let key = event.keyCode || event.which;
             if (key == 46 || key == 8) {
+                console.log("Deleting");
                 reference.view.deleteSelectedFeatures();
             }
+            if ((event.ctrlKey || event.metaKey) && key == 67) {
+                console.log("Ctl c detected");
+                let selectedFeatures = reference.view.getSelectedFeatures();
+                if (selectedFeatures.length > 0) {
+                    reference.activateTool(selectedFeatures[0].getType())
+                }
 
+            }
+            if ((event.ctrlKey || event.metaKey) && key == 88) {
+                console.log("Ctl x detected");
+                let selectedFeatures = reference.view.getSelectedFeatures();
+                if (selectedFeatures.length > 0) {
+                    reference.activateTool(selectedFeatures[0].getType());
+                    reference.removeFeature(selectedFeatures[0]);
+                }
+
+            }
             if(key == 37){
                 //console.log("left arrow");
                 reference.view.moveCenter(new paper.Point(1000,0));
@@ -410,7 +428,20 @@ class ViewManager {
             this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
         }
     }
-
+    revertFieldToDefault(valueString, feature) {
+        feature.updateParameter(valueString, Registry.featureDefaults[feature.getSet()][feature.getType()][valueString]);
+    }
+    revertFeatureToDefaults(feature) {
+        let heritable = feature.getHeritableParams();
+        for (let key in heritable) {
+            this.revertFieldToDefault(key, feature);
+        }
+    }
+    revertFeaturesToDefaults(features) {
+        for (let feature in features) {
+            this.revertFeatureToDefaults(feature);
+        }
+    }
     hitFeature(point) {
         return this.view.hitFeature(point);
     }

@@ -41,7 +41,7 @@ var createValueField = function(start, id) {
   var div = document.createElement("div");
   var error = document.createElement("span");
   var span = document.createElement("span");
-  span.innerHTML = " ";
+  span.innerHTML = "&mu;m";
   span.style.fontSize = "14px";
   error.className = "mdl-textfield__error";
   error.innerHTML = "Digits only";
@@ -221,6 +221,15 @@ var createStringRow = function(featureID, typeString, setString, key) {
   return row;
 }
 */
+
+var createDefaultsRow = function(featureID, typeString, setString, key) {
+  var title = createSpan(key);
+  var buttonID = ("defaults_button");
+  var spanID = ("defaults_span");
+  var value = Feature.getDefaultsForType(typeString, setString)[key]
+
+}
+
 var createCheckboxRow = function(featureID, typeString, setString, key) {
   var title = createSpan(key);
   var checkID = (featureID + "_" + key + "_checkbox");

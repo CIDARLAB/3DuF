@@ -112,7 +112,9 @@ class Layer {
     containsFeatureID(featureID) {
         return this.features.hasOwnProperty(featureID);
     }
-
+    getAllFeaturesFromLayer() {
+        return this.features;
+    }
     __renderFeatures2D() {
         let output = [];
         for (let i in this.features) {
