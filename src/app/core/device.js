@@ -49,7 +49,13 @@ class Device {
         }
         return false;
     }
-
+    getAllFeaturesFromDevice() {
+        features = [];
+        for (let layer in this.layers) {
+            features.push.apply(features, layer.features);
+        }
+        return features;
+    }
     getFeatureByID(featureID){
         let layer =  this.getLayerFromFeatureID(featureID);
         return layer.getFeature(featureID);

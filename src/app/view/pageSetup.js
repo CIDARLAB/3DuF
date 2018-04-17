@@ -25,6 +25,7 @@ let transposerButton = document.getElementById("transposer_button");
 let rotarymixerButton = document.getElementById("rotarymixer_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
 let celltraplButton = document.getElementById("celltrapl_button");
+let revertdefaultsButton = document.getElementById("revertdefaults_button");
 
 let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
@@ -213,6 +214,15 @@ function setupAppPage() {
         setActiveButton("Channel");
         switchTo2D();
     };
+    revertdefaultsButton.onclick = function() {
+        Registry.viewManager.revertFeaturesToDefaults(Registry.viewManager.view.getSelectedFeatures());
+
+    }
+/*
+    copyButton.onclick = function() {
+
+    }
+*/
     roundedChannelButton.onclick = function() {
         Registry.viewManager.activateTool("RoundedChannel");
         let bg = Colors.getDefaultFeatureColor("RoundedChannel", "Basic", Registry.currentLayer);
@@ -326,6 +336,9 @@ function setupAppPage() {
         setActiveButton("CellTrapL");
         switchTo2D();
     };
+    //copyButton.onclick = function() {
+
+    //}
 
     flowButton.onclick = function() {
         if (threeD) {
@@ -356,6 +369,8 @@ function setupAppPage() {
         Registry.currentLayer = Registry.currentDevice.layers[2];
         setActiveLayer("2");
         Registry.viewManager.updateActiveLayer();
+        console.log("Adaptive Grid Min Spacing: " + Registry.currentGrid.minSpacing);
+        console.log("Adaptive Grid Max Spacing: " + Registry.currentGrid.maxSpacing);
 
     }
 

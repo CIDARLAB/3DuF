@@ -38,7 +38,12 @@ class SelectTool extends MouseTool {
 
 	keyHandler(event) {
 		if (event.key == "delete" || event.key == "backspace") {
+			console.log("Removing feature");
 			this.removeFeatures();
+		}
+		if (event.key == "c") {
+			console.log("Detected a ctrlC");
+			console.log(this.currentSelection);
 		}
 	}
 
