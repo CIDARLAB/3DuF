@@ -374,13 +374,6 @@ function setupAppPage() {
 
     }
 
-    jsonButton.onclick = function() {
-        let json = new Blob([JSON.stringify(Registry.currentDevice.toJSON())], {
-            type: "application/json"
-        });
-        saveAs(json, "device.json");
-    }
-
     interchangeV1Button.onclick = function() {
         let json = new Blob([JSON.stringify(Registry.currentDevice.toInterchangeV1())], {
             type: "application/json"
