@@ -57,26 +57,35 @@ class ViewManager {
                 //console.log("left arrow");
                 reference.view.moveCenter(new paper.Point(1000,0));
                 reference.updateGrid();
+                reference.view.updateAlignmentMarks();
             }
             if(key == 38){
                 //console.log("Up arrow");
                 reference.view.moveCenter(new paper.Point(0,1000));
                 reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+
             }
             if(key == 39){
                 //console.log("right arrow");
                 reference.view.moveCenter(new paper.Point(-1000,0));
                 reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+
             }
             if(key == 40){
                 //console.log("down arrow");
                 reference.view.moveCenter(new paper.Point(0,-1000));
                 reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+
             }
         });
 
         this.view.setResizeFunction(function() {
             reference.updateGrid();
+            reference.updateAlignmentMarks();
+
             reference.updateDevice(Registry.currentDevice);
         });
 
@@ -219,6 +228,11 @@ class ViewManager {
         }
     }
 
+    updateAlignmentMarks(){
+        this.view.updateAlignmentMarks();
+        console.log("Testing update alignment marks");
+    }
+
     clear() {
         this.view.clear();
     }
@@ -228,6 +242,8 @@ class ViewManager {
         else if (zoom < this.minZoom) zoom = this.minZoom;
         this.view.setZoom(zoom);
         this.updateGrid(false);
+        this.updateAlignmentMarks();
+
         this.updateDevice(Registry.currentDevice, false);
         this.__updateViewTarget(false);
         this.refresh(refresh);
@@ -239,11 +255,13 @@ class ViewManager {
 
     updateTarget(featureType, featureSet, position, refresh = true) {
         this.view.addTarget(featureType, featureSet, position);
+        this.view.updateAlignmentMarks();
         this.refresh(refresh);
     }
 
     __updateViewTarget(refresh = true) {
         this.view.updateTarget();
+        this.updateAlignmentMarks();
         this.refresh(refresh);
     }
 
@@ -253,6 +271,8 @@ class ViewManager {
         if (!aboveMax && !belowMin) {
             this.view.adjustZoom(delta, point);
             this.updateGrid(false);
+            //this.updateAlignmentMarks();
+
             this.updateDevice(Registry.currentDevice, false);
             this.__updateViewTarget(false);
         } else {
@@ -264,6 +284,8 @@ class ViewManager {
     setCenter(center, refresh = true) {
         this.view.setCenter(center);
         this.updateGrid(false);
+        //this.updateAlighmentMarks();
+
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }
@@ -271,6 +293,8 @@ class ViewManager {
     moveCenter(delta, refresh = true) {
         this.view.moveCenter(delta);
         this.updateGrid(false);
+        // this.updateAlignmentMarks();
+
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }

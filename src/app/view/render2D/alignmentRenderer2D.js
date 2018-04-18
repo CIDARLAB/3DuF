@@ -33,11 +33,11 @@ function getPrimitive2D(typeString, setString) {
     return PrimitiveSets2D[setString][typeString];
 }
 
-function calculateDistance(pointer_position, radius, feature_position) {
-    dist = sqrt()
+function calculateDistance(pointer_position, feature_position) {
+    return Math.sqrt(Math.pow(pointer_position[0] - feature_position.x, 2) + Math.pow(pointer_position[1] - feature_position.y, 2));
 }
 
-function renderTarget(position, radius, features) {
+function renderAlignmentMarks(position, radius, features) {
     // let renderer = getFeatureRenderer(typeString, setString);
     // let params = renderer.targetParams;
     // let prim = getPrimitive2D(renderer.targetPrimitiveType, renderer.targetPrimitiveSet);
@@ -48,33 +48,51 @@ function renderTarget(position, radius, features) {
     // primParams["position"] = position;
     // primParams["color"] = Colors.getDefaultFeatureColor(typeString, setString, Registry.currentLayer);
     // let rendered = prim(primParams);
-    console.log("test 1");
-    for(i in features){
-        let feature = features[i];
-        if(calculateDistance(position, radius, feature.value("position"))){
+    let alignmentmarkergroup = new paper.Group();
 
+    for(i in features){
+
+        let feature = features[i];
+
+        if(calculateDistance(position, feature.getBounds().center) <radius){
+            //TODO: figure out how check for different kinds of components and then generate
+
+            //Generate the alignment H | V lines for each of the features
+
+            //Get the bounds of the feature
+
+            let bounds = feature.getBounds();
+
+            //Only the centroid alignment marks
+            let center = bounds.center;
+            let hstart = new paper.Point(center.x - radius, center.y);
+            let hend = new paper.Point(center.x + radius, center.y);
+
+            let vstart = new paper.Point(center.x, center.y - radius);
+            let vend = new paper.Point(center.x, center.y + radius);
+
+            let hpath = new paper.Path(hstart, hend);
+            let vpath = new paper.Path(vstart, vend);
+
+            hpath.strokeColor = '#696965';
+            hpath.strokeWidth = 500;
+            hpath.strokeCap = 'round';
+
+            hpath.dashArray = [1000, 1200];
+
+            vpath.strokeColor = '#696965';
+            vpath.strokeWidth = 500;
+            vpath.strokeCap = 'round';
+
+            vpath.dashArray = [1000, 1200];
+
+
+            alignmentmarkergroup.addChild(vpath);
+            alignmentmarkergroup.addChild(hpath);
         }
     }
 
-    return rendered;
+    return alignmentmarkergroup;
 }
 
-function renderFeature(feature) {
-    let type = feature.getType();
-    let set = feature.getSet();
-    let renderer = getFeatureRenderer(type, set);
-    let params = renderer.featureParams;
-    let prim = getPrimitive2D(renderer.featurePrimitiveType, renderer.featurePrimitiveSet);
-    let primParams = {};
-    for (let key in params) {
-        primParams[key] = feature.getValue(params[key]);
-    }
-    primParams["color"] = getLayerColor(feature);
-    primParams["baseColor"] = getBaseColor(feature);
-    let rendered = prim(primParams);
-    rendered.featureID = feature.getID();
-    return rendered;
-}
-
-module.exports.renderFeature = renderFeature;
-module.exports.renderTarget = renderTarget;
+module.exports.renderAlignmentMarks = renderAlignmentMarks;

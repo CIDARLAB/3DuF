@@ -23,6 +23,8 @@ class PaperView {
         this.gridLayer.insertAbove(this.deviceLayer);
         this.featureLayer = new paper.Group();
         this.featureLayer.insertAbove(this.gridLayer);
+        this.alignmentMarksLayer = new paper.Group();
+        this.alignmentMarksLayer.insertAbove(this.featureLayer);
         this.uiLayer = new paper.Group();
         this.uiLayer.insertAbove(this.featureLayer);
         this.currentTarget = null;
@@ -103,12 +105,17 @@ class PaperView {
         return Registry.currentDevice.params.getValue("height") * paper.view.zoom;
     }
 
+    /**
+     * Clears the all the paper group collections stored in the paperview object. Used when everything has to be
+     * redrawn
+     */
     clear() {
         this.activeLayer = null;
         this.featureLayer.removeChildren();
         this.featureLayer.clear();
         this.deviceLayer.clear();
         this.gridLayer.clear();
+        this.alignmentMarksLayer.clear();
     }
 
     getCenter() {
@@ -322,6 +329,19 @@ class PaperView {
         this.gridLayer.addChild(newPaperGrid);
     }
 
+    updateAlignmentMarks(){
+        //Remove current Alignment Marks:
+        this.removeAlignmentMarks();
+        let newAlignmentMarks = AlignmentRenderer.renderAlignmentMarks(this.lastTargetPosition, 20000, this.paperFeatures);
+        this.alignmentMarks = newAlignmentMarks;
+        this.alignmentMarksLayer.addChild(newAlignmentMarks);
+    }
+
+    removeAlignmentMarks(){
+        //Does nothing right now
+        if (this.alignmentMarks) this.alignmentMarks.remove();
+        this.alignmentMarks = null;
+    }
     moveCenter(delta) {
         this.panAndZoom.moveCenter(delta);
     }
