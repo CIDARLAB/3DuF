@@ -8,6 +8,10 @@ let basicFeatures = {
             "channelWidth": "Float",
             "height": "Float"
         },
+        units: {
+            "channelWidth": "um",
+            "height": "um"
+        },
         defaults: {
             "channelWidth": .80 * 1000,
             "height": .1 * 1000
@@ -29,6 +33,10 @@ let basicFeatures = {
         heritable: {
             "channelWidth": "Float",
             "height": "Float"
+        },
+        units: {
+            "channelWidth": "um",
+            "height": "um"
         },
         defaults: {
             "channelWidth": .80 * 1000,
@@ -53,6 +61,13 @@ let basicFeatures = {
             "length": "Float",
             "orientation": "String",
             "height": "Float"
+        },
+        units: {
+            "cw1": "um",
+            "cw2": "um",
+            "length": "um",
+            "orientation": "",
+            "height": "um"
         },
         defaults: {
             "cw1": .80 * 1000,
@@ -83,6 +98,10 @@ let basicFeatures = {
             "borderWidth": "Float",
             "height": "Float"
         },
+        units: {
+            "borderWidth": "um",
+            "height": "um"
+        },
         defaults: {
             "borderWidth": .41 * 1000,
             "height": .1 * 1000
@@ -101,6 +120,13 @@ let basicFeatures = {
             "position": "Point",
         },
         heritable: {
+            "radius1": "Float",
+            "radius2": "Float",
+            "height": "Float",
+            "width": "Float",
+            "length": "Float"
+        },
+        units: {
             "radius1": "Float",
             "radius2": "Float",
             "height": "Float",
@@ -134,6 +160,11 @@ let basicFeatures = {
             "radius2": "Float",
             "height": "Float"
         },
+        units: {
+            "radius1": "um",
+            "radius2": "um",
+            "height": "um"
+        },
         defaults: {
             "radius1": 1.4 * 1000,
             "radius2": 1.2 * 1000,
@@ -158,6 +189,11 @@ let basicFeatures = {
             "width": "Float",
             "length": "Float",
             "height": "Float"
+        },
+        units: {
+            "width": "um",
+            "length": "um",
+            "height": "um"
         },
         defaults: {
             "width": 1.4 * 1000,
@@ -184,6 +220,11 @@ let basicFeatures = {
             "length": "Float",
             "height": "Float"
         },
+        units: {
+            "width": "um",
+            "length": "um",
+            "height": "um"
+        },
         defaults: {
             "width": 4000,
             "length": 4000,
@@ -208,6 +249,11 @@ let basicFeatures = {
             "width": "Float",
             "length": "Float",
             "height": "Float"
+        },
+        units: {
+            "width": "um",
+            "length": "um",
+            "height": "um"
         },
         defaults: {
             "width": 4000,
@@ -236,6 +282,14 @@ let basicFeatures = {
             "gap": "Float",
             "width": "Float",
             "length": "Float"
+        },
+        units: {
+            "orientation": "",
+            "valveRadius": "um",
+            "height": "um",
+            "gap": "um",
+            "width": "um",
+            "length": "um"
         },
         defaults: {
             "orientation": "V",
@@ -270,6 +324,14 @@ let basicFeatures = {
             "width": "Float",
             "length": "Float"
         },
+        units: {
+            "orientation": "",
+            "valveRadius": "um",
+            "height": "um",
+            "gap": "um",
+            "width": "um",
+            "length": "um"
+        },
         defaults: {
             "orientation": "V",
             "valveRadius": 1.2 * 1000,
@@ -302,6 +364,14 @@ let basicFeatures = {
             "gap": "Float",
             "valveSpacing": "Float",
             "channelWidth": "Float"
+        },
+        units: {
+            "orientation": "",
+            "valveRadius": "um",
+            "height": "um",
+            "gap": "um",
+            "valveSpacing": "um",
+            "channelWidth": "um"
         },
         defaults: {
             "orientation": "V",
@@ -338,6 +408,14 @@ let basicFeatures = {
             "valveSpacing": "Float",
             "channelWidth": "Float"
         },
+        units: {
+            "orientation": "",
+            "valveRadius": "um",
+            "height": "um",
+            "gap": "um",
+            "valveSpacing": "um",
+            "channelWidth": "um"
+        },
         defaults: {
             "orientation": "V",
             "valveRadius": 1.2 * 1000,
@@ -373,6 +451,15 @@ let basicFeatures = {
             "valveLength": "Float",
             "valveSpacing": "Float",
             "height": "Float"
+        },
+        units: {
+            "orientation": "",
+            "radius": "um",
+            "flowChannelWidth": "um",
+            "valveWidth": "um",
+            "valveLength": "um",
+            "valveSpacing": "um",
+            "height": "um"
         },
         defaults: {
             "orientation": "V",
@@ -457,6 +544,12 @@ let basicFeatures = {
             "width": "Float",
             "height": "Float"
         },
+        units: {
+            "orientation": "",
+            "length": "um",
+            "width": "um",
+            "height": "um"
+        },
         defaults: {
             "orientation": "V",
             "width": 1.23 * 1000,
@@ -483,6 +576,11 @@ let basicFeatures = {
             "radius2": "Float",
             "height": "Float"
         },
+        units: {
+            "radius1": "um",
+            "radius2": "um",
+            "height": "um"
+        },
         defaults: {
             "radius1": .8 * 1000,
             "radius2": .7 * 1000,
@@ -506,6 +604,10 @@ let basicFeatures = {
         heritable: {
             "portRadius": "Float",
             "height": "Float"
+        },
+        units: {
+            "portRadius": "um",
+            "height": "um"
         },
         defaults: {
             "portRadius": .7 * 1000,
@@ -533,6 +635,13 @@ let basicFeatures = {
             "length": "Float",
             "width": "Float",
             "height": "Float"
+        },
+        units: {
+            "orientation": "",
+            "channelWidth": "um",
+            "length": "um",
+            "width": "um",
+            "height": "um"
         },
         defaults: {
             "orientation": "V",
@@ -565,6 +674,14 @@ let basicFeatures = {
             "bendLength": "Float",
             "orientation": "String",
             "height": "Float"
+        },
+        units: {
+            "bendSpacing": "um",
+            "numberOfBends": "",
+            "channelWidth": "um",
+            "bendLength": "um",
+            "orientation": "",
+            "height": "um"
         },
         defaults: {
             "channelWidth": .80 * 1000,
@@ -603,6 +720,14 @@ let basicFeatures = {
             "orientation": "String",
             "height": "Float"
         },
+        units: {
+            "bendSpacing": "um",
+            "numberOfBends": "",
+            "channelWidth": "um",
+            "bendLength": "um",
+            "orientation": "",
+            "height": "um"
+        },
         defaults: {
             "channelWidth": .80 * 1000,
             "bendSpacing": 1.23 * 1000,
@@ -640,6 +765,14 @@ let basicFeatures = {
             "orientation": "String",
             "height": "Float"
         },
+        units: {
+            "bendSpacing": "um",
+            "numberOfBends": "",
+            "channelWidth": "um",
+            "bendLength": "um",
+            "orientation": "",
+            "height": "um"
+        },
         defaults: {
             "channelWidth": .80 * 1000,
             "bendSpacing": 1.23 * 1000,
@@ -675,10 +808,19 @@ let basicFeatures = {
             "spacing": "Float",
             "leafs": "Float",
             "width": "Float",
-            "length": "Float",
             "height": "Float",
             "direction": "String",
-            "stagelength":"Float"
+            "stageLength":"Float"
+        },
+        units: {
+            "flowChannelWidth": "um",
+            "orientation": "",
+            "spacing": "um",
+            "leafs": "",
+            "width": "um",
+            "height": "um",
+            "direction": "",
+            "stageLength":"um"
         },
         defaults: {
             "flowChannelWidth": .80 * 1000,
@@ -686,28 +828,25 @@ let basicFeatures = {
             "spacing": 4 * 1000,
             "leafs": 8,
             "width": 2.46 * 1000,
-            "length": 2.46 * 1000,
             "height": .1 * 1000,
             "direction": "IN",
-            "stagelength": 4000
+            "stageLength": 4000
         },
         minimum: {
             "flowChannelWidth": 10,
             "spacing": 30,
             "leafs": 2,
             "width": 60,
-            "length": 60,
             "height": 10,
-            "stagelength": 100
+            "stageLength": 100
         },
         maximum: {
             "flowChannelWidth": 2000,
             "spacing": 12000,
             "leafs": 2,
             "width": 12 * 1000,
-            "length": 12 * 1000,
             "height": 1200,
-            "stagelength": 6000
+            "stageLength": 6000
         }
     },
     "Mux": {
@@ -725,6 +864,18 @@ let basicFeatures = {
             "direction": "String",
             "stageLength":"Float",
             "controlChannelWidth": "Float"
+        },
+        units: {
+            "flowChannelWidth": "um",
+            "orientation": "",
+            "spacing": "um",
+            "leafs": "",
+            "width": "um",
+            "length": "um",
+            "height": "um",
+            "direction": "",
+            "stageLength":"um",
+            "controlChannelWidth": "um"
         },
         defaults: {
             "flowChannelWidth": .80 * 1000,
@@ -821,6 +972,15 @@ let basicFeatures = {
             "chamberSpacing": "Float",
             "height": "Float"
         },
+        units: {
+            "chamberLength": "um",
+            "feedingChannelWidth": "um",
+            "orientation": "",
+            "chamberWidth": "um",
+            "numberOfChambers": "",
+            "chamberSpacing": "um",
+            "height": "um"
+        },
         defaults: {
             "chamberLength": 1.2 * 1000,
             "feedingChannelWidth": .41 * 1000,
@@ -893,6 +1053,10 @@ let basicFeatures = {
         heritable: {
             "orificeSize": "Float",
             "height": "Float"
+        },
+        units: {
+            "orificeSize": "um",
+            "height": "um"
         },
         defaults: {
             "orificeSize": .80 * 1000,

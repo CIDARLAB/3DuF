@@ -1833,7 +1833,7 @@ var Tree = function(params) {
     spacing = params["spacing"];
     leafs = params["leafs"];
     color = params["color"];
-    stagelength = params["stagelength"];
+    stagelength = params["stageLength"];
     px = position[0];
     py = position[1];
 
@@ -1974,7 +1974,7 @@ var TreeTarget = function(params) {
     spacing = params["spacing"];
     leafs = params["leafs"];
     color = params["color"];
-    stagelength = params["stagelength"];
+    stagelength = params["stageLength"];
     px = position[0];
     py = position[1];
 
