@@ -80,6 +80,12 @@ class ViewManager {
                 reference.view.updateAlignmentMarks();
 
             }
+
+            if(key == 70){
+                reference.view.initializeView();
+                reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+            }
         });
 
         this.view.setResizeFunction(function() {
