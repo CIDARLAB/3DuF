@@ -37,11 +37,11 @@ var createButton = function(iconString) {
   return button;
 }
 
-var createValueField = function(start, id) {
+var createValueField = function(start, id, unittext="") {
   var div = document.createElement("div");
   var error = document.createElement("span");
   var span = document.createElement("span");
-  span.innerHTML = "&mu;m";
+  span.innerHTML = unittext;
   span.style.fontSize = "14px";
   error.className = "mdl-textfield__error";
   error.innerHTML = "Digits only";
@@ -197,8 +197,10 @@ var createSliderRow = function(featureID, typeString, setString, key) {
   titleContainer.style.borderBottom = "none";
   var slider = createSlider(min, max, step, value, sliderID);
   var sliderContainer = createTableElement(slider);
-  sliderContainer.setAttribute("style", "padding-left: 0px; padding-right: 0px")
-  var field = createValueField(value, fieldID);
+  sliderContainer.setAttribute("style", "padding-left: 0px; padding-right: 0px");
+  var unittext = definition.units[key];
+  console.log("UNIT TEXT: " + unittext);
+  var field = createValueField(value, fieldID, unittext);
   var fieldContainer = createTableElement(field);
   var row = createTableRow(sliderContainer, titleContainer, fieldContainer);
   field.oninput = generateUpdateFunction(fieldID, sliderID, typeString, setString, key);
@@ -293,7 +295,7 @@ var createFeatureTableHeaders = function(typeString) {
   value.innerHTML = "Value";
   var type = document.createElement("th");
   type.className = "mdl-data-table__cell--non-numeric";
-  type.innerHTML = typeString + " Parameters";
+  type.innerHTML = "Parameters";
   type.style.fontSize = "18px";
   type.style.color = "#000000";
   //type.style.right = "35px";
