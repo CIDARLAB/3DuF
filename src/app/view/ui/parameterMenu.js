@@ -199,7 +199,6 @@ var createSliderRow = function(featureID, typeString, setString, key) {
   var sliderContainer = createTableElement(slider);
   sliderContainer.setAttribute("style", "padding-left: 0px; padding-right: 0px");
   var unittext = definition.units[key];
-  console.log("UNIT TEXT: " + unittext);
   var field = createValueField(value, fieldID, unittext);
   var fieldContainer = createTableElement(field);
   var row = createTableRow(sliderContainer, titleContainer, fieldContainer);
