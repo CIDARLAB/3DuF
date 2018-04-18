@@ -175,6 +175,56 @@ let basicFeatures = {
             "height": 1200
         }
     },
+    "AlignmentMarks": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "width": "Float",
+            "length": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "width": 4000,
+            "length": 4000,
+            "height": 200
+        },
+        minimum: {
+            "width": 10,
+            "length": 10,
+            "height": 10
+        },
+        maximum: {
+            "width": 200000,
+            "length": 200000,
+            "height": 1200
+        }
+    },
+    "AlignmentMarks_control": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "width": "Float",
+            "length": "Float",
+            "height": "Float"
+        },
+        defaults: {
+            "width": 4000,
+            "length": 4000,
+            "height": 200
+        },
+        minimum: {
+            "width": 10,
+            "length": 10,
+            "height": 10
+        },
+        maximum: {
+            "width": 200000,
+            "length": 200000,
+            "height": 1200
+        }
+    },
     "Valve3D": {
         unique: {
             "position": "Point"

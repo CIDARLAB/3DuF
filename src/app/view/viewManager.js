@@ -33,7 +33,6 @@ class ViewManager {
         this.view.setKeyDownFunction(function(event) {
             let key = event.keyCode || event.which;
             if (key == 46 || key == 8) {
-                console.log("Deleting");
                 reference.view.deleteSelectedFeatures();
             }
             if ((event.ctrlKey || event.metaKey) && key == 67) {
@@ -236,7 +235,6 @@ class ViewManager {
 
     updateAlignmentMarks(){
         this.view.updateAlignmentMarks();
-        console.log("Testing update alignment marks");
     }
 
     clear() {
@@ -513,6 +511,7 @@ class ViewManager {
         this.tools["CellTrapL"] = new CellPositionTool("CellTrapL", "Basic");
         this.tools["DropletGen"] = new PositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
+        this.tools["AlignmentMarks"] = new MultilayerPositionTool("AlignmentMarks", "Basic");
     }
 }
 
