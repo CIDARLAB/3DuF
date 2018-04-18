@@ -37,6 +37,20 @@ let tools = {
         },
         placementTool: "MultilayerPositionTool"
     },
+    AlignmentMarks: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    AlignmentMarks_control: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
     Valve3D_control: {
         toolParams: {
             position: "position",

@@ -74,6 +74,36 @@ let render2D = {
         targetPrimitiveType: "EdgedRectTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    AlignmentMarks: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            length: "length"
+        },
+        targetParams: {
+            width: "width",
+            length: "length"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "AlignmentMarks",
+        targetPrimitiveType: "AlignmentMarksTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    AlignmentMarks_control: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            length: "length"
+        },
+        targetParams: {
+            width: "width",
+            length: "length"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "AlignmentMarks_control",
+        targetPrimitiveType: "AlignmentMarksTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Valve3D: {
         featureParams: {
             position: "position",

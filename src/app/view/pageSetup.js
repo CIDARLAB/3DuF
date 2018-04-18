@@ -27,6 +27,10 @@ let dropletgenButton = document.getElementById("dropletgen_button");
 let celltraplButton = document.getElementById("celltrapl_button");
 let revertdefaultsButton = document.getElementById("revertdefaults_button");
 
+let alignmentMarksButton = document.getElementById("alignmentmarks_button");
+
+let alignmentMarksParams = document.getElementById("alignmentmarks_params_button");
+
 let channelParams = document.getElementById("channel_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
 let transitionParams = document.getElementById("transition_params_button");
@@ -93,7 +97,8 @@ let buttons = {
     "Transposer":transposerButton,
     "RotaryMixer":rotarymixerButton,
     "DropletGen": dropletgenButton,
-    "CellTrapL": celltraplButton
+    "CellTrapL": celltraplButton,
+    "AlignmentMarks": alignmentMarksButton
 }
 
 let layerButtons = {
@@ -245,6 +250,13 @@ function setupAppPage() {
         Registry.viewManager.activateTool("Valve3D");
         let bg = Colors.getDefaultFeatureColor("Valve3D", "Basic", Registry.currentLayer);
         setActiveButton("Valve3D");
+        switchTo2D();
+    };
+
+    alignmentMarksButton.onclick = function() {
+        Registry.viewManager.activateTool("AlignmentMarks");
+        let bg = Colors.getDefaultFeatureColor("AlignmentMarks", "Basic", Registry.currentLayer);
+        setActiveButton("AlignmentMarks");
         switchTo2D();
     };
 
@@ -448,6 +460,7 @@ function setupAppPage() {
     dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
     transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
     celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
+    alignmentMarksParams.onclick = paramsWindowFunction("AlignmentMarks", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {

@@ -17,7 +17,8 @@ var RoundedRectLine = function(params){
     rec.translate([-width/2, -width / 2]);
     rec.rotate(vec.angle, start);
     return rec;
-}
+};
+
 var EdgedRectLine = function(params){
     let start = params["start"];
     let end = params["end"];
@@ -37,7 +38,7 @@ var EdgedRectLine = function(params){
     rec.translate([0, -width / 2]);
     rec.rotate(vec.angle, start);
     return rec;
-}
+};
 
 var RoundedRect = function(params){
     let start = params["start"];
@@ -94,7 +95,7 @@ var CrossHairsTarget = function(params){
     chair.fillColor = color;
     chair.fillColor.alpha = 0.5;
     return chair;
-}
+};
 
 var EdgedRect = function(params){
     let length  = params["length"];
@@ -119,7 +120,7 @@ var EdgedRect = function(params){
         strokeWidth: 0
     });
     return rec;
-}
+};
 
 var EdgedRectTarget = function(params){
     let length  = params["length"];
@@ -145,7 +146,7 @@ var EdgedRectTarget = function(params){
     });
     rec.fillColor.alpha = 0.5;
     return rec;
-}
+};
 
 var GradientCircle = function(params){
     let position = params["position"];
@@ -175,7 +176,7 @@ var GradientCircle = function(params){
         destination: outerCircle.bounds.rightCenter
     };
     return outerCircle;
-}
+};
 /*
 var RectValve = function(params){
     var position = params["position"];
@@ -252,7 +253,7 @@ var GroverValve = function(params){
     //       circ.FillColor = color;
     //       return circ;
     //   }
-}
+};
 
 var GroverValve_control = function(params){
     let minRadiusInMicrometers = 8/paper.view.zoom;
@@ -266,7 +267,92 @@ var GroverValve_control = function(params){
     var circ = new paper.Path.Circle(center, radius);
     circ.fillColor = color;
     return circ;
-}
+};
+//************************************
+
+var AlignmentMarks = function(params){
+    let position = params["position"];
+    let width = params["width"];
+    let length = params["length"];
+    let color = params["color"];
+    let center = new paper.Point(position[0], position[1]);
+    let ret = new paper.CompoundPath();
+    let topleftpoint = new paper.Point(position[0] - width, position[1] - length);
+    let bottomrightpoint = new paper.Point(position[0] + width, position[1] + length);
+
+    let topleftrect = new paper.Path.Rectangle(topleftpoint, center);
+
+    ret.addChild(topleftrect);
+
+    let bottomrightrect = new paper.Path.Rectangle(position, bottomrightpoint);
+
+    ret.addChild(bottomrightrect);
+
+    ret.fillColor = color;
+    return ret;
+};
+
+var AlignmentMarks_control = function(params){
+    let position = params["position"];
+    let width = params["width"];
+    let length = params["length"];
+    let color = params["color"];
+    let here = new paper.Point(position[0], position[1]);
+    let ret = new paper.CompoundPath();
+    let topmiddlepoint = new paper.Point(position[0], position[1] - length);
+    let middlerightpoint = new paper.Point(position[0] + width, position[1]);
+    let middleleftpoint = new paper.Point(position[0] - width, position[1]);
+    let bottommiddlepoint = new paper.Point(position[0], position[1]+length);
+
+    let toprightrect = new paper.Path.Rectangle(topmiddlepoint, middlerightpoint);
+
+    ret.addChild(toprightrect);
+
+    let bottomleftrect = new paper.Path.Rectangle(middleleftpoint, bottommiddlepoint);
+
+    ret.addChild(bottomleftrect);
+
+    ret.fillColor = color;
+    return ret;
+};
+
+var AlignmentMarksTarget = function(params){
+    let position = params["position"];
+    let width = params["width"];
+    let length = params["length"];
+    let color = params["color"];
+    let center = new paper.Point(position[0], position[1]);
+    let ret = new paper.CompoundPath();
+    let topleftpoint = new paper.Point(position[0] - width, position[1] - length);
+    let bottomrightpoint = new paper.Point(position[0] + width, position[1] + length);
+
+    let topleftrect = new paper.Path.Rectangle(topleftpoint, center);
+
+    ret.addChild(topleftrect);
+
+    let bottomrightrect = new paper.Path.Rectangle(position, bottomrightpoint);
+
+    ret.addChild(bottomrightrect);
+
+    let topmiddlepoint = new paper.Point(position[0], position[1] - length);
+    let middlerightpoint = new paper.Point(position[0] + width, position[1]);
+    let middleleftpoint = new paper.Point(position[0] - width, position[1]);
+    let bottommiddlepoint = new paper.Point(position[0], position[1]+length);
+
+    let toprightrect = new paper.Path.Rectangle(topmiddlepoint, middlerightpoint);
+
+    ret.addChild(toprightrect);
+
+    let bottomleftrect = new paper.Path.Rectangle(middleleftpoint, bottommiddlepoint);
+
+    ret.addChild(bottomleftrect);
+
+    ret.fillColor = color;
+
+    ret.fillColor.alpha = 0.5;
+
+    return ret;
+};
 
 //************************************
 var Transposer = function(params){
@@ -392,7 +478,7 @@ var Transposer = function(params){
         );
 
     return transposer_flow;
-}
+};
 
 var createTransposerValve = function(compound_path, xpos, ypos, gap, radius, orientation){
 
@@ -489,7 +575,7 @@ var Transposer_control = function(params){
 
     transposer_control.fillColor = color;
     return transposer_control;
-}
+};
 
 var RotaryMixer = function(params){
 
@@ -539,7 +625,7 @@ var RotaryMixer = function(params){
 
     return rotarymixer.rotate(rotation, px, py);
 
-}
+};
 
 var RotaryMixer_control = function(params){
     let position = params["position"];
@@ -600,7 +686,8 @@ var RotaryMixer_control = function(params){
 
     rotarymixer.fillColor = color;
     return rotarymixer.rotate(rotation, px, py);
-}
+};
+
 //*********************************
 var CircleTarget = function(params){
     let targetRadius;
@@ -632,7 +719,8 @@ var CircleTarget = function(params){
     circ.strokeWidth = 3 / paper.view.zoom;
     if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
     return circ;
-}
+};
+
 //***************************************************
 var TransposerTarget = function(params){
     let targetRadius;
@@ -664,7 +752,7 @@ var TransposerTarget = function(params){
     circ.strokeWidth = 3 / paper.view.zoom;
     if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
     return circ;
-}
+};
 
 var RotaryMixerTarget = function(params){
 
@@ -716,7 +804,8 @@ var RotaryMixerTarget = function(params){
 
     return rotarymixer.rotate(rotation, px, py);
 
-}
+};
+
 //******************************************
 
 var Diamond = function(params){
@@ -755,7 +844,7 @@ var Diamond = function(params){
     hex.closed = true;
     hex.fillColor = color;
     return hex;
-}
+};
 
 var DiamondTarget = function(params){
     let position = params["position"];
@@ -828,7 +917,7 @@ var Valve = function(params){
     }
 
     return rec.rotate(rotation, px, py);
-}
+};
 
 /*
 var Mux_control = function(params){
@@ -910,7 +999,7 @@ var Mux_control = function(params) {
         rotation = 90;
     }
     return treepath.rotate(rotation,px,py);
-}
+};
 
 function drawmuxcontroltwig(treepath, px, py, cw, ctlcw, stagelength, spacing, valvewidth, valvelength, leftEdge, rightEdge, drawleafs=false) {
     //stem - don't bother with valves
@@ -1011,7 +1100,7 @@ function drawmuxcontroltwig(treepath, px, py, cw, ctlcw, stagelength, spacing, v
     // });
     // treepath.addChild(rec);
     return treepath
-}
+};
 
 function generateMuxControlTwig(treepath, px, py,cw, ctlcw, stagelength , newspacing, level, maxlevel, valvewidth, valvelength,
                                 leftEdge, rightEdge, islast=false,) {
@@ -1068,7 +1157,7 @@ var ValveTarget = function(params){
 
     return rec.rotate(rotation, px, py);
 
-}
+};
 
 
 
@@ -1116,7 +1205,7 @@ var BetterMixer = function(params) {
     }
     serp.fillColor = color;
     return serp;
-}
+};
 
 var BetterMixerTarget = function(params) {
     let channelWidth = params["channelWidth"];
@@ -1164,7 +1253,7 @@ var BetterMixerTarget = function(params) {
     serp.fillColor = color;
     serp.fillColor.alpha = 0.5;
     return serp;
-}
+};
 
 var CurvedMixer = function(params) {
     let channelWidth = params["channelWidth"];
@@ -1270,7 +1359,7 @@ var CurvedMixer = function(params) {
     }
     serp.fillColor = color;
     return serp;
-}
+};
 
 var CurvedMixerTarget = function(params) {
     let channelWidth = params["channelWidth"];
@@ -1377,7 +1466,7 @@ var CurvedMixerTarget = function(params) {
     serp.fillColor = color;
     serp.fillColor.alpha = 0.5;
     return serp;
-}
+};
 
 var Mixer = function(params){
     position = params["position"];
@@ -1528,7 +1617,7 @@ var Mixer = function(params){
     serpentine.fillColor = color;
 
     return serpentine;
-}
+};
 
 var MixerTarget = function(params){
     position = params["position"];
@@ -1680,7 +1769,7 @@ var MixerTarget = function(params){
     serpentine.fillColor.alpha = 0.5;
 
     return serpentine;
-}
+};
 
 var Transition = function(params) {
     position = params["position"];
@@ -1734,7 +1823,7 @@ var TransitionTarget = function(params) {
     trap.fillColor = color;
     trap.fillColor.alpha = 0.5;
     return trap;
-}
+};
 
 var Tree = function(params) {
     position  = params["position"];
@@ -1780,7 +1869,7 @@ var Tree = function(params) {
         rotation = 90;
     }
     return treepath.rotate(rotation,px,py);
-}
+};
 
 function drawtwig(treepath, px, py, cw, stagelength, spacing, drawleafs=false) {
     //stem
@@ -1965,7 +2054,7 @@ var Mux = function(params) {
         rotation = 90;
     }
     return treepath.rotate(rotation,px,py);
-}
+};
 
 function drawmuxtwig(treepath, px, py, cw, stagelength, spacing, drawleafs=false) {
     //stem
@@ -2423,3 +2512,6 @@ module.exports.Transition = Transition;
 module.exports.TransitionTarget = TransitionTarget;
 module.exports.CrossHairsTarget = CrossHairsTarget;
 module.exports.ValveTarget = ValveTarget;
+module.exports.AlignmentMarks = AlignmentMarks;
+module.exports.AlignmentMarks_control = AlignmentMarks_control;
+module.exports.AlignmentMarksTarget = AlignmentMarksTarget;
