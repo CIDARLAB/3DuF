@@ -53,7 +53,9 @@ function renderAlignmentMarks(position, radius, features) {
     for(i in features){
 
         let feature = features[i];
-
+        if(feature == null){
+            continue;
+        }
         if(calculateDistance(position, feature.getBounds().center) <radius){
             //TODO: figure out how check for different kinds of components and then generate
 
