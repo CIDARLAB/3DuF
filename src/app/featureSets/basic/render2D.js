@@ -418,9 +418,8 @@ let render2D = {
             orientation: "orientation",
             spacing: "spacing",
             width: "width",
-            length: "length",
             leafs: "leafs",
-            stagelength: "stagelength",
+            stageLength: "stageLength",
             direction : "direction"
         },
         targetParams: {
@@ -428,9 +427,8 @@ let render2D = {
             orientation: "orientation",
             spacing: "spacing",
             width: "width",
-            length: "length",
             leafs: "leafs",
-            stagelength: "stagelength",
+            stageLength: "stageLength",
             direction:"direction"
         },
         featurePrimitiveType: "Tree",
