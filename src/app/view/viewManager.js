@@ -20,21 +20,26 @@ class ViewManager {
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
         }, 20);
+
         this.saveQueue = new SimpleQueue(function() {
             reference.saveToStorage();
-        })
+        });
+
         this.undoStack = [];
         window.onkeydown = function(event) {
             let key = event.keyCode || event.which;
             if (key == 46) {
                 event.preventDefault();
             }
-        }
+        };
+
         this.view.setKeyDownFunction(function(event) {
             let key = event.keyCode || event.which;
+
             if (key == 46 || key == 8) {
                 reference.view.deleteSelectedFeatures();
             }
+
             if ((event.ctrlKey || event.metaKey) && key == 67) {
                 console.log("Ctl c detected");
                 let selectedFeatures = reference.view.getSelectedFeatures();
@@ -43,6 +48,7 @@ class ViewManager {
                 }
 
             }
+
             if ((event.ctrlKey || event.metaKey) && key == 88) {
                 console.log("Ctl x detected");
                 let selectedFeatures = reference.view.getSelectedFeatures();
@@ -52,12 +58,14 @@ class ViewManager {
                 }
 
             }
+
             if(key == 37){
                 //console.log("left arrow");
                 reference.view.moveCenter(new paper.Point(1000,0));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
             }
+
             if(key == 38){
                 //console.log("Up arrow");
                 reference.view.moveCenter(new paper.Point(0,1000));
@@ -65,6 +73,7 @@ class ViewManager {
                 reference.view.updateAlignmentMarks();
 
             }
+
             if(key == 39){
                 //console.log("right arrow");
                 reference.view.moveCenter(new paper.Point(-1000,0));
@@ -72,6 +81,7 @@ class ViewManager {
                 reference.view.updateAlignmentMarks();
 
             }
+
             if(key == 40){
                 //console.log("down arrow");
                 reference.view.moveCenter(new paper.Point(0,-1000));
@@ -81,10 +91,24 @@ class ViewManager {
             }
 
             if(key == 70){
+                //Reset the view
                 reference.view.initializeView();
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
             }
+
+            if(key == 27){
+                //Deselect all
+                paper.project.deselectAll()
+
+            }
+
+            if ((event.ctrlKey || event.metaKey) && key == 65) {
+                //Select all
+                reference.view.selectAllActive();
+                return false;
+            }
+
         });
 
         this.view.setResizeFunction(function() {

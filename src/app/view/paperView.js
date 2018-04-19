@@ -52,6 +52,13 @@ class PaperView {
         }
     }
 
+    selectAllActive(){
+        let layer = this.paperLayers[this.activeLayer];
+        for(var i in layer.children){
+            layer.children[i].selected = true;
+        }
+    }
+
     layersToSVGStrings() {
         let output = [];
         for (let i = 0; i < this.featureLayer.children.length; i++) {
