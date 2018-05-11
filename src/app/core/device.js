@@ -14,6 +14,22 @@ class Device {
         this.layers = [];
         this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
         this.name = StringValue(name);
+        this.__components = [];
+    }
+
+    addComponent(component){
+        this.__components.push(component);
+    }
+
+    removeComponent(component){
+        var i = this.__components.indexOf(component);
+        if(i != -1) {
+            this.__components.splice(i, 1);
+        }
+    }
+
+    getComponents(){
+        return this.__components;
     }
 
     setName(name){

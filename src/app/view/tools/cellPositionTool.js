@@ -10,6 +10,7 @@ class CellPositionTool extends PositionTool{
     }
 
     createNewFeature(point){
+        let featureIDs = [];
         let flowlayer = Registry.currentDevice.layers[0];
         let cell_layer = Registry.currentDevice.layers[2];
 
@@ -18,6 +19,12 @@ class CellPositionTool extends PositionTool{
         });
         this.currentFeatureID = newFeature.getID();
         flowlayer.addFeature(newFeature);
+
+        featureIDs.push(newFeature.getID());
+
+        let params_to_copy = newFeature.getParams();
+
+
         let newtypestring = this.typeString + "_cell";
         let paramstoadd = newFeature.getParams();
         newFeature = Feature.makeFeature(newtypestring, this.setString, {
@@ -27,6 +34,11 @@ class CellPositionTool extends PositionTool{
 
         this.currentFeatureID = newFeature.getID();
         cell_layer.addFeature(newFeature);
+
+        featureIDs.push(newFeature.getID());
+
+
+        super.createNewComponent(this.typeString, params_to_copy, featureIDs );
     }
 
     static getTarget(point){

@@ -30,10 +30,15 @@ class PaperView {
         this.currentTarget = null;
         this.lastTargetType = null;
         this.lastTargetPosition = null;
+        this.selectedComponents = [];
         this.inactiveAlpha = .5;
         this.disableContextMenu();
     }
 
+    /**
+     * Returns a list of selected items on the canvas
+     * @return {Array}
+     */
     getSelectedFeatures() {
         let output = [];
         let items = paper.project.selectedItems;
@@ -43,18 +48,28 @@ class PaperView {
         return output;
     }
 
+    /**
+     * Deletes the selected features and selected components from the canvas
+     * TODO: Rename the method
+     */
     deleteSelectedFeatures() {
         let items = paper.project.selectedItems;
         if (items && items.length > 0) {
             for (let i = 0; i < items.length; i++) {
                 Registry.currentDevice.removeFeatureByID(items[i].featureID);
             }
+
+            //Delete the selected Components !!!!
+            for (let i in this.selectedComponents) {
+                Registry.currentDevice.removeComponent(this.selectedComponents[i]);
+            }
         }
+
     }
 
-    selectAllActive(){
+    selectAllActive() {
         let layer = this.paperLayers[this.activeLayer];
-        for(var i in layer.children){
+        for (var i in layer.children) {
             layer.children[i].selected = true;
         }
     }
@@ -78,7 +93,7 @@ class PaperView {
         layerCopy.bounds.topLeft = new paper.Point(0, 0);
         let deviceWidth = Registry.currentDevice.params.getValue("width");
         let deviceHeight = Registry.currentDevice.params.getValue("height");
-        layerCopy.bounds.topLeft = new paper.Point(0,0);
+        layerCopy.bounds.topLeft = new paper.Point(0, 0);
         layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
         let svg = layer.exportSVG({
             asString: true
@@ -191,7 +206,7 @@ class PaperView {
     }
 
     disableContextMenu(func) {
-        this.canvas.oncontextmenu = function(event) {
+        this.canvas.oncontextmenu = function (event) {
             event.preventDefault();
         }
     }
@@ -222,7 +237,7 @@ class PaperView {
     addLayer(layer, index) {
         this.paperLayers[index] = new paper.Group();
         this.featureLayer.addChild(this.paperLayers[index]);
-       // this.setActiveLayer(index);
+        // this.setActiveLayer(index);
     }
 
     updateLayer(layer, index) {
@@ -336,7 +351,7 @@ class PaperView {
         this.gridLayer.addChild(newPaperGrid);
     }
 
-    updateAlignmentMarks(){
+    updateAlignmentMarks() {
         //Remove current Alignment Marks:
         this.removeAlignmentMarks();
         let newAlignmentMarks = AlignmentRenderer.renderAlignmentMarks(this.lastTargetPosition, 20000, this.paperFeatures);
@@ -344,11 +359,12 @@ class PaperView {
         this.alignmentMarksLayer.addChild(newAlignmentMarks);
     }
 
-    removeAlignmentMarks(){
+    removeAlignmentMarks() {
         //Does nothing right now
         if (this.alignmentMarks) this.alignmentMarks.remove();
         this.alignmentMarks = null;
     }
+
     moveCenter(delta) {
         this.panAndZoom.moveCenter(delta);
     }
@@ -415,7 +431,7 @@ class PaperView {
                 return result.item;
             }
         } else {
-            for (let i = this.paperLayers.length-1; i >= 0; i--){
+            for (let i = this.paperLayers.length - 1; i >= 0; i--) {
                 target = this.paperLayers[i];
                 let result = target.hitTest(point, hitOptions);
                 if (result) {

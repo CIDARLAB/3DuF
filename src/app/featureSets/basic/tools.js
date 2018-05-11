@@ -9,26 +9,26 @@ let tools = {
         toolParams: {
             position: "position",
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     Node: {
         toolParams: {
             position: "position",
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     CircleValve: {
         toolParams: {
             position: "position",
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     RectValve: {
         toolParams: {
             position: "position",
 
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     Valve3D: {
         toolParams: {
@@ -117,29 +117,29 @@ let tools = {
         toolParams: {
             position: "position",
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     Circuit: {
         toolParams: {
             position: "position",
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     Valve: {
         toolParams: {
             position: "position",
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     BetterMixer: {
         toolParams: {
             cursorPosition: "position"
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     CurvedMixer: {
         toolParams: {
-            position: "position"
+            position: "componentposition"
         },
         placementTool: "PositionTool"
     },
@@ -147,13 +147,13 @@ let tools = {
         toolParams: {
             position: "position"
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     Tree: {
         toolParams: {
             position: "position"
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     },
     Mux: {
         toolParams: {
@@ -183,7 +183,7 @@ let tools = {
         toolParams: {
             position: "position",
         },
-        placementTool: "PositionTool"
+        placementTool: "componentPositionTool"
     }
 };
 
