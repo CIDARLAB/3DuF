@@ -205,8 +205,8 @@ function switchTo2D() {
     }
 }
 
-function paramsWindowFunction(typeString, setString) {
-    var makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString);
+function paramsWindowFunction(typeString, setString, isTranslucent = false) {
+    var makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString , isTranslucent);
     return function(event) {
         killParamsWindow();
         makeTable(event);
