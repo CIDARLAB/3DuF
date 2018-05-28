@@ -1052,22 +1052,48 @@ let basicFeatures = {
         },
         heritable: {
             "orificeSize": "Float",
+            "orificeLength": "Float",
+            "oilInputWidth": "Float",
+            "waterInputWidth": "Float",
+            "outputWidth": "Float",
+            "outputLength": "Float",
             "height": "Float"
         },
         units: {
             "orificeSize": "&mu;m",
+            "height": "&mu;m",
+            "orificeLength": "&mu;m",
+            "oilInputWidth": "&mu;m",
+            "waterInputWidth": "&mu;m",
+            "outputWidth": "&mu;m",
+            "outputLength": "&mu;m",
             "height": "&mu;m"
         },
         defaults: {
-            "orificeSize": .80 * 1000,
+            "orificeSize": .20 * 1000,
+            "orificeLength": .40 * 1000,
+            "oilInputWidth": .80 * 1000,
+            "waterInputWidth": .60 * 1000,
+            "outputWidth": .60 * 1000,
+            "outputLength": .60 * 1000,
             "height": .1 * 1000
         },
         minimum: {
             "orificeSize": 10,
+            "orificeLength": 10,
+            "oilInputWidth": 10,
+            "waterInputWidth": 10,
+            "outputWidth": 10,
+            "outputLength": 10,
             "height": 10,
         },
         maximum: {
             "orificeSize": 2000,
+            "orificeLength": 2000,
+            "oilInputWidth": 2000,
+            "waterInputWidth": 2000,
+            "outputWidth": 2000,
+            "outputLength": 2000,
             "height": 1200,
         }
     }
