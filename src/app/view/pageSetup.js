@@ -23,6 +23,7 @@ let bettermixerButton = document.getElementById("bettermixer_button");
 let curvedmixerButton = document.getElementById("curvedmixer_button");
 let mixerButton = document.getElementById("mixer_button");
 let treeButton = document.getElementById("tree_button");
+let ytreeButton = document.getElementById("ytree_button");
 let muxButton = document.getElementById("mux_button");
 let transposerButton = document.getElementById("transposer_button");
 let rotarymixerButton = document.getElementById("rotarymixer_button");
@@ -48,6 +49,7 @@ let bettermixerParams = document.getElementById("bettermixer_params_button");
 let curvedmixerParams = document.getElementById("curvedmixer_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
 let treeParams = document.getElementById("tree_params_button");
+let ytreeParams = document.getElementById("ytree_params_button");
 let muxParams = document.getElementById("mux_params_button");
 let transposerParams = document.getElementById("transposer_params_button");
 let rotarymixerParams = document.getElementById("rotarymixer_params_button");
@@ -97,6 +99,7 @@ let buttons = {
     "CurvedMixer": curvedmixerButton,
     "Mixer": mixerButton,
     "Tree": treeButton,
+    "YTree": ytreeButton,
     "Mux":muxButton,
     "Transposer":transposerButton,
     "RotaryMixer":rotarymixerButton,
@@ -334,6 +337,12 @@ function setupAppPage() {
         setActiveButton("Tree");
         switchTo2D();
     };
+    ytreeButton.onclick = function() {
+        Registry.viewManager.activateTool("YTree");
+        let bg = Colors.getDefaultFeatureColor("YTree", "Basic", Registry.currentLayer);
+        setActiveButton("YTree");
+        switchTo2D();
+    };
     muxButton.onclick = function() {
         Registry.viewManager.activateTool("Mux");
         let bg = Colors.getDefaultFeatureColor("Mux", "Basic", Registry.currentLayer);
@@ -470,6 +479,7 @@ function setupAppPage() {
     curvedmixerParams.onclick = paramsWindowFunction("CurvedMixer", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
+    ytreeParams.onclick = paramsWindowFunction("YTree", "Basic");
     muxParams.onclick = paramsWindowFunction("Mux", "Basic");
     transposerParams.onclick = paramsWindowFunction("Transposer", "Basic");
     rotarymixerParams.onclick = paramsWindowFunction("RotaryMixer", "Basic");

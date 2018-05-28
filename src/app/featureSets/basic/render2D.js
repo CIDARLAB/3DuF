@@ -436,6 +436,31 @@ let render2D = {
         targetPrimitiveType: "TreeTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    YTree: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction : "direction"
+        },
+        targetParams: {
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            leafs: "leafs",
+            stageLength: "stageLength",
+            direction:"direction"
+        },
+        featurePrimitiveType: "YTree",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "YTreeTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Mux: {
         featureParams: {
             position: "position",
