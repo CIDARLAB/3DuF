@@ -352,11 +352,12 @@ class PaperView {
     }
 
     updateAlignmentMarks() {
+        //TODO: Update this for the new visualizations
         //Remove current Alignment Marks:
-        this.removeAlignmentMarks();
-        let newAlignmentMarks = AlignmentRenderer.renderAlignmentMarks(this.lastTargetPosition, 20000, this.paperFeatures);
-        this.alignmentMarks = newAlignmentMarks;
-        this.alignmentMarksLayer.addChild(newAlignmentMarks);
+        // this.removeAlignmentMarks();
+        // let newAlignmentMarks = AlignmentRenderer.renderAlignmentMarks(this.lastTargetPosition, 20000, this.paperFeatures);
+        // this.alignmentMarks = newAlignmentMarks;
+        // this.alignmentMarksLayer.addChild(newAlignmentMarks);
     }
 
     removeAlignmentMarks() {
