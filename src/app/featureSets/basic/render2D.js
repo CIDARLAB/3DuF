@@ -549,10 +549,22 @@ let render2D = {
     DropletGen: {
         featureParams: {
             position: "position",
-            orificeSize: "orificeSize"
+            orificeSize: "orificeSize",
+            orificeLength: "orificeLength",
+            oilInputWidth: "oilInputWidth",
+            waterInputWidth: "waterInputWidth",
+            outputWidth: "outputWidth",
+            outputLength: "outputLength",
+            height: "height"
         },
         targetParams: {
-            orificeSize: "orificeSize"
+            orificeSize: "orificeSize",
+            orificeLength: "orificeLength",
+            oilInputWidth: "oilInputWidth",
+            waterInputWidth: "waterInputWidth",
+            outputWidth: "outputWidth",
+            outputLength: "outputLength",
+            height: "height"
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "DropletGen",
