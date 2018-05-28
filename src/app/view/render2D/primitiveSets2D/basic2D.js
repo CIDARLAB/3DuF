@@ -2199,6 +2199,136 @@ var MuxTarget = function(params) {
 
 };
 
+
+
+/************************************************/
+var YTree = function(params) {
+    position  = params["position"];
+    cw = params["flowChannelWidth"];
+    orientation = params["orientation"];
+    direction = params["direction"];
+    spacing = params["spacing"];
+    leafs = params["leafs"];
+    color = params["color"];
+    stagelength = params["stageLength"];
+    px = position[0];
+    py = position[1];
+
+    let levels = Math.ceil(Math.log2(leafs));
+    let isodd = false ; //This is used to figure out how many lines have to be made
+    if(leafs%2 == 0){
+        isodd = false;
+    }else{
+        isodd = true;
+    }
+    let w = spacing * (leafs/2 + 1);
+    let l = (levels + 1) * stagelength;
+
+    // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
+
+    var treepath = new paper.CompoundPath();
+
+    generateYTwig(treepath, px, py, cw, stagelength, w, 1, levels);
+
+
+
+    //Draw the tree
+
+    treepath.fillColor = color;
+    var rotation = 0;
+    // console.log("Orientation: " + orientation);
+    // console.log("Direction: " + direction);
+    if(orientation == "H" && direction=="OUT"){
+        rotation = 180;
+    }else if(orientation == "V" && direction =="IN"){
+        rotation = 270;
+    }else if(orientation == "V" && direction == "OUT"){
+        rotation = 90;
+    }
+    return treepath.rotate(rotation,px,py);
+};
+
+function drawYtwig(treepath, px, py, cw, stagelength, spacing, drawleafs=false) {
+
+    let pivotpoint = new paper.Point(px, py);
+
+    //stem
+    let startPoint = new paper.Point(px - cw/2, py - cw/2);
+
+    let angle = Math.atan(spacing/2 / stagelength);
+
+    let h = spacing/2 / Math.sin(angle) + cw;
+
+    //left leaf
+    let rec = paper.Path.Rectangle({
+        size: [cw, h],
+        point:startPoint,
+        radius:cw/2,
+        fillColor:color,
+        stokeWidth:0
+    });
+    rec.rotate(angle * 180/Math.PI, pivotpoint);
+    treepath.addChild(rec);
+
+    //right leaf
+    rec = paper.Path.Rectangle({
+        size: [cw, h],
+        point:startPoint,
+        radius:cw/2,
+        fillColor:color,
+        stokeWidth:0
+    });
+    rec.rotate(-angle * 180/Math.PI, pivotpoint);
+    treepath.addChild(rec);
+
+    return treepath
+}
+
+function generateYTwig(treepath, px, py,cw, stagelength , newspacing, level, maxlevel, islast=false) {
+    //var newspacing = 2 * (spacing + cw);
+    var hspacing = newspacing/2;
+    var lex = px - 0.5 * newspacing;
+    var ley = py + stagelength ;
+    var rex = px + 0.5 * newspacing ;
+    var rey = py + stagelength ;
+
+    if(level == maxlevel){
+        islast = true;
+        // console.log("Final Spacing: " + newspacing)
+    }
+
+    drawYtwig(treepath, px, py, cw, stagelength, newspacing, islast);
+    // drawtwig(treepath, lex, ley, cw, stagelength, hspacing, islast);
+    // drawtwig(treepath, rex, rey, cw, stagelength, hspacing, islast);
+
+
+    if(!islast){
+        generateYTwig(treepath, lex, ley, cw, stagelength, hspacing, level+1, maxlevel);
+        generateYTwig(treepath, rex, rey, cw, stagelength, hspacing, level+1, maxlevel);
+    }
+}
+
+var YTreeTarget = function(params) {
+
+    let treepath = YTree(params);
+
+    treepath.fillColor = color;
+    treepath.fillColor.alpha = 0.5;
+    var rotation = 0;
+    if(orientation == "H" && direction=="OUT"){
+        rotation = 180;
+    }else if(orientation == "V" && direction =="IN"){
+        rotation = 270;
+    }else if(orientation == "V" && direction == "OUT"){
+        rotation = 90;
+    }
+    return treepath.rotate(rotation,px,py);
+
+};
+
+/************************************************/
+
+
 var CellTrapL = function(params) {
     let orientation = params["orientation"];
     let position = params["position"];
@@ -2579,6 +2709,8 @@ module.exports.MixerTarget = MixerTarget;
 module.exports.EdgedRect = EdgedRect;
 module.exports.Tree = Tree;
 module.exports.TreeTarget = TreeTarget;
+module.exports.YTree = YTree;
+module.exports.YTreeTarget = YTreeTarget;
 module.exports.Mux = Mux;
 module.exports.Mux_control = Mux_control;
 module.exports.MuxTarget = MuxTarget;

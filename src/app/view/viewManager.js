@@ -532,6 +532,7 @@ class ViewManager {
         this.tools["CurvedMixer"] = new ComponentPositionTool("CurvedMixer", "Basic");
         this.tools["Mixer"] = new ComponentPositionTool("Mixer", "Basic");
         this.tools["Tree"] = new ComponentPositionTool("Tree", "Basic");
+        this.tools["YTree"] = new ComponentPositionTool("YTree", "Basic");
         this.tools["Mux"] = new MultilayerPositionTool("Mux", "Basic");
         this.tools["Transposer"] = new MultilayerPositionTool("Transposer", "Basic");
         this.tools["RotaryMixer"] = new MultilayerPositionTool("RotaryMixer", "Basic");

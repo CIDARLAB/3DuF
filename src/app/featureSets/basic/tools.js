@@ -155,6 +155,12 @@ let tools = {
         },
         placementTool: "componentPositionTool"
     },
+    YTree: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
     Mux: {
         toolParams: {
             position: "position"

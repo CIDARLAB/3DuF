@@ -254,6 +254,21 @@ let render3D = {
         featurePrimitive: "ConeFeature",
         featurePrimitiveSet: "Basic3D"
     },
+    YTree: {
+        featureParams: {
+            position: "position",
+            flowChannelWidth: "flowChannelWidth",
+            orientation: "orientation",
+            spacing: "spacing",
+            width: "width",
+            leafs: "leafs",
+            height: "height",
+            radius1: "width",
+            radius2: "length"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
     Mux: {
         featureParams: {
             position: "position",
