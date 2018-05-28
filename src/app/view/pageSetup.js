@@ -6,6 +6,9 @@ var ParameterMenu = require("./UI/parameterMenu");
 
 let activeButton = null;
 let activeLayer = null;
+
+let selectToolButton = document.getElementById("select_button");
+
 let channelButton = document.getElementById("channel_button");
 let roundedChannelButton = document.getElementById("roundedchannel_button");
 let transitionButton = document.getElementById("transition_button");
@@ -79,6 +82,7 @@ let view;
 let threeD = false;
 
 let buttons = {
+    "SelectButton": selectToolButton,
     "Channel": channelButton,
     "RoundedChannel": roundedChannelButton,
     "Transition": transitionButton,
@@ -128,7 +132,11 @@ function setButtonColor(button, background, text) {
 
 function setActiveButton(feature) {
     killParamsWindow();
-    if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
+    if (activeButton == selectToolButton){
+        setButtonColor(activeButton, inactiveBackground, inactiveText);
+    } else if (activeButton) {
+        setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
+    }
     activeButton = feature;
     let color = Colors.getDefaultFeatureColor(activeButton, "Basic", Registry.currentLayer);
     setButtonColor(buttons[activeButton], color, activeText);
@@ -219,10 +227,18 @@ function setupAppPage() {
         setActiveButton("Channel");
         switchTo2D();
     };
+
+    selectToolButton.onclick = function(){
+        Registry.viewManager.activateTool("MouseSelectTool");
+        if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
+        activeButton = buttons["SelectButton"];
+        setButtonColor(buttons["SelectButton"], Colors.DEEP_PURPLE_500, activeText);
+    };
+
     revertdefaultsButton.onclick = function() {
         Registry.viewManager.revertFeaturesToDefaults(Registry.viewManager.view.getSelectedFeatures());
 
-    }
+    };
 /*
     copyButton.onclick = function() {
 

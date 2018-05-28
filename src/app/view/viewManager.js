@@ -10,6 +10,7 @@ var PositionTool = require("./tools/positionTool");
 var ComponentPositionTool = require("./tools/ComponentPositionTool");
 var MultilayerPositionTool = require('./tools/multilayerPositionTool');
 var CellPositionTool = require('./tools/cellPositionTool');
+var MouseSelectTool = require('./tools/mouseSelectTool');
 
 class ViewManager {
     constructor(view) {
@@ -515,6 +516,7 @@ class ViewManager {
     }
 
     setupTools() {
+        this.tools["MouseSelectTool"] = new MouseSelectTool();
         this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
         this.tools["Valve"] = new ComponentPositionTool("Valve", "Basic");
         this.tools["Channel"] = new ChannelTool("Channel", "Basic");
