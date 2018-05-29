@@ -627,6 +627,22 @@ let render2D = {
         targetPrimitiveType: "DropletGenTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    TEXT: {
+        featureParams: {
+            position: "position",
+            outputLength: "outputLength",
+            height: "height",
+            rotation: "rotation"
+        },
+        targetParams: {
+            height: "height",
+            rotation:"rotation"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "blah",
+        targetPrimitiveType: "blah",
+        targetPrimitiveSet: "Basic2D"
+    },
 };
 
 module.exports = render2D;

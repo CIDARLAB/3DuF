@@ -47,6 +47,11 @@
                     Select Tool</a>
             </div>
 
+            <div class="button_row">
+                <a id="insert_text_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">
+                    Insert Text</a>
+            </div>
+
         </nav>
 
         <span class="mdl-layout-title">Select Feature</span>
@@ -331,8 +336,26 @@
         <button type="button" class="mdl-button close">Cancel</button>
     </div>
 </dialog>
+<dialog id="insert_text_dialog" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+        <!-- Textfield with Floating Label -->
+        <h4>
+            Insert Text:
+        </h4>
+        <form action="#">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="inserttext_textinput">
+                <label class="mdl-textfield__label" for="inserttext_textinput">Text</label>
+            </div>
+        </form>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+        <button id="accept_text_button" type="button" class="mdl-button">Insert</button>
+        <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+</dialog>
 <script>
-    var dialog = document.querySelector('#edit_device_dialog');
+    var dialog = document.getElementById('edit_device_dialog');
     var showModalButton = document.querySelector('#resize_button');
     if (! dialog.showModal) {
         dialogPolyfill.registerDialog(dialog);
@@ -357,6 +380,19 @@
 
     helpdialog.querySelector('.close').addEventListener('click', function() {
         helpdialog.close();
+    });
+
+    var textLabelDialog = document.getElementById('insert_text_dialog');
+    var showTextLabelButton = document.querySelector('#insert_text_button');
+
+    if (! textLabelDialog.showModal) {
+        dialogPolyfill.registerDialog(textLabelDialog);
+    }
+    showTextLabelButton.addEventListener('click', function() {
+        textLabelDialog.showModal();
+    });
+    textLabelDialog.querySelector('.close').addEventListener('click', function() {
+        textLabelDialog.close();
     });
 
 </script>

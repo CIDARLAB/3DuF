@@ -1216,7 +1216,16 @@ let basicFeatures = {
             "height": 1200,
             "rotation": 360
         }
+    },
+    "TEXT":{
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "height": "Float",
+            "text":"String"
+        }
     }
-}
+};
 
 module.exports = basicFeatures;
