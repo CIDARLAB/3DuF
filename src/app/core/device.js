@@ -12,6 +12,7 @@ var FloatValue = Parameters.FloatValue;
 class Device {
     constructor(values, name = "New Device") {
         this.layers = [];
+        this.textLayers = [];
         this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
         this.name = StringValue(name);
         this.__components = [];
@@ -56,6 +57,12 @@ class Device {
                 return layer;
             } 
         } 
+        for (let i = 0; i < this.textLayers.length; i ++){
+            let layer = this.textLayers[i];
+            if (layer.containsFeatureID(featureID)){
+                return layer;
+            }
+        }
         throw new Error("FeatureID " + featureID + " not found in any layer.");
     }
 

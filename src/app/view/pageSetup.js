@@ -3,12 +3,15 @@ var Registry = require("../core/registry");
 var Colors = require("./colors");
 var JSZip = require("jszip");
 var ParameterMenu = require("./UI/parameterMenu");
+var InsertTextTool = require("./tools/insertTextTool");
 
 let activeButton = null;
 let activeLayer = null;
 
 let selectToolButton = document.getElementById("select_button");
 let saveDeviceSettingsButton = document.getElementById("accept_resize_button");
+let insertTextButton = document.getElementById("insert_text_button");
+let acceptTextButton = document.getElementById("accept_text_button");
 
 let channelButton = document.getElementById("channel_button");
 let roundedChannelButton = document.getElementById("roundedchannel_button");
@@ -89,6 +92,7 @@ let threeD = false;
 
 let buttons = {
     "SelectButton": selectToolButton,
+    "InsertTextButton": insertTextButton,
     "Channel": channelButton,
     "RoundedChannel": roundedChannelButton,
     "Transition": transitionButton,
@@ -140,8 +144,9 @@ function setButtonColor(button, background, text) {
 
 function setActiveButton(feature) {
     killParamsWindow();
-    if (activeButton == selectToolButton){
-        setButtonColor(activeButton, inactiveBackground, inactiveText);
+    //TODO: Make this less hacky so that it wont be such a big problem to modify the button selection criteria
+    if (activeButton == "SelectButton" || activeButton == "InsertTextButton"){
+        setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
     } else if (activeButton) {
         setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
     }
@@ -239,7 +244,7 @@ function setupAppPage() {
     selectToolButton.onclick = function(){
         Registry.viewManager.activateTool("MouseSelectTool");
         if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
-        activeButton = buttons["SelectButton"];
+        activeButton = "SelectButton";
         setButtonColor(buttons["SelectButton"], Colors.DEEP_PURPLE_500, activeText);
     };
 
@@ -274,6 +279,20 @@ function setupAppPage() {
             Registry.viewManager.view.updateAlignmentMarks();
         }
 
+    };
+
+    insertTextButton.onclick = function(){
+        if (activeButton) setButtonColor(buttons[activeButton], inactiveBackground, inactiveText);
+        activeButton = "InsertTextButton";
+        setButtonColor(buttons["InsertTextButton"], Colors.DEEP_PURPLE_500, activeText);
+    };
+
+    acceptTextButton.onclick = function(){
+        Registry.viewManager.activateTool("InsertTextTool");
+        Registry.text = document.getElementById("inserttext_textinput").value;
+        console.log(Registry.text);
+        let textLabelDialog = document.getElementById('insert_text_dialog');
+        textLabelDialog.close();
     };
 
 

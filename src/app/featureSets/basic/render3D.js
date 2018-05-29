@@ -358,6 +358,17 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    TEXT: {
+        featureParams: {
+            position: "position",
+            orificeSize: "orificeSize",
+            radius1: "orificeSize",
+            radius2: "orificeSize",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
 };
 
 module.exports = render3D;

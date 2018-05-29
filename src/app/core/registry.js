@@ -5,15 +5,25 @@ var featureDefaults = {};
 var currentDevice = null;
 var canvasManager = null;
 var currentLayer = null;
+var currentTextLayer = null;
 var currentGrid = null;
 var view = null;
 var viewManager = null;
+
+/*
+Place where we store the data necessary for the text label
+TODO: Change this from this awful hacky implementation
+ */
+var text = "";
+
+//TODO: Convert this into multiple text layers for use with multiple layers
+var textLayer = null;
 var id_counter = 0;
 var threeRenderer = null;
 
 var generateID = function() {
     return uuid.v1();
-}
+};
 
 exports.generateID = generateID;
 exports.registeredParams = registeredParams;
@@ -24,3 +34,4 @@ exports.viewManager = viewManager;
 exports.currentGrid = currentGrid;
 exports.featureDefaults = featureDefaults;
 exports.threeRenderer = threeRenderer;
+exports.text = text;

@@ -5,6 +5,7 @@ var MouseTool = require("./tools/mouseTool");
 var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
+var InsertTextTool = require("./tools/insertTextTool");
 var SimpleQueue = require("../utils/SimpleQueue");
 var PositionTool = require("./tools/positionTool");
 var ComponentPositionTool = require("./tools/ComponentPositionTool");
@@ -403,6 +404,7 @@ class ViewManager {
         }
         //Common Code for rendering stuff
         Registry.currentLayer = Registry.currentDevice.layers[0];
+        Registry.currentTextLayer = Registry.currentDevice.textLa
         Registry.viewManager.addDevice(Registry.currentDevice);
         this.view.initializeView();
         this.updateGrid();
@@ -526,6 +528,7 @@ class ViewManager {
 
     setupTools() {
         this.tools["MouseSelectTool"] = new MouseSelectTool();
+        this.tools["InsertTextTool"] = new InsertTextTool();
         this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
         this.tools["Valve"] = new ComponentPositionTool("Valve", "Basic");
         this.tools["Channel"] = new ChannelTool("Channel", "Basic");

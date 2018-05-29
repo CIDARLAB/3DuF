@@ -196,6 +196,12 @@ let tools = {
             position: "position",
         },
         placementTool: "componentPositionTool"
+    },
+    TEXT:{
+        toolParams:{
+            position:"position"
+        },
+        placementTool: "textInsertTool"
     }
 };
 
