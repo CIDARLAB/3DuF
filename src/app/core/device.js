@@ -210,9 +210,16 @@ class Device {
         return newDevice;
     }
 
-
     render2D(){
         return this.__renderLayers2D();
+    }
+
+    setXSpan(value){
+        this.params.updateParameter("width", value);
+    }
+
+    setYSpan(value){
+        this.params.updateParameter("height", value);
     }
 }
 
