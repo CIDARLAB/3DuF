@@ -38,13 +38,13 @@
         <nav class="mdl-navigation" id="general-tools">
 
             <div class="button_row">
-                <a id="select_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">
-                    Select Tool</a>
+                <a id="resize_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">
+                    Edit Device</a>
             </div>
 
             <div class="button_row">
-                <a id="resize_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">
-                    Resize</a>
+                <a id="select_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">
+                    Select Tool</a>
             </div>
 
         </nav>
@@ -240,9 +240,20 @@
 <button type="button" class="mdl-button show-modal">Show Modal</button>
 <dialog class="mdl-dialog">
     <div class="mdl-dialog__content">
-        <h3>
+        <!-- Textfield with Floating Label -->
+        <h4>
+            Rename:
+        </h4>
+        <form action="#">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="devicename_textinput">
+                <label class="mdl-textfield__label" for="devicename_textinput">Device Name</label>
+            </div>
+        </form>
+
+        <h4>
            Resize:
-        </h3>
+        </h4>
         <!-- Numeric Textfield with Floating Label -->
         <form action="#">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -259,7 +270,7 @@
         </form>
     </div>
     <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
-        <button id="accept_resize_button" type="button" class="mdl-button">Resize</button>
+        <button id="accept_resize_button" type="button" class="mdl-button">Save</button>
         <button type="button" class="mdl-button close">Cancel</button>
     </div>
 </dialog>
