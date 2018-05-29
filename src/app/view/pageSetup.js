@@ -8,7 +8,7 @@ let activeButton = null;
 let activeLayer = null;
 
 let selectToolButton = document.getElementById("select_button");
-let resizeButton = document.getElementById("accept_resize_button");
+let saveDeviceSettingsButton = document.getElementById("accept_resize_button");
 
 let channelButton = document.getElementById("channel_button");
 let roundedChannelButton = document.getElementById("roundedchannel_button");
@@ -239,25 +239,37 @@ function setupAppPage() {
         setButtonColor(buttons["SelectButton"], Colors.DEEP_PURPLE_500, activeText);
     };
 
-    resizeButton.onclick = function(){
+    saveDeviceSettingsButton.onclick = function(){
+
+        //Save the name
+        let devicename = document.getElementById("devicename_textinput").value;
+        if(devicename != "" || devicename != null){
+            console.log("test");
+            Registry.currentDevice.setName(devicename);
+        }
+
         //Do the resizing
         let xspan = document.getElementById("xspan_textinput").value;
         let yspan = document.getElementById("yspan_textinput").value;
         console.log("Resizing the device to: " + xspan + ", " +yspan);
 
-        //Convert the dimensions to microns from mm
-        Registry.currentDevice.setXSpan(xspan*1000);
-        Registry.currentDevice.setYSpan(yspan*1000);
+        if(xspan != "" && yspan != ""){
 
-        //Close the dialog
-        var dialog = document.querySelector('dialog');
-        dialog.close();
+            //Convert the dimensions to microns from mm
+            Registry.currentDevice.setXSpan(xspan*1000);
+            Registry.currentDevice.setYSpan(yspan*1000);
 
-        //Refresh the view
-        Registry.viewManager.view.initializeView();
-        Registry.viewManager.view.refresh();
-        // Registry.viewManager.view.updateGrid();
-        Registry.viewManager.view.updateAlignmentMarks();
+            //Close the dialog
+            var dialog = document.querySelector('dialog');
+            dialog.close();
+
+            //Refresh the view
+            Registry.viewManager.view.initializeView();
+            Registry.viewManager.view.refresh();
+            // Registry.viewManager.view.updateGrid();
+            Registry.viewManager.view.updateAlignmentMarks();
+        }
+
     };
 
 
