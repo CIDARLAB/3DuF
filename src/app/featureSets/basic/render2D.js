@@ -421,7 +421,8 @@ let render2D = {
             bendLength: "bendLength",
             in: "in",
             out: "out",
-            spacing: "spacing"
+            spacing: "spacing",
+            rotation: "rotation"
         },
         targetParams: {
             channelWidth: "channelWidth",
@@ -431,7 +432,8 @@ let render2D = {
             bendLength: "bendLength",
             in: "in",
             out: "out",
-            spacing: "spacing"
+            spacing: "spacing",
+            rotation: "rotation"
         },
         featurePrimitiveType: "GradientGenerator",
         featurePrimitiveSet: "Basic2D",

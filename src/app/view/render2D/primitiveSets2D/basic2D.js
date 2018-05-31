@@ -1784,6 +1784,7 @@ var GradientGenerator = function(params){
     invalue = params["in"];
     outvalue = params["out"];
     spacing = params["spacing"]; //Center to Center
+    let rotation = params["rotation"];
     let color = params["color"];
 
     let posx = position[0];
@@ -1835,9 +1836,9 @@ var GradientGenerator = function(params){
     gradientgenerator.fillColor = color;
     // console.log("testing");
     console.log(gradientgenerator);
-    if(orientation == "H"){
-        gradientgenerator.rotate(90, new paper.Point(posx, posy))
-    }
+
+    gradientgenerator.rotate(-rotation, new paper.Point(posx, posy));
+
     return gradientgenerator;
 };
 
