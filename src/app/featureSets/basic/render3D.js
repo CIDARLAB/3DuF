@@ -247,7 +247,8 @@ let render3D = {
             numberOfBends: "numberOfBends",
             orientation: "orientation",
             bendLength: "bendLength",
-            height: "height"
+            height: "height",
+            rotation: "rotation"
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"

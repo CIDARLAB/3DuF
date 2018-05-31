@@ -810,7 +810,8 @@ let basicFeatures = {
             "in": "Float",
             "out": "Float",
             "spacing": "Float",
-            "height": "Float"
+            "height": "Float",
+            "rotation": "Float"
         },
         units: {
             "bendSpacing": "&mu;m",
@@ -822,6 +823,7 @@ let basicFeatures = {
             "out": "",
             "spacing": "&mu;m",
             "height": "&mu;m",
+            "rotation" : "&deg;"
         },
         defaults: {
             "channelWidth": .80 * 1000,
@@ -832,7 +834,8 @@ let basicFeatures = {
             "in": 1,
             "out": 3,
             "spacing": 10000,
-            "height": .1 * 1000
+            "height": .1 * 1000,
+            "rotation": 0
         },
         minimum: {
             "channelWidth": 10,
@@ -844,6 +847,7 @@ let basicFeatures = {
             "out": 3,
             "spacing": 10,
             "height": 10,
+            "rotation": 0
         },
         maximum: {
             "channelWidth": 2000,
@@ -855,6 +859,7 @@ let basicFeatures = {
             "out": 90,
             "spacing": 90000,
             "height": 1200,
+            "rotation":360
         }
     },
     "Tree": {
