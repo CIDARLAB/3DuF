@@ -411,6 +411,33 @@ let render2D = {
         targetPrimitiveType: "MixerTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    GradientGenerator: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            in: "in",
+            out: "out",
+            spacing: "spacing"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            in: "in",
+            out: "out",
+            spacing: "spacing"
+        },
+        featurePrimitiveType: "GradientGenerator",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "GradientGeneratorTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Tree: {
         featureParams: {
             position: "position",

@@ -23,6 +23,7 @@ let diamondButton = document.getElementById("diamond_button");
 let bettermixerButton = document.getElementById("bettermixer_button");
 let curvedmixerButton = document.getElementById("curvedmixer_button");
 let mixerButton = document.getElementById("mixer_button");
+let gradientGeneratorButton = document.getElementById("gradientgenerator_button");
 let treeButton = document.getElementById("tree_button");
 let ytreeButton = document.getElementById("ytree_button");
 let muxButton = document.getElementById("mux_button");
@@ -31,6 +32,7 @@ let rotarymixerButton = document.getElementById("rotarymixer_button");
 let dropletgenButton = document.getElementById("dropletgen_button");
 let celltraplButton = document.getElementById("celltrapl_button");
 let revertdefaultsButton = document.getElementById("revertdefaults_button");
+
 
 let alignmentMarksButton = document.getElementById("alignmentmarks_button");
 
@@ -49,6 +51,7 @@ let diamondParams = document.getElementById("diamond_params_button");
 let bettermixerParams = document.getElementById("bettermixer_params_button");
 let curvedmixerParams = document.getElementById("curvedmixer_params_button");
 let mixerParams = document.getElementById("mixer_params_button");
+let gradientGeneratorParams = document.getElementById("gradientgenerator_params_button");
 let treeParams = document.getElementById("tree_params_button");
 let ytreeParams = document.getElementById("ytree_params_button");
 let muxParams = document.getElementById("mux_params_button");
@@ -99,6 +102,7 @@ let buttons = {
     "BetterMixer": bettermixerButton,
     "CurvedMixer": curvedmixerButton,
     "Mixer": mixerButton,
+    "GradientGenerator": gradientGeneratorButton,
     "Tree": treeButton,
     "YTree": ytreeButton,
     "Mux":muxButton,
@@ -366,6 +370,14 @@ function setupAppPage() {
         setActiveButton("Mixer");
         switchTo2D();
     };
+
+    gradientGeneratorButton.onclick = function(){
+        Registry.viewManager.activateTool("GradientGenerator");
+        let bg = Colors.getDefaultFeatureColor("GradientGenerator", "Basic", Registry.currentLayer);
+        setActiveButton("GradientGenerator");
+        switchTo2D();
+    };
+
     treeButton.onclick = function() {
         Registry.viewManager.activateTool("Tree");
         let bg = Colors.getDefaultFeatureColor("Tree", "Basic", Registry.currentLayer);
@@ -513,6 +525,7 @@ function setupAppPage() {
     bettermixerParams.onclick = paramsWindowFunction("BetterMixer", "Basic");
     curvedmixerParams.onclick = paramsWindowFunction("CurvedMixer", "Basic");
     mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
+    gradientGeneratorParams.onclick = paramsWindowFunction("GradientGenerator", "Basic");
     treeParams.onclick = paramsWindowFunction("Tree", "Basic");
     ytreeParams.onclick = paramsWindowFunction("YTree", "Basic");
     muxParams.onclick = paramsWindowFunction("Mux", "Basic");
