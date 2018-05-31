@@ -798,6 +798,65 @@ let basicFeatures = {
             "height": 1200,
         }
     },
+    "GradientGenerator": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "bendSpacing": "Float",
+            "numberOfBends": "Float",
+            "channelWidth": "Float",
+            "bendLength": "Float",
+            "in": "Float",
+            "out": "Float",
+            "spacing": "Float",
+            "height": "Float"
+        },
+        units: {
+            "bendSpacing": "&mu;m",
+            "numberOfBends": "",
+            "channelWidth": "&mu;m",
+            "bendLength": "&mu;m",
+            "orientation": "",
+            "in": "",
+            "out": "",
+            "spacing": "&mu;m",
+            "height": "&mu;m",
+        },
+        defaults: {
+            "channelWidth": .80 * 1000,
+            "bendSpacing": 1.23 * 1000,
+            "numberOfBends": 1,
+            "orientation": "V",
+            "bendLength": 2.46 * 1000,
+            "in": 1,
+            "out": 3,
+            "spacing": 10000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 10,
+            "bendSpacing": 10,
+            "numberOfBends": 1,
+            "orientation": "H",
+            "bendLength": 10,
+            "in": 1,
+            "out": 3,
+            "spacing": 10,
+            "height": 10,
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "bendSpacing": 6000,
+            "numberOfBends": 20,
+            "orientation": "H",
+            "bendLength": 12 * 1000,
+            "in": 30,
+            "out": 90,
+            "spacing": 90000,
+            "height": 1200,
+        }
+    },
     "Tree": {
         unique: {
             "position": "Point"

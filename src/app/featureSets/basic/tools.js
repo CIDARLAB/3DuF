@@ -149,6 +149,12 @@ let tools = {
         },
         placementTool: "componentPositionTool"
     },
+    GradientGenerator: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
     Tree: {
         toolParams: {
             position: "position"
