@@ -1795,7 +1795,24 @@ var GradientGenerator = function(params){
     // insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, posx, posy, color);
     //Iterate through each of the stages
     console.log(invalue, outvalue);
-    for(var stagevalue = invalue; stagevalue <= outvalue; stagevalue++){
+
+    //Draw the first stage which is just channels
+    let totalstagewidth = (invalue - 1)*spacing;
+    let xref = (posx - totalstagewidth / 2);;
+    let yref = posy;
+    //Draw straight channels for each of the input lines
+    for(var i = 0; i < invalue; i++){
+        let x = xref + spacing*i;
+        let y = yref;
+
+        //Insert Straight channel
+        gradientgenerator.addChild(new paper.Path.Rectangle({
+            point: new paper.Point(x, y),
+            size: [channelWidth, stagelength+channelWidth]
+        }));
+    }
+
+    for(var stagevalue = invalue+1; stagevalue <= outvalue; stagevalue++){
         //For each stage : do the following
         /*
         Check if each stagevalue is odd or even
@@ -1806,8 +1823,8 @@ var GradientGenerator = function(params){
         //Calculate the total width and start placing mixers
         let totalstagewidth = (stagevalue - 1)*spacing;
 
-        let xref = (posx - totalstagewidth/2);
-        let yref = posy + stagelength * (stagevalue - invalue);
+        xref = (posx - totalstagewidth / 2);
+        yref = posy + stagelength * (stagevalue - invalue);
 
         console.log("STage" , stagevalue, xref, yref);
 
