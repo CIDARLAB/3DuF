@@ -25,6 +25,33 @@ let basicFeatures = {
             "height": 1200,
         }
     },
+    "Connection": {
+        unique: {
+            "start": "Point",
+            "end": "Point",
+            "wayPoints": "PointArray"
+        },
+        heritable: {
+            "channelWidth": "Float",
+            "height": "Float"
+        },
+        units: {
+            "channelWidth": "&mu;m",
+            "height": "&mu;m"
+        },
+        defaults: {
+            "channelWidth": .80 * 1000,
+            "height": .1 * 1000
+        },
+        minimum: {
+            "channelWidth": 3,
+            "height": 10,
+        },
+        maximum: {
+            "channelWidth": 2000,
+            "height": 1200,
+        }
+    },
     "RoundedChannel": {
         unique: {
             "start": "Point",

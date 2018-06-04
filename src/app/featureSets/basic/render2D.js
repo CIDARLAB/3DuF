@@ -247,6 +247,24 @@ let render2D = {
         targetPrimitiveType: "CrossHairsTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Connection: {
+        featureParams: {
+            start: "start",
+            end: "end",
+            wayPoints: "wayPoints",
+            channelWidth: "channelWidth",
+            height: "height"
+        },
+        targetParams: {
+            wayPoints: "wayPoints",
+            channelWidth: "channelWidth",
+            height: "height"
+        },
+        featurePrimitiveType: "Connection",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "ConnectionTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     RoundedChannel: {
         featureParams: {
             start: "start",

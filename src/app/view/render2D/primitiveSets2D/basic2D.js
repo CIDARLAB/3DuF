@@ -1,3 +1,84 @@
+function drawStraightConnection(compoundpath, startpoint, endpoint, channelWidth){
+    //edit the points
+    let vec = endpoint.subtract(startpoint);
+    let rec = new paper.Path.Rectangle({
+        point: startpoint,
+        radius: channelWidth/2,
+        size: [vec.length + channelWidth, channelWidth]
+    });
+    rec.translate([-channelWidth/2, -channelWidth/2]);
+    rec.rotate(vec.angle, startpoint);
+
+    compoundpath.addChild(rec);
+}
+
+var Connection = function(params){
+    let start = params["start"];
+    let end = params["end"];
+    let color = params["color"];
+    let width = params["width"];
+    let wayPoints = params["wayPoints"];
+    let channelWidth = params["channelWidth"];
+    console.log("ChannelWidth:", channelWidth);
+    console.log("start:", start);
+    console.log("end:", end);
+    console.log("Waypoints:", wayPoints);
+    let connectionpath = new paper.CompoundPath();
+    let startpoint, endpoint;
+    startpoint = new paper.Point(start[0], start[1]);
+    // let rec = new paper.Path.Rectangle(start[0], start[1], channelWidth, channelWidth);
+    // connectionpath.addChild(rec);
+
+    for(let i in wayPoints){
+        let point = wayPoints[i];
+        endpoint = new paper.Point(point[0] , point[1]);
+        drawStraightConnection(connectionpath, startpoint, endpoint, channelWidth);
+        startpoint = endpoint;
+        // rec = new paper.Path.Rectangle(point[0], point[1], channelWidth, channelWidth);
+        // connectionpath.addChild(rec);
+    }
+
+    endpoint = new paper.Point(end[0], end[1]);
+
+    drawStraightConnection(connectionpath, startpoint, endpoint, channelWidth);
+
+    // rec = new paper.Path.Rectangle(end[0], end[1], channelWidth, channelWidth);
+    // connectionpath.addChild(rec);
+    // let baseColor = params["baseColor"];
+    // let startPoint = new paper.Point(start[0], start[1]);
+    // for(var i in wayPoints){
+    //     let point = wayPoints[i];
+    //     let endPoint = new paper.Point(point[0], point[1]);
+    //     let vec = endPoint.subtract(startPoint);
+    //     let rec = paper.Path.Rectangle({
+    //         size: [vec.length + width, width],
+    //         point: startPoint,
+    //         radius: width/2,
+    //         fillColor: color,
+    //         strokeWidth: 0
+    //     });
+    //     rec.translate([-width/2, -width / 2]);
+    //     rec.rotate(vec.angle, startPoint);
+    //     connectionpath.addChild(rec);
+    //     startPoint = new paper.Point(point[0], point[1]);
+    // }
+    // let endPoint = new paper.Point(end[0], end[1]);
+    // let vec = endPoint.subtract(startPoint);
+    // let rec = paper.Path.Rectangle({
+    //     size: [vec.length + width, width],
+    //     point: start,
+    //     radius: width/2,
+    //     fillColor: color,
+    //     strokeWidth: 0
+    // });
+    // rec.translate([-width/2, -width / 2]);
+    // rec.rotate(vec.angle, startPoint);
+    // connectionpath.addChild(rec);
+    connectionpath.fillColor = color;
+    return connectionpath;
+};
+
+
 var RoundedRectLine = function(params){
     let start = params["start"];
     let end = params["end"];
@@ -2600,6 +2681,8 @@ module.exports.DropletGenTarget = DropletGenTarget;
 module.exports.Transition = Transition;
 module.exports.TransitionTarget = TransitionTarget;
 module.exports.CrossHairsTarget = CrossHairsTarget;
+module.exports.Connection = Connection;
+module.exports.ConnectionTarget = CrossHairsTarget;
 module.exports.ValveTarget = ValveTarget;
 module.exports.AlignmentMarks = AlignmentMarks;
 module.exports.AlignmentMarks_control = AlignmentMarks_control;
