@@ -3,6 +3,7 @@ import ZoomToolBar from "./ui/zoomToolBar";
 var Registry = require("../core/registry");
 var Device = require("../core/device");
 var ChannelTool = require("./tools/channelTool");
+var ConnectionTool = require("./tools/connectionTool");
 var MouseTool = require("./tools/mouseTool");
 var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
@@ -383,7 +384,13 @@ export default class ViewManager {
     }
 
     constructMouseDownEvent(tool1, tool2, tool3) {
-        return this.constructMouseEvent(tool1.down, tool2.down, tool3.down);
+        if(tool1 == tool3){
+            console.log("Both right and left tool is the same");
+            return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown);
+
+        }else {
+            return this.constructMouseEvent(tool1.down, tool2.down, tool3.down);
+        }
     }
 
     constructMouseMoveEvent(tool1, tool2, tool3) {
@@ -531,17 +538,20 @@ export default class ViewManager {
         this.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
     }
 
-    activateTool(toolString) {
+    activateTool(toolString , rightClickToolString = "SelectTool") {
         this.leftMouseTool = this.tools[toolString];
+        this.rightMouseTool = this.tools[rightClickToolString];
         this.__updateViewMouseEvents();
     }
 
     setupTools() {
+        this.tools["SelectTool"] = new SelectTool();
         this.tools["MouseSelectTool"] = new MouseSelectTool();
         this.tools["InsertTextTool"] = new InsertTextTool();
         this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
         this.tools["Valve"] = new ComponentPositionTool("Valve", "Basic");
         this.tools["Channel"] = new ChannelTool("Channel", "Basic");
+        this.tools["Connection"] = new ConnectionTool("Connection", "Basic");
         this.tools["RoundedChannel"] = new ChannelTool("RoundedChannel", "Basic");
         this.tools["Node"] = new ComponentPositionTool("Node", "Basic");
         this.tools["CircleValve"] = new ComponentPositionTool("CircleValve", "Basic");

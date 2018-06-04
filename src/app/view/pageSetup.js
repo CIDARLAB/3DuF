@@ -14,6 +14,7 @@ let insertTextButton = document.getElementById("insert_text_button");
 let acceptTextButton = document.getElementById("accept_text_button");
 
 let channelButton = document.getElementById("channel_button");
+let connectionButton = document.getElementById("connection_button");
 let roundedChannelButton = document.getElementById("roundedchannel_button");
 let transitionButton = document.getElementById("transition_button");
 let circleValveButton = document.getElementById("circleValve_button");
@@ -42,6 +43,7 @@ let alignmentMarksButton = document.getElementById("alignmentmarks_button");
 let alignmentMarksParams = document.getElementById("alignmentmarks_params_button");
 
 let channelParams = document.getElementById("channel_params_button");
+let connectionParams = document.getElementById("connection_params_button");
 let roundedChannelParams = document.getElementById("roundedchannel_params_button");
 let transitionParams = document.getElementById("transition_params_button");
 let circleValveParams = document.getElementById("circleValve_params_button");
@@ -94,6 +96,7 @@ let buttons = {
     "SelectButton": selectToolButton,
     "InsertTextButton": insertTextButton,
     "Channel": channelButton,
+    "Connection": connectionButton,
     "RoundedChannel": roundedChannelButton,
     "Transition": transitionButton,
     "Via": viaButton,
@@ -234,10 +237,20 @@ function killParamsWindow() {
 function setupAppPage() {
     view = Registry.viewManager.view;
     renderer = Registry.threeRenderer;
+
+    //Register all the button clicks here
+
     channelButton.onclick = function() {
         Registry.viewManager.activateTool("Channel");
         let bg = Colors.getDefaultFeatureColor("Channel", "Basic", Registry.currentLayer);
         setActiveButton("Channel");
+        switchTo2D();
+    };
+
+    connectionButton.onclick = function() {
+        Registry.viewManager.activateTool("Connection", "Connection");
+        let bg = Colors.getDefaultFeatureColor("Connection", "Basic", Registry.currentLayer);
+        setActiveButton("Connection");
         switchTo2D();
     };
 
@@ -532,6 +545,7 @@ function setupAppPage() {
     //}
 
     channelParams.onclick = paramsWindowFunction("Channel", "Basic");
+    connectionParams.onclick = paramsWindowFunction("Connection", "Basic");
     roundedChannelParams.onclick = paramsWindowFunction("RoundedChannel", "Basic");
     circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
     valve3dParams.onclick = paramsWindowFunction("Valve3D", "Basic");

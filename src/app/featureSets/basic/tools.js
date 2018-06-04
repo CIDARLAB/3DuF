@@ -93,6 +93,13 @@ let tools = {
         },
         placementTool: "DragTool"
     },
+    Connection: {
+        toolParams: {
+            start: "start",
+            end: "end"
+        },
+        placementTool: "ConnectionTool"
+    },
     RoundedChannel: {
         toolParams: {
             start: "start",

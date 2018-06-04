@@ -5,6 +5,7 @@ class MouseTool{
         this.up = MouseTool.defaultFunction("up");
         this.down = MouseTool.defaultFunction("down");
         this.move = MouseTool.defaultFunction("move");
+        this.rightdown = MouseTool.defaultFunction("rightdown");
     }
 
     static defaultFunction(string){
