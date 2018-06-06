@@ -34,6 +34,11 @@ class ViewManager {
                 event.preventDefault();
             }
         };
+        this.pasteboard = [];
+        this.pasteboardTypeString = "";
+        this.pasteboardSetString = "";
+        this.pasteboardValueString = "";
+        this.pasteboardValue = 0;
 
         this.view.setKeyDownFunction(function(event) {
             let key = event.keyCode || event.which;
@@ -41,24 +46,32 @@ class ViewManager {
             if (key == 46 || key == 8) {
                 reference.view.deleteSelectedFeatures();
             }
-
+            // Copy
             if ((event.ctrlKey || event.metaKey) && key == 67) {
-                console.log("Ctl c detected");
+                //console.log("Ctl c detected");
                 let selectedFeatures = reference.view.getSelectedFeatures();
                 if (selectedFeatures.length > 0) {
-                    reference.activateTool(selectedFeatures[0].getType())
+                    reference.pasteboard[0] = selectedFeatures[0];
                 }
 
             }
-
+            // Cut
             if ((event.ctrlKey || event.metaKey) && key == 88) {
-                console.log("Ctl x detected");
+                //console.log("Ctl x detected");
                 let selectedFeatures = reference.view.getSelectedFeatures();
                 if (selectedFeatures.length > 0) {
-                    reference.activateTool(selectedFeatures[0].getType());
-                    reference.removeFeature(selectedFeatures[0]);
+                    reference.pasteboard[0] = selectedFeatures[0];
                 }
-
+                reference.view.deleteSelectedFeatures();
+            }
+            // Paste
+            if ((event.ctrlKey || event.metaKey) && key == 86) {
+                //console.log("Ctl v detected");
+                let pasteboardFeatures = reference.pasteboard;
+                if (pasteboardFeatures.length > 0) {
+                    reference.updateDefaultsFromFeature(pasteboardFeatures[0]);
+                    reference.activateTool(pasteboardFeatures[0].getType());
+                }
             }
 
             if(key == 37){
