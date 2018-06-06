@@ -35,10 +35,6 @@ class ViewManager {
             }
         };
         this.pasteboard = [];
-        this.pasteboardTypeString = "";
-        this.pasteboardSetString = "";
-        this.pasteboardValueString = "";
-        this.pasteboardValue = 0;
 
         this.view.setKeyDownFunction(function(event) {
             let key = event.keyCode || event.which;
