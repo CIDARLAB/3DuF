@@ -276,8 +276,6 @@ class PaperView {
     }
 
     comparePaperFeatureHeights(a, b) {
-        console.log("a", a);
-        console.log("b", b);
         let aFeature = Registry.currentDevice.getFeatureByID(a.featureID);
         let bFeature = Registry.currentDevice.getFeatureByID(b.featureID);
         let aHeight = aFeature.getValue("height");
@@ -292,7 +290,6 @@ class PaperView {
         }else{
             index = 0;
         }
-        console.log("heightindex", index);
         group.insertChild(index, newChild);
     }
 
@@ -308,8 +305,6 @@ class PaperView {
     }
 
     updateFeature(feature) {
-        console.log("Printing from PaperView.updateFeature");
-        console.log(feature);
         let existingFeature = this.paperFeatures[feature.getID()];
         let selected;
         if (existingFeature) selected = existingFeature.selected;
@@ -327,7 +322,6 @@ class PaperView {
         //TODO: This is terrible. Fix it. Fix it now.
         let index = feature.layer.device.layers.indexOf(feature.layer);
         let layer = this.paperLayers[index];
-        console.log("newPaperFeature", newPaperFeature);
         this.insertChildByHeight(layer, newPaperFeature);
     }
 

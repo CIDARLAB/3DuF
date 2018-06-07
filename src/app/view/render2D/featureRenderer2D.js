@@ -26,7 +26,6 @@ function getDefaultValueForType(typeString, setString, key) {
 }
 
 function getFeatureRenderer(typeString, setString) {
-    console.log("Type: " + typeString);
     if(typeString == "TEXT"){
         let rendererInfo = renderTextTarget;
         return rendererInfo;
@@ -74,7 +73,6 @@ function renderTextTarget(typeString, setString, position) {
 function renderText(feature){
     //TODO - Figure out where to save the position of the feature
     let position = feature.getValue("position");
-    console.log("Postiont of inserteed text", position);
     let rendered = new paper.PointText(new paper.Point(position[0], position[1]));
     rendered.justification = 'center';
     rendered.fillColor = Colors.DEEP_PURPLE_500;

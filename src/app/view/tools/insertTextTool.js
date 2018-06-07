@@ -28,7 +28,6 @@ class InsertTextTool extends MouseTool {
         this.down = function (event) {
             PageSetup.killParamsWindow();
             paper.project.deselectAll();
-            console.log("TEXT LABEL BUTTON DOWN WORKING");
             ref.createNewFeature(MouseTool.getEventPosition(event));
         }
     }

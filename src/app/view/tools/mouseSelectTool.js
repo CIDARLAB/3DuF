@@ -6,7 +6,6 @@ var PageSetup = require("../pageSetup");
 class MouseSelectTool extends MouseTool {
     constructor() {
         super();
-        console.log("Test");
         this.dragging = false;
         this.dragStart = null;
         this.lastPoint = null;

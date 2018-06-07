@@ -63,9 +63,6 @@ class Layer {
     }
 */
     __ensureIsAFeature(feature) {
-        console.log(feature);
-        console.log(feature instanceof Feature);
-        console.log(feature instanceof TextFeature);
         if (!(feature instanceof Feature) && !(feature instanceof TextFeature)) {
             throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
         }
