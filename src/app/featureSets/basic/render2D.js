@@ -609,7 +609,8 @@ let render2D = {
             waterInputWidth: "waterInputWidth",
             outputWidth: "outputWidth",
             outputLength: "outputLength",
-            height: "height"
+            height: "height",
+            rotation: "rotation"
         },
         targetParams: {
             orificeSize: "orificeSize",
@@ -618,7 +619,8 @@ let render2D = {
             waterInputWidth: "waterInputWidth",
             outputWidth: "outputWidth",
             outputLength: "outputLength",
-            height: "height"
+            height: "height",
+            rotation:"rotation"
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "DropletGen",
