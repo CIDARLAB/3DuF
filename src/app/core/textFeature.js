@@ -8,7 +8,6 @@ var Feature = require("./Feature");
 
 class TextFeature extends Feature{
     constructor(text, params, id = TextFeature.generateID()){
-        console.log("Text LAbel Params", params);
         super("TEXT", "Basic", params, id, id);
         this.__text = text;
         this.__params.updateParameter("text", text);

@@ -290,7 +290,6 @@ function setupAppPage() {
     acceptTextButton.onclick = function(){
         Registry.viewManager.activateTool("InsertTextTool");
         Registry.text = document.getElementById("inserttext_textinput").value;
-        console.log(Registry.text);
         let textLabelDialog = document.getElementById('insert_text_dialog');
         textLabelDialog.close();
     };
