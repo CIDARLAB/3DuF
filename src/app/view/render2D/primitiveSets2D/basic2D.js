@@ -2684,10 +2684,11 @@ var DropletGen = function(params) {
     let waterInputWidth = params["waterInputWidth"];
     let outputWidth = params["outputWidth"];
     let outputLength = params["outputLength"];
+    let rotation = params["rotation"];
 
     let ret = new paper.Path();
 
-    let p1 = new paper.Point(x, y);
+    let p1 = new paper.Point(x, y - waterInputWidth/2);
 
     let p2 = new paper.Point(p1.x + oilInputWidth, p1.y);
 
@@ -2723,104 +2724,20 @@ var DropletGen = function(params) {
     ret.add(p10);
     ret.add(p11);
     ret.add(p12);
+
+    //Rotate the geometry
+    ret.rotate(-rotation, new paper.Point(pos[0], pos[1]));
 
     ret.closed = true;
     ret.fillColor = color;
     return ret;
 };
 
-// var DropletGen = function(params) {
-//     let pos = params["position"];
-//     let color = params["color"];
-//     let A = params["orificeSize"];
-//     let B = 4.8*A;
-//     let C = 6.71*A;
-//     let D = 2.09*A;
-//     let E = 4.85*A;
-//     //var vertices = [];
-//     let v1, v2, v3, v4, v5, v6, v7, v8, v9, v10;
-//     v1 = [pos[0] - D/2, pos[1] - A/2];
-//     v2 = [pos[0] - A/2, pos[1] - E/2];
-//     v3 = [pos[0] + A/2, pos[1] - E/2];
-//     v4 = [pos[0] + D/2, pos[1] - A/2];
-//     v5 = [pos[0] + D/2 + C, pos[1] - B/2];
-//     v6 = [pos[0] + D/2 + C, pos[1] + B/2];
-//     v7 = [pos[0] + D/2, pos[1] + A/2];
-//     v8 = [pos[0] + A/2, pos[1] + E/2];
-//     v9 = [pos[0] - A/2, pos[1] + E/2];
-//     v10 = [pos[0] - D/2, pos[1] + A/2];
-//
-//     var decahedron = new paper.Path();
-//     decahedron.add(new paper.Point(v1));
-//     decahedron.add(new paper.Point(v2));
-//     decahedron.add(new paper.Point(v3));
-//     decahedron.add(new paper.Point(v4));
-//     decahedron.add(new paper.Point(v5));
-//     decahedron.add(new paper.Point(v6));
-//     decahedron.add(new paper.Point(v7));
-//     decahedron.add(new paper.Point(v8));
-//     decahedron.add(new paper.Point(v9));
-//     decahedron.add(new paper.Point(v10));
-//     decahedron.closed = true;
-//     decahedron.fillColor = color;
-//     //decahedron.strokeColor = "#FFFFFF";
-//     //decahedron.strokeWidth = 3 / paper.view.zoom;
-//     return decahedron;
-// };
-
 var DropletGenTarget = function(params) {
-    let pos = params["position"];
-    let x = pos[0];
-    let y = pos[1];
-    let color = params["color"];
-    let orificeSize = params["orificeSize"];
-    let orificeLength = params["orificeLength"];
-    let oilInputWidth = params["oilInputWidth"];
-    let waterInputWidth = params["waterInputWidth"];
-    let outputWidth = params["outputWidth"];
-    let outputLength = params["outputLength"];
 
-    let ret = new paper.Path();
+    let ret = DropletGen(params);
 
-    let p1 = new paper.Point(x, y);
-
-    let p2 = new paper.Point(p1.x + oilInputWidth, p1.y);
-
-    let p3 = new paper.Point(p2.x , p2.y + (waterInputWidth/2 - orificeSize/2));
-
-    let p4 = new paper.Point(p3.x + orificeLength, p3.y);
-
-    let p5 = new paper.Point(p4.x, p4.y - (outputWidth/2 - orificeSize/2));
-
-    let p6 = new paper.Point(p5.x + outputLength, p5.y);
-
-    let p7 = new paper.Point(p6.x, p6.y + (outputWidth));
-
-    let p8 = new paper.Point(p7.x - outputLength, p7.y);
-
-    let p9 = new paper.Point(p8.x, p8.y - (outputWidth/2 - orificeSize/2));
-
-    let p10 = new paper.Point(p9.x - orificeLength, p9.y);
-
-    let p11 = new paper.Point(p10.x, p10.y + (waterInputWidth/2 - orificeSize/2));
-
-    let p12 = new paper.Point(p11.x - oilInputWidth, p11.y);
-
-    ret.add(p1);
-    ret.add(p2);
-    ret.add(p3);
-    ret.add(p4);
-    ret.add(p5);
-    ret.add(p6);
-    ret.add(p7);
-    ret.add(p8);
-    ret.add(p9);
-    ret.add(p10);
-    ret.add(p11);
-    ret.add(p12);
-
-    ret.closed = true;
-    ret.fillColor = color;
+    // ret.fillColor = color;
     ret.fillColor.alpha = 0.5;
     return ret;
 };

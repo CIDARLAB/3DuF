@@ -1172,7 +1172,8 @@ let basicFeatures = {
             "waterInputWidth": "Float",
             "outputWidth": "Float",
             "outputLength": "Float",
-            "height": "Float"
+            "height": "Float",
+            "rotation": "Float"
         },
         units: {
             "orificeSize": "&mu;m",
@@ -1182,7 +1183,8 @@ let basicFeatures = {
             "waterInputWidth": "&mu;m",
             "outputWidth": "&mu;m",
             "outputLength": "&mu;m",
-            "height": "&mu;m"
+            "height": "&mu;m",
+            "rotation": "&deg;"
         },
         defaults: {
             "orificeSize": .20 * 1000,
@@ -1191,7 +1193,8 @@ let basicFeatures = {
             "waterInputWidth": .60 * 1000,
             "outputWidth": .60 * 1000,
             "outputLength": .60 * 1000,
-            "height": .1 * 1000
+            "height": .1 * 1000,
+            "rotation": 0
         },
         minimum: {
             "orificeSize": 10,
@@ -1201,6 +1204,7 @@ let basicFeatures = {
             "outputWidth": 10,
             "outputLength": 10,
             "height": 10,
+            "rotation": 0
         },
         maximum: {
             "orificeSize": 2000,
@@ -1210,6 +1214,7 @@ let basicFeatures = {
             "outputWidth": 2000,
             "outputLength": 2000,
             "height": 1200,
+            "rotation": 360
         }
     }
 }
