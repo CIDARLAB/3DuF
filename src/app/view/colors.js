@@ -17,7 +17,7 @@ module.exports.BLUE_500 = "#2196F3";
 module.exports.GREY_200 = "#EEEEEE";
 module.exports.GREY_300 = "#E0E0E0";
 module.exports.GREY_400 = "#BDBDBD";
-module.exports.LIGHT_GREEN_100 = "#DCEDC8"
+module.exports.LIGHT_GREEN_100 = "#DCEDC8";
 module.exports.GREY_700 = "#616161";
 module.exports.GREY_500 = "#9E9E9E";
 module.exports.AMBER_50 = "#FFF8E1";
@@ -26,8 +26,8 @@ module.exports.PINK_300 = "#F06292";
 module.exports.BLACK = "#000000";
 module.exports.WHITE = "#FFFFFF";
 
-var defaultColorKeys = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"]
-var darkColorKeys = ["300", "400", "500", "600", "700", "800", "900"]
+var defaultColorKeys = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
+var darkColorKeys = ["300", "400", "500", "600", "700", "800", "900"];
 
 var indigo = {
 	"900": "#" + "1A237E",
@@ -44,7 +44,7 @@ var indigo = {
 	"A200": "#" + "536DFE",
 	"A400": "#" + "3D5AFE",
 	"A700": "#" + "304FFE",
-}
+};
 
 var red = {
 	"900": "#" + "B71C1C",
@@ -61,7 +61,7 @@ var red = {
 	"A200": "#" + "FF5252",
 	"A400": "#" + "FF1744",
 	"A700": "#" + "D50000"
-}
+};
 
 var blue = {
     "900": "#" + "1A237E",
@@ -78,23 +78,23 @@ var blue = {
     "A200": "#" + "536DFE",
     "A400": "#" + "3D5AFE",
     "A700": "#" + "304FFE",
-}
+};
 
 var layerColors = {
 	"indigo": indigo,
 	"red": red,
 	"blue": blue
-}
+};
 
 var decimalToIndex = function(decimal, indices){
 	return Math.round((indices-1) * decimal);
-}
+};
 
 var decimalToLayerColor = function(decimal, layerColors, orderedKeys){
 	let index = decimalToIndex(decimal, orderedKeys.length);
 	let key = orderedKeys[index];
 	return layerColors["700"];
-}
+};
 
 var renderAllColors = function(layer, orderedKeys){
 	for (let i =0 ; i < orderedKeys.length; i ++){
@@ -114,21 +114,21 @@ var renderAllColors = function(layer, orderedKeys){
 			radius: 500
 		});
 	}
-}
+};
 
 var getLayerColors = function(layer){
 	if (layer && layer.color) return layerColors[layer.color];
 	else return layerColors["red"]
-}
+};
 
 var getDefaultLayerColor = function(layer){
 	return getLayerColors(layer)["500"];
-}
+};
 
 var getDefaultFeatureColor = function(typeString, setString, layer){
 	if (layer){
 		let height = Feature.getDefaultsForType(typeString, setString)["height"];
-		let decimal = height // layer.estimateLayerHeight();
+		let decimal = height; // layer.estimateLayerHeight();
 		if (!layer.flip) decimal = 1-decimal;
 		let colors = getLayerColors(layer);
 		return decimalToLayerColor(decimal, colors, darkColorKeys);
@@ -136,7 +136,7 @@ var getDefaultFeatureColor = function(typeString, setString, layer){
 	else {
 		return decimalToLayerColor(0,layerColors["indigo"], darkColorKeys);
 	}
-}
+};
 
 module.exports.getDefaultLayerColor = getDefaultLayerColor;
 module.exports.getDefaultFeatureColor = getDefaultFeatureColor;

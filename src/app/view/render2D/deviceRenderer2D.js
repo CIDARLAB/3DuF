@@ -21,7 +21,7 @@ function renderDevice(device, strokeColor = DEFAULT_STROKE_COLOR) {
         to: paper.view.bounds.bottomRight.add(paper.view.size),
         fillColor: Colors.BLUE_50,
         strokeColor: null
-    })
+    });
     let thickness = BORDER_THICKNESS / paper.view.zoom;
     let width = device.params.getValue("width");
     let height = device.params.getValue("height");

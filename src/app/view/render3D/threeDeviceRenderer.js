@@ -251,12 +251,12 @@ class ThreeDeviceRenderer {
 			width: width,
 			height: height,
 			thickness: thickness
-		}
+		};
 
 		let planeParams = {
 			width: width,
 			height: height
-		}
+		};
 		let slideGeometry = Device3D.Slide(slideParams);
 		let planeGeometry = Device3D.DevicePlane(planeParams);
 		let group = new THREE.Group();
@@ -274,7 +274,7 @@ class ThreeDeviceRenderer {
 			slideThickness: slideThickness,
 			borderWidth: borderWidth,
 			interlock: interlock
-		}
+		};
 
 		let holderGeometry = Device3D.SlideHolder(holderParams);
 		let holderMesh = new THREE.Mesh(holderGeometry, material);

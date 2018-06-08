@@ -15,12 +15,12 @@ class PanTool extends MouseTool {
         this.down = function(event){
             ref.startPan(MouseTool.getEventPosition(event));
             ref.showTarget();
-        }
+        };
         this.up = function(event){
             ref.endPan(MouseTool.getEventPosition(event));
             ref.showTarget();
 
-        }
+        };
         this.move = function(event){
             ref.moveHandler(MouseTool.getEventPosition(event));
             ref.showTarget();

@@ -13,8 +13,11 @@ var MultilayerPositionTool = require('./tools/multilayerPositionTool');
 var CellPositionTool = require('./tools/cellPositionTool');
 var MouseSelectTool = require('./tools/mouseSelectTool');
 
+import ResolutionToolBar from './ui/resolutionToolBar';
+
 class ViewManager {
     constructor(view) {
+        this.resolutionToolBar = new ResolutionToolBar();
         this.view = view;
         this.tools = {};
         this.middleMouseTool = new PanTool();
@@ -200,13 +203,6 @@ class ViewManager {
         }
     }
 
-    updateLayer(layer, index, refresh = true) {
-        if (this.__isLayerInCurrentDevice(layer)) {
-            this.view.updateLayer(layer);
-            this.refresh(refresh);
-        }
-    }
-
     removeLayer(layer, index, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
             this.view.removeLayer(layer, index);
@@ -351,6 +347,9 @@ class ViewManager {
 
     refresh(refresh = true) {
         this.updateQueue.run();
+        //Update the toolbar
+        let spacing = Registry.currentGrid.getSpacing();
+        this.resolutionToolBar.updateResolutionLabelAndSlider(spacing);
     }
 
     getEventPosition(event) {
@@ -390,7 +389,7 @@ class ViewManager {
         // its going the be the legacy format, else it'll be a new format
         var version = json.version;
         if(null == version || undefined == version){
-            console.log("Loading Legacy Format...")
+            console.log("Loading Legacy Format...");
             Registry.currentDevice = Device.fromJSON(json);
         }else{
             console.log("Version Number: " + version);
@@ -404,7 +403,7 @@ class ViewManager {
         }
         //Common Code for rendering stuff
         Registry.currentLayer = Registry.currentDevice.layers[0];
-        Registry.currentTextLayer = Registry.currentDevice.textLa
+        Registry.currentTextLayer = Registry.currentDevice.textLa;
         Registry.viewManager.addDevice(Registry.currentDevice);
         this.view.initializeView();
         this.updateGrid();

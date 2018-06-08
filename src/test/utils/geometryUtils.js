@@ -30,7 +30,7 @@ describe('GeometryUtils', function() {
         it("should return 360 for pi*2", function() {
             utils.radToDeg(Math.PI * 2).should.equal(360);
         });
-    })
+    });
 
     describe("#computeAngleFrompoints", function() {
         it("should return 45 degrees for [-1,0], [0,1]", function() {

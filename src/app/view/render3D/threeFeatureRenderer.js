@@ -18,7 +18,7 @@ var layerMaterials = {
 		color: 0x9E9E9E,
 		shading: THREE.SmoothShading
 	})
-}
+};
 
 function getFeatureMaterial(layer) {
 	var colorString = layer.color;

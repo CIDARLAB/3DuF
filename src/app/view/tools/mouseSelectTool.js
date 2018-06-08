@@ -27,7 +27,7 @@ class MouseSelectTool extends MouseTool {
                 ref.updateQueue.run();
             }
             ref.showTarget();
-        }
+        };
         this.up = function (event) {
             ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
@@ -62,7 +62,7 @@ class MouseSelectTool extends MouseTool {
 
     mouseUpHandler(point) {
         if (this.currentSelectBox) {
-            this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox)
+            this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox);
             this.selectFeatures();
         }
         this.killSelectBox();

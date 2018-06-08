@@ -1,7 +1,7 @@
 var Params = require("./params");
 var Parameters = require("./parameters");
 var Parameter =require("./parameter");
-var Feature = require('./feature')
+var Feature = require('./feature');
 var Layer = require('./layer');
 var Registry = require("./registry");
 
@@ -73,7 +73,7 @@ class Device {
         return false;
     }
     getAllFeaturesFromDevice() {
-        features = [];
+        let features = [];
         for (let layer in this.layers) {
             features.push.apply(features, layer.features);
         }

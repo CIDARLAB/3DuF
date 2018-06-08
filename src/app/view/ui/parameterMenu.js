@@ -51,8 +51,8 @@ var createValueField = function(start, id, unittext="") {
     field.setAttribute("type", "text");
     field.setAttribute("id", id);
     field.setAttribute("value", start);
-    field.setAttribute("pattern", "[0-9]*")
-    field.style.paddingTop = "0px"
+    field.setAttribute("pattern", "[0-9]*");
+    field.style.paddingTop = "0px";
     div.appendChild(field);
     div.appendChild(span);
     div.appendChild(error);
@@ -318,7 +318,7 @@ var createFeatureTableBody = function(typeString, setString) {
 
 var createFeatureTable = function(typeString, setString, position) {
     var table = document.createElement("table");
-    table.className = "mdl-data-table mdl-js-data-table mdl-shadow--2dp feature-table fade-transition"
+    table.className = "mdl-data-table mdl-js-data-table mdl-shadow--2dp feature-table fade-transition";
     var head = createFeatureTableHeaders(typeString);
     table.appendChild(head);
     var body = createFeatureTableBody(typeString, setString);
@@ -330,7 +330,7 @@ var createFeatureTable = function(typeString, setString, position) {
     //table.appendChild(closeButton);
     closeButton.onclick = function() {
         table.parentElement.removeChild(table);
-    }
+    };
     HTMLUtils.addClass(table, "hidden-block");
     table.style.zIndex = 999999;
     return table;

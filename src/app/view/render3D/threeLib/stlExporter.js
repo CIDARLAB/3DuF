@@ -58,25 +58,25 @@ THREE.STLExporter.prototype = {
 									vector.copy(vertices[vertexIndex]); //.applyMatrix4( matrixWorld );
 
 									// see https://github.com/mrdoob/three.js/issues/3187
-									boneIndices = [];
+									let boneIndices = [];
 									boneIndices[0] = mesh.geometry.skinIndices[vertexIndex].x;
 									boneIndices[1] = mesh.geometry.skinIndices[vertexIndex].y;
 									boneIndices[2] = mesh.geometry.skinIndices[vertexIndex].z;
 									boneIndices[3] = mesh.geometry.skinIndices[vertexIndex].w;
 
-									weights = [];
+									let weights = [];
 									weights[0] = mesh.geometry.skinWeights[vertexIndex].x;
 									weights[1] = mesh.geometry.skinWeights[vertexIndex].y;
 									weights[2] = mesh.geometry.skinWeights[vertexIndex].z;
 									weights[3] = mesh.geometry.skinWeights[vertexIndex].w;
 
-									inverses = [];
+									let inverses = [];
 									inverses[0] = mesh.skeleton.boneInverses[boneIndices[0]];
 									inverses[1] = mesh.skeleton.boneInverses[boneIndices[1]];
 									inverses[2] = mesh.skeleton.boneInverses[boneIndices[2]];
 									inverses[3] = mesh.skeleton.boneInverses[boneIndices[3]];
 
-									skinMatrices = [];
+									let skinMatrices = [];
 									skinMatrices[0] = mesh.skeleton.bones[boneIndices[0]].matrixWorld;
 									skinMatrices[1] = mesh.skeleton.bones[boneIndices[1]].matrixWorld;
 									skinMatrices[2] = mesh.skeleton.bones[boneIndices[2]].matrixWorld;
@@ -87,10 +87,10 @@ THREE.STLExporter.prototype = {
 									if (mesh.geometry.morphTargets !== 'undefined') {
 	
 									
-										morphMatricesX = [];
-										morphMatricesY = [];
-										morphMatricesZ = [];
-										morphMatricesInfluence = [];
+										let morphMatricesX = [];
+										let morphMatricesY = [];
+										let morphMatricesZ = [];
+										let morphMatricesInfluence = [];
 
 										for (var mt = 0; mt < mesh.geometry.morphTargets.length; mt++) {
 											//collect the needed vertex info - jc

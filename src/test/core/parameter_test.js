@@ -15,7 +15,7 @@ describe("Parameter", function() {
     describe("#toJSON", function() {
         it("can produce JSON without errors", function() {
             let type = "String";
-            let value = "foo"
+            let value = "foo";
             let val = new Parameter(type, value);
             val.toJSON();
         });
