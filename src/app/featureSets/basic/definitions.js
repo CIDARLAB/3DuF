@@ -1183,7 +1183,6 @@ let basicFeatures = {
             "waterInputWidth": "&mu;m",
             "outputWidth": "&mu;m",
             "outputLength": "&mu;m",
-            "height": "&mu;m",
             "rotation": "&deg;"
         },
         defaults: {

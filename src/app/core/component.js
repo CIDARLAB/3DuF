@@ -126,8 +126,8 @@ class Component {
     }
 
     /**
-     * Adds a feature that reference that is associated with the component
-     * @param feature
+     * Adds a feature that is associated with the component
+     * @param featureID String id of the feature
      */
     addFeatureID(featureID){
         this.__features.push(featureID);
@@ -140,7 +140,7 @@ class Component {
      * @private
      */
     __updateBounds() {
-        console.log("test")
+        console.log("test");
         let bounds = null;
         let feature = null;
         let renderedfeature = null;

@@ -1,11 +1,12 @@
-var Registry = require("./core/registry");
-var Device = require('./core/device');
-var Layer = require('./core/layer');
-var PaperView = require("./view/paperView");
-var ViewManager = require("./view/viewManager");
-var AdaptiveGrid = require("./view/grid/adaptiveGrid");
-var PageSetup = require("./view/pageSetup");
-var Colors = require("./view/colors");
+const Registry = require("./core/registry");
+const Device = require('./core/device');
+const Layer = require('./core/layer');
+const PaperView = require("./view/paperView");
+const ViewManager = require("./view/viewManager");
+import AdaptiveGrid from "./view/grid/adaptiveGrid";
+
+const PageSetup = require("./view/pageSetup");
+const Colors = require("./view/colors");
 var ThreeDeviceRenderer = require("./view/render3D/ThreeDeviceRenderer");
 var Examples = require("./examples/jsonExamples");
 

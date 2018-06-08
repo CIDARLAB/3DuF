@@ -285,9 +285,9 @@ class PaperView {
 
     insertChildByHeight(group, newChild) {
         let index;
-        if(group.children.length > 0){
+        if (group.children.length > 0) {
             index = this.getIndexByHeight(group.children, newChild);
-        }else{
+        } else {
             index = 0;
         }
         group.insertChild(index, newChild);
@@ -311,10 +311,10 @@ class PaperView {
         else selected = false;
         this.removeFeature(feature);
         let newPaperFeature;
-        if(feature instanceof TextFeature){
+        if (feature instanceof TextFeature) {
             //TODO:Create render textfeature method that doesnt take other params
             newPaperFeature = FeatureRenderer2D.renderText(feature);
-        }else{
+        } else {
             newPaperFeature = FeatureRenderer2D.renderFeature(feature);
         }
         newPaperFeature.selected = selected;
@@ -356,12 +356,12 @@ class PaperView {
         if (this.lastTargetType && this.lastTargetPosition) {
 
             //Checks if the target is a text type target
-            if(this.lastTargetType == "TEXT"){
+            if (this.lastTargetType == "TEXT") {
 
                 this.currentTarget = FeatureRenderer2D.renderTextTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
                 this.uiLayer.addChild(this.currentTarget);
 
-            }else{
+            } else {
                 this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
                 this.uiLayer.addChild(this.currentTarget);
             }
@@ -446,8 +446,14 @@ class PaperView {
         else maxHeight = canvasHeight - borderMargin;
         let widthRatio = deviceWidth / maxWidth;
         let heightRatio = deviceHeight / maxHeight;
-        if (widthRatio > heightRatio) return 1 / widthRatio;
-        else return 1 / heightRatio;
+        console.log("optimal zoom", 1 / heightRatio);
+        if (widthRatio > heightRatio) {
+            return 1 / widthRatio;
+        }
+        else {
+            return 1 / heightRatio;
+        }
+
     }
 
     hitFeature(point, onlyHitActiveLayer = true) {

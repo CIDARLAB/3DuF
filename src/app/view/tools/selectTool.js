@@ -65,7 +65,7 @@ class SelectTool extends MouseTool {
 
     mouseUpHandler(point) {
         if (this.currentSelectBox) {
-            this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox)
+            this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox);
             this.selectFeatures();
         }
         this.killSelectBox();

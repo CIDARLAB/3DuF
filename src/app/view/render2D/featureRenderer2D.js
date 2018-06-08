@@ -6,7 +6,7 @@ var Registry = require("../../core/registry");
 
 function getLayerColor(feature) {
     let height = feature.getValue("height");
-    let layerHeight = 1 // feature.layer.estimateLayerHeight();
+    let layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
     if (decimal >1) decimal = 1;
     if (!feature.layer.flip) decimal = 1 - decimal;

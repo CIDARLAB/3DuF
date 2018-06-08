@@ -1,19 +1,34 @@
 {
   "name": "3duf",
   "devDependencies": {
-    "mocha": ">=2.2.5",
     "babel": ">=5.5.5",
-    "browserify": ">=10.2.4",
+    "babel-preset-es2015": "^6.24.1",
     "babelify": ">=6.1.2",
-    "require-directory": ">=2.1.1",
-    "watchify": ">=3.2.2",
+    "browserify": ">=10.2.4",
     "istanbul": ">=0.3.17",
+    "mocha": ">=2.2.5",
+    "require-directory": ">=2.1.1",
     "should": ">=7.0.2",
-    "sinon": ">=1.15.4"
+    "sinon": ">=1.15.4",
+    "watchify": ">=3.2.2"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
   },
   "dependencies": {
     "jszip": "^2.5.0",
-    "node-uuid": ">=1.4.3"
+    "node-uuid": ">=1.4.3",
+    "nouislider": "^11.1.0",
+    "wnumb": "^1.1.0"
   },
   "version": "0.1.0",
   "description": "User-friendly CAD tool for designing microfluidic devices.",

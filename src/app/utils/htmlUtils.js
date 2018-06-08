@@ -1,12 +1,12 @@
 var removeClass = function(el, className){
     if (el.classList) el.classList.remove(className);
     else el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-}
+};
 
 var addClass = function(el, className){
     if (el.classList) el.classList.add(className);
     else el.className += ' ' + className;
-}
+};
 
 // From http://stackoverflow.com/questions/8869403/drag-drop-json-into-chrome
 function DnDFileController(selector, onDropCallback) {

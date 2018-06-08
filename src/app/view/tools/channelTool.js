@@ -18,7 +18,7 @@ class ChannelTool extends MouseTool {
 
 		this.showQueue = new SimpleQueue(function(){
 			ref.showTarget();
-		}, 20, false)
+		}, 20, false);
 
 		this.updateQueue = new SimpleQueue(function(){
 			ref.updateChannel();

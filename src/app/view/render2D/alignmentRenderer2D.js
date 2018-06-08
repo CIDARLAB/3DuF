@@ -1,11 +1,11 @@
-var Colors = require("../colors");
-var Feature = require("../../core/feature");
-var PrimitiveSets2D = require("./primitiveSets2D");
-var FeatureSets = require("../../featureSets");
+const Colors = require("../colors");
+const Feature = require("../../core/feature");
+const PrimitiveSets2D = require("./primitiveSets2D");
+const FeatureSets = require("../../featureSets");
 
 function getLayerColor(feature) {
     let height = feature.getValue("height");
-    let layerHeight = 1 // feature.layer.estimateLayerHeight();
+    let layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
     if (decimal >1) decimal = 1;
     if (!feature.layer.flip) decimal = 1 - decimal;
@@ -50,7 +50,7 @@ function renderAlignmentMarks(position, radius, features) {
     // let rendered = prim(primParams);
     let alignmentmarkergroup = new paper.Group();
 
-    for(i in features){
+    for(let i in features){
 
         let feature = features[i];
         if(feature == null){

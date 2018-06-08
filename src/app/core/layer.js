@@ -88,7 +88,7 @@ class Layer {
     }
 
     getFeature(featureID) {
-        this.__ensureFeatureIDExists(featureID)
+        this.__ensureFeatureIDExists(featureID);
         return this.features[featureID];
     }
 
