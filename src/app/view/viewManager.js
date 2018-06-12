@@ -14,10 +14,12 @@ var CellPositionTool = require('./tools/cellPositionTool');
 var MouseSelectTool = require('./tools/mouseSelectTool');
 
 import ResolutionToolBar from './ui/resolutionToolBar';
+import RightPanel from './ui/rightPanel';
 
 class ViewManager {
     constructor(view) {
         this.resolutionToolBar = new ResolutionToolBar();
+        this.rightPanel = new RightPanel();
         this.view = view;
         this.tools = {};
         this.middleMouseTool = new PanTool();

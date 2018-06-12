@@ -25,14 +25,6 @@ export default class ResolutionToolBar{
             }
         };
 
-        // this.__smallresolutionLabel.onchange = function(event){
-        //     console.log(event);
-        //     if(AdaptiveGrid.isValidZoom(ref.__smallresolutionLabel.value)){
-        //         console.log("New grid Value", ref.__smallresolutionLabel.value);
-        //         console.log("Changed Grid Spacing", Registry.currentGrid.getSpacing());
-        //     }
-        // };
-
         this.__setupGridResolutionSlider();
     }
 
