@@ -7,7 +7,7 @@ export default class ResolutionToolBar{
     constructor(){
         //TOOD: Enable all the UI hooks so that we can execute the updates, actions
         this.__gridResolution = 0;
-        // this.__smallresolutionLabel = document.getElementById("sm-resolution");
+        this.__smallresolutionLabel = document.getElementById("sm-resolution");
         this.__largeresolutionLabel = document.getElementById("lg-resolution");
         this.__adaptiveGridCheckBox = document.getElementById("grid-enable-toggle");
         // this.__resolutionSlider = document.getElementById("grid-resolution-slider");
@@ -36,7 +36,7 @@ export default class ResolutionToolBar{
     updateResolutionLabelAndSlider(smallResolution){
         if(smallResolution != null){
             this.__gridResolution = smallResolution;
-            // this.__smallresolutionLabel.innerHTML = smallResolution + " &mu;m";
+            this.__smallresolutionLabel.innerHTML = smallResolution + " &mu;m";
 
             this.__gridResolutionSlider.noUiSlider.set(parseInt(smallResolution, 10));
         }
@@ -58,7 +58,8 @@ export default class ResolutionToolBar{
                 '90%': [    1000    ,   1000    ],
                 'max': [    5000    ]
             },
-            pips: { mode: 'range', density: 5 , format: wNumb({suffix:"&mu;m"})}
+            pips: { mode: 'range', density: 5 , format: wNumb({suffix:"&mu;m"})},
+            tooltips : [true]
             // orientation: 'vertical',
             // direction: 'rtl'
         });
@@ -67,8 +68,7 @@ export default class ResolutionToolBar{
         let ref = this;
         let registryref = Registry;
         this.__gridResolutionSlider.noUiSlider.on('update', function(values, handle, unencoded, isTap, positions ){
-            // ref.__smallresolutionLabel.innerHTML = values[0] + " &mu;m";
-
+            ref.__smallresolutionLabel.innerHTML = values[0] + " &mu;m";
         });
 
         this.__gridResolutionSlider.noUiSlider.on('change', function(values, handle, unencoded, isTap, positions ){
