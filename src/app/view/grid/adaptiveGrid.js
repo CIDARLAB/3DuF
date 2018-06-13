@@ -63,7 +63,6 @@ export default class AdaptiveGrid {
 
     getSpacing() {
         if(this.__isAutomaticEnabled){
-            console.log("Calculating new spacing");
             let zoomlevel = paper.view.zoom;
             if (zoomlevel <= 0.02) {
                 this.__spacing = 1000;
