@@ -3,12 +3,12 @@ var FeatureRenderer2D = require("./render2D/featureRenderer2D");
 var GridRenderer = require("./render2D/GridRenderer");
 var DeviceRenderer = require("./render2D/deviceRenderer2D");
 var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
-var PanAndZoom = require("./PanAndZoom");
+import PanAndZoom from "./PanAndZoom";
 var SimpleQueue = require("../utils/simpleQueue");
 var Colors = require("./colors");
 var TextFeature = require("../core/textFeature");
 
-class PaperView {
+export default class PaperView {
     constructor(canvas) {
         this.panAndZoom = new PanAndZoom(this);
         this.center = paper.view.center;
@@ -162,7 +162,13 @@ class PaperView {
 
     setZoom(zoom) {
         this.zoom = zoom;
+        console.log(zoom);
         this.updateZoom();
+
+        //Check if the zoom toolbar exists before trying to run it
+        if(Registry.viewManager.zoomToolBar){
+            Registry.viewManager.zoomToolBar.setZoom(zoom);
+        }
     }
 
     updateZoom() {
@@ -508,5 +514,3 @@ class PaperView {
         return output;
     }
 }
-
-module.exports = PaperView;

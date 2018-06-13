@@ -1,3 +1,5 @@
+import ZoomToolBar from "./ui/zoomToolBar";
+
 var Registry = require("../core/registry");
 var Device = require("../core/device");
 var ChannelTool = require("./tools/channelTool");
@@ -16,14 +18,15 @@ var MouseSelectTool = require('./tools/mouseSelectTool');
 import ResolutionToolBar from './ui/resolutionToolBar';
 import RightPanel from './ui/rightPanel';
 
-class ViewManager {
+export default class ViewManager {
     constructor(view) {
-        this.resolutionToolBar = new ResolutionToolBar();
-        this.rightPanel = new RightPanel();
         this.view = view;
         this.tools = {};
         this.middleMouseTool = new PanTool();
         this.rightMouseTool = new SelectTool();
+        this.rightPanel = new RightPanel();
+        this.resolutionToolBar = new ResolutionToolBar();
+
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
@@ -143,6 +146,11 @@ class ViewManager {
         this.maxZoom = 5;
         this.setupTools();
         this.activateTool("Channel");
+    }
+
+    setupToolBars(){
+        //Initiating the zoom toolbar
+        this.zoomToolBar = new ZoomToolBar(.0001, 5);
     }
 
     addDevice(device, refresh = true) {
@@ -284,6 +292,7 @@ class ViewManager {
 
         this.updateDevice(Registry.currentDevice, false);
         this.__updateViewTarget(false);
+        this.zoomToolBar.setZoom(zoom);
         this.refresh(refresh);
     }
 
@@ -556,5 +565,3 @@ class ViewManager {
         this.tools["AlignmentMarks"] = new MultilayerPositionTool("AlignmentMarks", "Basic");
     }
 }
-
-module.exports = ViewManager;

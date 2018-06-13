@@ -17,6 +17,22 @@
     border-radius: 5px;
 }
 
+#zoom-toolbar{
+    align-content: center;
+    position: absolute;
+    /*width: 100px;*/
+    height: 30%;
+    top: 100px;
+    right: 30px;
+    /*background-color: rgb(250, 250, 250);*/
+    z-index: 9;
+    transition: all .4s;
+    padding-top: 25px;
+    padding-botton: 25px;
+    /*opacity: 0.9;*/
+    border-radius: 5px;
+}
+
 #toolbar-button-panel{
     position: absolute;
     top: 10px;

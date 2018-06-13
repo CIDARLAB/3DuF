@@ -5,7 +5,7 @@ import AdaptiveGrid from "../grid/adaptiveGrid";
 
 export default class ResolutionToolBar{
     constructor(){
-        //TOOD: Enable all the UI hooks so that we can execute the updates, actions
+        //Enable all the UI hooks so that we can execute the updates, actions
         this.__gridResolution = 0;
         this.__smallresolutionLabel = document.getElementById("sm-resolution");
         this.__largeresolutionLabel = document.getElementById("lg-resolution");

@@ -1,8 +1,11 @@
+import ZoomToolBar from "./view/ui/zoomToolBar";
+
 const Registry = require("./core/registry");
 const Device = require('./core/device');
 const Layer = require('./core/layer');
-const PaperView = require("./view/paperView");
-const ViewManager = require("./view/viewManager");
+
+import PaperView from "./view/paperView";
+import ViewManager from "./view/viewManager";
 import AdaptiveGrid from "./view/grid/adaptiveGrid";
 
 const PageSetup = require("./view/pageSetup");
@@ -77,5 +80,6 @@ window.onload = function() {
             });
     }
 
+    Registry.viewManager.setupToolBars();
 };
 

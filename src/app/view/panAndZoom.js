@@ -1,6 +1,6 @@
 var Registry = require("../core/registry");
 
-class PanAndZoom {
+export default class PanAndZoom {
     constructor(paperView){
         this.view = paperView;
     }
@@ -35,5 +35,3 @@ class PanAndZoom {
         return this.view.getCenter().subtract(delta);
     }
 }
-
-module.exports = PanAndZoom;
