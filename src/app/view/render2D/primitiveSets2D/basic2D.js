@@ -332,7 +332,7 @@ var Transposer = function(params){
     transposer_flow.addChild(channel);
 
     //Draw Valve
-    createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth/2, gap, radius, "H");
+    createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth / 2, gap, radius, "H", channelWidth);
 
     //Draw top right channel
     topleftpoint = new paper.Point(px + 4*valvespacing + 4*radius + 2*channelWidth, py - channelWidth/2);
@@ -347,7 +347,7 @@ var Transposer = function(params){
     channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
 
     transposer_flow.addChild(channel);
-    createTransposerValve(transposer_flow, topleftpoint.x + channelWidth/2, bottomrightpoint.y + radius, gap, radius, "V");
+    createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, gap, radius, "V", channelWidth);
 
     //2
     topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2*radius);
@@ -356,7 +356,7 @@ var Transposer = function(params){
 
     transposer_flow.addChild(channel);
 
-    createTransposerValve(transposer_flow, topleftpoint.x + channelWidth/2, bottomrightpoint.y + radius, gap, radius, "V");
+    createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, gap, radius, "V", channelWidth);
 
     //3
     topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2*radius);
@@ -372,7 +372,7 @@ var Transposer = function(params){
 
     transposer_flow.addChild(channel);
 
-    createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth/2, gap, radius, "H");
+    createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth / 2, gap, radius, "H", channelWidth);
 
     //2
     topleftpoint = new paper.Point(bottomrightpoint.x + 2*radius, topleftpoint.y );
@@ -389,7 +389,7 @@ var Transposer = function(params){
 
     transposer_flow.addChild(channel);
 
-    createTransposerValve(transposer_flow, topleftpoint.x + channelWidth/2, bottomrightpoint.y + radius, gap, radius, "V");
+    createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, gap, radius, "V", channelWidth);
 
     //2
     topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2*radius);
@@ -408,7 +408,7 @@ var Transposer = function(params){
 
     transposer_flow.addChild(channel);
 
-    createTransposerValve(transposer_flow, topleftpoint.x + channelWidth/2, bottomrightpoint.y + radius, gap, radius, "V");
+    createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, gap, radius, "V", channelWidth);
 
     //2
     topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2*radius);
@@ -436,26 +436,44 @@ var Transposer = function(params){
     return transposer_flow;
 };
 
-var createTransposerValve = function(compound_path, xpos, ypos, gap, radius, orientation){
+var createTransposerValve = function (compound_path, xpos, ypos, gap, radius, orientation, channel_width){
 
     let center = new paper.Point(xpos, ypos);
 
-    var circ = new paper.Path.Circle(center, radius);
-    var cutout;
-    if (orientation == "H") {
-        cutout = paper.Path.Rectangle({
-            from: new paper.Point(xpos - gap / 2, ypos - radius),
-            to: new paper.Point(xpos + gap / 2, ypos + radius)
-        });
-    }
-    else {
-        cutout = paper.Path.Rectangle({
-            from: new paper.Point(xpos - radius, ypos - gap / 2),
-            to: new paper.Point(xpos + radius, ypos + gap / 2)
-        });
-    }
+    //Create the basic circle
+    let circ = new paper.Path.Circle(center, radius);
+
+
+    //Add the tiny channel pieces that jut out
+    let rec = new paper.Path.Rectangle({
+        point: new paper.Point(xpos - channel_width/2, ypos - radius),
+        size: [channel_width, radius],
+        stokeWidth: 0
+    });
+
+    circ = circ.unite(rec);
+
+
+    rec = new paper.Path.Rectangle({
+        point: new paper.Point(xpos - channel_width/2, ypos),
+        size: [channel_width, radius],
+        stokeWidth: 0
+    });
+
+    circ = circ.unite(rec);
+
+    let cutout = paper.Path.Rectangle({
+        from: new paper.Point(xpos - radius, ypos - gap / 2),
+        to: new paper.Point(xpos + radius, ypos + gap / 2)
+    });
+
     //cutout.fillColor = "white";
-    var valve = circ.subtract(cutout);
+    let valve = circ.subtract(cutout);
+
+    //TODO Rotate
+    if(orientation == "H"){
+        valve.rotate(90, center);
+    }
 
     compound_path.addChild(valve);
 
@@ -486,10 +504,22 @@ var Transposer_control = function(params){
     circle = new paper.Path.Circle(center, radius);
     transposer_control.addChild(circle);
 
+    let crosschannelstart = center;
+
     center = new paper.Point(center.x + 2*valvespacing + 2*radius + channelWidth,
         py + channelWidth/2 + valvespacing + radius);
     circle = new paper.Path.Circle(center, radius);
     transposer_control.addChild(circle);
+
+    let crosschannelend = center;
+
+    //Draw the cross channel connecting the 2nd row valves
+    let rect = new paper.Path.Rectangle({
+        from: new paper.Point(crosschannelstart.x, crosschannelstart.y - channelWidth/2),
+        to: new paper.Point(crosschannelend.x , crosschannelstart.y + channelWidth/2)
+    });
+
+    transposer_control.addChild(rect);
 
     //3rd Row valves
 
@@ -498,9 +528,22 @@ var Transposer_control = function(params){
     circle = new paper.Path.Circle(center, radius);
     transposer_control.addChild(circle);
 
+    crosschannelstart = center;
+
     center = new paper.Point(center.x + 2*valvespacing + 2*radius + channelWidth, center.y);
     circle = new paper.Path.Circle(center, radius);
     transposer_control.addChild(circle);
+
+    crosschannelend = center;
+
+    //Draw the cross channel connecting the 3nd row valves
+    rect = new paper.Path.Rectangle({
+        from: new paper.Point(crosschannelstart.x, crosschannelstart.y - channelWidth/2),
+        to: new paper.Point(crosschannelend.x , crosschannelstart.y + channelWidth/2)
+    });
+
+    transposer_control.addChild(rect);
+
 
     //Bottom Row valve
     center = new paper.Point(px + channelWidth + 2*valvespacing + radius, py + 4*valvespacing + 4*radius + 2*channelWidth);
@@ -698,8 +741,6 @@ var TransposerTarget = function(params){
     circ.fillColor = color;
     circ.fillColor.alpha = .5;
     circ.strokeColor = "#FFFFFF";
-    circ.strokeWidth = 3 / paper.view.zoom;
-    if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
     return circ;
 };
 
