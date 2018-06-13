@@ -13,16 +13,15 @@ export default class ZoomToolBar {
         }
 
         //Create the nouislider
-        let zoom_optimal = Registry.viewManager.view.computeOptimalZoom();
+        let zoom_optimal = Math.log10(Registry.viewManager.view.computeOptimalZoom());
         console.log("toptimal zoom", zoom_optimal);
         //Create the noUiSlider
         noUiSlider.create(this.__zoomSlider, {
-            start: [zoom_optimal],
+            start: [ zoom_optimal ],
             connect: "lower",
-            step: (zoom_max - zoom_min)/100,
             range: {
-                'min': zoom_min,
-                'max': zoom_max
+                'min': -3.610,
+                'max': 0.6545
             },
             // pips: { mode: 'range', density: 5 , format: wNumb({suffix:"&mu;m"})},
             orientation: 'vertical',
@@ -33,14 +32,12 @@ export default class ZoomToolBar {
         let registryref = Registry;
         let ref = this;
         this.__zoomSlider.noUiSlider.on('update', function (values, handle, unencoded, tap, positions) {
-            console.log('isTap', tap);
-            console.log('handle', handle);
             if(ref.__isUserGeneratedEvent){
                 console.log('Zoom Value:', values[0]);
                 //TODO - Map this directly to the zoom functions
                 console.log(registryref);
                 try{
-                    registryref.viewManager.setZoom(values[0]);
+                    registryref.viewManager.setZoom(ZoomToolBar.convertLinearToZoomScale(values[0]));
                 }catch (e) {
                     console.log("Could not set the zoom");
                 }
@@ -54,8 +51,15 @@ export default class ZoomToolBar {
      * @param zoom
      */
     setZoom(zoom){
-        console.log("Text");
         this.__isUserGeneratedEvent = false;
-        this.__zoomSlider.noUiSlider.set(zoom);
+        this.__zoomSlider.noUiSlider.set(ZoomToolBar.convertZoomtoLinearScale(zoom));
+    }
+
+    static convertLinearToZoomScale(linvalue){
+        return Math.pow(10, linvalue);
+    }
+
+    static convertZoomtoLinearScale(zoomvalue){
+        return Math.log10(zoomvalue);
     }
 }
