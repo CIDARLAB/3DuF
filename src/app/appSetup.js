@@ -12,8 +12,8 @@ const PageSetup = require("./view/pageSetup");
 const Colors = require("./view/colors");
 var ThreeDeviceRenderer = require("./view/render3D/ThreeDeviceRenderer");
 var Examples = require("./examples/jsonExamples");
+let DxfParser = require('dxf-parser');
 
-var view;
 var viewManager;
 var grid;
 
@@ -31,7 +31,7 @@ function getQueryVariable(variable)
 }
 
 window.onload = function() {
-    view = new PaperView(document.getElementById("c"));
+    let view = new PaperView(document.getElementById("c"));
     viewManager = new ViewManager(view);
     grid = new AdaptiveGrid();
     grid.setColor(Colors.BLUE_500);

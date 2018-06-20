@@ -1,8 +1,9 @@
 var Colors = require("../colors");
-var Feature = require("../../core/feature");
+import Feature from "../../core/feature";
 var PrimitiveSets2D = require("./primitiveSets2D");
 var FeatureSets = require("../../featureSets");
 var Registry = require("../../core/registry");
+import {renderEdgeFeature} from '../../view/render2D/dxfObjectRenderer2D';
 
 function getLayerColor(feature) {
     let height = feature.getValue("height");
@@ -29,7 +30,11 @@ function getFeatureRenderer(typeString, setString) {
     if(typeString == "TEXT"){
         let rendererInfo = renderTextTarget;
         return rendererInfo;
-    }else{
+    }else if(typeString == "EDGE") {
+        return renderEdge;
+    }
+    else
+    {
         let rendererInfo = FeatureSets.getRender2D(typeString, setString);
         return rendererInfo;
     }
@@ -70,6 +75,11 @@ function renderTextTarget(typeString, setString, position) {
 }
 
 
+function renderEdge(feature) {
+    //TODO: Just call the DXF renderer (outline) for this
+    renderEdgeFeature(feature);
+}
+
 function renderText(feature){
     //TODO - Figure out where to save the position of the feature
     let position = feature.getValue("position");
@@ -85,12 +95,19 @@ function renderText(feature){
 }
 
 function renderFeature(feature) {
+    let params;
     let type = feature.getType();
     let set = feature.getSet();
     let renderer = getFeatureRenderer(type, set);
-    let params = renderer.featureParams;
+    if (!renderer) {
+        console.error("Could not find renderer method for feature:", feature);
+    } else {
+        params = renderer.featureParams;
+    }
     if (type == "TEXT") {
         return renderText(feature);
+    } else if (type === "EDGE") {
+        return renderEdge(feature);
     } else {
         let prim = getPrimitive2D(renderer.featurePrimitiveType, renderer.featurePrimitiveSet);
         let primParams = {};

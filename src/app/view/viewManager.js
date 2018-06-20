@@ -1,4 +1,5 @@
 import ZoomToolBar from "./ui/zoomToolBar";
+import BorderSettingsDialog from './ui/borderSettingDialog';
 
 var Registry = require("../core/registry");
 var Device = require("../core/device");
@@ -18,6 +19,9 @@ var MouseSelectTool = require('./tools/mouseSelectTool');
 
 import ResolutionToolBar from './ui/resolutionToolBar';
 import RightPanel from './ui/rightPanel';
+import Feature from '../core/feature';
+import DXFObject from '../core/dxfObject';
+import EdgeFeature from "../core/edgeFeature";
 
 export default class ViewManager {
     constructor(view) {
@@ -27,7 +31,7 @@ export default class ViewManager {
         this.rightMouseTool = new SelectTool();
         this.rightPanel = new RightPanel();
         this.resolutionToolBar = new ResolutionToolBar();
-
+        this.borderDialog = new BorderSettingsDialog();
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
@@ -226,6 +230,12 @@ export default class ViewManager {
         return this.view.layersToSVGStrings();
     }
 
+    /**
+     * Adds a feature to all the layers ??????
+     * @param layer
+     * @param refresh
+     * @private
+     */
     __addAllLayerFeatures(layer, refresh = true) {
         for (let key in layer.features) {
             let feature = layer.features[key];
@@ -295,6 +305,36 @@ export default class ViewManager {
         this.__updateViewTarget(false);
         this.zoomToolBar.setZoom(zoom);
         this.refresh(refresh);
+    }
+
+    /**
+     * Automatically generates the border for the device
+     */
+    generateBorder(){
+        let borderfeature = Registry.currentDevice.generateRectBorder();
+        this.view.addFeature(borderfeature);
+    }
+
+    /**
+     * Accepts a DXF object and then converts it into a feature, an edgeFeature in particular
+     * @param dxfobject
+     */
+    importBorder(dxfobject){
+        let customborderfeature = new EdgeFeature(null, null, Feature.generateID());
+        for(let i in dxfobject.entities){
+            let foo = new DXFObject(dxfobject.entities[i]);
+           customborderfeature.addDXFObject(foo);
+        }
+        console.log("border feature: ", customborderfeature);
+
+
+        // this.view.addFeature(customborderfeature);
+
+        //Adding the feature to all the layers
+        for(let i in Registry.currentDevice.layers){
+            let layer = Registry.currentDevice.layers[i];
+            layer.addFeature(customborderfeature);
+        }
     }
 
     removeTarget() {

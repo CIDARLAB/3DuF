@@ -1,4 +1,4 @@
-var Feature = require("../core/feature");
+import Feature from "../core/feature";
 
 class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {

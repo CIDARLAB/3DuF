@@ -1,5 +1,5 @@
 const Colors = require("../colors");
-const Feature = require("../../core/feature");
+import Feature from "../../core/feature";
 const PrimitiveSets2D = require("./primitiveSets2D");
 const FeatureSets = require("../../featureSets");
 

@@ -1,7 +1,7 @@
 var Params = require("./params");
 var Parameters = require("./parameters");
 var Parameter =require("./parameter");
-var Feature = require('./feature');
+import Feature from './feature';
 var Layer = require('./layer');
 var Registry = require("./registry");
 
@@ -227,6 +227,24 @@ class Device {
 
     setYSpan(value){
         this.params.updateParameter("height", value);
+    }
+
+    getXSpan(){
+        return this.params.getParameter("width");
+    }
+
+    getYSpan(){
+        return this.params.getParameter("height");
+    }
+
+    generateRectBorder(){
+        let xdim = this.getXSpan();
+        let ydim = this.getYSpan();
+
+        let pathobjects = [];
+
+
+
     }
 }
 

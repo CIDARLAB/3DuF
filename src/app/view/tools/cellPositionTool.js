@@ -1,6 +1,7 @@
 var PositionTool = require('./positionTool');
 var Registry = require("../../core/registry");
-var Feature = require("../../core/feature");
+//var Feature = require("../../core/feature");
+import Feature from '../../core/feature';
 var SimpleQueue = require("../../utils/simpleQueue");
 var PageSetup = require("../pageSetup");
 
