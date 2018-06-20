@@ -1,9 +1,8 @@
 var MouseTool = require("./mouseTool");
 var Registry = require("../../core/registry");
-var TextFeature = require("../../core/textFeature");
+import TextFeature from "../../core/textFeature";
 var SimpleQueue = require("../../utils/simpleQueue");
 var PageSetup = require("../pageSetup");
-var Component = require("../../core/component");
 var PositionTool = require("./positionTool");
 let Params = require("../../core/params");
 

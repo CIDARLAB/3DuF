@@ -1,13 +1,12 @@
 var Params = require('./params');
 var Parameters = require('./parameters');
-var Parameter = require("./parameter");
 var StringValue = Parameters.StringValue;
 var FeatureSets = require("../featureSets");
 var Registry = require("./registry");
 
-var registeredFeatureTypes = {};
+// var registeredFeatureTypes = {};
 
-class Feature {
+export default class Feature {
     constructor(type, set, params, name, id = Feature.generateID(), fabtype="XY"){
         this.__type = type;
         this.__params = params;
@@ -16,6 +15,7 @@ class Feature {
         this.__type = type;
         this.__set = set;
         this.__fabtype = fabtype;
+        this.__dxfObjects = [];
     }
 
 
@@ -163,6 +163,20 @@ class Feature {
     render2D(){
         throw new Error("Base class Feature cannot be rendered in 2D.");
     }
-}
 
-module.exports = Feature;
+    /**
+     * Returns the array of dxf objects
+     * @return {Array}
+     */
+    getDXFObjects(){
+        return this.__dxfObjects;
+    }
+
+    /**
+     * Add a DXF object
+     * @param dxfobject
+     */
+    addDXFObject(dxfobject) {
+        this.__dxfObjects.push(dxfobject);
+    }
+}

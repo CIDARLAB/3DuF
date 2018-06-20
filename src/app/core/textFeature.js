@@ -4,9 +4,9 @@ var Parameter = require("./parameter");
 var StringValue = Parameters.StringValue;
 var FeatureSets = require("../featureSets");
 var Registry = require("./registry");
-var Feature = require("./Feature");
+import Feature from "./feature";
 
-class TextFeature extends Feature{
+export default class TextFeature extends Feature{
     constructor(text, params, id = TextFeature.generateID()){
         super("TEXT", "Basic", params, id, id);
         this.__text = text;
@@ -155,5 +155,3 @@ class TextFeature extends Feature{
         throw new Error("Base class Feature cannot be rendered in 2D.");
     }
 }
-
-module.exports = TextFeature;

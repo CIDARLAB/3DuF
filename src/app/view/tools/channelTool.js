@@ -1,7 +1,7 @@
 var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
-var Feature = require("../../core/feature");
+import Feature from "../../core/feature";
 var PageSetup = require("../pageSetup");
 
 class ChannelTool extends MouseTool {

@@ -1,5 +1,6 @@
 var HTMLUtils = require("../../utils/htmlUtils");
-var Feature = require("../../core/feature");
+//var Feature = require("../../core/feature");
+import Feature from '../../core/feature';
 var Registry = require("../../core/registry");
 var Parameters = require("../../core/parameters");
 var FeatureSets = require("../../featureSets");

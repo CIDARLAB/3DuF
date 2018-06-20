@@ -5,5 +5,5 @@ var SimpleQueue = require("../../utils/simpleQueue");
 var PageSetup = require("../pageSetup");
 
 class CopyTool extends positionTool {
-    constructor(typeString, setString, )
+    // constructor(typeString, setString, )
 }

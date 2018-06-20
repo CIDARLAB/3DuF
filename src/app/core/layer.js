@@ -1,7 +1,9 @@
 var Params = require('./params');
 var Parameters = require('./parameters');
-var Feature = require('./feature');
-var TextFeature = require('./textFeature');
+
+import Feature from './feature';
+import TextFeature from './textFeature';
+
 var Registry = require("./registry");
 
 var FloatValue = Parameters.FloatValue;

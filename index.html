@@ -43,6 +43,11 @@
             </div>
 
             <div class="button_row">
+                <a id="edit_border_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">
+                    Edit Border</a>
+            </div>
+
+            <div class="button_row">
                 <a id="select_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">
                     Select Tool</a>
             </div>
@@ -389,6 +394,20 @@
     </div>
     <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
         <button id="accept_text_button" type="button" class="mdl-button">Insert</button>
+        <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+</dialog>
+<dialog id="border_settings_dialog" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+        <!-- Textfield with Floating Label -->
+        <h4>
+            Drag Drop the DXF file containing border to import:
+        </h4>
+        <input type="file" class="upload" id="dxf_input" />
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+        <button id="generate_border_button" type="button" class="mdl-button">Generate Border</button>
+        <button id="import_border_button" type="button" class="mdl-button">Import Border</button>
         <button type="button" class="mdl-button close">Cancel</button>
     </div>
 </dialog>

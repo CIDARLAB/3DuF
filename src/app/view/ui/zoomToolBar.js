@@ -14,7 +14,6 @@ export default class ZoomToolBar {
 
         //Create the nouislider
         let zoom_optimal = Math.log10(Registry.viewManager.view.computeOptimalZoom());
-        console.log("toptimal zoom", zoom_optimal);
         //Create the noUiSlider
         noUiSlider.create(this.__zoomSlider, {
             start: [ zoom_optimal ],
