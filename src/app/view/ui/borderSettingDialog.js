@@ -1,12 +1,14 @@
 const Registry = require('../../core/registry');
 const DxfParser = require('dxf-parser');
 
-import EdgeFeature from '../../core/edgeFeature';
-
 export default class BorderSettingsDialog {
     get _dxfObject() {
         return this.__dxfObject;
     }
+
+    /**
+     * Default constructor for the dialog, contains all the initialization code
+     */
     constructor(){
 
         this.__dxfObject = null;
@@ -15,7 +17,7 @@ export default class BorderSettingsDialog {
         this.__editBorderDialogButton = document.getElementById("edit_border_button");
 
         this.__dialog = document.getElementById("border_settings_dialog");
-        this.__generateRectBorderButton = document.getElementById("generate_border_button");
+        this.__deleteBorderButton = document.getElementById("delete_border_button");
 
         this.__dxffileinput = document.getElementById("dxf_input");
 
@@ -35,10 +37,13 @@ export default class BorderSettingsDialog {
             });
         }
 
-        if(this.__generateRectBorderButton){
-            this.__generateRectBorderButton.addEventListener('click', function (event) {
+        if(this.__deleteBorderButton){
+            this.__deleteBorderButton.addEventListener('click', function (event) {
                 console.log("Generate border clicked");
-                registryref.viewManager.generateBorder();
+                // registryref.viewManager.generateBorder();
+                registryref.viewManager.deleteBorder();
+                //Auto generate the border
+                this.generateBorder();
             });
         }
 
@@ -60,12 +65,17 @@ export default class BorderSettingsDialog {
         if(this.__importBorderButton){
             this.__importBorderButton.addEventListener('click', function (event) {
                 console.log('import button clicked');
+                registryref.viewManager.deleteBorder();
                 registryref.viewManager.importBorder(ref.getDXFObject());
             });
         }
 
     }
 
+    /**
+     * Loads text for the DXF file
+     * @param dxftext
+     */
     loadDXFText(dxftext){
         let parser = new DxfParser();
         try {
@@ -77,6 +87,10 @@ export default class BorderSettingsDialog {
 
     }
 
+    /**
+     * Returns teh DXF data that has been loaded
+     * @return {null|*}
+     */
     getDXFObject(){
         return this.__dxfObject;
     }

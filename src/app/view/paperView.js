@@ -539,4 +539,13 @@ export default class PaperView {
         let layer = this.paperLayers[0];
         layer.insertChild(0, newPaperFeature);
     }
+
+    /**
+     * Returns the rendered feature object that is being displayed for the particular feature
+     * @param featureID
+     * @return {*}
+     */
+    getRenderedFeature(featureID){
+        return this.paperFeatures[featureID];
+    }
 }

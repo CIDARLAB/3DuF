@@ -275,11 +275,15 @@ function setupAppPage() {
         let yspan = document.getElementById("yspan_textinput").value;
         console.log("Resizing the device to: " + xspan + ", " +yspan);
 
+
         if(xspan != "" && yspan != ""){
 
             //Convert the dimensions to microns from mm
             Registry.currentDevice.setXSpan(xspan*1000);
             Registry.currentDevice.setYSpan(yspan*1000);
+
+            //Update the device borders
+            Registry.viewManager.generateBorder();
 
             //Close the dialog
             var dialog = document.querySelector('dialog');

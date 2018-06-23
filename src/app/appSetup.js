@@ -81,5 +81,6 @@ window.onload = function() {
     }
 
     Registry.viewManager.setupToolBars();
+    Registry.viewManager.generateBorder();
 };
 

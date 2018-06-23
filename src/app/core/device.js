@@ -72,10 +72,17 @@ class Device {
         }
         return false;
     }
+
     getAllFeaturesFromDevice() {
         let features = [];
-        for (let layer in this.layers) {
-            features.push.apply(features, layer.features);
+        for (let i in this.layers) {
+            //features.push.apply(features, layer.features);
+            let layer = this.layers[i];
+            console.log(layer);
+            for(let j in layer.features){
+                console.log(layer.features[j]);
+                features.push(layer.features[j]);
+            }
         }
         return features;
     }
@@ -230,22 +237,13 @@ class Device {
     }
 
     getXSpan(){
-        return this.params.getParameter("width");
+        return this.params.getValue("width");
     }
 
     getYSpan(){
-        return this.params.getParameter("height");
+        return this.params.getValue("height");
     }
 
-    generateRectBorder(){
-        let xdim = this.getXSpan();
-        let ydim = this.getYSpan();
-
-        let pathobjects = [];
-
-
-
-    }
 }
 
 module.exports = Device;

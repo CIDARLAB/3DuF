@@ -18,6 +18,9 @@ export default class Feature {
         this.__dxfObjects = [];
     }
 
+    get fabType(){
+        return this.__fabtype;
+    }
 
     static generateID() {
         return Registry.generateID();

@@ -308,11 +308,22 @@ export default class ViewManager {
     }
 
     /**
-     * Automatically generates the border for the device
+     * Automatically generates a rectangular border for the device
      */
     generateBorder(){
-        let borderfeature = Registry.currentDevice.generateRectBorder();
-        this.view.addFeature(borderfeature);
+        let borderfeature = new EdgeFeature(null, null);
+
+        //Get the bounds for the border feature and then update the device dimensions
+        let xspan = Registry.currentDevice.getXSpan();
+        let yspan = Registry.currentDevice.getYSpan();
+        console.log("Span", xspan, yspan);
+        borderfeature.generateRectEdge(xspan, yspan);
+
+        //Adding the feature to all the layers
+        for(let i in Registry.currentDevice.layers){
+            let layer = Registry.currentDevice.layers[i];
+            layer.addFeature(borderfeature);
+        }
     }
 
     /**
@@ -320,23 +331,61 @@ export default class ViewManager {
      * @param dxfobject
      */
     importBorder(dxfobject){
-        let customborderfeature = new EdgeFeature(null, null, Feature.generateID());
+        let customborderfeature = new EdgeFeature(null, null);
         for(let i in dxfobject.entities){
             let foo = new DXFObject(dxfobject.entities[i]);
            customborderfeature.addDXFObject(foo);
         }
-        console.log("border feature: ", customborderfeature);
-
-
-        // this.view.addFeature(customborderfeature);
 
         //Adding the feature to all the layers
         for(let i in Registry.currentDevice.layers){
             let layer = Registry.currentDevice.layers[i];
             layer.addFeature(customborderfeature);
         }
+
+        //Get the bounds for the border feature and then update the device dimensions
+        let bounds = this.view.getRenderedFeature(customborderfeature.getID()).bounds;
+
+        Registry.currentDevice.setXSpan(bounds.width);
+        Registry.currentDevice.setYSpan(bounds.height);
+        //Refresh the view
+        Registry.viewManager.view.initializeView();
+        Registry.viewManager.view.refresh();
+
     }
 
+    /**
+     * Deletes the border
+     */
+    deleteBorder(){
+        /*
+        1. Find all the features that are EDGE type
+        2. Delete all these features
+         */
+
+        console.log("Deleting border...");
+
+        let features = Registry.currentDevice.getAllFeaturesFromDevice();
+        console.log("All features", features);
+
+        let edgefeatures = [];
+
+        for(let i in features){
+            //Check if the feature is EDGE or not
+            if('EDGE' == features[i].fabType){
+                edgefeatures.push(features[i]);
+            }
+        }
+
+        //Delete all the features
+        for(let i in edgefeatures){
+            Registry.currentDevice.removeFeatureByID(edgefeatures[i].getID());
+        }
+
+        console.log("Edgefeatures", edgefeatures);
+
+    }
+    
     removeTarget() {
         this.view.removeTarget();
     }
