@@ -284,10 +284,23 @@ export default class PaperView {
     }
 
     comparePaperFeatureHeights(a, b) {
+        let bHeight;
+        let aHeight;
         let aFeature = Registry.currentDevice.getFeatureByID(a.featureID);
         let bFeature = Registry.currentDevice.getFeatureByID(b.featureID);
-        let aHeight = aFeature.getValue("height");
-        let bHeight = bFeature.getValue("height");
+
+        //TODO: So this needs to be eliminated form the entire sequence
+        try {
+            aHeight = aFeature.getValue("height");
+        } catch (e) {
+            aHeight = 9999;
+        }
+
+        try {
+            bHeight = bFeature.getValue("height");
+        } catch (e) {
+            bHeight = 9999;
+        }
         return aHeight - bHeight;
     }
 
