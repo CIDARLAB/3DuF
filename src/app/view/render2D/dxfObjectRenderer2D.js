@@ -81,7 +81,11 @@ function getBaseColor(feature) {
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 }
 
-
+/**
+ * Generates the paper.js equivalent of the ELLIPSE DXF object
+ * @param entity DXF Data
+ * @param path Compound Path onto which the drawing will be inserted into
+ */
 function drawEllipse(entity, path) {
     /*
     https://www.autodesk.com/techpubs/autocad/acad2000/dxf/ellipse_dxf_06.htm
@@ -224,6 +228,11 @@ function drawCircle(entity, path){
     path.addChild(circle);
 }
 
+/**
+ * Generates the paper.js equivalent of the LINE, POLYLINE, LWPOLYLINE DXF object
+ * @param entity DXF Data
+ * @param path Compound Path onto which the drawing will be inserted into
+ */
 function drawLine(entity, path) {
 
     let bulge, bugleGeometry;
@@ -254,7 +263,11 @@ function drawLine(entity, path) {
 
 }
 
-
+/**
+ * Generates the paper.js equivalent of the ARC DXF object
+ * @param entity DXF Data
+ * @param path Compound Path onto which the drawing will be inserted into
+ */
 function drawArc(entity, path) {
     /*
     Ok so for this to work in paperjs, we need to have 3 variables
