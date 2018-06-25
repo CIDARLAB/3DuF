@@ -300,17 +300,25 @@ let render2D = {
     },
     Chamber: {
         featureParams: {
-            start: "start",
-            end: "end",
-            borderWidth: "borderWidth"
+            position: "position",
+            width: "width",
+            length: "length",
+            height: "height",
+            cornerRadius: "cornerRadius",
+            rotation: "rotation"
         },
         targetParams: {
-            diameter: "borderWidth"
+            position: "position",
+            width: "width",
+            length: "length",
+            height: "height",
+            cornerRadius: "cornerRadius",
+            rotation: "rotation"
         },
         featurePrimitiveSet: "Basic2D",
-        featurePrimitiveType: "RoundedRect",
+        featurePrimitiveType: "Chamber",
         targetPrimitiveSet: "Basic2D",
-        targetPrimitiveType: "CircleTarget"
+        targetPrimitiveType: "ChamberTarget"
     },
     DiamondReactionChamber: {
         featureParams: {

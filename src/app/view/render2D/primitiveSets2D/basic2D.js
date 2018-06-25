@@ -877,6 +877,44 @@ var RotaryMixerTarget = function(params){
 
 };
 
+//*******************************************
+
+var Chamber = function(params){
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = params["length"];
+    let w = params["width"];
+    let rotation = params["rotation"];
+    let color = params["color"];
+    let radius = params["cornerRadius"];
+
+    let rendered = new paper.CompoundPath();
+
+    let rec = new paper.Path.Rectangle({
+        point : new paper.Point(px - w/2, py - l/2),
+        size : [ w, l ],
+        radius: radius
+    });
+
+    rendered.addChild(rec);
+
+    rendered.fillColor = color;
+    return rendered.rotate(rotation, px, py);
+};
+
+
+var ChamberTarget = function(params) {
+
+    let ret = Chamber(params);
+
+    ret.fillColor.alpha = 0.5;
+
+    return ret;
+};
+
+
+
 //******************************************
 
 var Diamond = function(params){
@@ -2648,6 +2686,8 @@ module.exports.CircleTarget = CircleTarget;
 //module.expors.RectValveTarget = RectValveTarget;
 module.exports.GroverValve = GroverValve;
 module.exports.GroverValve_control = GroverValve_control;
+module.exports.Chamber = Chamber;
+module.exports.ChamberTarget = ChamberTarget;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
 module.exports.BetterMixer = BetterMixer;

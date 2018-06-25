@@ -118,28 +118,42 @@ let basicFeatures = {
     },
     "Chamber": {
         unique: {
-            "start": "Point",
-            "end": "Point"
+            "position": "Point"
         },
         heritable: {
-            "borderWidth": "Float",
-            "height": "Float"
+            "width": "Float",
+            "length": "Float",
+            "height": "Float",
+            "cornerRadius": "Float",
+            "rotation": "Float"
         },
         units: {
-            "borderWidth": "&mu;m",
-            "height": "&mu;m"
+            "width": "&mu;m",
+            "length": "&mu;m",
+            "height": "&mu;m",
+            "cornerRadius": "&mu;m",
+            "rotation": "&deg;"
         },
         defaults: {
-            "borderWidth": .41 * 1000,
-            "height": .1 * 1000
+            "width": 5000,
+            "length": 5000,
+            "height": 100,
+            "cornerRadius": 200,
+            "rotation": 0
         },
         minimum: {
-            "borderWidth": 10,
-            "height": 10,
+            "width": 5,
+            "length": 5,
+            "height": 1,
+            "cornerRadius": 1,
+            "rotation": 0
         },
         maximum: {
-            "borderWidth": 2000,
-            "height": 1200,
+            "width": 50000,
+            "length": 50000,
+            "height": 50000,
+            "cornerRadius": 1000,
+            "rotation": 90
         }
     },
     "Node": {
