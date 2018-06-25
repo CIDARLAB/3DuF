@@ -628,6 +628,8 @@ export default class ViewManager {
     }
 
     activateTool(toolString , rightClickToolString = "SelectTool") {
+        console.log("Toolstring", toolString);
+        console.log(this.tools[toolString]);
         this.leftMouseTool = this.tools[toolString];
         this.rightMouseTool = this.tools[rightClickToolString];
         this.__updateViewMouseEvents();
@@ -637,7 +639,7 @@ export default class ViewManager {
         this.tools["SelectTool"] = new SelectTool();
         this.tools["MouseSelectTool"] = new MouseSelectTool();
         this.tools["InsertTextTool"] = new InsertTextTool();
-        this.tools["Chamber"] = new ChannelTool("Chamber", "Basic");
+        this.tools["Chamber"] = new ComponentPositionTool("Chamber", "Basic");
         this.tools["Valve"] = new ComponentPositionTool("Valve", "Basic");
         this.tools["Channel"] = new ChannelTool("Channel", "Basic");
         this.tools["Connection"] = new ConnectionTool("Connection", "Basic");

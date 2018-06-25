@@ -115,10 +115,9 @@ let tools = {
     },
     Chamber: {
         toolParams: {
-            start: "start",
-            end: "end"
+            position: "position"
         },
-        placementTool: "DragTool"
+        placementTool: "componentPositionTool"
     },
     DiamondReactionChamber: {
         toolParams: {
