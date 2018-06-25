@@ -186,24 +186,24 @@ var generateCheckFunctionDir = function(sourceID, targetID, typeString, setStrin
 };
 
 var createSliderRow = function(featureID, typeString, setString, key) {
-    var definition = FeatureSets.getDefinition(typeString, setString);
-    var min = definition.minimum[key];
-    var max = definition.maximum[key];
-    var value = Feature.getDefaultsForType(typeString, setString)[key];
-    var step = 10;
-    var titleID = (featureID + "_" + key + "_title");
-    var sliderID = (featureID + "_" + key + "_slider");
-    var fieldID = (featureID + "_" + key + "_value");
-    var title = createSpan(key, titleID);
-    var titleContainer = createTableElement(title);
+    let definition = FeatureSets.getDefinition(typeString, setString);
+    let min = definition.minimum[key];
+    let max = definition.maximum[key];
+    let value = Feature.getDefaultsForType(typeString, setString)[key];
+    let step = 10;
+    let titleID = (featureID + "_" + key + "_title");
+    let sliderID = (featureID + "_" + key + "_slider");
+    let fieldID = (featureID + "_" + key + "_value");
+    let title = createSpan(key, titleID);
+    let titleContainer = createTableElement(title);
     titleContainer.style.borderBottom = "none";
-    var slider = createSlider(min, max, step, value, sliderID);
-    var sliderContainer = createTableElement(slider);
+    let slider = createSlider(min, max, step, value, sliderID);
+    let sliderContainer = createTableElement(slider);
     sliderContainer.setAttribute("style", "padding-left: 0px; padding-right: 0px");
-    var unittext = definition.units[key];
-    var field = createValueField(value, fieldID, unittext);
-    var fieldContainer = createTableElement(field);
-    var row = createTableRow(sliderContainer, titleContainer, fieldContainer);
+    let unittext = definition.units[key];
+    let field = createValueField(value, fieldID, unittext);
+    let fieldContainer = createTableElement(field);
+    let row = createTableRow(sliderContainer, titleContainer, fieldContainer);
     field.oninput = generateUpdateFunction(fieldID, sliderID, typeString, setString, key);
     slider.oninput = generateUpdateFunction(sliderID, fieldID, typeString, setString, key);
     return row;
@@ -277,10 +277,17 @@ var createFeatureTableRows = function(typeString, setString) {
     for (var key in heritable) {
         var row;
         var type = heritable[key];
-        if (type == "Float" || type == "Integer") row = createSliderRow(id, typeString, setString, key);
-        else if (key == "orientation") row = createCheckboxRow(id, typeString, setString, key);
-        else if (key == "direction") row = createInOutRow(id, typeString, setString, key);
+        if (type == "Float" || type == "Integer") {
+            row = createSliderRow(id, typeString, setString, key);
+        }
+        else if (key == "orientation") {
+            row = createCheckboxRow(id, typeString, setString, key);
+        }
+        else if (key == "direction") {
+            row = createInOutRow(id, typeString, setString, key);
+        }
         rows.push(row);
+
     }
     return rows;
 };
@@ -365,4 +372,59 @@ var generateTableFunction = function(tableID, typeString, setString , isTransluc
     }
 };
 
+var revertToDefaultParams = function(table, typeString, setString){
+    let def = FeatureSets.getDefinition(typeString, setString);
+    let heritable = def.heritable;
+    let defaults = def.defaults;
+
+    for (let key in heritable) {
+        let type = heritable[key];
+
+        if (type == "Float" || type == "Integer") {
+            let inputID = ("fake_ID_" + key + "_slider");
+            //Modify the text in the input element
+            let element = document.querySelector("#"+inputID);
+            element.MaterialSlider.change(defaults[key]);
+            Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
+        }
+        else if (key == "orientation") {
+            //TODO - Change the checkbox
+            let inputID = ("fake_ID_" + key + "_checkbox");
+            let element = document.querySelector("#"+inputID);
+            let materialelement = table.querySelector('.mdl-js-checkbox');
+            let spanelement = table.querySelector("#fake_ID_" + key + "_span");
+            if(defaults[key] == 'V'){
+                element.checked = true;
+                materialelement.MaterialCheckbox.check();
+                spanelement.textContent= defaults[key];
+            }else{
+                element.checked = false;
+                materialelement.MaterialCheckbox.uncheck();
+                spanelement.textContent= defaults[key];
+            }
+            Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
+        }
+        else if (key == "direction") {
+            //TODO Change the Checkbox
+            let inputID = ("fake_ID_" + key + "_checkbox");
+            let materialelement = table.querySelector('.mdl-js-checkbox');
+            let element = document.querySelector("#"+inputID);
+            let spanelement = table.querySelector("#fake_ID_" + key + "_span");
+            if(defaults[key] == 'IN'){
+                element.checked = true;
+                materialelement.MaterialCheckbox.check();
+                spanelement.textContent= defaults[key];
+            }else{
+                element.checked = false;
+                materialelement.MaterialCheckbox.uncheck();
+                spanelement.textContent= defaults[key];
+            }
+            Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
+        }
+
+    }
+};
+
+module.exports.revertToDefaultParams = revertToDefaultParams;
+module.exports.createFeatureTable = createFeatureTable;
 module.exports.generateTableFunction = generateTableFunction;

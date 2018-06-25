@@ -1,3 +1,5 @@
+import RightClickMenu from "../ui/rightClickMenu";
+
 var Registry = require("../../core/registry");
 var MouseTool = require("./MouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
@@ -86,8 +88,12 @@ class MouseSelectTool extends MouseTool {
             if (target.selected) {
                 let feat = Registry.currentDevice.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
-                let func = PageSetup.paramsWindowFunction(feat.getType(), feat.getSet());
-                func(event);
+                let rightclickmenu = new RightClickMenu(feat);
+                rightclickmenu.show(event);
+                Registry.viewManager.rightClickMenu = rightclickmenu;
+                this.rightClickMenu = rightclickmenu;
+                // let func = PageSetup.paramsWindowFunction(feat.getType(), feat.getSet());
+                //func(event);
             } else {
                 this.deselectFeatures();
                 this.selectFeature(target);
@@ -202,6 +208,10 @@ class MouseSelectTool extends MouseTool {
     }
 
     deselectFeatures() {
+        if(this.rightClickMenu){
+            this.rightClickMenu.close();
+            this.rightClickMenu = null;
+        }
         paper.project.deselectAll();
         this.currentSelection = [];
     }
