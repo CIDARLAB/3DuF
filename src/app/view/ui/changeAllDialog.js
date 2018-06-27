@@ -17,6 +17,7 @@ export default class ChangeAllDialog {
         this.__changeAllButton.addEventListener('click', function (event) {
            //TODO: Change values of all the features associated with the components
             ref.__modifyComponentParams();
+            ref.__dialog.close();
         });
 
     }
@@ -27,7 +28,6 @@ export default class ChangeAllDialog {
     showDialog(){
 
         for (let i in this.__similarComponents){
-            console.log("deleting..");
             this.__componentTable.deleteRow(-1);
         }
 
@@ -36,6 +36,11 @@ export default class ChangeAllDialog {
         let params = selectedcomponent.getParams();
 
         this.__paramsToChange = params;
+
+        //TODO: Find a better way to do this
+        if(this.__paramsToChange['position']){
+            delete this.__paramsToChange['position'];
+        }
 
         let allcomponents = Registry.currentDevice.getComponents();
 
@@ -84,14 +89,12 @@ export default class ChangeAllDialog {
         checkbox.addEventListener('change', function (event) {
             let id = event.target.value;
             ref.__componentsToChangeMap.set(id, event.target.checked);
-            console.log(event);
         });
 
         return checkbox;
     }
 
     __modifyComponentParams(){
-        console.log("Change map", this.__componentsToChangeMap);
         for(let i in this.__similarComponents){
             let componenttochange = this.__similarComponents[i];
             if(this.__componentsToChangeMap.get(componenttochange.getID())){

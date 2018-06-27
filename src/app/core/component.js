@@ -167,18 +167,21 @@ class Component {
 
     /**
      * Sets the params associated with the component
-     * @param params
+     * @param params key -> Parameter Set
      */
     setParams(params){
         this.__params = params;
         //TODO: Modify all the associated Features
-        console.log("params",params);
-        for(let i in this.__features){
-            let featureidtochange = this.__features[i];
-            console.log("Comp", featureidtochange);
-            //TODO: get the feature id and modify it
-            let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
-            feature.setParams(params);
+        for(let key in params){
+            let value = params[key];
+            for(let i in this.__features){
+                let featureidtochange = this.__features[i];
+
+                //Get the feature id and modify it
+                let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+                feature.updateParameter(key, value.getValue());
+            }
+
         }
     }
 
