@@ -162,7 +162,14 @@ function setActiveLayer(layerName) {
     if (activeLayer) setButtonColor(layerButtons[activeLayer], inactiveBackground, inactiveText);
     activeLayer = layerName;
     setActiveButton(activeButton);
-    let bgColor = Colors.getDefaultLayerColor(Registry.currentLayer);
+    let bgColor;// = Colors.getDefaultLayerColor(Registry.currentLayer);
+    if(layerName == 0){
+        bgColor = Colors.INDIGO_500;
+    }else if (layerName == 1){
+        bgColor = Colors.RED_500;
+    }else {
+        bgColor = Colors.GREEN_500;
+    }
     setButtonColor(layerButtons[activeLayer], bgColor, activeText);
    /* if (threeD) {
         setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
