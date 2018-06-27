@@ -1,6 +1,4 @@
-var Parameters = require('./parameters');
-var StringValue = Parameters.StringValue;
-var Registry = require("./registry");
+const Registry = require("./registry");
 var FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
 
 
@@ -11,10 +9,10 @@ var FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
 class Component {
     constructor(type, params, name, mint, id = Component.generateID()){
         this.__params = params;
-        this.__name = StringValue(name);
+        this.__name = name;
         this.__id = id;
         this.__type = type;
-        this.__entity = StringValue(mint);
+        this.__entity = mint;
         //This stores the features that are a part of the component
         this.__features = [];
         //TODO: Need to figure out how to effectively search through these
@@ -77,7 +75,7 @@ class Component {
      * @param name
      */
     setName(name){
-        this.__name = StringValue(name);
+        this.__name = name;
     }
 
     /**
@@ -85,7 +83,7 @@ class Component {
      * @returns {String}
      */
     getName(){
-        return this.__name.getValue();
+        return this.__name;
     }
 
     /**
@@ -164,7 +162,7 @@ class Component {
      * Rerturns the params associated with the component
      */
     getParams(){
-        return this.__params.parameters;
+        return this.__params;
     }
 
     /**
@@ -172,7 +170,16 @@ class Component {
      * @param params
      */
     setParams(params){
-        this.__params.parameters = params;
+        this.__params = params;
+        //TODO: Modify all the associated Features
+        console.log("params",params);
+        for(let i in this.__features){
+            let featureidtochange = this.__features[i];
+            console.log("Comp", featureidtochange);
+            //TODO: get the feature id and modify it
+            let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            feature.setParams(params);
+        }
     }
 
     /**

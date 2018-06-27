@@ -36,6 +36,8 @@ export default class RightClickMenu {
         });
         this.__copyToAllButton.addEventListener('click', function (event) {
             console.log("Change all the component parameters", event);
+            Registry.viewManager.changeAllDialog.showDialog();
+            ref.close();
         });
 
     }
