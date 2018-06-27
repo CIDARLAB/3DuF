@@ -20,16 +20,16 @@ class PositionTool extends MouseTool {
         }, 20, false);
         this.up = function (event) {
             // do nothing
-        }
+        };
         this.move = function (event) {
             ref.lastPoint = MouseTool.getEventPosition(event);
             ref.showQueue.run();
-        }
+        };
         this.down = function (event) {
             PageSetup.killParamsWindow();
             paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
-        }
+        };
     }
 
     createNewFeature(point) {

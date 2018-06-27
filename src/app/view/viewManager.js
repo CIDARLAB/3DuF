@@ -22,6 +22,7 @@ import RightPanel from './ui/rightPanel';
 import Feature from '../core/feature';
 import DXFObject from '../core/dxfObject';
 import EdgeFeature from "../core/edgeFeature";
+import ChangeAllDialog from "./ui/changeAllDialog";
 
 export default class ViewManager {
     constructor(view) {
@@ -30,6 +31,7 @@ export default class ViewManager {
         this.middleMouseTool = new PanTool();
         this.rightMouseTool = new SelectTool();
         this.rightPanel = new RightPanel();
+        this.changeAllDialog = new ChangeAllDialog();
         this.resolutionToolBar = new ResolutionToolBar();
         this.borderDialog = new BorderSettingsDialog();
         let reference = this;
@@ -635,6 +637,7 @@ export default class ViewManager {
         this.rightMouseTool = this.tools[rightClickToolString];
         this.__updateViewMouseEvents();
     }
+
 
     setupTools() {
         this.tools["SelectTool"] = new SelectTool();
