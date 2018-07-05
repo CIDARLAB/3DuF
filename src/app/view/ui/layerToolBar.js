@@ -1,4 +1,4 @@
-import {setButtonColor} from "../../utils/htmlUtils";
+import {setButtonColor, removeClass} from "../../utils/htmlUtils";
 
 const Registry = require('../../core/registry');
 const Colors = require('../colors');
@@ -30,16 +30,18 @@ export default class LayerToolBar {
         let registryref = Registry;
 
         this.__addNewLevelButton.addEventListener('click', function (event) {
-            //Update the UI
-            ref.__addNewLevel();
 
             //Create new layers in the data model
             registryref.viewManager.createNewLayerBlock();
+
+            //Update the UI
+            ref.__levelCount+=1;
+
+            ref.__generateUI();
+
         });
 
-        this.__generateButtonHandlers();
-        this.__generateLevelActionButtonHandlers();
-        this.__updateLayerButtonReferences();
+        this.__generateUI();
     }
 
 
@@ -77,7 +79,6 @@ export default class LayerToolBar {
         }
 
 
-
         let bgColor;// = Colors.getDefaultLayerColor(Registry.currentLayer);
         if(layerName%3 == 0){
             bgColor = Colors.INDIGO_500;
@@ -86,7 +87,6 @@ export default class LayerToolBar {
         }else {
             bgColor = Colors.GREEN_500;
         }
-
 
         setButtonColor(this.__layerButtons.get(layerName), bgColor, activeButtonText);
 
@@ -97,48 +97,39 @@ export default class LayerToolBar {
      * Adds the UI elements for the new block
      * @private
      */
-    __addNewLevel() {
-        //Update the total number of layers in the system
-        this.__levelCount+=1;
-
+    __addNewLevel(index) {
 
         //Copy the the first button group
-        let buttongroup = this.__toolBar.querySelector('.layer-block');
+        let buttongroup = document.querySelector('#template-layer-block');
         let copy = buttongroup.cloneNode(true);
+
+        //Make the delete button visible since the first layer ui keeps it hidden
+        copy.querySelector(".delete-level").style.visibility = "visible";
 
 
         //Change all the parameters for the UI elements
 
         //Update the level index for the layerblock
-        copy.dataset.levelindex = String(this.__levelCount);
+        copy.dataset.levelindex = String(index);
 
         //Change the Label
         let label = copy.querySelector(".level-index");
-        label.innerHTML = "LEVEL " + (this.__levelCount + 1);
+        label.innerHTML = "LEVEL " + (index + 1);
 
         //Change the button indices
         let flowbutton = copy.querySelector(".flow-button");
-        flowbutton.dataset.layerindex = String(this.__levelCount * 3);
+        flowbutton.dataset.layerindex = String(index * 3);
         setButtonColor(flowbutton, inactiveButtonBackground, inactiveButtonText);
 
         let controlbutton = copy.querySelector(".control-button");
-        controlbutton.dataset.layerindex = String(this.__levelCount * 3 + 1);
+        controlbutton.dataset.layerindex = String(index * 3 + 1);
         setButtonColor(controlbutton, inactiveButtonBackground, inactiveButtonText);
-
-        //Add the new elements to the toolbar
-        this.__toolBar.appendChild(copy);
 
         //Add reference to the deletebutton
         let deletebutton = copy.querySelector(".delete-level");
-        deletebutton.dataset.levelindex = String(this.__levelCount);
+        deletebutton.dataset.levelindex = String(index);
 
-        //Reset Event Handlers and update references
-        this.__generateButtonHandlers();
-        this.__updateLayerButtonReferences();
-        this.__generateLevelActionButtonHandlers();
-
-        console.log("level count", this.__levelCount);
-
+        return copy;
     }
 
     /**
@@ -169,8 +160,6 @@ export default class LayerToolBar {
     __generateLevelActionButtonHandlers() {
         let deleteButtons = document.querySelectorAll(".delete-level");
 
-        console.log("buttons", deleteButtons);
-
         let ref = this;
 
         for(let i=0; i < deleteButtons.length; i++){
@@ -186,7 +175,6 @@ export default class LayerToolBar {
      * @param levelindex Integer
      */
     deleteLevel(levelindex) {
-        console.log("Level to delete", levelindex);
 
         //First tell the viewmanager to delete the levels
         Registry.viewManager.deleteLayerBlock(levelindex);
@@ -195,14 +183,33 @@ export default class LayerToolBar {
 
         for(let i = 0; i<buttongroups.length; i++){
             if(buttongroups[i].dataset.levelindex == levelindex){
-                console.log(buttongroups[i].dataset);
                 this.__toolBar.removeChild(buttongroups[i]);
             }
         }
 
-        this.__levelCount=-1;
+        this.__levelCount-=1;
 
-        console.log("level count", this.__levelCount);
+        this.__generateUI();
 
+    }
+
+    __generateUI() {
+        //Clear out all the UI elements
+        let buttongroups = this.__toolBar.querySelectorAll('.layer-block');
+
+        //Delete all things except the first one
+        for(let i = buttongroups.length - 1; i>0 ; i--){
+            let node = buttongroups[i];
+            this.__toolBar.removeChild(node);
+        }
+
+        //Create the UI elements for everything
+        for(let i = 1; i <= this.__levelCount; i++){
+            let copy = this.__addNewLevel(i);
+            this.__toolBar.appendChild(copy);
+        }
+        this.__updateLayerButtonReferences();
+        this.__generateButtonHandlers();
+        this.__generateLevelActionButtonHandlers();
     }
 }

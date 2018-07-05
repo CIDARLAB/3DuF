@@ -65,14 +65,15 @@
 
         <nav class="mdl-navigation" id="layer-controls">
             <!--<a id="control_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised view-button">Control</a>-->
+
             <div id="layer-toolbar">
-                <div class="mdl-button-group layer-block" data-levelindex="0">
+                <div id="template-layer-block" class="mdl-button-group layer-block" data-levelindex="0">
                     <span class="level-index">LEVEL 1</span>
-                    <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored delete-level" data-levelindex="0">
+                    <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored delete-level" style="visibility: hidden" data-levelindex="0">
                         <i class="material-icons">delete</i>
                     </button>
                     <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon mdl-button&#45;&#45;colored">-->
-                        <!--<i class="material-icons">visibility_off</i>-->
+                    <!--<i class="material-icons">visibility_off</i>-->
                     <!--</button>-->
                     <br/>
                     <a class=" mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect layer-button flow-button" data-layerindex="0">Flow</a>
@@ -535,6 +536,10 @@
     });
 
 </script>
+
+<!--Templates-->
+
+
 </body>
 
 <script src="3DuFApp.js"></script>
