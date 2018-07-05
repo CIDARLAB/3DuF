@@ -255,8 +255,14 @@ export default class PaperView {
         // do nothing, for now
     }
 
-    removeLayer(layer, index) {
-        // do nothing, for now
+    /**
+     * Delete the layer from the paperview at the given index.
+     * @param index Integer
+     */
+    removeLayer(index) {
+        if(index != -1) {
+            this.paperLayers.splice(index, 1);
+        }
     }
 
     /* Rendering Features */
@@ -336,7 +342,6 @@ export default class PaperView {
             //TODO:Create render textfeature method that doesnt take other params
             newPaperFeature = FeatureRenderer2D.renderText(feature);
         } else if( feature instanceof EdgeFeature){
-            console.log('added the edge feature to the paperview');
             newPaperFeature = DXFObjectRenderer2D.renderEdgeFeature(feature);
             newPaperFeature.selected = selected;
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;

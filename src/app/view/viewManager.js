@@ -2,7 +2,8 @@ import ZoomToolBar from "./ui/zoomToolBar";
 import BorderSettingsDialog from './ui/borderSettingDialog';
 
 var Registry = require("../core/registry");
-var Device = require("../core/device");
+// var Device = require("../core/device");
+import Device from '../core/device';
 var ChannelTool = require("./tools/channelTool");
 var ConnectionTool = require("./tools/connectionTool");
 var MouseTool = require("./tools/mouseTool");
@@ -23,6 +24,7 @@ import Feature from '../core/feature';
 import DXFObject from '../core/dxfObject';
 import EdgeFeature from "../core/edgeFeature";
 import ChangeAllDialog from "./ui/changeAllDialog";
+import LayerToolBar from "./ui/layerToolBar";
 
 export default class ViewManager {
     constructor(view) {
@@ -34,6 +36,7 @@ export default class ViewManager {
         this.changeAllDialog = new ChangeAllDialog();
         this.resolutionToolBar = new ResolutionToolBar();
         this.borderDialog = new BorderSettingsDialog();
+        this.layerToolBar = new LayerToolBar();
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
@@ -151,6 +154,9 @@ export default class ViewManager {
         this.activateTool("Channel");
     }
 
+    /**
+     * Initiates the copy operation on the selected feature
+     */
     initiateCopy() {
         let selectedFeatures = this.view.getSelectedFeatures();
         if (selectedFeatures.length > 0) {
@@ -169,6 +175,12 @@ export default class ViewManager {
         this.refresh(refresh);
     }
 
+    /**
+     * Adds all the layers in the device
+     * @param device
+     * @param refresh
+     * @private
+     */
     __addAllDeviceLayers(device, refresh = true) {
         for (let i = 0; i < device.layers.length; i++) {
             let layer = device.layers[i];
@@ -221,6 +233,57 @@ export default class ViewManager {
             this.__addAllLayerFeatures(layer, false);
             this.refresh(refresh);
         }
+    }
+
+    /**
+     * Create a new set of layers (flow, control and cell) for the upcoming level.
+     */
+    createNewLayerBlock(){
+        let newlayers = Registry.currentDevice.createNewLayerBlock();
+
+        //Find all the edge features
+        let edgefeatures = [];
+        let devicefeatures = (Registry.currentDevice.layers[0]).features;
+        let feature;
+
+        for (let i in devicefeatures) {
+            feature = devicefeatures[i];
+            if(feature.fabType == "EDGE"){
+                edgefeatures.push(feature);
+            }
+        }
+
+        //Add the Edge Features from layer '0'
+        // to all other layers
+        for(let i in newlayers){
+            for(let j in edgefeatures){
+                newlayers[i].addFeature(edgefeatures[j], false);
+            }
+        }
+
+        //Added the new layers
+        for(let i in newlayers){
+            let layertoadd = newlayers[i];
+            let index = this.view.paperLayers.length;
+            this.addLayer(layertoadd, index, true);
+        }
+    }
+
+    /**
+     * Deletes the layers at the level index, we have 3-set of layers so it deletes everything at
+     * that level
+     * @param levelindex integer only
+     */
+    deleteLayerBlock(levelindex){
+        //Delete the levels in the device model
+        Registry.currentDevice.deleteLayer(levelindex * 3);
+        Registry.currentDevice.deleteLayer(levelindex * 3 + 1);
+        Registry.currentDevice.deleteLayer(levelindex * 3 + 2);
+
+        //Delete the levels in the render model
+        this.view.removeLayer(levelindex * 3);
+        this.view.removeLayer(levelindex * 3 + 1);
+        this.view.removeLayer(levelindex * 3 + 2);
     }
 
     removeLayer(layer, index, refresh = true) {
@@ -321,7 +384,6 @@ export default class ViewManager {
         //Get the bounds for the border feature and then update the device dimensions
         let xspan = Registry.currentDevice.getXSpan();
         let yspan = Registry.currentDevice.getYSpan();
-        console.log("Span", xspan, yspan);
         borderfeature.generateRectEdge(xspan, yspan);
 
         //Adding the feature to all the layers

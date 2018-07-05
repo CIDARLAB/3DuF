@@ -2,14 +2,15 @@ var Params = require("./params");
 var Parameters = require("./parameters");
 var Parameter =require("./parameter");
 import Feature from './feature';
-var Layer = require('./layer');
 var Registry = require("./registry");
+
+import Layer from './layer';
 
 var StringValue = Parameters.StringValue;
 var FloatValue = Parameters.FloatValue;
 
 /* The Device stores information about a design. */
-class Device {
+export default class Device {
     constructor(values, name = "New Device") {
         this.layers = [];
         this.textLayers = [];
@@ -78,7 +79,6 @@ class Device {
         for (let i in this.layers) {
             //features.push.apply(features, layer.features);
             let layer = this.layers[i];
-            console.log(layer);
             for(let j in layer.features){
                 console.log(layer.features[j]);
                 features.push(layer.features[j]);
@@ -95,7 +95,7 @@ class Device {
     addLayer(layer) {
         layer.device = this;
         this.layers.push(layer);
-        this.sortLayers();
+        //this.sortLayers();
         if (Registry.viewManager) Registry.viewManager.addLayer(this.layers.indexOf(layer));
     }
     
@@ -244,6 +244,31 @@ class Device {
         return this.params.getValue("height");
     }
 
-}
+    /**
+     * Create the layers necessary for creating a new level
+     * @return {*[]} returns a the layer objects created
+     */
+    createNewLayerBlock(){
+        let flowlayer = new Layer({"z_offset": 0, "flip": false}, "flow");
+        let controllayer = new Layer({"z_offset": 0, "flip": false}, "control");
+        //TODO: remove cell layer from the whole system
+        let cell = new Layer({"z_offset": 0, "flip": false}, "cell");
 
-module.exports = Device;
+        this.addLayer(flowlayer);
+        this.addLayer(controllayer);
+
+        //TODO:Remove Cell layer from the whole system
+        this.addLayer(cell);
+
+        return [flowlayer, controllayer, cell];
+    }
+
+    deleteLayer(index){
+
+        if(index != -1) {
+            this.layers.splice(index, 1);
+        }
+
+    }
+
+}

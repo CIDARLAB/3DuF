@@ -1,3 +1,5 @@
+import {setButtonColor} from "../utils/htmlUtils";
+
 var HTMLUtils = require("../utils/htmlUtils");
 var Registry = require("../core/registry");
 var Colors = require("./colors");
@@ -74,9 +76,7 @@ let svgButton = document.getElementById("svg_button");
 let button2D = document.getElementById("button_2D");
 //let button3D = document.getElementById("button_3D");
 
-let flowButton = document.getElementById("flow_button");
-let controlButton = document.getElementById("control_button");
-let cellsButton = document.getElementById("cells_button");
+// let cellsButton = document.getElementById("cells_button");
 
 let inactiveBackground = Colors.GREY_200;
 let inactiveText = Colors.BLACK;
@@ -118,19 +118,19 @@ let buttons = {
     "DropletGen": dropletgenButton,
     "CellTrapL": celltraplButton,
     "AlignmentMarks": alignmentMarksButton
-}
+};
 
-let layerButtons = {
-    "0": flowButton,
-    "1": controlButton,
-    "2": cellsButton
-}
+// let layerButtons = {
+//     "0": flowButton,
+//     "1": controlButton,
+//     "2": cellsButton
+// };
 
 let layerIndices = {
     "0": 0,
     "1": 1,
     "2": 2
-}
+};
 
 let zipper = new JSZip();
 
@@ -138,11 +138,6 @@ function drop(ev) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
     ev.target.appendChild(document.getElementById(data));
-}
-
-function setButtonColor(button, background, text) {
-    button.style.background = background;
-    button.style.color = text;
 }
 
 function setActiveButton(feature) {
@@ -158,27 +153,6 @@ function setActiveButton(feature) {
     setButtonColor(buttons[activeButton], color, activeText);
 }
 
-function setActiveLayer(layerName) {
-    if (activeLayer) setButtonColor(layerButtons[activeLayer], inactiveBackground, inactiveText);
-    activeLayer = layerName;
-    setActiveButton(activeButton);
-    let bgColor;// = Colors.getDefaultLayerColor(Registry.currentLayer);
-    if(layerName == 0){
-        bgColor = Colors.INDIGO_500;
-    }else if (layerName == 1){
-        bgColor = Colors.RED_500;
-    }else {
-        bgColor = Colors.GREEN_500;
-    }
-    setButtonColor(layerButtons[activeLayer], bgColor, activeText);
-   /* if (threeD) {
-        setButtonColor(button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-        setButtonColor(button2D, inactiveBackground, inactiveText);
-    } else {*/
-        setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-        //setButtonColor(button3D, inactiveBackground, inactiveText);
-   // }
-}
 
 function switchTo3D() {
     if (!threeD) {
@@ -466,46 +440,48 @@ function setupAppPage() {
 
     //}
 
-    flowButton.onclick = function() {
-        if (threeD) {
-            if (activeLayer == "0") renderer.toggleLayerView(0);
-            else renderer.showLayer(0);
-        }
-        Registry.currentLayer = Registry.currentDevice.layers[0];
-        setActiveLayer("0");
-        Registry.viewManager.updateActiveLayer();
+    //Setup Tool Handlers
+    // flowButton.onclick = function() {
+    //     if (threeD) {
+    //         if (activeLayer == "0") renderer.toggleLayerView(0);
+    //         else renderer.showLayer(0);
+    //     }
+    //     Registry.currentLayer = Registry.currentDevice.layers[0];
+    //     setActiveLayer("0");
+    //     Registry.viewManager.updateActiveLayer();
+    //
+    // };
+    //
+    // controlButton.onclick = function() {
+    //     if (threeD) {
+    //         if (activeLayer == "1") renderer.toggleLayerView(1);
+    //         else renderer.showLayer(1);
+    //     }
+    //     Registry.currentLayer = Registry.currentDevice.layers[1];
+    //     setActiveLayer("1");
+    //     Registry.viewManager.updateActiveLayer();
+    // };
 
-    }
 
-    controlButton.onclick = function() {
-        if (threeD) {
-            if (activeLayer == "1") renderer.toggleLayerView(1);
-            else renderer.showLayer(1);
-        }
-        Registry.currentLayer = Registry.currentDevice.layers[1];
-        setActiveLayer("1");
-        Registry.viewManager.updateActiveLayer();
-    }
-
-    cellsButton.onclick = function() {
-        if (threeD) {
-            if (activeLayer == "2") renderer.toggleLayerView(2);
-            else renderer.showLayer(2);
-        }
-        Registry.currentLayer = Registry.currentDevice.layers[2];
-        setActiveLayer("2");
-        Registry.viewManager.updateActiveLayer();
-        console.log("Adaptive Grid Min Spacing: " + Registry.currentGrid.minSpacing);
-        console.log("Adaptive Grid Max Spacing: " + Registry.currentGrid.maxSpacing);
-
-    }
+    // cellsButton.onclick = function() {
+    //     if (threeD) {
+    //         if (activeLayer == "2") renderer.toggleLayerView(2);
+    //         else renderer.showLayer(2);
+    //     }
+    //     Registry.currentLayer = Registry.currentDevice.layers[2];
+    //     setActiveLayer("2");
+    //     Registry.viewManager.updateActiveLayer();
+    //     console.log("Adaptive Grid Min Spacing: " + Registry.currentGrid.minSpacing);
+    //     console.log("Adaptive Grid Max Spacing: " + Registry.currentGrid.maxSpacing);
+    //
+    // };
 
     interchangeV1Button.onclick = function() {
         let json = new Blob([JSON.stringify(Registry.currentDevice.toInterchangeV1())], {
             type: "application/json"
         });
         saveAs(json, "device.json");
-    }
+    };
 
     /*
         stlButton.onclick = function() {
@@ -543,12 +519,12 @@ function setupAppPage() {
             });
             saveAs(content, "device_layers.zip");
         }
-    }
+    };
 
     button2D.onclick = function() {
       /*  killParamsWindow();
         switchTo2D();*/
-    }
+    };
 
   //  button3D.onclick = function() {
        /* killParamsWindow();
@@ -600,7 +576,7 @@ function setupAppPage() {
     setupDragAndDropLoad("#c");
     setupDragAndDropLoad("#renderContainer");
     setActiveButton("Channel");
-    setActiveLayer("0");
+    //setActiveLayer("0");
     switchTo2D();
 
 }

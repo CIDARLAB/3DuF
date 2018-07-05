@@ -12,8 +12,10 @@ class CellPositionTool extends PositionTool{
 
     createNewFeature(point){
         let featureIDs = [];
-        let flowlayer = Registry.currentDevice.layers[0];
-        let cell_layer = Registry.currentDevice.layers[2];
+
+        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer)/3);
+        let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
+        let cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
 
         let newFeature = Feature.makeFeature(this.typeString, this.setString, {
             "position": PositionTool.getTarget(point)
