@@ -44,6 +44,11 @@ function DnDFileController(selector, onDropCallback) {
   el_.addEventListener('drop', this.drop, false);
 };
 
+export function setButtonColor(button, color, text){
+    button.style.background = color;
+    button.style.color = text;
+}
+
 module.exports.removeClass = removeClass;
 module.exports.addClass = addClass;
 module.exports.DnDFileController = DnDFileController;

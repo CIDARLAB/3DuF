@@ -97,3 +97,17 @@
 	height: 100%;
 	min-height: 100%;
 }
+
+.layer-button{
+	width: 36px;
+}
+
+.mdl-button-group button{
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+
+}

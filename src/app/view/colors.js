@@ -117,8 +117,21 @@ var renderAllColors = function(layer, orderedKeys){
 };
 
 var getLayerColors = function(layer){
-	if (layer && layer.color) return layerColors[layer.color];
-	else return layerColors["red"]
+    if(!layer){
+        throw new Error("Undefined color");
+    }
+	if (layer.color) {
+        return layerColors[layer.color];
+    }
+	else {
+        if(layer.name == 'flow'){
+            return layerColors["indigo"];
+        }else if(layer.name == 'control'){
+            return layerColors["red"];
+        }else if(layer.name == 'cell'){
+            return layerColors["green"];
+        }
+    }
 };
 
 var getDefaultLayerColor = function(layer){

@@ -1,3 +1,5 @@
+import EdgeFeature from "./edgeFeature";
+
 var Params = require('./params');
 var Parameters = require('./parameters');
 
@@ -13,7 +15,7 @@ var StringValue = Parameters.StringValue;
 class Layer {
     constructor(values, name = "New Layer") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
-        this.name = StringValue(name);
+        this.name = String(name);
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
@@ -65,7 +67,7 @@ class Layer {
     }
 */
     __ensureIsAFeature(feature) {
-        if (!(feature instanceof Feature) && !(feature instanceof TextFeature)) {
+        if (!(feature instanceof Feature) && !(feature instanceof TextFeature) && !(feature instanceof EdgeFeature)) {
             throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
         }
     }

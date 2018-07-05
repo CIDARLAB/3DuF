@@ -12,8 +12,9 @@ class MultilayerPositionTool extends PositionTool{
 
     createNewFeature(point){
         let featureIDs = [];
-        let flowlayer = Registry.currentDevice.layers[0];
-        let controllayer = Registry.currentDevice.layers[1];
+        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer)/3);
+        let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
+        let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
         let newFeature = Feature.makeFeature(this.typeString, this.setString, {
             "position": PositionTool.getTarget(point)
