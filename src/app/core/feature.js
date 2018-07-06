@@ -1,3 +1,5 @@
+import EdgeFeature from "./edgeFeature";
+
 var Params = require('./params');
 var Parameters = require('./parameters');
 var StringValue = Parameters.StringValue;
@@ -50,6 +52,9 @@ export default class Feature {
         output.set = this.__set;
         if(this.__params){
             output.params = this.__params.toJSON();
+        }
+        if(this.__dxfObjects){
+            output.dxfData = this.__dxfObjects;
         }
         output.type = this.__fabtype;
         return output;
@@ -150,14 +155,22 @@ export default class Feature {
         if (json.hasOwnProperty("set")) set = json.set;
         else set = "Basic";
         //TODO: This will have to change soon when the thing is updated
-        return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
+        return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type, json.dxfData);
     }
 
-    static makeFeature(typeString, setString, values, name = "New Feature", id=undefined){
+    static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined, dxfdata=undefined){
+        let params;
         let featureType = FeatureSets.getDefinition(typeString, setString);
-        Feature.checkDefaults(values, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
-        let params = new Params(values, featureType.unique, featureType.heritable);
-        return new Feature(typeString, setString, params, name, id)
+        if (paramvalues) {
+            Feature.checkDefaults(paramvalues, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
+            params = new Params(paramvalues, featureType.unique, featureType.heritable);
+        }
+        if (typeString == "EDGE"){
+            console.log("testing......")
+            return new EdgeFeature(dxfdata, params, id);
+        }else {
+            return new Feature(typeString, setString, params, name, id)
+        }
     }
 
     updateView(){

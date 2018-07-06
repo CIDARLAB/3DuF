@@ -1,4 +1,3 @@
-import ViewManager from "./viewManager";
 
 export default class MouseAndKeyboardHandler {
     constructor(viewManagerDelegate){
@@ -10,7 +9,7 @@ export default class MouseAndKeyboardHandler {
         //Prevent default keyboard window events
         window.onkeydown = function(event) {
             let key = event.keyCode || event.which;
-            if (key == 46) {
+            if (key === 46) {
                 event.preventDefault();
             }
         };
@@ -39,6 +38,7 @@ export default class MouseAndKeyboardHandler {
             let key = event.keyCode || event.which;
 
             if (key == 46 || key == 8) {
+                reference.saveDeviceState();
                 reference.view.deleteSelectedFeatures();
             }
             // Copy
@@ -53,6 +53,7 @@ export default class MouseAndKeyboardHandler {
                 if (selectedFeatures.length > 0) {
                     reference.pasteboard[0] = selectedFeatures[0];
                 }
+                reference.saveDeviceState();
                 reference.view.deleteSelectedFeatures();
             }
             // Paste
@@ -65,14 +66,20 @@ export default class MouseAndKeyboardHandler {
                 }
             }
 
-            if(key == 37){
+            //Undo
+            if(event.keyCode === 90 && (event.metaKey || event.ctrlKey)){
+                console.log("Undo executed");
+                reference.undo();
+            }
+
+            if(key === 37){
                 //console.log("left arrow");
                 reference.view.moveCenter(new paper.Point(1000,0));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
             }
 
-            if(key == 38){
+            if(key === 38){
                 //console.log("Up arrow");
                 reference.view.moveCenter(new paper.Point(0,1000));
                 reference.updateGrid();
@@ -80,7 +87,7 @@ export default class MouseAndKeyboardHandler {
 
             }
 
-            if(key == 39){
+            if(key === 39){
                 //console.log("right arrow");
                 reference.view.moveCenter(new paper.Point(-1000,0));
                 reference.updateGrid();
@@ -88,7 +95,7 @@ export default class MouseAndKeyboardHandler {
 
             }
 
-            if(key == 40){
+            if(key === 40){
                 //console.log("down arrow");
                 reference.view.moveCenter(new paper.Point(0,-1000));
                 reference.updateGrid();
@@ -96,7 +103,7 @@ export default class MouseAndKeyboardHandler {
 
             }
 
-            if(key == 70){
+            if(key === 70){
                 //Reset the view
                 reference.view.initializeView();
                 reference.updateGrid();
@@ -104,7 +111,7 @@ export default class MouseAndKeyboardHandler {
             }
 
             //Escape key
-            if(key == 27){
+            if(key === 27){
                 //Deselect all
                 paper.project.deselectAll();
 
@@ -116,7 +123,7 @@ export default class MouseAndKeyboardHandler {
 
             }
 
-            if ((event.ctrlKey || event.metaKey) && key == 65) {
+            if ((event.ctrlKey || event.metaKey) && key === 65) {
                 //Select all
                 reference.view.selectAllActive();
                 return false;
@@ -132,10 +139,36 @@ export default class MouseAndKeyboardHandler {
         this.viewManagerDelegate.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.__leftMouseTool, this.__leftMouseTool, this.__leftMouseTool));
     }
 
+    /**
+     * This function is executed as a callback for every mouse down event
+     * @private
+     */
+    __mouseDownCallback(event){
+        console.log("testing down callback", event);
+
+        Registry.viewManager.saveDeviceState();
+    }
+
+    /**
+     * this function is executed as a callback for every mouse up event
+     * @private
+     */
+    __mouseUpCallback(event){
+        console.log("testing up callback", event);
+    }
+
+    /**
+     * This function is executed as a callback for every mouse move event
+     * @private
+     */
+    __mouseMoveCallback(event){
+        console.log("testing move callback", event);
+    }
+
     constructMouseDownEvent(tool1, tool2, tool3) {
         if(tool1 == tool3){
             console.log("Both right and left tool is the same");
-            return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown);
+            return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown, this.__mouseDownCallback);
 
         }else {
             return this.constructMouseEvent(tool1.down, tool2.down, tool3.down);
@@ -143,35 +176,42 @@ export default class MouseAndKeyboardHandler {
     }
 
     constructMouseMoveEvent(tool1, tool2, tool3) {
-        return this.constructMouseEvent(tool1.move, tool2.move, tool3.move);
+        return this.constructMouseEvent(tool1.move, tool2.move, tool3.move, this.__mouseUpCallback);
     }
 
     constructMouseUpEvent(tool1, tool2, tool3) {
-        return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
+        return this.constructMouseEvent(tool1.up, tool2.up, tool3.up, this.__mouseMoveCallback);
     }
 
-    constructMouseEvent(func1, func2, func3) {
+    constructMouseEvent(func1, func2, func3, buttondownCallback) {
         return function(event) {
             let target;
             if (event.buttons) {
+                buttondownCallback(event);
                 target = MouseAndKeyboardHandler.__eventButtonsToWhich(event.buttons);
             } else {
                 target = event.which;
             }
-            if (target == 2) func2(event);
-            else if (target == 3) func3(event);
-            else if (target == 1 || target == 0) func1(event);
+            if (target === 2){
+                func2(event);
+            }
+            else if (target === 3) {
+                func3(event);
+            }
+            else if (target === 1 || target === 0) {
+                func1(event);
+            }
         }
     }
 
     static __eventButtonsToWhich(num) {
-        if (num == 1) {
+        if (num === 1) {
             return 1;
-        } else if (num == 2) {
+        } else if (num === 2) {
             return 3;
-        } else if (num == 4) {
+        } else if (num === 4) {
             return 2;
-        } else if (num == 3) {
+        } else if (num === 3) {
             return 2;
         }
     }
