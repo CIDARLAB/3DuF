@@ -25,7 +25,7 @@ class ChannelTool extends MouseTool {
 		}, 20, false);
 
 		this.down = function(event) {
-			PageSetup.killParamsWindow();
+			Registry.viewManager.killParamsWindow();
 			paper.project.deselectAll();
 			ref.dragging = true;
 			ref.initChannel();

@@ -25,9 +25,13 @@ import DXFObject from '../core/dxfObject';
 import EdgeFeature from "../core/edgeFeature";
 import ChangeAllDialog from "./ui/changeAllDialog";
 import LayerToolBar from "./ui/layerToolBar";
+import {setButtonColor} from "../utils/htmlUtils";
+import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
+import ComponentToolBar from "./ui/componentToolBar";
 
 export default class ViewManager {
     constructor(view) {
+        this.threeD;
         this.view = view;
         this.tools = {};
         this.middleMouseTool = new PanTool();
@@ -47,95 +51,9 @@ export default class ViewManager {
         });
 
         this.undoStack = [];
-        window.onkeydown = function(event) {
-            let key = event.keyCode || event.which;
-            if (key == 46) {
-                event.preventDefault();
-            }
-        };
         this.pasteboard = [];
 
-        this.view.setKeyDownFunction(function(event) {
-            let key = event.keyCode || event.which;
-
-            if (key == 46 || key == 8) {
-                reference.view.deleteSelectedFeatures();
-            }
-            // Copy
-            if ((event.ctrlKey || event.metaKey) && key == 67) {
-                //console.log("Ctl c detected");
-                reference.initiateCopy();
-            }
-            // Cut
-            if ((event.ctrlKey || event.metaKey) && key == 88) {
-                //console.log("Ctl x detected");
-                let selectedFeatures = reference.view.getSelectedFeatures();
-                if (selectedFeatures.length > 0) {
-                    reference.pasteboard[0] = selectedFeatures[0];
-                }
-                reference.view.deleteSelectedFeatures();
-            }
-            // Paste
-            if ((event.ctrlKey || event.metaKey) && key == 86) {
-                //console.log("Ctl v detected");
-                let pasteboardFeatures = reference.pasteboard;
-                if (pasteboardFeatures.length > 0) {
-                    reference.updateDefaultsFromFeature(pasteboardFeatures[0]);
-                    reference.activateTool(pasteboardFeatures[0].getType());
-                }
-            }
-
-            if(key == 37){
-                //console.log("left arrow");
-                reference.view.moveCenter(new paper.Point(1000,0));
-                reference.updateGrid();
-                reference.view.updateAlignmentMarks();
-            }
-
-            if(key == 38){
-                //console.log("Up arrow");
-                reference.view.moveCenter(new paper.Point(0,1000));
-                reference.updateGrid();
-                reference.view.updateAlignmentMarks();
-
-            }
-
-            if(key == 39){
-                //console.log("right arrow");
-                reference.view.moveCenter(new paper.Point(-1000,0));
-                reference.updateGrid();
-                reference.view.updateAlignmentMarks();
-
-            }
-
-            if(key == 40){
-                //console.log("down arrow");
-                reference.view.moveCenter(new paper.Point(0,-1000));
-                reference.updateGrid();
-                reference.view.updateAlignmentMarks();
-
-            }
-
-            if(key == 70){
-                //Reset the view
-                reference.view.initializeView();
-                reference.updateGrid();
-                reference.view.updateAlignmentMarks();
-            }
-
-            if(key == 27){
-                //Deselect all
-                paper.project.deselectAll()
-
-            }
-
-            if ((event.ctrlKey || event.metaKey) && key == 65) {
-                //Select all
-                reference.view.selectAllActive();
-                return false;
-            }
-
-        });
+        this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
         this.view.setResizeFunction(function() {
             reference.updateGrid();
@@ -167,6 +85,7 @@ export default class ViewManager {
     setupToolBars(){
         //Initiating the zoom toolbar
         this.zoomToolBar = new ZoomToolBar(.0001, 5);
+        this.componentToolBar = new ComponentToolBar(this);
     }
 
     addDevice(device, refresh = true) {
@@ -539,23 +458,6 @@ export default class ViewManager {
         else return false;
     }
 
-    constructMouseDownEvent(tool1, tool2, tool3) {
-        if(tool1 == tool3){
-            console.log("Both right and left tool is the same");
-            return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown);
-
-        }else {
-            return this.constructMouseEvent(tool1.down, tool2.down, tool3.down);
-        }
-    }
-
-    constructMouseMoveEvent(tool1, tool2, tool3) {
-        return this.constructMouseEvent(tool1.move, tool2.move, tool3.move);
-    }
-
-    constructMouseUpEvent(tool1, tool2, tool3) {
-        return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
-    }
 
     loadDeviceFromJSON(json) {
         Registry.viewManager.clear();
@@ -596,31 +498,7 @@ export default class ViewManager {
         }
     }
 
-    static __eventButtonsToWhich(num) {
-        if (num == 1) {
-            return 1;
-        } else if (num == 2) {
-            return 3;
-        } else if (num == 4) {
-            return 2;
-        } else if (num == 3) {
-            return 2;
-        }
-    }
 
-    constructMouseEvent(func1, func2, func3) {
-        return function(event) {
-            let target;
-            if (event.buttons) {
-                target = ViewManager.__eventButtonsToWhich(event.buttons);
-            } else {
-                target = event.which;
-            }
-            if (target == 2) func2(event);
-            else if (target == 3) func3(event);
-            else if (target == 1 || target == 0) func1(event);
-        }
-    }
 
     snapToGrid(point) {
         if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);
@@ -688,18 +566,45 @@ export default class ViewManager {
         return this.view.hitFeaturesWithViewElement(element);
     }
 
-    __updateViewMouseEvents() {
-        this.view.setMouseDownFunction(this.constructMouseDownEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
-        this.view.setMouseUpFunction(this.constructMouseUpEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
-        this.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.leftMouseTool, this.middleMouseTool, this.rightMouseTool));
-    }
 
     activateTool(toolString , rightClickToolString = "SelectTool") {
-        this.leftMouseTool = this.tools[toolString];
-        this.rightMouseTool = this.tools[rightClickToolString];
-        this.__updateViewMouseEvents();
+        this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
+        this.mouseAndKeyboardHandler.rightMouseTool = this.tools[rightClickToolString];
+        this.mouseAndKeyboardHandler.updateViewMouseEvents();
     }
 
+    switchTo2D() {
+        if (this.threeD) {
+            this.threeD = false;
+            let center = renderer.getCameraCenterInMicrometers();
+            let zoom = renderer.getZoom();
+            let newCenterX = center[0];
+            if (newCenterX < 0) {
+                newCenterX = 0
+            } else if (newCenterX > Registry.currentDevice.params.getValue("width")) {
+                newCenterX = Registry.currentDevice.params.getValue("width");
+            }
+            let newCenterY = paper.view.center.y - center[1];
+            if (newCenterY < 0) {
+                newCenterY = 0;
+            } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
+                newCenterY = Registry.currentDevice.params.getValue("height")
+            }
+            setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+            setButtonColor(button3D, inactiveBackground, inactiveText);
+            Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
+            Registry.viewManager.setZoom(zoom);
+            HTMLUtils.addClass(renderBlock, "hidden-block");
+            HTMLUtils.removeClass(canvasBlock, "hidden-block");
+            HTMLUtils.removeClass(renderBlock, "shown-block");
+            HTMLUtils.addClass(canvasBlock, "shown-block");
+        }
+    }
+
+    killParamsWindow() {
+        let paramsWindow = document.getElementById("parameter_menu");
+        if (paramsWindow) paramsWindow.parentElement.removeChild(paramsWindow);
+    }
 
     setupTools() {
         this.tools["SelectTool"] = new SelectTool();

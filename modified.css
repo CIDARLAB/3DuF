@@ -68,12 +68,12 @@
 }
 
 .view-button {
-	margin: 15;
+	margin: 15px;
 	margin-top: 0;
 }
 
 .button-spacer {
-	padding: 20;
+	padding: 20px;
 }
 
 #renderContainer { 
@@ -89,7 +89,7 @@
 	position: relative;
 	max-width: 80%;
 	min-width: 80%;
-	padding: 20;
+	padding: 20px;
 	padding-bottom: 0;
 }
 

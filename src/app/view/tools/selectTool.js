@@ -17,7 +17,7 @@ class SelectTool extends MouseTool {
         }, 20);
 
         this.down = function (event) {
-            PageSetup.killParamsWindow();
+            Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
             ref.showTarget();
