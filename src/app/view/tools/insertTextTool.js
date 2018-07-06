@@ -25,7 +25,7 @@ class InsertTextTool extends MouseTool {
             ref.showQueue.run();
         };
         this.down = function (event) {
-            PageSetup.killParamsWindow();
+            Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
         }

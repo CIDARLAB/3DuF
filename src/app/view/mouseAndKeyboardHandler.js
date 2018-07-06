@@ -1,0 +1,179 @@
+import ViewManager from "./viewManager";
+
+export default class MouseAndKeyboardHandler {
+    constructor(viewManagerDelegate){
+        this.viewManagerDelegate = viewManagerDelegate;
+
+        this.__leftMouseTool = null;
+        this.__rightMouseTool = null;
+
+        //Prevent default keyboard window events
+        window.onkeydown = function(event) {
+            let key = event.keyCode || event.which;
+            if (key == 46) {
+                event.preventDefault();
+            }
+        };
+
+        this.__setupDefaultKeyboardShortcuts();
+        // this.__updateViewMouseEvents();
+    }
+
+    set leftMouseTool(tool){
+        this.__leftMouseTool = tool;
+    }
+
+    set rightMouseTool(tool){
+        this.__rightMouseTool = tool;
+    }
+
+    /**
+     * Sets up the default keyboard handlers
+     * @private
+     */
+    __setupDefaultKeyboardShortcuts() {
+
+        let reference = this.viewManagerDelegate;
+
+        reference.view.setKeyDownFunction(function(event) {
+            let key = event.keyCode || event.which;
+
+            if (key == 46 || key == 8) {
+                reference.view.deleteSelectedFeatures();
+            }
+            // Copy
+            if ((event.ctrlKey || event.metaKey) && key == 67) {
+                //console.log("Ctl c detected");
+                reference.initiateCopy();
+            }
+            // Cut
+            if ((event.ctrlKey || event.metaKey) && key == 88) {
+                //console.log("Ctl x detected");
+                let selectedFeatures = reference.view.getSelectedFeatures();
+                if (selectedFeatures.length > 0) {
+                    reference.pasteboard[0] = selectedFeatures[0];
+                }
+                reference.view.deleteSelectedFeatures();
+            }
+            // Paste
+            if ((event.ctrlKey || event.metaKey) && key == 86) {
+                //console.log("Ctl v detected");
+                let pasteboardFeatures = reference.pasteboard;
+                if (pasteboardFeatures.length > 0) {
+                    reference.updateDefaultsFromFeature(pasteboardFeatures[0]);
+                    reference.activateTool(pasteboardFeatures[0].getType());
+                }
+            }
+
+            if(key == 37){
+                //console.log("left arrow");
+                reference.view.moveCenter(new paper.Point(1000,0));
+                reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+            }
+
+            if(key == 38){
+                //console.log("Up arrow");
+                reference.view.moveCenter(new paper.Point(0,1000));
+                reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+
+            }
+
+            if(key == 39){
+                //console.log("right arrow");
+                reference.view.moveCenter(new paper.Point(-1000,0));
+                reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+
+            }
+
+            if(key == 40){
+                //console.log("down arrow");
+                reference.view.moveCenter(new paper.Point(0,-1000));
+                reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+
+            }
+
+            if(key == 70){
+                //Reset the view
+                reference.view.initializeView();
+                reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+            }
+
+            //Escape key
+            if(key == 27){
+                //Deselect all
+                paper.project.deselectAll();
+
+                //Change active tool to select tool
+                console.log("ref: ", reference);
+                reference.activateTool("MouseSelectTool");
+
+                reference.componentToolBar.setActiveButton("SelectButton");
+
+            }
+
+            if ((event.ctrlKey || event.metaKey) && key == 65) {
+                //Select all
+                reference.view.selectAllActive();
+                return false;
+            }
+
+        });
+
+    }
+
+    updateViewMouseEvents() {
+        this.viewManagerDelegate.view.setMouseDownFunction(this.constructMouseDownEvent(this.__leftMouseTool, this.__leftMouseTool, this.__leftMouseTool));
+        this.viewManagerDelegate.view.setMouseUpFunction(this.constructMouseUpEvent(this.__leftMouseTool, this.__leftMouseTool, this.__leftMouseTool));
+        this.viewManagerDelegate.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.__leftMouseTool, this.__leftMouseTool, this.__leftMouseTool));
+    }
+
+    constructMouseDownEvent(tool1, tool2, tool3) {
+        if(tool1 == tool3){
+            console.log("Both right and left tool is the same");
+            return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown);
+
+        }else {
+            return this.constructMouseEvent(tool1.down, tool2.down, tool3.down);
+        }
+    }
+
+    constructMouseMoveEvent(tool1, tool2, tool3) {
+        return this.constructMouseEvent(tool1.move, tool2.move, tool3.move);
+    }
+
+    constructMouseUpEvent(tool1, tool2, tool3) {
+        return this.constructMouseEvent(tool1.up, tool2.up, tool3.up);
+    }
+
+    constructMouseEvent(func1, func2, func3) {
+        return function(event) {
+            let target;
+            if (event.buttons) {
+                target = MouseAndKeyboardHandler.__eventButtonsToWhich(event.buttons);
+            } else {
+                target = event.which;
+            }
+            if (target == 2) func2(event);
+            else if (target == 3) func3(event);
+            else if (target == 1 || target == 0) func1(event);
+        }
+    }
+
+    static __eventButtonsToWhich(num) {
+        if (num == 1) {
+            return 1;
+        } else if (num == 2) {
+            return 3;
+        } else if (num == 4) {
+            return 2;
+        } else if (num == 3) {
+            return 2;
+        }
+    }
+
+}

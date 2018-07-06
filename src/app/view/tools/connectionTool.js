@@ -35,7 +35,7 @@ class ConnectionTool extends MouseTool {
 
         this.down = function (event) {
             console.log(event);
-            PageSetup.killParamsWindow();
+            Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             console.log("Current State:", ref.__STATE);
             switch (ref.__STATE) {
