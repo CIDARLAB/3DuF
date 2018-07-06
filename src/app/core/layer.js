@@ -168,7 +168,7 @@ class Layer {
 
     toInterchangeV1() {
         let output = {};
-        output.name = this.name.toJSON();
+        output.name = this.name;
         output.color = this.color;
         output.params = this.params.toJSON();
         output.features = this.__featuresInterchangeV1();
