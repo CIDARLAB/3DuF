@@ -185,7 +185,7 @@ export default class Device {
 
     toInterchangeV1() {
         let output = {};
-        output.name = this.name.toJSON();
+        output.name = this.name;
         output.params = this.params.toJSON();
         //TODO: Use this to dynamically create enough layers to scroll through
         // output.layers = this.__layersToInterchangeV1();

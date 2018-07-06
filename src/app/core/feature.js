@@ -48,7 +48,9 @@ export default class Feature {
         output.name = this.__name.toJSON();
         output.macro = this.__type;
         output.set = this.__set;
-        output.params = this.__params.toJSON();
+        if(this.__params){
+            output.params = this.__params.toJSON();
+        }
         output.type = this.__fabtype;
         return output;
     }
