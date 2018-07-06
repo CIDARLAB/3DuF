@@ -305,7 +305,7 @@ function setupAppPage() {
             reader.onloadend = function(e) {
                 var result = JSON.parse(this.result);
                 Registry.viewManager.loadDeviceFromJSON(result);
-                switchTo2D();
+                Registry.viewManager.switchTo2D();
             };
             try {
                 reader.readAsText(f);

@@ -1830,11 +1830,9 @@ var GradientGenerator = function(params){
     let posx = position[0];
     let posy = position[1];
     let stagelength = channelWidth * (2*numBends + 1) + (2*numBends + 2) * bendSpacing + channelWidth;
-    console.log(posx, posy);
     let gradientgenerator = new paper.CompoundPath();
     // insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, posx, posy, color);
     //Iterate through each of the stages
-    console.log(invalue, outvalue);
 
     //Draw the first stage which is just channels
     let totalstagewidth = (invalue - 1)*spacing;
@@ -1866,14 +1864,11 @@ var GradientGenerator = function(params){
         xref = (posx - totalstagewidth / 2);
         yref = posy + stagelength * (stagevalue - invalue);
 
-        console.log("STage" , stagevalue, xref, yref);
-
         //Start from the left
         for(let i = 0; i < stagevalue; i++){
             let x = xref + spacing*i;
 
             let y = yref;
-            console.log("Stage X", x);
             //insert the mixer
             insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, x, y, color);
 
@@ -1892,7 +1887,6 @@ var GradientGenerator = function(params){
 
     gradientgenerator.fillColor = color;
     // console.log("testing");
-    console.log(gradientgenerator);
 
     gradientgenerator.rotate(-rotation, new paper.Point(posx, posy));
 

@@ -28,6 +28,7 @@
     "dxf-parser": "^0.6.1",
     "jszip": "^2.5.0",
     "knockout": "^3.4.2",
+    "md5": "^2.2.1",
     "node-uuid": ">=1.4.3",
     "nouislider": "^11.1.0",
     "wnumb": "^1.1.0"

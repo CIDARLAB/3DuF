@@ -28,6 +28,7 @@ import LayerToolBar from "./ui/layerToolBar";
 import {setButtonColor} from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
 import ComponentToolBar from "./ui/componentToolBar";
+import DesignHistory from "./designHistory";
 
 export default class ViewManager {
     constructor(view) {
@@ -50,7 +51,7 @@ export default class ViewManager {
             reference.saveToStorage();
         });
 
-        this.undoStack = [];
+        this.undoStack = new DesignHistory();
         this.pasteboard = [];
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
@@ -604,6 +605,31 @@ export default class ViewManager {
     killParamsWindow() {
         let paramsWindow = document.getElementById("parameter_menu");
         if (paramsWindow) paramsWindow.parentElement.removeChild(paramsWindow);
+    }
+
+    /**
+     * This method saves the current device to the design history
+     */
+    saveDeviceState(){
+        console.log("Saving to statck");
+
+        let save = JSON.stringify(Registry.currentDevice.toInterchangeV1());
+
+        this.undoStack.pushDesign(save);
+
+        console.log(this.undoStack.deviceData);
+    }
+
+
+    undo(){
+        let previousdesign = this.undoStack.popDesign();
+        console.log(previousdesign);
+        if(previousdesign){
+            console.log("Test");
+            let result = JSON.parse(previousdesign);
+            this.loadDeviceFromJSON(result);
+        }
+
     }
 
     setupTools() {
