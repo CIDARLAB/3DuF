@@ -4,6 +4,8 @@ import {createFeatureTable, revertToDefaultParams} from "./parameterMenu";
 export default class RightClickMenu {
 
     constructor(feature, point){
+
+        this.__featureRef = feature;
         /*
         Figure out if we can fire the parameters menu
          */
@@ -15,6 +17,18 @@ export default class RightClickMenu {
         this.__moveButton = document.getElementById("context_button_move");
         this.__revertToDefaultsButton = document.getElementById("context_button_revert");
         this.__copyToAllButton = document.getElementById("context_button_copytoall");
+        this.__renameComponentButton = document.getElementById("context_button_rename");
+
+        //Textfield stuff
+        this.__renameComponentTextField = document.getElementById("rename_component_textfield");
+        this.__renameIsVisible = false;
+        this.__renameSaveButton = document.getElementById("context_rename_button_save");
+        this.__renameCancelButton = document.getElementById("context_rename_button_cancel");
+        this.__renameTextInput = document.getElementById("componentname_textinput");
+        //Collapse the textrename text input
+        this.__collapseTextInput();
+
+
 
         //TODO: Figure out if feature belongs to component
         this.__typeString = feature.getType();
@@ -39,6 +53,31 @@ export default class RightClickMenu {
             Registry.viewManager.changeAllDialog.showDialog();
             ref.close();
         });
+        this.__renameComponentButton.addEventListener('click', function (event) {
+            console.log("Show rename button", event);
+            if(ref.__renameIsVisible){
+                //Hide
+                HTMLUtils.addClass(ref.__renameComponentTextField, 'collapse');
+            }else{
+                //Show
+                HTMLUtils.removeClass(ref.__renameComponentTextField, 'collapse');
+                ref.__renameTextInput.value = ref.getComponentName();
+            }
+            ref.__renameIsVisible = !ref.__renameIsVisible;
+        });
+
+        //Save Rename
+        this.__renameSaveButton.addEventListener('click', function (event) {
+            let nametext = ref.__renameTextInput.value;
+            ref.setComponentName(nametext);
+        });
+
+        ///Cancel Rename
+        this.__renameCancelButton.addEventListener('click', function (event) {
+            let nametext = ref.getComponentName();
+            document.getElementById("componentname_textinput").value = nametext;
+        });
+
 
     }
 
@@ -65,6 +104,7 @@ export default class RightClickMenu {
     }
 
     close(){
+        this.__collapseTextInput();
         HTMLUtils.removeClass(this.__featureTable, "shown-block");
         HTMLUtils.addClass(this.__featureTable, "hidden-block");
         HTMLUtils.removeClass(this.__contextMenu, "shown-block");
@@ -76,4 +116,31 @@ export default class RightClickMenu {
         // }
     }
 
+    setComponentName(nametext) {
+        let id = this.__featureRef.getID();
+        //Find component for the feature id
+        let component = Registry.currentDevice.getComponentForFeatureID(id);
+        if(component){
+            component.setName(nametext);
+            console.log("renamed component", component);
+        }else{
+            throw new Error("Could not find component to rename");
+        }
+    }
+
+    getComponentName() {
+        let id = this.__featureRef.getID();
+        //Find component for the feature id
+        let component = Registry.currentDevice.getComponentForFeatureID(id);
+        if(component){
+            return component.getName();
+        }else{
+            throw new Error("Could not find component to rename");
+        }
+    }
+
+    __collapseTextInput() {
+        this.__renameIsVisible = false;
+        HTMLUtils.addClass(this.__renameComponentTextField, 'collapse');
+    }
 }
