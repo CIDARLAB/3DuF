@@ -19,6 +19,10 @@ class Component {
         this.__bounds = null;
     }
 
+    get features(){
+        return this.__features;
+    }
+
     /**
      * Generates a random id
      * @returns {String} Random ID string
@@ -75,6 +79,7 @@ class Component {
      * @param name
      */
     setName(name){
+        console.log("test", name);
         this.__name = name;
     }
 

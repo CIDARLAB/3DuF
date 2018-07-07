@@ -271,4 +271,19 @@ export default class Device {
 
     }
 
+    getComponentForFeatureID(id){
+        for(let i in this.__components){
+            let component = this.__components[i];
+            //go through each component's features
+            for(let j in component.features){
+                let feature = component.features[j];
+                if(feature === id){
+                    return component;
+                }
+            }
+        }
+
+        return null;
+    }
+
 }
