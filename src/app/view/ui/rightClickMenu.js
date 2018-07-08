@@ -65,6 +65,9 @@ export default class RightClickMenu {
             }
             ref.__renameIsVisible = !ref.__renameIsVisible;
         });
+        this.__moveButton.addEventListener('click', function (event) {
+            ref.__activateMove();
+        });
 
         //Save Rename
         this.__renameSaveButton.addEventListener('click', function (event) {
@@ -142,5 +145,12 @@ export default class RightClickMenu {
     __collapseTextInput() {
         this.__renameIsVisible = false;
         HTMLUtils.addClass(this.__renameComponentTextField, 'collapse');
+    }
+
+    __activateMove() {
+        this.close();
+        Registry.viewManager.activateTool("MoveTool");
+        let component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.getID());
+        Registry.viewManager.tools["MoveTool"].activate(component);
     }
 }

@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="lib/material/material.min.css">
     <script src="lib/material/material.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -367,6 +368,42 @@
         Rename
     </div>
 
+</div>
+
+<div id="moveBox" style="z-index: 20; left: 250px; top: 30px; position: absolute; background-color: #fff;" class="hidden-block test">
+    <h5>Specify Position</h5>
+    <label>X (mm) :</label>
+    <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+        <input class="mdl-textfield__input" type="text" id="textinput_xpos">
+        <!--<label class="mdl-textfield__label" for="textinput_xpos">x (mm)</label>-->
+    </div>
+    <button id="button-xpos-up" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+        <i class="material-icons">arrow_upward</i>
+    </button>
+    <button id="button-xpos-down" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+        <i class="material-icons">arrow_downward</i>
+    </button>
+    <br />
+    <label>Y (mm) :</label>
+    <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+        <input class="mdl-textfield__input" type="text" id="textinput_ypos">
+        <!--<label class="mdl-textfield__label" for="textinput_ypos">y (mm)</label>-->
+    </div>
+    <button id="button-ypos-up" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+        <i class="material-icons">arrow_upward</i>
+    </button>
+    <button id="button-ypos-down" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+        <i class="material-icons">arrow_downward</i>
+    </button>
+    <br/>
+    <!-- Raised button with ripple -->
+    <button id="save-position" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+        Save
+    </button>
+    <!-- Raised button with ripple -->
+    <button id="cancel-edit-position" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+        Cancel
+    </button>
 </div>
 
 <div id="resolution-toolbar" class="hidetoolbar">

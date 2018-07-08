@@ -89,8 +89,7 @@
 	position: relative;
 	max-width: 80%;
 	min-width: 80%;
-	padding: 20px;
-	padding-bottom: 0;
+    padding: 20px 20px 0px;
 }
 
 #main_window {
@@ -114,4 +113,11 @@
 
 #layer-toolbar{
     margin-left: 15px;
+}
+
+div#moveBox {
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
 }

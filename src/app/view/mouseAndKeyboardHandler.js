@@ -116,10 +116,7 @@ export default class MouseAndKeyboardHandler {
                 paper.project.deselectAll();
 
                 //Change active tool to select tool
-                console.log("ref: ", reference);
-                reference.activateTool("MouseSelectTool");
-
-                reference.componentToolBar.setActiveButton("SelectButton");
+                reference.resetToDefaultTool();
 
             }
 
