@@ -25,10 +25,11 @@ import DXFObject from '../core/dxfObject';
 import EdgeFeature from "../core/edgeFeature";
 import ChangeAllDialog from "./ui/changeAllDialog";
 import LayerToolBar from "./ui/layerToolBar";
-import {setButtonColor} from "../utils/htmlUtils";
+import * as HTMLUtils from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
 import ComponentToolBar from "./ui/componentToolBar";
 import DesignHistory from "./designHistory";
+import MoveTool from "./tools/moveTool";
 
 export default class ViewManager {
     constructor(view) {
@@ -591,8 +592,8 @@ export default class ViewManager {
             } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
                 newCenterY = Registry.currentDevice.params.getValue("height")
             }
-            setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-            setButtonColor(button3D, inactiveBackground, inactiveText);
+            HTMLUtils.setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+            HTMLUtils.setButtonColor(button3D, inactiveBackground, inactiveText);
             Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
             Registry.viewManager.setZoom(zoom);
             HTMLUtils.addClass(renderBlock, "hidden-block");
@@ -602,6 +603,9 @@ export default class ViewManager {
         }
     }
 
+    /**
+     * Closes the params window
+     */
     killParamsWindow() {
         let paramsWindow = document.getElementById("parameter_menu");
         if (paramsWindow) paramsWindow.parentElement.removeChild(paramsWindow);
@@ -616,8 +620,6 @@ export default class ViewManager {
         let save = JSON.stringify(Registry.currentDevice.toInterchangeV1());
 
         this.undoStack.pushDesign(save);
-
-        console.log(this.undoStack.deviceData);
     }
 
 
@@ -630,6 +632,11 @@ export default class ViewManager {
             this.loadDeviceFromJSON(result);
         }
 
+    }
+
+    resetToDefaultTool(){
+        this.activateTool("MouseSelectTool");
+        this.componentToolBar.setActiveButton("SelectButton");
     }
 
     setupTools() {
@@ -661,5 +668,7 @@ export default class ViewManager {
         this.tools["DropletGen"] = new ComponentPositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
         this.tools["AlignmentMarks"] = new MultilayerPositionTool("AlignmentMarks", "Basic");
+
+        this.tools["MoveTool"] = new MoveTool();
     }
 }
