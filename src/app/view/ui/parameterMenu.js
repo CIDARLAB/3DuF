@@ -1,13 +1,8 @@
-var HTMLUtils = require("../../utils/htmlUtils");
-//var Feature = require("../../core/feature");
+import * as HTMLUtils from '../../utils/htmlUtils';
 import Feature from '../../core/feature';
 var Registry = require("../../core/registry");
-var Parameters = require("../../core/parameters");
+import {FloatValue, BooleanValue, StringValue} from '../../core/parameters';
 var FeatureSets = require("../../featureSets");
-
-var FloatValue = Parameters.FloatValue;
-var BooleanValue = Parameters.BooleanValue;
-var StringValue = Parameters.StringValue;
 
 var createSlider = function(min, max, step, start, id) {
     var div = document.createElement("div");

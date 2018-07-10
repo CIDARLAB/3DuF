@@ -532,8 +532,9 @@ export default class ViewManager {
             if (correctType.length >0 ){
                 this.adjustAllFeatureParams(valueString, value, correctType);
             }
+        }else{
+            this.updateDefault(typeString, setString, valueString, value);
         }
-        //this.updateDefault(typeString, setString, valueString, value);
     }
 
     updateDefault(typeString, setString, valueString, value){
