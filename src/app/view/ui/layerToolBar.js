@@ -191,6 +191,10 @@ export default class LayerToolBar {
 
         this.__generateUI();
 
+        Registry.currentLayer = Registry.currentDevice.layers[0];
+        this.setActiveLayer("0");
+        Registry.viewManager.updateActiveLayer();
+
     }
 
     __generateUI() {

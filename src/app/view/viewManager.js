@@ -205,6 +205,8 @@ export default class ViewManager {
         this.view.removeLayer(levelindex * 3);
         this.view.removeLayer(levelindex * 3 + 1);
         this.view.removeLayer(levelindex * 3 + 2);
+        this.updateActiveLayer();
+        this.refresh();
     }
 
     removeLayer(layer, index, refresh = true) {
