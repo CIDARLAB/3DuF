@@ -591,29 +591,31 @@ let basicFeatures = {
             "position": "Point",
         },
         heritable: {
-            "orientation": "String",
+            "rotation": "Float",
             "length": "Float",
             "width": "Float",
             "height": "Float"
         },
         units: {
-            "orientation": "",
+            "rotation": "&deg",
             "length": "&mu;m",
             "width": "&mu;m",
             "height": "&mu;m"
         },
         defaults: {
-            "orientation": "V",
+            "rotation": "0",
             "width": 1.23 * 1000,
             "length": 4.92 * 1000,
             "height": .1 * 1000
         },
         minimum: {
+            "rotation": 0,
             "width": 30,
             "length": 120,
             "height": 10
         },
         maximum: {
+            "rotation": 180,
             "width": 6000,
             "length": 24 * 1000,
             "height": 1200

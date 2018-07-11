@@ -32,6 +32,8 @@ import PositionTool from "./tools/positionTool";
 import ConnectionTool from "./tools/connectionTool";
 import GenerateArrayTool from "./tools/generateArrayTool";
 
+import {GREEN_500} from './colors';
+
 export default class ViewManager {
     constructor(view) {
         this.threeD;
@@ -542,19 +544,41 @@ export default class ViewManager {
         }
     }
 
+    /**
+     * Updates the default feature parameter
+     * @param typeString
+     * @param setString
+     * @param valueString
+     * @param value
+     */
     updateDefault(typeString, setString, valueString, value){
         Registry.featureDefaults[setString][typeString][valueString] = value;
     }
 
+    /**
+     * Updates the defaults in the feature
+     * @param feature
+     */
     updateDefaultsFromFeature(feature){
         let heritable = feature.getHeritableParams();
         for (let key in heritable){
             this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
         }
     }
+
+    /**
+     * Reverts the feature to default
+     * @param valueString
+     * @param feature
+     */
     revertFieldToDefault(valueString, feature) {
         feature.updateParameter(valueString, Registry.featureDefaults[feature.getSet()][feature.getType()][valueString]);
     }
+
+    /**
+     * Reverts the feature to params to defaults
+     * @param feature
+     */
     revertFeatureToDefaults(feature) {
         let heritable = feature.getHeritableParams();
         for (let key in heritable) {
@@ -566,21 +590,39 @@ export default class ViewManager {
             this.revertFeatureToDefaults(feature);
         }
     }
+
+    /**
+     * Checks if the point intersects with any other feature
+     * @param point
+     * @return {*}
+     */
     hitFeature(point) {
         return this.view.hitFeature(point);
     }
 
+    /**
+     * Checks if the element intersects with any other feature
+     * @param element
+     * @return {*|Array}
+     */
     hitFeaturesWithViewElement(element) {
         return this.view.hitFeaturesWithViewElement(element);
     }
 
-
+    /**
+     * Activates the given tool
+     * @param toolString
+     * @param rightClickToolString
+     */
     activateTool(toolString , rightClickToolString = "SelectTool") {
         this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
         this.mouseAndKeyboardHandler.rightMouseTool = this.tools[rightClickToolString];
         this.mouseAndKeyboardHandler.updateViewMouseEvents();
     }
 
+    /**
+     * Switches to 2D
+     */
     switchTo2D() {
         if (this.threeD) {
             this.threeD = false;
@@ -628,21 +670,51 @@ export default class ViewManager {
         this.undoStack.pushDesign(save);
     }
 
-
+    /**
+     * Undoes the recent update
+     */
     undo(){
         let previousdesign = this.undoStack.popDesign();
         console.log(previousdesign);
         if(previousdesign){
-            console.log("Test");
             let result = JSON.parse(previousdesign);
             this.loadDeviceFromJSON(result);
         }
 
     }
 
+    /**
+     * Resets the tool to the default tool
+     */
     resetToDefaultTool(){
         this.activateTool("MouseSelectTool");
         this.componentToolBar.setActiveButton("SelectButton");
+    }
+
+    /**
+     * Updates the renders for all the connection in the blah
+     */
+    updatesConnectionRender(connection){
+        //Get all the valves for a connection
+        let valves = Registry.currentDevice.getValvesForConnection(connection);
+
+        //Cycle through each of the valves
+        for(let j in valves){
+            let valve = valves[j];
+            valves.push(valve);
+        }
+        console.log("control feature", valves);
+
+        // Remove the connection feature
+        let connectionfeatures = connection.features;
+        for(let i in connectionfeatures){
+            this.removeFeature(Registry.currentDevice.getFeatureByID(connectionfeatures[i]));
+        }
+
+        // Create new connection thingies
+        // let waypoints = connection.params;
+        console.log("waypoints", connection, connection.getWaypoints());
+
     }
 
     setupTools() {

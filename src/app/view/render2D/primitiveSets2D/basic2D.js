@@ -21,10 +21,6 @@ var Connection = function(params){
     let width = params["width"];
     let wayPoints = params["wayPoints"];
     let channelWidth = params["channelWidth"];
-    console.log("ChannelWidth:", channelWidth);
-    console.log("start:", start);
-    console.log("end:", end);
-    console.log("Waypoints:", wayPoints);
     let connectionpath = new paper.CompoundPath();
     let startpoint, endpoint;
     startpoint = new paper.Point(start[0], start[1]);
