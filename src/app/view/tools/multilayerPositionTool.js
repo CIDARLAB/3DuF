@@ -39,13 +39,9 @@ export default class MultilayerPositionTool extends PositionTool{
         super.createNewComponent(this.typeString, params_to_copy, featureIDs );
     }
 
-    static getTarget(point){
-        let target = Registry.viewManager.snapToGrid(point);
-        return [target.x, target.y];
-    }
-
     showTarget(){
         let target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }
+

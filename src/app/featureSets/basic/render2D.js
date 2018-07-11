@@ -107,13 +107,14 @@ let render2D = {
     Valve3D: {
         featureParams: {
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
             gap: "gap"
         },
         targetParams: {
+            rotation: "rotation",
             radius1: "valveRadius",
             radius2: "valveRadius"
         },
@@ -125,13 +126,14 @@ let render2D = {
     Valve3D_control: {
         featureParams: {
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
             gap: "gap"
         },
         targetParams: {
+            rotation: "rotation",
             radius1: "valveRadius",
             radius2: "valveRadius"
         },
@@ -344,12 +346,12 @@ let render2D = {
             position: "position",
             length: "length",
             width: "width",
-            orientation: "orientation"
+            rotation: "rotation"
         },
         targetParams: {
             length: "length",
             width: "width",
-            orientation: "orientation"
+            rotation: "rotation"
 
         },
         featurePrimitiveSet: "Basic2D",

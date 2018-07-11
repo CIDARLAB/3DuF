@@ -1,6 +1,6 @@
 var Registry = require("../../core/registry");
 
-class MouseTool{
+export default class MouseTool{
     constructor(){
         this.up = MouseTool.defaultFunction("up");
         this.down = MouseTool.defaultFunction("down");
@@ -19,4 +19,3 @@ class MouseTool{
     }
 }
 
-module.exports = MouseTool;

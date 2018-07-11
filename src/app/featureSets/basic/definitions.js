@@ -229,27 +229,32 @@ let basicFeatures = {
         heritable: {
             "width": "Float",
             "length": "Float",
-            "height": "Float"
+            "height": "Float",
+            "rotation": "Float"
         },
         units: {
             "width": "&mu;m",
             "length": "&mu;m",
-            "height": "&mu;m"
+            "height": "&mu;m",
+            "rotation": "&deg;"
         },
         defaults: {
             "width": 1.4 * 1000,
             "length": 1.2 * 1000,
-            "height": .8 * 1000
+            "height": .8 * 1000,
+            "rotation": 0
         },
         minimum: {
             "width": 10,
             "length": 10,
-            "height": 10
+            "height": 10,
+            "rotation": 0
         },
         maximum: {
             "width": 2000,
             "length": 2000,
-            "height": 1200
+            "height": 1200,
+            "rotation": 180
         }
     },
     "AlignmentMarks": {
@@ -322,7 +327,8 @@ let basicFeatures = {
             "height": "Float",
             "gap": "Float",
             "width": "Float",
-            "length": "Float"
+            "length": "Float",
+            "rotation": "Float"
         },
         units: {
             "orientation": "",
@@ -330,7 +336,8 @@ let basicFeatures = {
             "height": "&mu;m",
             "gap": "&mu;m",
             "width": "&mu;m",
-            "length": "&mu;m"
+            "length": "&mu;m",
+            "rotation": "&deg;"
         },
         defaults: {
             "orientation": "V",
@@ -338,19 +345,20 @@ let basicFeatures = {
             "height": .8 * 1000,
             "gap": 0.6 * 1000,
             "width": 2.4 * 1000,
-            "length": 2.4 * 1000
+            "length": 2.4 * 1000,
+            "rotation": 0
         },
         minimum: {
-          //  "orientation": "V",
             "valveRadius": .1 * 100,
             "height": .1 * 100,
-            "gap": .5 * 10
+            "gap": .5 * 10,
+            "rotation": 0
         },
         maximum: {
-        //    "orientation": "H",
             "valveRadius": .2 * 10000,
             "height": 1.2 * 1000,
-            "gap": .1 * 10000
+            "gap": .1 * 10000,
+            "rotation": 180
         }
     },
     "Valve3D_control": {
@@ -363,7 +371,8 @@ let basicFeatures = {
             "height": "Float",
             "gap": "Float",
             "width": "Float",
-            "length": "Float"
+            "length": "Float",
+            "rotation": "Float"
         },
         units: {
             "orientation": "",
@@ -371,7 +380,8 @@ let basicFeatures = {
             "height": "&mu;m",
             "gap": "&mu;m",
             "width": "&mu;m",
-            "length": "&mu;m"
+            "length": "&mu;m",
+            "rotation": "&deg;"
         },
         defaults: {
             "orientation": "V",
@@ -379,19 +389,20 @@ let basicFeatures = {
             "height": .8 * 1000,
             "gap": 0.6 * 1000,
             "width": 2.4 * 1000,
-            "length": 2.4 * 1000
+            "length": 2.4 * 1000,
+            "rotation": 0
         },
         minimum: {
-          //  "orientation": "V",
             "valveRadius": .1 * 100,
             "height": .1 * 100,
-            "gap": .5 * 10
+            "gap": .5 * 10,
+            "rotation": 0
         },
         maximum: {
-        //    "orientation": "H",
             "valveRadius": .2 * 10000,
             "height": 1.2 * 1000,
-            "gap": .1 * 10000
+            "gap": .1 * 10000,
+            "rotation": 180
         }
     },
     "Transposer": {

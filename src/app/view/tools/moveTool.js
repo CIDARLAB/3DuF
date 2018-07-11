@@ -1,7 +1,7 @@
 import MoveToolBar from "../ui/moveToolBar";
+import MouseTool from "./mouseTool";
 
 var Registry = require("../../core/registry");
-var MouseTool = require("./MouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
 
 export default class MoveTool extends MouseTool {

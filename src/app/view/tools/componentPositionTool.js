@@ -28,11 +28,6 @@ export default class ComponentPositionTool extends PositionTool{
 
     }
 
-    static getTarget(point){
-        let target = Registry.viewManager.snapToGrid(point);
-        return [target.x, target.y];
-    }
-
     showTarget(){
         let target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
