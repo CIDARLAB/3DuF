@@ -487,7 +487,10 @@ export default class ViewManager {
         this.updateGrid();
         this.updateDevice(Registry.currentDevice);
         this.refresh(true);
-        console.log(Registry.currentDevice.layers);
+        Registry.currentLayer = Registry.currentDevice.layers[0];
+        this.layerToolBar.setActiveLayer("0");
+        Registry.viewManager.updateActiveLayer();
+
     }
 
     removeFeaturesByPaperElements(paperElements) {
