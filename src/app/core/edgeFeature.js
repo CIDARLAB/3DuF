@@ -1,11 +1,5 @@
 import DXFObject from "./dxfObject";
 
-var Params = require('./params');
-var Parameters = require('./parameters');
-var Parameter = require("./parameter");
-var StringValue = Parameters.StringValue;
-var FeatureSets = require("../featureSets");
-var Registry = require("./registry");
 import Feature from "./feature";
 
 /**

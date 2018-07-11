@@ -68,6 +68,6 @@ export default class PositionTool extends MouseTool {
         }
 
         Registry.currentDevice.addComponent(newComponent);
+        return newComponent;
     }
 }
-

@@ -75,7 +75,7 @@ export default class Feature {
     }
 
     getName(){
-        return this.__name.getValue();
+        return this.__name;
     }
 
     getType(){

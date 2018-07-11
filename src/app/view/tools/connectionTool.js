@@ -1,4 +1,5 @@
 import MouseTool from "./mouseTool";
+import Connection from '../../core/connection';
 
 var Registry = require("../../core/registry");
 var SimpleQueue = require("../../utils/simpleQueue");
@@ -68,10 +69,7 @@ export default class ConnectionTool extends MouseTool {
             console.log("LAst Point", ref.lastPoint);
             ref.finishChannel();
         };
-        // this.up = function(event) {
-        // 	ref.dragging = false;
-        // 	ref.finishChannel(MouseTool.getEventPosition(event))
-        // };
+
         this.move = function (event) {
             //Check if orthogonal
             let point = MouseTool.getEventPosition(event)
@@ -99,23 +97,6 @@ export default class ConnectionTool extends MouseTool {
         }
     }
 
-    // static makeReticle(point) {
-    // 	let size = 10 / paper.view.zoom;
-    // 	let ret = paper.Path.Circle(point, size);
-    // 	ret.fillColor = new paper.Color(.5, 0, 1, .5);
-    // 	return ret;
-    // }
-    //
-    // abort() {
-    // 	ref.dragging = false;
-    // 	if (this.currentTarget) {
-    // 		this.currentTarget.remove();
-    // 	}
-    // 	if (this.currentChannelID) {
-    // 		Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-    // 	}
-    // }
-
     /**
      * This function renders the cross haired target used to show the mouse position.
      * @param point
@@ -138,7 +119,6 @@ export default class ConnectionTool extends MouseTool {
                 feat.updateParameter("end", target);
                 feat.updateParameter("wayPoints", this.wayPoints);
             } else {
-                console.log("Creating a new connection");
                 let newChannel = this.createChannel(this.startPoint, this.startPoint);
                 this.currentChannelID = newChannel.getID();
                 Registry.currentLayer.addFeature(newChannel);
@@ -147,11 +127,16 @@ export default class ConnectionTool extends MouseTool {
     }
 
     finishChannel() {
-        console.log("waypoints", this.wayPoints);
         if (this.currentChannelID) {
             let feat = Registry.currentLayer.getFeature(this.currentChannelID);
             feat.updateParameter("end", this.lastPoint);
             feat.updateParameter("wayPoints", this.wayPoints);
+
+            //Save the connection object
+            let connection = new Connection('Connection', feat.getParams(), Registry.currentDevice.generateNeWName('CHANNEL'), 'CHANNEL');
+            connection.addFeatureID(feat.getID());
+            Registry.currentDevice.addConnection(connection);
+
             this.currentChannelID = null;
             this.wayPoints = [];
         } else {
@@ -174,21 +159,17 @@ export default class ConnectionTool extends MouseTool {
     // }
 
     addWayPoint(event, isManhatten) {
-        console.log("WayPoint", MouseTool.getEventPosition(event));
         let point = MouseTool.getEventPosition(event);
         let target = ConnectionTool.getTarget(point);
-        console.log("target:", target);
         if(isManhatten && target){
             //TODO: modify the target to find the orthogonal point
             let lastwaypoint = this.startPoint;
-            console.log("is orthogonal point");
             if(this.wayPoints.length > 0){
                 lastwaypoint = this.wayPoints[this.wayPoints.length -1];
             }
             target = this.getNextOrthogonalPoint(lastwaypoint, target);
         }
         if (target.length = 2) {
-            console.log("adding waypoints");
             this.wayPoints.push(target);
         }
     }
@@ -208,7 +189,6 @@ export default class ConnectionTool extends MouseTool {
     }
 
     getNextOrthogonalPoint(lastwaypoint,target) {
-        console.log("init", target, lastwaypoint);
         //Trivial case where target is orthogonal
         if((target[0] === lastwaypoint[0]) || (target[1] === lastwaypoint[1])){
             return target;
