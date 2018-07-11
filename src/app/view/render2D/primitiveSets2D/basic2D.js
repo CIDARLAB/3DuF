@@ -262,40 +262,31 @@ var GradientCircle = function(params){
 };
 
 var GroverValve = function(params){
-    let minRadiusInMicrometers = 8/paper.view.zoom;
     let position = params["position"];
     let gap = params["gap"];
     let radius = params["valveRadius"];
     let color = params["color"];
     let orientation = params["orientation"];
+    let rotation = params["rotation"];
+
     let center = new paper.Point(position[0], position[1]);
     // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
-    var circ = new paper.Path.Circle(center, radius);
+    let circ = new paper.Path.Circle(center, radius);
     //circ.fillColor = color;
     //   if (String(color) == "3F51B5") {
-    var cutout;
-    if (orientation == "H") {
-        cutout = paper.Path.Rectangle({
-            from: new paper.Point(position[0] - gap / 2, position[1] - radius),
-            to: new paper.Point(position[0] + gap / 2, position[1] + radius)
-        });
-    }
-    else {
-        cutout = paper.Path.Rectangle({
+    let cutout = paper.Path.Rectangle({
             from: new paper.Point(position[0] - radius, position[1] - gap / 2),
             to: new paper.Point(position[0] + radius, position[1] + gap / 2)
         });
-    }
     //cutout.fillColor = "white";
-    var valve = circ.subtract(cutout);
+    let valve = circ.subtract(cutout);
+    valve.rotate(rotation, center);
     valve.fillColor = color;
-    //valve.fillRule = 'evenodd';
-    //console.log(color);
     return valve;
 };
 
 var GroverValve_control = function(params){
-    let minRadiusInMicrometers = 8/paper.view.zoom;
+    // let rotation = params["rotation"];
     let position = params["position"];
     let gap = params["gap"];
     let radius = params["valveRadius"];
@@ -1008,6 +999,7 @@ var Valve = function(params){
     let l = params["length"];
     let w = params["width"];
     let color = params["color"];
+    let rotation = params["rotation"];
     let startX = px - w/2;
     let startY = py - l/2;
     let endX = px + w/2;
@@ -1022,10 +1014,9 @@ var Valve = function(params){
         strokeWidth: 0
     });
 
-    var rotation = 0;
-    if(orientation == "V"){
-        rotation = 90;
-    }
+    // if(orientation == "V"){
+    //     rotation = 90;
+    // }
 
     return rec.rotate(rotation, px, py);
 };
@@ -1170,35 +1161,9 @@ function generateMuxControlTwig(treepath, px, py,cw, ctlcw, stagelength , newspa
 }
 
 var ValveTarget = function(params){
-    let orientation = params["orientation"];
-    let position = params["position"];
-    let px = position[0];
-    let py = position[1];
-    let l = params["length"];
-    let w = params["width"];
-    let color = params["color"];
-    let startX = px - w/2;
-    let startY = py - l/2;
-    let endX = px + w/2;
-    let endY = py + l/2;
-    let startPoint = new paper.Point(startX, startY);
-    let endPoint = new paper.Point(endX, endY);
-    let rec = paper.Path.Rectangle({
-        from: startPoint,
-        to: endPoint,
-        radius: 0,
-        fillColor: color,
-        strokeWidth: 0
-    });
-
-    rec.fillColor.alpha = 0.5;
-    var rotation = 0;
-    if(orientation == "V"){
-        rotation = 90;
-    }
-
-    return rec.rotate(rotation, px, py);
-
+    let ret = Valve(params);
+    ret.fillColor.alpha = 0.5;
+    return ret;
 };
 
 

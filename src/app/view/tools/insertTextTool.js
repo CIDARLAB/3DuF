@@ -1,4 +1,5 @@
-var MouseTool = require("./mouseTool");
+import MouseTool from "./mouseTool";
+
 var Registry = require("../../core/registry");
 import TextFeature from "../../core/textFeature";
 var SimpleQueue = require("../../utils/simpleQueue");

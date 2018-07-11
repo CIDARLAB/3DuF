@@ -1,7 +1,7 @@
 import RightClickMenu from "../ui/rightClickMenu";
+import MouseTool from "./mouseTool";
 
 var Registry = require("../../core/registry");
-var MouseTool = require("./MouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
 var PageSetup = require("../pageSetup");
 import paper from 'paper';
