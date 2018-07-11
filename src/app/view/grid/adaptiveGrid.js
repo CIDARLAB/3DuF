@@ -10,7 +10,7 @@ export default class AdaptiveGrid {
         this.maxSpacing = maxSpacing; //pixels
         this.thickCount = thickCount;
         this.__spacing = 500;
-        this.__isAutomaticEnabled = false;
+        this.__isAutomaticEnabled = true;
         this.color = color;
 
         if (Registry.currentGrid) throw new Error("Cannot instantiate more than one AdaptiveGrid!");
