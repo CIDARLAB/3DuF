@@ -4,7 +4,7 @@ var SimpleQueue = require("../../utils/simpleQueue");
 import Feature from "../../core/feature";
 var PageSetup = require("../pageSetup");
 
-class ConnectionTool extends MouseTool {
+export default class ConnectionTool extends MouseTool {
     constructor(typeString, setString) {
         super();
         this.typeString = typeString;
@@ -45,7 +45,7 @@ class ConnectionTool extends MouseTool {
                     ref.initChannel(event);
                     break;
                 case "WAYPOINT":
-                    ref.addWayPoint(event);
+                    ref.addWayPoint(event, event.altKey);
                     break;
                 case "TARGET":
                     ref.__STATE = "WAYPOINT";
@@ -70,7 +70,22 @@ class ConnectionTool extends MouseTool {
         // 	ref.finishChannel(MouseTool.getEventPosition(event))
         // };
         this.move = function (event) {
-            ref.lastPoint = MouseTool.getEventPosition(event);
+            //Check if orthogonal
+            let point = MouseTool.getEventPosition(event)
+            let target = ConnectionTool.getTarget(point);
+
+            if(event.altKey && ref.__STATE == "WAYPOINT"){
+                let lastwaypoint = ref.startPoint;
+                console.log("is orthogonal point");
+                if(ref.wayPoints.length > 0){
+                    lastwaypoint = ref.wayPoints[ref.wayPoints.length -1];
+                }
+                // ref.getNextOrthogonalPoint(lastwaypoint, target);
+                let orthopoint = ref.getNextOrthogonalPoint(lastwaypoint, target)
+                ref.lastPoint = {"x": orthopoint[0], "y": orthopoint[1]};
+            }else{
+                ref.lastPoint = {"x": target[0], "y":target[1]};
+            }
             if (ref.dragging) {
                 //This queue basically does the rendering of the connection feature
                 ref.updateQueue.run();
@@ -155,11 +170,20 @@ class ConnectionTool extends MouseTool {
     // 	this.startPoint = null;
     // }
 
-    addWayPoint(event) {
+    addWayPoint(event, isManhatten) {
         console.log("WayPoint", MouseTool.getEventPosition(event));
         let point = MouseTool.getEventPosition(event);
         let target = ConnectionTool.getTarget(point);
         console.log("target:", target);
+        if(isManhatten && target){
+            //TODO: modify the target to find the orthogonal point
+            let lastwaypoint = this.startPoint;
+            console.log("is orthogonal point");
+            if(this.wayPoints.length > 0){
+                lastwaypoint = this.wayPoints[this.wayPoints.length -1];
+            }
+            target = this.getNextOrthogonalPoint(lastwaypoint, target);
+        }
         if (target.length = 2) {
             console.log("adding waypoints");
             this.wayPoints.push(target);
@@ -179,6 +203,24 @@ class ConnectionTool extends MouseTool {
         let target = Registry.viewManager.snapToGrid(point);
         return [target.x, target.y]
     }
-}
 
-module.exports = ConnectionTool;
+    getNextOrthogonalPoint(lastwaypoint,target) {
+        console.log("init", target, lastwaypoint);
+        //Trivial case where target is orthogonal
+        if((target[0] === lastwaypoint[0]) || (target[1] === lastwaypoint[1])){
+            return target;
+        }
+
+        let ret = [target[0], target[1]];
+        //Find out if the delta x or delta y is smaller and then just 0 the that coordinate
+        let delta_x = Math.abs(target[0] - lastwaypoint[0]);
+        let delta_y = Math.abs(target[1] - lastwaypoint[1]);
+        if(delta_x < delta_y){
+            ret[0] = lastwaypoint[0];
+        }else{
+            ret[1] = lastwaypoint[1];
+        }
+        console.log(target, ret);
+        return ret;
+    }
+}
