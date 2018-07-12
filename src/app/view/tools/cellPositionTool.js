@@ -1,11 +1,9 @@
-var PositionTool = require('./positionTool');
-var Registry = require("../../core/registry");
-//var Feature = require("../../core/feature");
-import Feature from '../../core/feature';
-var SimpleQueue = require("../../utils/simpleQueue");
-var PageSetup = require("../pageSetup");
+import PositionTool from "./positionTool";
 
-class CellPositionTool extends PositionTool{
+var Registry = require("../../core/registry");
+import Feature from '../../core/feature';
+
+export default class CellPositionTool extends PositionTool{
     constructor(typeString, setString){
         super(typeString, setString);
     }
@@ -54,5 +52,3 @@ class CellPositionTool extends PositionTool{
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }
-
-module.exports = CellPositionTool;

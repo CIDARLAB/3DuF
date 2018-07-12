@@ -1,12 +1,8 @@
-var MouseTool = require("./mouseTool");
-var Registry = require("../../core/registry");
-//var Feature = require("../../core/feature");
+import PositionTool from "./positionTool";
+const Registry = require("../../core/registry");
 import Feature from '../../core/feature';
-var SimpleQueue = require("../../utils/simpleQueue");
-var PageSetup = require("../pageSetup");
-var PositionTool = require('./positionTool');
 
-class ComponentPositionTool extends PositionTool{
+export default class ComponentPositionTool extends PositionTool{
     constructor(typeString, setString){
         super(typeString, setString);
     }
@@ -42,5 +38,3 @@ class ComponentPositionTool extends PositionTool{
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }
-
-module.exports = ComponentPositionTool;

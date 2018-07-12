@@ -11,15 +11,10 @@ var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
 var InsertTextTool = require("./tools/insertTextTool");
 var SimpleQueue = require("../utils/SimpleQueue");
-var PositionTool = require("./tools/positionTool");
-var ComponentPositionTool = require("./tools/ComponentPositionTool");
-var MultilayerPositionTool = require('./tools/multilayerPositionTool');
-var CellPositionTool = require('./tools/cellPositionTool');
 var MouseSelectTool = require('./tools/mouseSelectTool');
 
 import ResolutionToolBar from './ui/resolutionToolBar';
 import RightPanel from './ui/rightPanel';
-import Feature from '../core/feature';
 import DXFObject from '../core/dxfObject';
 import EdgeFeature from "../core/edgeFeature";
 import ChangeAllDialog from "./ui/changeAllDialog";

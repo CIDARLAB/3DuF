@@ -1,13 +1,11 @@
 var MouseTool = require("./mouseTool");
 var Registry = require("../../core/registry");
-//var Feature = require("../../core/feature");
 import Feature from '../../core/feature';
 var SimpleQueue = require("../../utils/simpleQueue");
-var PageSetup = require("../pageSetup");
 var Component = require("../../core/component");
 
 
-class PositionTool extends MouseTool {
+export default class PositionTool extends MouseTool {
     constructor(typeString, setString) {
         super();
         this.typeString = typeString;
@@ -70,4 +68,3 @@ class PositionTool extends MouseTool {
     }
 }
 
-module.exports = PositionTool;
