@@ -121,3 +121,7 @@ div#moveBox {
     padding-right: 20px;
     padding-bottom: 20px;
 }
+
+body { /* ...or body.dialogShowing */
+	overflow: hidden;
+}
