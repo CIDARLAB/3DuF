@@ -5,8 +5,7 @@ var Registry = require("../core/registry");
 // var Device = require("../core/device");
 import Device from '../core/device';
 var ChannelTool = require("./tools/channelTool");
-var ConnectionTool = require("./tools/connectionTool");
-var MouseTool = require("./tools/mouseTool");
+
 var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
@@ -30,6 +29,12 @@ import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
 import ComponentToolBar from "./ui/componentToolBar";
 import DesignHistory from "./designHistory";
 import MoveTool from "./tools/moveTool";
+import ComponentPositionTool from "./tools/componentPositionTool";
+import MultilayerPositionTool from "./tools/multilayerPositionTool";
+import CellPositionTool from "./tools/cellPositionTool";
+// import ValveInsertionTool from "./tools/valveInsertionTool";
+import PositionTool from "./tools/positionTool";
+import ConnectionTool from "./tools/connectionTool";
 
 export default class ViewManager {
     constructor(view) {
