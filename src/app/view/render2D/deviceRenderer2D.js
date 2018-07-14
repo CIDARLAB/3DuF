@@ -1,6 +1,8 @@
 var Colors = require("../colors");
 var DEFAULT_STROKE_COLOR = Colors.GREY_700;
 var BORDER_THICKNESS = 5; // pixels
+import paper from 'paper';
+
 
 function renderLayerMask(device){
     let width = device.params.getValue("width");

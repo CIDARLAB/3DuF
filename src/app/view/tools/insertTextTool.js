@@ -5,6 +5,8 @@ var SimpleQueue = require("../../utils/simpleQueue");
 var PageSetup = require("../pageSetup");
 var PositionTool = require("./positionTool");
 let Params = require("../../core/params");
+import paper from 'paper';
+
 
 class InsertTextTool extends MouseTool {
     constructor() {

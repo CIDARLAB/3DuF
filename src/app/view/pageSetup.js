@@ -1,4 +1,6 @@
 import {setButtonColor} from "../utils/htmlUtils";
+import paper from 'paper';
+
 
 var HTMLUtils = require("../utils/htmlUtils");
 var Registry = require("../core/registry");

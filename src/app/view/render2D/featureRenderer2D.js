@@ -4,6 +4,8 @@ var PrimitiveSets2D = require("./primitiveSets2D");
 var FeatureSets = require("../../featureSets");
 var Registry = require("../../core/registry");
 import {renderEdgeFeature} from '../../view/render2D/dxfObjectRenderer2D';
+import paper from 'paper';
+
 
 function getLayerColor(feature) {
     let height = feature.getValue("height");

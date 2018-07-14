@@ -1,5 +1,6 @@
 import ZoomToolBar from "./ui/zoomToolBar";
 import BorderSettingsDialog from './ui/borderSettingDialog';
+import paper from 'paper';
 
 var Registry = require("../core/registry");
 // var Device = require("../core/device");
