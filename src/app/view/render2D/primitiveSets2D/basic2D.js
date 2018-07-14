@@ -1312,7 +1312,7 @@ var CurvedMixer = function(params) {
     let vRepeat = 2*bendSpacing + 2*channelWidth;
     let vOffset = bendSpacing + channelWidth;
     let hOffset = bendLength/2 + channelWidth/2;
-    var serp = new paper.CompoundPath();
+    let serp = new paper.CompoundPath();
 
     //draw first segment
     let toprect = new paper.Path.Rectangle(x + channelWidth -1 , y, bendLength/2 + channelWidth/2 +1, channelWidth);
@@ -1392,7 +1392,80 @@ function unionize(compundpath) {
 }
 
 var CurvedMixerTarget = function(params) {
-    let serp = CurvedMixer(params);
+    let channelWidth = params["channelWidth"];
+    let bendLength = params["bendLength"];
+    let bendSpacing = params["bendSpacing"];
+    let orientation = params["orientation"];
+    let numBends = params["numberOfBends"];
+    let x = params["position"][0];
+    let y = params["position"][1];
+    let color = params["color"];
+    let segHalf = bendLength/2 + channelWidth;
+    let segLength = bendLength + 2*channelWidth;
+    let segBend = bendSpacing + 2*channelWidth;
+    let vRepeat = 2*bendSpacing + 2*channelWidth;
+    let vOffset = bendSpacing + channelWidth;
+    let hOffset = bendLength/2 + channelWidth/2;
+    let serp = new paper.CompoundPath();
+
+    //draw first segment
+    let toprect = new paper.Path.Rectangle(x + channelWidth -1 , y, bendLength/2 + channelWidth/2 +1, channelWidth);
+    toprect.closed = true;
+    for(let i = 0; i < numBends; i++){
+        //draw left curved segment
+        let leftCurve = new paper.Path.Arc({
+            from:[x + channelWidth, y + vRepeat*i],
+            through: [x + channelWidth - (channelWidth + bendSpacing/2), y + vRepeat*i + bendSpacing/2 + channelWidth],
+            to:[x + channelWidth, y + vRepeat*i + bendSpacing + 2*channelWidth]
+        });
+        leftCurve.closed = true;
+        let leftCurveSmall = new paper.Path.Arc({
+            from: [x + channelWidth, y + vRepeat*i + bendSpacing + channelWidth],
+            through: [x + channelWidth - bendSpacing/2, y + vRepeat*i + bendSpacing/2 + channelWidth],
+            to: [x + channelWidth, y + vRepeat*i + channelWidth]
+        });
+        leftCurveSmall.closed = true;
+        leftCurve = leftCurve.subtract(leftCurveSmall);
+        toprect = toprect.unite(leftCurve);
+        // serp.addChild(leftCurve);
+        //draw horizontal segment
+        let hseg = new paper.Path.Rectangle(x + channelWidth-1, y+vOffset+vRepeat*i, bendLength+2, channelWidth);
+        toprect = toprect.unite(hseg);
+        //draw right curved segment
+        let rightCurve = new paper.Path.Arc({
+            from:[x + channelWidth + bendLength, y + vOffset + vRepeat*i],
+            through: [x + channelWidth + bendLength + (channelWidth + bendSpacing/2), y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
+            to:[x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + 2*channelWidth]
+        });
+        rightCurve.closed = true;
+        let rightCurveSmall = new paper.Path.Arc({
+            from: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + channelWidth],
+            through: [x + channelWidth + bendLength + bendSpacing/2, y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
+            to: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + channelWidth]
+        });
+        rightCurveSmall.closed = true;
+        rightCurve = rightCurve.subtract(rightCurveSmall);
+        toprect = toprect.unite(rightCurve);
+
+        if (i == numBends-1){//draw half segment to close
+            hseg = new paper.Path.Rectangle(x + channelWidth/2 + bendLength/2, y+vRepeat*(i+1), (bendLength + channelWidth)/2+1, channelWidth);
+            toprect = toprect.unite(hseg);
+        } else{//draw full segment
+            hseg = new paper.Path.Rectangle(x + channelWidth-1, y+vRepeat*(i+1), bendLength+2, channelWidth);
+            toprect = toprect.unite(hseg);
+        }
+        toprect = toprect.unite(hseg);
+    }
+    serp.addChild(toprect);
+
+
+    if (orientation == "V"){
+        serp.rotate(0, x + channelWidth, y);
+    }else{
+        serp.rotate(90, x + channelWidth, y);
+    }
+
+
     serp.fillColor = color;
     serp.fillColor.alpha = 0.5;
     return serp;
