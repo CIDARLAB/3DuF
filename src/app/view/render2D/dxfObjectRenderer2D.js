@@ -1,4 +1,5 @@
 
+import paper from 'paper';
 
 var Colors = require("../colors");
 import Feature from "../../core/feature";

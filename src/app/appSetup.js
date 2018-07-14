@@ -1,4 +1,5 @@
 import ZoomToolBar from "./view/ui/zoomToolBar";
+import paper from 'paper';
 
 const Registry = require("./core/registry");
 const Device = require('./core/device');

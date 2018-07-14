@@ -3,6 +3,8 @@ var Registry = require("../../core/registry");
 import Feature from '../../core/feature';
 var SimpleQueue = require("../../utils/simpleQueue");
 var Component = require("../../core/component");
+import paper from 'paper';
+
 
 
 export default class PositionTool extends MouseTool {

@@ -2,6 +2,7 @@ const Colors = require("../colors");
 import Feature from "../../core/feature";
 const PrimitiveSets2D = require("./primitiveSets2D");
 const FeatureSets = require("../../featureSets");
+import paper from 'paper';
 
 function getLayerColor(feature) {
     let height = feature.getValue("height");

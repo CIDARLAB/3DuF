@@ -1,3 +1,4 @@
+import paper from 'paper';
 
 export default class MouseAndKeyboardHandler {
     constructor(viewManagerDelegate){

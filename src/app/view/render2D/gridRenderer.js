@@ -1,4 +1,6 @@
 var Colors = require("../colors");
+import paper from 'paper';
+
 
 function renderGrid(grid){
     let gridGroup = new paper.Group();

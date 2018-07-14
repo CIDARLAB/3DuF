@@ -3,6 +3,8 @@ var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
 import Feature from "../../core/feature";
 var PageSetup = require("../pageSetup");
+import paper from 'paper';
+
 
 class ChannelTool extends MouseTool {
 	constructor(typeString, setString) {

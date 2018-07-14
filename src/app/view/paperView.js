@@ -1,4 +1,5 @@
 import EdgeFeature from "../core/edgeFeature";
+import paper from 'paper';
 
 var Registry = require("../core/registry");
 var FeatureRenderer2D = require("./render2D/featureRenderer2D");
