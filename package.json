@@ -10,7 +10,8 @@
     "require-directory": ">=2.1.1",
     "should": ">=7.0.2",
     "sinon": ">=1.15.4",
-    "watchify": ">=3.2.2"
+    "watchify": ">=3.2.2",
+    "babel-core": "^6.26.3"
   },
   "browserify": {
     "transform": [
@@ -25,7 +26,6 @@
     ]
   },
   "dependencies": {
-    "babel-core": "^6.26.3",
     "dxf-parser": "^0.6.1",
     "jszip": "^2.5.0",
     "knockout": "^3.4.2",
