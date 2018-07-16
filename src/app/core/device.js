@@ -5,6 +5,7 @@ import Feature from './feature';
 var Registry = require("./registry");
 
 import Layer from './layer';
+import Component from './component';
 
 var StringValue = Parameters.StringValue;
 var FloatValue = Parameters.FloatValue;
@@ -17,10 +18,15 @@ export default class Device {
         this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
         this.name = StringValue(name);
         this.__components = [];
+        this.__nameMap = new Map();
     }
 
     addComponent(component){
-        this.__components.push(component);
+        if(component instanceof Component){
+            this.__components.push(component);
+        }else{
+            throw new Error("Tried to add a component that isn't a component to the device");
+        }
     }
 
     removeComponent(component){
@@ -284,6 +290,17 @@ export default class Device {
         }
 
         return null;
+    }
+
+    generateNeWName(type){
+        if(this.__nameMap.has(type)){
+            let value = this.__nameMap.get(type);
+            this.__nameMap.set(type, value+1);
+            return type + "_" +  String(value+1);
+        }else{
+            this.__nameMap.set(type, 1);
+            return type + "_1";
+        }
     }
 
 }

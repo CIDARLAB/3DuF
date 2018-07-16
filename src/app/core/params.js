@@ -1,4 +1,4 @@
-var Parameter = require("./parameter");
+import Parameter from './parameter';
 
 class Params {
     constructor(values, unique, heritable) {
@@ -67,6 +67,7 @@ class Params {
             }
         }
         this.__checkParams(newParams);
+        console.log("Checking to see what sanitize actually returns", values,  newParams);
         return newParams;
     }
 

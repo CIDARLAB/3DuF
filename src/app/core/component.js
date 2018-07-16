@@ -1,6 +1,6 @@
 const Registry = require("./registry");
 var FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
-
+import Parameter from './parameter';
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -49,8 +49,7 @@ class Component {
      * @param value
      */
     updateParameter(key, value){
-        this.__params.updateParameter(key, value);
-        this.updateView();
+        this.__params[key] = value;
     }
 
     /**
@@ -115,7 +114,7 @@ class Component {
      */
     getValue(key){
         try {
-            return this.__params.getValue(key);
+            return this.__params[key].getValue();
         } catch (err){
             if (this.hasDefaultParam(key)) return this.getDefaults()[key];
             else throw new Error("Unable to get value for key: " + key);
@@ -200,18 +199,48 @@ class Component {
 
 
     updateComponetPosition(center){
-        let xpos = center[0];
-        let ypos = center[1];
-
+        // this.updateParameter('position', center);
+        this.updateParameter('position', new Parameter('Point', center));
         for(let i in this.__features){
             let featureidtochange = this.__features[i];
 
             let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            // feature.updateParameter('position', center);
             feature.updateParameter('position', center);
         }
     }
 
+    /**
+     * Replicates the component at the given positions
+     * @param xpos Integer location of X
+     * @param ypos Integer location of Y
+     * @return {Component}
+     */
+    replicate(xpos, ypos, name = Registry.currentDevice.generateNeWName(this.__type)){
+        //TODO: Fix this ridiculous chain of converting params back and forth, there should be an easier way
+        //Converting all the params into raw values
+        let replicaparams = {};
+        for(let key in this.__params){
+            replicaparams[key] = this.getValue(key);
+        }
+        let ret = new Component(this.__type, replicaparams, name, this.__entity);
+        console.log("Checking what the new component params are:", ret.__params);
+        //Generate New features
+        for(let i in this.features){
+            let feature = Registry.currentDevice.getFeatureByID(this.features[i]);
+            console.log("test", this.getPosition()[0], this.getPosition()[1] ,this.getPosition());
+            let replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
+            ret.features.push(replica.getID());
 
+            //TODO: add new feature to the layer in which the current feature is in
+            let currentlayer = Registry.currentDevice.getLayerFromFeatureID(this.features[i]);
+            currentlayer.addFeature(replica);
+
+        }
+        console.warn("TODO: Generate renders for the new Features for this new component");
+        ret.updateComponetPosition([xpos, ypos]);
+        return ret;
+    }
 
     /**
      * This method is used to import the component from Interchange V1 JSON

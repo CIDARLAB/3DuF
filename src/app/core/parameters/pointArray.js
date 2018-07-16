@@ -1,4 +1,4 @@
-var Parameter = require("../parameter");
+import Parameter from '../parameter';
 var Registry = require("../registry");
 
 let typeString = "PointArray";

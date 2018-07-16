@@ -1,4 +1,3 @@
-import MoveToolBar from "../ui/moveToolBar";
 import GenerateArrayWindow from "../ui/generateArrayWindow";
 
 var Registry = require("../../core/registry");
@@ -55,6 +54,34 @@ export default class GenerateArrayTool extends MouseTool {
 
     generateArray(xdim, ydim, xspacing, yspacing){
         console.log("Generate array:", xdim, ydim, xspacing, yspacing);
+        let xposref = this.__currentComponent.getPosition()[0];
+        let yposref = this.__currentComponent.getPosition()[1];
+        let name = this.__currentComponent.getName();
+        this.__currentComponent.setName(name + "_1_1");
+        let replicas = [];
+        //Loop to create the components at the new positions
+        for(let y = 0; y < ydim; y++ ){
+            for(let x = 0; x<xdim; x++){
+                //Skip the x=0, y=0 because thats the initial one
+                if(x===0 && y===0){
+                    continue;
+                }
+                let xpos = xposref + x*xspacing;
+                let ypos = yposref + y*yspacing;
+                replicas.push(this.__currentComponent.replicate(
+                    xpos,
+                    ypos,
+                    name + "_" + String(x+1) + "_" +String(y+1)
+                ));
+            }
+        }
+
+        //Add the replicas to the device
+        console.log(replicas);
+        replicas.forEach(function (replica) {
+            Registry.currentDevice.addComponent(replica);
+        });
+
     }
 
     revertToOriginalPosition(){

@@ -1,6 +1,7 @@
-var Registry = require("./registry");
+// const Registry = require("./registry");
+import * as Registry from './registry';
 
-class Parameter {
+export default class Parameter {
     constructor(type, value) {
         Parameter.checkValue(type, value);
         this.__type = type;
@@ -20,6 +21,8 @@ class Parameter {
     }
 
     static checkValue(type, value){
+        console.log("Checking registy:", Registry.registeredParams);
+
         let paramType = Registry.registeredParams[type];
         if (paramType.isValid(value)) return true;
         else throw new Error("Saw value: " + value +". " + paramType.description);
@@ -56,4 +59,3 @@ class Parameter {
     }
 }
 
-module.exports = Parameter;

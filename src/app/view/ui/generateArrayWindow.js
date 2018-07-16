@@ -107,8 +107,8 @@ export default class GenerateArrayWindow {
      * Sets up the initial values of the input fields
      */
     setupInitialValues() {
-        this.__xSpacingInput.value = 1;
-        this.__ySpacingInput.value = 1;
+        this.__xSpacingInput.value = "1.0";
+        this.__ySpacingInput.value = "1.0";
 
         this.__xDimInput.value = 5;
         this.__yDimInput.value = 1;
@@ -124,22 +124,19 @@ export default class GenerateArrayWindow {
     }
 
     processNewArrayData() {
-        // console.log("input data", xpos, ypos);
-
         let xspacing = Number.parseFloat(this.__xSpacingInput.value);
         let yspacing = Number.parseFloat(this.__ySpacingInput.value);
+
         //Check if the values are valid positions
         if(!NumberUtils.isFloatOrInt(xspacing) || !NumberUtils.isFloatOrInt(yspacing)){
             console.error("Invalid spacing values");
             return;
         }
         //Convert values from mm in to microns
-        this.__xspacing *= 1000;
-        this.__yspacing *= 1000;
+        this.__xspacing = xspacing * 1000;
+        this.__yspacing = yspacing * 1000;
 
         this.__xdim = Number.parseInt(this.__xDimInput.value);
-
         this.__ydim = Number.parseInt(this.__yDimInput.value);
-
     }
 }
