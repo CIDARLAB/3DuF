@@ -122,6 +122,13 @@ div#moveBox {
     padding-bottom: 20px;
 }
 
+div#arrayBox {
+	text-align: center;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+}
+
 body { /* ...or body.dialogShowing */
 	overflow: hidden;
 }

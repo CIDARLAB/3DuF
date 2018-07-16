@@ -18,6 +18,7 @@ export default class RightClickMenu {
         this.__revertToDefaultsButton = document.getElementById("context_button_revert");
         this.__copyToAllButton = document.getElementById("context_button_copytoall");
         this.__renameComponentButton = document.getElementById("context_button_rename");
+        this.__generateArrayButton = document.getElementById("context_button_arraygen");
 
         //Textfield stuff
         this.__renameComponentTextField = document.getElementById("rename_component_textfield");
@@ -65,8 +66,13 @@ export default class RightClickMenu {
             }
             ref.__renameIsVisible = !ref.__renameIsVisible;
         });
+
         this.__moveButton.addEventListener('click', function (event) {
             ref.__activateMove();
+        });
+
+        this.__generateArrayButton.addEventListener('click', function (event) {
+            ref.__activateGenerateArray();
         });
 
         //Save Rename
@@ -145,6 +151,13 @@ export default class RightClickMenu {
     __collapseTextInput() {
         this.__renameIsVisible = false;
         HTMLUtils.addClass(this.__renameComponentTextField, 'collapse');
+    }
+
+    __activateGenerateArray() {
+        this.close();
+        Registry.viewManager.activateTool("GenerateArrayTool");
+        let component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.getID());
+        Registry.viewManager.tools["GenerateArrayTool"].activate(component);
     }
 
     __activateMove() {

@@ -30,6 +30,7 @@ import CellPositionTool from "./tools/cellPositionTool";
 // import ValveInsertionTool from "./tools/valveInsertionTool";
 import PositionTool from "./tools/positionTool";
 import ConnectionTool from "./tools/connectionTool";
+import GenerateArrayTool from "./tools/generateArrayTool";
 
 export default class ViewManager {
     constructor(view) {
@@ -674,6 +675,9 @@ export default class ViewManager {
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
         this.tools["AlignmentMarks"] = new MultilayerPositionTool("AlignmentMarks", "Basic");
 
+        //All the new tools
         this.tools["MoveTool"] = new MoveTool();
+        this.tools["GenerateArrayTool"] = new GenerateArrayTool();
+
     }
 }
