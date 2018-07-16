@@ -2,7 +2,7 @@ var Registry = require("../../core/registry");
 var MouseTool = require("./mouseTool");
 var SimpleQueue = require("../../utils/simpleQueue");
 
-class PanTool extends MouseTool {
+export default class PanTool extends MouseTool {
     constructor(){
         super();
         this.startPoint = null;
@@ -58,5 +58,3 @@ class PanTool extends MouseTool {
         }
     }
 }
-
-module.exports = PanTool;
