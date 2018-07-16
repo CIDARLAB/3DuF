@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="lib/jquery/jquery-1.11.3.min.js"></script>
     <script src="lib/nouislider/nouislider.min.js"></script>
-    <!--<script src="lib/paper/paper-full.min.js"></script>-->
     <script src="lib/filesaver/FileSaver.min.js"></script>
     <script src="lib/three/three.min.js"></script>
     <script src="lib/popdown/jquery.popdown.min.js"></script>
@@ -13,7 +12,6 @@
     <link rel="stylesheet" href="lib/nouislider/nouislider.min.css">
 
     <link rel="stylesheet" href="lib/material/material.min.css">
-    <!--<script src="lib/material/material.min.js"></script>-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
@@ -367,10 +365,17 @@
     <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_rename">
         Rename
     </div>
+    <!-- Colored icon button -->
+    <div id="context_button_arraygen" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+        <i class="material-icons">view_comfy</i>
+    </div>
+    <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_arraygen">
+        Generate Array
+    </div>
 
 </div>
 
-<div id="moveBox" style="z-index: 20; left: 250px; top: 30px; position: absolute; background-color: #fff;" class="hidden-block test">
+<div id="moveBox" style="z-index: 20; left: 250px; top: 30px; position: absolute; background-color: #fff;" class="hidden-block">
     <h5>Specify Position</h5>
     <label>X (mm) :</label>
     <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
@@ -402,6 +407,69 @@
     </button>
     <!-- Raised button with ripple -->
     <button id="cancel-edit-position" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+        Cancel
+    </button>
+</div>
+
+<div id="arrayBox" style="z-index: 20; left: 250px; top: 30px; position: absolute; background-color: #fff;" class="hidden-block">
+    <h5>Generate:</h5>
+
+    <!--<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">-->
+        <!--<input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>-->
+        <!--<span class="mdl-radio__label">Bank</span>-->
+    <!--</label>-->
+    <!--<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">-->
+        <!--<input type="radio" id="option-2" class="mdl-radio__button" name="options" value="2">-->
+        <!--<span class="mdl-radio__label">Grid</span>-->
+    <!--</label>-->
+
+    <!--<br/>-->
+
+    <label>X :</label>
+    <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+        <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="replicate-x">
+        <span class="mdl-textfield__error">Input is not an integer !</span>
+    </div>
+    <label>Y :</label>
+    <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+        <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="replicate-y">
+        <span class="mdl-textfield__error">Input is not an integer !</span>
+    </div>
+
+    <h5>Spacing:</h5>
+
+    <label>X (mm) :</label>
+    <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+        <input class="mdl-textfield__input" type="text" id="textinput_xspacing">
+        <!--<label class="mdl-textfield__label" for="textinput_xpos">x (mm)</label>-->
+    </div>
+    <button id="button-xspacing-up" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+        <i class="material-icons">arrow_upward</i>
+    </button>
+    <button id="button-xspacing-down" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+        <i class="material-icons">arrow_downward</i>
+    </button>
+    <br />
+    <label>Y (mm) :</label>
+    <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+        <input class="mdl-textfield__input" type="text" id="textinput_yspacing">
+        <!--<label class="mdl-textfield__label" for="textinput_ypos">y (mm)</label>-->
+    </div>
+    <button id="button-yspacing-up" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+        <i class="material-icons">arrow_upward</i>
+    </button>
+    <button id="button-yspacing-down" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+        <i class="material-icons">arrow_downward</i>
+    </button>
+
+    <br/>
+
+    <!-- Raised button with ripple -->
+    <button id="generate-replication" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+        Generate
+    </button>
+    <!-- Raised button with ripple -->
+    <button id="cancel-replication" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
         Cancel
     </button>
 </div>
