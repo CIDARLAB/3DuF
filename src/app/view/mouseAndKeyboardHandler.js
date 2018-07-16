@@ -1,4 +1,5 @@
 import paper from 'paper';
+import PanTool from "./tools/panTool";
 
 export default class MouseAndKeyboardHandler {
     constructor(viewManagerDelegate){
@@ -6,6 +7,7 @@ export default class MouseAndKeyboardHandler {
 
         this.__leftMouseTool = null;
         this.__rightMouseTool = null;
+        this.__middleMouseTool = new PanTool();
 
         //Prevent default keyboard window events
         window.onkeydown = function(event) {
@@ -72,7 +74,7 @@ export default class MouseAndKeyboardHandler {
                 console.log("Undo executed");
                 reference.undo();
             }
-
+            
             if(key === 37){
                 //console.log("left arrow");
                 reference.view.moveCenter(new paper.Point(1000,0));
@@ -132,9 +134,9 @@ export default class MouseAndKeyboardHandler {
     }
 
     updateViewMouseEvents() {
-        this.viewManagerDelegate.view.setMouseDownFunction(this.constructMouseDownEvent(this.__leftMouseTool, this.__leftMouseTool, this.__leftMouseTool));
-        this.viewManagerDelegate.view.setMouseUpFunction(this.constructMouseUpEvent(this.__leftMouseTool, this.__leftMouseTool, this.__leftMouseTool));
-        this.viewManagerDelegate.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.__leftMouseTool, this.__leftMouseTool, this.__leftMouseTool));
+        this.viewManagerDelegate.view.setMouseDownFunction(this.constructMouseDownEvent(this.__leftMouseTool, this.__middleMouseTool, this.__leftMouseTool));
+        this.viewManagerDelegate.view.setMouseUpFunction(this.constructMouseUpEvent(this.__leftMouseTool, this.__middleMouseTool, this.__leftMouseTool));
+        this.viewManagerDelegate.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.__leftMouseTool, this.__middleMouseTool, this.__leftMouseTool));
     }
 
     /**

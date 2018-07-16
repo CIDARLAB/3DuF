@@ -7,7 +7,6 @@ var Registry = require("../core/registry");
 import Device from '../core/device';
 var ChannelTool = require("./tools/channelTool");
 
-var PanTool = require("./tools/panTool");
 var PanAndZoom = require("./PanAndZoom");
 var SelectTool = require("./tools/selectTool");
 var InsertTextTool = require("./tools/insertTextTool");
@@ -37,7 +36,6 @@ export default class ViewManager {
         this.threeD;
         this.view = view;
         this.tools = {};
-        this.middleMouseTool = new PanTool();
         this.rightMouseTool = new SelectTool();
         this.rightPanel = new RightPanel();
         this.changeAllDialog = new ChangeAllDialog();
