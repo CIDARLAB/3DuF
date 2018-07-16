@@ -1,4 +1,4 @@
-var Parameter = require("../parameter");
+import Parameter from '../parameter';
 
 require("./floatValue");
 require("./booleanValue");

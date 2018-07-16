@@ -1,4 +1,6 @@
 import EdgeFeature from "./edgeFeature";
+import PositionTool from "../view/tools/positionTool";
+import {PointValue} from "./parameters";
 
 var Params = require('./params');
 var Parameters = require('./parameters');
@@ -12,7 +14,7 @@ export default class Feature {
     constructor(type, set, params, name, id = Feature.generateID(), fabtype="XY"){
         this.__type = type;
         this.__params = params;
-        this.__name = StringValue(name);
+        this.__name = name;
         this.__id = id;
         this.__type = type;
         this.__set = set;
@@ -36,7 +38,7 @@ export default class Feature {
     toJSON() {
         let output = {};
         output.id = this.__id;
-        output.name = this.__name.toJSON();
+        output.name = this.__name;
         output.type = this.__type;
         output.set = this.__set;
         output.params = this.__params.toJSON();
@@ -47,7 +49,7 @@ export default class Feature {
         //TODO: We need to figure out what to do and what the final feature format will be
         let output = {};
         output.id = this.__id;
-        output.name = this.__name.toJSON();
+        output.name = this.__name;
         output.macro = this.__type;
         output.set = this.__set;
         if(this.__params){
@@ -126,6 +128,26 @@ export default class Feature {
 
     setParams(params){
         this.__params.parameters = params;
+    }
+
+    replicate(xpos, ypos){
+        let paramscopy = this.__params;
+        let replicaparams = {};
+        for(let key in this.__params.parameters){
+            replicaparams[key] = this.getValue(key);
+        }
+        replicaparams["position"] = [xpos, ypos];
+        let ret = Feature.makeFeature(
+            this.__type,
+            this.__set,
+            replicaparams,
+            this.__name,
+            Feature.generateID(),
+            this.__dxfObjects
+        );
+
+        return ret;
+
     }
 
     static getDefaultsForType(typeString, setString){

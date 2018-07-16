@@ -1,4 +1,4 @@
-var Parameter = require("../parameter");
+import Parameter from '../parameter';
 
 let typeString = "String";
 let description="StringValue must be a String, such as 'foobar'";
