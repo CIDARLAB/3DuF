@@ -197,9 +197,26 @@ class Component {
         }
     }
 
+    getBoundingRectangle(){
+        let bounds  = null;
+        for(let i in this.features){
+            let featureid = this.features[i];
+            let render = Registry.viewManager.view.getRenderedFeature(featureid);
+            if(bounds){
+                bounds = bounds.unite(render.bounds);
+            }else{
+                bounds = render.bounds;
+            }
+        }
 
+        return bounds;
+    }
+
+    /**
+     * Updates the coordinates of the component and all the other features
+     * @param center
+     */
     updateComponetPosition(center){
-        // this.updateParameter('position', center);
         this.updateParameter('position', new Parameter('Point', center));
         for(let i in this.__features){
             let featureidtochange = this.__features[i];

@@ -169,7 +169,6 @@ class MouseSelectTool extends MouseTool {
 
             if (index != -1) {
                 //Found it !!
-                console.log("Found Feature: " + featureid + " in component: " + component.getID());
                 return component;
             }
         }

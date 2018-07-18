@@ -20,6 +20,8 @@ export default class Device {
         this.__components = [];
         this.__nameMap = new Map();
         this.__connections = [];
+
+        //Map to store <componentID, connectionID>
         this.__valveMap = new Map();
     }
 
@@ -62,15 +64,20 @@ export default class Device {
     removeComponent(component){
         //Remove the component from the map
         let componentid = component.getID();
-
+        let connectiontorefresh = null;
         //Check if the valve map has the component
         if(this.__valveMap.has(componentid)){
+            connectiontorefresh = this.getConnectionByID(this.__valveMap.get(componentid));
             this.__valveMap.delete(componentid);
         }
 
         let i = this.__components.indexOf(component);
         if(i != -1) {
             this.__components.splice(i, 1);
+        }
+
+        if(connectiontorefresh){
+            Registry.viewManager.updatesConnectionRender(connectiontorefresh);
         }
     }
 
@@ -449,16 +456,29 @@ export default class Device {
     }
 
     /**
-     * Returns component that identified by the given key
-     * @param key
+     * Returns component that is identified by the given key
+     * @param key String
      * @return Component
      */
     getComponentByID(key) {
         for(let i in this.__components){
-
             let component = this.__components[i];
-            if(component.getID() == key){
+            if(component.getID() === key){
                 return component;
+            }
+        }
+    }
+
+    /**
+     * Returns connection that is identified by the given key
+     * @param key String
+     * @return Connection
+     */
+    getConnectionByID(key){
+        for(let i in this.__connections){
+            let connection = this.__connections[i];
+            if(connection.getID() === key){
+                return connection;
             }
         }
     }

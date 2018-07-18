@@ -255,11 +255,13 @@ let render2D = {
             end: "end",
             wayPoints: "wayPoints",
             channelWidth: "channelWidth",
+            segments: "segments",
             height: "height"
         },
         targetParams: {
             wayPoints: "wayPoints",
             channelWidth: "channelWidth",
+            segments: "segments",
             height: "height"
         },
         featurePrimitiveType: "Connection",
