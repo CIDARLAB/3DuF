@@ -6,6 +6,7 @@ require("./integerValue");
 require("./pointValue");
 require("./stringValue");
 require("./pointArray");
+require('./segmentArray');
 
 module.exports.BooleanValue = function(value) {
 	return Parameter.makeParam("Boolean", value);
@@ -24,4 +25,7 @@ module.exports.StringValue = function(value) {
 };
 module.exports.PointArray = function(value) {
 	return Parameter.makeParam("PointArray", value);
+};
+module.exports.SegmentArray = function (value) {
+	return Parameter.makeParam("SegmentArray", value);
 };

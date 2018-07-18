@@ -29,7 +29,8 @@ let basicFeatures = {
         unique: {
             "start": "Point",
             "end": "Point",
-            "wayPoints": "PointArray"
+            "wayPoints": "PointArray",
+            "segments": "SegmentArray"
         },
         heritable: {
             "channelWidth": "Float",

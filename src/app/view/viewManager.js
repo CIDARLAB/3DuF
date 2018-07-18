@@ -695,25 +695,18 @@ export default class ViewManager {
      * Updates the renders for all the connection in the blah
      */
     updatesConnectionRender(connection){
+        //First Redraw all the segements without valves or insertions
+        connection.regenerateSegments();
+
         //Get all the valves for a connection
         let valves = Registry.currentDevice.getValvesForConnection(connection);
 
         //Cycle through each of the valves
         for(let j in valves){
             let valve = valves[j];
-            valves.push(valve);
+            let boundingbox = valve.getBoundingRectangle();
+            connection.insertFeatureGap(boundingbox);
         }
-        console.log("control feature", valves);
-
-        // Remove the connection feature
-        let connectionfeatures = connection.features;
-        for(let i in connectionfeatures){
-            this.removeFeature(Registry.currentDevice.getFeatureByID(connectionfeatures[i]));
-        }
-
-        // Create new connection thingies
-        // let waypoints = connection.params;
-        console.log("waypoints", connection, connection.getWaypoints());
 
     }
 

@@ -66,7 +66,6 @@ export default class ConnectionTool extends MouseTool {
             ref.dragging = false;
             let end = ref.wayPoints.pop();
             ref.lastPoint = end;
-            console.log("LAst Point", ref.lastPoint);
             ref.finishChannel();
         };
 
@@ -77,7 +76,6 @@ export default class ConnectionTool extends MouseTool {
 
             if(event.altKey && ref.__STATE == "WAYPOINT"){
                 let lastwaypoint = ref.startPoint;
-                console.log("is orthogonal point");
                 if(ref.wayPoints.length > 0){
                     lastwaypoint = ref.wayPoints[ref.wayPoints.length -1];
                 }
@@ -109,6 +107,7 @@ export default class ConnectionTool extends MouseTool {
     initChannel() {
         this.startPoint = ConnectionTool.getTarget(this.lastPoint);
         this.lastPoint = this.startPoint;
+        this.wayPoints.push(this.startPoint);
     }
 
     updateChannel() {
@@ -118,6 +117,7 @@ export default class ConnectionTool extends MouseTool {
                 let feat = Registry.currentLayer.getFeature(this.currentChannelID);
                 feat.updateParameter("end", target);
                 feat.updateParameter("wayPoints", this.wayPoints);
+                feat.updateParameter("segments", this.generateSegments());
             } else {
                 let newChannel = this.createChannel(this.startPoint, this.startPoint);
                 this.currentChannelID = newChannel.getID();
@@ -128,10 +128,11 @@ export default class ConnectionTool extends MouseTool {
 
     finishChannel() {
         if (this.currentChannelID) {
+            this.wayPoints.push(this.lastPoint);
             let feat = Registry.currentLayer.getFeature(this.currentChannelID);
             feat.updateParameter("end", this.lastPoint);
             feat.updateParameter("wayPoints", this.wayPoints);
-
+            feat.updateParameter("segments", this.generateSegments());
             //Save the connection object
             let connection = new Connection('Connection', feat.getParams(), Registry.currentDevice.generateNeWName('CHANNEL'), 'CHANNEL');
             connection.addFeatureID(feat.getID());
@@ -140,23 +141,10 @@ export default class ConnectionTool extends MouseTool {
             this.currentChannelID = null;
             this.wayPoints = [];
         } else {
-            console.log("Something is wrong here");
+            console.error("Something is wrong here, unable to finish the connection");
         }
 
     }
-
-    // finishChannel(point) {
-    // 	let target = ConnectionTool.getTarget(point);
-    // 	if (this.currentChannelID) {
-    // 		if (this.startPoint.x == target[0] && this.startPoint.y == target[1]) {
-    // 			Registry.currentLayer.removeFeatureByID(this.currentChannelID);
-    // 		}
-    // 	} else {
-    // 		this.updateChannel(point);
-    // 	}
-    // 	this.currentChannelID = null;
-    // 	this.startPoint = null;
-    // }
 
     addWayPoint(event, isManhatten) {
         let point = MouseTool.getEventPosition(event);
@@ -174,11 +162,18 @@ export default class ConnectionTool extends MouseTool {
         }
     }
 
+    /**
+     * Creates the channel from the start and the end point
+     * @param start
+     * @param end
+     * @return {EdgeFeature}
+     */
     createChannel(start, end) {
         return Feature.makeFeature(this.typeString, this.setString, {
             start: start,
             end: end,
-            wayPoints: this.wayPoints
+            wayPoints: this.wayPoints,
+            segments: this.generateSegments()
         });
     }
 
@@ -188,6 +183,12 @@ export default class ConnectionTool extends MouseTool {
         return [target.x, target.y]
     }
 
+    /**
+     * Gets the closes manhatten point to where ever the mouse is
+     * @param lastwaypoint
+     * @param target
+     * @return {*}
+     */
     getNextOrthogonalPoint(lastwaypoint,target) {
         //Trivial case where target is orthogonal
         if((target[0] === lastwaypoint[0]) || (target[1] === lastwaypoint[1])){
@@ -203,7 +204,32 @@ export default class ConnectionTool extends MouseTool {
         }else{
             ret[1] = lastwaypoint[1];
         }
-        console.log(target, ret);
+        return ret;
+    }
+
+    /**
+     * Goes through teh waypoints and generates the connection segments
+     * @return {Array}
+     */
+    generateSegments() {
+        let waypointscopy = [];
+        waypointscopy.push(this.startPoint);
+        this.wayPoints.forEach(function (waypoint) {
+            waypointscopy.push(waypoint);
+        });
+        //TODO: Fix this bullshit where teh points are not always arrays
+        if(Array.isArray(this.lastPoint)){
+            waypointscopy.push(this.lastPoint);
+        }else{
+            waypointscopy.push([this.lastPoint.x, this.lastPoint.y]);
+        }
+        // console.log("waypoints", this.wayPoints, this.startPoint);
+        let ret = [];
+        for(let i=0; i < waypointscopy.length - 1; i++){
+            let segment = [waypointscopy[i], waypointscopy[i+1]];
+            ret.push(segment);
+        }
+        // console.log("segments:", ret);
         return ret;
     }
 }

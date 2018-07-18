@@ -1,4 +1,7 @@
 import Feature from './feature';
+import paper from 'paper';
+import Parameter from "./parameter";
+
 const Registry = require("./registry");
 
 
@@ -50,8 +53,9 @@ export default class Connection {
      * @param value
      */
     updateParameter(key, value){
-        this.__params.updateParameter(key, value);
-        this.updateView();
+        // this.__params.updateParameter(key, value);
+        this.__params[key] = value;
+        // this.updateView();
     }
 
     /**
@@ -202,6 +206,62 @@ export default class Connection {
         return this.__params["wayPoints"].getValue()
     }
 
+    updateSegments(segments){
+        this.updateParameter('segments', new Parameter('SegmentArray', segments));
+        for(let i in this.__features){
+            let featureidtochange = this.__features[i];
+
+            let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            // feature.updateParameter('position', center);
+            feature.updateParameter('segments', segments);
+        }
+
+    }
+
+    insertFeatureGap(boundingbox){
+        //Convert Rectangle to Path.Rectangle
+        boundingbox = new paper.Path.Rectangle(boundingbox);
+        //Check which segment I need to break
+        let segments = this.getValue("segments");
+        for(let i in segments){
+            let segment = segments[i];
+            let line = new paper.Path.Line(new paper.Point(segment[0]), new paper.Point(segment[1]));
+            let intersections = line.getIntersections(boundingbox);
+            if(intersections.length === 2){
+                let break1 = intersections[0].point;
+                let break2 = intersections[1].point;
+                let newsegs = this.__breakSegment(segment, break1, break2);
+                segments.splice(i, 1, newsegs[0], newsegs[1]);
+            }else if(intersections.length === 1){
+                console.error("There's something funky going on with the intersection, only found 1 intersection");
+            }
+        }
+        // console.log("raw new segments:", segments);
+        this.updateSegments(segments);
+    }
+
+    __breakSegment(segment, break1, break2){
+        //Generate 2 segments from this 1 segemnt
+        let p1 = new paper.Point(segment[0]);
+        let p2 = new paper.Point(segment[1]);
+
+        let segment1, segment2;
+
+        //Find out if break1 is closer to p1 or p2
+        if(p1.getDistance(break1) < p2.getDistance(break1)){
+            //break1 is closer to p1 and break2 is closer to p2
+            segment1 = [[p1.x, p1.y], [break1.x, break1.y]];
+            segment2 = [[p2.x, p2.y], [break2.x, break2.y]];
+
+        }else{
+            //break1 is closer to p2 and break1 is closer to p1
+            segment1 = [[p2.x, p2.y], [break1.x, break1.y]];
+            segment2 = [[p1.x, p1.y], [break2.x, break2.y]];
+
+        }
+
+        return [segment1, segment2];
+    }
 
     /**
      * This method is used to import the component from Interchange V1 JSON
@@ -216,5 +276,21 @@ export default class Connection {
         throw new Error("Need to implement Interchange V1 Import for component object");
         //return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
     }
+
+
+    /**
+     * Goes through teh waypoints and generates the connection segments
+     * @return {Array}
+     */
+    regenerateSegments() {
+        let waypointscopy = this.getWaypoints();
+        let ret = [];
+        for(let i=0; i < waypointscopy.length - 1; i++){
+            let segment = [waypointscopy[i], waypointscopy[i+1]];
+            ret.push(segment);
+        }
+        this.updateSegments(ret);
+    }
+
 
 }
