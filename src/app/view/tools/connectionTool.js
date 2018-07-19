@@ -146,6 +146,7 @@ export default class ConnectionTool extends MouseTool {
 
     }
 
+
     addWayPoint(event, isManhatten) {
         let point = MouseTool.getEventPosition(event);
         let target = ConnectionTool.getTarget(point);
