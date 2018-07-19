@@ -549,24 +549,12 @@
 
 <dialog id="import_dialog" class="mdl-dialog">
     <div class="mdl-dialog__content">
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">3DuF v1.0</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <canvas id="component_canvas" tabindex="0" width="500" height="500"></canvas>
-            </div>
-
-            <div class="mdl-card__menu">
-                <button id="import_component_button" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                    <i class="material-icons">Import</i>
-                </button>
-                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect close">
-                    <i class="material-icons">Cancel</i>
-                </button>
-            </div>
-        </div>
-
+        <canvas id="component_preview_canvas" tabindex="1" width="200" height="200"></canvas>
+    </div>
+    <br />
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+        <button id="import_component_button" type="button" class="mdl-button">Save</button>
+        <button type="button" class="mdl-button close">Cancel</button>
     </div>
 </dialog>
 
