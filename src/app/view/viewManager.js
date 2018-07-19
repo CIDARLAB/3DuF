@@ -31,8 +31,7 @@ import ValveInsertionTool from "./tools/valveInsertionTool";
 import PositionTool from "./tools/positionTool";
 import ConnectionTool from "./tools/connectionTool";
 import GenerateArrayTool from "./tools/generateArrayTool";
-
-import {GREEN_500} from './colors';
+import ImportComponent from "./ui/importComponent";
 
 export default class ViewManager {
     constructor(view) {
@@ -45,6 +44,7 @@ export default class ViewManager {
         this.resolutionToolBar = new ResolutionToolBar();
         this.borderDialog = new BorderSettingsDialog();
         this.layerToolBar = new LayerToolBar();
+        this.importComponentDialog = new ImportComponent();
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
