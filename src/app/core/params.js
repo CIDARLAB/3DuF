@@ -67,7 +67,6 @@ class Params {
             }
         }
         this.__checkParams(newParams);
-        console.log("Checking to see what sanitize actually returns", values,  newParams);
         return newParams;
     }
 

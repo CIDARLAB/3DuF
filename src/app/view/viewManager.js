@@ -45,6 +45,8 @@ export default class ViewManager {
         this.borderDialog = new BorderSettingsDialog();
         this.layerToolBar = new LayerToolBar();
         this.importComponentDialog = new ImportComponent();
+        this.messageBox = document.querySelector('.mdl-js-snackbar');
+
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
@@ -708,6 +710,14 @@ export default class ViewManager {
             connection.insertFeatureGap(boundingbox);
         }
 
+    }
+
+    showUIMessage(message){
+        this.messageBox.MaterialSnackbar.showSnackbar(
+            {
+                message: message
+            }
+        );
     }
 
     setupTools() {
