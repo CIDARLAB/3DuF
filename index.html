@@ -125,6 +125,14 @@
             </div>
 
         </nav>
+
+        <span class="mdl-layout-title">Imported</span>
+        <nav class="mdl-navigation" id="feature-import-static">
+            <a id="show_import_dialog" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button mdl-button--colored" >Import</a>
+        </nav>
+        <nav class="mdl-navigation" id="feature-import-custom">
+        </nav>
+
         <span class="mdl-layout-title">Mix</span>
         <nav class="mdl-navigation" id="feature-mix">
 
@@ -532,6 +540,29 @@
             <div class="mdl-card__menu">
                 <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect close">
                     <i class="material-icons">clear</i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</dialog>
+
+<dialog id="import_dialog" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">3DuF v1.0</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <canvas id="component_canvas" tabindex="0" width="500" height="500"></canvas>
+            </div>
+
+            <div class="mdl-card__menu">
+                <button id="import_component_button" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">Import</i>
+                </button>
+                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect close">
+                    <i class="material-icons">Cancel</i>
                 </button>
             </div>
         </div>
