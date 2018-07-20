@@ -31,7 +31,8 @@ import ValveInsertionTool from "./tools/valveInsertionTool";
 import PositionTool from "./tools/positionTool";
 import ConnectionTool from "./tools/connectionTool";
 import GenerateArrayTool from "./tools/generateArrayTool";
-import ImportComponent from "./ui/importComponent";
+import ImportComponentDialog from "./ui/importComponentDialog";
+import CustomComponentManager from "./customComponentManager";
 
 export default class ViewManager {
     constructor(view) {
@@ -44,7 +45,7 @@ export default class ViewManager {
         this.resolutionToolBar = new ResolutionToolBar();
         this.borderDialog = new BorderSettingsDialog();
         this.layerToolBar = new LayerToolBar();
-        this.importComponentDialog = new ImportComponent();
+        this.customComponentManager = new CustomComponentManager(this);
         this.messageBox = document.querySelector('.mdl-js-snackbar');
 
         let reference = this;
@@ -711,6 +712,7 @@ export default class ViewManager {
         }
 
     }
+
 
     showUIMessage(message){
         this.messageBox.MaterialSnackbar.showSnackbar(

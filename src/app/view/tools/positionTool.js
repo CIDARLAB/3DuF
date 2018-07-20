@@ -34,7 +34,7 @@ export default class PositionTool extends MouseTool {
     }
 
     createNewFeature(point) {
-        let name = Registry.currentDevice.generateNeWName(this.typeString);
+        let name = Registry.currentDevice.generateNewName(this.typeString);
         let newFeature = Feature.makeFeature(this.typeString, this.setString, {
             "position": PositionTool.getTarget(point)
         }, name);
@@ -62,7 +62,7 @@ export default class PositionTool extends MouseTool {
      */
     createNewComponent(typeString, params, featureIDs) {
         let componentid = Feature.generateID();
-        let name = Registry.currentDevice.generateNeWName(typeString);
+        let name = Registry.currentDevice.generateNewName(typeString);
         let newComponent = new Component(typeString, params, name , "TEST MINT", componentid);
 
         for (var i in featureIDs) {

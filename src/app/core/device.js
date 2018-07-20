@@ -396,7 +396,7 @@ export default class Device {
         return null;
     }
 
-    generateNeWName(type) {
+    generateNewName(type) {
         if (this.__nameMap.has(type)) {
             let value = this.__nameMap.get(type);
             this.__nameMap.set(type, value + 1);

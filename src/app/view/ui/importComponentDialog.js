@@ -1,14 +1,18 @@
 import paper from 'paper';
 import DXFParser from 'dxf-parser';
 import * as HTMLUtils from "../../utils/htmlUtils";
+import DXFObject from "../../core/dxfObject";
+import * as DXFRenderer from "../render2D/dxfObjectRenderer2D";
 
-export default class ImportComponent {
-    constructor(){
+export default class ImportComponentDialog {
+    constructor(customComponentManager){
+        this.__customComponentManagerDelegate = customComponentManager;
         this.__showDialogButton = document.getElementById("show_import_dialog");
         this.__importComponentButton = document.getElementById("import_component_button");
         this.__dialog = document.getElementById("import_dialog");
         this.dxfData = null;
         this.__canvas = document.getElementById("component_preview_canvas");
+        this.__nameTextInput = document.getElementById("new_component_name");
 
         //Setup the canvas and revert back to default canvas
         paper.setup(this.__canvas);
@@ -45,10 +49,20 @@ export default class ImportComponent {
         this.__setupDragAndDropLoad("#component_preview_canvas")
     }
 
+    /**
+     * Calls the custom component manager to import import the dxf into the current user library
+     */
     importComponent() {
         console.log("Import button clicked");
+        let name = this.__nameTextInput.value;
+        this.__customComponentManagerDelegate.importComponentFromDXF(name, this.dxfData);
     }
 
+    /**
+     * Initializes the drag and drop on the canvas element
+     * @param selector
+     * @private
+     */
     __setupDragAndDropLoad(selector) {
         let ref = this;
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
@@ -73,7 +87,20 @@ export default class ImportComponent {
      */
     __loadDXFData(text) {
         let parser = new DXFParser();
-        this.dxfData = parser.parseSync(text);
-        console.log("Yay ! loaded the data", this.dxfData);
+        let dxfdata = parser.parseSync(text);
+        let dxfobjects = [];
+        for(let i in dxfdata.entities){
+            let entity = dxfdata.entities[i];
+            dxfobjects.push(new DXFObject(entity));
+        }
+
+        this.dxfData = dxfobjects;
+
+        let render = DXFRenderer.renderDXFObjects(this.dxfData);
+
+        console.log("project", paper.project);
+        paper.project.activeLayer.addChild(render);
+        console.log("active layer", paper.project.activeLayer);
+
     }
 }
