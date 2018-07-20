@@ -3,6 +3,8 @@ import DXFParser from 'dxf-parser';
 import * as HTMLUtils from "../../utils/htmlUtils";
 import DXFObject from "../../core/dxfObject";
 import * as DXFRenderer from "../render2D/dxfObjectRenderer2D";
+import AdaptiveGrid from "../grid/adaptiveGrid";
+import {BLUE_500} from '../colors';
 
 export default class ImportComponentDialog {
     constructor(customComponentManager){
@@ -25,7 +27,11 @@ export default class ImportComponentDialog {
         //Enable dialog show
         this.__showDialogButton.addEventListener('click', function (event) {
             ref.__dialog.showModal();
-            ref.__paperProject.activate();
+            paper.projects[1].activate();
+            // let test = new paper.Rectangle(new paper.Point(0,0), 500, 500);
+            // test.fillColor = '#000000';
+            // paper.project.activeLayer.addChild(test);
+            console.log(paper.project);
         });
 
         //Enable close button
@@ -99,7 +105,7 @@ export default class ImportComponentDialog {
         let render = DXFRenderer.renderDXFObjects(this.dxfData);
 
         console.log("project", paper.project);
-        paper.project.activeLayer.addChild(render);
+        // paper.project.activeLayer.addChild(render);
         console.log("active layer", paper.project.activeLayer);
 
     }
