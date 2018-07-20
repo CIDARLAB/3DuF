@@ -40,9 +40,10 @@ export function renderDXFObjects(dxfobjectarray) {
 
     }
 
-    path.strokeColor = '#ff7606';
-    path.strokeWidth = 200;
-
+    path.strokeColor = '#000000';
+    path.strokeWidth = 1;
+    path.closed = true;
+    path.fillColor = '#ff7606';
     return path;
 }
 
@@ -263,6 +264,8 @@ function drawCircle(entity, path){
  * @param path Compound Path onto which the drawing will be inserted into
  */
 function drawLine(entity, path) {
+    //Create a path
+    let basepath = new paper.Path();
 
     let bulge, bugleGeometry;
     let startPoint, endPoint;
@@ -271,6 +274,7 @@ function drawLine(entity, path) {
     for(let i = 0; i < entity.vertices.length; i++) {
 
         if(entity.vertices[i].bulge) {
+            console.error("Need to implement code to incorporate bulge values");
             //TODO: Figure out what to do with the bugle value
             bulge = entity.vertices[i].bulge;
             startPoint = entity.vertices[i];
@@ -279,17 +283,21 @@ function drawLine(entity, path) {
             console.log("End Point:", endPoint);
 
         } else {
-            let vertex = entity.vertices[i];
-            let nextvertex = entity.vertices[(i + 1 < entity.vertices.length) ? i + 1 : 0];
-            let point = new paper.Point(vertex.x * 1000, vertex.y * 1000); //Need to convert everything to microns
-            let nextpoint = new paper.Point(nextvertex.x * 1000, nextvertex.y * 1000);
-            // console.log("Vertex:", point, nextpoint);
-            let line = new paper.Path.Line(point, nextpoint);
-            path.addChild(line);
+            // let vertex = entity.vertices[i];
+            // let nextvertex = entity.vertices[(i + 1 < entity.vertices.length) ? i + 1 : 0];
+            // let point = new paper.Point(vertex.x * 1000, vertex.y * 1000); //Need to convert everything to microns
+            // let nextpoint = new paper.Point(nextvertex.x * 1000, nextvertex.y * 1000);
+            // // console.log("Vertex:", point, nextpoint);
+            // let line = new paper.Path.Line(point, nextpoint);
+            // path.addChild(line);
+
+            let dxfvertex = entity.vertices[i];
+            basepath.add(new paper.Point(dxfvertex.x*1000, dxfvertex.y*1000));
+
         }
 
     }
-
+    path.addChild(basepath);
 }
 
 /**
