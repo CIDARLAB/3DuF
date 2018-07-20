@@ -18,6 +18,34 @@ export function renderFeatureObjects(feature) {
     return undefined;
 }
 
+export function renderDXFObjects(dxfobjectarray) {
+    let path = new paper.CompoundPath();
+
+    for(let i in dxfobjectarray){
+        let dxfobject = dxfobjectarray[i];
+        if(dxfobject.getType() === 'ARC') {
+            drawArc(dxfobject.getData(), path);
+        } else if(dxfobject.getType() === 'LWPOLYLINE' || dxfobject.getType() === 'LINE' || dxfobject.getType() === 'POLYLINE') {
+            drawLine(dxfobject.getData(), path);
+        } else if(dxfobject.getType() === 'SPLINE') {
+            drawSpline(dxfobject.getData(), path);
+        } else if(dxfobject.getType() === 'ELLIPSE') {
+            drawEllipse(dxfobject.getData(), path);
+        } else if(dxfobject.getType() === 'CIRCLE' ){
+            drawCircle(dxfobject.getData(), path);
+        }
+        else {
+            console.error("Unsupported DXF Entity Type for Outline Generation : " + dxfobject.getType());
+        }
+
+    }
+
+    path.strokeColor = '#ff7606';
+    path.strokeWidth = 200;
+
+    return path;
+}
+
 
 /**
  * Returns a PaperJS outline rendering of the given

@@ -7,6 +7,15 @@ import Parameter from './parameter';
  * high level device model of the microfluidic.
  */
 class Component {
+
+    /**
+     * Default Constructor
+     * @param type
+     * @param params
+     * @param name
+     * @param mint
+     * @param id
+     */
     constructor(type, params, name, mint, id = Component.generateID()){
         this.__params = params;
         this.__name = name;
@@ -19,6 +28,10 @@ class Component {
         this.__bounds = null;
     }
 
+    /**
+     * Returns an array of strings that are the feature ids of the component
+     * @return {Array}
+     */
     get features(){
         return this.__features;
     }
@@ -121,6 +134,11 @@ class Component {
         }
     }
 
+    /**
+     * Returns the list of feature ids that are associated with this
+     * component
+     * @return {Array}
+     */
     getFeatureIDs(){
         return this.__features;
     }
@@ -171,7 +189,7 @@ class Component {
     }
 
     /**
-     * Rerturns the params associated with the component
+     * Returns the params associated with the component
      */
     getParams(){
         return this.__params;
@@ -197,6 +215,10 @@ class Component {
         }
     }
 
+    /**
+     * Returns a paper.Rectangle object that defines the bounds of the component
+     * @return {*}
+     */
     getBoundingRectangle(){
         let bounds  = null;
         for(let i in this.features){
@@ -231,9 +253,10 @@ class Component {
      * Replicates the component at the given positions
      * @param xpos Integer location of X
      * @param ypos Integer location of Y
+     * @param name
      * @return {Component}
      */
-    replicate(xpos, ypos, name = Registry.currentDevice.generateNeWName(this.__type)){
+    replicate(xpos, ypos, name = Registry.currentDevice.generateNewName(this.__type)){
         //TODO: Fix this ridiculous chain of converting params back and forth, there should be an easier way
         //Converting all the params into raw values
         let replicaparams = {};

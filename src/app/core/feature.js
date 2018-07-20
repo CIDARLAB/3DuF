@@ -10,6 +10,9 @@ var Registry = require("./registry");
 
 // var registeredFeatureTypes = {};
 
+/**
+ * Represents the object from which we generate a render
+ */
 export default class Feature {
     constructor(type, set, params, name, id = Feature.generateID(), fabtype="XY"){
         this.__type = type;
@@ -22,19 +25,35 @@ export default class Feature {
         this.__dxfObjects = [];
     }
 
+    /**
+     * Returns a string that describes the fabrication type
+     * @return {string|*}
+     */
     get fabType(){
         return this.__fabtype;
     }
 
+    /**
+     * Generates an unique feature id
+     * @return {*}
+     */
     static generateID() {
         return Registry.generateID();
     }
 
+    /**
+     * Updates the parameter stored for the given key
+     * @param key
+     * @param value
+     */
     updateParameter(key, value){
         this.__params.updateParameter(key, value);
         this.updateView();
     }
 
+    /**
+     * Generates the serial version of this object
+     */
     toJSON() {
         let output = {};
         output.id = this.__id;
@@ -45,6 +64,10 @@ export default class Feature {
         return output;
     }
 
+    /**
+     * Generates the serial version of this object but conforms
+     * to the interchange format
+     */
     toInterchangeV1(){
         //TODO: We need to figure out what to do and what the final feature format will be
         let output = {};
