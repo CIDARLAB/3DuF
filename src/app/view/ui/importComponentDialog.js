@@ -18,6 +18,7 @@ export default class ImportComponentDialog {
 
         //Setup the canvas and revert back to default canvas
         paper.setup(this.__canvas);
+        //TODO: Fix this referencing situation
         paper.projects[0].activate();
 
         this.__paperProject = paper.projects[paper.projects.length - 1];
@@ -103,10 +104,32 @@ export default class ImportComponentDialog {
         this.dxfData = dxfobjects;
 
         let render = DXFRenderer.renderDXFObjects(this.dxfData);
-
-        console.log("project", paper.project);
-        // paper.project.activeLayer.addChild(render);
-        console.log("active layer", paper.project.activeLayer);
-
+        let bounds = render.bounds;
+        let zoom = this.__computeOptimalZoom(bounds.width, bounds.height);
+        paper.view.zoom = zoom;
+        paper.view.center = bounds.center;
     }
+
+    __computeOptimalZoom(xspan, yspan) {
+        let borderMargin = 10; // pixels
+        let componentWidth = xspan;
+        let componentHeight = yspan;
+        let canvasWidth = this.__canvas.clientWidth;
+        let canvasHeight = this.__canvas.clientHeight;
+        let maxWidth;
+        let maxHeight;
+        if (canvasWidth - borderMargin <= 0) maxWidth = canvasWidth;
+        else maxWidth = canvasWidth - borderMargin;
+        if (canvasHeight - borderMargin <= 0) maxHeight = canvasHeight;
+        else maxHeight = canvasHeight - borderMargin;
+        let widthRatio = componentWidth / maxWidth;
+        let heightRatio = componentHeight / maxHeight;
+        if (widthRatio > heightRatio) {
+            return 1 / widthRatio;
+        }
+        else {
+            return 1 / heightRatio;
+        }
+    }
+
 }
