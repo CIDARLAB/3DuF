@@ -2,9 +2,7 @@ import paper from 'paper';
 import DXFParser from 'dxf-parser';
 import * as HTMLUtils from "../../utils/htmlUtils";
 import DXFObject from "../../core/dxfObject";
-import * as DXFRenderer from "../render2D/dxfObjectRenderer2D";
-import AdaptiveGrid from "../grid/adaptiveGrid";
-import {BLUE_500} from '../colors';
+import * as DXFRenderer from "../render2D/dxfSolidObjectRenderer2D";
 
 export default class ImportComponentDialog {
     constructor(customComponentManager){
