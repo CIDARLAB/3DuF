@@ -18,6 +18,100 @@ export function renderFeatureObjects(feature) {
     return undefined;
 }
 
+function tryJoining(patharray) {
+    let count = 0;
+    let retarray = [];
+    let pathtotest = patharray.splice(0, 1);
+    retarray.push(retarray);
+    for(let i in patharray){
+        let other = patharray[i];
+        let test = pathtotest.join(other);
+        if(test){
+            console.log("Join count:", ++i);
+        }
+    }
+
+    return retarray;
+}
+
+export function renderDXFObjects(dxfobjectarray) {
+    // let path = new paper.CompoundPath();
+
+    let patharray = [];
+    let closedshapes = [];
+
+    for(let i in dxfobjectarray){
+        let dxfobject = dxfobjectarray[i];
+        if(dxfobject.getType() === 'ARC') {
+            patharray.push(drawArc(dxfobject.getData()));
+        } else if(dxfobject.getType() === 'LWPOLYLINE' || dxfobject.getType() === 'LINE' || dxfobject.getType() === 'POLYLINE') {
+            patharray.push(drawLine(dxfobject.getData()));
+        } else if(dxfobject.getType() === 'SPLINE') {
+            patharray.push(drawSpline(dxfobject.getData()));
+        } else if(dxfobject.getType() === 'ELLIPSE') {
+            closedshapes.push(drawEllipse(dxfobject.getData()));
+        } else if(dxfobject.getType() === 'CIRCLE' ){
+            closedshapes.push(drawCircle(dxfobject.getData()));
+        }
+        else {
+            console.error("Unsupported DXF Entity Type for Outline Generation : " + dxfobject.getType());
+        }
+
+    }
+
+
+    let path = new paper.CompoundPath();
+
+    //First add the closed shapes
+    for(let i in closedshapes){
+        path.addChild(closedshapes[i]);
+    }
+
+    console.log("Path Array old:", patharray);
+
+    //TODO: join all the joinable paths
+    if(patharray.length > 1){
+        patharray = tryJoining(patharray);
+    }
+
+    console.log("Path Array:", patharray);
+    console.log("Closed Paths:", closedshapes);
+
+    //Add the paths
+    for(let i in patharray){
+        path.addChild(patharray[i]);
+    }
+
+    // // let copy = new paper.CompoundPath();
+    // for(let i= 0 ; i<path.children.length; i++){
+    //     let childpath = path.children[i];
+    //
+    //     for(let j = 0; j < path.children.length; j++){
+    //         let otherchildpath = path.children[j];
+    //
+    //         let joinedpath = childpath.join(otherchildpath);
+    //
+    //         if(joinedpath){
+    //             //Splice the objects
+    //             path.children.removeChildren(i);
+    //             path.children.removeChildren(j);
+    //             path.children.addChild(joinedpath);
+    //         }
+    //     }
+    //
+    // }
+
+    path.strokeColor = '#000000';
+    path.strokeWidth = 10;
+    path.closed = true;
+    path.fillColor = '#ff7606';
+    let topleft = path.bounds.topLeft;
+    path.translate(new paper.Point(-topleft.x, -topleft.y));
+    path.scale(1, -1); //The coordinate system is all different for DXF
+
+    return path;
+}
+
 
 /**
  * Returns a PaperJS outline rendering of the given
@@ -33,15 +127,15 @@ export function renderEdgeFeature(feature) {
         // Figure out what entity this is and then based on that do the drawing
         let mesh;
         if(dxfobject.getType() === 'ARC') {
-            drawArc(dxfobject.getData(), path);
+            path.addChild(drawArc(dxfobject.getData()));
         } else if(dxfobject.getType() === 'LWPOLYLINE' || dxfobject.getType() === 'LINE' || dxfobject.getType() === 'POLYLINE') {
-            drawLine(dxfobject.getData(), path);
+            path.addChild(drawLine(dxfobject.getData()));
         } else if(dxfobject.getType() === 'SPLINE') {
-            drawSpline(dxfobject.getData(), path);
+            path.addChild(drawSpline(dxfobject.getData()));
         } else if(dxfobject.getType() === 'ELLIPSE') {
-            drawEllipse(dxfobject.getData(), path);
+            path.addChild(drawEllipse(dxfobject.getData()));
         } else if(dxfobject.getType() === 'CIRCLE' ){
-            drawCircle(dxfobject.getData(), path);
+            path.addChild(drawCircle(dxfobject.getData()));
         }
         else {
             console.error("Unsupported DXF Entity Type for Outline Generation : " + dxfobject.getType());
@@ -87,7 +181,7 @@ function getBaseColor(feature) {
  * @param entity DXF Data
  * @param path Compound Path onto which the drawing will be inserted into
  */
-function drawEllipse(entity, path) {
+function drawEllipse(entity) {
     /*
     https://www.autodesk.com/techpubs/autocad/acad2000/dxf/ellipse_dxf_06.htm
      */
@@ -111,7 +205,7 @@ function drawEllipse(entity, path) {
     });
 
     ellipse.rotate(rotation, center);
-    path.addChild(ellipse);
+    return ellipse;
 }
 
 function drawMtext(entity, data) {
@@ -223,10 +317,10 @@ function drawSpline(entity, path) {
     return splineObject;
 }
 
-function drawCircle(entity, path){
+function drawCircle(entity){
     let center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
     let circle = new paper.Path.Circle(center, entity.radius * 1000);
-    path.addChild(circle);
+    return circle;
 }
 
 /**
@@ -234,7 +328,9 @@ function drawCircle(entity, path){
  * @param entity DXF Data
  * @param path Compound Path onto which the drawing will be inserted into
  */
-function drawLine(entity, path) {
+function drawLine(entity) {
+    //Create a path
+    let basepath = new paper.Path();
 
     let bulge, bugleGeometry;
     let startPoint, endPoint;
@@ -243,6 +339,7 @@ function drawLine(entity, path) {
     for(let i = 0; i < entity.vertices.length; i++) {
 
         if(entity.vertices[i].bulge) {
+            console.error("Need to implement code to incorporate bulge values");
             //TODO: Figure out what to do with the bugle value
             bulge = entity.vertices[i].bulge;
             startPoint = entity.vertices[i];
@@ -251,17 +348,21 @@ function drawLine(entity, path) {
             console.log("End Point:", endPoint);
 
         } else {
-            let vertex = entity.vertices[i];
-            let nextvertex = entity.vertices[(i + 1 < entity.vertices.length) ? i + 1 : 0];
-            let point = new paper.Point(vertex.x * 1000, vertex.y * 1000); //Need to convert everything to microns
-            let nextpoint = new paper.Point(nextvertex.x * 1000, nextvertex.y * 1000);
-            // console.log("Vertex:", point, nextpoint);
-            let line = new paper.Path.Line(point, nextpoint);
-            path.addChild(line);
+            // let vertex = entity.vertices[i];
+            // let nextvertex = entity.vertices[(i + 1 < entity.vertices.length) ? i + 1 : 0];
+            // let point = new paper.Point(vertex.x * 1000, vertex.y * 1000); //Need to convert everything to microns
+            // let nextpoint = new paper.Point(nextvertex.x * 1000, nextvertex.y * 1000);
+            // // console.log("Vertex:", point, nextpoint);
+            // let line = new paper.Path.Line(point, nextpoint);
+            // path.addChild(line);
+
+            let dxfvertex = entity.vertices[i];
+            basepath.add(new paper.Point(dxfvertex.x*1000, dxfvertex.y*1000));
+
         }
 
     }
-
+    return basepath;
 }
 
 /**
@@ -269,7 +370,7 @@ function drawLine(entity, path) {
  * @param entity DXF Data
  * @param path Compound Path onto which the drawing will be inserted into
  */
-function drawArc(entity, path) {
+function drawArc(entity) {
     /*
     Ok so for this to work in paperjs, we need to have 3 variables
     1. Start
@@ -329,7 +430,7 @@ function drawArc(entity, path) {
 
     let arc = paper.Path.Arc(startpoint, midpoint, endpoint);
 
-    path.addChild(arc);
+    return arc;
 }
 
 
