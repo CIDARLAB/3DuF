@@ -31,7 +31,6 @@ import ValveInsertionTool from "./tools/valveInsertionTool";
 import PositionTool from "./tools/positionTool";
 import ConnectionTool from "./tools/connectionTool";
 import GenerateArrayTool from "./tools/generateArrayTool";
-import ImportComponentDialog from "./ui/importComponentDialog";
 import CustomComponentManager from "./customComponentManager";
 
 export default class ViewManager {
