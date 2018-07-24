@@ -3,6 +3,7 @@ import paper from 'paper';
 
 var Colors = require("../colors");
 import Feature from "../../core/feature";
+import LinkedList from "../../utils/linkedList";
 var PrimitiveSets2D = require("./primitiveSets2D");
 var FeatureSets = require("../../featureSets");
 var Registry = require("../../core/registry");
@@ -19,17 +20,30 @@ export function renderFeatureObjects(feature) {
 }
 
 function tryJoining(patharray) {
-    let count = 0;
-    let retarray = [];
-    let pathtotest = patharray.splice(0, 1);
-    retarray.push(retarray);
-    for(let i in patharray){
-        let other = patharray[i];
-        let test = pathtotest.join(other);
+    let joincount = 0;
+    let retarray;
+    // console.log("Linked list:",patharray);
+    let nodetotest = patharray.head;
+    let nextnode = LinkedList.getNextNode(nodetotest);
+    while(nextnode){
+        let primarypath = nodetotest.data;
+        let otherpath = nextnode.data;
+        let test = primarypath.join(otherpath);
         if(test){
-            console.log("Join count:", ++i);
+            nodetotest.data = test;
+            console.log("Join count:", ++joincount);
+            patharray.removeNode(nextnode);
+            console.log("Modified linkedlist:", patharray);
+        }
+        if(nextnode){
+            nextnode = LinkedList.getNextNode(nextnode);
         }
     }
+    // let count = 0;
+    // let retarray = [];
+    // let pathtotest = patharray.splice(0, 1);
+    // retarray.push(pathtotest);
+    retarray = patharray.getArray();
 
     return retarray;
 }
@@ -37,7 +51,7 @@ function tryJoining(patharray) {
 export function renderDXFObjects(dxfobjectarray) {
     // let path = new paper.CompoundPath();
 
-    let patharray = [];
+    let patharray = new LinkedList();
     let closedshapes = [];
 
     for(let i in dxfobjectarray){
@@ -47,6 +61,7 @@ export function renderDXFObjects(dxfobjectarray) {
         } else if(dxfobject.getType() === 'LWPOLYLINE' || dxfobject.getType() === 'LINE' || dxfobject.getType() === 'POLYLINE') {
             patharray.push(drawLine(dxfobject.getData()));
         } else if(dxfobject.getType() === 'SPLINE') {
+            throw new Error("Unsupported render object");
             patharray.push(drawSpline(dxfobject.getData()));
         } else if(dxfobject.getType() === 'ELLIPSE') {
             closedshapes.push(drawEllipse(dxfobject.getData()));
@@ -69,13 +84,11 @@ export function renderDXFObjects(dxfobjectarray) {
 
     console.log("Path Array old:", patharray);
 
-    //TODO: join all the joinable paths
-    if(patharray.length > 1){
-        patharray = tryJoining(patharray);
-    }
+    patharray = tryJoining(patharray);
 
-    console.log("Path Array:", patharray);
+    console.log("New Path Array:", patharray);
     console.log("Closed Paths:", closedshapes);
+
 
     //Add the paths
     for(let i in patharray){

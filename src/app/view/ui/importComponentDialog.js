@@ -30,7 +30,7 @@ export default class ImportComponentDialog {
             // let test = new paper.Rectangle(new paper.Point(0,0), 500, 500);
             // test.fillColor = '#000000';
             // paper.project.activeLayer.addChild(test);
-            console.log(paper.project);
+            // console.log(paper.project);
         });
 
         //Enable close button
@@ -100,7 +100,7 @@ export default class ImportComponentDialog {
         }
 
         this.dxfData = dxfobjects;
-
+        console.log("DXF Objects:", dxfobjects);
         let render = DXFRenderer.renderDXFObjects(this.dxfData);
         let bounds = render.bounds;
         let zoom = this.__computeOptimalZoom(bounds.width, bounds.height);
