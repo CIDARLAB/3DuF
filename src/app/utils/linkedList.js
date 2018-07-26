@@ -47,6 +47,7 @@ export default class LinkedList {
                 }
             }
         }
+        this.count--;
     }
 
     get length() {
@@ -82,7 +83,7 @@ export default class LinkedList {
         let nextnode = LinkedList.getNextNode(this.head);
         while(nextnode){
             retarray.push(nextnode.data);
-            nextnode = LinkedList.getNextNode(this.head);
+            nextnode = LinkedList.getNextNode(nextnode);
         }
         return retarray;
     }
