@@ -25,24 +25,21 @@ function tryJoining(patharray) {
     // console.log("Linked list:",patharray);
     let nodetotest = patharray.head;
     let nextnode = LinkedList.getNextNode(nodetotest);
-    while(nextnode){
-        let primarypath = nodetotest.data;
-        let otherpath = nextnode.data;
-        let test = primarypath.join(otherpath);
-        if(test){
-            nodetotest.data = test;
-            console.log("Join count:", ++joincount);
-            patharray.removeNode(nextnode);
-            console.log("Modified linkedlist:", patharray);
-        }
-        if(nextnode){
+    while(nodetotest){
+        while(nextnode){
+            let primarypath = nodetotest.data;
+            let otherpath = nextnode.data;
+            let test = primarypath.intersects(otherpath);
+            if(test){
+                nodetotest.data = primarypath.join(otherpath);
+                console.log("Join count:", ++joincount);
+                patharray.removeNode(nextnode);
+                console.log("Modified linkedlist:", patharray);
+            }
             nextnode = LinkedList.getNextNode(nextnode);
         }
+        nodetotest = LinkedList.getNextNode(nodetotest);
     }
-    // let count = 0;
-    // let retarray = [];
-    // let pathtotest = patharray.splice(0, 1);
-    // retarray.push(pathtotest);
     retarray = patharray.getArray();
 
     return retarray;
@@ -344,6 +341,7 @@ function drawCircle(entity){
 function drawLine(entity) {
     //Create a path
     let basepath = new paper.Path();
+    basepath.origin = "LINE";
 
     let bulge, bugleGeometry;
     let startPoint, endPoint;
@@ -443,6 +441,7 @@ function drawArc(entity) {
 
     let arc = paper.Path.Arc(startpoint, midpoint, endpoint);
 
+    arc.origin = "ARC";
     return arc;
 }
 
