@@ -25,6 +25,10 @@ export default class Device {
         this.__valveMap = new Map();
     }
 
+    getName(){
+        return this.name.getValue();
+    }
+
     /**
      * Adds a connection to the device
      * @param connection

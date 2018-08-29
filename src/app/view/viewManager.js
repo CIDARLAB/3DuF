@@ -32,6 +32,7 @@ import PositionTool from "./tools/positionTool";
 import ConnectionTool from "./tools/connectionTool";
 import GenerateArrayTool from "./tools/generateArrayTool";
 import CustomComponentManager from "./customComponentManager";
+import EditDeviceDialog from "./ui/edtiDeviceDialog";
 
 export default class ViewManager {
     constructor(view) {
@@ -46,6 +47,7 @@ export default class ViewManager {
         this.layerToolBar = new LayerToolBar();
         this.customComponentManager = new CustomComponentManager(this);
         this.messageBox = document.querySelector('.mdl-js-snackbar');
+        this.editDeviceDialog = new EditDeviceDialog(this);
 
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {

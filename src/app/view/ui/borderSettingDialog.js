@@ -1,3 +1,5 @@
+import * as HTMLUtils from "../../utils/htmlUtils";
+
 const Registry = require('../../core/registry');
 const DxfParser = require('dxf-parser');
 
@@ -70,6 +72,7 @@ export default class BorderSettingsDialog {
             });
         }
 
+        this.__setupDragAndDropLoad("#border_import_panel");
     }
 
     /**
@@ -93,6 +96,28 @@ export default class BorderSettingsDialog {
      */
     getDXFObject(){
         return this.__dxfObject;
+    }
+
+    /**
+     * Initializes the drag and drop on the canvas element
+     * @param selector
+     * @private
+     */
+    __setupDragAndDropLoad(selector) {
+        let ref = this;
+        let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+            let f = files[0];
+
+            let reader = new FileReader();
+            reader.onloadend = function(e) {
+                ref.__loadDXFData(this.result);
+            };
+            try {
+                reader.readAsText(f);
+            } catch (err) {
+                console.log("unable to load DXF: " + f);
+            }
+        });
     }
 
 
