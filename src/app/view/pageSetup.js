@@ -63,7 +63,6 @@ let view;
 
 let threeD = false;
 
-let saveDeviceSettingsButton = document.getElementById("accept_resize_button");
 
 let acceptTextButton = document.getElementById("accept_text_button");
 
@@ -125,42 +124,6 @@ function setupAppPage() {
     //Register all the button clicks here
 
 
-    saveDeviceSettingsButton.onclick = function(){
-
-        //Save the name
-        let devicename = document.getElementById("devicename_textinput").value;
-        if(devicename != "" || devicename != null){
-            console.log("test");
-            Registry.currentDevice.setName(devicename);
-        }
-
-        //Do the resizing
-        let xspan = document.getElementById("xspan_textinput").value;
-        let yspan = document.getElementById("yspan_textinput").value;
-        console.log("Resizing the device to: " + xspan + ", " +yspan);
-
-
-        if(xspan != "" && yspan != ""){
-
-            //Convert the dimensions to microns from mm
-            Registry.currentDevice.setXSpan(xspan*1000);
-            Registry.currentDevice.setYSpan(yspan*1000);
-
-            //Update the device borders
-            Registry.viewManager.generateBorder();
-
-            //Close the dialog
-            var dialog = document.querySelector('dialog');
-            dialog.close();
-
-            //Refresh the view
-            Registry.viewManager.view.initializeView();
-            Registry.viewManager.view.refresh();
-            // Registry.viewManager.view.updateGrid();
-            Registry.viewManager.view.updateAlignmentMarks();
-        }
-
-    };
 
 
     acceptTextButton.onclick = function(){

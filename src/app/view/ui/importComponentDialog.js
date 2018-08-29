@@ -51,7 +51,7 @@ export default class ImportComponentDialog {
 
         });
         
-        this.__setupDragAndDropLoad("#component_preview_canvas")
+        this.__setupDragAndDropLoad("#component_preview_canvas");
     }
 
     /**

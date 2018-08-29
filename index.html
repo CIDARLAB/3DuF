@@ -627,7 +627,11 @@
         <h4>
             Drag Drop the DXF file containing border to import:
         </h4>
-        <input type="file" class="upload" id="dxf_input" />
+        <div class="mdl-dialog__content">
+            <canvas id="border_import_panel" tabindex="1" width="300" height="200"></canvas>
+            <br />
+            <input type="file" class="upload" id="dxf_input" />
+        </div>
     </div>
     <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
         <button id="import_border_button" type="button" class="mdl-button">Import Border</button>
@@ -657,17 +661,10 @@
     </div>
 </dialog>
 <script>
-    var dialog = document.getElementById('edit_device_dialog');
-    var showModalButton = document.querySelector('#resize_button');
-    if (! dialog.showModal) {
-        dialogPolyfill.registerDialog(dialog);
-    }
-    showModalButton.addEventListener('click', function() {
-        dialog.showModal();
-    });
-    dialog.querySelector('.close').addEventListener('click', function() {
-        dialog.close();
-    });
+    // var dialog = document.getElementById('edit_device_dialog');
+    // if (! dialog.showModal) {
+    //     dialogPolyfill.registerDialog(dialog);
+    // }
 
     var helpdialog = document.querySelector('#help_dialog');
     var showhelpModalButton = document.querySelector('#infobutton');
