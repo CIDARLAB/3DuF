@@ -11,6 +11,10 @@ export default class CNCGenerator {
 
     }
 
+    getSVGOutputs(){
+        return this.__svgData;
+    }
+
     /**
      * Generate the port layers
      */
