@@ -33,6 +33,7 @@ import ConnectionTool from "./tools/connectionTool";
 import GenerateArrayTool from "./tools/generateArrayTool";
 import CustomComponentManager from "./customComponentManager";
 import EditDeviceDialog from "./ui/edtiDeviceDialog";
+import ManufacturingPanel from "./ui/manufacturingPanel";
 
 export default class ViewManager {
     constructor(view) {
@@ -73,6 +74,10 @@ export default class ViewManager {
         let func = function(event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
+
+        this.manufacturingPanel = new ManufacturingPanel(this);
+
+
         this.view.setMouseWheelFunction(func);
         this.minZoom = .0001;
         this.maxZoom = 5;

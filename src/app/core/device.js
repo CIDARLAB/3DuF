@@ -30,6 +30,14 @@ export default class Device {
     }
 
     /**
+     * Returns the list of layers in the device
+     * @return {Array}
+     */
+    getLayers(){
+        return this.layers;
+    }
+
+    /**
      * Adds a connection to the device
      * @param connection
      */
