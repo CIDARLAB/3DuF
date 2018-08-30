@@ -193,31 +193,11 @@ var EdgedRectTarget = function(params){
 
 var GradientCircle = function(params){
     let position = params["position"];
-    let radius1 = params["radius1"];
-    let radius2 = params["radius2"];
+    let radius = params["portRadius"];
     let color1 = params["color"];
-    let color2 = params["baseColor"];
     let pos = new paper.Point(position[0], position[1]);
-    let ratio = radius2 / radius1;
-    let targetRatio;
-    let targetRadius;
-    if (ratio > 1) {
-        targetRatio = 1;
-        targetRadius = radius2;
-    }
-    else {
-        targetRatio = ratio;
-        targetRadius = radius1;
-    }
-    let outerCircle = new paper.Path.Circle(pos, targetRadius);
-    outerCircle.fillColor = {
-        gradient: {
-            stops: [[color1, targetRatio], [color2, targetRatio]],
-            radial: true
-        },
-        origin: pos,
-        destination: outerCircle.bounds.rightCenter
-    };
+    let outerCircle = new paper.Path.Circle(pos, radius);
+    outerCircle.fillColor = color1;
     return outerCircle;
 };
 
@@ -716,34 +696,8 @@ var RotaryMixer_control = function(params){
 
 //*********************************
 var CircleTarget = function(params){
-    let targetRadius;
-    let radius1;
-    let radius2;
-    if (params.hasOwnProperty("diameter")) targetRadius = params["diameter"]/2;
-    else {
-        if (params.hasOwnProperty("portRadius")) {
-            radius1 = portRadius;
-            radius2 = portRadius;
-        }
-        else {
-            radius1 = params["radius1"];
-            radius2 = params["radius2"];
-            if (radius1 > radius2) targetRadius = radius1;
-            else targetRadius = radius2;
-        }
-    }
-    let minSize = 8; //pixels
-    let minSizeInMicrometers = 8/paper.view.zoom;
-    let position = params["position"];
-    let color = params["color"];
-    let pos = new paper.Point(position[0], position[1]);
-    if (targetRadius < minSizeInMicrometers) targetRadius = minSizeInMicrometers;
-    let circ = new paper.Path.Circle(pos, targetRadius);
-    circ.fillColor = color;
-    circ.fillColor.alpha = .5;
-    circ.strokeColor = "#FFFFFF";
-    circ.strokeWidth = 3 / paper.view.zoom;
-    if(circ.strokeWidth > targetRadius/2) circ.strokeWidth = targetRadius/2;
+    let circ = GradientCircle(params);
+    circ.fillColor.alpha = 0.5;
     return circ;
 };
 
