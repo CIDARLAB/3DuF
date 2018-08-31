@@ -29,6 +29,14 @@ export default class MouseAndKeyboardHandler {
         this.__rightMouseTool = tool;
     }
 
+    get leftMouseTool(){
+        return this.__leftMouseTool;
+    }
+
+    get rightMouseTool(){
+        return this.__rightMouseTool;
+    }
+
     /**
      * Sets up the default keyboard handlers
      * @private
@@ -144,9 +152,7 @@ export default class MouseAndKeyboardHandler {
      * @private
      */
     __mouseDownCallback(event){
-        console.log("testing down callback", event);
-
-        Registry.viewManager.saveDeviceState();
+        // console.log("testing down callback", event);
     }
 
     /**
@@ -154,7 +160,7 @@ export default class MouseAndKeyboardHandler {
      * @private
      */
     __mouseUpCallback(event){
-        console.log("testing up callback", event);
+        // console.log("testing up callback", event);
     }
 
     /**
@@ -162,7 +168,7 @@ export default class MouseAndKeyboardHandler {
      * @private
      */
     __mouseMoveCallback(event){
-        console.log("testing move callback", event);
+        // console.log("testing move callback", event);
     }
 
     constructMouseDownEvent(tool1, tool2, tool3) {

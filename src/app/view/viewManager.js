@@ -696,8 +696,17 @@ export default class ViewManager {
      * Resets the tool to the default tool
      */
     resetToDefaultTool(){
+        this.cleanupActiveTools();
         this.activateTool("MouseSelectTool");
         this.componentToolBar.setActiveButton("SelectButton");
+    }
+
+    /**
+     * Runs cleanup method on the activated tools
+     */
+    cleanupActiveTools() {
+        this.mouseAndKeyboardHandler.leftMouseTool.cleanup();
+        this.mouseAndKeyboardHandler.rightMouseTool.cleanup();
     }
 
     /**
