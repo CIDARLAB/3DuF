@@ -81,6 +81,7 @@ export default class CNCGenerator {
         let ref = this;
         mfglayers.forEach(function(mfglayer, index){
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
+            mfglayer.flushData();
         });
 
         console.log("SVG Outputs:", this.__svgData);
@@ -155,6 +156,8 @@ export default class CNCGenerator {
         let ref = this;
         mfglayers.forEach(function(mfglayer, index){
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
+            mfglayer.flushData();
+
         });
 
     }
@@ -212,6 +215,7 @@ export default class CNCGenerator {
         let ref = this;
         mfglayers.forEach(function(mfglayer, index){
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
+            mfglayer.flushData();
         });
 
     }
@@ -225,5 +229,11 @@ export default class CNCGenerator {
         console.log("Currentdevice:", currentDevice);
     }
 
+    /**
+     * Flush all the data
+     */
+    flushData(){
+        this.__svgData.clear();
+    }
 
 }
