@@ -41,6 +41,8 @@ class InsertTextTool extends MouseTool {
         }, { "position" : "Point" }, { "height": "Float", "text":"String" }));
         // this.currentFeatureID = newFeature.getID();
         Registry.currentLayer.addFeature(newFeature);
+        Registry.viewManager.saveDeviceState();
+
     }
 
     showTarget() {

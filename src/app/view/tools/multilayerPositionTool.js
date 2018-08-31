@@ -37,6 +37,8 @@ export default class MultilayerPositionTool extends PositionTool{
         featureIDs.push(newFeature.getID());
 
         super.createNewComponent(this.typeString, params_to_copy, featureIDs );
+        Registry.viewManager.saveDeviceState();
+
     }
 
     showTarget(){

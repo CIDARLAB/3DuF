@@ -25,6 +25,8 @@ export default class ComponentPositionTool extends PositionTool{
 
 
         super.createNewComponent(this.typeString, params_to_copy, featureIDs );
+        Registry.viewManager.saveDeviceState();
+
 
     }
 

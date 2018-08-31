@@ -98,7 +98,8 @@ class ChannelTool extends MouseTool {
 		}
 		this.currentChannelID = null;
 		this.startPoint = null;
-	}
+        Registry.viewManager.saveDeviceState();
+    }
 
 	createChannel(start, end) {
 		return Feature.makeFeature(this.typeString, this.setString, {
