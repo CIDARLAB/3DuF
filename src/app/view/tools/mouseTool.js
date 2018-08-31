@@ -8,6 +8,10 @@ export default class MouseTool{
         this.rightdown = MouseTool.defaultFunction("rightdown");
     }
 
+    cleanup(){
+        console.log('Default Message: You have to implement the method cleanup!');
+    }
+
     static defaultFunction(string){
         return function(){
             console.log("No " + string + " function set.");
