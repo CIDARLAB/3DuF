@@ -40,6 +40,8 @@ export default class CellPositionTool extends PositionTool{
 
 
         super.createNewComponent(this.typeString, params_to_copy, featureIDs );
+        Registry.viewManager.saveDeviceState();
+
     }
 
     showTarget(){

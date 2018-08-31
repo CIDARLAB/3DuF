@@ -82,6 +82,9 @@ export default class GenerateArrayTool extends MouseTool {
             Registry.currentDevice.addComponent(replica);
         });
 
+        Registry.viewManager.saveDeviceState();
+
+
     }
 
     revertToOriginalPosition(){
