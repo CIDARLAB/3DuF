@@ -1,6 +1,6 @@
 import CNCGenerator from "../../manufacturing/cncGenerator";
 
-import JSZip from 'JSZip';
+import JSZip from 'jszip';
 
 const Registry = require("../../core/registry");
 
@@ -24,24 +24,23 @@ export default class ManufacturingPanel {
             console.log("SVG Data:", cncGenerator.getSVGOutputs());
 
             ref.packageAndDownloadBundle(cncGenerator.getSVGOutputs());
-        })
+
+            cncGenerator.flushData();
+        });
     }
 
     packageAndDownloadBundle(svgOutputs) {
         let zipper = new JSZip();
-        // for (let i = 0; i < svgs.length; i++) {
-        //     if (svgs[i].slice(0, 4) == "<svg") {
-        //         zipper.file("Device_layer_" + i + ".svg", svgs[i]);
-        //         success++;
-        //     }
-        // }
+
         for(const key of svgOutputs.keys()){
             zipper.file(key+".svg", svgOutputs.get(key));
         }
+
         let content = zipper.generate({
             type: "blob"
         });
-        saveAs(content, "device_layers.zip");
+
+        saveAs(content, Registry.currentDevice.getName()+".zip");
 
 
     }

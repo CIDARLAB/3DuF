@@ -58,6 +58,10 @@ export default class ManufacturingLayer{
         return svgtext;
     }
 
+    flushData(){
+        this.__paperGroup.removeChildren();
+    }
+
     /**
      * Generates the SVG Prepend
      * @param xspan

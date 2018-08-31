@@ -138,50 +138,6 @@ function setupAppPage() {
     //     Registry.viewManager.revertFeaturesToDefaults(Registry.viewManager.view.getSelectedFeatures());
     //
     // };
-/*
-    copyButton.onclick = function() {
-
-    }
-*/
-    //copyButton.onclick = function() {
-
-    //}
-
-    //Setup Tool Handlers
-    // flowButton.onclick = function() {
-    //     if (threeD) {
-    //         if (activeLayer == "0") renderer.toggleLayerView(0);
-    //         else renderer.showLayer(0);
-    //     }
-    //     Registry.currentLayer = Registry.currentDevice.layers[0];
-    //     setActiveLayer("0");
-    //     Registry.viewManager.updateActiveLayer();
-    //
-    // };
-    //
-    // controlButton.onclick = function() {
-    //     if (threeD) {
-    //         if (activeLayer == "1") renderer.toggleLayerView(1);
-    //         else renderer.showLayer(1);
-    //     }
-    //     Registry.currentLayer = Registry.currentDevice.layers[1];
-    //     setActiveLayer("1");
-    //     Registry.viewManager.updateActiveLayer();
-    // };
-
-
-    // cellsButton.onclick = function() {
-    //     if (threeD) {
-    //         if (activeLayer == "2") renderer.toggleLayerView(2);
-    //         else renderer.showLayer(2);
-    //     }
-    //     Registry.currentLayer = Registry.currentDevice.layers[2];
-    //     setActiveLayer("2");
-    //     Registry.viewManager.updateActiveLayer();
-    //     console.log("Adaptive Grid Min Spacing: " + Registry.currentGrid.minSpacing);
-    //     console.log("Adaptive Grid Max Spacing: " + Registry.currentGrid.maxSpacing);
-    //
-    // };
 
     interchangeV1Button.onclick = function() {
         let json = new Blob([JSON.stringify(Registry.currentDevice.toInterchangeV1())], {
@@ -206,6 +162,7 @@ function setupAppPage() {
             saveAs(content, json.name + "_layers.zip");
         }
     */
+
     svgButton.onclick = function() {
         let svgs = Registry.viewManager.layersToSVGStrings();
         //let svg = paper.project.exportSVG({asString: true});
