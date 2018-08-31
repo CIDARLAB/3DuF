@@ -133,7 +133,7 @@ export default class CNCGenerator {
                 manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_" + depth);
                 let depthfeatures = featuredepthmap.getFeaturesAtDepth(depth);
                 for(let j in depthfeatures){
-                    let featurekey = depthfeatures[i];
+                    let featurekey = depthfeatures[j];
 
 
                     manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));

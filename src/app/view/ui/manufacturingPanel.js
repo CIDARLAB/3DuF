@@ -1,5 +1,7 @@
 import CNCGenerator from "../../manufacturing/cncGenerator";
 
+import JSZip from 'JSZip';
+
 const Registry = require("../../core/registry");
 
 export default class ManufacturingPanel {
@@ -10,6 +12,8 @@ export default class ManufacturingPanel {
         console.log("current device:", Registry.currentDevice);
         let cncGenerator = new CNCGenerator(Registry.currentDevice, this.__viewManagerDelegate);
         let registryref = Registry;
+
+        let ref = this;
         this.__cncButton.addEventListener('click', function (event) {
             console.log("Running generatePortLayers");
             cncGenerator.setDevice(registryref.currentDevice);
@@ -18,6 +22,27 @@ export default class ManufacturingPanel {
             cncGenerator.generateEdgeLayers();
 
             console.log("SVG Data:", cncGenerator.getSVGOutputs());
+
+            ref.packageAndDownloadBundle(cncGenerator.getSVGOutputs());
         })
+    }
+
+    packageAndDownloadBundle(svgOutputs) {
+        let zipper = new JSZip();
+        // for (let i = 0; i < svgs.length; i++) {
+        //     if (svgs[i].slice(0, 4) == "<svg") {
+        //         zipper.file("Device_layer_" + i + ".svg", svgs[i]);
+        //         success++;
+        //     }
+        // }
+        for(const key of svgOutputs.keys()){
+            zipper.file(key+".svg", svgOutputs.get(key));
+        }
+        let content = zipper.generate({
+            type: "blob"
+        });
+        saveAs(content, "device_layers.zip");
+
+
     }
 }

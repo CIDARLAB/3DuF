@@ -1,4 +1,5 @@
 import paper from 'paper';
+const Registry = require("../core/registry");
 
 export default class ManufacturingLayer{
     constructor(name){
@@ -7,10 +8,18 @@ export default class ManufacturingLayer{
         this.__paperGroup = new paper.Group();
     }
 
+    /**
+     * Returns the name field
+     * @return {*}
+     */
     get name(){
         return this.__name;
     }
 
+    /**
+     * Adds a feature to the manufacturing layer
+     * @param feature
+     */
     addFeature(feature){
         let copy = feature.clone();
         console.log("Copied feature",copy);
@@ -19,16 +28,52 @@ export default class ManufacturingLayer{
         this.__paperGroup.addChild(copy);
     }
 
+    /**
+     * Flips the manufacturing layer in X-Axis
+     */
     flipX(){
-        console.warn("Implement method to flip the the group");
+        // console.warn("Implement method to flip the the group");
         /*
-        Step 1 - Add a border ?
         Step 2 - Flip the whole godamn thing
-        Step 3 - Remove the border ?
          */
+        let yspan = Registry.currentDevice.getYSpan();
+        let xspan = Registry.currentDevice.getXSpan();
+
+        console.log("Flipping stuff:", xspan, yspan);
+
+        let center = new paper.Point(xspan/2, yspan/2);
+
+        this.__paperGroup.scale(-1, 1, center);
     }
 
+    /**
+     * Returns the SVG text
+     * @return {*}
+     */
     exportToSVG(){
-        return this.__paperGroup.exportSVG();
+        let xspan = Registry.currentDevice.getXSpan();
+        let yspan = Registry.currentDevice.getYSpan();
+        let svgtext = this.__paperGroup.exportSVG({asString: true});
+        svgtext = ManufacturingLayer.generateSVGTextPrepend(xspan, yspan) + svgtext + ManufacturingLayer.generateSVGTextAppend();
+        return svgtext;
+    }
+
+    /**
+     * Generates the SVG Prepend
+     * @param xspan
+     * @param yspan
+     * @return {string}
+     */
+    static generateSVGTextPrepend(xspan, yspan){
+        let text = `<svg width=\"${xspan}\" height=\"${yspan}\" viewBox=\"0 0 ${xspan} ${yspan}\">`;
+        return text;
+    }
+
+    /**
+     * Generates the SVG Append
+     * @return {string}
+     */
+    static generateSVGTextAppend(){
+        return "</svg>";
     }
 }

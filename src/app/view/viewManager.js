@@ -32,7 +32,7 @@ import PositionTool from "./tools/positionTool";
 import ConnectionTool from "./tools/connectionTool";
 import GenerateArrayTool from "./tools/generateArrayTool";
 import CustomComponentManager from "./customComponentManager";
-import EditDeviceDialog from "./ui/edtiDeviceDialog";
+import EditDeviceDialog from "./ui/editDeviceDialog";
 import ManufacturingPanel from "./ui/manufacturingPanel";
 
 export default class ViewManager {
