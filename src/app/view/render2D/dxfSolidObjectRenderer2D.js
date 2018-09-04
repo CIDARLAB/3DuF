@@ -4,6 +4,7 @@ import paper from 'paper';
 var Colors = require("../colors");
 import Feature from "../../core/feature";
 import LinkedList from "../../utils/linkedList";
+import GeometryGraph from "../../geometry/geometryGraph";
 var PrimitiveSets2D = require("./primitiveSets2D");
 var FeatureSets = require("../../featureSets");
 var Registry = require("../../core/registry");
@@ -45,71 +46,120 @@ function tryJoining(patharray) {
     return retarray;
 }
 
+function isClosedPolyline(dxfobject) {
+    let data = dxfobject.getData
+    ();
+    console.log(data.shape);
+    return data.shape;
+}
+
+function processARC(geometryGraph, data) {
+    console.warn("Implement this function !!");
+
+    /*
+
+    DXF gives :
+    1. startAngle
+    2. endAngle
+    3. center
+    4. radius
+
+    To translate we start with the center point, then calculate points at start angle and end angle
+
+    center-> @------r------* <- startAngle
+              \
+               \
+                r
+                 \
+                  \
+                   * <- endAngle
+
+     */
+
+
+    let center = new paper.Point(data.center.x, data.center.y);
+    let radius = data.radius;
+    let startAngle = data.startAngle;
+    let endAngle = data.endAngle; //* 180/Math.PI;
+
+    let startpoint = new paper.Point(center.x + radius* Math.cos(startAngle), center.y + radius* Math.sin(startAngle));
+
+
+    let endpoint = new paper.Point(center.x + radius* Math.cos(endAngle), center.y + radius* Math.sin(endAngle));
+
+
+
+    geometryGraph.addEdge(startpoint, endpoint, data);
+
+}
+
+function processPolyLine(geometryGraph, data) {
+    console.warn("Implement this function !!");
+
+}
+
+function processSpline(geometryGraph, data) {
+    console.warn("Implement this function !!");
+
+}
+
+function processLine(geometryGraph, data) {
+
+    let startPoint = data.vertices[0];
+    let endPoint = data.vertices[1];
+
+    geometryGraph.addEdge(startPoint, endPoint, data);
+
+}
+
 export function renderDXFObjects(dxfobjectarray) {
     // let path = new paper.CompoundPath();
 
     let patharray = new LinkedList();
     let closedshapes = [];
 
+    let geometryGraph = new GeometryGraph();
+
     for(let i in dxfobjectarray){
         let dxfobject = dxfobjectarray[i];
-        if(dxfobject.getType() === 'ARC') {
-            patharray.push(drawArc(dxfobject.getData()));
-        } else if(dxfobject.getType() === 'LWPOLYLINE' || dxfobject.getType() === 'LINE' || dxfobject.getType() === 'POLYLINE') {
-            patharray.push(drawLine(dxfobject.getData()));
-        } else if(dxfobject.getType() === 'SPLINE') {
-            throw new Error("Unsupported render object");
-            patharray.push(drawSpline(dxfobject.getData()));
-        } else if(dxfobject.getType() === 'ELLIPSE') {
+
+        /*
+        If ARC - Get the start and end points - save to edge graph as
+         */
+
+        if(dxfobject.getType() === 'ARC'){
+            processARC(geometryGraph, dxfobject.getData());
+        } else if (dxfobject.getType() === 'LINE') {
+            processLine(geometryGraph, dxfobject.getData());
+        } else if (dxfobject.getType() === 'LWPOLYLINE' || dxfobject.getType() === 'POLYLINE'){
+            if(isClosedPolyline(dxfobject)){
+                closedshapes.push(drawLine(dxfobject.getData()));
+            }else{
+                processPolyLine(geometryGraph, dxfobject.getData());
+            }
+        } else if(dxfobject.getType() === 'ELLIPSE'){
             closedshapes.push(drawEllipse(dxfobject.getData()));
         } else if(dxfobject.getType() === 'CIRCLE' ){
             closedshapes.push(drawCircle(dxfobject.getData()));
+        } else if(dxfobject.getType() === 'SPLINE') {
+            throw new Error("Unsupported render object");
+            processSpline(geometryGraph, dxfobject.getData())
+        } else {
+            console.error("Unsupported DXF Entity Type for Component Import : " + dxfobject.getType());
         }
-        else {
-            console.error("Unsupported DXF Entity Type for Outline Generation : " + dxfobject.getType());
-        }
-
     }
 
+    console.log("Geometry grpah:",geometryGraph);
+    console.log("Closed Shapes:", closedshapes);
+    //TODO: Generate the Geometry from the geometry graph , this should a return a compound path that takes care of the right kind of correct connected paths
 
-    let path = new paper.CompoundPath();
+    let path =  geometryGraph.generateGeometry();
 
-    //First add the closed shapes
-    for(let i in closedshapes){
-        path.addChild(closedshapes[i]);
+    //TODO: Now add all the remainder closed shapes to the compound paths
+    for(let child of closedshapes){
+        path.addChild(child);
     }
 
-    console.log("Path Array old:", patharray);
-
-    patharray = tryJoining(patharray);
-
-    console.log("New Path Array:", patharray);
-    console.log("Closed Paths:", closedshapes);
-
-
-    //Add the paths
-    for(let i in patharray){
-        path.addChild(patharray[i]);
-    }
-
-    // // let copy = new paper.CompoundPath();
-    // for(let i= 0 ; i<path.children.length; i++){
-    //     let childpath = path.children[i];
-    //
-    //     for(let j = 0; j < path.children.length; j++){
-    //         let otherchildpath = path.children[j];
-    //
-    //         let joinedpath = childpath.join(otherchildpath);
-    //
-    //         if(joinedpath){
-    //             //Splice the objects
-    //             path.children.removeChildren(i);
-    //             path.children.removeChildren(j);
-    //             path.children.addChild(joinedpath);
-    //         }
-    //     }
-    //
-    // }
 
     path.strokeColor = '#000000';
     path.strokeWidth = 10;
@@ -415,29 +465,12 @@ function drawArc(entity) {
 
     let startpoint = new paper.Point(center.x + radius* Math.cos(startAngle), center.y + radius* Math.sin(startAngle));
 
-    // var starcenter = new paper.Point(startpoint);
-    // var points = 5;
-    // var radius1 = 250;
-    // var radius2 = 400;
-    // var star = new paper.Path.Star(starcenter, points, radius1, radius2);
-    //
-    // path.addChild(star);
 
     let midpoint = new paper.Point(center.x + radius* Math.cos(midAngle), center.y + radius* Math.sin(midAngle));
 
-    // starcenter = new paper.Point(midpoint);
-    // points = 10;
-    // star = new paper.Path.Star(starcenter, points, radius1, radius2);
-    //
-    // path.addChild(star);
 
     let endpoint = new paper.Point(center.x + radius* Math.cos(endAngle), center.y + radius* Math.sin(endAngle));
 
-    // starcenter = new paper.Point(endpoint);
-    // points = 20;
-    // star = new paper.Path.Star(starcenter, points, radius1, radius2);
-    //
-    // path.addChild(star);
 
     let arc = paper.Path.Arc(startpoint, midpoint, endpoint);
 
