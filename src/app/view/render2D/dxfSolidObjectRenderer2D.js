@@ -20,30 +20,72 @@ export function renderFeatureObjects(feature) {
     return undefined;
 }
 
-function tryJoining(patharray) {
-    let joincount = 0;
-    let retarray;
-    // console.log("Linked list:",patharray);
-    let nodetotest = patharray.head;
-    let nextnode = LinkedList.getNextNode(nodetotest);
-    while(nodetotest){
-        while(nextnode){
-            let primarypath = nodetotest.data;
-            let otherpath = nextnode.data;
-            let test = primarypath.intersects(otherpath);
-            if(test){
-                nodetotest.data = primarypath.join(otherpath);
-                console.log("Join count:", ++joincount);
-                patharray.removeNode(nextnode);
-                console.log("Modified linkedlist:", patharray);
-            }
-            nextnode = LinkedList.getNextNode(nextnode);
-        }
-        nodetotest = LinkedList.getNextNode(nodetotest);
-    }
-    retarray = patharray.getArray();
+/**
+ * Calculates and returns the bulge through point
+ * @param startpoint
+ * @param endpoint
+ * @param bulgevalue
+ * @return {paper.Point}
+ */
+function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
+    let throughpoint = 0;
 
-    return retarray;
+    let start = new paper.Point(startpoint.x, startpoint.y);
+    let end = new paper.Point(endpoint.x, endpoint.y);
+    let angle = 4 * Math.atan(bulgevalue);
+
+
+    /*
+    https://math.stackexchange.com/questions/9365/endpoint-of-a-line-knowing-slope-start-and-distance
+     */
+    let epsilon = angle/4;
+
+    let midpoint = new paper.Point(startpoint.x/2 + endpoint.x/2,
+        startpoint.y/2 + endpoint.y/2);
+
+    let p = new paper.Point(startpoint.x, startpoint.y).getDistance(midpoint) * bulgevalue;
+
+    let slope = (endpoint.y - startpoint.y)/(endpoint.x - startpoint.x);
+
+    let chordvector = end.subtract(start);
+
+    console.log("all points:", start, end, chordvector);
+    /*
+    First handle the two cases when they're nicely aligned to the axes
+     */
+
+    console.log(chordvector, "Angle:",chordvector.angle, Math.round(chordvector.angle), "Dist from midpoint:", p);
+
+    if(Math.round(chordvector.angle) == 0){
+        //Horizontal
+        console.log("Horizontal Case");
+        throughpoint = new paper.Point(midpoint.x, midpoint.y - p);
+        return throughpoint;
+
+    }else if(Math.round(chordvector.angle) == 90){
+        //Vertical
+        console.log("Vertical Case");
+        throughpoint = new paper.Point(midpoint.x + p, midpoint.y);
+        return throughpoint;
+    }else{
+        // All other angles
+        console.log("Angled Case")
+        slope = -1*slope;
+
+        //midpoint
+        let k = -p / Math.sqrt(1 + slope*slope);
+
+        throughpoint = midpoint.add(new paper.Point(k, k*slope));
+
+    }
+
+    //let base = startpoint
+
+
+    //Find the distance on the perpendicular
+
+
+    return throughpoint;
 }
 
 function isClosedPolyline(dxfobject) {
@@ -54,7 +96,7 @@ function isClosedPolyline(dxfobject) {
 }
 
 function processARC(geometryGraph, data) {
-    console.warn("Implement this function !!");
+    // console.warn("Implement this function !!");
 
     /*
 
@@ -162,9 +204,10 @@ export function renderDXFObjects(dxfobjectarray) {
 
 
     path.strokeColor = '#000000';
-    path.strokeWidth = 10;
+    path.strokeWidth = 1;
     path.closed = true;
     path.fillColor = '#ff7606';
+    path.fillRule = 'evenodd';
     let topleft = path.bounds.topLeft;
     path.translate(new paper.Point(-topleft.x, -topleft.y));
     path.scale(1, -1); //The coordinate system is all different for DXF
@@ -398,15 +441,29 @@ function drawLine(entity) {
 
     // // create geometry
     for(let i = 0; i < entity.vertices.length; i++) {
-
+        console.log("Point:", i , entity.vertices[i]);
         if(entity.vertices[i].bulge) {
-            console.error("Need to implement code to incorporate bulge values");
+            console.log("Drawing arc segment to incorporate bulge values");
             //TODO: Figure out what to do with the bugle value
             bulge = entity.vertices[i].bulge;
             startPoint = entity.vertices[i];
-            endPoint = (i + 1 < entity.vertices.length) ? entity.vertices[i + 1] : geometry.vertices[0];
+            if(i < entity.vertices.length-1){
+                endPoint = entity.vertices[i+1];
+            }else{
+                console.log("LAst vertex")
+                endPoint = entity.vertices[0];
+            }
+            // endPoint = (i + 1 < entity.vertices.length) ? entity.vertices[i + 1] :entity.vertices[0];
             console.log("Start Point:", startPoint);
             console.log("End Point:", endPoint);
+            let throughpoint = calculateBulgeThroughPoint(startPoint, endPoint, bulge);
+
+            console.log("Throughpoint:", throughpoint);
+
+            basepath.add(new paper.Point(startPoint.x, startPoint.y));
+            //basepath.add(new paper.Point(endPoint.x, endPoint.y));
+            basepath.arcTo(throughpoint, new paper.Point(endPoint.x, endPoint.y));
+            i++;
 
         } else {
             // let vertex = entity.vertices[i];
@@ -418,7 +475,7 @@ function drawLine(entity) {
             // path.addChild(line);
 
             let dxfvertex = entity.vertices[i];
-            basepath.add(new paper.Point(dxfvertex.x*1000, dxfvertex.y*1000));
+            basepath.add(new paper.Point(dxfvertex.x, dxfvertex.y));
 
         }
 
