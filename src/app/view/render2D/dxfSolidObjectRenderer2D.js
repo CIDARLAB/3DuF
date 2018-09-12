@@ -49,27 +49,27 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
 
     let chordvector = end.subtract(start);
 
-    console.log("all points:", start, end, chordvector);
+    // console.log("all points:", start, end, chordvector);
     /*
     First handle the two cases when they're nicely aligned to the axes
      */
 
-    console.log(chordvector, "Angle:",chordvector.angle, Math.round(chordvector.angle), "Dist from midpoint:", p);
+    // console.log(chordvector, "Angle:",chordvector.angle, Math.round(chordvector.angle), "Dist from midpoint:", p);
 
     if(Math.round(chordvector.angle) == 0){
         //Horizontal
-        console.log("Horizontal Case");
+        // console.log("Horizontal Case");
         throughpoint = new paper.Point(midpoint.x, midpoint.y - p);
         return throughpoint;
 
     }else if(Math.round(chordvector.angle) == 90){
         //Vertical
-        console.log("Vertical Case");
+        // console.log("Vertical Case");
         throughpoint = new paper.Point(midpoint.x + p, midpoint.y);
         return throughpoint;
     }else{
         // All other angles
-        console.log("Angled Case")
+        // console.log("Angled Case")
         slope = -1*slope;
 
         //midpoint
@@ -211,6 +211,8 @@ export function renderDXFObjects(dxfobjectarray) {
     let topleft = path.bounds.topLeft;
     path.translate(new paper.Point(-topleft.x, -topleft.y));
     path.scale(1, -1); //The coordinate system is all different for DXF
+
+    path.scale(1000, 1000); //Scale the coordinates to microns
 
     return path;
 }

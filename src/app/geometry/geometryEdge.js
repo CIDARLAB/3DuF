@@ -27,5 +27,9 @@ export default class GeometryEdge{
         return this.__type;
     }
 
+    get dxfData(){
+        return this.__dxfData;
+    }
+
 
 }
