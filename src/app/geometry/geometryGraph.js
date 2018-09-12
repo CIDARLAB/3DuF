@@ -47,6 +47,7 @@ export default class GeometryGraph{
         console.log("Cycles:", graphlib.alg.findCycles(this.__networkGraph));
         console.log("Edges:", this.__networkGraph.edges());
         console.log("Nodes:", this.__nodes);
+        console.log("Edge Data:", this.__edgeData);
         let path = new paper.CompoundPath();
 
         //graphlib.alg.findCycles(this.__networkGraph);
@@ -88,8 +89,39 @@ export default class GeometryGraph{
         let childpath = new paper.Path();
 
         for(let i = 0; i< traversal.length; i++ ) {
-            let node = this.__nodes.get(traversal[i]);
-            childpath.add(new paper.Point(node.x, node.y));
+            let noderef = traversal[i];
+            let node = this.__nodes.get(noderef);
+            let nextnoderef;
+            if((i+1) == traversal.length){
+                //Last Node
+                nextnoderef = traversal[0];
+            }else{
+                //All other nodes
+                nextnoderef = traversal[i+1];
+            }
+
+            //Get the edge
+            let edge = this.__getEdge(noderef, nextnoderef);
+
+            console.log("Edge:", edge);
+            console.log("Edge Type:", edge.type);
+            switch (edge.type) {
+                case "LINE":
+                    childpath.add(new paper.Point(node.x, node.y));
+                    break;
+                case "ARC":
+                    if(i == 0){
+                        //If its the first one we need to add the initial vertex
+                        childpath.add(new paper.Point(node.x, node.y));
+                    }
+                    let nextnode = this.__nodes.get(nextnoderef);
+                    let endpoint = new paper.Point(nextnode.x, nextnode.y);
+                    let midpoint = this.getARCMidpoint(edge.dxfData);
+                    childpath.arcTo(midpoint, endpoint);
+                    break;
+            }
+
+
         }
 
         path.addChild(childpath);
@@ -130,6 +162,26 @@ export default class GeometryGraph{
         // console.log("Segments:", segments);
 
         // path.addChild(joinedpath);
+    }
+
+    getARCMidpoint(dxfData) {
+        console.log("DXF:",dxfData);
+        let center = new paper.Point(dxfData.center.x, dxfData.center.y);
+        let radius = dxfData.radius;
+        let startAngle = dxfData.startAngle;
+        let endAngle = dxfData.endAngle; //* 180/Math.PI;
+        let midAngle = (startAngle + endAngle)/2;
+
+
+
+        let midpoint = new paper.Point(center.x + radius* Math.cos(midAngle), center.y + radius* Math.sin(midAngle));
+
+        return midpoint;
+    }
+
+    __getEdge(source, target){
+        let edgeref = this.__networkGraph.edge(source, target);
+        return this.__edgeData.get(edgeref);
     }
 
     static computeDistance(node, nodetocheck){
