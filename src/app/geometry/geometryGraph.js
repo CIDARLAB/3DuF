@@ -110,10 +110,7 @@ export default class GeometryGraph{
                     childpath.add(new paper.Point(node.x, node.y));
                     break;
                 case "ARC":
-                    if(i == 0){
-                        //If its the first one we need to add the initial vertex
-                        childpath.add(new paper.Point(node.x, node.y));
-                    }
+                    childpath.add(new paper.Point(node.x, node.y));
                     let nextnode = this.__nodes.get(nextnoderef);
                     let endpoint = new paper.Point(nextnode.x, nextnode.y);
                     let midpoint = this.getARCMidpoint(edge.dxfData);
