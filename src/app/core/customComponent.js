@@ -15,15 +15,40 @@ export default class CustomComponent {
      * @param dxfdata [DXFObjects]
      * @param mint String
      */
-    constructor(type, dxfdata, mint="TEST MINT"){
+    constructor(type, dxfdata, mint=type.toUpperCase()){
         // this.__params = params;
         this.__type = type;
         this.__entity = mint;
         this.dxfData = dxfdata;
+        this.__renderData = null;
         //This stores the features that are a part of the component
         // this.__features = [];
         // //TODO: Need to figure out how to effectively search through these
         // this.__bounds = null;
+    }
+
+    /**
+     * Returns the entity type
+     * @return {string}
+     */
+    get entity(){
+        return this.__entity;
+    }
+
+    /**
+     * Returns the type
+     * @return {*}
+     */
+    get type(){
+        return this.__type;
+    }
+
+    /**
+     * Returns the rendering data
+     * @param data
+     */
+    set renderData(data){
+        this.__renderData = data;
     }
 
     /**
