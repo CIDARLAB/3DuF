@@ -11,6 +11,7 @@ export default class ImportComponentDialog {
         this.__importComponentButton = document.getElementById("import_component_button");
         this.__dialog = document.getElementById("import_dialog");
         this.dxfData = null;
+        this.__currentRenderSVG = null;
         this.__canvas = document.getElementById("component_preview_canvas");
         this.__nameTextInput = document.getElementById("new_component_name");
 
@@ -37,6 +38,9 @@ export default class ImportComponentDialog {
         this.__dialog.querySelector('.close').addEventListener('click', function() {
             ref.__dialog.close();
 
+            //Clear the canvas
+            paper.project.activeLayer.removeChildren();
+
             //Enable default paperproject
             paper.projects[0].activate();
         });
@@ -45,6 +49,9 @@ export default class ImportComponentDialog {
         this.__importComponentButton.addEventListener('click', function (event) {
             ref.importComponent();
             ref.__dialog.close();
+
+            //Clear the canvas
+            paper.project.activeLayer.removeChildren();
 
             //Enable default paperproject
             paper.projects[0].activate();
@@ -60,7 +67,7 @@ export default class ImportComponentDialog {
     importComponent() {
         console.log("Import button clicked");
         let name = this.__nameTextInput.value;
-        this.__customComponentManagerDelegate.importComponentFromDXF(name, this.dxfData);
+        this.__customComponentManagerDelegate.importComponentFromDXF(name, this.dxfData, this.__currentRenderSVG);
     }
 
     /**
@@ -102,6 +109,7 @@ export default class ImportComponentDialog {
         this.dxfData = dxfobjects;
         console.log("DXF Objects:", dxfobjects);
         let render = DXFRenderer.renderDXFObjects(this.dxfData);
+        this.__currentRenderSVG = render.exportSVG();
         let bounds = render.bounds;
         let zoom = this.__computeOptimalZoom(bounds.width, bounds.height);
         paper.view.zoom = zoom;
