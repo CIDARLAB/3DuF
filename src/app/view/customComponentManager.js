@@ -1,6 +1,5 @@
 import ImportComponentDialog from "./ui/importComponentDialog";
 import CustomComponent from "../core/customComponent";
-import CustomComponentToolBar from "./ui/customComponentToolBar";
 
 export default class CustomComponentManager {
     constructor(viewManager){
@@ -25,7 +24,7 @@ export default class CustomComponentManager {
         let customcomponent = new CustomComponent(type, dxfdata);
         customcomponent.renderData = renderData;
         this.__library.set(type, customcomponent);
-
+        this.viewManagerDelegate.addCustomComponentTool(type);
         this.viewManagerDelegate.rightPanel.customComponentToolBar.updateToolBar();
     }
 

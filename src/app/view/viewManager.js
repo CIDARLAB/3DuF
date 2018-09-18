@@ -34,6 +34,7 @@ import GenerateArrayTool from "./tools/generateArrayTool";
 import CustomComponentManager from "./customComponentManager";
 import EditDeviceDialog from "./ui/editDeviceDialog";
 import ManufacturingPanel from "./ui/manufacturingPanel";
+import CustomComponentPositionTool from "./tools/customComponentPositionTool";
 
 export default class ViewManager {
     constructor(view) {
@@ -624,6 +625,9 @@ export default class ViewManager {
      * @param rightClickToolString
      */
     activateTool(toolString , rightClickToolString = "SelectTool") {
+        if(this.tools[toolString] == null){
+            throw new Error("Could not find tool with the matching string");
+        }
         this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
         this.mouseAndKeyboardHandler.rightMouseTool = this.tools[rightClickToolString];
         this.mouseAndKeyboardHandler.updateViewMouseEvents();
@@ -771,5 +775,9 @@ export default class ViewManager {
         this.tools["MoveTool"] = new MoveTool();
         this.tools["GenerateArrayTool"] = new GenerateArrayTool();
 
+    }
+
+    addCustomComponentTool(identifier){
+        this.tools[identifier] = new CustomComponentPositionTool(identifier);
     }
 }
