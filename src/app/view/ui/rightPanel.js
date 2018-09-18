@@ -1,9 +1,12 @@
+import CustomComponentToolBar from "./customComponentToolBar";
 
 
 export default class RightPanel{
-    constructor(){
+    constructor(viewManagerDelegate){
+        this.__viewManagerDelegate = viewManagerDelegate;
         this.__showResolutionToolBarButton = document.getElementById('grid-toolbar-show-button');
         this.__resolutionToolBar = document.getElementById('resolution-toolbar');
+        this.customComponentToolBar = new CustomComponentToolBar(this.__viewManagerDelegate.customComponentManager);
 
         //Do the click handler here
         let ref = this;
