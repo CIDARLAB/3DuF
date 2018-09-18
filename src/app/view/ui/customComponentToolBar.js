@@ -1,5 +1,7 @@
 import {setButtonColor} from "../../utils/htmlUtils";
 import * as HTMLUtils from "../../../../dist/src/app/utils/htmlUtils";
+const Registry = require("../../core/registry");
+
 
 export default class CustomComponentToolBar{
 
@@ -73,9 +75,15 @@ export default class CustomComponentToolBar{
     __addClickEventListener(toolbutton) {
         let identifier = toolbutton.dataset.type;
         let mainbutton = toolbutton.querySelector(".custom-component-button");
+
+        let ref = this;
+        let registryref = Registry;
         mainbutton.addEventListener("click", function(e){
             console.log(e);
+            let identifier = e.target.dataset.type;
             console.log("Button was clicked:", identifier);
+            registryref.viewManager.activateTool(identifier);
         });
     }
+
 }
