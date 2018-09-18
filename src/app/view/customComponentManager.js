@@ -7,7 +7,6 @@ export default class CustomComponentManager {
         this.viewManagerDelegate = viewManager;
         this.importComponentDialog = new ImportComponentDialog(this);
         this.__library = new Map();
-        this.customComponentToolBar = new CustomComponentToolBar(this);
 
     }
 
@@ -27,7 +26,7 @@ export default class CustomComponentManager {
         customcomponent.renderData = renderData;
         this.__library.set(type, customcomponent);
 
-        this.customComponentToolBar.updateToolBar();
+        this.viewManagerDelegate.rightPanel.customComponentToolBar.updateToolBar();
     }
 
 }

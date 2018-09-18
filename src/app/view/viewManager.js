@@ -41,12 +41,12 @@ export default class ViewManager {
         this.view = view;
         this.tools = {};
         this.rightMouseTool = new SelectTool();
-        this.rightPanel = new RightPanel();
+        this.customComponentManager = new CustomComponentManager(this);
+        this.rightPanel = new RightPanel(this);
         this.changeAllDialog = new ChangeAllDialog();
         this.resolutionToolBar = new ResolutionToolBar();
         this.borderDialog = new BorderSettingsDialog();
         this.layerToolBar = new LayerToolBar();
-        this.customComponentManager = new CustomComponentManager(this);
         this.messageBox = document.querySelector('.mdl-js-snackbar');
         this.editDeviceDialog = new EditDeviceDialog(this);
 
