@@ -1,6 +1,4 @@
 import EdgeFeature from "./edgeFeature";
-import PositionTool from "../view/tools/positionTool";
-import {PointValue} from "./parameters";
 
 var Params = require('./params');
 var Parameters = require('./parameters');

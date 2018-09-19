@@ -1,4 +1,4 @@
-import {setButtonColor, removeClass} from "../../utils/htmlUtils";
+import {setButtonColor} from "../../utils/htmlUtils";
 
 const Registry = require('../../core/registry');
 const Colors = require('../colors');

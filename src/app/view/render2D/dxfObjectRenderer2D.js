@@ -2,7 +2,6 @@
 import paper from 'paper';
 
 var Colors = require("../colors");
-import Feature from "../../core/feature";
 var PrimitiveSets2D = require("./primitiveSets2D");
 var FeatureSets = require("../../featureSets");
 var Registry = require("../../core/registry");

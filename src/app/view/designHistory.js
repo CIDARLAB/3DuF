@@ -10,7 +10,7 @@ export default class DesignHistory {
 
     /**
      * Adds new design to the design history
-     * @param data String
+     * @param devicedata
      */
     pushDesign(devicedata){
 
