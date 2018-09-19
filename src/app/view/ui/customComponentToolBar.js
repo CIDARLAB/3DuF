@@ -1,4 +1,3 @@
-import {setButtonColor} from "../../utils/htmlUtils";
 import * as HTMLUtils from "../../../../dist/src/app/utils/htmlUtils";
 const Registry = require("../../core/registry");
 

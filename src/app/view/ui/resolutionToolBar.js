@@ -1,8 +1,6 @@
 let Registry = require("../../core/registry");
 const wNumb = require("wnumb");
 
-import AdaptiveGrid from "../grid/adaptiveGrid";
-
 export default class ResolutionToolBar{
     constructor(){
         //Enable all the UI hooks so that we can execute the updates, actions

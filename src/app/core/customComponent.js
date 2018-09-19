@@ -1,4 +1,3 @@
-import * as Component from "./component";
 import Feature from './feature';
 
 const Registry = require("./registry");

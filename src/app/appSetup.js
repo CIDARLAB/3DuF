@@ -1,4 +1,3 @@
-import ZoomToolBar from "./view/ui/zoomToolBar";
 import paper from 'paper';
 
 const Registry = require("./core/registry");
