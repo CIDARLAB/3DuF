@@ -34,7 +34,6 @@ import GenerateArrayTool from "./tools/generateArrayTool";
 import CustomComponentManager from "./customComponentManager";
 import EditDeviceDialog from "./ui/editDeviceDialog";
 import ManufacturingPanel from "./ui/manufacturingPanel";
-import CustomComponentPositionTool from "./tools/customComponentPositionTool";
 
 export default class ViewManager {
     constructor(view) {
@@ -778,6 +777,6 @@ export default class ViewManager {
     }
 
     addCustomComponentTool(identifier){
-        this.tools[identifier] = new CustomComponentPositionTool(identifier);
+        this.tools[identifier] = new ComponentPositionTool(identifier, "Custom");
     }
 }

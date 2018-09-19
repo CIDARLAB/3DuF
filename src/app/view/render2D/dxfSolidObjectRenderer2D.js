@@ -1,14 +1,17 @@
 
 import paper from 'paper';
 
-var Colors = require("../colors");
-import Feature from "../../core/feature";
+const Colors = require("../colors");
 import LinkedList from "../../utils/linkedList";
 import GeometryGraph from "../../geometry/geometryGraph";
-var PrimitiveSets2D = require("./primitiveSets2D");
-var FeatureSets = require("../../featureSets");
-var Registry = require("../../core/registry");
 
+export function renderCustomComponentTarget(customcomponent, position) {
+    console.log("Render Posiition:", position);
+    let render = renderDXFObjects(customcomponent.dxfData);
+    render.fillColor.alpha = 0.5;
+    render.translate(position);
+    return render;
+}
 
 export function renderFeatureObjects(feature) {
     console.log('rendering the features dxf objects');
@@ -202,9 +205,8 @@ export function renderDXFObjects(dxfobjectarray) {
         path.addChild(child);
     }
 
-
-    path.strokeColor = '#000000';
-    path.strokeWidth = 1;
+    // path.strokeColor = '#000000';
+    // path.strokeWidth = 1;
     path.closed = true;
     path.fillColor = '#ff7606';
     path.fillRule = 'evenodd';
@@ -284,7 +286,6 @@ function getBaseColor(feature) {
 /**
  * Generates the paper.js equivalent of the ELLIPSE DXF object
  * @param entity DXF Data
- * @param path Compound Path onto which the drawing will be inserted into
  */
 function drawEllipse(entity) {
     /*
@@ -431,7 +432,6 @@ function drawCircle(entity){
 /**
  * Generates the paper.js equivalent of the LINE, POLYLINE, LWPOLYLINE DXF object
  * @param entity DXF Data
- * @param path Compound Path onto which the drawing will be inserted into
  */
 function drawLine(entity) {
     //Create a path
@@ -488,7 +488,6 @@ function drawLine(entity) {
 /**
  * Generates the paper.js equivalent of the ARC DXF object
  * @param entity DXF Data
- * @param path Compound Path onto which the drawing will be inserted into
  */
 function drawArc(entity) {
     /*

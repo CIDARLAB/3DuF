@@ -11,6 +11,7 @@ var SimpleQueue = require("../utils/simpleQueue");
 var Colors = require("./colors");
 import TextFeature from "../core/textFeature";
 const DXFObjectRenderer2D = require('./render2D/dxfObjectRenderer2D');
+const DXFSolidObjectRenderer = require('./render2D/dxfSolidObjectRenderer2D');
 
 export default class PaperView {
     constructor(canvas) {
@@ -393,6 +394,11 @@ export default class PaperView {
             if (this.lastTargetType == "TEXT") {
 
                 this.currentTarget = FeatureRenderer2D.renderTextTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
+                this.uiLayer.addChild(this.currentTarget);
+
+            } else if(this.lastTargetSet == "Custom"){
+                let customcomponent = Registry.viewManager.customComponentManager.getCustomComponent(this.lastTargetType);
+                this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, this.lastTargetPosition);
                 this.uiLayer.addChild(this.currentTarget);
 
             } else {
