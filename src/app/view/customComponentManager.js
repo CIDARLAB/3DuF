@@ -15,7 +15,11 @@ export default class CustomComponentManager {
 
     /**
      * inserts a new component
+     * @param type
+     * @param type
+     * @param renderData
      * @param dxfdata
+     * @param renderData
      */
     importComponentFromDXF(type, dxfdata, renderData){
         console.log("Yay ! loaded the data", dxfdata);
@@ -28,4 +32,7 @@ export default class CustomComponentManager {
         this.viewManagerDelegate.rightPanel.customComponentToolBar.updateToolBar();
     }
 
+    getCustomComponent(componenttype) {
+        return this.__library.get(componenttype);
+    }
 }

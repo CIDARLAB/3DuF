@@ -1,9 +1,9 @@
 import MouseTool from "./mouseTool";
 
-var Registry = require("../../core/registry");
+const Registry = require("../../core/registry");
 import Feature from '../../core/feature';
-var SimpleQueue = require("../../utils/simpleQueue");
-var Component = require("../../core/component");
+const SimpleQueue = require("../../utils/simpleQueue");
+const Component = require("../../core/component");
 import paper from 'paper';
 
 
@@ -47,6 +47,9 @@ export default class PositionTool extends MouseTool {
         return [target.x, target.y];
     }
 
+    /**
+     * Renders the target
+     */
     showTarget() {
         let target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
