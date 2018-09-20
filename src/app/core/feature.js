@@ -1,4 +1,5 @@
 import EdgeFeature from "./edgeFeature";
+import CustomComponent from "./customComponent";
 
 const Params = require('./params');
 const Parameters = require('./parameters');
@@ -227,10 +228,11 @@ export default class Feature {
     }
 
     static makeCustomComponentFeature(customcomponent, setstring, paramvalues, name = "New Feature", id=undefined){
-        let params = new Params(paramvalues, {"position": "Point"}, null);
+        let definitions = CustomComponent.defaultParameterDefinitions();
+        Feature.checkDefaults(paramvalues, definitions.heritable, Feature.getDefaultsForType(customcomponent.type, setstring));
+        let params = new Params(paramvalues, definitions.unique, definitions.heritable);
         let ret = new Feature(customcomponent.type, setstring, params, name, id);
         ret.dxfObjects = customcomponent.dxfData;
-        console.log("Custom Feature:", ret);
         return ret;
     }
 

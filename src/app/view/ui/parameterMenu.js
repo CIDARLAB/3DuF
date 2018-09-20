@@ -265,13 +265,13 @@ var createInOutRow = function(featureID, typeString, setString, key) {
 };
 
 var createFeatureTableRows = function(typeString, setString) {
-    var def = FeatureSets.getDefinition(typeString, setString);
-    var heritable = def.heritable;
-    var id = "fake_ID";
-    var rows = [];
-    for (var key in heritable) {
-        var row;
-        var type = heritable[key];
+    let def = FeatureSets.getDefinition(typeString, setString);
+    let heritable = def.heritable;
+    let id = "fake_ID";
+    let rows = [];
+    for (let key in heritable) {
+        let row;
+        let type = heritable[key];
         if (type == "Float" || type == "Integer") {
             row = createSliderRow(id, typeString, setString, key);
         }

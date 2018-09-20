@@ -1,11 +1,15 @@
 import ImportComponentDialog from "./ui/importComponentDialog";
 import CustomComponent from "../core/customComponent";
+const Registry = require('../core/registry');
 
 export default class CustomComponentManager {
     constructor(viewManager){
         this.viewManagerDelegate = viewManager;
         this.importComponentDialog = new ImportComponentDialog(this);
         this.__library = new Map();
+
+        //set up registry for custom tools
+        Registry.featureDefaults["Custom"] = {};
 
     }
 
@@ -22,8 +26,8 @@ export default class CustomComponentManager {
      * @param renderData
      */
     importComponentFromDXF(type, dxfdata, renderData){
-        console.log("Yay ! loaded the data", dxfdata);
-        console.log("Render Data", renderData);
+        // console.log("Yay ! loaded the data", dxfdata);
+        // console.log("Render Data", renderData);
         //Create DXF Objects
         let customcomponent = new CustomComponent(type, dxfdata);
         customcomponent.renderData = renderData;
