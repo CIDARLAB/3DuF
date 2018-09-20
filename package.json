@@ -47,7 +47,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Nesciosquid/3DuF.git"
+    "url": "git+https://github.com/CIDARLAB/3DuF.git"
   },
   "keywords": [
     "microfluidics",
@@ -56,10 +56,10 @@
     "design",
     "rendering"
   ],
-  "author": "Aaron W. Heuckroth",
-  "license": "MIT",
+  "author": "Radhakrishna Sanka, Joshua Lippai and Aaron W. Heuckroth",
+  "license": "BSD-2",
   "bugs": {
-    "url": "https://github.com/Nesciosquid/3DuF/issues"
+    "url": "https://github.com/CIDARLAB/3DuF/issues"
   },
-  "homepage": "https://github.com/Nesciosquid/3DuF#readme"
+  "homepage": "http://3duf.org"
 }
