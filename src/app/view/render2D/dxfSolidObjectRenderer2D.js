@@ -5,20 +5,28 @@ const Colors = require("../colors");
 import LinkedList from "../../utils/linkedList";
 import GeometryGraph from "../../geometry/geometryGraph";
 
-export function renderCustomComponentFeature(feature) {
-    console.log("Feature Data:", feature);
+export function renderCustomComponentFeature(feature, color) {
     let position = feature.getValue("position");
+    let rotation = feature.getValue("rotation");
     let render = renderDXFObjects(feature.dxfObjects);
     render.translate(new paper.Point(position[0], position[1]));
-    console.log("Render:", render);
+    render.rotate(rotation);
+    render.fillColor = color;
     return render;
 }
 
-export function renderCustomComponentTarget(customcomponent, position) {
+export function renderCustomComponentTarget(customcomponent, params) {
     // console.log("Render Posiition:", position);
+    let position = params["position"];
+    let color = params["color"];
+    let rotation = params["rotation"];
+    let p = new paper.Point(position[0], position[1]);
     let render = renderDXFObjects(customcomponent.dxfData);
+
+    render.fillColor = color;
     render.fillColor.alpha = 0.5;
-    render.translate(position);
+    render.translate(p);
+    render.rotate(rotation);
     return render;
 }
 
@@ -172,7 +180,7 @@ export function renderDXFObjects(dxfobjectarray) {
     if(dxfobjectarray == undefined){
         throw new Error("Cannot find DXF DATA");
     }
-    console.log("DXF Object Array to render:", dxfobjectarray);
+    // console.log("DXF Object Array to render:", dxfobjectarray);
 
     let patharray = new LinkedList();
     let closedshapes = [];

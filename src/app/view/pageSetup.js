@@ -6,37 +6,13 @@ var HTMLUtils = require("../utils/htmlUtils");
 var Registry = require("../core/registry");
 var Colors = require("./colors");
 var JSZip = require("jszip");
-var ParameterMenu = require("./UI/parameterMenu");
 var InsertTextTool = require("./tools/insertTextTool");
 
 let activeButton = null;
 let activeLayer = null;
 
 let revertdefaultsButton = document.getElementById("revertdefaults_button");
-let alignmentMarksParams = document.getElementById("alignmentmarks_params_button");
 
-let channelParams = document.getElementById("channel_params_button");
-let connectionParams = document.getElementById("connection_params_button");
-let roundedChannelParams = document.getElementById("roundedchannel_params_button");
-let transitionParams = document.getElementById("transition_params_button");
-let circleValveParams = document.getElementById("circleValve_params_button");
-let valveParams = document.getElementById("valve_params_button");
-let valve3dParams = document.getElementById("valve3d_params_button");
-let portParams = document.getElementById("port_params_button");
-let viaParams = document.getElementById("via_params_button");
-let chamberParams = document.getElementById("chamber_params_button");
-let diamondParams = document.getElementById("diamond_params_button");
-let bettermixerParams = document.getElementById("bettermixer_params_button");
-let curvedmixerParams = document.getElementById("curvedmixer_params_button");
-let mixerParams = document.getElementById("mixer_params_button");
-let gradientGeneratorParams = document.getElementById("gradientgenerator_params_button");
-let treeParams = document.getElementById("tree_params_button");
-let ytreeParams = document.getElementById("ytree_params_button");
-let muxParams = document.getElementById("mux_params_button");
-let transposerParams = document.getElementById("transposer_params_button");
-let rotarymixerParams = document.getElementById("rotarymixer_params_button");
-let dropletgenParams = document.getElementById("dropletgen_params_button");
-let celltraplParams = document.getElementById("celltrapl_params_button");
 
 let jsonButton = document.getElementById("json_button");
 let interchangeV1Button = document.getElementById("interchange_button");
@@ -109,13 +85,6 @@ function switchTo3D() {
 
 //TODO: transition backwards is super hacky. Fix it!
 
-function paramsWindowFunction(typeString, setString, isTranslucent = false) {
-    var makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString , isTranslucent);
-    return function(event) {
-        Registry.viewManager.killParamsWindow();
-        makeTable(event);
-    }
-}
 
 function setupAppPage() {
     view = Registry.viewManager.view;
@@ -195,29 +164,6 @@ function setupAppPage() {
         switchTo3D();*/
     //}
 
-    channelParams.onclick = paramsWindowFunction("Channel", "Basic");
-    connectionParams.onclick = paramsWindowFunction("Connection", "Basic");
-    roundedChannelParams.onclick = paramsWindowFunction("RoundedChannel", "Basic");
-    circleValveParams.onclick = paramsWindowFunction("CircleValve", "Basic");
-    valve3dParams.onclick = paramsWindowFunction("Valve3D", "Basic");
-    valveParams.onclick = paramsWindowFunction("Valve", "Basic");
-    portParams.onclick = paramsWindowFunction("Port", "Basic");
-    viaParams.onclick = paramsWindowFunction("Via", "Basic");
-    chamberParams.onclick = paramsWindowFunction("Chamber", "Basic");
-    diamondParams.onclick = paramsWindowFunction("DiamondReactionChamber", "Basic");
-    bettermixerParams.onclick = paramsWindowFunction("BetterMixer", "Basic");
-    curvedmixerParams.onclick = paramsWindowFunction("CurvedMixer", "Basic");
-    mixerParams.onclick = paramsWindowFunction("Mixer", "Basic");
-    gradientGeneratorParams.onclick = paramsWindowFunction("GradientGenerator", "Basic");
-    treeParams.onclick = paramsWindowFunction("Tree", "Basic");
-    ytreeParams.onclick = paramsWindowFunction("YTree", "Basic");
-    muxParams.onclick = paramsWindowFunction("Mux", "Basic");
-    transposerParams.onclick = paramsWindowFunction("Transposer", "Basic");
-    rotarymixerParams.onclick = paramsWindowFunction("RotaryMixer", "Basic");
-    dropletgenParams.onclick = paramsWindowFunction("DropletGen", "Basic");
-    transitionParams.onclick = paramsWindowFunction("Transition", "Basic");
-    celltraplParams.onclick = paramsWindowFunction("CellTrapL", "Basic");
-    alignmentMarksParams.onclick = paramsWindowFunction("AlignmentMarks", "Basic");
 
     function setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
@@ -246,4 +192,3 @@ function setupAppPage() {
 }
 
 module.exports.setupAppPage = setupAppPage;
-module.exports.paramsWindowFunction = paramsWindowFunction;

@@ -1,6 +1,7 @@
 import {setButtonColor} from "../../utils/htmlUtils";
 import {GREY_200, BLACK, WHITE} from '../colors';
 const Colors = require("../colors");
+const ParameterMenu = require("./parameterMenu");
 
 const inactiveBackground = GREY_200;
 const inactiveText = BLACK;
@@ -38,8 +39,33 @@ export default class ComponentToolBar{
         this.__rotarymixerButton = document.getElementById("rotarymixer_button");
         this.__dropletgenButton = document.getElementById("dropletgen_button");
         this.__celltraplButton = document.getElementById("celltrapl_button");
-
         this.__alignmentMarksButton = document.getElementById("alignmentmarks_button");
+
+        //Create all the parameter menu buttons
+
+        this.__channelParams = document.getElementById("channel_params_button");
+        this.__connectionParams = document.getElementById("connection_params_button");
+        this.__roundedChannelParams = document.getElementById("roundedchannel_params_button");
+        this.__transitionParams = document.getElementById("transition_params_button");
+        this.__circleValveParams = document.getElementById("circleValve_params_button");
+        this.__valveParams = document.getElementById("valve_params_button");
+        this.__valve3dParams = document.getElementById("valve3d_params_button");
+        this.__portParams = document.getElementById("port_params_button");
+        this.__viaParams = document.getElementById("via_params_button");
+        this.__chamberParams = document.getElementById("chamber_params_button");
+        this.__diamondParams = document.getElementById("diamond_params_button");
+        this.__bettermixerParams = document.getElementById("bettermixer_params_button");
+        this.__curvedmixerParams = document.getElementById("curvedmixer_params_button");
+        this.__mixerParams = document.getElementById("mixer_params_button");
+        this.__gradientGeneratorParams = document.getElementById("gradientgenerator_params_button");
+        this.__treeParams = document.getElementById("tree_params_button");
+        this.__ytreeParams = document.getElementById("ytree_params_button");
+        this.__muxParams = document.getElementById("mux_params_button");
+        this.__transposerParams = document.getElementById("transposer_params_button");
+        this.__rotarymixerParams = document.getElementById("rotarymixer_params_button");
+        this.__dropletgenParams = document.getElementById("dropletgen_params_button");
+        this.__celltraplParams = document.getElementById("celltrapl_params_button");
+        this.__alignmentMarksParams = document.getElementById("alignmentmarks_params_button");
 
 
         this.buttons = {
@@ -71,6 +97,8 @@ export default class ComponentToolBar{
         };
 
         this.__setupEventHandlers();
+
+        this.__setupParamButtonEventHandlers();
     }
 
     __setupEventHandlers() {
@@ -261,4 +289,40 @@ export default class ComponentToolBar{
 
         }
     }
+
+    __setupParamButtonEventHandlers() {
+        this.__channelParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Channel", "Basic");
+        this.__connectionParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Connection", "Basic");
+        this.__roundedChannelParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("RoundedChannel", "Basic");
+        this.__circleValveParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CircleValve", "Basic");
+        this.__valve3dParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Valve3D", "Basic");
+        this.__valveParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Valve", "Basic");
+        this.__portParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Port", "Basic");
+        this.__viaParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Via", "Basic");
+        this.__chamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Chamber", "Basic");
+        this.__diamondParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DiamondReactionChamber", "Basic");
+        this.__bettermixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("BetterMixer", "Basic");
+        this.__curvedmixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CurvedMixer", "Basic");
+        this.__mixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Mixer", "Basic");
+        this.__gradientGeneratorParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("GradientGenerator", "Basic");
+        this.__treeParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Tree", "Basic");
+        this.__ytreeParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("YTree", "Basic");
+        this.__muxParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Mux", "Basic");
+        this.__transposerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Transposer", "Basic");
+        this.__rotarymixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("RotaryMixer", "Basic");
+        this.__dropletgenParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGen", "Basic");
+        this.__transitionParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Transition", "Basic");
+        this.__celltraplParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CellTrapL", "Basic");
+        this.__alignmentMarksParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("AlignmentMarks", "Basic");
+
+    }
+
+    static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {
+        let makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString , isTranslucent);
+        return function(event) {
+            Registry.viewManager.killParamsWindow();
+            makeTable(event);
+        }
+    }
+
 }

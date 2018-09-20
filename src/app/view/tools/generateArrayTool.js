@@ -125,7 +125,7 @@ export default class GenerateArrayTool extends MouseTool {
         //         rightclickmenu.show(event);
         //         Registry.viewManager.rightClickMenu = rightclickmenu;
         //         this.rightClickMenu = rightclickmenu;
-        //         // let func = PageSetup.paramsWindowFunction(feat.getType(), feat.getSet());
+        //         // let func = PageSetup.getParamsWindowCallbackFunction(feat.getType(), feat.getSet());
         //         //func(event);
         //     } else {
         //         this.deselectFeatures();

@@ -1,4 +1,5 @@
 import * as HTMLUtils from "../../utils/htmlUtils";
+import ComponentToolBar from "./componentToolBar";
 const Registry = require("../../core/registry");
 
 
@@ -23,9 +24,9 @@ export default class CustomComponentToolBar{
     updateToolBar() {
         //Clear the toolbar
         this.__clearToolBar();
-        console.log("custom component library", this.__library);
+        // console.log("custom component library", this.__library);
         for(let [key,value] of this.__library.entries()){
-            console.log("Iterating though custom component library", key, value);
+            // console.log("Iterating though custom component library", key, value);
             let button = this.__createNewToolButton(key, value);
             this.__toolBar.appendChild(button);
         }
@@ -33,7 +34,7 @@ export default class CustomComponentToolBar{
         //Generate the Event Handler
         let toolbuttons = this.__toolBar.querySelectorAll(".generated-button");
 
-        console.log("toolbuttons",toolbuttons);
+        // console.log("toolbuttons",toolbuttons);
 
         for(let i=0; i<toolbuttons.length ; i++){
             this.__addClickEventListener(toolbuttons[i]);
@@ -42,19 +43,20 @@ export default class CustomComponentToolBar{
     }
 
     __clearToolBar() {
-        console.log("Clear the custom component toolbar UI");
+        // console.log("Clear the custom component toolbar UI");
         let buttons = this.__toolBar.querySelectorAll(".generated-button");
         for(let i=0 ; i<buttons.length ; i++){
-            console.log("Removing:", buttons[i]);
+            // console.log("Removing:", buttons[i]);
             this.__toolBar.removeChild(buttons[i]);
         }
     }
 
     __createNewToolButton(key, customcomponent) {
-        console.log("Creating button for:", key);
+        // console.log("Creating button for:", key);
         //Copy the the first button group
         let button = document.querySelector('#template-custom-component-button');
         let copy = button.cloneNode(true);
+        copy.dataset.type = customcomponent.type;
 
         //Make the delete button visible since the first layer ui keeps it hidden
         copy.style.visibility = "visible";
@@ -65,7 +67,10 @@ export default class CustomComponentToolBar{
         let mainbutton = copy.querySelector(".custom-component-button");
 
         mainbutton.innerHTML = customcomponent.entity;
-        mainbutton.dataset.type = customcomponent.type;
+        // mainbutton.dataset.type = customcomponent.type;
+
+        let paramsbutton = copy.querySelector(".params-button");
+        paramsbutton.dataset.type = customcomponent.type;
 
         return copy;
 
@@ -78,11 +83,16 @@ export default class CustomComponentToolBar{
         let ref = this;
         let registryref = Registry;
         mainbutton.addEventListener("click", function(e){
-            console.log(e);
-            let identifier = e.target.dataset.type;
-            console.log("Button was clicked:", identifier);
+            // console.log(e);
+            // let identifier = e.target.dataset.type;
+            // console.log("Main Button was clicked:", identifier);
             registryref.viewManager.activateTool(identifier);
         });
+
+        let paramsbutton = toolbutton.querySelector(".params-button");
+
+        paramsbutton.onclick = ComponentToolBar.getParamsWindowCallbackFunction(identifier, "Custom");
+
     }
 
 }

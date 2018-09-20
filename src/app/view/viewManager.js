@@ -35,6 +35,7 @@ import CustomComponentManager from "./customComponentManager";
 import EditDeviceDialog from "./ui/editDeviceDialog";
 import ManufacturingPanel from "./ui/manufacturingPanel";
 import CustomComponentPositionTool from "./tools/customComponentPositionTool";
+import CustomComponent from "../core/customComponent";
 
 export default class ViewManager {
     constructor(view) {
@@ -780,5 +781,6 @@ export default class ViewManager {
     addCustomComponentTool(identifier){
         let customcomponent = this.customComponentManager.getCustomComponent(identifier);
         this.tools[identifier] = new CustomComponentPositionTool(customcomponent, "Custom");
+        Registry.featureDefaults["Custom"][identifier] = CustomComponent.defaultParameterDefinitions().defaults;
     }
 }

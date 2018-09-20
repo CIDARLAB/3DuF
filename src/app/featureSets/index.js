@@ -1,4 +1,5 @@
 import * as DXFSolidObjectRenderer2D from "../view/render2D/dxfSolidObjectRenderer2D";
+import CustomComponent from "../core/customComponent";
 
 const FeatureSet = require("./featureSet");
 const registeredFeatureSets = {};
@@ -30,11 +31,14 @@ function getSet(setString){
 }
 
 function getDefinition(typeString, setString) {
+
     let set = getSet(setString);
-    console.log("Set:", set);
+    // console.log("Set:", set);
     if(set != undefined || set != null){
         let def = set.getDefinition(typeString);
         return def;
+    } else if(setString === 'Custom'){
+        return CustomComponent.defaultParameterDefinitions();
     }else{
         return null;
     }

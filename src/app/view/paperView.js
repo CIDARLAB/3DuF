@@ -10,6 +10,7 @@ import PanAndZoom from "./PanAndZoom";
 var SimpleQueue = require("../utils/simpleQueue");
 var Colors = require("./colors");
 import TextFeature from "../core/textFeature";
+import CustomComponent from "../core/customComponent";
 const DXFObjectRenderer2D = require('./render2D/dxfObjectRenderer2D');
 const DXFSolidObjectRenderer = require('./render2D/dxfSolidObjectRenderer2D');
 
@@ -398,7 +399,10 @@ export default class PaperView {
 
             } else if(this.lastTargetSet == "Custom"){
                 let customcomponent = Registry.viewManager.customComponentManager.getCustomComponent(this.lastTargetType);
-                this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, this.lastTargetPosition);
+                let params = Registry.featureDefaults[this.lastTargetSet][this.lastTargetType];
+                params["position"] =  this.lastTargetPosition;
+                params["color"] = Colors.getDefaultFeatureColor(this.lastTargetType, this.lastTargetSet, Registry.currentLayer);
+                this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, params);
                 this.uiLayer.addChild(this.currentTarget);
 
             } else {
