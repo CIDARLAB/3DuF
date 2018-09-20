@@ -1,11 +1,11 @@
 import MouseTool from "./mouseTool";
 
-var Registry = require("../../core/registry");
-var SimpleQueue = require("../../utils/simpleQueue");
+const Registry = require("../../core/registry");
+import SimpleQueue from "../../utils/simpleQueue";
 var PageSetup = require("../pageSetup");
 import paper from 'paper';
 
-class SelectTool extends MouseTool {
+export default class SelectTool extends MouseTool {
     constructor() {
         super();
         this.dragging = false;
@@ -225,5 +225,3 @@ class SelectTool extends MouseTool {
         return rect;
     }
 }
-
-module.exports = SelectTool;

@@ -1,13 +1,13 @@
 import MouseTool from "./mouseTool";
 
 var Registry = require("../../core/registry");
-var SimpleQueue = require("../../utils/simpleQueue");
+import SimpleQueue from "../../utils/simpleQueue";
 import Feature from "../../core/feature";
 var PageSetup = require("../pageSetup");
 import paper from 'paper';
 
 
-class ChannelTool extends MouseTool {
+export default class ChannelTool extends MouseTool {
 	constructor(typeString, setString) {
 		super();
 		this.typeString = typeString;
@@ -114,5 +114,3 @@ class ChannelTool extends MouseTool {
 		return [target.x, target.y]
 	}
 }
-
-module.exports = ChannelTool;

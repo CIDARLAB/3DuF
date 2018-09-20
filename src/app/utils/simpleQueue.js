@@ -1,4 +1,4 @@
-class SimpleQueue {
+export default class SimpleQueue {
 	constructor(func, timeout, report = false){
 		this.timeout = timeout;
 		this.func = func;
@@ -38,5 +38,3 @@ class SimpleQueue {
 		}, this.timeout);
 	}
 }
-
-module.exports = SimpleQueue;
