@@ -1,6 +1,6 @@
 import Feature from "../core/feature";
 import * as paper from "paper";
-import * as paper from "../../../lib/three/three.min";
+
 //Colors taken from: http://www.google.ch/design/spec/style/color.html
 module.exports.RED_500 = "#F44336";
 module.exports.INDIGO_500 = "#3F51B5";

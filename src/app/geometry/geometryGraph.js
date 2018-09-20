@@ -43,16 +43,15 @@ export default class GeometryGraph{
     }
 
     generateGeometry() {
-        //TODO: Generate Geometry
-        console.log("Cycles:", graphlib.alg.findCycles(this.__networkGraph));
-        console.log("Edges:", this.__networkGraph.edges());
-        console.log("Nodes:", this.__nodes);
-        console.log("Edge Data:", this.__edgeData);
+        // console.log("Cycles:", graphlib.alg.findCycles(this.__networkGraph));
+        // console.log("Edges:", this.__networkGraph.edges());
+        // console.log("Nodes:", this.__nodes);
+        // console.log("Edge Data:", this.__edgeData);
         let path = new paper.CompoundPath();
 
         //graphlib.alg.findCycles(this.__networkGraph);
         let graphcomponents = graphlib.alg.components(this.__networkGraph)
-        console.log("Components:", graphcomponents);
+        // console.log("Components:", graphcomponents);
 
         /*
         Step 1 - Iterate through each of the components (disconnected components)
@@ -72,7 +71,7 @@ export default class GeometryGraph{
         Step 2 - start traversing through the component and start making a path with segments
          */
 
-        console.log("Graph component",component);
+        // console.log("Graph component",component);
 
         //Get the first item in the component
 
@@ -82,7 +81,7 @@ export default class GeometryGraph{
         let segments = [];
         let startnode = this.__nodes.get(component[0]);
         let endnode = null;
-        console.log("test ?");
+        // console.log("test ?");
         //Get traversal
         let traversal =  graphlib.alg.preorder(this.__networkGraph, component[0]);
 
@@ -103,8 +102,8 @@ export default class GeometryGraph{
             //Get the edge
             let edge = this.__getEdge(noderef, nextnoderef);
 
-            console.log("Edge:", edge);
-            console.log("Edge Type:", edge.type);
+            // console.log("Edge:", edge);
+            // console.log("Edge Type:", edge.type);
             switch (edge.type) {
                 case "LINE":
                     childpath.add(new paper.Point(node.x, node.y));
@@ -162,7 +161,7 @@ export default class GeometryGraph{
     }
 
     getARCMidpoint(dxfData) {
-        console.log("DXF:",dxfData);
+        // console.log("DXF:",dxfData);
         let center = new paper.Point(dxfData.center.x, dxfData.center.y);
         let radius = dxfData.radius;
         let startAngle = dxfData.startAngle;

@@ -1,10 +1,10 @@
 import EdgeFeature from "./edgeFeature";
 
-var Params = require('./params');
-var Parameters = require('./parameters');
-var StringValue = Parameters.StringValue;
-var FeatureSets = require("../featureSets");
-var Registry = require("./registry");
+const Params = require('./params');
+const Parameters = require('./parameters');
+const StringValue = Parameters.StringValue;
+const FeatureSets = require("../featureSets");
+const Registry = require("./registry");
 
 // var registeredFeatureTypes = {};
 
@@ -21,6 +21,10 @@ export default class Feature {
         this.__set = set;
         this.__fabtype = fabtype;
         this.__dxfObjects = [];
+    }
+
+    set dxfObjects(dxfdata){
+        this.__dxfObjects = dxfdata;
     }
 
     /**
@@ -81,6 +85,10 @@ export default class Feature {
         }
         output.type = this.__fabtype;
         return output;
+    }
+
+    get dxfObjects(){
+        return this.__dxfObjects;
     }
 
     getSet(){
@@ -201,19 +209,29 @@ export default class Feature {
         return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type, json.dxfData);
     }
 
-    static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined, dxfdata=undefined){
+    static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined){
         let params;
         let featureType = FeatureSets.getDefinition(typeString, setString);
-        if (paramvalues) {
+        if (paramvalues && featureType) {
             Feature.checkDefaults(paramvalues, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
             params = new Params(paramvalues, featureType.unique, featureType.heritable);
+        }else{
+            params = new Params(paramvalues, {"position": "Point"}, null);
         }
-        if (typeString == "EDGE"){
-            console.log("testing......")
+
+        if (typeString === "EDGE") {
             return new EdgeFeature(dxfdata, params, id);
-        }else {
-            return new Feature(typeString, setString, params, name, id)
+        } else{
+            return new Feature(typeString, setString, params, name, id);
         }
+    }
+
+    static makeCustomComponentFeature(customcomponent, setstring, paramvalues, name = "New Feature", id=undefined){
+        let params = new Params(paramvalues, {"position": "Point"}, null);
+        let ret = new Feature(customcomponent.type, setstring, params, name, id);
+        ret.dxfObjects = customcomponent.dxfData;
+        console.log("Custom Feature:", ret);
+        return ret;
     }
 
     updateView(){

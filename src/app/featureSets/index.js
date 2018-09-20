@@ -1,12 +1,14 @@
-var FeatureSet = require("./featureSet");
-var registeredFeatureSets = {};
-var typeStrings = {};
-var Registry = require("../core/registry");
+import * as DXFSolidObjectRenderer2D from "../view/render2D/dxfSolidObjectRenderer2D";
+
+const FeatureSet = require("./featureSet");
+const registeredFeatureSets = {};
+const typeStrings = {};
+const Registry = require("../core/registry");
 
 // add more sets here!
-var requiredSets = {
+const requiredSets = {
     "Basic": require("./basic")
-}
+};
 
 registerSets(requiredSets);
 
@@ -28,9 +30,14 @@ function getSet(setString){
 }
 
 function getDefinition(typeString, setString) {
-    var set = getSet(setString);
-    let def = set.getDefinition(typeString);
-    return def;
+    let set = getSet(setString);
+    console.log("Set:", set);
+    if(set != undefined || set != null){
+        let def = set.getDefinition(typeString);
+        return def;
+    }else{
+        return null;
+    }
 }
 
 function getTool(typeString, setString){
@@ -39,8 +46,13 @@ function getTool(typeString, setString){
 }
 
 function getRender2D(typeString, setString){
-    let set = getSet(setString);
-    return set.getRender2D(typeString);
+    let set;
+    if (setString === "Custom") {
+        return DXFSolidObjectRenderer2D.renderCustomComponentFeature;
+    } else {
+        set = getSet(setString);
+        return set.getRender2D(typeString);
+    }
 }
 
 function getRender3D(typeString, setString){
