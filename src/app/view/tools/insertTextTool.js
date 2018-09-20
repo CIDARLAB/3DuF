@@ -2,14 +2,14 @@ import MouseTool from "./mouseTool";
 
 var Registry = require("../../core/registry");
 import TextFeature from "../../core/textFeature";
-var SimpleQueue = require("../../utils/simpleQueue");
+import SimpleQueue from "../../utils/simpleQueue";
 var PageSetup = require("../pageSetup");
 var PositionTool = require("./positionTool");
 let Params = require("../../core/params");
 import paper from 'paper';
 
 
-class InsertTextTool extends MouseTool {
+export default class InsertTextTool extends MouseTool {
     constructor() {
         super();
         this.typeString = "TEXT";
@@ -50,5 +50,3 @@ class InsertTextTool extends MouseTool {
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }
-
-module.exports = InsertTextTool;

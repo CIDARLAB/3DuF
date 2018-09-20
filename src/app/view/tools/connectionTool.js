@@ -2,7 +2,7 @@ import MouseTool from "./mouseTool";
 import Connection from '../../core/connection';
 
 const Registry = require("../../core/registry");
-var SimpleQueue = require("../../utils/simpleQueue");
+import SimpleQueue from "../../utils/simpleQueue";
 import Feature from "../../core/feature";
 var PageSetup = require("../pageSetup");
 import paper from 'paper';

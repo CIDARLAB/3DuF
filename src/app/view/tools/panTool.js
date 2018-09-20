@@ -1,7 +1,7 @@
 import MouseTool from "./mouseTool";
 
-var Registry = require("../../core/registry");
-var SimpleQueue = require("../../utils/simpleQueue");
+const Registry = require("../../core/registry");
+import SimpleQueue from "../../utils/simpleQueue";
 
 export default class PanTool extends MouseTool {
     constructor(){

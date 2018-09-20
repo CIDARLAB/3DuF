@@ -2,16 +2,16 @@ import ZoomToolBar from "./ui/zoomToolBar";
 import BorderSettingsDialog from './ui/borderSettingDialog';
 import paper from 'paper';
 
-var Registry = require("../core/registry");
+const Registry = require("../core/registry");
 // var Device = require("../core/device");
 import Device from '../core/device';
-var ChannelTool = require("./tools/channelTool");
+import ChannelTool from "./tools/channelTool"; //= require("./tools/channelTool");
 
-var PanAndZoom = require("./PanAndZoom");
-var SelectTool = require("./tools/selectTool");
-var InsertTextTool = require("./tools/insertTextTool");
-var SimpleQueue = require("../utils/SimpleQueue");
-var MouseSelectTool = require('./tools/mouseSelectTool');
+const PanAndZoom = require("./PanAndZoom");
+import SelectTool from "./tools/selectTool"; //= require("./tools/selectTool");
+import InsertTextTool from "./tools/insertTextTool"; //= require("./tools/insertTextTool");
+import SimpleQueue from "../utils/simpleQueue"; //= require("../utils/SimpleQueue");
+import MouseSelectTool from "./tools/mouseSelectTool"; //= require('./tools/mouseSelectTool');
 
 import ResolutionToolBar from './ui/resolutionToolBar';
 import RightPanel from './ui/rightPanel';
