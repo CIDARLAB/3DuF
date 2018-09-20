@@ -5,8 +5,17 @@ const Colors = require("../colors");
 import LinkedList from "../../utils/linkedList";
 import GeometryGraph from "../../geometry/geometryGraph";
 
+export function renderCustomComponentFeature(feature) {
+    console.log("Feature Data:", feature);
+    let position = feature.getValue("position");
+    let render = renderDXFObjects(feature.dxfObjects);
+    render.translate(new paper.Point(position[0], position[1]));
+    console.log("Render:", render);
+    return render;
+}
+
 export function renderCustomComponentTarget(customcomponent, position) {
-    console.log("Render Posiition:", position);
+    // console.log("Render Posiition:", position);
     let render = renderDXFObjects(customcomponent.dxfData);
     render.fillColor.alpha = 0.5;
     render.translate(position);
@@ -160,6 +169,11 @@ function processLine(geometryGraph, data) {
 export function renderDXFObjects(dxfobjectarray) {
     // let path = new paper.CompoundPath();
 
+    if(dxfobjectarray == undefined){
+        throw new Error("Cannot find DXF DATA");
+    }
+    console.log("DXF Object Array to render:", dxfobjectarray);
+
     let patharray = new LinkedList();
     let closedshapes = [];
 
@@ -194,8 +208,8 @@ export function renderDXFObjects(dxfobjectarray) {
         }
     }
 
-    console.log("Geometry grpah:",geometryGraph);
-    console.log("Closed Shapes:", closedshapes);
+    // console.log("Geometry grpah:",geometryGraph);
+    // console.log("Closed Shapes:", closedshapes);
     //TODO: Generate the Geometry from the geometry graph , this should a return a compound path that takes care of the right kind of correct connected paths
 
     let path =  geometryGraph.generateGeometry();
@@ -396,7 +410,7 @@ function drawMtext(entity, data) {
 }
 
 function drawSpline(entity, path) {
-
+    let curve;
     var points = entity.controlPoints.map(function(vec) {
         return new paper.Point(vec.x, vec.y);
     });
