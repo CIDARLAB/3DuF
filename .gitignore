@@ -12,3 +12,6 @@ old/*.scad
 
 .idea/
 *tmp-browserify*
+
+3DuFapp.js
+publish.sh
