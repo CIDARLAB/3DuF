@@ -210,9 +210,14 @@ export default class Feature {
         return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type, json.dxfData);
     }
 
-    static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined){
+    static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined, dxfdata){
         let params;
         let featureType = FeatureSets.getDefinition(typeString, setString);
+
+        if (typeString === "EDGE") {
+            return new EdgeFeature(dxfdata, params, id);
+        }
+
         if (paramvalues && featureType) {
             Feature.checkDefaults(paramvalues, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
             params = new Params(paramvalues, featureType.unique, featureType.heritable);
@@ -220,11 +225,7 @@ export default class Feature {
             params = new Params(paramvalues, {"position": "Point"}, null);
         }
 
-        if (typeString === "EDGE") {
-            return new EdgeFeature(dxfdata, params, id);
-        } else{
-            return new Feature(typeString, setString, params, name, id);
-        }
+        return new Feature(typeString, setString, params, name, id);
     }
 
     static makeCustomComponentFeature(customcomponent, setstring, paramvalues, name = "New Feature", id=undefined){
