@@ -4,8 +4,9 @@ import Connection from '../../core/connection';
 const Registry = require("../../core/registry");
 import SimpleQueue from "../../utils/simpleQueue";
 import Feature from "../../core/feature";
-var PageSetup = require("../pageSetup");
 import paper from 'paper';
+import Params from "../../core/params";
+import ConnectionTarget from "../../core/connectionTarget";
 
 
 export default class ConnectionTool extends MouseTool {
@@ -19,6 +20,9 @@ export default class ConnectionTool extends MouseTool {
         this.currentChannelID = null;
         this.currentTarget = null;
         this.dragging = false;
+        this.source = null;
+        this.sinks = [];
+        this.__currentConnectionObject = null;
 
         /*
         States:
@@ -105,9 +109,23 @@ export default class ConnectionTool extends MouseTool {
     }
 
     initChannel() {
+        let isPointOnComponent = this.__isPointOnComponent(this.lastPoint);
+        let isPointOnConnection = this.__isPointOnConnection(this.lastPoint);
         this.startPoint = ConnectionTool.getTarget(this.lastPoint);
         this.lastPoint = this.startPoint;
-        this.wayPoints.push(this.startPoint);
+        if(isPointOnComponent){
+            this.source = new ConnectionTarget(isPointOnComponent.getID(), null);
+            //TODO: Modify the waypoint to reflect closest port in the future
+            this.wayPoints.push(this.startPoint);
+        } else if (isPointOnConnection){
+            console.warn("Implement method to make the connection connections");
+            //TODO: Find the current connection we are working with and load it into this tools working memory
+            this.__currentConnectionObject = isPointOnConnection; //We just use this as the reference
+            //TODO: Modify the waypoint to reflect the closest point on connection center spine
+            this.wayPoints.push(this.startPoint);
+        }else{
+            this.wayPoints.push(this.startPoint);
+        }
     }
 
     updateChannel() {
@@ -134,12 +152,24 @@ export default class ConnectionTool extends MouseTool {
             feat.updateParameter("wayPoints", this.wayPoints);
             feat.updateParameter("segments", this.generateSegments());
             //Save the connection object
-            let connection = new Connection('Connection', feat.getParams(), Registry.currentDevice.generateNewName('CHANNEL'), 'CHANNEL');
-            connection.addFeatureID(feat.getID());
-            Registry.currentDevice.addConnection(connection);
+            let params = new Params(null,null,null, feat.getParams());
+            if(this.__currentConnectionObject == null || this.__currentConnectionObject == undefined){
+                let connection = new Connection('Connection', params, Registry.currentDevice.generateNewName('CHANNEL'), 'CHANNEL');
+                connection.addFeatureID(feat.getID());
+                feat.referenceID = connection.getID();
+                this.__addConnectionTargets(connection)
+                Registry.currentDevice.addConnection(connection);
+            }else{
+                console.error("Implement conneciton tool to update existing connection");
+                //TODO: Update the connection with more sinks and paths and what not
+                this.__addConnectionTargets(this.__currentConnectionObject);
+            }
 
             this.currentChannelID = null;
             this.wayPoints = [];
+            this.source = null;
+            this.sinks = [];
+            this.__currentConnectionObject = null;
             Registry.viewManager.saveDeviceState();
         } else {
             console.error("Something is wrong here, unable to finish the connection");
@@ -157,7 +187,7 @@ export default class ConnectionTool extends MouseTool {
         Step 1 - Check the state
         Step 2 - based on the state do the following
             SOURCE - Do nothing, everything is good
-            WAYPOINT - 1) Reset the state to source 2) cleanup features 3) TBA
+            WAYPOINT - 1) Reset the state to __source 2) cleanup features 3) TBA
             TARGET - Set the state to SOURCE and do nothing else
          */
         switch (this.__STATE) {
@@ -176,9 +206,14 @@ export default class ConnectionTool extends MouseTool {
 
     }
 
-
+    /**
+     * Adds a way point to the connection
+     * @param event
+     * @param isManhatten
+     */
     addWayPoint(event, isManhatten) {
         let point = MouseTool.getEventPosition(event);
+        let isPointOnComponent = this.__isPointOnComponent(point);
         let target = ConnectionTool.getTarget(point);
         if(isManhatten && target){
             //TODO: modify the target to find the orthogonal point
@@ -191,6 +226,66 @@ export default class ConnectionTool extends MouseTool {
         if (target.length = 2) {
             this.wayPoints.push(target);
         }
+
+        if(isPointOnComponent){
+            //Do this if we want to terminate the connection
+            //Check if source is empty
+            if(this.source == null){
+                //Set is as the source
+                this.source = new ConnectionTarget(isPointOnComponent, null);
+            } else {
+                //Add it to the sinks
+                this.sinks.push(new ConnectionTarget(isPointOnComponent, null));
+            }
+            this.__STATE = "TARGET";
+            this.dragging = false;
+            let end = this.wayPoints.pop();
+            this.lastPoint = end;
+            this.finishChannel();
+        }
+
+    }
+
+    /**
+     * Checks if the point coincides with a Connection. Return the Connection associated with the point or returns false
+     * @param point
+     * @return {boolean} or Connection Object
+     * @private
+     */
+    __isPointOnConnection(point) {
+        console.log("Point to check", point);
+        let render = Registry.viewManager.hitFeature(point);
+        if(render != false && render != null && render != undefined){
+            let feature = Registry.currentDevice.getFeatureByID(render.featureID);
+            console.log("Feature that intersects:", feature);
+            console.log("Associated object:", Registry.currentDevice.getConnectionByID(feature.referenceID));
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if the point coincides with a component. Return the Component associated with the point or returns false
+     * @param point
+     * @return {boolean} or Component Object
+     * @private
+     */
+    __isPointOnComponent(point) {
+        console.log("Point to check", point);
+        let render = Registry.viewManager.hitFeature(point);
+        if(render != false && render != null && render != undefined){
+            let feature = Registry.currentDevice.getFeatureByID(render.featureID);
+            console.log("Feature that intersects:", feature);
+            let component = Registry.currentDevice.getComponentByID(feature.referenceID);
+            console.log("Associated object:", component);
+            if(component != null || component != undefined){
+                return component;
+            }else{
+                return false;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -262,5 +357,21 @@ export default class ConnectionTool extends MouseTool {
         }
         // console.log("segments:", ret);
         return ret;
+    }
+
+    /**
+     * Checks if the current connection tool object has source and sinks and updates the connection object that is
+     * passed as an argument in this method.
+     * @private
+     */
+    __addConnectionTargets(connection) {
+        if(this.source != null || this.source != undefined){
+            connection.addConnectionTarget(this.source);
+        }
+
+        for(let i in this.sinks){
+            connection.addConnectionTarget(this.sinks[i]);
+        }
+
     }
 }

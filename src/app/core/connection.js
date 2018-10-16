@@ -1,6 +1,8 @@
 import Feature from './feature';
 import paper from 'paper';
 import Parameter from "./parameter";
+import Params from "./params";
+import ConnectionTarget from "./connectionTarget";
 
 const Registry = require("./registry");
 
@@ -21,6 +23,11 @@ export default class Connection {
         this.__nodes = [];
         //TODO: Need to figure out how to effectively search through these
         this.__bounds = null;
+        this.__source = null;
+        this.__sinks = [];
+        this.__paths = [];
+        this.__objects = [];
+        this.__segments = [];
     }
 
     get features(){
@@ -65,8 +72,10 @@ export default class Connection {
     toInterchangeV1(){
         let output = {};
         output.id = this.__id;
-        output.name = this.__name.toJSON();
-        output.entity = this.__entity.toJSON();
+        output.name = this.__name;
+        output.entity = this.__entity;
+        output.source = this.__source;
+        output.sinks = this.__sinks;
         output.params = this.__params.toJSON();
         return output;
     }
@@ -145,7 +154,7 @@ export default class Connection {
      * @param featureID String id of the feature
      */
     addFeatureID(featureID){
-        if(typeof value != 'string' && !(value instanceof String)){
+        if(typeof featureID != 'string' && !(featureID instanceof String)){
             throw new Error("The reference object value can only be a string")
         }
         this.__features.push(featureID);
@@ -205,10 +214,18 @@ export default class Connection {
         }
     }
 
+    /**
+     * Returns the list of waypoints associated with the connection
+     * @return {*|void|string}
+     */
     getWaypoints(){
         return this.__params["wayPoints"].getValue()
     }
 
+    /**
+     * Updates the segments of the connection
+     * @param segments
+     */
     updateSegments(segments){
         this.updateParameter('segments', new Parameter('SegmentArray', segments));
         for(let i in this.__features){
@@ -221,6 +238,10 @@ export default class Connection {
 
     }
 
+    /**
+     * Inserts the gap using the boundingbox
+     * @param boundingbox
+     */
     insertFeatureGap(boundingbox){
         //Convert Rectangle to Path.Rectangle
         boundingbox = new paper.Path.Rectangle(boundingbox);
@@ -243,6 +264,14 @@ export default class Connection {
         this.updateSegments(segments);
     }
 
+    /**
+     * Breaks the segment at the 2 points given by the points
+     * @param segment
+     * @param break1
+     * @param break2
+     * @return {*[][][]}
+     * @private
+     */
     __breakSegment(segment, break1, break2){
         //Generate 2 segments from this 1 segemnt
         let p1 = new paper.Point(segment[0]);
@@ -272,12 +301,40 @@ export default class Connection {
      * @returns {*}
      */
     static fromInterchangeV1(json){
-        let set;
-        if (json.hasOwnProperty("set")) set = json.set;
-        else set = "Basic";
-        //TODO: This will have to change soon when the thing is updated
-        throw new Error("Need to implement Interchange V1 Import for component object");
-        //return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
+        // let set;
+        // if (json.hasOwnProperty("set")) set = json.set;
+        // else set = "Basic";
+        // //TODO: This will have to change soon when the thing is updated
+        // throw new Error("Need to implement Interchange V1 Import for component object");
+        // //return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
+        let name = json.name;
+        let id = json.id;
+        let entity = json.entity;
+        let params = {};
+        for(let key in json.params){
+            console.log("key:", key, "value:", json.params[key]);
+            let paramobject = Parameter.generateConnectionParameter(key, json.params[key]);
+            params[key] = paramobject;
+        }
+
+        let paramstoadd = new Params(null, null, null, params);
+
+        let connection = new Connection(entity, paramstoadd, name, entity, id);
+        if(json.hasOwnProperty("source")){
+            if(json.source != null && json.source != undefined){
+                connection.setSource(json.source.component, json.source.port);
+            }
+        }
+        if(json.hasOwnProperty("sinks")){
+            if(json.sinks != null && json.sinks != undefined){
+                for(let i in connection.__sinks){
+                    let sink = connection.__sinks[i];
+                    connection.addSink(sink.component, sink.port);
+                }
+            }
+        }
+
+        return connection;
     }
 
 
@@ -295,5 +352,45 @@ export default class Connection {
         this.updateSegments(ret);
     }
 
+    /**
+     * Allows the user to set the source of the connection
+     * @param component
+     * @param port
+     */
+    setSource(component, port){
+        if(typeof component != 'string' && !(component instanceof String)){
+            throw new Error("The reference object value can only be a string")
+        }
+        this.__source = new ConnectionTarget(component, port);
+    }
 
+    /**
+     * Allows the user to add a sink to the connection
+     * @param component
+     * @param port
+     */
+    addSink(component, port) {
+        if(typeof component != 'string' && !(component instanceof String)){
+            throw new Error("The reference object value can only be a string")
+        }
+        this.__sinks.push(new ConnectionTarget(component, port));
+    }
+
+    /**
+     * Adds a new connection target to either the source or the sinks of the connection object. Requires the user to pass
+     * a ConnectionTarget Object or else it will throw an error.
+     * @param connectiontarget
+     */
+    addConnectionTarget(connectiontarget){
+        if(!(connectiontarget instanceof ConnectionTarget) || connectiontarget == null || connectiontarget == undefined) {
+            throw new Error("Cannot add non-ConnectionTarget object as source or sink");
+        }
+
+        if(this.__source == null){
+            this.__source = connectiontarget
+        }else{
+            //TODO: Check for duplicates - does it matter actually ?
+            this.__sinks.push(connectiontarget);
+        }
+    }
 }

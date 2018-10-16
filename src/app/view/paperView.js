@@ -499,6 +499,12 @@ export default class PaperView {
 
     }
 
+    /**
+     * Checks to see if the point intersects with any feature that is rendered on the canvas
+     * @param point
+     * @param onlyHitActiveLayer
+     * @return PaperJS Rendered Feature
+     */
     hitFeature(point, onlyHitActiveLayer = true) {
         let hitOptions = {
             fill: true,
