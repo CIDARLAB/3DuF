@@ -1,3 +1,5 @@
+import Params from "./params";
+
 const Registry = require("./registry");
 var FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
 import Parameter from './parameter';
@@ -72,9 +74,12 @@ class Component {
     toInterchangeV1(){
         let output = {};
         output.id = this.__id;
-        output.name = this.__name.toJSON();
-        output.entity = this.__entity.toJSON();
+        output.name = this.__name;
+        output.entity = this.__entity;
         output.params = this.__params.toJSON();
+        let bounds = this.getBoundingRectangle()
+        output.xspan = bounds.width;
+        output.yspan = bounds.height;
         return output;
     }
 
@@ -117,7 +122,7 @@ class Component {
      * @return {*|string}
      */
     getPosition(){
-        return this.__params["position"].getValue();
+        return this.__params.getValue("position");
     }
 
     /**
@@ -158,6 +163,9 @@ class Component {
      * @param featureID String id of the feature
      */
     addFeatureID(featureID){
+        if(typeof featureID != 'string' && !(featureID instanceof String)){
+            throw new Error("The reference object value can only be a string")
+        }
         this.__features.push(featureID);
         //Now update bounds
         // this.__updateBounds();
@@ -220,6 +228,9 @@ class Component {
      * @return {*}
      */
     getBoundingRectangle(){
+        if(this.features.length == 0 || this.features == null || this.features == undefined){
+            console.error("No features associated with the component");
+        }
         let bounds  = null;
         for(let i in this.features){
             let featureid = this.features[i];
@@ -288,12 +299,26 @@ class Component {
      * @returns {*}
      */
     static fromInterchangeV1(json){
-        let set;
-        if (json.hasOwnProperty("set")) set = json.set;
-        else set = "Basic";
-        //TODO: This will have to change soon when the thing is updated
-        throw new Error("Need to implement Interchange V1 Import for component object");
-        //return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
+        // let set;
+        // if (json.hasOwnProperty("set")) set = json.set;
+        // else set = "Basic";
+        // //TODO: This will have to change soon when the thing is updated
+        // throw new Error("Need to implement Interchange V1 Import for component object");
+        let name = json.name;
+        let id = json.id;
+        let entity = json.entity;
+        let params = {};
+        for(let key in json.params){
+            console.log("key:", key, "value:", json.params[key]);
+            let paramobject = Parameter.generateFromRaw(key, json.params[key]);
+            params[key] = paramobject;
+        }
+
+        let paramstoadd = new Params(null, null, null, params);
+
+        let component = new Component(entity, paramstoadd, name, entity, id);
+        return component;
+
     }
 
 }

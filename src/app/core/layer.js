@@ -1,16 +1,13 @@
 import EdgeFeature from "./edgeFeature";
 
-var Params = require('./params');
-var Parameters = require('./parameters');
+const Parameters = require('./parameters');
 
 import Feature from './feature';
 import TextFeature from './textFeature';
+import Params from "./params";
 
-var Registry = require("./registry");
+const Registry = require("./registry");
 
-var FloatValue = Parameters.FloatValue;
-var BooleanValue = Parameters.BooleanValue;
-var StringValue = Parameters.StringValue;
 
 class Layer {
     constructor(values, name = "New Layer") {

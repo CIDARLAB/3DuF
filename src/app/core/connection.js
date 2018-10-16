@@ -145,6 +145,9 @@ export default class Connection {
      * @param featureID String id of the feature
      */
     addFeatureID(featureID){
+        if(typeof value != 'string' && !(value instanceof String)){
+            throw new Error("The reference object value can only be a string")
+        }
         this.__features.push(featureID);
         //Now update bounds
         // this.__updateBounds();

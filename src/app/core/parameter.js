@@ -1,5 +1,5 @@
-// const Registry = require("./registry");
 import * as Registry from './registry';
+import * as NumberUtils from "../utils/numberUtils";
 
 export default class Parameter {
     constructor(type, value) {
@@ -54,6 +54,20 @@ export default class Parameter {
 
     static fromJSON(json) {
         return Parameter.makeParam(json.type, json.value);
+    }
+
+    static generateFromRaw(key, value) {
+        let ret;
+
+        if(key == "position"){
+            ret = new Parameter("Point", value);
+        } else if(NumberUtils.isFloatOrInt(value)){
+            ret = new Parameter("Float", value);
+        } else if(typeof value == 'string' || value instanceof String){
+            ret = new Parameter("String", value);
+        }
+
+        return ret;
     }
 }
 
