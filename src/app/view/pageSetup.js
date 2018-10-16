@@ -1,5 +1,6 @@
 import {setButtonColor} from "../utils/htmlUtils";
 import paper from 'paper';
+import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 
 
 var HTMLUtils = require("../utils/htmlUtils");
@@ -134,6 +135,10 @@ function setupAppPage() {
 
     svgButton.onclick = function() {
         let svgs = Registry.viewManager.layersToSVGStrings();
+        for(let i = 0; i<svgs.length; i++){
+            svgs[i] = ManufacturingLayer.generateSVGTextPrepend(Registry.currentDevice.getXSpan(), Registry.currentDevice.getYSpan())
+                + svgs[i] + ManufacturingLayer.generateSVGTextAppend();
+        }
         //let svg = paper.project.exportSVG({asString: true});
         let blobs = [];
         let success = 0;

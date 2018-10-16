@@ -143,12 +143,13 @@ export default class CNCGenerator {
 
                 if(isControl){
                     manufacturinglayer.flipX();
-                    isControl = false;
                 }
 
                 mfglayers.push(manufacturinglayer);
 
             }
+
+            isControl = false;
 
         }
 
