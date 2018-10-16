@@ -1,10 +1,14 @@
 import Parameter from './parameter';
 
-class Params {
-    constructor(values, unique, heritable) {
+export default class Params {
+    constructor(values, unique, heritable, rawparameters) {
         this.unique = unique;
         this.heritable = heritable;
-        this.parameters = this.__sanitizeValues(values);
+        if(values != null){
+            this.parameters = this.__sanitizeValues(values);
+        }else{
+            this.parameters = rawparameters
+        }
     }
 
     updateParameter(key, value){
@@ -106,5 +110,3 @@ class Params {
         return new Params(json, unique, heritable);
     }
 }
-
-module.exports = Params;

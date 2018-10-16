@@ -1,4 +1,5 @@
-var Params = require("./params");
+import Params from "./params";
+
 var Parameters = require("./parameters");
 var Parameter =require("./parameter");
 import Feature from './feature';
@@ -170,7 +171,7 @@ export default class Device {
             //features.push.apply(features, layer.features);
             let layer = this.layers[i];
             for(let j in layer.features){
-                console.log(layer.features[j]);
+                // console.log(layer.features[j]);
                 features.push(layer.features[j]);
             }
         }
@@ -220,6 +221,39 @@ export default class Device {
         }
     }
 
+    /**
+     * Update the cross-reference
+     * @param objectID
+     * @param featureID
+     */
+    updateObjectReference(objectID, featureID){
+        //Goes through the components to update the reference
+        let component;
+        let foundflag = false;
+        for(let i in this.__components){
+            component = this.__components[i];
+            console.log(objectID, component.getID());
+            if(objectID == component.getID()){
+                component.addFeatureID(featureID);
+                foundflag = true;
+            }
+        }
+
+        //Goes through the connection to update the reference
+        let connection;
+        for(let i in this.__connections){
+            connection = this.__connections[i];
+            if(objectID == connection.getID()){
+                connection.addFeatureID(featureID);
+                foundflag = true;
+            }
+        }
+
+        if(!foundflag){
+            throw new Error("Could not find object to update reference: " + featureID);
+        }
+    }
+
     static getHeritableParameters(){
         return {};
     }
@@ -248,6 +282,23 @@ export default class Device {
         return output;
     }
 
+
+    __componentsToInterchangeV1() {
+        let output = [];
+        for(let i in this.__components){
+            output.push(this.__components[i].toInterchangeV1());
+        }
+        return output;
+    }
+
+    __connectionToInterchangeV1() {
+        let output = [];
+        for(let i in this.__connections){
+            output.push(this.__connections[i].toInterchangeV1());
+        }
+        return output;
+    }
+
     __featureLayersToInterchangeV1(){
         let output = [];
         for(let i in this.layers){
@@ -270,6 +321,21 @@ export default class Device {
         }
     }
 
+    /**
+     * Loads the JSON Component object into the device object
+     * @param components
+     * @private
+     */
+    __loadComponentsFromInterchangeV1(components) {
+        let componenttoadd;
+
+        for(let i in components){
+            componenttoadd = Component.fromInterchangeV1(components[i]);
+            this.__components.push(componenttoadd);
+        }
+    }
+
+
     toJSON() {
         let output = {};
         output.name = this.name.toJSON();
@@ -286,8 +352,8 @@ export default class Device {
         output.params = this.params.toJSON();
         //TODO: Use this to dynamically create enough layers to scroll through
         // output.layers = this.__layersToInterchangeV1();
-        // output.components = this.__componentsToInterchangeV1();
-        // output.connections = this.__connectionToInterchangeV1();
+        output.components = this.__componentsToInterchangeV1();
+        output.connections = this.__connectionToInterchangeV1();
         //TODO: Use this to render the device features
         output.features = this.__featureLayersToInterchangeV1();
         output.version = 1;
@@ -314,10 +380,24 @@ export default class Device {
         //TODO: Use this to dynamically create enough layers to scroll through
         //newDevice.__loadLayersFromInterchangeV1(json.layers);
         //TODO: Use these two generate a rat's nest
-        //newDevice.__loadComponentsFromInterchangeV1(json.layers);
-        //newDevice.__loadConnectionsFromInterchangeV1(json.layers);
+        newDevice.__loadComponentsFromInterchangeV1(json.components);
+        // newDevice.__loadConnectionsFromInterchangeV1(json.layers);
         //TODO: Use this to render the device features
         newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
+
+        //Updating cross-references
+        let features = newDevice.getAllFeaturesFromDevice();
+        console.log("Features: ",features);
+        let feature;
+        for(let i in features){
+            //console.log("Feature:", features[i]);
+            feature = features[i];
+            console.log(feature);
+            if(feature.referenceID != null){
+                newDevice.updateObjectReference(feature.referenceID, feature.getID());
+            }
+        }
+
         return newDevice;
     }
 

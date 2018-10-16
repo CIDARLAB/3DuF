@@ -1,18 +1,26 @@
 import EdgeFeature from "./edgeFeature";
 import CustomComponent from "./customComponent";
+import Params from "./params";
 
-const Params = require('./params');
 const Parameters = require('./parameters');
 const StringValue = Parameters.StringValue;
 const FeatureSets = require("../featureSets");
 const Registry = require("./registry");
 
-// var registeredFeatureTypes = {};
-
 /**
  * Represents the object from which we generate a render
  */
 export default class Feature {
+
+    /**
+     * Feature Object
+     * @param type
+     * @param set
+     * @param params
+     * @param name
+     * @param id
+     * @param fabtype
+     */
     constructor(type, set, params, name, id = Feature.generateID(), fabtype="XY"){
         this.__type = type;
         this.__params = params;
@@ -22,6 +30,28 @@ export default class Feature {
         this.__set = set;
         this.__fabtype = fabtype;
         this.__dxfObjects = [];
+        this.__referenceID = null;
+    }
+
+    /**
+     * Returns the reference object id
+     * @return {null}
+     * @private
+     */
+    get referenceID() {
+        return this.__referenceObject;
+    }
+
+    /**
+     * Sets the reference object id
+     * @param value
+     * @private
+     */
+    set referenceID(value) {
+        if(typeof value != 'string' && !(value instanceof String)){
+            throw new Error("The reference object value can only be a string")
+        }
+        this.__referenceObject = value;
     }
 
     set dxfObjects(dxfdata){
@@ -78,12 +108,16 @@ export default class Feature {
         output.name = this.__name;
         output.macro = this.__type;
         output.set = this.__set;
+        output.referenceID = this.referenceID;
+
         if(this.__params){
             output.params = this.__params.toJSON();
         }
+
         if(this.__dxfObjects){
             output.dxfData = this.__dxfObjects;
         }
+
         output.type = this.__fabtype;
         return output;
     }
@@ -203,11 +237,17 @@ export default class Feature {
     }
 
     static fromInterchangeV1(json){
+        let ret;
         let set;
         if (json.hasOwnProperty("set")) set = json.set;
         else set = "Basic";
         //TODO: This will have to change soon when the thing is updated
-        return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type, json.dxfData);
+        ret = Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type, json.dxfData);
+        if(json.hasOwnProperty("referenceID")){
+            ret.referenceID = json.referenceID;
+            // Registry.currentDevice.updateObjectReference(json.id, json.referenceID);
+        }
+        return ret;
     }
 
     static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined, dxfdata){
