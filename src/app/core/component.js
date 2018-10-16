@@ -310,7 +310,7 @@ class Component {
         let params = {};
         for(let key in json.params){
             console.log("key:", key, "value:", json.params[key]);
-            let paramobject = Parameter.generateFromRaw(key, json.params[key]);
+            let paramobject = Parameter.generateComponentParameter(key, json.params[key]);
             params[key] = paramobject;
         }
 

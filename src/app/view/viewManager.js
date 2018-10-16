@@ -605,7 +605,7 @@ export default class ViewManager {
     /**
      * Checks if the point intersects with any other feature
      * @param point
-     * @return {*}
+     * @return PaperJS rendered Feature
      */
     hitFeature(point) {
         return this.view.hitFeature(point);

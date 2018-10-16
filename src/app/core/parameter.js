@@ -56,12 +56,32 @@ export default class Parameter {
         return Parameter.makeParam(json.type, json.value);
     }
 
-    static generateFromRaw(key, value) {
+    static generateComponentParameter(key, value) {
         let ret;
 
         if(key == "position"){
             ret = new Parameter("Point", value);
         } else if(NumberUtils.isFloatOrInt(value)){
+            ret = new Parameter("Float", value);
+        } else if(typeof value == 'string' || value instanceof String){
+            ret = new Parameter("String", value);
+        }
+
+        return ret;
+    }
+
+    static generateConnectionParameter(key, value) {
+        let ret;
+
+        if(key == "paths"){
+            ret = [];
+            let point;
+            for(let i in value){
+                point = value[i];
+                ret.push(new Parameter("Point", point));
+            }
+        } else if(key == "segments") {
+        }else if(NumberUtils.isFloatOrInt(value)){
             ret = new Parameter("Float", value);
         } else if(typeof value == 'string' || value instanceof String){
             ret = new Parameter("String", value);

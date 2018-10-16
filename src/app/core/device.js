@@ -7,6 +7,7 @@ var Registry = require("./registry");
 
 import Layer from './layer';
 import Component from './component';
+import Connection from "./connection";
 
 var StringValue = Parameters.StringValue;
 var FloatValue = Parameters.FloatValue;
@@ -232,7 +233,7 @@ export default class Device {
         let foundflag = false;
         for(let i in this.__components){
             component = this.__components[i];
-            console.log(objectID, component.getID());
+            // console.log(objectID, component.getID());
             if(objectID == component.getID()){
                 component.addFeatureID(featureID);
                 foundflag = true;
@@ -336,6 +337,16 @@ export default class Device {
     }
 
 
+    __loadConnectionsFromInterchangeV1(connections) {
+        let connectiontoload;
+        for(let i in connections){
+            connectiontoload = Connection.fromInterchangeV1(connections[i]);
+            this.__connections.push(connectiontoload);
+        }
+        console.log("Connections:", this.__connections);
+    }
+
+
     toJSON() {
         let output = {};
         output.name = this.name.toJSON();
@@ -381,7 +392,7 @@ export default class Device {
         //newDevice.__loadLayersFromInterchangeV1(json.layers);
         //TODO: Use these two generate a rat's nest
         newDevice.__loadComponentsFromInterchangeV1(json.components);
-        // newDevice.__loadConnectionsFromInterchangeV1(json.layers);
+        newDevice.__loadConnectionsFromInterchangeV1(json.connections);
         //TODO: Use this to render the device features
         newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
 
@@ -392,7 +403,6 @@ export default class Device {
         for(let i in features){
             //console.log("Feature:", features[i]);
             feature = features[i];
-            console.log(feature);
             if(feature.referenceID != null){
                 newDevice.updateObjectReference(feature.referenceID, feature.getID());
             }
