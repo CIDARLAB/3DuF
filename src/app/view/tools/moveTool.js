@@ -1,14 +1,16 @@
 import MoveToolBar from "../ui/moveToolBar";
 import MouseTool from "./mouseTool";
 
-var Registry = require("../../core/registry");
-import SimpleQueue from "../../utils/simpleQueue";
+const Registry = require("../../core/registry");
 
 export default class MoveTool extends MouseTool {
     constructor() {
         super();
 
+        //Use the startpoint to calculate the delta for movement
+        this.__startPoint = null;
         this.__moveWindow = new MoveToolBar(this);
+        this.__dragging = false;
 
         // this.dragging = false;
         // this.dragStart = null;
@@ -31,17 +33,22 @@ export default class MoveTool extends MouseTool {
             //     ref.updateQueue.run();
             // }
             // ref.showTarget();
+            ref.dragHandler(event);
         };
         this.up = function (event) {
             // ref.dragging = false;
-            ref.mouseUpHandler(MouseTool.getEventPosition(event));
+            ref.mouseUpHandler(event);
             // ref.showTarget();
         }
 
     }
 
+    /**
+     * Default activation method
+     * @param component
+     */
     activate(component){
-        console.log("Activating the tool for a new component", component);
+        // console.log("Activating the tool for a new component", component);
         //Store the component position here
         this.__currentComponent = component;
         this.__originalPosition = component.getPosition();
@@ -49,76 +56,91 @@ export default class MoveTool extends MouseTool {
         this.__moveWindow.updateUIPos(this.__originalPosition);
     }
 
+    /**
+     * Default deactivation method
+     */
     unactivate(){
         Registry.viewManager.resetToDefaultTool();
     }
 
+    /**
+     * Method that can process the update of the component position
+     * @param xpos
+     * @param ypos
+     */
     processUIPosition(xpos, ypos){
-        console.log("new position", xpos, ypos);
         this.__currentComponent.updateComponetPosition([xpos, ypos]);
     }
 
+    /**
+     * Updates the position of the current selected component
+     * @param xpos
+     * @param ypos
+     * @private
+     */
+    __updatePosition(xpos, ypos){
+        this.processUIPosition(xpos, ypos);
+        this.__moveWindow.updateUIPos([xpos * 1000, ypos * 1000]);
+    }
+
+    /**
+     * Reverts the position to the original position
+     */
     revertToOriginalPosition(){
         this.__currentComponent.updateComponetPosition(this.__originalPosition);
     }
 
-    dragHandler() {
-        // if (this.dragStart) {
-        //     if (this.currentSelectBox) {
-        //         this.currentSelectBox.remove();
-        //     }
-        //     this.currentSelectBox = this.rectSelect(this.dragStart, this.lastPoint);
-        // }
+    /**
+     * Function that handles the dragging of the mouse
+     * @param event
+     */
+    dragHandler(event) {
+        if(this.__dragging){
+            let point = MouseTool.getEventPosition(event);
+            let target = Registry.viewManager.snapToGrid(point);
+            // console.log("Point:", point, target, this.__startPoint);
+            let delta = {"x":target.x - this.__startPoint.y, "y": target.y - this.__startPoint.y};
+            this.__startPoint = target;
+            // console.log("delta:", delta);
+
+            // let oldposition = this.__currentComponent.getPosition();
+            // // console.log("oldposition:", oldposition);
+            //
+            // let newposition = [oldposition[0] + delta.x, oldposition[1] + delta.y];
+            // console.log("Newposition:", newposition);
+            // this.__currentComponent.updateComponetPosition(newposition);
+            this.__updatePosition(target.x, target.y);
+        }
+
     }
 
     // showTarget() {
     //     Registry.viewManager.removeTarget();
     // }
 
+    /**
+     * Method that handles the mouse up event
+     * @param event
+     */
     mouseUpHandler(event) {
-        // if (this.currentSelectBox) {
-        //     this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox);
-        //     this.selectFeatures();
-        // }
-        // this.killSelectBox();
-        console.log("Up event", event);
+        let point = MouseTool.getEventPosition(event);
+        // console.log("Point:", point, event);
+        let target = Registry.viewManager.snapToGrid(point);
+
+        // console.log("Start:",this.__startPoint, "End:" ,target);
+        this.__dragging = false;
     }
 
-    removeFeatures() {
-        if (this.currentSelection.length > 0) {
-            for (let i = 0; i < this.currentSelection.length; i++) {
-                let paperFeature = this.currentSelection[i];
-                Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
-            }
-            this.currentSelection = [];
-            Registry.canvasManager.render();
-        }
-    }
-
+    /**
+     * Method that handles the movement of the mouse cursor
+     * @param event
+     */
     mouseDownHandler(event) {
-        // let point = MouseTool.getEventPosition(event);
-        // let target = this.hitFeature(point);
-        // if (target) {
-        //     if (target.selected) {
-        //         let feat = Registry.currentDevice.getFeatureByID(target.featureID);
-        //         Registry.viewManager.updateDefaultsFromFeature(feat);
-        //         let rightclickmenu = new RightClickMenu(feat);
-        //         rightclickmenu.show(event);
-        //         Registry.viewManager.rightClickMenu = rightclickmenu;
-        //         this.rightClickMenu = rightclickmenu;
-        //         // let func = PageSetup.getParamsWindowCallbackFunction(feat.getType(), feat.getSet());
-        //         //func(event);
-        //     } else {
-        //         this.deselectFeatures();
-        //         this.selectFeature(target);
-        //     }
-        //
-        //
-        // } else {
-        //     this.deselectFeatures();
-        //     this.dragStart = point;
-        // }
-        console.log("Down event", event)
+        let point = MouseTool.getEventPosition(event);
+        let target = Registry.viewManager.snapToGrid(point);
+        this.__startPoint = target;
+        this.__dragging = true;
+
     }
 
     // killSelectBox() {
