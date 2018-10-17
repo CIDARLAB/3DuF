@@ -1,6 +1,6 @@
 import MultilayerPositionTool from "./multilayerPositionTool";
 
-var Registry = require("../../core/registry");
+const Registry = require("../../core/registry");
 import Feature from '../../core/feature';
 import MouseTool from './mouseTool';
 import PositionTool from "./positionTool";

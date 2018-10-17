@@ -130,11 +130,12 @@ export default class MouseSelectTool extends MouseTool {
 
         //Find the component that owns this feature and then select all of the friends
         let component = this.__getComponentWithFeatureID(paperElement.featureID);
-        if (component == null) {
+        let connection = this.__getConnectionWithFeatureID(paperElement.featureID);
+        if (component == null && connection == null) {
             //Does not belong to a component, hence this returns
             paperElement.selected = true;
 
-        } else {
+        } else if(component !=null ) {
             //Belongs to the component so we basically select all features with this id
             let featureIDs = component.getFeatureIDs();
             for (let i in featureIDs) {
@@ -144,6 +145,18 @@ export default class MouseSelectTool extends MouseTool {
             }
 
             Registry.viewManager.view.selectedComponents.push(component);
+        } else if(connection !=  null){
+            let featureIDs = connection.getFeatureIDs();
+            for (let i in featureIDs) {
+                let featureid = featureIDs[i];
+                let actualfeature = Registry.viewManager.view.paperFeatures[featureid];
+                actualfeature.selected = true;
+            }
+
+            Registry.viewManager.view.selectedConnections.push(connection);
+
+        }else{
+            throw new Error("Totally got the selection logic wrong, reimplement this");
         }
     }
 
@@ -175,6 +188,36 @@ export default class MouseSelectTool extends MouseTool {
 
         return null;
     }
+
+    /**
+     * Finds and return the corresponding Connection Object in the Registry's current device associated with
+     * the featureid. Returns null if no connection is found.
+     *
+     * @param featureid
+     * @return {*}
+     * @private
+     */
+    __getConnectionWithFeatureID(featureid) {
+        // Get component with the features
+
+        let device_connections = Registry.currentDevice.getConnections();
+
+        //Check against every component
+        for (let i in device_connections) {
+            let connection = device_connections[i];
+            //Check against features in the in the component
+            let connection_features = connection.getFeatureIDs();
+            let index = connection_features.indexOf(featureid);
+
+            if (index != -1) {
+                //Found it !!
+                return connection;
+            }
+        }
+
+        return null;
+    }
+
 
 
     /**

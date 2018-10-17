@@ -40,6 +40,7 @@ export default class PaperView {
         this.lastTargetType = null;
         this.lastTargetPosition = null;
         this.selectedComponents = [];
+        this.selectedConnections = [];
         this.inactiveAlpha = .5;
         this.disableContextMenu();
     }
@@ -62,6 +63,7 @@ export default class PaperView {
      * TODO: Rename the method
      */
     deleteSelectedFeatures() {
+        //TODO: Refine how this works with the selection object code later on
         let items = paper.project.selectedItems;
         if (items && items.length > 0) {
             for (let i = 0; i < items.length; i++) {
@@ -71,6 +73,11 @@ export default class PaperView {
             //Delete the selected Components !!!!
             for (let i in this.selectedComponents) {
                 Registry.currentDevice.removeComponent(this.selectedComponents[i]);
+            }
+
+            //Delete the selected Connecitons
+            for(let i in this.selectedConnections){
+                Registry.currentDevice.removeConnection(this.selectedConnections[i]);
             }
         }
 
