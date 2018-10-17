@@ -1,7 +1,7 @@
 import Params from "./params";
 
 const Registry = require("./registry");
-var FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
+const FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
 import Parameter from './parameter';
 
 /**
@@ -132,10 +132,9 @@ class Component {
      */
     getValue(key){
         try {
-            return this.__params[key].getValue();
+            return this.__params.getValue(key);
         } catch (err){
-            if (this.hasDefaultParam(key)) return this.getDefaults()[key];
-            else throw new Error("Unable to get value for key: " + key);
+            throw new Error("Unable to get value for key: " + key);
         }
     }
 
@@ -270,10 +269,11 @@ class Component {
     replicate(xpos, ypos, name = Registry.currentDevice.generateNewName(this.__type)){
         //TODO: Fix this ridiculous chain of converting params back and forth, there should be an easier way
         //Converting all the params into raw values
-        let replicaparams = {};
-        for(let key in this.__params){
-            replicaparams[key] = this.getValue(key);
-        }
+        // let paramvalues = {};
+        // for(let key in this.__params.parameters){
+        //     paramvalues[key] = this.getValue(key);
+        // }
+        let replicaparams = new Params(null, null, null, this.__params.parameters);
         let ret = new Component(this.__type, replicaparams, name, this.__entity);
         console.log("Checking what the new component params are:", ret.__params);
         //Generate New features
