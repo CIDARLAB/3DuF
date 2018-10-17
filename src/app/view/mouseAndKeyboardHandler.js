@@ -48,6 +48,7 @@ export default class MouseAndKeyboardHandler {
         reference.view.setKeyDownFunction(function(event) {
             let key = event.keyCode || event.which;
 
+            // Delete
             if (key == 46 || key == 8) {
                 reference.saveDeviceState();
                 reference.view.deleteSelectedFeatures();

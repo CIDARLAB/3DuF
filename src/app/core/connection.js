@@ -27,9 +27,12 @@ export default class Connection {
         this.__sinks = [];
         this.__paths = [];
         this.__objects = [];
-        this.__segments = [];
     }
 
+    /**
+     * Returns the list of features associated with the connection
+     * @return {Array}
+     */
     get features(){
         return this.__features;
     }
@@ -129,7 +132,7 @@ export default class Connection {
      */
     getValue(key){
         try {
-            return this.__params[key].getValue();
+            return this.__params.getValue(key);
         } catch (err){
             throw new Error("Unable to get value for key: " + key);
         }
@@ -218,8 +221,8 @@ export default class Connection {
      * Returns the list of waypoints associated with the connection
      * @return {*|void|string}
      */
-    getWaypoints(){
-        return this.__params["wayPoints"].getValue()
+    getPaths(){
+        return this.__paths;
     }
 
     /**
@@ -343,11 +346,15 @@ export default class Connection {
      * @return {Array}
      */
     regenerateSegments() {
-        let waypointscopy = this.getWaypoints();
+        let pathscopy = this.getPaths();
         let ret = [];
-        for(let i=0; i < waypointscopy.length - 1; i++){
-            let segment = [waypointscopy[i], waypointscopy[i+1]];
-            ret.push(segment);
+        let waypointscopy;
+        for(let j in pathscopy){
+            waypointscopy = pathscopy[j];
+            for(let i=0; i < waypointscopy.length - 1; i++){
+                let segment = [waypointscopy[i], waypointscopy[i+1]];
+                ret.push(segment);
+            }
         }
         this.updateSegments(ret);
     }
@@ -393,4 +400,25 @@ export default class Connection {
             this.__sinks.push(connectiontarget);
         }
     }
+
+    /**
+     * Adds a new set of waypoints to the path field of the connection
+     * @param wayPoints
+     */
+    addWayPoints(wayPoints) {
+        this.__paths.push(wayPoints);
+    }
+
+    mergeConnection(connection){
+        throw new Error("Merge the newly found connection with the new connection");
+        //TODO:
+        /*
+        1. Transfer all the paths
+        2. Transfer all the ConnectionTargets
+        3. Transfer all the other objects
+        4. Move the params
+        5.
+         */
+    }
+
 }

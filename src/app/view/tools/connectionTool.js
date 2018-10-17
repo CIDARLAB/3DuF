@@ -1,12 +1,12 @@
 import MouseTool from "./mouseTool";
 import Connection from '../../core/connection';
-
-const Registry = require("../../core/registry");
 import SimpleQueue from "../../utils/simpleQueue";
 import Feature from "../../core/feature";
 import paper from 'paper';
 import Params from "../../core/params";
 import ConnectionTarget from "../../core/connectionTarget";
+
+const Registry = require("../../core/registry");
 
 
 export default class ConnectionTool extends MouseTool {
@@ -144,24 +144,32 @@ export default class ConnectionTool extends MouseTool {
         }
     }
 
+    /**
+     * Finishes the creation of the connection object
+     */
     finishChannel() {
         if (this.currentChannelID) {
             this.wayPoints.push(this.lastPoint);
             let feat = Registry.currentLayer.getFeature(this.currentChannelID);
             feat.updateParameter("end", this.lastPoint);
-            feat.updateParameter("wayPoints", this.wayPoints);
+            // feat.updateParameter("wayPoints", this.wayPoints);
             feat.updateParameter("segments", this.generateSegments());
             //Save the connection object
             let params = new Params(null,null,null, feat.getParams());
-            if(this.__currentConnectionObject == null || this.__currentConnectionObject == undefined){
+            if(this.__currentConnectionObject == null || this.__currentConnectionObject === undefined){
                 let connection = new Connection('Connection', params, Registry.currentDevice.generateNewName('CHANNEL'), 'CHANNEL');
                 connection.addFeatureID(feat.getID());
+                connection.addWayPoints(this.wayPoints);
                 feat.referenceID = connection.getID();
-                this.__addConnectionTargets(connection)
+                this.__addConnectionTargets(connection);
                 Registry.currentDevice.addConnection(connection);
             }else{
-                console.error("Implement conneciton tool to update existing connection");
-                //TODO: Update the connection with more sinks and paths and what not
+                // console.error("Implement conneciton tool to update existing connection");
+                // TODO: Update the connection with more sinks and paths and what not
+                this.__currentConnectionObject.addFeatureID(feat.getID());
+                feat.referenceID = this.__currentConnectionObject.getID();
+                this.__currentConnectionObject.addWayPoints(this.wayPoints);
+                feat.referenceID = this.__currentConnectionObject.getID();
                 this.__addConnectionTargets(this.__currentConnectionObject);
             }
 
@@ -214,6 +222,7 @@ export default class ConnectionTool extends MouseTool {
     addWayPoint(event, isManhatten) {
         let point = MouseTool.getEventPosition(event);
         let isPointOnComponent = this.__isPointOnComponent(point);
+        let isPointOnConnection = this.__isPointOnConnection(point);
         let target = ConnectionTool.getTarget(point);
         if(isManhatten && target){
             //TODO: modify the target to find the orthogonal point
@@ -228,6 +237,7 @@ export default class ConnectionTool extends MouseTool {
         }
 
         if(isPointOnComponent){
+
             //Do this if we want to terminate the connection
             //Check if source is empty
             if(this.source == null){
@@ -239,9 +249,21 @@ export default class ConnectionTool extends MouseTool {
             }
             this.__STATE = "TARGET";
             this.dragging = false;
-            let end = this.wayPoints.pop();
-            this.lastPoint = end;
+            this.lastPoint = this.wayPoints.pop();
             this.finishChannel();
+
+        } else if (isPointOnConnection){
+            console.log("There is connection at the waypoint path");
+            if(this.__currentConnectionObject == null){
+                this.__currentConnectionObject = isPointOnConnection;
+            }else{
+                this.__currentConnectionObject.mergeConnection(isPointOnConnection);
+            }
+            this.__STATE = "TARGET";
+            this.dragging = false;
+            this.lastPoint = this.wayPoints.pop();
+            this.finishChannel();
+
         }
 
     }
@@ -253,12 +275,14 @@ export default class ConnectionTool extends MouseTool {
      * @private
      */
     __isPointOnConnection(point) {
-        console.log("Point to check", point);
+        // console.log("Point to check", point);
         let render = Registry.viewManager.hitFeature(point);
         if(render != false && render != null && render != undefined){
             let feature = Registry.currentDevice.getFeatureByID(render.featureID);
-            console.log("Feature that intersects:", feature);
-            console.log("Associated object:", Registry.currentDevice.getConnectionByID(feature.referenceID));
+            let connection = Registry.currentDevice.getConnectionByID(feature.referenceID);
+            // console.log("Feature that intersects:", feature);
+            // console.log("Associated object:", connection);
+            return connection;
         }
 
         return false;
@@ -271,13 +295,13 @@ export default class ConnectionTool extends MouseTool {
      * @private
      */
     __isPointOnComponent(point) {
-        console.log("Point to check", point);
+        // console.log("Point to check", point);
         let render = Registry.viewManager.hitFeature(point);
         if(render != false && render != null && render != undefined){
             let feature = Registry.currentDevice.getFeatureByID(render.featureID);
-            console.log("Feature that intersects:", feature);
+            // console.log("Feature that intersects:", feature);
             let component = Registry.currentDevice.getComponentByID(feature.referenceID);
-            console.log("Associated object:", component);
+            // console.log("Associated object:", component);
             if(component != null || component != undefined){
                 return component;
             }else{
