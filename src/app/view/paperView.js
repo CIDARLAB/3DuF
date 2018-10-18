@@ -66,10 +66,6 @@ export default class PaperView {
         //TODO: Refine how this works with the selection object code later on
         let items = paper.project.selectedItems;
         if (items && items.length > 0) {
-            for (let i = 0; i < items.length; i++) {
-                Registry.currentDevice.removeFeatureByID(items[i].featureID);
-            }
-
             //Delete the selected Components !!!!
             for (let i in this.selectedComponents) {
                 Registry.currentDevice.removeComponent(this.selectedComponents[i]);
@@ -79,6 +75,11 @@ export default class PaperView {
             for(let i in this.selectedConnections){
                 Registry.currentDevice.removeConnection(this.selectedConnections[i]);
             }
+            
+            for (let i = 0; i < items.length; i++) {
+                Registry.currentDevice.removeFeatureByID(items[i].featureID);
+            }
+
         }
 
     }
