@@ -129,6 +129,7 @@ export default class ConnectionTool extends MouseTool {
     }
 
     updateChannel() {
+        console.log("Update chanel");
         if (this.lastPoint && this.startPoint) {
             if (this.currentChannelID) {
                 let target = ConnectionTool.getTarget(this.lastPoint);

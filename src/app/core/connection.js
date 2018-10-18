@@ -79,6 +79,7 @@ export default class Connection {
         output.entity = this.__entity;
         output.source = this.__source;
         output.sinks = this.__sinks;
+        output.paths = this.__paths;
         output.params = this.__params.toJSON();
         return output;
     }
@@ -252,15 +253,20 @@ export default class Connection {
         let segments = this.getValue("segments");
         for(let i in segments){
             let segment = segments[i];
+            console.log("Segments before:",segments);
             let line = new paper.Path.Line(new paper.Point(segment[0]), new paper.Point(segment[1]));
             let intersections = line.getIntersections(boundingbox);
+            console.log("Intersections found",intersections);
             if(intersections.length === 2){
                 let break1 = intersections[0].point;
                 let break2 = intersections[1].point;
                 let newsegs = this.__breakSegment(segment, break1, break2);
                 segments.splice(i, 1, newsegs[0], newsegs[1]);
+                console.log("Segments after:",segments);
+
             }else if(intersections.length === 1){
                 console.error("There's something funky going on with the intersection, only found 1 intersection");
+                return;
             }
         }
         // console.log("raw new segments:", segments);
@@ -323,6 +329,7 @@ export default class Connection {
         let paramstoadd = new Params(null, null, null, params);
 
         let connection = new Connection(entity, paramstoadd, name, entity, id);
+
         if(json.hasOwnProperty("source")){
             if(json.source != null && json.source != undefined){
                 connection.setSource(json.source.component, json.source.port);
@@ -330,9 +337,16 @@ export default class Connection {
         }
         if(json.hasOwnProperty("sinks")){
             if(json.sinks != null && json.sinks != undefined){
-                for(let i in connection.__sinks){
-                    let sink = connection.__sinks[i];
+                for(let i in json.sinks){
+                    let sink = json.sinks[i];
                     connection.addSink(sink.component, sink.port);
+                }
+            }
+        }
+        if(json.hasOwnProperty("paths")){
+            if(json.paths != null && json.paths != undefined){
+                for(let i in json.paths){
+                    connection.addWayPoints(json.paths[i]);
                 }
             }
         }
