@@ -36,13 +36,18 @@ export default class EditDeviceDialog {
                 Registry.currentDevice.setXSpan(xspan*1000);
                 Registry.currentDevice.setYSpan(yspan*1000);
 
+                //Delete the existing border
+                ref.viewManagerDelegate.deleteBorder();
+
                 //Update the device borders
                 ref.viewManagerDelegate.generateBorder();
-
                 //Close the dialog
                 ref.__window.close();
 
                 //Refresh the view
+                ref.viewManagerDelegate.updateGrid();
+                Registry.currentDevice.updateView();
+
                 ref.viewManagerDelegate.view.initializeView();
                 ref.viewManagerDelegate.view.refresh();
                 // Registry.viewManager.view.updateGrid();
