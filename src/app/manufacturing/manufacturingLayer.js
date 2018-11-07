@@ -21,11 +21,15 @@ export default class ManufacturingLayer{
      * @param feature
      */
     addFeature(feature){
+        if(null == feature || undefined == feature){
+            return false
+        }
         let copy = feature.clone();
         console.log("Copied feature",copy);
         this.__features.push(copy);
 
         this.__paperGroup.addChild(copy);
+        return true;
     }
 
     /**

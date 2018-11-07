@@ -62,7 +62,11 @@ export default class CNCGenerator {
                 let featurekey = ports[fi];
                 // console.log("Key:", featurekey);
                 // console.log("rendered:feature", this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
-                manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
+                let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
+                if(!issuccess){
+                    console.error("Could not find the feature for the corresponding id: " + featurekey);
+                }
+
             }
 
             if(isControl){
@@ -137,7 +141,10 @@ export default class CNCGenerator {
                     let featurekey = depthfeatures[j];
 
 
-                    manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
+                    let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
+                    if(!issuccess){
+                        console.error("Could not find the feature for the corresponding id: " + featurekey);
+                    }
 
                 }
 
@@ -197,7 +204,11 @@ export default class CNCGenerator {
                 //TODO: Modify the port check
                 if(feature.fabType == "EDGE"){
                     console.log("EDGE Feature: ", key);
-                    manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
+                    let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
+                    if(!issuccess){
+                        console.error("Could not find the feature for the corresponding id: " + key);
+                    }
+
                 }
             }
 
