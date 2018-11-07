@@ -14,6 +14,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
         let ref = this;
 
         this.down = function (event) {
+            console.log(event);
             let point = MouseTool.getEventPosition(event);
             let target = PositionTool.getTarget(point);
             //Check if connection exists at point
@@ -21,7 +22,12 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
             //if connection exists then place the valve
             if(connection){
                 ref.insertValve(point, connection);
-            }else{
+            }else if(event.ctrlKey || event.metaKey){
+                //Forced placement of the Valve
+                console.warn("Forcing placement of valve, a lot of things will not work correct if done this way");
+                ref.forceInsertValve(point);
+            }
+            else{
                 //Send out error message
                 console.log("Could not find connection at this location");
             }
@@ -35,15 +41,25 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
      * @param rotation
      * @return {Component}
      */
-    createNewFeature(point, rotation){
+    createNewFeature(point, rotation = null){
         let featureIDs = [];
+        let overridedata;
+
+        if(rotation){
+            overridedata = {
+                "position": PositionTool.getTarget(point),
+                "rotation": rotation
+            };
+        }else{
+            overridedata = {
+                "position": PositionTool.getTarget(point)
+            };
+        }
+
         let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer)/3);
         let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
-        let newFeature = Feature.makeFeature(this.typeString, this.setString, {
-            "position": PositionTool.getTarget(point),
-            "rotation": rotation
-        });
+        let newFeature = Feature.makeFeature(this.typeString, this.setString, overridedata);
         this.currentFeatureID = newFeature.getID();
 
         controllayer.addFeature(newFeature);
@@ -63,16 +79,26 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
      * @param rotation
      * @return {Component}
      */
-    createNewMultiLayerFeature(point, rotation){
+    createNewMultiLayerFeature(point, rotation = null){
         let featureIDs = [];
+        let overridedata;
+
+        if(rotation){
+           overridedata = {
+               "position": PositionTool.getTarget(point),
+               "rotation": rotation
+           };
+        }else{
+            overridedata = {
+                "position": PositionTool.getTarget(point)
+            };
+        }
+
         let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer)/3);
         let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
         let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
-        let newFeature = Feature.makeFeature(this.typeString, this.setString, {
-            "position": PositionTool.getTarget(point),
-            "rotation": rotation
-        });
+        let newFeature = Feature.makeFeature(this.typeString, this.setString, overridedata);
         this.currentFeatureID = newFeature.getID();
         flowlayer.addFeature(newFeature);
 
@@ -82,10 +108,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
 
         let newtypestring = this.typeString + "_control";
         let paramstoadd = newFeature.getParams();
-        newFeature = Feature.makeFeature(newtypestring, this.setString, {
-            "position": PositionTool.getTarget(point),
-            "rotation": rotation
-        });
+        newFeature = Feature.makeFeature(newtypestring, this.setString, overridedata);
         newFeature.setParams(paramstoadd);
 
         this.currentFeatureID = newFeature.getID();
@@ -146,6 +169,27 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
 
         Registry.currentDevice.insertValve(component, connection);
         Registry.viewManager.updatesConnectionRender(connection);
+        Registry.viewManager.saveDeviceState();
+
+    }
+
+    /**
+     * Inserts the valve at the point on the connection
+     * @param point
+     * @param connection
+     */
+    forceInsertValve(point) {
+
+        let component;
+        if(this.is3D){
+            //TODO: Insert the valve features in both flow and control
+            component = this.createNewMultiLayerFeature(point);
+            //TODO: Redraw the connection
+        }else {
+            //TODO: Insert the valve feature in flow
+            component = this.createNewFeature(point);
+        }
+
         Registry.viewManager.saveDeviceState();
 
     }
