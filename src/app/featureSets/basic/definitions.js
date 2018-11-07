@@ -604,7 +604,7 @@ let basicFeatures = {
             "height": "&mu;m"
         },
         defaults: {
-            "rotation": "0",
+            "rotation": 0,
             "width": 1.23 * 1000,
             "length": 4.92 * 1000,
             "height": .1 * 1000
