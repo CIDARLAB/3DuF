@@ -35,7 +35,8 @@ window.onload = function() {
     let isChrome = !!window.chrome && !!window.chrome.webstore;
 
     if(!isChrome){
-        alert("Warning ! Unsupported browser detected. 3DuF has been developed and tested only in Chrome. The tool may not work correctly in this browser");
+        alert("Warning ! Unsupported browser detected. 3DuF has been developed and tested only in Chrome. " +
+            "The tool may not work correctly on this browser");
     }
 
     let view = new PaperView(document.getElementById("c"));
