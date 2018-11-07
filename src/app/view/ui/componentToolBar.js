@@ -263,9 +263,9 @@ export default class ComponentToolBar{
         };
 
         this.__insertTextButton.onclick = function(){
-            if (this.activeButton) setButtonColor(this.buttons[this.activeButton], inactiveBackground, inactiveText);
-            this.activeButton = "InsertTextButton";
-            setButtonColor(this.buttons["InsertTextButton"], Colors.DEEP_PURPLE_500, activeText);
+            if (ref.activeButton) setButtonColor(ref.buttons[ref.activeButton], inactiveBackground, inactiveText);
+            ref.activeButton = "InsertTextButton";
+            setButtonColor(ref.buttons["InsertTextButton"], Colors.DEEP_PURPLE_500, activeText);
         };
 
 
