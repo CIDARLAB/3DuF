@@ -239,6 +239,202 @@ var GroverValve_control = function(params){
     return circ;
 };
 //************************************
+var Pump = function(params){
+
+    let rec;
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = params["length"];
+    let w = params["width"];
+    let color = params["color"];
+    let rotation = params["rotation"];
+    let spacing = params["spacing"];
+    let channelwidth = params["flowChannelWidth"];
+
+    let startX = px - w / 2;
+    let startY = py - l / 2;
+    let endX = px + w / 2;
+    let endY = py + l / 2;
+
+    let ret = new paper.CompoundPath();
+
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+
+
+    rec = paper.Path.Rectangle({
+        from: new paper.Point(px - channelwidth/2, py - spacing - l/2),
+        to: new paper.Point(px + channelwidth/2, py + spacing + l/2),
+    });
+
+    ret.addChild(rec);
+
+    ret.fillColor = color;
+    return ret.rotate(rotation, px, py);
+
+};
+
+var Pump_control = function(params){
+    let rec;
+    let position = params["position"];
+    let px = position[0];
+    let py = position[1];
+    let l = params["length"];
+    let w = params["width"];
+    let color = params["color"];
+    let rotation = params["rotation"];
+    let spacing = params["spacing"];
+
+    let startX = px - w / 2;
+    let startY = py - l / 2;
+    let endX = px + w / 2;
+    let endY = py + l / 2;
+
+    let ret = new paper.CompoundPath();
+
+    let startPoint = new paper.Point(startX, startY);
+    let endPoint = new paper.Point(endX, endY);
+
+
+    rec = paper.Path.Rectangle({
+        from: startPoint,
+        to: endPoint,
+        radius: 0,
+        fillColor: color,
+        strokeWidth: 0
+    });
+
+    ret.addChild(rec);
+
+    let topcenter = new paper.Point(px, py - spacing);
+
+    rec = paper.Path.Rectangle({
+        from: new paper.Point(topcenter.x - w/2, topcenter.y - l/2),
+        to: new paper.Point(topcenter.x + w/2, topcenter.y + l/2)
+    });
+
+    ret.addChild(rec);
+
+    let bottomcenter = new paper.Point(px, py + spacing);
+    rec = paper.Path.Rectangle({
+        from: new paper.Point(bottomcenter.x - w/2, bottomcenter.y - l/2),
+        to: new paper.Point(bottomcenter.x + w/2, bottomcenter.y + l/2)
+    });
+
+    ret.addChild(rec);
+
+    ret.fillColor = color;
+    return ret.rotate(rotation, px, py);
+};
+//************************************
+var Pump3D = function(params){
+    let valve;
+    let cutout;
+    let circ;
+    let center;
+    let ret = new paper.CompoundPath();
+
+    let position = params["position"];
+    let gap = params["gap"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let rotation = params["rotation"];
+    let spacing = params["spacing"];
+    let channelwidth = params["flowChannelWidth"];
+
+    center = new paper.Point(position[0], position[1]);
+    // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+    circ = new paper.Path.Circle(center, radius);
+    //circ.fillColor = color;
+    //   if (String(color) == "3F51B5") {
+    cutout = paper.Path.Rectangle({
+        from: new paper.Point(position[0] - radius, position[1] - gap / 2),
+        to: new paper.Point(position[0] + radius, position[1] + gap / 2)
+    });
+    //cutout.fillColor = "white";
+    valve = circ.subtract(cutout);
+    ret.addChild(valve);
+
+    let bottomcenter = new paper.Point(position[0], position[1] + spacing);
+    console.log(bottomcenter);
+    circ = new paper.Path.Circle(bottomcenter, radius);
+    //circ.fillColor = color;
+    //   if (String(color) == "3F51B5") {
+    cutout = paper.Path.Rectangle({
+        from: new paper.Point(bottomcenter.x - radius, bottomcenter.y - gap / 2),
+        to: new paper.Point(bottomcenter.x + radius, bottomcenter.y + gap / 2)
+    });
+    //cutout.fillColor = "white";
+    valve = circ.subtract(cutout);
+    ret.addChild(valve);
+
+
+    let topcenter = new paper.Point(position[0], position[1] - spacing);
+
+    circ = new paper.Path.Circle(topcenter, radius);
+    //circ.fillColor = color;
+    //   if (String(color) == "3F51B5") {
+    cutout = paper.Path.Rectangle({
+        from: new paper.Point(topcenter.x - radius, topcenter.y - gap / 2),
+        to: new paper.Point(topcenter.x + radius, topcenter.y + gap / 2)
+    });
+    //cutout.fillColor = "white";
+    valve = circ.subtract(cutout);
+    ret.addChild(valve);
+
+    //Create the channels that go through
+    let bottomchannel = new paper.Path.Rectangle({
+        from: new paper.Point(bottomcenter.x - channelwidth/2, bottomcenter.y - gap/2),
+        to: new paper.Point(center.x + channelwidth/2, center.y + gap/2)
+    });
+
+    ret.addChild(bottomchannel);
+
+    let topchannel = new paper.Path.Rectangle({
+        from: new paper.Point(topcenter.x - channelwidth/2, topcenter.y + gap/2),
+        to: new paper.Point(center.x + channelwidth/2, center.y - gap/2)
+    });
+
+    ret.addChild(topchannel);
+
+    ret.rotate(rotation, center);
+    ret.fillColor = color;
+
+    return ret;
+};
+
+var Pump3D_control = function(params){
+    let circ;
+    let position = params["position"];
+    let radius = params["valveRadius"];
+    let color = params["color"];
+    let rotation = params["rotation"];
+    let spacing = params["spacing"];
+
+    console.log("Spacing:", spacing);
+
+    let ret = new paper.CompoundPath();
+
+    let center = new paper.Point(position[0], position[1]);
+
+    circ = new paper.Path.Circle(center, radius);
+    ret.addChild(circ);
+
+    let topcenter = new paper.Point(position[0], position[1] - spacing);
+    circ = new paper.Path.Circle(topcenter, radius);
+    ret.addChild(circ);
+
+
+    let bottomcenter = new paper.Point(position[0], position[1] + spacing);
+    circ = new paper.Path.Circle(bottomcenter, radius);
+    ret.addChild(circ);
+
+    ret.rotate(rotation, center);
+    ret.fillColor = color;
+    return ret;
+};
+//************************************
 
 var AlignmentMarks = function(params){
     let position = params["position"];
@@ -2522,6 +2718,12 @@ module.exports.CircleTarget = CircleTarget;
 //module.expors.RectValveTarget = RectValveTarget;
 module.exports.GroverValve = GroverValve;
 module.exports.GroverValve_control = GroverValve_control;
+
+module.exports.Pump = Pump;
+module.exports.Pump_control = Pump_control;
+module.exports.Pump3D = Pump3D;
+module.exports.Pump3D_control = Pump3D_control;
+
 module.exports.Chamber = Chamber;
 module.exports.ChamberTarget = ChamberTarget;
 module.exports.Diamond = Diamond;

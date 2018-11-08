@@ -30,7 +30,37 @@ let tools = {
         },
         placementTool: "componentPositionTool"
     },
+
+    Pump: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+
+    Pump_control: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
     Valve3D: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    Pump3D: {
+        toolParams: {
+            position: "position",
+
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    Pump3D_control: {
         toolParams: {
             position: "position",
 

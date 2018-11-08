@@ -91,6 +91,50 @@ let render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    Pump: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Pump_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Pump3D: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Pump3D_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
     Transposer: {
         featureParams: {
             position: "position",

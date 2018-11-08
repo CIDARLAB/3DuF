@@ -622,6 +622,221 @@ let basicFeatures = {
             "height": 1200
         }
     },
+    "Pump": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "rotation": "Float",
+            "length": "Float",
+            "width": "Float",
+            "height": "Float",
+            "spacing": "Float",
+            "flowChannelWidth":"Float"
+        },
+        units: {
+            "rotation": "&deg",
+            "length": "&mu;m",
+            "width": "&mu;m",
+            "height": "&mu;m",
+            "spacing": "&mu;m",
+            "flowChannelWidth":"&mu;m"
+
+        },
+        defaults: {
+            "rotation": 90,
+            "width": 600,
+            "length": 300,
+            "height": .1 * 1000,
+            "spacing": 1000,
+            "flowChannelWidth":300
+
+        },
+        minimum: {
+            "rotation": 0,
+            "width": 30,
+            "length": 120,
+            "height": 10,
+            "spacing": 10,
+            "flowChannelWidth":1
+
+        },
+        maximum: {
+            "rotation": 180,
+            "width": 6000,
+            "length": 24 * 1000,
+            "height": 1200,
+            "spacing": 10000,
+            "flowChannelWidth":10000
+        }
+    },
+
+    "Pump_control": {
+        unique: {
+            "position": "Point",
+        },
+        heritable: {
+            "rotation": "Float",
+            "length": "Float",
+            "width": "Float",
+            "height": "Float",
+            "spacing": "Float",
+            "flowChannelWidth":"Float"
+        },
+        units: {
+            "rotation": "&deg",
+            "length": "&mu;m",
+            "width": "&mu;m",
+            "height": "&mu;m",
+            "spacing": "&mu;m",
+            "flowChannelWidth":"&mu;m"
+
+        },
+        defaults: {
+            "rotation": 90,
+            "width": 600,
+            "length": 300,
+            "height": .1 * 1000,
+            "spacing": 1000,
+            "flowChannelWidth":300
+
+        },
+        minimum: {
+            "rotation": 0,
+            "width": 30,
+            "length": 120,
+            "height": 10,
+            "spacing": 10,
+            "flowChannelWidth":1
+
+        },
+        maximum: {
+            "rotation": 180,
+            "width": 6000,
+            "length": 24 * 1000,
+            "height": 1200,
+            "spacing": 10000,
+            "flowChannelWidth":10000
+        }
+    },
+
+    "Pump3D": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "rotation": "Float",
+            "spacing": "Float",
+            "flowChannelWidth":"Float"
+
+        },
+        units: {
+            "orientation": "",
+            "valveRadius": "&mu;m",
+            "height": "&mu;m",
+            "gap": "&mu;m",
+            "width": "&mu;m",
+            "length": "&mu;m",
+            "rotation": "&deg;",
+            "spacing": "&mu;m",
+            "flowChannelWidth":"&mu;m"
+
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000,
+            "rotation": 90,
+            "spacing": 5000,
+            "flowChannelWidth":300
+
+        },
+        minimum: {
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10,
+            "rotation": 0,
+            "spacing": 10,
+            "flowChannelWidth":1
+
+        },
+        maximum: {
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000,
+            "rotation": 180,
+            "spacing": 10000,
+            "flowChannelWidth":10000
+
+        }
+    },
+
+    "Pump3D_control": {
+        unique: {
+            "position": "Point"
+        },
+        heritable: {
+            "orientation": "String",
+            "valveRadius": "Float",
+            "height": "Float",
+            "gap": "Float",
+            "rotation": "Float",
+            "spacing": "Float",
+            "flowChannelWidth":"Float"
+
+        },
+        units: {
+            "orientation": "",
+            "valveRadius": "&mu;m",
+            "height": "&mu;m",
+            "gap": "&mu;m",
+            "width": "&mu;m",
+            "length": "&mu;m",
+            "rotation": "&deg;",
+            "spacing": "&mu;m",
+            "flowChannelWidth":"&mu;m"
+
+        },
+        defaults: {
+            "orientation": "V",
+            "valveRadius": 1.2 * 1000,
+            "height": .8 * 1000,
+            "gap": 0.6 * 1000,
+            "width": 2.4 * 1000,
+            "length": 2.4 * 1000,
+            "rotation": 0,
+            "spacing": 1000,
+            "flowChannelWidth":300
+
+        },
+        minimum: {
+            "valveRadius": .1 * 100,
+            "height": .1 * 100,
+            "gap": .5 * 10,
+            "rotation": 0,
+            "spacing": 10,
+            "flowChannelWidth":1
+
+        },
+        maximum: {
+            "valveRadius": .2 * 10000,
+            "height": 1.2 * 1000,
+            "gap": .1 * 10000,
+            "rotation": 180,
+            "spacing": 10000,
+            "flowChannelWidth":10000
+
+        }
+    },
+
+
     "Via": {
         unique: {
             "position": "Point",
