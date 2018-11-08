@@ -24,6 +24,8 @@ export default class ComponentToolBar{
         this.__circleValveButton = document.getElementById("circleValve_button");
         this.__valveButton = document.getElementById("valve_button");
         this.__valve3dButton = document.getElementById("valve3d_button");
+        this.__pumpButton = document.getElementById("pump_button");
+        this.__pump3dButton = document.getElementById("pump3d_button");
         this.__portButton = document.getElementById("port_button");
         this.__viaButton = document.getElementById("via_button");
         this.__chamberButton = document.getElementById("chamber_button");
@@ -50,6 +52,8 @@ export default class ComponentToolBar{
         this.__circleValveParams = document.getElementById("circleValve_params_button");
         this.__valveParams = document.getElementById("valve_params_button");
         this.__valve3dParams = document.getElementById("valve3d_params_button");
+        this.__pumpParams = document.getElementById("pump_params_button");
+        this.__pump3dParams = document.getElementById("pump3d_params_button");
         this.__portParams = document.getElementById("port_params_button");
         this.__viaParams = document.getElementById("via_params_button");
         this.__chamberParams = document.getElementById("chamber_params_button");
@@ -80,6 +84,8 @@ export default class ComponentToolBar{
             "CircleValve": this.__circleValveButton,
             "Valve3D": this.__valve3dButton,
             "Valve":this.__valveButton,
+            "Pump3D": this.__pump3dButton,
+            "Pump":this.__pumpButton,
             "Chamber": this.__chamberButton,
             "DiamondReactionChamber": this.__diamondButton,
             "BetterMixer": this.__bettermixerButton,
@@ -149,6 +155,19 @@ export default class ComponentToolBar{
             Registry.viewManager.activateTool("Valve3D");
 
             ref.setActiveButton("Valve3D");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+
+        this.__pumpButton.onclick = function() {
+            Registry.viewManager.activateTool("Pump");
+
+            ref.setActiveButton("Pump");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__pump3dButton.onclick = function() {
+            Registry.viewManager.activateTool("Pump3D");
+
+            ref.setActiveButton("Pump3D");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
