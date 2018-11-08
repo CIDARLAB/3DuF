@@ -140,6 +140,93 @@ let render2D = {
         targetPrimitiveType: "CircleTarget",
         targetPrimitiveSet: "Basic2D"
     },
+
+    Pump: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            rotation: "rotation",
+            spacing: "spacing",
+            flowChannelWidth: "flowChannelWidth"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            rotation: "rotation",
+            spacing: "spacing",
+            flowChannelWidth: "flowChannelWidth"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Pump",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Pump_control: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            rotation: "rotation",
+            spacing: "spacing",
+            flowChannelWidth: "flowChannelWidth"
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            rotation: "rotation",
+            spacing: "spacing",
+            flowChannelWidth: "flowChannelWidth"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Pump_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+
+    Pump3D: {
+        featureParams: {
+            position: "position",
+            rotation: "rotation",
+            valveRadius: "valveRadius",
+            flowChannelWidth: "flowChannelWidth",
+            spacing: "spacing",
+            gap: "gap"
+        },
+        targetParams: {
+            rotation: "rotation",
+            valveRadius: "valveRadius",
+            flowChannelWidth: "flowChannelWidth",
+            spacing: "spacing",
+            gap: "gap"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Pump3D",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Pump3D_control: {
+        featureParams: {
+            position: "position",
+            rotation: "rotation",
+            valveRadius: "valveRadius",
+            flowChannelWidth: "flowChannelWidth",
+            spacing: "spacing",
+            gap: "gap"
+        },
+        targetParams: {
+            rotation: "rotation",
+            valveRadius: "valveRadius",
+            flowChannelWidth: "flowChannelWidth",
+            spacing: "spacing",
+            gap: "gap"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "Pump3D_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+
     Transposer: {
         featureParams: {
             position: "position",

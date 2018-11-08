@@ -771,6 +771,8 @@ export default class ViewManager {
         this.tools["DropletGen"] = new ComponentPositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
         this.tools["AlignmentMarks"] = new MultilayerPositionTool("AlignmentMarks", "Basic");
+        this.tools["Pump"] = new MultilayerPositionTool("Pump", "Basic");
+        this.tools["Pump3D"] = new MultilayerPositionTool("Pump3D", "Basic");
 
         //All the new tools
         this.tools["MoveTool"] = new MoveTool();
