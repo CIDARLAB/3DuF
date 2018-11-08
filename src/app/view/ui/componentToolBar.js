@@ -316,6 +316,8 @@ export default class ComponentToolBar{
         this.__circleValveParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CircleValve", "Basic");
         this.__valve3dParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Valve3D", "Basic");
         this.__valveParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Valve", "Basic");
+        this.__pump3dParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Pump3D", "Basic");
+        this.__pumpParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Pump", "Basic");
         this.__portParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Port", "Basic");
         this.__viaParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Via", "Basic");
         this.__chamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Chamber", "Basic");
