@@ -251,7 +251,7 @@ export default class Device {
         }
 
         if(!foundflag){
-            throw new Error("Could not find object to update reference: " + featureID);
+            console.error("Could not find object to update reference: " + featureID);
         }
     }
 
