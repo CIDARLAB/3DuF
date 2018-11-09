@@ -239,7 +239,7 @@ var GroverValve_control = function(params){
     return circ;
 };
 //************************************
-var Pump = function(params){
+const Pump = function(params){
 
     let rec;
     let position = params["position"];
@@ -275,7 +275,7 @@ var Pump = function(params){
 
 };
 
-var Pump_control = function(params){
+const Pump_control = function(params){
     let rec;
     let position = params["position"];
     let px = position[0];
@@ -327,8 +327,22 @@ var Pump_control = function(params){
     ret.fillColor = color;
     return ret.rotate(rotation, px, py);
 };
+
+
+const PumpTarget = function(params){
+    let ret = new paper.CompoundPath();
+    let flow = Pump(params);
+    let control = Pump_control(params);
+    ret.addChild(control);
+    ret.addChild(flow);
+    ret.fillColor = params["color"];
+    ret.fillColor.alpha = 0.5;
+    return ret;
+};
+
+
 //************************************
-var Pump3D = function(params){
+const Pump3D = function(params){
     let valve;
     let cutout;
     let circ;
@@ -404,7 +418,7 @@ var Pump3D = function(params){
     return ret;
 };
 
-var Pump3D_control = function(params){
+const Pump3D_control = function(params){
     let circ;
     let position = params["position"];
     let radius = params["valveRadius"];
@@ -434,6 +448,19 @@ var Pump3D_control = function(params){
     ret.fillColor = color;
     return ret;
 };
+
+const Pump3DTarget = function(params){
+    console.log("Testing....");
+    let ret = new paper.CompoundPath();
+    let flow = Pump3D(params);
+    let control = Pump3D_control(params);
+    ret.addChild(control);
+    ret.addChild(flow);
+    ret.fillColor = params["color"];
+    ret.fillColor.alpha = 0.5;
+    return ret;
+};
+
 //************************************
 
 var AlignmentMarks = function(params){
@@ -458,7 +485,7 @@ var AlignmentMarks = function(params){
     return ret;
 };
 
-var AlignmentMarks_control = function(params){
+const AlignmentMarks_control = function(params){
     let position = params["position"];
     let width = params["width"];
     let length = params["length"];
@@ -482,7 +509,7 @@ var AlignmentMarks_control = function(params){
     return ret;
 };
 
-var AlignmentMarksTarget = function(params){
+const AlignmentMarksTarget = function(params){
     let position = params["position"];
     let width = params["width"];
     let length = params["length"];
@@ -521,7 +548,7 @@ var AlignmentMarksTarget = function(params){
 };
 
 //************************************
-var Transposer = function(params){
+const Transposer = function(params){
     let position = params["position"];
     let gap = params["gap"];
     let radius = params["valveRadius"];
@@ -646,7 +673,7 @@ var Transposer = function(params){
     return transposer_flow;
 };
 
-var createTransposerValve = function (compound_path, xpos, ypos, gap, radius, orientation, channel_width){
+const createTransposerValve = function (compound_path, xpos, ypos, gap, radius, orientation, channel_width){
 
     let center = new paper.Point(xpos, ypos);
 
@@ -689,7 +716,7 @@ var createTransposerValve = function (compound_path, xpos, ypos, gap, radius, or
 
 };
 
-var Transposer_control = function(params){
+const Transposer_control = function(params){
     let position = params["position"];
     let gap = params["gap"];
     let radius = params["valveRadius"];
@@ -786,7 +813,7 @@ var Transposer_control = function(params){
     return transposer_control;
 };
 
-var RotaryMixer = function(params){
+const RotaryMixer = function(params){
 
     let position = params["position"];
     let radius = params["radius"];
@@ -836,7 +863,7 @@ var RotaryMixer = function(params){
 
 };
 
-var RotaryMixer_control = function(params){
+const RotaryMixer_control = function(params){
     let position = params["position"];
     let radius = params["radius"];
     let color = params["color"];
@@ -891,14 +918,14 @@ var RotaryMixer_control = function(params){
 };
 
 //*********************************
-var CircleTarget = function(params){
+const CircleTarget = function(params){
     let circ = GradientCircle(params);
     circ.fillColor.alpha = 0.5;
     return circ;
 };
 
 //***************************************************
-var TransposerTarget = function(params){
+const TransposerTarget = function(params){
     let targetRadius;
     let radius1;
     let radius2;
@@ -928,7 +955,7 @@ var TransposerTarget = function(params){
     return circ;
 };
 
-var RotaryMixerTarget = function(params){
+const RotaryMixerTarget = function(params){
 
     let position = params["position"];
     let radius = params["radius"];
@@ -982,7 +1009,7 @@ var RotaryMixerTarget = function(params){
 
 //*******************************************
 
-var Chamber = function(params){
+const Chamber = function (params) {
     let position = params["position"];
     let px = position[0];
     let py = position[1];
@@ -995,8 +1022,8 @@ var Chamber = function(params){
     let rendered = new paper.CompoundPath();
 
     let rec = new paper.Path.Rectangle({
-        point : new paper.Point(px - w/2, py - l/2),
-        size : [ w, l ],
+        point: new paper.Point(px - w / 2, py - l / 2),
+        size: [w, l],
         radius: radius
     });
 
@@ -1007,7 +1034,7 @@ var Chamber = function(params){
 };
 
 
-var ChamberTarget = function(params) {
+const ChamberTarget = function (params) {
 
     let ret = Chamber(params);
 
@@ -1017,10 +1044,9 @@ var ChamberTarget = function(params) {
 };
 
 
-
 //******************************************
 
-var Diamond = function(params){
+const Diamond = function (params) {
     let position = params["position"];
     let px = position[0];
     let py = position[1];
@@ -1030,21 +1056,21 @@ var Diamond = function(params){
     let orientation = params["orientation"];
     let color = params["color"];
     let p0, p1, p2, p3, p4, p5;
-    if (orientation == "H"){
-        p0 = [px - l/2, py - cw/2];
-        p1 = [px  - l/2, py + cw/2];
-        p2 = [px, py + w + cw/2];
-        p3 = [px + l/2, py + cw/2];
-        p4 = [px + l/2, py - cw/2];
-        p5 = [px, py - cw/2 - w];
+    if (orientation == "H") {
+        p0 = [px - l / 2, py - cw / 2];
+        p1 = [px - l / 2, py + cw / 2];
+        p2 = [px, py + w + cw / 2];
+        p3 = [px + l / 2, py + cw / 2];
+        p4 = [px + l / 2, py - cw / 2];
+        p5 = [px, py - cw / 2 - w];
     }
-    else{
-        p0 = [px - cw/2, py - l/2];
-        p1 = [px + cw/2, py - l/2];
-        p2 = [px + w + cw/2, py];
-        p3 = [px + cw/2, py + l/2];
-        p4 = [px - cw/2, py + l/2];
-        p5 = [px - cw/2 - w, py];
+    else {
+        p0 = [px - cw / 2, py - l / 2];
+        p1 = [px + cw / 2, py - l / 2];
+        p2 = [px + w + cw / 2, py];
+        p3 = [px + cw / 2, py + l / 2];
+        p4 = [px - cw / 2, py + l / 2];
+        p5 = [px - cw / 2 - w, py];
     }
     var hex = new paper.Path();
     hex.add(new paper.Point(p0));
@@ -1058,7 +1084,7 @@ var Diamond = function(params){
     return hex;
 };
 
-var DiamondTarget = function(params){
+const DiamondTarget = function (params) {
     let position = params["position"];
     let px = position[0];
     let py = position[1];
@@ -1068,21 +1094,21 @@ var DiamondTarget = function(params){
     let orientation = params["orientation"];
     let color = params["color"];
     let p0, p1, p2, p3, p4, p5;
-    if (orientation == "H"){
-        p0 = [px - l/2, py - cw/2];
-        p1 = [px  - l/2, py + cw/2];
-        p2 = [px, py + w + cw/2];
-        p3 = [px + l/2, py + cw/2];
-        p4 = [px + l/2, py - cw/2];
-        p5 = [px, py - cw/2 - w];
+    if (orientation == "H") {
+        p0 = [px - l / 2, py - cw / 2];
+        p1 = [px - l / 2, py + cw / 2];
+        p2 = [px, py + w + cw / 2];
+        p3 = [px + l / 2, py + cw / 2];
+        p4 = [px + l / 2, py - cw / 2];
+        p5 = [px, py - cw / 2 - w];
     }
-    else{
-        p0 = [px - cw/2, py - l/2];
-        p1 = [px + cw/2, py - l/2];
-        p2 = [px + w + cw/2, py];
-        p3 = [px + cw/2, py + l/2];
-        p4 = [px - cw/2, py + l/2];
-        p5 = [px - cw/2 - w, py];
+    else {
+        p0 = [px - cw / 2, py - l / 2];
+        p1 = [px + cw / 2, py - l / 2];
+        p2 = [px + w + cw / 2, py];
+        p3 = [px + cw / 2, py + l / 2];
+        p4 = [px - cw / 2, py + l / 2];
+        p5 = [px - cw / 2 - w, py];
     }
     var hex = new paper.Path();
     hex.add(new paper.Point(p0));
@@ -1096,12 +1122,12 @@ var DiamondTarget = function(params){
     hex.fillColor.alpha = 0.5;
     hex.strokeColor = "#FFFFFF";
     hex.strokeWidth = 3 / paper.view.zoom;
-    if(hex.strokeWidth > w/2) hex.strokeWidth = w/2;
+    if (hex.strokeWidth > w / 2) hex.strokeWidth = w / 2;
     //console.log(Math.ceil(Math.log2(7)));
     return hex;
 };
 
-var Valve = function(params){
+const Valve = function (params) {
     let orientation = params["orientation"];
     let position = params["position"];
     let px = position[0];
@@ -1110,10 +1136,10 @@ var Valve = function(params){
     let w = params["width"];
     let color = params["color"];
     let rotation = params["rotation"];
-    let startX = px - w/2;
-    let startY = py - l/2;
-    let endX = px + w/2;
-    let endY = py + l/2;
+    let startX = px - w / 2;
+    let startY = py - l / 2;
+    let endX = px + w / 2;
+    let endY = py + l / 2;
     let startPoint = new paper.Point(startX, startY);
     let endPoint = new paper.Point(endX, endY);
     let rec = paper.Path.Rectangle({
@@ -1131,8 +1157,8 @@ var Valve = function(params){
     return rec.rotate(rotation, px, py);
 };
 
-var Mux_control = function(params) {
-    let position  = params["position"];
+const Mux_control = function (params) {
+    let position = params["position"];
     let cw = params["flowChannelWidth"];
     let ctlcw = params["controlChannelWidth"];
     let orientation = params["orientation"];
@@ -1142,18 +1168,18 @@ var Mux_control = function(params) {
     let color = params["color"];
     let stagelength = params["stageLength"];
     let valvelength = params["length"];
-    let valvewidth =  params["width"];
+    let valvewidth = params["width"];
     let px = position[0];
     let py = position[1];
 
-    let treeWidth = (leafs - 1)*spacing + leafs*cw + valvewidth;
-    let leftEdge = px - treeWidth/2;
-    let rightEdge = px + treeWidth/2;
+    let treeWidth = (leafs - 1) * spacing + leafs * cw + valvewidth;
+    let leftEdge = px - treeWidth / 2;
+    let rightEdge = px + treeWidth / 2;
 
     let levels = Math.ceil(Math.log2(leafs));
 
-    let isodd = !(leafs%2);
-    let w = spacing * (leafs/2 + 1);
+    let isodd = !(leafs % 2);
+    let w = spacing * (leafs / 2 + 1);
     let l = (levels + 1) * stagelength;
 
     // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
@@ -1163,21 +1189,20 @@ var Mux_control = function(params) {
     generateMuxControlTwig(treepath, px, py, cw, ctlcw, stagelength, w, 1, levels, valvewidth, valvelength, leftEdge, rightEdge);
 
 
-
     //Draw the tree
 
     treepath.fillColor = color;
     var rotation = 0;
     // console.log("Orientation: " + orientation);
     // console.log("Direction: " + direction);
-    if(orientation == "H" && direction=="OUT"){
+    if (orientation == "H" && direction == "OUT") {
         rotation = 180;
-    }else if(orientation == "V" && direction =="IN"){
+    } else if (orientation == "V" && direction == "IN") {
         rotation = 270;
-    }else if(orientation == "V" && direction == "OUT"){
+    } else if (orientation == "V" && direction == "OUT") {
         rotation = 90;
     }
-    return treepath.rotate(rotation,px,py);
+    return treepath.rotate(rotation, px, py);
 };
 
 function drawmuxcontroltwig(treepath, px, py, cw, ctlcw, stagelength, spacing, valvewidth, valvelength, leftEdge, rightEdge, drawleafs=false) {
@@ -1277,8 +1302,7 @@ var ValveTarget = function(params){
 };
 
 
-
-var BetterMixer = function(params) {
+const BetterMixer = function (params) {
     let channelWidth = params["channelWidth"];
     let bendLength = params["bendLength"];
     let bendSpacing = params["bendSpacing"];
@@ -1287,36 +1311,36 @@ var BetterMixer = function(params) {
     let x = params["position"][0];
     let y = params["position"][1];
     let color = params["color"];
-    let segHalf = bendLength/2 + channelWidth;
-    let segLength = bendLength + 2*channelWidth;
-    let segBend = bendSpacing + 2*channelWidth;
-    let vRepeat = 2*bendSpacing + 2*channelWidth;
+    let segHalf = bendLength / 2 + channelWidth;
+    let segLength = bendLength + 2 * channelWidth;
+    let segBend = bendSpacing + 2 * channelWidth;
+    let vRepeat = 2 * bendSpacing + 2 * channelWidth;
     let vOffset = bendSpacing + channelWidth;
-    let hOffset = bendLength/2 + channelWidth/2;
+    let hOffset = bendLength / 2 + channelWidth / 2;
     var serp = new paper.CompoundPath();
-    if (orientation == "V"){
+    if (orientation == "V") {
         //draw first segment
-        serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth/2, channelWidth));
-        for(let i = 0; i < numBends; i++){
-            serp.addChild(new paper.Path.Rectangle(x, y+vRepeat*i, channelWidth, segBend));
-            serp.addChild(new paper.Path.Rectangle(x, y+vOffset+vRepeat*i, segLength, channelWidth));
-            serp.addChild(new paper.Path.Rectangle(x+channelWidth+ bendLength, y+vOffset+vRepeat*i, channelWidth, segBend));
-            if (i == numBends-1){//draw half segment to close
-                serp.addChild(new paper.Path.Rectangle(x+hOffset, y+vRepeat*(i+1), segHalf, channelWidth));
-            } else{//draw full segment
-                serp.addChild(new paper.Path.Rectangle(x, y+vRepeat*(i+1), segLength, channelWidth));
+        serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));
+        for (let i = 0; i < numBends; i++) {
+            serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
+            serp.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
+            serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
+            if (i == numBends - 1) {//draw half segment to close
+                serp.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
+            } else {//draw full segment
+                serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth));
             }
         }
     } else {
-        serp.addChild(new paper.Path.Rectangle(x, y+hOffset, channelWidth, segHalf));
-        for(let i = 0; i < numBends; i++){
-            serp.addChild(new paper.Path.Rectangle(x+vRepeat*i, y+channelWidth+bendLength, segBend, channelWidth));
-            serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, channelWidth, segLength));
-            serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, segBend, channelWidth));
-            if (i == numBends-1){//draw half segment to close
-                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segHalf + channelWidth/2));
-            } else{//draw full segment
-                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segLength));
+        serp.addChild(new paper.Path.Rectangle(x, y + hOffset, channelWidth, segHalf));
+        for (let i = 0; i < numBends; i++) {
+            serp.addChild(new paper.Path.Rectangle(x + vRepeat * i, y + channelWidth + bendLength, segBend, channelWidth));
+            serp.addChild(new paper.Path.Rectangle(x + vOffset + vRepeat * i, y, channelWidth, segLength));
+            serp.addChild(new paper.Path.Rectangle(x + vOffset + vRepeat * i, y, segBend, channelWidth));
+            if (i == numBends - 1) {//draw half segment to close
+                serp.addChild(new paper.Path.Rectangle(x + vRepeat * (i + 1), y, channelWidth, segHalf + channelWidth / 2));
+            } else {//draw full segment
+                serp.addChild(new paper.Path.Rectangle(x + vRepeat * (i + 1), y, channelWidth, segLength));
             }
         }
     }
@@ -1324,7 +1348,7 @@ var BetterMixer = function(params) {
     return serp;
 };
 
-var BetterMixerTarget = function(params) {
+const BetterMixerTarget = function (params) {
     let channelWidth = params["channelWidth"];
     let bendLength = params["bendLength"];
     let bendSpacing = params["bendSpacing"];
@@ -1333,37 +1357,37 @@ var BetterMixerTarget = function(params) {
     let x = params["position"][0];
     let y = params["position"][1];
     let color = params["color"];
-    let segHalf = bendLength/2 + channelWidth;
-    let segLength = bendLength + 2*channelWidth;
-    let segBend = bendSpacing + 2*channelWidth;
-    let vRepeat = 2*bendSpacing + 2*channelWidth;
+    let segHalf = bendLength / 2 + channelWidth;
+    let segLength = bendLength + 2 * channelWidth;
+    let segBend = bendSpacing + 2 * channelWidth;
+    let vRepeat = 2 * bendSpacing + 2 * channelWidth;
     let vOffset = bendSpacing + channelWidth;
-    let hOffset = bendLength/2 + channelWidth/2;
+    let hOffset = bendLength / 2 + channelWidth / 2;
 
     var serp = new paper.CompoundPath();
-    if (orientation == "V"){
+    if (orientation == "V") {
         //draw first segment
-        serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth/2, channelWidth));
-        for(let i = 0; i < numBends; i++){
-            serp.addChild(new paper.Path.Rectangle(x, y+vRepeat*i, channelWidth, segBend));
-            serp.addChild(new paper.Path.Rectangle(x, y+vOffset+vRepeat*i, segLength, channelWidth));
-            serp.addChild(new paper.Path.Rectangle(x+channelWidth+ bendLength, y+vOffset+vRepeat*i, channelWidth, segBend));
-            if (i == numBends-1){//draw half segment to close
-                serp.addChild(new paper.Path.Rectangle(x+hOffset, y+vRepeat*(i+1), segHalf, channelWidth));
-            } else{//draw full segment
-                serp.addChild(new paper.Path.Rectangle(x, y+vRepeat*(i+1), segLength, channelWidth));
+        serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));
+        for (let i = 0; i < numBends; i++) {
+            serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
+            serp.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
+            serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
+            if (i == numBends - 1) {//draw half segment to close
+                serp.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
+            } else {//draw full segment
+                serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth));
             }
         }
     } else {
-        serp.addChild(new paper.Path.Rectangle(x, y+hOffset, channelWidth, segHalf));
-        for(let i = 0; i < numBends; i++){
-            serp.addChild(new paper.Path.Rectangle(x+vRepeat*i, y+channelWidth+bendLength, segBend, channelWidth));
-            serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, channelWidth, segLength));
-            serp.addChild(new paper.Path.Rectangle(x+vOffset+vRepeat*i, y, segBend, channelWidth));
-            if (i == numBends-1){//draw half segment to close
-                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segHalf + channelWidth/2));
-            } else{//draw full segment
-                serp.addChild(new paper.Path.Rectangle(x+vRepeat*(i+1), y, channelWidth, segLength));
+        serp.addChild(new paper.Path.Rectangle(x, y + hOffset, channelWidth, segHalf));
+        for (let i = 0; i < numBends; i++) {
+            serp.addChild(new paper.Path.Rectangle(x + vRepeat * i, y + channelWidth + bendLength, segBend, channelWidth));
+            serp.addChild(new paper.Path.Rectangle(x + vOffset + vRepeat * i, y, channelWidth, segLength));
+            serp.addChild(new paper.Path.Rectangle(x + vOffset + vRepeat * i, y, segBend, channelWidth));
+            if (i == numBends - 1) {//draw half segment to close
+                serp.addChild(new paper.Path.Rectangle(x + vRepeat * (i + 1), y, channelWidth, segHalf + channelWidth / 2));
+            } else {//draw full segment
+                serp.addChild(new paper.Path.Rectangle(x + vRepeat * (i + 1), y, channelWidth, segLength));
             }
         }
     }
@@ -1372,7 +1396,7 @@ var BetterMixerTarget = function(params) {
     return serp;
 };
 
-var CurvedMixer = function(params) {
+const CurvedMixer = function (params) {
     let channelWidth = params["channelWidth"];
     let bendLength = params["bendLength"];
     let bendSpacing = params["bendSpacing"];
@@ -1381,58 +1405,58 @@ var CurvedMixer = function(params) {
     let x = params["position"][0];
     let y = params["position"][1];
     let color = params["color"];
-    let segHalf = bendLength/2 + channelWidth;
-    let segLength = bendLength + 2*channelWidth;
-    let segBend = bendSpacing + 2*channelWidth;
-    let vRepeat = 2*bendSpacing + 2*channelWidth;
+    let segHalf = bendLength / 2 + channelWidth;
+    let segLength = bendLength + 2 * channelWidth;
+    let segBend = bendSpacing + 2 * channelWidth;
+    let vRepeat = 2 * bendSpacing + 2 * channelWidth;
     let vOffset = bendSpacing + channelWidth;
-    let hOffset = bendLength/2 + channelWidth/2;
+    let hOffset = bendLength / 2 + channelWidth / 2;
     let serp = new paper.CompoundPath();
 
     //draw first segment
-    let toprect = new paper.Path.Rectangle(x + channelWidth -1 , y, bendLength/2 + channelWidth/2 +1, channelWidth);
+    let toprect = new paper.Path.Rectangle(x + channelWidth - 1, y, bendLength / 2 + channelWidth / 2 + 1, channelWidth);
     toprect.closed = true;
-    for(let i = 0; i < numBends; i++){
+    for (let i = 0; i < numBends; i++) {
         //draw left curved segment
         let leftCurve = new paper.Path.Arc({
-            from:[x + channelWidth, y + vRepeat*i],
-            through: [x + channelWidth - (channelWidth + bendSpacing/2), y + vRepeat*i + bendSpacing/2 + channelWidth],
-            to:[x + channelWidth, y + vRepeat*i + bendSpacing + 2*channelWidth]
+            from: [x + channelWidth, y + vRepeat * i],
+            through: [x + channelWidth - (channelWidth + bendSpacing / 2), y + vRepeat * i + bendSpacing / 2 + channelWidth],
+            to: [x + channelWidth, y + vRepeat * i + bendSpacing + 2 * channelWidth]
         });
         leftCurve.closed = true;
         let leftCurveSmall = new paper.Path.Arc({
-            from: [x + channelWidth, y + vRepeat*i + bendSpacing + channelWidth],
-            through: [x + channelWidth - bendSpacing/2, y + vRepeat*i + bendSpacing/2 + channelWidth],
-            to: [x + channelWidth, y + vRepeat*i + channelWidth]
+            from: [x + channelWidth, y + vRepeat * i + bendSpacing + channelWidth],
+            through: [x + channelWidth - bendSpacing / 2, y + vRepeat * i + bendSpacing / 2 + channelWidth],
+            to: [x + channelWidth, y + vRepeat * i + channelWidth]
         });
         leftCurveSmall.closed = true;
         leftCurve = leftCurve.subtract(leftCurveSmall);
         toprect = toprect.unite(leftCurve);
         // serp.addChild(leftCurve);
         //draw horizontal segment
-        let hseg = new paper.Path.Rectangle(x + channelWidth-1, y+vOffset+vRepeat*i, bendLength+2, channelWidth);
+        let hseg = new paper.Path.Rectangle(x + channelWidth - 1, y + vOffset + vRepeat * i, bendLength + 2, channelWidth);
         toprect = toprect.unite(hseg);
         //draw right curved segment
         let rightCurve = new paper.Path.Arc({
-            from:[x + channelWidth + bendLength, y + vOffset + vRepeat*i],
-            through: [x + channelWidth + bendLength + (channelWidth + bendSpacing/2), y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
-            to:[x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + 2*channelWidth]
+            from: [x + channelWidth + bendLength, y + vOffset + vRepeat * i],
+            through: [x + channelWidth + bendLength + (channelWidth + bendSpacing / 2), y + vOffset + vRepeat * i + bendSpacing / 2 + channelWidth],
+            to: [x + channelWidth + bendLength, y + vOffset + vRepeat * i + bendSpacing + 2 * channelWidth]
         });
         rightCurve.closed = true;
         let rightCurveSmall = new paper.Path.Arc({
-            from: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + channelWidth],
-            through: [x + channelWidth + bendLength + bendSpacing/2, y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
-            to: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + channelWidth]
+            from: [x + channelWidth + bendLength, y + vOffset + vRepeat * i + bendSpacing + channelWidth],
+            through: [x + channelWidth + bendLength + bendSpacing / 2, y + vOffset + vRepeat * i + bendSpacing / 2 + channelWidth],
+            to: [x + channelWidth + bendLength, y + vOffset + vRepeat * i + channelWidth]
         });
         rightCurveSmall.closed = true;
         rightCurve = rightCurve.subtract(rightCurveSmall);
         toprect = toprect.unite(rightCurve);
 
-        if (i == numBends-1){//draw half segment to close
-            hseg = new paper.Path.Rectangle(x + channelWidth/2 + bendLength/2, y+vRepeat*(i+1), (bendLength + channelWidth)/2+1, channelWidth);
+        if (i == numBends - 1) {//draw half segment to close
+            hseg = new paper.Path.Rectangle(x + channelWidth / 2 + bendLength / 2, y + vRepeat * (i + 1), (bendLength + channelWidth) / 2 + 1, channelWidth);
             toprect = toprect.unite(hseg);
-        } else{//draw full segment
-            hseg = new paper.Path.Rectangle(x + channelWidth-1, y+vRepeat*(i+1), bendLength+2, channelWidth);
+        } else {//draw full segment
+            hseg = new paper.Path.Rectangle(x + channelWidth - 1, y + vRepeat * (i + 1), bendLength + 2, channelWidth);
             toprect = toprect.unite(hseg);
         }
         toprect = toprect.unite(hseg);
@@ -1440,9 +1464,9 @@ var CurvedMixer = function(params) {
     serp.addChild(toprect);
 
 
-    if (orientation == "V"){
+    if (orientation == "V") {
         serp.rotate(0, x + channelWidth, y);
-    }else{
+    } else {
         serp.rotate(90, x + channelWidth, y);
     }
 
@@ -1466,7 +1490,7 @@ function unionize(compundpath) {
     return newpath;
 }
 
-var CurvedMixerTarget = function(params) {
+const CurvedMixerTarget = function (params) {
     let channelWidth = params["channelWidth"];
     let bendLength = params["bendLength"];
     let bendSpacing = params["bendSpacing"];
@@ -1475,58 +1499,58 @@ var CurvedMixerTarget = function(params) {
     let x = params["position"][0];
     let y = params["position"][1];
     let color = params["color"];
-    let segHalf = bendLength/2 + channelWidth;
-    let segLength = bendLength + 2*channelWidth;
-    let segBend = bendSpacing + 2*channelWidth;
-    let vRepeat = 2*bendSpacing + 2*channelWidth;
+    let segHalf = bendLength / 2 + channelWidth;
+    let segLength = bendLength + 2 * channelWidth;
+    let segBend = bendSpacing + 2 * channelWidth;
+    let vRepeat = 2 * bendSpacing + 2 * channelWidth;
     let vOffset = bendSpacing + channelWidth;
-    let hOffset = bendLength/2 + channelWidth/2;
+    let hOffset = bendLength / 2 + channelWidth / 2;
     let serp = new paper.CompoundPath();
 
     //draw first segment
-    let toprect = new paper.Path.Rectangle(x + channelWidth -1 , y, bendLength/2 + channelWidth/2 +1, channelWidth);
+    let toprect = new paper.Path.Rectangle(x + channelWidth - 1, y, bendLength / 2 + channelWidth / 2 + 1, channelWidth);
     toprect.closed = true;
-    for(let i = 0; i < numBends; i++){
+    for (let i = 0; i < numBends; i++) {
         //draw left curved segment
         let leftCurve = new paper.Path.Arc({
-            from:[x + channelWidth, y + vRepeat*i],
-            through: [x + channelWidth - (channelWidth + bendSpacing/2), y + vRepeat*i + bendSpacing/2 + channelWidth],
-            to:[x + channelWidth, y + vRepeat*i + bendSpacing + 2*channelWidth]
+            from: [x + channelWidth, y + vRepeat * i],
+            through: [x + channelWidth - (channelWidth + bendSpacing / 2), y + vRepeat * i + bendSpacing / 2 + channelWidth],
+            to: [x + channelWidth, y + vRepeat * i + bendSpacing + 2 * channelWidth]
         });
         leftCurve.closed = true;
         let leftCurveSmall = new paper.Path.Arc({
-            from: [x + channelWidth, y + vRepeat*i + bendSpacing + channelWidth],
-            through: [x + channelWidth - bendSpacing/2, y + vRepeat*i + bendSpacing/2 + channelWidth],
-            to: [x + channelWidth, y + vRepeat*i + channelWidth]
+            from: [x + channelWidth, y + vRepeat * i + bendSpacing + channelWidth],
+            through: [x + channelWidth - bendSpacing / 2, y + vRepeat * i + bendSpacing / 2 + channelWidth],
+            to: [x + channelWidth, y + vRepeat * i + channelWidth]
         });
         leftCurveSmall.closed = true;
         leftCurve = leftCurve.subtract(leftCurveSmall);
         toprect = toprect.unite(leftCurve);
         // serp.addChild(leftCurve);
         //draw horizontal segment
-        let hseg = new paper.Path.Rectangle(x + channelWidth-1, y+vOffset+vRepeat*i, bendLength+2, channelWidth);
+        let hseg = new paper.Path.Rectangle(x + channelWidth - 1, y + vOffset + vRepeat * i, bendLength + 2, channelWidth);
         toprect = toprect.unite(hseg);
         //draw right curved segment
         let rightCurve = new paper.Path.Arc({
-            from:[x + channelWidth + bendLength, y + vOffset + vRepeat*i],
-            through: [x + channelWidth + bendLength + (channelWidth + bendSpacing/2), y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
-            to:[x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + 2*channelWidth]
+            from: [x + channelWidth + bendLength, y + vOffset + vRepeat * i],
+            through: [x + channelWidth + bendLength + (channelWidth + bendSpacing / 2), y + vOffset + vRepeat * i + bendSpacing / 2 + channelWidth],
+            to: [x + channelWidth + bendLength, y + vOffset + vRepeat * i + bendSpacing + 2 * channelWidth]
         });
         rightCurve.closed = true;
         let rightCurveSmall = new paper.Path.Arc({
-            from: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + bendSpacing + channelWidth],
-            through: [x + channelWidth + bendLength + bendSpacing/2, y + vOffset + vRepeat*i + bendSpacing/2 + channelWidth],
-            to: [x + channelWidth + bendLength, y + vOffset + vRepeat*i + channelWidth]
+            from: [x + channelWidth + bendLength, y + vOffset + vRepeat * i + bendSpacing + channelWidth],
+            through: [x + channelWidth + bendLength + bendSpacing / 2, y + vOffset + vRepeat * i + bendSpacing / 2 + channelWidth],
+            to: [x + channelWidth + bendLength, y + vOffset + vRepeat * i + channelWidth]
         });
         rightCurveSmall.closed = true;
         rightCurve = rightCurve.subtract(rightCurveSmall);
         toprect = toprect.unite(rightCurve);
 
-        if (i == numBends-1){//draw half segment to close
-            hseg = new paper.Path.Rectangle(x + channelWidth/2 + bendLength/2, y+vRepeat*(i+1), (bendLength + channelWidth)/2+1, channelWidth);
+        if (i == numBends - 1) {//draw half segment to close
+            hseg = new paper.Path.Rectangle(x + channelWidth / 2 + bendLength / 2, y + vRepeat * (i + 1), (bendLength + channelWidth) / 2 + 1, channelWidth);
             toprect = toprect.unite(hseg);
-        } else{//draw full segment
-            hseg = new paper.Path.Rectangle(x + channelWidth-1, y+vRepeat*(i+1), bendLength+2, channelWidth);
+        } else {//draw full segment
+            hseg = new paper.Path.Rectangle(x + channelWidth - 1, y + vRepeat * (i + 1), bendLength + 2, channelWidth);
             toprect = toprect.unite(hseg);
         }
         toprect = toprect.unite(hseg);
@@ -1534,9 +1558,9 @@ var CurvedMixerTarget = function(params) {
     serp.addChild(toprect);
 
 
-    if (orientation == "V"){
+    if (orientation == "V") {
         serp.rotate(0, x + channelWidth, y);
-    }else{
+    } else {
         serp.rotate(90, x + channelWidth, y);
     }
 
@@ -1546,7 +1570,7 @@ var CurvedMixerTarget = function(params) {
     return serp;
 };
 
-var Mixer = function(params){
+const Mixer = function (params) {
     let position = params["position"];
     let bendSpacing = params["bendSpacing"];
     let numBends = params["numberOfBends"];
@@ -1558,12 +1582,12 @@ var Mixer = function(params){
 
     let startX, startY;
 
-    if (orientation == "V"){
-        startX = position[0] + 0.5*(bendLength + channelWidth);
+    if (orientation == "V") {
+        startX = position[0] + 0.5 * (bendLength + channelWidth);
         startY = position[1] - 0.5 * channelWidth;
         serpentine.addChild(new paper.Path.Rectangle({
-            size: [0.5*bendLength + channelWidth, channelWidth],
-            point: new paper.Point(startX - 0.5*bendLength - channelWidth, startY),
+            size: [0.5 * bendLength + channelWidth, channelWidth],
+            point: new paper.Point(startX - 0.5 * bendLength - channelWidth, startY),
             fillColor: color,
             strokeWidth: 0,
         }));
@@ -1573,27 +1597,27 @@ var Mixer = function(params){
         for (let i = 0; i < numBends - 1; i++) {
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [channelWidth, bendSpacing + channelWidth],
-                point: new paper.Point(startX - 0.5*bendLength - channelWidth, startY + 2*i*(bendSpacing + channelWidth) + channelWidth),
+                point: new paper.Point(startX - 0.5 * bendLength - channelWidth, startY + 2 * i * (bendSpacing + channelWidth) + channelWidth),
                 fillColor: color,
                 strokeWidth: 0
             }));
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [bendLength + channelWidth, channelWidth],
-                point: new paper.Point(startX - 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)),
+                point: new paper.Point(startX - 0.5 * bendLength, startY + (2 * i + 1) * (bendSpacing + channelWidth)),
                 fillColor: color,
                 strokeWidth: 0
             }));
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [channelWidth, bendSpacing + channelWidth],
-                point: new paper.Point(startX + 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth) + channelWidth),
+                point: new paper.Point(startX + 0.5 * bendLength, startY + (2 * i + 1) * (bendSpacing + channelWidth) + channelWidth),
                 fillColor: color,
                 strokeWidth: 0
             }));
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [bendLength + channelWidth, channelWidth],
-                point: new paper.Point(startX - 0.5*bendLength - channelWidth, startY + (2*i+2)*(bendSpacing + channelWidth)),
+                point: new paper.Point(startX - 0.5 * bendLength - channelWidth, startY + (2 * i + 2) * (bendSpacing + channelWidth)),
                 fillColor: color,
                 strokeWidth: 0
             }));
@@ -1601,37 +1625,37 @@ var Mixer = function(params){
         }
         serpentine.addChild(new paper.Path.Rectangle({
             size: [channelWidth, bendSpacing + channelWidth],
-            point: new paper.Point(startX - 0.5*bendLength - channelWidth, startY + 2*(numBends - 1)*(bendSpacing + channelWidth) + channelWidth),
+            point: new paper.Point(startX - 0.5 * bendLength - channelWidth, startY + 2 * (numBends - 1) * (bendSpacing + channelWidth) + channelWidth),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
             size: [bendLength + channelWidth, channelWidth],
-            point: new paper.Point(startX - 0.5*bendLength, startY + (2*(numBends - 1)+1)*(bendSpacing + channelWidth)),
+            point: new paper.Point(startX - 0.5 * bendLength, startY + (2 * (numBends - 1) + 1) * (bendSpacing + channelWidth)),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
             size: [channelWidth, bendSpacing + channelWidth],
-            point: new paper.Point(startX + 0.5*bendLength, startY + (2*(numBends - 1)+1)*(bendSpacing + channelWidth) + channelWidth),
+            point: new paper.Point(startX + 0.5 * bendLength, startY + (2 * (numBends - 1) + 1) * (bendSpacing + channelWidth) + channelWidth),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
-            size: [bendLength/2, channelWidth],
-            point: new paper.Point(startX, startY + (2*(numBends - 1)+2)*(bendSpacing + channelWidth)),
+            size: [bendLength / 2, channelWidth],
+            point: new paper.Point(startX, startY + (2 * (numBends - 1) + 2) * (bendSpacing + channelWidth)),
             fillColor: color,
             strokeWidth: 0
         }));
-        serpentine.scale(-1,1);
+        serpentine.scale(-1, 1);
     }
     else {
         startX = position[0] - 0.5 * channelWidth;
-        startY = position[1] + 0.5*(bendLength + channelWidth);
+        startY = position[1] + 0.5 * (bendLength + channelWidth);
         //serpentine.add(new paper.Point(startX, startY));
         serpentine.addChild(new paper.Path.Rectangle({
-            size: [channelWidth, 0.5*bendLength + channelWidth],
-            point: new paper.Point(startX, startY - 0.5*bendLength - channelWidth),
+            size: [channelWidth, 0.5 * bendLength + channelWidth],
+            point: new paper.Point(startX, startY - 0.5 * bendLength - channelWidth),
             fillColor: color,
             strokeWidth: 0
         }));
@@ -1640,27 +1664,27 @@ var Mixer = function(params){
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [bendSpacing + channelWidth, channelWidth],
-                point: new paper.Point(startX + 2*i*(bendSpacing + channelWidth) + channelWidth, startY - 0.5*bendLength - channelWidth),
+                point: new paper.Point(startX + 2 * i * (bendSpacing + channelWidth) + channelWidth, startY - 0.5 * bendLength - channelWidth),
                 fillColor: color,
                 strokeWidth: 0
             }));
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [channelWidth, bendLength + channelWidth],
-                point: new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY - 0.5*bendLength),
+                point: new paper.Point(startX + (2 * i + 1) * (bendSpacing + channelWidth), startY - 0.5 * bendLength),
                 fillColor: color,
                 strokeWidth: 0
             }));
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [bendSpacing + channelWidth, channelWidth],
-                point: new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth) + channelWidth, startY + 0.5*bendLength),
+                point: new paper.Point(startX + (2 * i + 1) * (bendSpacing + channelWidth) + channelWidth, startY + 0.5 * bendLength),
                 fillColor: color,
                 strokeWidth: 0
             }));
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [channelWidth, bendLength + channelWidth],
-                point: new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY - 0.5*bendLength - channelWidth),
+                point: new paper.Point(startX + (2 * i + 2) * (bendSpacing + channelWidth), startY - 0.5 * bendLength - channelWidth),
                 fillColor: color,
                 strokeWidth: 0
             }));
@@ -1668,25 +1692,25 @@ var Mixer = function(params){
         }
         serpentine.addChild(new paper.Path.Rectangle({
             size: [bendSpacing + channelWidth, channelWidth],
-            point: new paper.Point(startX + 2*(numBends - 1)*(bendSpacing + channelWidth) + channelWidth, startY - 0.5*bendLength - channelWidth),
+            point: new paper.Point(startX + 2 * (numBends - 1) * (bendSpacing + channelWidth) + channelWidth, startY - 0.5 * bendLength - channelWidth),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
             size: [channelWidth, bendLength + channelWidth],
-            point: new paper.Point(startX + (2*(numBends - 1)+1)*(bendSpacing + channelWidth), startY - 0.5*bendLength),
+            point: new paper.Point(startX + (2 * (numBends - 1) + 1) * (bendSpacing + channelWidth), startY - 0.5 * bendLength),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
             size: [bendSpacing + channelWidth, channelWidth],
-            point: new paper.Point(startX + (2*(numBends - 1)+1)*(bendSpacing + channelWidth) + channelWidth, startY + 0.5*bendLength),
+            point: new paper.Point(startX + (2 * (numBends - 1) + 1) * (bendSpacing + channelWidth) + channelWidth, startY + 0.5 * bendLength),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
-            size: [channelWidth, bendLength/2],
-            point: new paper.Point(startX + (2*(numBends - 1)+2)*(bendSpacing + channelWidth), startY),
+            size: [channelWidth, bendLength / 2],
+            point: new paper.Point(startX + (2 * (numBends - 1) + 2) * (bendSpacing + channelWidth), startY),
             fillColor: color,
             strokeWidth: 0
         }));
@@ -1697,7 +1721,7 @@ var Mixer = function(params){
     return serpentine;
 };
 
-var MixerTarget = function(params){
+const MixerTarget = function (params) {
     let position = params["position"];
     let bendSpacing = params["bendSpacing"];
     let numBends = params["numberOfBends"];
@@ -1709,12 +1733,12 @@ var MixerTarget = function(params){
 
     let startX, startY;
 
-    if (orientation == "V"){
-        startX = position[0] + 0.5*(bendLength + channelWidth);
+    if (orientation == "V") {
+        startX = position[0] + 0.5 * (bendLength + channelWidth);
         startY = position[1] - 0.5 * channelWidth;
         serpentine.addChild(new paper.Path.Rectangle({
-            size: [0.5*bendLength + channelWidth, channelWidth],
-            point: new paper.Point(startX - 0.5*bendLength - channelWidth, startY),
+            size: [0.5 * bendLength + channelWidth, channelWidth],
+            point: new paper.Point(startX - 0.5 * bendLength - channelWidth, startY),
             fillColor: color,
             strokeWidth: 0
         }));
@@ -1724,27 +1748,27 @@ var MixerTarget = function(params){
         for (let i = 0; i < numBends - 1; i++) {
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [channelWidth, bendSpacing + channelWidth],
-                point: new paper.Point(startX - 0.5*bendLength - channelWidth, startY + 2*i*(bendSpacing + channelWidth) + channelWidth),
+                point: new paper.Point(startX - 0.5 * bendLength - channelWidth, startY + 2 * i * (bendSpacing + channelWidth) + channelWidth),
                 fillColor: color,
                 strokeWidth: 0
             }));
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [bendLength + channelWidth, channelWidth],
-                point: new paper.Point(startX - 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth)),
+                point: new paper.Point(startX - 0.5 * bendLength, startY + (2 * i + 1) * (bendSpacing + channelWidth)),
                 fillColor: color,
                 strokeWidth: 0
             }));
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [channelWidth, bendSpacing + channelWidth],
-                point: new paper.Point(startX + 0.5*bendLength, startY + (2*i+1)*(bendSpacing + channelWidth) + channelWidth),
+                point: new paper.Point(startX + 0.5 * bendLength, startY + (2 * i + 1) * (bendSpacing + channelWidth) + channelWidth),
                 fillColor: color,
                 strokeWidth: 0
             }));
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [bendLength + channelWidth, channelWidth],
-                point: new paper.Point(startX - 0.5*bendLength - channelWidth, startY + (2*i+2)*(bendSpacing + channelWidth)),
+                point: new paper.Point(startX - 0.5 * bendLength - channelWidth, startY + (2 * i + 2) * (bendSpacing + channelWidth)),
                 fillColor: color,
                 strokeWidth: 0
             }));
@@ -1752,37 +1776,37 @@ var MixerTarget = function(params){
         }
         serpentine.addChild(new paper.Path.Rectangle({
             size: [channelWidth, bendSpacing + channelWidth],
-            point: new paper.Point(startX - 0.5*bendLength - channelWidth, startY + 2*(numBends - 1)*(bendSpacing + channelWidth) + channelWidth),
+            point: new paper.Point(startX - 0.5 * bendLength - channelWidth, startY + 2 * (numBends - 1) * (bendSpacing + channelWidth) + channelWidth),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
             size: [bendLength + channelWidth, channelWidth],
-            point: new paper.Point(startX - 0.5*bendLength, startY + (2*(numBends - 1)+1)*(bendSpacing + channelWidth)),
+            point: new paper.Point(startX - 0.5 * bendLength, startY + (2 * (numBends - 1) + 1) * (bendSpacing + channelWidth)),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
             size: [channelWidth, bendSpacing + channelWidth],
-            point: new paper.Point(startX + 0.5*bendLength, startY + (2*(numBends - 1)+1)*(bendSpacing + channelWidth) + channelWidth),
+            point: new paper.Point(startX + 0.5 * bendLength, startY + (2 * (numBends - 1) + 1) * (bendSpacing + channelWidth) + channelWidth),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
-            size: [bendLength/2, channelWidth],
-            point: new paper.Point(startX, startY + (2*(numBends - 1)+2)*(bendSpacing + channelWidth)),
+            size: [bendLength / 2, channelWidth],
+            point: new paper.Point(startX, startY + (2 * (numBends - 1) + 2) * (bendSpacing + channelWidth)),
             fillColor: color,
             strokeWidth: 0
         }));
-        serpentine.scale(-1,1);
+        serpentine.scale(-1, 1);
     }
     else {
         startX = position[0] - 0.5 * channelWidth;
-        startY = position[1] + 0.5*(bendLength + channelWidth);
+        startY = position[1] + 0.5 * (bendLength + channelWidth);
         //serpentine.add(new paper.Point(startX, startY));
         serpentine.addChild(new paper.Path.Rectangle({
-            size: [channelWidth, 0.5*bendLength + channelWidth],
-            point: new paper.Point(startX, startY - 0.5*bendLength - channelWidth),
+            size: [channelWidth, 0.5 * bendLength + channelWidth],
+            point: new paper.Point(startX, startY - 0.5 * bendLength - channelWidth),
             fillColor: color,
             strokeWidth: 0
         }));
@@ -1791,27 +1815,27 @@ var MixerTarget = function(params){
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [bendSpacing + channelWidth, channelWidth],
-                point: new paper.Point(startX + 2*i*(bendSpacing + channelWidth) + channelWidth, startY - 0.5*bendLength - channelWidth),
+                point: new paper.Point(startX + 2 * i * (bendSpacing + channelWidth) + channelWidth, startY - 0.5 * bendLength - channelWidth),
                 fillColor: color,
                 strokeWidth: 0
             }));
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [channelWidth, bendLength + channelWidth],
-                point: new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth), startY - 0.5*bendLength),
+                point: new paper.Point(startX + (2 * i + 1) * (bendSpacing + channelWidth), startY - 0.5 * bendLength),
                 fillColor: color,
                 strokeWidth: 0
             }));
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [bendSpacing + channelWidth, channelWidth],
-                point: new paper.Point(startX + (2*i+1)*(bendSpacing + channelWidth) + channelWidth, startY + 0.5*bendLength),
+                point: new paper.Point(startX + (2 * i + 1) * (bendSpacing + channelWidth) + channelWidth, startY + 0.5 * bendLength),
                 fillColor: color,
                 strokeWidth: 0
             }));
 
             serpentine.addChild(new paper.Path.Rectangle({
                 size: [channelWidth, bendLength + channelWidth],
-                point: new paper.Point(startX + (2*i+2)*(bendSpacing + channelWidth), startY - 0.5*bendLength - channelWidth),
+                point: new paper.Point(startX + (2 * i + 2) * (bendSpacing + channelWidth), startY - 0.5 * bendLength - channelWidth),
                 fillColor: color,
                 strokeWidth: 0
             }));
@@ -1819,25 +1843,25 @@ var MixerTarget = function(params){
         }
         serpentine.addChild(new paper.Path.Rectangle({
             size: [bendSpacing + channelWidth, channelWidth],
-            point: new paper.Point(startX + 2*(numBends - 1)*(bendSpacing + channelWidth) + channelWidth, startY - 0.5*bendLength - channelWidth),
+            point: new paper.Point(startX + 2 * (numBends - 1) * (bendSpacing + channelWidth) + channelWidth, startY - 0.5 * bendLength - channelWidth),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
             size: [channelWidth, bendLength + channelWidth],
-            point: new paper.Point(startX + (2*(numBends - 1)+1)*(bendSpacing + channelWidth), startY - 0.5*bendLength),
+            point: new paper.Point(startX + (2 * (numBends - 1) + 1) * (bendSpacing + channelWidth), startY - 0.5 * bendLength),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
             size: [bendSpacing + channelWidth, channelWidth],
-            point: new paper.Point(startX + (2*(numBends - 1)+1)*(bendSpacing + channelWidth) + channelWidth, startY + 0.5*bendLength),
+            point: new paper.Point(startX + (2 * (numBends - 1) + 1) * (bendSpacing + channelWidth) + channelWidth, startY + 0.5 * bendLength),
             fillColor: color,
             strokeWidth: 0
         }));
         serpentine.addChild(new paper.Path.Rectangle({
-            size: [channelWidth, bendLength/2],
-            point: new paper.Point(startX + (2*(numBends - 1)+2)*(bendSpacing + channelWidth), startY),
+            size: [channelWidth, bendLength / 2],
+            point: new paper.Point(startX + (2 * (numBends - 1) + 2) * (bendSpacing + channelWidth), startY),
             fillColor: color,
             strokeWidth: 0
         }));
@@ -1849,95 +1873,7 @@ var MixerTarget = function(params){
     return serpentine;
 };
 
-/**********************************************************************/
-
-
-var GradientGenerator = function(params){
-    let position = params["position"];
-    let bendSpacing = params["bendSpacing"];
-    let numBends = params["numberOfBends"];
-    let channelWidth = params["channelWidth"];
-    let bendLength = params["bendLength"];
-    let orientation = params["orientation"];
-    let invalue = params["in"];
-    let outvalue = params["out"];
-    let spacing = params["spacing"]; //Center to Center
-    let rotation = params["rotation"];
-    let color = params["color"];
-
-    let posx = position[0];
-    let posy = position[1];
-    let stagelength = channelWidth * (2*numBends + 1) + (2*numBends + 2) * bendSpacing + channelWidth;
-    let gradientgenerator = new paper.CompoundPath();
-    // insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, posx, posy, color);
-    //Iterate through each of the stages
-
-    //Draw the first stage which is just channels
-    let totalstagewidth = (invalue - 1)*spacing;
-    let xref = (posx - totalstagewidth / 2);;
-    let yref = posy;
-    //Draw straight channels for each of the input lines
-    for(let i = 0; i < invalue; i++){
-        let x = xref + spacing*i;
-        let y = yref;
-
-        //Insert Straight channel
-        gradientgenerator.addChild(new paper.Path.Rectangle({
-            point: new paper.Point(x, y),
-            size: [channelWidth, stagelength+channelWidth]
-        }));
-    }
-
-    for(let stagevalue = invalue+1; stagevalue <= outvalue; stagevalue++){
-        //For each stage : do the following
-        /*
-        Check if each stagevalue is odd or even
-
-        if (not last stage) place horizontal bar connecting eveything
-         */
-
-        //Calculate the total width and start placing mixers
-        let totalstagewidth = (stagevalue - 1)*spacing;
-
-        xref = (posx - totalstagewidth / 2);
-        yref = posy + stagelength * (stagevalue - invalue);
-
-        //Start from the left
-        for(let i = 0; i < stagevalue; i++){
-            let x = xref + spacing*i;
-
-            let y = yref;
-            //insert the mixer
-            insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, x, y, color);
-
-        }
-
-        // Insert horizontal bar
-        let hbar = new paper.Path.Rectangle({
-            point: new paper.Point(xref, yref),
-            size: [totalstagewidth, channelWidth],
-            fillColor: color,
-            strokeWidth:0
-        });
-
-        gradientgenerator.addChild(hbar);
-    }
-
-    gradientgenerator.fillColor = color;
-    // console.log("testing");
-
-    gradientgenerator.rotate(-rotation, new paper.Point(posx, posy));
-
-    return gradientgenerator;
-};
-
-var GradientGeneratorTarget = function(params){
-    let ret = GradientGenerator(params);
-    ret.fillColor.opacity = 0.5;
-    return ret;
-};
-
-var insertMixer = function(serpentine, bendSpacing, numBends, channelWidth, bendLength, x, y, color){
+const insertMixer = function(serpentine, bendSpacing, numBends, channelWidth, bendLength, x, y, color){
     let segHalf = bendLength/2 + channelWidth;
     let segLength = bendLength + 2*channelWidth;
     let segBend = bendSpacing + 2*channelWidth;
@@ -1967,13 +1903,100 @@ var insertMixer = function(serpentine, bendSpacing, numBends, channelWidth, bend
 
     return serpentine;
 };
+/**********************************************************************/
+
+
+const GradientGenerator = function (params) {
+    let position = params["position"];
+    let bendSpacing = params["bendSpacing"];
+    let numBends = params["numberOfBends"];
+    let channelWidth = params["channelWidth"];
+    let bendLength = params["bendLength"];
+    let orientation = params["orientation"];
+    let invalue = params["in"];
+    let outvalue = params["out"];
+    let spacing = params["spacing"]; //Center to Center
+    let rotation = params["rotation"];
+    let color = params["color"];
+
+    let posx = position[0];
+    let posy = position[1];
+    let stagelength = channelWidth * (2 * numBends + 1) + (2 * numBends + 2) * bendSpacing + channelWidth;
+    let gradientgenerator = new paper.CompoundPath();
+    // insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, posx, posy, color);
+    //Iterate through each of the stages
+
+    //Draw the first stage which is just channels
+    let totalstagewidth = (invalue - 1) * spacing;
+    let xref = (posx - totalstagewidth / 2);
+    ;
+    let yref = posy;
+    //Draw straight channels for each of the input lines
+    for (let i = 0; i < invalue; i++) {
+        let x = xref + spacing * i;
+        let y = yref;
+
+        //Insert Straight channel
+        gradientgenerator.addChild(new paper.Path.Rectangle({
+            point: new paper.Point(x, y),
+            size: [channelWidth, stagelength + channelWidth]
+        }));
+    }
+
+    for (let stagevalue = invalue + 1; stagevalue <= outvalue; stagevalue++) {
+        //For each stage : do the following
+        /*
+        Check if each stagevalue is odd or even
+
+        if (not last stage) place horizontal bar connecting eveything
+         */
+
+        //Calculate the total width and start placing mixers
+        let totalstagewidth = (stagevalue - 1) * spacing;
+
+        xref = (posx - totalstagewidth / 2);
+        yref = posy + stagelength * (stagevalue - invalue);
+
+        //Start from the left
+        for (let i = 0; i < stagevalue; i++) {
+            let x = xref + spacing * i;
+
+            let y = yref;
+            //insert the mixer
+            insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, x, y, color);
+
+        }
+
+        // Insert horizontal bar
+        let hbar = new paper.Path.Rectangle({
+            point: new paper.Point(xref, yref),
+            size: [totalstagewidth, channelWidth],
+            fillColor: color,
+            strokeWidth: 0
+        });
+
+        gradientgenerator.addChild(hbar);
+    }
+
+    gradientgenerator.fillColor = color;
+    // console.log("testing");
+
+    gradientgenerator.rotate(-rotation, new paper.Point(posx, posy));
+
+    return gradientgenerator;
+};
+
+const GradientGeneratorTarget = function (params) {
+    let ret = GradientGenerator(params);
+    ret.fillColor.opacity = 0.5;
+    return ret;
+};
 
 
 /**********************************************************************/
 
 
-
-var Transition = function(params) {
+const Transition = function (params) {
     let position = params["position"];
     let cw1 = params["cw1"];
     let cw2 = params["cw2"];
@@ -1983,17 +2006,17 @@ var Transition = function(params) {
     let trap = new paper.Path();
 
     if (orientation == "V") {
-        trap.add(new paper.Point(position[0] - cw1/2, position[1]));
-        trap.add(new paper.Point(position[0] + cw1/2, position[1]));
-        trap.add(new paper.Point(position[0] + cw2/2, position[1] + length));
-        trap.add(new paper.Point(position[0] - cw2/2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw2 / 2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw2 / 2, position[1] + length));
         //trap.add(new paper.Point(position[0] - cw1/2, position[1]));
     }
     else {
-        trap.add(new paper.Point(position[0], position[1] - cw1/2));
-        trap.add(new paper.Point(position[0], position[1] + cw1/2));
-        trap.add(new paper.Point(position[0] + length, position[1] + cw2/2));
-        trap.add(new paper.Point(position[0] + length, position[1] - cw2/2));
+        trap.add(new paper.Point(position[0], position[1] - cw1 / 2));
+        trap.add(new paper.Point(position[0], position[1] + cw1 / 2));
+        trap.add(new paper.Point(position[0] + length, position[1] + cw2 / 2));
+        trap.add(new paper.Point(position[0] + length, position[1] - cw2 / 2));
         //trap.add(new paper.Point(position[0], position[1] - cw1/2));
     }
     trap.closed = true;
@@ -2001,7 +2024,7 @@ var Transition = function(params) {
     return trap;
 };
 
-var TransitionTarget = function(params) {
+const TransitionTarget = function (params) {
     let position = params["position"];
     let cw1 = params["cw1"];
     let cw2 = params["cw2"];
@@ -2010,16 +2033,16 @@ var TransitionTarget = function(params) {
     let color = params["color"];
     let trap = new paper.Path();
     if (orientation == "V") {
-        trap.add(new paper.Point(position[0] - cw1/2, position[1]));
-        trap.add(new paper.Point(position[0] + cw1/2, position[1]));
-        trap.add(new paper.Point(position[0] + cw2/2, position[1] + length));
-        trap.add(new paper.Point(position[0] - cw2/2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw2 / 2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw2 / 2, position[1] + length));
     }
     else {
-        trap.add(new paper.Point(position[0], position[1] - cw1/2));
-        trap.add(new paper.Point(position[0], position[1] + cw1/2));
-        trap.add(new paper.Point(position[0] + length, position[1] + cw2/2));
-        trap.add(new paper.Point(position[0] + length, position[1] - cw2/2));
+        trap.add(new paper.Point(position[0], position[1] - cw1 / 2));
+        trap.add(new paper.Point(position[0], position[1] + cw1 / 2));
+        trap.add(new paper.Point(position[0] + length, position[1] + cw2 / 2));
+        trap.add(new paper.Point(position[0] + length, position[1] - cw2 / 2));
     }
     trap.closed = true;
     trap.fillColor = color;
@@ -2027,8 +2050,8 @@ var TransitionTarget = function(params) {
     return trap;
 };
 
-var Tree = function(params) {
-    let position  = params["position"];
+const Tree = function (params) {
+    let position = params["position"];
     let cw = params["flowChannelWidth"];
     let orientation = params["orientation"];
     let direction = params["direction"];
@@ -2040,13 +2063,13 @@ var Tree = function(params) {
     let py = position[1];
 
     let levels = Math.ceil(Math.log2(leafs));
-    let isodd = false ; //This is used to figure out how many lines have to be made
-    if(leafs%2 == 0){
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
         isodd = false;
-    }else{
+    } else {
         isodd = true;
     }
-    let w = spacing * (leafs/2 + 1);
+    let w = spacing * (leafs / 2 + 1);
     let l = (levels + 1) * stagelength;
 
     // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
@@ -2056,21 +2079,20 @@ var Tree = function(params) {
     generateTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
 
-
     //Draw the tree
 
     treepath.fillColor = color;
     var rotation = 0;
     // console.log("Orientation: " + orientation);
     // console.log("Direction: " + direction);
-    if(orientation == "H" && direction=="OUT"){
+    if (orientation == "H" && direction == "OUT") {
         rotation = 180;
-    }else if(orientation == "V" && direction =="IN"){
+    } else if (orientation == "V" && direction == "IN") {
         rotation = 270;
-    }else if(orientation == "V" && direction == "OUT"){
+    } else if (orientation == "V" && direction == "OUT") {
         rotation = 90;
     }
-    return treepath.rotate(rotation,px,py);
+    return treepath.rotate(rotation, px, py);
 };
 
 function drawtwig(treepath, px, py, cw, stagelength, spacing, drawleafs=false) {
@@ -2164,8 +2186,8 @@ function generateTwig(treepath, px, py,cw, stagelength , newspacing, level, maxl
     }
 }
 
-var TreeTarget = function(params) {
-    let position  = params["position"];
+const TreeTarget = function (params) {
+    let position = params["position"];
     let cw = params["flowChannelWidth"];
     let orientation = params["orientation"];
     let direction = params["direction"];
@@ -2177,13 +2199,13 @@ var TreeTarget = function(params) {
     let py = position[1];
 
     let levels = Math.ceil(Math.log2(leafs));
-    let isodd = false ; //This is used to figure out how many lines have to be made
-    if(leafs%2 == 0){
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
         isodd = false;
-    }else{
+    } else {
         isodd = true;
     }
-    let w = spacing * (leafs/2 + 1);
+    let w = spacing * (leafs / 2 + 1);
     let l = (levels + 1) * stagelength;
 
     // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
@@ -2193,25 +2215,24 @@ var TreeTarget = function(params) {
     generateTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
 
-
     //Draw the tree
 
     treepath.fillColor = color;
     treepath.fillColor.alpha = 0.5;
     var rotation = 0;
-    if(orientation == "H" && direction=="OUT"){
+    if (orientation == "H" && direction == "OUT") {
         rotation = 180;
-    }else if(orientation == "V" && direction =="IN"){
+    } else if (orientation == "V" && direction == "IN") {
         rotation = 270;
-    }else if(orientation == "V" && direction == "OUT"){
+    } else if (orientation == "V" && direction == "OUT") {
         rotation = 90;
     }
-    return treepath.rotate(rotation,px,py);
+    return treepath.rotate(rotation, px, py);
 
 };
 
-var Mux = function(params) {
-    let position  = params["position"];
+const Mux = function (params) {
+    let position = params["position"];
     let cw = params["flowChannelWidth"];
     let orientation = params["orientation"];
     let direction = params["direction"];
@@ -2223,13 +2244,13 @@ var Mux = function(params) {
     let py = position[1];
 
     let levels = Math.ceil(Math.log2(leafs));
-    let isodd = false ; //This is used to figure out how many lines have to be made
-    if(leafs%2 == 0){
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
         isodd = false;
-    }else{
+    } else {
         isodd = true;
     }
-    let w = spacing * (leafs/2 + 1);
+    let w = spacing * (leafs / 2 + 1);
     let l = (levels + 1) * stagelength;
 
     // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
@@ -2239,19 +2260,18 @@ var Mux = function(params) {
     generateMuxTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
 
-
     //Draw the tree
 
     treepath.fillColor = color;
     var rotation = 0;
-    if(orientation == "H" && direction=="OUT"){
+    if (orientation == "H" && direction == "OUT") {
         rotation = 180;
-    }else if(orientation == "V" && direction =="IN"){
+    } else if (orientation == "V" && direction == "IN") {
         rotation = 270;
-    }else if(orientation == "V" && direction == "OUT"){
+    } else if (orientation == "V" && direction == "OUT") {
         rotation = 90;
     }
-    return treepath.rotate(rotation,px,py);
+    return treepath.rotate(rotation, px, py);
 };
 
 function drawmuxtwig(treepath, px, py, cw, stagelength, spacing, drawleafs=false) {
@@ -2342,8 +2362,8 @@ function generateMuxTwig(treepath, px, py,cw, stagelength , newspacing, level, m
     }
 }
 
-var MuxTarget = function(params) {
-    let position  = params["position"];
+const MuxTarget = function (params) {
+    let position = params["position"];
     let cw = params["flowChannelWidth"];
     let orientation = params["orientation"];
     let direction = params["direction"];
@@ -2355,13 +2375,13 @@ var MuxTarget = function(params) {
     let py = position[1];
 
     let levels = Math.ceil(Math.log2(leafs));
-    let isodd = false ; //This is used to figure out how many lines have to be made
-    if(leafs%2 == 0){
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
         isodd = false;
-    }else{
+    } else {
         isodd = true;
     }
-    let w = spacing * (leafs/2 + 1);
+    let w = spacing * (leafs / 2 + 1);
     let l = (levels + 1) * stagelength;
 
     var treepath = new paper.CompoundPath();
@@ -2369,28 +2389,26 @@ var MuxTarget = function(params) {
     generateMuxTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
 
-
     //Draw the tree
 
     treepath.fillColor = color;
     treepath.fillColor.alpha = 0.5;
     var rotation = 0;
-    if(orientation == "H" && direction=="OUT"){
+    if (orientation == "H" && direction == "OUT") {
         rotation = 180;
-    }else if(orientation == "V" && direction =="IN"){
+    } else if (orientation == "V" && direction == "IN") {
         rotation = 270;
-    }else if(orientation == "V" && direction == "OUT"){
+    } else if (orientation == "V" && direction == "OUT") {
         rotation = 90;
     }
-    return treepath.rotate(rotation,px,py);
+    return treepath.rotate(rotation, px, py);
 
 };
 
 
-
 /************************************************/
-var YTree = function(params) {
-    let position  = params["position"];
+const YTree = function (params) {
+    let position = params["position"];
     let cw = params["flowChannelWidth"];
     let orientation = params["orientation"];
     let direction = params["direction"];
@@ -2402,13 +2420,13 @@ var YTree = function(params) {
     let py = position[1];
 
     let levels = Math.ceil(Math.log2(leafs));
-    let isodd = false ; //This is used to figure out how many lines have to be made
-    if(leafs%2 == 0){
+    let isodd = false; //This is used to figure out how many lines have to be made
+    if (leafs % 2 == 0) {
         isodd = false;
-    }else{
+    } else {
         isodd = true;
     }
-    let w = spacing * (leafs/2 + 1);
+    let w = spacing * (leafs / 2 + 1);
     let l = (levels + 1) * stagelength;
 
     var treepath = new paper.CompoundPath();
@@ -2416,19 +2434,18 @@ var YTree = function(params) {
     generateYTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
 
-
     //Draw the tree
 
     treepath.fillColor = color;
     var rotation = 0;
-    if(orientation == "H" && direction=="OUT"){
+    if (orientation == "H" && direction == "OUT") {
         rotation = 180;
-    }else if(orientation == "V" && direction =="IN"){
+    } else if (orientation == "V" && direction == "IN") {
         rotation = 270;
-    }else if(orientation == "V" && direction == "OUT"){
+    } else if (orientation == "V" && direction == "OUT") {
         rotation = 90;
     }
-    return treepath.rotate(rotation,px,py);
+    return treepath.rotate(rotation, px, py);
 };
 
 function drawYtwig(treepath, px, py, cw, stagelength, spacing, drawleafs=false) {
@@ -2484,7 +2501,7 @@ function generateYTwig(treepath, px, py,cw, stagelength , newspacing, level, max
     }
 }
 
-var YTreeTarget = function(params) {
+const YTreeTarget = function (params) {
 
     let treepath = YTree(params);
     treepath.fillColor.alpha = 0.5;
@@ -2495,7 +2512,7 @@ var YTreeTarget = function(params) {
 /************************************************/
 
 
-var CellTrapL = function(params) {
+const CellTrapL = function (params) {
     let orientation = params["orientation"];
     let position = params["position"];
     let chamberLength = params["chamberLength"];
@@ -2515,7 +2532,7 @@ var CellTrapL = function(params) {
         let startPoint = new paper.Point(x + chamberLength, y);
         channels = new paper.Path.Rectangle({
             point: startPoint,
-            size: [feedingChannelWidth, numChambers/2*(chamberWidth + chamberSpacing) + chamberSpacing],
+            size: [feedingChannelWidth, numChambers / 2 * (chamberWidth + chamberSpacing) + chamberSpacing],
             fillColor: color,
             strokeWidth: 0
         });
@@ -2525,7 +2542,7 @@ var CellTrapL = function(params) {
         let startPoint = new paper.Point(x, y + chamberLength);
         channels = new paper.Path.Rectangle({
             point: startPoint,
-            size: [numChambers/2*(chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
+            size: [numChambers / 2 * (chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
             fillColor: color,
             strokeWidth: 0
         });
@@ -2537,7 +2554,7 @@ var CellTrapL = function(params) {
     return channels;
 };
 
-var CellTrapL_cell = function(params) {
+const CellTrapL_cell = function (params) {
     let orientation = params["orientation"];
     let position = params["position"];
     let chamberLength = params["chamberLength"];
@@ -2551,10 +2568,10 @@ var CellTrapL_cell = function(params) {
     let chamberList = new paper.CompoundPath();
     var rec;
     if (orientation == "V") {
-        for (let i = 0; i < numChambers/2; i++) {
-            let startPoint = new paper.Point(x, y + i*(chamberWidth + chamberSpacing) + chamberSpacing);
+        for (let i = 0; i < numChambers / 2; i++) {
+            let startPoint = new paper.Point(x, y + i * (chamberWidth + chamberSpacing) + chamberSpacing);
             rec = new paper.Path.Rectangle({
-                size: [2*chamberLength + feedingChannelWidth, chamberWidth],
+                size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
                 point: startPoint,
                 fillColor: color,
                 strokeWidth: 0
@@ -2563,10 +2580,10 @@ var CellTrapL_cell = function(params) {
         }
     }
     else {
-        for (let i = 0; i < numChambers/2; i++) {
-            let startPoint = new paper.Point(x + i*(chamberWidth + chamberSpacing) + chamberSpacing, y);
+        for (let i = 0; i < numChambers / 2; i++) {
+            let startPoint = new paper.Point(x + i * (chamberWidth + chamberSpacing) + chamberSpacing, y);
             rec = paper.Path.Rectangle({
-                size: [chamberWidth, 2*chamberLength + feedingChannelWidth],
+                size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
                 point: startPoint,
                 fillColor: color,
                 strokeWidth: 0
@@ -2575,11 +2592,11 @@ var CellTrapL_cell = function(params) {
         }
     }
     chamberList.fillColor = color;
-    let center = new paper.Point(x,y);
+    let center = new paper.Point(x, y);
     return chamberList;
 };
 
-var CellTrapLTarget = function(params) {
+const CellTrapLTarget = function (params) {
     let orientation = params["orientation"];
     let position = params["position"];
     let chamberLength = params["chamberLength"];
@@ -2597,10 +2614,10 @@ var CellTrapLTarget = function(params) {
     var channels;
 
     if (orientation == "V") {
-        for (let i = 0; i < numChambers/2; i++) {
+        for (let i = 0; i < numChambers / 2; i++) {
             rec = paper.Path.Rectangle({
-                size: [2*chamberLength + feedingChannelWidth, chamberWidth],
-                point: [x, y + i*(chamberWidth + chamberSpacing) + chamberSpacing],
+                size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
+                point: [x, y + i * (chamberWidth + chamberSpacing) + chamberSpacing],
                 fillColor: color,
                 strokeWidth: 0
             });
@@ -2608,17 +2625,17 @@ var CellTrapLTarget = function(params) {
         }
         channels = paper.Path.Rectangle({
             point: [x + chamberLength, y],
-            size: [feedingChannelWidth, numChambers/2*(chamberWidth + chamberSpacing) + chamberSpacing],
+            size: [feedingChannelWidth, numChambers / 2 * (chamberWidth + chamberSpacing) + chamberSpacing],
             fillColor: color,
             strokeWidth: 0
         });
         chamberList.push(channels);
     }
     else {
-        for (let i = 0; i < numChambers/2; i++) {
+        for (let i = 0; i < numChambers / 2; i++) {
             rec = paper.Path.Rectangle({
-                size: [chamberWidth, 2*chamberLength + feedingChannelWidth],
-                point: [x + i*(chamberWidth + chamberSpacing) + chamberSpacing, y],
+                size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
+                point: [x + i * (chamberWidth + chamberSpacing) + chamberSpacing, y],
                 fillColor: color,
                 strokeWidth: 0
             });
@@ -2626,7 +2643,7 @@ var CellTrapLTarget = function(params) {
         }
         channels = paper.Path.Rectangle({
             point: [x, y + chamberLength],
-            size: [numChambers/2*(chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
+            size: [numChambers / 2 * (chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
             fillColor: color,
             strokeWidth: 0
         });
@@ -2638,7 +2655,7 @@ var CellTrapLTarget = function(params) {
     return traps;
 };
 
-var DropletGen = function(params) {
+const DropletGen = function (params) {
     let pos = params["position"];
     let x = pos[0];
     let y = pos[1];
@@ -2653,15 +2670,15 @@ var DropletGen = function(params) {
 
     let ret = new paper.Path();
 
-    let p1 = new paper.Point(x, y - waterInputWidth/2);
+    let p1 = new paper.Point(x, y - waterInputWidth / 2);
 
     let p2 = new paper.Point(p1.x + oilInputWidth, p1.y);
 
-    let p3 = new paper.Point(p2.x , p2.y + (waterInputWidth/2 - orificeSize/2));
+    let p3 = new paper.Point(p2.x, p2.y + (waterInputWidth / 2 - orificeSize / 2));
 
     let p4 = new paper.Point(p3.x + orificeLength, p3.y);
 
-    let p5 = new paper.Point(p4.x, p4.y - (outputWidth/2 - orificeSize/2));
+    let p5 = new paper.Point(p4.x, p4.y - (outputWidth / 2 - orificeSize / 2));
 
     let p6 = new paper.Point(p5.x + outputLength, p5.y);
 
@@ -2669,11 +2686,11 @@ var DropletGen = function(params) {
 
     let p8 = new paper.Point(p7.x - outputLength, p7.y);
 
-    let p9 = new paper.Point(p8.x, p8.y - (outputWidth/2 - orificeSize/2));
+    let p9 = new paper.Point(p8.x, p8.y - (outputWidth / 2 - orificeSize / 2));
 
     let p10 = new paper.Point(p9.x - orificeLength, p9.y);
 
-    let p11 = new paper.Point(p10.x, p10.y + (waterInputWidth/2 - orificeSize/2));
+    let p11 = new paper.Point(p10.x, p10.y + (waterInputWidth / 2 - orificeSize / 2));
 
     let p12 = new paper.Point(p11.x - oilInputWidth, p11.y);
 
@@ -2698,7 +2715,7 @@ var DropletGen = function(params) {
     return ret;
 };
 
-var DropletGenTarget = function(params) {
+const DropletGenTarget = function (params) {
 
     let ret = DropletGen(params);
 
@@ -2720,8 +2737,10 @@ module.exports.GroverValve = GroverValve;
 module.exports.GroverValve_control = GroverValve_control;
 
 module.exports.Pump = Pump;
+module.exports.PumpTarget = PumpTarget;
 module.exports.Pump_control = Pump_control;
 module.exports.Pump3D = Pump3D;
+module.exports.Pump3DTarget = Pump3DTarget;
 module.exports.Pump3D_control = Pump3D_control;
 
 module.exports.Chamber = Chamber;

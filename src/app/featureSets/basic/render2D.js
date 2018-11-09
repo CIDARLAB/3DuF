@@ -159,7 +159,7 @@ let render2D = {
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "Pump",
-        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveType: "PumpTarget",
         targetPrimitiveSet: "Basic2D"
     },
     Pump_control: {
@@ -202,7 +202,7 @@ let render2D = {
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "Pump3D",
-        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveType: "Pump3DTarget",
         targetPrimitiveSet: "Basic2D"
     },
     Pump3D_control: {
@@ -223,7 +223,7 @@ let render2D = {
         },
         featurePrimitiveSet: "Basic2D",
         featurePrimitiveType: "Pump3D_control",
-        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveType: "Pump3DTarget",
         targetPrimitiveSet: "Basic2D"
     },
 
