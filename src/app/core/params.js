@@ -101,7 +101,9 @@ export default class Params {
     toJSON() {
         let json = {};
         for (let key in this.parameters) {
-            json[key] = this.parameters[key].getValue();
+            if(json[key]!=null || json[key]!= undefined){
+                json[key] = this.parameters[key].getValue();
+            }
         }
         return json;
     }

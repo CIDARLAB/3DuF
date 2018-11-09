@@ -366,7 +366,7 @@ export default class Connection {
      */
     setSource(component, port){
         if(typeof component != 'string' && !(component instanceof String)){
-            throw new Error("The reference object value can only be a string")
+            console.error("The reference object value can only be a string")
         }
         this.__source = new ConnectionTarget(component, port);
     }
@@ -378,7 +378,7 @@ export default class Connection {
      */
     addSink(component, port) {
         if(typeof component != 'string' && !(component instanceof String)){
-            throw new Error("The reference object value can only be a string")
+            console.error("The reference object value can only be a string")
         }
         this.__sinks.push(new ConnectionTarget(component, port));
     }
@@ -390,7 +390,7 @@ export default class Connection {
      */
     addConnectionTarget(connectiontarget){
         if(!(connectiontarget instanceof ConnectionTarget) || connectiontarget == null || connectiontarget == undefined) {
-            throw new Error("Cannot add non-ConnectionTarget object as source or sink");
+            console.error("Cannot add non-ConnectionTarget object as source or sink");
         }
 
         if(this.__source == null){
