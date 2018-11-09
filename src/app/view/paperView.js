@@ -477,16 +477,16 @@ export default class PaperView {
 
     getDeviceCenter() {
         let dev = Registry.currentDevice;
-        let width = dev.params.getValue("width");
-        let height = dev.params.getValue("height");
+        let width = dev.getXSpan();
+        let height = dev.getYSpan();
         return new paper.Point(width / 2, height / 2);
     }
 
     computeOptimalZoom() {
         let borderMargin = 200; // pixels
         let dev = Registry.currentDevice;
-        let deviceWidth = dev.params.getValue("width");
-        let deviceHeight = dev.params.getValue("height");
+        let deviceWidth = dev.getXSpan("width");
+        let deviceHeight = dev.getYSpan("height");
         let canvasWidth = this.getCanvasWidth();
         let canvasHeight = this.getCanvasHeight();
         let maxWidth;

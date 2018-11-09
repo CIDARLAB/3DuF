@@ -52,8 +52,8 @@ describe("Device", function() {
         });
         it("should start with the correct width, height, and name", function() {
             dev.name.getValue().should.equal("dev1");
-            dev.params.getValue("width").should.equal(50);
-            dev.params.getValue("height").should.equal(60);
+            dev.getXSpan().should.equal(50);
+            dev.getYSpan().should.equal(60);
         });
         it("should be able to be constructed without a name", function() {
             (function() {

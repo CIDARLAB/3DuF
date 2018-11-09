@@ -5,8 +5,8 @@ import paper from 'paper';
 
 
 function renderLayerMask(device){
-    let width = device.params.getValue("width");
-    let height = device.params.getValue("height");
+    let width = device.getXSpan("width");
+    let height = device.getYSpan("height");
     let mask = new paper.Path.Rectangle({
         from: new paper.Point(0,0),
         to: new paper.Point(width, height),
@@ -25,11 +25,11 @@ function renderDevice(device, strokeColor = DEFAULT_STROKE_COLOR) {
         strokeColor: null
     });
     let thickness = BORDER_THICKNESS / paper.view.zoom;
-    let width = device.params.getValue("width");
-    let height = device.params.getValue("height");
+    let xspan = device.getXSpan();
+    let yspan = device.getYSpan();
     let border = new paper.Path.Rectangle({
         from: new paper.Point(0, 0),
-        to: new paper.Point(width, height),
+        to: new paper.Point(xspan, yspan),
         fillColor: Colors.WHITE,
         strokeColor: strokeColor,
         strokeWidth: thickness
