@@ -18,6 +18,9 @@ export default class Device {
         this.layers = [];
         this.textLayers = [];
         this.params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
+        // this.setXSpan(values.width);
+        // this.setYSpan(values.length);
+
         this.name = StringValue(name);
         this.__components = [];
         this.__nameMap = new Map();
@@ -217,7 +220,7 @@ export default class Device {
 
     static getUniqueParameters(){
         return {
-            "height": "Float",
+            "length": "Float",
             "width": "Float"
         }
     }
@@ -360,7 +363,10 @@ export default class Device {
     toInterchangeV1() {
         let output = {};
         output.name = this.name;
-        output.params = this.params.toJSON();
+        output.params = {
+            "width":this.getXSpan(),
+            "length":this.getYSpan()
+        };
         //TODO: Use this to dynamically create enough layers to scroll through
         // output.layers = this.__layersToInterchangeV1();
         output.components = this.__componentsToInterchangeV1();
@@ -376,7 +382,7 @@ export default class Device {
         let defaults = json.defaults;
         let newDevice = new Device({
             "width": json.params.width,
-            "height": json.params.height
+            "length": json.params.length
         }, json.name);
         newDevice.__loadLayersFromJSON(json.layers);
         return newDevice;
@@ -386,7 +392,7 @@ export default class Device {
         let defaults = json.defaults;
         let newDevice = new Device({
             "width": json.params.width,
-            "height": json.params.height
+            "length": json.params.length
         }, json.name);
         //TODO: Use this to dynamically create enough layers to scroll through
         //newDevice.__loadLayersFromInterchangeV1(json.layers);
@@ -444,7 +450,7 @@ export default class Device {
      * @return {*}
      */
     getYSpan(){
-        return this.params.getValue("height");
+        return this.params.getValue("length");
     }
 
     /**
