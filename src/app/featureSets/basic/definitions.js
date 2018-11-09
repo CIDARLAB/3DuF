@@ -644,13 +644,12 @@ let basicFeatures = {
 
         },
         defaults: {
-            "rotation": 90,
+            "rotation": 0,
             "width": 600,
             "length": 300,
             "height": .1 * 1000,
             "spacing": 1000,
             "flowChannelWidth":300
-
         },
         minimum: {
             "rotation": 0,
@@ -693,7 +692,7 @@ let basicFeatures = {
 
         },
         defaults: {
-            "rotation": 90,
+            "rotation": 0,
             "width": 600,
             "length": 300,
             "height": .1 * 1000,
@@ -725,7 +724,6 @@ let basicFeatures = {
             "position": "Point"
         },
         heritable: {
-            "orientation": "String",
             "valveRadius": "Float",
             "height": "Float",
             "gap": "Float",
@@ -735,7 +733,6 @@ let basicFeatures = {
 
         },
         units: {
-            "orientation": "",
             "valveRadius": "&mu;m",
             "height": "&mu;m",
             "gap": "&mu;m",
@@ -747,7 +744,6 @@ let basicFeatures = {
 
         },
         defaults: {
-            "orientation": "V",
             "valveRadius": 1.2 * 1000,
             "height": .8 * 1000,
             "gap": 0.6 * 1000,
@@ -783,7 +779,6 @@ let basicFeatures = {
             "position": "Point"
         },
         heritable: {
-            "orientation": "String",
             "valveRadius": "Float",
             "height": "Float",
             "gap": "Float",
@@ -793,7 +788,6 @@ let basicFeatures = {
 
         },
         units: {
-            "orientation": "",
             "valveRadius": "&mu;m",
             "height": "&mu;m",
             "gap": "&mu;m",
@@ -805,7 +799,6 @@ let basicFeatures = {
 
         },
         defaults: {
-            "orientation": "V",
             "valveRadius": 1.2 * 1000,
             "height": .8 * 1000,
             "gap": 0.6 * 1000,
