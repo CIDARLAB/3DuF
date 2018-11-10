@@ -281,6 +281,7 @@ class Component {
             let feature = Registry.currentDevice.getFeatureByID(this.features[i]);
             console.log("test", this.getPosition()[0], this.getPosition()[1] ,this.getPosition());
             let replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
+            replica.referenceID = ret.getID();
             ret.features.push(replica.getID());
 
             //TODO: add new feature to the layer in which the current feature is in
