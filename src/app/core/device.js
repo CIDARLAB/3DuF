@@ -434,7 +434,7 @@ export default class Device {
      * @param value
      */
     setYSpan(value){
-        this.params.updateParameter("height", value);
+        this.params.updateParameter("length", value);
     }
 
     /**

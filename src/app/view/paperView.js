@@ -11,6 +11,7 @@ var SimpleQueue = require("../utils/simpleQueue");
 var Colors = require("./colors");
 import TextFeature from "../core/textFeature";
 import CustomComponent from "../core/customComponent";
+import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 const DXFObjectRenderer2D = require('./render2D/dxfObjectRenderer2D');
 const DXFSolidObjectRenderer = require('./render2D/dxfSolidObjectRenderer2D');
 
@@ -107,8 +108,8 @@ export default class PaperView {
         //    layerCopy.scale(-1,1);
         //}
         layerCopy.bounds.topLeft = new paper.Point(0, 0);
-        let deviceWidth = Registry.currentDevice.params.getValue("width");
-        let deviceHeight = Registry.currentDevice.params.getValue("height");
+        let deviceWidth = Registry.currentDevice.getXSpan();
+        let deviceHeight = Registry.currentDevice.getYSpan();
         layerCopy.bounds.topLeft = new paper.Point(0, 0);
         layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
         let svg = layer.exportSVG({
@@ -119,10 +120,9 @@ export default class PaperView {
         let height = deviceHeight;
         let widthInMillimeters = width / 1000;
         let heightInMilliMeters = height / 1000;
-        let insertString = 'width="' + widthInMillimeters + 'mm" ' +
-            'height="' + heightInMilliMeters + 'mm" ' +
-            'viewBox="0 0 ' + width + ' ' + height + '" ';
-        let newSVG = svg.slice(0, 5) + insertString + svg.slice(5);
+        let prepend = ManufacturingLayer.generateSVGTextPrepend(widthInMillimeters,heightInMilliMeters);
+        let append = ManufacturingLayer.generateSVGTextAppend();
+        let newSVG = prepend + svg + append;
         layerCopy.remove();
         return newSVG;
     }

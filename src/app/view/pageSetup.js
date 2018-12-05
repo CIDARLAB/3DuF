@@ -113,7 +113,7 @@ function setupAppPage() {
         let json = new Blob([JSON.stringify(Registry.currentDevice.toInterchangeV1())], {
             type: "application/json"
         });
-        saveAs(json, "device.json");
+        saveAs(json, Registry.currentDevice.getName()+".json");
     };
 
     /*
