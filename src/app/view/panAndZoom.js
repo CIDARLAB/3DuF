@@ -1,5 +1,3 @@
-var Registry = require("../core/registry");
-
 export default class PanAndZoom {
     constructor(paperView){
         this.view = paperView;

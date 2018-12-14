@@ -1,7 +1,6 @@
-var Colors = require("../colors");
-var ColorButton = require("./colorButton");
-var Registry = require("../../core/registry");
-var activeTextColor = Colors.WHITE;
+const Colors = require("../colors");
+const ColorButton = require("./colorButton");
+const Registry = require("../../core/registry");
 
 class featureButton extends ColorButton {
 	constructor(id, typeString, setString) {

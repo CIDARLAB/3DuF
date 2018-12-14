@@ -1,4 +1,4 @@
-let Registry = require("../../core/registry");
+const Registry = require("../../core/registry");
 const wNumb = require("wnumb");
 
 export default class ResolutionToolBar{

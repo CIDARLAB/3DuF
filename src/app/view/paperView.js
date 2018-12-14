@@ -1,16 +1,15 @@
 import EdgeFeature from "../core/edgeFeature";
 import paper from 'paper';
 
-var Registry = require("../core/registry");
-var FeatureRenderer2D = require("./render2D/featureRenderer2D");
-var GridRenderer = require("./render2D/GridRenderer");
-var DeviceRenderer = require("./render2D/deviceRenderer2D");
-var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
-import PanAndZoom from "./PanAndZoom";
-var SimpleQueue = require("../utils/simpleQueue");
-var Colors = require("./colors");
+const Registry = require("../core/registry");
+const FeatureRenderer2D = require("./render2D/featureRenderer2D");
+import GridRenderer from  "./render2D/gridRenderer";
+import DeviceRenderer from "./render2D/deviceRenderer2D";
+//const DeviceRenderer = require("./render2D/deviceRenderer2D");
+// var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
+import PanAndZoom from "./panAndZoom";
+const Colors = require("./colors");
 import TextFeature from "../core/textFeature";
-import CustomComponent from "../core/customComponent";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 const DXFObjectRenderer2D = require('./render2D/dxfObjectRenderer2D');
 const DXFSolidObjectRenderer = require('./render2D/dxfSolidObjectRenderer2D');
@@ -510,7 +509,7 @@ export default class PaperView {
      * Checks to see if the point intersects with any feature that is rendered on the canvas
      * @param point
      * @param onlyHitActiveLayer
-     * @return PaperJS Rendered Feature
+     * @return boolean Rendered Feature
      */
     hitFeature(point, onlyHitActiveLayer = true) {
         let hitOptions = {

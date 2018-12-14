@@ -1,9 +1,8 @@
 import MouseTool from "./mouseTool";
 
-var Registry = require("../../core/registry");
+const Registry = require("../../core/registry");
 import SimpleQueue from "../../utils/simpleQueue";
 import Feature from "../../core/feature";
-var PageSetup = require("../pageSetup");
 import paper from 'paper';
 
 

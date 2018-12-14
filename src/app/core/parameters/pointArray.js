@@ -1,5 +1,6 @@
 import Parameter from '../parameter';
-var Registry = require("../registry");
+
+const Registry = require("../registry");
 
 let typeString = "PointArray";
 let description="Should be an array of points";

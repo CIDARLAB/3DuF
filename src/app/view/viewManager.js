@@ -3,11 +3,9 @@ import BorderSettingsDialog from './ui/borderSettingDialog';
 import paper from 'paper';
 
 const Registry = require("../core/registry");
-// var Device = require("../core/device");
 import Device from '../core/device';
 import ChannelTool from "./tools/channelTool"; //= require("./tools/channelTool");
 
-const PanAndZoom = require("./PanAndZoom");
 import SelectTool from "./tools/selectTool"; //= require("./tools/selectTool");
 import InsertTextTool from "./tools/insertTextTool"; //= require("./tools/insertTextTool");
 import SimpleQueue from "../utils/simpleQueue"; //= require("../utils/SimpleQueue");

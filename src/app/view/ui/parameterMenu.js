@@ -1,6 +1,7 @@
 import * as HTMLUtils from '../../utils/htmlUtils';
 import Feature from '../../core/feature';
-var Registry = require("../../core/registry");
+
+const Registry = require("../../core/registry");
 import {FloatValue, BooleanValue, StringValue} from '../../core/parameters';
 var FeatureSets = require("../../featureSets");
 

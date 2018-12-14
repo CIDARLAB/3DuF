@@ -1,6 +1,6 @@
 import PositionTool from "./positionTool";
 
-var Registry = require("../../core/registry");
+const Registry = require("../../core/registry");
 import Feature from '../../core/feature';
 
 export default class MultilayerPositionTool extends PositionTool{
