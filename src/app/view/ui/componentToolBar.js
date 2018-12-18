@@ -1,5 +1,6 @@
 import {setButtonColor} from "../../utils/htmlUtils";
 import {GREY_200, BLACK, WHITE} from '../colors';
+import InsertTextDialog from "./insertTextDialog";
 const Colors = require("../colors");
 const ParameterMenu = require("./parameterMenu");
 
@@ -71,6 +72,7 @@ export default class ComponentToolBar{
         this.__celltraplParams = document.getElementById("celltrapl_params_button");
         this.__alignmentMarksParams = document.getElementById("alignmentmarks_params_button");
 
+        this.__insertTextDialog = new InsertTextDialog();
 
         this.buttons = {
             "SelectButton": this.__selectToolButton,

@@ -34,6 +34,8 @@ import EditDeviceDialog from "./ui/editDeviceDialog";
 import ManufacturingPanel from "./ui/manufacturingPanel";
 import CustomComponentPositionTool from "./tools/customComponentPositionTool";
 import CustomComponent from "../core/customComponent";
+import {setButtonColor} from "../utils/htmlUtils";
+import ExportPanel from "./ui/exportPanel";
 
 export default class ViewManager {
     constructor(view) {
@@ -77,12 +79,23 @@ export default class ViewManager {
 
         this.manufacturingPanel = new ManufacturingPanel(this);
 
+        this.exportPanel = new ExportPanel(this);
 
         this.view.setMouseWheelFunction(func);
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.setupTools();
         this.activateTool("Channel");
+
+        //Removed from Page Setup
+        this.threeD = false;
+        this.renderer = Registry.threeRenderer;
+        this.__button2D = document.getElementById("button_2D");
+        this.__canvasBlock = document.getElementById("canvas_block");
+        this.__renderBlock = document.getElementById("renderContainer");
+        this.setupDragAndDropLoad("#c");
+        this.setupDragAndDropLoad("#renderContainer");
+        this.switchTo2D();
     }
 
     /**
@@ -638,8 +651,8 @@ export default class ViewManager {
     switchTo2D() {
         if (this.threeD) {
             this.threeD = false;
-            let center = renderer.getCameraCenterInMicrometers();
-            let zoom = renderer.getZoom();
+            let center = this.renderer.getCameraCenterInMicrometers();
+            let zoom = this.renderer.getZoom();
             let newCenterX = center[0];
             if (newCenterX < 0) {
                 newCenterX = 0
@@ -652,16 +665,57 @@ export default class ViewManager {
             } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
                 newCenterY = Registry.currentDevice.params.getValue("height")
             }
-            HTMLUtils.setButtonColor(button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-            HTMLUtils.setButtonColor(button3D, inactiveBackground, inactiveText);
+            HTMLUtils.setButtonColor(this.__button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+            HTMLUtils.setButtonColor(this.__button3D, inactiveBackground, inactiveText);
             Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
             Registry.viewManager.setZoom(zoom);
-            HTMLUtils.addClass(renderBlock, "hidden-block");
-            HTMLUtils.removeClass(canvasBlock, "hidden-block");
-            HTMLUtils.removeClass(renderBlock, "shown-block");
-            HTMLUtils.addClass(canvasBlock, "shown-block");
+            HTMLUtils.addClass(this.__renderBlock, "hidden-block");
+            HTMLUtils.removeClass(this.__canvasBlock, "hidden-block");
+            HTMLUtils.removeClass(this.__renderBlock, "shown-block");
+            HTMLUtils.addClass(this.__canvasBlock, "shown-block");
         }
     }
+
+    switchTo3D() {
+        if (!this.threeD) {
+            this.threeD = true;
+            setButtonColor(this.__button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
+            setButtonColor(this.__button2D, inactiveBackground, inactiveText);
+            this.renderer.loadJSON(Registry.currentDevice.toJSON());
+            let cameraCenter = this.view.getViewCenterInMillimeters();
+            let height = Registry.currentDevice.params.getValue("height") / 1000;
+            let pixels = this.view.getDeviceHeightInPixels();
+            this.renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
+            this.renderer.showMockup();
+            HTMLUtils.removeClass(this.__renderBlock, "hidden-block");
+            HTMLUtils.addClass(this.__canvasBlock, "hidden-block");
+            HTMLUtils.addClass(this.__renderBlock, "shown-block");
+            HTMLUtils.removeClass(this.__canvasBlock, "shown-block");
+        }
+    }
+
+    /**
+     *
+     * @param selector
+     */
+    setupDragAndDropLoad(selector) {
+        let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+            let f = files[0];
+
+            let reader = new FileReader();
+            reader.onloadend = function(e) {
+                let result = JSON.parse(this.result);
+                Registry.viewManager.loadDeviceFromJSON(result);
+                Registry.viewManager.switchTo2D();
+            };
+            try {
+                reader.readAsText(f);
+            } catch (err) {
+                console.log("unable to load JSON: " + f);
+            }
+        });
+    }
+
 
     /**
      * Closes the params window

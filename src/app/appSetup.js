@@ -6,7 +6,6 @@ import PaperView from "./view/paperView";
 import ViewManager from "./view/viewManager";
 import AdaptiveGrid from "./view/grid/adaptiveGrid";
 
-const PageSetup = require("./view/pageSetup");
 const Colors = require("./view/colors");
 const Examples = require("./examples/jsonExamples");
 
@@ -53,7 +52,6 @@ window.onload = function() {
     window.view = Registry.viewManager.view;
 
     // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
-    PageSetup.setupAppPage();
 
     if(false != getQueryVariable("file")){
         //Download the json
@@ -73,8 +71,7 @@ window.onload = function() {
 
                 window.view = Registry.viewManager.view;
 
-                Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
-                PageSetup.setupAppPage();
+                // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
 
             })
             .catch(function(err) {

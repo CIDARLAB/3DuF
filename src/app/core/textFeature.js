@@ -32,7 +32,7 @@ export default class TextFeature extends Feature{
         //TODO: We need to figure out what to do and what the final feature format will be
         let output = {};
         output.id = this.__id;
-        output.name = this.__name.toJSON();
+        output.name = this.__name;
         output.macro = this.__type;
         output.set = this.__set;
         output.params = this.__params.toJSON();

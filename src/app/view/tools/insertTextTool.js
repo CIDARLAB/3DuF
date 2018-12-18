@@ -1,19 +1,19 @@
 import MouseTool from "./mouseTool";
 
-var Registry = require("../../core/registry");
+const Registry = require("../../core/registry");
 import TextFeature from "../../core/textFeature";
 import SimpleQueue from "../../utils/simpleQueue";
-var PageSetup = require("../pageSetup");
-var PositionTool = require("./positionTool");
-let Params = require("../../core/params");
+
 import paper from 'paper';
+import PositionTool from "./positionTool";
+import Params from "../../core/params";
 
 
 export default class InsertTextTool extends MouseTool {
     constructor() {
         super();
         this.typeString = "TEXT";
-        this.setString = "STndard";
+        this.setString = "Standard";
         this.currentFeatureID = null;
         let ref = this;
         this.lastPoint = null;

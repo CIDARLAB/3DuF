@@ -21,7 +21,7 @@ export default class ManufacturingPanel {
             cncGenerator.generateDepthLayers();
             cncGenerator.generateEdgeLayers();
 
-            console.log("SVG Data:", cncGenerator.getSVGOutputs());
+            // console.log("SVG Data:", cncGenerator.getSVGOutputs());
 
             ref.packageAndDownloadBundle(cncGenerator.getSVGOutputs());
 

@@ -2,7 +2,6 @@ import MouseTool from "./mouseTool";
 
 const Registry = require("../../core/registry");
 import SimpleQueue from "../../utils/simpleQueue";
-var PageSetup = require("../pageSetup");
 import paper from 'paper';
 
 export default class SelectTool extends MouseTool {
@@ -91,8 +90,6 @@ export default class SelectTool extends MouseTool {
             if (target.selected) {
                 let feat = Registry.currentDevice.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
-                let func = PageSetup.paramsWindowFunction(feat.getType(), feat.getSet(), true);
-                func(event);
             } else {
                 this.deselectFeatures();
                 this.selectFeature(target);
