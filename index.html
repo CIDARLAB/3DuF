@@ -686,6 +686,31 @@
     //     dialogPolyfill.registerDialog(dialog);
     // }
 
+    var isChromium = window.chrome;
+    var winNav = window.navigator;
+    var vendorName = winNav.vendor;
+    var isOpera = typeof window.opr !== "undefined";
+    var isIEedge = winNav.userAgent.indexOf("Edge") > -1;
+    var isIOSChrome = winNav.userAgent.match("CriOS");
+
+    if (isIOSChrome) {
+        // is Google Chrome on IOS
+    } else if(
+        isChromium !== null &&
+        typeof isChromium !== "undefined" &&
+        vendorName === "Google Inc." &&
+        isOpera === false &&
+        isIEedge === false
+    ) {
+        // is Google Chrome
+    } else {
+        // not Google Chrome
+        alert("Warning ! Unsupported browser detected. 3DuF has been developed and tested only in Chrome. " +
+            "The tool may not work correctly on this browser");
+
+    }
+
+
     var helpdialog = document.querySelector('#help_dialog');
     var showhelpModalButton = document.querySelector('#infobutton');
 
