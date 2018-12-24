@@ -1,9 +1,12 @@
-# 3DuF
-User-friendly CAD for microfluidic devices.
+![3DuF Logo](http://3duf.org/img/logo.png)
+
+An Interactive Design Tool for Continuous Flow Microfluidic Devices
 
 ## Try it out
 
 [3DuF.org](http://3duf.org)
+
+
 
 ## Usage
 
@@ -28,15 +31,11 @@ If a layer has been selected, only features on that layer can be selected this w
 
 ### Editing Features
 
-Right click on any selected feature to bring up a dialog box which will allow you to edit its parameters. If more than one feature is selected, parameters will be inherited by all currently selected features of the same type as the one you clicked.
-
-### Switching between 2D and 3D views
-
-Under ```select view``` in the left menu, click ```3D``` to switch to a non-editable 3D view of your device. Click ```2D``` to switch back and continue editing.
+Left click on any selected feature to bring up a dialog box which will allow you to edit its parameters. If more than one feature is selected, parameters will be inherited by all currently selected features of the same type as the one you clicked.
 
 ### Saving Designs
 
-Under ```Save``` in the left menu, click a to download the current design in the selected format. JSON is used to allow designs to be saved and loaded again later. STL files are for 3D printing, and SVG files are for generating 2D photomasks.
+Under ```Save``` in the main menu, click a to download the current design in the selected format. 
 
 ### Loading Designs
 
@@ -44,12 +43,14 @@ After saving a device design to JSON, drag and drop it from your computer onto t
 
 ## Development Setup
 
-Want to play around with the 3DuF source? 
-
 [Instructions for installation, build, and test are in the wiki.](https://github.com/CIDARLAB/3DuF/wiki/Building-and-Testing-3DuF)
 
-### Disclaimer
+### License
 
-This is an active research project, and as such, this codebase could (and should) change dramatically as the code matures and new features are implemented. The master branch should always be functional, but we make no guarantee of backwards-compatability with previous versions. Expect bugs, excessive re-factoring, and cheeky commit messages.
+BSD 2-Clause License
 
+Copyright (c) 2017, CIDAR LAB
+All rights reserved.
+
+See [LICENSE](/LICENSE) for more information.
 
