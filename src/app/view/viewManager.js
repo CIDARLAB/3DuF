@@ -36,8 +36,14 @@ import CustomComponentPositionTool from "./tools/customComponentPositionTool";
 import CustomComponent from "../core/customComponent";
 import {setButtonColor} from "../utils/htmlUtils";
 import ExportPanel from "./ui/exportPanel";
+import HelpDialog from "./ui/helpDialog";
 
 export default class ViewManager {
+
+    /**
+     *
+     * @param view
+     */
     constructor(view) {
         this.threeD;
         this.view = view;
@@ -51,6 +57,7 @@ export default class ViewManager {
         this.layerToolBar = new LayerToolBar();
         this.messageBox = document.querySelector('.mdl-js-snackbar');
         this.editDeviceDialog = new EditDeviceDialog(this);
+        this.helpDialog = new HelpDialog();
 
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {

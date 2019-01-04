@@ -15,7 +15,19 @@ const DXFObjectRenderer2D = require('./render2D/dxfObjectRenderer2D');
 const DXFSolidObjectRenderer = require('./render2D/dxfSolidObjectRenderer2D');
 
 export default class PaperView {
-    constructor(canvas) {
+
+    /**
+     * Requires the canvas ID to setup the entire application.
+     * @param canvasID
+     */
+    constructor(canvasID) {
+
+        //Setup the Canvas
+        paper.setup(canvasID);
+
+        //Get the Canvas Object
+        let canvas = document.getElementById(canvasID);
+
         this.panAndZoom = new PanAndZoom(this);
         this.center = paper.view.center;
         this.zoom = paper.view.zoom;

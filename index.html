@@ -680,66 +680,6 @@
         <button type="button" class="mdl-button close">Cancel</button>
     </div>
 </dialog>
-<script>
-    // var dialog = document.getElementById('edit_device_dialog');
-    // if (! dialog.showModal) {
-    //     dialogPolyfill.registerDialog(dialog);
-    // }
-
-    var isChromium = window.chrome;
-    var winNav = window.navigator;
-    var vendorName = winNav.vendor;
-    var isOpera = typeof window.opr !== "undefined";
-    var isIEedge = winNav.userAgent.indexOf("Edge") > -1;
-    var isIOSChrome = winNav.userAgent.match("CriOS");
-
-    if (isIOSChrome) {
-        // is Google Chrome on IOS
-    } else if(
-        isChromium !== null &&
-        typeof isChromium !== "undefined" &&
-        vendorName === "Google Inc." &&
-        isOpera === false &&
-        isIEedge === false
-    ) {
-        // is Google Chrome
-    } else {
-        // not Google Chrome
-        alert("Warning ! Unsupported browser detected. 3DuF has been developed and tested only in Chrome. " +
-            "The tool may not work correctly on this browser");
-
-    }
-
-
-    var helpdialog = document.querySelector('#help_dialog');
-    var showhelpModalButton = document.querySelector('#infobutton');
-
-    if (! helpdialog.showModal) {
-        dialogPolyfill.registerDialog(helpdialog);
-    }
-
-    showhelpModalButton.addEventListener('click', function() {
-        helpdialog.showModal();
-    });
-
-    helpdialog.querySelector('.close').addEventListener('click', function() {
-        helpdialog.close();
-    });
-
-    var textLabelDialog = document.getElementById('insert_text_dialog');
-    var showTextLabelButton = document.querySelector('#insert_text_button');
-
-    if (! textLabelDialog.showModal) {
-        dialogPolyfill.registerDialog(textLabelDialog);
-    }
-    showTextLabelButton.addEventListener('click', function() {
-        textLabelDialog.showModal();
-    });
-    textLabelDialog.querySelector('.close').addEventListener('click', function() {
-        textLabelDialog.close();
-    });
-
-</script>
 
 
 <!--Snackbar for all user feedback-->
