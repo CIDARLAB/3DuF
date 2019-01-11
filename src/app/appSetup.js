@@ -55,8 +55,7 @@ window.onload = function() {
 
 
     if(checkBrowCompatibility()){
-        let view = new PaperView("c");
-        viewManager = new ViewManager(view);
+        viewManager = new ViewManager();
         grid = new AdaptiveGrid();
         grid.setColor(Colors.BLUE_500);
 

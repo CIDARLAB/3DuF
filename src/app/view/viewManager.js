@@ -37,6 +37,7 @@ import CustomComponent from "../core/customComponent";
 import {setButtonColor} from "../utils/htmlUtils";
 import ExportPanel from "./ui/exportPanel";
 import HelpDialog from "./ui/helpDialog";
+import PaperView from "./paperView";
 
 export default class ViewManager {
 
@@ -44,9 +45,9 @@ export default class ViewManager {
      *
      * @param view
      */
-    constructor(view) {
+    constructor() {
         this.threeD;
-        this.view = view;
+        this.view = new PaperView("c", this);
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         this.customComponentManager = new CustomComponentManager(this);
@@ -58,6 +59,8 @@ export default class ViewManager {
         this.messageBox = document.querySelector('.mdl-js-snackbar');
         this.editDeviceDialog = new EditDeviceDialog(this);
         this.helpDialog = new HelpDialog();
+
+        this.__currentDevice = null;
 
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {
@@ -104,6 +107,17 @@ export default class ViewManager {
         this.setupDragAndDropLoad("#renderContainer");
         this.switchTo2D();
     }
+
+    /**
+     * Returns the current device the ViewManager is displaying. right now I'm using this to replace the
+     * Registry.currentDevice dependency, however this might change as the modularity requirements change.
+     *
+     * @return {Device}
+     */
+    get currentDevice(){
+        return this.__currentDevice;
+    }
+
 
     /**
      * Initiates the copy operation on the selected feature
@@ -495,18 +509,25 @@ export default class ViewManager {
 
 
     loadDeviceFromJSON(json) {
+        let device;
         Registry.viewManager.clear();
         //Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
         var version = json.version;
-        if(null == version || undefined == version){
+        if (null == version || undefined == version) {
             console.log("Loading Legacy Format...");
-            Registry.currentDevice = Device.fromJSON(json);
+            device = Device.fromJSON(json);
+            Registry.currentDevice = device;
+            this.__currentDevice = device;
         }else{
             console.log("Version Number: " + version);
             switch (version){
                 case 1:
-                    Registry.currentDevice = Device.fromInterchangeV1(json);
+
+                    device = Device.fromInterchangeV1(json);
+                    Registry.currentDevice = device;
+                    this.__currentDevice = device;
+
                     break;
                 default:
                     alert("Version \'" + version + "\' is not supported by 3DuF !");
@@ -515,7 +536,11 @@ export default class ViewManager {
         //Common Code for rendering stuff
         Registry.currentLayer = Registry.currentDevice.layers[0];
         Registry.currentTextLayer = Registry.currentDevice.textLa;
+
+        //TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
         Registry.viewManager.addDevice(Registry.currentDevice);
+
+
         this.view.initializeView();
         this.updateGrid();
         this.updateDevice(Registry.currentDevice);

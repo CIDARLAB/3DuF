@@ -20,8 +20,8 @@ export default class PaperView {
      * Requires the canvas ID to setup the entire application.
      * @param canvasID
      */
-    constructor(canvasID) {
-
+    constructor(canvasID, viewmanager, device=null) {
+        console.log(Registry.currentDevice);
         //Setup the Canvas
         paper.setup(canvasID);
 
@@ -54,6 +54,7 @@ export default class PaperView {
         this.selectedComponents = [];
         this.selectedConnections = [];
         this.inactiveAlpha = .5;
+        this.__viewManagerDelegate = viewmanager;
         this.disableContextMenu();
     }
 
@@ -65,7 +66,7 @@ export default class PaperView {
         let output = [];
         let items = paper.project.selectedItems;
         for (let i = 0; i < items.length; i++) {
-            output.push(Registry.currentDevice.getFeatureByID(items[i].featureID));
+            output.push(this.__viewManagerDelegate.currentDevice.getFeatureByID(items[i].featureID));
         }
         return output;
     }
@@ -79,17 +80,17 @@ export default class PaperView {
         let items = paper.project.selectedItems;
         if (items && items.length > 0) {
             for (let i = 0; i < items.length; i++) {
-                Registry.currentDevice.removeFeatureByID(items[i].featureID);
+                this.__viewManagerDelegate.currentDevice.removeFeatureByID(items[i].featureID);
             }
 
             //Delete the selected Components !!!!
             for (let i in this.selectedComponents) {
-                Registry.currentDevice.removeComponent(this.selectedComponents[i]);
+                this.__viewManagerDelegate.currentDevice.removeComponent(this.selectedComponents[i]);
             }
 
             //Delete the selected Connecitons
             for(let i in this.selectedConnections){
-                Registry.currentDevice.removeConnection(this.selectedConnections[i]);
+                this.__viewManagerDelegate.currentDevice.removeConnection(this.selectedConnections[i]);
             }
         }
 
@@ -119,8 +120,8 @@ export default class PaperView {
         //    layerCopy.scale(-1,1);
         //}
         layerCopy.bounds.topLeft = new paper.Point(0, 0);
-        let deviceWidth = Registry.currentDevice.getXSpan();
-        let deviceHeight = Registry.currentDevice.getYSpan();
+        let deviceWidth = this.__viewManagerDelegate.currentDevice.getXSpan();
+        let deviceHeight = this.__viewManagerDelegate.currentDevice.getYSpan();
         layerCopy.bounds.topLeft = new paper.Point(0, 0);
         layerCopy.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
         let svg = layer.exportSVG({
@@ -151,7 +152,7 @@ export default class PaperView {
     }
 
     getDeviceHeightInPixels() {
-        return Registry.currentDevice.params.getValue("height") * paper.view.zoom;
+        return this.__viewManagerDelegate.currentDevice.params.getValue("height") * paper.view.zoom;
     }
 
     /**
@@ -304,7 +305,7 @@ export default class PaperView {
             this.featureLayer.addChild(this.paperLayers[i]);
         }
         if (this.layerMask) this.layerMask.remove();
-        this.layerMask = DeviceRenderer.renderLayerMask(Registry.currentDevice);
+        this.layerMask = DeviceRenderer.renderLayerMask(this.__viewManagerDelegate.currentDevice);
         this.featureLayer.addChild(this.layerMask);
         let activeLayer = this.paperLayers[this.activeLayer];
         activeLayer.bringToFront();
@@ -313,8 +314,8 @@ export default class PaperView {
     comparePaperFeatureHeights(a, b) {
         let bHeight;
         let aHeight;
-        let aFeature = Registry.currentDevice.getFeatureByID(a.featureID);
-        let bFeature = Registry.currentDevice.getFeatureByID(b.featureID);
+        let aFeature = this.__viewManagerDelegate.currentDevice.getFeatureByID(a.featureID);
+        let bFeature = this.__viewManagerDelegate.currentDevice.getFeatureByID(b.featureID);
 
         //TODO: So this needs to be eliminated form the entire sequence
         try {
@@ -374,7 +375,7 @@ export default class PaperView {
         }
         newPaperFeature.selected = selected;
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
-        let index = Registry.currentDevice.layers.indexOf(feature.layer);
+        let index = this.__viewManagerDelegate.currentDevice.layers.indexOf(feature.layer);
         let layer = this.paperLayers[index];
         this.insertChildByHeight(layer, newPaperFeature);
     }
@@ -474,7 +475,7 @@ export default class PaperView {
     getFeaturesByViewElements(paperFeatures) {
         let output = [];
         for (let i = 0; i < paperFeatures.length; i++) {
-            output.push(Registry.currentDevice.getFeatureByID(paperFeatures[i].featureID));
+            output.push(this.__viewManagerDelegate.currentDevice.getFeatureByID(paperFeatures[i].featureID));
         }
         return output;
     }
@@ -487,17 +488,15 @@ export default class PaperView {
     }
 
     getDeviceCenter() {
-        let dev = Registry.currentDevice;
-        let width = dev.getXSpan();
-        let height = dev.getYSpan();
+        let width = this.__viewManagerDelegate.currentDevice.getXSpan();
+        let height = this.__viewManagerDelegate.currentDevice.getYSpan();
         return new paper.Point(width / 2, height / 2);
     }
 
     computeOptimalZoom() {
         let borderMargin = 200; // pixels
-        let dev = Registry.currentDevice;
-        let deviceWidth = dev.getXSpan("width");
-        let deviceHeight = dev.getYSpan("height");
+        let deviceWidth = this.__viewManagerDelegate.currentDevice.getXSpan();
+        let deviceHeight = this.__viewManagerDelegate.currentDevice.getYSpan();
         let canvasWidth = this.getCanvasWidth();
         let canvasHeight = this.getCanvasHeight();
         let maxWidth;
