@@ -4,7 +4,6 @@ import PaperView from "./view/paperView";
 import ViewManager from "./view/viewManager";
 import AdaptiveGrid from "./view/grid/adaptiveGrid";
 
-const Colors = require("./view/colors");
 const Examples = require("./examples/jsonExamples");
 
 let viewManager;
@@ -56,8 +55,6 @@ window.onload = function() {
 
     if(checkBrowCompatibility()){
         viewManager = new ViewManager();
-        grid = new AdaptiveGrid();
-        grid.setColor(Colors.BLUE_500);
 
         Registry.viewManager = viewManager;
 

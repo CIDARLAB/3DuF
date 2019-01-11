@@ -3,6 +3,8 @@ import BorderSettingsDialog from './ui/borderSettingDialog';
 import paper from 'paper';
 
 const Registry = require("../core/registry");
+const Colors = require("./colors");
+
 import Device from '../core/device';
 import ChannelTool from "./tools/channelTool"; //= require("./tools/channelTool");
 
@@ -38,6 +40,7 @@ import {setButtonColor} from "../utils/htmlUtils";
 import ExportPanel from "./ui/exportPanel";
 import HelpDialog from "./ui/helpDialog";
 import PaperView from "./paperView";
+import AdaptiveGrid from "./grid/adaptiveGrid";
 
 export default class ViewManager {
 
@@ -48,6 +51,11 @@ export default class ViewManager {
     constructor() {
         this.threeD;
         this.view = new PaperView("c", this);
+
+        this.__grid = new AdaptiveGrid(this);
+        Registry.currentGrid = this.__grid;
+
+
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         this.customComponentManager = new CustomComponentManager(this);
@@ -96,6 +104,10 @@ export default class ViewManager {
         this.maxZoom = 5;
         this.setupTools();
         this.activateTool("Channel");
+
+        //TODO: Figure out how remove UpdateQueue as dependency mechanism
+        this.__grid.setColor(Colors.BLUE_500);
+
 
         //Removed from Page Setup
         this.threeD = false;

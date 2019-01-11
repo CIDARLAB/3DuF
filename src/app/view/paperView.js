@@ -21,7 +21,6 @@ export default class PaperView {
      * @param canvasID
      */
     constructor(canvasID, viewmanager, device=null) {
-        console.log(Registry.currentDevice);
         //Setup the Canvas
         paper.setup(canvasID);
 

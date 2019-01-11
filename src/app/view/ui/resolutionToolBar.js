@@ -75,7 +75,7 @@ export default class ResolutionToolBar{
             //This ensures that there is something valid present
             if(registryref.currentGrid != null){
                 registryref.currentGrid.updateGridSpacing(value);
-                registryref.currentGrid.updateView();
+                registryref.currentGrid.notifyViewManagerToUpdateView();
             }
 
         });

@@ -4,7 +4,10 @@ import paper from 'paper';
 const Colors = require("../colors");
 
 export default class AdaptiveGrid {
-    constructor(minSpacing = 5, maxSpacing = 100, thickCount = 10, origin = [0, 0], thinWidth = 1, thickWidth = 3, color = Colors.BLUE_100) {
+    constructor(viewmanager, minSpacing = 5, maxSpacing = 100, thickCount = 10, origin = [0, 0], thinWidth = 1, thickWidth = 3, color = Colors.BLUE_100) {
+
+        this.__viewManagerDelegate = viewmanager;
+
         this.origin = new paper.Point(origin[0], origin[1]);
         this.thinWidth = thinWidth; //pixel
         this.thickWidth = thickWidth; // pixels
@@ -15,8 +18,6 @@ export default class AdaptiveGrid {
         this.__isAutomaticEnabled = true;
         this.color = color;
 
-        if (Registry.currentGrid) throw new Error("Cannot instantiate more than one AdaptiveGrid!");
-        Registry.currentGrid = this;
     }
 
     enableAdaptiveGrid(){
@@ -35,32 +36,32 @@ export default class AdaptiveGrid {
 
     setOrigin(origin) {
         this.origin = new paper.Point(origin[0], origin[1]);
-        this.updateView();
+        this.notifyViewManagerToUpdateView();
     }
 
     setThinWidth(width) {
         this.thinWidth = width;
-        this.updateView();
+        this.notifyViewManagerToUpdateView();
     }
 
     setThickWidth(width) {
         this.thickWidth = width;
-        this.updateView();
+        this.notifyViewManagerToUpdateView();
     }
 
     setMinSpacing(pixels) {
         this.__spacing = pixels;
-        this.updateView();
+        this.notifyViewManagerToUpdateView();
     }
 
     setMaxSpacing(pixels) {
         this.maxSpacing = pixels;
-        this.updateView();
+        this.notifyViewManagerToUpdateView();
     }
 
     setColor(color){
         this.color = color;
-        this.updateView();
+        this.notifyViewManagerToUpdateView();
     }
 
     getSpacing() {
@@ -103,8 +104,12 @@ export default class AdaptiveGrid {
         return this.thickWidth / paper.view.zoom;
     }
 
-    updateView() {
-        if (Registry.viewManager) Registry.viewManager.updateGrid();
+    notifyViewManagerToUpdateView() {
+        if(this.__viewManagerDelegate){
+            this.__viewManagerDelegate.updateGrid();
+        }else{
+            console.error("Could not find view manager to send update grid signal");
+        }
     }
 
     static isValidZoom(value){
