@@ -1,13 +1,26 @@
 import Feature from "../core/feature";
+import Port from "../library/port";
+import Channel from "../library/channel";
+import BetterMixer from "../library/betterMixer";
+import RotaryMixer from "../library/rotaryMixer";
 
-class FeatureSet {
+export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
         this.__definitions = definitions;
         this.__setString = setString;
         this.__tools = tools;
         this.__render2D = render2D;
         this.__render3D = render3D;
-        this.__checkDefinitions();
+        //TODO: Replace this cumbersome mechanism for generating different feature variants, etc.
+        this.__library = {
+            "Port": {"object": new Port(), "key": null},
+            "Channel": {"object": new Channel(), "key":null },
+            "BetterMixer": {"object": new BetterMixer(), "key":"FLOW" },
+            "RotaryMixer": {"object": new RotaryMixer(), "key":"FLOW" },
+            "RotaryMixer_control": {"object": new RotaryMixer(), "key":"CONTROL"}
+        };
+        // this.__checkDefinitions();
+        console.warn("Skipping definition check over here ");
     }
 
     containsDefinition(featureTypeString) {
@@ -17,9 +30,8 @@ class FeatureSet {
 
     getDefaults() {
         let output = {};
-        let defs = this.__definitions;
-        for (let key in defs){
-            output[key] = defs[key]["defaults"];
+        for (let key in this.__library){
+            output[key] = this.__library[key].object.defaults;
         }
         return output;
     }
@@ -37,6 +49,15 @@ class FeatureSet {
     }
 
     getDefinition(typeString){
+        let definition = this.__library[typeString].object;
+        let ret = {
+            "unique": definition.unique,
+            "heritable": definition.heritable,
+            "units": definition.units,
+            "defaults": definition.default,
+            "minimum": definition.minimum,
+            "maximum": definition.maximum
+        };
         return this.__definitions[typeString];
     }
 
@@ -44,15 +65,19 @@ class FeatureSet {
         return this.__render3D[typeString];
     }
 
+    /*
+    Returns the library/technology description instead of the function pointer as it was doing before
+     */
     getRender2D(typeString){
-        return this.__render2D[typeString];
+        return this.__library[typeString];
     }
 
     getTool(typeString){
-        return this.__tools[typeString];
+        return this.__definitions[typeString].tool;
     }
 
     makeFeature(typeString, setString, values, name){
+        throw new Error("MAke featre in feature set is being called");
         console.log(setString);
         let set = getSet(setString);
         let featureType = getFeatureType(typeString);
@@ -67,5 +92,3 @@ class FeatureSet {
         }
     }
 }
-
-module.exports = FeatureSet;

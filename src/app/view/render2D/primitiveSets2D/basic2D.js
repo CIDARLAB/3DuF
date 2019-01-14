@@ -127,18 +127,18 @@ var RoundedRect = function(params){
     return rec;
 };
 
-var CrossHairsTarget = function(params){
-    let thickness = params["channelWidth"]/5;
-    let length = params["channelWidth"];
-    let x = params["position"][0];
-    let y = params["position"][1];
-    let color = params["color"];
-    var chair = new paper.Path.Rectangle(x - length/2, y - thickness/2, length, thickness);
-    chair = chair.unite(new paper.Path.Rectangle(x - thickness/2, y - length/2, thickness, length));
-    chair.fillColor = color;
-    chair.fillColor.alpha = 0.5;
-    return chair;
-};
+// var CrossHairsTarget = function(params){
+//     let thickness = params["channelWidth"]/5;
+//     let length = params["channelWidth"];
+//     let x = params["position"][0];
+//     let y = params["position"][1];
+//     let color = params["color"];
+//     var chair = new paper.Path.Rectangle(x - length/2, y - thickness/2, length, thickness);
+//     chair = chair.unite(new paper.Path.Rectangle(x - thickness/2, y - length/2, thickness, length));
+//     chair.fillColor = color;
+//     chair.fillColor.alpha = 0.5;
+//     return chair;
+// };
 
 var EdgedRect = function(params){
     let length  = params["length"];
@@ -2747,9 +2747,9 @@ module.exports.Chamber = Chamber;
 module.exports.ChamberTarget = ChamberTarget;
 module.exports.Diamond = Diamond;
 module.exports.DiamondTarget = DiamondTarget;
-module.exports.BetterMixer = BetterMixer;
+// module.exports.BetterMixer = BetterMixer;
 module.exports.Valve = Valve;
-module.exports.BetterMixerTarget = BetterMixerTarget;
+// module.exports.BetterMixerTarget = BetterMixerTarget;
 module.exports.CurvedMixer = CurvedMixer;
 module.exports.CurvedMixerTarget = CurvedMixerTarget;
 module.exports.Mixer = Mixer;
@@ -2777,9 +2777,9 @@ module.exports.DropletGen = DropletGen;
 module.exports.DropletGenTarget = DropletGenTarget;
 module.exports.Transition = Transition;
 module.exports.TransitionTarget = TransitionTarget;
-module.exports.CrossHairsTarget = CrossHairsTarget;
+// module.exports.CrossHairsTarget = CrossHairsTarget;
 module.exports.Connection = Connection;
-module.exports.ConnectionTarget = CrossHairsTarget;
+// module.exports.ConnectionTarget = CrossHairsTarget;
 module.exports.ValveTarget = ValveTarget;
 module.exports.AlignmentMarks = AlignmentMarks;
 module.exports.AlignmentMarks_control = AlignmentMarks_control;
