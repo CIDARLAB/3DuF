@@ -114,7 +114,7 @@ export default class Template {
      * compatibility.
      * @param key
      */
-    render2D(key, params){
+    render2D(params, key){
         throw new  Error ("User needs to provide method for component definition, look at examples");
     }
 
