@@ -57,7 +57,7 @@ export  default class Channel extends Template{
 
     }
 
-    render2D(key, params) {
+    render2D(params, key) {
         //Regardless of the key...
         let start = params["start"];
         let end = params["end"];
