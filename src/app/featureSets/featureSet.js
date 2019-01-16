@@ -3,6 +3,7 @@ import Port from "../library/port";
 import Channel from "../library/channel";
 import BetterMixer from "../library/betterMixer";
 import RotaryMixer from "../library/rotaryMixer";
+import AlignmentMarks from "../library/alignmentMarks";
 
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
@@ -17,7 +18,9 @@ export default class FeatureSet {
             "Channel": {"object": new Channel(), "key":null },
             "BetterMixer": {"object": new BetterMixer(), "key":"FLOW" },
             "RotaryMixer": {"object": new RotaryMixer(), "key":"FLOW" },
-            "RotaryMixer_control": {"object": new RotaryMixer(), "key":"CONTROL"}
+            "RotaryMixer_control": {"object": new RotaryMixer(), "key":"CONTROL"},
+            "AlignmentMarks": {"object": new AlignmentMarks(), "key":"FLOW" },
+            "AlignmentMarks_control": {"object": new AlignmentMarks(), "key":"CONTROL"}
         };
         // this.__checkDefinitions();
         console.warn("Skipping definition check over here ");
