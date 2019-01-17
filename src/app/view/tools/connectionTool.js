@@ -42,7 +42,6 @@ export default class ConnectionTool extends MouseTool {
         }, 20, false);
 
         this.down = function (event) {
-            console.log(event);
             Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             console.log("Current State:", ref.__STATE);

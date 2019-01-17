@@ -126,7 +126,6 @@ export function renderFeature(feature) {
         let rendererinfo = getFeatureRenderer(type, set);
         let renderer= rendererinfo.object;
         key = rendererinfo.key;
-        console.log(renderer);
         if (!renderer) {
             console.error("Could not find renderer method for feature:", feature);
         } else {
@@ -139,7 +138,6 @@ export function renderFeature(feature) {
         }
         primParams["color"] = getLayerColor(feature);
         primParams["baseColor"] = getBaseColor(feature);
-        console.log("TEST@");
         rendered = renderer.render2D(primParams, key);
         rendered.featureID = feature.getID();
 

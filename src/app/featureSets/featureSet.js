@@ -4,6 +4,23 @@ import Channel from "../library/channel";
 import BetterMixer from "../library/betterMixer";
 import RotaryMixer from "../library/rotaryMixer";
 import AlignmentMarks from "../library/alignmentMarks";
+import CellTrapL from "../library/celltrapL";
+import Chamber from "../library/chamber";
+import Connection from "../library/connection";
+import CurvedMixer from "../library/curvedMixer";
+import DiamondReactionChamber from "../library/diamondReactionChamber";
+import DropletGenerator from "../library/dropletGenerator";
+import GradientGenerator from "../library/gradientGenerator";
+import Mux from "../library/mux";
+import Pump from "../library/pump";
+import Pump3D from "../library/pump3D";
+import RoundedChannel from "../library/roundedChannel";
+import Transition from "../library/transition";
+import Transposer from "../library/transposer";
+import Valve from "../library/valve";
+import Valve3D from "../library/valve3D";
+import Tree from "../library/tree";
+import YTree from "../library/ytree";
 
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
@@ -20,7 +37,31 @@ export default class FeatureSet {
             "RotaryMixer": {"object": new RotaryMixer(), "key":"FLOW" },
             "RotaryMixer_control": {"object": new RotaryMixer(), "key":"CONTROL"},
             "AlignmentMarks": {"object": new AlignmentMarks(), "key":"FLOW" },
-            "AlignmentMarks_control": {"object": new AlignmentMarks(), "key":"CONTROL"}
+            "AlignmentMarks_control": {"object": new AlignmentMarks(), "key":"CONTROL"},
+            "CellTrapL": {"object": new CellTrapL(), "key":"FLOW" },
+            "CellTrapL_cell": {"object": new CellTrapL(), "key":"CELL"},
+            "Chamber": {"object": new Chamber(), "key":null },
+            "Connection": {"object": new Connection(), "key":null },
+            "CurvedMixer": {"object": new CurvedMixer(), "key":null },
+            "DiamondReactionChamber": {"object": new DiamondReactionChamber(), "key":null },
+            "DropletGen": {"object": new DropletGenerator(), "key":null },
+            "GradientGenerator": {"object": new GradientGenerator(), "key":null },
+            "Mux": {"object": new Mux(), "key":"FLOW" },
+            "Mux_control": {"object": new Mux(), "key":"CONTROL" },
+            "Pump": {"object": new Pump(), "key":"FLOW" },
+            "Pump_control": {"object": new Pump(), "key":"CONTROL" },
+            "Pump3D": {"object": new Pump3D(), "key":"FLOW" },
+            "Pump3D_control": {"object": new Pump3D(), "key":"CONTROL" },
+            "RoundedChannel": {"object": new RoundedChannel(), "key":null },
+            "Transition": {"object": new Transition(), "key":null },
+            "Transposer": {"object": new Transposer(), "key":"FLOW" },
+            "Transposer_control": {"object": new Transposer(), "key":"CONTROL" },
+            "Tree": {"object": new Tree(), "key":null },
+            "YTree": {"object": new YTree(), "key":null },
+            "Valve": {"object": new Valve(), "key":null },
+            "Valve3D": {"object": new Valve3D(), "key":"FLOW" },
+            "Valve3D_control": {"object": new Valve3D(), "key":"CONTROL" },
+
         };
         // this.__checkDefinitions();
         console.warn("Skipping definition check over here ");
