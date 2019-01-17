@@ -203,31 +203,36 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
      */
     __getRotation(point, connection) {
         //Find closes normal intersection of the point and place the
-        let lowestdist=1000000000000000000000;
+        let conn_waypoints;
+        let lowestdist = 1000000000000000000000;
         let p0, p1, sol;
+        let paths = [] = connection.getPaths();
         let waypoints = [];
-        waypoints.push(connection.getValue("start"));
-        let conn_waypoints = connection.getValue("wayPoints");
-        for(let i = 0; i < conn_waypoints.length; i++ ){
-            waypoints.push(conn_waypoints[i]);
+        for (let j in paths) {
+            conn_waypoints = paths[j];
+            //conn_waypoints = connection.getValue("wayPoints");
+            for(let i = 0; i < conn_waypoints.length; i++ ){
+                waypoints.push(conn_waypoints[i]);
+            }
+
+            //Find out which segment the point is on
+            for(let i = 0 ; i < waypoints.length -1 ; i++){
+                p0 = waypoints[i];
+                p1 = waypoints[i+1];
+
+                let tempdist = this.__calculateNormalDistance(point, p0, p1);
+                if(tempdist < lowestdist || i === 0){
+                    sol = i;
+                    lowestdist = tempdist;
+                }
+            }
+
+            p0 = waypoints[sol];
+            p1 = waypoints[sol+1];
+
         }
         // waypoints.splice(0, 0, connection.getValue("start"));
-        waypoints.push(connection.getValue("end"));
 
-        //Find out which segment the point is on
-        for(let i = 0 ; i < waypoints.length -1 ; i++){
-            p0 = waypoints[i];
-            p1 = waypoints[i+1];
-
-            let tempdist = this.__calculateNormalDistance(point, p0, p1);
-            if(tempdist < lowestdist || i === 0){
-                sol = i;
-                lowestdist = tempdist;
-            }
-        }
-
-        p0 = waypoints[sol];
-        p1 = waypoints[sol+1];
 
         let to = new paper.Point(p0[0], p0[1]);
         let from = new paper.Point(p1[0], p1[1]);
