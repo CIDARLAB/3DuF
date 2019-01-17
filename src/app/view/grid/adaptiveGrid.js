@@ -1,4 +1,3 @@
-const Registry = require("../../core/registry");
 import paper from 'paper';
 
 const Colors = require("../colors");

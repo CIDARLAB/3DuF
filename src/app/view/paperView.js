@@ -189,8 +189,8 @@ export default class PaperView {
         this.updateZoom();
 
         //Check if the zoom toolbar exists before trying to run it
-        if(Registry.viewManager.zoomToolBar){
-            Registry.viewManager.zoomToolBar.setZoom(zoom);
+        if(this.__viewManagerDelegate.zoomToolBar){
+            this.__viewManagerDelegate.zoomToolBar.setZoom(zoom);
         }
     }
 
@@ -416,7 +416,7 @@ export default class PaperView {
                 this.uiLayer.addChild(this.currentTarget);
 
             } else if(this.lastTargetSet == "Custom"){
-                let customcomponent = Registry.viewManager.customComponentManager.getCustomComponent(this.lastTargetType);
+                let customcomponent = this.__viewManagerDelegate.customComponentManager.getCustomComponent(this.lastTargetType);
                 let params = Registry.featureDefaults[this.lastTargetSet][this.lastTargetType];
                 params["position"] =  this.lastTargetPosition;
                 params["color"] = Colors.getDefaultFeatureColor(this.lastTargetType, this.lastTargetSet, Registry.currentLayer);
