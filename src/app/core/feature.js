@@ -252,12 +252,11 @@ export default class Feature {
 
     static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined, dxfdata){
         let params;
-        let featureType = FeatureSets.getDefinition(typeString, setString);
 
         if (typeString === "EDGE") {
             return new EdgeFeature(dxfdata, params, id);
         }
-
+        let featureType = FeatureSets.getDefinition(typeString, setString);
         if (paramvalues && featureType) {
             Feature.checkDefaults(paramvalues, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
             params = new Params(paramvalues, featureType.unique, featureType.heritable);
