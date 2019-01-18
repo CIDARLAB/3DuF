@@ -58,7 +58,7 @@
     "rendering"
   ],
   "author": "Radhakrishna Sanka, Joshua Lippai and Aaron W. Heuckroth",
-  "license": "BSD-2",
+  "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/CIDARLAB/3DuF/issues"
   },
