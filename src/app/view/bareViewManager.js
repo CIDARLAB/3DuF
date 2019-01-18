@@ -311,99 +311,22 @@ export default class BareViewManager {
         this.refresh(refresh);
     }
 
-    /**
-     * Automatically generates a rectangular border for the device
-     */
-    generateBorder(){
-        let borderfeature = new EdgeFeature(null, null);
 
-        //Get the bounds for the border feature and then update the device dimensions
-        let xspan = Registry.currentDevice.getXSpan();
-        let yspan = Registry.currentDevice.getYSpan();
-        borderfeature.generateRectEdge(xspan, yspan);
-
-        //Adding the feature to all the layers
-        for(let i in Registry.currentDevice.layers){
-            let layer = Registry.currentDevice.layers[i];
-            layer.addFeature(borderfeature);
-        }
-    }
-
-    /**
-     * Accepts a DXF object and then converts it into a feature, an edgeFeature in particular
-     * @param dxfobject
-     */
-    importBorder(dxfobject){
-        let customborderfeature = new EdgeFeature(null, null);
-        for(let i in dxfobject.entities){
-            let foo = new DXFObject(dxfobject.entities[i]);
-           customborderfeature.addDXFObject(foo);
-        }
-
-        //Adding the feature to all the layers
-        for(let i in Registry.currentDevice.layers){
-            let layer = Registry.currentDevice.layers[i];
-            layer.addFeature(customborderfeature);
-        }
-
-        //Get the bounds for the border feature and then update the device dimensions
-        let bounds = this.view.getRenderedFeature(customborderfeature.getID()).bounds;
-
-        Registry.currentDevice.setXSpan(bounds.width);
-        Registry.currentDevice.setYSpan(bounds.height);
-        //Refresh the view
-        Registry.viewManager.view.initializeView();
-        Registry.viewManager.view.refresh();
-
-    }
-
-    /**
-     * Deletes the border
-     */
-    deleteBorder(){
-        /*
-        1. Find all the features that are EDGE type
-        2. Delete all these features
-         */
-
-        console.log("Deleting border...");
-
-        let features = Registry.currentDevice.getAllFeaturesFromDevice();
-        console.log("All features", features);
-
-        let edgefeatures = [];
-
-        for(let i in features){
-            //Check if the feature is EDGE or not
-            if('EDGE' == features[i].fabType){
-                edgefeatures.push(features[i]);
-            }
-        }
-
-        //Delete all the features
-        for(let i in edgefeatures){
-            Registry.currentDevice.removeFeatureByID(edgefeatures[i].getID());
-        }
-
-        console.log("Edgefeatures", edgefeatures);
-
-    }
-    
-    removeTarget() {
-        this.view.removeTarget();
-    }
-
-    updateTarget(featureType, featureSet, position, refresh = true) {
-        this.view.addTarget(featureType, featureSet, position);
-        this.view.updateAlignmentMarks();
-        this.refresh(refresh);
-    }
-
-    __updateViewTarget(refresh = true) {
-        this.view.updateTarget();
-        this.updateAlignmentMarks();
-        this.refresh(refresh);
-    }
+    // removeTarget() {
+    //     this.view.removeTarget();
+    // }
+    //
+    // updateTarget(featureType, featureSet, position, refresh = true) {
+    //     this.view.addTarget(featureType, featureSet, position);
+    //     this.view.updateAlignmentMarks();
+    //     this.refresh(refresh);
+    // }
+    //
+    // __updateViewTarget(refresh = true) {
+    //     this.view.updateTarget();
+    //     this.updateAlignmentMarks();
+    //     this.refresh(refresh);
+    // }
 
     adjustZoom(delta, point, refresh = true) {
         let belowMin = (this.view.getZoom() >= this.maxZoom && delta < 0);
@@ -439,15 +362,6 @@ export default class BareViewManager {
         this.refresh(refresh);
     }
 
-    saveToStorage() {
-        if (Registry.currentDevice) {
-            try {
-                localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
-            } catch (err) {
-                // can't save, so.. don't?
-            }
-        }
-    }
 
     refresh(refresh = true) {
         this.updateQueue.run();
@@ -531,10 +445,6 @@ export default class BareViewManager {
 
 
 
-    snapToGrid(point) {
-        if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);
-        else return point;
-    }
 
     // getFeaturesOfType(typeString, setString, features){
     //     let output = [];
