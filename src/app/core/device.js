@@ -239,6 +239,7 @@ export default class Device {
             // console.log(objectID, component.getID());
             if(objectID == component.getID()){
                 component.addFeatureID(featureID);
+                component.placed = true;
                 foundflag = true;
             }
         }
@@ -249,6 +250,7 @@ export default class Device {
             connection = this.__connections[i];
             if(objectID == connection.getID()){
                 connection.addFeatureID(featureID);
+                connection.routed = true;
                 foundflag = true;
             }
         }
@@ -389,18 +391,40 @@ export default class Device {
     }
 
     static fromInterchangeV1(json) {
-        let defaults = json.defaults;
-        let newDevice = new Device({
-            "width": json.params.width,
-            "length": json.params.length
-        }, json.name);
+        let newDevice;
+        if(json.hasOwnProperty("params")){
+            if (json.params.hasOwnProperty("width") && json.params.hasOwnProperty("length")) {
+                newDevice = new Device({
+                    "width": json.params.width,
+                    "length": json.params.length
+                }, json.name);
+            }
+        }else{
+            console.warn("Could not find device params, using some default values for device size");
+            newDevice = new Device({
+                "width": 135000,
+                "length": 85000
+            }, json.name);
+
+        }
         //TODO: Use this to dynamically create enough layers to scroll through
         //newDevice.__loadLayersFromInterchangeV1(json.layers);
         //TODO: Use these two generate a rat's nest
         newDevice.__loadComponentsFromInterchangeV1(json.components);
         newDevice.__loadConnectionsFromInterchangeV1(json.connections);
         //TODO: Use this to render the device features
-        newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
+
+        //Check if JSON has features else mark
+        if(json.hasOwnProperty("features")){
+            newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
+        }else{
+            //We need to add a default layer
+            let newlayer = new Layer(null, "flow");
+            newDevice.addLayer(newlayer);
+            newlayer = new Layer(null, "control");
+            newDevice.addLayer(newlayer);
+
+        }
 
         //Updating cross-references
         let features = newDevice.getAllFeaturesFromDevice();
@@ -589,5 +613,20 @@ export default class Device {
                 return connection;
             }
         }
+    }
+
+    /**
+     * Returns a list of connections that have not been routed yet
+     * @return {Array}
+     */
+    getUnroutedConnections(){
+        let ret = [];
+        let connections = this.getConnections();
+        for(let i in connections){
+            if(!connections[i].routed){
+                ret.push(connections[i]);
+            }
+        }
+        return ret;
     }
 }

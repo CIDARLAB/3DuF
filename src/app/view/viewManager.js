@@ -41,6 +41,7 @@ import ExportPanel from "./ui/exportPanel";
 import HelpDialog from "./ui/helpDialog";
 import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
+import Feature from "../core/feature";
 
 export default class ViewManager {
 
@@ -546,11 +547,15 @@ export default class ViewManager {
             }
         }
         //Common Code for rendering stuff
+        console.log("Feature Layers", Registry.currentDevice.layers);
         Registry.currentLayer = Registry.currentDevice.layers[0];
         Registry.currentTextLayer = Registry.currentDevice.textLa;
 
         //TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
         Registry.viewManager.addDevice(Registry.currentDevice);
+
+        //In case of MINT exported json, generate layouts for rats nests
+        this.__initializeRatsNest();
 
 
         this.view.initializeView();
@@ -880,5 +885,47 @@ export default class ViewManager {
         let customcomponent = this.customComponentManager.getCustomComponent(identifier);
         this.tools[identifier] = new CustomComponentPositionTool(customcomponent, "Custom");
         Registry.featureDefaults["Custom"][identifier] = CustomComponent.defaultParameterDefinitions().defaults;
+    }
+
+    __initializeRatsNest() {
+        //Step 1 generate features for all the components with some basic layout
+        let components = this.currentDevice.getComponents();
+
+        for(let i in components){
+            let component = components[i];
+            if(!component.placed){
+                this.__generateDefaultPlacementForComponent(component);
+            }
+        }
+
+        //TODO: Step 2 generate rats nest renders for all the components
+    }
+
+    __generateDefaultPlacementForComponent(component) {
+        //component.type
+
+        let params_to_copy = component.getParams();
+
+        console.log(params_to_copy);
+
+        //Get default params and overwrite them with json params, this can account for inconsistencies
+        let nonminttype = Registry.featureSet.getTypeForMINT(component.getType());
+        console.log(nonminttype);
+        let newFeature = Feature.makeFeature(nonminttype, "Basic", {
+            "position": [10000, 10000]
+        });
+
+        console.log(newFeature);
+
+        // let currentFeatureID = newFeature.getID();
+
+        component.addFeatureID(newFeature.getID());
+
+        Registry.currentLayer.addFeature(newFeature);
+
+
+
+
+
     }
 }

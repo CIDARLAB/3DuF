@@ -23,7 +23,6 @@ export default class ComponentPositionTool extends PositionTool{
 
         let params_to_copy = newFeature.getParams();
 
-
         super.createNewComponent(this.typeString, params_to_copy, featureIDs );
         Registry.viewManager.saveDeviceState();
 
