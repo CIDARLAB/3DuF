@@ -9,6 +9,7 @@ var currentTextLayer = null;
 var currentGrid = null;
 var view = null;
 var viewManager = null;
+let featureSet = null;
 
 /*
 Place where we store the data necessary for the text label
@@ -35,3 +36,4 @@ exports.currentGrid = currentGrid;
 exports.featureDefaults = featureDefaults;
 exports.threeRenderer = threeRenderer;
 exports.text = text;
+exports.featureSet = featureSet;

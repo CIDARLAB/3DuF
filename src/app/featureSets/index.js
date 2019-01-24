@@ -20,7 +20,7 @@ function registerSets(sets) {
         let set  = sets[key];
 
         let newSet = new FeatureSet(set.definitions, set.tools, set.render2D, set.render3D, name);
-
+        Registry.featureSet = newSet;
         registeredFeatureSets[key] = newSet;
         Registry.featureDefaults[key] = newSet.getDefaults();
     }
