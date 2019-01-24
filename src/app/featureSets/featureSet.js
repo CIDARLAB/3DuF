@@ -63,6 +63,7 @@ export default class FeatureSet {
             "Valve3D_control": {"object": new Valve3D(), "key":"CONTROL" },
 
         };
+
         // this.__checkDefinitions();
         console.warn("Skipping definition check over here ");
     }
@@ -70,6 +71,15 @@ export default class FeatureSet {
     containsDefinition(featureTypeString) {
         if (this.__definitions.hasOwnProperty(featureTypeString)) return true;
         else return false;
+    }
+
+    getTypeForMINT(minttype){
+        for(let key in this.__library){
+            if(minttype == this.__library[key].object.mint){
+                return key;
+            }
+        }
+        return null;
     }
 
     getDefaults() {
@@ -93,6 +103,7 @@ export default class FeatureSet {
     }
 
     getDefinition(typeString){
+        console.log("Called", typeString);
         let definition = this.__library[typeString].object;
         let ret = {
             "unique": definition.unique,

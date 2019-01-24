@@ -50,7 +50,9 @@ export  default class Port extends Template{
 
         this.__targetParams = {
             portRadius: "portRadius"
-        }
+        };
+
+        this.__mint = "PORT";
     }
 
     render2D(params, key) {

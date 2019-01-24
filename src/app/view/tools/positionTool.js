@@ -43,6 +43,11 @@ export default class PositionTool extends MouseTool {
         Registry.currentLayer.addFeature(newFeature);
     }
 
+    /**
+     * Returns the 2D vector of the position of the cursor
+     * @param point
+     * @return {*[]}
+     */
     static getTarget(point) {
         let target = Registry.viewManager.snapToGrid(point);
         return [target.x, target.y];
