@@ -27,6 +27,15 @@ export default class Connection {
         this.__sinks = [];
         this.__paths = [];
         this.__objects = [];
+        this.__routed = false;
+    }
+
+    get routed() {
+        return this.__routed;
+    }
+
+    set routed(value) {
+        this.__routed = value;
     }
 
     /**

@@ -28,7 +28,17 @@ class Component {
         this.__features = [];
         //TODO: Need to figure out how to effectively search through these
         this.__bounds = null;
+        this.__placed = false;
     }
+
+    get placed() {
+        return this.__placed;
+    }
+
+    set placed(value) {
+        this.__placed = value;
+    }
+
 
     /**
      * Returns an array of strings that are the feature ids of the component
