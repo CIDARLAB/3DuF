@@ -82,6 +82,8 @@ export  default class BetterMixer extends Template{
 
         };
 
+        this.__mint = "MIXER";
+
     }
 
     render2D(params, key) {
@@ -99,7 +101,7 @@ export  default class BetterMixer extends Template{
         let vRepeat = 2 * bendSpacing + 2 * channelWidth;
         let vOffset = bendSpacing + channelWidth;
         let hOffset = bendLength / 2 + channelWidth / 2;
-        var serp = new paper.CompoundPath();
+        let serp = new paper.CompoundPath();
         if (orientation == "V") {
             //draw first segment
             serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));

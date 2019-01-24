@@ -9,8 +9,13 @@ export default class Template {
         this.__placementTool = null;
         this.__toolParams = null;//{ position: "position" };
         this.__featureParams = null;
-        this.__targetParams = null
+        this.__targetParams = null;
+        this.__mint = null;
         this.__setupDefinitions();
+    }
+
+    get mint() {
+        return this.__mint;
     }
 
     /**
