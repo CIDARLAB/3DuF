@@ -103,7 +103,7 @@ export default class FeatureSet {
     }
 
     getDefinition(typeString){
-        console.log("Called", typeString);
+        // console.log("Called", typeString);
         let definition = this.__library[typeString].object;
         let ret = {
             "unique": definition.unique,

@@ -890,32 +890,35 @@ export default class ViewManager {
     __initializeRatsNest() {
         //Step 1 generate features for all the components with some basic layout
         let components = this.currentDevice.getComponents();
-
+        let xpos = 10000;
+        let ypos = 10000;
         for(let i in components){
             let component = components[i];
             if(!component.placed){
-                this.__generateDefaultPlacementForComponent(component);
+                this.__generateDefaultPlacementForComponent(
+                    component,
+                    xpos * (parseInt(i) + 1),
+                    ypos * (Math.floor(parseInt(i)/5) +1)
+                );
             }
         }
 
         //TODO: Step 2 generate rats nest renders for all the components
     }
 
-    __generateDefaultPlacementForComponent(component) {
-        //component.type
-
-        let params_to_copy = component.getParams();
+    __generateDefaultPlacementForComponent(component, xpos, ypos) {
+        let params_to_copy = component.getParams().toJSON();
 
         console.log(params_to_copy);
 
         //Get default params and overwrite them with json params, this can account for inconsistencies
         let nonminttype = Registry.featureSet.getTypeForMINT(component.getType());
-        console.log(nonminttype);
+        // console.log(nonminttype);
         let newFeature = Feature.makeFeature(nonminttype, "Basic", {
-            "position": [10000, 10000]
+            "position": [xpos, ypos]
         });
 
-        console.log(newFeature);
+        // console.log(newFeature);
 
         // let currentFeatureID = newFeature.getID();
 
