@@ -6,12 +6,8 @@ const Colors = require("./colors");
 
 import Device from '../core/device';
 import SimpleQueue from "../utils/simpleQueue"; //= require("../utils/SimpleQueue");
-import DXFObject from '../core/dxfObject';
-import EdgeFeature from "../core/edgeFeature";
 import * as HTMLUtils from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
-import ManufacturingPanel from "./ui/manufacturingPanel";
-import ExportPanel from "./ui/exportPanel";
 import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
 
@@ -303,10 +299,7 @@ export default class BareViewManager {
         else if (zoom < this.minZoom) zoom = this.minZoom;
         this.view.setZoom(zoom);
         this.updateGrid(false);
-        this.updateAlignmentMarks();
-
         this.updateDevice(Registry.currentDevice, false);
-        this.__updateViewTarget(false);
         this.zoomToolBar.setZoom(zoom);
         this.refresh(refresh);
     }
@@ -337,7 +330,7 @@ export default class BareViewManager {
             //this.updateAlignmentMarks();
 
             this.updateDevice(Registry.currentDevice, false);
-            this.__updateViewTarget(false);
+            // this.__updateViewTarget(false);
         } else {
             //console.log("Too big or too small!");
         }
