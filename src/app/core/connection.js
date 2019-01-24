@@ -30,6 +30,15 @@ export default class Connection {
         this.__routed = false;
     }
 
+    get sinks() {
+        return this.__sinks;
+    }
+
+    get source() {
+        return this.__source;
+    }
+
+
     get routed() {
         return this.__routed;
     }
@@ -330,7 +339,7 @@ export default class Connection {
         let entity = json.entity;
         let params = {};
         for(let key in json.params){
-            console.log("key:", key, "value:", json.params[key]);
+            // console.log("key:", key, "value:", json.params[key]);
             let paramobject = Parameter.generateConnectionParameter(key, json.params[key]);
             params[key] = paramobject;
         }

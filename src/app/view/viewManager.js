@@ -42,6 +42,7 @@ import HelpDialog from "./ui/helpDialog";
 import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
 import Feature from "../core/feature";
+import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
 
 export default class ViewManager {
 
@@ -526,7 +527,7 @@ export default class ViewManager {
         Registry.viewManager.clear();
         //Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
-        var version = json.version;
+        let version = json.version;
         if (null == version || undefined == version) {
             console.log("Loading Legacy Format...");
             device = Device.fromJSON(json);
@@ -547,9 +548,9 @@ export default class ViewManager {
             }
         }
         //Common Code for rendering stuff
-        console.log("Feature Layers", Registry.currentDevice.layers);
+        // console.log("Feature Layers", Registry.currentDevice.layers);
         Registry.currentLayer = Registry.currentDevice.layers[0];
-        Registry.currentTextLayer = Registry.currentDevice.textLa;
+        Registry.currentTextLayer = Registry.currentDevice.textLayers[0];
 
         //TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
         Registry.viewManager.addDevice(Registry.currentDevice);
@@ -904,12 +905,26 @@ export default class ViewManager {
         }
 
         //TODO: Step 2 generate rats nest renders for all the components
+        
+        let connections = this.currentDevice.getConnections();
+        let unrouted = [];
+        for(let i in connections){
+            let connection = connections[i];
+            if(!connection.routed){
+                unrouted.push(connection);
+            }
+        }
+
+        let drawinggroup = RatsNestRenderer2D.renderRatsNest(unrouted, this.currentDevice);
+
+        //Pass this to the view somehow
     }
 
     __generateDefaultPlacementForComponent(component, xpos, ypos) {
+
         let params_to_copy = component.getParams().toJSON();
 
-        console.log(params_to_copy);
+        // console.log(params_to_copy);
 
         //Get default params and overwrite them with json params, this can account for inconsistencies
         let nonminttype = Registry.featureSet.getTypeForMINT(component.getType());
@@ -926,7 +941,9 @@ export default class ViewManager {
 
         Registry.currentLayer.addFeature(newFeature);
 
-
+        //Set the component position
+        console.log("updating component position");
+        component.updateComponetPosition([xpos, ypos]);
 
 
 

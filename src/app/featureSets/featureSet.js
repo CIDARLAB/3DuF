@@ -104,16 +104,25 @@ export default class FeatureSet {
 
     getDefinition(typeString){
         // console.log("Called", typeString);
+        //TODO:Clean up this hacky code and shift everything to use MINT convention
+        if(!this.__library.hasOwnProperty(typeString)){
+            typeString = this.getTypeForMINT(typeString);
+        }
+
+        if(!this.__library.hasOwnProperty(typeString)) {
+            throw new Error("Could not find the type string !");
+        }
+
         let definition = this.__library[typeString].object;
         let ret = {
             "unique": definition.unique,
             "heritable": definition.heritable,
             "units": definition.units,
-            "defaults": definition.default,
+            "defaults": definition.defaults,
             "minimum": definition.minimum,
             "maximum": definition.maximum
         };
-        return this.__definitions[typeString];
+        return ret;
     }
 
     getRender3D(typeString){

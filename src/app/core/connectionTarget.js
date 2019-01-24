@@ -4,6 +4,13 @@ export default class ConnectionTarget{
         this.__portLabel = portLabel;
     }
 
+    get portLabel() {
+        return this.__portLabel;
+    }
+    get componentID() {
+        return this.__componentID;
+    }
+
     toJSON(){
         return {"component": this.__componentID, "port": this.__portLabel};
     }

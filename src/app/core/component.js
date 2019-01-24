@@ -74,7 +74,7 @@ class Component {
      * @param value
      */
     updateParameter(key, value){
-        this.__params[key] = value;
+        this.__params.updateParameter(key, value);
     }
 
     /**
@@ -259,7 +259,7 @@ class Component {
      * @param center
      */
     updateComponetPosition(center){
-        this.updateParameter('position', new Parameter('Point', center));
+        this.updateParameter('position', center);
         for(let i in this.__features){
             let featureidtochange = this.__features[i];
 
@@ -319,13 +319,36 @@ class Component {
         let id = json.id;
         let entity = json.entity;
         let params = {};
+        let definition = Registry.featureSet.getDefinition(entity);
+        console.log(definition);
+        let type;
+        let value;
         for(let key in json.params){
-            console.log("key:", key, "value:", json.params[key]);
-            let paramobject = Parameter.generateComponentParameter(key, json.params[key]);
-            params[key] = paramobject;
+            // console.log("key:", key, "value:", json.params[key]);
+            if(definition.heritable.hasOwnProperty(key)){
+                type = definition.heritable[key];
+            }else if(definition.unique.hasOwnProperty(key)){
+                type = definition.unique[key];
+            }
+            // let paramobject = Parameter.generateComponentParameter(key, json.params[key]);
+            //Check if the value type is float and convert the value from string
+            value = json.params[key];
+            console.log(value);
+            console.log(typeof value);
+            if(type === "Float" && typeof value == "string"){
+                value = parseFloat(value);
+            }
+
+            // let paramobject = new Parameter(type, value);
+            params[key] = value;
         }
 
-        let paramstoadd = new Params(null, null, null, params);
+        //Do another check and see if position is present or not
+        if(!params.hasOwnProperty("position")){
+            params["position"] =  [0.0,0.0];
+        }
+
+        let paramstoadd = new Params(params, definition.unique , definition.heritable);
 
         let component = new Component(entity, paramstoadd, name, entity, id);
         return component;

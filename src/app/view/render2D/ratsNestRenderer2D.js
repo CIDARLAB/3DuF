@@ -7,11 +7,45 @@ import paper from 'paper';
 
 export default class RatsNestRenderer2D{
 
-    static renderRatsNest(device){
+    static renderRatsNest(connectionlist, device){
         let ratsnestgroup = new paper.Group();
+        let start, end, sink, render, sourceid, sinkid;
+        for(let i in connectionlist){
+            let connection = connectionlist[i];
+            let source = connection.source;
+            let sinks = connection.sinks;
+            // console.log("Sinks", sinks, sinks.length);
+            for(let ii in sinks){
+                sink = sinks[ii];
+                sourceid = source.componentID;
+                sinkid = sink.componentID;
 
-        console.log(device.getUnroutedConnections());
+                let startcomponent = device.getComponentByID(sourceid);
+                let endcomponent = device.getComponentByID(sinkid)
+                start = startcomponent.getPosition();
+                end = endcomponent.getPosition();
+                console.log(startcomponent, endcomponent);
+                render = RatsNestRenderer2D.renderRatsNestConnection(start, end);
+                ratsnestgroup.addChild(render);
+            }
 
+        }
+
+        return ratsnestgroup;
+    }
+
+    static renderRatsNestConnection(start, end){
+        // let vstart = new paper.Point(start.x, start.y - radius);
+        // let vend = new paper.Point(end.x, end.y + radius);
+        //
+        // let vpath = new paper.Path(vstart, vend);
+        //
+        // vpath.strokeColor = '#696965';
+        // vpath.strokeWidth = 500;
+        // vpath.strokeCap = 'round';
+        //
+        // vpath.dashArray = [1000, 1200];
+        // return vpath;
     }
 }
 

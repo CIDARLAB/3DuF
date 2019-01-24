@@ -1,6 +1,13 @@
 import Parameter from './parameter';
 
 export default class Params {
+    /**
+     * Default constructor create a Params object
+     * @param values
+     * @param unique
+     * @param heritable
+     * @param rawparameters
+     */
     constructor(values, unique, heritable, rawparameters) {
         this.unique = unique;
         this.heritable = heritable;
@@ -12,8 +19,9 @@ export default class Params {
     }
 
     updateParameter(key, value){
-        if(this.parameters.hasOwnProperty(key)) this.parameters[key].updateValue(value);
-        else {
+        if(this.parameters.hasOwnProperty(key)){
+            this.parameters[key].updateValue(value);
+        } else {
             if(this.isHeritable(key)){
                 this.parameters[key] = Parameter.makeParam(this.heritable[key], value);
             } 
