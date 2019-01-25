@@ -1,4 +1,5 @@
 import Handsontable from "handsontable";
+import JSZip from "jszip";
 
 export default class TaguchiDesigner{
     constructor(viewmanager){
@@ -31,6 +32,11 @@ export default class TaguchiDesigner{
             throw new Error("Cannot find table element");
         }
 
+        this.__generateDesignsButton = document.getElementById("download-doe-button");
+
+        this.__generateDesignsButton.addEventListener('click', function (el, ev) {
+            ref.generateAndDownloadTaguchiDesigns();
+        });
 
         this.__handsonTableObject = null;
 
@@ -57,26 +63,22 @@ export default class TaguchiDesigner{
     }
 
     loadCSVData(text) {
-
+        //Initialize the table based on the data in the CSV
         this.parseCSV(text);
 
+        //Initialize the params table UI so that the user can input the DOE parameters
         this.__initializeTable()
 
 
-        //TODO: Initialize the table based on the data in the CSV
     }
 
     parseCSV(text) {
-        // console.log(text);
 
         let lines = text.split("\n");
-
-        console.log(lines);
-
         let headers = lines[0].split(",");
         this.__parameterHeaders = headers;
         this.__numberOfParameters = headers.length;
-        console.log(headers);
+        // console.log(headers);
         let max = 0;
         //Find the highest value for the parameter values
         for(let i in lines){
@@ -91,18 +93,24 @@ export default class TaguchiDesigner{
         }
 
         this.__numberOfLevels = max;
-        console.log("Max number of values = ", max);
+        // console.log("Max number of values = ", max);
 
         //Number of parameters
-        console.log("# parameters", headers.length);
+        // console.log("# parameters", headers.length);
 
-        this.__orthogonalArray = lines.splice(1,lines.length-1);
+        this.__orthogonalArray = [];
+        lines = lines.splice(1,lines.length-1);
+        for(let i in lines){
+            let line = lines[i];
+            this.__orthogonalArray.push(line.split(","));
+        }
 
     }
 
     __initializeTable() {
         let heritables = this.__selectedComponent.getParams().heritable;
         let paramoptions = [];
+
         for(let key in heritables){
             paramoptions.push(key);
         }
@@ -121,11 +129,10 @@ export default class TaguchiDesigner{
             data.push(rowdata);
         }
 
-        let selectionboxcell =
-            {
-                editor: 'select',
-                selectOptions: paramoptions
-            };
+        let selectionboxcell = {
+            editor: 'select',
+            selectOptions: paramoptions
+        };
 
         let column_data = [];
         column_data.push(selectionboxcell);
@@ -133,17 +140,12 @@ export default class TaguchiDesigner{
         let col_header = ['Parameter'];
 
         for(let i=0; i<this.__numberOfLevels; i++){
-            let blank = {};
             column_data.push(blank_column_format);
             col_header.push(i+1);
         }
 
-
-
         this.__handsonTableObject = new Handsontable(this.__tablecontainer, {
-            data:data,
-            // dataSchema: {id: null, name: {first: null, last: null}, address: null},
-            // startRows: 10,
+            data: data,
             colHeaders: col_header,
             rowHeaders: this.__parameterHeaders,
             columns: column_data,
@@ -152,4 +154,52 @@ export default class TaguchiDesigner{
         });
     }
 
+    generateAndDownloadTaguchiDesigns() {
+
+        let paramdata = this.__handsonTableObject;
+        let jsons = [];
+        //Go through each design
+        for(let i in this.__orthogonalArray){
+            let iteration = this.__generateOrthogonalDesign(this.__orthogonalArray[i], paramdata);
+
+            jsons.push(iteration);
+        }
+
+        //Create a Zip
+        let zipper = new JSZip();
+        for (let i = 0; i < jsons.length; i++) {
+            zipper.file(this.__viewManagerDelegate.currentDevice.getName() + "_" +  i + ".json", jsons[i]);
+        }
+
+        let content = zipper.generate({
+            type: "blob"
+        });
+        saveAs(content, "Taguchi_DOE.zip");
+
+
+    }
+
+    __generateOrthogonalDesign(orthogonalArrayElement, paramdata) {
+        //Read the orthogonal array for each experiment
+        let paramMap = {};
+        // console.log("ORthogonal array", orthogonalArrayElement);
+
+        for(let i = 0; i < orthogonalArrayElement.length; i++){
+            let columnindex = parseInt(orthogonalArrayElement[i]);
+            // console.log(i, columnindex);
+            paramMap[paramdata.getDataAtCell(i, 0)] = paramdata.getDataAtCell(i, columnindex);
+
+        }
+
+        //TODO: Update the component and then download the design
+        // console.log(paramMap);
+        for(let key in paramMap){
+            this.__selectedComponent.updateParameter(key, paramMap[key]);
+        }
+
+        //Serialize each design
+        let json = JSON.stringify(this.__viewManagerDelegate.currentDevice.toInterchangeV1());
+
+        return json;
+    }
 }

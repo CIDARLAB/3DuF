@@ -2,7 +2,6 @@ import Params from "./params";
 
 const Registry = require("./registry");
 const FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
-import Parameter from './parameter';
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -75,6 +74,14 @@ class Component {
      */
     updateParameter(key, value){
         this.__params.updateParameter(key, value);
+
+        for(let i in this.__features){
+            let featureidtochange = this.__features[i];
+
+            //Get the feature id and modify it
+            let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            feature.updateParameter(key, value);
+        }
     }
 
     /**
