@@ -614,6 +614,22 @@ export default class Device {
     }
 
     /**
+     * Returns the component given by the user friendly name parameter
+     * return null if nothing is found
+     * @param name
+     * @return {*}
+     */
+    getComponentByName(name){
+        let components = this.getComponents();
+        for(let i in components){
+            if(name == components[i].getName()){
+                return components[i];
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns a list of connections that have not been routed yet
      * @return {Array}
      */

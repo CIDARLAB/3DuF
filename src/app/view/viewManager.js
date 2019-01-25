@@ -43,6 +43,7 @@ import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
 import Feature from "../core/feature";
 import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
+import TaguchiDesigner from "./ui/taguchiDesigner";
 
 export default class ViewManager {
 
@@ -69,6 +70,7 @@ export default class ViewManager {
         this.messageBox = document.querySelector('.mdl-js-snackbar');
         this.editDeviceDialog = new EditDeviceDialog(this);
         this.helpDialog = new HelpDialog();
+        this.taguchiDesigner = new TaguchiDesigner(this);
 
         this.__currentDevice = null;
 
