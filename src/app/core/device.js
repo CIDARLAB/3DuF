@@ -348,7 +348,6 @@ export default class Device {
             connectiontoload = Connection.fromInterchangeV1(connections[i]);
             this.__connections.push(connectiontoload);
         }
-        console.log("Connections:", this.__connections);
     }
 
 
@@ -428,7 +427,6 @@ export default class Device {
 
         //Updating cross-references
         let features = newDevice.getAllFeaturesFromDevice();
-        console.log("Features: ",features);
         let feature;
         for(let i in features){
             //console.log("Feature:", features[i]);

@@ -11,6 +11,7 @@ import PanAndZoom from "./panAndZoom";
 const Colors = require("./colors");
 import TextFeature from "../core/textFeature";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
+import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
 const DXFObjectRenderer2D = require('./render2D/dxfObjectRenderer2D');
 const DXFSolidObjectRenderer = require('./render2D/dxfSolidObjectRenderer2D');
 
@@ -47,6 +48,8 @@ export default class PaperView {
         this.alignmentMarksLayer.insertAbove(this.textFeatureLayer);
         this.uiLayer = new paper.Group(); //This is the layer which we use to render targets
         this.uiLayer.insertAbove(this.featureLayer);
+        this.ratsNestLayer = new paper.Group();
+        this.ratsNestLayer.insertAbove(this.featureLayer);
         this.currentTarget = null;
         this.lastTargetType = null;
         this.lastTargetPosition = null;
@@ -461,6 +464,26 @@ export default class PaperView {
         //Does nothing right now
         if (this.alignmentMarks) this.alignmentMarks.remove();
         this.alignmentMarks = null;
+    }
+
+    updateRatsNest(){
+        this.removeRatsNest();
+        let unrouted = this.__viewManagerDelegate.currentDevice.getUnroutedConnections();
+
+        let rendergroup =  RatsNestRenderer2D.renderRatsNest(unrouted, this.__viewManagerDelegate.currentDevice);
+
+        this.__ratsNestRender = rendergroup;
+        this.ratsNestLayer.addChild(this.__ratsNestRender);
+        
+    }
+
+    removeRatsNest() {
+        //First clear out the render objects
+        if(this.__ratsNestRender){
+            this.__ratsNestRender.remove();
+        }
+        //Next set it to null
+        this.__ratsNestRender = null;
     }
 
     moveCenter(delta) {

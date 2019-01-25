@@ -106,7 +106,6 @@ class Component {
      * @param name
      */
     setName(name){
-        console.log("test", name);
         this.__name = name;
     }
 
@@ -305,6 +304,15 @@ class Component {
     }
 
     /**
+     * Returns the center position of the component as a 2D vector
+     * @return {*[]}
+     */
+    getCenterPosition(){
+        let bounds = this.getBoundingRectangle();
+        return [bounds.center.x, bounds.center.y];
+    }
+
+    /**
      * This method is used to import the component from Interchange V1 JSON
      * @param json
      * @returns {*}
@@ -320,7 +328,7 @@ class Component {
         let entity = json.entity;
         let params = {};
         let definition = Registry.featureSet.getDefinition(entity);
-        console.log(definition);
+        // console.log(definition);
         let type;
         let value;
         for(let key in json.params){
@@ -333,8 +341,6 @@ class Component {
             // let paramobject = Parameter.generateComponentParameter(key, json.params[key]);
             //Check if the value type is float and convert the value from string
             value = json.params[key];
-            console.log(value);
-            console.log(typeof value);
             if(type === "Float" && typeof value == "string"){
                 value = parseFloat(value);
             }

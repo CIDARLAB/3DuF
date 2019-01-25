@@ -89,6 +89,8 @@ export default class ViewManager {
         this.view.setResizeFunction(function() {
             reference.updateGrid();
             reference.updateAlignmentMarks();
+            
+            reference.view.updateRatsNest();
 
             reference.updateDevice(Registry.currentDevice);
         });
@@ -350,6 +352,7 @@ export default class ViewManager {
         this.view.setZoom(zoom);
         this.updateGrid(false);
         this.updateAlignmentMarks();
+        this.view.updateRatsNest();
 
         this.updateDevice(Registry.currentDevice, false);
         this.__updateViewTarget(false);
@@ -442,12 +445,14 @@ export default class ViewManager {
     updateTarget(featureType, featureSet, position, refresh = true) {
         this.view.addTarget(featureType, featureSet, position);
         this.view.updateAlignmentMarks();
+        this.view.updateRatsNest();
         this.refresh(refresh);
     }
 
     __updateViewTarget(refresh = true) {
         this.view.updateTarget();
         this.updateAlignmentMarks();
+        this.view.updateRatsNest();
         this.refresh(refresh);
     }
 
@@ -458,7 +463,7 @@ export default class ViewManager {
             this.view.adjustZoom(delta, point);
             this.updateGrid(false);
             //this.updateAlignmentMarks();
-
+            this.view.updateRatsNest();
             this.updateDevice(Registry.currentDevice, false);
             this.__updateViewTarget(false);
         } else {
@@ -480,7 +485,7 @@ export default class ViewManager {
         this.view.moveCenter(delta);
         this.updateGrid(false);
         // this.updateAlignmentMarks();
-
+        this.view.updateRatsNest();
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }
@@ -906,46 +911,25 @@ export default class ViewManager {
 
         //TODO: Step 2 generate rats nest renders for all the components
         
-        let connections = this.currentDevice.getConnections();
-        let unrouted = [];
-        for(let i in connections){
-            let connection = connections[i];
-            if(!connection.routed){
-                unrouted.push(connection);
-            }
-        }
-
-        let drawinggroup = RatsNestRenderer2D.renderRatsNest(unrouted, this.currentDevice);
-
-        //Pass this to the view somehow
+        this.view.updateRatsNest();
     }
 
     __generateDefaultPlacementForComponent(component, xpos, ypos) {
 
         let params_to_copy = component.getParams().toJSON();
 
-        // console.log(params_to_copy);
+        params_to_copy["position"]  = [xpos, ypos];
 
         //Get default params and overwrite them with json params, this can account for inconsistencies
         let nonminttype = Registry.featureSet.getTypeForMINT(component.getType());
-        // console.log(nonminttype);
-        let newFeature = Feature.makeFeature(nonminttype, "Basic", {
-            "position": [xpos, ypos]
-        });
-
-        // console.log(newFeature);
-
-        // let currentFeatureID = newFeature.getID();
+        let newFeature = Feature.makeFeature(nonminttype, "Basic", params_to_copy);
 
         component.addFeatureID(newFeature.getID());
 
         Registry.currentLayer.addFeature(newFeature);
 
         //Set the component position
-        console.log("updating component position");
         component.updateComponetPosition([xpos, ypos]);
-
-
 
     }
 }
