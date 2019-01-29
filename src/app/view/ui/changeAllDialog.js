@@ -5,7 +5,7 @@ export default class ChangeAllDialog {
         this.__similarComponents = [];
         this.__componentTable = document.getElementById("similar_components_table");
         this.__changeAllButton = document.getElementById("change_all_button");
-
+        this.__paramsToChange = null;
         //Assign all event handlers
 
         let ref = this;
@@ -34,14 +34,14 @@ export default class ChangeAllDialog {
         let selectedcomponent = Registry.viewManager.view.selectedComponents[0];
         let selectedcomponenttype = selectedcomponent.getType();
         let params = selectedcomponent.getParams();
-
-        this.__paramsToChange = params;
-
-        //TODO: Find a better way to do this
-        if(this.__paramsToChange['position']){
-            delete this.__paramsToChange['position'];
+        this.__paramsToChange = {};
+        for(let key in params.heritable){
+            this.__paramsToChange[key] = params.getValue(key);
         }
-
+        // //TODO: Find a better way to do this
+        // if(this.__paramsToChange['position']){
+        //     delete this.__paramsToChange['position'];
+        // }
         let allcomponents = Registry.currentDevice.getComponents();
 
         let similarcomponents = [];
@@ -96,9 +96,16 @@ export default class ChangeAllDialog {
 
     __modifyComponentParams(){
         for(let i in this.__similarComponents){
+            console.log(this.__similarComponents);
             let componenttochange = this.__similarComponents[i];
             if(this.__componentsToChangeMap.get(componenttochange.getID())){
-                componenttochange.setParams(this.__paramsToChange);
+
+                //Call upateParameter for everything
+
+                for(let key in this.__paramsToChange){
+                    componenttochange.updateParameter(key, this.__paramsToChange[key]);
+                }
+
             }
         }
     }

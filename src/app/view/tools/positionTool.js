@@ -3,9 +3,10 @@ import MouseTool from "./mouseTool";
 const Registry = require("../../core/registry");
 import Feature from '../../core/feature';
 import SimpleQueue from "../../utils/simpleQueue";
-const Component = require("../../core/component");
+
 import paper from 'paper';
 import Params from "../../core/params";
+import Component from "../../core/component";
 
 
 
@@ -70,7 +71,14 @@ export default class PositionTool extends MouseTool {
      * @param featureIDs [String] Feature id's of all the features that will be a part of this component
      */
     createNewComponent(typeString, paramdata, featureIDs) {
-        let params = new Params(null, null, null, paramdata);
+        let definition = Registry.featureSet.getDefinition(typeString);
+        //Clean Param Data
+        let cleanparamdata = {};
+        for(let key in paramdata){
+            cleanparamdata[key] = paramdata[key].getValue();
+        }
+        console.log(cleanparamdata);
+        let params = new Params(cleanparamdata, definition.unique, definition.heritable);
         let componentid = Feature.generateID();
         let name = Registry.currentDevice.generateNewName(typeString);
         let newComponent = new Component(typeString, params, name , "TEST MINT", componentid);

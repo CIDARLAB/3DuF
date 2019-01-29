@@ -7,7 +7,7 @@ const FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
  * This class contains the component abstraction used in the interchange format and the
  * high level device model of the microfluidic.
  */
-class Component {
+export default class Component {
 
     /**
      * Default Constructor
@@ -18,7 +18,16 @@ class Component {
      * @param id
      */
     constructor(type, params, name, mint, id = Component.generateID()){
-        this.__params = params;
+
+
+        if(params instanceof Params){
+            this.__params = params;
+        }else{
+
+        }
+
+
+
         this.__name = name;
         this.__id = id;
         this.__type = type;
@@ -219,26 +228,6 @@ class Component {
     }
 
     /**
-     * Sets the params associated with the component
-     * @param params key -> Parameter Set
-     */
-    setParams(params){
-        this.__params = params;
-        //TODO: Modify all the associated Features
-        for(let key in params){
-            let value = params[key];
-            for(let i in this.__features){
-                let featureidtochange = this.__features[i];
-
-                //Get the feature id and modify it
-                let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
-                feature.updateParameter(key, value.getValue());
-            }
-
-        }
-    }
-
-    /**
      * Returns a paper.Rectangle object that defines the bounds of the component
      * @return {*}
      */
@@ -369,5 +358,3 @@ class Component {
     }
 
 }
-
-module.exports = Component;

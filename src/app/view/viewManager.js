@@ -618,6 +618,16 @@ export default class ViewManager {
             if (correctType.length >0 ){
                 this.adjustAllFeatureParams(valueString, value, correctType);
             }
+
+            //Check if any components are selected
+            //TODO: modify parameters window to not have chain of updates
+            //Cycle through all components and connections and change the parameters
+            for(let i in this.view.selectedComponents){
+                this.view.selectedComponents[i].updateParameter(valueString, value);
+            }
+            for(let i in this.view.selectedConnections){
+                this.view.selectedConnections[i].updateParameter(valueString, value);
+            }
         }else{
             this.updateDefault(typeString, setString, valueString, value);
         }
