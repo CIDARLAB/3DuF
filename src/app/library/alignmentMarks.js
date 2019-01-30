@@ -20,7 +20,7 @@ export  default class AlignmentMarks extends Template{
         this.__defaults = {
             "width": 4000,
             "length": 4000,
-            "height": 200
+            "height": 250
         };
 
 

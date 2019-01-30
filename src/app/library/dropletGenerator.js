@@ -29,7 +29,7 @@ export  default class DropletGenerator extends Template{
             "waterInputWidth": .60 * 1000,
             "outputWidth": .60 * 1000,
             "outputLength": .60 * 1000,
-            "height": .1 * 1000,
+            "height": 250,
             "rotation": 0
         };
 

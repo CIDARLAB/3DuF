@@ -18,7 +18,7 @@ export  default class Text extends Template{
 
         this.__defaults = {
             "portRadius": .7 * 1000,
-            "height": 1.1 * 1000
+            "height": 250
         };
 
 

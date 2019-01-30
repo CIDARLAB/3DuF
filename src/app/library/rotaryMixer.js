@@ -29,7 +29,7 @@ export  default class RotaryMixer extends Template{
             "valveLength": 2.4 * 1000,
             "valveSpacing": 300,
             "valveRadius": 1.2 * 1000,
-            "height": 200
+            "height": 250
         };
 
 

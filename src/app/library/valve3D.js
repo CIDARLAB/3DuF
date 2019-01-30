@@ -24,7 +24,7 @@ export  default class Valve3D extends Template{
         this.__defaults = {
             "orientation": "V",
             "valveRadius": 1.2 * 1000,
-            "height": .8 * 1000,
+            "height": 250,
             "gap": 0.6 * 1000,
             "width": 2.4 * 1000,
             "length": 2.4 * 1000,

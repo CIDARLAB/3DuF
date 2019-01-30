@@ -32,7 +32,7 @@ export  default class GradientGenerator extends Template{
             "in": 1,
             "out": 3,
             "spacing": 10000,
-            "height": .1 * 1000,
+            "height": 250,
             "rotation": 0
         };
 

@@ -24,7 +24,7 @@ export  default class Transition extends Template{
             "cw2": .90 * 1000,
             "length": 1.0 * 1000,
             "orientation": "V",
-            "height": .1 * 1000
+            "height": 250
         };
 
 
