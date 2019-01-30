@@ -157,6 +157,7 @@ export default class ConnectionTool extends MouseTool {
             let params = new Params(null,null,null, feat.getParams());
             if(this.__currentConnectionObject == null || this.__currentConnectionObject === undefined){
                 let connection = new Connection('Connection', params, Registry.currentDevice.generateNewName('CHANNEL'), 'CHANNEL');
+                connection.routed = true;
                 connection.addFeatureID(feat.getID());
                 connection.addWayPoints(this.wayPoints);
                 feat.referenceID = connection.getID();

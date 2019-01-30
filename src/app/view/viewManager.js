@@ -42,7 +42,6 @@ import HelpDialog from "./ui/helpDialog";
 import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
 import Feature from "../core/feature";
-import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
 import TaguchiDesigner from "./ui/taguchiDesigner";
 
 export default class ViewManager {
