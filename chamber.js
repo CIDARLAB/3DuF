@@ -22,7 +22,7 @@ export  default class Chamber extends Template{
         this.__defaults = {
             "width": 5000,
             "length": 5000,
-            "height": 100,
+            "height": 250,
             "cornerRadius": 200,
             "rotation": 0
         };

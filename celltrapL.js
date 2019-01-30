@@ -28,7 +28,7 @@ export  default class CellTrapL extends Template{
             "chamberWidth": 1.23 * 1000,
             "numberOfChambers": 6,
             "chamberSpacing": 2.46 * 1000,
-            "height": .1 * 1000
+            "height": 250
         };
 
 

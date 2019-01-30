@@ -24,7 +24,7 @@ export  default class Pump extends Template{
             "rotation": 0,
             "width": 600,
             "length": 300,
-            "height": .1 * 1000,
+            "height": 250,
             "spacing": 1000,
             "flowChannelWidth":300
         };

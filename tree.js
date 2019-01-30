@@ -28,7 +28,7 @@ export  default class Tree extends Template{
             "spacing": 4 * 1000,
             "leafs": 8,
             "width": 2.46 * 1000,
-            "height": .1 * 1000,
+            "height": 250,
             "direction": "IN",
             "stageLength": 4000
         };

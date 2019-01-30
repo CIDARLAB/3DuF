@@ -14,7 +14,7 @@ export  default class Channel extends Template{
 
         this.__defaults = {
             "channelWidth": .80 * 1000,
-            "height": .1 * 1000
+            "height": 250
         };
 
         this.__heritable = {

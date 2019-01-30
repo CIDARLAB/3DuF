@@ -23,7 +23,7 @@ export  default class Transposer extends Template{
         this.__defaults = {
             "orientation": "V",
             "valveRadius": 1.2 * 1000,
-            "height": .8 * 1000,
+            "height": 250,
             "gap": 0.6 * 1000,
             "valveSpacing": 0.6 * 1000,
             "channelWidth": 500

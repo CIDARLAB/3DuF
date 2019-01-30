@@ -20,7 +20,7 @@ export  default class CircleValve extends Template{
         this.__defaults = {
             "radius1": 1.4 * 1000,
             "radius2": 1.2 * 1000,
-            "height": .8 * 1000
+            "height": 250
         };
 
 

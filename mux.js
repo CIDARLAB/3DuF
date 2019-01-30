@@ -31,7 +31,7 @@ export  default class Mux extends Template{
             "leafs": 8,
             "width": 1.6 * 1000,
             "length": 1.6 * 1000,
-            "height": .1 * 1000,
+            "height": 250,
             "direction": "IN",
             "stageLength": 4000,
             "controlChannelWidth": .40 * 1000

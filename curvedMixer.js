@@ -26,7 +26,7 @@ export  default class CurvedMixer extends Template{
             "numberOfBends": 1,
             "orientation": "V",
             "bendLength": 2.46 * 1000,
-            "height": .1 * 1000
+            "height": 250
         };
 
 
