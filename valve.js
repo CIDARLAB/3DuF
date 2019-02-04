@@ -68,6 +68,7 @@ export  default class Valve extends Template{
             position: "position"
         };
 
+        this.__mint = "VALVE";
     }
 
     render2D(params, key) {

@@ -98,6 +98,7 @@ export  default class DropletGenerator extends Template{
             position: "position"
         };
 
+        this.__mint = "NOZZLE DROPLET GENERATOR";
     }
 
     render2D(params, key) {

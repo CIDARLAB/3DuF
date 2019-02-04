@@ -80,6 +80,7 @@ export  default class Valve3D extends Template{
             position: "position"
         };
 
+        this.__mint = "VALVE3D";
     }
 
     __drawFlow(params){

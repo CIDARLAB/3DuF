@@ -92,6 +92,7 @@ export  default class YTree extends Template{
             position: "position"
         };
 
+        this.__mint = "YTREE";
     }
 
     render2D(params, key) {

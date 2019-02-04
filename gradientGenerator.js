@@ -109,6 +109,8 @@ export  default class GradientGenerator extends Template{
             position: "position"
         };
 
+        this.__mint = "GRADIENT GENERATOR";
+
     }
 
     render2D(params, key) {

@@ -43,6 +43,7 @@ export  default class RectValve extends Template{
             position: "position"
         };
 
+        this.__mint = "VALVE";
     }
 
     render2D(params, key) {

@@ -86,6 +86,7 @@ export  default class Pump3D extends Template{
             position: "position"
         };
 
+        this.__mint = "PUMP3D";
     }
 
     render2D(params, key) {

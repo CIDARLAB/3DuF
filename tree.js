@@ -92,6 +92,7 @@ export  default class Tree extends Template{
             position: "position"
         };
 
+        this.__mint = "TREE";
     }
 
     render2D(params, key) {

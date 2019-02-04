@@ -85,6 +85,8 @@ export  default class Transposer extends Template{
             position: "position"
         };
 
+        this.__mint = "TRANSPOSER";
+
     }
 
     render2D(params, key) {

@@ -80,6 +80,8 @@ export  default class CurvedMixer extends Template{
             position: "position"
         };
 
+        this.__mint = "CURVED MIXER";
+
     }
 
     render2D(params, key) {

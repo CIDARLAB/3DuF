@@ -106,6 +106,8 @@ export  default class Mux extends Template{
             position: "position"
         };
 
+        this.__mint = "MUX";
+
     }
 
 
