@@ -111,7 +111,7 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
 function isClosedPolyline(dxfobject) {
     let data = dxfobject.getData
     ();
-    console.log(data.shape);
+    // console.log(data.shape);
     return data.shape;
 }
 
@@ -465,7 +465,7 @@ function drawLine(entity) {
 
     // // create geometry
     for(let i = 0; i < entity.vertices.length; i++) {
-        console.log("Point:", i , entity.vertices[i]);
+        // console.log("Point:", i , entity.vertices[i]);
         if(entity.vertices[i].bulge) {
             console.log("Drawing arc segment to incorporate bulge values");
             //TODO: Figure out what to do with the bugle value

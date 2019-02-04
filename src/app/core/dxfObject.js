@@ -21,4 +21,12 @@ export default class DXFObject{
     addData(key, value){
         this.__rootObject[key] = value;
     }
+
+    toJSON(){
+        return this.__rootObject;
+    }
+
+    static fromJSON(json){
+        return new DXFObject(json);
+    }
 }

@@ -1,4 +1,8 @@
 import Feature from './feature';
+import Params from "./params";
+import Component from "./component";
+import DXFObject from "./dxfObject";
+import * as DXFRenderer from "../view/render2D/dxfSolidObjectRenderer2D";
 
 const Registry = require("./registry");
 
@@ -19,6 +23,7 @@ export default class CustomComponent {
         this.__type = type;
         this.__entity = mint;
         this.dxfData = dxfdata;
+        this.__params = null;
         this.__renderData = null;
         //This stores the features that are a part of the component
         // this.__features = [];
@@ -69,12 +74,20 @@ export default class CustomComponent {
      * Generates the object that needs to be serialzed into JSON for interchange format V1
      * @returns {{}} Object
      */
-    toInterchangeV1(){
+    toJSON(){
         let output = {};
-        output.id = this.__id;
-        output.name = this.__name.toJSON();
-        output.entity = this.__entity.toJSON();
-        output.params = this.__params.toJSON();
+        output.type = this.__type;
+        output.entity = this.__entity;
+        if(this.__params){
+            output.params = this.__params.toJSON();
+        }
+        let dxfdata = [];
+        for(let i in this.dxfData){
+            dxfdata.push(this.dxfData[i].getData());
+        }
+        output.dxfData = dxfdata;
+        // output.renderData = this.__renderData;
+        // console.log(output);
         return output;
     }
 
@@ -87,9 +100,18 @@ export default class CustomComponent {
         let set;
         if (json.hasOwnProperty("set")) set = json.set;
         else set = "Basic";
+        let dxfdata = [];
+        for(let i in json.dxfData){
+            dxfdata.push(new DXFObject(json.dxfData[i]));
+        }
+
         //TODO: This will have to change soon when the thing is updated
-        throw new Error("Need to implement Interchange V1 Import for component object");
-        //return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
+        let ret = new CustomComponent(json.type, dxfdata, json.entity);
+        // ret.renderData = json.renderData;
+        // let render = DXFRenderer.renderDXFObjects(dxfdata);
+        // ret.renderData = render.exportSVG();
+        return ret;
+
     }
 
     static defaultParameterDefinitions(){

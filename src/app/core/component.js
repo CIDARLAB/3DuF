@@ -1,4 +1,5 @@
 import Params from "./params";
+import CustomComponent from "./customComponent";
 
 const Registry = require("./registry");
 const FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
@@ -319,19 +320,28 @@ export default class Component {
         // else set = "Basic";
         // //TODO: This will have to change soon when the thing is updated
         // throw new Error("Need to implement Interchange V1 Import for component object");
+        let iscustomcompnent = false;
         let name = json.name;
         let id = json.id;
         let entity = json.entity;
         let params = {};
-        if(entity === 'TEST MINT'){
-            console.warn("Found legacy invalid entity string",entity);
+        if (entity === 'TEST MINT') {
+            console.warn("Found legacy invalid entity string", entity);
             entity = (name.split("_"))[0];  //'^.*?(?=_)'
 
             console.log("new entity:", entity);
         }
 
-        console.log(json);
-        let definition = Registry.featureSet.getDefinition(entity);
+        iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);
+
+        let definition;
+
+        if(iscustomcompnent){
+            definition = CustomComponent.defaultParameterDefinitions();
+        }else{
+            definition = Registry.featureSet.getDefinition(entity);
+        }
+
         // console.log(definition);
         let type;
         let value;

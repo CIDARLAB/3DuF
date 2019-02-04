@@ -107,7 +107,6 @@ export default class ImportComponentDialog {
         }
 
         this.dxfData = dxfobjects;
-        console.log("DXF Objects:", dxfobjects);
         let render = DXFRenderer.renderDXFObjects(this.dxfData);
         this.__currentRenderSVG = render.exportSVG();
         let bounds = render.bounds;

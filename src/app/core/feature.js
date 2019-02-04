@@ -1,6 +1,7 @@
 import EdgeFeature from "./edgeFeature";
 import CustomComponent from "./customComponent";
 import Params from "./params";
+import DXFObject from "./dxfObject";
 
 const Parameters = require('./parameters');
 const StringValue = Parameters.StringValue;
@@ -114,11 +115,16 @@ export default class Feature {
             output.params = this.__params.toJSON();
         }
 
+        output.dxfData =[];
+
         if(this.__dxfObjects){
-            output.dxfData = this.__dxfObjects;
+            for(let i in this.__dxfObjects){
+                output.dxfData.push(this.__dxfObjects[i].toJSON());
+            }
         }
 
         output.type = this.__fabtype;
+        console.log("serialized feature: ", output);
         return output;
     }
 
@@ -250,11 +256,11 @@ export default class Feature {
         return ret;
     }
 
-    static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined, dxfdata){
+    static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined, fabtype, dxfdata){
         let params;
 
         if (typeString === "EDGE") {
-            return new EdgeFeature(dxfdata, params, id);
+            return new EdgeFeature(fabtype, params, id);
         }
         let featureType = FeatureSets.getDefinition(typeString, setString);
         if (paramvalues && featureType) {
@@ -264,7 +270,13 @@ export default class Feature {
             params = new Params(paramvalues, {"position": "Point"}, null);
         }
 
-        return new Feature(typeString, setString, params, name, id);
+        let feature = new Feature(typeString, setString, params, name, id);
+
+        for(let i in dxfdata){
+            feature.addDXFObject(DXFObject.fromJSON(dxfdata[i]));
+        }
+
+        return feature;
     }
 
     static makeCustomComponentFeature(customcomponent, setstring, paramvalues, name = "New Feature", id=undefined){

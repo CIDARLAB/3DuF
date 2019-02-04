@@ -108,7 +108,6 @@ export default class ViewManager {
         this.minZoom = .0001;
         this.maxZoom = 5;
         this.setupTools();
-        this.activateTool("Channel");
 
         //TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
@@ -150,6 +149,7 @@ export default class ViewManager {
         //Initiating the zoom toolbar
         this.zoomToolBar = new ZoomToolBar(.0001, 5);
         this.componentToolBar = new ComponentToolBar(this);
+        this.resetToDefaultTool();
     }
 
     addDevice(device, refresh = true) {
@@ -543,11 +543,10 @@ export default class ViewManager {
             console.log("Version Number: " + version);
             switch (version){
                 case 1:
-
+                    this.loadCustomComponents(json);
                     device = Device.fromInterchangeV1(json);
                     Registry.currentDevice = device;
                     this.__currentDevice = device;
-
                     break;
                 default:
                     alert("Version \'" + version + "\' is not supported by 3DuF !");
@@ -832,8 +831,12 @@ export default class ViewManager {
      * Runs cleanup method on the activated tools
      */
     cleanupActiveTools() {
-        this.mouseAndKeyboardHandler.leftMouseTool.cleanup();
-        this.mouseAndKeyboardHandler.rightMouseTool.cleanup();
+        if(this.mouseAndKeyboardHandler.leftMouseTool){
+            this.mouseAndKeyboardHandler.leftMouseTool.cleanup();
+        }
+        if (this.mouseAndKeyboardHandler.rightMouseTool){
+            this.mouseAndKeyboardHandler.rightMouseTool.cleanup();
+        }
     }
 
     /**
@@ -946,5 +949,22 @@ export default class ViewManager {
         //Set the component position
         component.updateComponetPosition([xpos, ypos]);
 
+    }
+
+    generateExportJSON(){
+        let json = this.currentDevice.toInterchangeV1();
+        json.customComponents = this.customComponentManager.toJSON();
+        return json;
+    }
+
+    /**
+     * This method attempts to load any custom components that are stored in the custom components property
+     * @param json
+     */
+    loadCustomComponents(json) {
+        if(json.hasOwnProperty("customComponents")){
+            this.customComponentManager.loadFromJSON(json["customComponents"]);
+
+        }
     }
 }

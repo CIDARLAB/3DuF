@@ -57,29 +57,16 @@ export default class ExportPanel {
 
         this.__interchangeV1Button = document.getElementById("interchange_button");
 
-        this.__interchangeV1Button.onclick = function() {
-            let json = new Blob([JSON.stringify(Registry.currentDevice.toInterchangeV1())], {
-                type: "application/json"
-            });
-            saveAs(json, Registry.currentDevice.getName()+".json");
-        };
+        this.__interchangeV1Button.addEventListener('click', this.saveJSON);
 
 
     }
 
-    // packageAndDownloadBundle(svgOutputs) {
-    //     let zipper = new JSZip();
-    //
-    //     for(const key of svgOutputs.keys()){
-    //         zipper.file(key+".svg", svgOutputs.get(key));
-    //     }
-    //
-    //     let content = zipper.generate({
-    //         type: "blob"
-    //     });
-    //
-    //     saveAs(content, Registry.currentDevice.getName()+".zip");
-    //
-    //
-    // }
+    saveJSON(){
+        let json = new Blob([JSON.stringify(Registry.viewManager.generateExportJSON())], {
+            type: "application/json"
+        });
+        saveAs(json, Registry.currentDevice.getName()+".json");
+
+    }
 }

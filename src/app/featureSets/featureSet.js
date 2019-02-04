@@ -110,7 +110,8 @@ export default class FeatureSet {
         }
 
         if(!this.__library.hasOwnProperty(typeString)) {
-            throw new Error("Could not find the type string !: " +typeString);
+            console.error("Could not find the type in featureset definition !: " +typeString);
+            return null;
         }
 
         let definition = this.__library[typeString].object;

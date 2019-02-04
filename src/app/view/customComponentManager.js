@@ -36,7 +36,41 @@ export default class CustomComponentManager {
         this.viewManagerDelegate.rightPanel.customComponentToolBar.updateToolBar();
     }
 
+    __importComponentFromDeserializedJSON(customcomponent){
+        this.__library.set(customcomponent.type, customcomponent);
+        this.viewManagerDelegate.addCustomComponentTool(customcomponent.type);
+        this.viewManagerDelegate.rightPanel.customComponentToolBar.updateToolBar();
+    }
+
     getCustomComponent(componenttype) {
         return this.__library.get(componenttype);
+    }
+
+    toJSON(){
+        let ret = {};
+
+        for(let key of this.__library.keys()){
+            let customcomponent = this.__library.get(key);
+            // console.log("Key:", key);
+            // console.log("Key:", customcomponent);
+            ret[key] = customcomponent.toJSON();
+        }
+
+        // console.log("library", this.__library);
+        // console.log("ret", ret);
+
+        return ret;
+    }
+
+    loadFromJSON(json){
+        for(let key in json){
+            let customcomponent = CustomComponent.fromInterchangeV1(json[key]);
+
+            this.__importComponentFromDeserializedJSON(customcomponent);
+        }
+    }
+
+    hasDefinition(entity) {
+        return this.__library.has(entity);
     }
 }

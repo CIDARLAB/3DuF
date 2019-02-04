@@ -44,6 +44,34 @@ export default class MouseAndKeyboardHandler {
     __setupDefaultKeyboardShortcuts() {
 
         let reference = this.viewManagerDelegate;
+        
+        window.addEventListener('keydown', function (event) {
+            let key = event.keyCode || event.which;
+
+            //Saving
+            if((event.ctrlKey || event.metaKey) && key == 83){
+                event.preventDefault();
+                reference.exportPanel.saveJSON();
+            }
+
+            if(key === 70){
+                //Reset the view
+                reference.view.initializeView();
+                reference.updateGrid();
+                reference.view.updateAlignmentMarks();
+            }
+
+            //Escape key
+            if(key === 27){
+                //Deselect all
+                paper.project.deselectAll();
+
+                //Change active tool to select tool
+                reference.resetToDefaultTool();
+
+            }
+
+        });
 
         reference.view.setKeyDownFunction(function(event) {
             let key = event.keyCode || event.which;
@@ -115,22 +143,6 @@ export default class MouseAndKeyboardHandler {
 
             }
 
-            if(key === 70){
-                //Reset the view
-                reference.view.initializeView();
-                reference.updateGrid();
-                reference.view.updateAlignmentMarks();
-            }
-
-            //Escape key
-            if(key === 27){
-                //Deselect all
-                paper.project.deselectAll();
-
-                //Change active tool to select tool
-                reference.resetToDefaultTool();
-
-            }
 
             if ((event.ctrlKey || event.metaKey) && key === 65) {
                 //Select all
