@@ -71,6 +71,7 @@ export  default class Transition extends Template{
             position: "position"
         };
 
+        this.__mint = "TRANSITION";
     }
 
     render2D(params, key) {

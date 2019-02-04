@@ -59,6 +59,8 @@ export  default class CircleValve extends Template{
             position: "position"
         };
 
+        this.__mint = "CIRCLE VALVE";
+
     }
 
     render2D(params, key) {

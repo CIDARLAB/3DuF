@@ -71,6 +71,8 @@ export  default class DiamondReactionChamber extends Template{
             position: "position"
         };
 
+        this.__mint = "DIAMOND REACTION CHAMBER";
+
     }
 
     render2D(params, key) {

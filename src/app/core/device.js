@@ -82,6 +82,15 @@ export default class Device {
         //Remove the component from the map
         let componentid = component.getID();
         let connectiontorefresh = null;
+
+        //Remove component from connections
+        for(let i in this.__connections){
+            let connection = this.__connections[i];
+            let trydelete = connection.tryDeleteConnectionTarget(component);
+            if(trydelete){
+                console.log("Removed Component from Connection : " , connection.getID());
+            }
+        }
         //Check if the valve map has the component
         if(this.__valveMap.has(componentid)){
             connectiontorefresh = this.getConnectionByID(this.__valveMap.get(componentid));
@@ -345,7 +354,7 @@ export default class Device {
     __loadConnectionsFromInterchangeV1(connections) {
         let connectiontoload;
         for(let i in connections){
-            connectiontoload = Connection.fromInterchangeV1(connections[i]);
+            connectiontoload = Connection.fromInterchangeV1(this, connections[i]);
             this.__connections.push(connectiontoload);
         }
     }

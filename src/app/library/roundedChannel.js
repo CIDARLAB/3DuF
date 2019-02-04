@@ -56,6 +56,8 @@ export  default class RoundedChannel extends Template{
             end: "end"
         };
 
+        this.__mint = "CHANNEL";
+
     }
 
     render2D(params, key) {

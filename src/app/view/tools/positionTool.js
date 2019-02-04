@@ -81,7 +81,7 @@ export default class PositionTool extends MouseTool {
         let params = new Params(cleanparamdata, definition.unique, definition.heritable);
         let componentid = Feature.generateID();
         let name = Registry.currentDevice.generateNewName(typeString);
-        let newComponent = new Component(typeString, params, name , "TEST MINT", componentid);
+        let newComponent = new Component(typeString, params, name , definition.mint, componentid);
         let feature;
 
         for (let i in featureIDs) {

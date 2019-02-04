@@ -59,6 +59,8 @@ export  default class AlignmentMarks extends Template{
             length: "length"
         }
 
+        this.__mint = "PORT";
+
 
     }
 

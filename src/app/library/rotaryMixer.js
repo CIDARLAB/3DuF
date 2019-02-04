@@ -91,6 +91,8 @@ export  default class RotaryMixer extends Template{
             height: "height"
         };
 
+        this.__mint = "ROTARY MIXER";
+
     }
 
     render2D(params, key = null) {

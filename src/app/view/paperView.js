@@ -73,6 +73,13 @@ export default class PaperView {
         return output;
     }
 
+    clearSelectedItems(){
+        paper.project.deselectAll();
+        this.selectedConnections = [];
+        this.selectedComponents = [];
+
+    }
+
     /**
      * Deletes the selected features and selected components from the canvas
      * TODO: Rename the method

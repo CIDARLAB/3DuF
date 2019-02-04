@@ -63,6 +63,7 @@ export  default class Connection extends Template{
             end: "end"
         };
 
+        this.__mint = "CONNECTION";
     }
 
     render2D(params, key) {

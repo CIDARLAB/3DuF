@@ -95,8 +95,20 @@ export default class Connection {
         output.id = this.__id;
         output.name = this.__name;
         output.entity = this.__entity;
-        output.source = this.__source;
-        output.sinks = this.__sinks;
+        if(this.__source != null){
+            output.source = this.__source.toJSON();
+        }else{
+            output.source = null;
+        }
+        let sinks = [];
+        if(this.__sinks != null && this.__sinks.length > 0){
+            for(let i in this.__sinks){
+                sinks.push(this.__sinks[i].toJSON());
+            }
+            output.sinks = this.__sinks;
+        }else{
+            output.sinks = null;
+        }
         output.paths = this.__paths;
         output.params = this.__params.toJSON();
         return output;
@@ -266,6 +278,7 @@ export default class Connection {
      */
     insertFeatureGap(boundingbox){
         //Convert Rectangle to Path.Rectangle
+        console.log(boundingbox);
         boundingbox = new paper.Path.Rectangle(boundingbox);
         //Check which segment I need to break
         let segments = this.getValue("segments");
@@ -327,7 +340,7 @@ export default class Connection {
      * @param json
      * @returns {*}
      */
-    static fromInterchangeV1(json){
+    static fromInterchangeV1(device, json){
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";
@@ -349,14 +362,14 @@ export default class Connection {
         let connection = new Connection(entity, paramstoadd, name, entity, id);
         if(json.hasOwnProperty("source")){
             if(json.source != null && json.source != undefined){
-                connection.setSource(json.source.component, json.source.port);
+                connection.setSourceFromJSON(device, json.source.component, json.source.port);
             }
         }
         if(json.hasOwnProperty("sinks")){
             if(json.sinks != null && json.sinks != undefined){
                 for(let i in json.sinks){
                     let sink = json.sinks[i];
-                    connection.addSink(sink.component, sink.port);
+                    connection.addSinkFromJSON(device, sink.component, sink.port);
                 }
             }
         }
@@ -408,11 +421,13 @@ export default class Connection {
      * @param port
      */
     addSink(component, port) {
-        if(typeof component != 'string' && !(component instanceof String)){
+        if(typeof component != 'string' || !(component instanceof String)){
             console.error("The reference object value can only be a string")
         }
         this.__sinks.push(new ConnectionTarget(component, port));
     }
+
+
 
     /**
      * Adds a new connection target to either the source or the sinks of the connection object. Requires the user to pass
@@ -430,6 +445,32 @@ export default class Connection {
             //TODO: Check for duplicates - does it matter actually ?
             this.__sinks.push(connectiontarget);
         }
+    }
+
+    /**
+     * Tries to delete any connection target reference that uses the said component. Returns true if any corresponding
+     * connection target is found.
+     * @param component
+     * @return boolean
+     */
+    tryDeleteConnectionTarget(component){
+        let ret = false;
+        if(component.getID() == this.__source.component.getID()){
+            //Remove the source object
+            this.__source = null;
+            ret = true;
+        }
+
+        for(let i in this.__sinks){
+            let sink = this.__sinks[i];
+
+            if(sink.component.getID() == component.getID()){
+                this.__sinks.splice(i,1);
+                ret = true;
+            }
+        }
+
+        return ret;
     }
 
     /**
@@ -452,4 +493,14 @@ export default class Connection {
          */
     }
 
+    setSourceFromJSON(device, componentID, port) {
+        let target = ConnectionTarget.fromJSON(device, componentID, port);
+        console.log("TARGET, check if component is the component object", target.component);
+        this.__source = target
+    }
+
+    addSinkFromJSON(device, componentID, port) {
+        let target = ConnectionTarget.fromJSON(device, componentID, port);
+        this.__sinks.push(target);
+    }
 }

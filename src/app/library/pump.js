@@ -82,6 +82,7 @@ export  default class Pump extends Template{
             position: "position"
         };
 
+        this.__mint = "MUX";
     }
 
     __drawFlow(params){

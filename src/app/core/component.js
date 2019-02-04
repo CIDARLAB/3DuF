@@ -323,6 +323,14 @@ export default class Component {
         let id = json.id;
         let entity = json.entity;
         let params = {};
+        if(entity === 'TEST MINT'){
+            console.warn("Found legacy invalid entity string",entity);
+            entity = (name.split("_"))[0];  //'^.*?(?=_)'
+
+            console.log("new entity:", entity);
+        }
+
+        console.log(json);
         let definition = Registry.featureSet.getDefinition(entity);
         // console.log(definition);
         let type;

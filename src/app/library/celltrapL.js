@@ -66,6 +66,8 @@ export  default class CellTrapL extends Template{
             position: "position"
         };
 
+        this.__mint = "LONG CELL TRAP";
+
     }
 
     render2D(params, key) {

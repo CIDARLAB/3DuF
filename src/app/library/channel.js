@@ -55,6 +55,8 @@ export  default class Channel extends Template{
             channelWidth: "channelWidth"
         };
 
+        this.__mint = "CHANNEL";
+
     }
 
     render2D(params, key) {

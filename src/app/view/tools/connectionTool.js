@@ -113,7 +113,7 @@ export default class ConnectionTool extends MouseTool {
         this.startPoint = ConnectionTool.getTarget(this.lastPoint);
         this.lastPoint = this.startPoint;
         if(isPointOnComponent){
-            this.source = new ConnectionTarget(isPointOnComponent.getID(), null);
+            this.source = new ConnectionTarget(isPointOnComponent, null);
             //TODO: Modify the waypoint to reflect closest port in the future
             this.wayPoints.push(this.startPoint);
         } else if (isPointOnConnection){
@@ -242,6 +242,7 @@ export default class ConnectionTool extends MouseTool {
             //Check if source is empty
             if(this.source == null){
                 //Set is as the source
+                console.log("isPointOnComponent", isPointOnComponent);
                 this.source = new ConnectionTarget(isPointOnComponent, null);
             } else {
                 //Add it to the sinks
@@ -394,6 +395,7 @@ export default class ConnectionTool extends MouseTool {
         }
 
         for(let i in this.sinks){
+            console.log("Sinks: " ,this.sinks);
             connection.addConnectionTarget(this.sinks[i]);
         }
 

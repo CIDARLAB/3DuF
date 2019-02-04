@@ -706,6 +706,10 @@ export default class ViewManager {
         if(this.tools[toolString] == null){
             throw new Error("Could not find tool with the matching string");
         }
+
+        //Cleanup job when activating new tool
+        this.view.clearSelectedItems();
+
         this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
         this.mouseAndKeyboardHandler.rightMouseTool = this.tools[rightClickToolString];
         this.mouseAndKeyboardHandler.updateViewMouseEvents();

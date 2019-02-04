@@ -110,7 +110,7 @@ export default class FeatureSet {
         }
 
         if(!this.__library.hasOwnProperty(typeString)) {
-            throw new Error("Could not find the type string !");
+            throw new Error("Could not find the type string !: " +typeString);
         }
 
         let definition = this.__library[typeString].object;
@@ -120,7 +120,8 @@ export default class FeatureSet {
             "units": definition.units,
             "defaults": definition.defaults,
             "minimum": definition.minimum,
-            "maximum": definition.maximum
+            "maximum": definition.maximum,
+            "mint": definition.mint
         };
         return ret;
     }

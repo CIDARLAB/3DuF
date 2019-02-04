@@ -43,6 +43,7 @@ export  default class Via extends Template{
             position: "position"
         };
 
+        this.__mint = "VIA";
     }
 
     render2D(params, key) {
