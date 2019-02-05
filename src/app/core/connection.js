@@ -453,9 +453,9 @@ export default class Connection {
      * @param component
      * @return boolean
      */
-    tryDeleteConnectionTarget(component){
+    tryDeleteConnectionTarget(componentid){
         let ret = false;
-        if(component.getID() == this.__source.component.getID()){
+        if(component.getID() == componentid){
             //Remove the source object
             this.__source = null;
             ret = true;
@@ -464,7 +464,7 @@ export default class Connection {
         for(let i in this.__sinks){
             let sink = this.__sinks[i];
 
-            if(sink.component.getID() == component.getID()){
+            if(sink.component.getID() == componentid){
                 this.__sinks.splice(i,1);
                 ret = true;
             }

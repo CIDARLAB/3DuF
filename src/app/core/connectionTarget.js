@@ -15,7 +15,12 @@ export default class ConnectionTarget{
     }
 
     toJSON(){
-        return {"component": this.__component.getID(), "port": this.__portLabel};
+        //This is for the older design data
+        if(this.__component instanceof Component){
+            return {"component": this.__component.getID(), "port": this.__portLabel};
+        }else{
+            return {"component": this.__component, "port": this.__portLabel};
+        }
     }
 
     static fromJSON(device, json){

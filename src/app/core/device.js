@@ -80,15 +80,20 @@ export default class Device {
      */
     removeComponent(component){
         //Remove the component from the map
+        let trydelete;
         let componentid = component.getID();
         let connectiontorefresh = null;
 
         //Remove component from connections
-        for(let i in this.__connections){
+        for (let i in this.__connections) {
             let connection = this.__connections[i];
-            let trydelete = connection.tryDeleteConnectionTarget(component);
-            if(trydelete){
-                console.log("Removed Component from Connection : " , connection.getID());
+            try{
+                trydelete = connection.tryDeleteConnectionTarget(componentid);
+                if(trydelete){
+                    console.log("Removed Component from Connection : " , connection.getID());
+                }
+            }catch (e) {
+                console.error(e);
             }
         }
         //Check if the valve map has the component

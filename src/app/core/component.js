@@ -23,7 +23,7 @@ export default class Component {
         if(params instanceof Params){
             this.__params = params;
         }else{
-
+            console.error("Params not an instance of Params Object");
         }
 
 
@@ -239,7 +239,7 @@ export default class Component {
         for(let i in this.features){
             let featureid = this.features[i];
             let render = Registry.viewManager.view.getRenderedFeature(featureid);
-            if(bounds){
+            if(bounds && render){
                 bounds = bounds.unite(render.bounds);
             }else{
                 bounds = render.bounds;
