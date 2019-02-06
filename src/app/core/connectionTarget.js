@@ -25,6 +25,6 @@ export default class ConnectionTarget{
 
     static fromJSON(device, json){
         let component = device.getComponentByID(json.component);
-        return new ConnectionTarget(json.component, json.port);
+        return new ConnectionTarget(component, json.port);
     }
 }

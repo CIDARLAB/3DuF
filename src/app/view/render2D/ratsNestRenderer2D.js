@@ -17,11 +17,8 @@ export default class RatsNestRenderer2D{
             // console.log("Sinks", sinks, sinks.length);
             for(let ii in sinks){
                 sink = sinks[ii];
-                sourceid = source.componentID;
-                sinkid = sink.componentID;
-
-                let startcomponent = device.getComponentByID(sourceid);
-                let endcomponent = device.getComponentByID(sinkid);
+                let startcomponent = source.component;
+                let endcomponent = sink.component;
                 start = startcomponent.getCenterPosition();
                 end = endcomponent.getCenterPosition();
                 // console.log(start, end);

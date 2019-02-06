@@ -362,14 +362,14 @@ export default class Connection {
         let connection = new Connection(entity, paramstoadd, name, entity, id);
         if(json.hasOwnProperty("source")){
             if(json.source != null && json.source != undefined){
-                connection.setSourceFromJSON(device, json.source.component, json.source.port);
+                connection.setSourceFromJSON(device, json.source);
             }
         }
         if(json.hasOwnProperty("sinks")){
             if(json.sinks != null && json.sinks != undefined){
                 for(let i in json.sinks){
                     let sink = json.sinks[i];
-                    connection.addSinkFromJSON(device, sink.component, sink.port);
+                    connection.addSinkFromJSON(device, sink);
                 }
             }
         }
@@ -482,7 +482,7 @@ export default class Connection {
     }
 
     mergeConnection(connection){
-        throw new Error("Merge the newly found connection with the new connection");
+        console.error("Merge the newly found connection with the new connection");
         //TODO:
         /*
         1. Transfer all the paths
@@ -493,14 +493,13 @@ export default class Connection {
          */
     }
 
-    setSourceFromJSON(device, componentID, port) {
-        let target = ConnectionTarget.fromJSON(device, componentID, port);
-        console.log("TARGET, check if component is the component object", target.component);
+    setSourceFromJSON(device,json) {
+        let target = ConnectionTarget.fromJSON(device, json);
         this.__source = target
     }
 
-    addSinkFromJSON(device, componentID, port) {
-        let target = ConnectionTarget.fromJSON(device, componentID, port);
+    addSinkFromJSON(device, json) {
+        let target = ConnectionTarget.fromJSON(device, json);
         this.__sinks.push(target);
     }
 }
