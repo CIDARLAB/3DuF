@@ -868,8 +868,7 @@ export default class ViewManager {
     }
 
     setupTools() {
-        this.tools["SelectTool"] = new SelectTool();
-        this.tools["MouseSelectTool"] = new MouseSelectTool();
+        this.tools["MouseSelectTool"] = new MouseSelectTool(this.view);
         this.tools["InsertTextTool"] = new InsertTextTool();
         this.tools["Chamber"] = new ComponentPositionTool("Chamber", "Basic");
         this.tools["Valve"] = new ValveInsertionTool("Valve", "Basic");

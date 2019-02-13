@@ -7,8 +7,9 @@ import paper from 'paper';
 
 
 export default class MouseSelectTool extends MouseTool {
-    constructor() {
+    constructor(paperview) {
         super();
+        this.paperView = paperview;
         this.dragging = false;
         this.dragStart = null;
         this.lastPoint = null;
@@ -255,7 +256,7 @@ export default class MouseSelectTool extends MouseTool {
             this.rightClickMenu.close();
             this.rightClickMenu = null;
         }
-        paper.project.deselectAll();
+        this.paperView.clearSelectedItems();
         this.currentSelection = [];
     }
 
