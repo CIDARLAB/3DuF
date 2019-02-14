@@ -94,21 +94,21 @@ export  default class BetterMixer extends Template{
         let orientation = params["orientation"];
         let numberOfBends = params["numberOfBends"];
 
-        let ports = {};
+        let ports = [];
 
-        ports["1"] = new ComponentPort(
-            bendLength/2 - channelWidth/2,
+        ports.push(new ComponentPort(
+            bendLength/2 + channelWidth,
             0,
             "1",
             "FLOW"
-        );
+        ));
 
-        ports["2"] = new ComponentPort(
-            bendLength/2 - channelWidth/2,
+        ports.push(new ComponentPort(
+            bendLength/2 + channelWidth,
             (2*numberOfBends + 1)*channelWidth + (2*numberOfBends)*bendSpacing,
             "2",
             "FLOW"
-        );
+        ));
 
         return ports;
     }
