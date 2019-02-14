@@ -127,4 +127,14 @@ export default class Template {
     render2DTarget(key, params){
         throw new Error("User needs to provide method for component definition, look at examples");
     }
+
+
+    /**
+     * Returns the ports for the component definition
+     * @param params
+     */
+    getPorts(params){
+        throw new Error("User needs to provide method for getting component ports, look at examples");
+    }
+
 }
