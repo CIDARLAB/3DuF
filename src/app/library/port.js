@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentport";
 
 export  default class Port extends Template{
     constructor(){
@@ -72,4 +73,19 @@ export  default class Port extends Template{
         render.fillColor.alpha = 0.5;
         return render;
     }
+
+    getPorts(params){
+
+        let ports = [];
+
+        // ports.push(new ComponentPort(
+        //     radius,
+        //     radius,
+        //     "1",
+        //     "FLOW"
+        // ));
+
+        return ports;
+    }
+
 }

@@ -12,6 +12,7 @@ const Colors = require("./colors");
 import TextFeature from "../core/textFeature";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
+import ComponentPortRenderer2D from "./render2D/componentPortRenderer2D";
 const DXFObjectRenderer2D = require('./render2D/dxfObjectRenderer2D');
 const DXFSolidObjectRenderer = require('./render2D/dxfSolidObjectRenderer2D');
 
@@ -50,12 +51,15 @@ export default class PaperView {
         this.uiLayer.insertAbove(this.featureLayer);
         this.ratsNestLayer = new paper.Group();
         this.ratsNestLayer.insertAbove(this.featureLayer);
+        this.componentPortsLayer = new paper.Group();
+        this.componentPortsLayer.insertAbove(this.featureLayer);
         this.currentTarget = null;
         this.lastTargetType = null;
         this.lastTargetPosition = null;
         this.selectedComponents = [];
         this.selectedConnections = [];
         this.inactiveAlpha = .5;
+        this.__componentPortsRender = null;
         this.__viewManagerDelegate = viewmanager;
         this.disableContextMenu();
     }
@@ -615,5 +619,35 @@ export default class PaperView {
      */
     getRenderedFeature(featureID){
         return this.paperFeatures[featureID];
+    }
+
+    updateComponentPortsRender() {
+        // console.log("Update ComponentPorts Renders")
+        let rendergroup;
+        this.removeComponentPortsRender();
+        let components = this.__viewManagerDelegate.currentDevice.getComponents();
+        for(let i in components){
+            let component = components[i];
+            // console.log("TEST1", component.ports);
+            let map = component.ports;
+            for(let j of map.keys()){
+                let componentport = map.get(j);
+                // console.log("ComponentPort: ", componentport);
+                rendergroup = ComponentPortRenderer2D.renderComponentPort(componentport, component.getTopLeftPosition() , component.getCenterPosition(), 0);
+                this.__componentPortsRender.push(rendergroup);
+                this.componentPortsLayer.addChild(rendergroup);
+            }
+        }
+    }
+
+    removeComponentPortsRender(){
+        // console.log("Clearing ComponentPorts Renders")
+        if(this.__componentPortsRender){
+            for(let i in this.__componentPortsRender){
+                this.__componentPortsRender[i].remove();
+            }
+        }
+
+        this.__componentPortsRender = [];
     }
 }

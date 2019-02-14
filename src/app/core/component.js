@@ -39,7 +39,7 @@ export default class Component {
         //TODO: Need to figure out how to effectively search through these
         this.__bounds = null;
         this.__placed = false;
-        this.__ports = null
+        this.__ports = new Map();
     }
 
     get ports() {
@@ -118,9 +118,10 @@ export default class Component {
         output.xspan = bounds.width;
         output.yspan = bounds.height;
         let portdata = [];
-
-        for(let i in this.ports){
-            portdata.push(this.ports[i].toInterchangeV1());
+        let map = this.ports;
+        for(let key of map.keys()){
+            let p = map.get(key).toInterchangeV1();
+            portdata.push(p);
         }
 
         output.ports = portdata;
@@ -327,6 +328,15 @@ export default class Component {
     }
 
     /**
+     * Returns the topleft position of the component as a 2D vector
+     * @return {*[]}
+     */
+    getTopLeftPosition(){
+        let bounds = this.getBoundingRectangle();
+        return [bounds.topLeft.x, bounds.topLeft.y];
+    }
+
+    /**
      * This method is used to import the component from Interchange V1 JSON
      * @param json
      * @returns {*}
@@ -400,5 +410,9 @@ export default class Component {
 
         return component;
 
+    }
+
+    setPort(label, port) {
+        this.__ports.set(label, port);
     }
 }

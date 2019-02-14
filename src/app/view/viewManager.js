@@ -92,7 +92,7 @@ export default class ViewManager {
             reference.updateAlignmentMarks();
             
             reference.view.updateRatsNest();
-
+            reference.view.updateComponentPortsRender();
             reference.updateDevice(Registry.currentDevice);
         });
 
@@ -354,6 +354,7 @@ export default class ViewManager {
         this.updateGrid(false);
         this.updateAlignmentMarks();
         this.view.updateRatsNest();
+        this.view.updateComponentPortsRender();
 
         this.updateDevice(Registry.currentDevice, false);
         this.__updateViewTarget(false);
@@ -447,6 +448,7 @@ export default class ViewManager {
         this.view.addTarget(featureType, featureSet, position);
         this.view.updateAlignmentMarks();
         this.view.updateRatsNest();
+        this.view.updateComponentPortsRender();
         this.refresh(refresh);
     }
 
@@ -454,6 +456,7 @@ export default class ViewManager {
         this.view.updateTarget();
         this.updateAlignmentMarks();
         this.view.updateRatsNest();
+        this.view.updateComponentPortsRender();
         this.refresh(refresh);
     }
 
@@ -465,6 +468,7 @@ export default class ViewManager {
             this.updateGrid(false);
             //this.updateAlignmentMarks();
             this.view.updateRatsNest();
+            this.view.updateComponentPortsRender();
             this.updateDevice(Registry.currentDevice, false);
             this.__updateViewTarget(false);
         } else {
@@ -487,6 +491,7 @@ export default class ViewManager {
         this.updateGrid(false);
         // this.updateAlignmentMarks();
         this.view.updateRatsNest();
+        this.view.updateComponentPortsRender();
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }
@@ -929,6 +934,7 @@ export default class ViewManager {
         //TODO: Step 2 generate rats nest renders for all the components
         
         this.view.updateRatsNest();
+        this.view.updateComponentPortsRender();
     }
 
     __generateDefaultPlacementForComponent(component, xpos, ypos) {
