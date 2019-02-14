@@ -119,4 +119,8 @@ export default class Params {
     static fromJSON(json, unique, heritable) {
         return new Params(json, unique, heritable);
     }
+
+    hasParam(key){
+        return this.parameters.hasOwnProperty(key);
+    }
 }

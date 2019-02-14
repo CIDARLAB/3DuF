@@ -415,4 +415,20 @@ export default class Component {
     setPort(label, port) {
         this.__ports.set(label, port);
     }
+
+    getRotation(){
+        if(this.__params.hasParam("rotation")){
+            return this.getValue("rotation");
+        }else if(this.__params.hasParam("orientation")){
+            let orientation = this.getValue("orientation");
+            if(orientation === "V"){
+                return 0;
+            }else{
+                return 90;
+            }
+        }else{
+            console.warn("No rotation was found for component: ", this);
+            return 0;
+        }
+    }
 }
