@@ -13,6 +13,7 @@ import TextFeature from "../core/textFeature";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
 import ComponentPortRenderer2D from "./render2D/componentPortRenderer2D";
+import PaperComponentPortView from "./render2D/paperComponentPortView";
 const DXFObjectRenderer2D = require('./render2D/dxfObjectRenderer2D');
 const DXFSolidObjectRenderer = require('./render2D/dxfSolidObjectRenderer2D');
 
@@ -22,7 +23,7 @@ export default class PaperView {
      * Requires the canvas ID to setup the entire application.
      * @param canvasID
      */
-    constructor(canvasID, viewmanager, device=null) {
+    constructor(canvasID, viewmanager) {
         //Setup the Canvas
         paper.setup(canvasID);
 
@@ -59,8 +60,10 @@ export default class PaperView {
         this.selectedComponents = [];
         this.selectedConnections = [];
         this.inactiveAlpha = .5;
-        this.__componentPortsRender = null;
         this.__viewManagerDelegate = viewmanager;
+
+        this._paperComponentPortView = new PaperComponentPortView(this.componentPortsLayer, viewmanager);
+
         this.disableContextMenu();
     }
 
@@ -622,32 +625,7 @@ export default class PaperView {
     }
 
     updateComponentPortsRender() {
-        // console.log("Update ComponentPorts Renders")
-        let rendergroup;
-        this.removeComponentPortsRender();
-        let components = this.__viewManagerDelegate.currentDevice.getComponents();
-        for(let i in components){
-            let component = components[i];
-            // console.log("TEST1", component.ports);
-            let map = component.ports;
-            for(let j of map.keys()){
-                let componentport = map.get(j);
-                // console.log("ComponentPort: ", componentport);
-                rendergroup = ComponentPortRenderer2D.renderComponentPort(componentport, component.getTopLeftPosition() , component.getCenterPosition(), 0);
-                this.__componentPortsRender.push(rendergroup);
-                this.componentPortsLayer.addChild(rendergroup);
-            }
-        }
+        this._paperComponentPortView.updateRenders();
     }
 
-    removeComponentPortsRender(){
-        // console.log("Clearing ComponentPorts Renders")
-        if(this.__componentPortsRender){
-            for(let i in this.__componentPortsRender){
-                this.__componentPortsRender[i].remove();
-            }
-        }
-
-        this.__componentPortsRender = [];
-    }
 }
