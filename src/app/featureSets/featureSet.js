@@ -150,6 +150,11 @@ export default class FeatureSet {
         return featureType(values, name);
     }
 
+    getComponentPorts(params, typestring){
+        let definition = this.__library[typestring].object;
+        return definition.getPorts(params)
+    }
+
     __checkDefinitions() {
         for (let key in this.__definitions) {
             if (!this.__tools.hasOwnProperty(key) || !this.__render2D.hasOwnProperty(key) || !this.__render3D.hasOwnProperty(key)) {

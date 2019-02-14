@@ -77,7 +77,6 @@ export default class PositionTool extends MouseTool {
         for(let key in paramdata){
             cleanparamdata[key] = paramdata[key].getValue();
         }
-        console.log(cleanparamdata);
         let params = new Params(cleanparamdata, definition.unique, definition.heritable);
         let componentid = Feature.generateID();
         let name = Registry.currentDevice.generateNewName(typeString);
@@ -92,6 +91,9 @@ export default class PositionTool extends MouseTool {
             feature.referenceID = componentid;
 
         }
+
+        let ports = Registry.featureSet.getComponentPorts(cleanparamdata, typeString);
+        newComponent.ports = ports;
 
         Registry.currentDevice.addComponent(newComponent);
         return newComponent;

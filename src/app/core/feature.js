@@ -124,7 +124,7 @@ export default class Feature {
         }
 
         output.type = this.__fabtype;
-        console.log("serialized feature: ", output);
+        // console.log("serialized feature: ", output);
         return output;
     }
 

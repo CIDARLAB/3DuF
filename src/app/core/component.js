@@ -1,5 +1,6 @@
 import Params from "./params";
 import CustomComponent from "./customComponent";
+import ComponentPort from "./componentport";
 
 const Registry = require("./registry");
 const FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
@@ -38,6 +39,15 @@ export default class Component {
         //TODO: Need to figure out how to effectively search through these
         this.__bounds = null;
         this.__placed = false;
+        this.__ports = null
+    }
+
+    get ports() {
+        return this.__ports;
+    }
+
+    set ports(value) {
+        this.__ports = value;
     }
 
     get placed() {
@@ -107,6 +117,13 @@ export default class Component {
         let bounds = this.getBoundingRectangle()
         output.xspan = bounds.width;
         output.yspan = bounds.height;
+        let portdata = [];
+
+        for(let i in this.ports){
+            portdata.push(this.ports[i].toInterchangeV1());
+        }
+
+        output.ports = portdata;
         return output;
     }
 
@@ -371,8 +388,17 @@ export default class Component {
         let paramstoadd = new Params(params, definition.unique , definition.heritable);
 
         let component = new Component(entity, paramstoadd, name, entity, id);
+
+        //Deserialize the component ports
+        let portdata = {};
+        for(let i in json.ports){
+            let componentport = ComponentPort.fromInterchangeV1(json.ports[i]);
+            portdata[componentport.label] = componentport;
+        }
+
+        component.ports = portdata;
+
         return component;
 
     }
-
 }

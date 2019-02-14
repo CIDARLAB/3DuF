@@ -64,8 +64,14 @@ function getRender3D(typeString, setString){
     return set.getRender3D(typeString);
 }
 
+function getComponentPorts(params, typeString, setString="Basic" ){
+    let set = getSet(setString);
+    return set.getComponentPorts(typeString);
+}
+
 module.exports.getSet = getSet;
 module.exports.getDefinition = getDefinition;
 module.exports.getTool = getTool;
 module.exports.getRender2D = getRender2D;
 module.exports.getRender3D = getRender3D;
+module.exports.getComponentPorts = getComponentPorts;
