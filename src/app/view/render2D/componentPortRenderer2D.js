@@ -6,8 +6,8 @@ export default class ComponentPortRenderer2D{
 
     static renderComponentPort(componentport, topleftposition, centerposition, rotation){
         // console.log("Rendering...", componentport, topleftposition, centerposition,rotation);
-        let xpos = topleftposition[0];
-        let ypos = topleftposition[1];
+        let xpos = centerposition[0];
+        let ypos = centerposition[1];
         let point = new paper.Point(
             xpos + componentport.x,
             ypos + componentport.y
@@ -26,7 +26,7 @@ export default class ComponentPortRenderer2D{
         let componentports = component.ports;
         for(let key of componentports.keys()){
             let topleftposition = component.getTopLeftPosition();
-            let centerposition = component.getCenterPosition();
+            let centerposition = component.getValue("position");
             let rotation = component.getRotation();
             ComponentPortRenderer2D.renderComponentPort(
                 componentports.get(key),

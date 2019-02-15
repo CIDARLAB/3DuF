@@ -424,7 +424,7 @@ export default class Component {
             if(orientation === "V"){
                 return 0;
             }else{
-                return 90;
+                return 270;
             }
         }else{
             console.warn("No rotation was found for component: ", this);

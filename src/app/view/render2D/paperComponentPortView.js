@@ -22,7 +22,6 @@ export default class PaperComponentPortView {
     }
 
     updateRenders(){
-        let rendergroup;
         this.clearActiveRenders();
         let components = this._viewManagerDelegate.currentDevice.getComponents();
         for(let i in components){
