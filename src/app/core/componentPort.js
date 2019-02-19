@@ -39,6 +39,7 @@ export default class ComponentPort {
     set y(value) {
         this._y = value;
     }
+
     get x() {
         return this._x;
     }
@@ -64,6 +65,10 @@ export default class ComponentPort {
         }
     }
 
+    static calculateAbsolutePosition(componentport, component){
+        let topleftposition = component.getTopLeftPosition();
+        return [topleftposition[0] + componentport.x, topleftposition[1] + componentport.y];
+    }
 
     static fromInterchangeV1(json){
         return new ComponentPort(json.x, json.y, json.label, json.layer);

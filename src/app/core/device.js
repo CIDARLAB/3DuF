@@ -658,4 +658,20 @@ export default class Device {
         }
         return ret;
     }
+
+
+    getPositionOfComponentPort(componentport){
+        let component;
+        let components = this.getComponents();
+        for (let i in components) {
+            component = components[i];
+            for(let key of component.ports.keys()){
+                if (componentport.id == component.ports.get(key).id){
+                    //Found the component so return the position
+                    return componentport.calculateAbsolutePosition(component)
+
+                }
+            }
+        }
+    }
 }
