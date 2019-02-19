@@ -1,8 +1,5 @@
 import Feature from './feature';
-import Params from "./params";
-import Component from "./component";
 import DXFObject from "./dxfObject";
-import * as DXFRenderer from "../view/render2D/dxfSolidObjectRenderer2D";
 
 const Registry = require("./registry");
 

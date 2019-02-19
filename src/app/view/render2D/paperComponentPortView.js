@@ -26,7 +26,11 @@ export default class PaperComponentPortView {
         let components = this._viewManagerDelegate.currentDevice.getComponents();
         for(let i in components){
             let component = components[i];
-            ComponentPortRenderer2D.renderComponentPorts(component);
+            let renders = ComponentPortRenderer2D.renderComponentPorts(component);
+            for(let i in renders){
+                this._activeRenders.push(renders[i]);
+                this._paperlayer.addChild(renders[i]);
+            }
         }
 
     }

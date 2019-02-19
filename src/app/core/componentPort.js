@@ -1,5 +1,6 @@
-export default class ComponentPort {
+const uuid = require('node-uuid');
 
+export default class ComponentPort {
     /**
      * Default constructor for ComponentPorts
      * @param x
@@ -8,12 +9,12 @@ export default class ComponentPort {
      * @param layer
      */
     constructor(x, y, label, layer){
+        this._id = uuid.v1();
         this._x = x;
         this._y = y;
         this._label = label;
         this._layer = layer;
     }
-
 
     get layer() {
         return this._layer;
@@ -30,6 +31,7 @@ export default class ComponentPort {
     set label(value) {
         this._label = value;
     }
+
     get y() {
         return this._y;
     }
@@ -45,6 +47,13 @@ export default class ComponentPort {
         this._x = value;
     }
 
+    get id() {
+        return this._id;
+    }
+
+    set id(value) {
+        this._id = value;
+    }
 
     toInterchangeV1(){
         return {

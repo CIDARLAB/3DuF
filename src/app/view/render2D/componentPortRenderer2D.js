@@ -24,10 +24,16 @@ export default class ComponentPortRenderer2D{
 
     static renderComponentPorts(component){
         let componentports = component.ports;
+        let ret = [];
         for(let key of componentports.keys()){
             let position = component.getValue("position");
             let rotation = component.getRotation();
-            ComponentPortRenderer2D.renderComponentPort(componentports.get(key), position, rotation);
+            let componentport = componentports.get(key);
+            let render = ComponentPortRenderer2D.renderComponentPort(componentport, position, rotation);
+            render.renderid = componentport.id;
+            component.attachComponentPortRender(key, render);
+            ret.push(render);
         }
+        return ret;
     }
 }

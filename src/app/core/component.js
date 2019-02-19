@@ -1,6 +1,6 @@
 import Params from "./params";
 import CustomComponent from "./customComponent";
-import ComponentPort from "./componentport";
+import ComponentPort from "./componentPort";
 
 const Registry = require("./registry");
 const FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
@@ -40,6 +40,8 @@ export default class Component {
         this.__bounds = null;
         this.__placed = false;
         this.__ports = new Map();
+        this._componentPortTRenders = new Map();
+
     }
 
     get ports() {
@@ -430,5 +432,9 @@ export default class Component {
             console.warn("No rotation was found for component: ", this);
             return 0;
         }
+    }
+
+    attachComponentPortRender(label, render){
+        this._componentPortTRenders.set(label, render);
     }
 }
