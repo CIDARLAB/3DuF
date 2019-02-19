@@ -134,7 +134,7 @@ export default class Template {
      * @param params
      */
     getPorts(params){
-        throw new Error("User needs to provide method for getting component ports, look at examples");
+        console.error("User needs to provide method for getting component ports, look at examples");
     }
 
 }
