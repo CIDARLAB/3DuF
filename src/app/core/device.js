@@ -1,18 +1,19 @@
 import Params from "./params";
 
-var Parameters = require("./parameters");
-var Parameter =require("./parameter");
+const Parameters = require("./parameters");
 import Feature from './feature';
-var Registry = require("./registry");
+
+const Registry = require("./registry");
 
 import Layer from './layer';
 import Component from './component';
 import Connection from "./connection";
 
-var StringValue = Parameters.StringValue;
-var FloatValue = Parameters.FloatValue;
+const StringValue = Parameters.StringValue;
 
-/* The Device stores information about a design. */
+/**
+ * The Device stores information about a design.
+ */
 export default class Device {
     constructor(values, name = "New Device") {
         this.layers = [];
