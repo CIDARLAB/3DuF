@@ -6,6 +6,7 @@ export default class PaperComponentPortView {
         this._componentAndRenderMap = new Map();
         this._activeRenders = [];
         this._viewManagerDelegate = viewmanager;
+        this._enabled = false;
     }
 
     addComponentPortElements(component){
@@ -22,6 +23,9 @@ export default class PaperComponentPortView {
     }
 
     updateRenders(){
+        if(!this._enabled){
+            return;
+        }
         this.clearActiveRenders();
         let components = this._viewManagerDelegate.currentDevice.getComponents();
         for(let i in components){
@@ -36,6 +40,9 @@ export default class PaperComponentPortView {
     }
 
     clearActiveRenders(){
+        if(!this._enabled){
+            return;
+        }
         if(this._activeRenders){
             for(let i in this._activeRenders){
                 this._activeRenders[i].remove();

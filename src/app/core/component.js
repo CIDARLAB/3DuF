@@ -121,6 +121,7 @@ export default class Component {
         output.yspan = bounds.height;
         let portdata = [];
         let map = this.ports;
+        if(this.map)
         for(let key of map.keys()){
             let p = map.get(key).toInterchangeV1();
             portdata.push(p);
@@ -402,10 +403,10 @@ export default class Component {
         let component = new Component(entity, paramstoadd, name, entity, id);
 
         //Deserialize the component ports
-        let portdata = {};
+        let portdata = new Map();
         for(let i in json.ports){
             let componentport = ComponentPort.fromInterchangeV1(json.ports[i]);
-            portdata[componentport.label] = componentport;
+            portdata.set(componentport.label, componentport);
         }
 
         component.ports = portdata;
