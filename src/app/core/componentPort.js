@@ -1,4 +1,5 @@
 const uuid = require('node-uuid');
+import paper from "paper";
 
 export default class ComponentPort {
     /**
@@ -66,8 +67,13 @@ export default class ComponentPort {
     }
 
     static calculateAbsolutePosition(componentport, component){
-        let topleftposition = component.getTopLeftPosition();
-        return [topleftposition[0] + componentport.x, topleftposition[1] + componentport.y];
+        let topleftposition = component.getValue("position");
+        let point = new paper.Point(topleftposition[0] + componentport.x, topleftposition[1] + componentport.y);
+        console.log("Unchanged point:", point);
+        console.log(component.getRotation());
+        let rotatedpoint = point.rotate(component.getRotation(), topleftposition);
+        console.log("Rotated point:", point);
+        return [rotatedpoint.x, rotatedpoint.y];
     }
 
     static fromInterchangeV1(json){
