@@ -121,10 +121,12 @@ export default class Component {
         output.yspan = bounds.height;
         let portdata = [];
         let map = this.ports;
-        if(this.map)
-        for(let key of map.keys()){
-            let p = map.get(key).toInterchangeV1();
-            portdata.push(p);
+        if(map != null){
+            for(let key of map.keys()){
+                let p = map.get(key).toInterchangeV1();
+                portdata.push(p);
+            }
+
         }
 
         output.ports = portdata;
