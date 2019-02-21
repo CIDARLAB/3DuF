@@ -43,6 +43,7 @@ import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
 import Feature from "../core/feature";
 import TaguchiDesigner from "./ui/taguchiDesigner";
+import RightClickMenu from "./ui/rightClickMenu";
 
 export default class ViewManager {
 
@@ -70,7 +71,7 @@ export default class ViewManager {
         this.editDeviceDialog = new EditDeviceDialog(this);
         this.helpDialog = new HelpDialog();
         this.taguchiDesigner = new TaguchiDesigner(this);
-
+        this.rightClickMenu = new RightClickMenu();
         this.__currentDevice = null;
 
         let reference = this;

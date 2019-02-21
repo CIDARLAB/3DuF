@@ -3,9 +3,9 @@ import {createFeatureTable, revertToDefaultParams} from "./parameterMenu";
 
 export default class RightClickMenu {
 
-    constructor(feature, point){
+    constructor(){
 
-        this.__featureRef = feature;
+        this.__featureRef = null;
         /*
         Figure out if we can fire the parameters menu
          */
@@ -29,11 +29,6 @@ export default class RightClickMenu {
         //Collapse the textrename text input
         this.__collapseTextInput();
 
-
-
-        //TODO: Figure out if feature belongs to component
-        this.__typeString = feature.getType();
-        this.__setString = feature.getSet();
 
         let ref = this;
 
@@ -90,7 +85,14 @@ export default class RightClickMenu {
 
     }
 
-    show(event){
+    show(event, feature){
+        console.log("Feature", feature);
+        this.__featureRef = feature;
+
+        //TODO: Figure out if feature belongs to component
+        this.__typeString = feature.getType();
+        this.__setString = feature.getSet();
+
         this.__contextMenu.style.left = "" + (event.clientX + 30)+ "px";
         this.__contextMenu.style.top = "" + (event.clientY - 20) + "px";
         this.__contextMenu.style.opacity = 0.8;
