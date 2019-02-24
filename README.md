@@ -1,4 +1,4 @@
-![3DuF Logo](http://3duf.org/img/logo.png | width=500)
+<img src="http://3duf.org/img/logo.png" width="500" /> 
 
 An Interactive Design Tool for Continuous Flow Microfluidic Devices - [3DuF.org](http://3duf.org)
 
@@ -10,7 +10,7 @@ The design of microfluidic Lab on a Chip (LoC) systems is an onerous task requir
 
 ### Design Environment
 
-![UI](/doc/ui.png | width=800)
+<img src="/doc/ui.png" width="800" /> 
 
 ### Keyboard Shortcuts
 
@@ -57,7 +57,7 @@ After saving a device design to JSON, drag and drop it from your computer onto t
 
 ## Component Library
 
-![UI](/doc/mint-primitives.png | width=800)
+<img src="/doc/mint-primitives.png" width="800" /> 
 
 
 ### License
