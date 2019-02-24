@@ -6,7 +6,7 @@ export default class PaperComponentPortView {
         this._componentAndRenderMap = new Map();
         this._activeRenders = [];
         this._viewManagerDelegate = viewmanager;
-        this._enabled = true;
+        this._enabled = false;
     }
 
     addComponentPortElements(component){
