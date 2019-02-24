@@ -60,7 +60,11 @@ After saving a device design to JSON, drag and drop it from your computer onto t
 <img src="/doc/mint-primitives.png" width="800" /> 
 
 
-### License
+## Attributions
+
+Error Logging and Tracking enabled by [TrackJS](https://trackjs.com/)
+
+## License
 
 BSD 2-Clause License
 
