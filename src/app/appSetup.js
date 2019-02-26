@@ -3,6 +3,7 @@ const Registry = require("./core/registry");
 import PaperView from "./view/paperView";
 import ViewManager from "./view/viewManager";
 import AdaptiveGrid from "./view/grid/adaptiveGrid";
+import { TrackJS } from 'trackjs';
 
 const Examples = require("./examples/jsonExamples");
 
@@ -50,11 +51,22 @@ function checkBrowCompatibility(){
 
 }
 
+
+
 window.onload = function() {
 
 
     if(checkBrowCompatibility()){
         viewManager = new ViewManager();
+
+        if(window.location.host == "3duf.org"){
+            TrackJS.install({
+                token: "1f4d3a9c263e4e3fb2fe4c7f96f8808e"
+            });
+
+            viewManager = TrackJS.watchAll(viewManager);
+        }
+
 
         Registry.viewManager = viewManager;
 

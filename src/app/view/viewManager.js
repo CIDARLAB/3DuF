@@ -44,6 +44,7 @@ import AdaptiveGrid from "./grid/adaptiveGrid";
 import Feature from "../core/feature";
 import TaguchiDesigner from "./ui/taguchiDesigner";
 import RightClickMenu from "./ui/rightClickMenu";
+import IntroDialog from "./ui/introDialog";
 
 export default class ViewManager {
 
@@ -73,7 +74,7 @@ export default class ViewManager {
         this.taguchiDesigner = new TaguchiDesigner(this);
         this.rightClickMenu = new RightClickMenu();
         this.__currentDevice = null;
-
+        this._introDialog = new IntroDialog();
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
