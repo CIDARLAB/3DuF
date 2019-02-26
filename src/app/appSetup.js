@@ -60,7 +60,9 @@ window.onload = function() {
         viewManager = new ViewManager();
 
 
-        console.log("Checking Host: ", window.location.host);
+        console.log("Checking Host: ");
+        console.log(window.location.host);
+
         if(window.location.host === "3duf.org"){
             console.log("Enabling TrackJS");
             TrackJS.install({
