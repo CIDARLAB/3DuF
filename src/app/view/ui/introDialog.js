@@ -4,6 +4,8 @@ export default class IntroDialog {
     constructor(){
         this._dialog = document.getElementById("intro_help_dialog");
 
+        this._gettingStartedButton = document.getElementById("getting-started-button");
+
         if (! this._dialog.showModal) {
             dialogPolyfill.registerDialog(this._dialog);
         }
@@ -23,6 +25,8 @@ export default class IntroDialog {
             CookieUtils.setCookie("isfirst", 'false');
         }
 
-
+        this._gettingStartedButton.addEventListener('click', function (e, el) {
+            ref._dialog.showModal();
+        })
     }
 }
