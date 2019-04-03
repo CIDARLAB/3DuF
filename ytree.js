@@ -140,6 +140,7 @@ export  default class YTree extends Template{
     render2DTarget(key, params){
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
+        return render;
     }
 
     __generateYTwig(treepath, px, py,cw, stagelength , newspacing, level, maxlevel, islast=false) {
