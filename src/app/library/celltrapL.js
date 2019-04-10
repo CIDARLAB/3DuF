@@ -60,6 +60,29 @@ export  default class CellTrapL extends Template{
             "height": 1200
         };
 
+
+        this.__featureParams = {
+            position: "position",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            chamberLength:"chamberLength",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            feedingChannelWidth:"feedingChannelWidth",
+            height: "height"
+        };
+
+        this.__targetParams = {
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            chamberLength:"chamberLength",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            feedingChannelWidth:"feedingChannelWidth",
+            height: "height"
+        };
+
+
         this.__placementTool = "CellPositionTool";
 
         this.__toolParams = {
@@ -72,9 +95,9 @@ export  default class CellTrapL extends Template{
 
     render2D(params, key) {
         if(key == "FLOW"){
-            this.__drawFlow(params);
+            return this.__drawFlow(params);
         }else if(key == "CELL"){
-            this.__drawCell(params);
+            return this.__drawCell(params);
         }
     }
 
@@ -145,6 +168,8 @@ export  default class CellTrapL extends Template{
         let chamberWidth = params["chamberWidth"];
         let feedingChannelWidth = params["feedingChannelWidth"];
         let chamberSpacing = params["chamberSpacing"];
+
+        console.log(orientation, position, chamberLength, numChambers, chamberWidth, feedingChannelWidth, chamberSpacing);
         let color = params["color"];
         let x = position[0];
         let y = position[1];
@@ -176,7 +201,7 @@ export  default class CellTrapL extends Template{
         traps = new paper.CompoundPath(chamberList);
         traps.fillColor = color;
         let center = new paper.Point(position[0], position[1]);
-        return channels;
+        return traps;
     }
 
     __drawCell(params) {
