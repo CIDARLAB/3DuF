@@ -592,7 +592,24 @@ export default class ViewManager {
     }
 
 
+    /**
+     * Updates the component parameters of a specific component
+     * @param componentname
+     * @param params
+     */
+    updateComponentParameters(componentname, params){
+        let component = this.__currentDevice.getComponentByName(componentname);
+        for(let key in params){
+            component.updateParameter(key, params[key]);
+        }
+    }
 
+
+    /**
+     * Returns a Point, coordinate list that is the closes grid coordinate
+     * @param point
+     * @return {*}
+     */
     snapToGrid(point) {
         if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);
         else return point;

@@ -87,8 +87,8 @@ window.onload = function() {
         // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
 
         if(false != getQueryVariable("file")){
+            let url = decodeURIComponent(getQueryVariable("file"));
             //Download the json
-            var url = decodeURIComponent(getQueryVariable("file"));
             fetch(url) // Call the fetch function passing the url of the API as a parameter
                 .then((resp) => resp.json())
                 .then(function(data) {
@@ -112,6 +112,14 @@ window.onload = function() {
                     alert("Error fetching the json");
                     alert(err)
                 });
+
+            //Now check if there are any components that need to be modified
+            if(false != getQueryVariable("component")){
+                //Create a function that modifies the data
+                let componentname = getQueryVariable("component");
+                let params = JSON.parse(getQueryVariable("params"));
+                viewManager.updateComponentParameters(componentname, params);
+            }
         }
 
         Registry.viewManager.setupToolBars();
