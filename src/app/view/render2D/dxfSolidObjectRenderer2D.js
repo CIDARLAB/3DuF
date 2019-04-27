@@ -212,6 +212,13 @@ export function renderDXFObjects(dxfobjectarray) {
             alert("The current version of the DXF Parser does not support SPLINE objects. Support will be added in future versions");
             throw new Error("Unsupported render object");
             processSpline(geometryGraph, dxfobject.getData())
+        } else if(dxfobject.getType() === 'DIMENSION'){
+            console.warn("DIMENSION entry in DXF will be ignored. Please ensure that all the designs are of the correct dimensions");
+        } else if(dxfobject.getType() === 'MTEXT'){
+            console.warn("MTEXT entry in DXF will be ignored. Please ensure that none of the features require text ");
+        } else if(dxfobject.getType() === 'INSERT'){
+            alert("The current version of the DXF Parser does not support INSERT and BLOCK design references.");
+            throw new Error("Unsupported render object");
         } else {
             alert("Unsupported DXF Entity Type for Component Import : " + dxfobject.getType());
             console.error("Unsupported DXF Entity Type for Component Import : " + dxfobject.getType());
