@@ -15,15 +15,17 @@ export  default class LLChamber extends Template{
             "width": "Float",
             "length": "Float",
             "height": "Float",
-            "cornerRadius": "Float",
-            "rotation": "Float"
+            "rotation": "Float",
+            "spacing": "Float",
+            "numberOfChambers": "Integer"
         };
 
         this.__defaults = {
-            "width": 5000,
+            "width": 800,
             "length": 5000,
             "height": 250,
-            "cornerRadius": 200,
+            "spacing": 10000,
+            "numberOfChambers": 10,
             "rotation": 0
         };
 
@@ -32,7 +34,8 @@ export  default class LLChamber extends Template{
             "width": "&mu;m",
             "length": "&mu;m",
             "height": "&mu;m",
-            "cornerRadius": "&mu;m",
+            "spacing": "&mu;m",
+            "numberOfChambers": "10",
             "rotation": "&deg;"
         };
 
@@ -40,7 +43,8 @@ export  default class LLChamber extends Template{
             "width": 5,
             "length": 5,
             "height": 1,
-            "cornerRadius": 1,
+            "spacing": 1,
+            "numberOfChambers": 1,
             "rotation": 0
         };
 
@@ -48,7 +52,8 @@ export  default class LLChamber extends Template{
             "width": 50000,
             "length": 50000,
             "height": 50000,
-            "cornerRadius": 1000,
+            "numberOfChambers": 1000,
+            "spacing": 50000,
             "rotation": 90
         };
 
@@ -57,7 +62,8 @@ export  default class LLChamber extends Template{
             width: "width",
             length: "length",
             height: "height",
-            cornerRadius: "cornerRadius",
+            numberOfChambers: "numberOfChambers",
+            spacing : "spacing",
             rotation: "rotation"
         };
 
@@ -66,7 +72,8 @@ export  default class LLChamber extends Template{
             width: "width",
             length: "length",
             height: "height",
-            cornerRadius: "cornerRadius",
+            numberOfChambers: "numberOfChambers",
+            spacing : "spacing",
             rotation: "rotation"
         };
 
@@ -88,17 +95,40 @@ export  default class LLChamber extends Template{
         let w = params["width"];
         let rotation = params["rotation"];
         let color = params["color"];
-        let radius = params["cornerRadius"];
+        // let radius = params["cornerRadius"];
+
+        let numArray = params["numberOfChambers"];
+        let spacing = params["spacing"];
+
 
         let rendered = new paper.CompoundPath();
 
-        let rec = new paper.Path.Rectangle({
-            point: new paper.Point(px - w / 2, py - l / 2),
-            size: [w, l],
-            radius: radius
+        let rec;
+
+        for(let i = 0; i < numArray; i++){
+            rec = new paper.Path.Rectangle({
+                point: new paper.Point(px  + (i+1)*spacing + i*w, py-1),
+                size: [w, l +2],
+                radius: 0
+            });
+
+            rendered.addChild(rec);
+
+        }
+
+        let topchannel = new paper.Path.Rectangle({
+            point: new paper.Point(px, py - w),
+            size:[ (numArray )*(w)  + (numArray+1) * spacing, w],
         });
 
-        rendered.addChild(rec);
+        rendered.addChild(topchannel);
+
+        let bottomchannel = new paper.Path.Rectangle({
+            point: new paper.Point(px, py + l),
+            size:[ (numArray )*(w)  + (numArray+1) * spacing, w],
+        });
+
+        rendered.addChild(bottomchannel);
 
         rendered.fillColor = color;
         return rendered.rotate(rotation, px, py);
