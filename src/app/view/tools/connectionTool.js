@@ -424,11 +424,27 @@ export default class ConnectionTool extends MouseTool {
 
     __getClosestComponentPort(component, startPoint) {
         // console.log("Location of startpoint: ",startPoint);
+        //Find out if this is on control or flow for now
+        //TODO:Change this implementation, currently layer does not have a type setting that maps 1-1 to the componentport layer location
+        let layertype = null;
+        if("control" == Registry.currentLayer.name){
+            layertype = "CONTROL";
+            console.log("This layer :", layertype);
+        }else if ("flow" == Registry.currentLayer.name){
+            layertype = "FLOW";
+            console.log("This layer: ", layertype);
+        }
         let componentports = component.ports;
+        if (layertype == null){
+            console.warn("Could not find the current layer type, searching through all the component ports without filtering");
+        }
         let dist = 1000000000000000;
         let closest = null;
         for(let key of componentports.keys()){
             let componentport = componentports.get(key);
+            if (componentport.layer !== layertype){
+                continue;
+            }
             let location = ComponentPort.calculateAbsolutePosition(componentport, component);
             let calc = Math.abs(startPoint[0] - location[0]) + Math.abs(startPoint[1] - location[1]);
             if(calc < dist){
