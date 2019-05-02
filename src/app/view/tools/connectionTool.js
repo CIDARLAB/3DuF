@@ -249,7 +249,7 @@ export default class ConnectionTool extends MouseTool {
 
         if (isPointOnComponent) {
             //Modify the waypoint to reflect closest port in the future
-            let componentport = this.__getClosestComponentPort(isPointOnComponent, this.startPoint);
+            let componentport = this.__getClosestComponentPort(isPointOnComponent, this.startPoint, target);
             if (componentport != null) {
                 let location = ComponentPort.calculateAbsolutePosition(componentport, isPointOnComponent);
                 connectiontargettoadd = new ConnectionTarget(isPointOnComponent, componentport.label);
@@ -422,24 +422,57 @@ export default class ConnectionTool extends MouseTool {
 
     }
 
-    __getClosestComponentPort(component, startPoint) {
+    /**
+     * Returns the closest component port to the given point
+     * @param component
+     * @param startPoint
+     * @param targetPoint This is null in case of the initialzing case
+     * @return {ComponentPort}
+     * @private
+     */
+    __getClosestComponentPort(component, startPoint, targetPoint = null) {
         // console.log("Location of startpoint: ",startPoint);
         //Find out if this is on control or flow for now
         //TODO:Change this implementation, currently layer does not have a type setting that maps 1-1 to the componentport layer location
+        let closest;
         let layertype = null;
-        if("control" == Registry.currentLayer.name){
+        let dist;
+        let gridsize = Registry.currentGrid.getSpacing();
+        console.log("Grid Size: ", gridsize);
+
+        if ("control" == Registry.currentLayer.name) {
             layertype = "CONTROL";
             console.log("This layer :", layertype);
-        }else if ("flow" == Registry.currentLayer.name){
+        } else if ("flow" == Registry.currentLayer.name) {
             layertype = "FLOW";
             console.log("This layer: ", layertype);
         }
         let componentports = component.ports;
-        if (layertype == null){
+        if (layertype == null) {
             console.warn("Could not find the current layer type, searching through all the component ports without filtering");
         }
-        let dist = 1000000000000000;
-        let closest = null;
+
+        //TODO: Check if the targetPoint and the component port are closer than grid size, if they are just make the connection
+        if (targetPoint != null) {
+            for(let key of componentports.keys()){
+                let componentport = componentports.get(key);
+                if (componentport.layer !== layertype){
+                    continue;
+                }
+                let location = ComponentPort.calculateAbsolutePosition(componentport, component);
+                let calc = Math.abs(targetPoint[0] - location[0]) + Math.abs(targetPoint[1] - location[1]);
+                // let gridsize = 1000; //TODO:Calculate from grid size
+                //Check if anything is really really close (use current grid size for now) to the port.
+                if(calc <= 3* gridsize){
+                    //If the distance is really small then yes fix return it
+                    return componentport;
+                }
+            }
+
+        }
+
+        dist = 1000000000000000;
+        closest = null;
         for(let key of componentports.keys()){
             let componentport = componentports.get(key);
             if (componentport.layer !== layertype){
