@@ -133,6 +133,57 @@ export  default class LLChamber extends Template{
         ));
 
 
+        // //Control Ports - Left
+        ports.push(new ComponentPort(
+            0,
+            0.2*l,
+            "10",
+            "CONTROL"
+        ));
+
+
+        ports.push(new ComponentPort(
+            0,
+            0.5*l,
+            "9",
+            "CONTROL"
+        ));
+
+
+        ports.push(new ComponentPort(
+            0,
+            0.8*l,
+            "8",
+            "CONTROL"
+        ));
+
+
+        //Control Ports - Right
+        ports.push(new ComponentPort(
+            (numArray )*(w)  + (numArray+1) * spacing,
+            0.2*l,
+            "5",
+            "CONTROL"
+        ));
+
+
+        ports.push(new ComponentPort(
+            (numArray )*(w)  + (numArray+1) * spacing,
+            0.5*l,
+            "6",
+            "CONTROL"
+        ));
+
+
+        ports.push(new ComponentPort(
+            (numArray )*(w)  + (numArray+1) * spacing,
+            0.8*l,
+            "7",
+            "CONTROL"
+        ));
+
+
+
         return ports;
     }
 
