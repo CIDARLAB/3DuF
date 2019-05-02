@@ -120,14 +120,14 @@ export  default class LLChamber extends Template{
 
         ports.push(new ComponentPort(
             w/2,
-            py + l,
+            l+w,
             "3",
             "FLOW"
         ));
 
         ports.push(new ComponentPort(
             (numArray )*(w)  + (numArray+1) * spacing - w/2,
-            py + l,
+            l+w,
             "4",
             "FLOW"
         ));
