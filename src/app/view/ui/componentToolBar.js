@@ -147,12 +147,12 @@ export default class ComponentToolBar{
             ref.setActiveButton("Transition");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__circleValveButton.onclick = function() {
-            Registry.viewManager.activateTool("CircleValve");
-
-            ref.setActiveButton("CircleValve");
-            ref.__viewManagerDelegate.switchTo2D();
-        };
+        // this.__circleValveButton.onclick = function() {
+        //     Registry.viewManager.activateTool("CircleValve");
+        //
+        //     ref.setActiveButton("CircleValve");
+        //     ref.__viewManagerDelegate.switchTo2D();
+        // };
         this.__valve3dButton.onclick = function() {
             Registry.viewManager.activateTool("Valve3D");
 
@@ -195,12 +195,12 @@ export default class ComponentToolBar{
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__viaButton.onclick = function() {
-            Registry.viewManager.activateTool("Via");
-
-            ref.setActiveButton("Via");
-            ref.__viewManagerDelegate.switchTo2D();
-        };
+        // this.__viaButton.onclick = function() {
+        //     Registry.viewManager.activateTool("Via");
+        //
+        //     ref.setActiveButton("Via");
+        //     ref.__viewManagerDelegate.switchTo2D();
+        // };
 
         this.__chamberButton.onclick = function() {
             Registry.viewManager.activateTool("Chamber");
@@ -315,13 +315,13 @@ export default class ComponentToolBar{
         this.__channelParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Channel", "Basic");
         this.__connectionParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Connection", "Basic");
         this.__roundedChannelParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("RoundedChannel", "Basic");
-        this.__circleValveParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CircleValve", "Basic");
+        // this.__circleValveParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CircleValve", "Basic");
         this.__valve3dParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Valve3D", "Basic");
         this.__valveParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Valve", "Basic");
         this.__pump3dParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Pump3D", "Basic");
         this.__pumpParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Pump", "Basic");
         this.__portParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Port", "Basic");
-        this.__viaParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Via", "Basic");
+        // this.__viaParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Via", "Basic");
         this.__chamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Chamber", "Basic");
         this.__diamondParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DiamondReactionChamber", "Basic");
         this.__bettermixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("BetterMixer", "Basic");
