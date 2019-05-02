@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export  default class LLChamber extends Template{
     constructor(){
@@ -21,11 +22,11 @@ export  default class LLChamber extends Template{
         };
 
         this.__defaults = {
-            "width": 800,
+            "width": 400,
             "length": 5000,
             "height": 250,
-            "spacing": 10000,
-            "numberOfChambers": 10,
+            "spacing": 2000,
+            "numberOfChambers": 4,
             "rotation": 0
         };
 
@@ -77,7 +78,7 @@ export  default class LLChamber extends Template{
             rotation: "rotation"
         };
 
-        this.__placementTool = "componentPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"
@@ -87,7 +88,152 @@ export  default class LLChamber extends Template{
 
     }
 
+
+    getPorts(params){
+        let position = params["position"];
+        let px = position[0];
+        let py = position[1];
+        let l = params["length"];
+        let w = params["width"];
+        let rotation = params["rotation"];
+        let color = params["color"];
+        // let radius = params["cornerRadius"];
+
+        let numArray = params["numberOfChambers"];
+        let spacing = params["spacing"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(
+            w/2,
+            -w,
+            "1",
+            "FLOW"
+        ));
+
+        ports.push(new ComponentPort(
+            (numArray )*(w)  + (numArray+1) * spacing - w/2,
+            -w,
+            "2",
+            "FLOW"
+        ));
+
+        ports.push(new ComponentPort(
+            w/2,
+            py + l,
+            "3",
+            "FLOW"
+        ));
+
+        ports.push(new ComponentPort(
+            (numArray )*(w)  + (numArray+1) * spacing - w/2,
+            py + l,
+            "4",
+            "FLOW"
+        ));
+
+
+        return ports;
+    }
+
+
+    __renderFlow(params){
+
+        let position = params["position"];
+        let px = position[0];
+        let py = position[1];
+        let l = params["length"];
+        let w = params["width"];
+        let rotation = params["rotation"];
+        let color = params["color"];
+        // let radius = params["cornerRadius"];
+
+        let numArray = params["numberOfChambers"];
+        let spacing = params["spacing"];
+
+
+        let rendered = new paper.CompoundPath();
+
+        let rec;
+
+        for(let i = 0; i < numArray; i++){
+            rec = new paper.Path.Rectangle({
+                point: new paper.Point(px  + (i+1)*spacing + i*w, py-1),
+                size: [w, l +2],
+                radius: 0
+            });
+
+            rendered.addChild(rec);
+
+        }
+
+        let topchannel = new paper.Path.Rectangle({
+            point: new paper.Point(px, py - w),
+            size:[ (numArray )*(w)  + (numArray+1) * spacing, w],
+        });
+
+        rendered.addChild(topchannel);
+
+        let bottomchannel = new paper.Path.Rectangle({
+            point: new paper.Point(px, py + l),
+            size:[ (numArray )*(w)  + (numArray+1) * spacing, w],
+        });
+
+        rendered.addChild(bottomchannel);
+
+        rendered.fillColor = color;
+        return rendered.rotate(rotation, px, py);
+
+    }
+
+    __renderControl(params){
+        let rendered = new paper.CompoundPath();
+        let position = params["position"];
+        let px = position[0];
+        let py = position[1];
+        let l = params["length"];
+        let w = params["width"];
+        let rotation = params["rotation"];
+        let color = params["color"];
+        // let radius = params["cornerRadius"];
+
+        let numArray = params["numberOfChambers"];
+        let spacing = params["spacing"];
+
+        let topchannel = new paper.Path.Rectangle({
+            point: new paper.Point(px, py + 0.2*l - w/2),
+            size:[ (numArray )*(w)  + (numArray+1) * spacing, w],
+        });
+
+        rendered.addChild(topchannel);
+
+        let middlechannel = new paper.Path.Rectangle({
+            point: new paper.Point(px, py + 0.5*l - w/2),
+            size:[ (numArray )*(w)  + (numArray+1) * spacing, w],
+        });
+
+        rendered.addChild(middlechannel);
+
+        let bottomchannel = new paper.Path.Rectangle({
+            point: new paper.Point(px, py + 0.8*l - w/2),
+            size:[ (numArray )*(w)  + (numArray+1) * spacing, w],
+        });
+
+        rendered.addChild(bottomchannel);
+
+        rendered.fillColor = color;
+        return rendered.rotate(rotation, px, py);
+
+    }
+
     render2D(params, key) {
+
+        if(key === "FLOW"){
+            return this.__renderFlow(params);
+        }else{
+            return this.__renderControl(params);
+        }
+
         let position = params["position"];
         let px = position[0];
         let py = position[1];
@@ -135,8 +281,13 @@ export  default class LLChamber extends Template{
     }
 
     render2DTarget(key, params){
-        let render = this.render2D(params, key);
-        render.fillColor.alpha = 0.5;
-        return render;
+        let ret = new paper.CompoundPath();
+        let flow = this.render2D(params, "FLOW");
+        let control = this.render2D(params, "CONTROL");
+        ret.addChild(control);
+        ret.addChild(flow);
+        ret.fillColor = params["color"];
+        ret.fillColor.alpha = 0.5;
+        return ret;
     }
 }
