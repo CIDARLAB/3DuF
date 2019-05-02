@@ -931,7 +931,7 @@ export default class ViewManager {
         this.tools["AlignmentMarks"] = new MultilayerPositionTool("AlignmentMarks", "Basic");
         this.tools["Pump"] = new MultilayerPositionTool("Pump", "Basic");
         this.tools["Pump3D"] = new MultilayerPositionTool("Pump3D", "Basic");
-        this.tools["LLChamber"] = new ComponentPositionTool("LLChamber", "Basic");
+        this.tools["LLChamber"] = new MultilayerPositionTool("LLChamber", "Basic");
 
         //All the new tools
         this.tools["MoveTool"] = new MoveTool();

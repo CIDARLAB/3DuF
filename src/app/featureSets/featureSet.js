@@ -62,7 +62,8 @@ export default class FeatureSet {
             "Valve": {"object": new Valve(), "key":null },
             "Valve3D": {"object": new Valve3D(), "key":"FLOW" },
             "Valve3D_control": {"object": new Valve3D(), "key":"CONTROL" },
-            "LLChamber": {"object": new LLChamber(), "key": "FLOW"}
+            "LLChamber": {"object": new LLChamber(), "key": "FLOW"},
+            "LLChamber_control": {"object": new LLChamber(), "key": "CONTROL"}
         };
 
         // this.__checkDefinitions();
