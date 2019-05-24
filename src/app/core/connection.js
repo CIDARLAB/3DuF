@@ -277,31 +277,60 @@ export default class Connection {
      * @param boundingbox
      */
     insertFeatureGap(boundingbox){
+        let foundflag = false;
         //Convert Rectangle to Path.Rectangle
-        console.log(boundingbox);
+        console.log(boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
         //Check which segment I need to break
         let segments = this.getValue("segments");
-        for(let i in segments){
+        for (let i in segments) {
             let segment = segments[i];
-            console.log("Segments before:",segments);
             let line = new paper.Path.Line(new paper.Point(segment[0]), new paper.Point(segment[1]));
             let intersections = line.getIntersections(boundingbox);
-            console.log("Intersections found",intersections);
-            if(intersections.length === 2){
+            // console.log("Intersections found", intersections);
+            if (intersections.length === 2) {
                 let break1 = intersections[0].point;
                 let break2 = intersections[1].point;
                 let newsegs = this.__breakSegment(segment, break1, break2);
+                console.log("breaking:", segment, newsegs)
+                if (newsegs.length !== 2) {
+                    throw new Error("Could not break the segments correctly");
+                }
                 segments.splice(i, 1, newsegs[0], newsegs[1]);
-                console.log("Segments after:",segments);
+                foundflag = true;
+            } else if (intersections.length === 1) {
+                console.error("Only found 1 intersection point so going to use a different method");
+                console.log("Found Intersection:", intersections);
 
-            }else if(intersections.length === 1){
-                console.error("There's something funky going on with the intersection, only found 1 intersection");
-                return;
+                console.log("Segments:", segments);
+                console.log("line:", line);
+                console.log("Bounding Box:", boundingbox);
+
+
+            } else {
+                console.error("No intersections found so going to use a different method");
+                console.log("Found Intersection:", intersections);
+
+                console.log("Segments:", segments);
+                console.log("line:", line);
+                console.log("Bounding Box:", boundingbox);
+
             }
+        }
+
+        //Now that we exit the check for every segment we can verify if this is ok
+        if(!foundflag){
+                console.error("There's something funky going on with the intersection,no intersections found");
+                console.log("Segments:", segments);
+                // console.log("line:", line);
+                console.log("Bounding Box:", boundingbox);
+                throw new Error("Could not find 2 intersection points, hence aborting the whole thing");
+
         }
         // console.log("raw new segments:", segments);
         this.updateSegments(segments);
+
+        return foundflag;
     }
 
     /**
@@ -318,20 +347,22 @@ export default class Connection {
         let p2 = new paper.Point(segment[1]);
 
         let segment1, segment2;
+        let p1_break1 =  p1.getDistance(break1);
+        let p2_break1 =  p2.getDistance(break1);
+        let p1_break2 =  p1.getDistance(break2);
+        let p2_break2 =  p2.getDistance(break2);
 
         //Find out if break1 is closer to p1 or p2
-        if(p1.getDistance(break1) < p2.getDistance(break1)){
-            //break1 is closer to p1 and break2 is closer to p2
-            segment1 = [[p1.x, p1.y], [break1.x, break1.y]];
-            segment2 = [[p2.x, p2.y], [break2.x, break2.y]];
+        if(p1_break1 + p2_break2 < p2_break1 + p1_break2){
+            //break1 is closer to p1 and break2 is closer to p2\
+            segment1 = [[Math.round(p1.x), Math.round(p1.y)], [Math.round(break1.x), Math.round(break1.y)]];
+            segment2 = [[Math.round(p2.x), Math.round(p2.y)], [Math.round(break2.x), Math.round(break2.y)]];
 
         }else{
             //break1 is closer to p2 and break1 is closer to p1
-            segment1 = [[p2.x, p2.y], [break1.x, break1.y]];
-            segment2 = [[p1.x, p1.y], [break2.x, break2.y]];
-
+            segment1 = [[Math.round(p2.x), Math.round(p2.y)], [Math.round(break1.x), Math.round(break1.y)]];
+            segment2 = [[Math.round(p1.x), Math.round(p1.y)], [Math.round(break2.x), Math.round(break2.y)]];
         }
-
         return [segment1, segment2];
     }
 
