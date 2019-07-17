@@ -80,6 +80,8 @@ export  default class Valve3D extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
+
         this.__mint = "VALVE3D";
     }
 
@@ -128,6 +130,10 @@ export  default class Valve3D extends Template{
             return this.__drawFlow(params);
         }else if(key == "CONTROL"){
             return this.__drawControll(params);
+        }else if(key == "INVERSE"){
+            return this.__drawInverseFlow(params);
+        }else{
+            throw new Error("No render procedure defined for component:" + this.__mint + ", key: " + key);
         }
     }
 
@@ -135,5 +141,19 @@ export  default class Valve3D extends Template{
         let render = this.render2D(params, "FLOW");
         render.fillColor.alpha = 0.5;
         return render;
+    }
+
+    __drawInverseFlow(params) {
+        let position = params["position"];
+        let gap = params["gap"];
+        let radius = params["valveRadius"];
+        let color = params["color"];
+        console.log("Coloer:", color);
+        let orientation = params["orientation"];
+        let center = new paper.Point(position[0], position[1]);
+        // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
+        let circ = new paper.Path.Circle(center, radius);
+        circ.fillColor = color;
+        return circ;
     }
 }

@@ -68,6 +68,8 @@ export  default class Valve extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["CONTROL"];
+
         this.__mint = "VALVE";
     }
 

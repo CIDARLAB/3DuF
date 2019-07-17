@@ -83,6 +83,8 @@ export  default class BetterMixer extends Template{
 
         };
 
+        this.__renderKeys = ["FLOW"];
+
         this.__mint = "MIXER";
 
     }

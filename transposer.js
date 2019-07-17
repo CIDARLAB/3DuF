@@ -85,6 +85,8 @@ export  default class Transposer extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
+
         this.__mint = "TRANSPOSER";
 
     }

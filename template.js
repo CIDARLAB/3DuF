@@ -11,6 +11,7 @@ export default class Template {
         this.__featureParams = null;
         this.__targetParams = null;
         this.__mint = null;
+        this.__renderKeys = null;
         this.__setupDefinitions();
     }
 
@@ -101,6 +102,14 @@ export default class Template {
             throw new Error("Heritable cannot be null instantiate in the __setupDefinitions");
         }
         return this.__heritable;
+    }
+
+    get renderKeys(){
+        if(this.__renderKeys == null){
+            throw new Error(("renderKeys cannot be null instantiate in the __setupDefinitions"));
+        }
+
+        return this.__renderKeys;
     }
 
     __setupDefinitions() {

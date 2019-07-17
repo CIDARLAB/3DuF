@@ -106,6 +106,8 @@ export  default class Mux extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW", "CONTROL"];
+
         this.__mint = "MUX";
 
     }

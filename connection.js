@@ -63,6 +63,8 @@ export  default class Connection extends Template{
             end: "end"
         };
 
+        this.__renderKeys = ["FLOW"];
+
         this.__mint = "CONNECTION";
     }
 

@@ -43,6 +43,8 @@ export  default class RectValve extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW", "CONTROL"];
+
         this.__mint = "VALVE";
     }
 

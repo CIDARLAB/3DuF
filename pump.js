@@ -82,6 +82,8 @@ export  default class Pump extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW", "CONTROL"];
+
         this.__mint = "PUMP";
     }
 

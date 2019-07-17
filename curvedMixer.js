@@ -80,6 +80,8 @@ export  default class CurvedMixer extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW"];
+
         this.__mint = "CURVED MIXER";
 
     }

@@ -71,6 +71,9 @@ export  default class DiamondReactionChamber extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW"];
+
+
         this.__mint = "DIAMOND REACTION CHAMBER";
 
     }

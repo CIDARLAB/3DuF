@@ -89,6 +89,8 @@ export  default class CellTrapL extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW", "CELL"];
+
         this.__mint = "LONG CELL TRAP";
 
     }

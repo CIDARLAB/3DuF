@@ -91,6 +91,9 @@ export  default class RotaryMixer extends Template{
             height: "height"
         };
 
+
+        this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
+
         this.__mint = "ROTARY MIXER";
 
     }
