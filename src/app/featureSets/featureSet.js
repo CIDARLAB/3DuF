@@ -61,7 +61,6 @@ export default class FeatureSet {
             "Valve": {"object": new Valve(), "key":null },
             "Valve3D": {"object": new Valve3D(), "key":"FLOW" },
             "Valve3D_control": {"object": new Valve3D(), "key":"CONTROL" },
-
         };
 
         // this.__checkDefinitions();
@@ -73,6 +72,11 @@ export default class FeatureSet {
         else return false;
     }
 
+    /**
+     * Returns the 3DuF type for MINT syntax (need to get rid of this in the future)
+     * @param minttype
+     * @return {string|null}
+     */
     getTypeForMINT(minttype){
         for(let key in this.__library){
             if(minttype == this.__library[key].object.mint){
@@ -82,6 +86,9 @@ export default class FeatureSet {
         return null;
     }
 
+    /**
+     * Returns the default params and values for the entire library
+     */
     getDefaults() {
         let output = {};
         for (let key in this.__library){
@@ -102,6 +109,11 @@ export default class FeatureSet {
         return this.setString;
     }
 
+    /**
+     * Returns the definition of the given typestring
+     * @param typeString
+     * @return {null|{mint: *, defaults: *, unique: *, maximum: *, units: *, heritable: *, minimum: *}}
+     */
     getDefinition(typeString){
         // console.log("Called", typeString);
         //TODO:Clean up this hacky code and shift everything to use MINT convention
@@ -131,17 +143,32 @@ export default class FeatureSet {
         return this.__render3D[typeString];
     }
 
-    /*
-    Returns the library/technology description instead of the function pointer as it was doing before
+    /**
+     * Returns the library/technology description instead of the function pointer as it was doing before
+     * @param typeString
+     * @return {*}
      */
     getRender2D(typeString){
         return this.__library[typeString];
     }
 
+    /**
+     * Returns the Tool that is being used by the definition
+     * @param typeString
+     * @return {Document.tool|null}
+     */
     getTool(typeString){
         return this.__definitions[typeString].tool;
     }
 
+    /**
+     * Creates a Feature (Outdated, I think)
+     * @param typeString
+     * @param setString
+     * @param values
+     * @param name
+     * @return {*}
+     */
     makeFeature(typeString, setString, values, name){
         throw new Error("MAke featre in feature set is being called");
         console.log(setString);
@@ -150,9 +177,27 @@ export default class FeatureSet {
         return featureType(values, name);
     }
 
+    /**
+     * Returns the component ports for a given component
+     * @param params
+     * @param typestring
+     * @return {void|Array}
+     */
     getComponentPorts(params, typestring){
         let definition = this.__library[typestring].object;
         return definition.getPorts(params)
+    }
+
+    /**
+     * Checks if the component definition in the library has the Inverse Render generation support
+     * @param typestring
+     * @return {*|boolean}
+     */
+    hasInverseRenderLayer(typestring){
+        let definition = this.__library[typestring].object;
+        // Go through the renderkeys and check if inverse is available
+        let renderkeys = definition.renderKeys;
+        return renderkeys.includes("INVERSE");
     }
 
     __checkDefinitions() {

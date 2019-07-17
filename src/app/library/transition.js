@@ -71,6 +71,8 @@ export  default class Transition extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW"];
+
         this.__mint = "TRANSITION";
     }
 

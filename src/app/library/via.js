@@ -43,6 +43,8 @@ export  default class Via extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW"];
+
         this.__mint = "VIA";
     }
 

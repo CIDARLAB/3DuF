@@ -55,6 +55,8 @@ export  default class Channel extends Template{
             channelWidth: "channelWidth"
         };
 
+        this.__renderKeys = ["FLOW"];
+
         this.__mint = "CHANNEL";
 
     }

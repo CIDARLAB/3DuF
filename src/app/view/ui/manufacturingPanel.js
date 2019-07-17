@@ -1,6 +1,7 @@
 import CNCGenerator from "../../manufacturing/cncGenerator";
 
 import JSZip from 'jszip';
+import LaserCuttingGenerator from "../../manufacturing/laserCuttingGenerator";
 
 const Registry = require("../../core/registry");
 
@@ -9,13 +10,15 @@ export default class ManufacturingPanel {
         this.__viewManagerDelegate = viewManagerDelegate;
 
         this.__cncButton = document.getElementById("cnc_button");
+        this.__laserButton = document.getElementById("laser_button");
         console.log("current device:", Registry.currentDevice);
         let cncGenerator = new CNCGenerator(Registry.currentDevice, this.__viewManagerDelegate);
+        let laserCuttingGenerator = new LaserCuttingGenerator(Registry.currentDevice, this.__viewManagerDelegate);
         let registryref = Registry;
 
         let ref = this;
         this.__cncButton.addEventListener('click', function (event) {
-            console.log("Running generatePortLayers");
+            console.log("Generating CNC Layers");
             cncGenerator.setDevice(registryref.currentDevice);
             cncGenerator.generatePortLayers();
             cncGenerator.generateDepthLayers();
@@ -27,6 +30,18 @@ export default class ManufacturingPanel {
 
             cncGenerator.flushData();
         });
+
+        this.__laserButton.addEventListener('click',function (event) {
+            console.log("Generating Laser Cutting Layers");
+
+            laserCuttingGenerator.setDevice(registryref.currentDevice);
+            laserCuttingGenerator.generatePortLayers();
+            laserCuttingGenerator.generateDepthLayers();
+            laserCuttingGenerator.generateEdgeLayers();
+            laserCuttingGenerator.generateInverseControlLayers();
+
+            ref.packageAndDownloadBundle(laserCuttingGenerator.getSVGOutputs());
+        })
     }
 
     packageAndDownloadBundle(svgOutputs) {

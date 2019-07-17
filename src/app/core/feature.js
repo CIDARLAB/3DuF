@@ -256,6 +256,18 @@ export default class Feature {
         return ret;
     }
 
+    /**
+     * This is the method that is called when one needs to make the feature object. The static function encapsulates
+     * all the functionality that needs to be implemented.
+     * @param typeString
+     * @param setString
+     * @param paramvalues
+     * @param name
+     * @param id
+     * @param fabtype
+     * @param dxfdata
+     * @return {EdgeFeature|Feature}
+     */
     static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined, fabtype, dxfdata){
         let params;
 

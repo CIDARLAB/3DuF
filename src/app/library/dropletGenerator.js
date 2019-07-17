@@ -98,6 +98,8 @@ export  default class DropletGenerator extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW"];
+
         this.__mint = "NOZZLE DROPLET GENERATOR";
     }
 

@@ -92,6 +92,8 @@ export  default class YTree extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW"];
+
         this.__mint = "YTREE";
     }
 

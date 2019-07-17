@@ -57,7 +57,9 @@ export  default class AlignmentMarks extends Template{
         this.__targetParams = {
             width: "width",
             length: "length"
-        }
+        };
+
+        this.__renderKeys = ["FLOW", "CONTROL"];
 
         this.__mint = "PORT";
 

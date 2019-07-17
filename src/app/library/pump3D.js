@@ -86,6 +86,8 @@ export  default class Pump3D extends Template{
             position: "position"
         };
 
+        this.__renderKeys = ["FLOW","CONTROL","INVERSE"];
+
         this.__mint = "PUMP3D";
     }
 

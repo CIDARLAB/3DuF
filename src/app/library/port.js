@@ -53,6 +53,8 @@ export  default class Port extends Template{
             portRadius: "portRadius"
         };
 
+        this.__renderKeys = ["FLOW"];
+
         this.__mint = "PORT";
     }
 

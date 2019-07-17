@@ -1,4 +1,5 @@
 import paper from 'paper';
+import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 const Registry = require("../core/registry");
 
 export default class ManufacturingLayer{
@@ -29,6 +30,21 @@ export default class ManufacturingLayer{
         this.__features.push(copy);
 
         this.__paperGroup.addChild(copy);
+        return true;
+    }
+
+    /**
+     * Generates the paperjs render for a feature that has no render displayed on the canvas
+     * and hence cannot get the render out of display set.
+     * @param feature
+     */
+    generateFeatureRender(feature, renderkey){
+        console.log("Generating Render for invisible feature", feature);
+
+        let render = FeatureRenderer2D.renderFeature(feature, renderkey);
+        this.__features.push(render);
+
+        this.__paperGroup.addChild(render);
         return true;
     }
 

@@ -106,12 +106,11 @@ export function renderText(feature){
  * @param feature
  * @return {*}
  */
-export function renderFeature(feature) {
+export function renderFeature(feature, key = null ) {
     let rendered;
     let params;
     let type = feature.getType();
     let set = feature.getSet();
-    let key = null;
     if (type == "TEXT") {
         return renderText(feature);
     } else if (set === "Custom") {
@@ -124,8 +123,18 @@ export function renderFeature(feature) {
         return renderEdge(feature);
     } else {
         let rendererinfo = getFeatureRenderer(type, set);
-        let renderer= rendererinfo.object;
-        key = rendererinfo.key;
+        let renderer = rendererinfo.object;
+
+        /*
+        If the user does not specify the key, then extract it from the rendering info of the feature.
+        I guess theoretically speaking, one needs to generate a set of invisible feature but for now we are just
+        ignoring that.
+         */
+
+        if(null == key){
+            key = rendererinfo.key;
+        }
+
         if (!renderer) {
             console.error("Could not find renderer method for feature:", feature);
         } else {

@@ -56,6 +56,9 @@ export  default class RoundedChannel extends Template{
             end: "end"
         };
 
+        this.__renderKeys = ["FLOW"];
+
+
         this.__mint = "CHANNEL";
 
     }
