@@ -109,13 +109,13 @@ export default class ConnectionTool extends MouseTool {
     }
 
     initChannel() {
-        let isPointOnComponent = this.__isPointOnComponent(this.lastPoint);
-        let isPointOnConnection = this.__isPointOnConnection(this.lastPoint);
+        let isPointOnComponent = ConnectionTool.isPointOnComponent(this.lastPoint);
+        let isPointOnConnection = this.isPointOnConnection(this.lastPoint);
         this.startPoint = ConnectionTool.getTarget(this.lastPoint);
         this.lastPoint = this.startPoint;
         if(isPointOnComponent){
             //Modify the waypoint to reflect closest port in the future
-            let componentport = this.__getClosestComponentPort(isPointOnComponent, this.startPoint);
+            let componentport = ConnectionTool.getClosestComponentPort(isPointOnComponent, this.startPoint);
             if(componentport != null){
                 let location = ComponentPort.calculateAbsolutePosition(componentport, isPointOnComponent);
                 this.source = new ConnectionTarget(isPointOnComponent, componentport.label);
@@ -232,8 +232,8 @@ export default class ConnectionTool extends MouseTool {
     addWayPoint(event, isManhatten) {
         let connectiontargettoadd;
         let point = MouseTool.getEventPosition(event);
-        let isPointOnComponent = this.__isPointOnComponent(point);
-        let isPointOnConnection = this.__isPointOnConnection(point);
+        let isPointOnComponent = ConnectionTool.isPointOnComponent(point);
+        let isPointOnConnection = this.isPointOnConnection(point);
         let target = ConnectionTool.getTarget(point);
         if (isManhatten && target) {
             //TODO: modify the target to find the orthogonal point
@@ -249,7 +249,8 @@ export default class ConnectionTool extends MouseTool {
 
         if (isPointOnComponent) {
             //Modify the waypoint to reflect closest port in the future
-            let componentport = this.__getClosestComponentPort(isPointOnComponent, this.startPoint, target);
+
+            let componentport = ConnectionTool.getClosestComponentPort(isPointOnComponent, this.startPoint);
             if (componentport != null) {
                 let location = ComponentPort.calculateAbsolutePosition(componentport, isPointOnComponent);
                 connectiontargettoadd = new ConnectionTarget(isPointOnComponent, componentport.label);
@@ -296,7 +297,7 @@ export default class ConnectionTool extends MouseTool {
      * @return {boolean} or Connection Object
      * @private
      */
-    __isPointOnConnection(point) {
+    static isPointOnConnection(point) {
         // console.log("Point to check", point);
         let render = Registry.viewManager.hitFeature(point);
         if(render != false && render != null && render != undefined){
@@ -316,7 +317,7 @@ export default class ConnectionTool extends MouseTool {
      * @return {boolean} or Component Object
      * @private
      */
-    __isPointOnComponent(point) {
+    static isPointOnComponent(point) {
         // console.log("Point to check", point);
         let render = Registry.viewManager.hitFeature(point);
         if(render != false && render != null && render != undefined){
@@ -426,11 +427,11 @@ export default class ConnectionTool extends MouseTool {
      * Returns the closest component port to the given point
      * @param component
      * @param startPoint
-     * @param targetPoint This is null in case of the initialzing case
      * @return {ComponentPort}
      * @private
      */
-    __getClosestComponentPort(component, startPoint, targetPoint = null) {
+
+    static getClosestComponentPort(component, startPoint) {
         // console.log("Location of startpoint: ",startPoint);
         //Find out if this is on control or flow for now
         //TODO:Change this implementation, currently layer does not have a type setting that maps 1-1 to the componentport layer location

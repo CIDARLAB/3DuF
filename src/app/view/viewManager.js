@@ -47,6 +47,7 @@ import RightClickMenu from "./ui/rightClickMenu";
 import IntroDialog from "./ui/introDialog";
 import DAFDPlugin from "../plugin/dafdPlugin";
 import {Examples} from "../index";
+import AutoRouteTool from "./tools/autorouteTool";
 
 export default class ViewManager {
 
@@ -936,6 +937,7 @@ export default class ViewManager {
         //All the new tools
         this.tools["MoveTool"] = new MoveTool();
         this.tools["GenerateArrayTool"] = new GenerateArrayTool();
+        this.tools["AutoRouteTool"] = new AutoRouteTool();
 
     }
 
@@ -1004,11 +1006,11 @@ export default class ViewManager {
     }
 
 
-    activateDAFDPlugin(params = null){
+    activateDAFDPlugin(params = null) {
 
         this.loadDeviceFromJSON(JSON.parse(Examples.dafdtemplate));
 
-        if(null == params){
+        if (null == params) {
             params = {
                 "orificeSize": 750,
                 "orificeLength": 200,
@@ -1021,6 +1023,9 @@ export default class ViewManager {
         }
 
         DAFDPlugin.fixLayout(params);
+    }
 
+    activateAutoRouteTool(){
+        this.activateTool("AutoRouteTool", "AutoRouteTool");
     }
 }

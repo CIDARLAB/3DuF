@@ -324,4 +324,18 @@ export default class Feature {
     addDXFObject(dxfobject) {
         this.__dxfObjects.push(dxfobject);
     }
+
+    getRenderBounds(){
+
+        //Get Render
+        let render = Registry.viewManager.view.getRenderedFeature(this.__id);
+        let ret =  {
+            'x':render.bounds.x,
+            'y': render.bounds.y,
+            'x-span': render.bounds.width,
+            'y-span': render.bounds.height
+        };
+
+        return ret;
+    }
 }

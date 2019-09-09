@@ -93,6 +93,15 @@ class Layer {
         return this.features[featureID];
     }
 
+    getAllFeaturesAsArray(){
+        let ret = [];
+        for (let i in this.features){
+            ret.push(this.features[i]);
+        }
+
+        return ret;
+    }
+
     removeFeature(feature) {
         this.removeFeatureByID(feature.getID());
     }
