@@ -15,7 +15,7 @@ export  default class Transition extends Template{
             "cw1": "Float",
             "cw2": "Float",
             "length": "Float",
-            "orientation": "String",
+            "rotation": "Float",
             "height": "Float"
         };
 
@@ -23,7 +23,7 @@ export  default class Transition extends Template{
             "cw1": .80 * 1000,
             "cw2": .90 * 1000,
             "length": 1.0 * 1000,
-            "orientation": "V",
+            "rotation": 0,
             "height": 250
         };
 
@@ -32,7 +32,7 @@ export  default class Transition extends Template{
             "cw1": "&mu;m",
             "cw2": "&mu;m",
             "length": "&mu;m",
-            "orientation": "",
+            "rotation": "&deg",
             "height": "&mu;m"
         };
 
@@ -40,10 +40,12 @@ export  default class Transition extends Template{
             "cw1": 3,
             "cw2": 3,
             "length": 10,
-            "height": 10
+            "height": 10,
+            "rotation": 0
         };
 
         this.__maximum = {
+            "rotation": 180,
             "cw1": 2000,
             "cw2": 2000,
             "length": 1200,
@@ -55,14 +57,14 @@ export  default class Transition extends Template{
             cw1: "cw1",
             cw2: "cw2",
             length: "length",
-            orientation: "orientation"
+            rotation: "rotation"
         };
 
         this.__targetParams = {
             cw1: "cw1",
             cw2: "cw2",
             length: "length",
-            orientation: "orientation"
+            rotation: "rotation"
         };
 
         this.__placementTool = "PositionTool";
@@ -81,27 +83,19 @@ export  default class Transition extends Template{
         let cw1 = params["cw1"];
         let cw2 = params["cw2"];
         let length = params["length"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let color = params["color"];
         let trap = new paper.Path();
 
-        if (orientation == "V") {
-            trap.add(new paper.Point(position[0] - cw1 / 2, position[1]));
-            trap.add(new paper.Point(position[0] + cw1 / 2, position[1]));
-            trap.add(new paper.Point(position[0] + cw2 / 2, position[1] + length));
-            trap.add(new paper.Point(position[0] - cw2 / 2, position[1] + length));
-            //trap.add(new paper.Point(position[0] - cw1/2, position[1]));
-        }
-        else {
-            trap.add(new paper.Point(position[0], position[1] - cw1 / 2));
-            trap.add(new paper.Point(position[0], position[1] + cw1 / 2));
-            trap.add(new paper.Point(position[0] + length, position[1] + cw2 / 2));
-            trap.add(new paper.Point(position[0] + length, position[1] - cw2 / 2));
-            //trap.add(new paper.Point(position[0], position[1] - cw1/2));
-        }
+        trap.add(new paper.Point(position[0] - cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw1 / 2, position[1]));
+        trap.add(new paper.Point(position[0] + cw2 / 2, position[1] + length));
+        trap.add(new paper.Point(position[0] - cw2 / 2, position[1] + length));
+        //trap.add(new paper.Point(position[0] - cw1/2, position[1]));
+
         trap.closed = true;
         trap.fillColor = color;
-        return trap;
+        return trap.rotate(rotation, position[0], position[1]);
     }
 
     render2DTarget(key, params){
