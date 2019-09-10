@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export  default class DropletGenerator extends Template{
     constructor(){
@@ -102,6 +103,53 @@ export  default class DropletGenerator extends Template{
 
         this.__mint = "NOZZLE DROPLET GENERATOR";
     }
+
+
+    getPorts(params){
+        let orificeSize = params["orificeSize"];
+        let orificeLength = params["orificeLength"];
+        let oilInputWidth = params["oilInputWidth"];
+        let waterInputWidth = params["waterInputWidth"];
+        let outputWidth = params["outputWidth"];
+        let outputLength = params["outputLength"];
+
+        let ports = [];
+
+        //Oil Top
+        ports.push(new ComponentPort(
+            oilInputWidth/2,
+            -waterInputWidth/2,
+            "1",
+            "FLOW"
+        ));
+
+        //Out
+        ports.push(new ComponentPort(
+            oilInputWidth + orificeLength + outputLength,
+            0,
+            "2",
+            "FLOW"
+        ));
+
+        //Oil Bottom
+        ports.push(new ComponentPort(
+            oilInputWidth/2,
+            waterInputWidth/2,
+            "3",
+            "FLOW"
+        ));
+
+        //Input
+        ports.push(new ComponentPort(
+            0,
+            0,
+            "4",
+            "FLOW"
+        ));
+
+        return ports;
+    }
+
 
     render2D(params, key) {
         let pos = params["position"];

@@ -207,6 +207,38 @@ export default class Device {
         return layer.getFeature(featureID);
     }
 
+    /**
+     * Returns the feature with the given name
+     * @param name
+     * @return {Feature}
+     */
+    getFeatureByName(name){
+        let layer;
+        let features;
+        for (let i = 0; i < this.layers.length; i++) {
+            layer = this.layers[i];
+            features = layer.getAllFeaturesFromLayer();
+            for(let ii in features){
+                let feature = features[ii];
+                if (feature.getName() === name){
+                    return feature;
+                }
+            }
+        }
+        for (let i = 0; i < this.textLayers.length; i ++){
+            layer = this.layers[i];
+            features = layer.getAllFeaturesFromLayer();
+            for(let ii in features){
+                let feature = features[i];
+                if (feature.getName() === name){
+                    return feature;
+                }
+            }
+        }
+        throw new Error("FeatureID " + name + " not found in any layer.");
+
+    }
+
     /* Add a layer, and re-sort the layers array.*/
     addLayer(layer) {
         layer.device = this;

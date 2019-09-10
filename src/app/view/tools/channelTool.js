@@ -79,7 +79,7 @@ export default class ChannelTool extends MouseTool {
 			let feat = Registry.currentLayer.getFeature(this.currentChannelID);
 			feat.updateParameter("end", target);
 			} else {
-				let newChannel = this.createChannel(this.startPoint, this.startPoint);
+				let newChannel = ChannelTool.createChannel(this.startPoint, this.startPoint, this.typeString, this.setString);
 				this.currentChannelID = newChannel.getID();
 				Registry.currentLayer.addFeature(newChannel);
 			}
@@ -100,8 +100,8 @@ export default class ChannelTool extends MouseTool {
         Registry.viewManager.saveDeviceState();
     }
 
-	createChannel(start, end) {
-		return Feature.makeFeature(this.typeString, this.setString, {
+	static createChannel(start, end, typestring = null, setstring = null) {
+		return Feature.makeFeature(typestring, setstring, {
 			start: start,
 			end: end
 		});

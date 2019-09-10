@@ -104,6 +104,9 @@ export default class Component {
             let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
             feature.updateParameter(key, value);
         }
+
+        //Update the ComponentPorts
+        this.updateComponentPorts();
     }
 
     /**
@@ -224,7 +227,6 @@ export default class Component {
      * @private
      */
     __updateBounds() {
-        console.log("test");
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
@@ -246,6 +248,7 @@ export default class Component {
 
     /**
      * Returns the params associated with the component
+     * @return {Params}
      */
     getParams(){
         return this.__params;
@@ -439,5 +442,28 @@ export default class Component {
 
     attachComponentPortRender(label, render){
         this._componentPortTRenders.set(label, render);
+    }
+
+    /**
+     * Updates the Component Ports to have the latest location information
+     */
+    updateComponentPorts(){
+        //updating the Component Ports
+
+        let params = (this.getParams()).toMap();
+
+        let cleanparamdata = {};
+
+        for(let key of params.keys()){
+            cleanparamdata[key] = params.get(key);
+        }
+
+        let type = Registry.featureSet.getTypeForMINT(this.getType())
+        let ports = Registry.featureSet.getComponentPorts(cleanparamdata, type);
+
+        for(let i in ports){
+            this.setPort(ports[i].label, ports[i]);
+        }
+
     }
 }

@@ -123,4 +123,18 @@ export default class Params {
     hasParam(key){
         return this.parameters.hasOwnProperty(key);
     }
+
+    /**
+     * Returns a ES6 Map() type object with keys and values
+     * @return {Map<key, value>}
+     */
+    toMap(){
+        let ret = new Map();
+        for (let key in this.parameters) {
+            if(this.parameters[key]!=undefined){
+                ret.set(key, this.parameters[key].getValue());
+            }
+        }
+        return ret;
+    }
 }
