@@ -94,7 +94,7 @@ export default class AutoRouteTool extends MouseTool {
 
     addSourcePoint(event){
         console.log("Source", event);
-        let point = MouseTool.getEventPosition(event)
+        let point = MouseTool.getEventPosition(event);
         let startPoint = ConnectionTool.getTarget(point);
 
         let isPointOnComponent = ConnectionTool.isPointOnComponent(startPoint);
@@ -105,10 +105,10 @@ export default class AutoRouteTool extends MouseTool {
             let componentport = ConnectionTool.getClosestComponentPort(isPointOnComponent, startPoint);
             if(componentport != null){
                 let location = ComponentPort.calculateAbsolutePosition(componentport, isPointOnComponent);
-                this.startPoint = location;
+                this.startPoint = startPoint;
             }else{
                 this.source = new ConnectionTarget(isPointOnComponent, null);
-                this.wayPoints.push(this.startPoint);
+                this.startPoint = startPoint;
             }
         } else if (isPointOnConnection){
             console.warn("Implement method to make the connection connections");
@@ -137,7 +137,7 @@ export default class AutoRouteTool extends MouseTool {
                 this.lastPoints.push(location);
             }else{
                 this.source = new ConnectionTarget(isPointOnComponent, null);
-                this.wayPoints.push(this.startPoint);
+                this.lastPoints.push(startPoint);
             }
         } else if (isPointOnConnection){
             console.warn("Implement method to make the connection connections");
