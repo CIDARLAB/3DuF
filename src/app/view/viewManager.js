@@ -45,6 +45,8 @@ import Feature from "../core/feature";
 import TaguchiDesigner from "./ui/taguchiDesigner";
 import RightClickMenu from "./ui/rightClickMenu";
 import IntroDialog from "./ui/introDialog";
+import DAFDPlugin from "../plugin/dafdPlugin";
+import {Examples} from "../index";
 
 export default class ViewManager {
 
@@ -998,5 +1000,26 @@ export default class ViewManager {
             this.customComponentManager.loadFromJSON(json["customComponents"]);
 
         }
+    }
+
+
+    activateDAFDPlugin(params = null){
+
+        this.loadDeviceFromJSON(JSON.parse(Examples.dafdtemplate));
+
+        if(null == params){
+            params = {
+                "orificeSize": 750,
+                "orificeLength": 200,
+                "oilInputWidth": 800,
+                "waterInputWidth": 900,
+                "outputWidth": 900,
+                "outputLength": 500,
+                "height": 100,
+            };
+        }
+
+        DAFDPlugin.fixLayout(params);
+
     }
 }

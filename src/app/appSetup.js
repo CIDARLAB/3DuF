@@ -120,6 +120,9 @@ window.onload = function() {
                 let params = JSON.parse(getQueryVariable("params"));
                 viewManager.updateComponentParameters(componentname, params);
             }
+        }else if(false != getQueryVariable("dafdparams")){
+            let params = JSON.parse(getQueryVariable("dafdparams"));
+            Registry.viewManager.activateDAFDPlugin(params);
         }
 
         Registry.viewManager.setupToolBars();
