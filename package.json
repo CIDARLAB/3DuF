@@ -44,7 +44,7 @@
     "compile_lib": "babel -—presets es2015 -d dist/ src/app/",
     "compile_orbit": "node_modules/.bin/browserify ./src/app/renderer/orbit_demo.js -t babelify --outfile ./orbit_bundle.js",
     "compile": "node_modules/.bin/browserify ./src/app/appSetup.js -t babelify --outfile ./3DuFapp.js -d -t [ babelify ]",
-    "publish": "node_modules/.bin/browserify ./src/app/appSetup.js -t babelify --outfile ./3DuFapp.js --debug -t [ babelify ] && cat ./3DuFapp.js | exorcist ./3DuFapp.js.map && echo \"//# sourceMappingUrl=./3DuFapp.js.map\" >> ./3DuFapp.js",
+    "publish": "node_modules/.bin/browserify ./src/app/appSetup.js -t babelify --outfile ./3DuFapp.js --debug -t [ babelify ] && cat ./3DuFapp.js | exorcist https://3duf.org/3DuFapp.js.map && echo \"//# sourceMappingUrl=./3DuFapp.js.map\" >> ./3DuFapp.js",
     "test": "node_modules/.bin/mocha --recursive --compilers js:babel/register -R spec ./src/test/",
     "watch_compile": "node_modules/.bin/watchify ./src/app/appSetup.js -t babelify -v --outfile ./3DuFapp.js -d -t [ babelify ]",
     "watch_test": "node_modules/.bin/mocha --watch --recursive --compilers js:babel/register -R min ./src/test/",
