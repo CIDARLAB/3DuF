@@ -1,3 +1,12 @@
+export const TechnologyType = {
+    COMPONENT : 0,
+    CONNECTION : 1,
+    CONNECTION_FEATURE: 2,
+    COMPONENT_FEATURE: 3,
+    FAB_FEATURE: 4,
+    EXT_INTEGRATION: 5
+};
+
 export default class Template {
     constructor(){
         this.__unique = null;
@@ -12,7 +21,12 @@ export default class Template {
         this.__targetParams = null;
         this.__mint = null;
         this.__renderKeys = null;
+        this.__technologyType = TechnologyType.COMPONENT; //This is the default
         this.__setupDefinitions();
+    }
+
+    get technologyType(){
+        return this.__technologyType;
     }
 
     get mint() {

@@ -137,7 +137,8 @@ export default class FeatureSet {
             "defaults": definition.defaults,
             "minimum": definition.minimum,
             "maximum": definition.maximum,
-            "mint": definition.mint
+            "mint": definition.mint,
+            "technologyType": definition.technologyType
         };
         return ret;
     }

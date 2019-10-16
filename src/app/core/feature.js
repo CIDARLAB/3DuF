@@ -192,8 +192,13 @@ export default class Feature {
         return Feature.getDefaultsForType(this.getType(), this.getSet());
     }
 
+    //TODO: Depreciate this
     getParams(){
         return this.__params.parameters;
+    }
+
+    getParamsObject(){
+        return this.__params;
     }
 
     setParams(params){

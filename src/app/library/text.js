@@ -1,4 +1,4 @@
-import Template from "./template";
+import Template, {TechnologyType} from "./template";
 import paper from "paper";
 
 export  default class Text extends Template{
@@ -42,6 +42,8 @@ export  default class Text extends Template{
         this.__toolParams = {
             position: "position"
         };
+
+        this.__technologyType = TechnologyType.FAB_FEATURE;
 
     }
 

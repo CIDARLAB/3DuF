@@ -1,4 +1,4 @@
-import Template from "./template";
+import Template, {TechnologyType} from "./template";
 import paper from "paper";
 
 export  default class RoundedChannel extends Template{
@@ -60,6 +60,8 @@ export  default class RoundedChannel extends Template{
 
 
         this.__mint = "CHANNEL";
+
+        this.__technologyType = TechnologyType.CONNECTION;
 
     }
 

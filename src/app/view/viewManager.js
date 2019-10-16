@@ -48,6 +48,9 @@ import IntroDialog from "./ui/introDialog";
 import DAFDPlugin from "../plugin/dafdPlugin";
 import {Examples} from "../index";
 import AutoRouteTool from "./tools/autorouteTool";
+import Params from "../core/params";
+import Component from "../core/component";
+import {TechnologyType} from "../library/template";
 
 export default class ViewManager {
 
@@ -1025,7 +1028,48 @@ export default class ViewManager {
         DAFDPlugin.fixLayout(params);
     }
 
+
+    /********************************************/
+
+    /**
+     *
+     */
     activateAutoRouteTool(){
         this.activateTool("AutoRouteTool", "AutoRouteTool");
+    }
+
+    convertselectedChannelsToConnections(){
+
+    }
+
+    generateComponentsFromOrphanFeatures(){
+        let features = this.__currentDevice.getAllFeaturesFromDevice();
+
+        for(let i in features){
+            let orphanfeature = features[i];
+            let type = orphanfeature.getType();
+            if(type == null){
+                console.log("Null typed feature:", orphanfeature);
+                continue;
+            }
+            let definition = Registry.featureSet.getDefinition(orphanfeature.getType());
+            if(definition.technologyType != TechnologyType.COMPONENT){
+                console.log(definition);
+                console.log("Skipping Non-Component", orphanfeature, definition.technologyType);
+                continue;
+            }
+            //Clean Param Data
+            let params = orphanfeature.getParamsObject();
+            let componentid = Registry.generateID();
+            let name = Registry.currentDevice.generateNewName(orphanfeature.getType());
+            let newComponent = new Component(orphanfeature.getType(), params, name , definition.mint, componentid);
+            newComponent.addFeatureID(orphanfeature.getID());
+            orphanfeature.referenceID = componentid;
+
+
+            //TODO: Add the component ports too for this
+            this.__currentDevice.addComponent(newComponent);
+
+        }
     }
 }

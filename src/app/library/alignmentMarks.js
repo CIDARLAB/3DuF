@@ -1,4 +1,4 @@
-import Template from "./template";
+import Template, {TechnologyType} from "./template";
 import paper from "paper";
 
 export  default class AlignmentMarks extends Template{
@@ -63,6 +63,7 @@ export  default class AlignmentMarks extends Template{
 
         this.__mint = "PORT";
 
+        this.__technologyType = TechnologyType.FAB_FEATURE;
 
     }
 

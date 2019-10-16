@@ -1,4 +1,4 @@
-import Template from "./template";
+import Template, {TechnologyType} from "./template";
 import paper from "paper";
 
 export  default class Transition extends Template{
@@ -76,6 +76,8 @@ export  default class Transition extends Template{
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "TRANSITION";
+
+        this.__technologyType = TechnologyType.CONNECTION_FEATURE;
     }
 
     render2D(params, key) {
