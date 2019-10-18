@@ -8,6 +8,7 @@ export default class DAFDPlugin {
     static fixLayout(params){
 
         //Update Params
+        let channelid;
         let orificeSize = params["orificeSize"];
         let orificeLength = params["orificeLength"];
         let oilInputWidth = params["oilInputWidth"];
@@ -52,10 +53,19 @@ export default class DAFDPlugin {
         let cp;
 
 
-        //Align ports to the droplet generator
+        //Align ports  to the droplet generator
+        let dxpos = dropgen.getPosition()[0];
+        let xpos = dxpos + oilInputWidth / 2;
+        let ypos = port_oil1.getCenterPosition()[1];
+        port_oil1.updateComponetPosition([xpos, ypos]);
+        ypos = port_oil2.getCenterPosition()[1];
+        port_oil2.updateComponetPosition([xpos, ypos]);
 
-
-
+        //Moving teh transistions to align with droplet generators
+        ypos = transition_oil1.getValue('position')[1];
+        transition_oil1.updateParameter('position', [xpos, ypos]);
+        ypos = transition_oil2.getValue('position')[1];
+        transition_oil2.updateParameter('position', [xpos, ypos]);
 
         //Input Channel
         startpoint = port_in.getCenterPosition();
@@ -63,9 +73,12 @@ export default class DAFDPlugin {
         endpoint = ComponentPort.calculateAbsolutePosition(cp, dropgen);
         console.log("endpoint", endpoint);
         let newChannel = ChannelTool.createChannel(startpoint, endpoint, "RoundedChannel", "Basic");
+        channelid = newChannel.getID();
 
-        // this.currentChannelID = newChannel.getID();
         Registry.currentLayer.addFeature(newChannel);
+
+        newChannel = Registry.currentDevice.getFeatureByID(channelid);
+        newChannel.updateParameter('channelWidth', waterInputWidth);
 
         //oil top Channel
         startpoint = port_oil1.getCenterPosition();
@@ -73,10 +86,11 @@ export default class DAFDPlugin {
         endpoint = ComponentPort.calculateAbsolutePosition(cp, dropgen);
         console.log("endpoint", endpoint);
         newChannel = ChannelTool.createChannel(startpoint, endpoint, "RoundedChannel", "Basic");
+        channelid = newChannel.getID();
 
-        // this.currentChannelID = newChannel.getID();
         Registry.currentLayer.addFeature(newChannel);
-
+        newChannel = Registry.currentDevice.getFeatureByID(channelid);
+        newChannel.updateParameter('channelWidth', oilInputWidth);
 
         //output Channel
         startpoint = port_out.getCenterPosition();
@@ -84,9 +98,12 @@ export default class DAFDPlugin {
         endpoint = ComponentPort.calculateAbsolutePosition(cp, dropgen);
         console.log("endpoint", endpoint);
         newChannel = ChannelTool.createChannel(startpoint, endpoint, "RoundedChannel", "Basic");
+        channelid = newChannel.getID();
 
-        // this.currentChannelID = newChannel.getID();
         Registry.currentLayer.addFeature(newChannel);
+
+        newChannel = Registry.currentDevice.getFeatureByID(channelid);
+        newChannel.updateParameter('channelWidth', outputWidth);
 
 
         //oil bottom Channel
@@ -96,9 +113,12 @@ export default class DAFDPlugin {
         endpoint = ComponentPort.calculateAbsolutePosition(cp, dropgen);
         console.log("endpoint", endpoint);
         newChannel = ChannelTool.createChannel(startpoint, endpoint, "RoundedChannel", "Basic");
+        channelid = newChannel.getID();
 
-        // this.currentChannelID = newChannel.getID();
         Registry.currentLayer.addFeature(newChannel);
+
+        newChannel = Registry.currentDevice.getFeatureByID(channelid);
+        newChannel.updateParameter('channelWidth', oilInputWidth);
 
     }
 
