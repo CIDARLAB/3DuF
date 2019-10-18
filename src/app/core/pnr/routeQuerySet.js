@@ -5,16 +5,23 @@ export default class RouteQuerySet {
         this._routequeries = new Map();
     }
 
-    createNewRouteQuery(connection_object, component_objects){
+    createNewRouteQuery(connection_object, obstacles){
 
         //TODO: Pull these from a default design rule set for the particular technology at a future point
         let designrules = new Map();
         designrules.set("channelSpacing", 500);
 
         let params = new Map();
-        params.set("channelWidth", connection_object.getParamValue("channelWidth"));
+        params.set("channelWidth", connection_object.getValue("channelWidth"));
+        let paths = connection_object.getPaths();
+        let path = paths[0];
+        //TODO: For multi paths
 
-        let rquery = new RouteQuery(connection_object.source, connection_object.sinks, component_objects.obstacles, connection_object.params, designrules);
+
+        let source = path[0];
+        let sinks = [path[path.length-1]];
+
+        let rquery = new RouteQuery(source, sinks, obstacles, params, designrules);
 
         this._routequeries.set(connection_object.getID(), rquery);
     }

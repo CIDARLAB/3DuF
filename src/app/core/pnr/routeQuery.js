@@ -1,3 +1,5 @@
+import {strMapToObj} from "../../utils/mapUtils";
+
 export default class RouteQuery {
     constructor(source = null, sinks = [], obstacles = [], params = new Map(), designrules = new Map()){
         self._source = source;
@@ -21,6 +23,8 @@ export default class RouteQuery {
         ret['source'] = self._source;
         ret['sinks'] = self._sinks;
         ret['obstacles'] = self._obstacles;
+        ret['params'] = strMapToObj(self._params);
+        ret['designRules'] = strMapToObj(self._designRules);
 
         return ret;
     }

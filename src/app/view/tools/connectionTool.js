@@ -110,7 +110,7 @@ export default class ConnectionTool extends MouseTool {
 
     initChannel() {
         let isPointOnComponent = ConnectionTool.isPointOnComponent(this.lastPoint);
-        let isPointOnConnection = this.isPointOnConnection(this.lastPoint);
+        let isPointOnConnection = ConnectionTool.isPointOnConnection(this.lastPoint);
         this.startPoint = ConnectionTool.getTarget(this.lastPoint);
         this.lastPoint = this.startPoint;
         if(isPointOnComponent){
@@ -233,7 +233,7 @@ export default class ConnectionTool extends MouseTool {
         let connectiontargettoadd;
         let point = MouseTool.getEventPosition(event);
         let isPointOnComponent = ConnectionTool.isPointOnComponent(point);
-        let isPointOnConnection = this.isPointOnConnection(point);
+        let isPointOnConnection = ConnectionTool.isPointOnConnection(point);
         let target = ConnectionTool.getTarget(point);
         if (isManhatten && target) {
             //TODO: modify the target to find the orthogonal point

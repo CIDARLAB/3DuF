@@ -123,6 +123,12 @@ class Layer {
     containsFeatureID(featureID) {
         return this.features.hasOwnProperty(featureID);
     }
+
+
+    /**
+     * Returns all the Feature Objects associated with the layer
+     * @return {{}|*}
+     */
     getAllFeaturesFromLayer() {
         return this.features;
     }

@@ -51,6 +51,8 @@ import AutoRouteTool from "./tools/autorouteTool";
 import Params from "../core/params";
 import Component from "../core/component";
 import {TechnologyType} from "../library/template";
+import Connection from "../core/connection";
+import RouteQuerySet from "../core/pnr/routeQuerySet";
 
 export default class ViewManager {
 
@@ -1038,9 +1040,63 @@ export default class ViewManager {
         this.activateTool("AutoRouteTool", "AutoRouteTool");
     }
 
-    convertselectedChannelsToConnections(){
+    // joinSelectedChannelsAndConvertToConnections(){
+    //     let selectedchannels = this.view.getSelectedFeatures();
+    //     if(selectedchannels.length == 0){
+    //         console.warn("No Channels Selected");
+    //         return;
+    //     }else if(selectedchannels.length = 1){
+    //         //TODO: Create a connection out of this
+    //         let thefeature = selectedchannels[0];
+    //
+    //         let params = thefeature.getParamsObject();
+    //
+    //         params.updateParameter("end", blah);
+    //         params.updateParameter("start", blah)
+    //         let connection = new Connection('Connection', params, this.__currentDevice.generateNewName('Connection'), 'CHANNEL');
+    //         connection.routed = true;
+    //         connection.addFeatureID(thefeature.getID());
+    //         thefeature.referenceID = connection.getID();
+    //
+    //         this.__currentDevice.addConnection()
+    //     }else if(selectedchannels.length > 1){
+    //         //TODO: Create a connection out of n things selected
+    //     }
+    //
+    // }
+
+    generateRouteQuerySet(){
+        let currentlayer = Registry.currentLayer;
+
+        let features = currentlayer.getAllFeaturesFromLayer();
+        let connections = new Map();
+        let obstaclefeatures = [];
+        for(let i in features){
+            if(features[i].getType() != "Connection"){
+                obstaclefeatures.push(features[i].getRenderBounds());
+                continue;
+            }
+            let conn = this.__currentDevice.getConnectionByID(features[i].referenceID);
+            // console.log(features[i], conn);
+            connections.set(conn.getID(), conn);
+        }
+        // console.log(connections, obstaclefeatures);
+        let queryset = new RouteQuerySet();
+
+        for(let key of connections.keys()){
+            let conn = connections.get(key);
+            queryset.createNewRouteQuery(conn, obstaclefeatures);
+        }
+
+        console.log(queryset);
+
+        let json = new Blob([JSON.stringify(queryset.toJSON())], {
+            type: "application/json"
+        });
+        saveAs(json, Registry.currentDevice.getName()+ "_route_query.json");
 
     }
+
 
     generateComponentsFromOrphanFeatures(){
         let features = this.__currentDevice.getAllFeaturesFromDevice();
@@ -1053,9 +1109,8 @@ export default class ViewManager {
                 continue;
             }
             let definition = Registry.featureSet.getDefinition(orphanfeature.getType());
-            if(definition.technologyType != TechnologyType.COMPONENT){
-                console.log(definition);
-                console.log("Skipping Non-Component", orphanfeature, definition.technologyType);
+            if(definition.technologyType !== TechnologyType.COMPONENT){
+                console.log("Skipping Non-Component:", definition.technologyType);
                 continue;
             }
             //Clean Param Data
