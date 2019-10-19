@@ -121,7 +121,7 @@ window.onload = function() {
                 viewManager.updateComponentParameters(componentname, params);
             }
         }else if(false != getQueryVariable("dafdparams")){
-            let params = JSON.parse(getQueryVariable("dafdparams"));
+            let params = JSON.parse(decodeURIComponent(getQueryVariable("dafdparams")));
             Registry.viewManager.activateDAFDPlugin(params);
         }
 
