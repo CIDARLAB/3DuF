@@ -62,10 +62,14 @@ export default class DAFDPlugin {
         port_oil2.updateComponetPosition([xpos, ypos]);
 
         //Moving teh transistions to align with droplet generators
-        ypos = transition_oil1.getValue('position')[1];
+        ypos = port_oil1.getValue('position')[1];
         transition_oil1.updateParameter('position', [xpos, ypos]);
-        ypos = transition_oil2.getValue('position')[1];
+        ypos = port_oil2.getValue('position')[1];
         transition_oil2.updateParameter('position', [xpos, ypos]);
+        let inpos = port_in.getValue('position');
+        let outpos = port_out.getValue('position');
+        transition_in.updateParameter('position', inpos);
+        transition_out.updateParameter('position', outpos);
 
         //Input Channel
         startpoint = port_in.getCenterPosition();
