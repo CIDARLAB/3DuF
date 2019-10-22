@@ -111,17 +111,33 @@ export default class MouseAndKeyboardHandler {
                 console.log("Undo executed");
                 reference.undo();
             }
+
+            let pan_multiplier;
             
             if(key === 37){
                 //console.log("left arrow");
-                reference.view.moveCenter(new paper.Point(1000,0));
+                if(event.shiftKey){
+                    pan_multiplier = 10;
+                }else if(event.ctrlKey){
+                    pan_multiplier = 0.1;
+                }else{
+                    pan_multiplier = 1;
+                }
+                reference.view.moveCenter(new paper.Point(1000 * pan_multiplier,0));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
             }
 
             if(key === 38){
                 //console.log("Up arrow");
-                reference.view.moveCenter(new paper.Point(0,1000));
+                if(event.shiftKey){
+                    pan_multiplier = 10;
+                }else if(event.ctrlKey){
+                    pan_multiplier = 0.1;
+                }else{
+                    pan_multiplier = 1;
+                }
+                reference.view.moveCenter(new paper.Point(0,1000 * pan_multiplier));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
 
@@ -129,7 +145,14 @@ export default class MouseAndKeyboardHandler {
 
             if(key === 39){
                 //console.log("right arrow");
-                reference.view.moveCenter(new paper.Point(-1000,0));
+                if(event.shiftKey){
+                    pan_multiplier = 10;
+                }else if(event.ctrlKey){
+                    pan_multiplier = 0.1;
+                }else{
+                    pan_multiplier = 1;
+                }
+                reference.view.moveCenter(new paper.Point(-1000 * pan_multiplier,0));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
 
@@ -137,7 +160,14 @@ export default class MouseAndKeyboardHandler {
 
             if(key === 40){
                 //console.log("down arrow");
-                reference.view.moveCenter(new paper.Point(0,-1000));
+                if(event.shiftKey){
+                    pan_multiplier = 10;
+                }else if(event.ctrlKey){
+                    pan_multiplier = 0.1;
+                }else{
+                    pan_multiplier = 1;
+                }
+                reference.view.moveCenter(new paper.Point(0,-1000 * pan_multiplier));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
 
