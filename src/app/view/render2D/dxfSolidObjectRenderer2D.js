@@ -109,9 +109,8 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
 }
 
 function isClosedPolyline(dxfobject) {
-    let data = dxfobject.getData
-    ();
-    // console.log(data.shape);
+    let data = dxfobject.getData();
+    // console.log(data, data.shape);
     return data.shape;
 }
 
@@ -153,6 +152,20 @@ function processARC(geometryGraph, data) {
 
     geometryGraph.addEdge(startpoint, endpoint, data);
 
+}
+
+function processClosedPolyLine(entity) {
+    let polygon = new paper.Path();
+    polygon.origin = "POLYLINE";
+    // // create geometry
+    for(let i = 0; i < entity.vertices.length; i++) {
+        let dxfvertex = entity.vertices[i];
+        polygon.add(new paper.Point(dxfvertex.x, dxfvertex.y));
+
+    }
+    polygon.closed = true;
+
+    return polygon;
 }
 
 function processPolyLine(geometryGraph, data) {
@@ -200,7 +213,7 @@ export function renderDXFObjects(dxfobjectarray) {
             processLine(geometryGraph, dxfobject.getData());
         } else if (dxfobject.getType() === 'LWPOLYLINE' || dxfobject.getType() === 'POLYLINE'){
             if(isClosedPolyline(dxfobject)){
-                closedshapes.push(drawLine(dxfobject.getData()));
+                closedshapes.push(processClosedPolyLine(dxfobject.getData()));
             }else{
                 processPolyLine(geometryGraph, dxfobject.getData());
             }
