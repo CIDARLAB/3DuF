@@ -138,8 +138,8 @@ function processARC(geometryGraph, data) {
      */
 
 
-    let center = new paper.Point(data.center.x, data.center.y);
-    let radius = data.radius;
+    let center = new paper.Point(data.center.x * 1000, data.center.y * 1000);
+    let radius = data.radius * 1000;
     let startAngle = data.startAngle;
     let endAngle = data.endAngle; //* 180/Math.PI;
 
@@ -160,7 +160,7 @@ function processClosedPolyLine(entity) {
     // // create geometry
     for(let i = 0; i < entity.vertices.length; i++) {
         let dxfvertex = entity.vertices[i];
-        polygon.add(new paper.Point(dxfvertex.x, dxfvertex.y));
+        polygon.add(new paper.Point(dxfvertex.x * 1000, dxfvertex.y * 1000));
 
     }
     polygon.closed = true;
@@ -240,9 +240,10 @@ export function renderDXFObjects(dxfobjectarray) {
 
     // console.log("Geometry grpah:",geometryGraph);
     // console.log("Closed Shapes:", closedshapes);
-    //TODO: Generate the Geometry from the geometry graph , this should a return a compound path that takes care of the right kind of correct connected paths
+    //TODO: Generate the Geometry from the geometry graph , this should a return a compound path that takes care of the
+    // right kind of correct connected paths
 
-    let path =  geometryGraph.generateGeometry();
+    let path = geometryGraph.generateGeometry();
 
     //TODO: Now add all the remainder closed shapes to the compound paths
     for(let child of closedshapes){
@@ -506,9 +507,9 @@ function drawLine(entity) {
 
             console.log("Throughpoint:", throughpoint);
 
-            basepath.add(new paper.Point(startPoint.x, startPoint.y));
+            basepath.add(new paper.Point(startPoint.x * 1000, startPoint.y * 1000));
             //basepath.add(new paper.Point(endPoint.x, endPoint.y));
-            basepath.arcTo(throughpoint, new paper.Point(endPoint.x, endPoint.y));
+            basepath.arcTo(throughpoint, new paper.Point(endPoint.x * 1000, endPoint.y * 1000));
             i++;
 
         } else {
@@ -521,7 +522,7 @@ function drawLine(entity) {
             // path.addChild(line);
 
             let dxfvertex = entity.vertices[i];
-            basepath.add(new paper.Point(dxfvertex.x, dxfvertex.y));
+            basepath.add(new paper.Point(dxfvertex.x * 1000, dxfvertex.y * 1000));
 
         }
 
