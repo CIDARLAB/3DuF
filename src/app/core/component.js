@@ -458,8 +458,7 @@ export default class Component {
             cleanparamdata[key] = params.get(key);
         }
 
-        let type = Registry.featureSet.getTypeForMINT(this.getType())
-        let ports = Registry.featureSet.getComponentPorts(cleanparamdata, type);
+        let ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.getType());
 
         for(let i in ports){
             this.setPort(ports[i].label, ports[i]);
