@@ -106,6 +106,9 @@ var generateUpdateFunction = function(sourceID, targetID, typeString, setString,
         var source = document.getElementById(sourceID);
         var target = document.getElementById(targetID);
         var param;
+        if(!source.value || source.value == ""){
+            return;
+        }
         try {
             param = new FloatValue(parseFloat(source.value));
         } catch (err){
