@@ -22,6 +22,7 @@ import Valve3D from "../library/valve3D";
 import Tree from "../library/tree";
 import YTree from "../library/ytree";
 import LLChamber from "../library/llChamber";
+import ThreeDMixer from "../library/threeDMixer";
 
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
@@ -63,7 +64,9 @@ export default class FeatureSet {
             "Valve3D": {"object": new Valve3D(), "key":"FLOW" },
             "Valve3D_control": {"object": new Valve3D(), "key":"CONTROL" },
             "LLChamber": {"object": new LLChamber(), "key": "FLOW"},
-            "LLChamber_control": {"object": new LLChamber(), "key": "CONTROL"}
+            "LLChamber_control": {"object": new LLChamber(), "key": "CONTROL"},
+            "3DMixer": {"object": new ThreeDMixer(), "key": "FLOW"},
+            "3DMixer_control": {"object": new ThreeDMixer(), "key": "CONTROL"},
         };
 
         // this.__checkDefinitions();

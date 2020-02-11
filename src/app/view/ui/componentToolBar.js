@@ -44,6 +44,7 @@ export default class ComponentToolBar{
         this.__celltraplButton = document.getElementById("celltrapl_button");
         this.__alignmentMarksButton = document.getElementById("alignmentmarks_button");
         this.__llChamberButton = document.getElementById("llchamber_button");
+        this.__threeDMixerButton = document.getElementById("3dmixer_button");
 
         //Create all the parameter menu buttons
 
@@ -73,6 +74,7 @@ export default class ComponentToolBar{
         this.__celltraplParams = document.getElementById("celltrapl_params_button");
         this.__alignmentMarksParams = document.getElementById("alignmentmarks_params_button");
         this.__llChamberParams = document.getElementById("llchamber_params_button");
+        this.__threeDMixerParams = document.getElementById("3dmixer_params_button");
 
         this.__insertTextDialog = new InsertTextDialog();
 
@@ -104,7 +106,8 @@ export default class ComponentToolBar{
             "DropletGen": this.__dropletgenButton,
             "CellTrapL": this.__celltraplButton,
             "AlignmentMarks": this.__alignmentMarksButton,
-            "LLChamber" : this.__llChamberButton
+            "LLChamber" : this.__llChamberButton,
+            "3DMixer" : this.__threeDMixerButton
         };
 
         this.__setupEventHandlers();
@@ -221,6 +224,12 @@ export default class ComponentToolBar{
             Registry.viewManager.activateTool("BetterMixer");
 
             ref.setActiveButton("BetterMixer");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__threeDMixerButton.onclick = function() {
+            Registry.viewManager.activateTool("3DMixer");
+
+            ref.setActiveButton("3DMixer");
             ref.__viewManagerDelegate.switchTo2D();
         };
         this.__curvedmixerButton.onclick = function() {
@@ -347,6 +356,7 @@ export default class ComponentToolBar{
         this.__celltraplParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CellTrapL", "Basic");
         this.__alignmentMarksParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("AlignmentMarks", "Basic");
         this.__llChamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LLChamber", "Basic");
+        this.__threeDMixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMixer", "Basic");
 
     }
 
