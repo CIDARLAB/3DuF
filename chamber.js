@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export  default class Chamber extends Template{
     constructor(){
@@ -80,6 +81,44 @@ export  default class Chamber extends Template{
 
         this.__mint = "REACTION CHAMBER";
 
+    }
+
+
+    getPorts(params){
+        let l = params["length"];
+        let w = params["width"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(
+            w/2,
+            0,
+            "1",
+            "FLOW"
+        ));
+
+        ports.push(new ComponentPort(
+            w,
+            l/2,
+            "2",
+            "FLOW"
+        ));
+
+        ports.push(new ComponentPort(
+            w/2,
+            l,
+            "3",
+            "FLOW"
+        ));
+
+        ports.push(new ComponentPort(
+            0,
+            l/2,
+            "4",
+            "FLOW"
+        ));
+
+        return ports;
     }
 
     render2D(params, key) {
