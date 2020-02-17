@@ -14,6 +14,13 @@ export default class Params {
         if(values != null){
             this.parameters = this.__sanitizeValues(values);
         }else{
+
+            let value;
+            for(let key in rawparameters){
+                value = rawparameters[key];
+                this.parameters[key] = Parameter.makeParam(this.unique[key], oldParam);
+            }
+
             this.parameters = rawparameters
         }
     }

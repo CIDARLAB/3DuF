@@ -281,7 +281,8 @@ export default class Component {
      * @param center
      */
     updateComponetPosition(center){
-        this.updateParameter('position', center);
+        //This was not calling the right method earlier
+        this.__params.updateParameter('position', center);
         for(let i in this.__features){
             let featureidtochange = this.__features[i];
 
@@ -305,7 +306,14 @@ export default class Component {
         // for(let key in this.__params.parameters){
         //     paramvalues[key] = this.getValue(key);
         // }
-        let replicaparams = new Params(null, null, null, this.__params.parameters);
+
+        let definition = Registry.featureSet.getDefinition(this.__type);
+        //Clean Param Data
+        let cleanparamdata = {};
+        for(let key in this.__params.parameters){
+            cleanparamdata[key] = this.__params.parameters[key].getValue();
+        }
+        let replicaparams = new Params(cleanparamdata, definition.unique, definition.heritable);
         let ret = new Component(this.__type, replicaparams, name, this.__entity);
         console.log("Checking what the new component params are:", ret.__params);
         //Generate New features
