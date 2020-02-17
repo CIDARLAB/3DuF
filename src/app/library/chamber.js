@@ -91,29 +91,29 @@ export  default class Chamber extends Template{
         let ports = [];
 
         ports.push(new ComponentPort(
-            w/2,
             0,
+            -l/2,
             "1",
             "FLOW"
         ));
 
         ports.push(new ComponentPort(
-            w,
-            l/2,
-            "2",
-            "FLOW"
-        ));
-
-        ports.push(new ComponentPort(
             w/2,
-            l,
-            "3",
+            0,
+            "2",
             "FLOW"
         ));
 
         ports.push(new ComponentPort(
             0,
             l/2,
+            "3",
+            "FLOW"
+        ));
+
+        ports.push(new ComponentPort(
+            -w/2,
+            0,
             "4",
             "FLOW"
         ));

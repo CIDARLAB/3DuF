@@ -17,7 +17,7 @@ export default class PaperComponentPortView {
         let componentportrenders = this._componentAndRenderMap.get(component.getID());
 
         for(let key of component.ports.keys()){
-            let render = ComponentPortRenderer2D.renderComponentPort(component.ports.get(key));
+            let render = ComponentPortRenderer2D.renderComponentPort(component.ports.get(key), undefined, undefined, zfactor);
             componentportrenders.push(render);
         }
     }
