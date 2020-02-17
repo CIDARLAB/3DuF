@@ -42,6 +42,20 @@ export default class Component {
         this.__ports = new Map();
         this._componentPortTRenders = new Map();
 
+        //Create and set the ports here itself
+
+        let cleanparamdata = {};
+        for(let key in this.__params.parameters){
+            cleanparamdata[key] = this.__params.parameters[key].getValue();
+        }
+
+        let ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.__type);
+        if(ports != undefined && ports.length >= 0 && ports != null){
+            for(let i in ports){
+                this.setPort(ports[i].label, ports[i]);
+            }
+        }
+
     }
 
     get ports() {

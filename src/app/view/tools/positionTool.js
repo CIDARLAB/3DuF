@@ -92,13 +92,6 @@ export default class PositionTool extends MouseTool {
 
         }
 
-        let ports = Registry.featureSet.getComponentPorts(cleanparamdata, typeString);
-
-        for(let i in ports){
-            newComponent.setPort(ports[i].label, ports[i]);
-        }
-
-
         Registry.currentDevice.addComponent(newComponent);
         return newComponent;
     }
