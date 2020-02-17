@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export  default class Valve extends Template{
     constructor(){
@@ -72,6 +73,30 @@ export  default class Valve extends Template{
 
         this.__mint = "VALVE";
     }
+
+    getPorts(params){
+        let l = params["length"];
+        let w = params["width"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(
+            0,
+            -l/2,
+            "1",
+            "CONTROL"
+        ));
+
+        ports.push(new ComponentPort(
+            0,
+            l/2,
+            "2",
+            "CONTROL"
+        ));
+
+        return ports;
+    }
+
 
     render2D(params, key) {
         let orientation = params["orientation"];
