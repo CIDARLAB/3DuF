@@ -24,6 +24,7 @@ export default class PaperComponentPortView {
 
     updateRenders(){
         if(!this._enabled){
+            this.clearActiveRenders();
             return;
         }
         this.clearActiveRenders();
@@ -51,4 +52,15 @@ export default class PaperComponentPortView {
 
         this._activeRenders = [];
     }
+
+    enable(){
+        this._enabled = true;
+        console.log("TEST");
+    }
+
+    disable(){
+        this.clearActiveRenders();
+        this._enabled = false;
+    }
+
 }

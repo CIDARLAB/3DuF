@@ -8,6 +8,7 @@ export default class ResolutionToolBar{
         this.__smallresolutionLabel = document.getElementById("sm-resolution");
         this.__largeresolutionLabel = document.getElementById("lg-resolution");
         this.__adaptiveGridCheckBox = document.getElementById("grid-enable-toggle");
+        this.__snapRenderCheckBox = document.getElementById("render-snap-toggle");
         // this.__resolutionSlider = document.getElementById("grid-resolution-slider");
         this.__gridResolutionSlider = document.getElementById('grid-resolution-slider');
         let ref = this; // User ref for referring to this object instance
@@ -20,6 +21,15 @@ export default class ResolutionToolBar{
                 //Disable Adaptive Grid
                 Registry.currentGrid.disableAdaptiveGrid();
                 ref.__gridResolutionSlider.removeAttribute('disabled');
+            }
+        };
+        this.__snapRenderCheckBox.onchange = function (event) {
+            if(ref.__snapRenderCheckBox.checked){
+                //Enable Adaptive Grid
+                Registry.viewManager.view.enableSnapRender();
+            }else{
+                //Disable Adaptive Grid
+                Registry.viewManager.view.disableSnapRender();
             }
         };
 

@@ -628,4 +628,12 @@ export default class PaperView {
         this._paperComponentPortView.updateRenders();
     }
 
+    enableSnapRender(){
+        this._paperComponentPortView.enable();
+    }
+
+    disableSnapRender(){
+        this._paperComponentPortView.disable();
+    }
+
 }
