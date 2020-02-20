@@ -384,11 +384,11 @@ export default class Connection {
         let params = {};
         for(let key in json.params){
             // console.log("key:", key, "value:", json.params[key]);
-            let paramobject = Parameter.generateConnectionParameter(key, json.params[key]);
-            params[key] = paramobject;
+            // let paramobject = Parameter.generateConnectionParameter(key, json.params[key]);
+            params[key] = json.params[key];
         }
-
-        let paramstoadd = new Params(null, null, null, params);
+        let definition = Registry.featureSet.getDefinition("Connection");
+        let paramstoadd = new Params(params, definition.unique, definition.heritable);
 
         let connection = new Connection(entity, paramstoadd, name, entity, id);
         if(json.hasOwnProperty("source")){
