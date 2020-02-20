@@ -975,8 +975,7 @@ export default class ViewManager {
         params_to_copy["position"]  = [xpos, ypos];
 
         //Get default params and overwrite them with json params, this can account for inconsistencies
-        let nonminttype = Registry.featureSet.getTypeForMINT(component.getType());
-        let newFeature = Feature.makeFeature(nonminttype, "Basic", params_to_copy);
+        let newFeature = Feature.makeFeature(component.getType(), "Basic", params_to_copy);
 
         component.addFeatureID(newFeature.getID());
 
