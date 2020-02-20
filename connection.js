@@ -26,7 +26,7 @@ export  default class Connection extends Template{
 
 
         this.__units = {
-            "portRadius": "&mu;m",
+            "channelWidth": "&mu;m",
             "height": "&mu;m"
         };
 
