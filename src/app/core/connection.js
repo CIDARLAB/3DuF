@@ -387,6 +387,54 @@ export default class Connection {
             // let paramobject = Parameter.generateConnectionParameter(key, json.params[key]);
             params[key] = json.params[key];
         }
+
+        //Check if the params have the other unique elements necessary otherwise add them as null 
+        if(!params.hasOwnProperty("start")){
+            //Setting this value to origin
+            params["start"] = [0,0];
+        }
+        if(!params.hasOwnProperty("end")){
+            //Setting this value to origin
+            params["end"] = [0,0];
+        }
+        if(!params.hasOwnProperty("wayPoints")){
+            //TODO: setting a single waypoint at origin
+            params["wayPoints"] = [
+                [
+                  0,
+                  0
+                ],
+                [
+                    1,
+                    2
+                ]
+              ]
+        }
+        if(!params.hasOwnProperty("segments")){
+            //TODO: Setting a default segment from origin to origin
+            params["segments"] = [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ],
+                [
+                    [
+                      0,
+                      0
+                    ],
+                    [
+                      0,
+                      0
+                    ]
+                  ]
+              ];
+        }
         let definition = Registry.featureSet.getDefinition("Connection");
         let paramstoadd = new Params(params, definition.unique, definition.heritable);
 

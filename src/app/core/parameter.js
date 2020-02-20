@@ -3,6 +3,12 @@ import * as NumberUtils from "../utils/numberUtils";
 
 export default class Parameter {
     constructor(type, value) {
+        //Check value if its parsable string
+        if (typeof value === 'string' && type === 'Float'){
+            value = parseInt(value);
+        }else if(typeof value === 'string' && type === 'Integer'){
+            value = parseInt(value);
+        }
         Parameter.checkValue(type, value);
         this.__type = type;
         this.__value = value;
