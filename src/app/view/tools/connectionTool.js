@@ -164,7 +164,13 @@ export default class ConnectionTool extends MouseTool {
             // feat.updateParameter("wayPoints", this.wayPoints);
             feat.updateParameter("segments", this.generateSegments());
             //Save the connection object
-            let params = new Params(null,null,null, feat.getParams());
+            let rawparams = feat.getParams();
+            let values = {};
+            for(let key in rawparams){
+                values[key] = rawparams[key].getValue();
+            }
+            let definition = Registry.featureSet.getDefinition("Connection");
+            let params = new Params(values, definition.unique, definition.heritable);
             if(this.__currentConnectionObject == null || this.__currentConnectionObject === undefined){
                 let connection = new Connection('Connection', params, Registry.currentDevice.generateNewName('CHANNEL'), 'CHANNEL');
                 connection.routed = true;

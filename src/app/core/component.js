@@ -426,8 +426,8 @@ export default class Component {
         }
 
         let paramstoadd = new Params(params, definition.unique , definition.heritable);
-
-        let component = new Component(entity, paramstoadd, name, entity, id);
+        let typestring = Registry.featureSet.getTypeForMINT(entity);
+        let component = new Component(typestring, paramstoadd, name, entity, id);
 
         //Deserialize the component ports
         let portdata = new Map();

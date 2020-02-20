@@ -65,7 +65,7 @@ export  default class Connection extends Template{
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "CONNECTION";
+        this.__mint = "CHANNEL";
     }
 
     render2D(params, key) {
