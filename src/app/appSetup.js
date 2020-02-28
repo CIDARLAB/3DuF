@@ -1,60 +1,14 @@
 import * as Registry from "./core/registry";
 
-import ViewManager from "./view/viewManager";
-import { TrackJS } from "trackjs";
+import PaperView from "./view/paperView";
+import BareViewManager from "./view/bareViewManager";
 
 import * as Examples from "./examples/jsonExamples";
 
 let viewManager;
 
-function getQueryVariable(variable) {
-    let query = window.location.search.substring(1);
-    let vars = query.split("&");
-    for (let i = 0; i < vars.length; i++) {
-        let pair = vars[i].split("=");
-        if (pair[0] == variable) {
-            return pair[1];
-        }
-    }
-    return false;
-}
-
-function checkBrowCompatibility() {
-    var isChromium = window.chrome;
-    var winNav = window.navigator;
-    var vendorName = winNav.vendor;
-    var isOpera = typeof window.opr !== "undefined";
-    var isIEedge = winNav.userAgent.indexOf("Edge") > -1;
-    var isIOSChrome = winNav.userAgent.match("CriOS");
-
-    if (isIOSChrome) {
-        // is Google Chrome on IOS
-    } else if (isChromium !== null && typeof isChromium !== "undefined" && vendorName === "Google Inc." && isOpera === false && isIEedge === false) {
-        // is Google Chrome
-        return true;
-    } else {
-        // not Google Chrome
-        alert("Warning ! Unsupported browser detected. 3DuF has been developed and tested only in Chrome. " + "The tool may not work correctly on this browser");
-
-        return false;
-    }
-}
-
 window.onload = function() {
-    if (checkBrowCompatibility()) {
-        viewManager = new ViewManager();
-
-        console.log("Checking Host: ");
-        console.log(window.location.host);
-
-        if (window.location.host === "3duf.org") {
-            console.log("Enabling TrackJS");
-            TrackJS.install({
-                token: "1f4d3a9c263e4e3fb2fe4c7f96f8808e"
-            });
-
-            viewManager = TrackJS.watchAll(viewManager);
-        }
+        viewManager = new BareViewManager();
 
         Registry.viewManager = viewManager;
 
