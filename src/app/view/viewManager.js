@@ -956,12 +956,25 @@ export default class ViewManager {
         let ypos = 10000;
         for(let i in components){
             let component = components[i];
-            if(!component.placed){
-                this.__generateDefaultPlacementForComponent(
-                    component,
-                    xpos * (parseInt(i) + 1),
-                    ypos * (Math.floor(parseInt(i)/5) +1)
-                );
+            let currentposition = component.getPosition();
+            //TODO: Refine this logic, it sucks
+            if (currentposition[0] == 0 && currentposition == 0){
+                if(!component.placed){
+                    this.__generateDefaultPlacementForComponent(
+                        component,
+                        xpos * (parseInt(i) + 1),
+                        ypos * (Math.floor(parseInt(i)/5) +1)
+                    );
+                }
+            }else{
+                if(!component.placed){
+                    this.__generateDefaultPlacementForComponent(
+                        component,
+                        currentposition[0],
+                        currentposition[1]
+                    );
+                }
+
             }
         }
 
