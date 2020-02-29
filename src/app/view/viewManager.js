@@ -886,8 +886,11 @@ export default class ViewManager {
         //Cycle through each of the valves
         for(let j in valves){
             let valve = valves[j];
-            let boundingbox = valve.getBoundingRectangle();
-            connection.insertFeatureGap(boundingbox);
+            let is3D = Registry.currentDevice.getIsValve3D(valve);
+            if(is3D){
+                let boundingbox = valve.getBoundingRectangle();
+                connection.insertFeatureGap(boundingbox);
+            }
         }
 
     }

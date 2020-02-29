@@ -29,6 +29,7 @@ export default class Device {
 
         //Map to store <componentID, connectionID>
         this.__valveMap = new Map();
+        this.__valveIs3DMap = new Map();
     }
 
     getName(){
@@ -573,6 +574,11 @@ export default class Device {
         return null;
     }
 
+    /**
+     * Generates a new new name for the type, use this to autogenerate the names for components that are typespecific
+     * @param type
+     * @return {string}
+     */
     generateNewName(type) {
         if (this.__nameMap.has(type)) {
             let value = this.__nameMap.get(type);
@@ -610,15 +616,20 @@ export default class Device {
      * @param valve
      * @param connection
      */
-    insertValve(valve, connection){
+    insertValve(valve, connection, is3D = false){
         this.__valveMap.set(valve.getID(), connection.getID());
+        this.__valveIs3DMap.set(valve.getID(), is3D);
     }
 
     getConnections(){
         return this.__connections;
     }
 
-    //Returns a list of valves mapped onto the connection
+    /**
+     * Returns a list of valves mapped onto the connection
+     * @param connection
+     * @return {Array}
+     */
     getValvesForConnection(connection){
         let connectionid = connection.getID();
         let ret = [];
@@ -630,6 +641,16 @@ export default class Device {
         }
 
         return ret;
+    }
+
+    /**
+     * Returns whether or not the valve generates a break
+     * @param valve
+     * @return {any}
+     */
+    getIsValve3D(valve){
+        let valveid = valve.getID();
+        return this.__valveIs3DMap.get(valveid);
     }
 
     /**
