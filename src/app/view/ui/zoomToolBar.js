@@ -1,4 +1,4 @@
-let Registry = require("../../core/registry");
+import * as Registry from "../../core/registry";
 
 export default class ZoomToolBar {
     constructor(zoom_min, zoom_max){

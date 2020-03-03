@@ -1,4 +1,4 @@
-let tools = {
+export const tools = {
     Via: {
         toolParams: {
             position: "position",
@@ -240,5 +240,3 @@ let tools = {
         placementTool: "textInsertTool"
     }
 };
-
-module.exports = tools;

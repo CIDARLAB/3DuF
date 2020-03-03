@@ -1,14 +1,14 @@
-var uuid = require('node-uuid');
+import uuid from 'node-uuid';
 
-var registeredParams = {};
-var featureDefaults = {};
-var currentDevice = null;
-var canvasManager = null;
-var currentLayer = null;
-var currentTextLayer = null;
-var currentGrid = null;
-var view = null;
-var viewManager = null;
+let registeredParams = {};
+let featureDefaults = {};
+let currentDevice = null;
+let canvasManager = null;
+let currentLayer = null;
+let currentTextLayer = null;
+let currentGrid = null;
+let view = null;
+let viewManager = null;
 let featureSet = null;
 
 /*
@@ -22,18 +22,8 @@ var textLayer = null;
 var id_counter = 0;
 var threeRenderer = null;
 
-var generateID = function() {
+export function generateID() {
     return uuid.v1();
 };
 
-exports.generateID = generateID;
-exports.registeredParams = registeredParams;
-exports.currentDevice = currentDevice;
-exports.currentLayer = currentLayer;
-exports.canvasManager = canvasManager;
-exports.viewManager = viewManager;
-exports.currentGrid = currentGrid;
-exports.featureDefaults = featureDefaults;
-exports.threeRenderer = threeRenderer;
-exports.text = text;
-exports.featureSet = featureSet;
+export { registeredParams, currentDevice, currentLayer, canvasManager, viewManager, currentGrid, featureDefaults, threeRenderer, text, featureSet };

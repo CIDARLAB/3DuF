@@ -1,15 +1,11 @@
 import EdgeFeature from "./edgeFeature";
-
-const Parameters = require('./parameters');
-
 import Feature from './feature';
 import TextFeature from './textFeature';
 import Params from "./params";
 
-const Registry = require("./registry");
+import * as Registry from './registry';
 
-
-class Layer {
+export default class Layer {
     constructor(values, name = "New Layer") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = String(name);
@@ -198,5 +194,3 @@ class Layer {
         return this.__renderFeatures2D();
     }
 }
-
-module.exports = Layer;

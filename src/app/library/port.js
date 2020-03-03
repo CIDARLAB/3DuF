@@ -1,6 +1,6 @@
 import Template from "./template";
 import paper from "paper";
-import ComponentPort from "../core/componentport";
+import ComponentPort from "../core/componentPort";
 
 export  default class Port extends Template{
     constructor(){

@@ -1,21 +1,21 @@
 import EdgeFeature from "../core/edgeFeature";
 import paper from 'paper';
 
-const Registry = require("../core/registry");
-const FeatureRenderer2D = require("./render2D/featureRenderer2D");
+import * as Registry from '../core/registry';
+import * as FeatureRenderer2D from "./render2D/featureRenderer2D";
 import GridRenderer from  "./render2D/gridRenderer";
 import DeviceRenderer from "./render2D/deviceRenderer2D";
 //const DeviceRenderer = require("./render2D/deviceRenderer2D");
 // var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
 import PanAndZoom from "./panAndZoom";
-const Colors = require("./colors");
+import * as Colors from './colors';
 import TextFeature from "../core/textFeature";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
 import ComponentPortRenderer2D from "./render2D/componentPortRenderer2D";
 import PaperComponentPortView from "./render2D/paperComponentPortView";
-const DXFObjectRenderer2D = require('./render2D/dxfObjectRenderer2D');
-const DXFSolidObjectRenderer = require('./render2D/dxfSolidObjectRenderer2D');
+import * as DXFObjectRenderer2D from './render2D/dxfObjectRenderer2D';
+import * as DXFSolidObjectRenderer from './render2D/dxfSolidObjectRenderer2D';
 
 export default class PaperView {
 

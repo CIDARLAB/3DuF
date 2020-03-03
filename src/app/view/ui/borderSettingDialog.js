@@ -1,7 +1,7 @@
 import * as HTMLUtils from "../../utils/htmlUtils";
 
-const Registry = require('../../core/registry');
-const DxfParser = require('dxf-parser');
+import * as Registry from '../../core/registry';
+import DxfParser from 'dxf-parser';
 
 export default class BorderSettingsDialog {
     get _dxfObject() {

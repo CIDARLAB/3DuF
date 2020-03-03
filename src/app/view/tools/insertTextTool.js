@@ -1,6 +1,6 @@
 import MouseTool from "./mouseTool";
 
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 import TextFeature from "../../core/textFeature";
 import SimpleQueue from "../../utils/simpleQueue";
 

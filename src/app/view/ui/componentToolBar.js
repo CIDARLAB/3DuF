@@ -1,8 +1,8 @@
 import {setButtonColor} from "../../utils/htmlUtils";
 import {GREY_200, BLACK, WHITE} from '../colors';
 import InsertTextDialog from "./insertTextDialog";
-const Colors = require("../colors");
-const ParameterMenu = require("./parameterMenu");
+import * as Colors from "../colors";
+import * as ParameterMenu from "./parameterMenu";
 
 const inactiveBackground = GREY_200;
 const inactiveText = BLACK;

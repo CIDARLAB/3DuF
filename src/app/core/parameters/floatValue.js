@@ -1,5 +1,5 @@
 import Parameter from '../parameter';
-var NumberUtils = require("../../utils/numberUtils");
+import * as NumberUtils from "../../utils/numberUtils";
 
 let typeString = "Float";
 

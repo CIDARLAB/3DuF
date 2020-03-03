@@ -1,4 +1,6 @@
-module.exports.definitions = require("./definitions");
-module.exports.render2D = require("./render2D");
-module.exports.render3D = require("./render3D");
-module.exports.tools = require("./tools");
+import * as definitions from "./definitions";
+import * as render2D from "./render2D";
+import * as render3D from "./render3D";
+import * as tools from "./tools";
+
+export { definitions, render2D, render3D, tools };

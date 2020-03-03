@@ -1,5 +1,5 @@
-var PrimitiveSets3D = require("./primitiveSets3D");
-var FeatureSets = require("../../featureSets");
+import * as PrimitiveSets3D from "./primitiveSets3D";
+import * as FeatureSets from "../../featureSets";
 
 var layerMaterials = {
 	"red": new THREE.MeshLambertMaterial({
@@ -43,7 +43,7 @@ function getRenderInfo(type, set) {
 	return FeatureSets.getRender3D(type, set);
 }
 
-function renderFeature(feature, layer, z_offset) {
+export function renderFeature(feature, layer, z_offset) {
 	let flip = layer.params.flip;
 	let type = feature.type;
 	let set = feature.set;
@@ -58,5 +58,3 @@ function renderFeature(feature, layer, z_offset) {
 	let renderedFeature = new THREE.Mesh(geom, material);
 	return renderedFeature;
 }
-
-module.exports.renderFeature = renderFeature;

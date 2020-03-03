@@ -1,9 +1,9 @@
 import * as HTMLUtils from '../../utils/htmlUtils';
 import Feature from '../../core/feature';
 
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 import {FloatValue, BooleanValue, StringValue} from '../../core/parameters';
-var FeatureSets = require("../../featureSets");
+import * as FeatureSets from "../../featureSets";
 
 var createSlider = function(min, max, step, start, id) {
     var div = document.createElement("div");
@@ -323,7 +323,7 @@ var createFeatureTableBody = function(typeString, setString) {
     return body;
 };
 
-var createFeatureTable = function(typeString, setString, position) {
+export function createFeatureTable(typeString, setString, position) {
     var table = document.createElement("table");
     table.className = "mdl-data-table mdl-js-data-table mdl-shadow--2dp feature-table fade-transition";
     var head = createFeatureTableHeaders(typeString);
@@ -350,7 +350,7 @@ var createCloseButton = function() {
     return button;
 };
 
-var generateTableFunction = function(tableID, typeString, setString , isTranslucent) {
+export function generateTableFunction(tableID, typeString, setString , isTranslucent) {
     return function(event) {
         var table = document.getElementById(tableID);
         if (table) {
@@ -371,7 +371,7 @@ var generateTableFunction = function(tableID, typeString, setString , isTransluc
     }
 };
 
-var revertToDefaultParams = function(table, typeString, setString){
+export function revertToDefaultParams(table, typeString, setString){
     let def = FeatureSets.getDefinition(typeString, setString);
     let heritable = def.heritable;
     let defaults = def.defaults;
@@ -423,7 +423,3 @@ var revertToDefaultParams = function(table, typeString, setString){
 
     }
 };
-
-module.exports.revertToDefaultParams = revertToDefaultParams;
-module.exports.createFeatureTable = createFeatureTable;
-module.exports.generateTableFunction = generateTableFunction;

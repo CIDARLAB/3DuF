@@ -1,6 +1,6 @@
-const Colors = require("../colors");
+import * as Colors from '../colors';
 import paper from 'paper';
-const Registry = require('../../core/registry');
+import * as Registry from '../../core/registry';
 
 
 export default class ComponentPortRenderer2D{

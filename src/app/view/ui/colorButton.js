@@ -1,8 +1,8 @@
-var Colors = require("../colors");
+import * as Colors from '../colors';
 var inactiveBackgroundColor = Colors.GREY_200;
 var inactiveTextColor = Colors.BLACK;
 
-class ColorButton{
+export default class ColorButton{
 	constructor(id){
 		this.button = document.getElementById(id);
 	}

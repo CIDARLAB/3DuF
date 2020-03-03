@@ -1,4 +1,5 @@
-import Feature from "../core/feature";
+import Device from '../core/device';
+
 import Port from "../library/port";
 import Channel from "../library/channel";
 import BetterMixer from "../library/betterMixer";
@@ -107,7 +108,7 @@ export default class FeatureSet {
         let setString = this.name;
         let defaultName = "New " + setString + "." + typeString;
         return function(values, name = defaultName){
-            return Feature.makeFeature(typeString, setString, values, name);
+            return Device.makeFeature(typeString, setString, values, name);
         }
     }
 

@@ -1,4 +1,4 @@
-const Colors = require("../colors");
+import * as Colors from "../colors";
 const DEFAULT_STROKE_COLOR = Colors.GREY_700;
 const BORDER_THICKNESS = 5; // pixels
 import paper from 'paper';

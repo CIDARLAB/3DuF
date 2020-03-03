@@ -2,16 +2,15 @@ import ZoomToolBar from "./ui/zoomToolBar";
 import BorderSettingsDialog from './ui/borderSettingDialog';
 import paper from 'paper';
 
-const Registry = require("../core/registry");
-const Colors = require("./colors");
+import * as Registry from '../core/registry';
+import * as Colors from "./colors";
 
 import Device from '../core/device';
-import ChannelTool from "./tools/channelTool"; //= require("./tools/channelTool");
-
-import SelectTool from "./tools/selectTool"; //= require("./tools/selectTool");
-import InsertTextTool from "./tools/insertTextTool"; //= require("./tools/insertTextTool");
-import SimpleQueue from "../utils/simpleQueue"; //= require("../utils/SimpleQueue");
-import MouseSelectTool from "./tools/mouseSelectTool"; //= require('./tools/mouseSelectTool');
+import ChannelTool from "./tools/channelTool"; 
+import SelectTool from "./tools/selectTool"; 
+import InsertTextTool from "./tools/insertTextTool";
+import SimpleQueue from "../utils/simpleQueue";
+import MouseSelectTool from "./tools/mouseSelectTool";
 
 import ResolutionToolBar from './ui/resolutionToolBar';
 import RightPanel from './ui/rightPanel';
@@ -41,7 +40,6 @@ import ExportPanel from "./ui/exportPanel";
 import HelpDialog from "./ui/helpDialog";
 import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
-import Feature from "../core/feature";
 import TaguchiDesigner from "./ui/taguchiDesigner";
 import RightClickMenu from "./ui/rightClickMenu";
 import IntroDialog from "./ui/introDialog";
@@ -991,7 +989,7 @@ export default class ViewManager {
         params_to_copy["position"]  = [xpos, ypos];
 
         //Get default params and overwrite them with json params, this can account for inconsistencies
-        let newFeature = Feature.makeFeature(component.getType(), "Basic", params_to_copy);
+        let newFeature = Device.makeFeature(component.getType(), "Basic", params_to_copy);
 
         component.addFeatureID(newFeature.getID());
 

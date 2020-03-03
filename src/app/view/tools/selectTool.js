@@ -1,6 +1,6 @@
 import MouseTool from "./mouseTool";
 
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from 'paper';
 

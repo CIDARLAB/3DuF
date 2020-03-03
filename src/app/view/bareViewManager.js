@@ -1,11 +1,11 @@
 import ZoomToolBar from "./ui/zoomToolBar";
 import paper from 'paper';
 
-const Registry = require("../core/registry");
-const Colors = require("./colors");
+import * as Registry from '../core/registry';
+import * as Colors from "./colors";
 
 import Device from '../core/device';
-import SimpleQueue from "../utils/simpleQueue"; //= require("../utils/SimpleQueue");
+import SimpleQueue from "../utils/simpleQueue";
 import * as HTMLUtils from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
 import PaperView from "./paperView";

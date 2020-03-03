@@ -1,7 +1,7 @@
 import MultilayerPositionTool from "./multilayerPositionTool";
 
-const Registry = require("../../core/registry");
-import Feature from '../../core/feature';
+import * as Registry from '../../core/registry';
+import Device from '../../core/device';
 import MouseTool from './mouseTool';
 import PositionTool from "./positionTool";
 import paper from 'paper';
@@ -59,7 +59,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
         let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer)/3);
         let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
-        let newFeature = Feature.makeFeature(this.typeString, this.setString, overridedata);
+        let newFeature = Device.makeFeature(this.typeString, this.setString, overridedata);
         this.currentFeatureID = newFeature.getID();
 
         controllayer.addFeature(newFeature);
@@ -98,7 +98,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
         let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
         let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
-        let newFeature = Feature.makeFeature(this.typeString, this.setString, overridedata);
+        let newFeature = Device.makeFeature(this.typeString, this.setString, overridedata);
         this.currentFeatureID = newFeature.getID();
         flowlayer.addFeature(newFeature);
 
@@ -108,7 +108,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
 
         let newtypestring = this.typeString + "_control";
         let paramstoadd = newFeature.getParams();
-        newFeature = Feature.makeFeature(newtypestring, this.setString, overridedata);
+        newFeature = Device.makeFeature(newtypestring, this.setString, overridedata);
         newFeature.setParams(paramstoadd);
 
         this.currentFeatureID = newFeature.getID();

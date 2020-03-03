@@ -1,14 +1,11 @@
-const Registry = require("./core/registry");
+import * as Registry from './core/registry';
 
-import PaperView from "./view/paperView";
 import ViewManager from "./view/viewManager";
-import AdaptiveGrid from "./view/grid/adaptiveGrid";
 import { TrackJS } from 'trackjs';
 
-const Examples = require("./examples/jsonExamples");
+import * as Examples from "./examples/jsonExamples";
 
 let viewManager;
-let grid;
 
 function getQueryVariable(variable)
 {

@@ -148,13 +148,13 @@ THREE.STLExporter.prototype = {
 		())
 };
 
-function getSTLString(scene){
+export function getSTLString(scene){
 	var exporter = new THREE.STLExporter();
 	var stlString = exporter.parse(scene);
 	return stlString;
 }
 
-function saveSTL(scene, name) {
+export function saveSTL(scene, name) {
 	var exporter = new THREE.STLExporter();
 	var stlString = exporter.parse(scene);
 
@@ -165,7 +165,7 @@ function saveSTL(scene, name) {
 	saveAs(blob, name + '.stl');
 }
 var exporter = new THREE.STLExporter();
-var exportString = function (output, filename) {
+export function exportString(output, filename) {
 
 	var blob = new Blob([output], {
 			type : 'text/plain'
@@ -179,7 +179,3 @@ var exportString = function (output, filename) {
 	link.click();
 
 };
-
-module.exports.saveSTL = saveSTL;
-module.exports.exportString = exportString;
-module.exports.getSTLString = getSTLString;

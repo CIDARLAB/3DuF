@@ -1,7 +1,7 @@
 import GenerateArrayWindow from "../ui/generateArrayWindow";
 import MouseTool from "./mouseTool";
 
-var Registry = require("../../core/registry");
+import * as  Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 
 export default class GenerateArrayTool extends MouseTool {

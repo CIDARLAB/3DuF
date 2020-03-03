@@ -1,4 +1,4 @@
-let render2D = {
+export const render2D = {
     Via: {
         featureParams: {
             position: "position",
@@ -759,5 +759,3 @@ let render2D = {
         targetPrimitiveSet: "Basic2D"
     },
 };
-
-module.exports = render2D;

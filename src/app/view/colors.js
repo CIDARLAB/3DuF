@@ -1,35 +1,35 @@
-import Feature from "../core/feature";
+// import Feature from "../core/feature";
 import * as paper from "paper";
 
 //Colors taken from: http://www.google.ch/design/spec/style/color.html
-module.exports.RED_500 = "#F44336";
-module.exports.INDIGO_500 = "#3F51B5";
-module.exports.GREEN_500 = "#4CAF50";
-module.exports.GREEN_100 = "#C8E6C9";
-module.exports.GREEN_A200 = "#69F0AE";
-module.exports.DEEP_PURPLE_500 = "#673AB7";
-module.exports.PURPLE_200 = "#E1BEE7";
-module.exports.PURPLE_100 = "#E1BEE7";
-module.exports.TEAL_100 = "#B2DFDB";
-module.exports.BLUE_50 = "#e3f2fd";
-module.exports.BLUE_100 = "#BBDEFB";
-module.exports.BLUE_200 = "#90CAF9";
-module.exports.BLUE_300 = "#64B5F6";
-module.exports.BLUE_500 = "#2196F3";
-module.exports.GREY_200 = "#EEEEEE";
-module.exports.GREY_300 = "#E0E0E0";
-module.exports.GREY_400 = "#BDBDBD";
-module.exports.LIGHT_GREEN_100 = "#DCEDC8";
-module.exports.GREY_700 = "#616161";
-module.exports.GREY_500 = "#9E9E9E";
-module.exports.AMBER_50 = "#FFF8E1";
-module.exports.PINK_500 = "#E91E63";
-module.exports.PINK_300 = "#F06292";
-module.exports.BLACK = "#000000";
-module.exports.WHITE = "#FFFFFF";
+export const RED_500 = "#F44336";
+export const INDIGO_500 = "#3F51B5";
+export const GREEN_500 = "#4CAF50";
+export const GREEN_100 = "#C8E6C9";
+export const GREEN_A200 = "#69F0AE";
+export const DEEP_PURPLE_500 = "#673AB7";
+export const PURPLE_200 = "#E1BEE7";
+export const PURPLE_100 = "#E1BEE7";
+export const TEAL_100 = "#B2DFDB";
+export const BLUE_50 = "#e3f2fd";
+export const BLUE_100 = "#BBDEFB";
+export const BLUE_200 = "#90CAF9";
+export const BLUE_300 = "#64B5F6";
+export const BLUE_500 = "#2196F3";
+export const GREY_200 = "#EEEEEE";
+export const GREY_300 = "#E0E0E0";
+export const GREY_400 = "#BDBDBD";
+export const LIGHT_GREEN_100 = "#DCEDC8";
+export const GREY_700 = "#616161";
+export const GREY_500 = "#9E9E9E";
+export const AMBER_50 = "#FFF8E1";
+export const PINK_500 = "#E91E63";
+export const PINK_300 = "#F06292";
+export const BLACK = "#000000";
+export const WHITE = "#FFFFFF";
 
-var defaultColorKeys = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
-var darkColorKeys = ["300", "400", "500", "600", "700", "800", "900"];
+export const defaultColorKeys = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
+export const darkColorKeys = ["300", "400", "500", "600", "700", "800", "900"];
 
 var indigo = {
 	"900": "#" + "1A237E",
@@ -92,13 +92,13 @@ var decimalToIndex = function(decimal, indices){
 	return Math.round((indices-1) * decimal);
 };
 
-var decimalToLayerColor = function(decimal, layerColors, orderedKeys){
+export function decimalToLayerColor(decimal, layerColors, orderedKeys){
 	let index = decimalToIndex(decimal, orderedKeys.length);
 	let key = orderedKeys[index];
 	return layerColors["700"];
 };
 
-var renderAllColors = function(layer, orderedKeys){
+export function renderAllColors(layer, orderedKeys){
 	for (let i =0 ; i < orderedKeys.length; i ++){
 		
 		new paper.Path.Circle({
@@ -118,7 +118,7 @@ var renderAllColors = function(layer, orderedKeys){
 	}
 };
 
-var getLayerColors = function(layer){
+export function getLayerColors(layer){
     if(!layer){
         throw new Error("Undefined color");
     }
@@ -136,14 +136,15 @@ var getLayerColors = function(layer){
     }
 };
 
-var getDefaultLayerColor = function(layer){
+export function getDefaultLayerColor(layer){
 	return getLayerColors(layer)["500"];
 };
 
-var getDefaultFeatureColor = function(typeString, setString, layer){
+//TODO: We need to fix how this works and remove the circular dependency form this chain
+export function getDefaultFeatureColor(typeString, setString, layer){
 	if (layer){
-		let height = Feature.getDefaultsForType(typeString, setString)["height"];
-		let decimal = height; // layer.estimateLayerHeight();
+		// let height = Feature.getDefaultsForType(typeString, setString)["height"];
+		let decimal = 500; // layer.estimateLayerHeight();
 		if (!layer.flip) decimal = 1-decimal;
 		let colors = getLayerColors(layer);
 		return decimalToLayerColor(decimal, colors, darkColorKeys);
@@ -153,11 +154,3 @@ var getDefaultFeatureColor = function(typeString, setString, layer){
 	}
 };
 
-module.exports.getDefaultLayerColor = getDefaultLayerColor;
-module.exports.getDefaultFeatureColor = getDefaultFeatureColor;
-module.exports.getLayerColors = getLayerColors;
-module.exports.decimalToLayerColor = decimalToLayerColor;
-module.exports.defaultColorKeys = defaultColorKeys;
-module.exports.darkColorKeys = darkColorKeys;
-module.exports.layerColors = layerColors;
-module.exports.renderAllColors = renderAllColors;

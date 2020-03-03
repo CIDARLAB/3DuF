@@ -1,6 +1,6 @@
 import paper from 'paper';
 
-const Colors = require("../colors");
+import * as Colors from "../colors";
 
 export default class AdaptiveGrid {
     constructor(viewmanager, minSpacing = 5, maxSpacing = 100, thickCount = 10, origin = [0, 0], thinWidth = 1, thickWidth = 3, color = Colors.BLUE_100) {

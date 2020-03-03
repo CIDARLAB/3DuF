@@ -1,10 +1,10 @@
-var OrbitControls = require("./threeLib/orbitControls");
-var STLExporter = require("./threeLib/stlExporter");
-var Detector = require("./threeLib/detector");
+import * as OrbitControls from "./threeLib/orbitControls";
+import * as  STLExporter from "./threeLib/stlExporter";
+import * as  Detector from "./threeLib/detector";
 var getSTLString = STLExporter.getSTLString;
-var Device3D = require("./primitiveSets3D").Device3D;
-var renderFeature = require("./threeFeatureRenderer").renderFeature;
-var Colors = require("../colors");
+import {Device3D} from "./primitiveSets3D";
+import {renderFeature} from "./threeFeatureRenderer";
+import * as Colors from "../colors";
 
 var SLIDE_HOLDER_MATERIAL = new THREE.MeshLambertMaterial({
 	color: 0x9E9E9E,
@@ -24,7 +24,7 @@ var HOLDER_BORDER_WIDTH = .41;
 var INTERLOCK_TOLERANCE = .125;
 var SLIDE_THICKNESS = 1.2;
 
-class ThreeDeviceRenderer {
+export class ThreeDeviceRenderer {
 	constructor(renderContainer) {
 		this.container = renderContainer;
 		this.camera;
@@ -334,5 +334,3 @@ class ThreeDeviceRenderer {
 		this.controls.update();
 	}
 }
-
-module.exports = ThreeDeviceRenderer;

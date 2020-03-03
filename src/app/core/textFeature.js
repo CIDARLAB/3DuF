@@ -1,14 +1,11 @@
-var Params = require('./params');
-var Parameters = require('./parameters');
-var Parameter = require("./parameter");
+//TODO: Restructure the TextFeature and all its implementation
+import * as Parameters from './parameters';
 var StringValue = Parameters.StringValue;
-var FeatureSets = require("../featureSets");
-var Registry = require("./registry");
-import Feature from "./feature";
+import * as  Registry from "./registry";
 
-export default class TextFeature extends Feature{
+export default class TextFeature {
     constructor(text, params, id = TextFeature.generateID()){
-        super("TEXT", "Basic", params, id, id);
+        // super("TEXT", "Basic", params, id, id);
         this.__text = text;
         this.__params.updateParameter("text", text);
     }
@@ -107,21 +104,6 @@ export default class TextFeature extends Feature{
 
     setParams(params){
         this.__params.parameters = params;
-    }
-
-    static getDefaultsForType(typeString, setString){
-        return Registry.featureDefaults[setString][typeString];
-    }
-
-    static getDefinitionForType(typeString, setString){
-        return FeatureSets.getDefinition(typeString, setString);
-    }
-
-    static checkDefaults(values, heritable, defaults){
-        for (let key in heritable){
-            if (!values.hasOwnProperty(key)) values[key] = defaults[key];
-        }
-        return values;
     }
 
     static fromJSON(json) {

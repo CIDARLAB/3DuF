@@ -2,7 +2,7 @@
 import JSZip from 'jszip';
 import ManufacturingLayer from "../../manufacturing/manufacturingLayer";
 
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 
 export default class ExportPanel {
     constructor(viewManagerDelegate){

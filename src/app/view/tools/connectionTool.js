@@ -1,13 +1,13 @@
 import MouseTool from "./mouseTool";
 import Connection from '../../core/connection';
 import SimpleQueue from "../../utils/simpleQueue";
-import Feature from "../../core/feature";
+import Device from "../../core/device";
 import paper from 'paper';
 import Params from "../../core/params";
 import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
 
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 
 
 export default class ConnectionTool extends MouseTool {
@@ -347,7 +347,7 @@ export default class ConnectionTool extends MouseTool {
      * @return {EdgeFeature}
      */
     createChannel(start, end) {
-        return Feature.makeFeature(this.typeString, this.setString, {
+        return Device.makeFeature(this.typeString, this.setString, {
             start: start,
             end: end,
             wayPoints: this.wayPoints,

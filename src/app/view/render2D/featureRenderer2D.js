@@ -1,16 +1,16 @@
 import * as DXFSolidObjectRenderer2D from "./dxfSolidObjectRenderer2D";
 
-const Colors = require("../colors");
+import * as Colors from "../colors";
 import Feature from "../../core/feature";
 
-const PrimitiveSets2D = require("./primitiveSets2D");
-const FeatureSets = require("../../featureSets");
-const Registry = require("../../core/registry");
+import * as PrimitiveSets2D from "./primitiveSets2D";
+import * as FeatureSets from "../../featureSets";
+import * as Registry from '../../core/registry';
 import {renderEdgeFeature} from '../../view/render2D/dxfObjectRenderer2D';
 import paper from 'paper';
 
 
-function getLayerColor(feature) {
+var getLayerColor = function(feature) {
     let height = feature.getValue("height");
     let layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
@@ -20,18 +20,18 @@ function getLayerColor(feature) {
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 }
 
-function getBaseColor(feature) {
+var getBaseColor = function(feature) {
     let decimal = 0;
     if (!feature.layer.flip) decimal = 1 - decimal;
     let targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 }
 
-function getDefaultValueForType(typeString, setString, key) {
+export function getDefaultValueForType(typeString, setString, key) {
     return Feature.getDefaultsForType(typeString, setString)[key];
 }
 
-function getFeatureRenderer(typeString, setString) {
+export function getFeatureRenderer(typeString, setString) {
     if(typeString == "TEXT"){
         let rendererInfo = renderTextTarget;
         return rendererInfo;
@@ -45,7 +45,7 @@ function getFeatureRenderer(typeString, setString) {
     }
 }
 
-function getPrimitive2D(typeString, setString) {
+export function getPrimitive2D(typeString, setString) {
     console.log("What are Primitive sets ?", PrimitiveSets2D);
     //return PrimitiveSets2D[setString][typeString]; //Looks like the primitivesets2d are the function pointers
 }

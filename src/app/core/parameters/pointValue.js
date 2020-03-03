@@ -1,5 +1,5 @@
 import Parameter from '../parameter';
-var NumberUtils = require("../../utils/numberUtils");
+import * as NumberUtils from "../../utils/numberUtils";
 
 let typeString = "Point";
 let description="PointValue must be an array containing exactly two numbers, such as [3,-5]";

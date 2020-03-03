@@ -1,7 +1,7 @@
 
 import paper from 'paper';
 
-const Colors = require("../colors");
+import * as Colors from "../colors";
 import LinkedList from "../../utils/linkedList";
 import GeometryGraph from "../../geometry/geometryGraph";
 

@@ -1,7 +1,7 @@
 import PositionTool from "./positionTool";
 
-const Registry = require("../../core/registry");
-import Feature from '../../core/feature';
+import * as Registry from '../../core/registry';
+import Device from '../../core/device';
 
 export default class MultilayerPositionTool extends PositionTool{
     constructor(typeString, setString){
@@ -14,7 +14,7 @@ export default class MultilayerPositionTool extends PositionTool{
         let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
         let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
-        let newFeature = Feature.makeFeature(this.typeString, this.setString, {
+        let newFeature = Device.makeFeature(this.typeString, this.setString, {
             "position": PositionTool.getTarget(point)
         });
         this.currentFeatureID = newFeature.getID();
@@ -26,7 +26,7 @@ export default class MultilayerPositionTool extends PositionTool{
 
         let newtypestring = this.typeString + "_control";
         let paramstoadd = newFeature.getParams();
-        newFeature = Feature.makeFeature(newtypestring, this.setString, {
+        newFeature = Device.makeFeature(newtypestring, this.setString, {
             "position": PositionTool.getTarget(point)
         });
         newFeature.setParams(paramstoadd);

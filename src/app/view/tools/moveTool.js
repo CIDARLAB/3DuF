@@ -1,7 +1,7 @@
 import MoveToolBar from "../ui/moveToolBar";
 import MouseTool from "./mouseTool";
 
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 
 export default class MoveTool extends MouseTool {
     constructor() {

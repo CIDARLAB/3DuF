@@ -1,7 +1,7 @@
-var mergeGeometries = require("../threeUtils").mergeGeometries;
+import mergeGeometries from "../threeUtils";
 var CONE_SEGMENTS = 16;
 
-function TwoPointRoundedLineFeature(params, flip, z_offset) {
+export function TwoPointRoundedLineFeature(params, flip, z_offset) {
 	let start = params.start;
 	let end = params.end;
 	let width = params.width;
@@ -21,7 +21,7 @@ function TwoPointRoundedLineFeature(params, flip, z_offset) {
 	return box;
 }
 
-function EdgedBoxFeature(params, flip, z_offset) {
+export function EdgedBoxFeature(params, flip, z_offset) {
 	var position = params.position;
 	var width = params.width;
 	var length = params.length;
@@ -43,7 +43,7 @@ function EdgedBoxFeature(params, flip, z_offset) {
 	return box;
 }
 
-function TwoPointRoundedBoxFeature(params, flip, z_offset) {
+export function TwoPointRoundedBoxFeature(params, flip, z_offset) {
     let start = params.start;
     let end = params.end;
     let borderWidth = params.borderWidth;
@@ -62,7 +62,7 @@ function TwoPointRoundedBoxFeature(params, flip, z_offset) {
     return box;
 }
 
-function Cone(params) {
+export function Cone(params) {
 	let position = params.position;
 	let radius1 = params.radius1;
 	let radius2 = params.radius2;
@@ -74,7 +74,7 @@ function Cone(params) {
 	return cyl;
 }
 
-function TwoPointLine(params) {
+export function TwoPointLine(params) {
 	let start = params.start;
 	let end = params.end;
 	let width = params.width;
@@ -93,7 +93,7 @@ function TwoPointLine(params) {
 	return box;
 }
 
-function TwoPointRoundedBox(params) {
+export function TwoPointRoundedBox(params) {
 	let start = params.start;
 	let end = params.end;
 	let borderWidth = params.borderWidth;
@@ -157,7 +157,7 @@ function TwoPointRoundedBox(params) {
 	return geom;
 }
 
-function ConeFeature(params, flip, z_offset) {
+export function ConeFeature(params, flip, z_offset) {
 	let position = params.position;
 	let radius1 = params.radius1;
 	let radius2 = params.radius2;
@@ -177,7 +177,7 @@ function ConeFeature(params, flip, z_offset) {
 	return cone;
 }
 
-function TwoPointRoundedLine(params) {
+export function TwoPointRoundedLine(params) {
 	let start = params.start;
 	let end = params.end;
 	let width = params.width;
@@ -203,11 +203,3 @@ function TwoPointRoundedLine(params) {
 	var merged = mergeGeometries([box, cone1, cone2]);
 	return merged;
 }
-
-module.exports.TwoPointRoundedLine = TwoPointRoundedLine;
-module.exports.TwoPointRoundedBox = TwoPointRoundedBox;
-module.exports.TwoPointRoundedBoxFeature = TwoPointRoundedBoxFeature;
-module.exports.TwoPointRoundedLineFeature = TwoPointRoundedLineFeature;
-module.exports.TwoPointLine = TwoPointLine;
-module.exports.ConeFeature = ConeFeature;
-module.exports.EdgedBoxFeature = EdgedBoxFeature;

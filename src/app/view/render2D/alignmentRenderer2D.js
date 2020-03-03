@@ -1,7 +1,7 @@
-const Colors = require("../colors");
+import * as Colors from "../colors";
 import Feature from "../../core/feature";
-const PrimitiveSets2D = require("./primitiveSets2D");
-const FeatureSets = require("../../featureSets");
+import * as PrimitiveSets2D from "./primitiveSets2D";
+import * as FeatureSets from "../../featureSets";
 import paper from 'paper';
 
 function getLayerColor(feature) {
@@ -38,7 +38,7 @@ function calculateDistance(pointer_position, feature_position) {
     return Math.sqrt(Math.pow(pointer_position[0] - feature_position.x, 2) + Math.pow(pointer_position[1] - feature_position.y, 2));
 }
 
-function renderAlignmentMarks(position, radius, features) {
+export function renderAlignmentMarks(position, radius, features) {
     // let renderer = getFeatureRenderer(typeString, setString);
     // let params = renderer.targetParams;
     // let prim = getPrimitive2D(renderer.targetPrimitiveType, renderer.targetPrimitiveSet);
@@ -97,5 +97,3 @@ function renderAlignmentMarks(position, radius, features) {
 
     return alignmentmarkergroup;
 }
-
-module.exports.renderAlignmentMarks = renderAlignmentMarks;

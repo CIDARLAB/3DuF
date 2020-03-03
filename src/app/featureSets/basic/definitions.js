@@ -1,4 +1,4 @@
-let basicFeatures = {
+export const basicFeatures = {
     "Channel": {
         unique: {
             "start": "Point",
@@ -1489,5 +1489,3 @@ let basicFeatures = {
         }
     }
 };
-
-module.exports = basicFeatures;

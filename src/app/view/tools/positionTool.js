@@ -1,7 +1,8 @@
 import MouseTool from "./mouseTool";
 
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 import Feature from '../../core/feature';
+import Device from '../../core/device';
 import SimpleQueue from "../../utils/simpleQueue";
 
 import paper from 'paper';
@@ -37,7 +38,7 @@ export default class PositionTool extends MouseTool {
 
     createNewFeature(point) {
         let name = Registry.currentDevice.generateNewName(this.typeString);
-        let newFeature = Feature.makeFeature(this.typeString, this.setString, {
+        let newFeature = Device.makeFeature(this.typeString, this.setString, {
             "position": PositionTool.getTarget(point)
         }, name);
         this.currentFeatureID = newFeature.getID();

@@ -1,6 +1,6 @@
 import paper from 'paper';
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
-const Registry = require("../core/registry");
+import * as Registry from '../core/registry';
 
 export default class ManufacturingLayer{
     constructor(name){

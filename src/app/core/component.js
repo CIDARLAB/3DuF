@@ -2,8 +2,8 @@ import Params from "./params";
 import CustomComponent from "./customComponent";
 import ComponentPort from "./componentPort";
 
-const Registry = require("./registry");
-const FeatureRenderer2D = require("../view/render2D/featureRenderer2D");
+import * as Registry from './registry';
+import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 
 /**
  * This class contains the component abstraction used in the interchange format and the

@@ -4,7 +4,7 @@ import Parameter from "./parameter";
 import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
 
-const Registry = require("./registry");
+import * as Registry from './registry';
 
 
 /**
@@ -377,7 +377,7 @@ export default class Connection {
         // else set = "Basic";
         // //TODO: This will have to change soon when the thing is updated
         // throw new Error("Need to implement Interchange V1 Import for component object");
-        // //return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
+        // //return Device.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
         let name = json.name;
         let id = json.id;
         let entity = json.entity;

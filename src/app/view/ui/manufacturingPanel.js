@@ -3,7 +3,7 @@ import CNCGenerator from "../../manufacturing/cncGenerator";
 import JSZip from 'jszip';
 import LaserCuttingGenerator from "../../manufacturing/laserCuttingGenerator";
 
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 
 export default class ManufacturingPanel {
     constructor(viewManagerDelegate){

@@ -1,4 +1,4 @@
-const uuid = require('node-uuid');
+import uuid from 'node-uuid';
 import paper from "paper";
 
 export default class ComponentPort {

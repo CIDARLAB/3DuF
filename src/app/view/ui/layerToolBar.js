@@ -1,8 +1,7 @@
 import {setButtonColor} from "../../utils/htmlUtils";
 
-const Registry = require('../../core/registry');
-const Colors = require('../colors');
-
+import * as Registry from '../../core/registry';
+import * as Colors from '../colors';
 const inactiveButtonBackground = Colors.GREY_200;
 const inactiveButtonText = Colors.BLACK;
 const activeButtonText = Colors.WHITE;

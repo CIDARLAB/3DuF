@@ -1,5 +1,5 @@
-var Basic3D = require("./basic3D");
-var ThreeUtils = require("../threeUtils");
+import * as Basic3D from "./basic3D";
+import * as ThreeUtils from "../threeUtils";
 var TwoPointRoundedLine = Basic3D.TwoPointRoundedLine;
 var mergeGeometries = ThreeUtils.mergeGeometries;
 
@@ -7,7 +7,7 @@ var HOLDER_BORDER_WIDTH = .41;
 var INTERLOCK_TOLERANCE = .125;
 var SLIDE_THICKNESS = 1.2;
 
-function Slide(params) {
+export function Slide(params) {
 	let width = params.width;
 	let height = params.height;
 	let thickness = params.thickness;
@@ -17,7 +17,7 @@ function Slide(params) {
 	return slide;
 }
 
-function SlideHolder(params) {
+export function SlideHolder(params) {
 	let width = params.width;
 	let height = params.height;
 	let slideThickness = params.slideThickness;
@@ -61,7 +61,7 @@ function SlideHolder(params) {
 	return border;
 }
 
-function DevicePlane(params) {
+export function DevicePlane(params) {
 	let width = params.width;
 	let height = params.height;
 	var plane = new THREE.PlaneBufferGeometry(width, height);
@@ -69,7 +69,3 @@ function DevicePlane(params) {
 	plane.applyMatrix(matrix.makeTranslation(width / 2, height / 2, 0));
 	return plane;
 }
-
-module.exports.Slide = Slide;
-module.exports.DevicePlane = DevicePlane;
-module.exports.SlideHolder = SlideHolder;

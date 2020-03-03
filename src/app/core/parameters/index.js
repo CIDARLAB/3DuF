@@ -1,31 +1,31 @@
 import Parameter from '../parameter';
 
-require("./floatValue");
-require("./booleanValue");
-require("./integerValue");
-require("./pointValue");
-require("./stringValue");
-require("./pointArray");
-require('./segmentArray');
+import "./floatValue";
+import "./booleanValue";
+import "./integerValue";
+import "./pointValue";
+import "./stringValue";
+import "./pointArray";
+import './segmentArray';
 
-module.exports.BooleanValue = function(value) {
+export function BooleanValue(value) {
 	return Parameter.makeParam("Boolean", value);
 };
-module.exports.FloatValue = function(value) {
+export function FloatValue(value) {
 	return Parameter.makeParam("Float", value);
 };
-module.exports.IntegerValue = function(value) {
+export function IntegerValue(value) {
 	return Parameter.makeParam("Integer", value);
 };
-module.exports.PointValue = function(value) {
+export function PointValue(value) {
 	return Parameter.makeParam("Point", value);
 };
-module.exports.StringValue = function(value) {
+export function StringValue(value) {
 	return Parameter.makeParam("String", value);
 };
-module.exports.PointArray = function(value) {
+export function PointArray(value) {
 	return Parameter.makeParam("PointArray", value);
 };
-module.exports.SegmentArray = function (value) {
+export function SegmentArray(value) {
 	return Parameter.makeParam("SegmentArray", value);
 };

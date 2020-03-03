@@ -1,6 +1,6 @@
 import * as HTMLUtils from "../../utils/htmlUtils";
 import ComponentToolBar from "./componentToolBar";
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 
 
 export default class CustomComponentToolBar{

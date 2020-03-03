@@ -3,7 +3,7 @@
  * @author mr.doob / http://mrdoob.com/
  */
 
-var Detector = {
+export const Detector = {
 
 	canvas: !! window.CanvasRenderingContext2D,
 	webgl: ( function () { try { var canvas = document.createElement( 'canvas' ); return !! ( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) ) ); } catch ( e ) { return false; } } )(),
@@ -57,10 +57,3 @@ var Detector = {
 	}
 
 };
-
-// browserify support
-if ( typeof module === 'object' ) {
-
-	module.exports = Detector;
-
-}

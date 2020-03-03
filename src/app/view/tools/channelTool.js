@@ -1,8 +1,8 @@
 import MouseTool from "./mouseTool";
 
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 import SimpleQueue from "../../utils/simpleQueue";
-import Feature from "../../core/feature";
+import Device from "../../core/device";
 import paper from 'paper';
 
 
@@ -101,7 +101,7 @@ export default class ChannelTool extends MouseTool {
     }
 
 	static createChannel(start, end, typestring = null, setstring = null) {
-		return Feature.makeFeature(typestring, setstring, {
+		return Device.makeFeature(typestring, setstring, {
 			start: start,
 			end: end
 		});

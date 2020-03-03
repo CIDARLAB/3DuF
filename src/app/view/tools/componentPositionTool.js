@@ -1,6 +1,6 @@
 import PositionTool from "./positionTool";
-const Registry = require("../../core/registry");
-import Feature from '../../core/feature';
+import * as Registry from '../../core/registry';
+import Device from '../../core/device';
 
 export default class ComponentPositionTool extends PositionTool{
     constructor(typeString, setString){
@@ -11,7 +11,7 @@ export default class ComponentPositionTool extends PositionTool{
 
         let featureIDs = [];
 
-        let newFeature = Feature.makeFeature(this.typeString, this.setString, {
+        let newFeature = Device.makeFeature(this.typeString, this.setString, {
             "position": PositionTool.getTarget(point)
         });
         this.currentFeatureID = newFeature.getID();

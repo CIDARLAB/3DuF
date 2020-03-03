@@ -1,11 +1,7 @@
 
 import paper from 'paper';
 
-var Colors = require("../colors");
-var PrimitiveSets2D = require("./primitiveSets2D");
-var FeatureSets = require("../../featureSets");
-var Registry = require("../../core/registry");
-
+import * as Colors from "../colors";
 
 export function renderFeatureObjects(feature) {
     console.log('rendering the features dxf objects');

@@ -1,13 +1,16 @@
 import Params from "./params";
 
-const Parameters = require("./parameters");
+import * as Parameters from "./parameters";
 import Feature from './feature';
 
-const Registry = require("./registry");
+import * as Registry from './registry';
 
 import Layer from './layer';
 import Component from './component';
 import Connection from "./connection";
+import EdgeFeature from "./edgeFeature";
+import DXFObject from "./dxfObject";
+import * as FeatureSets from "../featureSets";
 
 const StringValue = Parameters.StringValue;
 
@@ -727,4 +730,42 @@ export default class Device {
             }
         }
     }
+
+
+        /**
+     * This is the method that is called when one needs to make the feature object. The static function encapsulates
+     * all the functionality that needs to be implemented.
+     * @param typeString
+     * @param setString
+     * @param paramvalues
+     * @param name
+     * @param id
+     * @param fabtype
+     * @param dxfdata
+     * @return {EdgeFeature|Feature}
+     */
+    static makeFeature(typeString, setString, paramvalues, name = "New Feature", id=undefined, fabtype, dxfdata){
+        let params;
+
+        if (typeString === "EDGE") {
+            return new EdgeFeature(fabtype, params, id);
+        }
+        let featureType = FeatureSets.getDefinition(typeString, setString);
+        if (paramvalues && featureType) {
+            Feature.checkDefaults(paramvalues, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
+            params = new Params(paramvalues, featureType.unique, featureType.heritable);
+        }else{
+            params = new Params(paramvalues, {"position": "Point"}, null);
+        }
+
+        let feature = new Feature(typeString, setString, params, name, id);
+
+        for(let i in dxfdata){
+            feature.addDXFObject(DXFObject.fromJSON(dxfdata[i]));
+        }
+
+        return feature;
+    }
+
+
 }

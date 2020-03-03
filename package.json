@@ -6,7 +6,8 @@
     "babel-cli": "^6.26.0",
     "babelify": "^10.0.0",
     "browserify": "^16.2.2",
-    "watchify": "^3.11.0"
+    "node-sass": "^4.13.1",
+    "watchify": "^3.11.1"
   },
   "browserify": {
     "transform": [
@@ -24,6 +25,7 @@
     "@dagrejs/graphlib": "^2.1.4",
     "dxf-parser": "^0.6.1",
     "exorcist": "^1.0.1",
+    "fsevents": "^2.1.2",
     "handsontable": "^6.2.2",
     "install": "^0.12.2",
     "jszip": "^2.6.1",
@@ -31,7 +33,7 @@
     "md5": "^2.2.1",
     "node-uuid": ">=1.4.3",
     "nouislider": "^11.1.0",
-    "npm": "^6.7.0",
+    "npm": "^6.14.1",
     "paper": "^0.12.3",
     "trackjs": "^3.1.2",
     "wnumb": "^1.1.0"

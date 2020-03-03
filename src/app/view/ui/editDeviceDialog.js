@@ -1,4 +1,4 @@
-const Registry = require("../../core/registry");
+import * as Registry from '../../core/registry';
 
 export default class EditDeviceDialog {
 

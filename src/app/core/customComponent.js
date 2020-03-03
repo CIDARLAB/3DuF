@@ -1,7 +1,7 @@
-import Feature from './feature';
 import DXFObject from "./dxfObject";
+import Device from './device';
 
-const Registry = require("./registry");
+import * as Registry from './registry';
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -57,7 +57,7 @@ export default class CustomComponent {
      */
     generateComponent(){
         let paramvalues = {};
-        let feature = Feature.makeFeature(
+        let feature = Device.makeFeature(
             type,
             "custom",
             paramvalues,
@@ -65,6 +65,7 @@ export default class CustomComponent {
             Feature.generateID(),
             this.dxfData
         );
+        return feature;
     }
 
     /**
