@@ -9,7 +9,7 @@ import Params from "./params";
 const Registry = require("./registry");
 
 
-class Layer {
+export default class Layer {
     constructor(values, name = "New Layer") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = String(name);
