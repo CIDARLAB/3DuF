@@ -160,14 +160,15 @@ export function getDefaultLayerColor(layer) {
 }
 
 //TODO: We need to fix how this works and remove the circular dependency form this chain
-export function getDefaultFeatureColor(typeString, setString, layer) {
-    if (layer) {
-        // let height = Feature.getDefaultsForType(typeString, setString)["height"];
-        let decimal = 500; // layer.estimateLayerHeight();
-        if (!layer.flip) decimal = 1 - decimal;
-        let colors = getLayerColors(layer);
-        return decimalToLayerColor(decimal, colors, darkColorKeys);
-    } else {
-        return decimalToLayerColor(0, layerColors["indigo"], darkColorKeys);
-    }
-}
+export function getDefaultFeatureColor(typeString, setString, layer){
+	if (layer){
+		// let height = Feature.getDefaultsForType(typeString, setString)["height"];
+		let decimal = 500; // layer.estimateLayerHeight();
+		if (!layer.flip) decimal = 1-decimal;
+		let colors = getLayerColors(layer);
+		return decimalToLayerColor(decimal, colors, darkColorKeys);
+	}
+	else {
+		return decimalToLayerColor(0,layerColors["indigo"], darkColorKeys);
+	}
+};
