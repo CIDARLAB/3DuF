@@ -140,7 +140,10 @@ export function getDefaultLayerColor(layer){
 	return getLayerColors(layer)["500"];
 };
 
+<<<<<<< HEAD
 //TODO: We need to fix how this works and remove the circular dependency form this chain
+=======
+>>>>>>> Removed the circular dependency in makeFeature method by moving it to class Device from Class Feature
 export function getDefaultFeatureColor(typeString, setString, layer){
 	if (layer){
 		// let height = Feature.getDefaultsForType(typeString, setString)["height"];
