@@ -5,10 +5,6 @@ import Params from "./params";
 
 import * as Registry from "./registry";
 
-<<<<<<< HEAD
-=======
-
->>>>>>> updated some of the fixes for the vue system
 export default class Layer {
     constructor(values, name = "New Layer") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
