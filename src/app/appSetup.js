@@ -23,5 +23,6 @@ window.onload = function() {
 
         // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
         Registry.viewManager.setupToolBars();
+        Registry.viewManager.generateBorder();
     };
 
