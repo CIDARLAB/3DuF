@@ -1,6 +1,10 @@
 import MultilayerPositionTool from "./multilayerPositionTool";
 
+<<<<<<< HEAD
 import * as Registry from '../../core/registry';
+=======
+const Registry = require("../../core/registry");
+>>>>>>> Removed the circular dependency in makeFeature method by moving it to class Device from Class Feature
 import Device from '../../core/device';
 import MouseTool from './mouseTool';
 import PositionTool from "./positionTool";

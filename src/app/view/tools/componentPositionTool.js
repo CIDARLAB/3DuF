@@ -1,5 +1,9 @@
 import PositionTool from "./positionTool";
+<<<<<<< HEAD
 import * as Registry from '../../core/registry';
+=======
+const Registry = require("../../core/registry");
+>>>>>>> Removed the circular dependency in makeFeature method by moving it to class Device from Class Feature
 import Device from '../../core/device';
 
 export default class ComponentPositionTool extends PositionTool{
