@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import * as Basic3D from "./basic3D";
 import * as ThreeUtils from "../threeUtils";
 var TwoPointRoundedLine = Basic3D.TwoPointRoundedLine;

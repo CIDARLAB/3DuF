@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import mergeGeometries from "../threeUtils";
 var CONE_SEGMENTS = 16;
 
