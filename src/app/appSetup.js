@@ -10,7 +10,7 @@ let viewManager;
 window.onload = function() {
         viewManager = new BareViewManager();
 
-        Registry.viewManager.setViewManager(viewManager);
+        Registry.viewManager = viewManager;
 
         viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
         viewManager.updateGrid();
