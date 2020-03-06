@@ -83,7 +83,6 @@ export default class Parameter {
      * @returns {void}
      */
     static registerParamType(typeString, isValid, description) {
-      console.log(Registry)
         Registry.registeredParams[typeString] = {
             isValid: isValid,
             description: description
