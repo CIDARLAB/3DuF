@@ -1,6 +1,6 @@
 import MouseTool from "./mouseTool";
 
-import * as Registry from '../../core/registry';
+import Registry from '../../core/registry';
 import Feature from '../../core/feature';
 import Device from '../../core/device';
 import SimpleQueue from "../../utils/simpleQueue";

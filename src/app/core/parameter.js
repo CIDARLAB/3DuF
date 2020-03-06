@@ -1,4 +1,4 @@
-import * as Registry from './registry';
+import Registry from './registry';
 import * as NumberUtils from "../utils/numberUtils";
 
 export default class Parameter {
@@ -44,6 +44,7 @@ export default class Parameter {
     // an isValid function which returns true if a value is OK for
     // that type.
     static registerParamType(typeString, isValid, description) {
+      console.log(Registry)
         Registry.registeredParams[typeString] = {
             isValid: isValid,
             description: description

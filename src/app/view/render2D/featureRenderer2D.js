@@ -5,7 +5,7 @@ import Feature from "../../core/feature";
 
 import * as PrimitiveSets2D from "./primitiveSets2D";
 import * as FeatureSets from "../../featureSets";
-import * as Registry from '../../core/registry';
+import Registry from '../../core/registry';
 import {renderEdgeFeature} from '../../view/render2D/dxfObjectRenderer2D';
 import paper from 'paper';
 

@@ -4,7 +4,7 @@ import Parameter from "./parameter";
 import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
 
-import * as Registry from './registry';
+import Registry from './registry';
 
 
 /**

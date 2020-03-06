@@ -1,5 +1,5 @@
 import PositionTool from "./positionTool";
-import * as Registry from '../../core/registry';
+import Registry from '../../core/registry';
 import Feature from '../../core/feature';
 import CustomComponent from "../../core/customComponent";
 import Params from "../../core/params";

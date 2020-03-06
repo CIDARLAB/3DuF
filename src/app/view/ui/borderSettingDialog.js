@@ -1,6 +1,6 @@
 import * as HTMLUtils from "../../utils/htmlUtils";
 
-import * as Registry from '../../core/registry';
+import Registry from '../../core/registry';
 import DxfParser from 'dxf-parser';
 
 export default class BorderSettingsDialog {

@@ -1,6 +1,6 @@
 import MultilayerPositionTool from "./multilayerPositionTool";
 
-import * as Registry from '../../core/registry';
+import Registry from '../../core/registry';
 import Device from '../../core/device';
 import MouseTool from './mouseTool';
 import PositionTool from "./positionTool";
