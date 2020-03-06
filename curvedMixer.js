@@ -1,60 +1,59 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class CurvedMixer extends Template{
-    constructor(){
+export default class CurvedMixer extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "bendSpacing": "Float",
-            "numberOfBends": "Float",
-            "channelWidth": "Float",
-            "bendLength": "Float",
-            "orientation": "String",
-            "height": "Float"
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
         };
 
         this.__defaults = {
-            "channelWidth": .80 * 1000,
-            "bendSpacing": 1.23 * 1000,
-            "numberOfBends": 1,
-            "orientation": "V",
-            "bendLength": 2.46 * 1000,
-            "height": 250
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 250
         };
 
-
         this.__units = {
-            "bendSpacing": "&mu;m",
-            "numberOfBends": "",
-            "channelWidth": "&mu;m",
-            "bendLength": "&mu;m",
-            "orientation": "",
-            "height": "&mu;m"
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "channelWidth": 10,
-            "bendSpacing": 10,
-            "numberOfBends": 1,
-            "orientation": "H",
-            "bendLength": 10,
-            "height": 10
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
         };
 
         this.__maximum = {
-            "channelWidth": 2000,
-            "bendSpacing": 6000,
-            "numberOfBends": 20,
-            "orientation": "H",
-            "bendLength": 12 * 1000,
-            "height": 1200
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
         };
 
         this.__featureParams = {
@@ -83,7 +82,6 @@ export  default class CurvedMixer extends Template{
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "CURVED MIXER";
-
     }
 
     render2D(params, key) {
@@ -142,10 +140,12 @@ export  default class CurvedMixer extends Template{
             rightCurve = rightCurve.subtract(rightCurveSmall);
             toprect = toprect.unite(rightCurve);
 
-            if (i == numBends - 1) {//draw half segment to close
+            if (i == numBends - 1) {
+                //draw half segment to close
                 hseg = new paper.Path.Rectangle(x + channelWidth / 2 + bendLength / 2, y + vRepeat * (i + 1), (bendLength + channelWidth) / 2 + 1, channelWidth);
                 toprect = toprect.unite(hseg);
-            } else {//draw full segment
+            } else {
+                //draw full segment
                 hseg = new paper.Path.Rectangle(x + channelWidth - 1, y + vRepeat * (i + 1), bendLength + 2, channelWidth);
                 toprect = toprect.unite(hseg);
             }
@@ -153,19 +153,17 @@ export  default class CurvedMixer extends Template{
         }
         serp.addChild(toprect);
 
-
         if (orientation == "V") {
             serp.rotate(0, x + channelWidth, y);
         } else {
             serp.rotate(90, x + channelWidth, y);
         }
 
-
         serp.fillColor = color;
         return serp;
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;

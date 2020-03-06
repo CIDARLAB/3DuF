@@ -2,50 +2,49 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export  default class Valve extends Template{
-    constructor(){
+export default class Valve extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "rotation": "Float",
-            "length": "Float",
-            "width": "Float",
-            "height": "Float"
+            rotation: "Float",
+            length: "Float",
+            width: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
-            "rotation": 0,
-            "width": 1.23 * 1000,
-            "length": 4.92 * 1000,
-            "height": 250
+            rotation: 0,
+            width: 1.23 * 1000,
+            length: 4.92 * 1000,
+            height: 250
         };
 
-
         this.__units = {
-            "rotation": "&deg",
-            "length": "&mu;m",
-            "width": "&mu;m",
-            "height": "&mu;m"
+            rotation: "&deg",
+            length: "&mu;m",
+            width: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "rotation": 0,
-            "width": 30,
-            "length": 120,
-            "height": 10
+            rotation: 0,
+            width: 30,
+            length: 120,
+            height: 10
         };
 
         this.__maximum = {
-            "rotation": 180,
-            "width": 6000,
-            "length": 24 * 1000,
-            "height": 1200
+            rotation: 180,
+            width: 6000,
+            length: 24 * 1000,
+            height: 1200
         };
 
         this.__featureParams = {
@@ -53,14 +52,12 @@ export  default class Valve extends Template{
             length: "length",
             width: "width",
             rotation: "rotation"
-
         };
 
         this.__targetParams = {
             length: "length",
             width: "width",
             rotation: "rotation"
-
         };
 
         this.__placementTool = "ValveInsertionTool";
@@ -74,29 +71,18 @@ export  default class Valve extends Template{
         this.__mint = "VALVE";
     }
 
-    getPorts(params){
+    getPorts(params) {
         let l = params["length"];
         let w = params["width"];
 
         let ports = [];
 
-        ports.push(new ComponentPort(
-            0,
-            -l/2,
-            "1",
-            "CONTROL"
-        ));
+        ports.push(new ComponentPort(0, -l / 2, "1", "CONTROL"));
 
-        ports.push(new ComponentPort(
-            0,
-            l/2,
-            "2",
-            "CONTROL"
-        ));
+        ports.push(new ComponentPort(0, l / 2, "2", "CONTROL"));
 
         return ports;
     }
-
 
     render2D(params, key) {
         let orientation = params["orientation"];
@@ -128,7 +114,7 @@ export  default class Valve extends Template{
         return rec.rotate(rotation, px, py);
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;

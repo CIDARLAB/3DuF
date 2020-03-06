@@ -2,40 +2,39 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export  default class Port extends Template{
-    constructor(){
+export default class Port extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "portRadius": "Float",
-            "height": "Float"
+            portRadius: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
-            "portRadius": .7 * 1000,
-            "height": 1.1 * 1000
+            portRadius: 0.7 * 1000,
+            height: 1.1 * 1000
         };
 
-
         this.__units = {
-            "portRadius": "&mu;m",
-            "height": "&mu;m"
+            portRadius: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "portRadius": .8 * 10,
-            "height": 10
+            portRadius: 0.8 * 10,
+            height: 10
         };
 
         this.__maximum = {
-            "portRadius": 2000,
-            "height": 1200
+            portRadius: 2000,
+            height: 1200
         };
 
         this.__placementTool = "componentPositionTool";
@@ -67,27 +66,19 @@ export  default class Port extends Template{
         let outerCircle = new paper.Path.Circle(pos, radius);
         outerCircle.fillColor = color1;
         return outerCircle;
-
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }
 
-    getPorts(params){
-
+    getPorts(params) {
         let ports = [];
 
-        ports.push(new ComponentPort(
-            0,
-            0,
-            "1",
-            "FLOW"
-        ));
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
         return ports;
     }
-
 }

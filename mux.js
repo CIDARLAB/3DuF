@@ -1,76 +1,75 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class Mux extends Template{
-    constructor(){
+export default class Mux extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "flowChannelWidth": "Float",
-            "orientation": "String",
-            "spacing": "Float",
-            "leafs": "Float",
-            "width": "Float",
-            "length": "Float",
-            "height": "Float",
-            "direction": "String",
-            "stageLength":"Float",
-            "controlChannelWidth": "Float"
+            flowChannelWidth: "Float",
+            orientation: "String",
+            spacing: "Float",
+            leafs: "Float",
+            width: "Float",
+            length: "Float",
+            height: "Float",
+            direction: "String",
+            stageLength: "Float",
+            controlChannelWidth: "Float"
         };
 
         this.__defaults = {
-            "flowChannelWidth": .80 * 1000,
-            "orientation": "V",
-            "spacing": 4 * 1000,
-            "leafs": 8,
-            "width": 1.6 * 1000,
-            "length": 1.6 * 1000,
-            "height": 250,
-            "direction": "IN",
-            "stageLength": 4000,
-            "controlChannelWidth": .40 * 1000
+            flowChannelWidth: 0.8 * 1000,
+            orientation: "V",
+            spacing: 4 * 1000,
+            leafs: 8,
+            width: 1.6 * 1000,
+            length: 1.6 * 1000,
+            height: 250,
+            direction: "IN",
+            stageLength: 4000,
+            controlChannelWidth: 0.4 * 1000
         };
 
-
         this.__units = {
-            "flowChannelWidth": "&mu;m",
-            "orientation": "",
-            "spacing": "&mu;m",
-            "leafs": "",
-            "width": "&mu;m",
-            "length": "&mu;m",
-            "height": "&mu;m",
-            "direction": "",
-            "stageLength":"&mu;m",
-            "controlChannelWidth": "&mu;m"
+            flowChannelWidth: "&mu;m",
+            orientation: "",
+            spacing: "&mu;m",
+            leafs: "",
+            width: "&mu;m",
+            length: "&mu;m",
+            height: "&mu;m",
+            direction: "",
+            stageLength: "&mu;m",
+            controlChannelWidth: "&mu;m"
         };
 
         this.__minimum = {
-            "flowChannelWidth": 10,
-            "spacing": 30,
-            "leafs": 2,
-            "width": 60,
-            "length": 60,
-            "height": 10,
-            "stageLength": 100,
-            "controlChannelWidth": 10
+            flowChannelWidth: 10,
+            spacing: 30,
+            leafs: 2,
+            width: 60,
+            length: 60,
+            height: 10,
+            stageLength: 100,
+            controlChannelWidth: 10
         };
 
         this.__maximum = {
-            "flowChannelWidth": 2000,
-            "spacing": 12000,
-            "leafs": 2,
-            "width": 12 * 1000,
-            "length": 12 * 1000,
-            "height": 1200,
-            "stageLength": 6000,
-            "controlChannelWidth": 2000
+            flowChannelWidth: 2000,
+            spacing: 12000,
+            leafs: 2,
+            width: 12 * 1000,
+            length: 12 * 1000,
+            height: 1200,
+            stageLength: 6000,
+            controlChannelWidth: 2000
         };
 
         this.__featureParams = {
@@ -83,7 +82,7 @@ export  default class Mux extends Template{
             length: "length",
             leafs: "leafs",
             stageLength: "stageLength",
-            direction : "direction"
+            direction: "direction"
         };
 
         this.__targetParams = {
@@ -96,8 +95,7 @@ export  default class Mux extends Template{
             length: "length",
             leafs: "leafs",
             stageLength: "stageLength",
-            direction : "direction"
-
+            direction: "direction"
         };
 
         this.__placementTool = "MultilayerPositionTool";
@@ -109,11 +107,9 @@ export  default class Mux extends Template{
         this.__renderKeys = ["FLOW", "CONTROL"];
 
         this.__mint = "MUX";
-
     }
 
-
-    __drawFlow(params){
+    __drawFlow(params) {
         let position = params["position"];
         let cw = params["flowChannelWidth"];
         let orientation = params["orientation"];
@@ -141,7 +137,6 @@ export  default class Mux extends Template{
 
         this.__generateMuxTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
-
         //Draw the tree
 
         treepath.fillColor = color;
@@ -156,7 +151,7 @@ export  default class Mux extends Template{
         return treepath.rotate(rotation, px, py);
     }
 
-    __drawControl(params){
+    __drawControl(params) {
         let position = params["position"];
         let cw = params["flowChannelWidth"];
         let ctlcw = params["controlChannelWidth"];
@@ -187,7 +182,6 @@ export  default class Mux extends Template{
 
         this.__generateMuxControlTwig(treepath, px, py, cw, ctlcw, stagelength, w, 1, levels, valvewidth, valvelength, leftEdge, rightEdge);
 
-
         //Draw the tree
 
         treepath.fillColor = color;
@@ -202,45 +196,44 @@ export  default class Mux extends Template{
             rotation = 90;
         }
         return treepath.rotate(rotation, px, py);
-
     }
 
     render2D(params, key) {
-        if(key == "FLOW"){
+        if (key == "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CONTROL"){
+        } else if (key == "CONTROL") {
             return this.__drawControl(params);
         }
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let render = this.render2D(params, "FLOW");
         render.fillColor.alpha = 0.5;
         return render;
     }
 
-    __generateMuxTwig(treepath, px, py,cw, stagelength , newspacing, level, maxlevel, islast=false) {
+    __generateMuxTwig(treepath, px, py, cw, stagelength, newspacing, level, maxlevel, islast = false) {
         //var newspacing = 2 * (spacing + cw);
-        let hspacing = newspacing/2;
+        let hspacing = newspacing / 2;
         let lex = px - 0.5 * newspacing;
         let ley = py + cw + stagelength;
         let rex = px + 0.5 * newspacing;
         let rey = py + cw + stagelength;
 
-        if(level == maxlevel){
+        if (level == maxlevel) {
             islast = true;
             // console.log("Final Spacing: " + newspacing)
         }
 
         this.__drawmuxtwig(treepath, px, py, cw, stagelength, newspacing, islast);
 
-        if(!islast){
-            this.__generateMuxTwig(treepath, lex, ley, cw, stagelength, hspacing, level+1, maxlevel);
-            this.__generateMuxTwig(treepath, rex, rey, cw, stagelength, hspacing, level+1, maxlevel);
+        if (!islast) {
+            this.__generateMuxTwig(treepath, lex, ley, cw, stagelength, hspacing, level + 1, maxlevel);
+            this.__generateMuxTwig(treepath, rex, rey, cw, stagelength, hspacing, level + 1, maxlevel);
         }
     }
 
-    __drawmuxtwig(treepath, px, py, cw, stagelength, spacing, drawleafs=false) {
+    __drawmuxtwig(treepath, px, py, cw, stagelength, spacing, drawleafs = false) {
         //stem
         let startPoint = new paper.Point(px - cw / 2, py);
         let endPoint = new paper.Point(px + cw / 2, py + stagelength);
@@ -266,7 +259,7 @@ export  default class Mux extends Template{
         let rstarty = py + stagelength + cw;
         let rendy = rstarty + stagelength;
 
-        if(drawleafs){
+        if (drawleafs) {
             startPoint = new paper.Point(lstartx, lstarty);
             endPoint = new paper.Point(lendx, lendy);
             rec = paper.Path.Rectangle({
@@ -286,9 +279,7 @@ export  default class Mux extends Template{
                 strokeWidth: 0
             });
             treepath.addChild(rec);
-
         }
-
 
         //Horizontal bar
         let hstartx = px - 0.5 * (cw + spacing);
@@ -304,33 +295,31 @@ export  default class Mux extends Template{
             strokeWidth: 0
         });
         treepath.addChild(rec);
-        return treepath
+        return treepath;
     }
 
-    __generateMuxControlTwig(treepath, px, py,cw, ctlcw, stagelength , newspacing, level, maxlevel, valvewidth, valvelength,
-                             leftEdge, rightEdge, islast=false,) {
+    __generateMuxControlTwig(treepath, px, py, cw, ctlcw, stagelength, newspacing, level, maxlevel, valvewidth, valvelength, leftEdge, rightEdge, islast = false) {
         //var newspacing = 2 * (spacing + cw);
-        let hspacing = newspacing/2;
+        let hspacing = newspacing / 2;
         let lex = px - 0.5 * newspacing;
         let ley = py + cw + stagelength;
         let rex = px + 0.5 * newspacing;
         let rey = py + cw + stagelength;
 
-        if(level == maxlevel){
+        if (level == maxlevel) {
             islast = true;
             // console.log("Final Spacing: " + newspacing)
         }
 
         this.__drawmuxcontroltwig(treepath, px, py, cw, ctlcw, stagelength, newspacing, valvewidth, valvelength, leftEdge, rightEdge, islast);
 
-        if(!islast){
-            this.__generateMuxControlTwig(treepath, lex, ley, cw, ctlcw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
-            this.__generateMuxControlTwig(treepath, rex, rey, cw, ctlcw, stagelength, hspacing, level+1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
+        if (!islast) {
+            this.__generateMuxControlTwig(treepath, lex, ley, cw, ctlcw, stagelength, hspacing, level + 1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
+            this.__generateMuxControlTwig(treepath, rex, rey, cw, ctlcw, stagelength, hspacing, level + 1, maxlevel, valvewidth, valvelength, leftEdge, rightEdge);
         }
     }
 
-
-    __drawmuxcontroltwig(treepath, px, py, cw, ctlcw, stagelength, spacing, valvewidth, valvelength, leftEdge, rightEdge, drawleafs=false) {
+    __drawmuxcontroltwig(treepath, px, py, cw, ctlcw, stagelength, spacing, valvewidth, valvelength, leftEdge, rightEdge, drawleafs = false) {
         //stem - don't bother with valves
 
         //Draw 2 valves
@@ -340,8 +329,8 @@ export  default class Mux extends Template{
         let lstarty = py + stagelength + cw;
         let lendy = lstarty + stagelength;
 
-        let lcenterx = (lstartx + lendx)/2;
-        let lcentery = lstarty + Math.abs(lstarty - lendy)/4;
+        let lcenterx = (lstartx + lendx) / 2;
+        let lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
 
         // //right leaf
         let rstartx = px + 0.5 * (spacing - cw);
@@ -349,12 +338,11 @@ export  default class Mux extends Template{
         let rstarty = py + stagelength + cw;
         let rendy = rstarty + stagelength;
 
-        let rcenterx = (rstartx + rendx)/2;
-        let rcentery = rstarty + Math.abs(rstarty - rendy)*3/4;
+        let rcenterx = (rstartx + rendx) / 2;
+        let rcentery = rstarty + (Math.abs(rstarty - rendy) * 3) / 4;
 
-
-        let startPoint = new paper.Point(lcenterx - valvewidth/2 , lcentery - valvelength/2);
-        let endPoint = new paper.Point(lcenterx + valvewidth/2 , lcentery + valvewidth/2);
+        let startPoint = new paper.Point(lcenterx - valvewidth / 2, lcentery - valvelength / 2);
+        let endPoint = new paper.Point(lcenterx + valvewidth / 2, lcentery + valvewidth / 2);
         let rec = paper.Path.Rectangle({
             from: startPoint,
             to: endPoint,
@@ -363,8 +351,8 @@ export  default class Mux extends Template{
         });
         treepath.addChild(rec);
 
-        let leftChannelStart = new paper.Point(startPoint.x, lcentery - ctlcw/2);
-        let leftChannelEnd = new paper.Point(leftEdge, lcentery + ctlcw/2);
+        let leftChannelStart = new paper.Point(startPoint.x, lcentery - ctlcw / 2);
+        let leftChannelEnd = new paper.Point(leftEdge, lcentery + ctlcw / 2);
 
         let leftChannel = paper.Path.Rectangle({
             from: leftChannelStart,
@@ -374,8 +362,8 @@ export  default class Mux extends Template{
         });
         treepath.addChild(leftChannel);
 
-        startPoint = new paper.Point(rcenterx - valvewidth/2 , rcentery - valvelength/2);
-        endPoint = new paper.Point(rcenterx + valvewidth/2 , rcentery + valvewidth/2);
+        startPoint = new paper.Point(rcenterx - valvewidth / 2, rcentery - valvelength / 2);
+        endPoint = new paper.Point(rcenterx + valvewidth / 2, rcentery + valvewidth / 2);
         rec = paper.Path.Rectangle({
             from: startPoint,
             to: endPoint,
@@ -384,8 +372,8 @@ export  default class Mux extends Template{
         });
 
         treepath.addChild(rec);
-        let rightChannelStart = new paper.Point(endPoint.x, rcentery - ctlcw/2);
-        let rightChannelEnd = new paper.Point(rightEdge, rcentery + ctlcw/2);
+        let rightChannelStart = new paper.Point(endPoint.x, rcentery - ctlcw / 2);
+        let rightChannelEnd = new paper.Point(rightEdge, rcentery + ctlcw / 2);
 
         let rightChannel = paper.Path.Rectangle({
             from: rightChannelStart,
@@ -395,6 +383,6 @@ export  default class Mux extends Template{
         });
         treepath.addChild(rightChannel);
 
-        return treepath
-    };
+        return treepath;
+    }
 }

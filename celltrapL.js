@@ -1,87 +1,84 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class CellTrapL extends Template{
-    constructor(){
+export default class CellTrapL extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "chamberLength": "Float",
-            "feedingChannelWidth": "Float",
-            "orientation": "String",
-            "chamberWidth": "Float",
-            "numberOfChambers": "Float",
-            "chamberSpacing": "Float",
-            "height": "Float"
+            chamberLength: "Float",
+            feedingChannelWidth: "Float",
+            orientation: "String",
+            chamberWidth: "Float",
+            numberOfChambers: "Float",
+            chamberSpacing: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
-            "chamberLength": 1.2 * 1000,
-            "feedingChannelWidth": .41 * 1000,
-            "orientation": "H",
-            "chamberWidth": 1.23 * 1000,
-            "numberOfChambers": 6,
-            "chamberSpacing": 2.46 * 1000,
-            "height": 250
+            chamberLength: 1.2 * 1000,
+            feedingChannelWidth: 0.41 * 1000,
+            orientation: "H",
+            chamberWidth: 1.23 * 1000,
+            numberOfChambers: 6,
+            chamberSpacing: 2.46 * 1000,
+            height: 250
         };
 
-
         this.__units = {
-            "chamberLength": "&mu;m",
-            "feedingChannelWidth": "&mu;m",
-            "orientation": "",
-            "chamberWidth": "&mu;m",
-            "numberOfChambers": "",
-            "chamberSpacing": "&mu;m",
-            "height": "&mu;m"
+            chamberLength: "&mu;m",
+            feedingChannelWidth: "&mu;m",
+            orientation: "",
+            chamberWidth: "&mu;m",
+            numberOfChambers: "",
+            chamberSpacing: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "chamberLength": 30,
-            "feedingChannelWidth": 10,
-            "chamberWidth": 30,
-            "numberOfChambers": 1,
-            "chamberSpacing": 60,
-            "height": 10
+            chamberLength: 30,
+            feedingChannelWidth: 10,
+            chamberWidth: 30,
+            numberOfChambers: 1,
+            chamberSpacing: 60,
+            height: 10
         };
 
         this.__maximum = {
-            "chamberLength": 6000,
-            "feedingChannelWidth": 2000,
-            "chamberWidth": 6000,
-            "numberOfChambers": 10,
-            "chamberSpacing": 12 * 1000,
-            "height": 1200
+            chamberLength: 6000,
+            feedingChannelWidth: 2000,
+            chamberWidth: 6000,
+            numberOfChambers: 10,
+            chamberSpacing: 12 * 1000,
+            height: 1200
         };
-
 
         this.__featureParams = {
             position: "position",
             orientation: "orientation",
             chamberWidth: "chamberWidth",
-            chamberLength:"chamberLength",
+            chamberLength: "chamberLength",
             numberOfChambers: "numberOfChambers",
             chamberSpacing: "chamberSpacing",
-            feedingChannelWidth:"feedingChannelWidth",
+            feedingChannelWidth: "feedingChannelWidth",
             height: "height"
         };
 
         this.__targetParams = {
             orientation: "orientation",
             chamberWidth: "chamberWidth",
-            chamberLength:"chamberLength",
+            chamberLength: "chamberLength",
             numberOfChambers: "numberOfChambers",
             chamberSpacing: "chamberSpacing",
-            feedingChannelWidth:"feedingChannelWidth",
+            feedingChannelWidth: "feedingChannelWidth",
             height: "height"
         };
-
 
         this.__placementTool = "CellPositionTool";
 
@@ -92,18 +89,17 @@ export  default class CellTrapL extends Template{
         this.__renderKeys = ["FLOW", "CELL"];
 
         this.__mint = "LONG CELL TRAP";
-
     }
 
     render2D(params, key) {
-        if(key == "FLOW"){
+        if (key == "FLOW") {
             return this.__drawFlow(params);
-        }else if(key == "CELL"){
+        } else if (key == "CELL") {
             return this.__drawCell(params);
         }
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let orientation = params["orientation"];
         let position = params["position"];
         let chamberLength = params["chamberLength"];
@@ -132,13 +128,12 @@ export  default class CellTrapL extends Template{
             }
             channels = paper.Path.Rectangle({
                 point: [x + chamberLength, y],
-                size: [feedingChannelWidth, numChambers / 2 * (chamberWidth + chamberSpacing) + chamberSpacing],
+                size: [feedingChannelWidth, (numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing],
                 fillColor: color,
                 strokeWidth: 0
             });
             chamberList.push(channels);
-        }
-        else {
+        } else {
             for (let i = 0; i < numChambers / 2; i++) {
                 rec = paper.Path.Rectangle({
                     size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
@@ -150,7 +145,7 @@ export  default class CellTrapL extends Template{
             }
             channels = paper.Path.Rectangle({
                 point: [x, y + chamberLength],
-                size: [numChambers / 2 * (chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
+                size: [(numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
                 fillColor: color,
                 strokeWidth: 0
             });
@@ -162,7 +157,7 @@ export  default class CellTrapL extends Template{
         return traps;
     }
 
-    __drawFlow(params){
+    __drawFlow(params) {
         let orientation = params["orientation"];
         let position = params["position"];
         let chamberLength = params["chamberLength"];
@@ -184,17 +179,16 @@ export  default class CellTrapL extends Template{
             let startPoint = new paper.Point(x + chamberLength, y);
             channels = new paper.Path.Rectangle({
                 point: startPoint,
-                size: [feedingChannelWidth, numChambers / 2 * (chamberWidth + chamberSpacing) + chamberSpacing],
+                size: [feedingChannelWidth, (numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing],
                 fillColor: color,
                 strokeWidth: 0
             });
             chamberList.addChild(channels);
-        }
-        else {
+        } else {
             let startPoint = new paper.Point(x, y + chamberLength);
             channels = new paper.Path.Rectangle({
                 point: startPoint,
-                size: [numChambers / 2 * (chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
+                size: [(numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
                 fillColor: color,
                 strokeWidth: 0
             });
@@ -230,8 +224,7 @@ export  default class CellTrapL extends Template{
                 });
                 chamberList.addChild(rec);
             }
-        }
-        else {
+        } else {
             for (let i = 0; i < numChambers / 2; i++) {
                 let startPoint = new paper.Point(x + i * (chamberWidth + chamberSpacing) + chamberSpacing, y);
                 rec = paper.Path.Rectangle({
@@ -246,6 +239,5 @@ export  default class CellTrapL extends Template{
         chamberList.fillColor = color;
         let center = new paper.Point(x, y);
         return chamberList;
-
     }
 }

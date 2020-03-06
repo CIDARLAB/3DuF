@@ -1,48 +1,46 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class RoundedChannel extends Template{
-    constructor(){
+export default class RoundedChannel extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "start": "Point",
-            "end": "Point"
+            start: "Point",
+            end: "Point"
         };
 
         this.__heritable = {
-            "channelWidth": "Float",
-            "height": "Float"
+            channelWidth: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
-            "channelWidth": .80 * 1000,
-            "height": 250
+            channelWidth: 0.8 * 1000,
+            height: 250
         };
 
-
         this.__units = {
-            "channelWidth": "&mu;m",
-            "height": "&mu;m"
+            channelWidth: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "channelWidth": 3,
-            "height": 10,
+            channelWidth: 3,
+            height: 10
         };
 
         this.__maximum = {
-            "channelWidth": 2000,
-            "height": 1200,
+            channelWidth: 2000,
+            height: 1200
         };
 
         this.__featureParams = {
             start: "start",
             end: "end",
             width: "channelWidth"
-
         };
 
         this.__targetParams = {
@@ -58,9 +56,7 @@ export  default class RoundedChannel extends Template{
 
         this.__renderKeys = ["FLOW"];
 
-
         this.__mint = "CHANNEL";
-
     }
 
     render2D(params, key) {
@@ -75,17 +71,16 @@ export  default class RoundedChannel extends Template{
         let rec = paper.Path.Rectangle({
             size: [vec.length + width, width],
             point: start,
-            radius: width/2,
+            radius: width / 2,
             fillColor: color,
             strokeWidth: 0
         });
-        rec.translate([-width/2, -width / 2]);
+        rec.translate([-width / 2, -width / 2]);
         rec.rotate(vec.angle, start);
         return rec;
-
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let position = params["position"];
         let radius = params["diameter"];
         let color1 = params["color"];

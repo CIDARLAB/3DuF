@@ -1,45 +1,44 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class CircleValve extends Template{
-    constructor(){
+export default class CircleValve extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "radius1": "Float",
-            "radius2": "Float",
-            "height": "Float"
+            radius1: "Float",
+            radius2: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
-            "radius1": 1.4 * 1000,
-            "radius2": 1.2 * 1000,
-            "height": 250
+            radius1: 1.4 * 1000,
+            radius2: 1.2 * 1000,
+            height: 250
         };
 
-
         this.__units = {
-            "radius1": "&mu;m",
-            "radius2": "&mu;m",
-            "height": "&mu;m"
+            radius1: "&mu;m",
+            radius2: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "radius1": 10,
-            "radius2": 10,
-            "height": 10
+            radius1: 10,
+            radius2: 10,
+            height: 10
         };
 
         this.__maximum = {
-            "radius1": 2000,
-            "radius2": 2000,
-            "height": 1200
+            radius1: 2000,
+            radius2: 2000,
+            height: 1200
         };
 
         this.__featureParams = {
@@ -62,7 +61,6 @@ export  default class CircleValve extends Template{
         this.__renderKeys = ["CONTROL"];
 
         this.__mint = "CIRCLE VALVE";
-
     }
 
     render2D(params, key) {
@@ -73,13 +71,11 @@ export  default class CircleValve extends Template{
         let outerCircle = new paper.Path.Circle(pos, radius);
         outerCircle.fillColor = color1;
         return outerCircle;
-
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
-
     }
 }

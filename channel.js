@@ -1,40 +1,40 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class Channel extends Template{
-    constructor(){
+export default class Channel extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "start": "Point",
-            "end": "Point"
+            start: "Point",
+            end: "Point"
         };
 
         this.__defaults = {
-            "channelWidth": .80 * 1000,
-            "height": 250
+            channelWidth: 0.8 * 1000,
+            height: 250
         };
 
         this.__heritable = {
-            "channelWidth": "Float",
-            "height": "Float"
+            channelWidth: "Float",
+            height: "Float"
         };
 
         this.__units = {
-            "channelWidth": "&mu;m",
-            "height": "&mu;m"
+            channelWidth: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "channelWidth": 3,
-            "height": 10,
+            channelWidth: 3,
+            height: 10
         };
 
         this.__maximum = {
-            "channelWidth": 2000,
-            "height": 1200,
+            channelWidth: 2000,
+            height: 1200
         };
 
         this.__placementTool = "DragTool";
@@ -58,7 +58,6 @@ export  default class Channel extends Template{
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "CHANNEL";
-
     }
 
     render2D(params, key) {
@@ -81,17 +80,16 @@ export  default class Channel extends Template{
         rec.translate([0, -width / 2]);
         rec.rotate(vec.angle, start);
         return rec;
-
     }
 
-    render2DTarget(key, params){
-        let thickness = params["channelWidth"]/5;
+    render2DTarget(key, params) {
+        let thickness = params["channelWidth"] / 5;
         let length = params["channelWidth"];
         let x = params["position"][0];
         let y = params["position"][1];
         let color = params["color"];
-        var chair = new paper.Path.Rectangle(x - length/2, y - thickness/2, length, thickness);
-        chair = chair.unite(new paper.Path.Rectangle(x - thickness/2, y - length/2, thickness, length));
+        var chair = new paper.Path.Rectangle(x - length / 2, y - thickness / 2, length, thickness);
+        chair = chair.unite(new paper.Path.Rectangle(x - thickness / 2, y - length / 2, thickness, length));
         chair.fillColor = color;
         chair.fillColor.alpha = 0.5;
         return chair;
