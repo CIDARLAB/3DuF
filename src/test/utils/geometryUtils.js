@@ -1,8 +1,8 @@
 var should = require("should");
 var utils = require("../../app/utils/geometryUtils");
 
-describe('GeometryUtils', function() {
-    describe('#degToRad', function() {
+describe("GeometryUtils", function() {
+    describe("#degToRad", function() {
         it("should return pi/2 for 90 degrees", function() {
             utils.degToRad(90).should.equal(Math.PI / 2);
         });
@@ -122,33 +122,33 @@ describe('GeometryUtils', function() {
     describe("#computeEndPoint", function() {
         it("should return [3,4] for [0,0], 53.13 degrees, 5 length", function() {
             var end = utils.computeEndPoint([0, 0], 53.13, 5);
-            end[0].should.be.approximately(3, .01);
-            end[1].should.be.approximately(4, .01);
+            end[0].should.be.approximately(3, 0.01);
+            end[1].should.be.approximately(4, 0.01);
         });
         it("should return [4,3] for [0,0], 36.86 degrees, 5 length", function() {
             var end = utils.computeEndPoint([0, 0], 36.86, 5);
-            end[0].should.be.approximately(4, .01);
-            end[1].should.be.approximately(3, .01);
+            end[0].should.be.approximately(4, 0.01);
+            end[1].should.be.approximately(3, 0.01);
         });
         it("should return [4,-3] for [0,0], -36.86 degrees, 5 length", function() {
             var end = utils.computeEndPoint([0, 0], -36.86, 5);
-            end[0].should.be.approximately(4, .01);
-            end[1].should.be.approximately(-3, .01);
+            end[0].should.be.approximately(4, 0.01);
+            end[1].should.be.approximately(-3, 0.01);
         });
         it("should return [-3,-4] for [0,0], 126.86 degrees, 5 length", function() {
             var end = utils.computeEndPoint([0, 0], -126.86, 5);
-            end[0].should.be.approximately(-3, .01);
-            end[1].should.be.approximately(-4, .01);
+            end[0].should.be.approximately(-3, 0.01);
+            end[1].should.be.approximately(-4, 0.01);
         });
         it("should return [1,1] for [0,0], 45 degrees, 1.41421 length", function() {
             var end = utils.computeEndPoint([0, 0], 45, 1.41421);
-            end[0].should.be.approximately(1, .01);
-            end[1].should.be.approximately(1, .01);
+            end[0].should.be.approximately(1, 0.01);
+            end[1].should.be.approximately(1, 0.01);
         });
         it("should return [2,2] for [1,1], 45 degrees, 1.41421 length", function() {
             var end = utils.computeEndPoint([1, 1], 45, 1.41421);
-            end[0].should.be.approximately(2, .01);
-            end[1].should.be.approximately(2, .01);
+            end[0].should.be.approximately(2, 0.01);
+            end[1].should.be.approximately(2, 0.01);
         });
     });
 });

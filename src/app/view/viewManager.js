@@ -1,20 +1,20 @@
 import ZoomToolBar from "./ui/zoomToolBar";
-import BorderSettingsDialog from './ui/borderSettingDialog';
-import paper from 'paper';
+import BorderSettingsDialog from "./ui/borderSettingDialog";
+import paper from "paper";
 
-import * as Registry from '../core/registry';
+import * as Registry from "../core/registry";
 import * as Colors from "./colors";
 
-import Device from '../core/device';
-import ChannelTool from "./tools/channelTool"; 
-import SelectTool from "./tools/selectTool"; 
+import Device from "../core/device";
+import ChannelTool from "./tools/channelTool";
+import SelectTool from "./tools/selectTool";
 import InsertTextTool from "./tools/insertTextTool";
 import SimpleQueue from "../utils/simpleQueue";
 import MouseSelectTool from "./tools/mouseSelectTool";
 
-import ResolutionToolBar from './ui/resolutionToolBar';
-import RightPanel from './ui/rightPanel';
-import DXFObject from '../core/dxfObject';
+import ResolutionToolBar from "./ui/resolutionToolBar";
+import RightPanel from "./ui/rightPanel";
+import DXFObject from "../core/dxfObject";
 import EdgeFeature from "../core/edgeFeature";
 import ChangeAllDialog from "./ui/changeAllDialog";
 import LayerToolBar from "./ui/layerToolBar";
@@ -35,7 +35,7 @@ import EditDeviceDialog from "./ui/editDeviceDialog";
 import ManufacturingPanel from "./ui/manufacturingPanel";
 import CustomComponentPositionTool from "./tools/customComponentPositionTool";
 import CustomComponent from "../core/customComponent";
-import {setButtonColor} from "../utils/htmlUtils";
+import { setButtonColor } from "../utils/htmlUtils";
 import ExportPanel from "./ui/exportPanel";
 import HelpDialog from "./ui/helpDialog";
 import PaperView from "./paperView";
@@ -44,10 +44,9 @@ import TaguchiDesigner from "./ui/taguchiDesigner";
 import RightClickMenu from "./ui/rightClickMenu";
 import IntroDialog from "./ui/introDialog";
 import DAFDPlugin from "../plugin/dafdPlugin";
-import {Examples} from "../index";
+import { Examples } from "../index";
 
 export default class ViewManager {
-
     /**
      *
      * @param view
@@ -59,7 +58,6 @@ export default class ViewManager {
         this.__grid = new AdaptiveGrid(this);
         Registry.currentGrid = this.__grid;
 
-
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         this.customComponentManager = new CustomComponentManager(this);
@@ -68,7 +66,7 @@ export default class ViewManager {
         this.resolutionToolBar = new ResolutionToolBar();
         this.borderDialog = new BorderSettingsDialog();
         this.layerToolBar = new LayerToolBar();
-        this.messageBox = document.querySelector('.mdl-js-snackbar');
+        this.messageBox = document.querySelector(".mdl-js-snackbar");
         this.editDeviceDialog = new EditDeviceDialog(this);
         this.helpDialog = new HelpDialog();
         this.taguchiDesigner = new TaguchiDesigner(this);
@@ -92,7 +90,7 @@ export default class ViewManager {
         this.view.setResizeFunction(function() {
             reference.updateGrid();
             reference.updateAlignmentMarks();
-            
+
             reference.view.updateRatsNest();
             reference.view.updateComponentPortsRender();
             reference.updateDevice(Registry.currentDevice);
@@ -107,13 +105,12 @@ export default class ViewManager {
         this.exportPanel = new ExportPanel(this);
 
         this.view.setMouseWheelFunction(func);
-        this.minZoom = .0001;
+        this.minZoom = 0.0001;
         this.maxZoom = 5;
         this.setupTools();
 
         //TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
-
 
         //Removed from Page Setup
         this.threeD = false;
@@ -132,10 +129,9 @@ export default class ViewManager {
      *
      * @return {Device}
      */
-    get currentDevice(){
+    get currentDevice() {
         return this.__currentDevice;
     }
-
 
     /**
      * Initiates the copy operation on the selected feature
@@ -147,9 +143,9 @@ export default class ViewManager {
         }
     }
 
-    setupToolBars(){
+    setupToolBars() {
         //Initiating the zoom toolbar
-        this.zoomToolBar = new ZoomToolBar(.0001, 5);
+        this.zoomToolBar = new ZoomToolBar(0.0001, 5);
         this.componentToolBar = new ComponentToolBar(this);
         this.resetToDefaultTool();
     }
@@ -223,31 +219,31 @@ export default class ViewManager {
     /**
      * Create a new set of layers (flow, control and cell) for the upcoming level.
      */
-    createNewLayerBlock(){
+    createNewLayerBlock() {
         let newlayers = Registry.currentDevice.createNewLayerBlock();
 
         //Find all the edge features
         let edgefeatures = [];
-        let devicefeatures = (Registry.currentDevice.layers[0]).features;
+        let devicefeatures = Registry.currentDevice.layers[0].features;
         let feature;
 
         for (let i in devicefeatures) {
             feature = devicefeatures[i];
-            if(feature.fabType == "EDGE"){
+            if (feature.fabType == "EDGE") {
                 edgefeatures.push(feature);
             }
         }
 
         //Add the Edge Features from layer '0'
         // to all other layers
-        for(let i in newlayers){
-            for(let j in edgefeatures){
+        for (let i in newlayers) {
+            for (let j in edgefeatures) {
                 newlayers[i].addFeature(edgefeatures[j], false);
             }
         }
 
         //Added the new layers
-        for(let i in newlayers){
+        for (let i in newlayers) {
             let layertoadd = newlayers[i];
             let index = this.view.paperLayers.length;
             this.addLayer(layertoadd, index, true);
@@ -259,7 +255,7 @@ export default class ViewManager {
      * that level
      * @param levelindex integer only
      */
-    deleteLayerBlock(levelindex){
+    deleteLayerBlock(levelindex) {
         //Delete the levels in the device model
         Registry.currentDevice.deleteLayer(levelindex * 3);
         Registry.currentDevice.deleteLayer(levelindex * 3 + 1);
@@ -295,7 +291,7 @@ export default class ViewManager {
         for (let key in layer.features) {
             let feature = layer.features[key];
             this.addFeature(feature, false);
-            this.refresh(refresh)
+            this.refresh(refresh);
         }
     }
 
@@ -341,7 +337,7 @@ export default class ViewManager {
         }
     }
 
-    updateAlignmentMarks(){
+    updateAlignmentMarks() {
         this.view.updateAlignmentMarks();
     }
 
@@ -367,7 +363,7 @@ export default class ViewManager {
     /**
      * Automatically generates a rectangular border for the device
      */
-    generateBorder(){
+    generateBorder() {
         let borderfeature = new EdgeFeature(null, null);
 
         //Get the bounds for the border feature and then update the device dimensions
@@ -376,7 +372,7 @@ export default class ViewManager {
         borderfeature.generateRectEdge(xspan, yspan);
 
         //Adding the feature to all the layers
-        for(let i in Registry.currentDevice.layers){
+        for (let i in Registry.currentDevice.layers) {
             let layer = Registry.currentDevice.layers[i];
             layer.addFeature(borderfeature);
         }
@@ -386,15 +382,15 @@ export default class ViewManager {
      * Accepts a DXF object and then converts it into a feature, an edgeFeature in particular
      * @param dxfobject
      */
-    importBorder(dxfobject){
+    importBorder(dxfobject) {
         let customborderfeature = new EdgeFeature(null, null);
-        for(let i in dxfobject.entities){
+        for (let i in dxfobject.entities) {
             let foo = new DXFObject(dxfobject.entities[i]);
-           customborderfeature.addDXFObject(foo);
+            customborderfeature.addDXFObject(foo);
         }
 
         //Adding the feature to all the layers
-        for(let i in Registry.currentDevice.layers){
+        for (let i in Registry.currentDevice.layers) {
             let layer = Registry.currentDevice.layers[i];
             layer.addFeature(customborderfeature);
         }
@@ -407,13 +403,12 @@ export default class ViewManager {
         //Refresh the view
         Registry.viewManager.view.initializeView();
         Registry.viewManager.view.refresh();
-
     }
 
     /**
      * Deletes the border
      */
-    deleteBorder(){
+    deleteBorder() {
         /*
         1. Find all the features that are EDGE type
         2. Delete all these features
@@ -426,22 +421,21 @@ export default class ViewManager {
 
         let edgefeatures = [];
 
-        for(let i in features){
+        for (let i in features) {
             //Check if the feature is EDGE or not
-            if('EDGE' == features[i].fabType){
+            if ("EDGE" == features[i].fabType) {
                 edgefeatures.push(features[i]);
             }
         }
 
         //Delete all the features
-        for(let i in edgefeatures){
+        for (let i in edgefeatures) {
             Registry.currentDevice.removeFeatureByID(edgefeatures[i].getID());
         }
 
         console.log("Edgefeatures", edgefeatures);
-
     }
-    
+
     removeTarget() {
         this.view.removeTarget();
     }
@@ -463,8 +457,8 @@ export default class ViewManager {
     }
 
     adjustZoom(delta, point, refresh = true) {
-        let belowMin = (this.view.getZoom() >= this.maxZoom && delta < 0);
-        let aboveMax = (this.view.getZoom() <= this.minZoom && delta > 0);
+        let belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
+        let aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
         if (!aboveMax && !belowMin) {
             this.view.adjustZoom(delta, point);
             this.updateGrid(false);
@@ -501,7 +495,7 @@ export default class ViewManager {
     saveToStorage() {
         if (Registry.currentDevice) {
             try {
-                localStorage.setItem('currentDevice', JSON.stringify(Registry.currentDevice.toJSON()));
+                localStorage.setItem("currentDevice", JSON.stringify(Registry.currentDevice.toJSON()));
             } catch (err) {
                 // can't save, so.. don't?
             }
@@ -534,7 +528,6 @@ export default class ViewManager {
         else return false;
     }
 
-
     loadDeviceFromJSON(json) {
         let device;
         Registry.viewManager.clear();
@@ -546,9 +539,9 @@ export default class ViewManager {
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
             this.__currentDevice = device;
-        }else{
+        } else {
             console.log("Version Number: " + version);
-            switch (version){
+            switch (version) {
                 case 1:
                     this.loadCustomComponents(json);
                     device = Device.fromInterchangeV1(json);
@@ -556,7 +549,7 @@ export default class ViewManager {
                     this.__currentDevice = device;
                     break;
                 default:
-                    alert("Version \'" + version + "\' is not supported by 3DuF !");
+                    alert("Version '" + version + "' is not supported by 3DuF !");
             }
         }
         //Common Code for rendering stuff
@@ -570,7 +563,6 @@ export default class ViewManager {
         //In case of MINT exported json, generate layouts for rats nests
         this.__initializeRatsNest();
 
-
         this.view.initializeView();
         this.updateGrid();
         this.updateDevice(Registry.currentDevice);
@@ -578,7 +570,6 @@ export default class ViewManager {
         Registry.currentLayer = Registry.currentDevice.layers[0];
         this.layerToolBar.setActiveLayer("0");
         Registry.viewManager.updateActiveLayer();
-
     }
 
     removeFeaturesByPaperElements(paperElements) {
@@ -591,19 +582,17 @@ export default class ViewManager {
         }
     }
 
-
     /**
      * Updates the component parameters of a specific component
      * @param componentname
      * @param params
      */
-    updateComponentParameters(componentname, params){
+    updateComponentParameters(componentname, params) {
         let component = this.__currentDevice.getComponentByName(componentname);
-        for(let key in params){
+        for (let key in params) {
             component.updateParameter(key, params[key]);
         }
     }
-
 
     /**
      * Returns a Point, coordinate list that is the closes grid coordinate
@@ -615,42 +604,42 @@ export default class ViewManager {
         else return point;
     }
 
-    getFeaturesOfType(typeString, setString, features){
+    getFeaturesOfType(typeString, setString, features) {
         let output = [];
-        for (let i =0; i < features.length; i++){
+        for (let i = 0; i < features.length; i++) {
             let feature = features[i];
-            if (feature.getType() == typeString && feature.getSet() == setString){
+            if (feature.getType() == typeString && feature.getSet() == setString) {
                 output.push(feature);
             }
         }
         return output;
     }
 
-    adjustAllFeatureParams(valueString, value, features){
-        for (let i = 0 ; i < features.length; i++){
+    adjustAllFeatureParams(valueString, value, features) {
+        for (let i = 0; i < features.length; i++) {
             let feature = features[i];
             feature.updateParameter(valueString, value);
         }
     }
 
-    adjustParams(typeString, setString, valueString, value){
+    adjustParams(typeString, setString, valueString, value) {
         let selectedFeatures = this.view.getSelectedFeatures();
-        if (selectedFeatures.length > 0){
+        if (selectedFeatures.length > 0) {
             let correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
-            if (correctType.length >0 ){
+            if (correctType.length > 0) {
                 this.adjustAllFeatureParams(valueString, value, correctType);
             }
 
             //Check if any components are selected
             //TODO: modify parameters window to not have chain of updates
             //Cycle through all components and connections and change the parameters
-            for(let i in this.view.selectedComponents){
+            for (let i in this.view.selectedComponents) {
                 this.view.selectedComponents[i].updateParameter(valueString, value);
             }
-            for(let i in this.view.selectedConnections){
+            for (let i in this.view.selectedConnections) {
                 this.view.selectedConnections[i].updateParameter(valueString, value);
             }
-        }else{
+        } else {
             this.updateDefault(typeString, setString, valueString, value);
         }
     }
@@ -662,7 +651,7 @@ export default class ViewManager {
      * @param valueString
      * @param value
      */
-    updateDefault(typeString, setString, valueString, value){
+    updateDefault(typeString, setString, valueString, value) {
         Registry.featureDefaults[setString][typeString][valueString] = value;
     }
 
@@ -670,9 +659,9 @@ export default class ViewManager {
      * Updates the defaults in the feature
      * @param feature
      */
-    updateDefaultsFromFeature(feature){
+    updateDefaultsFromFeature(feature) {
         let heritable = feature.getHeritableParams();
-        for (let key in heritable){
+        for (let key in heritable) {
             this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
         }
     }
@@ -725,8 +714,8 @@ export default class ViewManager {
      * @param toolString
      * @param rightClickToolString
      */
-    activateTool(toolString , rightClickToolString = "SelectTool") {
-        if(this.tools[toolString] == null){
+    activateTool(toolString, rightClickToolString = "SelectTool") {
+        if (this.tools[toolString] == null) {
             throw new Error("Could not find tool with the matching string");
         }
 
@@ -748,7 +737,7 @@ export default class ViewManager {
             let zoom = this.renderer.getZoom();
             let newCenterX = center[0];
             if (newCenterX < 0) {
-                newCenterX = 0
+                newCenterX = 0;
             } else if (newCenterX > Registry.currentDevice.params.getValue("width")) {
                 newCenterX = Registry.currentDevice.params.getValue("width");
             }
@@ -756,7 +745,7 @@ export default class ViewManager {
             if (newCenterY < 0) {
                 newCenterY = 0;
             } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
-                newCenterY = Registry.currentDevice.params.getValue("height")
+                newCenterY = Registry.currentDevice.params.getValue("height");
             }
             HTMLUtils.setButtonColor(this.__button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
             HTMLUtils.setButtonColor(this.__button3D, inactiveBackground, inactiveText);
@@ -798,16 +787,14 @@ export default class ViewManager {
             let reader = new FileReader();
             reader.onloadend = function(e) {
                 let result = this.result;
-                try{
+                try {
                     result = JSON.parse(result);
                     Registry.viewManager.loadDeviceFromJSON(result);
                     Registry.viewManager.switchTo2D();
-                }catch (error) {
+                } catch (error) {
                     console.error(error.message);
-                    alert("Unable to parse the design file, please ensure that the file is not corrupted:\n"+ error.message);
+                    alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
                 }
-                
-
             };
             try {
                 reader.readAsText(f);
@@ -816,7 +803,6 @@ export default class ViewManager {
             }
         });
     }
-
 
     /**
      * Closes the params window
@@ -829,7 +815,7 @@ export default class ViewManager {
     /**
      * This method saves the current device to the design history
      */
-    saveDeviceState(){
+    saveDeviceState() {
         console.log("Saving to statck");
 
         let save = JSON.stringify(Registry.currentDevice.toInterchangeV1());
@@ -840,20 +826,19 @@ export default class ViewManager {
     /**
      * Undoes the recent update
      */
-    undo(){
+    undo() {
         let previousdesign = this.undoStack.popDesign();
         console.log(previousdesign);
-        if(previousdesign){
+        if (previousdesign) {
             let result = JSON.parse(previousdesign);
             this.loadDeviceFromJSON(result);
         }
-
     }
 
     /**
      * Resets the tool to the default tool
      */
-    resetToDefaultTool(){
+    resetToDefaultTool() {
         this.cleanupActiveTools();
         this.activateTool("MouseSelectTool");
         this.componentToolBar.setActiveButton("SelectButton");
@@ -863,10 +848,10 @@ export default class ViewManager {
      * Runs cleanup method on the activated tools
      */
     cleanupActiveTools() {
-        if(this.mouseAndKeyboardHandler.leftMouseTool){
+        if (this.mouseAndKeyboardHandler.leftMouseTool) {
             this.mouseAndKeyboardHandler.leftMouseTool.cleanup();
         }
-        if (this.mouseAndKeyboardHandler.rightMouseTool){
+        if (this.mouseAndKeyboardHandler.rightMouseTool) {
             this.mouseAndKeyboardHandler.rightMouseTool.cleanup();
         }
     }
@@ -874,7 +859,7 @@ export default class ViewManager {
     /**
      * Updates the renders for all the connection in the blah
      */
-    updatesConnectionRender(connection){
+    updatesConnectionRender(connection) {
         //First Redraw all the segements without valves or insertions
         connection.regenerateSegments();
 
@@ -882,24 +867,20 @@ export default class ViewManager {
         let valves = Registry.currentDevice.getValvesForConnection(connection);
 
         //Cycle through each of the valves
-        for(let j in valves){
+        for (let j in valves) {
             let valve = valves[j];
             let is3D = Registry.currentDevice.getIsValve3D(valve);
-            if(is3D){
+            if (is3D) {
                 let boundingbox = valve.getBoundingRectangle();
                 connection.insertFeatureGap(boundingbox);
             }
         }
-
     }
 
-
-    showUIMessage(message){
-        this.messageBox.MaterialSnackbar.showSnackbar(
-            {
-                message: message
-            }
-        );
+    showUIMessage(message) {
+        this.messageBox.MaterialSnackbar.showSnackbar({
+            message: message
+        });
     }
 
     setupTools() {
@@ -938,10 +919,9 @@ export default class ViewManager {
         //All the new tools
         this.tools["MoveTool"] = new MoveTool();
         this.tools["GenerateArrayTool"] = new GenerateArrayTool();
-
     }
 
-    addCustomComponentTool(identifier){
+    addCustomComponentTool(identifier) {
         let customcomponent = this.customComponentManager.getCustomComponent(identifier);
         this.tools[identifier] = new CustomComponentPositionTool(customcomponent, "Custom");
         Registry.featureDefaults["Custom"][identifier] = CustomComponent.defaultParameterDefinitions().defaults;
@@ -952,41 +932,31 @@ export default class ViewManager {
         let components = this.currentDevice.getComponents();
         let xpos = 10000;
         let ypos = 10000;
-        for(let i in components){
+        for (let i in components) {
             let component = components[i];
             let currentposition = component.getPosition();
             //TODO: Refine this logic, it sucks
-            if (currentposition[0] == 0 && currentposition == 0){
-                if(!component.placed){
-                    this.__generateDefaultPlacementForComponent(
-                        component,
-                        xpos * (parseInt(i) + 1),
-                        ypos * (Math.floor(parseInt(i)/5) +1)
-                    );
+            if (currentposition[0] == 0 && currentposition == 0) {
+                if (!component.placed) {
+                    this.__generateDefaultPlacementForComponent(component, xpos * (parseInt(i) + 1), ypos * (Math.floor(parseInt(i) / 5) + 1));
                 }
-            }else{
-                if(!component.placed){
-                    this.__generateDefaultPlacementForComponent(
-                        component,
-                        currentposition[0],
-                        currentposition[1]
-                    );
+            } else {
+                if (!component.placed) {
+                    this.__generateDefaultPlacementForComponent(component, currentposition[0], currentposition[1]);
                 }
-
             }
         }
 
         //TODO: Step 2 generate rats nest renders for all the components
-        
+
         this.view.updateRatsNest();
         this.view.updateComponentPortsRender();
     }
 
     __generateDefaultPlacementForComponent(component, xpos, ypos) {
-
         let params_to_copy = component.getParams().toJSON();
 
-        params_to_copy["position"]  = [xpos, ypos];
+        params_to_copy["position"] = [xpos, ypos];
 
         //Get default params and overwrite them with json params, this can account for inconsistencies
         let newFeature = Device.makeFeature(component.getType(), "Basic", params_to_copy);
@@ -997,10 +967,9 @@ export default class ViewManager {
 
         //Set the component position
         component.updateComponetPosition([xpos, ypos]);
-
     }
 
-    generateExportJSON(){
+    generateExportJSON() {
         let json = this.currentDevice.toInterchangeV1();
         json.customComponents = this.customComponentManager.toJSON();
         return json;
@@ -1011,30 +980,26 @@ export default class ViewManager {
      * @param json
      */
     loadCustomComponents(json) {
-        if(json.hasOwnProperty("customComponents")){
+        if (json.hasOwnProperty("customComponents")) {
             this.customComponentManager.loadFromJSON(json["customComponents"]);
-
         }
     }
 
-
-    activateDAFDPlugin(params = null){
-
+    activateDAFDPlugin(params = null) {
         this.loadDeviceFromJSON(JSON.parse(Examples.dafdtemplate));
 
-        if(null == params){
+        if (null == params) {
             params = {
-                "orificeSize": 750,
-                "orificeLength": 200,
-                "oilInputWidth": 800,
-                "waterInputWidth": 900,
-                "outputWidth": 900,
-                "outputLength": 500,
-                "height": 100,
+                orificeSize: 750,
+                orificeLength: 200,
+                oilInputWidth: 800,
+                waterInputWidth: 900,
+                outputWidth: 900,
+                outputLength: 500,
+                height: 100
             };
         }
 
         DAFDPlugin.fixLayout(params);
-
     }
 }

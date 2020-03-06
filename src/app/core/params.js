@@ -1,4 +1,4 @@
-import Parameter from './parameter';
+import Parameter from "./parameter";
 
 export default class Params {
     /**
@@ -11,32 +11,30 @@ export default class Params {
     constructor(values, unique, heritable, rawparameters) {
         this.unique = unique;
         this.heritable = heritable;
-        if(values != null){
+        if (values != null) {
             this.parameters = this.__sanitizeValues(values);
-        }else{
-
+        } else {
             let value;
-            for(let key in rawparameters){
+            for (let key in rawparameters) {
                 value = rawparameters[key];
                 this.parameters[key] = Parameter.makeParam(this.unique[key], oldParam);
             }
 
-            this.parameters = rawparameters
+            this.parameters = rawparameters;
         }
     }
 
-    updateParameter(key, value){
-        if(this.parameters.hasOwnProperty(key)){
+    updateParameter(key, value) {
+        if (this.parameters.hasOwnProperty(key)) {
             this.parameters[key].updateValue(value);
         } else {
-            if(this.isHeritable(key)){
+            if (this.isHeritable(key)) {
                 this.parameters[key] = Parameter.makeParam(this.heritable[key], value);
-            } 
-            else throw new Error(key + "parameter does not exist in Params object");
+            } else throw new Error(key + "parameter does not exist in Params object");
         }
     }
 
-    __ensureHasKey(key){
+    __ensureHasKey(key) {
         if (!this.parameters.hasOwnProperty(key)) throw new Error(key + " parameter not found in Params object.");
     }
 
@@ -51,21 +49,19 @@ export default class Params {
     }
 
     isUnique(key) {
-        return (this.unique.hasOwnProperty(key));
+        return this.unique.hasOwnProperty(key);
     }
 
     isHeritable(key) {
-        return (this.heritable.hasOwnProperty(key));
+        return this.heritable.hasOwnProperty(key);
     }
 
     hasAllUniques(params) {
-        for (let key in this.unique)
-            if (!params.hasOwnProperty(key)) return false;
+        for (let key in this.unique) if (!params.hasOwnProperty(key)) return false;
         return true;
     }
     wrongTypeError(key, expected, actual) {
-        return new Error("Parameter " + key + " is the wrong type. " +
-            "Expected: " + this.unique[key] + ", Actual: " + actual);
+        return new Error("Parameter " + key + " is the wrong type. " + "Expected: " + this.unique[key] + ", Actual: " + actual);
     }
 
     /* Turns the raw key:value pairs passed into a user-written Feature declaration
@@ -78,7 +74,7 @@ export default class Params {
             if (this.isUnique(key)) {
                 newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
             } else if (this.isHeritable(key)) {
-                if (values[key]){
+                if (values[key]) {
                     newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
                 }
             } else {
@@ -102,7 +98,7 @@ export default class Params {
                 }
             } else if (this.isHeritable(key)) {
                 if (param.type != this.heritable[key]) {
-                    this.wrongTypeError(key, this.heritable[key], param.type)
+                    this.wrongTypeError(key, this.heritable[key], param.type);
                 }
             } else {
                 throw new Error(key + " does not exist in this set of ParamTypes.");
@@ -116,7 +112,7 @@ export default class Params {
     toJSON() {
         let json = {};
         for (let key in this.parameters) {
-            if(this.parameters[key]!=undefined){
+            if (this.parameters[key] != undefined) {
                 json[key] = this.parameters[key].getValue();
             }
         }
@@ -127,7 +123,7 @@ export default class Params {
         return new Params(json, unique, heritable);
     }
 
-    hasParam(key){
+    hasParam(key) {
         return this.parameters.hasOwnProperty(key);
     }
 
@@ -135,10 +131,10 @@ export default class Params {
      * Returns a ES6 Map() type object with keys and values
      * @return {Map<key, value>}
      */
-    toMap(){
+    toMap() {
         let ret = new Map();
         for (let key in this.parameters) {
-            if(this.parameters[key]!=undefined){
+            if (this.parameters[key] != undefined) {
                 ret.set(key, this.parameters[key].getValue());
             }
         }

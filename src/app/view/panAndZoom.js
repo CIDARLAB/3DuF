@@ -1,5 +1,5 @@
 export default class PanAndZoom {
-    constructor(paperView){
+    constructor(paperView) {
         this.view = paperView;
     }
     stableZoom(zoom, position) {
@@ -25,11 +25,11 @@ export default class PanAndZoom {
         else return this.view.getZoom();
     }
 
-    moveCenter(delta){
+    moveCenter(delta) {
         this.view.setCenter(this.calcCenter(delta));
     }
 
-    calcCenter(delta){
+    calcCenter(delta) {
         return this.view.getCenter().subtract(delta);
     }
 }

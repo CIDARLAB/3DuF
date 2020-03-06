@@ -1,5 +1,5 @@
-export default class GeometryEdge{
-    constructor(start, end, type, id, data){
+export default class GeometryEdge {
+    constructor(start, end, type, id, data) {
         this.__start = start;
         this.__end = end;
 
@@ -11,25 +11,23 @@ export default class GeometryEdge{
         //TODO: Do classification of kind of edge (curve, horizontal, vertical, angled, etc), compute length
     }
 
-    get id(){
+    get id() {
         return this.__id;
     }
 
-    get start(){
+    get start() {
         return this.__start;
     }
 
-    get end(){
+    get end() {
         return this.__end;
     }
 
-    get type(){
+    get type() {
         return this.__type;
     }
 
-    get dxfData(){
+    get dxfData() {
         return this.__dxfData;
     }
-
-
 }

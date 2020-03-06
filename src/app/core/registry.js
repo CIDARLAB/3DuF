@@ -1,4 +1,4 @@
-import uuid from 'node-uuid';
+import uuid from "node-uuid";
 
 let registeredParams = {};
 let featureDefaults = {};
@@ -24,6 +24,6 @@ var threeRenderer = null;
 
 export function generateID() {
     return uuid.v1();
-};
+}
 
 export { registeredParams, currentDevice, currentLayer, canvasManager, viewManager, currentGrid, featureDefaults, threeRenderer, text, featureSet };

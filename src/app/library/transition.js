@@ -1,55 +1,54 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class Transition extends Template{
-    constructor(){
+export default class Transition extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "cw1": "Float",
-            "cw2": "Float",
-            "length": "Float",
-            "rotation": "Float",
-            "height": "Float"
+            cw1: "Float",
+            cw2: "Float",
+            length: "Float",
+            rotation: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
-            "cw1": .80 * 1000,
-            "cw2": .90 * 1000,
-            "length": 1.0 * 1000,
-            "rotation": 0,
-            "height": 250
+            cw1: 0.8 * 1000,
+            cw2: 0.9 * 1000,
+            length: 1.0 * 1000,
+            rotation: 0,
+            height: 250
         };
 
-
         this.__units = {
-            "cw1": "&mu;m",
-            "cw2": "&mu;m",
-            "length": "&mu;m",
-            "rotation": "&deg",
-            "height": "&mu;m"
+            cw1: "&mu;m",
+            cw2: "&mu;m",
+            length: "&mu;m",
+            rotation: "&deg",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "cw1": 3,
-            "cw2": 3,
-            "length": 10,
-            "height": 10,
-            "rotation": 0
+            cw1: 3,
+            cw2: 3,
+            length: 10,
+            height: 10,
+            rotation: 0
         };
 
         this.__maximum = {
-            "rotation": 180,
-            "cw1": 2000,
-            "cw2": 2000,
-            "length": 1200,
-            "height": 1200
+            rotation: 180,
+            cw1: 2000,
+            cw2: 2000,
+            length: 1200,
+            height: 1200
         };
 
         this.__featureParams = {
@@ -98,7 +97,7 @@ export  default class Transition extends Template{
         return trap.rotate(rotation, position[0], position[1]);
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;

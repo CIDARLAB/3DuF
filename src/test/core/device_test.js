@@ -1,5 +1,5 @@
 var appRoot = "../../app/";
-var should = require('should');
+var should = require("should");
 var Layer = require(appRoot + "core/layer");
 var Feature = require(appRoot + "core/feature");
 var Device = require(appRoot + "core/device");
@@ -20,33 +20,41 @@ var feat1;
 var feat2;
 
 var initDevice = function() {
-    dev = new Device({
-        "width": 50, 
-        "height": 60
-    }, "dev1");
-    lay1 = new Layer({
-        "z_offset": 0,
-        "flip": false
-    }, "layer1");
-    lay2 = new Layer({
-        "z_offset": 1.2,
-        "flip": true
-    }, "layer2");
+    dev = new Device(
+        {
+            width: 50,
+            height: 60
+        },
+        "dev1"
+    );
+    lay1 = new Layer(
+        {
+            z_offset: 0,
+            flip: false
+        },
+        "layer1"
+    );
+    lay2 = new Layer(
+        {
+            z_offset: 1.2,
+            flip: true
+        },
+        "layer2"
+    );
     feat1 = Channel({
-        "start": [0,0],
-        "end": [2,2]
+        start: [0, 0],
+        end: [2, 2]
     });
     feat2 = CircleValve({
-        "position": [3,5]
+        position: [3, 5]
     });
-}
+};
 
 describe("Device", function() {
     beforeEach(function initialize() {
         initDevice();
     });
     describe("#init", function() {
-
         it("should start with no layers", function() {
             dev.layers.length.should.equal(0);
         });
@@ -58,10 +66,10 @@ describe("Device", function() {
         it("should be able to be constructed without a name", function() {
             (function() {
                 let dev2 = new Device({
-                    "width": 50,
-                    "height": 70
+                    width: 50,
+                    height: 70
                 });
-            }).should.not.throwError();
+            }.should.not.throwError());
         });
     });
 
@@ -110,14 +118,14 @@ describe("Device", function() {
             lay1.addFeature(feat1);
             lay2.addFeature(feat2);
             let json = {
-                "params": {
-                    "width": 59,
-                    "height": 23.5
+                params: {
+                    width: 59,
+                    height: 23.5
                 },
-                "name": "myDevice",
-                "layers": {
-                    "lay1": lay1.toJSON(),
-                    "lay2": lay2.toJSON()
+                name: "myDevice",
+                layers: {
+                    lay1: lay1.toJSON(),
+                    lay2: lay2.toJSON()
                 }
             };
             let dev2 = Device.fromJSON(json);
@@ -132,25 +140,25 @@ describe("Device", function() {
         });
         it("cannot load a device from malformed JSON", function() {
             let json = {
-                "params": {
-                    "height": {
-                        "type": "Float",
-                        "value": 23.5
+                params: {
+                    height: {
+                        type: "Float",
+                        value: 23.5
                     }
                 },
-                "name": {
-                    "type": "String",
-                    "value": "myDevice"
+                name: {
+                    type: "String",
+                    value: "myDevice"
                 },
-                "layers": {
-                    "lay1": lay1.toJSON(),
-                    "lay2": lay2.toJSON()
+                layers: {
+                    lay1: lay1.toJSON(),
+                    lay2: lay2.toJSON()
                 }
-            }
+            };
             let dev2;
             (function() {
-                dev2 = Device.fromJSON(json)
-            }).should.throwError();
+                dev2 = Device.fromJSON(json);
+            }.should.throwError());
         });
     });
 });

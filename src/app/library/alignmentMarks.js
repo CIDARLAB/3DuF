@@ -1,45 +1,44 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class AlignmentMarks extends Template{
-    constructor(){
+export default class AlignmentMarks extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "width": "Float",
-            "length": "Float",
-            "height": "Float"
+            width: "Float",
+            length: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
-            "width": 4000,
-            "length": 4000,
-            "height": 250
+            width: 4000,
+            length: 4000,
+            height: 250
         };
 
-
         this.__units = {
-            "width": "&mu;m",
-            "length": "&mu;m",
-            "height": "&mu;m"
+            width: "&mu;m",
+            length: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "width": 10,
-            "length": 10,
-            "height": 10
+            width: 10,
+            length: 10,
+            height: 10
         };
 
         this.__maximum = {
-            "width": 200000,
-            "length": 200000,
-            "height": 1200
+            width: 200000,
+            length: 200000,
+            height: 1200
         };
 
         this.__placementTool = "MultilayerPositionTool";
@@ -62,20 +61,17 @@ export  default class AlignmentMarks extends Template{
         this.__renderKeys = ["FLOW", "CONTROL"];
 
         this.__mint = "PORT";
-
-
     }
 
     render2D(params, key) {
-        if(key == "FLOW"){
+        if (key == "FLOW") {
             return this.__drawFlow(params);
-        }else if (key == "CONTROL"){
+        } else if (key == "CONTROL") {
             return this.__drawControl(params);
         }
-
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let position = params["position"];
         let width = params["width"];
         let length = params["length"];
@@ -96,7 +92,7 @@ export  default class AlignmentMarks extends Template{
         let topmiddlepoint = new paper.Point(position[0], position[1] - length);
         let middlerightpoint = new paper.Point(position[0] + width, position[1]);
         let middleleftpoint = new paper.Point(position[0] - width, position[1]);
-        let bottommiddlepoint = new paper.Point(position[0], position[1]+length);
+        let bottommiddlepoint = new paper.Point(position[0], position[1] + length);
 
         let toprightrect = new paper.Path.Rectangle(topmiddlepoint, middlerightpoint);
 
@@ -145,7 +141,7 @@ export  default class AlignmentMarks extends Template{
         let topmiddlepoint = new paper.Point(position[0], position[1] - length);
         let middlerightpoint = new paper.Point(position[0] + width, position[1]);
         let middleleftpoint = new paper.Point(position[0] - width, position[1]);
-        let bottommiddlepoint = new paper.Point(position[0], position[1]+length);
+        let bottommiddlepoint = new paper.Point(position[0], position[1] + length);
 
         let toprightrect = new paper.Path.Rectangle(topmiddlepoint, middlerightpoint);
 

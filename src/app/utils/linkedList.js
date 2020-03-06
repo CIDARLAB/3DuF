@@ -6,11 +6,11 @@ export default class LinkedList {
         this.current = null;
     }
 
-    currentData(){
+    currentData() {
         return this.current.data;
     }
 
-    removeCurrent(){
+    removeCurrent() {
         let prev = this.current.prev;
         let next = this.current.next;
 
@@ -18,31 +18,31 @@ export default class LinkedList {
         next.prev = prev;
     }
 
-    removeNode(node){
+    removeNode(node) {
         let cnode = this.head;
-        if(node.id === cnode.id){
+        if (node.id === cnode.id) {
             //remove the node
             let prev = cnode.prev;
             let next = cnode.next;
 
             prev.next = next;
-            if(next){
+            if (next) {
                 next.prev = prev;
             }
-        }else{
+        } else {
             let nextnode = LinkedList.getNextNode(cnode);
-            while(nextnode){
-                if(nextnode.id === node.id){
+            while (nextnode) {
+                if (nextnode.id === node.id) {
                     //remove the node
                     let prev = nextnode.prev;
                     let next = nextnode.next;
 
                     prev.next = next;
-                    if(next){
+                    if (next) {
                         next.prev = prev;
                     }
                     break;
-                }else{
+                } else {
                     nextnode = LinkedList.getNextNode(nextnode);
                 }
             }
@@ -54,13 +54,13 @@ export default class LinkedList {
         return this.count;
     }
 
-    push(data){
+    push(data) {
         //Incase its the first one
-        if(this.count === 0){
+        if (this.count === 0) {
             let node = new Node(data);
             this.head = node;
             this.tail = node;
-        }else{
+        } else {
             //Save the old head
             let temp = this.head;
 
@@ -77,33 +77,31 @@ export default class LinkedList {
         this.count++;
     }
 
-    getArray(){
+    getArray() {
         let retarray = [];
         retarray.push(this.head.data);
         let nextnode = LinkedList.getNextNode(this.head);
-        while(nextnode){
+        while (nextnode) {
             retarray.push(nextnode.data);
             nextnode = LinkedList.getNextNode(nextnode);
         }
         return retarray;
     }
 
-    static getNextNode(node){
+    static getNextNode(node) {
         return node.next;
     }
 
-    static getPreviousNode(node){
+    static getPreviousNode(node) {
         return node.prev;
     }
 }
 
-
-class Node{
-    constructor(data){
+class Node {
+    constructor(data) {
         this.prev = null;
         this.data = data;
         this.next = null;
         this.id = 0;
     }
 }
-

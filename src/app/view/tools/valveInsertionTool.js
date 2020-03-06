@@ -1,38 +1,36 @@
 import MultilayerPositionTool from "./multilayerPositionTool";
 
-import * as Registry from '../../core/registry';
-import Device from '../../core/device';
-import MouseTool from './mouseTool';
+import * as Registry from "../../core/registry";
+import Device from "../../core/device";
+import MouseTool from "./mouseTool";
 import PositionTool from "./positionTool";
-import paper from 'paper';
+import paper from "paper";
 
-export default class ValveInsertionTool extends MultilayerPositionTool{
-    constructor(typeString, setString, is3D = false){
+export default class ValveInsertionTool extends MultilayerPositionTool {
+    constructor(typeString, setString, is3D = false) {
         super(typeString, setString);
         this.is3D = is3D;
 
         let ref = this;
 
-        this.down = function (event) {
+        this.down = function(event) {
             console.log(event);
             let point = MouseTool.getEventPosition(event);
             let target = PositionTool.getTarget(point);
             //Check if connection exists at point
             let connection = ref.checkIfConnectionExistsAt(target);
             //if connection exists then place the valve
-            if(connection){
+            if (connection) {
                 ref.insertValve(point, connection);
-            }else if(event.ctrlKey || event.metaKey){
+            } else if (event.ctrlKey || event.metaKey) {
                 //Forced placement of the Valve
                 console.warn("Forcing placement of valve, a lot of things will not work correct if done this way");
                 ref.forceInsertValve(point);
-            }
-            else{
+            } else {
                 //Send out error message
                 console.log("Could not find connection at this location");
             }
-
-        }
+        };
     }
 
     /**
@@ -41,22 +39,22 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
      * @param rotation
      * @return {Component}
      */
-    createNewFeature(point, rotation = null){
+    createNewFeature(point, rotation = null) {
         let featureIDs = [];
         let overridedata;
 
-        if(rotation){
+        if (rotation) {
             overridedata = {
-                "position": PositionTool.getTarget(point),
-                "rotation": rotation
+                position: PositionTool.getTarget(point),
+                rotation: rotation
             };
-        }else{
+        } else {
             overridedata = {
-                "position": PositionTool.getTarget(point)
+                position: PositionTool.getTarget(point)
             };
         }
 
-        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer)/3);
+        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
         let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
         let newFeature = Device.makeFeature(this.typeString, this.setString, overridedata);
@@ -68,9 +66,9 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
 
         let params_to_copy = newFeature.getParams();
 
-        let component = super.createNewComponent(this.typeString, params_to_copy, featureIDs );
+        let component = super.createNewComponent(this.typeString, params_to_copy, featureIDs);
 
-        return component
+        return component;
     }
 
     /**
@@ -79,22 +77,22 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
      * @param rotation
      * @return {Component}
      */
-    createNewMultiLayerFeature(point, rotation = null){
+    createNewMultiLayerFeature(point, rotation = null) {
         let featureIDs = [];
         let overridedata;
 
-        if(rotation){
-           overridedata = {
-               "position": PositionTool.getTarget(point),
-               "rotation": rotation
-           };
-        }else{
+        if (rotation) {
             overridedata = {
-                "position": PositionTool.getTarget(point)
+                position: PositionTool.getTarget(point),
+                rotation: rotation
+            };
+        } else {
+            overridedata = {
+                position: PositionTool.getTarget(point)
             };
         }
 
-        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer)/3);
+        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
         let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
         let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
@@ -116,7 +114,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
 
         featureIDs.push(newFeature.getID());
 
-        let component  = super.createNewComponent(this.typeString, params_to_copy, featureIDs );
+        let component = super.createNewComponent(this.typeString, params_to_copy, featureIDs);
 
         return component;
     }
@@ -124,7 +122,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
     /**
      * Shows the target
      */
-    showTarget(){
+    showTarget() {
         let target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
@@ -137,7 +135,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
     checkIfConnectionExistsAt(target) {
         let hit = Registry.viewManager.view.hitFeature(target, false);
         //TODO: check if the hit feature belongs to a connection
-        if(hit){
+        if (hit) {
             let connection = Registry.currentDevice.getConnectionForFeatureID(hit.featureID);
             return connection;
         }
@@ -152,17 +150,17 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
      */
     insertValve(point, connection) {
         let angle = this.__getRotation(point, connection);
-        if(angle < 0){
-            angle+=180;
+        if (angle < 0) {
+            angle += 180;
         }
 
         let component;
-        if(this.is3D){
-            angle+=90;
+        if (this.is3D) {
+            angle += 90;
             //TODO: Insert the valve features in both flow and control
             component = this.createNewMultiLayerFeature(point, angle);
             //TODO: Redraw the connection
-        }else {
+        } else {
             //TODO: Insert the valve feature in flow
             component = this.createNewFeature(point, angle);
         }
@@ -170,7 +168,6 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
         Registry.currentDevice.insertValve(component, connection, this.is3D);
         Registry.viewManager.updatesConnectionRender(connection);
         Registry.viewManager.saveDeviceState();
-
     }
 
     /**
@@ -179,19 +176,17 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
      * @param connection
      */
     forceInsertValve(point) {
-
         let component;
-        if(this.is3D){
+        if (this.is3D) {
             //TODO: Insert the valve features in both flow and control
             component = this.createNewMultiLayerFeature(point);
             //TODO: Redraw the connection
-        }else {
+        } else {
             //TODO: Insert the valve feature in flow
             component = this.createNewFeature(point);
         }
 
         Registry.viewManager.saveDeviceState();
-
     }
 
     /**
@@ -206,33 +201,31 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
         let conn_waypoints;
         let lowestdist = 1000000000000000000000;
         let p0, p1, sol;
-        let paths = [] = connection.getPaths();
+        let paths = ([] = connection.getPaths());
         let waypoints = [];
         for (let j in paths) {
             conn_waypoints = paths[j];
             //conn_waypoints = connection.getValue("wayPoints");
-            for(let i = 0; i < conn_waypoints.length; i++ ){
+            for (let i = 0; i < conn_waypoints.length; i++) {
                 waypoints.push(conn_waypoints[i]);
             }
 
             //Find out which segment the point is on
-            for(let i = 0 ; i < waypoints.length -1 ; i++){
+            for (let i = 0; i < waypoints.length - 1; i++) {
                 p0 = waypoints[i];
-                p1 = waypoints[i+1];
+                p1 = waypoints[i + 1];
 
                 let tempdist = this.__calculateNormalDistance(point, p0, p1);
-                if(tempdist < lowestdist || i === 0){
+                if (tempdist < lowestdist || i === 0) {
                     sol = i;
                     lowestdist = tempdist;
                 }
             }
 
             p0 = waypoints[sol];
-            p1 = waypoints[sol+1];
-
+            p1 = waypoints[sol + 1];
         }
         // waypoints.splice(0, 0, connection.getValue("start"));
-
 
         let to = new paper.Point(p0[0], p0[1]);
         let from = new paper.Point(p1[0], p1[1]);
@@ -256,4 +249,3 @@ export default class ValveInsertionTool extends MultilayerPositionTool{
         return dist;
     }
 }
-

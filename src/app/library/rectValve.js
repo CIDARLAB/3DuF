@@ -1,40 +1,39 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class RectValve extends Template{
-    constructor(){
+export default class RectValve extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "portRadius": "Float",
-            "height": "Float"
+            portRadius: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
-            "portRadius": .7 * 1000,
-            "height": 250
+            portRadius: 0.7 * 1000,
+            height: 250
         };
 
-
         this.__units = {
-            "portRadius": "&mu;m",
-            "height": "&mu;m"
+            portRadius: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "portRadius": .8 * 10,
-            "height": 10
+            portRadius: 0.8 * 10,
+            height: 10
         };
 
         this.__maximum = {
-            "portRadius": 2000,
-            "height": 1200
+            portRadius: 2000,
+            height: 1200
         };
 
         this.__placementTool = "componentPositionTool";
@@ -68,10 +67,9 @@ export  default class RectValve extends Template{
         rec.translate([0, -width / 2]);
         rec.rotate(vec.angle, start);
         return rec;
-
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
     }

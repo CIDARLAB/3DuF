@@ -1,10 +1,9 @@
-import paper from 'paper';
+import paper from "paper";
 
 import * as Colors from "../colors";
 
 export default class AdaptiveGrid {
     constructor(viewmanager, minSpacing = 5, maxSpacing = 100, thickCount = 10, origin = [0, 0], thinWidth = 1, thickWidth = 3, color = Colors.BLUE_100) {
-
         this.__viewManagerDelegate = viewmanager;
 
         this.origin = new paper.Point(origin[0], origin[1]);
@@ -16,14 +15,13 @@ export default class AdaptiveGrid {
         this.__spacing = 500;
         this.__isAutomaticEnabled = true;
         this.color = color;
-
     }
 
-    enableAdaptiveGrid(){
+    enableAdaptiveGrid() {
         this.__isAutomaticEnabled = true;
     }
 
-    disableAdaptiveGrid(){
+    disableAdaptiveGrid() {
         this.__isAutomaticEnabled = false;
     }
 
@@ -58,38 +56,38 @@ export default class AdaptiveGrid {
         this.notifyViewManagerToUpdateView();
     }
 
-    setColor(color){
+    setColor(color) {
         this.color = color;
         this.notifyViewManagerToUpdateView();
     }
 
     getSpacing() {
-        if(this.__isAutomaticEnabled){
+        if (this.__isAutomaticEnabled) {
             let zoomlevel = paper.view.zoom;
             if (zoomlevel <= 0.02) {
                 this.__spacing = 1000;
-            }else if(zoomlevel <= 0.05){
+            } else if (zoomlevel <= 0.05) {
                 this.__spacing = 500;
-            }else if(zoomlevel <= 0.1){
+            } else if (zoomlevel <= 0.1) {
                 this.__spacing = 100;
-            }else if(zoomlevel <= 0.6){
+            } else if (zoomlevel <= 0.6) {
                 this.__spacing = 50;
-            }else{
+            } else {
                 this.__spacing = 5;
             }
             return this.__spacing;
-        }else{
+        } else {
             return this.__spacing;
         }
         // console.log("Zoom: " + paper.view.zoom + " Spacing: " + this.__spacing);
     }
 
-    updateGridSpacing(value){
-        if(AdaptiveGrid.isValidZoom(value)){
+    updateGridSpacing(value) {
+        if (AdaptiveGrid.isValidZoom(value)) {
             console.log("New spacing value:", value);
             this.__spacing = value;
             return true;
-        }else{
+        } else {
             console.error("Inavlid Grid Spacing");
             return false;
         }
@@ -104,20 +102,19 @@ export default class AdaptiveGrid {
     }
 
     notifyViewManagerToUpdateView() {
-        if(this.__viewManagerDelegate){
+        if (this.__viewManagerDelegate) {
             this.__viewManagerDelegate.updateGrid();
-        }else{
+        } else {
             console.error("Could not find view manager to send update grid signal");
         }
     }
 
-    static isValidZoom(value){
+    static isValidZoom(value) {
         //First check if its a valid number
 
         //TODO: figure out if we want to round it off
 
         //Then check if its in bounds
-
 
         //TODO: change this to be actually functional
         return true;

@@ -1,11 +1,11 @@
-import paper from 'paper';
-import DXFParser from 'dxf-parser';
+import paper from "paper";
+import DXFParser from "dxf-parser";
 import * as HTMLUtils from "../../utils/htmlUtils";
 import DXFObject from "../../core/dxfObject";
 import * as DXFRenderer from "../render2D/dxfSolidObjectRenderer2D";
 
 export default class ImportComponentDialog {
-    constructor(customComponentManager){
+    constructor(customComponentManager) {
         this.__customComponentManagerDelegate = customComponentManager;
         this.__showDialogButton = document.getElementById("show_import_dialog");
         this.__importComponentButton = document.getElementById("import_component_button");
@@ -25,7 +25,7 @@ export default class ImportComponentDialog {
         let ref = this;
 
         //Enable dialog show
-        this.__showDialogButton.addEventListener('click', function (event) {
+        this.__showDialogButton.addEventListener("click", function(event) {
             ref.__dialog.showModal();
             paper.projects[1].activate();
             // let test = new paper.Rectangle(new paper.Point(0,0), 500, 500);
@@ -35,7 +35,7 @@ export default class ImportComponentDialog {
         });
 
         //Enable close button
-        this.__dialog.querySelector('.close').addEventListener('click', function() {
+        this.__dialog.querySelector(".close").addEventListener("click", function() {
             ref.__dialog.close();
 
             //Clear the canvas
@@ -45,8 +45,7 @@ export default class ImportComponentDialog {
             paper.projects[0].activate();
         });
 
-
-        this.__importComponentButton.addEventListener('click', function (event) {
+        this.__importComponentButton.addEventListener("click", function(event) {
             ref.importComponent();
             ref.__dialog.close();
 
@@ -55,9 +54,8 @@ export default class ImportComponentDialog {
 
             //Enable default paperproject
             paper.projects[0].activate();
-
         });
-        
+
         this.__setupDragAndDropLoad("#component_preview_canvas");
     }
 
@@ -101,7 +99,7 @@ export default class ImportComponentDialog {
         let parser = new DXFParser();
         let dxfdata = parser.parseSync(text);
         let dxfobjects = [];
-        for(let i in dxfdata.entities){
+        for (let i in dxfdata.entities) {
             let entity = dxfdata.entities[i];
             dxfobjects.push(new DXFObject(entity));
         }
@@ -131,10 +129,8 @@ export default class ImportComponentDialog {
         let heightRatio = componentHeight / maxHeight;
         if (widthRatio > heightRatio) {
             return 1 / widthRatio;
-        }
-        else {
+        } else {
             return 1 / heightRatio;
         }
     }
-
 }

@@ -3,50 +3,46 @@ import * as DXFSolidObjectRenderer2D from "./dxfSolidObjectRenderer2D";
 import * as Colors from "../colors";
 import Feature from "../../core/feature";
 
-import * as PrimitiveSets2D from "./primitiveSets2D";
 import * as FeatureSets from "../../featureSets";
-import * as Registry from '../../core/registry';
-import {renderEdgeFeature} from '../../view/render2D/dxfObjectRenderer2D';
-import paper from 'paper';
-
+import * as Registry from "../../core/registry";
+import { renderEdgeFeature } from "../../view/render2D/dxfObjectRenderer2D";
+import paper from "paper";
 
 var getLayerColor = function(feature) {
     let height = feature.getValue("height");
     let layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
-    if (decimal >1) decimal = 1;
+    if (decimal > 1) decimal = 1;
     if (!feature.layer.flip) decimal = 1 - decimal;
     let targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
-}
+};
 
 var getBaseColor = function(feature) {
     let decimal = 0;
     if (!feature.layer.flip) decimal = 1 - decimal;
     let targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
-}
+};
 
 export function getDefaultValueForType(typeString, setString, key) {
     return Feature.getDefaultsForType(typeString, setString)[key];
 }
 
 export function getFeatureRenderer(typeString, setString) {
-    if(typeString == "TEXT"){
+    if (typeString == "TEXT") {
         let rendererInfo = renderTextTarget;
         return rendererInfo;
-    }else if(typeString == "EDGE") {
+    } else if (typeString == "EDGE") {
         return renderEdge;
-    }
-    else
-    {
+    } else {
         let rendererInfo = FeatureSets.getRender2D(typeString, setString);
         return rendererInfo;
     }
 }
 
 export function getPrimitive2D(typeString, setString) {
-    console.log("What are Primitive sets ?", PrimitiveSets2D);
+    console.error("What are Primitive sets ?");
     //return PrimitiveSets2D[setString][typeString]; //Looks like the primitivesets2d are the function pointers
 }
 
@@ -73,32 +69,29 @@ export function renderTarget(typeString, setString, position) {
  */
 export function renderTextTarget(typeString, setString, position) {
     let rendered = new paper.PointText(new paper.Point(position[0], position[1]));
-    rendered.justification = 'center';
+    rendered.justification = "center";
     rendered.fillColor = Colors.DEEP_PURPLE_500;
     rendered.content = Registry.text;
-    rendered.fontSize = 10000/3;
+    rendered.fontSize = 10000 / 3;
     return rendered;
 }
-
 
 export function renderEdge(feature) {
     //TODO: Just call the DXF renderer (outline) for this
     renderEdgeFeature(feature);
 }
 
-
-export function renderText(feature){
+export function renderText(feature) {
     //TODO - Figure out where to save the position of the feature
     let position = feature.getValue("position");
     let rendered = new paper.PointText(new paper.Point(position[0], position[1]));
-    rendered.justification = 'center';
+    rendered.justification = "center";
     rendered.fillColor = Colors.DEEP_PURPLE_500;
     ///rendered.content = feature.getText();
     rendered.content = feature.getValue("text");
-    rendered.fontSize = 10000/3;
+    rendered.fontSize = 10000 / 3;
     rendered.featureID = feature.getID();
     return rendered;
-
 }
 
 /**
@@ -106,7 +99,7 @@ export function renderText(feature){
  * @param feature
  * @return {*}
  */
-export function renderFeature(feature, key = null ) {
+export function renderFeature(feature, key = null) {
     let rendered;
     let params;
     let type = feature.getType();
@@ -118,7 +111,6 @@ export function renderFeature(feature, key = null ) {
         rendered.featureID = feature.getID();
 
         return rendered;
-
     } else if (type === "EDGE") {
         return renderEdge(feature);
     } else {
@@ -131,7 +123,7 @@ export function renderFeature(feature, key = null ) {
         ignoring that.
          */
 
-        if(null == key){
+        if (null == key) {
             key = rendererinfo.key;
         }
 

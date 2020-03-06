@@ -1,5 +1,5 @@
-import {setButtonColor} from "../../utils/htmlUtils";
-import {GREY_200, BLACK, WHITE} from '../colors';
+import { setButtonColor } from "../../utils/htmlUtils";
+import { GREY_200, BLACK, WHITE } from "../colors";
 import InsertTextDialog from "./insertTextDialog";
 import * as Colors from "../colors";
 import * as ParameterMenu from "./parameterMenu";
@@ -8,9 +8,8 @@ const inactiveBackground = GREY_200;
 const inactiveText = BLACK;
 const activeText = WHITE;
 
-export default class ComponentToolBar{
-    constructor(viewmanagerdelegate){
-
+export default class ComponentToolBar {
+    constructor(viewmanagerdelegate) {
         this.__viewManagerDelegate = viewmanagerdelegate;
 
         //Create all component references
@@ -79,35 +78,35 @@ export default class ComponentToolBar{
         this.__insertTextDialog = new InsertTextDialog();
 
         this.buttons = {
-            "SelectButton": this.__selectToolButton,
-            "InsertTextButton": this.__insertTextButton,
-            "Channel": this.__channelButton,
-            "Connection": this.__connectionButton,
-            "RoundedChannel": this.__roundedChannelButton,
-            "Transition": this.__transitionButton,
-            "Via": this.__viaButton,
-            "Port": this.__portButton,
-            "CircleValve": this.__circleValveButton,
-            "Valve3D": this.__valve3dButton,
-            "Valve":this.__valveButton,
-            "Pump3D": this.__pump3dButton,
-            "Pump":this.__pumpButton,
-            "Chamber": this.__chamberButton,
-            "DiamondReactionChamber": this.__diamondButton,
-            "BetterMixer": this.__bettermixerButton,
-            "CurvedMixer": this.__curvedmixerButton,
-            "Mixer": this.__mixerButton,
-            "GradientGenerator": this.__gradientGeneratorButton,
-            "Tree": this.__treeButton,
-            "YTree": this.__ytreeButton,
-            "Mux":this.__muxButton,
-            "Transposer":this.__transposerButton,
-            "RotaryMixer":this.__rotarymixerButton,
-            "DropletGen": this.__dropletgenButton,
-            "CellTrapL": this.__celltraplButton,
-            "AlignmentMarks": this.__alignmentMarksButton,
-            "LLChamber" : this.__llChamberButton,
-            "3DMixer" : this.__threeDMixerButton
+            SelectButton: this.__selectToolButton,
+            InsertTextButton: this.__insertTextButton,
+            Channel: this.__channelButton,
+            Connection: this.__connectionButton,
+            RoundedChannel: this.__roundedChannelButton,
+            Transition: this.__transitionButton,
+            Via: this.__viaButton,
+            Port: this.__portButton,
+            CircleValve: this.__circleValveButton,
+            Valve3D: this.__valve3dButton,
+            Valve: this.__valveButton,
+            Pump3D: this.__pump3dButton,
+            Pump: this.__pumpButton,
+            Chamber: this.__chamberButton,
+            DiamondReactionChamber: this.__diamondButton,
+            BetterMixer: this.__bettermixerButton,
+            CurvedMixer: this.__curvedmixerButton,
+            Mixer: this.__mixerButton,
+            GradientGenerator: this.__gradientGeneratorButton,
+            Tree: this.__treeButton,
+            YTree: this.__ytreeButton,
+            Mux: this.__muxButton,
+            Transposer: this.__transposerButton,
+            RotaryMixer: this.__rotarymixerButton,
+            DropletGen: this.__dropletgenButton,
+            CellTrapL: this.__celltraplButton,
+            AlignmentMarks: this.__alignmentMarksButton,
+            LLChamber: this.__llChamberButton,
+            "3DMixer": this.__threeDMixerButton
         };
 
         this.__setupEventHandlers();
@@ -116,7 +115,6 @@ export default class ComponentToolBar{
     }
 
     __setupEventHandlers() {
-
         let ref = this;
 
         this.__channelButton.onclick = function() {
@@ -133,7 +131,7 @@ export default class ComponentToolBar{
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__selectToolButton.onclick = function(){
+        this.__selectToolButton.onclick = function() {
             Registry.viewManager.activateTool("MouseSelectTool");
             // if (this.activeButton) setButtonColor(this.buttons[this.activeButton], inactiveBackground, inactiveText);
             // ref.activeButton = "SelectButton";
@@ -193,7 +191,6 @@ export default class ComponentToolBar{
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-
         this.__portButton.onclick = function() {
             Registry.viewManager.activateTool("Port");
 
@@ -245,7 +242,7 @@ export default class ComponentToolBar{
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__gradientGeneratorButton.onclick = function(){
+        this.__gradientGeneratorButton.onclick = function() {
             Registry.viewManager.activateTool("GradientGenerator");
 
             ref.setActiveButton("GradientGenerator");
@@ -295,7 +292,7 @@ export default class ComponentToolBar{
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__insertTextButton.onclick = function(){
+        this.__insertTextButton.onclick = function() {
             if (ref.activeButton) setButtonColor(ref.buttons[ref.activeButton], inactiveBackground, inactiveText);
             ref.activeButton = "InsertTextButton";
             setButtonColor(ref.buttons["InsertTextButton"], Colors.DEEP_PURPLE_500, activeText);
@@ -307,25 +304,23 @@ export default class ComponentToolBar{
             ref.setActiveButton("LLChamber");
             ref.__viewManagerDelegate.switchTo2D();
         };
-
     }
 
     setActiveButton(feature) {
         this.__viewManagerDelegate.killParamsWindow();
         //TODO: Make this less hacky so that it wont be such a big problem to modify the button selection criteria
-        if (this.activeButton === "SelectButton" || this.activeButton === "InsertTextButton"){
+        if (this.activeButton === "SelectButton" || this.activeButton === "InsertTextButton") {
             setButtonColor(this.buttons[this.activeButton], inactiveBackground, inactiveText);
         } else if (this.activeButton) {
             setButtonColor(this.buttons[this.activeButton], inactiveBackground, inactiveText);
         }
         this.activeButton = feature;
-        if(feature === "SelectButton"){
+        if (feature === "SelectButton") {
             this.activeButton = "SelectButton";
             setButtonColor(this.buttons["SelectButton"], Colors.DEEP_PURPLE_500, activeText);
-        }else{
+        } else {
             let color = Colors.getDefaultFeatureColor(this.activeButton, "Basic", Registry.currentLayer);
             setButtonColor(this.buttons[this.activeButton], color, activeText);
-
         }
     }
 
@@ -357,15 +352,13 @@ export default class ComponentToolBar{
         this.__alignmentMarksParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("AlignmentMarks", "Basic");
         this.__llChamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LLChamber", "Basic");
         this.__threeDMixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMixer", "Basic");
-
     }
 
     static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {
-        let makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString , isTranslucent);
+        let makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString, isTranslucent);
         return function(event) {
             Registry.viewManager.killParamsWindow();
             makeTable(event);
-        }
+        };
     }
-
 }

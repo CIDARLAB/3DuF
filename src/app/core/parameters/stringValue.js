@@ -1,10 +1,10 @@
-import Parameter from '../parameter';
+import Parameter from "../parameter";
 
 let typeString = "String";
-let description="StringValue must be a String, such as 'foobar'";
+let description = "StringValue must be a String, such as 'foobar'";
 
-function isValid(value){
-    if (typeof value === 'string') return true;
+function isValid(value) {
+    if (typeof value === "string") return true;
     else return false;
 }
 

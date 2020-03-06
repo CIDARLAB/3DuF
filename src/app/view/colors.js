@@ -32,37 +32,37 @@ export const defaultColorKeys = ["50", "100", "200", "300", "400", "500", "600",
 export const darkColorKeys = ["300", "400", "500", "600", "700", "800", "900"];
 
 var indigo = {
-	"900": "#" + "1A237E",
-	"800": "#" + "283593",
-	"700": "#" + "303F9F",
-	"600": "#" + "3949AB",
-	"500": "#" + "3F51B5",
-	"400": "#" + "5C6BC0",
-	"300": "#" + "7986CB",
-	"200": "#" + "9FA8DA",
-	"100": "#" + "C5CAE9",
-	"50": "#" + "E8EAF6",
-	"A100": "#" + "8C9EFF",
-	"A200": "#" + "536DFE",
-	"A400": "#" + "3D5AFE",
-	"A700": "#" + "304FFE",
+    "900": "#" + "1A237E",
+    "800": "#" + "283593",
+    "700": "#" + "303F9F",
+    "600": "#" + "3949AB",
+    "500": "#" + "3F51B5",
+    "400": "#" + "5C6BC0",
+    "300": "#" + "7986CB",
+    "200": "#" + "9FA8DA",
+    "100": "#" + "C5CAE9",
+    "50": "#" + "E8EAF6",
+    A100: "#" + "8C9EFF",
+    A200: "#" + "536DFE",
+    A400: "#" + "3D5AFE",
+    A700: "#" + "304FFE"
 };
 
 var red = {
-	"900": "#" + "B71C1C",
-	"800": "#" + "C62828",
-	"700": "#" + "D32F2F",
-	"600": "#" + "E53935",
-	"500": "#" + "F44336",
-	"400": "#" + "EF5350",
-	"300": "#" + "E57373",
-	"200": "#" + "EF9A9A",
-	"100": "#" + "FFCDD2",
-	"50": "#" + "FFEBEE",
-	"A100": "#" + "FF8A80",
-	"A200": "#" + "FF5252",
-	"A400": "#" + "FF1744",
-	"A700": "#" + "D50000"
+    "900": "#" + "B71C1C",
+    "800": "#" + "C62828",
+    "700": "#" + "D32F2F",
+    "600": "#" + "E53935",
+    "500": "#" + "F44336",
+    "400": "#" + "EF5350",
+    "300": "#" + "E57373",
+    "200": "#" + "EF9A9A",
+    "100": "#" + "FFCDD2",
+    "50": "#" + "FFEBEE",
+    A100: "#" + "FF8A80",
+    A200: "#" + "FF5252",
+    A400: "#" + "FF1744",
+    A700: "#" + "D50000"
 };
 
 var blue = {
@@ -76,81 +76,77 @@ var blue = {
     "200": "#" + "9FA8DA",
     "100": "#" + "C5CAE9",
     "50": "#" + "E8EAF6",
-    "A100": "#" + "8C9EFF",
-    "A200": "#" + "536DFE",
-    "A400": "#" + "3D5AFE",
-    "A700": "#" + "304FFE",
+    A100: "#" + "8C9EFF",
+    A200: "#" + "536DFE",
+    A400: "#" + "3D5AFE",
+    A700: "#" + "304FFE"
 };
 
 var layerColors = {
-	"indigo": indigo,
-	"red": red,
-	"blue": blue
+    indigo: indigo,
+    red: red,
+    blue: blue
 };
 
-var decimalToIndex = function(decimal, indices){
-	return Math.round((indices-1) * decimal);
+var decimalToIndex = function(decimal, indices) {
+    return Math.round((indices - 1) * decimal);
 };
 
-export function decimalToLayerColor(decimal, layerColors, orderedKeys){
-	let index = decimalToIndex(decimal, orderedKeys.length);
-	let key = orderedKeys[index];
-	return layerColors["700"];
-};
+export function decimalToLayerColor(decimal, layerColors, orderedKeys) {
+    let index = decimalToIndex(decimal, orderedKeys.length);
+    let key = orderedKeys[index];
+    return layerColors["700"];
+}
 
-export function renderAllColors(layer, orderedKeys){
-	for (let i =0 ; i < orderedKeys.length; i ++){
-		
-		new paper.Path.Circle({
-			position: new paper.Point(0+(i*1000), 0),
-			fillColor: layer[orderedKeys[i]],
-			radius: 500
-		});
-	}
+export function renderAllColors(layer, orderedKeys) {
+    for (let i = 0; i < orderedKeys.length; i++) {
+        new paper.Path.Circle({
+            position: new paper.Point(0 + i * 1000, 0),
+            fillColor: layer[orderedKeys[i]],
+            radius: 500
+        });
+    }
 
-	for (let i = 0; i < orderedKeys.length; i ++){
-		let color = decimalToLayerColor(i/orderedKeys.length, layer, orderedKeys);
-		new paper.Path.Circle({
-			position: new paper.Point(0+(i*1000), 2000),
-			fillColor: layer[orderedKeys[i]],
-			radius: 500
-		});
-	}
-};
+    for (let i = 0; i < orderedKeys.length; i++) {
+        let color = decimalToLayerColor(i / orderedKeys.length, layer, orderedKeys);
+        new paper.Path.Circle({
+            position: new paper.Point(0 + i * 1000, 2000),
+            fillColor: layer[orderedKeys[i]],
+            radius: 500
+        });
+    }
+}
 
-export function getLayerColors(layer){
-    if(!layer){
+export function getLayerColors(layer) {
+    if (!layer) {
         throw new Error("Undefined color");
     }
-	if (layer.color) {
+    if (layer.color) {
         return layerColors[layer.color];
-    }
-	else {
-        if(layer.name == 'flow'){
+    } else {
+        if (layer.name == "flow") {
             return layerColors["indigo"];
-        }else if(layer.name == 'control'){
+        } else if (layer.name == "control") {
             return layerColors["red"];
-        }else if(layer.name == 'cell'){
+        } else if (layer.name == "cell") {
             return layerColors["green"];
         }
     }
-};
+}
 
-export function getDefaultLayerColor(layer){
-	return getLayerColors(layer)["500"];
-};
+export function getDefaultLayerColor(layer) {
+    return getLayerColors(layer)["500"];
+}
 
 //TODO: We need to fix how this works and remove the circular dependency form this chain
-export function getDefaultFeatureColor(typeString, setString, layer){
-	if (layer){
-		// let height = Feature.getDefaultsForType(typeString, setString)["height"];
-		let decimal = 500; // layer.estimateLayerHeight();
-		if (!layer.flip) decimal = 1-decimal;
-		let colors = getLayerColors(layer);
-		return decimalToLayerColor(decimal, colors, darkColorKeys);
-	}
-	else {
-		return decimalToLayerColor(0,layerColors["indigo"], darkColorKeys);
-	}
-};
-
+export function getDefaultFeatureColor(typeString, setString, layer) {
+    if (layer) {
+        // let height = Feature.getDefaultsForType(typeString, setString)["height"];
+        let decimal = 500; // layer.estimateLayerHeight();
+        if (!layer.flip) decimal = 1 - decimal;
+        let colors = getLayerColors(layer);
+        return decimalToLayerColor(decimal, colors, darkColorKeys);
+    } else {
+        return decimalToLayerColor(0, layerColors["indigo"], darkColorKeys);
+    }
+}

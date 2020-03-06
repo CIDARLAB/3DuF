@@ -1,32 +1,32 @@
-export default class DXFObject{
-    constructor(jsondata){
+export default class DXFObject {
+    constructor(jsondata) {
         this.__rootObject = jsondata;
 
-        this.__type = jsondata['type'];
+        this.__type = jsondata["type"];
     }
 
-    setType(type){
+    setType(type) {
         this.__type = type;
-        this.__rootObject['type'] = type;
+        this.__rootObject["type"] = type;
     }
 
-    getType(){
+    getType() {
         return this.__type;
     }
 
-    getData(){
+    getData() {
         return this.__rootObject;
     }
 
-    addData(key, value){
+    addData(key, value) {
         this.__rootObject[key] = value;
     }
 
-    toJSON(){
+    toJSON() {
         return this.__rootObject;
     }
 
-    static fromJSON(json){
+    static fromJSON(json) {
         return new DXFObject(json);
     }
 }

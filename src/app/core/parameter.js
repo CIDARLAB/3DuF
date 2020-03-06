@@ -1,12 +1,12 @@
-import * as Registry from './registry';
+import * as Registry from "./registry";
 import * as NumberUtils from "../utils/numberUtils";
 
 export default class Parameter {
     constructor(type, value) {
         //Check value if its parsable string
-        if (typeof value === 'string' && type === 'Float'){
+        if (typeof value === "string" && type === "Float") {
             value = parseInt(value);
-        }else if(typeof value === 'string' && type === 'Integer'){
+        } else if (typeof value === "string" && type === "Integer") {
             value = parseInt(value);
         }
         Parameter.checkValue(type, value);
@@ -18,27 +18,25 @@ export default class Parameter {
         return this.__value;
     }
 
-    getValue(){
+    getValue() {
         return this.__value;
     }
 
-    getType(){
+    getType() {
         return this.__type;
     }
 
-    static checkValue(type, value){
+    static checkValue(type, value) {
         let paramType = Registry.registeredParams[type];
         if (paramType.isValid(value)) return true;
-        else throw new Error("Saw value: " + value +". " + paramType.description);
+        else throw new Error("Saw value: " + value + ". " + paramType.description);
     }
 
-    updateValue(value){
+    updateValue(value) {
         Parameter.checkValue(this.__type, value);
         this.__value = value;
     }
-    resetValue(){
-
-    }
+    resetValue() {}
 
     //Takes a typestring to recognize that param type, and
     // an isValid function which returns true if a value is OK for
@@ -47,7 +45,7 @@ export default class Parameter {
         Registry.registeredParams[typeString] = {
             isValid: isValid,
             description: description
-        }
+        };
     }
 
     static makeParam(type, value) {
@@ -65,11 +63,11 @@ export default class Parameter {
     static generateComponentParameter(key, value) {
         let ret;
 
-        if(key == "position"){
+        if (key == "position") {
             ret = new Parameter("Point", value);
-        } else if(NumberUtils.isFloatOrInt(value)){
+        } else if (NumberUtils.isFloatOrInt(value)) {
             ret = new Parameter("Float", value);
-        } else if(typeof value == 'string' || value instanceof String){
+        } else if (typeof value == "string" || value instanceof String) {
             ret = new Parameter("String", value);
         }
 
@@ -79,21 +77,20 @@ export default class Parameter {
     static generateConnectionParameter(key, value) {
         let ret;
 
-        if(key == "paths"){
+        if (key == "paths") {
             ret = [];
             let point;
-            for(let i in value){
+            for (let i in value) {
                 point = value[i];
                 ret.push(new Parameter("Point", point));
             }
-        } else if(key == "segments") {
-        }else if(NumberUtils.isFloatOrInt(value)){
+        } else if (key == "segments") {
+        } else if (NumberUtils.isFloatOrInt(value)) {
             ret = new Parameter("Float", value);
-        } else if(typeof value == 'string' || value instanceof String){
+        } else if (typeof value == "string" || value instanceof String) {
             ret = new Parameter("String", value);
         }
 
         return ret;
     }
 }
-

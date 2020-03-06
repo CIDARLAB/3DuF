@@ -1,11 +1,10 @@
-
-import JSZip from 'jszip';
+import JSZip from "jszip";
 import ManufacturingLayer from "../../manufacturing/manufacturingLayer";
 
-import * as Registry from '../../core/registry';
+import * as Registry from "../../core/registry";
 
 export default class ExportPanel {
-    constructor(viewManagerDelegate){
+    constructor(viewManagerDelegate) {
         this.__viewManagerDelegate = viewManagerDelegate;
 
         // this.__cncButton = document.getElementById("cnc_button");
@@ -31,9 +30,11 @@ export default class ExportPanel {
         this.__svgButton = document.getElementById("svg_button");
         this.__svgButton.onclick = function() {
             let svgs = Registry.viewManager.layersToSVGStrings();
-            for(let i = 0; i<svgs.length; i++){
-                svgs[i] = ManufacturingLayer.generateSVGTextPrepend(Registry.currentDevice.getXSpan(), Registry.currentDevice.getYSpan())
-                    + svgs[i] + ManufacturingLayer.generateSVGTextAppend();
+            for (let i = 0; i < svgs.length; i++) {
+                svgs[i] =
+                    ManufacturingLayer.generateSVGTextPrepend(Registry.currentDevice.getXSpan(), Registry.currentDevice.getYSpan()) +
+                    svgs[i] +
+                    ManufacturingLayer.generateSVGTextAppend();
             }
             //let svg = paper.project.exportSVG({asString: true});
             let blobs = [];
@@ -57,16 +58,13 @@ export default class ExportPanel {
 
         this.__interchangeV1Button = document.getElementById("interchange_button");
 
-        this.__interchangeV1Button.addEventListener('click', this.saveJSON);
-
-
+        this.__interchangeV1Button.addEventListener("click", this.saveJSON);
     }
 
-    saveJSON(){
+    saveJSON() {
         let json = new Blob([JSON.stringify(Registry.viewManager.generateExportJSON())], {
             type: "application/json"
         });
-        saveAs(json, Registry.currentDevice.getName()+".json");
-
+        saveAs(json, Registry.currentDevice.getName() + ".json");
     }
 }

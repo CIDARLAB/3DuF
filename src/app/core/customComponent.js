@@ -1,21 +1,20 @@
 import DXFObject from "./dxfObject";
-import Device from './device';
+import Device from "./device";
 
-import * as Registry from './registry';
+import * as Registry from "./registry";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
  * high level device model of the microfluidic.
  */
 export default class CustomComponent {
-
     /**
      * Default constructor
      * @param type String
      * @param dxfdata [DXFObjects]
      * @param mint String
      */
-    constructor(type, dxfdata, mint=type.toUpperCase()){
+    constructor(type, dxfdata, mint = type.toUpperCase()) {
         // this.__params = params;
         this.__type = type;
         this.__entity = mint;
@@ -32,7 +31,7 @@ export default class CustomComponent {
      * Returns the entity type
      * @return {string}
      */
-    get entity(){
+    get entity() {
         return this.__entity;
     }
 
@@ -40,7 +39,7 @@ export default class CustomComponent {
      * Returns the type
      * @return {*}
      */
-    get type(){
+    get type() {
         return this.__type;
     }
 
@@ -48,23 +47,16 @@ export default class CustomComponent {
      * Returns the rendering data
      * @param data
      */
-    set renderData(data){
+    set renderData(data) {
         this.__renderData = data;
     }
 
     /**
      * Generates a Feature that has all the corresponding respective data
      */
-    generateComponent(){
+    generateComponent() {
         let paramvalues = {};
-        let feature = Device.makeFeature(
-            type,
-            "custom",
-            paramvalues,
-            Registry.currentDevice.generateNewName(type),
-            Feature.generateID(),
-            this.dxfData
-        );
+        let feature = Device.makeFeature(type, "custom", paramvalues, Registry.currentDevice.generateNewName(type), Feature.generateID(), this.dxfData);
         return feature;
     }
 
@@ -72,15 +64,15 @@ export default class CustomComponent {
      * Generates the object that needs to be serialzed into JSON for interchange format V1
      * @returns {{}} Object
      */
-    toJSON(){
+    toJSON() {
         let output = {};
         output.type = this.__type;
         output.entity = this.__entity;
-        if(this.__params){
+        if (this.__params) {
             output.params = this.__params.toJSON();
         }
         let dxfdata = [];
-        for(let i in this.dxfData){
+        for (let i in this.dxfData) {
             dxfdata.push(this.dxfData[i].getData());
         }
         output.dxfData = dxfdata;
@@ -94,12 +86,12 @@ export default class CustomComponent {
      * @param json
      * @returns {*}
      */
-    static fromInterchangeV1(json){
+    static fromInterchangeV1(json) {
         let set;
         if (json.hasOwnProperty("set")) set = json.set;
         else set = "Basic";
         let dxfdata = [];
-        for(let i in json.dxfData){
+        for (let i in json.dxfData) {
             dxfdata.push(new DXFObject(json.dxfData[i]));
         }
 
@@ -109,46 +101,44 @@ export default class CustomComponent {
         // let render = DXFRenderer.renderDXFObjects(dxfdata);
         // ret.renderData = render.exportSVG();
         return ret;
-
     }
 
-    static defaultParameterDefinitions(){
+    static defaultParameterDefinitions() {
         let params = {
             unique: {
-                "position": "Point",
+                position: "Point"
             },
             heritable: {
-                "rotation": "Float",
+                rotation: "Float",
                 // "x-scale": "Float",
                 // "width": "Float",
-                "height": "Float"
+                height: "Float"
             },
             units: {
-                "rotation": "&deg",
+                rotation: "&deg",
                 // "length": "&mu;m",
                 // "width": "&mu;m",
-                "height": "&mu;m"
+                height: "&mu;m"
             },
             defaults: {
-                "rotation": 0,
+                rotation: 0,
                 // "width": 1.23 * 1000,
                 // "length": 4.92 * 1000,
-                "height": .1 * 1000
+                height: 0.1 * 1000
             },
             minimum: {
-                "rotation": 0,
+                rotation: 0,
                 // "width": 30,
                 // "length": 120,
-                "height": 1
+                height: 1
             },
             maximum: {
-                "rotation": 359,
+                rotation: 359,
                 // "width": 6000,
                 // "length": 24 * 1000,
-                "height": 1200
+                height: 1200
             }
         };
         return params;
     }
-
 }

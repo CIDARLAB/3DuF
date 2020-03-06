@@ -1,5 +1,5 @@
 export default class ChangeAllDialog {
-    constructor(){
+    constructor() {
         this.__componentsToChangeMap = new Map();
         this.__dialog = document.getElementById("change_all_dialog");
         this.__similarComponents = [];
@@ -10,24 +10,22 @@ export default class ChangeAllDialog {
 
         let ref = this;
 
-        this.__dialog.querySelector('.close').addEventListener('click', function() {
+        this.__dialog.querySelector(".close").addEventListener("click", function() {
             ref.__dialog.close();
         });
 
-        this.__changeAllButton.addEventListener('click', function (event) {
-           //TODO: Change values of all the features associated with the components
+        this.__changeAllButton.addEventListener("click", function(event) {
+            //TODO: Change values of all the features associated with the components
             ref.__modifyComponentParams();
             ref.__dialog.close();
         });
-
     }
 
     /**
      * Method used to show the dialog
      */
-    showDialog(){
-
-        for (let i in this.__similarComponents){
+    showDialog() {
+        for (let i in this.__similarComponents) {
             this.__componentTable.deleteRow(-1);
         }
 
@@ -35,7 +33,7 @@ export default class ChangeAllDialog {
         let selectedcomponenttype = selectedcomponent.getType();
         let params = selectedcomponent.getParams();
         this.__paramsToChange = {};
-        for(let key in params.heritable){
+        for (let key in params.heritable) {
             this.__paramsToChange[key] = params.getValue(key);
         }
         // //TODO: Find a better way to do this
@@ -49,9 +47,7 @@ export default class ChangeAllDialog {
         //Find all the similar components
         for (let i in allcomponents) {
             let component = allcomponents[i];
-            if (selectedcomponenttype == component.getType()
-                && selectedcomponent.getID() != component.getID()) {
-
+            if (selectedcomponenttype == component.getType() && selectedcomponent.getID() != component.getID()) {
                 this.__componentsToChangeMap.set(component.getID(), true);
                 similarcomponents.push(component);
             }
@@ -73,11 +69,10 @@ export default class ChangeAllDialog {
         }
 
         this.__dialog.showModal();
-
     }
 
-    __createOptionButton(componentid, checked){
-        let checkbox = document.createElement('input');
+    __createOptionButton(componentid, checked) {
+        let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         // checkbox.name = "name";
         // checkbox.value = "value";
@@ -86,7 +81,7 @@ export default class ChangeAllDialog {
         checkbox.value = componentid;
         //Track all the changes
         let ref = this;
-        checkbox.addEventListener('change', function (event) {
+        checkbox.addEventListener("change", function(event) {
             let id = event.target.value;
             ref.__componentsToChangeMap.set(id, event.target.checked);
         });
@@ -94,22 +89,19 @@ export default class ChangeAllDialog {
         return checkbox;
     }
 
-    __modifyComponentParams(){
-        for(let i in this.__similarComponents){
+    __modifyComponentParams() {
+        for (let i in this.__similarComponents) {
             console.log(this.__similarComponents);
             let componenttochange = this.__similarComponents[i];
-            if(this.__componentsToChangeMap.get(componenttochange.getID())){
-
+            if (this.__componentsToChangeMap.get(componenttochange.getID())) {
                 //Call upateParameter for everything
 
-                for(let key in this.__paramsToChange){
+                for (let key in this.__paramsToChange) {
                     componenttochange.updateParameter(key, this.__paramsToChange[key]);
                 }
-
             }
         }
     }
-
 
     // __createOptionButton(componentid, checked) {
     //     let div = document.createElement("div");
@@ -136,5 +128,4 @@ export default class ChangeAllDialog {
     //
     //     return div;
     // };
-
 }

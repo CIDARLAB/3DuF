@@ -2,7 +2,7 @@ import * as HTMLUtils from "../../utils/htmlUtils";
 import * as NumberUtils from "../../utils/numberUtils";
 
 export default class GenerateArrayWindow {
-    constructor(generateArrayToolDelegate){
+    constructor(generateArrayToolDelegate) {
         //Get the UI references
 
         this.generateArrayToolDelegate = generateArrayToolDelegate;
@@ -30,20 +30,20 @@ export default class GenerateArrayWindow {
         let ref = this;
 
         //Text input changes
-        this.__xSpacingInput.addEventListener('input', function (event) {
+        this.__xSpacingInput.addEventListener("input", function(event) {
             ref.processNewArrayData();
         });
 
-        this.__ySpacingInput.addEventListener('input', function (event) {
+        this.__ySpacingInput.addEventListener("input", function(event) {
             ref.processNewArrayData();
         });
 
         //Position buttons
         //Decrease x
-        this.__xSpacingDownButton.addEventListener('click', function (event) {
+        this.__xSpacingDownButton.addEventListener("click", function(event) {
             let value = ref.__xSpacingInput.value;
             value = Number.parseFloat(value);
-            if(NumberUtils.isFloatOrInt(value)){
+            if (NumberUtils.isFloatOrInt(value)) {
                 value -= 0.1;
                 ref.__xSpacingInput.value = value;
                 ref.processNewArrayData();
@@ -51,43 +51,40 @@ export default class GenerateArrayWindow {
         });
 
         //increase x
-        this.__xSpacingUpButton.addEventListener('click', function (event) {
+        this.__xSpacingUpButton.addEventListener("click", function(event) {
             let value = ref.__xSpacingInput.value;
             value = Number.parseFloat(value);
-            if(NumberUtils.isFloatOrInt(value)){
+            if (NumberUtils.isFloatOrInt(value)) {
                 value += 0.1;
                 ref.__xSpacingInput.value = value;
                 ref.processNewArrayData();
             }
-
         });
 
         //increase y
-        this.__ySpacingUpButton.addEventListener('click', function (event) {
+        this.__ySpacingUpButton.addEventListener("click", function(event) {
             let value = ref.__ySpacingInput.value;
             value = Number.parseFloat(value);
-            if(NumberUtils.isFloatOrInt(value)){
+            if (NumberUtils.isFloatOrInt(value)) {
                 value += 0.1;
                 ref.__ySpacingInput.value = value;
                 ref.processNewArrayData();
             }
-
         });
 
         //decrease y
-        this.__ySpacingDownButton.addEventListener('click', function (event) {
+        this.__ySpacingDownButton.addEventListener("click", function(event) {
             let value = ref.__ySpacingInput.value;
             value = Number.parseFloat(value);
-            if(NumberUtils.isFloatOrInt(value)){
+            if (NumberUtils.isFloatOrInt(value)) {
                 value -= 0.1;
                 ref.__ySpacingInput.value = value;
                 ref.processNewArrayData();
             }
-
         });
-        
+
         //Action button clicks
-        this.__generateButton.addEventListener('click', function (event) {
+        this.__generateButton.addEventListener("click", function(event) {
             console.log("Save button was pressed");
             ref.processNewArrayData();
             ref.hideWindow();
@@ -96,7 +93,7 @@ export default class GenerateArrayWindow {
             ref.generateArrayToolDelegate.unactivate();
         });
 
-        this.__cancelButton.addEventListener('click', function (event) {
+        this.__cancelButton.addEventListener("click", function(event) {
             console.log("Cancel Button was Pressed");
             ref.hideWindow();
             ref.generateArrayToolDelegate.unactivate();
@@ -112,14 +109,13 @@ export default class GenerateArrayWindow {
 
         this.__xDimInput.value = 5;
         this.__yDimInput.value = 1;
-
     }
 
-    showWindow(){
+    showWindow() {
         HTMLUtils.removeClass(this.__window, "hidden-block");
     }
 
-    hideWindow(){
+    hideWindow() {
         HTMLUtils.addClass(this.__window, "hidden-block");
     }
 
@@ -128,7 +124,7 @@ export default class GenerateArrayWindow {
         let yspacing = Number.parseFloat(this.__ySpacingInput.value);
 
         //Check if the values are valid positions
-        if(!NumberUtils.isFloatOrInt(xspacing) || !NumberUtils.isFloatOrInt(yspacing)){
+        if (!NumberUtils.isFloatOrInt(xspacing) || !NumberUtils.isFloatOrInt(yspacing)) {
             console.error("Invalid spacing values");
             return;
         }

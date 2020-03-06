@@ -2,16 +2,14 @@ import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
 
 export default class CNCGenerator {
-    constructor(device, viewManagerDelegate){
-
+    constructor(device, viewManagerDelegate) {
         this.__device = device;
         this.__viewManagerDelegate = viewManagerDelegate;
 
         this.__svgData = new Map();
-
     }
 
-    getSVGOutputs(){
+    getSVGOutputs() {
         return this.__svgData;
     }
 
@@ -32,70 +30,64 @@ export default class CNCGenerator {
 
         let isControl = false;
 
-        for(let i in layers){
+        for (let i in layers) {
             let layer = layers[i];
             let ports = [];
 
             let features = layer.features;
 
-            if(layer.name == "control"){
+            if (layer.name == "control") {
                 isControl = true;
             }
 
-            for(let key in features){
+            for (let key in features) {
                 let feature = features[key];
                 //TODO: Include fabtype check also
-                if(feature.getType() == "Port"){
+                if (feature.getType() == "Port") {
                     ports.push(key);
                 }
             }
 
-            if(ports.length == 0){
+            if (ports.length == 0) {
                 continue;
             }
 
             let manufacturinglayer = new ManufacturingLayer("ports_" + layer.name + "_" + i);
             // console.log("manufacturing layer :", manufacturinglayer);
 
-
-            for(let fi in ports){
+            for (let fi in ports) {
                 let featurekey = ports[fi];
                 // console.log("Key:", featurekey);
                 // console.log("rendered:feature", this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
                 let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
-                if(!issuccess){
+                if (!issuccess) {
                     console.error("Could not find the feature for the corresponding id: " + featurekey);
                 }
-
             }
 
-            if(isControl){
+            if (isControl) {
                 manufacturinglayer.flipX();
                 isControl = false;
             }
 
-
             mfglayers.push(manufacturinglayer);
         }
 
-
         console.log("mfglayers:", mfglayers);
 
-
         let ref = this;
-        mfglayers.forEach(function(mfglayer, index){
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
 
         console.log("SVG Outputs:", this.__svgData);
-
     }
 
     /**
      * Generates separate mfglayers and svgs for each of the depth layers
      */
-    generateDepthLayers(){
+    generateDepthLayers() {
         /*
         Step 1 - Go through each of the layers
         Step 2 - At each layer:
@@ -108,72 +100,64 @@ export default class CNCGenerator {
         let mfglayers = [];
         let isControl = false;
 
-
-        for(let i in layers) {
+        for (let i in layers) {
             let layer = layers[i];
 
             let features = layer.features;
 
-            if(layer.name == "control"){
+            if (layer.name == "control") {
                 isControl = true;
             }
 
             //Create the depthmap for this
             let featuredepthmap = new DepthFeatureMap(layer.name);
 
-            for(let key in features){
+            for (let key in features) {
                 let feature = features[key];
                 //TODO: Modify the port check
-                if(feature.fabType == "XY" && feature.getType() != "Port"){
+                if (feature.fabType == "XY" && feature.getType() != "Port") {
                     let depth = feature.getValue("height");
                     console.log("Depth of feature: ", key, depth);
                     featuredepthmap.addFeature(depth, key);
                 }
             }
 
-
             //Generate Manufacturing Layers for each depth
             let manufacturinglayer;
-            for(let depth of featuredepthmap.getDepths()){
+            for (let depth of featuredepthmap.getDepths()) {
                 manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_" + depth);
                 let depthfeatures = featuredepthmap.getFeaturesAtDepth(depth);
-                for(let j in depthfeatures){
+                for (let j in depthfeatures) {
                     let featurekey = depthfeatures[j];
 
-
                     let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
-                    if(!issuccess){
+                    if (!issuccess) {
                         console.error("Could not find the feature for the corresponding id: " + featurekey);
                     }
-
                 }
 
-                if(isControl){
+                if (isControl) {
                     manufacturinglayer.flipX();
                 }
 
                 mfglayers.push(manufacturinglayer);
-
             }
 
             isControl = false;
-
         }
 
         console.log("XY Manufacturing Layers:", mfglayers);
         let ref = this;
-        mfglayers.forEach(function(mfglayer, index){
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
-
         });
-
     }
 
     /**
      * Generates all the edge cuts
      */
-    generateEdgeLayers(){
+    generateEdgeLayers() {
         /*
         Step 1 - Go through each of the layers
         Step 2 - Get all the EDGE features in the drawing
@@ -187,49 +171,43 @@ export default class CNCGenerator {
 
         let isControl = false;
 
-
-        for(let i in layers) {
+        for (let i in layers) {
             let layer = layers[i];
             manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_EDGE");
 
-
-            if(layer.name == "control"){
+            if (layer.name == "control") {
                 isControl = true;
             }
 
             let features = layer.features;
 
-            for(let key in features){
+            for (let key in features) {
                 let feature = features[key];
                 //TODO: Modify the port check
-                if(feature.fabType == "EDGE"){
+                if (feature.fabType == "EDGE") {
                     console.log("EDGE Feature: ", key);
                     let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
-                    if(!issuccess){
+                    if (!issuccess) {
                         console.error("Could not find the feature for the corresponding id: " + key);
                     }
-
                 }
             }
 
-            if(isControl){
+            if (isControl) {
                 manufacturinglayer.flipX();
                 isControl = false;
             }
 
-
             mfglayers.push(manufacturinglayer);
-
         }
 
         console.log("EDGE Manufacturing Layers:", mfglayers);
 
         let ref = this;
-        mfglayers.forEach(function(mfglayer, index){
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
-
     }
 
     /**
@@ -244,8 +222,7 @@ export default class CNCGenerator {
     /**
      * Flush all the data
      */
-    flushData(){
+    flushData() {
         this.__svgData.clear();
     }
-
 }

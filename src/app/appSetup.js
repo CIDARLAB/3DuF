@@ -1,25 +1,25 @@
-import * as Registry from './core/registry';
+import * as Registry from "./core/registry";
 
 import ViewManager from "./view/viewManager";
-import { TrackJS } from 'trackjs';
+import { TrackJS } from "trackjs";
 
 import * as Examples from "./examples/jsonExamples";
 
 let viewManager;
 
-function getQueryVariable(variable)
-{
+function getQueryVariable(variable) {
     let query = window.location.search.substring(1);
     let vars = query.split("&");
-    for (let i=0;i<vars.length;i++) {
+    for (let i = 0; i < vars.length; i++) {
         let pair = vars[i].split("=");
-        if(pair[0] == variable){return pair[1];}
+        if (pair[0] == variable) {
+            return pair[1];
+        }
     }
-    return(false);
+    return false;
 }
 
-function checkBrowCompatibility(){
-
+function checkBrowCompatibility() {
     var isChromium = window.chrome;
     var winNav = window.navigator;
     var vendorName = winNav.vendor;
@@ -29,38 +29,25 @@ function checkBrowCompatibility(){
 
     if (isIOSChrome) {
         // is Google Chrome on IOS
-    } else if(
-        isChromium !== null &&
-        typeof isChromium !== "undefined" &&
-        vendorName === "Google Inc." &&
-        isOpera === false &&
-        isIEedge === false
-    ) {
+    } else if (isChromium !== null && typeof isChromium !== "undefined" && vendorName === "Google Inc." && isOpera === false && isIEedge === false) {
         // is Google Chrome
         return true;
     } else {
         // not Google Chrome
-        alert("Warning ! Unsupported browser detected. 3DuF has been developed and tested only in Chrome. " +
-            "The tool may not work correctly on this browser");
+        alert("Warning ! Unsupported browser detected. 3DuF has been developed and tested only in Chrome. " + "The tool may not work correctly on this browser");
 
         return false;
     }
-
 }
 
-
-
 window.onload = function() {
-
-
-    if(checkBrowCompatibility()){
+    if (checkBrowCompatibility()) {
         viewManager = new ViewManager();
-
 
         console.log("Checking Host: ");
         console.log(window.location.host);
 
-        if(window.location.host === "3duf.org"){
+        if (window.location.host === "3duf.org") {
             console.log("Enabling TrackJS");
             TrackJS.install({
                 token: "1f4d3a9c263e4e3fb2fe4c7f96f8808e"
@@ -68,7 +55,6 @@ window.onload = function() {
 
             viewManager = TrackJS.watchAll(viewManager);
         }
-
 
         Registry.viewManager = viewManager;
 
@@ -83,11 +69,11 @@ window.onload = function() {
 
         // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
 
-        if(false != getQueryVariable("file")){
+        if (false != getQueryVariable("file")) {
             let url = decodeURIComponent(getQueryVariable("file"));
             //Download the json
             fetch(url) // Call the fetch function passing the url of the API as a parameter
-                .then((resp) => resp.json())
+                .then(resp => resp.json())
                 .then(function(data) {
                     // Create and append the li's to the ul
                     //alert(data);
@@ -102,22 +88,21 @@ window.onload = function() {
                     window.view = Registry.viewManager.view;
 
                     // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
-
                 })
                 .catch(function(err) {
                     // This is where you run code if the server returns any errors
                     alert("Error fetching the json");
-                    alert(err)
+                    alert(err);
                 });
 
             //Now check if there are any components that need to be modified
-            if(false != getQueryVariable("component")){
+            if (false != getQueryVariable("component")) {
                 //Create a function that modifies the data
                 let componentname = getQueryVariable("component");
                 let params = JSON.parse(getQueryVariable("params"));
                 viewManager.updateComponentParameters(componentname, params);
             }
-        }else if(false != getQueryVariable("dafdparams")){
+        } else if (false != getQueryVariable("dafdparams")) {
             let params = JSON.parse(decodeURIComponent(getQueryVariable("dafdparams")));
             Registry.viewManager.activateDAFDPlugin(params);
         }
@@ -125,7 +110,4 @@ window.onload = function() {
         Registry.viewManager.setupToolBars();
         Registry.viewManager.generateBorder();
     }
-
-
 };
-

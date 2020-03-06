@@ -1,24 +1,21 @@
-import {setButtonColor} from "../../utils/htmlUtils";
+import { setButtonColor } from "../../utils/htmlUtils";
 
-import * as Registry from '../../core/registry';
-import * as Colors from '../colors';
+import * as Registry from "../../core/registry";
+import * as Colors from "../colors";
 const inactiveButtonBackground = Colors.GREY_200;
 const inactiveButtonText = Colors.BLACK;
 const activeButtonText = Colors.WHITE;
 
-
 export default class LayerToolBar {
-    constructor(){
-
+    constructor() {
         this.__toolBar = document.getElementById("layer-toolbar");
-        if(!this.__toolBar){
+        if (!this.__toolBar) {
             console.error("Could not find the LayerToolBar on the HTML page");
         }
 
         this.__layerButtons = new Map(); //Simple Reference System
 
         this.__activeLayer = null;
-
 
         this.__levelCount = 0;
 
@@ -28,21 +25,18 @@ export default class LayerToolBar {
 
         let registryref = Registry;
 
-        this.__addNewLevelButton.addEventListener('click', function (event) {
-
+        this.__addNewLevelButton.addEventListener("click", function(event) {
             //Create new layers in the data model
             registryref.viewManager.createNewLayerBlock();
 
             //Update the UI
-            ref.__levelCount+=1;
+            ref.__levelCount += 1;
 
             ref.__generateUI();
-
         });
 
         this.__generateUI();
     }
-
 
     __generateButtonHandlers() {
         let flowButtons = document.querySelectorAll(".flow-button");
@@ -50,25 +44,23 @@ export default class LayerToolBar {
 
         let ref = this;
 
-        for(let i=0 ; i < flowButtons.length; i++){
+        for (let i = 0; i < flowButtons.length; i++) {
             let flowButton = flowButtons[i];
             flowButton.onclick = function(event) {
                 Registry.currentLayer = Registry.currentDevice.layers[flowButton.dataset.layerindex];
                 ref.setActiveLayer(flowButton.dataset.layerindex);
                 Registry.viewManager.updateActiveLayer();
             };
-
         }
 
-        for(let i=0 ; i < controlButtons.length; i++){
+        for (let i = 0; i < controlButtons.length; i++) {
             let controlButton = controlButtons[i];
-            controlButton.onclick = function (event) {
+            controlButton.onclick = function(event) {
                 Registry.currentLayer = Registry.currentDevice.layers[controlButton.dataset.layerindex];
                 ref.setActiveLayer(controlButton.dataset.layerindex);
                 Registry.viewManager.updateActiveLayer();
-            }
+            };
         }
-
     }
 
     setActiveLayer(layerName) {
@@ -77,13 +69,12 @@ export default class LayerToolBar {
             setButtonColor(this.__layerButtons.get(this.__activeLayer), inactiveButtonBackground, inactiveButtonText);
         }
 
-
-        let bgColor;// = Colors.getDefaultLayerColor(Registry.currentLayer);
-        if(layerName%3 == 0){
+        let bgColor; // = Colors.getDefaultLayerColor(Registry.currentLayer);
+        if (layerName % 3 == 0) {
             bgColor = Colors.INDIGO_500;
-        }else if (layerName%3 == 1){
+        } else if (layerName % 3 == 1) {
             bgColor = Colors.RED_500;
-        }else {
+        } else {
             bgColor = Colors.GREEN_500;
         }
 
@@ -97,14 +88,12 @@ export default class LayerToolBar {
      * @private
      */
     __addNewLevel(index) {
-
         //Copy the the first button group
-        let buttongroup = document.querySelector('#template-layer-block');
+        let buttongroup = document.querySelector("#template-layer-block");
         let copy = buttongroup.cloneNode(true);
 
         //Make the delete button visible since the first layer ui keeps it hidden
         copy.querySelector(".delete-level").style.visibility = "visible";
-
 
         //Change all the parameters for the UI elements
 
@@ -140,16 +129,15 @@ export default class LayerToolBar {
         let flowButtons = document.querySelectorAll(".flow-button");
         let controlButtons = document.querySelectorAll(".control-button");
 
-        for(let i=0 ; i < flowButtons.length; i++){
+        for (let i = 0; i < flowButtons.length; i++) {
             let flowButton = flowButtons[i];
             this.__layerButtons.set(flowButton.dataset.layerindex, flowButton);
         }
 
-        for(let i=0 ; i < controlButtons.length; i++){
+        for (let i = 0; i < controlButtons.length; i++) {
             let controlButton = controlButtons[i];
             this.__layerButtons.set(controlButton.dataset.layerindex, controlButton);
         }
-
     }
 
     /**
@@ -161,9 +149,9 @@ export default class LayerToolBar {
 
         let ref = this;
 
-        for(let i=0; i < deleteButtons.length; i++){
+        for (let i = 0; i < deleteButtons.length; i++) {
             let deletebutton = deleteButtons[i];
-            deletebutton.addEventListener('click', function (event) {
+            deletebutton.addEventListener("click", function(event) {
                 ref.deleteLevel(parseInt(deletebutton.dataset.levelindex));
             });
         }
@@ -174,40 +162,38 @@ export default class LayerToolBar {
      * @param levelindex Integer
      */
     deleteLevel(levelindex) {
-
         //First tell the viewmanager to delete the levels
         Registry.viewManager.deleteLayerBlock(levelindex);
         //Next delete the ux buttons
-        let buttongroups = this.__toolBar.querySelectorAll('.layer-block');
+        let buttongroups = this.__toolBar.querySelectorAll(".layer-block");
 
-        for(let i = 0; i<buttongroups.length; i++){
-            if(buttongroups[i].dataset.levelindex == levelindex){
+        for (let i = 0; i < buttongroups.length; i++) {
+            if (buttongroups[i].dataset.levelindex == levelindex) {
                 this.__toolBar.removeChild(buttongroups[i]);
             }
         }
 
-        this.__levelCount-=1;
+        this.__levelCount -= 1;
 
         this.__generateUI();
 
         Registry.currentLayer = Registry.currentDevice.layers[0];
         this.setActiveLayer("0");
         Registry.viewManager.updateActiveLayer();
-
     }
 
     __generateUI() {
         //Clear out all the UI elements
-        let buttongroups = this.__toolBar.querySelectorAll('.layer-block');
+        let buttongroups = this.__toolBar.querySelectorAll(".layer-block");
 
         //Delete all things except the first one
-        for(let i = buttongroups.length - 1; i>0 ; i--){
+        for (let i = buttongroups.length - 1; i > 0; i--) {
             let node = buttongroups[i];
             this.__toolBar.removeChild(node);
         }
 
         //Create the UI elements for everything
-        for(let i = 1; i <= this.__levelCount; i++){
+        for (let i = 1; i <= this.__levelCount; i++) {
             let copy = this.__addNewLevel(i);
             this.__toolBar.appendChild(copy);
         }

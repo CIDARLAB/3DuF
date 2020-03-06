@@ -9,22 +9,22 @@ describe("IntegerValue", function() {
     });
     it("should not allow a value of 1.1", function() {
         (function() {
-            IntegerValue(1.1)
-        }).should.throwError();
+            IntegerValue(1.1);
+        }.should.throwError());
     });
     it("should not allow the point [0,1]", function() {
         (function() {
-            IntegerValue([0, 1])
-        }).should.throwError();
+            IntegerValue([0, 1]);
+        }.should.throwError());
     });
     it("should not allow a value of true", function() {
         (function() {
-            IntegerValue(true)
-        }).should.throwError();
+            IntegerValue(true);
+        }.should.throwError());
     });
     it("should not allow a value of 'foobar'", function() {
         (function() {
-            IntegerValue('foobar')
-        }).should.throwError();
+            IntegerValue("foobar");
+        }.should.throwError());
     });
 });

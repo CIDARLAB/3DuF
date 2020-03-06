@@ -1,24 +1,23 @@
 import EdgeFeature from "../core/edgeFeature";
-import paper from 'paper';
+import paper from "paper";
 
-import * as Registry from '../core/registry';
+import * as Registry from "../core/registry";
 import * as FeatureRenderer2D from "./render2D/featureRenderer2D";
-import GridRenderer from  "./render2D/gridRenderer";
+import GridRenderer from "./render2D/gridRenderer";
 import DeviceRenderer from "./render2D/deviceRenderer2D";
 //const DeviceRenderer = require("./render2D/deviceRenderer2D");
 // var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
 import PanAndZoom from "./panAndZoom";
-import * as Colors from './colors';
+import * as Colors from "./colors";
 import TextFeature from "../core/textFeature";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
 import ComponentPortRenderer2D from "./render2D/componentPortRenderer2D";
 import PaperComponentPortView from "./render2D/paperComponentPortView";
-import * as DXFObjectRenderer2D from './render2D/dxfObjectRenderer2D';
-import * as DXFSolidObjectRenderer from './render2D/dxfSolidObjectRenderer2D';
+import * as DXFObjectRenderer2D from "./render2D/dxfObjectRenderer2D";
+import * as DXFSolidObjectRenderer from "./render2D/dxfSolidObjectRenderer2D";
 
 export default class PaperView {
-
     /**
      * Requires the canvas ID to setup the entire application.
      * @param canvasID
@@ -59,7 +58,7 @@ export default class PaperView {
         this.lastTargetPosition = null;
         this.selectedComponents = [];
         this.selectedConnections = [];
-        this.inactiveAlpha = .5;
+        this.inactiveAlpha = 0.5;
         this.__viewManagerDelegate = viewmanager;
 
         this._paperComponentPortView = new PaperComponentPortView(this.componentPortsLayer, viewmanager);
@@ -80,11 +79,10 @@ export default class PaperView {
         return output;
     }
 
-    clearSelectedItems(){
+    clearSelectedItems() {
         paper.project.deselectAll();
         this.selectedConnections = [];
         this.selectedComponents = [];
-
     }
 
     /**
@@ -105,11 +103,10 @@ export default class PaperView {
             }
 
             //Delete the selected Connecitons
-            for(let i in this.selectedConnections){
+            for (let i in this.selectedConnections) {
                 this.__viewManagerDelegate.currentDevice.removeConnection(this.selectedConnections[i]);
             }
         }
-
     }
 
     selectAllActive() {
@@ -148,7 +145,7 @@ export default class PaperView {
         let height = deviceHeight;
         let widthInMillimeters = width / 1000;
         let heightInMilliMeters = height / 1000;
-        let prepend = ManufacturingLayer.generateSVGTextPrepend(widthInMillimeters,heightInMilliMeters);
+        let prepend = ManufacturingLayer.generateSVGTextPrepend(widthInMillimeters, heightInMilliMeters);
         let append = ManufacturingLayer.generateSVGTextAppend();
         let newSVG = prepend + svg + append;
         layerCopy.remove();
@@ -206,7 +203,7 @@ export default class PaperView {
         this.updateZoom();
 
         //Check if the zoom toolbar exists before trying to run it
-        if(this.__viewManagerDelegate.zoomToolBar){
+        if (this.__viewManagerDelegate.zoomToolBar) {
             this.__viewManagerDelegate.zoomToolBar.setZoom(zoom);
         }
     }
@@ -219,7 +216,7 @@ export default class PaperView {
         let rect = this.canvas.getBoundingClientRect();
         let projX = x - rect.left;
         let projY = y - rect.top;
-        return (paper.view.viewToProject(new paper.Point(projX, projY)));
+        return paper.view.viewToProject(new paper.Point(projX, projY));
     }
 
     getProjectPosition(x, y) {
@@ -255,9 +252,9 @@ export default class PaperView {
     }
 
     disableContextMenu(func) {
-        this.canvas.oncontextmenu = function (event) {
+        this.canvas.oncontextmenu = function(event) {
             event.preventDefault();
-        }
+        };
     }
 
     refresh() {
@@ -298,7 +295,7 @@ export default class PaperView {
      * @param index Integer
      */
     removeLayer(index) {
-        if(index != -1) {
+        if (index != -1) {
             this.paperLayers.splice(index, 1);
         }
     }
@@ -379,14 +376,13 @@ export default class PaperView {
         if (feature instanceof TextFeature) {
             //TODO:Create render textfeature method that doesnt take other params
             newPaperFeature = FeatureRenderer2D.renderText(feature);
-        } else if( feature instanceof EdgeFeature){
+        } else if (feature instanceof EdgeFeature) {
             newPaperFeature = DXFObjectRenderer2D.renderEdgeFeature(feature);
             newPaperFeature.selected = selected;
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
             this.insertEdgeFeatures(newPaperFeature);
             return;
-        }
-        else {
+        } else {
             newPaperFeature = FeatureRenderer2D.renderFeature(feature);
         }
         newPaperFeature.selected = selected;
@@ -425,21 +421,17 @@ export default class PaperView {
     updateTarget() {
         this.removeTarget();
         if (this.lastTargetType && this.lastTargetPosition) {
-
             //Checks if the target is a text type target
             if (this.lastTargetType == "TEXT") {
-
                 this.currentTarget = FeatureRenderer2D.renderTextTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
                 this.uiLayer.addChild(this.currentTarget);
-
-            } else if(this.lastTargetSet == "Custom"){
+            } else if (this.lastTargetSet == "Custom") {
                 let customcomponent = this.__viewManagerDelegate.customComponentManager.getCustomComponent(this.lastTargetType);
                 let params = Registry.featureDefaults[this.lastTargetSet][this.lastTargetType];
-                params["position"] =  this.lastTargetPosition;
+                params["position"] = this.lastTargetPosition;
                 params["color"] = Colors.getDefaultFeatureColor(this.lastTargetType, this.lastTargetSet, Registry.currentLayer);
                 this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, params);
                 this.uiLayer.addChild(this.currentTarget);
-
             } else {
                 this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
                 this.uiLayer.addChild(this.currentTarget);
@@ -480,20 +472,19 @@ export default class PaperView {
         this.alignmentMarks = null;
     }
 
-    updateRatsNest(){
+    updateRatsNest() {
         this.removeRatsNest();
         let unrouted = this.__viewManagerDelegate.currentDevice.getUnroutedConnections();
 
-        let rendergroup =  RatsNestRenderer2D.renderRatsNest(unrouted, this.__viewManagerDelegate.currentDevice);
+        let rendergroup = RatsNestRenderer2D.renderRatsNest(unrouted, this.__viewManagerDelegate.currentDevice);
 
         this.__ratsNestRender = rendergroup;
         this.ratsNestLayer.addChild(this.__ratsNestRender);
-        
     }
 
     removeRatsNest() {
         //First clear out the render objects
-        if(this.__ratsNestRender){
+        if (this.__ratsNestRender) {
             this.__ratsNestRender.remove();
         }
         //Next set it to null
@@ -545,11 +536,9 @@ export default class PaperView {
         let heightRatio = deviceHeight / maxHeight;
         if (widthRatio > heightRatio) {
             return 1 / widthRatio;
-        }
-        else {
+        } else {
             return 1 / heightRatio;
         }
-
     }
 
     /**
@@ -620,7 +609,7 @@ export default class PaperView {
      * @param featureID
      * @return {*}
      */
-    getRenderedFeature(featureID){
+    getRenderedFeature(featureID) {
         return this.paperFeatures[featureID];
     }
 
@@ -628,12 +617,11 @@ export default class PaperView {
         this._paperComponentPortView.updateRenders();
     }
 
-    enableSnapRender(){
+    enableSnapRender() {
         this._paperComponentPortView.enable();
     }
 
-    disableSnapRender(){
+    disableSnapRender() {
         this._paperComponentPortView.disable();
     }
-
 }

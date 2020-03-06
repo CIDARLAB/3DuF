@@ -1,8 +1,8 @@
 import MouseTool from "./mouseTool";
 
-import * as Registry from '../../core/registry';
+import * as Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
-import paper from 'paper';
+import paper from "paper";
 
 export default class SelectTool extends MouseTool {
     constructor() {
@@ -13,18 +13,18 @@ export default class SelectTool extends MouseTool {
         this.currentSelectBox = null;
         this.currentSelection = [];
         let ref = this;
-        this.updateQueue = new SimpleQueue(function () {
+        this.updateQueue = new SimpleQueue(function() {
             ref.dragHandler();
         }, 20);
 
-        this.down = function (event) {
+        this.down = function(event) {
             Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
             ref.showTarget();
         };
 
-        this.move = function (event) {
+        this.move = function(event) {
             if (ref.dragging) {
                 ref.lastPoint = MouseTool.getEventPosition(event);
                 ref.updateQueue.run();
@@ -32,12 +32,11 @@ export default class SelectTool extends MouseTool {
             ref.showTarget();
         };
 
-        this.up = function (event) {
+        this.up = function(event) {
             ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
             ref.showTarget();
-        }
-
+        };
     }
 
     keyHandler(event) {
@@ -94,8 +93,6 @@ export default class SelectTool extends MouseTool {
                 this.deselectFeatures();
                 this.selectFeature(target);
             }
-
-
         } else {
             this.deselectFeatures();
             this.dragStart = point;
@@ -127,7 +124,6 @@ export default class SelectTool extends MouseTool {
         if (component == null) {
             //Does not belong to a component, hence this returns
             paperElement.selected = true;
-
         } else {
             //Belongs to the component so we basically select all features with this id
             let featureIDs = component.getFeatureIDs();
@@ -171,7 +167,6 @@ export default class SelectTool extends MouseTool {
         return null;
     }
 
-
     /**
      * Function that is fired when we drag and select an area on the paperjs canvas
      */
@@ -186,7 +181,6 @@ export default class SelectTool extends MouseTool {
                 if (component == null) {
                     //Does not belong to a component hence do the normal stuff
                     paperFeature.selected = true;
-
                 } else {
                     //Belongs to the component so we basically select all features with this id
                     let featureIDs = component.getFeatureIDs();
@@ -198,7 +192,6 @@ export default class SelectTool extends MouseTool {
 
                     Registry.viewManager.view.selectedComponents.push(component);
                 }
-
             }
         }
     }
@@ -215,7 +208,7 @@ export default class SelectTool extends MouseTool {
 
     rectSelect(point1, point2) {
         let rect = new paper.Path.Rectangle(point1, point2);
-        rect.fillColor = new paper.Color(0, .3, 1, .4);
+        rect.fillColor = new paper.Color(0, 0.3, 1, 0.4);
         rect.strokeColor = new paper.Color(0, 0, 0);
         rect.strokeWidth = 2;
         rect.selected = true;

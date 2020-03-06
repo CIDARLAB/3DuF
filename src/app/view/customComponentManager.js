@@ -1,19 +1,18 @@
 import ImportComponentDialog from "./ui/importComponentDialog";
 import CustomComponent from "../core/customComponent";
-import * as Registry from '../core/registry';
+import * as Registry from "../core/registry";
 
 export default class CustomComponentManager {
-    constructor(viewManager){
+    constructor(viewManager) {
         this.viewManagerDelegate = viewManager;
         this.importComponentDialog = new ImportComponentDialog(this);
         this.__library = new Map();
 
         //set up registry for custom tools
         Registry.featureDefaults["Custom"] = {};
-
     }
 
-    get library(){
+    get library() {
         return this.__library;
     }
 
@@ -25,7 +24,7 @@ export default class CustomComponentManager {
      * @param dxfdata
      * @param renderData
      */
-    importComponentFromDXF(type, dxfdata, renderData){
+    importComponentFromDXF(type, dxfdata, renderData) {
         // console.log("Yay ! loaded the data", dxfdata);
         // console.log("Render Data", renderData);
         //Create DXF Objects
@@ -36,7 +35,7 @@ export default class CustomComponentManager {
         this.viewManagerDelegate.rightPanel.customComponentToolBar.updateToolBar();
     }
 
-    __importComponentFromDeserializedJSON(customcomponent){
+    __importComponentFromDeserializedJSON(customcomponent) {
         this.__library.set(customcomponent.type, customcomponent);
         this.viewManagerDelegate.addCustomComponentTool(customcomponent.type);
         this.viewManagerDelegate.rightPanel.customComponentToolBar.updateToolBar();
@@ -46,10 +45,10 @@ export default class CustomComponentManager {
         return this.__library.get(componenttype);
     }
 
-    toJSON(){
+    toJSON() {
         let ret = {};
 
-        for(let key of this.__library.keys()){
+        for (let key of this.__library.keys()) {
             let customcomponent = this.__library.get(key);
             // console.log("Key:", key);
             // console.log("Key:", customcomponent);
@@ -62,8 +61,8 @@ export default class CustomComponentManager {
         return ret;
     }
 
-    loadFromJSON(json){
-        for(let key in json){
+    loadFromJSON(json) {
+        for (let key in json) {
             let customcomponent = CustomComponent.fromInterchangeV1(json[key]);
 
             this.__importComponentFromDeserializedJSON(customcomponent);

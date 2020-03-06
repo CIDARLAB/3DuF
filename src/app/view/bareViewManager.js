@@ -1,10 +1,10 @@
 import ZoomToolBar from "./ui/zoomToolBar";
-import paper from 'paper';
+import paper from "paper";
 
-import * as Registry from '../core/registry';
+import * as Registry from "../core/registry";
 import * as Colors from "./colors";
 
-import Device from '../core/device';
+import Device from "../core/device";
 import SimpleQueue from "../utils/simpleQueue";
 import * as HTMLUtils from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
@@ -12,15 +12,12 @@ import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
 
 export default class BareViewManager {
-
-
     constructor() {
         this.threeD;
         this.view = new PaperView("c", this);
 
         this.__grid = new AdaptiveGrid(this);
         Registry.currentGrid = this.__grid;
-
 
         // this.tools = {};
         // this.rightMouseTool = new SelectTool();
@@ -61,16 +58,14 @@ export default class BareViewManager {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
-
         this.view.setMouseWheelFunction(func);
-        this.minZoom = .0001;
+        this.minZoom = 0.0001;
         this.maxZoom = 5;
         // this.setupTools();
         // this.activateTool("Channel");
 
         //TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
-
 
         //Removed from Page Setup
         this.threeD = false;
@@ -88,14 +83,13 @@ export default class BareViewManager {
      *
      * @return {Device}
      */
-    get currentDevice(){
+    get currentDevice() {
         return this.__currentDevice;
     }
 
-
-    setupToolBars(){
+    setupToolBars() {
         //Initiating the zoom toolbar
-        this.zoomToolBar = new ZoomToolBar(.0001, 5);
+        this.zoomToolBar = new ZoomToolBar(0.0001, 5);
         // this.componentToolBar = new ComponentToolBar(this);
     }
 
@@ -168,31 +162,31 @@ export default class BareViewManager {
     /**
      * Create a new set of layers (flow, control and cell) for the upcoming level.
      */
-    createNewLayerBlock(){
+    createNewLayerBlock() {
         let newlayers = Registry.currentDevice.createNewLayerBlock();
 
         //Find all the edge features
         let edgefeatures = [];
-        let devicefeatures = (Registry.currentDevice.layers[0]).features;
+        let devicefeatures = Registry.currentDevice.layers[0].features;
         let feature;
 
         for (let i in devicefeatures) {
             feature = devicefeatures[i];
-            if(feature.fabType == "EDGE"){
+            if (feature.fabType == "EDGE") {
                 edgefeatures.push(feature);
             }
         }
 
         //Add the Edge Features from layer '0'
         // to all other layers
-        for(let i in newlayers){
-            for(let j in edgefeatures){
+        for (let i in newlayers) {
+            for (let j in edgefeatures) {
                 newlayers[i].addFeature(edgefeatures[j], false);
             }
         }
 
         //Added the new layers
-        for(let i in newlayers){
+        for (let i in newlayers) {
             let layertoadd = newlayers[i];
             let index = this.view.paperLayers.length;
             this.addLayer(layertoadd, index, true);
@@ -204,7 +198,7 @@ export default class BareViewManager {
      * that level
      * @param levelindex integer only
      */
-    deleteLayerBlock(levelindex){
+    deleteLayerBlock(levelindex) {
         //Delete the levels in the device model
         Registry.currentDevice.deleteLayer(levelindex * 3);
         Registry.currentDevice.deleteLayer(levelindex * 3 + 1);
@@ -240,7 +234,7 @@ export default class BareViewManager {
         for (let key in layer.features) {
             let feature = layer.features[key];
             this.addFeature(feature, false);
-            this.refresh(refresh)
+            this.refresh(refresh);
         }
     }
 
@@ -286,7 +280,7 @@ export default class BareViewManager {
         }
     }
 
-    updateAlignmentMarks(){
+    updateAlignmentMarks() {
         this.view.updateAlignmentMarks();
     }
 
@@ -303,7 +297,6 @@ export default class BareViewManager {
         this.zoomToolBar.setZoom(zoom);
         this.refresh(refresh);
     }
-
 
     // removeTarget() {
     //     this.view.removeTarget();
@@ -322,8 +315,8 @@ export default class BareViewManager {
     // }
 
     adjustZoom(delta, point, refresh = true) {
-        let belowMin = (this.view.getZoom() >= this.maxZoom && delta < 0);
-        let aboveMax = (this.view.getZoom() <= this.minZoom && delta > 0);
+        let belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
+        let aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
         if (!aboveMax && !belowMin) {
             this.view.adjustZoom(delta, point);
             this.updateGrid(false);
@@ -355,7 +348,6 @@ export default class BareViewManager {
         this.refresh(refresh);
     }
 
-
     refresh(refresh = true) {
         this.updateQueue.run();
         //Update the toolbar
@@ -382,7 +374,6 @@ export default class BareViewManager {
         else return false;
     }
 
-
     loadDeviceFromJSON(json) {
         let device;
         Registry.viewManager.clear();
@@ -394,18 +385,17 @@ export default class BareViewManager {
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
             this.__currentDevice = device;
-        }else{
+        } else {
             console.log("Version Number: " + version);
-            switch (version){
+            switch (version) {
                 case 1:
-
                     device = Device.fromInterchangeV1(json);
                     Registry.currentDevice = device;
                     this.__currentDevice = device;
 
                     break;
                 default:
-                    alert("Version \'" + version + "\' is not supported by 3DuF !");
+                    alert("Version '" + version + "' is not supported by 3DuF !");
             }
         }
         //Common Code for rendering stuff
@@ -415,7 +405,6 @@ export default class BareViewManager {
         //TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
         Registry.viewManager.addDevice(Registry.currentDevice);
 
-
         this.view.initializeView();
         this.updateGrid();
         this.updateDevice(Registry.currentDevice);
@@ -423,7 +412,6 @@ export default class BareViewManager {
         Registry.currentLayer = Registry.currentDevice.layers[0];
         // this.layerToolBar.setActiveLayer("0");
         Registry.viewManager.updateActiveLayer();
-
     }
 
     // removeFeaturesByPaperElements(paperElements) {
@@ -435,9 +423,6 @@ export default class BareViewManager {
     //         this.currentSelection = [];
     //     }
     // }
-
-
-
 
     // getFeaturesOfType(typeString, setString, features){
     //     let output = [];
@@ -558,7 +543,7 @@ export default class BareViewManager {
             let zoom = this.renderer.getZoom();
             let newCenterX = center[0];
             if (newCenterX < 0) {
-                newCenterX = 0
+                newCenterX = 0;
             } else if (newCenterX > Registry.currentDevice.params.getValue("width")) {
                 newCenterX = Registry.currentDevice.params.getValue("width");
             }
@@ -566,7 +551,7 @@ export default class BareViewManager {
             if (newCenterY < 0) {
                 newCenterY = 0;
             } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
-                newCenterY = Registry.currentDevice.params.getValue("height")
+                newCenterY = Registry.currentDevice.params.getValue("height");
             }
             HTMLUtils.setButtonColor(this.__button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
             HTMLUtils.setButtonColor(this.__button3D, inactiveBackground, inactiveText);
@@ -618,7 +603,6 @@ export default class BareViewManager {
             }
         });
     }
-
 
     // /**
     //  * Closes the params window

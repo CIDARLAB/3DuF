@@ -2,7 +2,7 @@ import * as HTMLUtils from "../../utils/htmlUtils";
 import * as NumberUtils from "../../utils/numberUtils";
 
 export default class MoveToolBar {
-    constructor(moveToolDelegate){
+    constructor(moveToolDelegate) {
         //Get the UI references
 
         this.moveToolDelegate = moveToolDelegate;
@@ -26,20 +26,20 @@ export default class MoveToolBar {
         let ref = this;
 
         //Text input changes
-        this.__xPosInput.addEventListener('input', function (event) {
+        this.__xPosInput.addEventListener("input", function(event) {
             ref.processNewPosition();
         });
 
-        this.__yPosInput.addEventListener('input', function (event) {
+        this.__yPosInput.addEventListener("input", function(event) {
             ref.processNewPosition();
         });
 
         //Position buttons
         //Decrease x
-        this.__xPosDownButton.addEventListener('click', function (event) {
+        this.__xPosDownButton.addEventListener("click", function(event) {
             let value = ref.__xPosInput.value;
             value = Number.parseFloat(value);
-            if(NumberUtils.isFloatOrInt(value)){
+            if (NumberUtils.isFloatOrInt(value)) {
                 value -= 0.1;
                 ref.__xPosInput.value = value;
                 ref.processNewPosition();
@@ -47,49 +47,46 @@ export default class MoveToolBar {
         });
 
         //increase x
-        this.__xPosUpButton.addEventListener('click', function (event) {
+        this.__xPosUpButton.addEventListener("click", function(event) {
             let value = ref.__xPosInput.value;
             value = Number.parseFloat(value);
-            if(NumberUtils.isFloatOrInt(value)){
+            if (NumberUtils.isFloatOrInt(value)) {
                 value += 0.1;
                 ref.__xPosInput.value = value;
                 ref.processNewPosition();
             }
-
         });
 
         //increase y
-        this.__yPosUpButton.addEventListener('click', function (event) {
+        this.__yPosUpButton.addEventListener("click", function(event) {
             let value = ref.__yPosInput.value;
             value = Number.parseFloat(value);
-            if(NumberUtils.isFloatOrInt(value)){
+            if (NumberUtils.isFloatOrInt(value)) {
                 value += 0.1;
                 ref.__yPosInput.value = value;
                 ref.processNewPosition();
             }
-
         });
 
         //decrease y
-        this.__yPosDownButton.addEventListener('click', function (event) {
+        this.__yPosDownButton.addEventListener("click", function(event) {
             let value = ref.__yPosInput.value;
             value = Number.parseFloat(value);
-            if(NumberUtils.isFloatOrInt(value)){
+            if (NumberUtils.isFloatOrInt(value)) {
                 value -= 0.1;
                 ref.__yPosInput.value = value;
                 ref.processNewPosition();
             }
-
         });
-        
+
         //Action button clicks
-        this.__saveButton.addEventListener('click', function (event) {
+        this.__saveButton.addEventListener("click", function(event) {
             console.log("Save button was pressed");
             ref.hideWindow();
             ref.moveToolDelegate.unactivate();
         });
 
-        this.__cancelButton.addEventListener('click', function (event) {
+        this.__cancelButton.addEventListener("click", function(event) {
             console.log("Cancel Button was Pressed");
             ref.moveToolDelegate.revertToOriginalPosition();
             ref.hideWindow();
@@ -97,19 +94,18 @@ export default class MoveToolBar {
         });
     }
 
-    showWindow(){
+    showWindow() {
         HTMLUtils.removeClass(this.__window, "hidden-block");
     }
 
-    hideWindow(){
+    hideWindow() {
         HTMLUtils.addClass(this.__window, "hidden-block");
     }
 
-    updateUIPos(pos){
-        this.__xPosInput.value = pos[0]/1000;
-        this.__yPosInput.value = pos[1]/1000;
+    updateUIPos(pos) {
+        this.__xPosInput.value = pos[0] / 1000;
+        this.__yPosInput.value = pos[1] / 1000;
     }
-
 
     processNewPosition() {
         // console.log("input data", xpos, ypos);
@@ -117,7 +113,7 @@ export default class MoveToolBar {
         let xpos = Number.parseFloat(this.__xPosInput.value);
         let ypos = Number.parseFloat(this.__yPosInput.value);
         //Check if the values are valid positions
-        if(!NumberUtils.isFloatOrInt(xpos) || !NumberUtils.isFloatOrInt(ypos)){
+        if (!NumberUtils.isFloatOrInt(xpos) || !NumberUtils.isFloatOrInt(ypos)) {
             console.log("test");
             return;
         }
@@ -127,6 +123,5 @@ export default class MoveToolBar {
 
         //Tell the moveTool to set the position as the x,y pos
         this.moveToolDelegate.processUIPosition(xpos, ypos);
-
     }
 }

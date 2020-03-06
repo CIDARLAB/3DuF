@@ -2,55 +2,54 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export  default class Chamber extends Template{
-    constructor(){
+export default class Chamber extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "width": "Float",
-            "length": "Float",
-            "height": "Float",
-            "cornerRadius": "Float",
-            "rotation": "Float"
+            width: "Float",
+            length: "Float",
+            height: "Float",
+            cornerRadius: "Float",
+            rotation: "Float"
         };
 
         this.__defaults = {
-            "width": 5000,
-            "length": 5000,
-            "height": 250,
-            "cornerRadius": 200,
-            "rotation": 0
+            width: 5000,
+            length: 5000,
+            height: 250,
+            cornerRadius: 200,
+            rotation: 0
         };
 
-
         this.__units = {
-            "width": "&mu;m",
-            "length": "&mu;m",
-            "height": "&mu;m",
-            "cornerRadius": "&mu;m",
-            "rotation": "&deg;"
+            width: "&mu;m",
+            length: "&mu;m",
+            height: "&mu;m",
+            cornerRadius: "&mu;m",
+            rotation: "&deg;"
         };
 
         this.__minimum = {
-            "width": 5,
-            "length": 5,
-            "height": 1,
-            "cornerRadius": 1,
-            "rotation": 0
+            width: 5,
+            length: 5,
+            height: 1,
+            cornerRadius: 1,
+            rotation: 0
         };
 
         this.__maximum = {
-            "width": 50000,
-            "length": 50000,
-            "height": 50000,
-            "cornerRadius": 1000,
-            "rotation": 90
+            width: 50000,
+            length: 50000,
+            height: 50000,
+            cornerRadius: 1000,
+            rotation: 90
         };
 
         this.__featureParams = {
@@ -80,43 +79,21 @@ export  default class Chamber extends Template{
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "REACTION CHAMBER";
-
     }
 
-
-    getPorts(params){
+    getPorts(params) {
         let l = params["length"];
         let w = params["width"];
 
         let ports = [];
 
-        ports.push(new ComponentPort(
-            0,
-            -l/2,
-            "1",
-            "FLOW"
-        ));
+        ports.push(new ComponentPort(0, -l / 2, "1", "FLOW"));
 
-        ports.push(new ComponentPort(
-            w/2,
-            0,
-            "2",
-            "FLOW"
-        ));
+        ports.push(new ComponentPort(w / 2, 0, "2", "FLOW"));
 
-        ports.push(new ComponentPort(
-            0,
-            l/2,
-            "3",
-            "FLOW"
-        ));
+        ports.push(new ComponentPort(0, l / 2, "3", "FLOW"));
 
-        ports.push(new ComponentPort(
-            -w/2,
-            0,
-            "4",
-            "FLOW"
-        ));
+        ports.push(new ComponentPort(-w / 2, 0, "4", "FLOW"));
 
         return ports;
     }
@@ -145,7 +122,7 @@ export  default class Chamber extends Template{
         return rendered.rotate(rotation, px, py);
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;

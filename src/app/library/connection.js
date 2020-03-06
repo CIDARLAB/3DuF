@@ -1,43 +1,42 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class Connection extends Template{
-    constructor(){
+export default class Connection extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "start": "Point",
-            "end": "Point",
-            "wayPoints": "PointArray",
-            "segments": "SegmentArray"
+            start: "Point",
+            end: "Point",
+            wayPoints: "PointArray",
+            segments: "SegmentArray"
         };
 
         this.__heritable = {
-            "channelWidth": "Float",
-            "height": "Float"
+            channelWidth: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
-            "channelWidth": .80 * 1000,
-            "height": 250
+            channelWidth: 0.8 * 1000,
+            height: 250
         };
 
-
         this.__units = {
-            "channelWidth": "&mu;m",
-            "height": "&mu;m"
+            channelWidth: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
-            "channelWidth": 3,
-            "height": 10,
+            channelWidth: 3,
+            height: 10
         };
 
         this.__maximum = {
-            "channelWidth": 2000,
-            "height": 1200,
+            channelWidth: 2000,
+            height: 1200
         };
 
         this.__featureParams = {
@@ -81,7 +80,7 @@ export  default class Connection extends Template{
 
         let p1, p2;
 
-        for(let i in segments){
+        for (let i in segments) {
             let segment = segments[i];
             p1 = segment[0];
             p2 = segment[1];
@@ -94,28 +93,28 @@ export  default class Connection extends Template{
         return connectionpath;
     }
 
-    __drawStraightConnection(compoundpath, startpoint, endpoint, channelWidth){
+    __drawStraightConnection(compoundpath, startpoint, endpoint, channelWidth) {
         //edit the points
         let vec = endpoint.subtract(startpoint);
         let rec = new paper.Path.Rectangle({
             point: startpoint,
-            radius: channelWidth/2,
+            radius: channelWidth / 2,
             size: [vec.length + channelWidth, channelWidth]
         });
-        rec.translate([-channelWidth/2, -channelWidth/2]);
+        rec.translate([-channelWidth / 2, -channelWidth / 2]);
         rec.rotate(vec.angle, startpoint);
 
         compoundpath.addChild(rec);
     }
 
-    render2DTarget(key, params){
-        let thickness = params["channelWidth"]/5;
+    render2DTarget(key, params) {
+        let thickness = params["channelWidth"] / 5;
         let length = params["channelWidth"];
         let x = params["position"][0];
         let y = params["position"][1];
         let color = params["color"];
         let chair = new paper.Path.Rectangle(x - length / 2, y - thickness / 2, length, thickness);
-        chair = chair.unite(new paper.Path.Rectangle(x - thickness/2, y - length/2, thickness, length));
+        chair = chair.unite(new paper.Path.Rectangle(x - thickness / 2, y - length / 2, thickness, length));
         chair.fillColor = color;
         chair.fillColor.alpha = 0.5;
         return chair;

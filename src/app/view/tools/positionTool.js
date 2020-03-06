@@ -1,15 +1,13 @@
 import MouseTool from "./mouseTool";
 
-import * as Registry from '../../core/registry';
-import Feature from '../../core/feature';
-import Device from '../../core/device';
+import * as Registry from "../../core/registry";
+import Feature from "../../core/feature";
+import Device from "../../core/device";
 import SimpleQueue from "../../utils/simpleQueue";
 
-import paper from 'paper';
+import paper from "paper";
 import Params from "../../core/params";
 import Component from "../../core/component";
-
-
 
 export default class PositionTool extends MouseTool {
     constructor(typeString, setString) {
@@ -19,17 +17,21 @@ export default class PositionTool extends MouseTool {
         this.currentFeatureID = null;
         let ref = this;
         this.lastPoint = null;
-        this.showQueue = new SimpleQueue(function () {
-            ref.showTarget();
-        }, 20, false);
-        this.up = function (event) {
+        this.showQueue = new SimpleQueue(
+            function() {
+                ref.showTarget();
+            },
+            20,
+            false
+        );
+        this.up = function(event) {
             // do nothing
         };
-        this.move = function (event) {
+        this.move = function(event) {
             ref.lastPoint = MouseTool.getEventPosition(event);
             ref.showQueue.run();
         };
-        this.down = function (event) {
+        this.down = function(event) {
             Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
@@ -38,9 +40,14 @@ export default class PositionTool extends MouseTool {
 
     createNewFeature(point) {
         let name = Registry.currentDevice.generateNewName(this.typeString);
-        let newFeature = Device.makeFeature(this.typeString, this.setString, {
-            "position": PositionTool.getTarget(point)
-        }, name);
+        let newFeature = Device.makeFeature(
+            this.typeString,
+            this.setString,
+            {
+                position: PositionTool.getTarget(point)
+            },
+            name
+        );
         this.currentFeatureID = newFeature.getID();
         Registry.currentLayer.addFeature(newFeature);
     }
@@ -75,13 +82,13 @@ export default class PositionTool extends MouseTool {
         let definition = Registry.featureSet.getDefinition(typeString);
         //Clean Param Data
         let cleanparamdata = {};
-        for(let key in paramdata){
+        for (let key in paramdata) {
             cleanparamdata[key] = paramdata[key].getValue();
         }
         let params = new Params(cleanparamdata, definition.unique, definition.heritable);
         let componentid = Feature.generateID();
         let name = Registry.currentDevice.generateNewName(typeString);
-        let newComponent = new Component(typeString, params, name , definition.mint, componentid);
+        let newComponent = new Component(typeString, params, name, definition.mint, componentid);
         let feature;
 
         for (let i in featureIDs) {
@@ -90,7 +97,6 @@ export default class PositionTool extends MouseTool {
             //Update the component reference
             feature = Registry.currentDevice.getFeatureByID(featureIDs[i]);
             feature.referenceID = componentid;
-
         }
 
         Registry.currentDevice.addComponent(newComponent);

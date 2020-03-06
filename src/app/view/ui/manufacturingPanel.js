@@ -1,12 +1,12 @@
 import CNCGenerator from "../../manufacturing/cncGenerator";
 
-import JSZip from 'jszip';
+import JSZip from "jszip";
 import LaserCuttingGenerator from "../../manufacturing/laserCuttingGenerator";
 
-import * as Registry from '../../core/registry';
+import * as Registry from "../../core/registry";
 
 export default class ManufacturingPanel {
-    constructor(viewManagerDelegate){
+    constructor(viewManagerDelegate) {
         this.__viewManagerDelegate = viewManagerDelegate;
 
         this.__cncButton = document.getElementById("cnc_button");
@@ -17,7 +17,7 @@ export default class ManufacturingPanel {
         let registryref = Registry;
 
         let ref = this;
-        this.__cncButton.addEventListener('click', function (event) {
+        this.__cncButton.addEventListener("click", function(event) {
             console.log("Generating CNC Layers");
             cncGenerator.setDevice(registryref.currentDevice);
             cncGenerator.generatePortLayers();
@@ -31,7 +31,7 @@ export default class ManufacturingPanel {
             cncGenerator.flushData();
         });
 
-        this.__laserButton.addEventListener('click',function (event) {
+        this.__laserButton.addEventListener("click", function(event) {
             console.log("Generating Laser Cutting Layers");
 
             laserCuttingGenerator.setDevice(registryref.currentDevice);
@@ -41,22 +41,20 @@ export default class ManufacturingPanel {
             laserCuttingGenerator.generateInverseControlLayers();
 
             ref.packageAndDownloadBundle(laserCuttingGenerator.getSVGOutputs());
-        })
+        });
     }
 
     packageAndDownloadBundle(svgOutputs) {
         let zipper = new JSZip();
 
-        for(const key of svgOutputs.keys()){
-            zipper.file(key+".svg", svgOutputs.get(key));
+        for (const key of svgOutputs.keys()) {
+            zipper.file(key + ".svg", svgOutputs.get(key));
         }
 
         let content = zipper.generate({
             type: "blob"
         });
 
-        saveAs(content, Registry.currentDevice.getName()+".zip");
-
-
+        saveAs(content, Registry.currentDevice.getName() + ".zip");
     }
 }

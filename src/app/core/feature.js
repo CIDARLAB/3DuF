@@ -1,17 +1,16 @@
 import CustomComponent from "./customComponent";
 import Params from "./params";
-import Device from './device';
+import Device from "./device";
 
-import * as Parameters from './parameters';
+import * as Parameters from "./parameters";
 const StringValue = Parameters.StringValue;
 import * as FeatureSets from "../featureSets";
-import * as Registry from './registry';
+import * as Registry from "./registry";
 
 /**
  * Represents the object from which we generate a render
  */
 export default class Feature {
-
     /**
      * Feature Object
      * @param type
@@ -21,7 +20,7 @@ export default class Feature {
      * @param id
      * @param fabtype
      */
-    constructor(type, set, params, name, id = Feature.generateID(), fabtype="XY"){
+    constructor(type, set, params, name, id = Feature.generateID(), fabtype = "XY") {
         this.__type = type;
         this.__params = params;
         this.__name = name;
@@ -48,13 +47,13 @@ export default class Feature {
      * @private
      */
     set referenceID(value) {
-        if(typeof value != 'string' && !(value instanceof String)){
-            throw new Error("The reference object value can only be a string")
+        if (typeof value != "string" && !(value instanceof String)) {
+            throw new Error("The reference object value can only be a string");
         }
         this.__referenceObject = value;
     }
 
-    set dxfObjects(dxfdata){
+    set dxfObjects(dxfdata) {
         this.__dxfObjects = dxfdata;
     }
 
@@ -62,7 +61,7 @@ export default class Feature {
      * Returns a string that describes the fabrication type
      * @return {string|*}
      */
-    get fabType(){
+    get fabType() {
         return this.__fabtype;
     }
 
@@ -79,7 +78,7 @@ export default class Feature {
      * @param key
      * @param value
      */
-    updateParameter(key, value){
+    updateParameter(key, value) {
         this.__params.updateParameter(key, value);
         this.updateView();
     }
@@ -101,7 +100,7 @@ export default class Feature {
      * Generates the serial version of this object but conforms
      * to the interchange format
      */
-    toInterchangeV1(){
+    toInterchangeV1() {
         //TODO: We need to figure out what to do and what the final feature format will be
         let output = {};
         output.id = this.__id;
@@ -110,14 +109,14 @@ export default class Feature {
         output.set = this.__set;
         output.referenceID = this.referenceID;
 
-        if(this.__params){
+        if (this.__params) {
             output.params = this.__params.toJSON();
         }
 
-        output.dxfData =[];
+        output.dxfData = [];
 
-        if(this.__dxfObjects){
-            for(let i in this.__dxfObjects){
+        if (this.__dxfObjects) {
+            for (let i in this.__dxfObjects) {
                 output.dxfData.push(this.__dxfObjects[i].toJSON());
             }
         }
@@ -127,108 +126,100 @@ export default class Feature {
         return output;
     }
 
-    get dxfObjects(){
+    get dxfObjects() {
         return this.__dxfObjects;
     }
 
-    getSet(){
+    getSet() {
         return this.__set;
     }
 
-    getID(){
+    getID() {
         return this.__id;
     }
 
-    setName(name){
+    setName(name) {
         this.__name = StringValue(name);
     }
 
-    getName(){
+    getName() {
         return this.__name;
     }
 
-    getType(){
+    getType() {
         return this.__type;
     }
 
-    static getFeatureGenerator(typeString, setString){
-        return function(values){
+    static getFeatureGenerator(typeString, setString) {
+        return function(values) {
             return Device.makeFeature(typeString, setString, values);
-        }
+        };
     }
 
-    getValue(key){
+    getValue(key) {
         try {
             return this.__params.getValue(key);
-        } catch (err){
+        } catch (err) {
             if (this.hasDefaultParam(key)) return this.getDefaults()[key];
             else throw new Error("Unable to get value for key: " + key);
         }
     }
 
-    hasDefaultParam(key){
+    hasDefaultParam(key) {
         if (this.getDefaults().hasOwnProperty(key)) return true;
         else return false;
     }
 
-    hasUniqueParam(key){
+    hasUniqueParam(key) {
         return this.__params.isUnique(key);
     }
 
-    hasHeritableParam(key){
+    hasHeritableParam(key) {
         return this.__params.isHeritable(key);
     }
 
-    getHeritableParams(){
+    getHeritableParams() {
         return Feature.getDefinitionForType(this.getType(), this.getSet()).heritable;
     }
 
-    getUniqueParams(){
+    getUniqueParams() {
         return Feature.getDefinitionForType(this.getType(), this.getSet()).unique;
     }
 
-    getDefaults(){
+    getDefaults() {
         return Feature.getDefaultsForType(this.getType(), this.getSet());
     }
 
-    getParams(){
+    getParams() {
         return this.__params.parameters;
     }
 
-    setParams(params){
+    setParams(params) {
         this.__params.parameters = params;
     }
 
-    replicate(xpos, ypos){
+    replicate(xpos, ypos) {
         let paramscopy = this.__params;
         let replicaparams = {};
-        for(let key in this.__params.parameters){
+        for (let key in this.__params.parameters) {
             replicaparams[key] = this.getValue(key);
         }
         replicaparams["position"] = [xpos, ypos];
-        let ret = Device.makeFeature(
-            this.__type,
-            this.__set,
-            replicaparams,
-            this.__name,
-            Feature.generateID(),
-            this.__dxfObjects
-        );
+        let ret = Device.makeFeature(this.__type, this.__set, replicaparams, this.__name, Feature.generateID(), this.__dxfObjects);
 
         return ret;
-
     }
 
-    static getDefaultsForType(typeString, setString){
+    static getDefaultsForType(typeString, setString) {
         return Registry.featureDefaults[setString][typeString];
     }
 
-    static getDefinitionForType(typeString, setString){
+    static getDefinitionForType(typeString, setString) {
         return FeatureSets.getDefinition(typeString, setString);
     }
 
-    static checkDefaults(values, heritable, defaults){
-        for (let key in heritable){
+    static checkDefaults(values, heritable, defaults) {
+        for (let key in heritable) {
             if (!values.hasOwnProperty(key)) values[key] = defaults[key];
         }
         return values;
@@ -241,21 +232,21 @@ export default class Feature {
         return Device.makeFeature(json.type, set, json.params, json.name, json.id);
     }
 
-    static fromInterchangeV1(json){
+    static fromInterchangeV1(json) {
         let ret;
         let set;
         if (json.hasOwnProperty("set")) set = json.set;
         else set = "Basic";
         //TODO: This will have to change soon when the thing is updated
         ret = Device.makeFeature(json.macro, set, json.params, json.name, json.id, json.type, json.dxfData);
-        if(json.hasOwnProperty("referenceID")){
+        if (json.hasOwnProperty("referenceID")) {
             ret.referenceID = json.referenceID;
             // Registry.currentDevice.updateObjectReference(json.id, json.referenceID);
         }
         return ret;
     }
 
-    static makeCustomComponentFeature(customcomponent, setstring, paramvalues, name = "New Feature", id=undefined){
+    static makeCustomComponentFeature(customcomponent, setstring, paramvalues, name = "New Feature", id = undefined) {
         let definitions = CustomComponent.defaultParameterDefinitions();
         Feature.checkDefaults(paramvalues, definitions.heritable, Feature.getDefaultsForType(customcomponent.type, setstring));
         let params = new Params(paramvalues, definitions.unique, definitions.heritable);
@@ -264,12 +255,12 @@ export default class Feature {
         return ret;
     }
 
-    updateView(){
-        if(Registry.viewManager) Registry.viewManager.updateFeature(this);
+    updateView() {
+        if (Registry.viewManager) Registry.viewManager.updateFeature(this);
     }
 
     //I wish I had abstract methods. :(
-    render2D(){
+    render2D() {
         throw new Error("Base class Feature cannot be rendered in 2D.");
     }
 
@@ -277,7 +268,7 @@ export default class Feature {
      * Returns the array of dxf objects
      * @return {Array}
      */
-    getDXFObjects(){
+    getDXFObjects() {
         return this.__dxfObjects;
     }
 

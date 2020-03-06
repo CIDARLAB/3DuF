@@ -1,12 +1,11 @@
-import {Registry} from "../index";
+import { Registry } from "../index";
 import Connection from "../core/connection";
 import Feature from "../core/feature";
 import ChannelTool from "../view/tools/channelTool";
 import ComponentPort from "../core/componentPort";
 
 export default class DAFDPlugin {
-    static fixLayout(params){
-
+    static fixLayout(params) {
         //Update Params
         let channelid;
         let orificeSize = params["orificeSize"];
@@ -16,7 +15,6 @@ export default class DAFDPlugin {
         let outputWidth = params["outputWidth"];
         let outputLength = params["outputLength"];
         let height = params["height"];
-
 
         //Load up all the components and change their positions based on the component dimensions
         let dropgen = Registry.currentDevice.getComponentByName("DropletGen_1");
@@ -52,7 +50,6 @@ export default class DAFDPlugin {
         let endpoint;
         let cp;
 
-
         //Align ports  to the droplet generator
         let dxpos = dropgen.getPosition()[0];
         let xpos = dxpos + oilInputWidth / 2;
@@ -62,14 +59,14 @@ export default class DAFDPlugin {
         port_oil2.updateComponetPosition([xpos, ypos]);
 
         //Moving teh transistions to align with droplet generators
-        ypos = port_oil1.getValue('position')[1];
-        transition_oil1.updateParameter('position', [xpos, ypos]);
-        ypos = port_oil2.getValue('position')[1];
-        transition_oil2.updateParameter('position', [xpos, ypos]);
-        let inpos = port_in.getValue('position');
-        let outpos = port_out.getValue('position');
-        transition_in.updateParameter('position', inpos);
-        transition_out.updateParameter('position', outpos);
+        ypos = port_oil1.getValue("position")[1];
+        transition_oil1.updateParameter("position", [xpos, ypos]);
+        ypos = port_oil2.getValue("position")[1];
+        transition_oil2.updateParameter("position", [xpos, ypos]);
+        let inpos = port_in.getValue("position");
+        let outpos = port_out.getValue("position");
+        transition_in.updateParameter("position", inpos);
+        transition_out.updateParameter("position", outpos);
 
         //Input Channel
         startpoint = port_in.getCenterPosition();
@@ -82,7 +79,7 @@ export default class DAFDPlugin {
         Registry.currentLayer.addFeature(newChannel);
 
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
-        newChannel.updateParameter('channelWidth', waterInputWidth);
+        newChannel.updateParameter("channelWidth", waterInputWidth);
 
         //oil top Channel
         startpoint = port_oil1.getCenterPosition();
@@ -94,7 +91,7 @@ export default class DAFDPlugin {
 
         Registry.currentLayer.addFeature(newChannel);
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
-        newChannel.updateParameter('channelWidth', oilInputWidth);
+        newChannel.updateParameter("channelWidth", oilInputWidth);
 
         //output Channel
         startpoint = port_out.getCenterPosition();
@@ -107,8 +104,7 @@ export default class DAFDPlugin {
         Registry.currentLayer.addFeature(newChannel);
 
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
-        newChannel.updateParameter('channelWidth', outputWidth);
-
+        newChannel.updateParameter("channelWidth", outputWidth);
 
         //oil bottom Channel
         startpoint = port_oil2.getCenterPosition();
@@ -122,8 +118,6 @@ export default class DAFDPlugin {
         Registry.currentLayer.addFeature(newChannel);
 
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
-        newChannel.updateParameter('channelWidth', oilInputWidth);
-
+        newChannel.updateParameter("channelWidth", oilInputWidth);
     }
-
 }

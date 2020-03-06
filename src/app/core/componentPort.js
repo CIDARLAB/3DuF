@@ -1,4 +1,4 @@
-import uuid from 'node-uuid';
+import uuid from "node-uuid";
 import paper from "paper";
 
 export default class ComponentPort {
@@ -9,7 +9,7 @@ export default class ComponentPort {
      * @param label
      * @param layer
      */
-    constructor(x, y, label, layer){
+    constructor(x, y, label, layer) {
         this._id = uuid.v1();
         this._x = x;
         this._y = y;
@@ -57,16 +57,16 @@ export default class ComponentPort {
         this._id = value;
     }
 
-    toInterchangeV1(){
+    toInterchangeV1() {
         return {
-            "x": this._x,
-            "y": this._y,
-            "layer": this._layer,
-            "label": this._label
-        }
+            x: this._x,
+            y: this._y,
+            layer: this._layer,
+            label: this._label
+        };
     }
 
-    static calculateAbsolutePosition(componentport, component){
+    static calculateAbsolutePosition(componentport, component) {
         let topleftposition = component.getValue("position");
         let point = new paper.Point(topleftposition[0] + componentport.x, topleftposition[1] + componentport.y);
         console.log("Unchanged point:", point);
@@ -76,9 +76,7 @@ export default class ComponentPort {
         return [rotatedpoint.x, rotatedpoint.y];
     }
 
-    static fromInterchangeV1(json){
+    static fromInterchangeV1(json) {
         return new ComponentPort(json.x, json.y, json.label, json.layer);
     }
-
-
 }

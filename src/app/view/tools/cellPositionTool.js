@@ -1,22 +1,22 @@
 import PositionTool from "./positionTool";
 
-import * as  Registry from "../../core/registry";
-import Device from '../../core/device';
+import * as Registry from "../../core/registry";
+import Device from "../../core/device";
 
-export default class CellPositionTool extends PositionTool{
-    constructor(typeString, setString){
+export default class CellPositionTool extends PositionTool {
+    constructor(typeString, setString) {
         super(typeString, setString);
     }
 
-    createNewFeature(point){
+    createNewFeature(point) {
         let featureIDs = [];
 
-        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer)/3);
+        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
         let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
         let cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
 
         let newFeature = Device.makeFeature(this.typeString, this.setString, {
-            "position": PositionTool.getTarget(point)
+            position: PositionTool.getTarget(point)
         });
         this.currentFeatureID = newFeature.getID();
         flowlayer.addFeature(newFeature);
@@ -25,11 +25,10 @@ export default class CellPositionTool extends PositionTool{
 
         let params_to_copy = newFeature.getParams();
 
-
         let newtypestring = this.typeString + "_cell";
         let paramstoadd = newFeature.getParams();
         newFeature = Device.makeFeature(newtypestring, this.setString, {
-            "position": PositionTool.getTarget(point)
+            position: PositionTool.getTarget(point)
         });
         newFeature.setParams(paramstoadd);
 
@@ -38,13 +37,11 @@ export default class CellPositionTool extends PositionTool{
 
         featureIDs.push(newFeature.getID());
 
-
-        super.createNewComponent(this.typeString, params_to_copy, featureIDs );
+        super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager.saveDeviceState();
-
     }
 
-    showTarget(){
+    showTarget() {
         let target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }

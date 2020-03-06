@@ -1,64 +1,63 @@
 import Template from "./template";
 import paper from "paper";
 
-export  default class Pump3D extends Template{
-    constructor(){
+export default class Pump3D extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "valveRadius": "Float",
-            "height": "Float",
-            "gap": "Float",
-            "rotation": "Float",
-            "spacing": "Float",
-            "flowChannelWidth":"Float"
+            valveRadius: "Float",
+            height: "Float",
+            gap: "Float",
+            rotation: "Float",
+            spacing: "Float",
+            flowChannelWidth: "Float"
         };
 
         this.__defaults = {
-            "valveRadius": 1.2 * 1000,
-            "height": 250,
-            "gap": 0.6 * 1000,
-            "width": 2.4 * 1000,
-            "length": 2.4 * 1000,
-            "rotation": 90,
-            "spacing": 5000,
-            "flowChannelWidth":300
+            valveRadius: 1.2 * 1000,
+            height: 250,
+            gap: 0.6 * 1000,
+            width: 2.4 * 1000,
+            length: 2.4 * 1000,
+            rotation: 90,
+            spacing: 5000,
+            flowChannelWidth: 300
         };
 
-
         this.__units = {
-            "valveRadius": "&mu;m",
-            "height": "&mu;m",
-            "gap": "&mu;m",
-            "width": "&mu;m",
-            "length": "&mu;m",
-            "rotation": "&deg;",
-            "spacing": "&mu;m",
-            "flowChannelWidth":"&mu;m"
+            valveRadius: "&mu;m",
+            height: "&mu;m",
+            gap: "&mu;m",
+            width: "&mu;m",
+            length: "&mu;m",
+            rotation: "&deg;",
+            spacing: "&mu;m",
+            flowChannelWidth: "&mu;m"
         };
 
         this.__minimum = {
-            "valveRadius": .1 * 100,
-            "height": .1 * 100,
-            "gap": .5 * 10,
-            "rotation": 0,
-            "spacing": 10,
-            "flowChannelWidth":1
+            valveRadius: 0.1 * 100,
+            height: 0.1 * 100,
+            gap: 0.5 * 10,
+            rotation: 0,
+            spacing: 10,
+            flowChannelWidth: 1
         };
 
         this.__maximum = {
-            "valveRadius": .2 * 10000,
-            "height": 1.2 * 1000,
-            "gap": .1 * 10000,
-            "rotation": 180,
-            "spacing": 10000,
-            "flowChannelWidth":10000
+            valveRadius: 0.2 * 10000,
+            height: 1.2 * 1000,
+            gap: 0.1 * 10000,
+            rotation: 180,
+            spacing: 10000,
+            flowChannelWidth: 10000
         };
 
         this.__featureParams = {
@@ -68,7 +67,6 @@ export  default class Pump3D extends Template{
             flowChannelWidth: "flowChannelWidth",
             spacing: "spacing",
             gap: "gap"
-
         };
 
         this.__targetParams = {
@@ -77,7 +75,6 @@ export  default class Pump3D extends Template{
             flowChannelWidth: "flowChannelWidth",
             spacing: "spacing",
             gap: "gap"
-
         };
 
         this.__placementTool = "componentPositionTool";
@@ -86,20 +83,20 @@ export  default class Pump3D extends Template{
             position: "position"
         };
 
-        this.__renderKeys = ["FLOW","CONTROL","INVERSE"];
+        this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
 
         this.__mint = "PUMP3D";
     }
 
     render2D(params, key) {
-        if(key == "FLOW"){
+        if (key == "FLOW") {
             return this.__drawFlow(params);
-        }else if(key == "CONTROL"){
+        } else if (key == "CONTROL") {
             return this.__drawControl(params);
         }
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let ret = new paper.CompoundPath();
         let flow = this.render2D(params, "FLOW");
         let control = this.render2D(params, "CONTROL");
@@ -110,7 +107,7 @@ export  default class Pump3D extends Template{
         return ret;
     }
 
-    __drawFlow(params){
+    __drawFlow(params) {
         let valve;
         let cutout;
         let circ;
@@ -151,7 +148,6 @@ export  default class Pump3D extends Template{
         valve = circ.subtract(cutout);
         ret.addChild(valve);
 
-
         let topcenter = new paper.Point(position[0], position[1] - spacing);
 
         circ = new paper.Path.Circle(topcenter, radius);
@@ -167,15 +163,15 @@ export  default class Pump3D extends Template{
 
         //Create the channels that go through
         let bottomchannel = new paper.Path.Rectangle({
-            from: new paper.Point(bottomcenter.x - channelwidth/2, bottomcenter.y - gap/2),
-            to: new paper.Point(center.x + channelwidth/2, center.y + gap/2)
+            from: new paper.Point(bottomcenter.x - channelwidth / 2, bottomcenter.y - gap / 2),
+            to: new paper.Point(center.x + channelwidth / 2, center.y + gap / 2)
         });
 
         ret.addChild(bottomchannel);
 
         let topchannel = new paper.Path.Rectangle({
-            from: new paper.Point(topcenter.x - channelwidth/2, topcenter.y + gap/2),
-            to: new paper.Point(center.x + channelwidth/2, center.y - gap/2)
+            from: new paper.Point(topcenter.x - channelwidth / 2, topcenter.y + gap / 2),
+            to: new paper.Point(center.x + channelwidth / 2, center.y - gap / 2)
         });
 
         ret.addChild(topchannel);
@@ -184,10 +180,9 @@ export  default class Pump3D extends Template{
         ret.fillColor = color;
 
         return ret;
-
     }
 
-    __drawControl(params){
+    __drawControl(params) {
         let circ;
         let position = params["position"];
         let radius = params["valveRadius"];
@@ -208,7 +203,6 @@ export  default class Pump3D extends Template{
         circ = new paper.Path.Circle(topcenter, radius);
         ret.addChild(circ);
 
-
         let bottomcenter = new paper.Point(position[0], position[1] + spacing);
         circ = new paper.Path.Circle(bottomcenter, radius);
         ret.addChild(circ);
@@ -216,6 +210,5 @@ export  default class Pump3D extends Template{
         ret.rotate(rotation, center);
         ret.fillColor = color;
         return ret;
-
     }
 }

@@ -2,70 +2,69 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export  default class DropletGenerator extends Template{
-    constructor(){
+export default class DropletGenerator extends Template {
+    constructor() {
         super();
     }
 
     __setupDefinitions() {
         this.__unique = {
-            "position": "Point"
+            position: "Point"
         };
 
         this.__heritable = {
-            "orificeSize": "Float",
-            "orificeLength": "Float",
-            "oilInputWidth": "Float",
-            "waterInputWidth": "Float",
-            "outputWidth": "Float",
-            "outputLength": "Float",
-            "height": "Float",
-            "rotation": "Float"
+            orificeSize: "Float",
+            orificeLength: "Float",
+            oilInputWidth: "Float",
+            waterInputWidth: "Float",
+            outputWidth: "Float",
+            outputLength: "Float",
+            height: "Float",
+            rotation: "Float"
         };
 
         this.__defaults = {
-            "orificeSize": .20 * 1000,
-            "orificeLength": .40 * 1000,
-            "oilInputWidth": .80 * 1000,
-            "waterInputWidth": .60 * 1000,
-            "outputWidth": .60 * 1000,
-            "outputLength": .60 * 1000,
-            "height": 250,
-            "rotation": 0
+            orificeSize: 0.2 * 1000,
+            orificeLength: 0.4 * 1000,
+            oilInputWidth: 0.8 * 1000,
+            waterInputWidth: 0.6 * 1000,
+            outputWidth: 0.6 * 1000,
+            outputLength: 0.6 * 1000,
+            height: 250,
+            rotation: 0
         };
 
-
         this.__units = {
-            "orificeSize": "&mu;m",
-            "height": "&mu;m",
-            "orificeLength": "&mu;m",
-            "oilInputWidth": "&mu;m",
-            "waterInputWidth": "&mu;m",
-            "outputWidth": "&mu;m",
-            "outputLength": "&mu;m",
-            "rotation": "&deg;"
+            orificeSize: "&mu;m",
+            height: "&mu;m",
+            orificeLength: "&mu;m",
+            oilInputWidth: "&mu;m",
+            waterInputWidth: "&mu;m",
+            outputWidth: "&mu;m",
+            outputLength: "&mu;m",
+            rotation: "&deg;"
         };
 
         this.__minimum = {
-            "orificeSize": 10,
-            "orificeLength": 10,
-            "oilInputWidth": 10,
-            "waterInputWidth": 10,
-            "outputWidth": 10,
-            "outputLength": 10,
-            "height": 10,
-            "rotation": 0
+            orificeSize: 10,
+            orificeLength: 10,
+            oilInputWidth: 10,
+            waterInputWidth: 10,
+            outputWidth: 10,
+            outputLength: 10,
+            height: 10,
+            rotation: 0
         };
 
         this.__maximum = {
-            "orificeSize": 2000,
-            "orificeLength": 2000,
-            "oilInputWidth": 2000,
-            "waterInputWidth": 2000,
-            "outputWidth": 2000,
-            "outputLength": 2000,
-            "height": 1200,
-            "rotation": 360
+            orificeSize: 2000,
+            orificeLength: 2000,
+            oilInputWidth: 2000,
+            waterInputWidth: 2000,
+            outputWidth: 2000,
+            outputLength: 2000,
+            height: 1200,
+            rotation: 360
         };
 
         this.__featureParams = {
@@ -78,7 +77,6 @@ export  default class DropletGenerator extends Template{
             outputLength: "outputLength",
             height: "height",
             rotation: "rotation"
-
         };
 
         this.__targetParams = {
@@ -89,8 +87,7 @@ export  default class DropletGenerator extends Template{
             outputWidth: "outputWidth",
             outputLength: "outputLength",
             height: "height",
-            rotation:"rotation"
-
+            rotation: "rotation"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -104,8 +101,7 @@ export  default class DropletGenerator extends Template{
         this.__mint = "NOZZLE DROPLET GENERATOR";
     }
 
-
-    getPorts(params){
+    getPorts(params) {
         let orificeSize = params["orificeSize"];
         let orificeLength = params["orificeLength"];
         let oilInputWidth = params["oilInputWidth"];
@@ -116,40 +112,19 @@ export  default class DropletGenerator extends Template{
         let ports = [];
 
         //Oil Top
-        ports.push(new ComponentPort(
-            oilInputWidth/2,
-            -waterInputWidth/2,
-            "1",
-            "FLOW"
-        ));
+        ports.push(new ComponentPort(oilInputWidth / 2, -waterInputWidth / 2, "1", "FLOW"));
 
         //Out
-        ports.push(new ComponentPort(
-            oilInputWidth + orificeLength + outputLength,
-            0,
-            "2",
-            "FLOW"
-        ));
+        ports.push(new ComponentPort(oilInputWidth + orificeLength + outputLength, 0, "2", "FLOW"));
 
         //Oil Bottom
-        ports.push(new ComponentPort(
-            oilInputWidth/2,
-            waterInputWidth/2,
-            "3",
-            "FLOW"
-        ));
+        ports.push(new ComponentPort(oilInputWidth / 2, waterInputWidth / 2, "3", "FLOW"));
 
         //Input
-        ports.push(new ComponentPort(
-            0,
-            0,
-            "4",
-            "FLOW"
-        ));
+        ports.push(new ComponentPort(0, 0, "4", "FLOW"));
 
         return ports;
     }
-
 
     render2D(params, key) {
         let pos = params["position"];
@@ -178,7 +153,7 @@ export  default class DropletGenerator extends Template{
 
         let p6 = new paper.Point(p5.x + outputLength, p5.y);
 
-        let p7 = new paper.Point(p6.x, p6.y + (outputWidth));
+        let p7 = new paper.Point(p6.x, p6.y + outputWidth);
 
         let p8 = new paper.Point(p7.x - outputLength, p7.y);
 
@@ -209,10 +184,9 @@ export  default class DropletGenerator extends Template{
         ret.closed = true;
         ret.fillColor = color;
         return ret;
-
     }
 
-    render2DTarget(key, params){
+    render2DTarget(key, params) {
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;

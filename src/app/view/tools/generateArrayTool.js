@@ -1,7 +1,7 @@
 import GenerateArrayWindow from "../ui/generateArrayWindow";
 import MouseTool from "./mouseTool";
 
-import * as  Registry from "../../core/registry";
+import * as Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 
 export default class GenerateArrayTool extends MouseTool {
@@ -19,40 +19,38 @@ export default class GenerateArrayTool extends MouseTool {
         // this.updateQueue = new SimpleQueue(function () {
         //     ref.dragHandler();
         // }, 20);
-        this.down = function (event) {
+        this.down = function(event) {
             // Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             // ref.dragging = true;
             // ref.showTarget();
         };
-        this.move = function (event) {
+        this.move = function(event) {
             // if (ref.dragging) {
             //     ref.lastPoint = MouseTool.getEventPosition(event);
             //     ref.updateQueue.run();
             // }
             // ref.showTarget();
         };
-        this.up = function (event) {
+        this.up = function(event) {
             // ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
             // ref.showTarget();
-        }
-
+        };
     }
 
-    activate(component){
+    activate(component) {
         console.log("Activating the tool for a new component", component);
         //Store the component position here
         this.__currentComponent = component;
         this.__generateArrayWindow.showWindow();
     }
 
-    unactivate(){
+    unactivate() {
         Registry.viewManager.resetToDefaultTool();
     }
 
-
-    generateArray(xdim, ydim, xspacing, yspacing){
+    generateArray(xdim, ydim, xspacing, yspacing) {
         console.log("Generate array:", xdim, ydim, xspacing, yspacing);
         let xposref = this.__currentComponent.getPosition()[0];
         let yposref = this.__currentComponent.getPosition()[1];
@@ -60,34 +58,28 @@ export default class GenerateArrayTool extends MouseTool {
         this.__currentComponent.setName(name + "_1_1");
         let replicas = [];
         //Loop to create the components at the new positions
-        for(let y = 0; y < ydim; y++ ){
-            for(let x = 0; x<xdim; x++){
+        for (let y = 0; y < ydim; y++) {
+            for (let x = 0; x < xdim; x++) {
                 //Skip the x=0, y=0 because thats the initial one
-                if(x===0 && y===0){
+                if (x === 0 && y === 0) {
                     continue;
                 }
-                let xpos = xposref + x*xspacing;
-                let ypos = yposref + y*yspacing;
-                replicas.push(this.__currentComponent.replicate(
-                    xpos,
-                    ypos,
-                    name + "_" + String(x+1) + "_" +String(y+1)
-                ));
+                let xpos = xposref + x * xspacing;
+                let ypos = yposref + y * yspacing;
+                replicas.push(this.__currentComponent.replicate(xpos, ypos, name + "_" + String(x + 1) + "_" + String(y + 1)));
             }
         }
 
         //Add the replicas to the device
         console.log(replicas);
-        replicas.forEach(function (replica) {
+        replicas.forEach(function(replica) {
             Registry.currentDevice.addComponent(replica);
         });
 
         Registry.viewManager.saveDeviceState();
-
-
     }
 
-    revertToOriginalPosition(){
+    revertToOriginalPosition() {
         this.__currentComponent.updateComponetPosition(this.__originalPosition);
     }
 
@@ -113,7 +105,6 @@ export default class GenerateArrayTool extends MouseTool {
         console.log("Up event", event);
     }
 
-
     mouseDownHandler(event) {
         // let point = MouseTool.getEventPosition(event);
         // let target = this.hitFeature(point);
@@ -137,7 +128,7 @@ export default class GenerateArrayTool extends MouseTool {
         //     this.deselectFeatures();
         //     this.dragStart = point;
         // }
-        console.log("Down event", event)
+        console.log("Down event", event);
     }
 
     // killSelectBox() {
@@ -208,7 +199,6 @@ export default class GenerateArrayTool extends MouseTool {
     //
     //     return null;
     // }
-
 
     /**
      * Function that is fired when we drag and select an area on the paperjs canvas

@@ -1,5 +1,5 @@
 var appRoot = "../../app/";
-var should = require('should');
+var should = require("should");
 var Layer = require(appRoot + "core/layer");
 var Feature = require(appRoot + "core/feature");
 var Parameters = require(appRoot + "core/parameters");
@@ -22,21 +22,24 @@ var lay2;
 
 function initLayer() {
     layerParams = {
-        "z_offset": 0,
-        "flip": false
+        z_offset: 0,
+        flip: false
     };
     feat1 = new Channel({
-        "start": [0,0],
-        "end": [1,1]
+        start: [0, 0],
+        end: [1, 1]
     });
     feat2 = new CircleValve({
-        "position": [5,4]
+        position: [5, 4]
     });
     lay1 = new Layer(layerParams, "layer1");
-    lay2 = new Layer({
-        "z_offset": 1.2,
-        "flip": true
-        }, "layer2");
+    lay2 = new Layer(
+        {
+            z_offset: 1.2,
+            flip: true
+        },
+        "layer2"
+    );
 }
 
 describe("Layer", function() {
@@ -44,7 +47,6 @@ describe("Layer", function() {
         initLayer();
     });
     describe("#init", function() {
-
         it("should start with the correct z_offset, flip, and name", function() {
             lay1.params.getValue("z_offset").should.equal(0);
             lay1.params.getValue("flip").should.equal(false);
@@ -57,15 +59,15 @@ describe("Layer", function() {
         it("should be able to be constructed without a name", function() {
             (function() {
                 let lay3 = new Layer({
-                    "z_offset": 1.2,
-                    "flip": true 
+                    z_offset: 1.2,
+                    flip: true
                 });
-            }).should.not.throwError();
+            }.should.not.throwError());
         });
         it("should not permit a z_offset less than 0", function() {
             (function() {
-                let lay3 = new Layer(-.6, false)
-            }).should.throwError();
+                let lay3 = new Layer(-0.6, false);
+            }.should.throwError());
         });
         it("should start with 0 features", function() {
             lay1.featureCount.should.equal(0);
@@ -79,8 +81,8 @@ describe("Layer", function() {
         });
         it("should not let a user add a feature by id", function() {
             (function() {
-                lay1.addFeature("some_ID")
-            }).should.throwError();
+                lay1.addFeature("some_ID");
+            }.should.throwError());
         });
         it("should let the user add multiple features", function() {
             lay1.addFeature(feat1);
@@ -95,14 +97,14 @@ describe("Layer", function() {
         });
         it("Should error if the value is not a feature", function() {
             (function() {
-                lay1.__ensureIsAFeature("foo")
-            }).should.throwError();
+                lay1.__ensureIsAFeature("foo");
+            }.should.throwError());
             (function() {
-                lay1.__ensureIsAFeature(dev1)
-            }).should.throwError();
+                lay1.__ensureIsAFeature(dev1);
+            }.should.throwError());
             (function() {
-                lay1.__ensureIsAFeature(lay2)
-            }).should.throwError();
+                lay1.__ensureIsAFeature(lay2);
+            }.should.throwError());
         });
     });
 
@@ -116,22 +118,21 @@ describe("Layer", function() {
         it("should not let the user remove a feature by ID", function() {
             lay1.addFeature(feat1);
             (function() {
-                lay1.removeFeature(feat1.getID())
-            }).should.throwError();
+                lay1.removeFeature(feat1.getID());
+            }.should.throwError());
         });
         it("should not let the user remove a feature when empty", function() {
             (function() {
-                lay1.removeFeature(feat1)
-            }).should.throwError();
+                lay1.removeFeature(feat1);
+            }.should.throwError());
         });
         it("should not let the user remove a feature that does not exist", function() {
             lay1.addFeature(feat1);
             (function() {
-                lay1.removeFeature(feat2)
-            }).should.throwError();
+                lay1.removeFeature(feat2);
+            }.should.throwError());
         });
     });
-
 
     describe("#containsFeature", function() {
         it("should return true if the feature exists in the layer", function() {
@@ -152,17 +153,17 @@ describe("Layer", function() {
         });
         it("should not allow the user to check for the presence of something other than a feature", function() {
             (function() {
-                lay1.containsFeature("foo")
-            }).should.throwError();
+                lay1.containsFeature("foo");
+            }.should.throwError());
             (function() {
-                lay1.containsFeature(12)
-            }).should.throwError();
+                lay1.containsFeature(12);
+            }.should.throwError());
             (function() {
-                lay1.containsFeature("featureID")
-            }).should.throwError();
+                lay1.containsFeature("featureID");
+            }.should.throwError());
             (function() {
-                lay1.containsFeature(dev1)
-            }).should.throwError();
+                lay1.containsFeature(dev1);
+            }.should.throwError());
         });
     });
 
@@ -173,8 +174,8 @@ describe("Layer", function() {
         });
         it("should not allow the user to retrieve a feature for an ID that does not exist in the layer", function() {
             (function() {
-                lay1.containsFeature(dev1)
-            }).should.throwError();
+                lay1.containsFeature(dev1);
+            }.should.throwError());
         });
     });
 
@@ -197,10 +198,10 @@ describe("Layer", function() {
     describe("#fromJSON", function() {
         it("can construct a Layer from valid JSON", function() {
             let json = {
-                "name": "layer3",
-                "params": layerParams,
-                "features": {
-                    "feat1": feat1.toJSON()
+                name: "layer3",
+                params: layerParams,
+                features: {
+                    feat1: feat1.toJSON()
                 }
             };
 
@@ -208,16 +209,16 @@ describe("Layer", function() {
         });
         it("cannot construct a layer form invalid JSON", function() {
             let json = {
-                "name": {
-                    "type": "String",
-                    "value": "layer3"
+                name: {
+                    type: "String",
+                    value: "layer3"
                 },
-                "params": layerParams
-            }
+                params: layerParams
+            };
             let lay3;
             (function() {
-                lay3 = Layer.fromJSON(json)
-            }).should.throwError();
+                lay3 = Layer.fromJSON(json);
+            }.should.throwError());
         });
         it("can construct a layer from the output of toJSON", function() {
             let json = lay2.toJSON();

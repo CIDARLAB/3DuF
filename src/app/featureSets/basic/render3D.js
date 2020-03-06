@@ -422,5 +422,5 @@ export const render3D = {
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
-    },
+    }
 };

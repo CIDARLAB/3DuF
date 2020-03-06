@@ -1,8 +1,8 @@
-import * as HTMLUtils from '../../utils/htmlUtils';
-import Feature from '../../core/feature';
+import * as HTMLUtils from "../../utils/htmlUtils";
+import Feature from "../../core/feature";
 
-import * as Registry from '../../core/registry';
-import {FloatValue, BooleanValue, StringValue} from '../../core/parameters';
+import * as Registry from "../../core/registry";
+import { FloatValue, BooleanValue, StringValue } from "../../core/parameters";
 import * as FeatureSets from "../../featureSets";
 
 var createSlider = function(min, max, step, start, id) {
@@ -34,7 +34,7 @@ var createButton = function(iconString) {
     return button;
 };
 
-var createValueField = function(start, id, unittext="") {
+var createValueField = function(start, id, unittext = "") {
     var div = document.createElement("div");
     var error = document.createElement("span");
     var span = document.createElement("span");
@@ -106,18 +106,18 @@ var generateUpdateFunction = function(sourceID, targetID, typeString, setString,
         var source = document.getElementById(sourceID);
         var target = document.getElementById(targetID);
         var param;
-        if(!source.value || source.value == ""){
+        if (!source.value || source.value == "") {
             return;
         }
         try {
             param = new FloatValue(parseFloat(source.value));
-        } catch (err){
+        } catch (err) {
             console.log("Invalid Float value.");
             return;
         }
         target.value = String(param.getValue());
         Registry.viewManager.adjustParams(typeString, setString, paramString, param.getValue());
-    }
+    };
 };
 /*
 var generateUpdateFunctionString = function(sourceID, targetID, typeString, setString, paramString) {
@@ -144,20 +144,19 @@ var generateCheckFunction = function(sourceID, targetID, typeString, setString, 
         var param_to_pass;
         try {
             param = new BooleanValue(source.checked);
-        } catch (err){
+        } catch (err) {
             console.log("Invalid Boolean value.");
             return;
         }
         if (param.getValue()) {
             target.innerHTML = "V";
             param_to_pass = new StringValue("V");
-        }
-        else {
+        } else {
             target.innerHTML = "H";
             param_to_pass = new StringValue("H");
         }
         Registry.viewManager.adjustParams(typeString, setString, paramString, param_to_pass.getValue());
-    }
+    };
 };
 
 var generateCheckFunctionDir = function(sourceID, targetID, typeString, setString, paramString) {
@@ -168,20 +167,19 @@ var generateCheckFunctionDir = function(sourceID, targetID, typeString, setStrin
         var param_to_pass;
         try {
             param = new BooleanValue(source.checked);
-        } catch (err){
+        } catch (err) {
             console.log("Invalid Boolean value.");
             return;
         }
         if (param.getValue()) {
             target.innerHTML = "IN";
             param_to_pass = new StringValue("IN");
-        }
-        else {
+        } else {
             target.innerHTML = "OUT";
             param_to_pass = new StringValue("OUT");
         }
         Registry.viewManager.adjustParams(typeString, setString, paramString, param_to_pass.getValue());
-    }
+    };
 };
 
 var createSliderRow = function(featureID, typeString, setString, key) {
@@ -190,9 +188,9 @@ var createSliderRow = function(featureID, typeString, setString, key) {
     let max = definition.maximum[key];
     let value = Feature.getDefaultsForType(typeString, setString)[key];
     let step = 10;
-    let titleID = (featureID + "_" + key + "_title");
-    let sliderID = (featureID + "_" + key + "_slider");
-    let fieldID = (featureID + "_" + key + "_value");
+    let titleID = featureID + "_" + key + "_title";
+    let sliderID = featureID + "_" + key + "_slider";
+    let fieldID = featureID + "_" + key + "_value";
     let title = createSpan(key, titleID);
     let titleContainer = createTableElement(title);
     titleContainer.style.borderBottom = "none";
@@ -226,16 +224,15 @@ var createStringRow = function(featureID, typeString, setString, key) {
 
 var createDefaultsRow = function(featureID, typeString, setString, key) {
     var title = createSpan(key);
-    var buttonID = ("defaults_button");
-    var spanID = ("defaults_span");
-    var value = Feature.getDefaultsForType(typeString, setString)[key]
-
+    var buttonID = "defaults_button";
+    var spanID = "defaults_span";
+    var value = Feature.getDefaultsForType(typeString, setString)[key];
 };
 
 var createCheckboxRow = function(featureID, typeString, setString, key) {
     var title = createSpan(key);
-    var checkID = (featureID + "_" + key + "_checkbox");
-    var spanID = (featureID + "_" + key + "_span");
+    var checkID = featureID + "_" + key + "_checkbox";
+    var spanID = featureID + "_" + key + "_span";
     var value = Feature.getDefaultsForType(typeString, setString)[key];
     var checkBox = createCheckbox(value, checkID);
     var spanValue;
@@ -252,8 +249,8 @@ var createCheckboxRow = function(featureID, typeString, setString, key) {
 
 var createInOutRow = function(featureID, typeString, setString, key) {
     var title = createSpan(key);
-    var checkID = (featureID + "_" + key + "_checkbox");
-    var spanID = (featureID + "_" + key + "_span");
+    var checkID = featureID + "_" + key + "_checkbox";
+    var spanID = featureID + "_" + key + "_span";
     var value = Feature.getDefaultsForType(typeString, setString)[key];
     var checkBox = createCheckbox(value, checkID);
     var spanValue = value;
@@ -278,15 +275,12 @@ var createFeatureTableRows = function(typeString, setString) {
         let type = heritable[key];
         if (type == "Float" || type == "Integer") {
             row = createSliderRow(id, typeString, setString, key);
-        }
-        else if (key == "orientation") {
+        } else if (key == "orientation") {
             row = createCheckboxRow(id, typeString, setString, key);
-        }
-        else if (key == "direction") {
+        } else if (key == "direction") {
             row = createInOutRow(id, typeString, setString, key);
         }
         rows.push(row);
-
     }
     return rows;
 };
@@ -341,8 +335,7 @@ export function createFeatureTable(typeString, setString, position) {
     HTMLUtils.addClass(table, "hidden-block");
     table.style.zIndex = 999999;
     return table;
-};
-
+}
 
 var createCloseButton = function() {
     var button = createButton("close");
@@ -350,7 +343,7 @@ var createCloseButton = function() {
     return button;
 };
 
-export function generateTableFunction(tableID, typeString, setString , isTranslucent) {
+export function generateTableFunction(tableID, typeString, setString, isTranslucent) {
     return function(event) {
         var table = document.getElementById(tableID);
         if (table) {
@@ -358,20 +351,20 @@ export function generateTableFunction(tableID, typeString, setString , isTranslu
         } else {
             table = createFeatureTable(typeString, setString);
             table.id = tableID;
-            if(isTranslucent){
+            if (isTranslucent) {
                 table.style.opacity = 0.7;
             }
             table.style.position = "absolute";
-            table.style.left = "" + (event.clientX + 30)+ "px";
-            table.style.top = "" + (event.clientY - 20) +   "px";
+            table.style.left = "" + (event.clientX + 30) + "px";
+            table.style.top = "" + (event.clientY - 20) + "px";
             HTMLUtils.removeClass(table, "hidden-block");
             HTMLUtils.addClass(table, "shown-block");
             document.body.appendChild(table);
         }
-    }
-};
+    };
+}
 
-export function revertToDefaultParams(table, typeString, setString){
+export function revertToDefaultParams(table, typeString, setString) {
     let def = FeatureSets.getDefinition(typeString, setString);
     let heritable = def.heritable;
     let defaults = def.defaults;
@@ -380,46 +373,43 @@ export function revertToDefaultParams(table, typeString, setString){
         let type = heritable[key];
 
         if (type == "Float" || type == "Integer") {
-            let inputID = ("fake_ID_" + key + "_slider");
+            let inputID = "fake_ID_" + key + "_slider";
             //Modify the text in the input element
-            let element = document.querySelector("#"+inputID);
+            let element = document.querySelector("#" + inputID);
             element.MaterialSlider.change(defaults[key]);
             Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
-        }
-        else if (key == "orientation") {
+        } else if (key == "orientation") {
             //TODO - Change the checkbox
-            let inputID = ("fake_ID_" + key + "_checkbox");
-            let element = document.querySelector("#"+inputID);
-            let materialelement = table.querySelector('.mdl-js-checkbox');
+            let inputID = "fake_ID_" + key + "_checkbox";
+            let element = document.querySelector("#" + inputID);
+            let materialelement = table.querySelector(".mdl-js-checkbox");
             let spanelement = table.querySelector("#fake_ID_" + key + "_span");
-            if(defaults[key] == 'V'){
+            if (defaults[key] == "V") {
                 element.checked = true;
                 materialelement.MaterialCheckbox.check();
-                spanelement.textContent= defaults[key];
-            }else{
+                spanelement.textContent = defaults[key];
+            } else {
                 element.checked = false;
                 materialelement.MaterialCheckbox.uncheck();
-                spanelement.textContent= defaults[key];
+                spanelement.textContent = defaults[key];
             }
             Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
-        }
-        else if (key == "direction") {
+        } else if (key == "direction") {
             //TODO Change the Checkbox
-            let inputID = ("fake_ID_" + key + "_checkbox");
-            let materialelement = table.querySelector('.mdl-js-checkbox');
-            let element = document.querySelector("#"+inputID);
+            let inputID = "fake_ID_" + key + "_checkbox";
+            let materialelement = table.querySelector(".mdl-js-checkbox");
+            let element = document.querySelector("#" + inputID);
             let spanelement = table.querySelector("#fake_ID_" + key + "_span");
-            if(defaults[key] == 'IN'){
+            if (defaults[key] == "IN") {
                 element.checked = true;
                 materialelement.MaterialCheckbox.check();
-                spanelement.textContent= defaults[key];
-            }else{
+                spanelement.textContent = defaults[key];
+            } else {
                 element.checked = false;
                 materialelement.MaterialCheckbox.uncheck();
-                spanelement.textContent= defaults[key];
+                spanelement.textContent = defaults[key];
             }
             Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
         }
-
     }
-};
+}

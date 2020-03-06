@@ -1,8 +1,8 @@
-import paper from 'paper';
+import paper from "paper";
 import PanTool from "./tools/panTool";
 
 export default class MouseAndKeyboardHandler {
-    constructor(viewManagerDelegate){
+    constructor(viewManagerDelegate) {
         this.viewManagerDelegate = viewManagerDelegate;
 
         this.__leftMouseTool = null;
@@ -21,19 +21,19 @@ export default class MouseAndKeyboardHandler {
         // this.__updateViewMouseEvents();
     }
 
-    set leftMouseTool(tool){
+    set leftMouseTool(tool) {
         this.__leftMouseTool = tool;
     }
 
-    set rightMouseTool(tool){
+    set rightMouseTool(tool) {
         this.__rightMouseTool = tool;
     }
 
-    get leftMouseTool(){
+    get leftMouseTool() {
         return this.__leftMouseTool;
     }
 
-    get rightMouseTool(){
+    get rightMouseTool() {
         return this.__rightMouseTool;
     }
 
@@ -42,19 +42,18 @@ export default class MouseAndKeyboardHandler {
      * @private
      */
     __setupDefaultKeyboardShortcuts() {
-
         let reference = this.viewManagerDelegate;
-        
-        window.addEventListener('keydown', function (event) {
+
+        window.addEventListener("keydown", function(event) {
             let key = event.keyCode || event.which;
 
             //Saving
-            if((event.ctrlKey || event.metaKey) && key == 83){
+            if ((event.ctrlKey || event.metaKey) && key == 83) {
                 event.preventDefault();
                 reference.exportPanel.saveJSON();
             }
 
-            if(key === 70){
+            if (key === 70) {
                 //Reset the view
                 reference.view.initializeView();
                 reference.updateGrid();
@@ -62,15 +61,13 @@ export default class MouseAndKeyboardHandler {
             }
 
             //Escape key
-            if(key === 27){
+            if (key === 27) {
                 //Deselect all
                 paper.project.deselectAll();
 
                 //Change active tool to select tool
                 reference.resetToDefaultTool();
-
             }
-
         });
 
         reference.view.setKeyDownFunction(function(event) {
@@ -107,81 +104,75 @@ export default class MouseAndKeyboardHandler {
             }
 
             //Undo
-            if(event.keyCode === 90 && (event.metaKey || event.ctrlKey)){
+            if (event.keyCode === 90 && (event.metaKey || event.ctrlKey)) {
                 console.log("Undo executed");
                 reference.undo();
             }
 
             let pan_multiplier;
-            
-            if(key === 37){
+
+            if (key === 37) {
                 //console.log("left arrow");
-                if(event.shiftKey){
+                if (event.shiftKey) {
                     pan_multiplier = 10;
-                }else if(event.ctrlKey){
+                } else if (event.ctrlKey) {
                     pan_multiplier = 0.1;
-                }else{
+                } else {
                     pan_multiplier = 1;
                 }
-                reference.view.moveCenter(new paper.Point(1000 * pan_multiplier,0));
+                reference.view.moveCenter(new paper.Point(1000 * pan_multiplier, 0));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
             }
 
-            if(key === 38){
+            if (key === 38) {
                 //console.log("Up arrow");
-                if(event.shiftKey){
+                if (event.shiftKey) {
                     pan_multiplier = 10;
-                }else if(event.ctrlKey){
+                } else if (event.ctrlKey) {
                     pan_multiplier = 0.1;
-                }else{
+                } else {
                     pan_multiplier = 1;
                 }
-                reference.view.moveCenter(new paper.Point(0,1000 * pan_multiplier));
+                reference.view.moveCenter(new paper.Point(0, 1000 * pan_multiplier));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
-
             }
 
-            if(key === 39){
+            if (key === 39) {
                 //console.log("right arrow");
-                if(event.shiftKey){
+                if (event.shiftKey) {
                     pan_multiplier = 10;
-                }else if(event.ctrlKey){
+                } else if (event.ctrlKey) {
                     pan_multiplier = 0.1;
-                }else{
+                } else {
                     pan_multiplier = 1;
                 }
-                reference.view.moveCenter(new paper.Point(-1000 * pan_multiplier,0));
+                reference.view.moveCenter(new paper.Point(-1000 * pan_multiplier, 0));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
-
             }
 
-            if(key === 40){
+            if (key === 40) {
                 //console.log("down arrow");
-                if(event.shiftKey){
+                if (event.shiftKey) {
                     pan_multiplier = 10;
-                }else if(event.ctrlKey){
+                } else if (event.ctrlKey) {
                     pan_multiplier = 0.1;
-                }else{
+                } else {
                     pan_multiplier = 1;
                 }
-                reference.view.moveCenter(new paper.Point(0,-1000 * pan_multiplier));
+                reference.view.moveCenter(new paper.Point(0, -1000 * pan_multiplier));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
-
             }
-
 
             if ((event.ctrlKey || event.metaKey) && key === 65) {
                 //Select all
                 reference.view.selectAllActive();
                 return false;
             }
-
         });
-
     }
 
     updateViewMouseEvents() {
@@ -194,7 +185,7 @@ export default class MouseAndKeyboardHandler {
      * This function is executed as a callback for every mouse down event
      * @private
      */
-    __mouseDownCallback(event){
+    __mouseDownCallback(event) {
         // console.log("testing down callback", event);
     }
 
@@ -202,7 +193,7 @@ export default class MouseAndKeyboardHandler {
      * this function is executed as a callback for every mouse up event
      * @private
      */
-    __mouseUpCallback(event){
+    __mouseUpCallback(event) {
         // console.log("testing up callback", event);
     }
 
@@ -210,16 +201,15 @@ export default class MouseAndKeyboardHandler {
      * This function is executed as a callback for every mouse move event
      * @private
      */
-    __mouseMoveCallback(event){
+    __mouseMoveCallback(event) {
         // console.log("testing move callback", event);
     }
 
     constructMouseDownEvent(tool1, tool2, tool3) {
-        if(tool1 == tool3){
+        if (tool1 == tool3) {
             console.log("Both right and left tool is the same");
             return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown, this.__mouseDownCallback);
-
-        }else {
+        } else {
             return this.constructMouseEvent(tool1.down, tool2.down, tool3.down);
         }
     }
@@ -241,16 +231,14 @@ export default class MouseAndKeyboardHandler {
             } else {
                 target = event.which;
             }
-            if (target === 2){
+            if (target === 2) {
                 func2(event);
-            }
-            else if (target === 3) {
+            } else if (target === 3) {
                 func3(event);
-            }
-            else if (target === 1 || target === 0) {
+            } else if (target === 1 || target === 0) {
                 func1(event);
             }
-        }
+        };
     }
 
     static __eventButtonsToWhich(num) {
@@ -264,5 +252,4 @@ export default class MouseAndKeyboardHandler {
             return 2;
         }
     }
-
 }

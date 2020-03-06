@@ -1,7 +1,7 @@
 import * as HTMLUtils from "../../utils/htmlUtils";
 
-import * as Registry from '../../core/registry';
-import DxfParser from 'dxf-parser';
+import * as Registry from "../../core/registry";
+import DxfParser from "dxf-parser";
 
 export default class BorderSettingsDialog {
     get _dxfObject() {
@@ -11,8 +11,7 @@ export default class BorderSettingsDialog {
     /**
      * Default constructor for the dialog, contains all the initialization code
      */
-    constructor(){
-
+    constructor() {
         this.__dxfObject = null;
 
         //TODO: Register all event handlers, etc.
@@ -27,20 +26,19 @@ export default class BorderSettingsDialog {
 
         let ref = this;
 
-        this.__dialog.querySelector('.close').addEventListener('click', function() {
+        this.__dialog.querySelector(".close").addEventListener("click", function() {
             ref.__dialog.close();
         });
 
-
         let registryref = Registry;
-        if(this.__editBorderDialogButton){
-            this.__editBorderDialogButton.addEventListener('click', function (event) {
+        if (this.__editBorderDialogButton) {
+            this.__editBorderDialogButton.addEventListener("click", function(event) {
                 ref.__dialog.showModal();
             });
         }
 
-        if(this.__deleteBorderButton){
-            this.__deleteBorderButton.addEventListener('click', function (event) {
+        if (this.__deleteBorderButton) {
+            this.__deleteBorderButton.addEventListener("click", function(event) {
                 console.log("Generate border clicked");
                 // registryref.viewManager.generateBorder();
                 registryref.viewManager.deleteBorder();
@@ -50,23 +48,27 @@ export default class BorderSettingsDialog {
         }
 
         let reader = new FileReader();
-        reader.onload = function (e) {
+        reader.onload = function(e) {
             //console.log(reader.result);
             ref.loadDXFText(reader.result);
         };
 
-        if(this.__dxffileinput){
-            this.__dxffileinput.addEventListener('change', function(){
-                let file = this.files[0];
-                console.log(file.name);
-                console.log(file.size);
-                reader.readAsText(file);
-            }, false);
+        if (this.__dxffileinput) {
+            this.__dxffileinput.addEventListener(
+                "change",
+                function() {
+                    let file = this.files[0];
+                    console.log(file.name);
+                    console.log(file.size);
+                    reader.readAsText(file);
+                },
+                false
+            );
         }
 
-        if(this.__importBorderButton){
-            this.__importBorderButton.addEventListener('click', function (event) {
-                console.log('import button clicked');
+        if (this.__importBorderButton) {
+            this.__importBorderButton.addEventListener("click", function(event) {
+                console.log("import button clicked");
                 registryref.viewManager.deleteBorder();
                 registryref.viewManager.importBorder(ref.getDXFObject());
             });
@@ -79,22 +81,21 @@ export default class BorderSettingsDialog {
      * Loads text for the DXF file
      * @param dxftext
      */
-    loadDXFText(dxftext){
+    loadDXFText(dxftext) {
         let parser = new DxfParser();
         try {
             this.__dxfObject = parser.parseSync(dxftext);
-            console.log('parsed dxf object', this.__dxfObject);
-        }catch (e) {
+            console.log("parsed dxf object", this.__dxfObject);
+        } catch (e) {
             console.error(e.stack);
         }
-
     }
 
     /**
      * Returns teh DXF data that has been loaded
      * @return {null|*}
      */
-    getDXFObject(){
+    getDXFObject() {
         return this.__dxfObject;
     }
 
@@ -119,6 +120,4 @@ export default class BorderSettingsDialog {
             }
         });
     }
-
-
 }

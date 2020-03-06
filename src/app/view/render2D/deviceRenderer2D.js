@@ -1,21 +1,19 @@
 import * as Colors from "../colors";
 const DEFAULT_STROKE_COLOR = Colors.GREY_700;
 const BORDER_THICKNESS = 5; // pixels
-import paper from 'paper';
+import paper from "paper";
 
-
-export default class DeviceRenderer{
-
-    static renderLayerMask(device){
+export default class DeviceRenderer {
+    static renderLayerMask(device) {
         let width = device.getXSpan();
         let height = device.getYSpan();
         let mask = new paper.Path.Rectangle({
-            from: new paper.Point(0,0),
+            from: new paper.Point(0, 0),
             to: new paper.Point(width, height),
             fillColor: Colors.WHITE,
             strokeColor: null
         });
-        mask.fillColor.alpha = .5;
+        mask.fillColor.alpha = 0.5;
         return mask;
     }
 
@@ -41,5 +39,4 @@ export default class DeviceRenderer{
 
         return group;
     }
-
 }

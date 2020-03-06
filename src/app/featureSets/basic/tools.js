@@ -1,118 +1,105 @@
 export const tools = {
     Via: {
         toolParams: {
-            position: "position",
+            position: "position"
         },
         placementTool: "PositionTool"
     },
     Port: {
         toolParams: {
-            position: "position",
+            position: "position"
         },
         placementTool: "componentPositionTool"
     },
     Node: {
         toolParams: {
-            position: "position",
+            position: "position"
         },
         placementTool: "componentPositionTool"
     },
     CircleValve: {
         toolParams: {
-            position: "position",
+            position: "position"
         },
         placementTool: "componentPositionTool"
     },
     RectValve: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "componentPositionTool"
     },
 
     Pump: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
 
     Pump_control: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     Valve3D: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     Pump3D: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     Pump3D_control: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     AlignmentMarks: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     AlignmentMarks_control: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     Valve3D_control: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     Transposer: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     Transposer_control: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     RotaryMixer: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
     RotaryMixer_control: {
         toolParams: {
-            position: "position",
-
+            position: "position"
         },
         placementTool: "MultilayerPositionTool"
     },
@@ -151,19 +138,19 @@ export const tools = {
     },
     DiamondReactionChamber: {
         toolParams: {
-            position: "position",
+            position: "position"
         },
         placementTool: "componentPositionTool"
     },
     Circuit: {
         toolParams: {
-            position: "position",
+            position: "position"
         },
         placementTool: "componentPositionTool"
     },
     Valve: {
         toolParams: {
-            position: "position",
+            position: "position"
         },
         placementTool: "componentPositionTool"
     },
@@ -229,13 +216,13 @@ export const tools = {
     },
     DropletGen: {
         toolParams: {
-            position: "position",
+            position: "position"
         },
         placementTool: "componentPositionTool"
     },
-    TEXT:{
-        toolParams:{
-            position:"position"
+    TEXT: {
+        toolParams: {
+            position: "position"
         },
         placementTool: "textInsertTool"
     }

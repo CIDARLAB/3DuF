@@ -1,5 +1,4 @@
-
-import paper from 'paper';
+import paper from "paper";
 
 import * as Colors from "../colors";
 import LinkedList from "../../utils/linkedList";
@@ -31,10 +30,9 @@ export function renderCustomComponentTarget(customcomponent, params) {
 }
 
 export function renderFeatureObjects(feature) {
-    console.log('rendering the features dxf objects');
-    for(let i in feature.getDXFObjects()){
+    console.log("rendering the features dxf objects");
+    for (let i in feature.getDXFObjects()) {
         let dxfobject = feature.getDXFObjects()[i];
-
     }
     throw new Error("Implement the renderer");
     return undefined;
@@ -54,18 +52,16 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
     let end = new paper.Point(endpoint.x, endpoint.y);
     let angle = 4 * Math.atan(bulgevalue);
 
-
     /*
     https://math.stackexchange.com/questions/9365/endpoint-of-a-line-knowing-slope-start-and-distance
      */
-    let epsilon = angle/4;
+    let epsilon = angle / 4;
 
-    let midpoint = new paper.Point(startpoint.x/2 + endpoint.x/2,
-        startpoint.y/2 + endpoint.y/2);
+    let midpoint = new paper.Point(startpoint.x / 2 + endpoint.x / 2, startpoint.y / 2 + endpoint.y / 2);
 
     let p = new paper.Point(startpoint.x, startpoint.y).getDistance(midpoint) * bulgevalue;
 
-    let slope = (endpoint.y - startpoint.y)/(endpoint.x - startpoint.x);
+    let slope = (endpoint.y - startpoint.y) / (endpoint.x - startpoint.x);
 
     let chordvector = end.subtract(start);
 
@@ -76,34 +72,30 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
 
     // console.log(chordvector, "Angle:",chordvector.angle, Math.round(chordvector.angle), "Dist from midpoint:", p);
 
-    if(Math.round(chordvector.angle) == 0){
+    if (Math.round(chordvector.angle) == 0) {
         //Horizontal
         // console.log("Horizontal Case");
         throughpoint = new paper.Point(midpoint.x, midpoint.y - p);
         return throughpoint;
-
-    }else if(Math.round(chordvector.angle) == 90){
+    } else if (Math.round(chordvector.angle) == 90) {
         //Vertical
         // console.log("Vertical Case");
         throughpoint = new paper.Point(midpoint.x + p, midpoint.y);
         return throughpoint;
-    }else{
+    } else {
         // All other angles
         // console.log("Angled Case")
-        slope = -1*slope;
+        slope = -1 * slope;
 
         //midpoint
-        let k = -p / Math.sqrt(1 + slope*slope);
+        let k = -p / Math.sqrt(1 + slope * slope);
 
-        throughpoint = midpoint.add(new paper.Point(k, k*slope));
-
+        throughpoint = midpoint.add(new paper.Point(k, k * slope));
     }
 
     //let base = startpoint
 
-
     //Find the distance on the perpendicular
-
 
     return throughpoint;
 }
@@ -137,31 +129,25 @@ function processARC(geometryGraph, data) {
 
      */
 
-
     let center = new paper.Point(data.center.x * 1000, data.center.y * 1000);
     let radius = data.radius * 1000;
     let startAngle = data.startAngle;
     let endAngle = data.endAngle; //* 180/Math.PI;
 
-    let startpoint = new paper.Point(center.x + radius* Math.cos(startAngle), center.y + radius* Math.sin(startAngle));
+    let startpoint = new paper.Point(center.x + radius * Math.cos(startAngle), center.y + radius * Math.sin(startAngle));
 
-
-    let endpoint = new paper.Point(center.x + radius* Math.cos(endAngle), center.y + radius* Math.sin(endAngle));
-
-
+    let endpoint = new paper.Point(center.x + radius * Math.cos(endAngle), center.y + radius * Math.sin(endAngle));
 
     geometryGraph.addEdge(startpoint, endpoint, data);
-
 }
 
 function processClosedPolyLine(entity) {
     let polygon = new paper.Path();
     polygon.origin = "POLYLINE";
     // // create geometry
-    for(let i = 0; i < entity.vertices.length; i++) {
+    for (let i = 0; i < entity.vertices.length; i++) {
         let dxfvertex = entity.vertices[i];
         polygon.add(new paper.Point(dxfvertex.x * 1000, dxfvertex.y * 1000));
-
     }
     polygon.closed = true;
 
@@ -170,27 +156,23 @@ function processClosedPolyLine(entity) {
 
 function processPolyLine(geometryGraph, data) {
     console.warn("Implement this function !!");
-
 }
 
 function processSpline(geometryGraph, data) {
     console.warn("Implement this function !!");
-
 }
 
 function processLine(geometryGraph, data) {
-
     let startPoint = data.vertices[0];
     let endPoint = data.vertices[1];
 
     geometryGraph.addEdge(startPoint, endPoint, data);
-
 }
 
 export function renderDXFObjects(dxfobjectarray) {
     // let path = new paper.CompoundPath();
 
-    if(dxfobjectarray == undefined){
+    if (dxfobjectarray == undefined) {
         throw new Error("Cannot find DXF DATA");
     }
     // console.log("DXF Object Array to render:", dxfobjectarray);
@@ -200,36 +182,36 @@ export function renderDXFObjects(dxfobjectarray) {
 
     let geometryGraph = new GeometryGraph();
 
-    for(let i in dxfobjectarray){
+    for (let i in dxfobjectarray) {
         let dxfobject = dxfobjectarray[i];
 
         /*
         If ARC - Get the start and end points - save to edge graph as
          */
 
-        if(dxfobject.getType() === 'ARC'){
+        if (dxfobject.getType() === "ARC") {
             processARC(geometryGraph, dxfobject.getData());
-        } else if (dxfobject.getType() === 'LINE') {
+        } else if (dxfobject.getType() === "LINE") {
             processLine(geometryGraph, dxfobject.getData());
-        } else if (dxfobject.getType() === 'LWPOLYLINE' || dxfobject.getType() === 'POLYLINE'){
-            if(isClosedPolyline(dxfobject)){
+        } else if (dxfobject.getType() === "LWPOLYLINE" || dxfobject.getType() === "POLYLINE") {
+            if (isClosedPolyline(dxfobject)) {
                 closedshapes.push(processClosedPolyLine(dxfobject.getData()));
-            }else{
+            } else {
                 processPolyLine(geometryGraph, dxfobject.getData());
             }
-        } else if(dxfobject.getType() === 'ELLIPSE'){
+        } else if (dxfobject.getType() === "ELLIPSE") {
             closedshapes.push(drawEllipse(dxfobject.getData()));
-        } else if(dxfobject.getType() === 'CIRCLE' ){
+        } else if (dxfobject.getType() === "CIRCLE") {
             closedshapes.push(drawCircle(dxfobject.getData()));
-        } else if(dxfobject.getType() === 'SPLINE') {
+        } else if (dxfobject.getType() === "SPLINE") {
             alert("The current version of the DXF Parser does not support SPLINE objects. Support will be added in future versions");
             throw new Error("Unsupported render object");
-            processSpline(geometryGraph, dxfobject.getData())
-        } else if(dxfobject.getType() === 'DIMENSION'){
+            processSpline(geometryGraph, dxfobject.getData());
+        } else if (dxfobject.getType() === "DIMENSION") {
             console.warn("DIMENSION entry in DXF will be ignored. Please ensure that all the designs are of the correct dimensions");
-        } else if(dxfobject.getType() === 'MTEXT'){
+        } else if (dxfobject.getType() === "MTEXT") {
             console.warn("MTEXT entry in DXF will be ignored. Please ensure that none of the features require text ");
-        } else if(dxfobject.getType() === 'INSERT'){
+        } else if (dxfobject.getType() === "INSERT") {
             alert("The current version of the DXF Parser does not support INSERT and BLOCK design references.");
             throw new Error("Unsupported render object");
         } else {
@@ -246,15 +228,15 @@ export function renderDXFObjects(dxfobjectarray) {
     let path = geometryGraph.generateGeometry();
 
     //TODO: Now add all the remainder closed shapes to the compound paths
-    for(let child of closedshapes){
+    for (let child of closedshapes) {
         path.addChild(child);
     }
 
     // path.strokeColor = '#000000';
     // path.strokeWidth = 1;
     path.closed = true;
-    path.fillColor = '#ff7606';
-    path.fillRule = 'evenodd';
+    path.fillColor = "#ff7606";
+    path.fillRule = "evenodd";
     let topleft = path.bounds.topLeft;
     path.translate(new paper.Point(-topleft.x, -topleft.y));
     path.scale(1, -1); //The coordinate system is all different for DXF
@@ -263,7 +245,6 @@ export function renderDXFObjects(dxfobjectarray) {
 
     return path;
 }
-
 
 /**
  * Returns a PaperJS outline rendering of the given
@@ -274,27 +255,26 @@ export function renderEdgeFeature(feature) {
     let path = new paper.CompoundPath();
 
     // console.log('rendering the outline dxf objects....', feature.getDXFObjects());
-    for(let i in feature.getDXFObjects()){
+    for (let i in feature.getDXFObjects()) {
         let dxfobject = feature.getDXFObjects()[i];
         // Figure out what entity this is and then based on that do the drawing
         let mesh;
-        if(dxfobject.getType() === 'ARC') {
+        if (dxfobject.getType() === "ARC") {
             path.addChild(drawArc(dxfobject.getData()));
-        } else if(dxfobject.getType() === 'LWPOLYLINE' || dxfobject.getType() === 'LINE' || dxfobject.getType() === 'POLYLINE') {
+        } else if (dxfobject.getType() === "LWPOLYLINE" || dxfobject.getType() === "LINE" || dxfobject.getType() === "POLYLINE") {
             path.addChild(drawLine(dxfobject.getData()));
-        } else if(dxfobject.getType() === 'SPLINE') {
+        } else if (dxfobject.getType() === "SPLINE") {
             path.addChild(drawSpline(dxfobject.getData()));
-        } else if(dxfobject.getType() === 'ELLIPSE') {
+        } else if (dxfobject.getType() === "ELLIPSE") {
             path.addChild(drawEllipse(dxfobject.getData()));
-        } else if(dxfobject.getType() === 'CIRCLE' ){
+        } else if (dxfobject.getType() === "CIRCLE") {
             path.addChild(drawCircle(dxfobject.getData()));
-        }
-        else {
+        } else {
             console.error("Unsupported DXF Entity Type for Outline Generation : " + dxfobject.getType());
         }
     }
     //Set the visual properties for the path
-    path.strokeColor = '#ff7606';
+    path.strokeColor = "#ff7606";
     path.strokeWidth = 200;
     //Since this is an outline we need to do the required transformations to it
     path.scale(1, -1); //The coordinate system is all different for DXF
@@ -306,16 +286,13 @@ export function renderEdgeFeature(feature) {
     //TODO: Streamline the feature ID insertion for each rendered object business
     path.featureID = feature.getID();
     return path;
-
 }
-
-
 
 function getLayerColor(feature) {
     let height = feature.getValue("height");
     let layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
-    if (decimal >1) decimal = 1;
+    if (decimal > 1) decimal = 1;
     if (!feature.layer.flip) decimal = 1 - decimal;
     let targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
@@ -340,19 +317,18 @@ function drawEllipse(entity) {
 
     let center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
     let axisratio = entity.axisRatio;
-    let majoraxislength = Math.sqrt(Math.pow(entity.majorAxisEndPoint.x * 1000, 2)
-        + Math.pow(entity.majorAxisEndPoint.y * 1000, 2));
+    let majoraxislength = Math.sqrt(Math.pow(entity.majorAxisEndPoint.x * 1000, 2) + Math.pow(entity.majorAxisEndPoint.y * 1000, 2));
     let minoraxislength = majoraxislength * axisratio;
-    let rotation = Math.atan(entity.majorAxisEndPoint.y/entity.majorAxisEndPoint.x) * 180/Math.PI;
+    let rotation = (Math.atan(entity.majorAxisEndPoint.y / entity.majorAxisEndPoint.x) * 180) / Math.PI;
     // console.log("Rotation:", rotation);
-    if(Number.isNaN(rotation)){
+    if (Number.isNaN(rotation)) {
         rotation = 0;
     }
     // console.log("Rotation:", rotation);
     // console.log("lengths:", majoraxislength, minoraxislength);
     let ellipse = new paper.Path.Ellipse({
         center: [center.x, center.y],
-        radius: [majoraxislength, minoraxislength],
+        radius: [majoraxislength, minoraxislength]
     });
 
     ellipse.rotate(rotation, center);
@@ -362,19 +338,19 @@ function drawEllipse(entity) {
 function drawMtext(entity, data) {
     var color = getColor(entity, data);
 
-    var geometry = new THREE.TextGeometry( entity.text, {
+    var geometry = new THREE.TextGeometry(entity.text, {
         font: font,
-        size: entity.height * (4/5),
+        size: entity.height * (4 / 5),
         height: 1
     });
-    var material = new THREE.MeshBasicMaterial( {color: color} );
-    var text = new THREE.Mesh( geometry, material );
+    var material = new THREE.MeshBasicMaterial({ color: color });
+    var text = new THREE.Mesh(geometry, material);
 
     // Measure what we rendered.
     var measure = new THREE.Box3();
-    measure.setFromObject( text );
+    measure.setFromObject(text);
 
-    var textWidth  = measure.max.x - measure.min.x;
+    var textWidth = measure.max.x - measure.min.x;
 
     // If the text ends up being wider than the box, it's supposed
     // to be multiline. Doing that in threeJS is overkill.
@@ -392,7 +368,7 @@ function drawMtext(entity, data) {
             break;
         case 2:
             // Top Center
-            text.position.x = entity.position.x - textWidth/2;
+            text.position.x = entity.position.x - textWidth / 2;
             text.position.y = entity.position.y - entity.height;
             break;
         case 3:
@@ -404,17 +380,17 @@ function drawMtext(entity, data) {
         case 4:
             // Middle Left
             text.position.x = entity.position.x;
-            text.position.y = entity.position.y - entity.height/2;
+            text.position.y = entity.position.y - entity.height / 2;
             break;
         case 5:
             // Middle Center
-            text.position.x = entity.position.x - textWidth/2;
-            text.position.y = entity.position.y - entity.height/2;
+            text.position.x = entity.position.x - textWidth / 2;
+            text.position.y = entity.position.y - entity.height / 2;
             break;
         case 6:
             // Middle Right
             text.position.x = entity.position.x - textWidth;
-            text.position.y = entity.position.y - entity.height/2;
+            text.position.y = entity.position.y - entity.height / 2;
             break;
 
         case 7:
@@ -424,7 +400,7 @@ function drawMtext(entity, data) {
             break;
         case 8:
             // Bottom Center
-            text.position.x = entity.position.x - textWidth/2;
+            text.position.x = entity.position.x - textWidth / 2;
             text.position.y = entity.position.y;
             break;
         case 9:
@@ -435,7 +411,7 @@ function drawMtext(entity, data) {
 
         default:
             return undefined;
-    };
+    }
 
     return text;
 }
@@ -448,7 +424,7 @@ function drawSpline(entity, path) {
 
     var interpolatedPoints = [];
     if (entity.degreeOfSplineCurve === 2 || entity.degreeOfSplineCurve === 3) {
-        for(var i = 0; i + 2 < points.length; i = i + 2) {
+        for (var i = 0; i + 2 < points.length; i = i + 2) {
             if (entity.degreeOfSplineCurve === 2) {
                 curve = new THREE.QuadraticBezierCurve(points[i], points[i + 1], points[i + 2]);
             } else {
@@ -458,17 +434,17 @@ function drawSpline(entity, path) {
         }
     } else {
         curve = new THREE.SplineCurve(points);
-        interpolatedPoints = curve.getPoints( 400 );
+        interpolatedPoints = curve.getPoints(400);
     }
 
-    var geometry = new THREE.BufferGeometry().setFromPoints( interpolatedPoints );
-    var material = new THREE.LineBasicMaterial( { linewidth: 1, color : color } );
-    var splineObject = new THREE.Line( geometry, material );
+    var geometry = new THREE.BufferGeometry().setFromPoints(interpolatedPoints);
+    var material = new THREE.LineBasicMaterial({ linewidth: 1, color: color });
+    var splineObject = new THREE.Line(geometry, material);
 
     return splineObject;
 }
 
-function drawCircle(entity){
+function drawCircle(entity) {
     let center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
     let circle = new paper.Path.Circle(center, entity.radius * 1000);
     return circle;
@@ -487,17 +463,17 @@ function drawLine(entity) {
     let startPoint, endPoint;
 
     // // create geometry
-    for(let i = 0; i < entity.vertices.length; i++) {
+    for (let i = 0; i < entity.vertices.length; i++) {
         // console.log("Point:", i , entity.vertices[i]);
-        if(entity.vertices[i].bulge) {
+        if (entity.vertices[i].bulge) {
             console.log("Drawing arc segment to incorporate bulge values");
             //TODO: Figure out what to do with the bugle value
             bulge = entity.vertices[i].bulge;
             startPoint = entity.vertices[i];
-            if(i < entity.vertices.length-1){
-                endPoint = entity.vertices[i+1];
-            }else{
-                console.log("LAst vertex")
+            if (i < entity.vertices.length - 1) {
+                endPoint = entity.vertices[i + 1];
+            } else {
+                console.log("LAst vertex");
                 endPoint = entity.vertices[0];
             }
             // endPoint = (i + 1 < entity.vertices.length) ? entity.vertices[i + 1] :entity.vertices[0];
@@ -511,7 +487,6 @@ function drawLine(entity) {
             //basepath.add(new paper.Point(endPoint.x, endPoint.y));
             basepath.arcTo(throughpoint, new paper.Point(endPoint.x * 1000, endPoint.y * 1000));
             i++;
-
         } else {
             // let vertex = entity.vertices[i];
             // let nextvertex = entity.vertices[(i + 1 < entity.vertices.length) ? i + 1 : 0];
@@ -523,9 +498,7 @@ function drawLine(entity) {
 
             let dxfvertex = entity.vertices[i];
             basepath.add(new paper.Point(dxfvertex.x * 1000, dxfvertex.y * 1000));
-
         }
-
     }
     return basepath;
 }
@@ -559,21 +532,17 @@ function drawArc(entity) {
 
      */
 
-
-    let center = new paper.Point(entity.center.x * 1000, entity.center.y *1000);
+    let center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
     let radius = entity.radius * 1000;
     let startAngle = entity.startAngle;
     let endAngle = entity.endAngle; //* 180/Math.PI;
-    let midAngle = (startAngle + endAngle)/2;
+    let midAngle = (startAngle + endAngle) / 2;
 
-    let startpoint = new paper.Point(center.x + radius* Math.cos(startAngle), center.y + radius* Math.sin(startAngle));
+    let startpoint = new paper.Point(center.x + radius * Math.cos(startAngle), center.y + radius * Math.sin(startAngle));
 
+    let midpoint = new paper.Point(center.x + radius * Math.cos(midAngle), center.y + radius * Math.sin(midAngle));
 
-    let midpoint = new paper.Point(center.x + radius* Math.cos(midAngle), center.y + radius* Math.sin(midAngle));
-
-
-    let endpoint = new paper.Point(center.x + radius* Math.cos(endAngle), center.y + radius* Math.sin(endAngle));
-
+    let endpoint = new paper.Point(center.x + radius * Math.cos(endAngle), center.y + radius * Math.sin(endAngle));
 
     let arc = paper.Path.Arc(startpoint, midpoint, endpoint);
 
@@ -581,9 +550,10 @@ function drawArc(entity) {
     return arc;
 }
 
-
 function drawSolid(entity, data) {
-    var material, mesh, verts,
+    var material,
+        mesh,
+        verts,
         geometry = new THREE.Geometry();
 
     verts = geometry.vertices;
@@ -600,7 +570,7 @@ function drawSolid(entity, data) {
     vector1.cross(vector2);
 
     // If z < 0 then we must draw these in reverse order
-    if(vector1.z < 0) {
+    if (vector1.z < 0) {
         geometry.faces.push(new THREE.Face3(2, 1, 0));
         geometry.faces.push(new THREE.Face3(2, 3, 1));
     } else {
@@ -608,20 +578,24 @@ function drawSolid(entity, data) {
         geometry.faces.push(new THREE.Face3(1, 3, 2));
     }
 
-
     material = new THREE.MeshBasicMaterial({ color: getColor(entity, data) });
 
     return new THREE.Mesh(geometry, material);
-
 }
 
 function drawText(entity, data) {
     var geometry, material, text;
 
-    if(!font)
-        return console.warn('Text is not supported without a Three.js font loaded with THREE.FontLoader! Load a font of your choice and pass this into the constructor. See the sample for this repository or Three.js examples at http://threejs.org/examples/?q=text#webgl_geometry_text for more details.');
+    if (!font)
+        return console.warn(
+            "Text is not supported without a Three.js font loaded with THREE.FontLoader! Load a font of your choice and pass this into the constructor. See the sample for this repository or Three.js examples at http://threejs.org/examples/?q=text#webgl_geometry_text for more details."
+        );
 
-    geometry = new THREE.TextGeometry(entity.text, { font: font, height: 0, size: entity.textHeight || 12 });
+    geometry = new THREE.TextGeometry(entity.text, {
+        font: font,
+        height: 0,
+        size: entity.textHeight || 12
+    });
 
     material = new THREE.MeshBasicMaterial({ color: getColor(entity, data) });
 
@@ -645,7 +619,7 @@ function drawPoint(entity, data) {
     var numPoints = 1;
 
     var color = getColor(entity, data);
-    var colors = new Float32Array( numPoints*3 );
+    var colors = new Float32Array(numPoints * 3);
     colors[0] = color.r;
     colors[1] = color.g;
     colors[2] = color.b;
@@ -653,8 +627,10 @@ function drawPoint(entity, data) {
     geometry.colors = colors;
     geometry.computeBoundingBox();
 
-    material = new THREE.PointsMaterial( { size: 0.05, vertexColors: THREE.VertexColors } );
+    material = new THREE.PointsMaterial({
+        size: 0.05,
+        vertexColors: THREE.VertexColors
+    });
     point = new THREE.Points(geometry, material);
     scene.add(point);
 }
-
