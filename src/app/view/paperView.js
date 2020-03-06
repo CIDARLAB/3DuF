@@ -1,7 +1,7 @@
 import EdgeFeature from "../core/edgeFeature";
 import paper from "paper";
 
-import * as Registry from "../core/registry";
+import Registry from '../core/registry';
 import * as FeatureRenderer2D from "./render2D/featureRenderer2D";
 import GridRenderer from "./render2D/gridRenderer";
 import DeviceRenderer from "./render2D/deviceRenderer2D";

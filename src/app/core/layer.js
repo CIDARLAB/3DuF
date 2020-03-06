@@ -2,8 +2,8 @@ import EdgeFeature from "./edgeFeature";
 import Feature from "./feature";
 import TextFeature from "./textFeature";
 import Params from "./params";
+import Registry from './registry';
 
-import * as Registry from "./registry";
 /**
  * Layer class
  */

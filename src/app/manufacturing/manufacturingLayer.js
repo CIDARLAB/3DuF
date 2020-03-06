@@ -1,16 +1,16 @@
 import paper from "paper";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
-import * as Registry from "../core/registry";
-import Feature from "../core/feature";
+import Registry from '../core/registry';
+
 /**
  * Manufacturing Layer class
  */
-export default class ManufacturingLayer {
+export default class ManufacturingLayer{
     /**
      * Default Constructor for the Manufacturing Layer
      * @param {String} name Name of the field
      */
-    constructor(name) {
+    constructor(name){
         this.__features = [];
         this.__name = name;
         this.__paperGroup = new paper.Group();

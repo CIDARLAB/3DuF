@@ -5,8 +5,7 @@ import Device from "./device";
 import * as Parameters from "./parameters";
 const StringValue = Parameters.StringValue;
 import * as FeatureSets from "../featureSets";
-import * as Registry from "./registry";
-import DXFObject from "./dxfObject";
+import Registry from './registry';
 
 /**
  * Feature class

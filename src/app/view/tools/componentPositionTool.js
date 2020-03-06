@@ -1,6 +1,6 @@
 import PositionTool from "./positionTool";
-import * as Registry from "../../core/registry";
-import Device from "../../core/device";
+import Registry from '../../core/registry';
+import Device from '../../core/device';
 
 export default class ComponentPositionTool extends PositionTool {
     constructor(typeString, setString) {

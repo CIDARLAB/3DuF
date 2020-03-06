@@ -1,7 +1,7 @@
 import MoveToolBar from "../ui/moveToolBar";
 import MouseTool from "./mouseTool";
 
-import * as Registry from "../../core/registry";
+import Registry from '../../core/registry';
 
 export default class MoveTool extends MouseTool {
     constructor() {

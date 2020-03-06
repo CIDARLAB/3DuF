@@ -1,6 +1,6 @@
-import * as Colors from "../colors";
-import paper from "paper";
-import * as Registry from "../../core/registry";
+import * as Colors from '../colors';
+import paper from 'paper';
+import Registry from '../../core/registry';
 
 export default class ComponentPortRenderer2D {
     static renderComponentPort(componentport, draworigin, rotation, portrendersize = 500) {
