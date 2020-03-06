@@ -1,5 +1,5 @@
 import paper from "paper";
-import * as THREE from 'three';
+import * as THREE from "three";
 import * as Colors from "../colors";
 import LinkedList from "../../utils/linkedList";
 import GeometryGraph from "../../geometry/geometryGraph";
