@@ -1,3 +1,4 @@
+import dialogPolyfill from "dialog-polyfill";
 import Handsontable from "handsontable";
 import JSZip from "jszip";
 

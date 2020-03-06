@@ -127,56 +127,56 @@ function drawMtext(entity, data) {
 
     text.position.z = 0;
     switch (entity.attachmentPoint) {
-        case 1:
-            // Top Left
-            text.position.x = entity.position.x;
-            text.position.y = entity.position.y - entity.height;
-            break;
-        case 2:
-            // Top Center
-            text.position.x = entity.position.x - textWidth / 2;
-            text.position.y = entity.position.y - entity.height;
-            break;
-        case 3:
-            // Top Right
-            text.position.x = entity.position.x - textWidth;
-            text.position.y = entity.position.y - entity.height;
-            break;
+    case 1:
+        // Top Left
+        text.position.x = entity.position.x;
+        text.position.y = entity.position.y - entity.height;
+        break;
+    case 2:
+        // Top Center
+        text.position.x = entity.position.x - textWidth / 2;
+        text.position.y = entity.position.y - entity.height;
+        break;
+    case 3:
+        // Top Right
+        text.position.x = entity.position.x - textWidth;
+        text.position.y = entity.position.y - entity.height;
+        break;
 
-        case 4:
-            // Middle Left
-            text.position.x = entity.position.x;
-            text.position.y = entity.position.y - entity.height / 2;
-            break;
-        case 5:
-            // Middle Center
-            text.position.x = entity.position.x - textWidth / 2;
-            text.position.y = entity.position.y - entity.height / 2;
-            break;
-        case 6:
-            // Middle Right
-            text.position.x = entity.position.x - textWidth;
-            text.position.y = entity.position.y - entity.height / 2;
-            break;
+    case 4:
+        // Middle Left
+        text.position.x = entity.position.x;
+        text.position.y = entity.position.y - entity.height / 2;
+        break;
+    case 5:
+        // Middle Center
+        text.position.x = entity.position.x - textWidth / 2;
+        text.position.y = entity.position.y - entity.height / 2;
+        break;
+    case 6:
+        // Middle Right
+        text.position.x = entity.position.x - textWidth;
+        text.position.y = entity.position.y - entity.height / 2;
+        break;
 
-        case 7:
-            // Bottom Left
-            text.position.x = entity.position.x;
-            text.position.y = entity.position.y;
-            break;
-        case 8:
-            // Bottom Center
-            text.position.x = entity.position.x - textWidth / 2;
-            text.position.y = entity.position.y;
-            break;
-        case 9:
-            // Bottom Right
-            text.position.x = entity.position.x - textWidth;
-            text.position.y = entity.position.y;
-            break;
+    case 7:
+        // Bottom Left
+        text.position.x = entity.position.x;
+        text.position.y = entity.position.y;
+        break;
+    case 8:
+        // Bottom Center
+        text.position.x = entity.position.x - textWidth / 2;
+        text.position.y = entity.position.y;
+        break;
+    case 9:
+        // Bottom Right
+        text.position.x = entity.position.x - textWidth;
+        text.position.y = entity.position.y;
+        break;
 
-        default:
-            return undefined;
+    default:
+        return undefined;
     }
 
     return text;

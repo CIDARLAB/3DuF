@@ -1,3 +1,4 @@
+import dialogPolyfill from "dialog-polyfill";
 import * as CookieUtils from "../../utils/cookieUtils";
 
 export default class IntroDialog {

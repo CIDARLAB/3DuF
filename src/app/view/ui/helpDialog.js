@@ -1,3 +1,4 @@
+import dialogPolyfill from "dialog-polyfill";
 export default class HelpDialog {
     constructor() {
         let helpdialog = document.querySelector("#help_dialog");

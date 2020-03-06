@@ -6,6 +6,7 @@
     "babel-cli": "^6.26.0",
     "babelify": "^10.0.0",
     "browserify": "^16.2.2",
+    "eslint": "^6.8.0",
     "node-sass": "^4.13.1",
     "prettier": "1.19.1",
     "watchify": "^3.11.1"
@@ -24,6 +25,7 @@
   },
   "dependencies": {
     "@dagrejs/graphlib": "^2.1.4",
+    "dialog-polyfill": "^0.5.0",
     "dxf-parser": "^0.6.1",
     "exorcist": "^1.0.1",
     "fsevents": "^2.1.2",

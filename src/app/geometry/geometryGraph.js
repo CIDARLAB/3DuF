@@ -103,16 +103,16 @@ export default class GeometryGraph {
             // console.log("Edge:", edge);
             // console.log("Edge Type:", edge.type);
             switch (edge.type) {
-                case "LINE":
-                    childpath.add(new paper.Point(node.x, node.y));
-                    break;
-                case "ARC":
-                    childpath.add(new paper.Point(node.x, node.y));
-                    let nextnode = this.__nodes.get(nextnoderef);
-                    let endpoint = new paper.Point(nextnode.x, nextnode.y);
-                    let midpoint = this.getARCMidpoint(edge.dxfData);
-                    childpath.arcTo(midpoint, endpoint);
-                    break;
+            case "LINE":
+                childpath.add(new paper.Point(node.x, node.y));
+                break;
+            case "ARC":
+                childpath.add(new paper.Point(node.x, node.y));
+                let nextnode = this.__nodes.get(nextnoderef);
+                let endpoint = new paper.Point(nextnode.x, nextnode.y);
+                let midpoint = this.getARCMidpoint(edge.dxfData);
+                childpath.arcTo(midpoint, endpoint);
+                break;
             }
         }
 

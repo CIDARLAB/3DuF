@@ -542,14 +542,14 @@ export default class ViewManager {
         } else {
             console.log("Version Number: " + version);
             switch (version) {
-                case 1:
-                    this.loadCustomComponents(json);
-                    device = Device.fromInterchangeV1(json);
-                    Registry.currentDevice = device;
-                    this.__currentDevice = device;
-                    break;
-                default:
-                    alert("Version '" + version + "' is not supported by 3DuF !");
+            case 1:
+                this.loadCustomComponents(json);
+                device = Device.fromInterchangeV1(json);
+                Registry.currentDevice = device;
+                this.__currentDevice = device;
+                break;
+            default:
+                alert("Version '" + version + "' is not supported by 3DuF !");
             }
         }
         //Common Code for rendering stuff

@@ -54,20 +54,20 @@ export default class ConnectionTool extends MouseTool {
             paper.project.deselectAll();
             console.log("Current State:", ref.__STATE);
             switch (ref.__STATE) {
-                case "SOURCE":
-                    ref.__STATE = "WAYPOINT";
-                    ref.dragging = true;
-                    ref.initChannel(event);
-                    break;
-                case "WAYPOINT":
-                    ref.addWayPoint(event, event.altKey);
-                    break;
-                case "TARGET":
-                    ref.__STATE = "WAYPOINT";
-                    ref.dragging = true;
-                    ref.initChannel(event);
-                    //ref.createConnection();
-                    break;
+            case "SOURCE":
+                ref.__STATE = "WAYPOINT";
+                ref.dragging = true;
+                ref.initChannel(event);
+                break;
+            case "WAYPOINT":
+                ref.addWayPoint(event, event.altKey);
+                break;
+            case "TARGET":
+                ref.__STATE = "WAYPOINT";
+                ref.dragging = true;
+                ref.initChannel(event);
+                //ref.createConnection();
+                break;
             }
         };
 
@@ -219,17 +219,17 @@ export default class ConnectionTool extends MouseTool {
             TARGET - Set the state to SOURCE and do nothing else
          */
         switch (this.__STATE) {
-            case "SOURCE":
-                console.log("Doing nothing");
-                break;
-            case "WAYPOINT":
-                console.warn("Implement cleanup");
+        case "SOURCE":
+            console.log("Doing nothing");
+            break;
+        case "WAYPOINT":
+            console.warn("Implement cleanup");
 
-                break;
-            case "TARGET":
-                this.__STATE = "SOURCE";
-                this.dragging = false;
-                break;
+            break;
+        case "TARGET":
+            this.__STATE = "SOURCE";
+            this.dragging = false;
+            break;
         }
     }
 
