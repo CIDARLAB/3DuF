@@ -1,4 +1,4 @@
-import * as Registry from "./registry";
+import Registry from './registry';
 import * as NumberUtils from "../utils/numberUtils";
 
 /**
@@ -83,6 +83,7 @@ export default class Parameter {
      * @returns {void}
      */
     static registerParamType(typeString, isValid, description) {
+      console.log(Registry)
         Registry.registeredParams[typeString] = {
             isValid: isValid,
             description: description

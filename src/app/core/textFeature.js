@@ -2,7 +2,8 @@
 import Parameter from "./parameter";
 import * as Parameters from "./parameters";
 var StringValue = Parameters.StringValue;
-import * as Registry from "./registry";
+import Registry from "./registry";
+
 /**
  * Text Feature class
  */
