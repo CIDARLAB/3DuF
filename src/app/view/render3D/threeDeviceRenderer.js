@@ -5,6 +5,7 @@ var getSTLString = STLExporter.getSTLString;
 import { Device3D } from "./primitiveSets3D";
 import { renderFeature } from "./threeFeatureRenderer";
 import * as Colors from "../colors";
+import * as THREE from "three";
 
 var SLIDE_HOLDER_MATERIAL = new THREE.MeshLambertMaterial({
     color: 0x9e9e9e,

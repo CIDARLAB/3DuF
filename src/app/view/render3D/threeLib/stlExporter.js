@@ -1,3 +1,4 @@
+import * as THREE from "three";
 /**
  * Based on https://github.com/mrdoob/three.js/blob/a72347515fa34e892f7a9bfa66a34fdc0df55954/examples/js/exporters/STLExporter.js
  * Tested on r68 and r70

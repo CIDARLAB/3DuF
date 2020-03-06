@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import paper from "paper";
 
 import * as Colors from "../colors";

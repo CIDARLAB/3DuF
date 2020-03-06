@@ -1,5 +1,6 @@
 import * as PrimitiveSets3D from "./primitiveSets3D";
 import * as FeatureSets from "../../featureSets";
+import * as THREE from "three";
 
 var layerMaterials = {
     red: new THREE.MeshLambertMaterial({
