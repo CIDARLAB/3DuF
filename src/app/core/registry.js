@@ -2,30 +2,27 @@ import uuid from "node-uuid";
 
 class Registry {
 
-    text = "";
-    textLayer = null;
-    id_counter = 0;
-    threeRenderer = null;
+  /*
+    Place where we store the data necessary for the text label
+    TODO: Change this from this awful hacky implementation
+  */
+  text = "";
 
-    registeredParams = {};
-    featureDefaults = {};
-    currentDevice = null;
-    canvasManager = null;
-    currentLayer = null;
-    currentTextLayer = null;
-    currentGrid = null;
-    view = null;
-    viewManager = null;
-    featureSet = null;
+  //TODO: Convert this into multiple text layers for use with multiple layers
+  textLayer = null;
+  id_counter = 0;
+  threeRenderer = null;
 
-  construtor() {
-    /*
-      Place where we store the data necessary for the text label
-      TODO: Change this from this awful hacky implementation
-    */
-
-    //TODO: Convert this into multiple text layers for use with multiple layers
-  }
+  registeredParams = {};
+  featureDefaults = {};
+  currentDevice = null;
+  canvasManager = null;
+  currentLayer = null;
+  currentTextLayer = null;
+  currentGrid = null;
+  view = null;
+  viewManager = null;
+  featureSet = null;
 
   generateID() {
       return uuid.v1();
@@ -34,9 +31,4 @@ class Registry {
 
 const instance = new Registry()
 
-export default instance 
-
-
-
-
-
+export default instance  
