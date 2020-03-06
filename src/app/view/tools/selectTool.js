@@ -1,6 +1,6 @@
 import MouseTool from "./mouseTool";
 
-import * as Registry from "../../core/registry";
+import Registry from '../../core/registry';
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
 

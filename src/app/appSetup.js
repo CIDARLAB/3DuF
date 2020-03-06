@@ -1,4 +1,4 @@
-import * as Registry from "./core/registry";
+import Registry from './core/registry';
 
 import PaperView from "./view/paperView";
 import BareViewManager from "./view/bareViewManager";
@@ -10,7 +10,7 @@ let viewManager;
 window.onload = function() {
         viewManager = new BareViewManager();
 
-        Registry.viewManager = viewManager;
+        Registry.viewManager.setViewManager(viewManager);
 
         viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
         viewManager.updateGrid();

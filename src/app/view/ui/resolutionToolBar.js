@@ -1,4 +1,4 @@
-import * as Registry from "../../core/registry";
+import Registry from '../../core/registry';
 import wNumb from "wnumb";
 
 export default class ResolutionToolBar {

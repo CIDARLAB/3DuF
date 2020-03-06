@@ -5,7 +5,7 @@ import * as Basic from "./basic";
 
 const registeredFeatureSets = {};
 const typeStrings = {};
-import * as Registry from "../core/registry";
+import Registry from '../core/registry';
 
 // add more sets here!
 const requiredSets = {
