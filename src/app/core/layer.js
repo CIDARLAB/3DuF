@@ -3,7 +3,7 @@ import Feature from "./feature";
 import TextFeature from "./textFeature";
 import Params from "./params";
 
-import * as Registry from "./registry";
+import Registry from './registry';
 
 export default class Layer {
     constructor(values, name = "New Layer") {

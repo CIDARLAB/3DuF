@@ -7,7 +7,8 @@ import Params from "../../core/params";
 import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
 
-import * as Registry from "../../core/registry";
+import Registry from '../../core/registry';
+
 
 export default class ConnectionTool extends MouseTool {
     constructor(typeString, setString) {

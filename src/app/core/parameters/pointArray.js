@@ -1,6 +1,6 @@
 import Parameter from "../parameter";
 
-import * as Registry from "../registry";
+import Registry from "../registry";
 
 let typeString = "PointArray";
 let description = "Should be an array of points";

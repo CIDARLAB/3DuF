@@ -5,7 +5,7 @@ import Device from "./device";
 import * as Parameters from "./parameters";
 const StringValue = Parameters.StringValue;
 import * as FeatureSets from "../featureSets";
-import * as Registry from "./registry";
+import Registry from './registry';
 
 /**
  * Represents the object from which we generate a render

@@ -1,4 +1,4 @@
-import * as Registry from "./core/registry";
+import Registry from './core/registry';
 
 import PaperView from "./view/paperView";
 import BareViewManager from "./view/bareViewManager";

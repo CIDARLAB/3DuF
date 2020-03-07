@@ -1,7 +1,7 @@
 import DXFObject from "./dxfObject";
 import Device from "./device";
 
-import * as Registry from "./registry";
+import Registry from './registry';
 
 /**
  * This class contains the component abstraction used in the interchange format and the

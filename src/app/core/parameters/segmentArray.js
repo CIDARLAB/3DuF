@@ -1,6 +1,6 @@
 import Parameter from "../parameter";
 
-import * as Registry from "../registry";
+import Registry from "../registry";
 
 let typeString = "SegmentArray";
 let description = "Should be an array of PointArrays";

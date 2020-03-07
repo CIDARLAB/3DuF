@@ -1,7 +1,7 @@
 //TODO: Restructure the TextFeature and all its implementation
 import * as Parameters from "./parameters";
 var StringValue = Parameters.StringValue;
-import * as Registry from "./registry";
+import Registry from "./registry";
 
 export default class TextFeature {
     constructor(text, params, id = TextFeature.generateID()) {

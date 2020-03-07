@@ -1,4 +1,4 @@
-import * as Registry from "./registry";
+import Registry from './registry';
 import * as NumberUtils from "../utils/numberUtils";
 
 export default class Parameter {

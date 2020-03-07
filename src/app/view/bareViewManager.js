@@ -1,7 +1,7 @@
 import ZoomToolBar from "./ui/zoomToolBar";
 import paper from "paper";
 
-import * as Registry from "../core/registry";
+import Registry from '../core/registry';
 import * as Colors from "./colors";
 
 import Device from "../core/device";

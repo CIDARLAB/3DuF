@@ -2,7 +2,7 @@ import Params from "./params";
 import CustomComponent from "./customComponent";
 import ComponentPort from "./componentPort";
 
-import * as Registry from "./registry";
+import Registry from './registry';
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 
 /**

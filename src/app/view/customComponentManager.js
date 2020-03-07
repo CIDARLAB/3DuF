@@ -1,6 +1,6 @@
 import ImportComponentDialog from "./ui/importComponentDialog";
 import CustomComponent from "../core/customComponent";
-import * as Registry from "../core/registry";
+import Registry from '../core/registry';
 
 export default class CustomComponentManager {
     constructor(viewManager) {
