@@ -3,11 +3,7 @@ import BorderSettingsDialog from './ui/borderSettingDialog';
 import paper from 'paper';
 
 import Registry from '../core/registry';
-<<<<<<< HEAD
 import * as Colors from "./colors";
-=======
-const Colors = require("./colors");
->>>>>>> Removed the circular dependency in makeFeature method by moving it to class Device from Class Feature
 
 import Device from '../core/device';
 import ChannelTool from "./tools/channelTool"; 
