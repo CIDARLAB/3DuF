@@ -1,8 +1,8 @@
-const path = require("path");
+const path  = require("path");
 
 module.exports = {
     mode: "development",
-    entry: "./src/app/index.js",
+    entry: "./src/app/appSetup.js",
     output: {
         path: path.resolve(__dirname, "build"),
         filename: "3DuF.js"
@@ -14,6 +14,10 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.css$/i,
+                use: ["style-loader", "css-loader"],
+            },
             {
                 test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,

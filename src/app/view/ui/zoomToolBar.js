@@ -1,4 +1,5 @@
 import Registry from "../../core/registry";
+import noUiSlider from "nouislider";
 
 export default class ZoomToolBar {
     constructor(zoom_min, zoom_max) {
