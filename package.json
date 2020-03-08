@@ -1,27 +1,19 @@
 {
   "name": "ThreeDuF",
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
-    "babel-cli": "^6.26.0",
-    "babelify": "^10.0.0",
-    "browserify": "^16.2.2",
+    "babel-loader": "^8.0.6",
+    "browserslist": "^4.9.1",
+    "caniuse-lite": "^1.0.30001032",
     "eslint": "^6.8.0",
+    "eslint-loader": "^3.0.3",
     "node-sass": "^4.13.1",
     "prettier": "1.19.1",
-    "watchify": "^3.11.1"
-  },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "@babel/preset-env"
-          ]
-        }
-      ]
-    ]
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
     "@dagrejs/graphlib": "^2.1.4",
@@ -47,6 +39,9 @@
   "main": "src/app/index.js",
   "module": "src/app/index.js",
   "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "watch": "webpack --watch",
+    "serve": "webpack --watch & webpack-dev-server --open",
     "compile_lib": "babel -—presets es2015 -d dist/ src/app/",
     "compile_orbit": "node_modules/.bin/browserify ./src/app/renderer/orbit_demo.js -t babelify --outfile ./orbit_bundle.js",
     "compile": "node_modules/.bin/browserify ./src/app/appSetup.js -t babelify --outfile ./3DuFapp.js -d -t [ babelify ]",
