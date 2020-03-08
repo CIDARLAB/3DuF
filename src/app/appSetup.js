@@ -10,20 +10,19 @@ import * as Examples from "./examples/jsonExamples";
 let viewManager;
 
 window.onload = function() {
-        viewManager = new BareViewManager();
+    viewManager = new BareViewManager();
 
-        Registry.viewManager = viewManager;
+    Registry.viewManager = viewManager;
 
-        viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
-        viewManager.updateGrid();
-        Registry.currentDevice.updateView();
+    viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
+    viewManager.updateGrid();
+    Registry.currentDevice.updateView();
 
-        window.dev = Registry.currentDevice;
-        window.Registry = Registry;
+    window.dev = Registry.currentDevice;
+    window.Registry = Registry;
 
-        window.view = Registry.viewManager.view;
-
-        // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
-        Registry.viewManager.setupToolBars();
-    };
+    window.view = Registry.viewManager.view;
+    // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
+    Registry.viewManager.setupToolBars();
+};
 
