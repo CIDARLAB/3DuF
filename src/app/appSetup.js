@@ -1,6 +1,7 @@
-import Registry from './core/registry';
+import "../../lib/material/material.min.css";
+import "../../lib/material/material.min.js";
 
-import PaperView from "./view/paperView";
+import Registry from "./core/registry";
 import BareViewManager from "./view/bareViewManager";
 
 import Registry from "./core/registry";
@@ -25,4 +26,3 @@ window.onload = function() {
     // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
     Registry.viewManager.setupToolBars();
 };
-
