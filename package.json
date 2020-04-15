@@ -28,7 +28,6 @@
     "dialog-polyfill": "^0.5.0",
     "dxf-parser": "^0.6.1",
     "exorcist": "^1.0.1",
-    "fsevents": "^2.1.2",
     "handsontable": "^6.2.2",
     "install": "^0.12.2",
     "jszip": "^2.6.1",
@@ -41,6 +40,9 @@
     "three": "^0.114.0",
     "trackjs": "^3.1.2",
     "wnumb": "^1.1.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.1.2"
   },
   "version": "1.1.0",
   "description": "User-friendly CAD tool for designing microfluidic devices.",
