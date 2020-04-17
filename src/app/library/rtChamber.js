@@ -89,7 +89,7 @@ export default class RTChamber extends Template {
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "PCR";
+        this.__mint = "RT";
     }
 
     render2D(params, key) {
