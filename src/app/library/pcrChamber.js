@@ -28,10 +28,10 @@ export default class PCRChamber extends Template {
             bendSpacing: 2.358 * 1000,
             numberOfBends: 10,
             orientation: "H",
-            bendLength: 9.65 * 1000,
+            bendLength: 9.142 * 1000,
             height: 250,
             // new params
-            intermediatePartLength: 3.2 * 1000,
+            intermediatePartLength: 3.0 * 1000,
             curvature: 100
         };
 
@@ -102,7 +102,7 @@ export default class PCRChamber extends Template {
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "PCR";
+        this.__mint = "PCRChamber";
     }
 
     render2D(params, key) {
