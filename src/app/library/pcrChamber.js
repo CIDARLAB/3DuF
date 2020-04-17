@@ -1,5 +1,5 @@
 import Template from "./template";
-import paper from "paper";
+import { Path, CompoundPath } from "paper";
 
 export default class PCRChamber extends Template {
     constructor() {
@@ -19,8 +19,8 @@ export default class PCRChamber extends Template {
             orientation: "String",
             height: "Float",
             // new params 
-            narrowPartLength: "Float",
-            curvature: "Float",
+            intermediatePartLength: "Float",
+            curvature: "Float"
         };
 
         this.__defaults = {
@@ -31,7 +31,7 @@ export default class PCRChamber extends Template {
             bendLength: 9.65 * 1000,
             height: 250,
             // new params
-            narrowPartLength: 3.2 * 1000,
+            intermediatePartLength: 3.2 * 1000,
             curvature: 100
         };
 
@@ -43,7 +43,7 @@ export default class PCRChamber extends Template {
             orientation: "",
             height: "&mu;m",
             // new params
-            narrowPartLength: "&mu;m",
+            intermediatePartLength: "&mu;m",
             curvature: "&mu;m"
         };
 
@@ -55,7 +55,7 @@ export default class PCRChamber extends Template {
             bendLength: 10,
             height: 10,
             // new params
-            narrowPartLength: 5,
+            intermediatePartLength: 5,
             curvature: 50
         };
 
@@ -67,7 +67,7 @@ export default class PCRChamber extends Template {
             bendLength: 12 * 1000,
             height: 1200,
             // new params
-            narrowPartLength: 4 * 1000,
+            intermediatePartLength: 4 * 1000,
             curvature: 300
         };
 
@@ -79,7 +79,7 @@ export default class PCRChamber extends Template {
             orientation: "orientation",
             bendLength: "bendLength",
             // new params
-            narrowPartLength: "narrowPartLength",
+            intermediatePartLength: "intermediatePartLength",
             curvature: "curvature"
         };
 
@@ -90,7 +90,7 @@ export default class PCRChamber extends Template {
             orientation: "orientation",
             bendLength: "bendLength",
             // new params
-            narrowPartLength: "narrowPartLength",
+            intermediatePartLength: "intermediatePartLength",
             curvature: "curvature"
         };
 
@@ -107,149 +107,108 @@ export default class PCRChamber extends Template {
 
     render2D(params, key) {
         let cw = params["channelWidth"];
-        let bl= params["bendLength"];
+        let bl = params["bendLength"];
         let bs = params["bendSpacing"];
-        let pl = params["narrowPartLength"];
+        let pl = params["intermediatePartLength"];
         let orientation = params["orientation"];
-        let numBends = params["numberOfBends"];
-        let smallChannelLength = params["smallChannelLength"];
+        let cycles = params["numberOfBends"];
         let x = params["position"][0];
         let y = params["position"][1];
         let color = params["color"];
         let curve = params["curvature"];
 
-        let radius = bs / 2 + cw;
-        let diameter = bs + 2 * cw;
+        let plotArc = (x, y, r1, r2, left=true) => {
+            let x_intermediate = left ? x - r1 : x + r1;
+            let externalArc = new Path.Arc({
+                from: [x, y],
+                through: [x_intermediate, y + r1],
+                to: [x, y + 2 * r1],
+            });
+            externalArc.closed = true;
 
-        let vRepeat = 2 * bs + 2 * cw;
-        let vOffset = bs + cw;
-        //let hOffset = bendLength / 2 + channelWidth / 2;
+            x_intermediate = left ? x - r2 : x + r2;
+            let internalArc = new Path.Arc({
+                from: [x, y + r1 - r2],
+                through: [x_intermediate, y + r1 - r2 + r2],
+                to: [x, y + r1 - r2 + 2 * r2],
+            });
+            internalArc.closed = true;
+            return externalArc.subtract(internalArc);
+        };
 
-        let serp = new paper.CompoundPath();
+        let plotRec = (x, y, length, width, curve) => {
+            return new Path.Rectangle(x, y, length, width, curve);
+        };
 
-        let npl = (bl - pl) /2;
-        let radius2 = bs/2 + cw/2;
-        let diameter2 = 2 * radius2; 
+        let plotStraightSegments = (x, y, bendLength, partLength, channelWidth, curve) => {
+            let len = (bendLength - partLength) / 2;
+            let part1 = plotRec(x, y, len, channelWidth / 2);
+            let part2 = plotRec(x + len, y - channelWidth/4, partLength, channelWidth, curve);
+            let part3 = plotRec(x + len + partLength, y, bendLength - partLength - len, channelWidth / 2);
 
-        let radius3 = bs/2;
-        let diameter3 = 2 * radius3; 
+            return {part1, part2, part3};
+        };
 
-        //draw first segment
-        let toprect = new paper.Path.Rectangle(x + cw - 1 + (bl - pl)/2, y + 3*cw/4, (bl - pl)/2, cw/2);
-        toprect.closed = true;
+        let pcr = new CompoundPath();
 
-        let remaining = bl - pl - npl;
-        let narrowWidth = cw / 2
+        // define narrow part length
+        let narrowPartLength = (bl - pl) / 2;
 
-        let leftCurve;
-        let leftCurveSmall;
-        let rightCurve;
-        let rightCurveSmall;
+        // define device
+        let device = plotRec(x + cw + narrowPartLength, y + 3 * cw / 4, narrowPartLength, cw / 2);
+        device.closed = true;
 
-        let hseg;
-        let i = 0;
-        for (i = 0; i < numBends + 1; i++) {
-            if (i == 0) {
-                leftCurve = new paper.Path.Arc({
-                    from: [x + cw + npl, y + vRepeat * i + 3*cw/4],
-                    through: [x + cw + npl - radius2, y + vRepeat * i + 3*cw/4 + radius2],
-                    to: [x + cw + npl, y + vRepeat * i + 3*cw/4 + diameter2]
-                });
-                leftCurve.closed = true;
-                
-                leftCurveSmall = new paper.Path.Arc({
-                    from: [x + cw + npl, y + vRepeat * i + 5*cw/4],
-                    through: [x + cw + npl - radius3, y + vRepeat * i + 5*cw/4 + radius3],
-                    to: [x + cw + npl, y + vRepeat * i + 5*cw/4 + diameter3]
-                });
-                leftCurveSmall.closed = true;
-                
-                leftCurve = leftCurve.subtract(leftCurveSmall);
-                toprect = toprect.unite(leftCurve);
+        let cycleLength = 2 * bs + 2 * cw;
+        let offset = bs + cw;
 
-                hseg = new paper.Path.Rectangle(x + cw + npl, y + vOffset + vRepeat * i, pl, cw, curve);
-                toprect = toprect.unite(hseg);
-                hseg = new paper.Path.Rectangle(x + cw + npl + pl, y + vOffset + vRepeat * i + narrowWidth/2, remaining, narrowWidth);
-                toprect = toprect.unite(hseg);
-            } else {
-                leftCurve = new paper.Path.Arc({
-                    from: [x + cw, y + vRepeat * i],
-                    through: [x + cw - radius, y + vRepeat * i + radius],
-                    to: [x + cw, y + vRepeat * i + diameter]
-                });
-                leftCurve.closed = true;
-                
-                leftCurveSmall = new paper.Path.Arc({
-                    from: [x + cw, y + vRepeat * i + bs + cw],
-                    through: [x + cw - bs / 2, y + vRepeat * i + bs / 2 + cw],
-                    to: [x + cw, y + vRepeat * i + cw]
-                });
-                leftCurveSmall.closed = true;
-                
-                leftCurve = leftCurve.subtract(leftCurveSmall);
-                toprect = toprect.unite(leftCurve);
-                
-                //draw horizontal segment
-                hseg = new paper.Path.Rectangle(x + cw - 1, y + vOffset + vRepeat * i + cw/4, npl, cw/2);
-                toprect = toprect.unite(hseg);
-                hseg = new paper.Path.Rectangle(x + cw - 1 + npl, y + vOffset + vRepeat * i, pl, cw, curve);
-                toprect = toprect.unite(hseg);
-                hseg = new paper.Path.Rectangle(x + cw - 1 + npl + pl, y + vOffset + vRepeat * i + cw/4, remaining, cw/2);
-                toprect = toprect.unite(hseg);
-            }
+        // define the custom parts for the output
+        let x_offset = cw + narrowPartLength;
+        let leftArc = plotArc(x + x_offset, y + 3 * cw / 4, bs/2 + cw/2, bs/2);
+        let seg1 = plotRec(x + x_offset, y + offset, pl, cw, curve);
+        let seg2 = plotRec(x + x_offset + pl, y + offset + cw / 4, narrowPartLength, cw/2);
+        let rightArc = plotArc(x + bl, y + offset, bs/2 + cw, bs/2, false);
+        let seg3 = plotRec(x, y + cycleLength + cw/4, bl + 2, cw / 2);
+
+        device = device.unite(leftArc);
+        device = device.unite(seg1);
+        device = device.unite(seg2);
+        device = device.unite(rightArc);
+        device = device.unite(seg3);
+
+        let seg;
+        let externalRadius = bs/2 + cw;
+        let internalRadius = bs/2;
+        for (let i = 1; i < cycles + 1; i++) {
+            //draw left curved segment
+            leftArc = plotArc(x, y + cycleLength * i, externalRadius, internalRadius, true);
+            device = device.unite(leftArc);
+
+            //draw straight segments
+            let segments = plotStraightSegments(x, y + offset + cycleLength * i + cw / 4, bl, pl, cw, curve);
+            device = device.unite(segments.part1);
+            device = device.unite(segments.part2);
+            device = device.unite(segments.part3);
 
             //draw right curved segment
-            rightCurve = new paper.Path.Arc({
-                from: [x + cw + bl, y + vOffset + vRepeat * i],
-                through: [x + cw + bl + radius, y + vOffset + vRepeat * i + radius],
-                to: [x + cw + bl, y + vOffset + vRepeat * i + diameter]
-            });
-            rightCurve.closed = true;
+            rightArc = plotArc(x + bl, y + offset + cycleLength * i, externalRadius, internalRadius, false);
+            device = device.unite(rightArc);
 
-            rightCurveSmall = new paper.Path.Arc({
-                from: [x + cw + bl, y + vOffset + vRepeat * i + bs + cw],
-                through: [x + cw + bl + bs / 2, y + vOffset + vRepeat * i + radius],
-                to: [x + cw + bl, y + vOffset + vRepeat * i + cw]
-            });
-            rightCurveSmall.closed = true;
-            rightCurve = rightCurve.subtract(rightCurveSmall);
-            toprect = toprect.unite(rightCurve);
-
-            hseg = new paper.Path.Rectangle(x + cw - 1, y + vRepeat * (i + 1) + cw/4, bl + 2, cw/2);
-            toprect = toprect.unite(hseg);
+            //draw straight segment
+            seg = plotRec(x, y + cycleLength * (i + 1) + cw / 4, bl + 2, cw / 2);
+            device = device.unite(seg);
         }
-        hseg = new paper.Path.Rectangle(x + cw - 1, y + vRepeat * i + cw/4, bl, cw/2);
-        toprect = toprect.unite(hseg);
-        let j = i;
-        leftCurve = new paper.Path.Arc({
-            from: [x + cw, y + vRepeat * j],
-            through: [x + cw - radius, y + vRepeat * j + radius],
-            to: [x + cw, y + vRepeat * j + diameter]
-        });
-        leftCurve.closed = true;
-        
-        leftCurveSmall = new paper.Path.Arc({
-            from: [x + cw, y + vRepeat * j + bs + cw],
-            through: [x + cw - bs / 2, y + vRepeat * j + bs / 2 + cw],
-            to: [x + cw, y + vRepeat * j + cw]
-        });
-        leftCurveSmall.closed = true;
-        
-        leftCurve = leftCurve.subtract(leftCurveSmall);
-        toprect = toprect.unite(leftCurve);
+        // define the custom parts for the input
+        leftArc = plotArc(x, y + cycleLength * (cycles + 1), externalRadius, internalRadius, true);
+        device = device.unite(leftArc);
+        seg = plotRec(x, y + offset + cycleLength * (cycles + 1), bl + externalRadius, cw);
+        device = device.unite(seg);
 
-        let custom1 = new paper.Path.Rectangle(x + cw - 1, y + vOffset + vRepeat * j, bl + radius, cw);
-        toprect = toprect.unite(custom1);
-        serp.addChild(toprect);
+        pcr.addChild(device);
 
-        if (orientation == "V") {
-            serp.rotate(0, x + cw, y);
-        } else {
-            serp.rotate(90, x + cw, y);
-        }
+        orientation == "V" ? pcr.rotate(0, x + cw, y) : pcr.rotate(90, x + cw, y);
 
-        serp.fillColor = color;
-        return serp;
+        pcr.fillColor = color;
+        return pcr;
     }
 
     render2DTarget(key, params) {
