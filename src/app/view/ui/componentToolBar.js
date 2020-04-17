@@ -46,6 +46,7 @@ export default class ComponentToolBar {
         this.__llChamberButton = document.getElementById("llchamber_button");
         this.__threeDMixerButton = document.getElementById("3dmixer_button");
         this.__pcrChamberButton = document.getElementById("pcrchamber_button");
+        this.__rtChamberButton = document.getElementById("rtchamber_button");
 
         //Create all the parameter menu buttons
 
@@ -77,6 +78,7 @@ export default class ComponentToolBar {
         this.__llChamberParams = document.getElementById("llchamber_params_button");
         this.__threeDMixerParams = document.getElementById("3dmixer_params_button");
         this.__pcrChamberParams = document.getElementById("pcrchamber_params_button");
+        this.__rtChamberParams = document.getElementById("rtchamber_params_button");
 
         this.__insertTextDialog = new InsertTextDialog();
 
@@ -111,6 +113,7 @@ export default class ComponentToolBar {
             LLChamber: this.__llChamberButton,
             "3DMixer": this.__threeDMixerButton,
             PCRChamber: this.__pcrChamberButton,
+            RTChamber: this.__rtChamberButton,
         };
 
         this.__setupEventHandlers();
@@ -315,6 +318,13 @@ export default class ComponentToolBar {
             ref.setActiveButton("PCRChamber");
             ref.__viewManagerDelegate.switchTo2D();
         };
+
+        this.__rtChamberButton.onclick = function() {
+            Registry.viewManager.activateTool("RTChamber");
+
+            ref.setActiveButton("RTChamber");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
     }
 
     setActiveButton(feature) {
@@ -364,6 +374,7 @@ export default class ComponentToolBar {
         this.__llChamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LLChamber", "Basic");
         this.__threeDMixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMixer", "Basic");
         this.__pcrChamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("PCRChamber", "Basic");
+        this.__rtChamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("RTChamber", "Basic");
     }
 
     static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {

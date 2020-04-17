@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 
-export default class PCRChamber extends Template {
+export default class RTChamber extends Template {
     constructor() {
         super();
     }
@@ -13,85 +13,72 @@ export default class PCRChamber extends Template {
 
         this.__heritable = {
             bendSpacing: "Float",
-            numberOfBends: "Float",
             channelWidth: "Float",
             bendLength: "Float",
             orientation: "String",
             height: "Float",
-            // new params 
-            narrowPartLength: "Float",
-            curvature: "Float",
+            partLength: "Float",
+            verticalPart: "Float",
         };
 
         this.__defaults = {
-            channelWidth: 0.500 * 1000,
-            bendSpacing: 2.358 * 1000,
-            numberOfBends: 10,
+            bendSpacing: 5.8 * 1000,
+            channelWidth: 0.7 * 1000,
+            bendLength: 61.3 * 1000,
             orientation: "H",
-            bendLength: 9.65 * 1000,
             height: 250,
-            // new params
-            narrowPartLength: 3.2 * 1000,
-            curvature: 100
+            partLength: 44 * 1000,
+            verticalPart: 5.3 * 1000,
         };
 
         this.__units = {
             bendSpacing: "&mu;m",
-            numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
             orientation: "",
             height: "&mu;m",
-            // new params
-            narrowPartLength: "&mu;m",
-            curvature: "&mu;m"
+            partLength: "&mu;m",
+            verticalPart: "&mu;m",
         };
 
         this.__minimum = {
-            channelWidth: 10,
             bendSpacing: 10,
-            numberOfBends: 1,
+            channelWidth: 10,
             orientation: "V",
-            bendLength: 10,
+            bendLength: 10 * 1000,
             height: 10,
-            // new params
-            narrowPartLength: 5,
-            curvature: 50
+            partLength: 5 * 1000,
+            verticalPart: 2 * 1000,
         };
 
         this.__maximum = {
             channelWidth: 2000,
             bendSpacing: 6000,
-            numberOfBends: 20,
             orientation: "V",
-            bendLength: 12 * 1000,
+            bendLength: 62 * 1000,
             height: 1200,
             // new params
-            narrowPartLength: 4 * 1000,
-            curvature: 300
+            partLength: 4 * 1000,
+            verticalPart: 6 * 1000,
         };
 
         this.__featureParams = {
             position: "position",
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
             orientation: "orientation",
             bendLength: "bendLength",
-            // new params
-            narrowPartLength: "narrowPartLength",
-            curvature: "curvature"
+            partLength: "partLength",
+            verticalPart: "verticalPart",
         };
 
         this.__targetParams = {
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
             orientation: "orientation",
             bendLength: "bendLength",
-            // new params
-            narrowPartLength: "narrowPartLength",
-            curvature: "curvature"
+            partLength: "partLength",
+            verticalPart: "verticalPart",
         };
 
         this.__placementTool = "componentPositionTool";
@@ -109,14 +96,12 @@ export default class PCRChamber extends Template {
         let cw = params["channelWidth"];
         let bl= params["bendLength"];
         let bs = params["bendSpacing"];
-        let pl = params["narrowPartLength"];
+        let pl = params["partLength"];
         let orientation = params["orientation"];
-        let numBends = params["numberOfBends"];
-        let smallChannelLength = params["smallChannelLength"];
         let x = params["position"][0];
         let y = params["position"][1];
         let color = params["color"];
-        let curve = params["curvature"];
+        let verticalPart = params["verticalPart"];
 
         let radius = bs / 2 + cw;
         let diameter = bs + 2 * cw;
@@ -135,9 +120,39 @@ export default class PCRChamber extends Template {
         let diameter3 = 2 * radius3; 
 
         //draw first segment
-        let toprect = new paper.Path.Rectangle(x + cw - 1 + (bl - pl)/2, y + 3*cw/4, (bl - pl)/2, cw/2);
+        let toprect = new paper.Path.Rectangle(x, y, pl, cw);
         toprect.closed = true;
 
+        x = x + pl
+        let rightCurve = new paper.Path.Arc({
+            from: [x, y - bs - cw],
+            through: [x + bs/2 + cw, y - bs - cw + bs/2 + cw],
+            to: [x, y + cw]
+        });
+        rightCurve.closed = true;
+        
+        let rightCurveSmall = new paper.Path.Arc({
+            from: [x, y - bs],
+            through: [x + bs/2, y - bs + bs/2],
+            to: [x, y]
+        });
+        rightCurveSmall.closed = true;
+        rightCurve = rightCurve.subtract(rightCurveSmall);
+
+        toprect = toprect.unite(rightCurve);
+
+        y = y - bs - cw
+        x = x - bl
+        let part = new paper.Path.Rectangle(x, y, bl, cw);
+        toprect = toprect.unite(part);
+
+        let p2l = 4.5 * 1000
+        part = new paper.Path.Rectangle(x - cw, y - p2l, cw, p2l + cw)
+
+        toprect = toprect.unite(part);
+
+        serp.addChild(toprect);
+/*
         let remaining = bl - pl - npl;
         let narrowWidth = cw / 2
 
@@ -241,12 +256,13 @@ export default class PCRChamber extends Template {
         let custom1 = new paper.Path.Rectangle(x + cw - 1, y + vOffset + vRepeat * j, bl + radius, cw);
         toprect = toprect.unite(custom1);
         serp.addChild(toprect);
-
+*/
         if (orientation == "V") {
-            serp.rotate(0, x + cw, y);
-        } else {
             serp.rotate(90, x + cw, y);
+        } else {
+            serp.rotate(0, x + cw, y);
         }
+
 
         serp.fillColor = color;
         return serp;

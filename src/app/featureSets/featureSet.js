@@ -25,6 +25,7 @@ import YTree from "../library/ytree";
 import LLChamber from "../library/llChamber";
 import ThreeDMixer from "../library/threeDMixer";
 import PCRChamber from "../library/pcrChamber";
+import RTChamber from "../library/rtChamber";
 
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
@@ -77,6 +78,8 @@ export default class FeatureSet {
             "3DMixer_control": { object: new ThreeDMixer(), key: "CONTROL" },
             PCRChamber: { object: new PCRChamber(), key: "FLOW" },
             PCRChamber_control: { object: new PCRChamber(), key: "CONTROL" },
+            RTChamber: { object: new RTChamber(), key: "FLOW" },
+            RTChamber_control: { object: new RTChamber(), key: "CONTROL" },
         };
 
         // this.__checkDefinitions();
