@@ -1,6 +1,8 @@
 import Device from "../core/device";
 
 import Port from "../library/port";
+import Anode from "../library/anode"; //new from CK
+import Cathode from "../library/cathode"; //new from CK
 import Channel from "../library/channel";
 import BetterMixer from "../library/betterMixer";
 import RotaryMixer from "../library/rotaryMixer";
@@ -35,6 +37,8 @@ export default class FeatureSet {
         //TODO: Replace this cumbersome mechanism for generating different feature variants, etc.
         this.__library = {
             Port: { object: new Port(), key: null },
+            Anode: { object: new Anode(), key: null },//ck addition
+            Cathode: { object: new Cathode(), key: null },//ck addition
             Channel: { object: new Channel(), key: null },
             BetterMixer: { object: new BetterMixer(), key: "FLOW" },
             RotaryMixer: { object: new RotaryMixer(), key: "FLOW" },
