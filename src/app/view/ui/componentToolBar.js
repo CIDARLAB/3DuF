@@ -28,6 +28,8 @@ export default class ComponentToolBar {
         this.__pumpButton = document.getElementById("pump_button");
         this.__pump3dButton = document.getElementById("pump3d_button");
         this.__portButton = document.getElementById("port_button");
+        this.__anodeButton = document.getElementById("anode_button");//CK edit
+        this.__cathodeButton = document.getElementById("cathode_button");//CK
         this.__viaButton = document.getElementById("via_button");
         this.__chamberButton = document.getElementById("chamber_button");
         this.__diamondButton = document.getElementById("diamond_button");
@@ -58,6 +60,8 @@ export default class ComponentToolBar {
         this.__pumpParams = document.getElementById("pump_params_button");
         this.__pump3dParams = document.getElementById("pump3d_params_button");
         this.__portParams = document.getElementById("port_params_button");
+        this.__anodeParams = document.getElementById("anode_params_button");//ck
+        this.__cathodeParams = document.getElementById("cathode_params_button");//ck
         this.__viaParams = document.getElementById("via_params_button");
         this.__chamberParams = document.getElementById("chamber_params_button");
         this.__diamondParams = document.getElementById("diamond_params_button");
@@ -87,6 +91,8 @@ export default class ComponentToolBar {
             Transition: this.__transitionButton,
             Via: this.__viaButton,
             Port: this.__portButton,
+            Anode: this.__anodeButton,//ck
+            Cathode: this.__cathodeButton,//ck
             CircleValve: this.__circleValveButton,
             Valve3D: this.__valve3dButton,
             Valve: this.__valveButton,
@@ -198,6 +204,20 @@ export default class ComponentToolBar {
             ref.setActiveButton("Port");
             ref.__viewManagerDelegate.switchTo2D();
         };
+        
+        this.__anodeButton.onclick = function() {//ck
+            Registry.viewManager.activateTool("Anode");//ck
+
+            ref.setActiveButton("Anode");//ck
+            ref.__viewManagerDelegate.switchTo2D();//ck
+        };//ck
+
+        this.__cathodeButton.onclick = function() {//ck
+            Registry.viewManager.activateTool("Cathode");//ck
+
+            ref.setActiveButton("Cathode");//ck
+            ref.__viewManagerDelegate.switchTo2D();//ck
+        };//ck
 
         // this.__viaButton.onclick = function() {
         //     Registry.viewManager.activateTool("Via");
@@ -335,6 +355,8 @@ export default class ComponentToolBar {
         this.__pump3dParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Pump3D", "Basic");
         this.__pumpParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Pump", "Basic");
         this.__portParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Port", "Basic");
+        this.__anodeParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Anode", "Basic");//ck
+        this.__cathodeParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Cathode", "Basic");//ck
         // this.__viaParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Via", "Basic");
         this.__chamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Chamber", "Basic");
         this.__diamondParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DiamondReactionChamber", "Basic");
