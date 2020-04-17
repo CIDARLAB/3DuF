@@ -24,7 +24,7 @@ export default class RTChamber extends Template {
         this.__defaults = {
             bendSpacing: 5.8 * 1000,
             channelWidth: 0.7 * 1000,
-            bendLength: 61.3 * 1000,
+            bendLength: 61.7 * 1000,
             orientation: "H",
             height: 250,
             partLength: 44 * 1000,
@@ -89,7 +89,7 @@ export default class RTChamber extends Template {
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "RT";
+        this.__mint = "RTChamber";
     }
 
     render2D(params, key) {
