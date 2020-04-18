@@ -27,7 +27,7 @@ export default class RTChamber extends Template {
             bendLength: 61.7 * 1000,
             orientation: "H",
             height: 250,
-            partLength: 44 * 1000,
+            partLength: 40.4 * 1000,
             verticalPartLength: 5.3 * 1000
         };
 
@@ -58,7 +58,7 @@ export default class RTChamber extends Template {
             bendLength: 62 * 1000,
             height: 1200,
             // new params
-            partLength: 4 * 1000,
+            partLength: 44 * 1000,
             verticalPartLength: 6 * 1000
         };
 
