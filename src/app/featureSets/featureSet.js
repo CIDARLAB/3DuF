@@ -6,6 +6,7 @@ import BetterMixer from "../library/betterMixer";
 import RotaryMixer from "../library/rotaryMixer";
 import AlignmentMarks from "../library/alignmentMarks";
 import CellTrapL from "../library/celltrapL";
+import Gelchannel from "../library/gelchannel";//CK
 import Chamber from "../library/chamber";
 import Connection from "../library/connection";
 import CurvedMixer from "../library/curvedMixer";
@@ -53,6 +54,15 @@ export default class FeatureSet {
                 object: new DiamondReactionChamber(),
                 key: null
             },
+            Gelchannel: { object: new Gelchannel(), key: "FLOW" },//CK
+            Gelchannel_cell: { object: new Gelchannel(), key: "CELL" },//CK
+            Chamber: { object: new Chamber(), key: null },//CK
+            Connection: { object: new Connection(), key: null },//CK
+            CurvedMixer: { object: new CurvedMixer(), key: null },//CK
+            DiamondReactionChamber: {//CK
+                object: new DiamondReactionChamber(),//CK
+                key: null//CK
+            },//CK
             DropletGen: { object: new DropletGenerator(), key: null },
             GradientGenerator: { object: new GradientGenerator(), key: null },
             Mux: { object: new Mux(), key: "FLOW" },
