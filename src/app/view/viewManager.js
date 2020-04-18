@@ -896,8 +896,6 @@ export default class ViewManager {
         this.tools["RectValve"] = new ComponentPositionTool("RectValve", "Basic");
         this.tools["Valve3D"] = new ValveInsertionTool("Valve3D", "Basic", true);
         this.tools["Port"] = new ComponentPositionTool("Port", "Basic");
-        this.tools["Anode"] = new ComponentPositionTool("Anode", "Basic");//Ck
-        this.tools["Cathode"] = new ComponentPositionTool("Cathode", "Basic");//Ck
         this.tools["Via"] = new PositionTool("Via", "Basic");
         this.tools["DiamondReactionChamber"] = new ComponentPositionTool("DiamondReactionChamber", "Basic");
         this.tools["BetterMixer"] = new ComponentPositionTool("BetterMixer", "Basic");
