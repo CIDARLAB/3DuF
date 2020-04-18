@@ -25,11 +25,14 @@
   },
   "dependencies": {
     "@dagrejs/graphlib": "^2.1.4",
+    "canvas": "^2.6.1",
     "dialog-polyfill": "^0.5.0",
     "dxf-parser": "^0.6.1",
     "exorcist": "^1.0.1",
     "handsontable": "^6.2.2",
     "install": "^0.12.2",
+    "jquery": "^3.5.0",
+    "jsdom": "^16.2.2",
     "jszip": "^2.6.1",
     "knockout": "^3.4.2",
     "md5": "^2.2.1",
@@ -39,7 +42,8 @@
     "paper": "^0.12.3",
     "three": "^0.114.0",
     "trackjs": "^3.1.2",
-    "wnumb": "^1.1.0"
+    "wnumb": "^1.1.0",
+    "xmldom": "^0.3.0"
   },
   "optionalDependencies": {
     "fsevents": "^2.1.2"
@@ -59,8 +63,8 @@
     "cover": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R spec --recursive --compilers js:babel/register ./src/test/",
     "check_pretty": "prettier --check './src/**/*.js'",
     "make_pretty": "prettier --write es6 --paerser babel './src/**/*.js'",
-    "eslint":"eslint './src/app/**/*.js'",
-    "eslint_fix":"eslint './src/app/**/*.js' --fix"
+    "eslint": "eslint './src/app/**/*.js'",
+    "eslint_fix": "eslint './src/app/**/*.js' --fix"
   },
   "repository": {
     "type": "git",

@@ -35,6 +35,7 @@ export default class ComponentToolBar {
         this.__curvedmixerButton = document.getElementById("curvedmixer_button");
         this.__mixerButton = document.getElementById("mixer_button");
         this.__gradientGeneratorButton = document.getElementById("gradientgenerator_button");
+        this.__thermoCycler = document.getElementById("thermoCycler_button")
         this.__treeButton = document.getElementById("tree_button");
         this.__ytreeButton = document.getElementById("ytree_button");
         this.__muxButton = document.getElementById("mux_button");
@@ -101,6 +102,7 @@ export default class ComponentToolBar {
             Tree: this.__treeButton,
             YTree: this.__ytreeButton,
             Mux: this.__muxButton,
+            "ThermoCycler": this.__thermoCyclerButton,
             Transposer: this.__transposerButton,
             RotaryMixer: this.__rotarymixerButton,
             DropletGen: this.__dropletgenButton,
@@ -177,7 +179,7 @@ export default class ComponentToolBar {
             ref.setActiveButton("Pump3D");
             ref.__viewManagerDelegate.switchTo2D();
         };
-
+        this.__thermoCyclerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("thermoCycler", "Basic");
         this.__alignmentMarksButton.onclick = function() {
             Registry.viewManager.activateTool("AlignmentMarks");
 
@@ -249,7 +251,12 @@ export default class ComponentToolBar {
             ref.setActiveButton("GradientGenerator");
             ref.__viewManagerDelegate.switchTo2D();
         };
+        this.__thermoCyclerButton.onlcick = function() {
+          Registry.viewManager.activateTool("ThermoCycler");
 
+          ref.setActiveButton("ThermoCycler");
+          ref.__viewManagerDelegate.switchTo2D();
+        }
         this.__treeButton.onclick = function() {
             Registry.viewManager.activateTool("Tree");
 
