@@ -46,6 +46,9 @@ export default class ComponentToolBar {
         this.__llChamberButton = document.getElementById("llchamber_button");
         this.__threeDMixerButton = document.getElementById("3dmixer_button");
 
+        // *** david was here
+        this.__sideSlotButton = document.getElementById("sideSlot_button");
+
         //Create all the parameter menu buttons
 
         this.__channelParams = document.getElementById("channel_params_button");
@@ -75,6 +78,9 @@ export default class ComponentToolBar {
         this.__alignmentMarksParams = document.getElementById("alignmentmarks_params_button");
         this.__llChamberParams = document.getElementById("llchamber_params_button");
         this.__threeDMixerParams = document.getElementById("3dmixer_params_button");
+
+        // *** david was here
+        this.__sideSlotParams = document.getElementById("sideSlot_params_buttom");
 
         this.__insertTextDialog = new InsertTextDialog();
 
@@ -107,7 +113,10 @@ export default class ComponentToolBar {
             CellTrapL: this.__celltraplButton,
             AlignmentMarks: this.__alignmentMarksButton,
             LLChamber: this.__llChamberButton,
-            "3DMixer": this.__threeDMixerButton
+            "3DMixer": this.__threeDMixerButton,
+
+            // *** david was here
+            "SideSlot": this.__sideSlotButton
         };
 
         this.__setupEventHandlers();
@@ -305,6 +314,14 @@ export default class ComponentToolBar {
             ref.setActiveButton("LLChamber");
             ref.__viewManagerDelegate.switchTo2D();
         };
+
+        // *** david was here
+        this.__sideSlotButton.onclick = function() {
+            Registry.viewManager.activateTool("SideSlot");
+
+            ref.setActiveButton("SideSlot");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
     }
 
     setActiveButton(feature) {
@@ -353,6 +370,9 @@ export default class ComponentToolBar {
         this.__alignmentMarksParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("AlignmentMarks", "Basic");
         this.__llChamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LLChamber", "Basic");
         this.__threeDMixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMixer", "Basic");
+
+        // *** david was here
+        this.__sideSlotParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("SideSlot", "Basic");
     }
 
     static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {
