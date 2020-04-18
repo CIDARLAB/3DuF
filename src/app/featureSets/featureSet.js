@@ -16,6 +16,7 @@ import Mux from "../library/mux";
 import Pump from "../library/pump";
 import Pump3D from "../library/pump3D";
 import RoundedChannel from "../library/roundedChannel";
+import thermoCycler from "../library/thermoCycler"
 import Transition from "../library/transition";
 import Transposer from "../library/transposer";
 import Valve from "../library/valve";
@@ -62,6 +63,7 @@ export default class FeatureSet {
             Pump3D: { object: new Pump3D(), key: "FLOW" },
             Pump3D_control: { object: new Pump3D(), key: "CONTROL" },
             RoundedChannel: { object: new RoundedChannel(), key: null },
+            thermoCycler: { object: new thermoCycler(), key: "FLOW"},
             Transition: { object: new Transition(), key: null },
             Transposer: { object: new Transposer(), key: "FLOW" },
             Transposer_control: { object: new Transposer(), key: "CONTROL" },
