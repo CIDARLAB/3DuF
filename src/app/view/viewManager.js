@@ -908,6 +908,7 @@ export default class ViewManager {
         this.tools["Transposer"] = new MultilayerPositionTool("Transposer", "Basic");
         this.tools["RotaryMixer"] = new MultilayerPositionTool("RotaryMixer", "Basic");
         this.tools["CellTrapL"] = new CellPositionTool("CellTrapL", "Basic");
+        this.tools["Gelchannel"] = new CellPositionTool("Gelchannel", "Basic");//ck
         this.tools["DropletGen"] = new ComponentPositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
         this.tools["AlignmentMarks"] = new MultilayerPositionTool("AlignmentMarks", "Basic");
