@@ -448,6 +448,14 @@ export default class Device {
                     },
                     json.name
                 );
+            }else{
+                newDevice = new Device(
+                    {
+                        width: 135000,
+                        length: 85000
+                    },
+                    json.name
+                );
             }
         } else {
             console.warn("Could not find device params, using some default values for device size");
