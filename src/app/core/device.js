@@ -480,6 +480,12 @@ export default class Device {
     }
 
     static fromInterchangeV1(json) {
+        console.log("OLD:", json);
+
+        json = sanitizeJSON(json);
+        
+        console.log("NEW:", json);
+
         let newDevice;
         if (json.hasOwnProperty("params")) {
             if (json.params.hasOwnProperty("width") && json.params.hasOwnProperty("length")) {

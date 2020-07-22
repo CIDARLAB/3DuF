@@ -41,7 +41,7 @@ export default class GradientGenerator extends Template {
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            orientation: "",
+            
             in: "",
             out: "",
             spacing: "&mu;m",

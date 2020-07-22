@@ -106,10 +106,6 @@ export default class Valve extends Template {
             strokeWidth: 0
         });
 
-        // if(orientation == "V"){
-        //     rotation = 90;
-        // }
-
         return rec.rotate(rotation, px, py);
     }
 

@@ -35,7 +35,7 @@ export default class ThreeDMixer extends Template {
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            orientation: "",
+            
             height: "&mu;m"
         };
 
@@ -148,9 +148,7 @@ export default class ThreeDMixer extends Template {
             }
         }
 
-        if (orientation === "H") {
-            serp.rotate(270, new paper.Point(x, y));
-        }
+        serp.rotate(rotation, new paper.Point(x, y));
         serp.fillColor = color;
         return serp;
     }

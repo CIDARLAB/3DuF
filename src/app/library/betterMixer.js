@@ -35,7 +35,7 @@ export default class BetterMixer extends Template {
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            orientation: "",
+            
             height: "&mu;m"
         };
 

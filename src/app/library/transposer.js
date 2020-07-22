@@ -30,7 +30,7 @@ export default class Transposer extends Template {
         };
 
         this.__units = {
-            orientation: "",
+            
             valveRadius: "&mu;m",
             height: "&mu;m",
             gap: "&mu;m",

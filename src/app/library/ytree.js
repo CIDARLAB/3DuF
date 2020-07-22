@@ -35,7 +35,7 @@ export default class YTree extends Template {
 
         this.__units = {
             flowChannelWidth: "&mu;m",
-            orientation: "",
+            
             spacing: "&mu;m",
             leafs: "",
             width: "&mu;m",
