@@ -34,7 +34,7 @@ export default class CurvedMixer extends Template {
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            orientation: "",
+            
             height: "&mu;m"
         };
 
@@ -153,12 +153,7 @@ export default class CurvedMixer extends Template {
         }
         serp.addChild(toprect);
 
-        if (orientation == "V") {
-            serp.rotate(0, x + channelWidth, y);
-        } else {
-            serp.rotate(90, x + channelWidth, y);
-        }
-
+        serp.rotate(rotation, x + channelWidth, y);
         serp.fillColor = color;
         return serp;
     }

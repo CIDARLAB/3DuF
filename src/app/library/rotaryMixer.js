@@ -33,7 +33,7 @@ export default class RotaryMixer extends Template {
         };
 
         this.__units = {
-            orientation: "",
+            
             radius: "&mu;m",
             flowChannelWidth: "&mu;m",
             valveWidth: "&mu;m",
