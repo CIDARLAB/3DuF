@@ -49,7 +49,8 @@ export default class RotaryMixer extends Template {
             valveLength: 0.1 * 2.4 * 1000,
             valveSpacing: 0.1 * 300,
             valveRadius: 0.1 * 1.2 * 1000,
-            height: 0.1 * 200
+            height: 0.1 * 200,
+            rotation: 0
         };
 
         this.__maximum = {
@@ -59,7 +60,8 @@ export default class RotaryMixer extends Template {
             valveLength: 10 * 2.4 * 1000,
             valveSpacing: 10 * 300,
             valveRadius: 10 * 1.2 * 1000,
-            height: 10 * 200
+            height: 10 * 200,
+            rotation: 360
         };
 
         this.__placementTool = "MultilayerPositionTool";

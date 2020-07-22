@@ -49,7 +49,7 @@ export default class Chamber extends Template {
             length: 50000,
             height: 50000,
             cornerRadius: 1000,
-            rotation: 90
+            rotation: 360
         };
 
         this.__featureParams = {

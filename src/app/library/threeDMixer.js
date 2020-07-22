@@ -43,7 +43,7 @@ export default class ThreeDMixer extends Template {
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            rotation: 270,
+            rotation: 0,
             bendLength: 10,
             height: 10
         };
@@ -52,7 +52,7 @@ export default class ThreeDMixer extends Template {
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            rotation: 270,
+            rotation: 360,
             bendLength: 12 * 1000,
             height: 1200
         };
