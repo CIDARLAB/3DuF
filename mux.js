@@ -58,7 +58,8 @@ export default class Mux extends Template {
             length: 60,
             height: 10,
             stageLength: 100,
-            controlChannelWidth: 10
+            controlChannelWidth: 10,
+            rotation: 0
         };
 
         this.__maximum = {
@@ -69,7 +70,8 @@ export default class Mux extends Template {
             length: 12 * 1000,
             height: 1200,
             stageLength: 6000,
-            controlChannelWidth: 2000
+            controlChannelWidth: 2000,
+            rotation: 360
         };
 
         this.__featureParams = {

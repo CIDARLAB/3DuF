@@ -43,7 +43,8 @@ export default class Transposer extends Template {
             height: 0.1 * 100,
             gap: 0.5 * 10,
             valveSpacing: 0.1 * 1000,
-            channelWidth: 25
+            channelWidth: 25,
+            rotation: 0
         };
 
         this.__maximum = {
@@ -51,7 +52,8 @@ export default class Transposer extends Template {
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
             valveSpacing: 0.1 * 10000,
-            channelWidth: 25e3
+            channelWidth: 25e3,
+            rotation: 360
         };
 
         this.__featureParams = {

@@ -48,7 +48,7 @@ export default class Pump extends Template {
         };
 
         this.__maximum = {
-            rotation: 180,
+            rotation: 360,
             width: 6000,
             length: 24 * 1000,
             height: 1200,
