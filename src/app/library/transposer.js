@@ -12,7 +12,7 @@ export default class Transposer extends Template {
         };
 
         this.__heritable = {
-            orientation: "String",
+            rotation: "Float",
             valveRadius: "Float",
             height: "Float",
             gap: "Float",
@@ -21,7 +21,7 @@ export default class Transposer extends Template {
         };
 
         this.__defaults = {
-            orientation: "V",
+            rotation: 0,
             valveRadius: 1.2 * 1000,
             height: 250,
             gap: 0.6 * 1000,
@@ -56,7 +56,7 @@ export default class Transposer extends Template {
 
         this.__featureParams = {
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
@@ -67,7 +67,7 @@ export default class Transposer extends Template {
 
         this.__targetParams = {
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
@@ -111,7 +111,7 @@ export default class Transposer extends Template {
         let gap = params["gap"];
         let radius = params["valveRadius"];
         let color = params["color"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let channelWidth = params["channelWidth"];
         let valvespacing = params["valveSpacing"];
         let transposer_flow = new paper.CompoundPath();
@@ -212,14 +212,6 @@ export default class Transposer extends Template {
 
         transposer_flow.fillColor = color;
 
-        let rotation = 0;
-
-        if (orientation == "V") {
-            rotation = 90;
-        } else {
-            rotation = 0;
-        }
-
         transposer_flow.rotate(rotation, px + 3 * valvespacing + 1.5 * channelWidth + 2 * radius, py + channelWidth + 2 * valvespacing + 2 * radius);
 
         return transposer_flow;
@@ -269,7 +261,7 @@ export default class Transposer extends Template {
         let gap = params["gap"];
         let radius = params["valveRadius"];
         let color = params["color"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let channelWidth = params["channelWidth"];
         let valvespacing = params["valveSpacing"];
         let transposer_control = new paper.CompoundPath();
@@ -336,14 +328,6 @@ export default class Transposer extends Template {
         let bottomleftpoint = new paper.Point(topleftpoint.x + +4 * valvespacing + 3 * channelWidth + 4 * radius, topleftpoint.y + channelWidth);
         let rectangle = new paper.Path.Rectangle(topleftpoint, bottomleftpoint);
         transposer_control.addChild(rectangle);
-
-        let rotation = 0;
-
-        if (orientation == "V") {
-            rotation = 90;
-        } else {
-            rotation = 0;
-        }
 
         transposer_control.rotate(rotation, px + 3 * valvespacing + 1.5 * channelWidth + 2 * radius, py + channelWidth + 2 * valvespacing + 2 * radius);
 

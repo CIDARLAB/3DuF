@@ -17,7 +17,7 @@ export default class BetterMixer extends Template {
             numberOfBends: "Float",
             channelWidth: "Float",
             bendLength: "Float",
-            orientation: "String",
+            rotation: "Float",
             height: "Float"
         };
 
@@ -25,7 +25,7 @@ export default class BetterMixer extends Template {
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
-            orientation: "V",
+            rotation: 0,
             bendLength: 2.46 * 1000,
             height: 250
         };
@@ -43,7 +43,7 @@ export default class BetterMixer extends Template {
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            orientation: "H",
+            rotation: 270,
             bendLength: 10,
             height: 10
         };
@@ -52,7 +52,7 @@ export default class BetterMixer extends Template {
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            orientation: "H",
+            rotation: 270,
             bendLength: 12 * 1000,
             height: 1200
         };
@@ -68,7 +68,7 @@ export default class BetterMixer extends Template {
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength"
         };
 
@@ -76,7 +76,7 @@ export default class BetterMixer extends Template {
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength"
         };
 
@@ -89,7 +89,7 @@ export default class BetterMixer extends Template {
         let channelWidth = params["channelWidth"];
         let bendLength = params["bendLength"];
         let bendSpacing = params["bendSpacing"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let numberOfBends = params["numberOfBends"];
 
         let ports = [];
@@ -105,7 +105,7 @@ export default class BetterMixer extends Template {
         let channelWidth = params["channelWidth"];
         let bendLength = params["bendLength"];
         let bendSpacing = params["bendSpacing"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let numBends = params["numberOfBends"];
         let x = params["position"][0];
         let y = params["position"][1];
@@ -132,9 +132,7 @@ export default class BetterMixer extends Template {
             }
         }
 
-        if (orientation === "H") {
-            serp.rotate(270, new paper.Point(x, y));
-        }
+        serp.rotate(rotation, new paper.Point(x, y));
         serp.fillColor = color;
         return serp;
     }
