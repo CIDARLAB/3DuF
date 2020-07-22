@@ -1019,15 +1019,33 @@ export default class ViewManager {
         //TODO: Run through the current selection and generate the valve map for every 
         //vavle that is in the Selection
         let selection = this.tools["MouseSelectTool"].currentSelection;
-        
+        let valves = [];
+        let connection = null;
         //TODO: run though the items
         for(let render_element of selection){
             //Check if render_element is associated with a VALVE/VALVE3D
-            console.log(render_element);
+            let component = this.currentDevice.getComponentForFeatureID(render_element.featureID);
+            if(component != null){
+                console.log("Component Type:", component.getType());
+                let type = component.getType();
+                if(type == "Valve3D" || type == "Valve"){
+                    valves.push(component);
+                }
+            }
 
-            //Add to the valvemap
-            this.currentDevice.insertValve(valve, connection, getIsValve3D(valve));
+            connection = this.currentDevice.getConnectionForFeatureID(render_element.featureID);
+            
         }
         
+        //Add to the valvemap
+        for(let valve of valves){
+            let valve_type = false;
+            if(valve.getType() == 'Valve3D'){
+                valve_type = true
+            }
+            console.log("Adding Valve: ", valve);
+            this.currentDevice.insertValve(valve, connection, valve_type);
+        }
+
     }
 }
