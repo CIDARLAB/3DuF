@@ -12,7 +12,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__heritable = {
-            orientation: "String",
+            rotation: "Float",
             channelWidth: "Float",
             length: "Float",
             width: "Float",
@@ -20,7 +20,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__defaults = {
-            orientation: "V",
+            rotation: 0,
             channelWidth: 0.8 * 1000,
             width: 1.23 * 1000,
             length: 4.92 * 1000,
@@ -51,7 +51,7 @@ export default class DiamondReactionChamber extends Template {
 
         this.__featureParams = {
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             channelWidth: "channelWidth",
             length: "length",
             width: "width"
@@ -82,7 +82,7 @@ export default class DiamondReactionChamber extends Template {
         let cw = params["channelWidth"];
         let l = params["length"];
         let w = params["width"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let color = params["color"];
         let p0, p1, p2, p3, p4, p5;
         if (orientation == "H") {

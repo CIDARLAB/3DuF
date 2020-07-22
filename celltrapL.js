@@ -14,7 +14,7 @@ export default class CellTrapL extends Template {
         this.__heritable = {
             chamberLength: "Float",
             feedingChannelWidth: "Float",
-            orientation: "String",
+            rotation: "Float",
             chamberWidth: "Float",
             numberOfChambers: "Float",
             chamberSpacing: "Float",
@@ -24,7 +24,7 @@ export default class CellTrapL extends Template {
         this.__defaults = {
             chamberLength: 1.2 * 1000,
             feedingChannelWidth: 0.41 * 1000,
-            orientation: "H",
+            rotation: 270,
             chamberWidth: 1.23 * 1000,
             numberOfChambers: 6,
             chamberSpacing: 2.46 * 1000,
@@ -61,7 +61,7 @@ export default class CellTrapL extends Template {
 
         this.__featureParams = {
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             chamberWidth: "chamberWidth",
             chamberLength: "chamberLength",
             numberOfChambers: "numberOfChambers",
@@ -71,7 +71,7 @@ export default class CellTrapL extends Template {
         };
 
         this.__targetParams = {
-            orientation: "orientation",
+            rotation: "rotation",
             chamberWidth: "chamberWidth",
             chamberLength: "chamberLength",
             numberOfChambers: "numberOfChambers",
@@ -100,7 +100,7 @@ export default class CellTrapL extends Template {
     }
 
     render2DTarget(key, params) {
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let position = params["position"];
         let chamberLength = params["chamberLength"];
         let numChambers = params["numberOfChambers"];
@@ -158,7 +158,7 @@ export default class CellTrapL extends Template {
     }
 
     __drawFlow(params) {
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let position = params["position"];
         let chamberLength = params["chamberLength"];
         let numChambers = params["numberOfChambers"];
@@ -201,7 +201,7 @@ export default class CellTrapL extends Template {
     }
 
     __drawCell(params) {
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let position = params["position"];
         let chamberLength = params["chamberLength"];
         let numChambers = params["numberOfChambers"];
