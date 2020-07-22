@@ -40,7 +40,7 @@ export default class Device {
 
     setValveMap(valvemap, isvalve3Ddata){
         this.__valveMap = valvemap;
-        //tODO: Set the vavle 3d data
+        this.__valveIs3DMap = isvalve3Ddata;
     }
 
     getName() {
@@ -435,10 +435,23 @@ export default class Device {
     toInterchangeV1_1() {
         let output = {};
         output.name = this.name;
+
+        let valvetypemap = {}
+        for(let [key, value] of this.__valveIs3DMap){
+            if(value){
+                //3D Valve
+                valvetypemap[key] = 'NORMALLY_CLOSED';
+            }else{
+                valvetypemap[key] = 'NORMALLY_OPEN';
+            }
+            
+        }
+
         output.params = {
             width: this.getXSpan(),
             length: this.getYSpan(),
-            valveMap: MapUtils.mapToJson(this.__valveMap)
+            valveMap: MapUtils.mapToJson(this.__valveMap),
+            valveTypeMap: valvetypemap
         };
         //TODO: Use this to dynamically create enough layers to scroll through
         // output.layers = this.__layersToInterchangeV1();
@@ -564,14 +577,33 @@ export default class Device {
         newDevice.__loadComponentsFromInterchangeV1(json.components);
         newDevice.__loadConnectionsFromInterchangeV1(json.connections);
 
-        let valve_map;
+        let valve_map, valve_type_map;
         //Import ValveMap
-        if (json.params.hasOwnProperty("valveMap")){
+        if (json.params.hasOwnProperty("valveMap") && json.params.hasOwnProperty("valveTypeMap")){
             valve_map = MapUtils.jsonToMap(json.params.valveMap);
             console.log("Imported valvemap", valve_map);
-            newDevice.setValveMap(valve_map);
-        }
+            
 
+            console.log("Loaded valvetypemap", json.params.valveTypeMap);
+            valve_type_map = MapUtils.jsonToMap(json.params.valveTypeMap);
+
+
+            console.log(json.params.valveTypeMap, valve_type_map);
+            let valveis3dmap = new Map();
+            for(let [key, value] of valve_type_map){
+                console.log("Setting type:",key, value);
+                switch(value){
+                    case 'NORMALLY_OPEN':
+                        valveis3dmap.set(key, false);
+                        break;
+                    case 'NORMALLY_CLOSED':
+                        valveis3dmap.set(key, true);
+                        break;
+                }
+            }
+            console.log("Imported valvemap", valve_map, valveis3dmap);
+            newDevice.setValveMap(valve_map, valveis3dmap);
+        }
 
         //TODO: Use this to render the device features
 
