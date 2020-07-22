@@ -12,6 +12,8 @@ import EdgeFeature from "./edgeFeature";
 import DXFObject from "./dxfObject";
 import * as FeatureSets from "../featureSets";
 
+import * as MapUtils from "../utils/mapUtils";
+
 const StringValue = Parameters.StringValue;
 
 /**
@@ -33,6 +35,12 @@ export default class Device {
         //Map to store <componentID, connectionID>
         this.__valveMap = new Map();
         this.__valveIs3DMap = new Map();
+    }
+
+
+    setValveMap(valvemap, isvalve3Ddata){
+        this.__valveMap = valvemap;
+        //tODO: Set the vavle 3d data
     }
 
     getName() {
@@ -424,6 +432,26 @@ export default class Device {
         return output;
     }
 
+    toInterchangeV1_1() {
+        let output = {};
+        output.name = this.name;
+        output.params = {
+            width: this.getXSpan(),
+            length: this.getYSpan(),
+            valveMap: MapUtils.mapToJson(this.__valveMap)
+        };
+        //TODO: Use this to dynamically create enough layers to scroll through
+        // output.layers = this.__layersToInterchangeV1();
+        output.components = this.__componentsToInterchangeV1();
+        output.connections = this.__connectionToInterchangeV1();
+        //TODO: Use this to render the device features
+        output.features = this.__featureLayersToInterchangeV1();
+        output.version = 1.1;
+        output.groups = this.__groupsToJSON();
+        return output;
+    }
+
+
     static fromJSON(json) {
         let defaults = json.defaults;
         let newDevice = new Device(
@@ -498,6 +526,80 @@ export default class Device {
 
         return newDevice;
     }
+
+    static fromInterchangeV1_1(json) {
+        let newDevice;
+        
+        if (json.hasOwnProperty("params")) {
+            if (json.params.hasOwnProperty("xspan") && json.params.hasOwnProperty("yspan")) {
+                newDevice = new Device(
+                    {
+                        width: json.params.xpan,
+                        length: json.params.yspan
+                    },
+                    json.name
+                );
+            }else{
+                newDevice = new Device(
+                    {
+                        width: 135000,
+                        length: 85000
+                    },
+                    json.name
+                );
+            }
+        } else {
+            console.warn("Could not find device params, using some default values for device size");
+            newDevice = new Device(
+                {
+                    width: 135000,
+                    length: 85000
+                },
+                json.name
+            );
+        }
+        //TODO: Use this to dynamically create enough layers to scroll through
+        //newDevice.__loadLayersFromInterchangeV1(json.layers);
+        //TODO: Use these two generate a rat's nest
+        newDevice.__loadComponentsFromInterchangeV1(json.components);
+        newDevice.__loadConnectionsFromInterchangeV1(json.connections);
+
+        let valve_map;
+        //Import ValveMap
+        if (json.params.hasOwnProperty("valveMap")){
+            valve_map = MapUtils.jsonToMap(json.params.valveMap);
+            console.log("Imported valvemap", valve_map);
+            newDevice.setValveMap(valve_map);
+        }
+
+
+        //TODO: Use this to render the device features
+
+        //Check if JSON has features else mark
+        if (json.hasOwnProperty("features")) {
+            newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
+        } else {
+            //We need to add a default layer
+            let newlayer = new Layer(null, "flow");
+            newDevice.addLayer(newlayer);
+            newlayer = new Layer(null, "control");
+            newDevice.addLayer(newlayer);
+        }
+
+        //Updating cross-references
+        let features = newDevice.getAllFeaturesFromDevice();
+        let feature;
+        for (let i in features) {
+            //console.log("Feature:", features[i]);
+            feature = features[i];
+            if (feature.referenceID != null) {
+                newDevice.updateObjectReference(feature.referenceID, feature.getID());
+            }
+        }
+
+        return newDevice;
+    }
+
 
     render2D() {
         return this.__renderLayers2D();

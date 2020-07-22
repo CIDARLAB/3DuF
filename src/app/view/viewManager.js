@@ -548,6 +548,12 @@ export default class ViewManager {
                 Registry.currentDevice = device;
                 this.__currentDevice = device;
                 break;
+            case 1.1:
+                this.loadCustomComponents(json);
+                device = Device.fromInterchangeV1_1(json);
+                Registry.currentDevice = device;
+                this.__currentDevice = device;
+                break;
             default:
                 alert("Version '" + version + "' is not supported by 3DuF !");
             }
@@ -970,7 +976,7 @@ export default class ViewManager {
     }
 
     generateExportJSON() {
-        let json = this.currentDevice.toInterchangeV1();
+        let json = this.currentDevice.toInterchangeV1_1();
         json.customComponents = this.customComponentManager.toJSON();
         return json;
     }
@@ -1001,5 +1007,27 @@ export default class ViewManager {
         }
 
         DAFDPlugin.fixLayout(params);
+    }
+
+
+    
+    /**
+     * This is the method we need to call to fix the valvemaps
+     * @memberof ViewManager
+     */
+    createValveMapFromSelection(){
+        //TODO: Run through the current selection and generate the valve map for every 
+        //vavle that is in the Selection
+        let selection = this.tools["MouseSelectTool"].currentSelection;
+        
+        //TODO: run though the items
+        for(let render_element of selection){
+            //Check if render_element is associated with a VALVE/VALVE3D
+            console.log(render_element);
+
+            //Add to the valvemap
+            this.currentDevice.insertValve(valve, connection, getIsValve3D(valve));
+        }
+        
     }
 }
