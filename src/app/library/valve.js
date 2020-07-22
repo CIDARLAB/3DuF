@@ -85,7 +85,6 @@ export default class Valve extends Template {
     }
 
     render2D(params, key) {
-        let orientation = params["orientation"];
         let position = params["position"];
         let px = position[0];
         let py = position[1];

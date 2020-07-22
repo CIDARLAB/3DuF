@@ -13,7 +13,7 @@ export default class Tree extends Template {
 
         this.__heritable = {
             flowChannelWidth: "Float",
-            orientation: "String",
+            rotation: "Float",
             spacing: "Float",
             leafs: "Float",
             width: "Float",
@@ -24,7 +24,7 @@ export default class Tree extends Template {
 
         this.__defaults = {
             flowChannelWidth: 0.8 * 1000,
-            orientation: "V",
+            rotation: 0,
             spacing: 4 * 1000,
             leafs: 8,
             width: 2.46 * 1000,
@@ -65,7 +65,7 @@ export default class Tree extends Template {
         this.__featureParams = {
             position: "position",
             flowChannelWidth: "flowChannelWidth",
-            orientation: "orientation",
+            rotation: "rotation",
             spacing: "spacing",
             width: "width",
             leafs: "leafs",
@@ -75,7 +75,7 @@ export default class Tree extends Template {
 
         this.__targetParams = {
             flowChannelWidth: "flowChannelWidth",
-            orientation: "orientation",
+            rotation: "rotation",
             spacing: "spacing",
             width: "width",
             leafs: "leafs",
@@ -97,7 +97,7 @@ export default class Tree extends Template {
     render2D(params, key) {
         let position = params["position"];
         let cw = params["flowChannelWidth"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let direction = params["direction"];
         let spacing = params["spacing"];
         let leafs = params["leafs"];
@@ -125,16 +125,6 @@ export default class Tree extends Template {
         //Draw the tree
 
         treepath.fillColor = color;
-        let rotation = 0;
-        // console.log("Orientation: " + orientation);
-        // console.log("Direction: " + direction);
-        if (orientation == "H" && direction == "OUT") {
-            rotation = 180;
-        } else if (orientation == "V" && direction == "IN") {
-            rotation = 270;
-        } else if (orientation == "V" && direction == "OUT") {
-            rotation = 90;
-        }
         return treepath.rotate(rotation, px, py);
     }
 

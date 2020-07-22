@@ -27,7 +27,7 @@ export default class GradientGenerator extends Template {
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
-            orientation: "V",
+            rotation: 0,
             bendLength: 2.46 * 1000,
             in: 1,
             out: 3,
@@ -53,7 +53,7 @@ export default class GradientGenerator extends Template {
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            orientation: "H",
+            rotation: 270,
             bendLength: 10,
             in: 1,
             out: 3,
@@ -66,7 +66,7 @@ export default class GradientGenerator extends Template {
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            orientation: "H",
+            rotation: 270,
             bendLength: 12 * 1000,
             in: 30,
             out: 90,
@@ -80,7 +80,7 @@ export default class GradientGenerator extends Template {
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength",
             in: "in",
             out: "out",
@@ -92,7 +92,7 @@ export default class GradientGenerator extends Template {
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength",
             in: "in",
             out: "out",
@@ -117,11 +117,10 @@ export default class GradientGenerator extends Template {
         let numBends = params["numberOfBends"];
         let channelWidth = params["channelWidth"];
         let bendLength = params["bendLength"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let invalue = params["in"];
         let outvalue = params["out"];
         let spacing = params["spacing"]; //Center to Center
-        let rotation = params["rotation"];
         let color = params["color"];
 
         let posx = position[0];

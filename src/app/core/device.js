@@ -13,6 +13,7 @@ import DXFObject from "./dxfObject";
 import * as FeatureSets from "../featureSets";
 
 import * as MapUtils from "../utils/mapUtils";
+import { sanitizeJSON } from "../utils/parchmintSanitizationUtils";
 
 const StringValue = Parameters.StringValue;
 
@@ -541,6 +542,12 @@ export default class Device {
     }
 
     static fromInterchangeV1_1(json) {
+        console.log("OLD:", json);
+
+        json = sanitizeJSON(json);
+        
+        console.log("NEW:", json);
+
         let newDevice;
         
         if (json.hasOwnProperty("params")) {
