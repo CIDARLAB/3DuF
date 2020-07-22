@@ -50,7 +50,8 @@ export default class YTree extends Template {
             leafs: 2,
             width: 60,
             height: 10,
-            stageLength: 100
+            stageLength: 100,
+            rotation: 0
         };
 
         this.__maximum = {
@@ -59,7 +60,8 @@ export default class YTree extends Template {
             leafs: 2,
             width: 12 * 1000,
             height: 1200,
-            stageLength: 6000
+            stageLength: 6000,
+            rotation: 360
         };
 
         this.__featureParams = {

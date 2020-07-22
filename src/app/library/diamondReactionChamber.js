@@ -39,14 +39,16 @@ export default class DiamondReactionChamber extends Template {
             channelWidth: 10,
             width: 30,
             length: 120,
-            height: 10
+            height: 10,
+            roation: 0
         };
 
         this.__maximum = {
             channelWidth: 2000,
             width: 6000,
             length: 24 * 1000,
-            height: 1200
+            height: 1200,
+            rotation: 360
         };
 
         this.__featureParams = {

@@ -52,7 +52,7 @@ export default class BetterMixer extends Template {
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            rotation: 270,
+            rotation: 360,
             bendLength: 12 * 1000,
             height: 1200
         };

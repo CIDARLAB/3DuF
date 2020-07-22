@@ -47,7 +47,8 @@ export default class CellTrapL extends Template {
             chamberWidth: 30,
             numberOfChambers: 1,
             chamberSpacing: 60,
-            height: 10
+            height: 10,
+            rotation: 0
         };
 
         this.__maximum = {
@@ -56,7 +57,8 @@ export default class CellTrapL extends Template {
             chamberWidth: 6000,
             numberOfChambers: 10,
             chamberSpacing: 12 * 1000,
-            height: 1200
+            height: 1200,
+            rotation: 360
         };
 
         this.__featureParams = {
