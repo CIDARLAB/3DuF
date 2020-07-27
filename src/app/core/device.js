@@ -12,7 +12,7 @@ import EdgeFeature from "./edgeFeature";
 import DXFObject from "./dxfObject";
 import * as FeatureSets from "../featureSets";
 
-import * as MapUtils from "../utils/mapUtils";
+import * as IOUtils from "../utils/ioUtils";
 
 const StringValue = Parameters.StringValue;
 
@@ -448,9 +448,9 @@ export default class Device {
         }
 
         output.params = {
-            width: this.getXSpan(),
-            length: this.getYSpan(),
-            valveMap: MapUtils.mapToJson(this.__valveMap),
+            xspan: this.getXSpan(),
+            yspan: this.getYSpan(),
+            valveMap: IOUtils.mapToJson(this.__valveMap),
             valveTypeMap: valvetypemap
         };
         //TODO: Use this to dynamically create enough layers to scroll through
@@ -541,13 +541,14 @@ export default class Device {
     }
 
     static fromInterchangeV1_1(json) {
+        IOUtils.sanitizeV1Plus(json);
         let newDevice;
         
         if (json.hasOwnProperty("params")) {
             if (json.params.hasOwnProperty("xspan") && json.params.hasOwnProperty("yspan")) {
                 newDevice = new Device(
                     {
-                        width: json.params.xpan,
+                        width: json.params.xspan,
                         length: json.params.yspan
                     },
                     json.name
@@ -580,12 +581,12 @@ export default class Device {
         let valve_map, valve_type_map;
         //Import ValveMap
         if (json.params.hasOwnProperty("valveMap") && json.params.hasOwnProperty("valveTypeMap")){
-            valve_map = MapUtils.jsonToMap(json.params.valveMap);
+            valve_map = IOUtils.jsonToMap(json.params.valveMap);
             console.log("Imported valvemap", valve_map);
             
 
             console.log("Loaded valvetypemap", json.params.valveTypeMap);
-            valve_type_map = MapUtils.jsonToMap(json.params.valveTypeMap);
+            valve_type_map = IOUtils.jsonToMap(json.params.valveTypeMap);
 
 
             console.log(json.params.valveTypeMap, valve_type_map);
