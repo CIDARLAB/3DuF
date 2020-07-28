@@ -93,6 +93,8 @@ export default class Pump3D extends Template {
             return this.__drawFlow(params);
         } else if (key == "CONTROL") {
             return this.__drawControl(params);
+        } else if (key == "INVERSE"){
+            return this.__drawInverse(params);
         }
     }
 
@@ -183,6 +185,37 @@ export default class Pump3D extends Template {
     }
 
     __drawControl(params) {
+        let circ;
+        let position = params["position"];
+        let radius = params["valveRadius"];
+        let color = params["color"];
+        let rotation = params["rotation"];
+        let spacing = params["spacing"];
+
+        console.log("Spacing:", spacing);
+
+        let ret = new paper.CompoundPath();
+
+        let center = new paper.Point(position[0], position[1]);
+
+        circ = new paper.Path.Circle(center, radius);
+        ret.addChild(circ);
+
+        let topcenter = new paper.Point(position[0], position[1] - spacing);
+        circ = new paper.Path.Circle(topcenter, radius);
+        ret.addChild(circ);
+
+        let bottomcenter = new paper.Point(position[0], position[1] + spacing);
+        circ = new paper.Path.Circle(bottomcenter, radius);
+        ret.addChild(circ);
+
+        ret.rotate(rotation, center);
+        ret.fillColor = color;
+        return ret;
+    }
+
+
+    __drawInverse(params){
         let circ;
         let position = params["position"];
         let radius = params["valveRadius"];

@@ -39,7 +39,7 @@ export default class ManufacturingLayer {
      * @param feature
      */
     generateFeatureRender(feature, renderkey) {
-        console.log("Generating Render for invisible feature", feature);
+        console.log("Generating Render for invisible feature", feature, renderkey);
 
         let render = FeatureRenderer2D.renderFeature(feature, renderkey);
         this.__features.push(render);
