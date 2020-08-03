@@ -107,7 +107,7 @@ export default class ComponentToolBar {
             CellTrapL: this.__celltraplButton,
             AlignmentMarks: this.__alignmentMarksButton,
             LLChamber: this.__llChamberButton,
-            "3DMixer": this.__threeDMixerButton
+            "3DMixer": this.__threeDMixerButton,
         };
 
         this.__setupEventHandlers();
@@ -199,12 +199,12 @@ export default class ComponentToolBar {
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        // this.__viaButton.onclick = function() {
-        //     Registry.viewManager.activateTool("Via");
-        //
-        //     ref.setActiveButton("Via");
-        //     ref.__viewManagerDelegate.switchTo2D();
-        // };
+        this.__viaButton.onclick = function() {
+            Registry.viewManager.activateTool("Via");
+        
+            ref.setActiveButton("Via");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
 
         this.__chamberButton.onclick = function() {
             Registry.viewManager.activateTool("Chamber");
