@@ -70,5 +70,6 @@ export default class Via extends Template {
     render2DTarget(key, params) {
         let render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
+        return render;
     }
 }
