@@ -82,7 +82,7 @@ export default class ThreeDMixer extends Template {
 
         this.__renderKeys = ["FLOW", "CONTROL"];
 
-        this.__mint = "3DMIXER";
+        this.__mint = "MIXER3D";
     }
 
     getPorts(params) {
