@@ -138,6 +138,34 @@ router.get('/dimensions', function(req, res, next) {
   res.send(ret);
 });
 
+router.get('/terminals', function(req, res, next) {
+
+  let primitive = req.query.mint;
+  let key = primitive.replace(/\s/g, '');
+  let technology = primitive_map.get(key);
+  if (! primitive_map.has(key)){
+    res.send("MINT Not found")
+    console.error("Could not find MINT:", key);
+  }
+
+  let params_text = req.query.params;
+  let params = JSON.parse(params_text);
+  console.log("Params:", params);
+  params["position"] = [0,0];
+  params["color"] = "#FFF";
+
+  // console.log("Dimensions:",xspan, yspan);
+  let ports = technology.getPorts(params);
+  let ret = [];
+  for(let i=0; i<ports.length; i++){
+    let port = ports[i];
+    ret.push(port.toInterchangeV1())
+  }
+  console.log("Terminals:",primitive, ret)
+  res.send(ret);
+});
+
+
 router.get('/defaults', function(req, res, next) {
   console.log(req.query, req.query.mint, req.query["mint"] )
   let primitive = req.query.mint;
