@@ -28,8 +28,12 @@ export default class Parameter {
 
     static checkValue(type, value) {
         let paramType = Registry.registeredParams[type];
-        if (paramType.isValid(value)) return true;
-        else throw new Error("Saw value: " + value + ". " + paramType.description);
+        if (paramType.isValid(value)){
+            return true;
+        }
+        else {
+            throw new Error("Saw value: " + value + ". " + paramType.description);
+        }
     }
 
     updateValue(value) {
