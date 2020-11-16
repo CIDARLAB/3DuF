@@ -109,8 +109,33 @@ export default class Connection {
         }
         output.paths = this.__paths;
         output.params = this.__params.toJSON();
+        output.layer = this.__findLayerReference();
         return output;
     }
+
+
+    /**
+     * 
+     */
+    __findLayerReference(){
+        let layers = Registry.currentDevice.getLayers();
+        let layerrefs;
+        let layer;
+        for(let i in layers){
+            layer = layers[i];
+            //Check if the connectino is in layer then put it there
+            let feature;
+            for(let key in layer.features){
+                feature = layer.features[key];
+                if(feature.referenceID == this.getID()){
+                    layerrefs = layer.id;
+                }
+            }
+        }
+        return layerrefs;
+    }
+
+
 
     /**
      * Returns the ID of the component

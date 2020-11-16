@@ -160,7 +160,6 @@ export default class Component {
                 if(feature.referenceID == this.getID()){
                     layerrefs.push(layer.id);
                 }
-                console.log(key, layerrefs, layer);
             }
         }
         return layerrefs;
