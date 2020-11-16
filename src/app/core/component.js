@@ -169,7 +169,27 @@ export default class Component {
         }
 
         output.ports = portdata;
+        output.layers = this.__findLayerReferences();
         return output;
+    }
+
+    __findLayerReferences(){
+        let layers = Registry.currentDevice.getLayers();
+        let layerrefs = [];
+        let layer;
+        for(let i in layers){
+            layer = layers[i];
+            //Check if the component is in layer then put it there
+            let feature;
+            for(let key in layer.features){
+                feature = layer.features[key];
+                if(feature.referenceID == this.getID()){
+                    layerrefs.push(layer.id);
+                }
+                console.log(key, layerrefs, layer);
+            }
+        }
+        return layerrefs;
     }
 
     /**

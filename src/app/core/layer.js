@@ -20,13 +20,17 @@ export default class Layer {
         this.featureCount = 0;
         this.device = undefined;
         this.color = undefined;
-        this.id = Layer.generateID();
+        this.__id = Layer.generateID();
         this.__type = type;
         this.group = group;
     }
 
     get type(){
         return this.__type;
+    }
+
+    get id(){
+        return this.__id;
     }
 
     /**
@@ -290,15 +294,9 @@ export default class Layer {
      */
     toInterchangeV1() {
         let output = {};
-        output.id = this.name;
+        output.id = this.__id;
         output.name = this.name;
-        let type = "";
-        if(this.name == "flow"){
-            type = "FLOW";
-        }else if(this.name == "control"){
-            type = 'CONTROL';
-        }
-        output.type = type;
+        output.type = this.type;
         // TODO - Add group and unique name parameters to the system and do type checking 
         // against type and not name in the future
         output.group = '0';
