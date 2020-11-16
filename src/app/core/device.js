@@ -445,6 +445,21 @@ export default class Device {
         }
         return output;
     }
+
+    /**
+     * Converts the layer object into  interchagne v1
+     *
+     * @returns
+     * @memberof Device
+     */
+    __layersToInterchangeV1() {
+        let output = [];
+        for (let i in this.layers) {
+            output.push(this.layers[i].toInterchangeV1());
+        }
+        return output;
+    }
+
     /**
      * Converts feature layers to InterchangeV1
      * @return {Array<Layer>} Returns an array with the feature layers
@@ -546,6 +561,39 @@ export default class Device {
         output.groups = this.__groupsToJSON();
         return output;
     }
+
+    toInterchangeV1_1() {
+        let output = {};
+        output.name = this.name;
+
+        let valvetypemap = {}
+        for(let [key, value] of this.__valveIs3DMap){
+            if(value){
+                //3D Valve
+                valvetypemap[key] = 'NORMALLY_CLOSED';
+            }else{
+                valvetypemap[key] = 'NORMALLY_OPEN';
+            }
+            
+        }
+
+        output.params = {
+            xspan: this.getXSpan(),
+            yspan: this.getYSpan(),
+            valveMap: IOUtils.mapToJson(this.__valveMap),
+            valveTypeMap: valvetypemap
+        };
+        //TODO: Use this to dynamically create enough layers to scroll through
+        output.components = this.__componentsToInterchangeV1();
+        output.connections = this.__connectionToInterchangeV1();
+        output.layers = this.__layersToInterchangeV1();       
+        //TODO: Use this to render the device features
+        output.features = this.__featureLayersToInterchangeV1();
+        output.version = 1.1;
+        output.groups = this.__groupsToJSON();
+        return output;
+    }
+
     /**
      * Creates a new device object from a JSON format
      * @param {JSON} json 

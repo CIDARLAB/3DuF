@@ -275,10 +275,19 @@ export default class Layer {
      */
     toInterchangeV1() {
         let output = {};
+        output.id = this.name;
         output.name = this.name;
-        output.color = this.color;
+        let type = "";
+        if(this.name == "flow"){
+            type = "FLOW";
+        }else if(this.name == "control"){
+            type = 'CONTROL';
+        }
+        output.type = type;
+        // TODO - Add group and unique name parameters to the system and do type checking 
+        // against type and not name in the future
+        output.group = '0';
         output.params = this.params.toJSON();
-        output.features = this.__featuresInterchangeV1();
         return output;
     }
     /**
