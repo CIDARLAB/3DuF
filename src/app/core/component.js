@@ -37,6 +37,10 @@ export default class Component {
         this.__ports = new Map();
         this._componentPortTRenders = new Map();
 
+        // TODO - Figure out how to use this for generic components
+        this._xspan = 0;
+        this._yspan = 0;
+
         //Create and set the ports here itself
 
         let cleanparamdata = {};
@@ -127,8 +131,8 @@ export default class Component {
         output.entity = this.__entity;
         output.params = this.__params.toJSON();
         let bounds = this.getBoundingRectangle();
-        output.xspan = bounds.width;
-        output.yspan = bounds.height;
+        output["x-span"] = bounds.width;
+        output["y-span"] = bounds.height;
         let portdata = [];
         let map = this.ports;
         if (map != null) {
@@ -372,6 +376,9 @@ export default class Component {
         let name = json.name;
         let id = json.id;
         let entity = json.entity;
+        this.xspan = this._xspan;
+        this.yspan = this._yspan;
+
         let params = {};
         if (entity === "TEST MINT") {
             console.warn("Found legacy invalid entity string", entity);

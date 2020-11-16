@@ -360,6 +360,14 @@ export default class Device {
         return output;
     }
 
+    __layersToInterchangeV1() {
+        let output = [];
+        for (let i in this.layers) {
+            output.push(this.layers[i].toInterchangeV1());
+        }
+        return output;
+    }
+
     __featureLayersToInterchangeV1() {
         let output = [];
         for (let i in this.layers) {
@@ -454,9 +462,9 @@ export default class Device {
             valveTypeMap: valvetypemap
         };
         //TODO: Use this to dynamically create enough layers to scroll through
-        // output.layers = this.__layersToInterchangeV1();
         output.components = this.__componentsToInterchangeV1();
         output.connections = this.__connectionToInterchangeV1();
+        output.layers = this.__layersToInterchangeV1();       
         //TODO: Use this to render the device features
         output.features = this.__featureLayersToInterchangeV1();
         output.version = 1.1;
