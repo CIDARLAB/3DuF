@@ -40,6 +40,12 @@ export default class Device {
         //Map to store <componentID, connectionID>
         this.__valveMap = new Map();
         this.__valveIs3DMap = new Map();
+
+        //New layerblock indices for naming, etc. 
+        // TODO - Figure out how to handle this in the case 
+        // where things are imported from other tools because
+        // this will not work anymore
+        this.__layerBlockIndex = 0;
     }
     /**
      * Returns a string with the name of the Device
@@ -654,6 +660,7 @@ export default class Device {
         //TODO: Use these two generate a rat's nest
         newDevice.__loadComponentsFromInterchangeV1(json.components);
         newDevice.__loadConnectionsFromInterchangeV1(json.connections);
+        newDevice.__loadFeatureLayersFromInterchangeV1(json.layers);
         //TODO: Use this to render the device features
 
         //Check if JSON has features else mark
@@ -661,10 +668,12 @@ export default class Device {
             newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         } else {
             //We need to add a default layer
-            let newlayer = new Layer(null, "flow");
+            let newlayer = new Layer(null, "flow"+this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
             newDevice.addLayer(newlayer);
-            newlayer = new Layer(null, "control");
+            newlayer = new Layer(null, "control"+this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
             newDevice.addLayer(newlayer);
+
+            this.__layerBlockIndex += 1;
         }
 
         //Updating cross-references
@@ -754,10 +763,11 @@ export default class Device {
             newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         } else {
             //We need to add a default layer
-            let newlayer = new Layer(null, "flow");
+            let newlayer = new Layer(null, "flow"+this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
             newDevice.addLayer(newlayer);
-            newlayer = new Layer(null, "control");
+            newlayer = new Layer(null, "control"+this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
             newDevice.addLayer(newlayer);
+            this.__layerBlockIndex += 1;
         }
 
         //Updating cross-references
@@ -823,16 +833,18 @@ export default class Device {
      * @memberof Device
      */
     createNewLayerBlock() {
-        let flowlayer = new Layer({ z_offset: 0, flip: false }, "flow");
-        let controllayer = new Layer({ z_offset: 0, flip: false }, "control");
+        let flowlayer = new Layer({ z_offset: 0, flip: false }, "flow" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
+        let controllayer = new Layer({ z_offset: 0, flip: false }, "control" + this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
         //TODO: remove cell layer from the whole system
-        let cell = new Layer({ z_offset: 0, flip: false }, "cell");
+        let cell = new Layer({ z_offset: 0, flip: false }, "cell" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
 
         this.addLayer(flowlayer);
         this.addLayer(controllayer);
 
         //TODO:Remove Cell layer from the whole system
         this.addLayer(cell);
+
+        this.__layerBlockIndex += 1;
 
         return [flowlayer, controllayer, cell];
     }

@@ -13,13 +13,28 @@ export default class Layer {
      * @param {*} values Value of the layer
      * @param {String} name Name of the layer
      */
-    constructor(values, name = "New Layer") {
+    constructor(values, name = "New Layer", type = "FLOW", group = "0") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = String(name);
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
         this.color = undefined;
+        this.id = Layer.generateID();
+        this.__type = type;
+        this.group = group;
+    }
+
+    get type(){
+        return this.__type;
+    }
+
+    /**
+     * Generates a random id
+     * @returns {String} Random ID string
+     */
+    static generateID() {
+        return Registry.generateID();
     }
     /**
      * Adds a feature to the layer
@@ -316,7 +331,7 @@ export default class Layer {
         if (!json.hasOwnProperty("features")) {
             throw new Error("JSON layer has no features!");
         }
-        let newLayer = new Layer(json.params, json.name);
+        let newLayer = new Layer(json.params, json.name, json.type, json.group);
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
         if (json.color) newLayer.color = json.color; //TODO: Figure out if this needs to change in the future
         return newLayer;
