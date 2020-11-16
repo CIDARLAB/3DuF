@@ -201,10 +201,6 @@ export default class Layer {
     }
 
     static fromInterchangeV1(json) {
-        //TODO: Need to be able to through all the features in the layer
-        if (!json.hasOwnProperty("features")) {
-            throw new Error("JSON layer has no features!");
-        }
         let newLayer = new Layer(json.params, json.name, json.type, json.group);
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
         if (json.color) newLayer.color = json.color; //TODO: Figure out if this needs to change in the future
