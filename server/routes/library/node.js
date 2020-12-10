@@ -48,6 +48,14 @@ export default class Node extends Template {
         this.__mint = "NODE";
     }
 
+    getPorts(params) {
+        let ports = [];
+
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
+
+        return ports;
+    }
+
     render2D(params, key) {
         //Regardless of the key...
         let pos = new paper.Point(0, 0);

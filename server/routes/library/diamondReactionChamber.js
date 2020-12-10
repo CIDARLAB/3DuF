@@ -75,6 +75,20 @@ export default class DiamondReactionChamber extends Template {
         this.__mint = "DIAMOND REACTION CHAMBER";
     }
 
+    getPorts(params) {
+        let channelWidth = params["channelWidth"];
+        let l = params["length"];
+        let w = params["width"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(channelWidth/2 + w, 0, "1", "FLOW"));
+
+        ports.push(new ComponentPort(channelWidth/2 + w, 0, l, "2", "FLOW"));
+
+        return ports;
+    }
+
     render2D(params, key) {
         let position = params["position"];
         let px = position[0];

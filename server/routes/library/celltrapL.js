@@ -91,11 +91,35 @@ export default class CellTrapL extends Template {
         this.__mint = "LONG CELL TRAP";
     }
 
+    getPorts(params) {
+        let orientation = params["orientation"];
+        let position = params["position"];
+        let chamberLength = params["chamberLength"];
+        let numChambers = params["numberOfChambers"];
+        let chamberWidth = params["chamberWidth"];
+        let feedingChannelWidth = params["feedingChannelWidth"];
+        let chamberSpacing = params["chamberSpacing"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(chamberLength + channelWidth/2, 0, "1", "FLOW"));
+
+        ports.push(new ComponentPort(chamberLength + channelWidth/2, numChambers/2 + 1 * chamberWidth, "2", "FLOW"));
+
+        return ports;
+    }
+
+
     render2D(params, key) {
         if (key == "FLOW") {
             return this.__drawFlow(params);
         } else if (key == "CELL") {
             return this.__drawCell(params);
+        }else{
+            let flow = this.__drawFlow(params);
+            let control = this.__drawCell(params);
+            let ret = flow.addChild(control);
+            return ret;
         }
     }
 
