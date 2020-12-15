@@ -86,7 +86,7 @@ export default class SquareCellTrap extends Template {
         let height = params["height"];
 
         let pos = new paper.Point(position[0], position[1]);
-        let size = new paper.Size(2*chamberWidth + channelWidth + 2*chamberLength + channelWidth);
+        let size = new paper.Size(2*chamberWidth + channelWidth, 2*chamberLength + channelWidth);
         let box = new paper.Path.Rectangle(pos, size);
         box.fillColor = color1;
         return box;
