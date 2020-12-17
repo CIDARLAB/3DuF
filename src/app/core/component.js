@@ -340,8 +340,10 @@ export default class Component {
     }
 
     /**
-     * Returns the center position of the component as a 2D vector
-     * @return {*[]}
+     * Returns the center position of the bounding rectangle for the component
+     *
+     * @returns {Array}
+     * @memberof Component
      */
     getCenterPosition() {
         let bounds = this.getBoundingRectangle();
@@ -350,7 +352,7 @@ export default class Component {
 
     /**
      * Returns the topleft position of the component as a 2D vector
-     * @return {*[]}
+     * @return {Array}
      */
     getTopLeftPosition() {
         let bounds = this.getBoundingRectangle();

@@ -7,6 +7,7 @@
     "babelify": "^10.0.0",
     "browserify": "^16.2.2",
     "eslint": "^6.8.0",
+    "jsdoc": "^3.6.6",
     "node-sass": "^4.14.1",
     "prettier": "1.19.1",
     "watchify": "^3.11.1"
@@ -61,7 +62,8 @@
     "check_pretty": "prettier --check './src/**/*.js'",
     "make_pretty": "prettier --write es6 --paerser babel './src/**/*.js'",
     "eslint": "eslint './src/app/**/*.js'",
-    "eslint_fix": "eslint './src/app/**/*.js' --fix"
+    "eslint_fix": "eslint './src/app/**/*.js' --fix",
+    "generate-docs": "jsdoc -c ./conf.json"
   },
   "repository": {
     "type": "git",

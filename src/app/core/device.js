@@ -18,6 +18,9 @@ const StringValue = Parameters.StringValue;
 
 /**
  * The Device stores information about a design.
+ *
+ * @export
+ * @class Device
  */
 export default class Device {
     constructor(values, name = "New Device") {
@@ -37,12 +40,25 @@ export default class Device {
         this.__valveIs3DMap = new Map();
     }
 
-
+    
+    /**
+     * Set the valve map of the device
+     * 
+     * @param {*} valvemap
+     * @param {*} isvalve3Ddata
+     * @memberof Device
+     */
     setValveMap(valvemap, isvalve3Ddata){
         this.__valveMap = valvemap;
         this.__valveIs3DMap = isvalve3Ddata;
     }
 
+    /**
+     * Returns the name of the device
+     *
+     * @returns {String}
+     * @memberof Device
+     */
     getName() {
         return this.name.getValue();
     }
@@ -50,6 +66,7 @@ export default class Device {
     /**
      * Returns the list of layers in the device
      * @return {Array}
+     * @memberof Device
      */
     getLayers() {
         return this.layers;
@@ -58,6 +75,7 @@ export default class Device {
     /**
      * Adds a connection to the device
      * @param connection
+     * @memberof Device
      */
     addConnection(connection) {
         this.__connections.push(connection);
@@ -672,7 +690,7 @@ export default class Device {
 
     /**
      * Create the layers necessary for creating a new level
-     * @return {*[]} returns a the layer objects created
+     * @return {Layer} returns a the layer objects created
      */
     createNewLayerBlock() {
         let flowlayer = new Layer({ z_offset: 0, flip: false }, "flow");
