@@ -43,6 +43,7 @@ export default class ComponentToolBar {
         this.__rotarymixerButton = document.getElementById("rotarymixer_button");
         this.__dropletgenButton = document.getElementById("dropletgen_button");
         this.__celltraplButton = document.getElementById("celltrapl_button");
+        this.__gelchannelButton = document.getElementById("gelchannel_button");//ck
         this.__alignmentMarksButton = document.getElementById("alignmentmarks_button");
         this.__llChamberButton = document.getElementById("llchamber_button");
         this.__threeDMixerButton = document.getElementById("3dmixer_button");
@@ -74,6 +75,7 @@ export default class ComponentToolBar {
         this.__rotarymixerParams = document.getElementById("rotarymixer_params_button");
         this.__dropletgenParams = document.getElementById("dropletgen_params_button");
         this.__celltraplParams = document.getElementById("celltrapl_params_button");
+        this.__gelchannelParams = document.getElementById("gelchannel_params_button");//ck
         this.__alignmentMarksParams = document.getElementById("alignmentmarks_params_button");
         this.__llChamberParams = document.getElementById("llchamber_params_button");
         this.__threeDMixerParams = document.getElementById("3dmixer_params_button");
@@ -108,6 +110,7 @@ export default class ComponentToolBar {
             RotaryMixer: this.__rotarymixerButton,
             DropletGen: this.__dropletgenButton,
             CellTrapL: this.__celltraplButton,
+            Gelchannel: this.__gelchannelButton,//ck
             AlignmentMarks: this.__alignmentMarksButton,
             LLChamber: this.__llChamberButton,
             "3DMixer": this.__threeDMixerButton,
@@ -301,6 +304,13 @@ export default class ComponentToolBar {
             ref.setActiveButton("CellTrapL");
             ref.__viewManagerDelegate.switchTo2D();
         };
+            this.__gelchannelButton.onclick = function() {//CK
+            Registry.viewManager.activateTool("Gelchannel");//CK
+
+
+            ref.setActiveButton("Gelchannel");//CK
+            ref.__viewManagerDelegate.switchTo2D();//CK
+        };//CK
 
         this.__insertTextButton.onclick = function() {
             if (ref.activeButton) setButtonColor(ref.buttons[ref.activeButton], inactiveBackground, inactiveText);
@@ -359,6 +369,7 @@ export default class ComponentToolBar {
         this.__dropletgenParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGen", "Basic");
         this.__transitionParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Transition", "Basic");
         this.__celltraplParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CellTrapL", "Basic");
+        this.__gelchannelParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Gelchannel", "Basic");//ck
         this.__alignmentMarksParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("AlignmentMarks", "Basic");
         this.__llChamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LLChamber", "Basic");
         this.__threeDMixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMixer", "Basic");
