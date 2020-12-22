@@ -331,7 +331,7 @@ export default class Connection {
      * @param segment
      * @param break1
      * @param break2
-     * @return {*[][][]}
+     * @return {Segments}
      * @private
      */
     __breakSegment(segment, break1, break2) {
