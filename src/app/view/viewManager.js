@@ -548,6 +548,12 @@ export default class ViewManager {
                 Registry.currentDevice = device;
                 this.__currentDevice = device;
                 break;
+            case 1.1:
+                this.loadCustomComponents(json);
+                device = Device.fromInterchangeV1_1(json);
+                Registry.currentDevice = device;
+                this.__currentDevice = device;
+                break;
             default:
                 alert("Version '" + version + "' is not supported by 3DuF !");
             }
@@ -970,7 +976,7 @@ export default class ViewManager {
     }
 
     generateExportJSON() {
-        let json = this.currentDevice.toInterchangeV1();
+        let json = this.currentDevice.toInterchangeV1_1();
         json.customComponents = this.customComponentManager.toJSON();
         return json;
     }
@@ -1001,5 +1007,45 @@ export default class ViewManager {
         }
 
         DAFDPlugin.fixLayout(params);
+    }
+
+
+    
+    /**
+     * This is the method we need to call to fix the valvemaps
+     * @memberof ViewManager
+     */
+    createValveMapFromSelection(){
+        //TODO: Run through the current selection and generate the valve map for every 
+        //vavle that is in the Selection
+        let selection = this.tools["MouseSelectTool"].currentSelection;
+        let valves = [];
+        let connection = null;
+        //TODO: run though the items
+        for(let render_element of selection){
+            //Check if render_element is associated with a VALVE/VALVE3D
+            let component = this.currentDevice.getComponentForFeatureID(render_element.featureID);
+            if(component != null){
+                console.log("Component Type:", component.getType());
+                let type = component.getType();
+                if(type == "Valve3D" || type == "Valve"){
+                    valves.push(component);
+                }
+            }
+
+            connection = this.currentDevice.getConnectionForFeatureID(render_element.featureID);
+            
+        }
+        
+        //Add to the valvemap
+        for(let valve of valves){
+            let valve_type = false;
+            if(valve.getType() == 'Valve3D'){
+                valve_type = true
+            }
+            console.log("Adding Valve: ", valve);
+            this.currentDevice.insertValve(valve, connection, valve_type);
+        }
+
     }
 }

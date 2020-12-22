@@ -12,7 +12,6 @@ export default class Valve3D extends Template {
         };
 
         this.__heritable = {
-            orientation: "String",
             valveRadius: "Float",
             height: "Float",
             gap: "Float",
@@ -22,7 +21,6 @@ export default class Valve3D extends Template {
         };
 
         this.__defaults = {
-            orientation: "V",
             valveRadius: 1.2 * 1000,
             height: 250,
             gap: 0.6 * 1000,
@@ -32,7 +30,6 @@ export default class Valve3D extends Template {
         };
 
         this.__units = {
-            orientation: "",
             valveRadius: "&mu;m",
             height: "&mu;m",
             gap: "&mu;m",
@@ -89,7 +86,6 @@ export default class Valve3D extends Template {
         let gap = params["gap"];
         let radius = params["valveRadius"];
         let color = params["color"];
-        let orientation = params["orientation"];
         let rotation = params["rotation"];
 
         let center = new paper.Point(position[0], position[1]);
@@ -113,7 +109,6 @@ export default class Valve3D extends Template {
         let gap = params["gap"];
         let radius = params["valveRadius"];
         let color = params["color"];
-        let orientation = params["orientation"];
         let center = new paper.Point(position[0], position[1]);
         // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
         let circ = new paper.Path.Circle(center, radius);
@@ -145,7 +140,6 @@ export default class Valve3D extends Template {
         let radius = params["valveRadius"];
         let color = params["color"];
         console.log("Coloer:", color);
-        let orientation = params["orientation"];
         let center = new paper.Point(position[0], position[1]);
         // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
         let circ = new paper.Path.Circle(center, radius);

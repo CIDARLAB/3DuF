@@ -79,8 +79,8 @@ export default class Connection {
      * @param value
      */
     updateParameter(key, value) {
-        // this.__params.updateParameter(key, value);
-        this.__params[key] = value;
+        this.__params.updateParameter(key, value);
+        // this.__params[key] = value;
         // this.updateView();
     }
 
@@ -258,7 +258,8 @@ export default class Connection {
      * @param segments
      */
     updateSegments(segments) {
-        this.updateParameter("segments", new Parameter("SegmentArray", segments));
+        // let segments_parameter = new Parameter("SegmentArray", segments)
+        this.updateParameter("segments", segments);
         for (let i in this.__features) {
             let featureidtochange = this.__features[i];
 
@@ -275,7 +276,7 @@ export default class Connection {
     insertFeatureGap(boundingbox) {
         let foundflag = false;
         //Convert Rectangle to Path.Rectangle
-        console.log(boundingbox, boundingbox.width, boundingbox.height);
+        console.log("Gap Bounding Box: ", boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
         //Check which segment I need to break
         let segments = this.getValue("segments");
@@ -463,6 +464,7 @@ export default class Connection {
                 ret.push(segment);
             }
         }
+        console.log("Regenerated Segments:",ret)
         this.updateSegments(ret);
     }
 

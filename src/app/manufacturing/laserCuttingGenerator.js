@@ -28,17 +28,12 @@ export default class LaserCuttingGenerator {
 
         let mfglayers = [];
 
-        let isControl = false;
 
         for (let i in layers) {
             let layer = layers[i];
             let ports = [];
 
             let features = layer.features;
-
-            if (layer.name == "control") {
-                isControl = true;
-            }
 
             for (let key in features) {
                 let feature = features[key];
@@ -65,10 +60,9 @@ export default class LaserCuttingGenerator {
                 }
             }
 
-            if (isControl) {
-                manufacturinglayer.flipX();
-                isControl = false;
-            }
+            //We flip all the ports for this system
+            //TODO: Future manufacturing user interface will require us to have options for each of the UI elements
+            manufacturinglayer.flipX();
 
             mfglayers.push(manufacturinglayer);
         }

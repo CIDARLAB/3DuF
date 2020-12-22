@@ -7,7 +7,7 @@
     "babelify": "^10.0.0",
     "browserify": "^16.2.2",
     "eslint": "^6.8.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "prettier": "1.19.1",
     "watchify": "^3.11.1"
   },
@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@dagrejs/graphlib": "^2.1.4",
+    "acorn": "^8.0.2",
     "dialog-polyfill": "^0.5.0",
     "dxf-parser": "^0.6.1",
     "exorcist": "^1.0.1",
@@ -35,7 +36,7 @@
     "md5": "^2.2.1",
     "node-uuid": ">=1.4.3",
     "nouislider": "^11.1.0",
-    "npm": "^6.14.1",
+    "npm": "^6.14.8",
     "paper": "^0.12.3",
     "three": "^0.114.0",
     "trackjs": "^3.1.2",
@@ -59,8 +60,8 @@
     "cover": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R spec --recursive --compilers js:babel/register ./src/test/",
     "check_pretty": "prettier --check './src/**/*.js'",
     "make_pretty": "prettier --write es6 --paerser babel './src/**/*.js'",
-    "eslint":"eslint './src/app/**/*.js'",
-    "eslint_fix":"eslint './src/app/**/*.js' --fix"
+    "eslint": "eslint './src/app/**/*.js'",
+    "eslint_fix": "eslint './src/app/**/*.js' --fix"
   },
   "repository": {
     "type": "git",
