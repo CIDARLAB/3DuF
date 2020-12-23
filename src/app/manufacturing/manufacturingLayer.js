@@ -1,8 +1,15 @@
 import paper from "paper";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import * as Registry from "../core/registry";
-
+import Feature from "../core/feature";
+/**
+ * Manufacturing Layer class
+ */
 export default class ManufacturingLayer {
+    /**
+     * Default Constructor for the Manufacturing Layer
+     * @param {String} name Name of the field
+     */
     constructor(name) {
         this.__features = [];
         this.__name = name;
@@ -11,7 +18,8 @@ export default class ManufacturingLayer {
 
     /**
      * Returns the name field
-     * @return {*}
+     * @return {String} Returns the name of the field
+     * @memberof ManufacturingLayer
      */
     get name() {
         return this.__name;
@@ -19,7 +27,9 @@ export default class ManufacturingLayer {
 
     /**
      * Adds a feature to the manufacturing layer
-     * @param feature
+     * @param {Feature} feature Feature to add to the layer
+     * @memberof ManufacturingLayer
+     * @returns {boolean} 
      */
     addFeature(feature) {
         if (null == feature || undefined == feature) {
@@ -37,9 +47,12 @@ export default class ManufacturingLayer {
      * Generates the paperjs render for a feature that has no render displayed on the canvas
      * and hence cannot get the render out of display set.
      * @param feature
+     * @param renderkey
+     * @returns {boolean}
+     * @memberof ManufacturingLayer
      */
     generateFeatureRender(feature, renderkey) {
-        console.log("Generating Render for invisible feature", feature, renderkey);
+        console.log("Generating Render for invisible feature", feature);
 
         let render = FeatureRenderer2D.renderFeature(feature, renderkey);
         this.__features.push(render);
@@ -50,6 +63,8 @@ export default class ManufacturingLayer {
 
     /**
      * Flips the manufacturing layer in X-Axis
+     * @memberof ManufacturingLayer
+     * @returns {void}
      */
     flipX() {
         // console.warn("Implement method to flip the the group");
@@ -69,6 +84,7 @@ export default class ManufacturingLayer {
     /**
      * Returns the SVG text
      * @return {*}
+     * @memberof ManufacturingLayer
      */
     exportToSVG() {
         let xspan = Registry.currentDevice.getXSpan();
@@ -77,16 +93,20 @@ export default class ManufacturingLayer {
         svgtext = ManufacturingLayer.generateSVGTextPrepend(xspan, yspan) + svgtext + ManufacturingLayer.generateSVGTextAppend();
         return svgtext;
     }
-
+    /**
+     * @memberof ManufacturingLayer
+     * @returns {void}
+     */
     flushData() {
         this.__paperGroup.removeChildren();
     }
 
     /**
      * Generates the SVG Prepend
-     * @param xspan
-     * @param yspan
+     * @param {number} xspan
+     * @param {number} yspan
      * @return {string}
+     * @memberof ManufacturingLayer
      */
     static generateSVGTextPrepend(xspan, yspan) {
         let text = `<svg width=\"${xspan / 1000}mm\" height=\"${yspan / 1000}mm\" viewBox=\"0 0 ${xspan} ${yspan}\">`;
@@ -96,6 +116,7 @@ export default class ManufacturingLayer {
     /**
      * Generates the SVG Append
      * @return {string}
+     * @memberof ManufacturingLayer
      */
     static generateSVGTextAppend() {
         return "</svg>";
