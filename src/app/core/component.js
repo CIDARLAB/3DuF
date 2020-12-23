@@ -208,8 +208,13 @@ export default class Component {
     }
 
     /**
+<<<<<<< HEAD
      * Returns an Array of size two containing the X and Y coordinates
      * @return {Array<number>}
+=======
+     * Returns the position of the component
+     * @return {*|string}
+>>>>>>> 12/23/20
      * @memberof Component
      */
     getPosition() {

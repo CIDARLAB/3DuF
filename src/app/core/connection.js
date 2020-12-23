@@ -39,7 +39,11 @@ export default class Connection {
     }
     /**
      * Gets the sinks in the connection
+<<<<<<< HEAD
      * @returns {Array<ConnectionTarget>} Returns an array with the sinks
+=======
+     * @returns {Array} Returns an array with the sinks
+>>>>>>> 12/23/20
      * @memberof Connection
      */
     get sinks() {
@@ -73,7 +77,11 @@ export default class Connection {
 
     /**
      * Returns the list of features associated with the connection
+<<<<<<< HEAD
      * @return {Array<Feature>}
+=======
+     * @return {Array}
+>>>>>>> 12/23/20
      * @memberof Connection
      */
     get features() {
@@ -91,7 +99,11 @@ export default class Connection {
 
     /**
      * Sets the bounds i.e. the x,y position and the width and length of the component
+<<<<<<< HEAD
      * @param {paper.Path.Rectangle} bounds PaperJS Rectangle object associated with a Path.bounds property
+=======
+     * @param {paper} bounds PaperJS Rectangle object associated with a Path.bounds property
+>>>>>>> 12/23/20
      * @memberof Connection
      * @returns {void}
      */
@@ -106,7 +118,11 @@ export default class Connection {
     /**
      * Updates the parameters stored by the component
      * @param {string} key Identifier of the parameter
+<<<<<<< HEAD
      * @param {PointArray} value
+=======
+     * @param {segment} value
+>>>>>>> 12/23/20
      * @memberof Connection
      * @returns {void}
      */
@@ -385,10 +401,17 @@ export default class Connection {
 
     /**
      * Breaks the segment at the 2 points given by the points
+<<<<<<< HEAD
      * @param {PointArray} segment
      * @param break1
      * @param break2
      * @return {SegmentArray} Returns the two segments
+=======
+     * @param {segment} segment
+     * @param break1
+     * @param break2
+     * @return {*[][][]} Returns the two segments
+>>>>>>> 12/23/20
      * @memberof Connection
      * @private
      */
@@ -510,7 +533,11 @@ export default class Connection {
 
     /**
      * Goes through teh waypoints and generates the connection segments
+<<<<<<< HEAD
      * @return {SegmentArray}
+=======
+     * @return {Array}
+>>>>>>> 12/23/20
      * @memberof Connection
      */
     regenerateSegments() {
@@ -543,7 +570,11 @@ export default class Connection {
 
     /**
      * Allows the user to add a sink to the connection
+<<<<<<< HEAD
      * @param {string} component 
+=======
+     * @param {Object} component 
+>>>>>>> 12/23/20
      * @param {ComponentPort} port
      * @memberof Connection
      * @returns {void}
@@ -558,7 +589,11 @@ export default class Connection {
     /**
      * Adds a new connection target to either the source or the sinks of the connection object. Requires the user to pass
      * a ConnectionTarget Object or else it will throw an error.
+<<<<<<< HEAD
      * @param {string} connectiontarget
+=======
+     * @param {Object} connectiontarget
+>>>>>>> 12/23/20
      * @memberof Connection
      * @returns {void}
      */
@@ -613,7 +648,11 @@ export default class Connection {
     }
     /**
      * Merges connections
+<<<<<<< HEAD
      * @param {Connection} connection 
+=======
+     * @param {Object} connection 
+>>>>>>> 12/23/20
      * @memberof Connection
      * @returns {void}
      */
