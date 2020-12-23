@@ -2,11 +2,11 @@ import Parameter from "./parameter";
 
 export default class Params {
     /**
-     * Default constructor create a Params object
-     * @param values
-     * @param unique
-     * @param heritable
-     * @param rawparameters
+     * Default constructor create a Params object.
+     * @param {} values Values of the params
+     * @param {Boolean} unique Boolean if it's unique
+     * @param {} heritable Boolean if it's heritable
+     * @param {} rawparameters ?
      */
     constructor(values, unique, heritable, rawparameters) {
         this.unique = unique;
@@ -23,7 +23,11 @@ export default class Params {
             this.parameters = rawparameters;
         }
     }
-
+    /**
+     * Updates parameter value.
+     * @param {String} key Identifier of the parameter
+     * @param {*} value New value of the parameter
+     */
     updateParameter(key, value) {
         if (this.parameters.hasOwnProperty(key)) {
             this.parameters[key].updateValue(value);
@@ -33,40 +37,72 @@ export default class Params {
             } else throw new Error(key + "parameter does not exist in Params object");
         }
     }
-
+    /**
+     * Checks if the object has certain parameter.
+     * @param {String} key The key is use to identify the parameter 
+     */
     __ensureHasKey(key) {
         if (!this.parameters.hasOwnProperty(key)) throw new Error(key + " parameter not found in Params object.");
     }
-
+    /**
+     * Gets the value of the selected parameter.
+     * @param {String} key The key is needed to identify the parameter
+     * @returns Returns parameter value
+     */
     getValue(key) {
         this.__ensureHasKey(key);
         return this.parameters[key].getValue();
     }
-
+    /**
+     * Gets the paramter.
+     * @param {String} key The key is needed to search and identify the parameter
+     * @returns Returns parameter
+     */
     getParameter(key) {
         this.__ensureHasKey(key);
         return this.parameters[key];
     }
-
+    /**
+     * Checks if param object has unique key.
+     * @param {String} key Key to identify the param
+     * @returns {boolean} 
+     */
     isUnique(key) {
         return this.unique.hasOwnProperty(key);
     }
-
+    /**
+     * Checks if param object has heritable attribute.
+     * @param {String} key Key to identify the param
+     * @returns {boolean}
+     */
     isHeritable(key) {
         return this.heritable.hasOwnProperty(key);
     }
-
+    /**
+     * Checks if param has unique key.
+     * @param {Parameters} params Param to check if it is unique 
+     * @returns {boolean}
+     */
     hasAllUniques(params) {
         for (let key in this.unique) if (!params.hasOwnProperty(key)) return false;
         return true;
     }
+    /**
+     * Returns the expected type for a specific param.
+     * @param {String} key Identifier of the param
+     * @param {*} expected 
+     * @param {*} actual 
+     */
     wrongTypeError(key, expected, actual) {
         return new Error("Parameter " + key + " is the wrong type. " + "Expected: " + this.unique[key] + ", Actual: " + actual);
     }
-
-    /* Turns the raw key:value pairs passed into a user-written Feature declaration
+    /**
+     * Turns the raw key:value pairs passed into a user-written Feature declaration
     into key:Parameter pairs. This forces the checks for each Parameter type
-    to execute on the provided values, and should throw an error for mismatches. */
+    to execute on the provided values, and should throw an error for mismatches.
+     * @param {*} values 
+     * @returns {Parameters} Returns a parameters object
+     */
     __sanitizeValues(values) {
         let newParams = {};
         for (let key in values) {
@@ -87,6 +123,11 @@ export default class Params {
 
     /* Checks to make sure the set of sanitized parameters matches the expected ParamTypes.
     This method also checks to make sure that all unique (required) params are present.*/
+    /**
+     * Checks to make sure the set of sanitized parameters matches the expected ParamTypes.
+    This method also checks to make sure that all unique (required) params are present.
+     * @param {Params} parameters 
+     */
     __checkParams(parameters) {
         for (let key in parameters) {
             let param = parameters[key];
@@ -108,7 +149,10 @@ export default class Params {
             throw new Error("Unique values were not present in the provided parameters. Expected: " + Object.keys(this.unique) + ", saw: " + Object.keys(parameters));
         }
     }
-
+    /**
+     * Converts to JSON format.
+     * @returns {JSON}  Returns JSON format.
+     */
     toJSON() {
         let json = {};
         for (let key in this.parameters) {
@@ -118,17 +162,27 @@ export default class Params {
         }
         return json;
     }
-
+    /**
+     * Creates new params object from a JSON format.
+     * @param {JSON} json 
+     * @param {*} unique 
+     * @param {*} heritable 
+     * @returns {Params} Returns a new params object.
+     */
     static fromJSON(json, unique, heritable) {
         return new Params(json, unique, heritable);
     }
-
+    /**
+     * Checks if it has parameters.
+     * @param {String} key The key is use to identify the desire parameter.
+     * @returns {boolean}
+     */
     hasParam(key) {
         return this.parameters.hasOwnProperty(key);
     }
 
     /**
-     * Returns a ES6 Map() type object with keys and values
+     * Returns a ES6 Map() type object with keys and values.
      * @return {Map<key, value>}
      */
     toMap() {

@@ -5,12 +5,21 @@ import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
 
 import * as Registry from "./registry";
+import ComponentPort from "./componentPort";
 
 /**
  * This class contains the connection abstraction used in the interchange format and the
  * high level device model of the microfluidic.
  */
 export default class Connection {
+    /**
+     * Default Connection Constructor
+     * @param {String} type 
+     * @param {Params} params 
+     * @param {String} name 
+     * @param {String} mint 
+     * @param {String} id 
+     */
     constructor(type, params, name, mint, id = Feature.generateID()) {
         this.__params = params;
         this.__name = name;
@@ -28,19 +37,31 @@ export default class Connection {
         this.__objects = [];
         this.__routed = false;
     }
-
+    /**
+     * Gets the sinks in the connection
+     * @returns {Array} Returns an array with the sinks
+     */
     get sinks() {
         return this.__sinks;
     }
-
+    /**
+     * Gets the source of the connection
+     * @returns {} Returns the source of the connection
+     */
     get source() {
         return this.__source;
     }
-
+    /**
+     * Checks if the connection is routed
+     * @returns {Boolean} Returns true whether if it is routed or not
+     */
     get routed() {
         return this.__routed;
     }
-
+    /**
+     * Sets if the connection is routed
+     * @param {Boolean} value true if it's router or false if it's not
+     */
     set routed(value) {
         this.__routed = value;
     }
@@ -63,7 +84,7 @@ export default class Connection {
 
     /**
      * Sets the bounds i.e. the x,y position and the width and length of the component
-     * @param bounds PaperJS Rectangle object associated with a Path.bounds property
+     * @param {paper} bounds PaperJS Rectangle object associated with a Path.bounds property
      */
     setBounds(bounds) {
         this.__bounds = bounds;
@@ -75,18 +96,18 @@ export default class Connection {
 
     /**
      * Updates the parameters stored by the component
-     * @param key
-     * @param value
+     * @param {String} key Identifier of the parameter
+     * @param {segment} value
      */
     updateParameter(key, value) {
-        this.__params.updateParameter(key, value);
-        // this.__params[key] = value;
+        // this.__params.updateParameter(key, value);
+        this.__params[key] = value;
         // this.updateView();
     }
 
     /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
-     * @returns {{}} Object
+     * @returns {Connection} Object
      */
     toInterchangeV1() {
         let output = {};
@@ -122,7 +143,7 @@ export default class Connection {
 
     /**
      * Allows the user to set the name of the component
-     * @param name
+     * @param {String} name Name of the component
      */
     setName(name) {
         console.log("test", name);
@@ -131,7 +152,7 @@ export default class Connection {
 
     /**
      * Returns the name of the component
-     * @returns {String}
+     * @returns {String} Name of the component
      */
     getName() {
         return this.__name;
@@ -140,7 +161,7 @@ export default class Connection {
     /**
      * Gets the 3DuF Type of the component, this will soon be depreciated and merged with
      * the MINT references
-     * @returns {*}
+     * @returns {String}
      */
     getType() {
         return this.__type;
@@ -156,7 +177,7 @@ export default class Connection {
 
     /**
      * Returns the value of the parameter stored against the following key in teh component params
-     * @param key
+     * @param {String} key Key is get the value
      * @returns {*}
      */
     getValue(key) {
@@ -166,14 +187,17 @@ export default class Connection {
             throw new Error("Unable to get value for key: " + key);
         }
     }
-
+    /**
+     * Returns the feature ID
+     * @returns {string}
+     */
     getFeatureIDs() {
         return this.__features;
     }
 
     /**
-     * Not sure what this does
-     * @param key
+     * If it has their own properties returns true
+     * @param {String} key
      * @returns {boolean}
      */
     hasDefaultParam(key) {
@@ -183,7 +207,7 @@ export default class Connection {
 
     /**
      * Adds a feature that is associated with the component
-     * @param featureID String id of the feature
+     * @param {String} featureID String id of the feature
      */
     addFeatureID(featureID) {
         if (typeof featureID != "string" && !(featureID instanceof String)) {
@@ -220,7 +244,8 @@ export default class Connection {
     }
 
     /**
-     * Rerturns the params associated with the component
+     * Returns the params associated with the component
+     * @returns {Params}
      */
     getParams() {
         return this.__params;
@@ -228,7 +253,7 @@ export default class Connection {
 
     /**
      * Sets the params associated with the component
-     * @param params key -> Parameter Set
+     * @param {Params} params key -> Parameter Set
      */
     setParams(params) {
         this.__params = params;
@@ -255,11 +280,10 @@ export default class Connection {
 
     /**
      * Updates the segments of the connection
-     * @param segments
+     * @param {Array} segments
      */
     updateSegments(segments) {
-        // let segments_parameter = new Parameter("SegmentArray", segments)
-        this.updateParameter("segments", segments);
+        this.updateParameter("segments", new Parameter("SegmentArray", segments));
         for (let i in this.__features) {
             let featureidtochange = this.__features[i];
 
@@ -271,12 +295,12 @@ export default class Connection {
 
     /**
      * Inserts the gap using the boundingbox
-     * @param boundingbox
+     * @param {Object} boundingbox
      */
     insertFeatureGap(boundingbox) {
         let foundflag = false;
         //Convert Rectangle to Path.Rectangle
-        console.log("Gap Bounding Box: ", boundingbox, boundingbox.width, boundingbox.height);
+        console.log(boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
         //Check which segment I need to break
         let segments = this.getValue("segments");
@@ -328,10 +352,10 @@ export default class Connection {
 
     /**
      * Breaks the segment at the 2 points given by the points
-     * @param segment
+     * @param {segment} segment
      * @param break1
      * @param break2
-     * @return {Segments}
+     * @return {*[][][]} Returns the two segments
      * @private
      */
     __breakSegment(segment, break1, break2) {
@@ -373,7 +397,7 @@ export default class Connection {
     /**
      * This method is used to import the component from Interchange V1 JSON
      * @param json
-     * @returns {*}
+     * @returns {Connection} Returns a connection object
      */
     static fromInterchangeV1(device, json) {
         // let set;
@@ -464,14 +488,13 @@ export default class Connection {
                 ret.push(segment);
             }
         }
-        console.log("Regenerated Segments:",ret)
         this.updateSegments(ret);
     }
 
     /**
      * Allows the user to set the source of the connection
-     * @param component
-     * @param port
+     * @param {Object} component
+     * @param {ComponentPort} port
      */
     setSource(component, port) {
         if (typeof component != "string" && !(component instanceof String)) {
@@ -482,8 +505,8 @@ export default class Connection {
 
     /**
      * Allows the user to add a sink to the connection
-     * @param component
-     * @param port
+     * @param {Object} component 
+     * @param {ComponentPort} port
      */
     addSink(component, port) {
         if (typeof component != "string" || !(component instanceof String)) {
@@ -495,7 +518,7 @@ export default class Connection {
     /**
      * Adds a new connection target to either the source or the sinks of the connection object. Requires the user to pass
      * a ConnectionTarget Object or else it will throw an error.
-     * @param connectiontarget
+     * @param {Object} connectiontarget
      */
     addConnectionTarget(connectiontarget) {
         if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget == null || connectiontarget == undefined) {
@@ -511,10 +534,10 @@ export default class Connection {
     }
 
     /**
-     * Tries to delete any connection target reference that uses the said component. Returns true if any corresponding
-     * connection target is found.
-     * @param component
-     * @return boolean
+     * Tries to delete any connection target reference that uses the said component
+     * @param {Object} component
+     * @return {boolean} Returns true if any corresponding connection target is found
+     * 
      */
     tryDeleteConnectionTarget(componentid) {
         let ret = false;
@@ -543,7 +566,10 @@ export default class Connection {
     addWayPoints(wayPoints) {
         this.__paths.push(wayPoints);
     }
-
+    /**
+     * Merges connections
+     * @param {Object} connection 
+     */
     mergeConnection(connection) {
         console.error("Merge the newly found connection with the new connection");
         //TODO:
@@ -555,12 +581,20 @@ export default class Connection {
         5.
          */
     }
-
+    /**
+     * Converts from JSON format to connection object
+     * @param {Object} device 
+     * @param {JSON} json 
+     */
     setSourceFromJSON(device, json) {
         let target = ConnectionTarget.fromJSON(device, json);
         this.__source = target;
     }
-
+    /**
+     * ?
+     * @param {Object} device 
+     * @param {JSON} json 
+     */
     addSinkFromJSON(device, json) {
         let target = ConnectionTarget.fromJSON(device, json);
         this.__sinks.push(target);

@@ -1,6 +1,7 @@
 import DXFObject from "./dxfObject";
 
 import Feature from "./feature";
+import Params from "./params";
 
 /**
  * Class that can be used to describe the EDGE feature
@@ -8,9 +9,9 @@ import Feature from "./feature";
 export default class EdgeFeature extends Feature {
     /**
      * Default constructor for the edge feature
-     * @param edgeObjects
-     * @param params
-     * @param id
+     * @param {Object} edgeObjects
+     * @param {Params} params
+     * @param {String} id
      */
     constructor(edgeObjects, params, id = Feature.generateID()) {
         super("EDGE", "Basic", params, id, id, "EDGE");
@@ -22,9 +23,9 @@ export default class EdgeFeature extends Feature {
     }
 
     /**
-     * Generate an rectangular edge for the device
-     * @param xspan
-     * @param yspan
+     * Generate a rectangular edge for the device
+     * @param {Number} xspan X coordinate
+     * @param {Number} yspan Y coordinate
      */
     generateRectEdge(xspan, yspan) {
         //TODO: Fix this by trying to incorporate a system where the unit is given

@@ -4,6 +4,7 @@ import ComponentPort from "./componentPort";
 
 import * as Registry from "./registry";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
+import Port from "../library/port";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -12,11 +13,11 @@ import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 export default class Component {
     /**
      * Default Constructor
-     * @param type
-     * @param params
-     * @param name
-     * @param mint
-     * @param id
+     * @param {string} type
+     * @param {Params} params
+     * @param {String} name
+     * @param {string} mint
+     * @param {String} id
      */
     constructor(type, params, name, mint, id = Component.generateID()) {
         if (params instanceof Params) {
@@ -51,26 +52,38 @@ export default class Component {
             }
         }
     }
-
+    /**
+     * Gets the ports of the component
+     * @returns {Port} Returns ports of the component
+     */
     get ports() {
         return this.__ports;
     }
-
+    /**
+     * Sets the port of the component
+     * @param {} value
+     */
     set ports(value) {
         this.__ports = value;
     }
-
+    /**
+     * Gets the place of the component
+     * @returns {Number} Returns the place of the component
+     */
     get placed() {
         return this.__placed;
     }
-
+    /**
+     * Sets the place 
+     * @param {Number} value
+     */
     set placed(value) {
         this.__placed = value;
     }
 
     /**
      * Returns an array of strings that are the feature ids of the component
-     * @return {Array}
+     * @return {Array} Returns an array with the features
      */
     get features() {
         return this.__features;
@@ -86,7 +99,7 @@ export default class Component {
 
     /**
      * Sets the bounds i.e. the x,y position and the width and length of the component
-     * @param bounds PaperJS Rectangle object associated with a Path.bounds property
+     * @param {Object} bounds PaperJS Rectangle object associated with a Path.bounds property
      */
     setBounds(bounds) {
         this.__bounds = bounds;
@@ -98,8 +111,8 @@ export default class Component {
 
     /**
      * Updates the parameters stored by the component
-     * @param key
-     * @param value
+     * @param {String} key Key to identify the parameter
+     * @param {} value New value to be assign in the feature
      */
     updateParameter(key, value) {
         this.__params.updateParameter(key, value);
@@ -118,7 +131,7 @@ export default class Component {
 
     /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
-     * @returns {{}} Object
+     * @returns {Object} Object
      */
     toInterchangeV1() {
         let output = {};
@@ -152,7 +165,7 @@ export default class Component {
 
     /**
      * Allows the user to set the name of the component
-     * @param name
+     * @param {String} name
      */
     setName(name) {
         this.__name = name;
@@ -169,7 +182,7 @@ export default class Component {
     /**
      * Gets the 3DuF Type of the component, this will soon be depreciated and merged with
      * the MINT references
-     * @returns {*}
+     * @returns {String} Returns the type of component
      */
     getType() {
         return this.__type;
@@ -184,9 +197,9 @@ export default class Component {
     }
 
     /**
-     * Returns the value of the parameter stored against the following key in teh component params
-     * @param key
-     * @returns {*}
+     * Returns the value of the parameter stored against the following key in the component params
+     * @param {String} key Key to access the value
+     * @returns {*} Returns the value or an error
      */
     getValue(key) {
         try {
@@ -197,18 +210,18 @@ export default class Component {
     }
 
     /**
-     * Returns the list of feature ids that are associated with this
+     * Gets the list of feature ids that are associated with this
      * component
-     * @return {Array}
+     * @return {Array|*} Returns an array with the correspondings features of the component
      */
     getFeatureIDs() {
         return this.__features;
     }
 
     /**
-     * Not sure what this does
-     * @param key
-     * @returns {boolean}
+     * Checks if the component has default parameters
+     * @param {String} key Key to access the component
+     * @returns {boolean} Returns true whether it has default parameters or not
      */
     hasDefaultParam(key) {
         if (this.getDefaults().hasOwnProperty(key)) return true;
@@ -217,7 +230,7 @@ export default class Component {
 
     /**
      * Adds a feature that is associated with the component
-     * @param featureID String id of the feature
+     * @param {String} featureID String id of the feature
      */
     addFeatureID(featureID) {
         if (typeof featureID != "string" && !(featureID instanceof String)) {
@@ -253,8 +266,8 @@ export default class Component {
     }
 
     /**
-     * Returns the params associated with the component
-     * @return {Params}
+     * Gets the params associated with the component
+     * @return {Params} Returns the params associated with the component
      */
     getParams() {
         return this.__params;
@@ -262,7 +275,7 @@ export default class Component {
 
     /**
      * Returns a paper.Rectangle object that defines the bounds of the component
-     * @return {*}
+     * @return {Object}
      */
     getBoundingRectangle() {
         if (this.features.length == 0 || this.features == null || this.features == undefined) {
@@ -284,7 +297,7 @@ export default class Component {
 
     /**
      * Updates the coordinates of the component and all the other features
-     * @param center
+     * @param {Array} center
      */
     updateComponetPosition(center) {
         //This was not calling the right method earlier
@@ -300,9 +313,9 @@ export default class Component {
 
     /**
      * Replicates the component at the given positions
-     * @param xpos Integer location of X
-     * @param ypos Integer location of Y
-     * @param name
+     * @param {Number} xpos Integer location of X
+     * @param {Number} ypos Integer location of Y
+     * @param {string} name Name of the replicated component
      * @return {Component}
      */
     replicate(xpos, ypos, name = Registry.currentDevice.generateNewName(this.__type)) {
@@ -340,10 +353,8 @@ export default class Component {
     }
 
     /**
-     * Returns the center position of the bounding rectangle for the component
-     *
-     * @returns {Array}
-     * @memberof Component
+     * Returns the center position of the component as a 2D vector
+     * @return {*|[]}
      */
     getCenterPosition() {
         let bounds = this.getBoundingRectangle();
@@ -352,7 +363,7 @@ export default class Component {
 
     /**
      * Returns the topleft position of the component as a 2D vector
-     * @return {Array}
+     * @return {*|[]}
      */
     getTopLeftPosition() {
         let bounds = this.getBoundingRectangle();
@@ -361,7 +372,7 @@ export default class Component {
 
     /**
      * This method is used to import the component from Interchange V1 JSON
-     * @param json
+     * @param {} json
      * @returns {*}
      */
     static fromInterchangeV1(json) {
@@ -433,11 +444,18 @@ export default class Component {
 
         return component;
     }
-
+    /**
+     * Set port for the component
+     * @param {*} label 
+     * @param {*} port 
+     */
     setPort(label, port) {
         this.__ports.set(label, port);
     }
-
+    /**
+     * Gets the rotation of the component
+     * @returns {Number} Returns the degree of rotation
+     */
     getRotation() {
         if (this.__params.hasParam("rotation")) {
             return this.getValue("rotation");
@@ -453,7 +471,11 @@ export default class Component {
             return 0;
         }
     }
-
+    /**
+     * 
+     * @param {*} label 
+     * @param {*} render 
+     */
     attachComponentPortRender(label, render) {
         this._componentPortTRenders.set(label, render);
     }
