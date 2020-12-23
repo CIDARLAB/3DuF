@@ -1,5 +1,6 @@
 // import Feature from "../core/feature";
 import * as paper from "paper";
+import Layer from "../core/layer";
 
 //Colors taken from: http://www.google.ch/design/spec/style/color.html
 export const RED_500 = "#F44336";
@@ -87,17 +88,31 @@ var layerColors = {
     red: red,
     blue: blue
 };
-
+/**
+ * Converts from decimal to index
+ * @param {number} decimal 
+ * @param {number} indices 
+ * @returns {number} 
+ */
 var decimalToIndex = function(decimal, indices) {
     return Math.round((indices - 1) * decimal);
 };
-
+/**
+ * Converts the decimal to the corresponding layer color
+ * @param {number} decimal 
+ * @param {Object} layerColors 
+ * @param {Array} orderedKeys 
+ */
 export function decimalToLayerColor(decimal, layerColors, orderedKeys) {
     let index = decimalToIndex(decimal, orderedKeys.length);
     let key = orderedKeys[index];
     return layerColors["700"];
 }
-
+/**
+ * Renders all the colors
+ * @param {Layer} layer 
+ * @param {Array} orderedKeys 
+ */
 export function renderAllColors(layer, orderedKeys) {
     for (let i = 0; i < orderedKeys.length; i++) {
         new paper.Path.Circle({
@@ -116,7 +131,10 @@ export function renderAllColors(layer, orderedKeys) {
         });
     }
 }
-
+/**
+ * Gets the color corresponding to the layer
+ * @param {Layer} layer 
+ */
 export function getLayerColors(layer) {
     if (!layer) {
         throw new Error("Undefined color");
@@ -133,7 +151,10 @@ export function getLayerColors(layer) {
         }
     }
 }
-
+/**
+ * Gets the default color for the layer
+ * @param {Layer} layer 
+ */
 export function getDefaultLayerColor(layer) {
     return getLayerColors(layer)["500"];
 }
