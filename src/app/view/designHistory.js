@@ -55,7 +55,7 @@ export default class DesignHistory {
     /**
      * Deep copys the object being stored in the design
      * @param obj
-     * @returns
+     * @returns {Object}
      * @memberof DesignHistory
      * @private
      */

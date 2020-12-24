@@ -296,7 +296,7 @@ export default class BareViewManager {
     }
     /**
      * Convers layers to SVG String format
-     * @returns 
+     * @returns {}
      * @memberof BareViewManager
      */
     layersToSVGStrings() {
