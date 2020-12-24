@@ -20,7 +20,7 @@ export default class CustomComponentManager {
     /**
      * Gets the library
      * @memberof CustomComponentManager
-     * @returns 
+     * @returns {}
      */
     get library() {
         return this.__library;
@@ -58,7 +58,7 @@ export default class CustomComponentManager {
     /**
      * Gets the custom component
      * @param {*} componenttype 
-     * @returns
+     * @returns {}
      * @memberof CustomComponentManager
      */
     getCustomComponent(componenttype) {
@@ -100,7 +100,7 @@ export default class CustomComponentManager {
     /**
      * Checks if the library has a definition ?
      * @param {*} entity 
-     * @returns
+     * @returns {}
      * @memberof CustomComponentManager
      */
     hasDefinition(entity) {

@@ -47,6 +47,7 @@ import DAFDPlugin from "../plugin/dafdPlugin";
 import { Examples } from "../index";
 import Feature from "../core/feature";
 import Layer from "../core/layer";
+import Component from "../core/component";
 /**
  * View manager class
  */
@@ -350,7 +351,7 @@ export default class ViewManager {
     }
     /**
      * Converts the layers to SVG format
-     * @returns
+     * @returns {}
      * @memberof ViewManager
      */
     layersToSVGStrings() {
@@ -577,7 +578,7 @@ export default class ViewManager {
     /**
      * Update the target view
      * @param {string} featureType 
-     * @param {*} featureSet 
+     * @param {string} featureSet 
      * @param {Array<number>} position Array with X and Y coordinates
      * @param {boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
@@ -1199,7 +1200,7 @@ export default class ViewManager {
     }
     /**
      * Adds a custom component tool
-     * @param {*} identifier 
+     * @param {string} identifier 
      * @returns {void}
      * @memberof ViewManager
      */
@@ -1240,7 +1241,7 @@ export default class ViewManager {
     }
     /**
      * Generates the default placement for components 
-     * @param {*} component 
+     * @param {Component} component 
      * @param {number} xpos Default X coordinate
      * @param {number} ypos Default Y coordinate
      * @returns {void}

@@ -285,7 +285,7 @@ export default class PaperView {
      * Returns the coordinates of the project
      * @param {number} x X coordinate of the canvas
      * @param {number} y Y coordinate of the canvas
-     * @returns
+     * @returns {}
      * @memberof PaperView
      */
     canvasToProject(x, y) {
@@ -298,7 +298,7 @@ export default class PaperView {
      * Converts from canvas to project position
      * @param {number} x X coordinate 
      * @param {number} y Y coordinate
-     * @returns
+     * @returns {}
      * @memberof PaperView
      */
     getProjectPosition(x, y) {
