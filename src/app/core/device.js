@@ -170,7 +170,7 @@ export default class Device {
     /* Sort the layers such that they are ordered from lowest to highest z_offset. */
     /**
      * Sort the layers such that they are ordered from lowest to highest z_offset
-     * @returns
+     * @returns {void}
      * @memberof Device
      */
     sortLayers() {
@@ -662,7 +662,7 @@ export default class Device {
 
     /**
      * Create the layers necessary for creating a new level
-     * @return {*[]} returns a the layer objects created
+     * @return {Array<Layer>} Returns a the layer objects created
      * @memberof Device
      */
     createNewLayerBlock() {

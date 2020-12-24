@@ -289,7 +289,7 @@ export default class Feature {
      * Replicates the position 
      * @param {Number} xpos X coordinate to replicate
      * @param {Number} ypos Y coordinate to replicate
-     * @returns
+     * @returns {Feature}
      * @memberof Feature
      */
     replicate(xpos, ypos) {

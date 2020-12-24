@@ -2,6 +2,7 @@ import DXFObject from "./dxfObject";
 import Device from "./device";
 
 import * as Registry from "./registry";
+import Feature from "./feature";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -12,7 +13,7 @@ export default class CustomComponent {
      * Default constructor
      * @param {String} type Type of component
      * @param {DXFObject} dxfdata DXFObject
-     * @param {String} mint ?
+     * @param {String} mint Unique MINT identifier
      */
     constructor(type, dxfdata, mint = type.toUpperCase()) {
         // this.__params = params;
@@ -57,7 +58,7 @@ export default class CustomComponent {
 
     /**
      * Generates a Feature that has all the corresponding respective data
-     * @returns {Device.feature} Returns a feature based on the data
+     * @returns {Feature} Returns a feature based on the data
      * @memberof CustomComponent
      */
     generateComponent() {
@@ -68,7 +69,7 @@ export default class CustomComponent {
 
     /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
-     * @returns {Object & JSON} Object
+     * @returns {JSON} Object
      * @memberof CustomComponent
      */
     toJSON() {

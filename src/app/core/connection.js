@@ -39,7 +39,7 @@ export default class Connection {
     }
     /**
      * Gets the sinks in the connection
-     * @returns {Array} Returns an array with the sinks
+     * @returns {Array<ConnectionTarget>} Returns an array with the sinks
      * @memberof Connection
      */
     get sinks() {
@@ -73,7 +73,7 @@ export default class Connection {
 
     /**
      * Returns the list of features associated with the connection
-     * @return {Array}
+     * @return {Array<Feature>}
      * @memberof Connection
      */
     get features() {
@@ -91,7 +91,7 @@ export default class Connection {
 
     /**
      * Sets the bounds i.e. the x,y position and the width and length of the component
-     * @param {paper} bounds PaperJS Rectangle object associated with a Path.bounds property
+     * @param {paper.Path.Rectangle} bounds PaperJS Rectangle object associated with a Path.bounds property
      * @memberof Connection
      * @returns {void}
      */
@@ -106,7 +106,7 @@ export default class Connection {
     /**
      * Updates the parameters stored by the component
      * @param {string} key Identifier of the parameter
-     * @param {segment} value
+     * @param {PointArray} value
      * @memberof Connection
      * @returns {void}
      */
@@ -385,10 +385,10 @@ export default class Connection {
 
     /**
      * Breaks the segment at the 2 points given by the points
-     * @param {segment} segment
+     * @param {PointArray} segment
      * @param break1
      * @param break2
-     * @return {*[][][]} Returns the two segments
+     * @return {SegmentArray} Returns the two segments
      * @memberof Connection
      * @private
      */
@@ -510,7 +510,7 @@ export default class Connection {
 
     /**
      * Goes through teh waypoints and generates the connection segments
-     * @return {Array}
+     * @return {SegmentArray}
      * @memberof Connection
      */
     regenerateSegments() {
@@ -543,7 +543,7 @@ export default class Connection {
 
     /**
      * Allows the user to add a sink to the connection
-     * @param {Object} component 
+     * @param {string} component 
      * @param {ComponentPort} port
      * @memberof Connection
      * @returns {void}
@@ -558,7 +558,7 @@ export default class Connection {
     /**
      * Adds a new connection target to either the source or the sinks of the connection object. Requires the user to pass
      * a ConnectionTarget Object or else it will throw an error.
-     * @param {Object} connectiontarget
+     * @param {string} connectiontarget
      * @memberof Connection
      * @returns {void}
      */
@@ -613,7 +613,7 @@ export default class Connection {
     }
     /**
      * Merges connections
-     * @param {Object} connection 
+     * @param {Connection} connection 
      * @memberof Connection
      * @returns {void}
      */
