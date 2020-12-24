@@ -46,6 +46,17 @@ export default class Device {
      * @returns {string} 
      * @memberof Device
      */
+    setValveMap(valvemap, isvalve3Ddata){
+        this.__valveMap = valvemap;
+        this.__valveIs3DMap = isvalve3Ddata;
+    }
+
+    /**
+     * Returns the name of the device
+     *
+     * @returns {String}
+     * @memberof Device
+     */
     getName() {
         return this.name.getValue();
     }
@@ -167,7 +178,6 @@ export default class Device {
         this.updateView();
     }
 
-    /* Sort the layers such that they are ordered from lowest to highest z_offset. */
     /**
      * Sort the layers such that they are ordered from lowest to highest z_offset
      * @returns {void}
@@ -554,12 +564,7 @@ export default class Device {
         newDevice.__loadLayersFromJSON(json.layers);
         return newDevice;
     }
-    /**
-     * Creates new device object from InterchangeV1
-     * @param {*} json 
-     * @returns {Device} Returns a device object
-     * @memberof Device
-     */
+
     static fromInterchangeV1(json) {
         let newDevice;
         if (json.hasOwnProperty("params")) {
@@ -568,6 +573,14 @@ export default class Device {
                     {
                         width: json.params.width,
                         length: json.params.length
+                    },
+                    json.name
+                );
+            }else{
+                newDevice = new Device(
+                    {
+                        width: 135000,
+                        length: 85000
                     },
                     json.name
                 );
@@ -613,11 +626,101 @@ export default class Device {
 
         return newDevice;
     }
-    /**
-     * Renders 2D layers
-     * @returns {Layer} Returns rendered layers
-     * @memberof Device
-     */
+
+    static fromInterchangeV1_1(json) {
+        IOUtils.sanitizeV1Plus(json);
+        let newDevice;
+        
+        if (json.hasOwnProperty("params")) {
+            if (json.params.hasOwnProperty("xspan") && json.params.hasOwnProperty("yspan")) {
+                newDevice = new Device(
+                    {
+                        width: json.params.xspan,
+                        length: json.params.yspan
+                    },
+                    json.name
+                );
+            }else{
+                newDevice = new Device(
+                    {
+                        width: 135000,
+                        length: 85000
+                    },
+                    json.name
+                );
+            }
+        } else {
+            console.warn("Could not find device params, using some default values for device size");
+            newDevice = new Device(
+                {
+                    width: 135000,
+                    length: 85000
+                },
+                json.name
+            );
+        }
+        //TODO: Use this to dynamically create enough layers to scroll through
+        //newDevice.__loadLayersFromInterchangeV1(json.layers);
+        //TODO: Use these two generate a rat's nest
+        newDevice.__loadComponentsFromInterchangeV1(json.components);
+        newDevice.__loadConnectionsFromInterchangeV1(json.connections);
+
+        let valve_map, valve_type_map;
+        //Import ValveMap
+        if (json.params.hasOwnProperty("valveMap") && json.params.hasOwnProperty("valveTypeMap")){
+            valve_map = IOUtils.jsonToMap(json.params.valveMap);
+            console.log("Imported valvemap", valve_map);
+            
+
+            console.log("Loaded valvetypemap", json.params.valveTypeMap);
+            valve_type_map = IOUtils.jsonToMap(json.params.valveTypeMap);
+
+
+            console.log(json.params.valveTypeMap, valve_type_map);
+            let valveis3dmap = new Map();
+            for(let [key, value] of valve_type_map){
+                console.log("Setting type:",key, value);
+                switch(value){
+                    case 'NORMALLY_OPEN':
+                        valveis3dmap.set(key, false);
+                        break;
+                    case 'NORMALLY_CLOSED':
+                        valveis3dmap.set(key, true);
+                        break;
+                }
+            }
+            console.log("Imported valvemap", valve_map, valveis3dmap);
+            newDevice.setValveMap(valve_map, valveis3dmap);
+        }
+
+        //TODO: Use this to render the device features
+
+        //Check if JSON has features else mark
+        if (json.hasOwnProperty("features")) {
+            newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
+        } else {
+            //We need to add a default layer
+            let newlayer = new Layer(null, "flow");
+            newDevice.addLayer(newlayer);
+            newlayer = new Layer(null, "control");
+            newDevice.addLayer(newlayer);
+        }
+
+        //Updating cross-references
+        let features = newDevice.getAllFeaturesFromDevice();
+        let feature;
+        for (let i in features) {
+            //console.log("Feature:", features[i]);
+            feature = features[i];
+            if (feature.referenceID != null) {
+                newDevice.updateObjectReference(feature.referenceID, feature.getID());
+            }
+        }
+
+        return newDevice;
+    }
+
+
     render2D() {
         return this.__renderLayers2D();
     }
