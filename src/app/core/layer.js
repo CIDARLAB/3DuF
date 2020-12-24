@@ -129,7 +129,7 @@ export default class Layer {
     }
     /**
      * Returns heritable parameters
-     * @returns {Params|[]}
+     * @returns {Array<Params>}
      * @memberof Layer
      * @returns {void}
      */
