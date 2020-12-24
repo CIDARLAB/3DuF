@@ -53,9 +53,11 @@ export default class Parameter {
      */
     static checkValue(type, value) {
         let paramType = Registry.registeredParams[type];
-        if (paramType.isValid(value)) return true;
-        else throw new Error("Saw value: " + value + ". " + paramType.description);
+        if (paramType.isValid(value)){
+            return true;
+        }
     }
+    
     /**
      * Updates the value of parameter
      * @param {*} value New value of the parameter
@@ -66,6 +68,7 @@ export default class Parameter {
         Parameter.checkValue(this.__type, value);
         this.__value = value;
     }
+    
     resetValue() {}
 
     //Takes a typestring to recognize that param type, and
