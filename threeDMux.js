@@ -18,6 +18,8 @@ export default class ThreeDMux extends Template{
             valveRadius: "Float",
             height: "Float",
             gap: "Float",
+            width: "Float",
+            length: "Float",
             valveSpacing: "Float",
             channelWidth: "Float"
         };
@@ -26,36 +28,46 @@ export default class ThreeDMux extends Template{
             inputNumber: 4,
             orientation: "V",
             valveRadius: 1.2 * 1000,
-            height: 250,
+            height: 0.8 * 1000,
             gap: 0.6 * 1000,
+            width: 100,
+            length: 100,
             valveSpacing: 0.6 * 1000,
             channelWidth: 500
         };
 
         this.__units = {
             inputNumber: "",
-            orientation: "",
+            orientation: "&deg;",
             valveRadius: "&mu;m",
             height: "&mu;m",
             gap: "&mu;m",
+            width: "&mu;m",
+            length: "&mu;m",
             valveSpacing: "&mu;m",
             channelWidth: "&mu;m"
         };
 
         this.__minimum = {
             inputNumber: 2,
+            orientation: 0,
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
             gap: 0.5 * 10,
+            width: 100,
+            length: 100,
             valveSpacing: 0.1 * 1000,
             channelWidth: 25
         };
 
         this.__maximum = {
             inputNumber: 32,
+            orientation: 360,
             valveRadius: 0.2 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
+            width: 100,
+            length: 100,
             valveSpacing: 0.1 * 10000,
             channelWidth: 25e3
         };
@@ -68,6 +80,8 @@ export default class ThreeDMux extends Template{
             radius2: "valveRadius",
             valveRadius: "valveRadius",
             gap: "gap",
+            width: "width",
+            length: "length",
             valveSpacing: "valveSpacing",
             channelWidth: "channelWidth"
         };
@@ -80,6 +94,8 @@ export default class ThreeDMux extends Template{
             radius2: "valveRadius",
             valveRadius: "valveRadius",
             gap: "gap",
+            width: "width",
+            length: "length",
             valveSpacing: "valveSpacing",
             channelWidth: "channelWidth"
         };
@@ -136,9 +152,10 @@ export default class ThreeDMux extends Template{
         let gap = params["gap"];
         let radius = params["valveRadius"];
         let color = params["color"];
+        // let orientation = params["orientation"];
         let orientation = params["orientation"];
         let channelWidth = params["channelWidth"];
-        let valvespacing = params["valveSpacing"];
+        // let valvespacing = params["valveSpacing"];
         let threedmux_flow = new paper.CompoundPath();
 
         let px = position[0];
@@ -287,12 +304,12 @@ export default class ThreeDMux extends Template{
 
     __drawControl(params) {
         let position = params["position"];
-        let gap = params["gap"];
+        // let gap = params["gap"];
         let radius = params["valveRadius"];
         let color = params["color"];
-        let orientation = params["orientation"];
+        // let orientation = params["orientation"];
         let channelWidth = params["channelWidth"];
-        let valvespacing = params["valveSpacing"];
+        // let valvespacing = params["valveSpacing"];
         let threedmux_control = new paper.CompoundPath();
 
         
