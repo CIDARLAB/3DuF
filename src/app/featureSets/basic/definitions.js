@@ -1616,6 +1616,8 @@ export const basicFeatures = {
             valveRadius: "Float",
             height: "Float",
             gap: "Float",
+            width: "Float",
+            length: "Float",
             valveSpacing: "Float",
             channelWidth: "Float"
         },
@@ -1625,6 +1627,8 @@ export const basicFeatures = {
             valveRadius: "&mu;m",
             height: "&mu;m",
             gap: "&mu;m",
+            width: "&mu;m",
+            length: "&mu;m",
             valveSpacing: "&mu;m",
             channelWidth: "&mu;m"
         },
@@ -1634,6 +1638,8 @@ export const basicFeatures = {
             valveRadius: 1.2 * 1000,
             height: 0.8 * 1000,
             gap: 0.6 * 1000,
+            width: 100,
+            length: 100,
             valveSpacing: 0.6 * 1000,
             channelWidth: 500
         },
@@ -1642,6 +1648,8 @@ export const basicFeatures = {
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
             gap: 0.5 * 10,
+            width: 100,
+            length: 100,
             valveSpacing: 0.1 * 1000,
             channelWidth: 25
         },
@@ -1650,6 +1658,8 @@ export const basicFeatures = {
             valveRadius: 0.2 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
+            width: 100,
+            length: 100,
             valveSpacing: 0.1 * 10000,
             channelWidth: 25e3
         }
@@ -1664,6 +1674,8 @@ export const basicFeatures = {
             valveRadius: "Float",
             height: "Float",
             gap: "Float",
+            width: "Float",
+            length: "Float",
             valveSpacing: "Float",
             channelWidth: "Float"
         },
@@ -1673,6 +1685,8 @@ export const basicFeatures = {
             valveRadius: "&mu;m",
             height: "&mu;m",
             gap: "&mu;m",
+            width: "&mu;m",
+            length: "&mu;m",
             valveSpacing: "&mu;m",
             channelWidth: "&mu;m"
         },
@@ -1682,6 +1696,8 @@ export const basicFeatures = {
             valveRadius: 1.2 * 1000,
             height: 0.8 * 1000,
             gap: 0.6 * 1000,
+            width: 100,
+            length: 100,
             valveSpacing: 0.6 * 1000,
             channelWidth: 500
         },
@@ -1690,6 +1706,8 @@ export const basicFeatures = {
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
             gap: 0.5 * 10,
+            width: 100,
+            length: 100,
             valveSpacing: 0.1 * 1000,
             channelWidth: 25
         },
@@ -1698,6 +1716,8 @@ export const basicFeatures = {
             valveRadius: 0.2 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
+            width: 100,
+            length: 100,
             valveSpacing: 0.1 * 10000,
             channelWidth: 25e3
         }

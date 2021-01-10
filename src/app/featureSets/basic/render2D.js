@@ -842,6 +842,8 @@ export const render2D = {
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
+            width: "width",
+            length: "length",
             gap: "gap",
             valveSpacing: "valveSpacing",
             channelWidth: "channelWidth"
@@ -863,6 +865,8 @@ export const render2D = {
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
+            width: "width",
+            length: "length",
             gap: "gap",
             valveSpacing: "valveSpacing",
             channelWidth: "channelWidth"
