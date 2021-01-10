@@ -1471,5 +1471,505 @@ export const basicFeatures = {
             height: "Float",
             text: "String"
         }
-    }
+    },
+
+    // new
+    Filter: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
+    CellTrapS: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            chamberLength: "Float",
+            feedingChannelWidth: "Float",
+            orientation: "String",
+            chamberWidth: "Float",
+            numberOfChambers: "Float",
+            chamberSpacing: "Float",
+            height: "Float"
+        },
+        units: {
+            chamberLength: "&mu;m",
+            feedingChannelWidth: "&mu;m",
+            orientation: "",
+            chamberWidth: "&mu;m",
+            numberOfChambers: "",
+            chamberSpacing: "&mu;m",
+            height: "&mu;m"
+        },
+        defaults: {
+            chamberLength: 1.2 * 1000,
+            feedingChannelWidth: 0.41 * 1000,
+            orientation: "H",
+            chamberWidth: 1.23 * 1000,
+            numberOfChambers: 6,
+            chamberSpacing: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            chamberLength: 30,
+            feedingChannelWidth: 10,
+            chamberWidth: 30,
+            numberOfChambers: 1,
+            chamberSpacing: 60,
+            height: 10
+        },
+        maximum: {
+            chamberLength: 6000,
+            feedingChannelWidth: 2000,
+            chamberWidth: 6000,
+            numberOfChambers: 10,
+            chamberSpacing: 12 * 1000,
+            height: 1200
+        }
+    },
+    CellTrapS_cell: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            chamberLength: "Float",
+            feedingChannelWidth: "Float",
+            orientation: "String",
+            chamberWidth: "Float",
+            numberOfChambers: "Float",
+            chamberSpacing: "Float",
+            height: "Float"
+        },
+        defaults: {
+            chamberLength: 1.2 * 1000,
+            feedingChannelWidth: 0.41 * 1000,
+            orientation: "H",
+            chamberWidth: 1.23 * 1000,
+            numberOfChambers: 6,
+            chamberSpacing: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            chamberLength: 30,
+            feedingChannelWidth: 10,
+            chamberWidth: 30,
+            numberOfChambers: 1,
+            chamberSpacing: 60,
+            height: 10
+        },
+        maximum: {
+            chamberLength: 6000,
+            feedingChannelWidth: 2000,
+            chamberWidth: 6000,
+            numberOfChambers: 10,
+            chamberSpacing: 12 * 1000,
+            height: 1200
+        }
+    },
+    ThreeDMux: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            inputNumber: "Float",
+            orientation: "String",
+            valveRadius: "Float",
+            height: "Float",
+            gap: "Float",
+            valveSpacing: "Float",
+            channelWidth: "Float"
+        },
+        units: {
+            inputNumber: "",
+            orientation: "",
+            valveRadius: "&mu;m",
+            height: "&mu;m",
+            gap: "&mu;m",
+            valveSpacing: "&mu;m",
+            channelWidth: "&mu;m"
+        },
+        defaults: {
+            inputNumber: 4,
+            orientation: "V",
+            valveRadius: 1.2 * 1000,
+            height: 0.8 * 1000,
+            gap: 0.6 * 1000,
+            valveSpacing: 0.6 * 1000,
+            channelWidth: 500
+        },
+        minimum: {
+            inputNumber: 2,
+            valveRadius: 0.1 * 100,
+            height: 0.1 * 100,
+            gap: 0.5 * 10,
+            valveSpacing: 0.1 * 1000,
+            channelWidth: 25
+        },
+        maximum: {
+            inputNumber: 32,
+            valveRadius: 0.2 * 10000,
+            height: 1.2 * 1000,
+            gap: 0.1 * 10000,
+            valveSpacing: 0.1 * 10000,
+            channelWidth: 25e3
+        }
+    },
+    ThreeDMux_control: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            inputNumber: "Float",
+            orientation: "String",
+            valveRadius: "Float",
+            height: "Float",
+            gap: "Float",
+            valveSpacing: "Float",
+            channelWidth: "Float"
+        },
+        units: {
+            inputNumber: "",
+            orientation: "",
+            valveRadius: "&mu;m",
+            height: "&mu;m",
+            gap: "&mu;m",
+            valveSpacing: "&mu;m",
+            channelWidth: "&mu;m"
+        },
+        defaults: {
+            inputNumber: 4,
+            orientation: "V",
+            valveRadius: 1.2 * 1000,
+            height: 0.8 * 1000,
+            gap: 0.6 * 1000,
+            valveSpacing: 0.6 * 1000,
+            channelWidth: 500
+        },
+        minimum: {
+            inputNumber: 2,
+            valveRadius: 0.1 * 100,
+            height: 0.1 * 100,
+            gap: 0.5 * 10,
+            valveSpacing: 0.1 * 1000,
+            channelWidth: 25
+        },
+        maximum: {
+            inputNumber: 32,
+            valveRadius: 0.2 * 10000,
+            height: 1.2 * 1000,
+            gap: 0.1 * 10000,
+            valveSpacing: 0.1 * 10000,
+            channelWidth: 25e3
+        }
+    },
+    ChemostatRing: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
+    Incubation: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
+    Merger: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
+    PicoInjection: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
+    Sorter: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
+    Splitter: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
 };

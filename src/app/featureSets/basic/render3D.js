@@ -422,5 +422,142 @@ export const render3D = {
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
-    }
+    },
+
+    //new
+    Filter: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+
+    CellTrapS: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing",
+            height: "height"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
+    CellTrapS_cell: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing",
+            height: "height"
+        },
+        featurePrimitive: "ConeFeature",
+        featurePrimitiveSet: "Basic3D"
+    },
+    ThreeDMux: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height",
+            valveSpacing: "valveSpacing"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    ThreeDMux_control: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            height: "height",
+            valveSpacing: "valveSpacing"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Incubation: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Merger: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    PicoInjection: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Sorter: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    Splitter: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
 };

@@ -26,6 +26,18 @@ import LLChamber from "../library/llChamber";
 import ThreeDMixer from "../library/threeDMixer";
 import Via from "../library/via";
 
+//new
+
+import Filter from "../library/filter";
+import CellTrapS from "../library/celltrapS";
+import ThreeDMux from "../library/threeDMux";
+import ChemostatRing from "../library/chemostatring";
+import Incubation from "../library/incubation";
+import Merger from "../library/merger";
+import PicoInjection from "../library/picoinjection";
+import Sorter from "../library/sorter";
+import Splitter from "../library/splitter";
+
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
         this.__definitions = definitions;
@@ -75,7 +87,21 @@ export default class FeatureSet {
             LLChamber_control: { object: new LLChamber(), key: "CONTROL" },
             "3DMixer": { object: new ThreeDMixer(), key: "FLOW" },
             "3DMixer_control": { object: new ThreeDMixer(), key: "CONTROL" },
-            Via: {object: new Via(), key: "FLOW" }
+            Via: {object: new Via(), key: "FLOW" },
+
+
+            //new
+            Filter: {object: new Filter(), key: "Flow"},
+            CellTrapS: { object: new CellTrapS(), key: "FLOW" },
+            CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },
+            "3DMux": { object: new ThreeDMux(), key: "FLOW" },
+            "3DMux_control": { object: new ThreeDMux(), key: "CONTROL" },
+            ChemostatRing: { object: new ChemostatRing(), key: "FLOW" },
+            Incubation: { object: new Incubation(), key: "FLOW" },
+            Merger: { object: new Merger(), key: "FLOW" },
+            PicoInjection: { object: new PicoInjection(), key: "FLOW" },
+            Sorter: { object: new Sorter(), key: "FLOW" },
+            Splitter: { object: new Splitter(), key: "FLOW" }
         };
 
         // this.__checkDefinitions();

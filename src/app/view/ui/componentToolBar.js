@@ -46,6 +46,17 @@ export default class ComponentToolBar {
         this.__llChamberButton = document.getElementById("llchamber_button");
         this.__threeDMixerButton = document.getElementById("3dmixer_button");
 
+        //new 
+        this.__filterButton = document.getElementById("filter_button");
+        this.__celltrapsButton = document.getElementById("celltraps_button");
+        this.__threeDMuxButton = document.getElementById("3dmux_button");
+        this.__chemostatRingButton = document.getElementById("chemostatring_button");
+        this.__incubationButton = document.getElementById("incubation_button");
+        this.__mergerButton = document.getElementById("merger_button");
+        this.__picoinjectionButton = document.getElementById("picoinjection_button");
+        this.__sorterButton = document.getElementById("sorter_button");
+        this.__splitterButton = document.getElementById("splitter_button");
+
         //Create all the parameter menu buttons
 
         this.__channelParams = document.getElementById("channel_params_button");
@@ -77,6 +88,17 @@ export default class ComponentToolBar {
         this.__threeDMixerParams = document.getElementById("3dmixer_params_button");
 
         this.__insertTextDialog = new InsertTextDialog();
+        
+        //new
+        this.__filterParams = document.getElementById("filter_params_button");
+        this.__celltrapsParams = document.getElementById("celltraps_params_button");
+        this.__threeDMuxParams = document.getElementById("3dmux_params_button");
+        this.__chemostatRingParams = document.getElementById("chemostatring_params_button");
+        this.__incubationParams = document.getElementById("incubation_params_button");
+        this.__mergerParams = document.getElementById("merger_params_button");
+        this.__picoinjectionParams = document.getElementById("picoinjection_params_button");
+        this.__sorterParams = document.getElementById("sorter_params_button");
+        this.__splitterParams = document.getElementById("splitter_params_button");
 
         this.buttons = {
             SelectButton: this.__selectToolButton,
@@ -108,7 +130,19 @@ export default class ComponentToolBar {
             AlignmentMarks: this.__alignmentMarksButton,
             LLChamber: this.__llChamberButton,
             "3DMixer": this.__threeDMixerButton,
+
+            //newly added part
+            Filter: this.__filterButton,
+            CellTrapS: this.__celltrapsButton,
+            "3DMux": this.__threeDMuxButton,
+            ChemostatRing: this.__chemostatRingButton,
+            Incubation: this.__incubationButton,
+            Merger: this.__mergerButton,
+            PicoInjection: this.__picoinjectionButton,
+            Sorter: this.__sorterButton,
+            Splitter: this.__splitterButton
         };
+            
 
         this.__setupEventHandlers();
 
@@ -305,6 +339,65 @@ export default class ComponentToolBar {
             ref.setActiveButton("LLChamber");
             ref.__viewManagerDelegate.switchTo2D();
         };
+
+        //new
+        this.__filterButton.onclick = function() {
+            Registry.viewManager.activateTool("Filter");
+
+            ref.setActiveButton("Filter");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+
+        this.__celltrapsButton.onclick = function() {
+            Registry.viewManager.activateTool("CellTrapS");
+
+            ref.setActiveButton("CellTrapS");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+
+        this.__threeDMuxButton.onclick = function() {
+            Registry.viewManager.activateTool("3DMux");
+
+            ref.setActiveButton("3DMux");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+
+        this.__chemostatRingButton.onclick = function() {
+            Registry.viewManager.activateTool("ChemostatRing");
+
+            ref.setActiveButton("ChemostatRing");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__incubationButton.onclick = function() {
+            Registry.viewManager.activateTool("Incubation");
+
+            ref.setActiveButton("Incubation");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__mergerButton.onclick = function() {
+            Registry.viewManager.activateTool("Merger");
+
+            ref.setActiveButton("Merger");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__picoinjectionButton.onclick = function() {
+            Registry.viewManager.activateTool("PicoInjection");
+
+            ref.setActiveButton("PicoInjection");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__sorterButton.onclick = function() {
+            Registry.viewManager.activateTool("Sorter");
+
+            ref.setActiveButton("Sorter");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__splitterButton.onclick = function() {
+            Registry.viewManager.activateTool("Splitter");
+
+            ref.setActiveButton("Splitter");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
     }
 
     setActiveButton(feature) {
@@ -353,6 +446,17 @@ export default class ComponentToolBar {
         this.__alignmentMarksParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("AlignmentMarks", "Basic");
         this.__llChamberParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LLChamber", "Basic");
         this.__threeDMixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMixer", "Basic");
+
+        //new
+        this.__filterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Filter", "Basic");
+        this.__celltrapsParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CellTrapS", "Basic");
+        this.__threeDMuxParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMux", "Basic");
+        this.__chemostatRingParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("ChemostatRing", "Basic");
+        this.__incubationParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Incubation", "Basic");
+        this.__mergerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Merger", "Basic");
+        this.__picoinjectionParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("PicoInjection", "Basic");
+        this.__sorterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Sorter", "Basic");
+        this.__splitterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Splitter", "Basic");
     }
 
     static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {
