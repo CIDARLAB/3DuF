@@ -946,18 +946,28 @@ export const render2D = {
     PicoInjection: {
         featureParams: {
             position: "position",
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
-            orientation: "orientation",
-            bendLength: "bendLength"
+            width: "width",
+            injectorWidth: "injectorWidth",
+            injectorLength: "injectorLength",
+            dropletWidth: "dropletWidth",
+            nozzleWidth: "nozzleWidth",
+            nozzleLength: "nozzleLength",
+            electrodeDistance: "electrodeDistance",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            orientation: "orientation"
         },
         targetParams: {
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
-            orientation: "orientation",
-            bendLength: "bendLength"
+            width: "width",
+            injectorWidth: "injectorWidth",
+            injectorLength: "injectorLength",
+            dropletWidth: "dropletWidth",
+            nozzleWidth: "nozzleWidth",
+            nozzleLength: "nozzleLength",
+            electrodeDistance: "electrodeDistance",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            orientation: "orientation"
         },
         featurePrimitiveType: "PicoInjection",
         featurePrimitiveSet: "Basic2D",
