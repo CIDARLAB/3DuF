@@ -925,18 +925,32 @@ export const render2D = {
     Merger: {
         featureParams: {
             position: "position",
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
             orientation: "orientation",
-            bendLength: "bendLength"
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            electrodeDistance: "electrodeDistance",
+            outletWidth: "outletWidth",
+            outletLength: "outletLength",
+            chamberHeight: "chamberHeight",
+            chamberLength: "chamberLength",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth"
         },
         targetParams: {
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
             orientation: "orientation",
-            bendLength: "bendLength"
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            electrodeDistance: "electrodeDistance",
+            outletWidth: "outletWidth",
+            outletLength: "outletLength",
+            chamberHeight: "chamberHeight",
+            chamberLength: "chamberLength",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth"
         },
         featurePrimitiveType: "Merger",
         featurePrimitiveSet: "Basic2D",
