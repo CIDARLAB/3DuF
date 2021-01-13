@@ -1211,15 +1211,16 @@ export default class ViewManager {
         this.tools["GenerateArrayTool"] = new GenerateArrayTool();
 
         //new
-        this.tools["Filter"] = new ComponentPositionTool("Filter", "Basic");
-        this.tools["CellTrapS"] = new CellPositionTool("CellTrapS", "Basic");
+        // this.tools["Filter"] = new ComponentPositionTool("Filter", "Basic");
+        // this.tools["CellTrapS"] = new CellPositionTool("CellTrapS", "Basic");
         this.tools["3DMux"] = new MultilayerPositionTool("3DMux", "Basic");
-        this.tools["ChemostatRing"] = new ComponentPositionTool("ChemostatRing", "Basic");
-        this.tools["Incubation"] = new ComponentPositionTool("Incubation", "Basic");
+        // this.tools["ChemostatRing"] = new ComponentPositionTool("ChemostatRing", "Basic");
+        // this.tools["Incubation"] = new ComponentPositionTool("Incubation", "Basic");
         this.tools["Merger"] = new ComponentPositionTool("Merger", "Basic");
         this.tools["PicoInjection"] = new ComponentPositionTool("PicoInjection", "Basic");
         this.tools["Sorter"] = new ComponentPositionTool("Sorter", "Basic");
-        this.tools["Splitter"] = new ComponentPositionTool("Splitter", "Basic");
+        // this.tools["Splitter"] = new ComponentPositionTool("Splitter", "Basic");
+        this.tools["CapacitanceSensor"] = new ComponentPositionTool("CapacitanceSensor", "Basic");
     }
     /**
      * Adds a custom component tool

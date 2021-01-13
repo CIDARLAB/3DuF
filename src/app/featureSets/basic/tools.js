@@ -294,4 +294,10 @@ export const tools = {
         },
         placementTool: "componentPositionTool"
     },
+    CapacitanceSensor: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
 };

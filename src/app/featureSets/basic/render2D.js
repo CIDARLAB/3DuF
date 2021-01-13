@@ -1016,4 +1016,25 @@ export const render2D = {
         targetPrimitiveType: "SplitterTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    CapacitanceSensor: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "CapacitanceSensor",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CapacitanceSensorTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
 };

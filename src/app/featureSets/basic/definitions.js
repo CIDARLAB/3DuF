@@ -2017,4 +2017,49 @@ export const basicFeatures = {
             height: 1200
         }
     },
+    CapacitanceSensor: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
 };

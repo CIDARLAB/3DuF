@@ -524,12 +524,13 @@ export const render3D = {
     PicoInjection: {
         featureParams: {
             position: "position",
-            radius1: "channelWidth",
-            radius2: "bendSpacing",
-            numberOfBends: "numberOfBends",
-            orientation: "orientation",
-            bendLength: "bendLength",
-            height: "height"
+            injectorWidth: "injectorWidth",
+            dropletWidth: "dropletWidth",
+            nozzleWidth: "nozzleWidth",
+            nozzleLength: "nozzleLength",
+            electrodeDistance: "electrodeDistance",
+            electrodeWidth: "electrodeWidth",
+            orientation: "orientation"
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
@@ -548,6 +549,19 @@ export const render3D = {
         featurePrimitive: "ConeFeature"
     },
     Splitter: {
+        featureParams: {
+            position: "position",
+            radius1: "channelWidth",
+            radius2: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "ConeFeature"
+    },
+    CapacitanceSensor: {
         featureParams: {
             position: "position",
             radius1: "channelWidth",
