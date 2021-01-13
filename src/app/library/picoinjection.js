@@ -178,11 +178,6 @@ export default class PicoInjection extends Template{
         // injector
         ports.push(new ComponentPort(0, - dropletWidth/2 - nozzleLength - injectorLength, "3", "FLOW"));
 
-        // electrodes
-        ports.push(new ComponentPort(0, electrodeDistance + electrodeLength, "4", "FLOW"));
-        ports.push(new ComponentPort(- 2 * electrodeWidth, electrodeDistance + electrodeLength, "5", "FLOW"));
-        ports.push(new ComponentPort(2 * electrodeWidth, electrodeDistance + electrodeLength, "6", "FLOW"));
-
         return ports;
     }
 

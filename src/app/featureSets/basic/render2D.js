@@ -1033,18 +1033,28 @@ export const render2D = {
     CapacitanceSensor: {
         featureParams: {
             position: "position",
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
             orientation: "orientation",
-            bendLength: "bendLength"
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            electrodeDistance: "electrodeDistance",
+            sensorWidth: "sensorWidth",
+            sensorLength: "sensorLength",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth"
         },
         targetParams: {
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
             orientation: "orientation",
-            bendLength: "bendLength"
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            electrodeDistance: "electrodeDistance",
+            sensorWidth: "sensorWidth",
+            sensorLength: "sensorLength",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth"
         },
         featurePrimitiveType: "CapacitanceSensor",
         featurePrimitiveSet: "Basic2D",
