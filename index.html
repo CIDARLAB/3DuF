@@ -339,6 +339,8 @@
             <a id="cnc_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">CNC (.svg)</a>
             <a id="laser_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">Laser Cutting (.svg)</a>
             <a id="metafluidics_save" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button" target="_blank" href="https://metafluidics.org/create-part/">Publish on Metafluidics</a>
+            <a id="damp_fabricate" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button" >Fabricate</a>
+            <!-- <a id="damp_fabricate" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button" ></a>Fabricate</a> -->
             <!-- <a id="stl_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">3D Model (.stl)</a>-->
         </nav>
         <a id="infobutton" class="popdown mdl-button mdl-js-button mdl-js-ripple-effect" title="About" style="color: hotpink">About/Help</a>
@@ -829,6 +831,40 @@
     </div>
 </dialog>
 
+<dialog id="damp_fabricate_dialog" class="mdl-dialog">
+    <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">Send your design for fabrication at DAMP LAB</h2>
+    </div>
+    <div class="mdl-dialog__content">
+        <!-- Textfield with Floating Label -->
+        <h6>
+            Enter your contact information:
+        </h6>
+        <form action="#">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="fabricate_dialog_email_field">
+                <label class="mdl-textfield__label" for="fabricate_dialog_email_field">Email</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="fabricate_dialog_address_field">
+                <label class="mdl-textfield__label" for="fabricate_dialog_email_field">Shipping Address</label>
+            </div>
+        </form>
+
+        <p>Learn more about the DAMP LAB fabrication service <a href="https://www.damplab.org/damp-lab-6-services" target="_blank">here</a>.</p>
+    </div>
+    <!--<form action="#">-->
+        <!--<div class="mdl-textfield mdl-js-textfield" width="300px">-->
+            <!--<input class="mdl-textfield__input" type="text" id="new_component_name">-->
+            <!--<label class="mdl-textfield__label" for="new_component_name">Name...</label>-->
+        <!--</div>-->
+    <!--</form>-->
+    <br />
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+        <button id="send_designs_button" type="button" class="mdl-button">Send Design</button>
+        <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+</dialog>
 
 <!--Snackbar for all user feedback-->
 <div aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
