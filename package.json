@@ -27,6 +27,7 @@
   "dependencies": {
     "@dagrejs/graphlib": "^2.1.4",
     "acorn": "^8.0.2",
+    "axios": "^0.21.1",
     "dialog-polyfill": "^0.5.0",
     "dxf-parser": "^0.6.1",
     "exorcist": "^1.0.1",
