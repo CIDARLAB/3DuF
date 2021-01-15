@@ -20,7 +20,7 @@ export default class DAMPFabricationDialog {
             // Registry.viewManager.activateTool("InsertTextTool");
             let email = document.getElementById("fabricate_dialog_email_field").value;
             let address = document.getElementById("fabricate_dialog_address_field").value;
-            
+            console.log(Registry.currentDevice.toInterchangeV1())
             let endpoint = 'http://localhost:8081/api/v1/submit';
             axios.post(endpoint, {
             "email": email,
@@ -28,7 +28,7 @@ export default class DAMPFabricationDialog {
             "completion": "not completed",
             "time": 10,
             "cost": 1000,
-            "file": Registry.currentDevice.toInterchangeV1(),
+            "file": JSON.stringify(Registry.currentDevice.toInterchangeV1()),
             "address": address
             })
             .then((res) => {
