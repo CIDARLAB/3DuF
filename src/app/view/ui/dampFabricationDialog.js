@@ -24,11 +24,7 @@ export default class DAMPFabricationDialog {
             let endpoint = 'http://localhost:8081/api/v1/submit';
             axios.post(endpoint, {
             "email": email,
-            "acceptance": "n/a",
-            "completion": "not completed",
-            "time": 10,
-            "cost": 1000,
-            "file": JSON.stringify(Registry.currentDevice.toInterchangeV1()),
+            "design": JSON.stringify(Registry.currentDevice.toInterchangeV1()),
             "address": address
             })
             .then((res) => {
