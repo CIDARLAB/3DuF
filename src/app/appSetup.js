@@ -1,4 +1,4 @@
-import * as Registry from "./core/registry";
+import Registry from "./core/registry";
 
 import ViewManager from "./view/viewManager";
 import { TrackJS } from "trackjs";

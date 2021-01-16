@@ -3,7 +3,7 @@ import Params from "./params";
 import * as Parameters from "./parameters";
 import Feature from "./feature";
 
-import * as Registry from "./registry";
+import Registry from './registry';
 
 import Layer from "./layer";
 import Component from "./component";

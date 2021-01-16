@@ -43,10 +43,10 @@ var indigo = {
     "200": "#" + "9FA8DA",
     "100": "#" + "C5CAE9",
     "50": "#" + "E8EAF6",
-    A100: "#" + "8C9EFF",
-    A200: "#" + "536DFE",
-    A400: "#" + "3D5AFE",
-    A700: "#" + "304FFE"
+    "A100": "#" + "8C9EFF",
+    "A200": "#" + "536DFE",
+    "A400": "#" + "3D5AFE",
+    "A700": "#" + "304FFE"
 };
 
 var red = {
@@ -60,10 +60,10 @@ var red = {
     "200": "#" + "EF9A9A",
     "100": "#" + "FFCDD2",
     "50": "#" + "FFEBEE",
-    A100: "#" + "FF8A80",
-    A200: "#" + "FF5252",
-    A400: "#" + "FF1744",
-    A700: "#" + "D50000"
+    "A100": "#" + "FF8A80",
+    "A200": "#" + "FF5252",
+    "A400": "#" + "FF1744",
+    "A700": "#" + "D50000"
 };
 
 var blue = {
@@ -77,10 +77,10 @@ var blue = {
     "200": "#" + "9FA8DA",
     "100": "#" + "C5CAE9",
     "50": "#" + "E8EAF6",
-    A100: "#" + "8C9EFF",
-    A200: "#" + "536DFE",
-    A400: "#" + "3D5AFE",
-    A700: "#" + "304FFE"
+    "A100": "#" + "8C9EFF",
+    "A200": "#" + "536DFE",
+    "A400": "#" + "3D5AFE",
+    "A700": "#" + "304FFE"
 };
 
 var layerColors = {
@@ -160,14 +160,15 @@ export function getDefaultLayerColor(layer) {
 }
 
 //TODO: We need to fix how this works and remove the circular dependency form this chain
-export function getDefaultFeatureColor(typeString, setString, layer) {
-    if (layer) {
-        // let height = Feature.getDefaultsForType(typeString, setString)["height"];
-        let decimal = 500; // layer.estimateLayerHeight();
-        if (!layer.flip) decimal = 1 - decimal;
-        let colors = getLayerColors(layer);
-        return decimalToLayerColor(decimal, colors, darkColorKeys);
-    } else {
-        return decimalToLayerColor(0, layerColors["indigo"], darkColorKeys);
-    }
-}
+export function getDefaultFeatureColor(typeString, setString, layer){
+	if (layer){
+		// let height = Feature.getDefaultsForType(typeString, setString)["height"];
+		let decimal = 500; // layer.estimateLayerHeight();
+		if (!layer.flip) decimal = 1-decimal;
+		let colors = getLayerColors(layer);
+		return decimalToLayerColor(decimal, colors, darkColorKeys);
+	}
+	else {
+		return decimalToLayerColor(0,layerColors["indigo"], darkColorKeys);
+	}
+};

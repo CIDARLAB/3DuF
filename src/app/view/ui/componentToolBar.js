@@ -3,7 +3,7 @@ import { GREY_200, BLACK, WHITE } from "../colors";
 import InsertTextDialog from "./insertTextDialog";
 import * as Colors from "../colors";
 import * as ParameterMenu from "./parameterMenu";
-import * as Registry from "../../core/registry";
+import Registry from "../../core/registry";
 
 const inactiveBackground = GREY_200;
 const inactiveText = BLACK;
