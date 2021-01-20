@@ -1,7 +1,7 @@
 import ZoomToolBar from "./ui/zoomToolBar";
 import paper from "paper";
 
-import Registry from '../core/registry';
+import Registry from "../core/registry";
 import * as Colors from "./colors";
 
 import Device from "../core/device";
@@ -22,6 +22,9 @@ export default class BareViewManager {
      */
     constructor() {
         this.threeD;
+        let element = document.getElementById("c");
+        console.log(element, element.width, element.height);
+
         this.view = new PaperView("c", this);
 
         this.__grid = new AdaptiveGrid(this);
@@ -183,7 +186,7 @@ export default class BareViewManager {
     }
     /**
      * Updates specific feature of the view
-     * @param {Feature} feature Selected feature to update 
+     * @param {Feature} feature Selected feature to update
      * @param {boolean} refresh Whether to refresh or not. true by default
      * @memberof BareViewManager
      * @returns {void}
@@ -281,7 +284,7 @@ export default class BareViewManager {
     }
     /**
      * Removes a specific layer of the view
-     * @param {Layer} layer Layer object 
+     * @param {Layer} layer Layer object
      * @param {number} index Index of the layer to be removed
      * @param {boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
@@ -305,7 +308,7 @@ export default class BareViewManager {
 
     /**
      * Adds all features of the layers to the view manager
-     * @param {Layer} layer Layer object 
+     * @param {Layer} layer Layer object
      * @param {boolean} refresh Whether to refresh or not
      * @returns {void}
      * @memberof BareViewManager
@@ -410,7 +413,7 @@ export default class BareViewManager {
         this.view.clear();
     }
     /**
-     * Sets the zoom 
+     * Sets the zoom
      * @param {number} zoom Value of zoom
      * @param {boolean} refresh Whether to resfresh or not. true by default
      * @returns {void}
@@ -443,7 +446,7 @@ export default class BareViewManager {
     // }
     /**
      * Adjust the zoom
-     * @param {number} delta 
+     * @param {number} delta
      * @param {Array<number>} point Coordinates of the point where the zoom will be
      * @param {boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
@@ -481,7 +484,7 @@ export default class BareViewManager {
     }
     /**
      * Moves the center
-     * @param {*} delta 
+     * @param {*} delta
      * @param {boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
      * @memberof BareViewManager
@@ -496,7 +499,7 @@ export default class BareViewManager {
     }
     /**
      * Refresh?
-     * @param {boolean} refresh Whether to refresh or not 
+     * @param {boolean} refresh Whether to refresh or not
      * @returns {void}
      * @memberof BareViewManager
      */
@@ -508,7 +511,7 @@ export default class BareViewManager {
     }
     /**
      * Gets the position of the project
-     * @param {*} event 
+     * @param {*} event
      * @returns {Array<number>} Returns the X and Y coordinates
      * @memberof BareViewManager
      */
@@ -516,8 +519,8 @@ export default class BareViewManager {
         return this.view.getProjectPosition(event.clientX, event.clientY);
     }
     /**
-     * Checks if it has current grid 
-     * @returns {Boolean} 
+     * Checks if it has current grid
+     * @returns {Boolean}
      * @memberof BareViewManager
      */
     __hasCurrentGrid() {
@@ -546,7 +549,7 @@ export default class BareViewManager {
     }
     /**
      * Loads a device from a JSON format
-     * @param {JSON} json 
+     * @param {JSON} json
      * @memberof BareViewManager
      * @returns {void}
      */
@@ -564,14 +567,14 @@ export default class BareViewManager {
         } else {
             console.log("Version Number: " + version);
             switch (version) {
-            case 1:
-                device = Device.fromInterchangeV1(json);
-                Registry.currentDevice = device;
-                this.__currentDevice = device;
+                case 1:
+                    device = Device.fromInterchangeV1(json);
+                    Registry.currentDevice = device;
+                    this.__currentDevice = device;
 
-                break;
-            default:
-                alert("Version '" + version + "' is not supported by 3DuF !");
+                    break;
+                default:
+                    alert("Version '" + version + "' is not supported by 3DuF !");
             }
         }
         //Common Code for rendering stuff
