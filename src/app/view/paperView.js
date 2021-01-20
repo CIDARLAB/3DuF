@@ -1,7 +1,7 @@
 import EdgeFeature from "../core/edgeFeature";
 import paper from "paper";
 
-import Registry from '../core/registry';
+import Registry from "../core/registry";
 import * as FeatureRenderer2D from "./render2D/featureRenderer2D";
 import GridRenderer from "./render2D/gridRenderer";
 import DeviceRenderer from "./render2D/deviceRenderer2D";
@@ -133,7 +133,7 @@ export default class PaperView {
         }
     }
     /**
-     * Converts the layers to SVG format 
+     * Converts the layers to SVG format
      * @memberof PaperView
      * @returns {}
      */
@@ -252,7 +252,7 @@ export default class PaperView {
     }
     /**
      * Gets the zoom at the paper
-     * @returns {number} Returns zoom value 
+     * @returns {number} Returns zoom value
      * @memberof PaperView
      */
     getZoom() {
@@ -296,7 +296,7 @@ export default class PaperView {
     }
     /**
      * Converts from canvas to project position
-     * @param {number} x X coordinate 
+     * @param {number} x X coordinate
      * @param {number} y Y coordinate
      * @returns {}
      * @memberof PaperView
@@ -306,7 +306,7 @@ export default class PaperView {
     }
     /**
      * Adds an event listener to the mouse wheel key
-     * @param {Function} func Event to execute 
+     * @param {Function} func Event to execute
      * @returns {void}
      * @memberof PaperView
      */
@@ -315,7 +315,7 @@ export default class PaperView {
     }
     /**
      * Adds an event listener when the mouse goes down
-     * @param {Function} func Event to execute 
+     * @param {Function} func Event to execute
      * @returns {void}
      * @memberof PaperView
      */
@@ -324,7 +324,7 @@ export default class PaperView {
     }
     /**
      * Adds an event listener to the mouse up key
-     * @param {Function} func Event to execute 
+     * @param {Function} func Event to execute
      * @returns {void}
      * @memberof PaperView
      */
@@ -333,7 +333,7 @@ export default class PaperView {
     }
     /**
      * Adds an event listener when the mouse moves
-     * @param {Function} func Event to execute 
+     * @param {Function} func Event to execute
      * @returns {void}
      * @memberof PaperView
      */
@@ -342,7 +342,7 @@ export default class PaperView {
     }
     /**
      * Adds an event listener when a key is press
-     * @param {Function} func Event to execute 
+     * @param {Function} func Event to execute
      * @returns {void}
      * @memberof PaperView
      */
@@ -351,7 +351,7 @@ export default class PaperView {
     }
     /**
      * Adds an event listener when a key is down
-     * @param {Function} func Event to execute 
+     * @param {Function} func Event to execute
      * @returns {void}
      * @memberof PaperView
      */
@@ -359,8 +359,8 @@ export default class PaperView {
         this.canvas.onkeydown = func;
     }
     /**
-     * Sets the resize function 
-     * @param {Function} func Event to execute 
+     * Sets the resize function
+     * @param {Function} func Event to execute
      * @returns {void}
      * @memberof PaperView
      */
@@ -494,9 +494,9 @@ export default class PaperView {
     }
     /**
      * Compares feature heights of the paper
-     * @param {number} a 
-     * @param {number} b 
-     * @returns {number} 
+     * @param {number} a
+     * @param {number} b
+     * @returns {number}
      * @memberof PaperView
      */
     comparePaperFeatureHeights(a, b) {
@@ -521,8 +521,8 @@ export default class PaperView {
     }
     /**
      * Insert a child component by height order
-     * @param {*} group 
-     * @param {*} newChild 
+     * @param {*} group
+     * @param {*} newChild
      * @returns {void}
      * @memberof PaperView
      */
@@ -539,8 +539,8 @@ export default class PaperView {
     // TODO: Could be done faster with a binary search. Probably not needed!
     /**
      * Gets the index of a children component depending on it's height
-     * @param {*} children 
-     * @param {*} newChild 
+     * @param {*} children
+     * @param {*} newChild
      * @returns {number} Returns the index of the component
      * @memberof PaperView
      */
@@ -719,7 +719,7 @@ export default class PaperView {
     }
     /**
      * Moves the center by a specific value
-     * @param {number} delta 
+     * @param {number} delta
      * @returns {void}
      * @memberof PaperView
      */
@@ -728,8 +728,8 @@ export default class PaperView {
     }
     /**
      * Adjust the zoom bu a specific value to a certain point on the paper
-     * @param {number} delta 
-     * @param {Array<number>} point 
+     * @param {number} delta
+     * @param {Array<number>} point
      * @returns {void}
      * @memberof PaperView
      */
@@ -738,7 +738,7 @@ export default class PaperView {
     }
     /**
      * Gets the paper features
-     * @param {Array<Feature>} paperFeatures 
+     * @param {Array<Feature>} paperFeatures
      * @returns {Array} Returns an array with the features
      * @memberof PaperView
      */
@@ -832,8 +832,8 @@ export default class PaperView {
     }
     /**
      * Checks if the feature hit an element ?
-     * @param {*} paperElement 
-     * @param {*} onlyHitActiveLayer 
+     * @param {*} paperElement
+     * @param {*} onlyHitActiveLayer
      * @returns {Array} Returns an Array with all the child components which intersects the paper element
      * @memberof PaperView
      */
@@ -861,7 +861,7 @@ export default class PaperView {
         return output;
     }
     /**
-     * Inserts new feature to the edge 
+     * Inserts new feature to the edge
      * @param {Feature} newPaperFeature Feature to be inserted
      * @returns {void}
      * @memberof PaperView
@@ -874,7 +874,7 @@ export default class PaperView {
     /**
      * Returns the rendered feature object that is being displayed for the particular feature
      * @param {string} featureID ID of the feature
-     * @return {Object} Returns an object containing the rendered features 
+     * @return {Object} Returns an object containing the rendered features
      * @memberof PaperView
      */
     getRenderedFeature(featureID) {
