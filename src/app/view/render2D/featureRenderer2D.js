@@ -4,10 +4,9 @@ import * as Colors from "../colors";
 import Feature from "../../core/feature";
 
 import * as FeatureSets from "../../featureSets";
-import Registry from '../../core/registry';
-import {renderEdgeFeature} from '../../view/render2D/dxfObjectRenderer2D';
-import paper from 'paper';
-
+import Registry from "../../core/registry";
+import { renderEdgeFeature } from "../../view/render2D/dxfObjectRenderer2D";
+import paper from "paper";
 
 var getLayerColor = function(feature) {
     let height = feature.getValue("height");

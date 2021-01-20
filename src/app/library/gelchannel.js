@@ -56,7 +56,7 @@ export default class Gelchannel extends Template {
             componentSpacing: 10000,
             sideWidth: 500,
             mainWidth: 500,
-            length: 100*1000,
+            length: 100 * 1000,
             height: 1200,
             sideheight: 1200,
             rotation: 360
