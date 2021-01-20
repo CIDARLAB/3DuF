@@ -17,10 +17,12 @@ module.exports = {
     rules: {
         "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
         "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-        indent: ["error", 4],
+        indent: ["warn", 4],
         "linebreak-style": ["error", "unix"],
-        quotes: ["error", "double"],
-        semi: ["error", "always"],
+        quotes: ["warn", "double"],
+        semi: ["warn", "always"],
+        "no-unused-vars": "off",
+        "no-case-declarations":"off"
     },
     overrides: [
         {
