@@ -49,7 +49,7 @@ export default class Gelchannel extends Template {
         this.__maximum = {
             sideWidth: 500,
             mainWidth: 500,
-            length: 100*1000,
+            length: 100 * 1000,
             height: 1200,
             sideheight: 1200
         };

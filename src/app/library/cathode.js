@@ -22,8 +22,8 @@ export default class Cahode extends Template {
 
         this.__defaults = {
             cathodeRadius: 0.9 * 1000,
-            pegRadius: 0.7*1000,
-            pegThickness: 0.3*1000,
+            pegRadius: 0.7 * 1000,
+            pegThickness: 0.3 * 1000,
             height: 1.1 * 1000,
             rotation: 0
         };
@@ -38,16 +38,16 @@ export default class Cahode extends Template {
 
         this.__minimum = {
             cathodeRadius: 0.4 * 10,
-            pegRadius: 0.1*1000,
-            pegThickness: 0.1*1000,
+            pegRadius: 0.1 * 1000,
+            pegThickness: 0.1 * 1000,
             height: 10,
             rotation: 0
         };
 
         this.__maximum = {
             cathodeRadius: 2000,
-            pegRadius: 2*1000,
-            pegThickness: 2*1000,
+            pegRadius: 2 * 1000,
+            pegThickness: 2 * 1000,
             height: 1200,
             rotation: 90
         };
@@ -90,17 +90,13 @@ export default class Cahode extends Template {
         let outerCircle = new paper.Path.Circle(pos, radius);
         outerCircle.fillColor = color1;
 
-        let peg1 = new paper.Path.Rectangle(
-            position[0]-pegradius/2,position[1]-pegthickness/2,
-            pegradius,pegthickness)
-        let peg2 = new paper.Path.Rectangle(
-            position[0]-pegthickness/2,position[1]-pegradius/2,
-            pegthickness,pegradius)
-	let finalCircle = outerCircle.subtract(peg1.unite(peg2));
+        let peg1 = new paper.Path.Rectangle(position[0] - pegradius / 2, position[1] - pegthickness / 2, pegradius, pegthickness);
+        let peg2 = new paper.Path.Rectangle(position[0] - pegthickness / 2, position[1] - pegradius / 2, pegthickness, pegradius);
+        let finalCircle = outerCircle.subtract(peg1.unite(peg2));
         finalCircle.fillColor = color1;
-        outerCircle.remove()
-        peg1.remove()
-	peg2.remove()
+        outerCircle.remove();
+        peg1.remove();
+        peg2.remove();
         return finalCircle.rotate(rotation, pos);
     }
 
