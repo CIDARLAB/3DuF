@@ -1,16 +1,22 @@
 <template>
-    <div id="app">
+  <v-app id="3duf">
+    <LayoutSidebar> 
+      <template v-slot:main>
         <Visualiser />
-    </div>
+      </template>
+    </LayoutSidebar>
+  </v-app>
 </template>
 
 <script>
-import Visualiser from "./components/Visualiser";
+import Visualiser from './components/Visualiser.vue';
+import LayoutSidebar from './views/layouts/sidebar_layout.vue';
 
 export default {
     name: "App",
     components: {
-        Visualiser
+      LayoutSidebar,
+      Visualiser
     }
 };
 </script>
