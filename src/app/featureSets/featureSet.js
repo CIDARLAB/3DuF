@@ -28,7 +28,7 @@ import Via from "../library/via";
 
 //new
 
-// import Filter from "../library/filter";
+import Filter from "../library/filter";
 // import CellTrapS from "../library/celltrapS";
 import ThreeDMux from "../library/threeDMux";
 // import ChemostatRing from "../library/chemostatring";
@@ -92,7 +92,7 @@ export default class FeatureSet {
 
 
             //new
-            // Filter: {object: new Filter(), key: "Flow"},
+            Filter: {object: new Filter(), key: "Flow"},
             // CellTrapS: { object: new CellTrapS(), key: "FLOW" },
             // CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },
             "3DMux": { object: new ThreeDMux(), key: "FLOW" },
