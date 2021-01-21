@@ -14,7 +14,7 @@ export default class ThreeDMux extends Template{
 
         this.__heritable = {
             inputNumber: "Float",
-            orientation: "String",
+            rotation: "Float",
             valveRadius: "Float",
             height: "Float",
             gap: "Float",
@@ -26,7 +26,7 @@ export default class ThreeDMux extends Template{
 
         this.__defaults = {
             inputNumber: 4,
-            orientation: "V",
+            rotation: 0,
             valveRadius: 1.2 * 1000,
             height: 0.8 * 1000,
             gap: 0.6 * 1000,
@@ -38,7 +38,7 @@ export default class ThreeDMux extends Template{
 
         this.__units = {
             inputNumber: "",
-            orientation: "&deg;",
+            rotation: "&deg;",
             valveRadius: "&mu;m",
             height: "&mu;m",
             gap: "&mu;m",
@@ -50,7 +50,7 @@ export default class ThreeDMux extends Template{
 
         this.__minimum = {
             inputNumber: 2,
-            orientation: 0,
+            rotation: 0,
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
             gap: 0.5 * 10,
@@ -62,7 +62,7 @@ export default class ThreeDMux extends Template{
 
         this.__maximum = {
             inputNumber: 32,
-            orientation: 360,
+            rotation: 360,
             valveRadius: 0.2 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
@@ -75,7 +75,7 @@ export default class ThreeDMux extends Template{
         this.__featureParams = {
             inputNumber: "inputNumber",
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
@@ -89,7 +89,7 @@ export default class ThreeDMux extends Template{
         this.__targetParams = {
             inputNumber: "inputNumber",
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
@@ -152,10 +152,8 @@ export default class ThreeDMux extends Template{
         let gap = params["gap"];
         let radius = params["valveRadius"];
         let color = params["color"];
-        // let orientation = params["orientation"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let channelWidth = params["channelWidth"];
-        // let valvespacing = params["valveSpacing"];
         let threedmux_flow = new paper.CompoundPath();
 
         let px = position[0];
@@ -174,7 +172,6 @@ export default class ThreeDMux extends Template{
         let valveselect = vertlinelength/(2*valvenum);
         let branchArray = new Array(N);
         let centerArray = new Array(N);
-        let ports = [];
 
         // create base flow 
         for (var i = 0; i < N; i++) {
@@ -182,7 +179,6 @@ export default class ThreeDMux extends Template{
 
             let vertlinebottom = new paper.Point(px + xposbranch - channelWidth/2, py + vertlinelength);
             let vertlinetop = new paper.Point(px + xposbranch + channelWidth/2, py);
-            // ports.push(new ComponentPort(px + xposbranch, py));
             let center = new paper.Point (px + xposbranch, py);
 
             centerArray[i] = new paper.Path.Circle(center, radius);
@@ -194,7 +190,6 @@ export default class ThreeDMux extends Template{
         let portOut = new paper.Point(px + bottomlinelength/2 + channelWidth/2, py + vertlinelength + N * 1000);
 
         let portRec = new paper.Path.Rectangle(portCon, portOut);
-        // ports.push(new ComponentPort(px + bottomlinelength/2, py + vertlinelength + N * 1000));
 
         threedmux_flow.addChild(portRec);
 
@@ -218,7 +213,7 @@ export default class ThreeDMux extends Template{
                     })
 
 
-                    this.__createthreedmuxValve(threedmux_flow, current_xpos, ypos, gap, radius, "V", channelWidth);
+                    this.__createthreedmuxValve(threedmux_flow, current_xpos, ypos, gap, radius, rotation, channelWidth);
                     branchArray[count1 + w] = branchArray[count1 + w].subtract(cutrec); //remove a portion from the selected channel
 
                 }
@@ -242,7 +237,7 @@ export default class ThreeDMux extends Template{
                     })
 
                     branchArray[(N-1) - w - count2] = branchArray[(N-1) - w - count2].subtract(cutrec);
-                    this.__createthreedmuxValve(threedmux_flow, current_xpos, ypos, gap, radius, "V". channelWidth);
+                    this.__createthreedmuxValve(threedmux_flow, current_xpos, ypos, gap, radius, rotation, channelWidth);
                 }
                 count2 += increment2 + cur_N/2;
             }
@@ -255,15 +250,14 @@ export default class ThreeDMux extends Template{
             threedmux_flow.addChild(centerArray[i]);
         }
 
-        // this.__valveplacement(threedmux_flow, px, py + valveselect, gap, radius, "V", vertlinelength, bottomlinelength, N, N, channelWidth);
         threedmux_flow.fillColor = color;
 
-       
+        threedmux_flow.rotate(rotation, new paper.Point(px, py));
 
         return threedmux_flow;
     }
 
-    __createthreedmuxValve(compound_path, xpos, ypos, gap, radius, orientation, channel_width) {
+    __createthreedmuxValve(compound_path, xpos, ypos, gap, radius, rotation, channel_width) {
         let center = new paper.Point(xpos, ypos);
 
         //Create the basic circle
@@ -291,25 +285,17 @@ export default class ThreeDMux extends Template{
             to: new paper.Point(xpos + radius, ypos + gap / 2)
         });
 
-        //cutout.fillColor = "white";
         let valve = circ.subtract(cutout);
-
-        //TODO Rotate
-        if (orientation == "H") {
-            valve.rotate(90, center);
-        }
 
         compound_path.addChild(valve);
     }
 
     __drawControl(params) {
         let position = params["position"];
-        // let gap = params["gap"];
         let radius = params["valveRadius"];
         let color = params["color"];
-        // let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let channelWidth = params["channelWidth"];
-        // let valvespacing = params["valveSpacing"];
         let threedmux_control = new paper.CompoundPath();
 
         
@@ -362,6 +348,8 @@ export default class ThreeDMux extends Template{
         }
 
         threedmux_control.fillColor = color;
+        threedmux_control.rotate(rotation, new paper.Point(px, py));
+
         return threedmux_control;
     }
 }
