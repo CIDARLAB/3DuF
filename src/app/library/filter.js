@@ -13,7 +13,7 @@ export default class Filter extends Template {
         };
 
         this.__heritable = {
-            orientation: "String",
+            rotation: "Float",
             height: "Float",
             pillarDiameter: "Float",
             filterWidth: "Float",
@@ -28,7 +28,7 @@ export default class Filter extends Template {
         };
 
         this.__defaults = {
-            orientation: "V",
+            rotation: 0,
             height: 250,
             pillarDiameter: 2 * 1000,
             filterWidth: 1 * 1000,
@@ -43,7 +43,7 @@ export default class Filter extends Template {
         };
 
         this.__units = {
-            orientation: "",
+            rotation: "&deg;",
             height: "&mu;m",
             pillarDiameter: "&mu;m",
             filterWidth: "&mu;m",
@@ -58,7 +58,7 @@ export default class Filter extends Template {
         };
 
         this.__minimum = {
-            orientation: "H",
+            rotation: 0,
             height: 10,
             pillarDiameter: 1 * 1000,
             filterWidth: 0.5 * 1000,
@@ -73,7 +73,7 @@ export default class Filter extends Template {
         };
 
         this.__maximum = {
-            orientation: "H",
+            rotation: 360,
             height: 1200,
             pillarDiameter: 4 * 1000,
             filterWidth: 4 * 1000,
@@ -95,7 +95,7 @@ export default class Filter extends Template {
 
         this.__featureParams = {
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             pillarDiameter: "pillarDiameter",
             filterWidth: "filterWidth",
             barrierWidth: "barrierWidth",
@@ -109,7 +109,7 @@ export default class Filter extends Template {
         };
 
         this.__targetParams = {
-            orientation: "orientation",
+            rotation: "rotation",
             pillarDiameter: "pillarDiameter",
             filterWidth: "filterWidth",
             barrierWidth: "barrierWidth",
@@ -144,7 +144,7 @@ export default class Filter extends Template {
     }
 
     render2D(params, key) {
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let x = params["position"][0];
         let y = params["position"][1];
         let color = params["color"];
@@ -263,9 +263,9 @@ export default class Filter extends Template {
 
         serp.addChild((new paper.Path.Rectangle(topLeft, bottomRight)));
         
-        if (orientation === "H") {
-            serp.rotate(270, new paper.Point(x, y));
-        }
+       
+        serp.rotate(rotation, new paper.Point(x, y));
+        
         serp.fillColor = color;
         return serp;
     }

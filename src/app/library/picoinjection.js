@@ -13,11 +13,6 @@ export default class PicoInjection extends Template{
         };
 
         this.__heritable = {
-            // bendSpacing: "Float",
-            // numberOfBends: "Float",
-            // channelWidth: "Float",
-            // bendLength: "Float",
-            // orientation: "String",
             height: "Float",
             width: "Float",
             injectorWidth: "Float",
@@ -28,15 +23,10 @@ export default class PicoInjection extends Template{
             electrodeDistance: "Float",
             electrodeWidth: "Float",
             electrodeLength: "Float",
-            orientation: "String"
+            rotation: "Float"
         };
 
         this.__defaults = {
-            // channelWidth: 0.8 * 1000,
-            // bendSpacing: 1.23 * 1000,
-            // numberOfBends: 1,
-            // orientation: "V",
-            // bendLength: 2.46 * 1000,
             height: 250,
             width: 10 * 1000,
             injectorWidth: 2 * 1000,
@@ -47,15 +37,10 @@ export default class PicoInjection extends Template{
             electrodeDistance: 0.8 * 1000,
             electrodeWidth: 0.8 * 1000,
             electrodeLength: 3 * 1000,
-            orientation: "V"
+            rotation: 0
         };
 
         this.__units = {
-            // bendSpacing: "&mu;m",
-            // numberOfBends: "",
-            // channelWidth: "&mu;m",
-            // bendLength: "&mu;m",
-            // orientation: "",
             height: "&mu;m",
             width: "&mu;m",
             injectorWidth: "&mu;m",
@@ -66,15 +51,10 @@ export default class PicoInjection extends Template{
             electrodeDistance: "&mu;m",
             electrodeWidth: "&mu;m",
             electrodeLength: "&mu;m",
-            orientation: ""
+            rotation: "&deg;"
         };
 
         this.__minimum = {
-            // channelWidth: 10,
-            // bendSpacing: 10,
-            // numberOfBends: 1,
-            // orientation: "H",
-            // bendLength: 10,
             height: 10,
             width: 5 * 1000,
             injectorWidth: 1000,
@@ -85,15 +65,10 @@ export default class PicoInjection extends Template{
             electrodeDistance: 100,
             electrodeWidth: 100,
             electrodeLength: 1000,
-            orientation: "H"
+            rotation: 0
         };
 
         this.__maximum = {
-            // channelWidth: 2000,
-            // bendSpacing: 6000,
-            // numberOfBends: 20,
-            // orientation: "H",
-            // bendLength: 12 * 1000,
             height: 1200,
             width: 20 * 1000,
             injectorWidth: 4000,
@@ -104,7 +79,7 @@ export default class PicoInjection extends Template{
             electrodeDistance: 2000,
             electrodeWidth: 2000,
             electrodeLength: 5000,
-            orientation: "H"
+            rotation: 360
         };
 
         this.__placementTool = "componentPositionTool";
@@ -115,11 +90,6 @@ export default class PicoInjection extends Template{
 
         this.__featureParams = {
             position: "position",
-            // channelWidth: "channelWidth",
-            // bendSpacing: "bendSpacing",
-            // numberOfBends: "numberOfBends",
-            // orientation: "orientation",
-            // bendLength: "bendLength"
             width: "width",
             injectorWidth: "injectorWidth",
             injectorLength: "injectorLength",
@@ -129,15 +99,10 @@ export default class PicoInjection extends Template{
             electrodeDistance: "electrodeDistance",
             electrodeWidth: "electrodeWidth",
             electrodeLength: "electrodeLength",
-            orientation: "orientation"
+            rotation: "rotation"
         };
 
         this.__targetParams = {
-            // channelWidth: "channelWidth",
-            // bendSpacing: "bendSpacing",
-            // numberOfBends: "numberOfBends",
-            // orientation: "orientation",
-            // bendLength: "bendLength"
             width: "width",
             injectorWidth: "injectorWidth",
             injectorLength: "injectorLength",
@@ -147,7 +112,7 @@ export default class PicoInjection extends Template{
             electrodeDistance: "electrodeDistance",
             electrodeWidth: "electrodeWidth",
             electrodeLength: "electrodeLength",
-            orientation: "orientation"
+            rotation: "rotation"
         };
 
         this.__renderKeys = ["FLOW"];
@@ -156,11 +121,6 @@ export default class PicoInjection extends Template{
     }
 
     getPorts(params) {
-        // let channelWidth = params["channelWidth"];
-        // let bendLength = params["bendLength"];
-        // let bendSpacing = params["bendSpacing"];
-        // let orientation = params["orientation"];
-        // let numberOfBends = params["numberOfBends"];
         let width = params["width"];
         let injectorLength = params["injectorLength"];
         let dropletWidth = params["dropletWidth"];
@@ -182,7 +142,7 @@ export default class PicoInjection extends Template{
     }
 
     render2D(params, key) {
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let x = params["position"][0];
         let y = params["position"][1];
         let color = params["color"];
@@ -233,9 +193,8 @@ export default class PicoInjection extends Template{
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        if (orientation === "H") {
-            serp.rotate(270, new paper.Point(x, y));
-        }
+        serp.rotate(rotation, new paper.Point(x, y));
+
         serp.fillColor = color;
         return serp;
     }
