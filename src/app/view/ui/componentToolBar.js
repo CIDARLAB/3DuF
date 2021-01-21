@@ -48,7 +48,7 @@ export default class ComponentToolBar {
 
         //new 
         this.__filterButton = document.getElementById("filter_button");
-        // this.__celltrapsButton = document.getElementById("celltraps_button");
+        this.__celltrapsButton = document.getElementById("celltraps_button");
         this.__threeDMuxButton = document.getElementById("3dmux_button");
         // this.__chemostatRingButton = document.getElementById("chemostatring_button");
         // this.__incubationButton = document.getElementById("incubation_button");
@@ -92,7 +92,7 @@ export default class ComponentToolBar {
         
         //new
         this.__filterParams = document.getElementById("filter_params_button");
-        // this.__celltrapsParams = document.getElementById("celltraps_params_button");
+        this.__celltrapsParams = document.getElementById("celltraps_params_button");
         this.__threeDMuxParams = document.getElementById("3dmux_params_button");
         // this.__chemostatRingParams = document.getElementById("chemostatring_params_button");
         // this.__incubationParams = document.getElementById("incubation_params_button");
@@ -135,7 +135,7 @@ export default class ComponentToolBar {
 
             //newly added part
             Filter: this.__filterButton,
-            // CellTrapS: this.__celltrapsButton,
+            CellTrapS: this.__celltrapsButton,
             "3DMux": this.__threeDMuxButton,
             // ChemostatRing: this.__chemostatRingButton,
             // Incubation: this.__incubationButton,
@@ -351,12 +351,12 @@ export default class ComponentToolBar {
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        // this.__celltrapsButton.onclick = function() {
-        //     Registry.viewManager.activateTool("CellTrapS");
+        this.__celltrapsButton.onclick = function() {
+            Registry.viewManager.activateTool("CellTrapS");
 
-        //     ref.setActiveButton("CellTrapS");
-        //     ref.__viewManagerDelegate.switchTo2D();
-        // };
+            ref.setActiveButton("CellTrapS");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
 
         this.__threeDMuxButton.onclick = function() {
             Registry.viewManager.activateTool("3DMux");
@@ -458,7 +458,7 @@ export default class ComponentToolBar {
 
         //new
         this.__filterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Filter", "Basic");
-        // this.__celltrapsParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CellTrapS", "Basic");
+        this.__celltrapsParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CellTrapS", "Basic");
         this.__threeDMuxParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMux", "Basic");
         // this.__chemostatRingParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("ChemostatRing", "Basic");
         // this.__incubationParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Incubation", "Basic");

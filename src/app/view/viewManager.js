@@ -929,7 +929,7 @@ export default class ViewManager {
 
         //new
         this.tools["Filter"] = new ComponentPositionTool("Filter", "Basic");
-        // this.tools["CellTrapS"] = new CellPositionTool("CellTrapS", "Basic");
+        this.tools["CellTrapS"] = new CellPositionTool("CellTrapS", "Basic");
         this.tools["3DMux"] = new MultilayerPositionTool("3DMux", "Basic");
         // this.tools["ChemostatRing"] = new ComponentPositionTool("ChemostatRing", "Basic");
         // this.tools["Incubation"] = new ComponentPositionTool("Incubation", "Basic");

@@ -29,7 +29,7 @@ import Via from "../library/via";
 //new
 
 import Filter from "../library/filter";
-// import CellTrapS from "../library/celltrapS";
+import CellTrapS from "../library/celltrapS";
 import ThreeDMux from "../library/threeDMux";
 // import ChemostatRing from "../library/chemostatring";
 // import Incubation from "../library/incubation";
@@ -93,8 +93,8 @@ export default class FeatureSet {
 
             //new
             Filter: {object: new Filter(), key: "Flow"},
-            // CellTrapS: { object: new CellTrapS(), key: "FLOW" },
-            // CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },
+            CellTrapS: { object: new CellTrapS(), key: "FLOW" },
+            CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },
             "3DMux": { object: new ThreeDMux(), key: "FLOW" },
             "3DMux_control": { object: new ThreeDMux(), key: "CONTROL" },
             // ChemostatRing: { object: new ChemostatRing(), key: "FLOW" },
