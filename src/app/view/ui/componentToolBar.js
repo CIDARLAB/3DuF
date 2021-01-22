@@ -51,7 +51,7 @@ export default class ComponentToolBar {
         this.__celltrapsButton = document.getElementById("celltraps_button");
         this.__threeDMuxButton = document.getElementById("3dmux_button");
         // this.__chemostatRingButton = document.getElementById("chemostatring_button");
-        // this.__incubationButton = document.getElementById("incubation_button");
+        this.__incubationButton = document.getElementById("incubation_button");
         this.__mergerButton = document.getElementById("merger_button");
         this.__picoinjectionButton = document.getElementById("picoinjection_button");
         this.__sorterButton = document.getElementById("sorter_button");
@@ -95,7 +95,7 @@ export default class ComponentToolBar {
         this.__celltrapsParams = document.getElementById("celltraps_params_button");
         this.__threeDMuxParams = document.getElementById("3dmux_params_button");
         // this.__chemostatRingParams = document.getElementById("chemostatring_params_button");
-        // this.__incubationParams = document.getElementById("incubation_params_button");
+        this.__incubationParams = document.getElementById("incubation_params_button");
         this.__mergerParams = document.getElementById("merger_params_button");
         this.__picoinjectionParams = document.getElementById("picoinjection_params_button");
         this.__sorterParams = document.getElementById("sorter_params_button");
@@ -138,7 +138,7 @@ export default class ComponentToolBar {
             CellTrapS: this.__celltrapsButton,
             "3DMux": this.__threeDMuxButton,
             // ChemostatRing: this.__chemostatRingButton,
-            // Incubation: this.__incubationButton,
+            Incubation: this.__incubationButton,
             Merger: this.__mergerButton,
             PicoInjection: this.__picoinjectionButton,
             Sorter: this.__sorterButton,
@@ -371,12 +371,12 @@ export default class ComponentToolBar {
         //     ref.setActiveButton("ChemostatRing");
         //     ref.__viewManagerDelegate.switchTo2D();
         // };
-        // this.__incubationButton.onclick = function() {
-        //     Registry.viewManager.activateTool("Incubation");
+        this.__incubationButton.onclick = function() {
+            Registry.viewManager.activateTool("Incubation");
 
-        //     ref.setActiveButton("Incubation");
-        //     ref.__viewManagerDelegate.switchTo2D();
-        // };
+            ref.setActiveButton("Incubation");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
         this.__mergerButton.onclick = function() {
             Registry.viewManager.activateTool("Merger");
 
@@ -461,7 +461,7 @@ export default class ComponentToolBar {
         this.__celltrapsParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CellTrapS", "Basic");
         this.__threeDMuxParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMux", "Basic");
         // this.__chemostatRingParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("ChemostatRing", "Basic");
-        // this.__incubationParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Incubation", "Basic");
+        this.__incubationParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Incubation", "Basic");
         this.__mergerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Merger", "Basic");
         this.__picoinjectionParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("PicoInjection", "Basic");
         this.__sorterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Sorter", "Basic");

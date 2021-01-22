@@ -32,7 +32,7 @@ import Filter from "../library/filter";
 import CellTrapS from "../library/celltrapS";
 import ThreeDMux from "../library/threeDMux";
 // import ChemostatRing from "../library/chemostatring";
-// import Incubation from "../library/incubation";
+import Incubation from "../library/incubation";
 import Merger from "../library/merger";
 import PicoInjection from "../library/picoinjection";
 import Sorter from "../library/sorter";
@@ -98,7 +98,7 @@ export default class FeatureSet {
             "3DMux": { object: new ThreeDMux(), key: "FLOW" },
             "3DMux_control": { object: new ThreeDMux(), key: "CONTROL" },
             // ChemostatRing: { object: new ChemostatRing(), key: "FLOW" },
-            // Incubation: { object: new Incubation(), key: "FLOW" },
+            Incubation: { object: new Incubation(), key: "FLOW" },
             Merger: { object: new Merger(), key: "FLOW" },
             PicoInjection: { object: new PicoInjection(), key: "FLOW" },
             Sorter: { object: new Sorter(), key: "FLOW" },
