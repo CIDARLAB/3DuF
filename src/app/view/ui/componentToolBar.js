@@ -55,7 +55,7 @@ export default class ComponentToolBar {
         this.__mergerButton = document.getElementById("merger_button");
         this.__picoinjectionButton = document.getElementById("picoinjection_button");
         this.__sorterButton = document.getElementById("sorter_button");
-        // this.__splitterButton = document.getElementById("splitter_button");
+        this.__splitterButton = document.getElementById("splitter_button");
         this.__capacitancesensorButton = document.getElementById("capacitancesensor_button");
 
         //Create all the parameter menu buttons
@@ -99,7 +99,7 @@ export default class ComponentToolBar {
         this.__mergerParams = document.getElementById("merger_params_button");
         this.__picoinjectionParams = document.getElementById("picoinjection_params_button");
         this.__sorterParams = document.getElementById("sorter_params_button");
-        // this.__splitterParams = document.getElementById("splitter_params_button");
+        this.__splitterParams = document.getElementById("splitter_params_button");
         this.__capacitancesensorParams = document.getElementById("capacitancesensor_params_button");
 
         this.buttons = {
@@ -142,7 +142,7 @@ export default class ComponentToolBar {
             Merger: this.__mergerButton,
             PicoInjection: this.__picoinjectionButton,
             Sorter: this.__sorterButton,
-            // Splitter: this.__splitterButton,
+            Splitter: this.__splitterButton,
             CapacitanceSensor: this.__capacitancesensorButton
         };
             
@@ -395,12 +395,12 @@ export default class ComponentToolBar {
             ref.setActiveButton("Sorter");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        // this.__splitterButton.onclick = function() {
-        //     Registry.viewManager.activateTool("Splitter");
+        this.__splitterButton.onclick = function() {
+            Registry.viewManager.activateTool("Splitter");
 
-        //     ref.setActiveButton("Splitter");
-        //     ref.__viewManagerDelegate.switchTo2D();
-        // };
+            ref.setActiveButton("Splitter");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
         this.__capacitancesensorButton.onclick = function() {
             Registry.viewManager.activateTool("CapacitanceSensor");
 
@@ -465,7 +465,7 @@ export default class ComponentToolBar {
         this.__mergerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Merger", "Basic");
         this.__picoinjectionParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("PicoInjection", "Basic");
         this.__sorterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Sorter", "Basic");
-        // this.__splitterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Splitter", "Basic");
+        this.__splitterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Splitter", "Basic");
         this.__capacitancesensorParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CapacitanceSensor", "Basic");
     }
 

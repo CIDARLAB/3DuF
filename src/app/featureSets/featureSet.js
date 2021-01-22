@@ -37,7 +37,7 @@ import Merger from "../library/merger";
 import PicoInjection from "../library/picoinjection";
 import Sorter from "../library/sorter";
 import CapacitanceSensor from "../library/capacitancesensor";
-// import Splitter from "../library/splitter";
+import Splitter from "../library/splitter";
 
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
@@ -102,7 +102,7 @@ export default class FeatureSet {
             Merger: { object: new Merger(), key: "FLOW" },
             PicoInjection: { object: new PicoInjection(), key: "FLOW" },
             Sorter: { object: new Sorter(), key: "FLOW" },
-            // Splitter: { object: new Splitter(), key: "FLOW" },
+            Splitter: { object: new Splitter(), key: "FLOW" },
             CapacitanceSensor: { object: new CapacitanceSensor(), key: "FLOW" }
         };
 

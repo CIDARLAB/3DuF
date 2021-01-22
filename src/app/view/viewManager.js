@@ -936,7 +936,7 @@ export default class ViewManager {
         this.tools["Merger"] = new ComponentPositionTool("Merger", "Basic");
         this.tools["PicoInjection"] = new ComponentPositionTool("PicoInjection", "Basic");
         this.tools["Sorter"] = new ComponentPositionTool("Sorter", "Basic");
-        // this.tools["Splitter"] = new ComponentPositionTool("Splitter", "Basic");
+        this.tools["Splitter"] = new ComponentPositionTool("Splitter", "Basic");
         this.tools["CapacitanceSensor"] = new ComponentPositionTool("CapacitanceSensor", "Basic");
     }
 
