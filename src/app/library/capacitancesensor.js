@@ -13,7 +13,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__heritable = {
-            orientation: "String",
+            rotation: "Float",
             height: "Float",
             inletWidth: "Float",
             inletLength: "Float",
@@ -27,7 +27,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__defaults = {
-            orientation: "V",
+            rotation: 0,
             height: 250,
             inletWidth: 1 * 1000,
             inletLength: 10 * 1000,
@@ -41,7 +41,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__units = {
-            orientation: "",
+            rotation: "&deg;",
             height: "&mu;m",
             inletWidth: "&mu;m",
             inletLength: "&mu;m",
@@ -55,7 +55,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__minimum = {
-            orientation: "H",
+            rotation: 0,
             height: 10,
             inletWidth: 0.5 * 1000,
             inletLength: 5 * 1000,
@@ -69,7 +69,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__maximum = {
-            orientation: "H",
+            rotation: 360,
             height: 1200,
             inletWidth: 2 * 1000,
             inletLength: 15 * 1000,
@@ -90,7 +90,7 @@ export default class CapacitanceSensor extends Template {
 
         this.__featureParams = {
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             inletWidth: "inletWidth",
             inletLength: "inletLength",
             electrodeWidth: "electrodeWidth",
@@ -103,7 +103,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__targetParams = {
-            orientation: "orientation",
+            rotation: "rotation",
             inletWidth: "inletWidth",
             inletLength: "inletLength",
             electrodeWidth: "electrodeWidth",
@@ -133,7 +133,7 @@ export default class CapacitanceSensor extends Template {
     }
 
     render2D(params, key) {
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let x = params["position"][0];
         let y = params["position"][1];
         let color = params["color"];
@@ -180,9 +180,8 @@ export default class CapacitanceSensor extends Template {
 
         serp.addChild(elli);
 
-        if (orientation === "H") {
-            serp.rotate(270, new paper.Point(x, y));
-        }
+        serp.rotate(rotation, new paper.Point(x, y));
+        
         serp.fillColor = color;
         return serp;
     }
