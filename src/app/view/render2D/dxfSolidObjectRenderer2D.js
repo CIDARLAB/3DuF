@@ -35,7 +35,6 @@ export function renderFeatureObjects(feature) {
         let dxfobject = feature.getDXFObjects()[i];
     }
     throw new Error("Implement the renderer");
-    return undefined;
 }
 
 /**
@@ -205,8 +204,8 @@ export function renderDXFObjects(dxfobjectarray) {
             closedshapes.push(drawCircle(dxfobject.getData()));
         } else if (dxfobject.getType() === "SPLINE") {
             alert("The current version of the DXF Parser does not support SPLINE objects. Support will be added in future versions");
-            throw new Error("Unsupported render object");
-            processSpline(geometryGraph, dxfobject.getData());
+            throw new Error("Unsupported DXF render object - SPLINE");
+            //processSpline(geometryGraph, dxfobject.getData());
         } else if (dxfobject.getType() === "DIMENSION") {
             console.warn("DIMENSION entry in DXF will be ignored. Please ensure that all the designs are of the correct dimensions");
         } else if (dxfobject.getType() === "MTEXT") {
@@ -335,113 +334,114 @@ function drawEllipse(entity) {
     return ellipse;
 }
 
-function drawMtext(entity, data) {
-    var color = getColor(entity, data);
+// function drawMtext(entity, data) {
+//     var color = getColor(entity, data);
 
-    var geometry = new THREE.TextGeometry(entity.text, {
-        font: font,
-        size: entity.height * (4 / 5),
-        height: 1
-    });
-    var material = new THREE.MeshBasicMaterial({ color: color });
-    var text = new THREE.Mesh(geometry, material);
+//     var geometry = new THREE.TextGeometry(entity.text, {
+//         font: font,
+//         size: entity.height * (4 / 5),
+//         height: 1
+//     });
+//     var material = new THREE.MeshBasicMaterial({ color: color });
+//     var text = new THREE.Mesh(geometry, material);
 
-    // Measure what we rendered.
-    var measure = new THREE.Box3();
-    measure.setFromObject(text);
+//     // Measure what we rendered.
+//     var measure = new THREE.Box3();
+//     measure.setFromObject(text);
 
-    var textWidth = measure.max.x - measure.min.x;
+//     var textWidth = measure.max.x - measure.min.x;
 
-    // If the text ends up being wider than the box, it's supposed
-    // to be multiline. Doing that in threeJS is overkill.
-    if (textWidth > entity.width) {
-        console.log("Can't render this multipline MTEXT entity, sorry.", entity);
-        return undefined;
-    }
+//     // If the text ends up being wider than the box, it's supposed
+//     // to be multiline. Doing that in threeJS is overkill.
+//     if (textWidth > entity.width) {
+//         console.log("Can't render this multipline MTEXT entity, sorry.", entity);
+//         return undefined;
+//     }
 
-    text.position.z = 0;
-    switch (entity.attachmentPoint) {
-    case 1:
-        // Top Left
-        text.position.x = entity.position.x;
-        text.position.y = entity.position.y - entity.height;
-        break;
-    case 2:
-        // Top Center
-        text.position.x = entity.position.x - textWidth / 2;
-        text.position.y = entity.position.y - entity.height;
-        break;
-    case 3:
-        // Top Right
-        text.position.x = entity.position.x - textWidth;
-        text.position.y = entity.position.y - entity.height;
-        break;
+//     text.position.z = 0;
+//     switch (entity.attachmentPoint) {
+//         case 1:
+//             // Top Left
+//             text.position.x = entity.position.x;
+//             text.position.y = entity.position.y - entity.height;
+//             break;
+//         case 2:
+//             // Top Center
+//             text.position.x = entity.position.x - textWidth / 2;
+//             text.position.y = entity.position.y - entity.height;
+//             break;
+//         case 3:
+//             // Top Right
+//             text.position.x = entity.position.x - textWidth;
+//             text.position.y = entity.position.y - entity.height;
+//             break;
 
-    case 4:
-        // Middle Left
-        text.position.x = entity.position.x;
-        text.position.y = entity.position.y - entity.height / 2;
-        break;
-    case 5:
-        // Middle Center
-        text.position.x = entity.position.x - textWidth / 2;
-        text.position.y = entity.position.y - entity.height / 2;
-        break;
-    case 6:
-        // Middle Right
-        text.position.x = entity.position.x - textWidth;
-        text.position.y = entity.position.y - entity.height / 2;
-        break;
+//         case 4:
+//             // Middle Left
+//             text.position.x = entity.position.x;
+//             text.position.y = entity.position.y - entity.height / 2;
+//             break;
+//         case 5:
+//             // Middle Center
+//             text.position.x = entity.position.x - textWidth / 2;
+//             text.position.y = entity.position.y - entity.height / 2;
+//             break;
+//         case 6:
+//             // Middle Right
+//             text.position.x = entity.position.x - textWidth;
+//             text.position.y = entity.position.y - entity.height / 2;
+//             break;
 
-    case 7:
-        // Bottom Left
-        text.position.x = entity.position.x;
-        text.position.y = entity.position.y;
-        break;
-    case 8:
-        // Bottom Center
-        text.position.x = entity.position.x - textWidth / 2;
-        text.position.y = entity.position.y;
-        break;
-    case 9:
-        // Bottom Right
-        text.position.x = entity.position.x - textWidth;
-        text.position.y = entity.position.y;
-        break;
+//         case 7:
+//             // Bottom Left
+//             text.position.x = entity.position.x;
+//             text.position.y = entity.position.y;
+//             break;
+//         case 8:
+//             // Bottom Center
+//             text.position.x = entity.position.x - textWidth / 2;
+//             text.position.y = entity.position.y;
+//             break;
+//         case 9:
+//             // Bottom Right
+//             text.position.x = entity.position.x - textWidth;
+//             text.position.y = entity.position.y;
+//             break;
 
-    default:
-        return undefined;
-    }
+//         default:
+//             return undefined;
+//     }
 
-    return text;
-}
+//     return text;
+// }
 
 function drawSpline(entity, path) {
     let curve;
     var points = entity.controlPoints.map(function(vec) {
         return new paper.Point(vec.x, vec.y);
     });
+    throw "Spline entity is not supported !";
+    // let color = "black";
+    // var interpolatedPoints = [];
+    // if (entity.degreeOfSplineCurve === 2 || entity.degreeOfSplineCurve === 3) {
+    //     for (var i = 0; i + 2 < points.length; i = i + 2) {
+    //         if (entity.degreeOfSplineCurve === 2) {
+    //             curve = new THREE.QuadraticBezierCurve(points[i], points[i + 1], points[i + 2]);
+    //         } else {
+    //             curve = new THREE.QuadraticBezierCurve3(points[i], points[i + 1], points[i + 2]);
+    //         }
+    //         interpolatedPoints.push.apply(interpolatedPoints, curve.getPoints(50));
+    //     }
+    // } else {
+    //     curve = new THREE.SplineCurve(points);
+    //     interpolatedPoints = curve.getPoints(400);
+    // }
 
-    var interpolatedPoints = [];
-    if (entity.degreeOfSplineCurve === 2 || entity.degreeOfSplineCurve === 3) {
-        for (var i = 0; i + 2 < points.length; i = i + 2) {
-            if (entity.degreeOfSplineCurve === 2) {
-                curve = new THREE.QuadraticBezierCurve(points[i], points[i + 1], points[i + 2]);
-            } else {
-                curve = new THREE.QuadraticBezierCurve3(points[i], points[i + 1], points[i + 2]);
-            }
-            interpolatedPoints.push.apply(interpolatedPoints, curve.getPoints(50));
-        }
-    } else {
-        curve = new THREE.SplineCurve(points);
-        interpolatedPoints = curve.getPoints(400);
-    }
+    // var geometry = new THREE.BufferGeometry().setFromPoints(interpolatedPoints);
+    // var material = new THREE.LineBasicMaterial({ linewidth: 1, color: color });
+    // var splineObject = new THREE.Line(geometry, material);
 
-    var geometry = new THREE.BufferGeometry().setFromPoints(interpolatedPoints);
-    var material = new THREE.LineBasicMaterial({ linewidth: 1, color: color });
-    var splineObject = new THREE.Line(geometry, material);
-
-    return splineObject;
+    // return splineObject;
 }
 
 function drawCircle(entity) {
@@ -550,87 +550,87 @@ function drawArc(entity) {
     return arc;
 }
 
-function drawSolid(entity, data) {
-    var material,
-        mesh,
-        verts,
-        geometry = new THREE.Geometry();
+// function drawSolid(entity, data) {
+//     var material,
+//         mesh,
+//         verts,
+//         geometry = new THREE.Geometry();
 
-    verts = geometry.vertices;
-    verts.push(new THREE.Vector3(entity.points[0].x, entity.points[0].y, entity.points[0].z));
-    verts.push(new THREE.Vector3(entity.points[1].x, entity.points[1].y, entity.points[1].z));
-    verts.push(new THREE.Vector3(entity.points[2].x, entity.points[2].y, entity.points[2].z));
-    verts.push(new THREE.Vector3(entity.points[3].x, entity.points[3].y, entity.points[3].z));
+//     verts = geometry.vertices;
+//     verts.push(new THREE.Vector3(entity.points[0].x, entity.points[0].y, entity.points[0].z));
+//     verts.push(new THREE.Vector3(entity.points[1].x, entity.points[1].y, entity.points[1].z));
+//     verts.push(new THREE.Vector3(entity.points[2].x, entity.points[2].y, entity.points[2].z));
+//     verts.push(new THREE.Vector3(entity.points[3].x, entity.points[3].y, entity.points[3].z));
 
-    // Calculate which direction the points are facing (clockwise or counter-clockwise)
-    var vector1 = new THREE.Vector3();
-    var vector2 = new THREE.Vector3();
-    vector1.subVectors(verts[1], verts[0]);
-    vector2.subVectors(verts[2], verts[0]);
-    vector1.cross(vector2);
+//     // Calculate which direction the points are facing (clockwise or counter-clockwise)
+//     var vector1 = new THREE.Vector3();
+//     var vector2 = new THREE.Vector3();
+//     vector1.subVectors(verts[1], verts[0]);
+//     vector2.subVectors(verts[2], verts[0]);
+//     vector1.cross(vector2);
 
-    // If z < 0 then we must draw these in reverse order
-    if (vector1.z < 0) {
-        geometry.faces.push(new THREE.Face3(2, 1, 0));
-        geometry.faces.push(new THREE.Face3(2, 3, 1));
-    } else {
-        geometry.faces.push(new THREE.Face3(0, 1, 2));
-        geometry.faces.push(new THREE.Face3(1, 3, 2));
-    }
+//     // If z < 0 then we must draw these in reverse order
+//     if (vector1.z < 0) {
+//         geometry.faces.push(new THREE.Face3(2, 1, 0));
+//         geometry.faces.push(new THREE.Face3(2, 3, 1));
+//     } else {
+//         geometry.faces.push(new THREE.Face3(0, 1, 2));
+//         geometry.faces.push(new THREE.Face3(1, 3, 2));
+//     }
 
-    material = new THREE.MeshBasicMaterial({ color: getColor(entity, data) });
+//     material = new THREE.MeshBasicMaterial({ color: getColor(entity, data) });
 
-    return new THREE.Mesh(geometry, material);
-}
+//     return new THREE.Mesh(geometry, material);
+// }
 
-function drawText(entity, data) {
-    var geometry, material, text;
+// function drawText(entity, data) {
+//     var geometry, material, text;
 
-    if (!font)
-        return console.warn(
-            "Text is not supported without a Three.js font loaded with THREE.FontLoader! Load a font of your choice and pass this into the constructor. See the sample for this repository or Three.js examples at http://threejs.org/examples/?q=text#webgl_geometry_text for more details."
-        );
+//     if (!font)
+//         return console.warn(
+//             "Text is not supported without a Three.js font loaded with THREE.FontLoader! Load a font of your choice and pass this into the constructor. See the sample for this repository or Three.js examples at http://threejs.org/examples/?q=text#webgl_geometry_text for more details."
+//         );
 
-    geometry = new THREE.TextGeometry(entity.text, {
-        font: font,
-        height: 0,
-        size: entity.textHeight || 12
-    });
+//     geometry = new THREE.TextGeometry(entity.text, {
+//         font: font,
+//         height: 0,
+//         size: entity.textHeight || 12
+//     });
 
-    material = new THREE.MeshBasicMaterial({ color: getColor(entity, data) });
+//     material = new THREE.MeshBasicMaterial({ color: getColor(entity, data) });
 
-    text = new THREE.Mesh(geometry, material);
-    text.position.x = entity.startPoint.x;
-    text.position.y = entity.startPoint.y;
-    text.position.z = entity.startPoint.z;
+//     text = new THREE.Mesh(geometry, material);
+//     text.position.x = entity.startPoint.x;
+//     text.position.y = entity.startPoint.y;
+//     text.position.z = entity.startPoint.z;
 
-    return text;
-}
+//     return text;
+// }
 
-function drawPoint(entity, data) {
-    var geometry, material, point;
+// function drawPoint(entity, data) {
+//     var geometry, material, point;
 
-    geometry = new THREE.Geometry();
+//     geometry = new THREE.Geometry();
 
-    geometry.vertices.push(new THREE.Vector3(entity.position.x, entity.position.y, entity.position.z));
+//     geometry.vertices.push(new THREE.Vector3(entity.position.x, entity.position.y, entity.position.z));
 
-    // TODO: could be more efficient. PointCloud per layer?
+//     // TODO: could be more efficient. PointCloud per layer?
 
-    var numPoints = 1;
+//     var numPoints = 1;
 
-    var color = getColor(entity, data);
-    var colors = new Float32Array(numPoints * 3);
-    colors[0] = color.r;
-    colors[1] = color.g;
-    colors[2] = color.b;
+//     var color = getColor(entity, data);
+//     var colors = new Float32Array(numPoints * 3);
+//     colors[0] = color.r;
+//     colors[1] = color.g;
+//     colors[2] = color.b;
 
-    geometry.colors = colors;
-    geometry.computeBoundingBox();
+//     geometry.colors = colors;
+//     geometry.computeBoundingBox();
 
-    material = new THREE.PointsMaterial({
-        size: 0.05,
-        vertexColors: THREE.VertexColors
-    });
-    point = new THREE.Points(geometry, material);
-    scene.add(point);
-}
+//     material = new THREE.PointsMaterial({
+//         size: 0.05,
+//         vertexColors: THREE.VertexColors
+//     });
+//     point = new THREE.Points(geometry, material);
+//     scene.add(point);
+// }
