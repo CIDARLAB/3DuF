@@ -762,18 +762,30 @@ export const render2D = {
     Filter: {
         featureParams: {
             position: "position",
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
             orientation: "orientation",
-            bendLength: "bendLength"
+            pillarDiameter: "pillarDiameter",
+            filterWidth: "filterWidth",
+            barrierWidth: "barrierWidth",
+            filterLength: "filterLength",
+            filterNumber: "filterNumber",
+            levelNumber: "levelNumber",
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            outletWidth: "outletWidth",
+            outletLength: "outletLength"
         },
         targetParams: {
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
             orientation: "orientation",
-            bendLength: "bendLength"
+            pillarDiameter: "pillarDiameter",
+            filterWidth: "filterWidth",
+            barrierWidth: "barrierWidth",
+            filterLength: "filterLength",
+            filterNumber: "filterNumber",
+            levelNumber: "levelNumber",
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            outletWidth: "outletWidth",
+            outletLength: "outletLength"
         },
         featurePrimitiveType: "FilterMixer",
         featurePrimitiveSet: "Basic2D",
