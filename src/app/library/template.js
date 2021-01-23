@@ -16,7 +16,7 @@ export default class Template {
     }
 
     get mint() {
-        return this.__mint.replace(/\s/g, '');
+        return this.__mint;
     }
 
     /**
