@@ -111,6 +111,51 @@ export default class GradientGenerator extends Template {
         this.__mint = "GRADIENT GENERATOR";
     }
 
+    getPorts(params) {
+        let position = params["position"];
+        let bendSpacing = params["bendSpacing"];
+        let numBends = params["numberOfBends"];
+        let channelWidth = params["channelWidth"];
+        let bendLength = params["bendLength"];
+        let orientation = params["orientation"];
+        let invalue = params["in"];
+        let outvalue = params["out"];
+        let spacing = params["spacing"]; //Center to Center
+
+        let ports = [];
+
+        let maxstagewidth = (outvalue - 1) * spacing;
+        let posx = maxstagewidth/2;
+
+        let stagelength = channelWidth * (2 * numBends + 1) + (2 * numBends + 2) * bendSpacing + channelWidth;
+
+        let stagevalue = invalue;
+        let totalstagewidth = (stagevalue - 1) * spacing;
+
+        let xref = posx - totalstagewidth / 2;
+        let yref = stagelength * (stagevalue - invalue);
+    
+        for(var i = 0 ; i < invalue; i++){
+            //Generate the ports for each of the inputs
+            let x = xref + spacing * i;
+            ports.push(new ComponentPort(x, 0, (i+1).toString(), "FLOW"));
+        }
+
+        stagevalue = outvalue;
+        totalstagewidth = (stagevalue - 1) * spacing;
+
+        xref = posx - totalstagewidth / 2;
+        yref = stagelength * (stagevalue - invalue);
+
+        for(var i = 0; i < outvalue; i++){
+            //Generate the ports for each of the outputs
+            let x = xref + spacing * i;
+            ports.push(new ComponentPort(x, yref, (invalue+1+i).toString(), "FLOW"));
+        }
+
+        return ports;
+    }
+
     render2D(params, key) {
         let position = params["position"];
         let bendSpacing = params["bendSpacing"];
