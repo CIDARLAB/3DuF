@@ -10,6 +10,7 @@ export default class PaperComponentPortView {
     }
 
     addComponentPortElements(component) {
+        let zfactor = 1;
         if (!this._componentAndRenderMap.has(component.getID())) {
             this._componentAndRenderMap.set(component.getID(), []);
         }
