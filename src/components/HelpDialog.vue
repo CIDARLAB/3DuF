@@ -29,6 +29,8 @@
 </template>
 
 <script>
+let showhelpModalButton = document.querySelector("#infobutton");
+
 export default {
     data() {
         return {
