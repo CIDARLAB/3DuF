@@ -1,8 +1,16 @@
 <template>
-            <dialog id="edit_device_dialog" class="mdl-dialog">
-                <div class="mdl-dialog__content">
-                    <!-- Textfield with Floating Label -->
-                    <h4>Rename:</h4>
+    <v-dialog v-model="dialog" persistent max-width="600">
+        <template v-slot:activator="{ on, attrs }">
+            <div color="primary" dark v-bind="attrs" v-on="on" class="button_row">
+                <a id="resize_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button"> Edit Device</a>
+            </div>
+        </template>
+        <v-card>
+            <v-card-title class="headline"> Edit Device </v-card-title>
+            <v-card-text>
+
+
+                <h4>Rename:</h4>
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input
@@ -18,7 +26,6 @@
                     </form>
 
                     <h4>Resize:</h4>
-                    <!-- Numeric Textfield with Floating Label -->
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input
@@ -41,21 +48,25 @@
                             <span class="mdl-textfield__error">Input is not a number!</span>
                         </div>
                     </form>
-                </div>
-                <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
-                    <button id="accept_resize_button" type="button" class="mdl-button">Save</button>
-                    <button type="button" class="mdl-button close">Cancel</button>
-                </div>
-            </dialog>
-  
+
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="dialog = false"> Cancel </v-btn>
+                <v-btn color="green darken-1" text @click="dialog = false"> Save </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 <script>
 export default {
-
-    
-}
+    data() {
+        return {
+            dialog: false
+        };
+    }
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>
