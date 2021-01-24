@@ -4,10 +4,10 @@
             <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
 
             <v-divider></v-divider>
-            <IntroHelpDialog v-model="introHelpDialogVisible" />
+            <IntroHelpDialog />
 
             <v-divider></v-divider>
-
+            <EditDeviceDialog />
             <v-list>
                 <v-list-item-group mandatory color="indigo">
                     <v-list-item v-for="[icon, text] in buttons" :key="icon" link>
@@ -21,7 +21,7 @@
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
-            <HelpDialog v-model="helpDialogVisible" />
+            <HelpDialog />
         </v-navigation-drawer>
 
         <v-main id="visualizer-slot">
@@ -40,16 +40,16 @@
 <script>
 import HelpDialog from "../../components/HelpDialog.vue";
 import IntroHelpDialog from "../../components/IntroHelpDialog.vue";
+import EditDeviceDialog from "../../components/EditDeviceDialog.vue";
 
 export default {
     components: {
         HelpDialog,
-        IntroHelpDialog
+        IntroHelpDialog,
+        EditDeviceDialog
     },
     data() {
         return {
-            helpDialogVisible: false,
-            introHelpDialogVisible: true,
             buttons: [
                 ["mdi-devices", "Edit Device"],
                 ["mdi-border-all", "Edit Border"],
