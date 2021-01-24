@@ -27,7 +27,6 @@
 </template>
 
 <script>
-let showhelpModalButton = document.querySelector("#infobutton");
 
 export default {
     data() {
@@ -35,10 +34,6 @@ export default {
             dialog: false
         };
     }
-    // mounted() {
-    //     let helpdialog = document.querySelector("#help_dialog");
-    //     let showhelpModalButton = document.querySelector("#infobutton");
-    // }
 };
 </script>
 
