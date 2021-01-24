@@ -8,6 +8,7 @@
 
             <v-divider></v-divider>
             <EditDeviceDialog />
+            <EditBorderDialog />
             <v-list>
                 <v-list-item-group mandatory color="indigo">
                     <v-list-item v-for="[icon, text] in buttons" :key="icon" link>
@@ -41,12 +42,13 @@
 import HelpDialog from "../../components/HelpDialog.vue";
 import IntroHelpDialog from "../../components/IntroHelpDialog.vue";
 import EditDeviceDialog from "../../components/EditDeviceDialog.vue";
-
+import EditBorderDialog from "../../components/EditBorderDialog.vue";
 export default {
     components: {
         HelpDialog,
         IntroHelpDialog,
-        EditDeviceDialog
+        EditDeviceDialog,
+        EditBorderDialog
     },
     data() {
         return {
