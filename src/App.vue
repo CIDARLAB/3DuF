@@ -1,22 +1,22 @@
 <template>
-  <v-app id="3duf">
-    <LayoutSidebar> 
-      <template v-slot:main>
-        <Visualiser />
-      </template>
-    </LayoutSidebar>
-  </v-app>
+    <v-app id="3duf">
+        <LayoutSidebar>
+            <template v-slot:main>
+                <Visualiser />
+            </template>
+        </LayoutSidebar>
+    </v-app>
 </template>
 
 <script>
-import Visualiser from './components/Visualiser.vue';
-import LayoutSidebar from './views/layouts/sidebar_layout.vue';
+import Visualiser from "./components/Visualiser.vue";
+import LayoutSidebar from "./views/layouts/sidebar_layout.vue";
 
 export default {
     name: "App",
     components: {
-      LayoutSidebar,
-      Visualiser
+        LayoutSidebar,
+        Visualiser
     }
 };
 </script>
@@ -29,5 +29,9 @@ export default {
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
+}
+body {
+    overflow: hidden;
+    height: 100vh;
 }
 </style>

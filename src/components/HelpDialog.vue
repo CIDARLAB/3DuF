@@ -1,53 +1,46 @@
 <template>
-                <dialog id="help_dialog" class="mdl-dialog">
-                <div class="mdl-dialog__content">
-                    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-                        <div class="mdl-card__title">
-                            <h2 class="mdl-card__title-text">3DuF v1.1</h2>
-                        </div>
-                        <div class="mdl-card__supporting-text">
-                            <img src="img/cidar_logo.png" width="100%" />
-                            3DuF is microfluidic design environment developed by
-                            <a
-                                href="http://cidarlab.org"
-                                target="_blank"
-                            >CIDAR</a>.
-                            For any help or queries, please send an email to
-                            <a
-                                href="mailto: 3dufhelp@gmail.com"
-                            >3dufhelp@gmail.com</a>.
-                            Source code, issue tracking and feature requests are available at
-                            <a
-                                href="https://github.com/CIDARLAB/3DuF/"
-                                target="_blank"
-                            >Github</a>.
-                            <hr />Developed by:
-                            Aaron Heuckroth, Joshua Lippai and Radhakrishna Sanka.
-                            <hr />Error Tracking powered by
-                            <a
-                                href="https://trackjs.com"
-                            >https://trackjs.com</a>.
-                        </div>
+    <v-dialog v-model="dialog" persistent max-width="400">
+        <template v-slot:activator="{ on, attrs }">
+            <a color="primary" dark v-bind="attrs" v-on="on" class="popdown mdl-button mdl-js-button mdl-js-ripple-effect" title="About" style="color: hotpink">About/Help</a>
+        </template>
+        <v-card>
+            <v-card-title class="headline"> 3DuF v1.1 </v-card-title>
+            <v-card-text>
 
-                        <div class="mdl-card__menu">
-                            <button
-                                class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect close"
-                            >
-                                <i class="material-icons">clear</i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </dialog>
+                <img src="img/cidar_logo.png" width="100%" />
+                3DuF is microfluidic design environment developed by
+                <a href="http://cidarlab.org" target="_blank">CIDAR</a>. For any help or queries, please send an email to
+                <a href="mailto: 3dufhelp@gmail.com">3dufhelp@gmail.com</a>. Source code, issue tracking and feature requests are available at
+                <a href="https://github.com/CIDARLAB/3DuF/" target="_blank">Github</a>.
+                <hr />
+                Developed by: Aaron Heuckroth, Joshua Lippai and Radhakrishna Sanka.
+                <hr />
+                Error Tracking powered by <a href="https://trackjs.com">https://trackjs.com</a>.
 
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="dialog = false"> Close </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
+let showhelpModalButton = document.querySelector("#infobutton");
+
 export default {
-    
-}
+    data() {
+        return {
+            dialog: false
+        };
+    }
+    // mounted() {
+    //     let helpdialog = document.querySelector("#help_dialog");
+    //     let showhelpModalButton = document.querySelector("#infobutton");
+    // }
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>
