@@ -9,6 +9,8 @@
             <v-divider></v-divider>
             <EditDeviceDialog />
             <EditBorderDialog />
+            <InsertTextDialog />
+            <ImportDXFDialog />
             <v-list>
                 <v-list-item-group mandatory color="indigo">
                     <v-list-item v-for="[icon, text] in buttons" :key="icon" link>
@@ -43,27 +45,29 @@ import HelpDialog from "../../components/HelpDialog.vue";
 import IntroHelpDialog from "../../components/IntroHelpDialog.vue";
 import EditDeviceDialog from "../../components/EditDeviceDialog.vue";
 import EditBorderDialog from "../../components/EditBorderDialog.vue";
+import ImportDXFDialog from "../../components/ImportDXFDialog.vue";
+import InsertTextDialog from "../../components/InsertTextDialog.vue";
 export default {
     components: {
         HelpDialog,
         IntroHelpDialog,
         EditDeviceDialog,
-        EditBorderDialog
+        EditBorderDialog,
+        ImportDXFDialog,
+        InsertTextDialog
     },
     data() {
         return {
             buttons: [
-                ["mdi-devices", "Edit Device"],
-                ["mdi-border-all", "Edit Border"],
-                ["mdi-toolbox", "Select Tool"]
+                ["mdi-devices", "3DuF File (.json)"],
+                ["mdi-border-all", "Vector Art (.svg)"],
+                ["mdi-toolbox", "CNC (.svg)"],
+                ["mdi-toolbox", "Laser Cutting (.svg)"],
+                ["mdi-toolbox", "Publish on Metafluidics"]
             ]
         };
     },
     methods: {
-        showHelpDialog() {
-            alert("TEST");
-            this.$dialog.show(HelpDialog);
-        }
     }
 };
 </script>
