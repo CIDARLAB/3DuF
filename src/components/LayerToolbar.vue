@@ -2,28 +2,6 @@
     <div>
         <md-toolbar class="md-title" md-elevation="0">Select Layer</md-toolbar>
 
-        <div>
-            <div>
-                <span style="align:left">
-                    <span class="md-subheading" md-elevation="0" v-text="test"></span>
-                </span>
-                <span style="align:right; margin-top:-15px">
-                    <md-button class="md-icon-button md-dense md-primary md-size-2x">
-                        <md-icon>delete</md-icon>
-                    </md-button>
-                    <md-button class="md-icon-button md-dense md-primary md-size-2x">
-                        <md-icon>arrow_downward</md-icon>
-                    </md-button>
-                    <md-button class="md-icon-button md-dense md-primary md-size-2x">
-                        <md-icon>arrow_upward</md-icon>
-                    </md-button>
-                </span>
-                <br />
-                <md-button class="md-raised">FLOW</md-button>
-                <md-button class="md-raised">CONTROL</md-button>
-            </div>
-        </div>
-
         <nav class="mdl-navigation" id="layer-controls">
             <!--<a id="control_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised view-button">Control</a>-->
 
@@ -69,7 +47,7 @@
 
 <script>
 export default {
-    name: "LayerToolbar",
+    name: "ComponentToolbar",
     data() {
         return {
             test: "Level -"
