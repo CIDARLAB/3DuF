@@ -11,6 +11,8 @@
             <EditBorderDialog />
             <InsertTextDialog />
             <ImportDXFDialog />
+            <LayerToolbar />
+            <ComponentToolbar />
             <v-list>
                 <v-list-item-group mandatory color="indigo">
                     <v-list-item v-for="[icon, text] in buttons" :key="icon" link>
@@ -47,6 +49,8 @@ import EditDeviceDialog from "../../components/EditDeviceDialog.vue";
 import EditBorderDialog from "../../components/EditBorderDialog.vue";
 import ImportDXFDialog from "../../components/ImportDXFDialog.vue";
 import InsertTextDialog from "../../components/InsertTextDialog.vue";
+import LayerToolbar from "../../components/LayerToolbar.vue";
+import ComponentToolbar from "../../components/ComponentToolBar.vue";
 export default {
     components: {
         HelpDialog,
@@ -54,7 +58,9 @@ export default {
         EditDeviceDialog,
         EditBorderDialog,
         ImportDXFDialog,
-        InsertTextDialog
+        InsertTextDialog,
+        LayerToolbar,
+        ComponentToolbar
     },
     data() {
         return {

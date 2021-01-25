@@ -4,7 +4,6 @@ export default class GridRenderer {
     static renderGrid(grid) {
         //con
         let gridGroup = new paper.Group();
-        console.log(grid, paper.view);
         gridGroup.addChild(GridRenderer.makeHorizontalLines(grid));
         gridGroup.addChild(GridRenderer.makeVerticalLines(grid));
         return gridGroup;
