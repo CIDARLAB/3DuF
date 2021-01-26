@@ -1,18 +1,21 @@
 <template>
     <div>
         <v-navigation-drawer app permanent class="pt-4" color="grey lighten-3">
-            <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
+            <div class="d-flex flex-column mx-2"> 
+              <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
+              <v-divider class="mb-1"></v-divider>
+              <IntroHelpDialog />
+              <HelpDialog />
+              <v-divider></v-divider>
+              <EditDeviceDialog />
+              <EditBorderDialog />
+              <InsertTextDialog />
+              <ImportDXFDialog />
+              <v-divider></v-divider>
+              <LayerToolbar />
+              <ComponentToolbar />
+            </div>
 
-            <v-divider></v-divider>
-            <IntroHelpDialog />
-
-            <v-divider></v-divider>
-            <EditDeviceDialog />
-            <EditBorderDialog />
-            <InsertTextDialog />
-            <ImportDXFDialog />
-            <LayerToolbar />
-            <ComponentToolbar />
             <v-list>
                 <v-list-item-group mandatory color="indigo">
                     <v-list-item v-for="[icon, text] in buttons" :key="icon" link>
@@ -26,7 +29,6 @@
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
-            <HelpDialog />
         </v-navigation-drawer>
 
         <v-main id="visualizer-slot">
@@ -43,14 +45,14 @@
 </style>
 
 <script>
-import HelpDialog from "../../components/HelpDialog.vue";
-import IntroHelpDialog from "../../components/IntroHelpDialog.vue";
-import EditDeviceDialog from "../../components/EditDeviceDialog.vue";
-import EditBorderDialog from "../../components/EditBorderDialog.vue";
-import ImportDXFDialog from "../../components/ImportDXFDialog.vue";
-import InsertTextDialog from "../../components/InsertTextDialog.vue";
-import LayerToolbar from "../../components/LayerToolbar.vue";
-import ComponentToolbar from "../../components/ComponentToolBar.vue";
+import HelpDialog from "@/components/HelpDialog.vue";
+import IntroHelpDialog from "@/components/IntroHelpDialog.vue";
+import EditDeviceDialog from "@/components/EditDeviceDialog.vue";
+import EditBorderDialog from "@/components/EditBorderDialog.vue";
+import ImportDXFDialog from "@/components/ImportDXFDialog.vue";
+import InsertTextDialog from "@/components/InsertTextDialog.vue";
+import LayerToolbar from "@/components/LayerToolbar.vue";
+import ComponentToolbar from "@/components/ComponentToolBar.vue";
 export default {
     components: {
         HelpDialog,
@@ -73,7 +75,6 @@ export default {
             ]
         };
     },
-    methods: {
-    }
+    methods: {}
 };
 </script>
