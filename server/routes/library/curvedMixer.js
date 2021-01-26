@@ -84,22 +84,6 @@ export default class CurvedMixer extends Template {
         this.__mint = "CURVED MIXER";
     }
 
-    getPorts(params) {
-        let channelWidth = params["channelWidth"];
-        let bendLength = params["bendLength"];
-        let bendSpacing = params["bendSpacing"];
-        let orientation = params["orientation"];
-        let numberOfBends = params["numberOfBends"];
-
-        let ports = [];
-
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", "FLOW"));
-
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", "FLOW"));
-
-        return ports;
-    }
-
     render2D(params, key) {
         let channelWidth = params["channelWidth"];
         let bendLength = params["bendLength"];

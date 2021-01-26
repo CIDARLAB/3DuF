@@ -198,32 +198,6 @@ export default class Mux extends Template {
         return treepath.rotate(rotation, px, py);
     }
 
-    getPorts(params) {
-        let position = params["position"];
-        let cw = params["flowChannelWidth"];
-        let orientation = params["orientation"];
-        let direction = params["direction"];
-        let spacing = params["spacing"];
-        let leafs = params["leafs"];
-        let stagelength = params["stageLength"];
-        let ports = [];
-
-        let levels = Math.ceil(Math.log2(leafs));
-
-        let w = (leafs - 1) * spacing + leafs * cw + valvewidth;
-
-        ports.push(new ComponentPort(w/2, 0, "1", "FLOW"));
-
-        for(var i = 0; i < leafs; i++){
-            //TODO - All the output ports
-            ports.push(new ComponentPort((i * spacing) + ((i+1) * cw/2), levels * stagelength , (i+2), "FLOW"));
-        }
-
-
-        //Control ports
-        return ports;
-    }
-
     render2D(params, key) {
         if (key == "FLOW") {
             return this.__drawFlow(params);

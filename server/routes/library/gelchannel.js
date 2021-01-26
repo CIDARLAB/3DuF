@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 
-export default class CellTrapL extends Template {
+export default class Gelchannel extends Template {
     constructor() {
         super();
     }
@@ -12,72 +12,65 @@ export default class CellTrapL extends Template {
         };
 
         this.__heritable = {
-            chamberLength: "Float",
-            feedingChannelWidth: "Float",
+            sideWidth: "Float",
+            mainWidth: "Float",
             orientation: "String",
-            chamberWidth: "Float",
-            numberOfChambers: "Float",
-            chamberSpacing: "Float",
-            height: "Float"
+            length: "Float",
+            height: "Float",
+            sideheight: "Float"
         };
 
         this.__defaults = {
-            chamberLength: 1.2 * 1000,
-            feedingChannelWidth: 0.41 * 1000,
+            sideWidth: 200,
+            mainWidth: 500,
             orientation: "H",
-            chamberWidth: 1.23 * 1000,
-            numberOfChambers: 6,
-            chamberSpacing: 2.46 * 1000,
-            height: 250
+            length: 3000,
+            height: 250,
+            sideheight: 50
         };
 
         this.__units = {
-            chamberLength: "&mu;m",
-            feedingChannelWidth: "&mu;m",
+            sideWidth: "&mu;m",
+            mainWidth: "&mu;m",
             orientation: "",
-            chamberWidth: "&mu;m",
-            numberOfChambers: "",
-            chamberSpacing: "&mu;m",
-            height: "&mu;m"
+            length: "&mu;m",
+            height: "&mu;m",
+            sideheight: "&mu;m"
         };
 
         this.__minimum = {
-            chamberLength: 30,
-            feedingChannelWidth: 10,
-            chamberWidth: 30,
-            numberOfChambers: 1,
-            chamberSpacing: 60,
-            height: 10
+            sideWidth: 20,
+            mainWidth: 10,
+            length: 1000,
+            height: 10,
+            sideheight: 10
         };
 
         this.__maximum = {
-            chamberLength: 6000,
-            feedingChannelWidth: 2000,
-            chamberWidth: 6000,
-            numberOfChambers: 10,
-            chamberSpacing: 12 * 1000,
-            height: 1200
+            sideWidth: 500,
+            mainWidth: 500,
+            length: 100*1000,
+            height: 1200,
+            sideheight: 1200
         };
 
         this.__featureParams = {
             position: "position",
             orientation: "orientation",
-            chamberWidth: "chamberWidth",
-            chamberLength: "chamberLength",
-            numberOfChambers: "numberOfChambers",
-            chamberSpacing: "chamberSpacing",
-            feedingChannelWidth: "feedingChannelWidth",
-            height: "height"
+            length: "length",
+            sideWidth: "sideWidth",
+            mainWidth: "mainWidth",
+            height: "height",
+            sideheight: "sideheight"
         };
 
         this.__targetParams = {
             orientation: "orientation",
-            chamberWidth: "chamberWidth",
-            chamberLength: "chamberLength",
-            numberOfChambers: "numberOfChambers",
-            chamberSpacing: "chamberSpacing",
-            feedingChannelWidth: "feedingChannelWidth",
-            height: "height"
+            length: "length",
+            sideWidth: "sideWidth",
+            mainWidth: "mainWidth",
+            height: "height",
+            sideheight: "sideheight"
         };
 
         this.__placementTool = "CellPositionTool";
@@ -102,11 +95,10 @@ export default class CellTrapL extends Template {
     render2DTarget(key, params) {
         let orientation = params["orientation"];
         let position = params["position"];
-        let chamberLength = params["chamberLength"];
-        let numChambers = params["numberOfChambers"];
-        let chamberWidth = params["chamberWidth"];
-        let feedingChannelWidth = params["feedingChannelWidth"];
-        let chamberSpacing = params["chamberSpacing"];
+        let sideWidth = params["sideWidth"];
+        let numChambers = 2;
+        let length = params["length"];
+        let mainWidth = params["mainWidth"];
         let color = params["color"];
         let x = position[0];
         let y = position[1];
@@ -119,16 +111,16 @@ export default class CellTrapL extends Template {
         if (orientation == "V") {
             for (let i = 0; i < numChambers / 2; i++) {
                 rec = paper.Path.Rectangle({
-                    size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
-                    point: [x, y + i * (chamberWidth + chamberSpacing) + chamberSpacing],
+                    size: [2 * sideWidth + mainWidth, length],
+                    point: [x, y + i * (length + 60) + 60],
                     fillColor: color,
                     strokeWidth: 0
                 });
                 chamberList.push(rec);
             }
             channels = paper.Path.Rectangle({
-                point: [x + chamberLength, y],
-                size: [feedingChannelWidth, (numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing],
+                point: [x + sideWidth, y],
+                size: [mainWidth, (numChambers / 2) * (length + 60) + 60],
                 fillColor: color,
                 strokeWidth: 0
             });
@@ -136,16 +128,16 @@ export default class CellTrapL extends Template {
         } else {
             for (let i = 0; i < numChambers / 2; i++) {
                 rec = paper.Path.Rectangle({
-                    size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
-                    point: [x + i * (chamberWidth + chamberSpacing) + chamberSpacing, y],
+                    size: [length, 2 * sideWidth + mainWidth],
+                    point: [x + i * (length + 60) + 60, y],
                     fillColor: color,
                     strokeWidth: 0
                 });
                 chamberList.push(rec);
             }
             channels = paper.Path.Rectangle({
-                point: [x, y + chamberLength],
-                size: [(numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
+                point: [x, y + sideWidth],
+                size: [(numChambers / 2) * (length + 60) + 60, mainWidth],
                 fillColor: color,
                 strokeWidth: 0
             });
@@ -160,13 +152,12 @@ export default class CellTrapL extends Template {
     __drawFlow(params) {
         let orientation = params["orientation"];
         let position = params["position"];
-        let chamberLength = params["chamberLength"];
-        let numChambers = params["numberOfChambers"];
-        let chamberWidth = params["chamberWidth"];
-        let feedingChannelWidth = params["feedingChannelWidth"];
-        let chamberSpacing = params["chamberSpacing"];
+        let sideWidth = params["sideWidth"];
+        let numChambers = 2;
+        let length = params["length"];
+        let mainWidth = params["mainWidth"];
 
-        console.log(orientation, position, chamberLength, numChambers, chamberWidth, feedingChannelWidth, chamberSpacing);
+        console.log(orientation, position, sideWidth, numChambers, length, mainWidth, 60);
         let color = params["color"];
         let x = position[0];
         let y = position[1];
@@ -176,19 +167,19 @@ export default class CellTrapL extends Template {
         let traps;
         let channels;
         if (orientation == "V") {
-            let startPoint = new paper.Point(x + chamberLength, y);
+            let startPoint = new paper.Point(x + sideWidth, y);
             channels = new paper.Path.Rectangle({
                 point: startPoint,
-                size: [feedingChannelWidth, (numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing],
+                size: [mainWidth, (numChambers / 2) * (length + 60) + 60],
                 fillColor: color,
                 strokeWidth: 0
             });
             chamberList.addChild(channels);
         } else {
-            let startPoint = new paper.Point(x, y + chamberLength);
+            let startPoint = new paper.Point(x, y + sideWidth);
             channels = new paper.Path.Rectangle({
                 point: startPoint,
-                size: [(numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
+                size: [(numChambers / 2) * (length + 60) + 60, mainWidth],
                 fillColor: color,
                 strokeWidth: 0
             });
@@ -203,11 +194,10 @@ export default class CellTrapL extends Template {
     __drawCell(params) {
         let orientation = params["orientation"];
         let position = params["position"];
-        let chamberLength = params["chamberLength"];
-        let numChambers = params["numberOfChambers"];
-        let chamberWidth = params["chamberWidth"];
-        let feedingChannelWidth = params["feedingChannelWidth"];
-        let chamberSpacing = params["chamberSpacing"];
+        let sideWidth = params["sideWidth"];
+        let numChambers = 2;
+        let length = params["length"];
+        let mainWidth = params["mainWidth"];
         let color = params["color"];
         let x = position[0];
         let y = position[1];
@@ -215,9 +205,9 @@ export default class CellTrapL extends Template {
         let rec;
         if (orientation == "V") {
             for (let i = 0; i < numChambers / 2; i++) {
-                let startPoint = new paper.Point(x, y + i * (chamberWidth + chamberSpacing) + chamberSpacing);
+                let startPoint = new paper.Point(x, y + i * (length + 60) + 60);
                 rec = new paper.Path.Rectangle({
-                    size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
+                    size: [2 * sideWidth + mainWidth, length],
                     point: startPoint,
                     fillColor: color,
                     strokeWidth: 0
@@ -226,9 +216,9 @@ export default class CellTrapL extends Template {
             }
         } else {
             for (let i = 0; i < numChambers / 2; i++) {
-                let startPoint = new paper.Point(x + i * (chamberWidth + chamberSpacing) + chamberSpacing, y);
+                let startPoint = new paper.Point(x + i * (length + 60) + 60, y);
                 rec = paper.Path.Rectangle({
-                    size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
+                    size: [length, 2 * sideWidth + mainWidth],
                     point: startPoint,
                     fillColor: color,
                     strokeWidth: 0

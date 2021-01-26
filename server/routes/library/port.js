@@ -1,7 +1,6 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import CSG from "@jscad/csg";
 
 export default class Port extends Template {
     constructor() {
@@ -81,18 +80,5 @@ export default class Port extends Template {
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
         return ports;
-    }
-
-    render3D(params, key){
-        let position = params["position"];
-        let radius = params["portRadius"];
-        let color1 = params["color"];
-        let pos = new paper.Point(position[0], position[1]);
-
-        let cylinder = CSG.cylinder({start: [1, 2, 3], end: [4, 5, 6], radiusStart: 7, radiusEnd: 8, resolution: 72});
-
-        console.log("Testing the csg thing:", cylinder);
-        
-        return cylinder;
     }
 }
