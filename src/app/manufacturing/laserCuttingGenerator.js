@@ -1,20 +1,35 @@
 import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
+import Device from "../core/device";
 
+/**
+ * Lasser Cutting Generator object
+ */
 export default class LaserCuttingGenerator {
+    /**
+     * Default Constructor for the laser cutting generator object
+     * @param {Device} device Device object
+     * @param {*} viewManagerDelegate 
+     */
     constructor(device, viewManagerDelegate) {
         this.__device = device;
         this.__viewManagerDelegate = viewManagerDelegate;
 
         this.__svgData = new Map();
     }
-
+    /**
+     * Gets the SVG data
+     * @returns Returns the SVG data
+     * @memberof LaserCuttingGenerator
+     */
     getSVGOutputs() {
         return this.__svgData;
     }
 
     /**
      * Generate the port layers
+     * @memberof LaserCuttingGenerator
+     * @returns {void}
      */
     generatePortLayers() {
         /*
@@ -80,6 +95,8 @@ export default class LaserCuttingGenerator {
 
     /**
      * Generates separate mfglayers and svgs for each of the depth layers
+     * @memberof LaserCuttingGenerator
+     * @returns {void}
      */
     generateDepthLayers() {
         /*
@@ -150,6 +167,8 @@ export default class LaserCuttingGenerator {
 
     /**
      * Generates all the edge cuts
+     * @memberof LaserCuttingGenerator
+     * @returns {void}
      */
     generateEdgeLayers() {
         /*
@@ -206,7 +225,9 @@ export default class LaserCuttingGenerator {
 
     /**
      * Sets the device the CNCGenerator needs to work of
-     * @param currentDevice
+     * @param {Device} currentDevice
+     * @memberof LaserCuttingGenerator
+     * @returns {void}
      */
     setDevice(currentDevice) {
         this.__device = currentDevice;
@@ -215,6 +236,8 @@ export default class LaserCuttingGenerator {
 
     /**
      * Flush all the data
+     * @memberof LaserCuttingGenerator
+     * @returns {void}
      */
     flushData() {
         this.__svgData.clear();
@@ -222,6 +245,8 @@ export default class LaserCuttingGenerator {
 
     /**
      * Generates all the glue burn off layers necessary for the valves
+     * @memberof LaserCuttingGenerator
+     * @returns {void}
      */
     generateInverseControlLayers() {
         console.log("Generating inverse layers");

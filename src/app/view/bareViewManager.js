@@ -10,8 +10,16 @@ import * as HTMLUtils from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
 import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
+import Feature from "../core/feature";
+import Layer from "../core/layer";
 
+/**
+ * Bare view manager class
+ */
 export default class BareViewManager {
+    /**
+     * Default Constructor for BareViewManager object
+     */
     constructor() {
         this.threeD;
         this.view = new PaperView("c", this);
@@ -82,17 +90,28 @@ export default class BareViewManager {
      * Registry.currentDevice dependency, however this might change as the modularity requirements change.
      *
      * @return {Device}
+     * @memberof BareViewManager
      */
     get currentDevice() {
         return this.__currentDevice;
     }
-
+    /**
+     * Initialize the zoom toolbar
+     * @memberof BareViewManager
+     * @returns {void}
+     */
     setupToolBars() {
         //Initiating the zoom toolbar
         this.zoomToolBar = new ZoomToolBar(0.0001, 5);
         // this.componentToolBar = new ComponentToolBar(this);
     }
-
+    /**
+     * Adds device to the view manager
+     * @param {Device} device Device to add to the view manager
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @memberof BareViewManager
+     * @returns {void}
+     */
     addDevice(device, refresh = true) {
         this.view.addDevice(device);
         this.__addAllDeviceLayers(device, false);
@@ -101,8 +120,10 @@ export default class BareViewManager {
 
     /**
      * Adds all the layers in the device
-     * @param device
-     * @param refresh
+     * @param {Device} device Selected device to add all of it's layers
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @memberof BareViewManager
+     * @returns {void}
      * @private
      */
     __addAllDeviceLayers(device, refresh = true) {
@@ -111,46 +132,89 @@ export default class BareViewManager {
             this.addLayer(layer, i, false);
         }
     }
-
+    /**
+     * Removes all the layers in the device
+     * @param {Device} device Selected device to removes all of it's layers
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @memberof BareViewManager
+     * @returns {void}
+     */
     __removeAllDeviceLayers(device, refresh = true) {
         for (let i = 0; i < device.layers.length; i++) {
             let layer = device.layers[i];
             this.removeLayer(layer, i, false);
         }
     }
-
+    /**
+     * Removes device from the view
+     * @param {Device} device Device to remove from the view
+     * @param {*} refresh Whether to refresh or not. true by default
+     * @memberof BareViewManager
+     * @returns {void}
+     */
     removeDevice(device, refresh = true) {
         this.view.removeDevice(device);
         this.__removeAllDeviceLayers(device, false);
         this.refresh(refresh);
     }
-
+    /**
+     * Updates the device in the view
+     * @param {Device} device Device to update
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @memberof BareViewManager
+     * @returns {void}
+     */
     updateDevice(device, refresh = true) {
         this.view.updateDevice(device);
         this.refresh(refresh);
     }
-
+    /**
+     * Adds feature in the view
+     * @param {Feature} feature Feature to be addede to the view
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @memberof BareViewManager
+     * @returns {void}
+     */
     addFeature(feature, refresh = true) {
         if (this.__isFeatureInCurrentDevice(feature)) {
             this.view.addFeature(feature);
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Updates specific feature of the view
+     * @param {Feature} feature Selected feature to update 
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @memberof BareViewManager
+     * @returns {void}
+     */
     updateFeature(feature, refresh = true) {
         if (this.__isFeatureInCurrentDevice(feature)) {
             this.view.updateFeature(feature);
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Removes specific feature of the view
+     * @param {Feature} feature Feature to remove from the view
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     removeFeature(feature, refresh = true) {
         if (this.__isFeatureInCurrentDevice(feature)) {
             this.view.removeFeature(feature);
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Adds a layer in the view
+     * @param {Layer} layer Layer to add to the view manager
+     * @param {number} index Position of the layer
+     * @param {BigInt} refresh Whether to refresh or not. true bu default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     addLayer(layer, index, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
             this.view.addLayer(layer, index, false);
@@ -160,7 +224,9 @@ export default class BareViewManager {
     }
 
     /**
-     * Create a new set of layers (flow, control and cell) for the upcoming level.
+     * Create a new set of layers (flow, control and cell) for the upcoming level
+     * @returns {void}
+     * @memberof BareViewManager
      */
     createNewLayerBlock() {
         let newlayers = Registry.currentDevice.createNewLayerBlock();
@@ -196,7 +262,9 @@ export default class BareViewManager {
     /**
      * Deletes the layers at the level index, we have 3-set of layers so it deletes everything at
      * that level
-     * @param levelindex integer only
+     * @param {number} levelindex Integer only
+     * @returns {void}
+     * @memberof BareViewManager
      */
     deleteLayerBlock(levelindex) {
         //Delete the levels in the device model
@@ -211,7 +279,14 @@ export default class BareViewManager {
         this.updateActiveLayer();
         this.refresh();
     }
-
+    /**
+     * Removes a specific layer of the view
+     * @param {Layer} layer Layer object 
+     * @param {number} index Index of the layer to be removed
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     removeLayer(layer, index, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
             this.view.removeLayer(layer, index);
@@ -219,15 +294,21 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Convers layers to SVG String format
+     * @returns {}
+     * @memberof BareViewManager
+     */
     layersToSVGStrings() {
         return this.view.layersToSVGStrings();
     }
 
     /**
-     * Adds a feature to all the layers ??????
-     * @param layer
-     * @param refresh
+     * Adds all features of the layers to the view manager
+     * @param {Layer} layer Layer object 
+     * @param {boolean} refresh Whether to refresh or not
+     * @returns {void}
+     * @memberof BareViewManager
      * @private
      */
     __addAllLayerFeatures(layer, refresh = true) {
@@ -237,7 +318,13 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Updates all features of the layers in the view manager
+     * @param {Layer} layer Layer object
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     __updateAllLayerFeatures(layer, refresh = true) {
         for (let key in layer.features) {
             let feature = layer.features[key];
@@ -245,7 +332,13 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Removes all features of the layers of the view manager
+     * @param {Layer} layer Layer object
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     __removeAllLayerFeatures(layer, refresh = true) {
         for (let key in layer.features) {
             let feature = layer.features[key];
@@ -253,41 +346,76 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Updates a specific layer in the view manager
+     * @param {Layer} layer Layer object
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     updateLayer(layer, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
             this.view.updateLayer(layer);
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Updates the active layer in the view manager
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     updateActiveLayer(refresh = true) {
         this.view.setActiveLayer(Registry.currentDevice.layers.indexOf(Registry.currentLayer));
         this.refresh(refresh);
     }
-
+    /**
+     * Removes grid from the view manager
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     removeGrid(refresh = true) {
         if (this.__hasCurrentGrid()) {
             this.view.removeGrid();
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Updates the grid of the view manager
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     updateGrid(refresh = true) {
         if (this.__hasCurrentGrid()) {
             this.view.updateGrid(Registry.currentGrid);
             this.refresh(refresh);
         }
     }
-
+    /**
+     * Updates alignments marks of the view manager
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     updateAlignmentMarks() {
         this.view.updateAlignmentMarks();
     }
-
+    /**
+     * Clears the view manager
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     clear() {
         this.view.clear();
     }
-
+    /**
+     * Sets the zoom 
+     * @param {number} zoom Value of zoom
+     * @param {boolean} refresh Whether to resfresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     setZoom(zoom, refresh = true) {
         if (zoom > this.maxZoom) zoom = this.maxZoom;
         else if (zoom < this.minZoom) zoom = this.minZoom;
@@ -313,7 +441,14 @@ export default class BareViewManager {
     //     this.updateAlignmentMarks();
     //     this.refresh(refresh);
     // }
-
+    /**
+     * Adjust the zoom
+     * @param {number} delta 
+     * @param {Array<number>} point Coordinates of the point where the zoom will be
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     adjustZoom(delta, point, refresh = true) {
         let belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
         let aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
@@ -329,7 +464,13 @@ export default class BareViewManager {
         }
         this.refresh(refresh);
     }
-
+    /**
+     * Sets the center of the view manager
+     * @param {Array<number>} center X and Y coordinates of the center
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @memberof BareViewManager
+     * @returns {void}
+     */
     setCenter(center, refresh = true) {
         this.view.setCenter(center);
         this.updateGrid(false);
@@ -338,7 +479,13 @@ export default class BareViewManager {
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }
-
+    /**
+     * Moves the center
+     * @param {*} delta 
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     moveCenter(delta, refresh = true) {
         this.view.moveCenter(delta);
         this.updateGrid(false);
@@ -347,33 +494,62 @@ export default class BareViewManager {
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }
-
+    /**
+     * Refresh?
+     * @param {boolean} refresh Whether to refresh or not 
+     * @returns {void}
+     * @memberof BareViewManager
+     */
     refresh(refresh = true) {
         this.updateQueue.run();
         //Update the toolbar
         let spacing = Registry.currentGrid.getSpacing();
         // this.resolutionToolBar.updateResolutionLabelAndSlider(spacing);
     }
-
+    /**
+     * Gets the position of the project
+     * @param {*} event 
+     * @returns {Array<number>} Returns the X and Y coordinates
+     * @memberof BareViewManager
+     */
     getEventPosition(event) {
         return this.view.getProjectPosition(event.clientX, event.clientY);
     }
-
+    /**
+     * Checks if it has current grid 
+     * @returns {Boolean} 
+     * @memberof BareViewManager
+     */
     __hasCurrentGrid() {
         if (Registry.currentGrid) return true;
         else return false;
     }
-
+    /**
+     * Checks if the layers is in the current device
+     * @param {Layer} layer Layer object
+     * @returns {Boolean}
+     * @memberof BareViewManager
+     */
     __isLayerInCurrentDevice(layer) {
         if (Registry.currentDevice && layer.device == Registry.currentDevice) return true;
         else return false;
     }
-
+    /**
+     * Checks if the feature is in current device
+     * @param {Feature} feature Feature object
+     * @returns {Boolean}
+     * @memberof BareViewManager
+     */
     __isFeatureInCurrentDevice(feature) {
         if (Registry.currentDevice && this.__isLayerInCurrentDevice(feature.layer)) return true;
         else return false;
     }
-
+    /**
+     * Loads a device from a JSON format
+     * @param {JSON} json 
+     * @memberof BareViewManager
+     * @returns {void}
+     */
     loadDeviceFromJSON(json) {
         let device;
         Registry.viewManager.clear();
@@ -503,8 +679,9 @@ export default class BareViewManager {
 
     /**
      * Checks if the point intersects with any other feature
-     * @param point
+     * @param {Array<number>} point X and Y coordinates of the point
      * @return PaperJS rendered Feature
+     * @memberof BareViewManager
      */
     hitFeature(point) {
         return this.view.hitFeature(point);
@@ -512,8 +689,9 @@ export default class BareViewManager {
 
     /**
      * Checks if the element intersects with any other feature
-     * @param element
+     * @param {Object} element
      * @return {*|Array}
+     * @memberof BareViewManager
      */
     hitFeaturesWithViewElement(element) {
         return this.view.hitFeaturesWithViewElement(element);
@@ -535,6 +713,8 @@ export default class BareViewManager {
 
     /**
      * Switches to 2D
+     * @returns {void}
+     * @memberof BareViewManager
      */
     switchTo2D() {
         if (this.threeD) {
@@ -583,8 +763,10 @@ export default class BareViewManager {
     // }
 
     /**
-     *
-     * @param selector
+     * Reads a selected file of the user
+     * @param {Object} selector Selector object
+     * @returns {void}
+     * @memberof BareViewManager
      */
     setupDragAndDropLoad(selector) {
         let dnd = new HTMLUtils.DnDFileController(selector, function(files) {

@@ -1,8 +1,14 @@
 import md5 from "md5";
+import Device from "../core/device";
 
 const HISTORY_SIZE = 50;
-
+/**
+ * Design History class
+ */
 export default class DesignHistory {
+    /**
+     * Default Construcot for the Design History object
+     */
     constructor() {
         this.deviceData = [];
         this.__mostRecentMD5 = null;
@@ -10,7 +16,9 @@ export default class DesignHistory {
 
     /**
      * Adds new design to the design history
-     * @param devicedata
+     * @param {Array} devicedata
+     * @returns {void}
+     * @memberof DesignHistory
      */
     pushDesign(devicedata) {
         //Calculate md5 hash and see if we want so save this design
@@ -30,7 +38,11 @@ export default class DesignHistory {
         this.__mostRecentMD5 = hash;
         console.log("Saved new state:", hash);
     }
-
+    /**
+     * Removes a design from the history
+     * @returns {Device}
+     * @memberof DesignHistory
+     */
     popDesign() {
         if (this.deviceData.length > 0) {
             let device = this.deviceData.pop();
@@ -43,6 +55,8 @@ export default class DesignHistory {
     /**
      * Deep copys the object being stored in the design
      * @param obj
+     * @returns {Object}
+     * @memberof DesignHistory
      * @private
      */
     __cloneObject(obj) {
