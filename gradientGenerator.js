@@ -58,8 +58,7 @@ export default class GradientGenerator extends Template {
             in: 1,
             out: 3,
             spacing: 10,
-            height: 10,
-            rotation: 0
+            height: 10
         };
 
         this.__maximum = {
@@ -71,8 +70,7 @@ export default class GradientGenerator extends Template {
             in: 30,
             out: 90,
             spacing: 90000,
-            height: 1200,
-            rotation: 360
+            height: 1200
         };
 
         this.__featureParams = {
@@ -85,7 +83,6 @@ export default class GradientGenerator extends Template {
             in: "in",
             out: "out",
             spacing: "spacing",
-            rotation: "rotation"
         };
 
         this.__targetParams = {
@@ -96,8 +93,7 @@ export default class GradientGenerator extends Template {
             bendLength: "bendLength",
             in: "in",
             out: "out",
-            spacing: "spacing",
-            rotation: "rotation"
+            spacing: "spacing"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -117,7 +113,7 @@ export default class GradientGenerator extends Template {
         let numBends = params["numberOfBends"];
         let channelWidth = params["channelWidth"];
         let bendLength = params["bendLength"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let invalue = params["in"];
         let outvalue = params["out"];
         let spacing = params["spacing"]; //Center to Center
@@ -268,7 +264,7 @@ export default class GradientGenerator extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        let render = this.render2D(params, key="FLOW");
         render.fillColor.alpha = 0.5;
         return render;
     }
