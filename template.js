@@ -1,4 +1,8 @@
 export default class Template {
+    /**
+     *Creates an instance of Template.
+     * @memberof Template
+     */
     constructor() {
         this.__unique = null;
         this.__heritable = null;
