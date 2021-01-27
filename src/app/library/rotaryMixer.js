@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class RotaryMixer extends Template {
     constructor() {
@@ -98,25 +99,21 @@ export default class RotaryMixer extends Template {
     }
 
     getPorts(params) {
-        let position = params["position"];
         let radius = params["radius"];
-        let color = params["color"];
-        let orientation = params["orientation"];
         let valvespacing = params["valveSpacing"];
         let valvelength = params["valveLength"];
-        let flowchannelwidth = params["flowChannelWidth"];
+        let flowchannelwidth = params["flowChannelWidth"]; //params["flowChannelWidth"];
+        let channellength = radius + valvelength + 2 * valvespacing + flowchannelwidth; //This needs to be a real expression
 
         let ports = [];
 
-        ports.push(new ComponentPort(flowchannelwidth/2, 0 ,  "1", "FLOW"));
-
-        ports.push(new ComponentPort(2*radius + flowchannelwidth, 2*radius + 4*valvespacing + 2*channellength, "2", "FLOW"));
+        ports.push(new ComponentPort(channellength, - radius - flowchannelwidth/2, "1", "FLOW"));  
+        ports.push(new ComponentPort(- channellength, radius + flowchannelwidth/2, "2", "FLOW"));
 
         return ports;
     }
 
-
-    render2D(params, key="FLOW") {
+    render2D(params, key = null) {
         if (key == "FLOW") {
             return this.__renderFlow(params);
         } else if (key == "CONTROL") {
@@ -127,45 +124,11 @@ export default class RotaryMixer extends Template {
     }
 
     render2DTarget(key, params) {
-        let position = params["position"];
-        let radius = params["radius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let valvespacing = params["valveSpacing"];
-        let valvelength = params["valveLength"];
-        let flowchannelwidth = params["flowChannelWidth"];
-        let px = position[0];
-        let py = position[1];
-        let center = new paper.Point(px, py);
-        let channellength = radius + valvelength + 2 * valvespacing; //This needs to be a real expression
-
-        let rotarymixer = new paper.CompoundPath();
-
-        let innercirc = new paper.Path.Circle(center, radius);
-        let outercirc = new paper.Path.Circle(center, radius + flowchannelwidth);
-
-        let rotary = outercirc.subtract(innercirc);
-
-        rotarymixer.addChild(rotary);
-
-        let point1 = new paper.Point(px, py - radius - flowchannelwidth);
-        let point2 = new paper.Point(px + channellength, py - radius);
-        let rectangle = new paper.Path.Rectangle(point1, point2);
-
-        // rotary.unite(rectangle);
-        rotarymixer.addChild(rectangle);
-
-        let point3 = new paper.Point(px - channellength, py + radius);
-        let point4 = new paper.Point(px, py + radius + flowchannelwidth);
-        let rectangle2 = new paper.Path.Rectangle(point3, point4);
-
-        //rotary.unite(rectangle2);
-        rotarymixer.addChild(rectangle2);
-
-        rotarymixer.fillColor = color;
+        let rotarymixer = this.__renderFlow(params);
+        rotarymixer.addChild(this.__renderControl(params));
         rotarymixer.fillColor.alpha = 0.5;
 
-        return rotarymixer.rotate(rotation, px, py);
+        return rotarymixer;
     }
 
     __renderFlow(params) {
@@ -201,8 +164,6 @@ export default class RotaryMixer extends Template {
         let rectangle2 = new paper.Path.Rectangle(point3, point4);
 
         rotarymixer.addChild(rectangle2);
-
-        // cutout.fillColor = "white";
 
         rotarymixer.fillColor = color;
 
