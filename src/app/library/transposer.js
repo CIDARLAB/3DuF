@@ -15,7 +15,7 @@ export default class Transposer extends Template {
             rotation: "Float",
             valveRadius: "Float",
             height: "Float",
-            gap: "Float",
+            valveGap: "Float",
             valveSpacing: "Float",
             channelWidth: "Float"
         };
@@ -24,58 +24,60 @@ export default class Transposer extends Template {
             rotation: 0,
             valveRadius: 1.2 * 1000,
             height: 250,
-            gap: 0.6 * 1000,
+            valveGap: 0.6 * 1000,
             valveSpacing: 0.6 * 1000,
-            channelWidth: 500
+            flowChannelWidth: 500,
+            controlChannelWidth: 50
         };
 
         this.__units = {
-            
+            rotation: "&deg;",
             valveRadius: "&mu;m",
             height: "&mu;m",
-            gap: "&mu;m",
+            valveGap: "&mu;m",
             valveSpacing: "&mu;m",
-            channelWidth: "&mu;m"
+            flowChannelWidth: "&mu;m",
+            controlChannelWidth: "&mu;m"
         };
 
         this.__minimum = {
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
-            gap: 0.5 * 10,
+            valveGap: 0.5 * 10,
             valveSpacing: 0.1 * 1000,
-            channelWidth: 25,
+            flowChannelWidth: 0.1,
+            controlChannelWidth: 0.1,
             rotation: 0
         };
 
         this.__maximum = {
             valveRadius: 0.2 * 10000,
             height: 1.2 * 1000,
-            gap: 0.1 * 10000,
+            valveGap: 0.1 * 10000,
             valveSpacing: 0.1 * 10000,
-            channelWidth: 25e3,
+            flowChannelWidth: 0.1 * 10000,
+            controlChannelWidth: 0.1 * 10000,
             rotation: 360
         };
 
         this.__featureParams = {
             position: "position",
             rotation: "rotation",
-            radius1: "valveRadius",
-            radius2: "valveRadius",
             valveRadius: "valveRadius",
-            gap: "gap",
+            valveGap: "valveGap",
             valveSpacing: "valveSpacing",
-            channelWidth: "channelWidth"
+            flowChannelWidth: "flowChannelWidth",
+            controlChannelWidth: "controlChannelWidth"
         };
 
         this.__targetParams = {
             position: "position",
             rotation: "rotation",
-            radius1: "valveRadius",
-            radius2: "valveRadius",
             valveRadius: "valveRadius",
-            gap: "gap",
+            valveGap: "valveGap",
             valveSpacing: "valveSpacing",
-            channelWidth: "channelWidth"
+            flowChannelWidth: "flowChannelWidth",
+            controlChannelWidth: "controlChannelWidth"
         };
 
         this.__placementTool = "MultilayerPositionTool";
@@ -89,7 +91,7 @@ export default class Transposer extends Template {
         this.__mint = "TRANSPOSER";
     }
 
-    render2D(params, key) {
+    render2D(params, key="FLOW") {
         if (key == "FLOW") {
             return this.__drawFlow(params);
         } else if (key == "CONTROL") {
@@ -110,11 +112,11 @@ export default class Transposer extends Template {
 
     __drawFlow(params) {
         let position = params["position"];
-        let gap = params["gap"];
+        let valveGap = params["valveGap"];
         let radius = params["valveRadius"];
         let color = params["color"];
         let rotation = params["rotation"];
-        let channelWidth = params["channelWidth"];
+        let channelWidth = params["flowChannelWidth"];
         let valvespacing = params["valveSpacing"];
         let transposer_flow = new paper.CompoundPath();
 
@@ -129,7 +131,7 @@ export default class Transposer extends Template {
         transposer_flow.addChild(channel);
 
         //Draw Valve
-        this.__createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth / 2, gap, radius, "H", channelWidth);
+        this.__createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth / 2, valveGap, radius, "H", channelWidth);
 
         //Draw top right channel
         topleftpoint = new paper.Point(px + 4 * valvespacing + 4 * radius + 2 * channelWidth, py - channelWidth / 2);
@@ -144,7 +146,7 @@ export default class Transposer extends Template {
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
 
         transposer_flow.addChild(channel);
-        this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, gap, radius, "V", channelWidth);
+        this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, valveGap, radius, "V", channelWidth);
 
         //2
         topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2 * radius);
@@ -153,7 +155,7 @@ export default class Transposer extends Template {
 
         transposer_flow.addChild(channel);
 
-        this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, gap, radius, "V", channelWidth);
+        this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, valveGap, radius, "V", channelWidth);
 
         //3
         topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2 * radius);
@@ -169,7 +171,7 @@ export default class Transposer extends Template {
 
         transposer_flow.addChild(channel);
 
-        this.__createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth / 2, gap, radius, "H", channelWidth);
+        this.__createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth / 2, valveGap, radius, "H", channelWidth);
 
         //2
         topleftpoint = new paper.Point(bottomrightpoint.x + 2 * radius, topleftpoint.y);
@@ -185,7 +187,7 @@ export default class Transposer extends Template {
 
         transposer_flow.addChild(channel);
 
-        this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, gap, radius, "V", channelWidth);
+        this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, valveGap, radius, "V", channelWidth);
 
         //2
         topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2 * radius);
@@ -203,7 +205,7 @@ export default class Transposer extends Template {
 
         transposer_flow.addChild(channel);
 
-        this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, gap, radius, "V", channelWidth);
+        this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, valveGap, radius, "V", channelWidth);
 
         //2
         topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2 * radius);
@@ -219,7 +221,7 @@ export default class Transposer extends Template {
         return transposer_flow;
     }
 
-    __createTransposerValve(compound_path, xpos, ypos, gap, radius, orientation, channel_width) {
+    __createTransposerValve(compound_path, xpos, ypos, valveGap, radius, orientation, channel_width) {
         let center = new paper.Point(xpos, ypos);
 
         //Create the basic circle
@@ -243,8 +245,8 @@ export default class Transposer extends Template {
         circ = circ.unite(rec);
 
         let cutout = paper.Path.Rectangle({
-            from: new paper.Point(xpos - radius, ypos - gap / 2),
-            to: new paper.Point(xpos + radius, ypos + gap / 2)
+            from: new paper.Point(xpos - radius, ypos - valveGap / 2),
+            to: new paper.Point(xpos + radius, ypos + valveGap / 2)
         });
 
         //cutout.fillColor = "white";
@@ -260,7 +262,7 @@ export default class Transposer extends Template {
 
     __drawControl(params) {
         let position = params["position"];
-        let gap = params["gap"];
+        let valveGap = params["valveGap"];
         let radius = params["valveRadius"];
         let color = params["color"];
         let rotation = params["rotation"];

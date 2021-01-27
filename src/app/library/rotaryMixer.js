@@ -33,7 +33,7 @@ export default class RotaryMixer extends Template {
         };
 
         this.__units = {
-            
+            rotation: "&deg;",
             radius: "&mu;m",
             flowChannelWidth: "&mu;m",
             valveWidth: "&mu;m",
@@ -116,7 +116,7 @@ export default class RotaryMixer extends Template {
     }
 
 
-    render2D(params, key = null) {
+    render2D(params, key="FLOW") {
         if (key == "FLOW") {
             return this.__renderFlow(params);
         } else if (key == "CONTROL") {

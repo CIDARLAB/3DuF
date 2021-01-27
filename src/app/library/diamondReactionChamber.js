@@ -28,7 +28,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__units = {
-            
+            rotation: "&deg;",
             channelWidth: "&mu;m",
             length: "&mu;m",
             width: "&mu;m",
@@ -117,7 +117,7 @@ export default class DiamondReactionChamber extends Template {
         hex.closed = true;
         hex.rotate(rotation, new paper.Point(px, py));
         hex.fillColor = color;
-        return hex;
+        return hex.rotate(rotation, px, py);
     }
 
     render2DTarget(key, params) {

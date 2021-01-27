@@ -210,7 +210,7 @@ export default class LLChamber extends Template {
         return rendered.rotate(rotation, px, py);
     }
 
-    render2D(params, key) {
+    render2D(params, key="FLOW") {
         if (key === "FLOW") {
             return this.__renderFlow(params);
         } else {

@@ -169,9 +169,8 @@ export default class CurvedMixer extends Template {
         }
         serp.addChild(toprect);
 
-        serp.rotate(rotation, x + channelWidth, y);
         serp.fillColor = color;
-        return serp;
+        return serp.rotate(rotation, x + channelWidth, y);;
     }
 
     render2DTarget(key, params) {

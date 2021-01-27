@@ -126,7 +126,7 @@ export default class DropletGenerator extends Template {
         return ports;
     }
 
-    render2D(params, key) {
+    render2D(params, key="FLOW") {
         let pos = params["position"];
         let x = pos[0];
         let y = pos[1];

@@ -148,9 +148,8 @@ export default class ThreeDMixer extends Template {
             }
         }
 
-        serp.rotate(rotation, new paper.Point(x, y));
         serp.fillColor = color;
-        return serp;
+        return serp.rotate(rotation, x, y);
     }
 
     render2DTarget(key, params) {
