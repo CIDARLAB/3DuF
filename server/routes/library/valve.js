@@ -84,8 +84,7 @@ export default class Valve extends Template {
         return ports;
     }
 
-    render2D(params, key) {
-        let orientation = params["orientation"];
+    render2D(params, key="FLOW") {
         let position = params["position"];
         let px = position[0];
         let py = position[1];
@@ -107,15 +106,11 @@ export default class Valve extends Template {
             strokeWidth: 0
         });
 
-        // if(orientation == "V"){
-        //     rotation = 90;
-        // }
-
         return rec.rotate(rotation, px, py);
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        let render = this.render2D(params, key="FLOW");
         render.fillColor.alpha = 0.5;
         return render;
     }

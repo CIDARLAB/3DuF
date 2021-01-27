@@ -13,7 +13,7 @@ export default class Mux extends Template {
 
         this.__heritable = {
             flowChannelWidth: "Float",
-            orientation: "String",
+            rotation: "Float",
             spacing: "Float",
             leafs: "Float",
             width: "Float",
@@ -26,7 +26,7 @@ export default class Mux extends Template {
 
         this.__defaults = {
             flowChannelWidth: 0.8 * 1000,
-            orientation: "V",
+            rotation: 0,
             spacing: 4 * 1000,
             leafs: 8,
             width: 1.6 * 1000,
@@ -39,7 +39,7 @@ export default class Mux extends Template {
 
         this.__units = {
             flowChannelWidth: "&mu;m",
-            orientation: "",
+            rotation: "&deg;",
             spacing: "&mu;m",
             leafs: "",
             width: "&mu;m",
@@ -58,7 +58,8 @@ export default class Mux extends Template {
             length: 60,
             height: 10,
             stageLength: 100,
-            controlChannelWidth: 10
+            controlChannelWidth: 10,
+            rotation: 0
         };
 
         this.__maximum = {
@@ -69,14 +70,15 @@ export default class Mux extends Template {
             length: 12 * 1000,
             height: 1200,
             stageLength: 6000,
-            controlChannelWidth: 2000
+            controlChannelWidth: 2000,
+            rotation: 360
         };
 
         this.__featureParams = {
             position: "position",
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
-            orientation: "orientation",
+            rotation: "rotation",
             spacing: "spacing",
             width: "width",
             length: "length",
@@ -89,7 +91,7 @@ export default class Mux extends Template {
             position: "position",
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
-            orientation: "orientation",
+            rotation: "rotation",
             spacing: "spacing",
             width: "width",
             length: "length",
@@ -112,7 +114,7 @@ export default class Mux extends Template {
     __drawFlow(params) {
         let position = params["position"];
         let cw = params["flowChannelWidth"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let direction = params["direction"];
         let spacing = params["spacing"];
         let leafs = params["leafs"];
@@ -140,14 +142,6 @@ export default class Mux extends Template {
         //Draw the tree
 
         treepath.fillColor = color;
-        let rotation = 0;
-        if (orientation == "H" && direction == "OUT") {
-            rotation = 180;
-        } else if (orientation == "V" && direction == "IN") {
-            rotation = 270;
-        } else if (orientation == "V" && direction == "OUT") {
-            rotation = 90;
-        }
         return treepath.rotate(rotation, px, py);
     }
 
@@ -155,7 +149,7 @@ export default class Mux extends Template {
         let position = params["position"];
         let cw = params["flowChannelWidth"];
         let ctlcw = params["controlChannelWidth"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let direction = params["direction"];
         let spacing = params["spacing"];
         let leafs = params["leafs"];
@@ -185,17 +179,33 @@ export default class Mux extends Template {
         //Draw the tree
 
         treepath.fillColor = color;
-        var rotation = 0;
-        // console.log("Orientation: " + orientation);
-        // console.log("Direction: " + direction);
-        if (orientation == "H" && direction == "OUT") {
-            rotation = 180;
-        } else if (orientation == "V" && direction == "IN") {
-            rotation = 270;
-        } else if (orientation == "V" && direction == "OUT") {
-            rotation = 90;
-        }
         return treepath.rotate(rotation, px, py);
+    }
+
+    getPorts(params) {
+        let position = params["position"];
+        let cw = params["flowChannelWidth"];
+        let orientation = params["orientation"];
+        let direction = params["direction"];
+        let spacing = params["spacing"];
+        let leafs = params["leafs"];
+        let stagelength = params["stageLength"];
+        let ports = [];
+
+        let levels = Math.ceil(Math.log2(leafs));
+
+        let w = (leafs - 1) * spacing + leafs * cw + valvewidth;
+
+        ports.push(new ComponentPort(w/2, 0, "1", "FLOW"));
+
+        for(var i = 0; i < leafs; i++){
+            //TODO - All the output ports
+            ports.push(new ComponentPort((i * spacing) + ((i+1) * cw/2), levels * stagelength , (i+2), "FLOW"));
+        }
+
+
+        //Control ports
+        return ports;
     }
 
     render2D(params, key) {

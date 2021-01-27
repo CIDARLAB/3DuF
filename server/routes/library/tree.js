@@ -106,6 +106,7 @@ export default class Tree extends Template {
         let length = levels * (cw + stagelength) + stagelength;
         let width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels); 
 
+
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));        
 
         for (let i = 0; i < leafs; i++){
@@ -145,16 +146,6 @@ export default class Tree extends Template {
         //Draw the tree
 
         treepath.fillColor = color;
-        // let rotation = 0;
-        // console.log("rotation: " + rotation);
-        // console.log("Direction: " + direction);
-        // if (rotation == "H" && direction == "OUT") {
-        //     rotation = 180;
-        // } else if (rotation == "V" && direction == "IN") {
-        //     rotation = 270;
-        // } else if (rotation == "V" && direction == "OUT") {
-        //     rotation = 90;
-        // }
         return treepath.rotate(rotation, px, py);
     }
 

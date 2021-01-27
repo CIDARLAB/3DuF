@@ -54,7 +54,7 @@ export default class LLChamber extends Template {
             height: 50000,
             numberOfChambers: 1000,
             spacing: 50000,
-            rotation: 90
+            rotation: 360
         };
 
         this.__featureParams = {
@@ -210,7 +210,7 @@ export default class LLChamber extends Template {
         return rendered.rotate(rotation, px, py);
     }
 
-    render2D(params, key) {
+    render2D(params, key="FLOW") {
         if (key === "FLOW") {
             return this.__renderFlow(params);
         } else {

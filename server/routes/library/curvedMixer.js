@@ -16,7 +16,7 @@ export default class CurvedMixer extends Template {
             numberOfBends: "Float",
             channelWidth: "Float",
             bendLength: "Float",
-            orientation: "String",
+            rotation: "Float",
             height: "Float"
         };
 
@@ -24,7 +24,7 @@ export default class CurvedMixer extends Template {
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
-            orientation: "V",
+            rotation: 0,
             bendLength: 2.46 * 1000,
             height: 250
         };
@@ -34,7 +34,7 @@ export default class CurvedMixer extends Template {
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            orientation: "",
+            
             height: "&mu;m"
         };
 
@@ -42,7 +42,7 @@ export default class CurvedMixer extends Template {
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            orientation: "H",
+            rotation: 0,
             bendLength: 10,
             height: 10
         };
@@ -51,7 +51,7 @@ export default class CurvedMixer extends Template {
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            orientation: "H",
+            rotation: 360,
             bendLength: 12 * 1000,
             height: 1200
         };
@@ -61,7 +61,7 @@ export default class CurvedMixer extends Template {
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength"
         };
 
@@ -69,7 +69,7 @@ export default class CurvedMixer extends Template {
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength"
         };
 
@@ -84,11 +84,27 @@ export default class CurvedMixer extends Template {
         this.__mint = "CURVED MIXER";
     }
 
-    render2D(params, key) {
+    getPorts(params) {
         let channelWidth = params["channelWidth"];
         let bendLength = params["bendLength"];
         let bendSpacing = params["bendSpacing"];
         let orientation = params["orientation"];
+        let numberOfBends = params["numberOfBends"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", "FLOW"));
+
+        ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", "FLOW"));
+
+        return ports;
+    }
+
+    render2D(params, key) {
+        let channelWidth = params["channelWidth"];
+        let bendLength = params["bendLength"];
+        let bendSpacing = params["bendSpacing"];
+        let rotation = params["rotation"];
         let numBends = params["numberOfBends"];
         let x = params["position"][0];
         let y = params["position"][1];
@@ -153,14 +169,8 @@ export default class CurvedMixer extends Template {
         }
         serp.addChild(toprect);
 
-        if (orientation == "V") {
-            serp.rotate(0, x + channelWidth, y);
-        } else {
-            serp.rotate(90, x + channelWidth, y);
-        }
-
         serp.fillColor = color;
-        return serp;
+        return serp.rotate(rotation, x + channelWidth, y);;
     }
 
     render2DTarget(key, params) {

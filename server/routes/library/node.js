@@ -1,7 +1,6 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import CSG from "@jscad/csg";
 
 export default class Node extends Template {
     constructor() {
@@ -65,15 +64,8 @@ export default class Node extends Template {
 
     render2DTarget(key, params) {
         let render = this.render2D(params, key);
+        render.fillColor.alpha = 0.5;
         return render;
-    }
-
-    getPorts(params) {
-        let ports = [];
-
-        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
-
-        return ports;
     }
 
 }
