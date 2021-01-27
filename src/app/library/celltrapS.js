@@ -91,7 +91,7 @@ export default class CellTrapS extends Template{
 
         this.__renderKeys = ["FLOW", "CELL"];
 
-        this.__mint = "SHORT CELL TRAP";
+        this.__mint = "SQUARE CELL TRAP";
     }
 
     getPorts(params) {
