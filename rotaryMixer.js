@@ -97,6 +97,25 @@ export default class RotaryMixer extends Template {
         this.__mint = "ROTARY MIXER";
     }
 
+    getPorts(params) {
+        let position = params["position"];
+        let radius = params["radius"];
+        let color = params["color"];
+        let orientation = params["orientation"];
+        let valvespacing = params["valveSpacing"];
+        let valvelength = params["valveLength"];
+        let flowchannelwidth = params["flowChannelWidth"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(flowchannelwidth/2, 0 ,  "1", "FLOW"));
+
+        ports.push(new ComponentPort(2*radius + flowchannelwidth, 2*radius + 4*valvespacing + 2*channellength, "2", "FLOW"));
+
+        return ports;
+    }
+
+
     render2D(params, key = null) {
         if (key == "FLOW") {
             return this.__renderFlow(params);
@@ -114,7 +133,7 @@ export default class RotaryMixer extends Template {
         let rotation = params["rotation"];
         let valvespacing = params["valveSpacing"];
         let valvelength = params["valveLength"];
-        let flowchannelwidth = 1000; //params["flowChannelWidth"];
+        let flowchannelwidth = params["flowChannelWidth"];
         let px = position[0];
         let py = position[1];
         let center = new paper.Point(px, py);
