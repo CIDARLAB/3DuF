@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class CellTrapL extends Template {
     constructor() {
@@ -34,7 +35,7 @@ export default class CellTrapL extends Template {
         this.__units = {
             chamberLength: "&mu;m",
             feedingChannelWidth: "&mu;m",
-            
+            rotation: "&deg;",
             chamberWidth: "&mu;m",
             numberOfChambers: "",
             chamberSpacing: "&mu;m",
@@ -48,7 +49,7 @@ export default class CellTrapL extends Template {
             numberOfChambers: 1,
             chamberSpacing: 60,
             height: 10,
-            rotation: 0
+            rotation: 0,
         };
 
         this.__maximum = {
@@ -93,6 +94,23 @@ export default class CellTrapL extends Template {
         this.__mint = "LONG CELL TRAP";
     }
 
+    getPorts(params) {
+        
+        let chamberLength = params["chamberLength"];
+        let numChambers = params["numberOfChambers"];
+        let chamberWidth = params["chamberWidth"];
+        let feedingChannelWidth = params["feedingChannelWidth"];
+        let chamberSpacing = params["chamberSpacing"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(0, chamberLength + feedingChannelWidth/2, "1", "FLOW"));        
+
+        ports.push(new ComponentPort((numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing, chamberLength + feedingChannelWidth/2, "2", "FLOW"));
+
+        return ports;
+    }
+
     render2D(params, key) {
         if (key == "FLOW") {
             return this.__drawFlow(params);
@@ -102,9 +120,10 @@ export default class CellTrapL extends Template {
     }
 
     render2DTarget(key, params) {
-        let ret = this.render2D(params, key);
-        ret.fillColor.alpha = 0.5;
-        return ret;
+        let traps = this.__drawFlow(params);
+        traps.addChild(this.__drawCell(params));
+        traps.fillColor.alpha = 0.5;
+        return traps;
     }
 
     __drawFlow(params) {
@@ -116,7 +135,7 @@ export default class CellTrapL extends Template {
         let feedingChannelWidth = params["feedingChannelWidth"];
         let chamberSpacing = params["chamberSpacing"];
 
-        console.log(position, chamberLength, numChambers, chamberWidth, feedingChannelWidth, chamberSpacing);
+        console.log(rotation, position, chamberLength, numChambers, chamberWidth, feedingChannelWidth, chamberSpacing);
         let color = params["color"];
         let x = position[0];
         let y = position[1];
@@ -125,18 +144,19 @@ export default class CellTrapL extends Template {
         let rec;
         let traps;
         let channels;
-        let startPoint = new paper.Point(x + chamberLength, y);
+
+        let startPoint = new paper.Point(x, y + chamberLength);
         channels = new paper.Path.Rectangle({
             point: startPoint,
-            size: [feedingChannelWidth, (numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing],
+            size: [(numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing, feedingChannelWidth],
             fillColor: color,
             strokeWidth: 0
         });
         chamberList.addChild(channels);
+        
         traps = new paper.CompoundPath(chamberList);
         traps.fillColor = color;
-        let center = new paper.Point(position[0], position[1]);
-        traps.rotate(rotation, center);
+        traps.rotate(rotation, new paper.Point(x, y));
         return traps;
     }
 
@@ -153,19 +173,20 @@ export default class CellTrapL extends Template {
         let y = position[1];
         let chamberList = new paper.CompoundPath();
         let rec;
+      
         for (let i = 0; i < numChambers / 2; i++) {
-            let startPoint = new paper.Point(x, y + i * (chamberWidth + chamberSpacing) + chamberSpacing);
-            rec = new paper.Path.Rectangle({
-                size: [2 * chamberLength + feedingChannelWidth, chamberWidth],
+            let startPoint = new paper.Point(x + i * (chamberWidth + chamberSpacing) + chamberSpacing, y);
+            rec = paper.Path.Rectangle({
+                size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
                 point: startPoint,
                 fillColor: color,
                 strokeWidth: 0
             });
             chamberList.addChild(rec);
         }
+    
         chamberList.fillColor = color;
-        let center = new paper.Point(x, y);
-        traps.rotate(rotation, center);
+        chamberList.rotate(rotation, new paper.Point(x, y));
         return chamberList;
     }
 }
