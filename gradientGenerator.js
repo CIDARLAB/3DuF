@@ -27,7 +27,7 @@ export default class GradientGenerator extends Template {
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
-            orientation: "V",
+            rotation: 0,
             bendLength: 2.46 * 1000,
             in: 1,
             out: 3,
@@ -41,7 +41,7 @@ export default class GradientGenerator extends Template {
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            orientation: "",
+            
             in: "",
             out: "",
             spacing: "&mu;m",
@@ -53,26 +53,24 @@ export default class GradientGenerator extends Template {
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            orientation: "H",
+            rotation: 270,
             bendLength: 10,
             in: 1,
             out: 3,
             spacing: 10,
-            height: 10,
-            rotation: 0
+            height: 10
         };
 
         this.__maximum = {
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            orientation: "H",
+            rotation: 270,
             bendLength: 12 * 1000,
             in: 30,
             out: 90,
             spacing: 90000,
-            height: 1200,
-            rotation: 360
+            height: 1200
         };
 
         this.__featureParams = {
@@ -80,24 +78,22 @@ export default class GradientGenerator extends Template {
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength",
             in: "in",
             out: "out",
             spacing: "spacing",
-            rotation: "rotation"
         };
 
         this.__targetParams = {
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength",
             in: "in",
             out: "out",
-            spacing: "spacing",
-            rotation: "rotation"
+            spacing: "spacing"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -111,17 +107,61 @@ export default class GradientGenerator extends Template {
         this.__mint = "GRADIENT GENERATOR";
     }
 
+    getPorts(params) {
+        let position = params["position"];
+        let bendSpacing = params["bendSpacing"];
+        let numBends = params["numberOfBends"];
+        let channelWidth = params["channelWidth"];
+        let bendLength = params["bendLength"];
+        let rotation = params["rotation"];
+        let invalue = params["in"];
+        let outvalue = params["out"];
+        let spacing = params["spacing"]; //Center to Center
+
+        let ports = [];
+
+        let maxstagewidth = (outvalue - 1) * spacing;
+        let posx = maxstagewidth/2;
+
+        let stagelength = channelWidth * (2 * numBends + 1) + (2 * numBends + 2) * bendSpacing + channelWidth;
+
+        let stagevalue = invalue;
+        let totalstagewidth = (stagevalue - 1) * spacing;
+
+        let xref = posx - totalstagewidth / 2;
+        let yref = stagelength * (stagevalue - invalue);
+    
+        for(var i = 0 ; i < invalue; i++){
+            //Generate the ports for each of the inputs
+            let x = xref + spacing * i;
+            ports.push(new ComponentPort(x, 0, (i+1).toString(), "FLOW"));
+        }
+
+        stagevalue = outvalue;
+        totalstagewidth = (stagevalue - 1) * spacing;
+
+        xref = posx - totalstagewidth / 2;
+        yref = stagelength * (stagevalue - invalue);
+
+        for(var i = 0; i < outvalue; i++){
+            //Generate the ports for each of the outputs
+            let x = xref + spacing * i;
+            ports.push(new ComponentPort(x, yref, (invalue+1+i).toString(), "FLOW"));
+        }
+
+        return ports;
+    }
+
     render2D(params, key) {
         let position = params["position"];
         let bendSpacing = params["bendSpacing"];
         let numBends = params["numberOfBends"];
         let channelWidth = params["channelWidth"];
         let bendLength = params["bendLength"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let invalue = params["in"];
         let outvalue = params["out"];
         let spacing = params["spacing"]; //Center to Center
-        let rotation = params["rotation"];
         let color = params["color"];
 
         let posx = position[0];
@@ -224,7 +264,7 @@ export default class GradientGenerator extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        let render = this.render2D(params, key="FLOW");
         render.fillColor.alpha = 0.5;
         return render;
     }

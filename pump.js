@@ -48,7 +48,7 @@ export default class Pump extends Template {
         };
 
         this.__maximum = {
-            rotation: 180,
+            rotation: 360,
             width: 6000,
             length: 24 * 1000,
             height: 1200,
@@ -169,7 +169,7 @@ export default class Pump extends Template {
         return ret.rotate(rotation, px, py);
     }
 
-    render2D(params, key) {
+    render2D(params, key="FLOW") {
         if (key == "FLOW") {
             return this.__drawFlow(params);
         } else if (key == "CONTROL") {

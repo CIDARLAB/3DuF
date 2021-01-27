@@ -149,7 +149,6 @@ export default class YTree extends Template {
         //Draw the tree
 
         treepath.fillColor = color;
-
         return treepath.rotate(rotation, px, py);
     }
 
