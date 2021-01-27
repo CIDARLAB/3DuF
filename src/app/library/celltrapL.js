@@ -25,7 +25,7 @@ export default class CellTrapL extends Template {
         this.__defaults = {
             chamberLength: 1.2 * 1000,
             feedingChannelWidth: 0.41 * 1000,
-            rotation: 0,
+            rotation: 270,
             chamberWidth: 1.23 * 1000,
             numberOfChambers: 6,
             chamberSpacing: 2.46 * 1000,
@@ -111,11 +111,16 @@ export default class CellTrapL extends Template {
         return ports;
     }
 
-    render2D(params, key) {
+    render2D(params, key="FLOW") {
         if (key == "FLOW") {
             return this.__drawFlow(params);
         } else if (key == "CELL") {
             return this.__drawCell(params);
+        }else{
+            let flow = this.__drawFlow(params);
+            let control = this.__drawCell(params);
+            let ret = flow.addChild(control);
+            return ret;
         }
     }
 

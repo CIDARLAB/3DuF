@@ -42,6 +42,7 @@ import PicoInjection from "../library/picoinjection";
 import Sorter from "../library/sorter";
 import CapacitanceSensor from "../library/capacitancesensor";
 import Splitter from "../library/splitter";
+import Node from "../library/node";
 
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
@@ -114,7 +115,8 @@ export default class FeatureSet {
             PicoInjection: { object: new PicoInjection(), key: "FLOW" },
             Sorter: { object: new Sorter(), key: "FLOW" },
             Splitter: { object: new Splitter(), key: "FLOW" },
-            CapacitanceSensor: { object: new CapacitanceSensor(), key: "FLOW" }
+            CapacitanceSensor: { object: new CapacitanceSensor(), key: "FLOW" },
+            Node: {object: new Node(), key: "FLOW"}
         };
 
         // this.__checkDefinitions();

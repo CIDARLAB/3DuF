@@ -146,16 +146,6 @@ export default class Tree extends Template {
         //Draw the tree
 
         treepath.fillColor = color;
-        // let rotation = 0;
-        // console.log("rotation: " + rotation);
-        // console.log("Direction: " + direction);
-        // if (rotation == "H" && direction == "OUT") {
-        //     rotation = 180;
-        // } else if (rotation == "V" && direction == "IN") {
-        //     rotation = 270;
-        // } else if (rotation == "V" && direction == "OUT") {
-        //     rotation = 90;
-        // }
         return treepath.rotate(rotation, px, py);
     }
 
