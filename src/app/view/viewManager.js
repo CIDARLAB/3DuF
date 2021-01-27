@@ -1293,7 +1293,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     generateExportJSON() {
-        let json = this.currentDevice.toInterchangeV1();
+        let json = this.currentDevice.toInterchangeV1_1();
         json.customComponents = this.customComponentManager.toJSON();
         return json;
     }

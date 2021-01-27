@@ -13,6 +13,7 @@ import DXFObject from "./dxfObject";
 import * as FeatureSets from "../featureSets";
 import Valve from "../library/valve";
 import ComponentPort from "./componentPort";
+import * as IOUtils from "../utils/ioUtils";
 
 const StringValue = Parameters.StringValue;
 
@@ -561,6 +562,7 @@ export default class Device {
         // output.layers = this.__layersToInterchangeV1();
         output.components = this.__componentsToInterchangeV1();
         output.connections = this.__connectionToInterchangeV1();
+        output.layers = this.__layersToInterchangeV1();       
         //TODO: Use this to render the device features
         output.features = this.__featureLayersToInterchangeV1();
         output.version = 1;
@@ -620,11 +622,7 @@ export default class Device {
     }
 
     static fromInterchangeV1(json) {
-        console.log("OLD:", json);
-
-        json = sanitizeJSON(json);
-        
-        console.log("NEW:", json);
+        IOUtils.sanitizeV1Plus(json)
 
         let newDevice;
         if (json.hasOwnProperty("params")) {
