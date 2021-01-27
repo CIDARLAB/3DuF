@@ -1,20 +1,35 @@
 import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
+import Device from "../core/device";
 
+/**
+ * GNCGenerator class
+ */
 export default class CNCGenerator {
+    /**
+     * Default Constructor of GNCGenerator object.
+     * @param {Device} device Device object
+     * @param {*} viewManagerDelegate 
+     */
     constructor(device, viewManagerDelegate) {
         this.__device = device;
         this.__viewManagerDelegate = viewManagerDelegate;
 
         this.__svgData = new Map();
     }
-
+    /**
+     * Gets the SVG output
+     * @returns {}
+     * @memberof CNCGenerator
+     */
     getSVGOutputs() {
         return this.__svgData;
     }
 
     /**
      * Generate the port layers
+     * @memberof CNCGenerator
+     * @returns {void}
      */
     generatePortLayers() {
         /*
@@ -86,6 +101,8 @@ export default class CNCGenerator {
 
     /**
      * Generates separate mfglayers and svgs for each of the depth layers
+     * @returns {void}
+     * @memberof CNCGenerator
      */
     generateDepthLayers() {
         /*
@@ -156,6 +173,8 @@ export default class CNCGenerator {
 
     /**
      * Generates all the edge cuts
+     * @returns {void}
+     * @memberof CNCGenerator
      */
     generateEdgeLayers() {
         /*
@@ -212,7 +231,9 @@ export default class CNCGenerator {
 
     /**
      * Sets the device the CNCGenerator needs to work of
-     * @param currentDevice
+     * @param {Device} currentDevice
+     * @returns {void}
+     * @memberof CNCGenerator
      */
     setDevice(currentDevice) {
         this.__device = currentDevice;
@@ -221,6 +242,8 @@ export default class CNCGenerator {
 
     /**
      * Flush all the data
+     * @returns {void}
+     * @memberof CNCGenerator
      */
     flushData() {
         this.__svgData.clear();

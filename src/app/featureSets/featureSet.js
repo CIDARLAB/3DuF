@@ -1,11 +1,14 @@
 import Device from "../core/device";
 
 import Port from "../library/port";
+import Anode from "../library/anode"; //new from CK
+import Cathode from "../library/cathode"; //new from CK
 import Channel from "../library/channel";
 import BetterMixer from "../library/betterMixer";
 import RotaryMixer from "../library/rotaryMixer";
 import AlignmentMarks from "../library/alignmentMarks";
 import CellTrapL from "../library/celltrapL";
+import Gelchannel from "../library/gelchannel";//CK
 import Chamber from "../library/chamber";
 import Connection from "../library/connection";
 import CurvedMixer from "../library/curvedMixer";
@@ -16,6 +19,7 @@ import Mux from "../library/mux";
 import Pump from "../library/pump";
 import Pump3D from "../library/pump3D";
 import RoundedChannel from "../library/roundedChannel";
+import thermoCycler from "../library/thermoCycler"
 import Transition from "../library/transition";
 import Transposer from "../library/transposer";
 import Valve from "../library/valve";
@@ -49,6 +53,8 @@ export default class FeatureSet {
         //TODO: Replace this cumbersome mechanism for generating different feature variants, etc.
         this.__library = {
             Port: { object: new Port(), key: null },
+            Anode: { object: new Anode(), key: null },//ck addition
+            Cathode: { object: new Cathode(), key: null },//ck addition
             Channel: { object: new Channel(), key: null },
             BetterMixer: { object: new BetterMixer(), key: "FLOW" },
             RotaryMixer: { object: new RotaryMixer(), key: "FLOW" },
@@ -60,6 +66,8 @@ export default class FeatureSet {
             },
             CellTrapL: { object: new CellTrapL(), key: "FLOW" },
             CellTrapL_cell: { object: new CellTrapL(), key: "CELL" },
+            Gelchannel: { object: new Gelchannel(), key: "FLOW" },//CK
+            Gelchannel_cell: { object: new Gelchannel(), key: "CELL" },//CK
             Chamber: { object: new Chamber(), key: null },
             Connection: { object: new Connection(), key: null },
             CurvedMixer: { object: new CurvedMixer(), key: null },
@@ -67,6 +75,8 @@ export default class FeatureSet {
                 object: new DiamondReactionChamber(),
                 key: null
             },
+
+
             DropletGen: { object: new DropletGenerator(), key: null },
             GradientGenerator: { object: new GradientGenerator(), key: null },
             Mux: { object: new Mux(), key: "FLOW" },
@@ -76,6 +86,7 @@ export default class FeatureSet {
             Pump3D: { object: new Pump3D(), key: "FLOW" },
             Pump3D_control: { object: new Pump3D(), key: "CONTROL" },
             RoundedChannel: { object: new RoundedChannel(), key: null },
+            thermoCycler: { object: new thermoCycler(), key: "FLOW"},
             Transition: { object: new Transition(), key: null },
             Transposer: { object: new Transposer(), key: "FLOW" },
             Transposer_control: { object: new Transposer(), key: "CONTROL" },

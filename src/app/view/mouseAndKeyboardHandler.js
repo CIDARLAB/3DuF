@@ -1,7 +1,14 @@
 import paper from "paper";
 import PanTool from "./tools/panTool";
 
+/**
+ * Mouse and Keyboard Handler class
+ */
 export default class MouseAndKeyboardHandler {
+    /**
+     * Default Constructor for MouseAndKeyboardHandler object
+     * @param {*} viewManagerDelegate 
+     */
     constructor(viewManagerDelegate) {
         this.viewManagerDelegate = viewManagerDelegate;
 
@@ -20,25 +27,44 @@ export default class MouseAndKeyboardHandler {
         this.__setupDefaultKeyboardShortcuts();
         // this.__updateViewMouseEvents();
     }
-
+    /**
+     * Sets the tool for the left mouse
+     * @returns {void}
+     * @memberof MouseAndKeyboardHandler
+     */
     set leftMouseTool(tool) {
         this.__leftMouseTool = tool;
     }
-
+    /**
+     * Sets the tool for the right mouse
+     * @param {} tool Selected tool
+     * @returns {void}
+     * @memberof MouseAndKeyboardHandler
+     */
     set rightMouseTool(tool) {
         this.__rightMouseTool = tool;
     }
-
+    /**
+     * Gets the tool of the left mouse
+     * @returns Returns left mouse tool
+     * @memberof MouseAndKeyboardHandler
+     */
     get leftMouseTool() {
         return this.__leftMouseTool;
     }
-
-    get rightMouseTool() {
+    /**
+     * Gets the tool of the right mouse
+     * @returns Returns right mouse tool
+     * @memberof MouseAndKeyboardHandler
+     */
+    get rightMouseTool() {  
         return this.__rightMouseTool;
     }
 
     /**
      * Sets up the default keyboard handlers
+     * @returns {void}
+     * @memberof MouseAndKeyboardHandler
      * @private
      */
     __setupDefaultKeyboardShortcuts() {
@@ -174,7 +200,11 @@ export default class MouseAndKeyboardHandler {
             }
         });
     }
-
+    /**
+     * Updates mouse events
+     * @returns {void}
+     * @memberof MouseAndKeyboardHandler
+     */
     updateViewMouseEvents() {
         this.viewManagerDelegate.view.setMouseDownFunction(this.constructMouseDownEvent(this.__leftMouseTool, this.__middleMouseTool, this.__leftMouseTool));
         this.viewManagerDelegate.view.setMouseUpFunction(this.constructMouseUpEvent(this.__leftMouseTool, this.__middleMouseTool, this.__leftMouseTool));
@@ -183,6 +213,8 @@ export default class MouseAndKeyboardHandler {
 
     /**
      * This function is executed as a callback for every mouse down event
+     * @memberof MouseAndKeyboardHandler
+     * @returns {void}
      * @private
      */
     __mouseDownCallback(event) {
@@ -191,6 +223,8 @@ export default class MouseAndKeyboardHandler {
 
     /**
      * this function is executed as a callback for every mouse up event
+     * @memberof MouseAndKeyboardHandler
+     * @returns {void}
      * @private
      */
     __mouseUpCallback(event) {
@@ -199,12 +233,19 @@ export default class MouseAndKeyboardHandler {
 
     /**
      * This function is executed as a callback for every mouse move event
+     * @memberof MouseAndKeyboardHandler
+     * @returns {void}
      * @private
      */
     __mouseMoveCallback(event) {
         // console.log("testing move callback", event);
     }
-
+    /**
+     * 
+     * @param {*} tool1 
+     * @param {*} tool2 
+     * @param {*} tool3 
+     */
     constructMouseDownEvent(tool1, tool2, tool3) {
         if (tool1 == tool3) {
             console.log("Both right and left tool is the same");
@@ -221,7 +262,15 @@ export default class MouseAndKeyboardHandler {
     constructMouseUpEvent(tool1, tool2, tool3) {
         return this.constructMouseEvent(tool1.up, tool2.up, tool3.up, this.__mouseMoveCallback);
     }
-
+    /**
+     * 
+     * @param {*} func1 
+     * @param {*} func2 
+     * @param {*} func3 
+     * @param {*} buttondownCallback 
+     * @memberof MouseAndKeyboardHandler
+     * @returns {Function}
+     */
     constructMouseEvent(func1, func2, func3, buttondownCallback) {
         return function(event) {
             let target;
@@ -240,7 +289,7 @@ export default class MouseAndKeyboardHandler {
             }
         };
     }
-
+    
     static __eventButtonsToWhich(num) {
         if (num === 1) {
             return 1;

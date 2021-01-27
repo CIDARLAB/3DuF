@@ -15,3 +15,5 @@ old/*.scad
 
 3DuFapp.js
 publish.sh
+
+docs/

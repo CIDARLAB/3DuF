@@ -1,9 +1,11 @@
 import paper from "paper";
-
+/**
+ * Selection class
+ */
 export default class Selection {
     /**
      * Pass an array of feature IDs that can be used to store the selection
-     * @param items Array of String
+     * @param {Array<string>} items Array of String
      */
     constructor(items) {
         this.__components = [];
@@ -18,8 +20,10 @@ export default class Selection {
 
     /**
      * Generates a replica
-     * @param x X coordinate for here the selection should be replicated
-     * @param y Y coordinate for where the selection should be replicated
+     * @param {number} x X coordinate for here the selection should be replicated
+     * @param {number} y Y coordinate for where the selection should be replicated
+     * @returns {void}
+     * @memberof Selection
      */
     replicate(x, y) {
         /*
@@ -43,7 +47,11 @@ export default class Selection {
             let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
         }
     }
-
+    /**
+     * Selects all the components, connections and features
+     * @returns {void}
+     * @memberof Selection
+     */
     selectAll() {
         for (let i in this.__components) {
             let component = Registry.currentDevice.getComponentByID(this.__components[i]);
@@ -66,11 +74,19 @@ export default class Selection {
             render.selected = true;
         }
     }
-
+    /**
+     * Gets all the bounds
+     * @returns {Array<number>} Returns an array containing the bounds of the selection
+     * @memberof Selection
+     */
     get bounds() {
         return this.__bounds;
     }
-
+    /**
+     * Calculates how much area has been selected
+     * @returns {void}
+     * @memberof Selection
+     */
     __calculateSelectionBounds() {
         let xmin = 0;
         let ymin = 0;

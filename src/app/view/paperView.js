@@ -16,11 +16,17 @@ import ComponentPortRenderer2D from "./render2D/componentPortRenderer2D";
 import PaperComponentPortView from "./render2D/paperComponentPortView";
 import * as DXFObjectRenderer2D from "./render2D/dxfObjectRenderer2D";
 import * as DXFSolidObjectRenderer from "./render2D/dxfSolidObjectRenderer2D";
-
+import Layer from "../core/layer";
+import Device from "../core/device";
+import Feature from "../core/feature";
+/**
+ * Paper View class
+ */
 export default class PaperView {
     /**
      * Requires the canvas ID to setup the entire application.
-     * @param canvasID
+     * @param {string} canvasID
+     * @param {} viewmanager
      */
     constructor(canvasID, viewmanager) {
         //Setup the Canvas
@@ -69,6 +75,7 @@ export default class PaperView {
     /**
      * Returns a list of selected items on the canvas
      * @return {Array}
+     * @memberof PaperView
      */
     getSelectedFeatures() {
         let output = [];
@@ -78,7 +85,11 @@ export default class PaperView {
         }
         return output;
     }
-
+    /**
+     * Deselects the items from the canvas
+     * @returns {void}
+     * @memberof PaperView
+     */
     clearSelectedItems() {
         paper.project.deselectAll();
         this.selectedConnections = [];
@@ -88,6 +99,8 @@ export default class PaperView {
     /**
      * Deletes the selected features and selected components from the canvas
      * TODO: Rename the method
+     * @returns {void}
+     * @memberof PaperView
      */
     deleteSelectedFeatures() {
         //TODO: Refine how this works with the selection object code later on
@@ -108,14 +121,22 @@ export default class PaperView {
             }
         }
     }
-
+    /**
+     * Selects all active layers in the canvas
+     * @returns {void}
+     * @memberof PaperView
+     */
     selectAllActive() {
         let layer = this.paperLayers[this.activeLayer];
         for (var i in layer.children) {
             layer.children[i].selected = true;
         }
     }
-
+    /**
+     * Converts the layers to SVG format 
+     * @memberof PaperView
+     * @returns {}
+     */
     layersToSVGStrings() {
         let output = [];
         for (let i = 0; i < this.featureLayer.children.length; i++) {
@@ -125,7 +146,12 @@ export default class PaperView {
         }
         return output;
     }
-
+    /**
+     * Process layers to SVG
+     * @param {Layer} layer Layer object
+     * @returns Returns an SVG format
+     * @memberof PaperView
+     */
     postProcessLayerToSVG(layer) {
         //var flip = layer.params["flip"];
         let layerCopy = layer.clone();
@@ -151,19 +177,35 @@ export default class PaperView {
         layerCopy.remove();
         return newSVG;
     }
-
+    /**
+     * Gets the width of the canvas
+     * @returns {number} Returns the width of the canvas
+     * @memberof PaperView
+     */
     getCanvasWidth() {
         return this.canvas.clientWidth;
     }
-
+    /**
+     * Gets the height of the canvas
+     * @returns {number} Returns the height of the canvas
+     * @memberof PaperView
+     */
     getCanvasHeight() {
         return this.canvas.clientHeight;
     }
-
+    /**
+     * Gets the view of the center in mm
+     * @returns {number}
+     * @memberof PaperView
+     */
     getViewCenterInMillimeters() {
         return [paper.view.center.x / 1000, paper.view.center.y / 1000];
     }
-
+    /**
+     * Gets the device height in pixels
+     * @returns {number}
+     * @memberof PaperView
+     */
     getDeviceHeightInPixels() {
         return this.__viewManagerDelegate.currentDevice.params.getValue("height") * paper.view.zoom;
     }
@@ -171,6 +213,8 @@ export default class PaperView {
     /**
      * Clears the all the paper group collections stored in the paperview object. Used when everything has to be
      * redrawn
+     * @returns {void}
+     * @memberof PaperView
      */
     clear() {
         this.activeLayer = null;
@@ -180,24 +224,46 @@ export default class PaperView {
         this.gridLayer.clear();
         this.alignmentMarksLayer.clear();
     }
-
+    /**
+     * Gets the center of the paper
+     * @returns {Array<number>}
+     * @memberof PaperView
+     */
     getCenter() {
         return this.center;
     }
-
+    /**
+     * Sets the center at a specific point of the canvas
+     * @param {Array<number>} point X and Y coordinates
+     * @returns {void}
+     * @memberof PaperView
+     */
     setCenter(point) {
         this.center = point;
         this.updateCenter();
     }
-
+    /**
+     * Updates the paper center to the new value
+     * @returns {void}
+     * @memberof PaperView
+     */
     updateCenter() {
         paper.view.center = this.center;
     }
-
+    /**
+     * Gets the zoom at the paper
+     * @returns {number} Returns zoom value 
+     * @memberof PaperView
+     */
     getZoom() {
         return this.zoom;
     }
-
+    /**
+     * Sets a specific zoom at the paper view
+     * @param {number} zoom Zoom value
+     * @returns {void}
+     * @memberof PaperView
+     */
     setZoom(zoom) {
         this.zoom = zoom;
         this.updateZoom();
@@ -207,92 +273,181 @@ export default class PaperView {
             this.__viewManagerDelegate.zoomToolBar.setZoom(zoom);
         }
     }
-
+    /**
+     * Updates zoom of the canvas
+     * @returns {void}
+     * @memberof PaperView
+     */
     updateZoom() {
         paper.view.zoom = this.zoom;
     }
-
+    /**
+     * Returns the coordinates of the project
+     * @param {number} x X coordinate of the canvas
+     * @param {number} y Y coordinate of the canvas
+     * @returns {}
+     * @memberof PaperView
+     */
     canvasToProject(x, y) {
         let rect = this.canvas.getBoundingClientRect();
         let projX = x - rect.left;
         let projY = y - rect.top;
         return paper.view.viewToProject(new paper.Point(projX, projY));
     }
-
+    /**
+     * Converts from canvas to project position
+     * @param {number} x X coordinate 
+     * @param {number} y Y coordinate
+     * @returns {}
+     * @memberof PaperView
+     */
     getProjectPosition(x, y) {
         return this.canvasToProject(x, y);
     }
-
+    /**
+     * Adds an event listener to the mouse wheel key
+     * @param {Function} func Event to execute 
+     * @returns {void}
+     * @memberof PaperView
+     */
     setMouseWheelFunction(func) {
         this.canvas.addEventListener("wheel", func);
     }
-
+    /**
+     * Adds an event listener when the mouse goes down
+     * @param {Function} func Event to execute 
+     * @returns {void}
+     * @memberof PaperView
+     */
     setMouseDownFunction(func) {
         this.canvas.onmousedown = func;
     }
-
+    /**
+     * Adds an event listener to the mouse up key
+     * @param {Function} func Event to execute 
+     * @returns {void}
+     * @memberof PaperView
+     */
     setMouseUpFunction(func) {
         this.canvas.onmouseup = func;
     }
-
+    /**
+     * Adds an event listener when the mouse moves
+     * @param {Function} func Event to execute 
+     * @returns {void}
+     * @memberof PaperView
+     */
     setMouseMoveFunction(func) {
         this.canvas.onmousemove = func;
     }
-
+    /**
+     * Adds an event listener when a key is press
+     * @param {Function} func Event to execute 
+     * @returns {void}
+     * @memberof PaperView
+     */
     setKeyPressFunction(func) {
         this.canvas.onkeypress = func;
     }
-
+    /**
+     * Adds an event listener when a key is down
+     * @param {Function} func Event to execute 
+     * @returns {void}
+     * @memberof PaperView
+     */
     setKeyDownFunction(func) {
         this.canvas.onkeydown = func;
     }
-
+    /**
+     * Sets the resize function 
+     * @param {Function} func Event to execute 
+     * @returns {void}
+     * @memberof PaperView
+     */
     setResizeFunction(func) {
         paper.view.onResize = func;
     }
-
+    /**
+     * Disables the contex menu
+     * @param {Function} func Event to execute
+     * @returns {void}
+     * @memberof PaperView
+     */
     disableContextMenu(func) {
         this.canvas.oncontextmenu = function(event) {
             event.preventDefault();
         };
     }
-
+    /**
+     * Refreshes the view of the paper
+     * @returns {void}
+     * @memberof PaperView
+     */
     refresh() {
         paper.view.update();
     }
 
     /* Rendering Devices */
+    /**
+     * Renders device
+     * @param {Device} device Device object
+     * @returns {void}
+     * @memberof PaperView
+     */
     addDevice(device) {
         this.updateDevice(device);
     }
-
+    /**
+     * Updates a device
+     * @param {Device} device Device object
+     * @returns {void}
+     * @memberof PaperView
+     */
     updateDevice(device) {
         this.removeDevice(device);
         let newPaperDevice = DeviceRenderer.renderDevice(device);
         this.paperDevice = newPaperDevice;
         this.deviceLayer.addChild(newPaperDevice);
     }
-
+    /**
+     * Removes the device from the paper
+     * @returns {void}
+     * @memberof PaperView
+     */
     removeDevice() {
         if (this.paperDevice) this.paperDevice.remove();
         this.paperDevice = null;
     }
 
     /* Rendering Layers */
-
+    /**
+     * Renders the layers
+     * @param {Layer} layer Layer object
+     * @param {number} index Index of layer to render (Int)
+     * @returns {void}
+     * @memberof PaperView
+     */
     addLayer(layer, index) {
         this.paperLayers[index] = new paper.Group();
         this.featureLayer.addChild(this.paperLayers[index]);
         // this.setActiveLayer(index);
     }
-
+    /**
+     * Updates the layers
+     * @param {Layer} layer Layer object
+     * @param {number} index Index of layer to update (Int)
+     * @returns {void}
+     * @memberof PaperView
+     */
     updateLayer(layer, index) {
         // do nothing, for now
     }
 
     /**
      * Delete the layer from the paperview at the given index.
-     * @param index Integer
+     * @param {number} index Index of the layer to be removed (Int)
+     * @returns {void}
+     * @memberof PaperView
      */
     removeLayer(index) {
         if (index != -1) {
@@ -301,16 +456,30 @@ export default class PaperView {
     }
 
     /* Rendering Features */
-
+    /**
+     * Renders a feature
+     * @param {Feature} feature Feature to be render
+     * @returns {void}
+     * @memberof PaperView
+     */
     addFeature(feature) {
         this.updateFeature(feature);
     }
-
+    /**
+     * Sets a new active layer
+     * @param {number} index Index of layer to be active (Int)
+     * @returns {void}
+     * @memberof PaperView
+     */
     setActiveLayer(index) {
         this.activeLayer = index;
         if (this.activeLayer != null && this.activeLayer >= 0) this.showActiveLayer();
     }
-
+    /**
+     * Show the current active layer
+     * @returns {void}
+     * @memberof PaperView
+     */
     showActiveLayer() {
         this.featureLayer.remove();
         this.featureLayer = new paper.Group();
@@ -323,7 +492,13 @@ export default class PaperView {
         let activeLayer = this.paperLayers[this.activeLayer];
         activeLayer.bringToFront();
     }
-
+    /**
+     * Compares feature heights of the paper
+     * @param {number} a 
+     * @param {number} b 
+     * @returns {number} 
+     * @memberof PaperView
+     */
     comparePaperFeatureHeights(a, b) {
         let bHeight;
         let aHeight;
@@ -344,7 +519,13 @@ export default class PaperView {
         }
         return aHeight - bHeight;
     }
-
+    /**
+     * Insert a child component by height order
+     * @param {*} group 
+     * @param {*} newChild 
+     * @returns {void}
+     * @memberof PaperView
+     */
     insertChildByHeight(group, newChild) {
         let index;
         if (group.children.length > 0) {
@@ -356,6 +537,13 @@ export default class PaperView {
     }
 
     // TODO: Could be done faster with a binary search. Probably not needed!
+    /**
+     * Gets the index of a children component depending on it's height
+     * @param {*} children 
+     * @param {*} newChild 
+     * @returns {number} Returns the index of the component
+     * @memberof PaperView
+     */
     getIndexByHeight(children, newChild) {
         for (let i = 0; i < children.length; i++) {
             let test = this.comparePaperFeatureHeights(children[i], newChild);
@@ -365,7 +553,12 @@ export default class PaperView {
         }
         return children.length;
     }
-
+    /**
+     * Updates the selected featured
+     * @param {Feature} feature Feature object
+     * @returns {void}
+     * @memberof PaperView
+     */
     updateFeature(feature) {
         let existingFeature = this.paperFeatures[feature.getID()];
         let selected;
@@ -394,6 +587,8 @@ export default class PaperView {
 
     /**
      * Removes the target that is being rendered
+     * @returns {void}
+     * @memberof PaperView
      */
     removeTarget() {
         if (this.currentTarget) this.currentTarget.remove();
@@ -402,9 +597,11 @@ export default class PaperView {
 
     /**
      * Add information about the target that has to be rendered
-     * @param featureType   String that identifies what kind of a feature this is
-     * @param set           Feature set the feature belongs to
-     * @param position      x,y position of the feature
+     * @param {string} featureType   String that identifies what kind of a feature this is
+     * @param {Feature} set           Feature set the feature belongs to
+     * @param {Array<number>} position      x,y position of the feature
+     * @returns {void}
+     * @memberof PaperView
      */
     addTarget(featureType, set, position) {
         this.removeTarget();
@@ -417,6 +614,8 @@ export default class PaperView {
     /**
      * Updates the target that being rendered. This entails removing the current target and
      * then creates a new target at the new position.
+     * @returns {void}
+     * @memberof PaperView
      */
     updateTarget() {
         this.removeTarget();
@@ -438,25 +637,41 @@ export default class PaperView {
             }
         }
     }
-
+    /**
+     * Removes a feature
+     * @param {Feature} feature  Feature to be removed
+     * @returns {void}
+     * @memberof PaperView
+     */
     removeFeature(feature) {
         let paperFeature = this.paperFeatures[feature.getID()];
         if (paperFeature) paperFeature.remove();
         this.paperFeatures[feature.getID()] = null;
     }
-
+    /**
+     * Removes grid of the paper
+     * @returns {void}
+     * @memberof PaperView
+     */
     removeGrid() {
         if (this.paperGrid) this.paperGrid.remove();
         this.paperGrid = null;
     }
-
+    /**
+     * Updates the grid of the paper
+     * @param {*} grid Grid to update
+     * @returns {void}
+     * @memberof PaperView
+     */
     updateGrid(grid) {
         this.removeGrid();
         let newPaperGrid = GridRenderer.renderGrid(grid);
         this.paperGrid = newPaperGrid;
         this.gridLayer.addChild(newPaperGrid);
     }
-
+    /**
+     * Updates alignment marks of the paper
+     */
     updateAlignmentMarks() {
         //TODO: Update this for the new visualizations
         //Remove current Alignment Marks:
@@ -465,13 +680,21 @@ export default class PaperView {
         // this.alignmentMarks = newAlignmentMarks;
         // this.alignmentMarksLayer.addChild(newAlignmentMarks);
     }
-
+    /**
+     * Removes alignment marks of the paper
+     * @returns {void}
+     * @memberof PaperView
+     */
     removeAlignmentMarks() {
         //Does nothing right now
         if (this.alignmentMarks) this.alignmentMarks.remove();
         this.alignmentMarks = null;
     }
-
+    /**
+     * Updates unrouted connections of the paper
+     * @returns {void}
+     * @memberof PaperView
+     */
     updateRatsNest() {
         this.removeRatsNest();
         let unrouted = this.__viewManagerDelegate.currentDevice.getUnroutedConnections();
@@ -481,7 +704,11 @@ export default class PaperView {
         this.__ratsNestRender = rendergroup;
         this.ratsNestLayer.addChild(this.__ratsNestRender);
     }
-
+    /**
+     * Removes unrouted connections of the paper
+     * @returns {void}
+     * @memberof PaperView
+     */
     removeRatsNest() {
         //First clear out the render objects
         if (this.__ratsNestRender) {
@@ -490,15 +717,31 @@ export default class PaperView {
         //Next set it to null
         this.__ratsNestRender = null;
     }
-
+    /**
+     * Moves the center by a specific value
+     * @param {number} delta 
+     * @returns {void}
+     * @memberof PaperView
+     */
     moveCenter(delta) {
         this.panAndZoom.moveCenter(delta);
     }
-
+    /**
+     * Adjust the zoom bu a specific value to a certain point on the paper
+     * @param {number} delta 
+     * @param {Array<number>} point 
+     * @returns {void}
+     * @memberof PaperView
+     */
     adjustZoom(delta, point) {
         this.panAndZoom.adjustZoom(delta, point);
     }
-
+    /**
+     * Gets the paper features
+     * @param {Array<Feature>} paperFeatures 
+     * @returns {Array} Returns an array with the features
+     * @memberof PaperView
+     */
     getFeaturesByViewElements(paperFeatures) {
         let output = [];
         for (let i = 0; i < paperFeatures.length; i++) {
@@ -506,20 +749,32 @@ export default class PaperView {
         }
         return output;
     }
-
+    /**
+     * Initialize the view on the paper
+     * @returns {void}
+     * @memberof PaperView
+     */
     initializeView() {
         let center = this.getDeviceCenter();
         let zoom = this.computeOptimalZoom();
         this.setCenter(center);
         this.setZoom(zoom);
     }
-
+    /**
+     * Centers the device on the paper
+     * @returns {Array<number>} Returns an array with the X and Y coordinates of the center
+     * @memberof PaperView
+     */
     getDeviceCenter() {
         let width = this.__viewManagerDelegate.currentDevice.getXSpan();
         let height = this.__viewManagerDelegate.currentDevice.getYSpan();
         return new paper.Point(width / 2, height / 2);
     }
-
+    /**
+     * Calculates the optimal zoom of the paper
+     * @returns {number} Returns the value of the optima zoom
+     * @memberof PaperView
+     */
     computeOptimalZoom() {
         let borderMargin = 200; // pixels
         let deviceWidth = this.__viewManagerDelegate.currentDevice.getXSpan();
@@ -543,9 +798,10 @@ export default class PaperView {
 
     /**
      * Checks to see if the point intersects with any feature that is rendered on the canvas
-     * @param point
-     * @param onlyHitActiveLayer
-     * @return boolean Rendered Feature
+     * @param {Array<number>} point X and Y coordinates of the point
+     * @param {boolean} onlyHitActiveLayer Default to true
+     * @return {boolean} Rendered Feature
+     * @memberof PaperView
      */
     hitFeature(point, onlyHitActiveLayer = true) {
         let hitOptions = {
@@ -574,7 +830,13 @@ export default class PaperView {
         }
         return false;
     }
-
+    /**
+     * Checks if the feature hit an element ?
+     * @param {*} paperElement 
+     * @param {*} onlyHitActiveLayer 
+     * @returns {Array} Returns an Array with all the child components which intersects the paper element
+     * @memberof PaperView
+     */
     hitFeaturesWithViewElement(paperElement, onlyHitActiveLayer = true) {
         let output = [];
         if (onlyHitActiveLayer && this.activeLayer != null) {
@@ -598,7 +860,12 @@ export default class PaperView {
         }
         return output;
     }
-
+    /**
+     * Inserts new feature to the edge 
+     * @param {Feature} newPaperFeature Feature to be inserted
+     * @returns {void}
+     * @memberof PaperView
+     */
     insertEdgeFeatures(newPaperFeature) {
         let layer = this.paperLayers[0];
         layer.insertChild(0, newPaperFeature);
@@ -606,21 +873,34 @@ export default class PaperView {
 
     /**
      * Returns the rendered feature object that is being displayed for the particular feature
-     * @param featureID
-     * @return {*}
+     * @param {string} featureID ID of the feature
+     * @return {Object} Returns an object containing the rendered features 
+     * @memberof PaperView
      */
     getRenderedFeature(featureID) {
         return this.paperFeatures[featureID];
     }
-
+    /**
+     * Updates the component after it was rendered
+     * @returns {void}
+     * @memberof PaperView
+     */
     updateComponentPortsRender() {
         this._paperComponentPortView.updateRenders();
     }
-
+    /**
+     * Enable snap render
+     * @returns {void}
+     * @memberof PaperView
+     */
     enableSnapRender() {
         this._paperComponentPortView.enable();
     }
-
+    /**
+     * Disable snap render
+     * @returns {void}
+     * @memberof PaperView
+     */
     disableSnapRender() {
         this._paperComponentPortView.disable();
     }

@@ -2,6 +2,7 @@ import DXFObject from "./dxfObject";
 import Device from "./device";
 
 import * as Registry from "./registry";
+import Feature from "./feature";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -10,9 +11,9 @@ import * as Registry from "./registry";
 export default class CustomComponent {
     /**
      * Default constructor
-     * @param type String
-     * @param dxfdata [DXFObjects]
-     * @param mint String
+     * @param {String} type Type of component
+     * @param {DXFObject} dxfdata DXFObject
+     * @param {String} mint Unique MINT identifier
      */
     constructor(type, dxfdata, mint = type.toUpperCase()) {
         // this.__params = params;
@@ -30,6 +31,7 @@ export default class CustomComponent {
     /**
      * Returns the entity type
      * @return {string}
+     * @memberof CustomComponent
      */
     get entity() {
         return this.__entity;
@@ -37,15 +39,18 @@ export default class CustomComponent {
 
     /**
      * Returns the type
-     * @return {*}
+     * @return {string}
+     * @memberof CustomComponent
      */
     get type() {
         return this.__type;
     }
 
     /**
-     * Returns the rendering data
-     * @param data
+     * Sets the rendering data
+     * @param {} data
+     * @memberof CustomComponent
+     * @returns {void}
      */
     set renderData(data) {
         this.__renderData = data;
@@ -53,6 +58,8 @@ export default class CustomComponent {
 
     /**
      * Generates a Feature that has all the corresponding respective data
+     * @returns {Feature} Returns a feature based on the data
+     * @memberof CustomComponent
      */
     generateComponent() {
         let paramvalues = {};
@@ -62,7 +69,8 @@ export default class CustomComponent {
 
     /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
-     * @returns {{}} Object
+     * @returns {JSON} Object
+     * @memberof CustomComponent
      */
     toJSON() {
         let output = {};
@@ -84,7 +92,8 @@ export default class CustomComponent {
     /**
      * This method is used to import the component from Interchange V1 JSON
      * @param json
-     * @returns {*}
+     * @returns {CustomComponent}
+     * @memberof CustomComponent
      */
     static fromInterchangeV1(json) {
         let set;
@@ -102,7 +111,11 @@ export default class CustomComponent {
         // ret.renderData = render.exportSVG();
         return ret;
     }
-
+    /**
+     * Contains the default parameters
+     * @returns {Object} Returns an Object containing the default parameters
+     * @memberof CustomComponent
+     */
     static defaultParameterDefinitions() {
         let params = {
             unique: {
