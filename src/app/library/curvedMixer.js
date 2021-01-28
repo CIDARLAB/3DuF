@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class CurvedMixer extends Template {
     constructor() {
@@ -12,6 +13,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__heritable = {
+            rotation: "Float",
             bendSpacing: "Float",
             numberOfBends: "Float",
             channelWidth: "Float",
@@ -21,6 +23,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__defaults = {
+            rotation: 0,
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
@@ -30,15 +33,16 @@ export default class CurvedMixer extends Template {
         };
 
         this.__units = {
+            rotation: "&deg;",
             bendSpacing: "&mu;m",
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            
             height: "&mu;m"
         };
 
         this.__minimum = {
+            rotation: 0,
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
@@ -48,6 +52,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__maximum = {
+            rotation: 360,
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
@@ -88,7 +93,6 @@ export default class CurvedMixer extends Template {
         let channelWidth = params["channelWidth"];
         let bendLength = params["bendLength"];
         let bendSpacing = params["bendSpacing"];
-        let orientation = params["orientation"];
         let numberOfBends = params["numberOfBends"];
 
         let ports = [];
@@ -170,7 +174,7 @@ export default class CurvedMixer extends Template {
         serp.addChild(toprect);
 
         serp.fillColor = color;
-        return serp.rotate(rotation, x + channelWidth, y);;
+        return serp.rotate(rotation, x, y);;
     }
 
     render2DTarget(key, params) {
