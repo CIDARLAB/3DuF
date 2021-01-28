@@ -7,7 +7,7 @@
   "settings": {
     "editor.formatOnSave": false,
     "editor.tabSize": 4,
-    "editor.insertSpaces": false,
+    "editor.insertSpaces": true,
     "editor.detectIndentation": false,
     "editor.defaultFormatter": null,
     "editor.codeActionsOnSave": {
