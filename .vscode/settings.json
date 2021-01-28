@@ -1,0 +1,9 @@
+{
+    "files.eol": "\n",
+    "eslint.validate": [
+        "vue",
+        "html",
+        "javascript",
+        "typescript",
+    ]
+}
