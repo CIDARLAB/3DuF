@@ -13,7 +13,7 @@
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
 
-                <v-btn-toggle v-model="layer.mode" mandatory tile>
+                <v-btn-toggle v-model="layer.mode" mandatory tile borderless>
                     <v-btn small :color="getButtonColor(layer, 0)" @click="layerModeClicked(layer, 0)">
                         <span>Flow</span>
                     </v-btn>
