@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Pump extends Template {
     constructor() {
@@ -82,6 +83,19 @@ export default class Pump extends Template {
         this.__renderKeys = ["FLOW", "CONTROL"];
 
         this.__mint = "PUMP";
+    }
+
+    getPorts(params) {
+        let l = params["length"];
+        let spacing = params["spacing"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(0, - l/2 - spacing, "1", "FLOW"));
+
+        ports.push(new ComponentPort(0, l/2 + spacing, "2", "FLOW"));
+
+        return ports;
     }
 
     __drawFlow(params) {
