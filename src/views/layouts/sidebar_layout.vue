@@ -1,19 +1,19 @@
 <template>
     <div>
         <v-navigation-drawer app permanent class="pt-4" color="grey lighten-3">
-            <div class="d-flex flex-column mx-2"> 
-              <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
-              <v-divider class="mb-1"></v-divider>
-              <IntroHelpDialog />
-              <HelpDialog />
-              <v-divider></v-divider>
-              <EditDeviceDialog />
-              <EditBorderDialog />
-              <InsertTextDialog />
-              <ImportDXFDialog />
-              <v-divider></v-divider>
-              <LayerToolbar />
-              <ComponentToolbar />
+            <div class="d-flex flex-column mx-2">
+                <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
+                <v-divider class="mb-1" />
+                <IntroHelpDialog />
+                <HelpDialog />
+                <v-divider />
+                <EditDeviceDialog />
+                <EditBorderDialog />
+                <InsertTextDialog />
+                <ImportDXFDialog />
+                <v-divider />
+                <LayerToolbar />
+                <ComponentToolbar />
             </div>
 
             <v-list>
@@ -32,7 +32,7 @@
         </v-navigation-drawer>
 
         <v-main id="visualizer-slot">
-            <slot name="main"></slot>
+            <slot name="main" />
         </v-main>
     </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <span class="mdl-layout-title">Mix</span>
-        <nav class="mdl-navigation" id="feature-mix">
+        <nav id="feature-mix" class="mdl-navigation">
             <div class="button_row">
                 <a id="bettermixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Mixer</a>
                 <button id="bettermixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
@@ -35,7 +35,7 @@
             </div>
         </nav>
         <span class="mdl-layout-title">Control</span>
-        <nav class="mdl-navigation" id="feature-control">
+        <nav id="feature-control" class="mdl-navigation">
             <!--            <div class="button_row">-->
             <!--                <a id="circleValve_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised feature-button">Circle Valve</a>-->
             <!--                <button id="circleValve_params_button" class="params-button mdl-button mdl-js-button mdl-button&#45;&#45;icon">-->
@@ -68,7 +68,7 @@
             </div>
         </nav>
         <span class="mdl-layout-title">Process</span>
-        <nav class="mdl-navigation" id="feature-process">
+        <nav id="feature-process" class="mdl-navigation">
             <div class="button_row">
                 <a id="llchamber_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">LL Chamber</a>
                 <button id="llchamber_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
@@ -117,7 +117,7 @@
         </nav>
         <span class="mdl-layout-title">Distribute</span>
 
-        <nav class="mdl-navigation" id="feature-distribute">
+        <nav id="feature-distribute" class="mdl-navigation">
             <!-- CK stuff-->
             <div class="button_row">
                 <a id="anode_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Anode</a>
@@ -182,8 +182,7 @@
 export default {
     name: "LayerToolbar",
     data() {
-        return {
-        };
+        return {};
     }
 };
 </script>
