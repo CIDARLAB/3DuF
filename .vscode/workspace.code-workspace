@@ -7,7 +7,11 @@
   "settings": {
     "editor.formatOnSave": false,
     "editor.tabSize": 4,
+<<<<<<< HEAD
     "editor.insertSpaces": true,
+=======
+    "editor.insertSpaces": false,
+>>>>>>> Working eslint, prettier, vuetr configurations for code lint and formatting.
     "editor.detectIndentation": false,
     "editor.defaultFormatter": null,
     "editor.codeActionsOnSave": {

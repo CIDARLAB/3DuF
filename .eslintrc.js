@@ -31,7 +31,6 @@ module.exports = {
     },
 
     ignorePatterns: ["src/app/**", "src/test/**"],
-
     overrides: [
         {
             files: ["**/__tests__/*.{j,t}s?(x)", "**/tests/unit/**/*.spec.{j,t}s?(x)"],
