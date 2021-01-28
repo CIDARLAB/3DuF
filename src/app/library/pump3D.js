@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Pump3D extends Template {
     constructor() {
@@ -86,6 +87,29 @@ export default class Pump3D extends Template {
         this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
 
         this.__mint = "PUMP3D";
+    }
+
+    getPorts(params) {
+        let valve;
+        let cutout;
+        let circ;
+        let center;
+        let ret = new paper.CompoundPath();
+
+        let position = params["position"];
+        let gap = params["gap"];
+        let radius = params["valveRadius"];
+        let color = params["color"];
+        let rotation = params["rotation"];
+        let spacing = params["spacing"];
+        let channelwidth = params["flowChannelWidth"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(0, - spacing - radius, "1", "FLOW"));
+        ports.push(new ComponentPort(0, spacing + radius, "2", "FLOW"));
+
+        return ports;
     }
 
     render2D(params, key="FLOW") {
