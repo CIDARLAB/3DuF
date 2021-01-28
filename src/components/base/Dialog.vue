@@ -34,8 +34,7 @@ export default {
     props: {
         title: {
             type: String,
-            required: true,
-            default: "My Dialog"
+            required: true
         },
         color: {
             type: String,
