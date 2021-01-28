@@ -89,20 +89,9 @@ export default class Pump3D extends Template {
         this.__mint = "PUMP3D";
     }
 
-    getPorts(params) {
-        let valve;
-        let cutout;
-        let circ;
-        let center;
-        let ret = new paper.CompoundPath();
-
-        let position = params["position"];
-        let gap = params["gap"];
+    getPorts(params) { 
         let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
         let spacing = params["spacing"];
-        let channelwidth = params["flowChannelWidth"];
 
         let ports = [];
 
