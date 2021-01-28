@@ -10,7 +10,7 @@
 
 <script>
 import Visualiser from "./components/Visualiser.vue";
-import LayoutSidebar from "./views/layouts/sidebar_layout.vue";
+import LayoutSidebar from "./views/layouts/SidebarLayout.vue";
 
 export default {
     name: "App",
