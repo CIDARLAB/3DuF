@@ -1,0 +1,26 @@
+{
+  "folders": [
+    {
+      "path": ".."
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": false,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false,
+    "editor.defaultFormatter": null,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+		"eslint.alwaysShowStatus": true,
+		"eslint.codeActionsOnSave.mode": "all",
+    "eslint.codeAction.showDocumentation": {
+      "enable": true
+    },
+    "eslint.lintTask.enable": true,
+    "javascript.format.enable": false,
+    "typescript.format.enable": false,
+    "vetur.validation.template": false
+  }
+}

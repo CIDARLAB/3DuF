@@ -2,7 +2,7 @@
     <div>
         <div id="view-container">
             <div id="canvas_block">
-                <canvas id="c" tabindex="0" resize></canvas>
+                <canvas id="c" tabindex="0" resize />
             </div>
             <div id="renderContainer" />
         </div>
