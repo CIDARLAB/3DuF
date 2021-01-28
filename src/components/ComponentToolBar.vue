@@ -180,7 +180,6 @@
 
 <script>
 export default {
-    name: "LayerToolbar",
     data() {
         return {};
     }
