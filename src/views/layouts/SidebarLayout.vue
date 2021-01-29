@@ -13,6 +13,7 @@
                 <ImportDXFDialog />
                 <v-divider />
                 <LayerToolbar />
+                <PropertyDrawer title="Properties" />
                 <ComponentToolbar />
             </div>
 
@@ -53,6 +54,7 @@ import ImportDXFDialog from "@/components/ImportDXFDialog.vue";
 import InsertTextDialog from "@/components/InsertTextDialog.vue";
 import LayerToolbar from "@/components/LayerToolbar.vue";
 import ComponentToolbar from "@/components/ComponentToolBar.vue";
+import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
 export default {
     components: {
         HelpDialog,
@@ -62,7 +64,8 @@ export default {
         ImportDXFDialog,
         InsertTextDialog,
         LayerToolbar,
-        ComponentToolbar
+        ComponentToolbar,
+        PropertyDrawer
     },
     data() {
         return {
