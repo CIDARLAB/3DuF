@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class YTree extends Template {
     constructor() {
@@ -35,7 +36,7 @@ export default class YTree extends Template {
 
         this.__units = {
             flowChannelWidth: "&mu;m",
-            
+            rotation: "&deg;",
             spacing: "&mu;m",
             leafs: "",
             width: "&mu;m",
@@ -94,6 +95,29 @@ export default class YTree extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "YTREE";
+    }
+
+    getPorts(params) {
+        
+        let ports = [];
+        let cw = params["flowChannelWidth"];
+        let spacing = params["spacing"];
+        let leafs = params["leafs"];
+        let stagelength = params["stageLength"];
+
+        let levels = Math.ceil(Math.log2(leafs));
+        let w = spacing * (leafs / 2 + 1);
+
+        let length = levels * stagelength;
+        let width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels); 
+
+        ports.push(new ComponentPort(0, - cw/2, "1", "FLOW"));        
+
+        for (let i = 0; i < leafs; i++){
+            ports.push(new ComponentPort((leafs - 1) * width/2 - i * width, length + cw/2, (2 + i).toString(), "FLOW"));
+        }
+
+        return ports;
     }
 
     render2D(params, key) {
