@@ -1,4 +1,6 @@
 import paper from "paper";
+import * as Registry from "../core/registry";
+
 /**
  * Selection class
  */
@@ -11,11 +13,36 @@ export default class Selection {
         this.__components = [];
         this.__connections = [];
         this.__otherFeatures = [];
-        //Sort out wether each of the items selected belongs to one of the following
-        for (let i in items) {
-            console.log(items[i]);
+        //Sort out where each of the items selected belongs to one of the following
+        for (let i in items) {  // query if its a component, connection or other feature
+            let feature = Registry.currentDevice.getComponentByID(items[i]); 
+            if (feature == null) {
+                feature = Registry.currentDevice.getConnectionByID(items[i]);
+                if (feature == null) {
+                    console.log("Other Feature Selected");
+                    feature = Registry.currentDevice.getFeatureByID(items[i]);
+                    console.log(feature);
+                    console.log(items[i]);
+                    console.log(Registry.currentDevice.getFeatureIDs);
+                    this.__otherFeatures.push(items[i]);
+                } else {
+                    console.log("Connection Feature Selected");
+                    this.__connections.push(items[i]);
+                }
+            } else {
+                console.log("Component Feature Selected");
+                this.__components.push(items[i]);
+            }
         }
         this.__bounds = this.__calculateSelectionBounds();
+    }
+
+    getFeatureIDs() {
+        let ret = [];
+        ret.concat(this.__components);
+        ret.concat(this.__connections);
+        ret.concat(this.__otherFeatures);
+        return ret;
     }
 
     /**
@@ -35,17 +62,33 @@ export default class Selection {
 
         console.log("reference point:", referencepoint);
 
+
         for (let i in this.__components) {
-            let render = Registry.currentDevice.getFeatureByID(this.__components[i]);
+            let render = Registry.currentDevice.getComponentByID(this.__components[i]);
+            let newx = referencepoint.x + render.bounds.x;
+            newx -= x;
+            let newy = referencepoint.y - render.bounds.y;
+            newy += y;
+            let newComponent = render.replicate(newx,newy);
+            Registry.currentDevice.addComponent(newComponent);
+            console.log("registry added replicated device");
         }
 
         for (let i in this.__connections) {
             let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+            let replica = render.replicate(x,y);
         }
 
         for (let i in this.__otherFeatures) {
             let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+            let newx = referencepoint.x + render.bounds.x;
+            newx -= x;
+            let newy = referencepoint.y - render.bounds.y;
+            newy += y;
+            let newFeature = render.replicate(newx,newy);
+            let replica = render.replicate(newx,newy);
         }
+
     }
     /**
      * Selects all the components, connections and features

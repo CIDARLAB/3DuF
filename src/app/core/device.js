@@ -917,6 +917,7 @@ export default class Device {
                 return component;
             }
         }
+        return null;  // if no component found return null
     }
 
     /**
@@ -932,6 +933,7 @@ export default class Device {
                 return connection;
             }
         }
+        return null;  // if no connection found return null
     }
 
     /**

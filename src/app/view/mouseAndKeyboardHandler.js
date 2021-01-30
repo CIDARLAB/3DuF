@@ -106,13 +106,13 @@ export default class MouseAndKeyboardHandler {
             }
             // Copy
             if ((event.ctrlKey || event.metaKey) && key == 67) {
-                //console.log("Ctl c detected");
+                // console.log("Ctl c detected");
                 reference.initiateCopy();
             }
             // Cut
             if ((event.ctrlKey || event.metaKey) && key == 88) {
                 //console.log("Ctl x detected");
-                let selectedFeatures = reference.view.getSelectedFeatures();
+                let selection = reference.view.getSelectedFeatures();
                 if (selectedFeatures.length > 0) {
                     reference.pasteboard[0] = selectedFeatures[0];
                 }
@@ -121,12 +121,18 @@ export default class MouseAndKeyboardHandler {
             }
             // Paste
             if ((event.ctrlKey || event.metaKey) && key == 86) {
-                //console.log("Ctl v detected");
-                let pasteboardFeatures = reference.pasteboard;
-                if (pasteboardFeatures.length > 0) {
-                    reference.updateDefaultsFromFeature(pasteboardFeatures[0]);
-                    reference.activateTool(pasteboardFeatures[0].getType());
-                }
+                console.log("Ctl v detected");
+                let selection = reference.selection;
+                
+                // if (pasteboardFeatures.length == 1) {  // 1 feature
+                //     reference.updateDefaultsFromFeature(pasteboardFeatures[0]);
+                //     reference.activateTool(pasteboardFeatures[0].getType());
+
+                // } else if (pasteboardFeatures.length > 1) {  // multiple features
+                //     console.log("multiple features detected")
+                //     reference.updateDefaultsFromFeatures(pasteboardFeatures);
+                //     reference.activateTools(pasteboardFeatures);
+                // }   
             }
 
             //Undo

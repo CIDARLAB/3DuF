@@ -19,6 +19,7 @@ import * as DXFSolidObjectRenderer from "./render2D/dxfSolidObjectRenderer2D";
 import Layer from "../core/layer";
 import Device from "../core/device";
 import Feature from "../core/feature";
+import Selection from "./selection";
 /**
  * Paper View class
  */
@@ -74,16 +75,18 @@ export default class PaperView {
 
     /**
      * Returns a list of selected items on the canvas
-     * @return {Array}
+     * @return {Selection}
      * @memberof PaperView
      */
     getSelectedFeatures() {
         let output = [];
         let items = paper.project.selectedItems;
         for (let i = 0; i < items.length; i++) {
-            output.push(this.__viewManagerDelegate.currentDevice.getFeatureByID(items[i].featureID));
+            output.push(items[i].featureID);
         }
-        return output;
+        console.log(output);
+        let selection = new Selection(output);
+        return selection;
     }
     /**
      * Deselects the items from the canvas
