@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class GradientGenerator extends Template {
     constructor() {
@@ -125,28 +126,34 @@ export default class GradientGenerator extends Template {
 
         let stagelength = channelWidth * (2 * numBends + 1) + (2 * numBends + 2) * bendSpacing + channelWidth;
 
+        let segBend = bendSpacing + 2 * channelWidth;
+
+        let fullLength = (outvalue - 1) * (4 * segBend - 3.5 * channelWidth) + stagelength;
+
         let stagevalue = invalue;
         let totalstagewidth = (stagevalue - 1) * spacing;
 
-        let xref = posx - totalstagewidth / 2;
+        let xref = - totalstagewidth / 2;
         let yref = stagelength * (stagevalue - invalue);
+
+        let vRepeat = 2 * bendSpacing + 2 * channelWidth;
     
         for(var i = 0 ; i < invalue; i++){
             //Generate the ports for each of the inputs
-            let x = xref + spacing * i;
+            let x = xref + spacing * i + channelWidth/2;
             ports.push(new ComponentPort(x, 0, (i+1).toString(), "FLOW"));
         }
 
         stagevalue = outvalue;
         totalstagewidth = (stagevalue - 1) * spacing;
 
-        xref = posx - totalstagewidth / 2;
+        xref = - totalstagewidth / 2;
         yref = stagelength * (stagevalue - invalue);
 
         for(var i = 0; i < outvalue; i++){
             //Generate the ports for each of the outputs
-            let x = xref + spacing * i;
-            ports.push(new ComponentPort(x, yref, (invalue+1+i).toString(), "FLOW"));
+            let x = xref + spacing * i + channelWidth/2;
+            ports.push(new ComponentPort(x, fullLength, (invalue+1+i).toString(), "FLOW"));
         }
 
         return ports;
