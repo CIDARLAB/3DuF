@@ -23,7 +23,6 @@ export default class Selection {
                     feature = Registry.currentDevice.getFeatureByID(items[i]);
                     console.log(feature);
                     console.log(items[i]);
-                    console.log(Registry.currentDevice.getFeatureIDs);
                     this.__otherFeatures.push(items[i]);
                 } else {
                     console.log("Connection Feature Selected");
@@ -37,11 +36,10 @@ export default class Selection {
         this.__bounds = this.__calculateSelectionBounds();
     }
 
-    getFeatureIDs() {
+    getSelectedFeatures() {
         let ret = [];
-        ret.concat(this.__components);
-        ret.concat(this.__connections);
-        ret.concat(this.__otherFeatures);
+        ret = this.__components.concat(this.__connections);
+        ret = ret.concat(this.__otherFeatures);
         return ret;
     }
 

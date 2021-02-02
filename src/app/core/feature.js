@@ -2,6 +2,8 @@ import CustomComponent from "./customComponent";
 import Params from "./params";
 import Device from "./device";
 
+import paper from "paper";
+
 import * as Parameters from "./parameters";
 const StringValue = Parameters.StringValue;
 import * as FeatureSets from "../featureSets";
@@ -31,6 +33,13 @@ export default class Feature {
         this.__fabtype = fabtype;
         this.__dxfObjects = [];
         this.__referenceID = null;
+        this.__bounds = null;
+
+        if (this.__params != null) {
+            console.log(this.__params);
+            let [x,y] = this.__params.getValue("position");
+            this.__bounds = new paper.Rectangle(new paper.Point(x, y), new paper.Point(x, y));
+        }
     }
 
     /**
@@ -42,6 +51,25 @@ export default class Feature {
     get referenceID() {
         return this.__referenceObject;
     }
+
+    get bounds() {
+        return this.__bounds;
+    }
+
+    /**
+     * Sets the bounds i.e. the x,y position and the width and length of the feature
+     * @param {Object} bounds PaperJS Rectangle object associated with a Path.bounds property
+     * @memberof Feature
+     * @returns {void}
+     */
+    setBounds(bounds) {
+        this.__bounds = bounds;
+        let topleftpt = bounds.topLeft;
+        this.__params.position = [topleftpt.x, topleftpt.y];
+        this.__params.xspan = bounds.width;
+        this.__params.yspan = bounds.height;
+    }
+
 
     /**
      * Sets the reference object id

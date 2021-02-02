@@ -991,7 +991,7 @@ export default class ViewManager {
             //Cleanup job when activating new tool
             this.view.clearSelectedItems();
 
-            this.mouseAndKeyboardHandler.leftMouseTool = this.tools[new CopyTool(toolString, "Copy", selection)];    
+            this.mouseAndKeyboardHandler.leftMouseTool = new CopyTool(toolString, "Copy", this.selection);
         } else {
             if (this.tools[toolString] == null) {
                 throw new Error("Could not find tool with the matching string");

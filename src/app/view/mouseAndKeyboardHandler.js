@@ -123,6 +123,11 @@ export default class MouseAndKeyboardHandler {
             if ((event.ctrlKey || event.metaKey) && key == 86) {
                 console.log("Ctl v detected");
                 let selection = reference.selection;
+                let pastedFeatures = selection.getSelectedFeatures();
+                console.log(pastedFeatures);
+                if (pastedFeatures.length > 0) {
+                    reference.activateTool("CopyTool");
+                }
                 
                 // if (pasteboardFeatures.length == 1) {  // 1 feature
                 //     reference.updateDefaultsFromFeature(pasteboardFeatures[0]);
