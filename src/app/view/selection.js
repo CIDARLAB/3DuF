@@ -34,9 +34,10 @@ export default class Selection {
             }
         }
         this.__bounds = this.__calculateSelectionBounds();
+        console.log("bounds: ", this.__bounds);
     }
 
-    getSelectedFeatures() {
+    getFeatureIDs() {
         let ret = [];
         ret = this.__components.concat(this.__connections);
         ret = ret.concat(this.__otherFeatures);
@@ -56,7 +57,7 @@ export default class Selection {
         2. Go through each of the items
         3. Clone components/connections/other features
          */
-        let referencepoint = this.__bounds.topleft;
+        let referencepoint = this.__bounds;
 
         console.log("reference point:", referencepoint);
 
@@ -85,6 +86,7 @@ export default class Selection {
             newy += y;
             let newFeature = render.replicate(newx,newy);
             let replica = render.replicate(newx,newy);
+            Registry.currentLayer.addFeature(replica);
         }
 
     }
@@ -178,15 +180,15 @@ export default class Selection {
             if (bounds.y < ymin) {
                 ymin = bounds.y;
             }
-            if (bounds.x + bounds.width > xmax) {
-                xmax = bounds.x + bounds.width;
+            if (bounds.x > xmax) {
+                xmax = bounds.x;
             }
-            if (bounds.y + bounds.height > ymax) {
-                ymax = bounds.y + bounds.height;
+            if (bounds.y > ymax) {
+                ymax = bounds.y;
             }
         }
-
-        let ret = new paper.Rectangle(new paper.Point(xmin, ymin), new paper.Point(xmax, ymax));
+        console.log(xmin,xmax,ymin,ymax);
+        let ret = new paper.Point((xmin+xmax)/2, (ymin+ymax)/2);
         return ret;
     }
 }

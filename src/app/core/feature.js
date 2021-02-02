@@ -36,9 +36,8 @@ export default class Feature {
         this.__bounds = null;
 
         if (this.__params != null) {
-            console.log(this.__params);
             let [x,y] = this.__params.getValue("position");
-            this.__bounds = new paper.Rectangle(new paper.Point(x, y), new paper.Point(x, y));
+            this.__bounds = new paper.Point(x, y);
         }
     }
 

@@ -84,7 +84,6 @@ export default class PaperView {
         for (let i = 0; i < items.length; i++) {
             output.push(items[i].featureID);
         }
-        console.log(output);
         let selection = new Selection(output);
         return selection;
     }

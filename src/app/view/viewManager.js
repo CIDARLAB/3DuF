@@ -875,8 +875,8 @@ export default class ViewManager {
         let selection_ = this.view.getSelectedFeatures();  
         let featureIDs = selection_.getFeatureIDs();
         let selectedFeatures = [];
-        for (let featureID in featureIDs) {
-            selectedFeatures.push(this.__currentDevice.getFeatureByID(featureID));
+        for (let i in featureIDs) {
+            selectedFeatures.push(this.__currentDevice.getFeatureByID(featureIDs[i]));
         }
         if (selectedFeatures.length > 0) {
             let correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
@@ -1107,7 +1107,7 @@ export default class ViewManager {
      * @returns {void}
      */
     saveDeviceState() {
-        console.log("Saving to statck");
+        console.log("Saving to stack");
 
         let save = JSON.stringify(Registry.currentDevice.toInterchangeV1());
 
