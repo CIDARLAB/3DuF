@@ -747,7 +747,7 @@ export default class ViewManager {
             switch (version) {
             case 1:
                 this.loadCustomComponents(json);
-                device = Device.fromInterchangeV1(json);
+                device = Device.fromInterchangeV1_1(json);
                 Registry.currentDevice = device;
                 this.__currentDevice = device;
                 break;

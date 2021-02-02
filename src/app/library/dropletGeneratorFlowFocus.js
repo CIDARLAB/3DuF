@@ -13,6 +13,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             oilChannelWidth: "Float",
             waterChannelWidth: "Float",
             length: "Float",
@@ -23,6 +24,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             oilChannelWidth: 0.2 * 1000,
             waterChannelWidth: 0.4 * 1000,
             length: 0.8 * 1000,
@@ -33,6 +35,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             oilChannelWidth: "&mu;m",
             height: "&mu;m",
             waterChannelWidth: "&mu;m",
@@ -43,6 +46,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             oilChannelWidth: 1,
             waterChannelWidth: 1,
             length: 1,
@@ -52,6 +56,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             oilChannelWidth: 2000,
             waterChannelWidth: 2000,
             length: 20000,
@@ -62,6 +67,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
@@ -73,6 +79,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
             length: "length",

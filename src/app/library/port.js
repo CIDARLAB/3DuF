@@ -13,26 +13,31 @@ export default class Port extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             portRadius: "Float",
             height: "Float"
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             portRadius: 0.7 * 1000,
             height: 1.1 * 1000
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             portRadius: "&mu;m",
             height: "&mu;m"
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             portRadius: 0.8 * 10,
             height: 10
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             portRadius: 2000,
             height: 1200
         };
@@ -44,11 +49,13 @@ export default class Port extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             portRadius: "portRadius"
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             portRadius: "portRadius"
         };
 

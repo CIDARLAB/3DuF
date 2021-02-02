@@ -13,6 +13,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             height: "Float",
             inletWidth: "Float",
@@ -27,6 +28,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             height: 250,
             inletWidth: 1 * 1000,
@@ -41,6 +43,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             rotation: "&deg;",
             height: "&mu;m",
             inletWidth: "&mu;m",
@@ -55,6 +58,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             rotation: 0,
             height: 10,
             inletWidth: 0.5 * 1000,
@@ -69,6 +73,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             rotation: 360,
             height: 1200,
             inletWidth: 2 * 1000,
@@ -89,6 +94,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             inletWidth: "inletWidth",
@@ -103,6 +109,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             rotation: "rotation",
             inletWidth: "inletWidth",
             inletLength: "inletLength",
