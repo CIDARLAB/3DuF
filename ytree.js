@@ -16,10 +16,10 @@ export default class YTree extends Template {
             flowChannelWidth: "Float",
             rotation: "Float",
             spacing: "Float",
-            leafs: "Float",
+            in: "Integer",
+            out: "Integer",
             width: "Float",
             height: "Float",
-            direction: "String",
             stageLength: "Float"
         };
 
@@ -27,10 +27,10 @@ export default class YTree extends Template {
             flowChannelWidth: 0.8 * 1000,
             rotation: 0,
             spacing: 4 * 1000,
-            leafs: 8,
+            in: 1,
+            out: 8,
             width: 2.46 * 1000,
             height: 250,
-            direction: "IN",
             stageLength: 4000
         };
 
@@ -38,17 +38,18 @@ export default class YTree extends Template {
             flowChannelWidth: "&mu;m",
             rotation: "&deg;",
             spacing: "&mu;m",
-            leafs: "",
+            in: "",
+            out: "",
             width: "&mu;m",
             height: "&mu;m",
-            direction: "",
             stageLength: "&mu;m"
         };
 
         this.__minimum = {
             flowChannelWidth: 10,
             spacing: 30,
-            leafs: 2,
+            in: 1,
+            out: 2,
             width: 60,
             height: 10,
             stageLength: 100,
@@ -58,7 +59,8 @@ export default class YTree extends Template {
         this.__maximum = {
             flowChannelWidth: 2000,
             spacing: 12000,
-            leafs: 2,
+            in: 1,
+            out: 128,
             width: 12 * 1000,
             height: 1200,
             stageLength: 6000,
@@ -71,19 +73,18 @@ export default class YTree extends Template {
             rotation: "rotation",
             spacing: "spacing",
             width: "width",
-            leafs: "leafs",
+            in: "in",
+            out: "out",
             stageLength: "stageLength",
-            direction: "direction"
         };
 
         this.__targetParams = {
             flowChannelWidth: "flowChannelWidth",
             rotation: "rotation",
             spacing: "spacing",
-            width: "width",
-            leafs: "leafs",
+            in: "in",
+            out: "out",
             stageLength: "stageLength",
-            direction: "direction"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -102,7 +103,15 @@ export default class YTree extends Template {
         let ports = [];
         let cw = params["flowChannelWidth"];
         let spacing = params["spacing"];
-        let leafs = params["leafs"];
+        let ins = params["in"];
+        let outs = params["out"];
+        let leafs 
+        if( ins < outs){
+            leafs = outs;
+        }else{
+            leafs = ins;
+            rotation += 180;
+        }
         let stagelength = params["stageLength"];
 
         let levels = Math.ceil(Math.log2(leafs));
@@ -124,9 +133,16 @@ export default class YTree extends Template {
         let position = params["position"];
         let cw = params["flowChannelWidth"];
         let rotation = params["rotation"];
-        let direction = params["direction"];
         let spacing = params["spacing"];
-        let leafs = params["leafs"];
+        let ins = params["in"];
+        let outs = params["out"];
+        let leafs 
+        if( ins < outs){
+            leafs = outs;
+        }else{
+            leafs = ins;
+            rotation += 180;
+        }
         let color = params["color"];
         let stagelength = params["stageLength"];
         let px = position[0];

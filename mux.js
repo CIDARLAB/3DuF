@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Mux extends Template {
     constructor() {
@@ -15,11 +16,11 @@ export default class Mux extends Template {
             flowChannelWidth: "Float",
             rotation: "Float",
             spacing: "Float",
-            leafs: "Float",
+            in: "Integer",
+            out: "Integer",
             width: "Float",
             length: "Float",
             height: "Float",
-            direction: "String",
             stageLength: "Float",
             controlChannelWidth: "Float"
         };
@@ -28,11 +29,11 @@ export default class Mux extends Template {
             flowChannelWidth: 0.8 * 1000,
             rotation: 0,
             spacing: 4 * 1000,
-            leafs: 8,
+            in: 1,
+            out: 8,
             width: 1.6 * 1000,
             length: 1.6 * 1000,
             height: 250,
-            direction: "IN",
             stageLength: 4000,
             controlChannelWidth: 0.4 * 1000
         };
@@ -41,11 +42,11 @@ export default class Mux extends Template {
             flowChannelWidth: "&mu;m",
             rotation: "&deg;",
             spacing: "&mu;m",
-            leafs: "",
+            in: "",
+            out: "",
             width: "&mu;m",
             length: "&mu;m",
             height: "&mu;m",
-            direction: "",
             stageLength: "&mu;m",
             controlChannelWidth: "&mu;m"
         };
@@ -53,7 +54,8 @@ export default class Mux extends Template {
         this.__minimum = {
             flowChannelWidth: 10,
             spacing: 30,
-            leafs: 2,
+            in: 1,
+            out: 2,
             width: 60,
             length: 60,
             height: 10,
@@ -65,7 +67,8 @@ export default class Mux extends Template {
         this.__maximum = {
             flowChannelWidth: 2000,
             spacing: 12000,
-            leafs: 2,
+            in: 1,
+            out: 128,
             width: 12 * 1000,
             length: 12 * 1000,
             height: 1200,
@@ -82,9 +85,9 @@ export default class Mux extends Template {
             spacing: "spacing",
             width: "width",
             length: "length",
-            leafs: "leafs",
+            in: "in",
+            out: "out",
             stageLength: "stageLength",
-            direction: "direction"
         };
 
         this.__targetParams = {
@@ -95,9 +98,9 @@ export default class Mux extends Template {
             spacing: "spacing",
             width: "width",
             length: "length",
-            leafs: "leafs",
+            in: "in",
+            out: "out",
             stageLength: "stageLength",
-            direction: "direction"
         };
 
         this.__placementTool = "MultilayerPositionTool";
@@ -115,9 +118,16 @@ export default class Mux extends Template {
         let position = params["position"];
         let cw = params["flowChannelWidth"];
         let rotation = params["rotation"];
-        let direction = params["direction"];
         let spacing = params["spacing"];
-        let leafs = params["leafs"];
+        let ins = params["in"];
+        let outs = params["out"];
+        let leafs 
+        if( ins < outs){
+            leafs = outs;
+        }else{
+            leafs = ins;
+            rotation += 180;
+        }
         let color = params["color"];
         let stagelength = params["stageLength"];
         let px = position[0];
@@ -150,9 +160,16 @@ export default class Mux extends Template {
         let cw = params["flowChannelWidth"];
         let ctlcw = params["controlChannelWidth"];
         let rotation = params["rotation"];
-        let direction = params["direction"];
         let spacing = params["spacing"];
-        let leafs = params["leafs"];
+        let ins = params["in"];
+        let outs = params["out"];
+        let leafs 
+        if( ins < outs){
+            leafs = outs;
+        }else{
+            leafs = ins;
+            rotation += 180;
+        }
         let color = params["color"];
         let stagelength = params["stageLength"];
         let valvelength = params["length"];
@@ -185,11 +202,20 @@ export default class Mux extends Template {
     getPorts(params) {
         let position = params["position"];
         let cw = params["flowChannelWidth"];
-        let orientation = params["orientation"];
-        let direction = params["direction"];
         let spacing = params["spacing"];
-        let leafs = params["leafs"];
+        let ins = params["in"];
+        let outs = params["out"];
+        let leafs 
+        if( ins < outs){
+            leafs = outs;
+        }else{
+            leafs = ins;
+            rotation += 180;
+        }
         let stagelength = params["stageLength"];
+        let valvelength = params["length"];
+        let valvewidth = params["width"];
+
         let ports = [];
 
         let levels = Math.ceil(Math.log2(leafs));
