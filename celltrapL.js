@@ -13,6 +13,7 @@ export default class CellTrapL extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             chamberLength: "Float",
             feedingChannelWidth: "Float",
             rotation: "Float",
@@ -23,6 +24,7 @@ export default class CellTrapL extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             chamberLength: 1.2 * 1000,
             feedingChannelWidth: 0.41 * 1000,
             rotation: 270,
@@ -33,6 +35,7 @@ export default class CellTrapL extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             chamberLength: "&mu;m",
             feedingChannelWidth: "&mu;m",
             rotation: "&deg;",
@@ -43,6 +46,7 @@ export default class CellTrapL extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             chamberLength: 30,
             feedingChannelWidth: 10,
             chamberWidth: 30,
@@ -53,6 +57,7 @@ export default class CellTrapL extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             chamberLength: 6000,
             feedingChannelWidth: 2000,
             chamberWidth: 6000,
@@ -63,6 +68,7 @@ export default class CellTrapL extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             chamberWidth: "chamberWidth",
@@ -74,6 +80,7 @@ export default class CellTrapL extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             rotation: "rotation",
             chamberWidth: "chamberWidth",
             chamberLength: "chamberLength",

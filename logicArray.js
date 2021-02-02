@@ -14,6 +14,7 @@ export default class LogicArray extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             chamberWidth: "Float",
             height: "Float",
             chamberLength: "Float",
@@ -24,6 +25,7 @@ export default class LogicArray extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             height: 1.1 * 1000,
             chamberWidth: 1000,
             chamberLength: 1000,
@@ -35,6 +37,7 @@ export default class LogicArray extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             chamberWidth: "&mu;m",
             chamberLength:"&mu;m",
             flowChannelWidth: "&mu;m",
@@ -44,6 +47,7 @@ export default class LogicArray extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             height: 1,
             chamberWidth: 1,
             chamberLength: 1,
@@ -53,6 +57,7 @@ export default class LogicArray extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             height: 1.1 * 10000,
             chamberWidth: 10000,
             chamberLength: 10000,
@@ -68,6 +73,7 @@ export default class LogicArray extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             chamberWidth:"chamberWidth",
             flowChannelWidth: "flowChannelWidth",
             controlChanelWidth: "controlChannelWidth",
@@ -78,6 +84,7 @@ export default class LogicArray extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             chamberWidth:"chamberWidth",
             flowChannelWidth: "flowChannelWidth",
             controlChanelWidth: "controlChannelWidth",

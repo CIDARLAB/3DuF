@@ -13,6 +13,7 @@ export default class ThreeDMux extends Template{
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             in: "Integer",
             out: "Integer",
             rotation: "Float",
@@ -26,6 +27,7 @@ export default class ThreeDMux extends Template{
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             in: 1,
             out: 8,
             rotation: 0,
@@ -39,6 +41,7 @@ export default class ThreeDMux extends Template{
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             in: "",
             out: "",
             rotation: "&deg;",
@@ -52,6 +55,7 @@ export default class ThreeDMux extends Template{
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             in: 1,
             out: 2,
             rotation: 0,
@@ -65,6 +69,7 @@ export default class ThreeDMux extends Template{
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             in: 1,
             out: 128,
             rotation: 360,
@@ -78,6 +83,7 @@ export default class ThreeDMux extends Template{
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             in: "in",
             out: "out",
             position: "position",
@@ -93,6 +99,7 @@ export default class ThreeDMux extends Template{
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             in: "in",
             out: "out",
             position: "position",

@@ -13,6 +13,7 @@ export default class Mux extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             flowChannelWidth: "Float",
             rotation: "Float",
             spacing: "Float",
@@ -26,6 +27,7 @@ export default class Mux extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             flowChannelWidth: 0.8 * 1000,
             rotation: 0,
             spacing: 4 * 1000,
@@ -39,6 +41,7 @@ export default class Mux extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             flowChannelWidth: "&mu;m",
             rotation: "&deg;",
             spacing: "&mu;m",
@@ -52,6 +55,7 @@ export default class Mux extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             flowChannelWidth: 10,
             spacing: 30,
             in: 1,
@@ -65,6 +69,7 @@ export default class Mux extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             flowChannelWidth: 2000,
             spacing: 12000,
             in: 1,
@@ -78,6 +83,7 @@ export default class Mux extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
@@ -91,6 +97,7 @@ export default class Mux extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",

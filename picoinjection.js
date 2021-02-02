@@ -13,6 +13,7 @@ export default class PicoInjection extends Template{
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             height: "Float",
             width: "Float",
             injectorWidth: "Float",
@@ -27,6 +28,7 @@ export default class PicoInjection extends Template{
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             height: 250,
             width: 10 * 1000,
             injectorWidth: 2 * 1000,
@@ -41,6 +43,7 @@ export default class PicoInjection extends Template{
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             height: "&mu;m",
             width: "&mu;m",
             injectorWidth: "&mu;m",
@@ -55,6 +58,7 @@ export default class PicoInjection extends Template{
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             height: 10,
             width: 5 * 1000,
             injectorWidth: 1000,
@@ -69,6 +73,7 @@ export default class PicoInjection extends Template{
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             height: 1200,
             width: 20 * 1000,
             injectorWidth: 4000,
@@ -89,6 +94,7 @@ export default class PicoInjection extends Template{
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             width: "width",
             injectorWidth: "injectorWidth",
@@ -103,6 +109,7 @@ export default class PicoInjection extends Template{
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             width: "width",
             injectorWidth: "injectorWidth",
             injectorLength: "injectorLength",

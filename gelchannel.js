@@ -12,6 +12,7 @@ export default class Gelchannel extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             sideWidth: "Float",
             mainWidth: "Float",
             orientation: "String",
@@ -21,6 +22,7 @@ export default class Gelchannel extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             sideWidth: 200,
             mainWidth: 500,
             orientation: "H",
@@ -30,6 +32,7 @@ export default class Gelchannel extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             sideWidth: "&mu;m",
             mainWidth: "&mu;m",
             orientation: "",
@@ -39,6 +42,7 @@ export default class Gelchannel extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             sideWidth: 20,
             mainWidth: 10,
             length: 1000,
@@ -47,6 +51,7 @@ export default class Gelchannel extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             sideWidth: 500,
             mainWidth: 500,
             length: 100*1000,
@@ -55,6 +60,7 @@ export default class Gelchannel extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             orientation: "orientation",
             length: "length",
@@ -65,6 +71,7 @@ export default class Gelchannel extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             orientation: "orientation",
             length: "length",
             sideWidth: "sideWidth",
