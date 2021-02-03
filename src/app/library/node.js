@@ -13,18 +13,28 @@ export default class Node extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
+            height: "Float"
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
+            height: 100
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
+            height: "&mu;m"
         };
 
         this.__minimum = {
+            componentSpacing: 10,
+            height: 10
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
+            height: 1000
         };
 
         this.__placementTool = "componentPositionTool";
@@ -34,12 +44,11 @@ export default class Node extends Template {
         };
 
         this.__featureParams = {
-            position: "position",
-            portRadius: "portRadius"
+            componentSpacing: "componentSpacing"
         };
 
         this.__targetParams = {
-            portRadius: "portRadius"
+            componentSpacing: "componentSpacing"
         };
 
         this.__renderKeys = ["FLOW"];

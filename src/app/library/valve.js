@@ -84,14 +84,12 @@ export default class Valve extends Template {
 
         let ports = [];
 
-        ports.push(new ComponentPort(0, -l / 2, "1", "CONTROL"));
-
-        ports.push(new ComponentPort(0, l / 2, "2", "CONTROL"));
+        ports.push(new ComponentPort(0, 0, "1", "CONTROL"));
 
         return ports;
     }
 
-    render2D(params, key="FLOW") {
+    render2D(params, key = "FLOW") {
         let position = params["position"];
         let px = position[0];
         let py = position[1];
@@ -117,7 +115,7 @@ export default class Valve extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key="FLOW");
+        let render = this.render2D(params, (key = "FLOW"));
         render.fillColor.alpha = 0.5;
         return render;
     }

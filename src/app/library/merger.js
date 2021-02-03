@@ -138,7 +138,7 @@ export default class Merger extends Template{
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "MERGER";
+        this.__mint = "DROPLET MERGER";
     }
 
     getPorts(params) {

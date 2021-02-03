@@ -1,7 +1,6 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { RedFormat, TangentSpaceNormalMap } from "three";
 
 export default class DropletGeneratorFlowFocus extends Template {
     constructor() {
@@ -40,7 +39,7 @@ export default class DropletGeneratorFlowFocus extends Template {
             oilChannelWidth: "&mu;m",
             height: "&mu;m",
             waterChannelWidth: "&mu;m",
-            radius:"&mu;m",
+            radius: "&mu;m",
             length: "&mu;m",
             rotation: "&deg;",
             angle: "&deg;"
@@ -61,7 +60,7 @@ export default class DropletGeneratorFlowFocus extends Template {
             oilChannelWidth: 2000,
             waterChannelWidth: 2000,
             length: 20000,
-            angle: 360,            
+            angle: 360,
             height: 1200,
             radius: 2000,
             rotation: 360
@@ -125,62 +124,62 @@ export default class DropletGeneratorFlowFocus extends Template {
         let ret = new paper.CompoundPath();
 
         // middle path
-        let topLeft = new paper.Point(x - length/3 - 2 * length, y - waterChannelWidth/2);
-        let bottomRight = new paper.Point(x, y + waterChannelWidth/2);
+        let topLeft = new paper.Point(x - length / 3 - 2 * length, y - waterChannelWidth / 2);
+        let bottomRight = new paper.Point(x, y + waterChannelWidth / 2);
 
         ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        let circ = new paper.Path.Circle(new paper.Point(x - length/3 - 2 * length, y), radius);
+        let circ = new paper.Path.Circle(new paper.Point(x - length / 3 - 2 * length, y), radius);
 
         ret.addChild(circ);
         // top tilt path
-        let Hlength = length/Math.cos(angle * Math.PI / 180);
+        let Hlength = length / Math.cos((angle * Math.PI) / 180);
 
-        topLeft = new paper.Point(x - length/3 - Hlength, y - oilChannelWidth/2);
-        bottomRight = new paper.Point(x - length/3, y + oilChannelWidth/2);
+        topLeft = new paper.Point(x - length / 3 - Hlength, y - oilChannelWidth / 2);
+        bottomRight = new paper.Point(x - length / 3, y + oilChannelWidth / 2);
 
         let tiltBlock = new paper.Path.Rectangle(topLeft, bottomRight);
-        tiltBlock.rotate(angle, new paper.Point(x - length/3, y));
+        tiltBlock.rotate(angle, new paper.Point(x - length / 3, y));
 
         ret.addChild(tiltBlock);
 
         // bottom tilt path
         tiltBlock = new paper.Path.Rectangle(topLeft, bottomRight);
-        tiltBlock.rotate(-angle, new paper.Point(x - length/3, y));
+        tiltBlock.rotate(-angle, new paper.Point(x - length / 3, y));
 
         ret.addChild(tiltBlock);
 
         // top part
-        let disFromMid = Hlength * Math.sin(angle * Math.PI/180);
+        let disFromMid = Hlength * Math.sin((angle * Math.PI) / 180);
         let angleS = 90 - angle;
-        let seamCover = oilChannelWidth/2 * Math.tan(angleS * Math.PI/180);
+        let seamCover = (oilChannelWidth / 2) * Math.tan((angleS * Math.PI) / 180);
 
-        topLeft = new paper.Point(x - length/3 - length - oilChannelWidth/2, y - disFromMid - 2 * length/3 + seamCover);
-        bottomRight = new paper.Point(x - length/3 - length + oilChannelWidth/2, y - disFromMid + seamCover);
-
-        ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
-
-        topLeft = new paper.Point(x - length/3 - 2 * length, y - disFromMid - 2 * length/3 + seamCover);
-        bottomRight = new paper.Point(x - length/3 - length - oilChannelWidth/2, y - disFromMid - 2 * length/3 + oilChannelWidth + seamCover);
+        topLeft = new paper.Point(x - length / 3 - length - oilChannelWidth / 2, y - disFromMid - (2 * length) / 3 + seamCover);
+        bottomRight = new paper.Point(x - length / 3 - length + oilChannelWidth / 2, y - disFromMid + seamCover);
 
         ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        circ = paper.Path.Circle(new paper.Point(x - length/3 - 2 * length, y - disFromMid - 2 * length/3 + seamCover + oilChannelWidth/2), radius);
+        topLeft = new paper.Point(x - length / 3 - 2 * length, y - disFromMid - (2 * length) / 3 + seamCover);
+        bottomRight = new paper.Point(x - length / 3 - length - oilChannelWidth / 2, y - disFromMid - (2 * length) / 3 + oilChannelWidth + seamCover);
+
+        ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        circ = paper.Path.Circle(new paper.Point(x - length / 3 - 2 * length, y - disFromMid - (2 * length) / 3 + seamCover + oilChannelWidth / 2), radius);
 
         ret.addChild(circ);
 
         // bottom part
-        topLeft = new paper.Point(x - length/3 - length - oilChannelWidth/2, y + disFromMid + 2 * length/3 - seamCover);
-        bottomRight = new paper.Point(x - length/3 - length + oilChannelWidth/2, y + disFromMid - seamCover);
+        topLeft = new paper.Point(x - length / 3 - length - oilChannelWidth / 2, y + disFromMid + (2 * length) / 3 - seamCover);
+        bottomRight = new paper.Point(x - length / 3 - length + oilChannelWidth / 2, y + disFromMid - seamCover);
 
         ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        topLeft = new paper.Point(x - length/3 - 2 * length, y + disFromMid + 2 * length/3 - seamCover);
-        bottomRight = new paper.Point(x - length/3 - length - oilChannelWidth/2, y + disFromMid + 2 * length/3 - oilChannelWidth - seamCover);
+        topLeft = new paper.Point(x - length / 3 - 2 * length, y + disFromMid + (2 * length) / 3 - seamCover);
+        bottomRight = new paper.Point(x - length / 3 - length - oilChannelWidth / 2, y + disFromMid + (2 * length) / 3 - oilChannelWidth - seamCover);
 
         ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        circ = paper.Path.Circle(new paper.Point(x - length/3 - 2 * length, y + disFromMid + 2 * length/3 - seamCover - oilChannelWidth/2), radius);
+        circ = paper.Path.Circle(new paper.Point(x - length / 3 - 2 * length, y + disFromMid + (2 * length) / 3 - seamCover - oilChannelWidth / 2), radius);
 
         ret.addChild(circ);
 
