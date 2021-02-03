@@ -147,4 +147,39 @@ export default class Template {
     getPorts(params) {
         console.error("User needs to provide method for getting component ports, look at examples");
     }
+
+    getBounds(params){
+        let renderkeys = this.renderKeys;
+        let features = [];
+        for(let i =0 ; i<renderkeys.length; i++){
+          console.log("Rendering layer: " + renderkeys[i]);
+          let feature = this.render2D(params, renderkeys[i]);
+          features.push(feature);
+        }
+        let unitedBounds = features.reduce((bbox, item) => {
+          return !bbox ? item.bounds : bbox.unite(item.bounds)
+        }, null)
+        return unitedBounds;
+    }
+
+    getDimensions(params){
+        params["position"] = [0, 0];
+
+        let unitedBounds = this.getBounds(params);
+        let xspan = unitedBounds.width;
+        let yspan = unitedBounds.height;
+        // console.log("Dimensions:",xspan, yspan);
+        return {"xspan": xspan, "yspan": yspan};
+    }
+
+    getDrawOffset(params){
+        let position = params["position"];
+        let positionUnitedBounds = this.getBounds(params);
+        console.log(positionUnitedBounds.topLeft, position);
+
+        return [
+            position[0] - positionUnitedBounds.topLeft.x,
+            position[1] - positionUnitedBounds.topLeft.y
+        ];
+    }
 }

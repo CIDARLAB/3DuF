@@ -213,7 +213,7 @@ export default class Feature {
             return this.__params.getValue(key);
         } catch (err) {
             if (this.hasDefaultParam(key)) return this.getDefaults()[key];
-            else throw new Error("Unable to get value for key: " + key);
+            else throw new Error("Unable to get value for key: " + key + " Type: " + this.getType());
         }
     }
     /**
