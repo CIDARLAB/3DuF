@@ -28,7 +28,7 @@ export default class Valve3D extends Template {
             height: 250,
             gap: 0.6 * 1000,
             width: 2.4 * 1000,
-            length: 2.4 * 1000,
+            length: 2.4 * 1000
         };
 
         this.__units = {
@@ -88,6 +88,14 @@ export default class Valve3D extends Template {
         this.__mint = "VALVE3D";
     }
 
+    getPorts(params) {
+        let ports = [];
+
+        ports.push(new ComponentPort(0, 0, "1", "CONTROL"));
+
+        return ports;
+    }
+
     __drawFlow(params) {
         let position = params["position"];
         let gap = params["gap"];
@@ -124,7 +132,7 @@ export default class Valve3D extends Template {
         return circ;
     }
 
-    render2D(params, key="FLOW") {
+    render2D(params, key = "FLOW") {
         if (key == "FLOW") {
             return this.__drawFlow(params);
         } else if (key == "CONTROL") {
