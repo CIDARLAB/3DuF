@@ -1,6 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
+import { RedFormat } from "three";
 
 export default class DropletGeneratorT extends Template {
     constructor() {
@@ -13,69 +14,74 @@ export default class DropletGeneratorT extends Template {
         };
 
         this.__heritable = {
-            componentSpacing: "Float",
+            // componentSpacing: "Float",
             oilChannelWidth: "Float",
             waterChannelWidth: "Float",
             length: "Float",
             radius: "Float",
-            angle: "Float",
+            // angle: "Float",
             height: "Float",
             rotation: "Float"
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
-            oilChannelWidth: 0.2 * 1000,
-            waterChannelWidth: 0.4 * 1000,
-            length: 0.8 * 1000,
-            radius: 200,
+            // componentSpacing: 1000,
+            oilChannelWidth: 0.6 * 1000,
+            waterChannelWidth: 0.3 * 1000,
+            length: 5 * 1000,
+            radius: 500,
             height: 250,
             rotation: 0
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
+            // componentSpacing: "&mu;m",
             oilChannelWidth: "&mu;m",
             height: "&mu;m",
             waterChannelWidth: "&mu;m",
             radius:"&mu;m",
             rotation: "&deg;",
+            length: "&mu;m"
         };
 
         this.__minimum = {
-            componentSpacing: 0,
+            // componentSpacing: 0,
             oilChannelWidth: 1,
             waterChannelWidth: 1,
             radius: 1,
-            rotation: 0
+            rotation: 0,
+            length: 0 * 1000
         };
 
         this.__maximum = {
-            componentSpacing: 10000,
+            // componentSpacing: 10000,
             oilChannelWidth: 2000,
             waterChannelWidth: 2000,
             height: 1200,
             radius: 2000,
-            rotation: 360
+            rotation: 360,
+            length: 8 * 1000
         };
 
         this.__featureParams = {
-            componentSpacing: "componentSpacing",
+            // componentSpacing: "componentSpacing",
             position: "position",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
             height: "height",
             rotation: "rotation",
-            radius: "radius"
+            radius: "radius",
+            length: "length"
         };
 
         this.__targetParams = {
-            componentSpacing: "componentSpacing",
+            // componentSpacing: "componentSpacing",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
             height: "height",
             rotation: "rotation",
-            radius: "radius"
+            radius: "radius",
+            length: "length"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -90,16 +96,11 @@ export default class DropletGeneratorT extends Template {
     }
 
     getPorts(params) {
-        let orificeSize = params["orificeSize"];
-        let orificeLength = params["orificeLength"];
-        let oilInputWidth = params["oilInputWidth"];
-        let waterInputWidth = params["waterInputWidth"];
-        let outputWidth = params["outputWidth"];
-        let outputLength = params["outputLength"];
+        let length = params["length"];
 
         let ports = [];
 
-        ports.push(new ComponentPort(2*port / 2, -waterInputWidth / 2, "1", "FLOW"));
+        ports.push(new ComponentPort(length/2, 0, "1", "FLOW"));
 
         //Out
         return ports;
@@ -114,32 +115,53 @@ export default class DropletGeneratorT extends Template {
         let waterChannelWidth = params["waterChannelWidth"];
         let radius = params["radius"];
         let rotation = params["rotation"];
+        let length = params["length"];
 
         let ret = new paper.CompoundPath();
 
-        let p = new paper.Point(x, y) ;
-        let pwater = new paper.Path.Circle( p , radius );
-        let poil1 = new paper.Path.Circle(new paper.Point(p.x - 5*radius, p.y + 5*radius), radius);
-        let size = new paper.Size(waterChannelWidth, 12*radius);
-        let centerchannel = paper.Path.Rectangle(new paper.Point(p.x - waterChannelWidth/2, p.y), size);
-        size = new paper.Size(6*radius, oilChannelWidth);
-        let sidechannel = paper.Path.Rectangle(new paper.Point(p.x - 5*radius, p.y + 5*radius - oilChannelWidth/2), size);
+        // let p = new paper.Point(x, y) ;
+        // let pwater = new paper.Path.Circle( p , radius );
+        // let poil1 = new paper.Path.Circle(new paper.Point(p.x - 5*radius, p.y + 5*radius), radius);
+        // let size = new paper.Size(waterChannelWidth, length);
+        // let centerchannel = paper.Path.Rectangle(new paper.Point(p.x - waterChannelWidth/2, p.y), size);
+        // size = new paper.Size(6*radius, oilChannelWidth);
+        // let sidechannel = paper.Path.Rectangle(new paper.Point(p.x - 5*radius, p.y + 5*radius - oilChannelWidth/2), size);
 
-        ret.addChild(pwater);
-        ret.addChild(poil1);
-        ret.addChild(centerchannel);
-        ret.addChild(sidechannel);
+        // ret.addChild(pwater);
+        // ret.addChild(poil1);
+        // ret.addChild(centerchannel);
+        // ret.addChild(sidechannel);
+
+        let topLeft = new paper.Point(x - length/2, y - oilChannelWidth/2);
+        let bottomRight = new paper.Point(x + length/2, y + oilChannelWidth/2);
+
+        ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        let circ = new paper.Path.Circle(new paper.Point(x - length/2, y), radius);
+
+        ret.addChild(circ);
+
+        topLeft = new paper.Point(x - waterChannelWidth/2, y);
+        bottomRight = new paper.Point(x + waterChannelWidth/2, y + length/2);
+
+        ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        circ = new paper.Path.Circle(new paper.Point(x, y + length/2), radius);
+
+        ret.addChild(circ);
+
 
         //Rotate the geometry
-        ret.rotate(-rotation, new paper.Point(pos[0], pos[1]));
-
         ret.closed = true;
+        ret.rotate(-rotation, new paper.Point(x, y));
         ret.fillColor = color;
+
         return ret;
     }
 
     render2DTarget(key, params) {
         let render = this.render2D(params, key);
+
         render.fillColor.alpha = 0.5;
         return render;
     }
