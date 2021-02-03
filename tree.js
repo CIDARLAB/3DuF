@@ -118,7 +118,6 @@ export default class Tree extends Template {
             leafs = outs;
         }else{
             leafs = ins;
-            rotation += 180;
         }
         let stagelength = params["stageLength"];
 

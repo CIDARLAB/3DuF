@@ -217,7 +217,6 @@ export default class Mux extends Template {
             leafs = outs;
         }else{
             leafs = ins;
-            rotation += 180;
         }
         let stagelength = params["stageLength"];
         let valvelength = params["length"];
