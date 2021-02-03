@@ -2,7 +2,6 @@ import express from 'express';
 
 import Port from "./library/port";
 import BetterMixer from "./library/betterMixer";
-import CellTrapL from "./library/celltrapL";
 import Chamber from "./library/chamber";
 import Channel from "./library/channel";
 import Connection from "./library/connection";
@@ -22,7 +21,8 @@ import Via from "./library/via";
 import Tree from "./library/tree";
 import YTree from "./library/ytree";
 import Node from "./library/node";
-import SquareCellTrap from "./library/squareCellTrap";
+import CellTrapS from "./library/celltrapS";
+import CellTrapL from "./library/celltrapL";
 import LogicArray from "./library/logicArray";
 
 import paper, { Key } from "paper";
@@ -53,7 +53,7 @@ let via = new Via();
 let tree = new Tree();
 let ytree = new YTree();
 let node = new Node();
-let squareCellTrap = new SquareCellTrap();
+let squareCellTrap = new CellTrapS();
 
 primitive_map.set(port.mint.replace(/\s/g, ''), port);
 primitive_map.set(better_mixer.mint.replace(/\s/g, ''), better_mixer);
@@ -132,9 +132,18 @@ router.get('/dimensions', function(req, res, next) {
   params["position"] = [0,0];
   params["color"] = "#FFF";
 
-  let feature = technology.render2D(params);
-  let xspan = feature.bounds.width;
-  let yspan = feature.bounds.height;
+  let renderkeys = technology.renderKeys;
+  let features = [];
+  for(let i =0 ; i<renderkeys.length; i++){
+    console.log("Rendering layer: " + renderkeys[i]);
+    let feature = technology.render2D(params, renderkeys[i]);
+    features.push(feature);
+  }
+  let unitedBounds = features.reduce((bbox, item) => {
+    return !bbox ? item.bounds : bbox.unite(item.bounds)
+  }, null)
+  let xspan = unitedBounds.width;
+  let yspan = unitedBounds.height;
   // console.log("Dimensions:",xspan, yspan);
   let ret = {"x-span":xspan, "y-span":yspan};
   console.log("Dimensions:",primitive, ret)
