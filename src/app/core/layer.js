@@ -14,6 +14,18 @@ export default class Layer {
      * @param {String} name Name of the layer
      */
     constructor(values, name = "New Layer", type = "FLOW", group = "0") {
+
+        // TODO - Deal with this later probably create feature layer objects to handle this
+        if(!Object.hasOwnProperty("z_offset")){
+            console.log("Adding default value for missing \'z_offset\' value for layer: " + name);
+            values["z_offset"] = 0;
+        }
+        if(!Object.hasOwnProperty("flip")){
+            console.log("Adding default value for missing \'flip\' value for layer: " + name);
+            values["flip"] = false;
+        }
+
+
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = String(name);
         this.features = {};
@@ -327,7 +339,14 @@ export default class Layer {
     static fromInterchangeV1(json) {
         let newLayer = new Layer(json.params, json.name, json.type, json.group);
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
-        if (json.color) newLayer.color = json.color; //TODO: Figure out if this needs to change in the future
+        if (json.color) newLayer.color = json.color;
+        else{
+            if(json.type == "FLOW"){
+                newLayer.color = "indigo";
+            }else{
+                newLayer.color = "red";
+            }
+        } //TODO: Figure out if this needs to change in the future
         return newLayer;
     }
     /**

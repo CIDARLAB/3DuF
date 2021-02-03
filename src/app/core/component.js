@@ -5,6 +5,8 @@ import ComponentPort from "./componentPort";
 import * as Registry from "./registry";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
+import * as FeatureSets from "../featureSets";
+
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -357,6 +359,11 @@ export default class Component {
     updateComponetPosition(center) {
         //This was not calling the right method earlier
         this.__params.updateParameter("position", center);
+
+        let technology = FeatureSets.getTechnologyDefinition(this.getType(),  "Basic");
+        let params_to_copy = this.getParams().toJSON();
+        let offset = technology.getDrawOffset(params_to_copy);
+        console.log("Offsets:", this.name, this.getType(), offset);
         for (let i in this.__features) {
             let featureidtochange = this.__features[i];
 
@@ -493,8 +500,13 @@ export default class Component {
         if (!params.hasOwnProperty("position")) {
             params["position"] = [0.0, 0.0];
         }
-
-        let paramstoadd = new Params(params, definition.unique, definition.heritable);
+        let paramstoadd;
+        try{
+            paramstoadd = new Params(params, definition.unique, definition.heritable);
+        }catch(e){
+            console.error("Could not generate parameters object for:", name, entity);
+            console.error(e.message);
+        }
         let typestring = Registry.featureSet.getTypeForMINT(entity);
         let component = new Component(typestring, paramstoadd, name, entity, id);
 

@@ -23,7 +23,7 @@ const StringValue = Parameters.StringValue;
 export default class Device {
     /**
      * Default Constructor
-     * @param {*} values 
+     * @param {*} values
      * @param {string} name Name of the Device
      */
     constructor(values, name = "New Device") {
@@ -42,18 +42,18 @@ export default class Device {
         this.__valveMap = new Map();
         this.__valveIs3DMap = new Map();
 
-        //New layerblock indices for naming, etc. 
-        // TODO - Figure out how to handle this in the case 
+        //New layerblock indices for naming, etc.
+        // TODO - Figure out how to handle this in the case
         // where things are imported from other tools because
         // this will not work anymore
         this.__layerBlockIndex = 0;
     }
     /**
      * Returns a string with the name of the Device
-     * @returns {string} 
+     * @returns {string}
      * @memberof Device
      */
-    setValveMap(valvemap, isvalve3Ddata){
+    setValveMap(valvemap, isvalve3Ddata) {
         this.__valveMap = valvemap;
         this.__valveIs3DMap = isvalve3Ddata;
     }
@@ -198,7 +198,7 @@ export default class Device {
 
     /**
      * Returns the layer that contains the feature with the given feature ID
-     * @param {string} featureID ID of the feature to search for it 
+     * @param {string} featureID ID of the feature to search for it
      * @return {Layer} Returns the layer
      * @memberof Device
      */
@@ -251,7 +251,7 @@ export default class Device {
 
     /**
      * Returns the feature with the given feature id
-     * @param {string} featureID ID of the feature to search 
+     * @param {string} featureID ID of the feature to search
      * @return {Feature}
      * @memberof Device
      */
@@ -294,7 +294,7 @@ export default class Device {
 
     /**
      * Add a layer, and re-sort the layers array
-     * @param {Layer} layer Layer to add 
+     * @param {Layer} layer Layer to add
      * @memberof Device
      * @returns {void}
      */
@@ -340,8 +340,8 @@ export default class Device {
         if (Registry.viewManager) Registry.viewManager.updateDevice(this);
     }
     /**
-     * Gets the unique parameters 
-     * @returns {Object} 
+     * Gets the unique parameters
+     * @returns {Object}
      */
     static getUniqueParameters() {
         return {
@@ -481,7 +481,7 @@ export default class Device {
     }
     /**
      * Loads layers from a JSON format into the device object
-     * @param {JSON} json 
+     * @param {JSON} json
      * @memberof Device
      * @returns {void}
      */
@@ -493,7 +493,7 @@ export default class Device {
     }
     /**
      * Loads feature layers from a Interchange format into the device object
-     * @param {*} json 
+     * @param {*} json
      * @memberof Device
      * @returns {void}
      */
@@ -519,6 +519,7 @@ export default class Device {
             this.__components.push(componenttoadd);
         }
     }
+
     /**
      * Loads connections to the device object
      * @param {Connection} connections Connections to add to the device
@@ -532,8 +533,44 @@ export default class Device {
             this.__connections.push(connectiontoload);
         }
     }
+
     /**
-     * Converts the properties of the device to JSON 
+     * Loads connections to the device object
+     * @param {Connection} connections Connections to add to the device
+     * @memberof Device
+     * @returns {void}
+     */
+    __loadConnectionsFromInterchangeV1_1(connections) {
+        let connectiontoload;
+        for (let i in connections) {
+            connectiontoload = Connection.fromInterchangeV1_1(this, connections[i]);
+            this.__connections.push(connectiontoload);
+        }
+    }
+
+    __loadLayersFromInterchangeV1(layers) {
+        //Generate all the layer block ID's first
+        let layerblockids = [];
+
+        for (let layer of layers) {
+            if (!layerblockids.includes(layer.group)) {
+                layerblockids.push(layer.group);
+            }
+        }
+
+        //For each layer block ID, we generate the layers
+        for (let layerblockid of layerblockids) {
+            for (let layer of layers) {
+                if (layerblockid == layer.group) {
+                    let layerobject = Layer.fromInterchangeV1(layer);
+                    this.addLayer(layerobject);
+                }
+            }
+        }
+    }
+
+    /**
+     * Converts the properties of the device to JSON
      * @returns {JSON} Returns a JSON format with the properties of the device
      * @memberof Device
      */
@@ -562,7 +599,7 @@ export default class Device {
         // output.layers = this.__layersToInterchangeV1();
         output.components = this.__componentsToInterchangeV1();
         output.connections = this.__connectionToInterchangeV1();
-        output.layers = this.__layersToInterchangeV1();       
+        output.layers = this.__layersToInterchangeV1();
         //TODO: Use this to render the device features
         output.features = this.__featureLayersToInterchangeV1();
         output.version = 1;
@@ -574,15 +611,14 @@ export default class Device {
         let output = {};
         output.name = this.name;
 
-        let valvetypemap = {}
-        for(let [key, value] of this.__valveIs3DMap){
-            if(value){
+        let valvetypemap = {};
+        for (let [key, value] of this.__valveIs3DMap) {
+            if (value) {
                 //3D Valve
-                valvetypemap[key] = 'NORMALLY_CLOSED';
-            }else{
-                valvetypemap[key] = 'NORMALLY_OPEN';
+                valvetypemap[key] = "NORMALLY_CLOSED";
+            } else {
+                valvetypemap[key] = "NORMALLY_OPEN";
             }
-            
         }
 
         output.params = {
@@ -594,7 +630,7 @@ export default class Device {
         //TODO: Use this to dynamically create enough layers to scroll through
         output.components = this.__componentsToInterchangeV1();
         output.connections = this.__connectionToInterchangeV1();
-        output.layers = this.__layersToInterchangeV1();       
+        output.layers = this.__layersToInterchangeV1();
         //TODO: Use this to render the device features
         output.features = this.__featureLayersToInterchangeV1();
         output.version = 1.1;
@@ -604,7 +640,7 @@ export default class Device {
 
     /**
      * Creates a new device object from a JSON format
-     * @param {JSON} json 
+     * @param {JSON} json
      * @returns {Device} Returns a device object
      * @memberof Device
      */
@@ -622,7 +658,7 @@ export default class Device {
     }
 
     static fromInterchangeV1(json) {
-        IOUtils.sanitizeV1Plus(json)
+        IOUtils.sanitizeV1Plus(json);
 
         let newDevice;
         if (json.hasOwnProperty("params")) {
@@ -634,7 +670,7 @@ export default class Device {
                     },
                     json.name
                 );
-            }else{
+            } else {
                 newDevice = new Device(
                     {
                         width: 135000,
@@ -666,9 +702,9 @@ export default class Device {
             newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         } else {
             //We need to add a default layer
-            let newlayer = new Layer(null, "flow"+this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
+            let newlayer = new Layer(null, "flow" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
             newDevice.addLayer(newlayer);
-            newlayer = new Layer(null, "control"+this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
+            newlayer = new Layer(null, "control" + this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
             newDevice.addLayer(newlayer);
 
             this.__layerBlockIndex += 1;
@@ -691,7 +727,7 @@ export default class Device {
     static fromInterchangeV1_1(json) {
         IOUtils.sanitizeV1Plus(json);
         let newDevice;
-        
+
         if (json.hasOwnProperty("params")) {
             if (json.params.hasOwnProperty("xspan") && json.params.hasOwnProperty("yspan")) {
                 newDevice = new Device(
@@ -701,7 +737,7 @@ export default class Device {
                     },
                     json.name
                 );
-            }else{
+            } else {
                 newDevice = new Device(
                     {
                         width: 135000,
@@ -724,28 +760,27 @@ export default class Device {
         //newDevice.__loadLayersFromInterchangeV1(json.layers);
         //TODO: Use these two generate a rat's nest
         newDevice.__loadComponentsFromInterchangeV1(json.components);
-        newDevice.__loadConnectionsFromInterchangeV1(json.connections);
+        newDevice.__loadConnectionsFromInterchangeV1_1(json.connections);
+        newDevice.__loadLayersFromInterchangeV1(json.layers);
 
         let valve_map, valve_type_map;
         //Import ValveMap
-        if (json.params.hasOwnProperty("valveMap") && json.params.hasOwnProperty("valveTypeMap")){
+        if (json.params.hasOwnProperty("valveMap") && json.params.hasOwnProperty("valveTypeMap")) {
             valve_map = IOUtils.jsonToMap(json.params.valveMap);
             console.log("Imported valvemap", valve_map);
-            
 
             console.log("Loaded valvetypemap", json.params.valveTypeMap);
             valve_type_map = IOUtils.jsonToMap(json.params.valveTypeMap);
 
-
             console.log(json.params.valveTypeMap, valve_type_map);
             let valveis3dmap = new Map();
-            for(let [key, value] of valve_type_map){
-                console.log("Setting type:",key, value);
-                switch(value){
-                    case 'NORMALLY_OPEN':
+            for (let [key, value] of valve_type_map) {
+                console.log("Setting type:", key, value);
+                switch (value) {
+                    case "NORMALLY_OPEN":
                         valveis3dmap.set(key, false);
                         break;
-                    case 'NORMALLY_CLOSED':
+                    case "NORMALLY_CLOSED":
                         valveis3dmap.set(key, true);
                         break;
                 }
@@ -760,12 +795,24 @@ export default class Device {
         if (json.hasOwnProperty("features")) {
             newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         } else {
-            //We need to add a default layer
-            let newlayer = new Layer(null, "flow"+this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
-            newDevice.addLayer(newlayer);
-            newlayer = new Layer(null, "control"+this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
-            newDevice.addLayer(newlayer);
-            this.__layerBlockIndex += 1;
+            // // //We need to add a default layer
+            // // let newlayer = new Layer(null, "flow"+this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
+            // // newDevice.addLayer(newlayer);
+            // // newlayer = new Layer(null, "control"+this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
+            // // newDevice.addLayer(newlayer);
+            // // this.__layerBlockIndex += 1;
+            // // TODO - We go though the layers and create a collection of layerblock ID's and then start creating all the layers based
+            // // on the different layers. Since they're typically just called control and flow this should be fairly simple
+            // let layerblockids = [];
+            // if (Object.hasOwnProperty("layers", json)){
+            //     for(let layer of json["layers"]){
+            //         if(!layerblockids.includes(layer.group)){
+            //             layerblockids.push(layer.group);
+            //         }
+            //     }
+            // }else{
+            //     throw new Error("Incoming JSON has no saved layers, incorrect Parchmint Format");
+            // }
         }
 
         //Updating cross-references
@@ -781,7 +828,6 @@ export default class Device {
 
         return newDevice;
     }
-
 
     render2D() {
         return this.__renderLayers2D();
@@ -862,7 +908,7 @@ export default class Device {
     /**
      * Returns the component identified by the id
      * @param {string} id ID of the feature to get the component
-     * @return {Component|null} 
+     * @return {Component|null}
      * @memberof Device
      */
     getComponentForFeatureID(id) {
@@ -900,7 +946,7 @@ export default class Device {
     /**
      * Returns a connection object corresponding to the ID
      * @param {String} id ID of feature to get the connection
-     * @return {Connection|null} 
+     * @return {Connection|null}
      * @memberof Device
      */
     getConnectionForFeatureID(id) {
@@ -971,7 +1017,7 @@ export default class Device {
     /**
      * Returns component object that is identified by the given key
      * @param {String} key Key to  the component
-     * @return {Component} 
+     * @return {Component}
      * @memberof Device
      */
     getComponentByID(key) {
@@ -986,7 +1032,7 @@ export default class Device {
     /**
      * Returns connection object which is identified by a given key
      * @param {String} key Key to identify the connection
-     * @return {Connection} 
+     * @return {Connection}
      * @memberof Device
      */
     getConnectionByID(key) {

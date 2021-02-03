@@ -86,7 +86,7 @@ export default class Port extends Template {
 
         let ports = [];
 
-        ports.push(new ComponentPort(radius, radius, "1", "FLOW"));
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
         return ports;
     }

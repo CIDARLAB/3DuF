@@ -124,7 +124,7 @@ export default class PicoInjection extends Template{
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "PICOINJECTION";
+        this.__mint = "PICOINJECTOR";
     }
 
     getPorts(params) {

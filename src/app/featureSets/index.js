@@ -58,6 +58,11 @@ export function getRender2D(typeString, setString) {
     }
 }
 
+export function getTechnologyDefinition(typeString, setString){
+    let set = getSet(setString);
+    return set.getTechnology(typeString);
+}
+
 export function getRender3D(typeString, setString) {
     let set = getSet(setString);
     return set.getRender3D(typeString);

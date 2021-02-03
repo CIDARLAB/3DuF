@@ -1,7 +1,6 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { RedFormat } from "three";
 
 export default class DropletGeneratorT extends Template {
     constructor() {
@@ -39,7 +38,7 @@ export default class DropletGeneratorT extends Template {
             oilChannelWidth: "&mu;m",
             height: "&mu;m",
             waterChannelWidth: "&mu;m",
-            radius:"&mu;m",
+            radius: "&mu;m",
             rotation: "&deg;",
             length: "&mu;m"
         };
@@ -100,7 +99,7 @@ export default class DropletGeneratorT extends Template {
 
         let ports = [];
 
-        ports.push(new ComponentPort(length/2, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(length / 2, 0, "1", "FLOW"));
 
         //Out
         return ports;
@@ -119,24 +118,23 @@ export default class DropletGeneratorT extends Template {
 
         let ret = new paper.CompoundPath();
 
-        let topLeft = new paper.Point(x - length/2, y - oilChannelWidth/2);
-        let bottomRight = new paper.Point(x + length/2, y + oilChannelWidth/2);
+        let topLeft = new paper.Point(x - length / 2, y - oilChannelWidth / 2);
+        let bottomRight = new paper.Point(x + length / 2, y + oilChannelWidth / 2);
 
         ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        let circ = new paper.Path.Circle(new paper.Point(x - length/2, y), radius);
+        let circ = new paper.Path.Circle(new paper.Point(x - length / 2, y), radius);
 
         ret.addChild(circ);
 
-        topLeft = new paper.Point(x - waterChannelWidth/2, y);
-        bottomRight = new paper.Point(x + waterChannelWidth/2, y + length/2);
+        topLeft = new paper.Point(x - waterChannelWidth / 2, y);
+        bottomRight = new paper.Point(x + waterChannelWidth / 2, y + length / 2);
 
         ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        circ = new paper.Path.Circle(new paper.Point(x, y + length/2), radius);
+        circ = new paper.Path.Circle(new paper.Point(x, y + length / 2), radius);
 
         ret.addChild(circ);
-
 
         //Rotate the geometry
         ret.closed = true;
