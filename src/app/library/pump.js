@@ -13,6 +13,7 @@ export default class Pump extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             length: "Float",
             width: "Float",
@@ -22,6 +23,7 @@ export default class Pump extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             width: 600,
             length: 300,
@@ -31,6 +33,7 @@ export default class Pump extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             rotation: "&deg",
             length: "&mu;m",
             width: "&mu;m",
@@ -40,6 +43,7 @@ export default class Pump extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             rotation: 0,
             width: 30,
             length: 120,
@@ -49,6 +53,7 @@ export default class Pump extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             rotation: 360,
             width: 6000,
             length: 24 * 1000,
@@ -58,6 +63,7 @@ export default class Pump extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             length: "length",
             width: "width",
@@ -67,6 +73,7 @@ export default class Pump extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             length: "length",
             width: "width",
             rotation: "rotation",
