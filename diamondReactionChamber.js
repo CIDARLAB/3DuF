@@ -12,6 +12,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             channelWidth: "Float",
             length: "Float",
@@ -20,6 +21,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             channelWidth: 0.8 * 1000,
             width: 1.23 * 1000,
@@ -28,6 +30,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             rotation: "&deg;",
             channelWidth: "&mu;m",
             length: "&mu;m",
@@ -36,6 +39,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             channelWidth: 10,
             width: 30,
             length: 120,
@@ -44,6 +48,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             channelWidth: 2000,
             width: 6000,
             length: 24 * 1000,
@@ -52,6 +57,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             channelWidth: "channelWidth",
@@ -60,6 +66,7 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             channelWidth: "channelWidth",
             length: "length",
             width: "width",

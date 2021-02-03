@@ -13,6 +13,7 @@ export default class GradientGenerator extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             bendSpacing: "Float",
             numberOfBends: "Float",
             channelWidth: "Float",
@@ -25,6 +26,7 @@ export default class GradientGenerator extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
@@ -38,6 +40,7 @@ export default class GradientGenerator extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             bendSpacing: "&mu;m",
             numberOfBends: "",
             channelWidth: "&mu;m",
@@ -51,6 +54,7 @@ export default class GradientGenerator extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
@@ -63,6 +67,7 @@ export default class GradientGenerator extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
@@ -75,6 +80,7 @@ export default class GradientGenerator extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
@@ -87,6 +93,7 @@ export default class GradientGenerator extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",

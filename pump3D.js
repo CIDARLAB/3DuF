@@ -13,6 +13,7 @@ export default class Pump3D extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             valveRadius: "Float",
             height: "Float",
             gap: "Float",
@@ -22,6 +23,7 @@ export default class Pump3D extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             valveRadius: 1.2 * 1000,
             height: 250,
             gap: 0.6 * 1000,
@@ -33,6 +35,7 @@ export default class Pump3D extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             valveRadius: "&mu;m",
             height: "&mu;m",
             gap: "&mu;m",
@@ -44,6 +47,7 @@ export default class Pump3D extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
             gap: 0.5 * 10,
@@ -53,6 +57,7 @@ export default class Pump3D extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             valveRadius: 0.2 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
@@ -62,6 +67,7 @@ export default class Pump3D extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             valveRadius: "valveRadius",
@@ -71,6 +77,7 @@ export default class Pump3D extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             rotation: "rotation",
             valveRadius: "valveRadius",
             flowChannelWidth: "flowChannelWidth",

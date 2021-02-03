@@ -13,6 +13,7 @@ export default class Cahode extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             cathodeRadius: "Float",
             pegRadius: "Float",
             pegThickness: "Float",
@@ -21,6 +22,7 @@ export default class Cahode extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             cathodeRadius: 0.9 * 1000,
             pegRadius: 0.7*1000,
             pegThickness: 0.3*1000,
@@ -29,6 +31,7 @@ export default class Cahode extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             cathodeRadius: "&mu;m",
             pegRadius: "&mu;m",
             pegThickness: "&mu;m",
@@ -37,6 +40,7 @@ export default class Cahode extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             cathodeRadius: 0.4 * 10,
             pegRadius: 0.1*1000,
             pegThickness: 0.1*1000,
@@ -45,6 +49,7 @@ export default class Cahode extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             cathodeRadius: 2000,
             pegRadius: 2*1000,
             pegThickness: 2*1000,
@@ -59,6 +64,7 @@ export default class Cahode extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             cathodeRadius: "cathodeRadius",
             pegRadius: "pegRadius",
@@ -67,6 +73,7 @@ export default class Cahode extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             cathodeRadius: "cathodeRadius",
             pegRadius: "pegRadius",
             pegThickness: "pegThickness",

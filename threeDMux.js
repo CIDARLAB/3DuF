@@ -13,7 +13,9 @@ export default class ThreeDMux extends Template{
         };
 
         this.__heritable = {
-            inputNumber: "Float",
+            componentSpacing: "Float",
+            in: "Integer",
+            out: "Integer",
             rotation: "Float",
             valveRadius: "Float",
             height: "Float",
@@ -25,7 +27,9 @@ export default class ThreeDMux extends Template{
         };
 
         this.__defaults = {
-            inputNumber: 4,
+            componentSpacing: 1000,
+            in: 1,
+            out: 8,
             rotation: 0,
             valveRadius: 1.2 * 1000,
             height: 0.8 * 1000,
@@ -37,7 +41,9 @@ export default class ThreeDMux extends Template{
         };
 
         this.__units = {
-            inputNumber: "",
+            componentSpacing: "&mu;m",
+            in: "",
+            out: "",
             rotation: "&deg;",
             valveRadius: "&mu;m",
             height: "&mu;m",
@@ -49,7 +55,9 @@ export default class ThreeDMux extends Template{
         };
 
         this.__minimum = {
-            inputNumber: 2,
+            componentSpacing: 0,
+            in: 1,
+            out: 2,
             rotation: 0,
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
@@ -61,7 +69,9 @@ export default class ThreeDMux extends Template{
         };
 
         this.__maximum = {
-            inputNumber: 32,
+            componentSpacing: 10000,
+            in: 1,
+            out: 128,
             rotation: 360,
             valveRadius: 0.2 * 10000,
             height: 1.2 * 1000,
@@ -73,7 +83,9 @@ export default class ThreeDMux extends Template{
         };
 
         this.__featureParams = {
-            inputNumber: "inputNumber",
+            componentSpacing: "componentSpacing",
+            in: "in",
+            out: "out",
             position: "position",
             rotation: "rotation",
             radius1: "valveRadius",
@@ -87,7 +99,9 @@ export default class ThreeDMux extends Template{
         };
 
         this.__targetParams = {
-            inputNumber: "inputNumber",
+            componentSpacing: "componentSpacing",
+            in: "in",
+            out: "out",
             position: "position",
             rotation: "rotation",
             radius1: "valveRadius",
@@ -131,7 +145,16 @@ export default class ThreeDMux extends Template{
     }
 
     getPorts(params) {
-        let N = params["inputNumber"];
+        let ins = params["in"];
+        let outs = params["out"];
+        let N 
+        if( ins < outs){
+            N = outs;
+        }else{
+            N = ins;
+            rotation += 180;
+        }
+
         let horizontal_length = N * 4000;
         let vertical_length = N * 3000;
         let ports = [];
@@ -158,7 +181,15 @@ export default class ThreeDMux extends Template{
 
         let px = position[0];
         let py = position[1];
-        let N = params["inputNumber"]; //change this to input
+        let ins = params["in"];
+        let outs = params["out"];
+        let N 
+        if( ins < outs){
+            N = outs;
+        }else{
+            N = ins;
+            rotation += 180;
+        }
         let bottomlinelength = N * 4000; //modify, so it depends on the input N
         let vertlinelength = N * 3000; //same as above
 
