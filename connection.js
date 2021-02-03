@@ -17,13 +17,13 @@ export default class Connection extends Template {
         this.__heritable = {
             connectionSpacing: "Float",
             channelWidth: "Float",
-            height: "Float"
+            height: "Float",
         };
 
         this.__defaults = {
             connectionSpacing: 1600,
             channelWidth: 0.8 * 1000,
-            height: 250
+            height: 250,
         };
 
         this.__units = {
