@@ -12,6 +12,7 @@ export default class thermoCycler extends Template{
       position : "Point"
     };
     this.__heritable = {
+      componentSpacing: "Float",
       rotation : "Float",
       width : "Float",
       length : "Float",
@@ -52,6 +53,7 @@ export default class thermoCycler extends Template{
     };
 
     this.__featureParams = {
+            componentSpacing: "componentSpacing",
       position : "position",
       rotation : "rotation",
       length: "length",
@@ -60,6 +62,7 @@ export default class thermoCycler extends Template{
     };
 
     this.__targetParams = {
+            componentSpacing: "componentSpacing",
       rotation : "rotation",
       length: "length",
       width: "width",

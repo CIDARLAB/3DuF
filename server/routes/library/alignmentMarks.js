@@ -12,6 +12,7 @@ export default class AlignmentMarks extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             width: "Float",
             length: "Float",
             height: "Float"

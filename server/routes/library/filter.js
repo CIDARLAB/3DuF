@@ -13,6 +13,7 @@ export default class Filter extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             height: "Float",
             pillarDiameter: "Float",
@@ -28,6 +29,7 @@ export default class Filter extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             height: 250,
             pillarDiameter: 2 * 1000,
@@ -43,6 +45,7 @@ export default class Filter extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             rotation: "&deg;",
             height: "&mu;m",
             pillarDiameter: "&mu;m",
@@ -58,6 +61,7 @@ export default class Filter extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             rotation: 0,
             height: 10,
             pillarDiameter: 1 * 1000,
@@ -73,6 +77,7 @@ export default class Filter extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             rotation: 360,
             height: 1200,
             pillarDiameter: 4 * 1000,
@@ -94,6 +99,7 @@ export default class Filter extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             pillarDiameter: "pillarDiameter",
@@ -109,6 +115,7 @@ export default class Filter extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             rotation: "rotation",
             pillarDiameter: "pillarDiameter",
             filterWidth: "filterWidth",

@@ -14,6 +14,7 @@ export default class DropletMerger extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             inputWidth1:"Float",
             inputWidth2:"Float",
             outputWidth:"Float",
@@ -23,6 +24,7 @@ export default class DropletMerger extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             inputWidth1:400,
             inputWidth2:400,
             outputWidth:400,
@@ -32,6 +34,7 @@ export default class DropletMerger extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             inputWidth1:"&mu;m",
             inputWidth2:"&mu;m",
             outputWidth:"&mu;m",
@@ -41,6 +44,7 @@ export default class DropletMerger extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             inputWidth1:1,
             inputWidth2:1,
             outputWidth:1,
@@ -50,6 +54,7 @@ export default class DropletMerger extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             inputWidth1:10000,
             inputWidth2:10000,
             outputWidth:10000,
@@ -65,6 +70,7 @@ export default class DropletMerger extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             inputWidth1:"inputWidth1",
             inputWidth2:"inputWidth2",
@@ -75,6 +81,7 @@ export default class DropletMerger extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             inputWidth1:"inputWidth1",
             inputWidth2:"inputWidth2",
             outputWidth:"outputWidth",

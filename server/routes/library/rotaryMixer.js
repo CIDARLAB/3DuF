@@ -13,6 +13,7 @@ export default class RotaryMixer extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             radius: "Float",
             flowChannelWidth: "Float",
@@ -23,6 +24,7 @@ export default class RotaryMixer extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             radius: 2000,
             flowChannelWidth: 1000,
@@ -34,6 +36,7 @@ export default class RotaryMixer extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             rotation: "&deg;",
             radius: "&mu;m",
             flowChannelWidth: "&mu;m",
@@ -44,6 +47,7 @@ export default class RotaryMixer extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             radius: 0.1 * 5000,
             flowChannelWidth: 0.1 * 1000,
             valveWidth: 0.1 * 2.4 * 1000,
@@ -55,6 +59,7 @@ export default class RotaryMixer extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             radius: 10 * 5000,
             flowChannelWidth: 10 * 1000,
             valveWidth: 10 * 2.4 * 1000,
@@ -72,6 +77,7 @@ export default class RotaryMixer extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             flowChannelWidth: "flowChannelWidth",
@@ -83,6 +89,7 @@ export default class RotaryMixer extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             flowChannelWidth: "flowChannelWidth",

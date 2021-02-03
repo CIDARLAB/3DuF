@@ -13,6 +13,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             bendSpacing: "Float",
             numberOfBends: "Float",
@@ -23,6 +24,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
@@ -33,6 +35,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             rotation: "&deg;",
             bendSpacing: "&mu;m",
             numberOfBends: "",
@@ -42,6 +45,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             rotation: 0,
             channelWidth: 10,
             bendSpacing: 10,
@@ -52,6 +56,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             rotation: 360,
             channelWidth: 2000,
             bendSpacing: 6000,
@@ -62,6 +67,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
@@ -71,6 +77,7 @@ export default class CurvedMixer extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",

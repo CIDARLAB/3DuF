@@ -12,6 +12,7 @@ export default class Valve3D extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             valveRadius: "Float",
             height: "Float",
@@ -21,6 +22,7 @@ export default class Valve3D extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             valveRadius: 1.2 * 1000,
             height: 250,
@@ -30,6 +32,7 @@ export default class Valve3D extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             valveRadius: "&mu;m",
             height: "&mu;m",
             gap: "&mu;m",
@@ -39,6 +42,7 @@ export default class Valve3D extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
             gap: 0.5 * 10,
@@ -46,6 +50,7 @@ export default class Valve3D extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             valveRadius: 0.2 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
@@ -53,6 +58,7 @@ export default class Valve3D extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             radius1: "valveRadius",
@@ -62,6 +68,7 @@ export default class Valve3D extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             radius1: "valveRadius",
