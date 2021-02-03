@@ -15,6 +15,7 @@ export default class CopyTool extends PositionTool {
     createNewFeature(point) {
         console.log("mouseDown Copy");
         let [x,y] = PositionTool.getTarget(point);
+        console.log("mouse at: ", x,y);
         this.__selection.replicate(x,y);
         Registry.viewManager.saveDeviceState();
     }

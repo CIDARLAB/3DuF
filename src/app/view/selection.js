@@ -80,11 +80,12 @@ export default class Selection {
 
         for (let i in this.__otherFeatures) {
             let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
-            let newx = referencepoint.x + render.bounds.x;
-            newx -= x;
+            let newx = referencepoint.x - render.bounds.x;
+            newx = x + newx;
+            console.log("newx: ", newx);
             let newy = referencepoint.y - render.bounds.y;
-            newy += y;
-            let newFeature = render.replicate(newx,newy);
+            newy = y + newy;
+            console.log("newy: ", newy);
             let replica = render.replicate(newx,newy);
             Registry.currentLayer.addFeature(replica);
         }
@@ -131,10 +132,10 @@ export default class Selection {
      * @memberof Selection
      */
     __calculateSelectionBounds() {
-        let xmin = 0;
-        let ymin = 0;
-        let xmax = 0;
-        let ymax = 0;
+        let xmin = Number.MAX_SAFE_INTEGER;
+        let ymin = Number.MAX_SAFE_INTEGER;
+        let xmax = Number.MIN_SAFE_INTEGER;
+        let ymax = Number.MIN_SAFE_INTEGER;
         let bounds;
 
         for (let i in this.__components) {
@@ -187,7 +188,6 @@ export default class Selection {
                 ymax = bounds.y;
             }
         }
-        console.log(xmin,xmax,ymin,ymax);
         let ret = new paper.Point((xmin+xmax)/2, (ymin+ymax)/2);
         return ret;
     }

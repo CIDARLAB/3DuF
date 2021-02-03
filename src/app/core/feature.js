@@ -35,7 +35,7 @@ export default class Feature {
         this.__referenceID = null;
         this.__bounds = null;
 
-        if (this.__params != null) {
+        if (this.__params != null & this.__type !== "Connection") {
             let [x,y] = this.__params.getValue("position");
             this.__bounds = new paper.Point(x, y);
         }
