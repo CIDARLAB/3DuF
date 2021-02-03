@@ -119,19 +119,6 @@ export default class DropletGeneratorT extends Template {
 
         let ret = new paper.CompoundPath();
 
-        // let p = new paper.Point(x, y) ;
-        // let pwater = new paper.Path.Circle( p , radius );
-        // let poil1 = new paper.Path.Circle(new paper.Point(p.x - 5*radius, p.y + 5*radius), radius);
-        // let size = new paper.Size(waterChannelWidth, length);
-        // let centerchannel = paper.Path.Rectangle(new paper.Point(p.x - waterChannelWidth/2, p.y), size);
-        // size = new paper.Size(6*radius, oilChannelWidth);
-        // let sidechannel = paper.Path.Rectangle(new paper.Point(p.x - 5*radius, p.y + 5*radius - oilChannelWidth/2), size);
-
-        // ret.addChild(pwater);
-        // ret.addChild(poil1);
-        // ret.addChild(centerchannel);
-        // ret.addChild(sidechannel);
-
         let topLeft = new paper.Point(x - length/2, y - oilChannelWidth/2);
         let bottomRight = new paper.Point(x + length/2, y + oilChannelWidth/2);
 
