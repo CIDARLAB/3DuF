@@ -14,7 +14,7 @@ export default class DropletGeneratorT extends Template {
         };
 
         this.__heritable = {
-            // componentSpacing: "Float",
+            componentSpacing: "Float",
             oilChannelWidth: "Float",
             waterChannelWidth: "Float",
             length: "Float",
@@ -25,7 +25,7 @@ export default class DropletGeneratorT extends Template {
         };
 
         this.__defaults = {
-            // componentSpacing: 1000,
+            componentSpacing: 1000,
             oilChannelWidth: 0.6 * 1000,
             waterChannelWidth: 0.3 * 1000,
             length: 5 * 1000,
@@ -35,7 +35,7 @@ export default class DropletGeneratorT extends Template {
         };
 
         this.__units = {
-            // componentSpacing: "&mu;m",
+            componentSpacing: "&mu;m",
             oilChannelWidth: "&mu;m",
             height: "&mu;m",
             waterChannelWidth: "&mu;m",
@@ -45,7 +45,7 @@ export default class DropletGeneratorT extends Template {
         };
 
         this.__minimum = {
-            // componentSpacing: 0,
+            componentSpacing: 0,
             oilChannelWidth: 1,
             waterChannelWidth: 1,
             radius: 1,
@@ -54,7 +54,7 @@ export default class DropletGeneratorT extends Template {
         };
 
         this.__maximum = {
-            // componentSpacing: 10000,
+            componentSpacing: 10000,
             oilChannelWidth: 2000,
             waterChannelWidth: 2000,
             height: 1200,
@@ -64,7 +64,7 @@ export default class DropletGeneratorT extends Template {
         };
 
         this.__featureParams = {
-            // componentSpacing: "componentSpacing",
+            componentSpacing: "componentSpacing",
             position: "position",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
@@ -75,7 +75,7 @@ export default class DropletGeneratorT extends Template {
         };
 
         this.__targetParams = {
-            // componentSpacing: "componentSpacing",
+            componentSpacing: "componentSpacing",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
             height: "height",
