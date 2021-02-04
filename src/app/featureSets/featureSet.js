@@ -43,6 +43,8 @@ import Sorter from "../library/sorter";
 import CapacitanceSensor from "../library/capacitancesensor";
 import Splitter from "../library/splitter";
 import Node from "../library/node";
+import DropletGeneratorT from "../library/dropletGeneratorT";
+import DropletGeneratorFlowFocus from "../library/dropletGeneratorFlowFocus";
 
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
@@ -116,7 +118,9 @@ export default class FeatureSet {
             Sorter: { object: new Sorter(), key: "FLOW" },
             Splitter: { object: new Splitter(), key: "FLOW" },
             CapacitanceSensor: { object: new CapacitanceSensor(), key: "FLOW" },
-            Node: {object: new Node(), key: "FLOW"}
+            Node: {object: new Node(), key: "FLOW"},
+            DropletGenT: { object: new DropletGeneratorT(), key: null },
+            DropletGenFlow: { object: new DropletGeneratorFlowFocus(), key: null }
         };
 
         // this.__checkDefinitions();
