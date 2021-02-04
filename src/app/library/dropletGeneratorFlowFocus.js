@@ -1,6 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
+import { RedFormat, TangentSpaceNormalMap } from "three";
 
 export default class DropletGeneratorFlowFocus extends Template {
     constructor() {
@@ -25,10 +26,10 @@ export default class DropletGeneratorFlowFocus extends Template {
 
         this.__defaults = {
             componentSpacing: 1000,
-            oilChannelWidth: 0.2 * 1000,
-            waterChannelWidth: 0.4 * 1000,
-            length: 0.8 * 1000,
-            radius: 200,
+            oilChannelWidth: 0.4 * 1000,
+            waterChannelWidth: 0.2 * 1000,
+            length: 3 * 1000,
+            radius: 500,
             angle: 45,
             height: 250,
             rotation: 0
@@ -56,7 +57,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__maximum = {
-            componentSpacing: 10000,
+            // componentSpacing: 10000,
             oilChannelWidth: 2000,
             waterChannelWidth: 2000,
             length: 20000,
@@ -67,7 +68,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__featureParams = {
-            componentSpacing: "componentSpacing",
+            // componentSpacing: "componentSpacing",
             position: "position",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
@@ -79,7 +80,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__targetParams = {
-            componentSpacing: "componentSpacing",
+            // componentSpacing: "componentSpacing",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
             length: "length",
@@ -101,16 +102,9 @@ export default class DropletGeneratorFlowFocus extends Template {
     }
 
     getPorts(params) {
-        let orificeSize = params["orificeSize"];
-        let orificeLength = params["orificeLength"];
-        let oilInputWidth = params["oilInputWidth"];
-        let waterInputWidth = params["waterInputWidth"];
-        let outputWidth = params["outputWidth"];
-        let outputLength = params["outputLength"];
-
         let ports = [];
 
-        ports.push(new ComponentPort(2*port / 2, -waterInputWidth / 2, "1", "FLOW"));
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
         //Out
         return ports;
@@ -130,17 +124,65 @@ export default class DropletGeneratorFlowFocus extends Template {
 
         let ret = new paper.CompoundPath();
 
-        let p = new paper.Point(x, y) ;
-        let pwater = new paper.Path.Circle( p , radius );
-        let poil1 = new paper.Path.Circle(new paper.Point(p.x - 5*radius, p.y), radius);
-        let poil2 = new paper.Path.Circle(new paper.Point(p.x + 5*radius, p.y), radius);
-        let size = new paper.Size(waterChannelWidth, 6*radius + length);
-        let centerchannel = paper.Path.Rectangle(new paper.Point(p.x - waterChannelWidth/2, p.y), size);
+        // middle path
+        let topLeft = new paper.Point(x - length/3 - 2 * length, y - waterChannelWidth/2);
+        let bottomRight = new paper.Point(x, y + waterChannelWidth/2);
 
-        ret.addChild(pwater);
-        ret.addChild(poil1);
-        ret.addChild(poil2);
-        ret.addChild(centerchannel);
+        ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        let circ = new paper.Path.Circle(new paper.Point(x - length/3 - 2 * length, y), radius);
+
+        ret.addChild(circ);
+        // top tilt path
+        let Hlength = length/Math.cos(angle * Math.PI / 180);
+
+        topLeft = new paper.Point(x - length/3 - Hlength, y - oilChannelWidth/2);
+        bottomRight = new paper.Point(x - length/3, y + oilChannelWidth/2);
+
+        let tiltBlock = new paper.Path.Rectangle(topLeft, bottomRight);
+        tiltBlock.rotate(angle, new paper.Point(x - length/3, y));
+
+        ret.addChild(tiltBlock);
+
+        // bottom tilt path
+        tiltBlock = new paper.Path.Rectangle(topLeft, bottomRight);
+        tiltBlock.rotate(-angle, new paper.Point(x - length/3, y));
+
+        ret.addChild(tiltBlock);
+
+        // top part
+        let disFromMid = Hlength * Math.sin(angle * Math.PI/180);
+        let angleS = 90 - angle;
+        let seamCover = oilChannelWidth/2 * Math.tan(angleS * Math.PI/180);
+
+        topLeft = new paper.Point(x - length/3 - length - oilChannelWidth/2, y - disFromMid - 2 * length/3 + seamCover);
+        bottomRight = new paper.Point(x - length/3 - length + oilChannelWidth/2, y - disFromMid + seamCover);
+
+        ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        topLeft = new paper.Point(x - length/3 - 2 * length, y - disFromMid - 2 * length/3 + seamCover);
+        bottomRight = new paper.Point(x - length/3 - length - oilChannelWidth/2, y - disFromMid - 2 * length/3 + oilChannelWidth + seamCover);
+
+        ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        circ = paper.Path.Circle(new paper.Point(x - length/3 - 2 * length, y - disFromMid - 2 * length/3 + seamCover + oilChannelWidth/2), radius);
+
+        ret.addChild(circ);
+
+        // bottom part
+        topLeft = new paper.Point(x - length/3 - length - oilChannelWidth/2, y + disFromMid + 2 * length/3 - seamCover);
+        bottomRight = new paper.Point(x - length/3 - length + oilChannelWidth/2, y + disFromMid - seamCover);
+
+        ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        topLeft = new paper.Point(x - length/3 - 2 * length, y + disFromMid + 2 * length/3 - seamCover);
+        bottomRight = new paper.Point(x - length/3 - length - oilChannelWidth/2, y + disFromMid + 2 * length/3 - oilChannelWidth - seamCover);
+
+        ret.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        circ = paper.Path.Circle(new paper.Point(x - length/3 - 2 * length, y + disFromMid + 2 * length/3 - seamCover - oilChannelWidth/2), radius);
+
+        ret.addChild(circ);
 
         //Rotate the geometry
         ret.rotate(-rotation, new paper.Point(pos[0], pos[1]));

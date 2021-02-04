@@ -1221,6 +1221,8 @@ export default class ViewManager {
         this.tools["Sorter"] = new ComponentPositionTool("Sorter", "Basic");
         this.tools["Splitter"] = new ComponentPositionTool("Splitter", "Basic");
         this.tools["CapacitanceSensor"] = new ComponentPositionTool("CapacitanceSensor", "Basic");
+        this.tools["DropletGenT"] = new ComponentPositionTool("DropletGenT", "Basic");
+        this.tools["DropletGenFlow"] = new ComponentPositionTool("DropletGenFlow", "Basic");
     }
 
     /**

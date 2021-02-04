@@ -61,6 +61,8 @@ export default class ComponentToolBar {
         this.__sorterButton = document.getElementById("sorter_button");
         this.__splitterButton = document.getElementById("splitter_button");
         this.__capacitancesensorButton = document.getElementById("capacitancesensor_button");
+        this.__dropletgenTButton = document.getElementById("dropletgenT_button");
+        this.__dropletgenFlowButton = document.getElementById("dropletgenFlow_button");
 
         //Create all the parameter menu buttons
 
@@ -109,6 +111,8 @@ export default class ComponentToolBar {
         this.__sorterParams = document.getElementById("sorter_params_button");
         this.__splitterParams = document.getElementById("splitter_params_button");
         this.__capacitancesensorParams = document.getElementById("capacitancesensor_params_button");
+        this.__dropletgenTParams = document.getElementById("dropletgenT_params_button");
+        this.__dropletgenFlowParams = document.getElementById("dropletgenFlow_params_button")
 
         this.buttons = {
             SelectButton: this.__selectToolButton,
@@ -155,7 +159,9 @@ export default class ComponentToolBar {
             PicoInjection: this.__picoinjectionButton,
             Sorter: this.__sorterButton,
             Splitter: this.__splitterButton,
-            CapacitanceSensor: this.__capacitancesensorButton
+            CapacitanceSensor: this.__capacitancesensorButton,
+            DropletGenT: this.__dropletgenTButton,
+            DropletGenFlow: this.__dropletgenFlowButton
         };
             
 
@@ -383,6 +389,20 @@ export default class ComponentToolBar {
         };
 
         //new
+        this.__dropletgenTButton.onclick = function() {
+            Registry.viewManager.activateTool("DropletGenT");
+
+            ref.setActiveButton("DropletGenT");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+
+        this.__dropletgenFlowButton.onclick = function() {
+            Registry.viewManager.activateTool("DropletGenFlow");
+
+            ref.setActiveButton("DropletGenFlow");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+
         this.__filterButton.onclick = function() {
             Registry.viewManager.activateTool("Filter");
 
@@ -509,6 +529,8 @@ export default class ComponentToolBar {
         this.__sorterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Sorter", "Basic");
         this.__splitterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Splitter", "Basic");
         this.__capacitancesensorParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CapacitanceSensor", "Basic");
+        this.__dropletgenTParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenT", "Basic");
+        this.__dropletgenFlowParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenFlow", "Basic");
     }
 
     static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {
