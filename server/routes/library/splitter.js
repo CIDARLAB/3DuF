@@ -105,7 +105,7 @@ export default class Splitter extends Template{
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "SPLITTER";
+        this.__mint = "DROPLET SPLITTER";
     }
 
     getPorts(params) {

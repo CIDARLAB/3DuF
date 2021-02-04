@@ -174,7 +174,7 @@ export default class Sorter extends Template{
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "SORTER";
+        this.__mint = "DROPLET SORTER";
     }
 
     getPorts(params) {

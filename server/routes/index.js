@@ -24,6 +24,7 @@ import Node from "./library/node";
 import CellTrapS from "./library/celltrapS";
 import CellTrapL from "./library/celltrapL";
 import LogicArray from "./library/logicArray";
+import PicoInjection from "./library/picoinjection";
 
 import paper, { Key } from "paper";
 
