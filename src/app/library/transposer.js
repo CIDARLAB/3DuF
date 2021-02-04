@@ -273,7 +273,7 @@ export default class Transposer extends Template {
         let radius = params["valveRadius"];
         let color = params["color"];
         let rotation = params["rotation"];
-        let channelWidth = params["channelWidth"];
+        let channelWidth = params["controlChannelWidth"];
         let valvespacing = params["valveSpacing"];
         let transposer_control = new paper.CompoundPath();
 
