@@ -23,7 +23,8 @@ export default class ThreeDMux extends Template{
             width: "Float",
             length: "Float",
             valveSpacing: "Float",
-            channelWidth: "Float"
+            channelWidth: "Float",
+            controlChannelWidth: "Float"
         };
 
         this.__defaults = {
@@ -37,7 +38,8 @@ export default class ThreeDMux extends Template{
             width: 100,
             length: 100,
             valveSpacing: 0.6 * 1000,
-            channelWidth: 500
+            channelWidth: 500,
+            controlChannelWidth: 200
         };
 
         this.__units = {
@@ -51,7 +53,8 @@ export default class ThreeDMux extends Template{
             width: "&mu;m",
             length: "&mu;m",
             valveSpacing: "&mu;m",
-            channelWidth: "&mu;m"
+            channelWidth: "&mu;m",
+            controlChannelWidth: "&mu;m"
         };
 
         this.__minimum = {
@@ -65,7 +68,8 @@ export default class ThreeDMux extends Template{
             width: 100,
             length: 100,
             valveSpacing: 0.1 * 1000,
-            channelWidth: 25
+            channelWidth: 25,
+            controlChannelWidth: 10
         };
 
         this.__maximum = {
@@ -79,7 +83,8 @@ export default class ThreeDMux extends Template{
             width: 100,
             length: 100,
             valveSpacing: 0.1 * 10000,
-            channelWidth: 25e3
+            channelWidth: 25e3,
+            controlChannelWidth: 1000
         };
 
         this.__featureParams = {
@@ -95,7 +100,8 @@ export default class ThreeDMux extends Template{
             width: "width",
             length: "length",
             valveSpacing: "valveSpacing",
-            channelWidth: "channelWidth"
+            channelWidth: "channelWidth",
+            controlChannelWidth: "controlChannelWidth"
         };
 
         this.__targetParams = {
@@ -111,7 +117,8 @@ export default class ThreeDMux extends Template{
             width: "width",
             length: "length",
             valveSpacing: "valveSpacing",
-            channelWidth: "channelWidth"
+            channelWidth: "channelWidth",
+            controlChannelWidth: "controlChannelWidth"
         };
 
         this.__placementTool = "MultilayerPositionTool";
@@ -122,7 +129,7 @@ export default class ThreeDMux extends Template{
 
         this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
 
-        this.__mint = "3DMUX";
+        this.__mint = "MUX3D";
     }
 
     render2D(params, key) {
@@ -326,7 +333,7 @@ export default class ThreeDMux extends Template{
         let radius = params["valveRadius"];
         let color = params["color"];
         let rotation = params["rotation"];
-        let channelWidth = params["channelWidth"];
+        let channelWidth = params["controlChannelWidth"];
         let threedmux_control = new paper.CompoundPath();
 
         
@@ -334,7 +341,17 @@ export default class ThreeDMux extends Template{
         let px = position[0];
         let py = position[1];
 
-        let N = params["inputNumber"]; //change this to input
+        let ins = params["in"];
+        let outs = params["out"];
+
+        let N 
+        if( ins < outs){
+            N = outs;
+        }else{
+            N = ins;
+            rotation += 180;
+        }
+
         let bottomlinelength = N * 4000; //modify, so it depends on the input N
         let vertlinelength = N * 3000; //same as above
 
