@@ -48,6 +48,8 @@ import { Examples } from "../index";
 import Feature from "../core/feature";
 import Layer from "../core/layer";
 import Component from "../core/component";
+
+import ControlCellPositionTool from "./tools/controlCellPositionTool";
 /**
  * View manager class
  */
@@ -1223,6 +1225,7 @@ export default class ViewManager {
         this.tools["CapacitanceSensor"] = new ComponentPositionTool("CapacitanceSensor", "Basic");
         this.tools["DropletGenT"] = new ComponentPositionTool("DropletGenT", "Basic");
         this.tools["DropletGenFlow"] = new ComponentPositionTool("DropletGenFlow", "Basic");
+        this.tools["LogicArray"] = new ControlCellPositionTool("LogicArray", "Basic")
     }
 
     /**

@@ -63,6 +63,7 @@ export default class ComponentToolBar {
         this.__capacitancesensorButton = document.getElementById("capacitancesensor_button");
         this.__dropletgenTButton = document.getElementById("dropletgenT_button");
         this.__dropletgenFlowButton = document.getElementById("dropletgenFlow_button");
+        this.__logicarrayButton = document.getElementById("logicarray_button");
 
         //Create all the parameter menu buttons
 
@@ -112,7 +113,8 @@ export default class ComponentToolBar {
         this.__splitterParams = document.getElementById("splitter_params_button");
         this.__capacitancesensorParams = document.getElementById("capacitancesensor_params_button");
         this.__dropletgenTParams = document.getElementById("dropletgenT_params_button");
-        this.__dropletgenFlowParams = document.getElementById("dropletgenFlow_params_button")
+        this.__dropletgenFlowParams = document.getElementById("dropletgenFlow_params_button");
+        this.__logicarrayParams = document.getElementById("logicarray_params_button");
 
         this.buttons = {
             SelectButton: this.__selectToolButton,
@@ -161,7 +163,8 @@ export default class ComponentToolBar {
             Splitter: this.__splitterButton,
             CapacitanceSensor: this.__capacitancesensorButton,
             DropletGenT: this.__dropletgenTButton,
-            DropletGenFlow: this.__dropletgenFlowButton
+            DropletGenFlow: this.__dropletgenFlowButton,
+            LogicArray: this.__logicarrayButton
         };
             
 
@@ -466,6 +469,12 @@ export default class ComponentToolBar {
             ref.setActiveButton("CapacitanceSensor");
             ref.__viewManagerDelegate.switchTo2D();
         };
+        this.__logicarrayButton.onclick = function() {
+            Registry.viewManager.activateTool("LogicArray");
+
+            ref.setActiveButton("LogicArray");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
     }
 
     setActiveButton(feature) {
@@ -531,6 +540,7 @@ export default class ComponentToolBar {
         this.__capacitancesensorParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CapacitanceSensor", "Basic");
         this.__dropletgenTParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenT", "Basic");
         this.__dropletgenFlowParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenFlow", "Basic");
+        this.__logicarrayParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LogicArray", "Basic");
     }
 
     static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {
