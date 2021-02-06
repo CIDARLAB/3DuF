@@ -45,7 +45,6 @@ export default class GradientGenerator extends Template {
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            
             in: "",
             out: "",
             spacing: "&mu;m",
@@ -63,7 +62,8 @@ export default class GradientGenerator extends Template {
             in: 1,
             out: 3,
             spacing: 10,
-            height: 10
+            height: 10,
+            rotation: 0,
         };
 
         this.__maximum = {
@@ -76,7 +76,8 @@ export default class GradientGenerator extends Template {
             in: 30,
             out: 90,
             spacing: 90000,
-            height: 1200
+            height: 1200,
+            rotation: 360
         };
 
         this.__featureParams = {
@@ -116,12 +117,9 @@ export default class GradientGenerator extends Template {
     }
 
     getPorts(params) {
-        let position = params["position"];
         let bendSpacing = params["bendSpacing"];
         let numBends = params["numberOfBends"];
         let channelWidth = params["channelWidth"];
-        let bendLength = params["bendLength"];
-        let rotation = params["rotation"];
         let invalue = params["in"];
         let outvalue = params["out"];
         let spacing = params["spacing"]; //Center to Center
@@ -155,12 +153,12 @@ export default class GradientGenerator extends Template {
         totalstagewidth = (stagevalue - 1) * spacing;
 
         xref = - totalstagewidth / 2;
-        yref = stagelength * (stagevalue - invalue);
+        yref = stagelength * (stagevalue - invalue + 1);
 
         for(var i = 0; i < outvalue; i++){
             //Generate the ports for each of the outputs
             let x = xref + spacing * i + channelWidth/2;
-            ports.push(new ComponentPort(x, fullLength, (invalue+1+i).toString(), "FLOW"));
+            ports.push(new ComponentPort(x, yref + channelWidth, (invalue+1+i).toString(), "FLOW"));
         }
 
         return ports;
@@ -240,7 +238,7 @@ export default class GradientGenerator extends Template {
         gradientgenerator.fillColor = color;
         // console.log("testing");
 
-        gradientgenerator.rotate(-rotation, new paper.Point(posx, posy));
+        gradientgenerator.rotate(rotation, new paper.Point(posx, posy));
 
         return gradientgenerator;
     }
