@@ -18,7 +18,7 @@ export default class Transposer extends Template {
             height: "Float",
             valveGap: "Float",
             valveSpacing: "Float",
-            channelWidth: "Float"
+            controlChannelWidth: "Float"
         };
 
         this.__defaults = {
@@ -29,7 +29,7 @@ export default class Transposer extends Template {
             valveGap: 0.6 * 1000,
             valveSpacing: 0.6 * 1000,
             flowChannelWidth: 500,
-            controlChannelWidth: 50
+            controlChannelWidth: 500
         };
 
         this.__units = {
