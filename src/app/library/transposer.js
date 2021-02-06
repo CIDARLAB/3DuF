@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Transposer extends Template {
     constructor() {
@@ -18,6 +19,7 @@ export default class Transposer extends Template {
             height: "Float",
             valveGap: "Float",
             valveSpacing: "Float",
+            flowChannelWidth: "Float",
             controlChannelWidth: "Float"
         };
 
@@ -96,6 +98,24 @@ export default class Transposer extends Template {
         this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
 
         this.__mint = "TRANSPOSER";
+    }
+
+    getPorts(params) {
+        let ports = [];
+        let position = params["position"];
+        let valveGap = params["valveGap"];
+        let radius = params["valveRadius"];
+        let color = params["color"];
+        let rotation = params["rotation"];
+        let channelWidth = params["flowChannelWidth"];
+        let valvespacing = params["valveSpacing"];
+
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(6 * valvespacing + 4 * radius + 3 * channelWidth, 0, "2", "FLOW"));
+        ports.push(new ComponentPort(0, 2 * channelWidth + 4 * valvespacing + 2 * 2 * radius, "3", "FLOW"));
+        ports.push(new ComponentPort(6 * valvespacing + 4 * radius + 3 * channelWidth, 2 * channelWidth + 4 * valvespacing + 2 * 2 * radius, "4", "FLOW"));
+
+        return ports;
     }
 
     render2D(params, key="FLOW") {
