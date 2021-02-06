@@ -102,11 +102,8 @@ export default class Transposer extends Template {
 
     getPorts(params) {
         let ports = [];
-        let position = params["position"];
-        let valveGap = params["valveGap"];
+  
         let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
         let channelWidth = params["flowChannelWidth"];
         let valvespacing = params["valveSpacing"];
 
