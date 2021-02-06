@@ -207,7 +207,7 @@ export default class Mux extends Template {
     }
 
     getPorts(params) {
-        let position = params["position"];
+        let ports = [];
         let cw = params["flowChannelWidth"];
         let spacing = params["spacing"];
         let ins = params["in"];
@@ -219,24 +219,50 @@ export default class Mux extends Template {
             leafs = ins;
         }
         let stagelength = params["stageLength"];
-        let valvelength = params["length"];
-        let valvewidth = params["width"];
-
-        let ports = [];
 
         let levels = Math.ceil(Math.log2(leafs));
+        let w = spacing * (leafs / 2 + 1);
 
-        let w = (leafs - 1) * spacing + leafs * cw + valvewidth;
+        let length = levels * (cw + stagelength) + stagelength;
+        let width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels); 
 
-        ports.push(new ComponentPort(w/2, 0, "1", "FLOW"));
 
-        for(var i = 0; i < leafs; i++){
-            //TODO - All the output ports
-            ports.push(new ComponentPort((i * spacing) + ((i+1) * cw/2), levels * stagelength , (i+2), "FLOW"));
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));        
+
+        for (let i = 0; i < leafs; i++){
+            ports.push(new ComponentPort((leafs - 1) * width/2 - i * width, length, (2 + i).toString(), "FLOW"));
         }
 
+        let count = 2 + leafs;
+        let lstartx = - 0.5 * (cw + spacing);
+        let lendx = lstartx + cw;
+        let lstarty = stagelength + cw;
+        let lendy = lstarty + stagelength;
 
-        //Control ports
+        let lcenterx = (lstartx + lendx) / 2;
+        let lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
+        let valvewidth = params["width"];
+
+        let treeWidth = (leafs - 1) * spacing + leafs * cw + valvewidth;
+
+        let leftEdge = - treeWidth / 2;
+        let rightEdge = treeWidth / 2;
+
+        let rstartx = 0.5 * (spacing - cw);
+        let rendx = rstartx + cw;
+        let rstarty = stagelength + cw;
+        let rendy = rstarty + stagelength;
+
+        let rcenterx = (rstartx + rendx) / 2;
+        let rcentery = rstarty + (Math.abs(rstarty - rendy) * 3) / 4;
+
+        for (let i = 0; i < Math.log2(leafs); i++){
+            ports.push(new ComponentPort(leftEdge, i * (cw + stagelength) + lcentery, count.toString(), "CONTROL"));
+            count++;
+            ports.push(new ComponentPort(rightEdge, i * (cw + stagelength) + rcentery, count.toString(), "CONTROL"));
+            count++;
+        }
+
         return ports;
     }
 
