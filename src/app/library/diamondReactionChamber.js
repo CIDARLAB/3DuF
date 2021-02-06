@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class DiamondReactionChamber extends Template {
     constructor() {
@@ -44,7 +45,7 @@ export default class DiamondReactionChamber extends Template {
             width: 30,
             length: 120,
             height: 10,
-            roation: 0
+            rotation: 0
         };
 
         this.__maximum = {
@@ -91,9 +92,9 @@ export default class DiamondReactionChamber extends Template {
 
         let ports = [];
 
-        ports.push(new ComponentPort(channelWidth/2 + w, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(- l/2, 0, "1", "FLOW"));
 
-        ports.push(new ComponentPort(channelWidth/2 + w, 0, l, "2", "FLOW"));
+        ports.push(new ComponentPort(l/2, 0, 0, "2", "FLOW"));
 
         return ports;
     }
@@ -124,7 +125,7 @@ export default class DiamondReactionChamber extends Template {
         hex.closed = true;
         hex.rotate(rotation, new paper.Point(px, py));
         hex.fillColor = color;
-        return hex.rotate(rotation, px, py);
+        return hex;
     }
 
     render2DTarget(key, params) {
