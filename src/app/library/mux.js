@@ -276,6 +276,7 @@ export default class Mux extends Template {
 
     render2DTarget(key, params) {
         let render = this.render2D(params, "FLOW");
+        render.addChild(this.render2D(params, "CONTROL"));
         render.fillColor.alpha = 0.5;
         return render;
     }
