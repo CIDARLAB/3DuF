@@ -8,7 +8,7 @@ import PositionTool from "./positionTool";
 
 export default class CopyTool extends PositionTool {
     constructor(typeString, setString, selection) {
-        super(typeString, setString);  // typeString == CopyString, setString == Copy
+        super(typeString, setString);  // typeString == "CopyTool", setString == "Basic"
         this.__selection = selection;  // Selection, what we are copying
     }
 

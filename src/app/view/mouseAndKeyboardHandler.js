@@ -126,6 +126,8 @@ export default class MouseAndKeyboardHandler {
                 let pastedFeatures = selection.getFeatureIDs();
                 if (pastedFeatures.length > 0) {
                     reference.activateTool("CopyTool");
+                } else {
+                    console.error("No features to paste");
                 }
                 
                 // if (pasteboardFeatures.length == 1) {  // 1 feature

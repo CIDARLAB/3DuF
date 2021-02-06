@@ -151,15 +151,6 @@ export default class ViewManager {
      */
     initiateCopy() {
         this.selection = this.view.getSelectedFeatures();
-
-
-        // if (selectedFeatures.length > 0) {
-        //     for (let i = 0; i < selectedFeatures.length; i++) {
-        //         this.pasteboard[i] = selectedFeatures[i];
-        //     }
-        //     console.log("initiateCopy");
-        //     console.log(this.pasteboard);
-        // }
     }
     /**
      * Initiating the zoom toolbar
@@ -991,7 +982,7 @@ export default class ViewManager {
             //Cleanup job when activating new tool
             this.view.clearSelectedItems();
 
-            this.mouseAndKeyboardHandler.leftMouseTool = new CopyTool(toolString, "Copy", this.selection);
+            this.mouseAndKeyboardHandler.leftMouseTool = new CopyTool(toolString, "Basic", this.selection);
         } else {
             if (this.tools[toolString] == null) {
                 throw new Error("Could not find tool with the matching string");

@@ -607,10 +607,34 @@ export default class PaperView {
      */
     addTarget(featureType, set, position) {
         this.removeTarget();
-        this.lastTargetType = featureType;
-        this.lastTargetPosition = position;
-        this.lastTargetSet = set;
-        this.updateTarget();
+        if (featureType === "CopyTool") {  // render the preview of the copied selection
+            let selection = this.__viewManagerDelegate.selection;
+            let referencepoint = selection.getReferencePoint();  // calculate position of where to render target
+            let featureIDs = selection.getFeatureIDs();
+            let [x,y] = position;
+            for (let i=0;i<featureIDs.length;i++) {
+                let render = Registry.currentDevice.getFeatureByID(featureIDs[i]); // which feature
+                let type = render.getType(); // Get the type of each item
+
+                let newx = referencepoint.x - render.bounds.x;
+                newx = x + newx;
+                let newy = referencepoint.y - render.bounds.y;
+                newy = y + newy;
+
+
+                let newPosition = [newx,newy]
+
+                this.lastTargetType = type;
+                this.lastTargetPosition = newPosition;
+                this.lastTargetSet = set;
+                this.updateTarget();
+            } 
+        } else {
+            this.lastTargetType = featureType;
+            this.lastTargetPosition = position;
+            this.lastTargetSet = set;
+            this.updateTarget();
+        }
     }
 
     /**

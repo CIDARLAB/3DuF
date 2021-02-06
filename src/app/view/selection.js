@@ -21,6 +21,7 @@ export default class Selection {
                 if (feature == null) {
                     console.log("Other Feature Selected");
                     feature = Registry.currentDevice.getFeatureByID(items[i]);
+                    if (feature)
                     console.log(feature);
                     console.log(items[i]);
                     this.__otherFeatures.push(items[i]);
@@ -44,6 +45,9 @@ export default class Selection {
         return ret;
     }
 
+    getReferencePoint() {
+        return this.__bounds;
+    }
     /**
      * Generates a replica
      * @param {number} x X coordinate for here the selection should be replicated
@@ -63,27 +67,28 @@ export default class Selection {
 
 
         for (let i in this.__components) {
-            let render = Registry.currentDevice.getComponentByID(this.__components[i]);
-            let newx = referencepoint.x + render.bounds.x;
-            newx -= x;
-            let newy = referencepoint.y - render.bounds.y;
-            newy += y;
-            let newComponent = render.replicate(newx,newy);
-            Registry.currentDevice.addComponent(newComponent);
-            console.log("registry added replicated device");
-        }
-
-        for (let i in this.__connections) {
-            let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
-            let replica = render.replicate(x,y);
-        }
-
-        for (let i in this.__otherFeatures) {
             let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
             let newx = referencepoint.x - render.bounds.x;
             newx = x + newx;
             console.log("newx: ", newx);
             let newy = referencepoint.y - render.bounds.y;
+            newy = y + newy;
+            console.log("newy: ", newy);
+            let newComponent = render.replicate(newx, newy);
+            Registry.currentDevice.addComponent(newComponent);
+        }
+
+        for (let i in this.__connections) {
+            // let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+            // let replica = render.replicate(x,y);
+        }
+
+        for (let i in this.__otherFeatures) {
+            let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+            let newx = render.bounds.x -referencepoint.x;
+            newx = x + newx;
+            console.log("newx: ", newx);
+            let newy = render.bounds.y - referencepoint.y;
             newy = y + newy;
             console.log("newy: ", newy);
             let replica = render.replicate(newx,newy);
@@ -147,11 +152,11 @@ export default class Selection {
             if (bounds.y < ymin) {
                 ymin = bounds.y;
             }
-            if (bounds.x + bounds.width > xmax) {
-                xmax = bounds.x + bounds.width;
+            if (bounds.x > xmax) {
+                xmax = bounds.x;
             }
-            if (bounds.y + bounds.height > ymax) {
-                ymax = bounds.y + bounds.height;
+            if (bounds.y > ymax) {
+                ymax = bounds.y;
             }
         }
 
@@ -164,11 +169,11 @@ export default class Selection {
             if (bounds.y < ymin) {
                 ymin = bounds.y;
             }
-            if (bounds.x + bounds.width > xmax) {
-                xmax = bounds.x + bounds.width;
+            if (bounds.x > xmax) {
+                xmax = bounds.x;
             }
-            if (bounds.y + bounds.height > ymax) {
-                ymax = bounds.y + bounds.height;
+            if (bounds.y > ymax) {
+                ymax = bounds.y;
             }
         }
 
