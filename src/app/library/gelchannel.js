@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Gelchannel extends Template {
     constructor() {
@@ -15,7 +16,7 @@ export default class Gelchannel extends Template {
             componentSpacing: "Float",
             sideWidth: "Float",
             mainWidth: "Float",
-            orientation: "String",
+            rotation: "Float",
             length: "Float",
             height: "Float",
             sideheight: "Float"
@@ -25,7 +26,7 @@ export default class Gelchannel extends Template {
             componentSpacing: 1000,
             sideWidth: 200,
             mainWidth: 500,
-            orientation: "H",
+            rotation: 0,
             length: 3000,
             height: 250,
             sideheight: 50
@@ -35,7 +36,7 @@ export default class Gelchannel extends Template {
             componentSpacing: "&mu;m",
             sideWidth: "&mu;m",
             mainWidth: "&mu;m",
-            orientation: "",
+            rotation: "&deg;",
             length: "&mu;m",
             height: "&mu;m",
             sideheight: "&mu;m"
@@ -47,7 +48,8 @@ export default class Gelchannel extends Template {
             mainWidth: 10,
             length: 1000,
             height: 10,
-            sideheight: 10
+            sideheight: 10,
+            rotation: 0
         };
 
         this.__maximum = {
@@ -56,13 +58,14 @@ export default class Gelchannel extends Template {
             mainWidth: 500,
             length: 100*1000,
             height: 1200,
-            sideheight: 1200
+            sideheight: 1200,
+            rotation: 360
         };
 
         this.__featureParams = {
             componentSpacing: "componentSpacing",
             position: "position",
-            orientation: "orientation",
+            rotation: "rotation",
             length: "length",
             sideWidth: "sideWidth",
             mainWidth: "mainWidth",
@@ -72,7 +75,7 @@ export default class Gelchannel extends Template {
 
         this.__targetParams = {
             componentSpacing: "componentSpacing",
-            orientation: "orientation",
+            rotation: "rotation",
             length: "length",
             sideWidth: "sideWidth",
             mainWidth: "mainWidth",
@@ -91,6 +94,19 @@ export default class Gelchannel extends Template {
         this.__mint = "LONG CELL TRAP";
     }
 
+    getPorts(params) {
+        let ports = [];
+        let sideWidth = params["sideWidth"];
+        let numChambers = 2;
+        let length = params["length"];
+        let mainWidth = params["mainWidth"];
+
+        ports.push(new ComponentPort(0, sideWidth + mainWidth/2, "1", "FLOW"));
+        ports.push(new ComponentPort((numChambers / 2) * (length + 60) + 60, sideWidth + mainWidth/2, "2", "FLOW"));
+
+        return ports;
+    }
+
     render2D(params, key) {
         if (key == "FLOW") {
             return this.__drawFlow(params);
@@ -100,106 +116,47 @@ export default class Gelchannel extends Template {
     }
 
     render2DTarget(key, params) {
-        let orientation = params["orientation"];
-        let position = params["position"];
-        let sideWidth = params["sideWidth"];
-        let numChambers = 2;
-        let length = params["length"];
-        let mainWidth = params["mainWidth"];
-        let color = params["color"];
-        let x = position[0];
-        let y = position[1];
-
-        let chamberList = [];
-        let rec;
-        let traps;
-        let channels;
-
-        if (orientation == "V") {
-            for (let i = 0; i < numChambers / 2; i++) {
-                rec = paper.Path.Rectangle({
-                    size: [2 * sideWidth + mainWidth, length],
-                    point: [x, y + i * (length + 60) + 60],
-                    fillColor: color,
-                    strokeWidth: 0
-                });
-                chamberList.push(rec);
-            }
-            channels = paper.Path.Rectangle({
-                point: [x + sideWidth, y],
-                size: [mainWidth, (numChambers / 2) * (length + 60) + 60],
-                fillColor: color,
-                strokeWidth: 0
-            });
-            chamberList.push(channels);
-        } else {
-            for (let i = 0; i < numChambers / 2; i++) {
-                rec = paper.Path.Rectangle({
-                    size: [length, 2 * sideWidth + mainWidth],
-                    point: [x + i * (length + 60) + 60, y],
-                    fillColor: color,
-                    strokeWidth: 0
-                });
-                chamberList.push(rec);
-            }
-            channels = paper.Path.Rectangle({
-                point: [x, y + sideWidth],
-                size: [(numChambers / 2) * (length + 60) + 60, mainWidth],
-                fillColor: color,
-                strokeWidth: 0
-            });
-            chamberList.push(channels);
-        }
-        traps = new paper.CompoundPath(chamberList);
-        traps.fillColor = color;
+        let traps = this.__drawFlow(params);
+        traps.addChild(this.__drawCell(params));
         traps.fillColor.alpha = 0.5;
         return traps;
     }
 
     __drawFlow(params) {
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let position = params["position"];
         let sideWidth = params["sideWidth"];
         let numChambers = 2;
         let length = params["length"];
         let mainWidth = params["mainWidth"];
 
-        console.log(orientation, position, sideWidth, numChambers, length, mainWidth, 60);
+        console.log(rotation, position, sideWidth, numChambers, length, mainWidth, 60);
         let color = params["color"];
         let x = position[0];
         let y = position[1];
         let chamberList = new paper.CompoundPath();
         chamberList.fillColor = color;
-        let rec;
         let traps;
         let channels;
-        if (orientation == "V") {
-            let startPoint = new paper.Point(x + sideWidth, y);
-            channels = new paper.Path.Rectangle({
-                point: startPoint,
-                size: [mainWidth, (numChambers / 2) * (length + 60) + 60],
-                fillColor: color,
-                strokeWidth: 0
-            });
-            chamberList.addChild(channels);
-        } else {
-            let startPoint = new paper.Point(x, y + sideWidth);
-            channels = new paper.Path.Rectangle({
-                point: startPoint,
-                size: [(numChambers / 2) * (length + 60) + 60, mainWidth],
-                fillColor: color,
-                strokeWidth: 0
-            });
-            chamberList.addChild(channels);
-        }
+
+        let startPoint = new paper.Point(x, y + sideWidth);
+        channels = new paper.Path.Rectangle({
+            point: startPoint,
+            size: [(numChambers / 2) * (length + 60) + 60, mainWidth],
+            fillColor: color,
+            strokeWidth: 0
+        });
+        chamberList.addChild(channels);
+        
         traps = new paper.CompoundPath(chamberList);
         traps.fillColor = color;
         let center = new paper.Point(position[0], position[1]);
+        traps.rotate(rotation, center);
         return traps;
     }
 
     __drawCell(params) {
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let position = params["position"];
         let sideWidth = params["sideWidth"];
         let numChambers = 2;
@@ -210,31 +167,21 @@ export default class Gelchannel extends Template {
         let y = position[1];
         let chamberList = new paper.CompoundPath();
         let rec;
-        if (orientation == "V") {
-            for (let i = 0; i < numChambers / 2; i++) {
-                let startPoint = new paper.Point(x, y + i * (length + 60) + 60);
-                rec = new paper.Path.Rectangle({
-                    size: [2 * sideWidth + mainWidth, length],
-                    point: startPoint,
-                    fillColor: color,
-                    strokeWidth: 0
-                });
-                chamberList.addChild(rec);
-            }
-        } else {
-            for (let i = 0; i < numChambers / 2; i++) {
-                let startPoint = new paper.Point(x + i * (length + 60) + 60, y);
-                rec = paper.Path.Rectangle({
-                    size: [length, 2 * sideWidth + mainWidth],
-                    point: startPoint,
-                    fillColor: color,
-                    strokeWidth: 0
-                });
-                chamberList.addChild(rec);
-            }
+
+        for (let i = 0; i < numChambers / 2; i++) {
+            let startPoint = new paper.Point(x + i * (length + 60) + 60, y);
+            rec = paper.Path.Rectangle({
+                size: [length, 2 * sideWidth + mainWidth],
+                point: startPoint,
+                fillColor: color,
+                strokeWidth: 0
+            });
+            chamberList.addChild(rec);
         }
+    
         chamberList.fillColor = color;
         let center = new paper.Point(x, y);
+        chamberList.rotate(rotation, center);
         return chamberList;
     }
 }
