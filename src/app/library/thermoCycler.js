@@ -20,6 +20,7 @@ export default class thermoCycler extends Template{
       temperature : "Float"
     };
     this.__defaults = {
+      componentSpacing: 1000,
       rotation : 0,
       width : 20 * 1000,
       length : 40 * 1000,
@@ -27,6 +28,7 @@ export default class thermoCycler extends Template{
       temperature : 0.03 * 1000
     };
     this.__units = {
+      componentSpacing: "&mu;m",
       rotation : "&deg",
       width : "&mu;m",
       length : "&mu;m",
@@ -34,6 +36,7 @@ export default class thermoCycler extends Template{
       temperature : "°C"
     };
     this.__minimum = {
+      componentSpacing: 0,
       rotation : 0,
       width : 10 * 1000,
       length : 10 * 1000,
@@ -41,6 +44,7 @@ export default class thermoCycler extends Template{
       temperature : 0 * 1000
     };
     this.__maximum = {
+      componentSpacing: 10000,
       rotation : 90,
       width : 60 * 1000,
       length : 60 * 1000,
@@ -53,7 +57,7 @@ export default class thermoCycler extends Template{
     };
 
     this.__featureParams = {
-            componentSpacing: "componentSpacing",
+      componentSpacing: "componentSpacing",
       position : "position",
       rotation : "rotation",
       length: "length",
@@ -62,7 +66,7 @@ export default class thermoCycler extends Template{
     };
 
     this.__targetParams = {
-            componentSpacing: "componentSpacing",
+      componentSpacing: "componentSpacing",
       rotation : "rotation",
       length: "length",
       width: "width",
