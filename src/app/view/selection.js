@@ -1,5 +1,8 @@
 import paper from "paper";
 import * as Registry from "../core/registry";
+import Feature from "../core/feature";
+import Params from "../core/params";
+import Component from "../core/component";
 
 /**
  * Selection class
@@ -15,17 +18,24 @@ export default class Selection {
         this.__otherFeatures = [];
         //Sort out where each of the items selected belongs to one of the following
         for (let i in items) {  // query if its a component, connection or other feature
-            let feature = Registry.currentDevice.getComponentByID(items[i]); 
+            let feature = Registry.currentDevice.getComponentByID(items[i]);
             if (feature == null) {
                 feature = Registry.currentDevice.getConnectionByID(items[i]);
                 if (feature == null) {
-                    console.log("Other Feature Selected");
                     feature = Registry.currentDevice.getFeatureByID(items[i]);
-                    if (feature)
                     console.log(feature);
                     console.log(items[i]);
-                    this.__otherFeatures.push(items[i]);
+                    if (feature.__type === "Connection") {
+                        console.log("Connection Feature Selected");
+                        this.__connections.push(items[i]);
+                    } else if (feature.__type === "EDGE") {
+                        // ignore the edge
+                    } else {
+                        console.log("Other Feature Selected");
+                        this.__otherFeatures.push(items[i]);
+                    }
                 } else {
+                    console.log("Connection:",feature);
                     console.log("Connection Feature Selected");
                     this.__connections.push(items[i]);
                 }
@@ -81,6 +91,7 @@ export default class Selection {
         for (let i in this.__connections) {
             // let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
             // let replica = render.replicate(x,y);
+            console.log("implement connections");
         }
 
         for (let i in this.__otherFeatures) {
@@ -93,6 +104,33 @@ export default class Selection {
             console.log("newy: ", newy);
             let replica = render.replicate(newx,newy);
             Registry.currentLayer.addFeature(replica);
+
+            // if component do this
+            let featureIDs = [];
+            featureIDs.push(this.__otherFeatures[i]);
+            let typeString = replica.__type;
+            let paramdata = replica.getParams();
+
+            let definition = Registry.featureSet.getDefinition(typeString);
+            let cleanparamdata = {};
+            for (let key in paramdata) {
+                cleanparamdata[key] = paramdata[key].getValue();
+            }
+            let params = new Params(cleanparamdata, definition.unique, definition.heritable);
+            let componentid = Feature.generateID();
+            let name = Registry.currentDevice.generateNewName(typeString);
+            let newComponent = new Component(typeString, params, name, definition.mint, componentid);
+            let feature;
+
+            for (let i in featureIDs) {
+                newComponent.addFeatureID(featureIDs[i]);
+
+                //Update the component reference
+                feature = Registry.currentDevice.getFeatureByID(featureIDs[i]);
+                feature.referenceID = componentid;
+            }
+
+            Registry.currentDevice.addComponent(newComponent);
         }
 
     }
@@ -161,20 +199,20 @@ export default class Selection {
         }
 
         for (let i in this.__connections) {
-            let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
-            bounds = render.bounds;
-            if (bounds.x < xmin) {
-                xmin = bounds.x;
-            }
-            if (bounds.y < ymin) {
-                ymin = bounds.y;
-            }
-            if (bounds.x > xmax) {
-                xmax = bounds.x;
-            }
-            if (bounds.y > ymax) {
-                ymax = bounds.y;
-            }
+            // let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+            // bounds = render.bounds;
+            // if (bounds.x < xmin) {
+            //     xmin = bounds.x;
+            // }
+            // if (bounds.y < ymin) {
+            //     ymin = bounds.y;
+            // }
+            // if (bounds.x > xmax) {
+            //     xmax = bounds.x;
+            // }
+            // if (bounds.y > ymax) {
+            //     ymax = bounds.y;
+            // }
         }
 
         for (let i in this.__otherFeatures) {
