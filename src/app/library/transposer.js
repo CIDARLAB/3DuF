@@ -302,6 +302,14 @@ export default class Transposer extends Template {
         let circle = new paper.Path.Circle(center, radius);
         transposer_control.addChild(circle);
 
+        let topLeft = new paper.Point(px + 4 * valvespacing + 2 * channelWidth + 2 * radius + radius - channelWidth/2, py - 2 * radius);
+        let bottomRight = new paper.Point(px + 4 * valvespacing + 2 * channelWidth + 2 * radius + radius + channelWidth/2, py);
+        transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        topLeft = new paper.Point(px - 2 * radius, py - 2 * radius - channelWidth/2);
+        bottomRight = new paper.Point(px + 4 * valvespacing + 2 * channelWidth + 2 * radius + radius + channelWidth/2, py - 2 * radius + channelWidth/2);
+        transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
         //2nd row valves
 
         center = new paper.Point(px + 1.5 * channelWidth + 3 * valvespacing + 2 * radius, py + channelWidth / 2 + valvespacing + radius);
@@ -323,6 +331,14 @@ export default class Transposer extends Template {
         });
 
         transposer_control.addChild(rect);
+
+        topLeft = new paper.Point(crosschannelend.x, crosschannelstart.y - channelWidth/2);
+        bottomRight = new paper.Point(crosschannelend.x + 2 * radius, crosschannelstart.y + channelWidth/2);
+        transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        topLeft = new paper.Point(crosschannelend.x + 2 * radius - channelWidth/2, crosschannelstart.y - channelWidth/2);
+        bottomRight = new paper.Point(crosschannelend.x + 2 * radius + channelWidth/2, py + 1.5 * channelWidth + 3 * valvespacing + 2 * radius + radius);
+        transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         //3rd Row valves
 
@@ -346,10 +362,26 @@ export default class Transposer extends Template {
 
         transposer_control.addChild(rect);
 
+        topLeft = new paper.Point(crosschannelend.x, crosschannelstart.y - channelWidth/2);
+        bottomRight = new paper.Point(center.x + 2 * valvespacing + 4 * radius + channelWidth + channelWidth/2, crosschannelstart.y + channelWidth/2);
+        transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
         //Bottom Row valve
         center = new paper.Point(px + channelWidth + 2 * valvespacing + radius, py + 4 * valvespacing + 4 * radius + 2 * channelWidth);
         circle = new paper.Path.Circle(center, radius);
         transposer_control.addChild(circle);
+
+        topLeft = new paper.Point(px - 2 * radius - channelWidth/2, py - 2 * radius - channelWidth/2);
+        bottomRight = new paper.Point(px - 2 * radius + channelWidth/2, py + 4 * valvespacing + 6 * radius + 2 * channelWidth);
+        transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        topLeft = new paper.Point(px - 2 * radius - channelWidth/2, py + 4 * valvespacing + 6 * radius + 2 * channelWidth - channelWidth/2);
+        bottomRight = new paper.Point(px + channelWidth + 2 * valvespacing + radius, py + 4 * valvespacing + 6 * radius + 2 * channelWidth + channelWidth/2);
+        transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
+        topLeft = new paper.Point(px + channelWidth + 2 * valvespacing + radius - channelWidth/2, py + 4 * valvespacing + 4 * radius + 2 * channelWidth);
+        bottomRight = new paper.Point(px + channelWidth + 2 * valvespacing + radius + channelWidth/2, py + 4 * valvespacing + 6 * radius + 2 * channelWidth + channelWidth/2)
+        transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         //Finally we draw the cross channel
         let topleftpoint = new paper.Point(px + valvespacing, py + channelWidth / 2 + 2 * radius + 2 * valvespacing);

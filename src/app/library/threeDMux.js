@@ -1,6 +1,8 @@
 import Template from "./template";
 import paper, { CompoundPath } from "paper";
 import ComponentPort from "../core/componentPort";
+import { ConeBufferGeometry } from "three";
+import Component from "../core/component";
 
 export default class ThreeDMux extends Template{
     constructor() {
@@ -39,7 +41,7 @@ export default class ThreeDMux extends Template{
             length: 100,
             valveSpacing: 0.6 * 1000,
             channelWidth: 500,
-            controlChannelWidth: 200
+            controlChannelWidth: 0.6 * 1000
         };
 
         this.__units = {
@@ -154,7 +156,9 @@ export default class ThreeDMux extends Template{
     getPorts(params) {
         let ins = params["in"];
         let outs = params["out"];
-        let N 
+        let N;
+        let channelWidth = params["channelWidth"];
+
         if( ins < outs){
             N = outs;
         }else{
@@ -168,11 +172,39 @@ export default class ThreeDMux extends Template{
 
         for (var i = 0; i < N; i++){
             let xpos = i * (horizontal_length/(N-1));
-            ports.push(new ComponentPort(xpos, 0, i + 1, "FLOW"))
+            ports.push(new ComponentPort(xpos, 0, (i + 1).toString(), "FLOW"))
         }
 
-        ports.push(new ComponentPort(horizontal_length/2, vertical_length + N * 1000, N + 1, "FLOW"));
-        // console.log(ports);
+        ports.push(new ComponentPort(horizontal_length/2, vertical_length + N * 1000, (N + 1).toString(), "FLOW"));
+        let bottomlinelength = N * 4000; //modify, so it depends on the input N
+        let vertlinelength = N * 3000; //same as above
+
+        let leftInput = - N * 1000 ;
+        let rightInput = bottomlinelength + N * 1000;
+        let indexN = N;
+        let valvenum = Math.log(N)/Math.log(2);
+        let vertholder = vertlinelength/(2*valvenum);
+
+        let count = N + 2;
+
+        for (var i = 0; i < 2 * valvenum; i++){
+            //left side
+            if (i % 2 === 0){
+                indexN /= 2;
+                let cur_ind = N - indexN - 1; 
+                // let leftsideLeft = new paper.Point(leftInput, vertholder + (i) * vertlinelength/(2*valvenum + 2) - channelWidth/2);
+                ports.push(new ComponentPort(leftInput, vertholder + (i) * vertlinelength/(2*valvenum + 2), count.toString(), "CONTROL"));
+                console.log(count);
+                count++;
+            }
+            //right side
+            else {
+                ports.push(new ComponentPort(rightInput, vertholder + i * vertlinelength/(2 * valvenum + 2), count.toString(), "CONTROL"));
+                console.log(count);
+                count++;
+            }
+        }
+        
 
         return ports;
     }
@@ -217,9 +249,6 @@ export default class ThreeDMux extends Template{
 
             let vertlinebottom = new paper.Point(px + xposbranch - channelWidth/2, py + vertlinelength);
             let vertlinetop = new paper.Point(px + xposbranch + channelWidth/2, py);
-            let center = new paper.Point (px + xposbranch, py);
-
-            centerArray[i] = new paper.Path.Circle(center, radius);
             branchArray[i] = new paper.Path.Rectangle(vertlinebottom, vertlinetop);
         } 
 
@@ -285,7 +314,7 @@ export default class ThreeDMux extends Template{
 
         for (var i = 0; i < N; i++){
             threedmux_flow.addChild(branchArray[i]);
-            threedmux_flow.addChild(centerArray[i]);
+            // threedmux_flow.addChild(centerArray[i]);
         }
 
         threedmux_flow.fillColor = color;
@@ -367,12 +396,12 @@ export default class ThreeDMux extends Template{
                 indexN /= 2;
                 let cur_ind = N - indexN - 1; 
                 let leftsideLeft = new paper.Point(leftInput, py + vertholder + (i) * vertlinelength/(2*valvenum + 2) - channelWidth/2);
-                let center = new paper.Point(leftInput, py + vertholder + i * vertlinelength/(2*valvenum + 2));
-                let circle = new paper.Path.Circle(center, radius);
-                threedmux_control.addChild(circle);
+                // let center = new paper.Point(leftInput, py + vertholder + i * vertlinelength/(2*valvenum + 2));
+                // let circle = new paper.Path.Circle(center, radius);
+                // threedmux_control.addChild(circle);
                 let leftsideRight = new paper.Point(px + cur_ind * (bottomlinelength/(N-1)), py + vertholder + (i) * vertlinelength/(2*valvenum + 2) + channelWidth/2);
-                center = new paper.Point(px + cur_ind * (bottomlinelength/(N-1)), py + vertholder + (i) * vertlinelength/(2*valvenum + 2));
-                circle = new paper.Path.Circle(center, radius);
+                let center = new paper.Point(px + cur_ind * (bottomlinelength/(N-1)), py + vertholder + (i) * vertlinelength/(2*valvenum + 2));
+                let circle = new paper.Path.Circle(center, radius);
                 threedmux_control.addChild(circle);
                 let leftcontrol = new paper.Path.Rectangle(leftsideLeft, leftsideRight);
 
@@ -386,9 +415,9 @@ export default class ThreeDMux extends Template{
                 let circle = new paper.Path.Circle(center, radius);
                 threedmux_control.addChild(circle);
                 let rightsideRight = new paper.Point(rightInput, py + vertholder + (i) * vertlinelength/(2*valvenum + 2) + channelWidth/2);
-                center = new paper.Point(rightInput, py + vertholder + (i) * vertlinelength/(2*valvenum + 2));
-                circle = new paper.Path.Circle(center, radius);
-                threedmux_control.addChild(circle);
+                // center = new paper.Point(rightInput, py + vertholder + (i) * vertlinelength/(2*valvenum + 2));
+                // circle = new paper.Path.Circle(center, radius);
+                // threedmux_control.addChild(circle);
                 let rightcontrol = new paper.Path.Rectangle(rightsideLeft, rightsideRight);
 
                 threedmux_control.addChild(rightcontrol);
