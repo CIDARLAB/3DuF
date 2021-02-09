@@ -272,7 +272,7 @@ export default class ThreeDMux extends Template{
             let increment1 = cur_N/2;
             while(count1 < N){
                 for (var w = 0; w < cur_N/2; w++){
-                    let current_xpos = xpos + ((count1 + w) * bottomlinelength/(N-1));px
+                    let current_xpos = xpos + ((count1 + w) * bottomlinelength/(N-1));
 
                     let cutrec = paper.Path.Rectangle({
                         from: new paper.Point(current_xpos - channelWidth/2, ypos - gap/2),
@@ -389,6 +389,7 @@ export default class ThreeDMux extends Template{
         let indexN = N;
         let valvenum = Math.log(N)/Math.log(2);
         let vertholder = vertlinelength/(2*valvenum);
+        let valveselect = vertlinelength/(2*valvenum);
 
         for (var i = 0; i < 2 * valvenum; i++){
             //left side
@@ -396,13 +397,7 @@ export default class ThreeDMux extends Template{
                 indexN /= 2;
                 let cur_ind = N - indexN - 1; 
                 let leftsideLeft = new paper.Point(leftInput, py + vertholder + (i) * vertlinelength/(2*valvenum + 2) - channelWidth/2);
-                // let center = new paper.Point(leftInput, py + vertholder + i * vertlinelength/(2*valvenum + 2));
-                // let circle = new paper.Path.Circle(center, radius);
-                // threedmux_control.addChild(circle);
                 let leftsideRight = new paper.Point(px + cur_ind * (bottomlinelength/(N-1)), py + vertholder + (i) * vertlinelength/(2*valvenum + 2) + channelWidth/2);
-                let center = new paper.Point(px + cur_ind * (bottomlinelength/(N-1)), py + vertholder + (i) * vertlinelength/(2*valvenum + 2));
-                let circle = new paper.Path.Circle(center, radius);
-                threedmux_control.addChild(circle);
                 let leftcontrol = new paper.Path.Rectangle(leftsideLeft, leftsideRight);
 
                 threedmux_control.addChild(leftcontrol);
@@ -411,22 +406,55 @@ export default class ThreeDMux extends Template{
             else {
                 let cur_ind = indexN;
                 let rightsideLeft = new paper.Point(px + cur_ind * (bottomlinelength/(N-1)), py + vertholder + (i) * vertlinelength/(2*valvenum + 2) - channelWidth/2);
-                let center = new paper.Point(px + cur_ind * (bottomlinelength/(N-1)), py + vertholder + (i) * vertlinelength/(2*valvenum + 2));
-                let circle = new paper.Path.Circle(center, radius);
-                threedmux_control.addChild(circle);
                 let rightsideRight = new paper.Point(rightInput, py + vertholder + (i) * vertlinelength/(2*valvenum + 2) + channelWidth/2);
-                // center = new paper.Point(rightInput, py + vertholder + (i) * vertlinelength/(2*valvenum + 2));
-                // circle = new paper.Path.Circle(center, radius);
-                // threedmux_control.addChild(circle);
                 let rightcontrol = new paper.Path.Rectangle(rightsideLeft, rightsideRight);
 
                 threedmux_control.addChild(rightcontrol);
             }
         }
 
+        let cur_N = N;
+        let xpos = px;
+        let ypos = py + valveselect;
+
+        for (let j = 0; j < valvenum; j++){
+            // left side
+            let count1 = 0;
+            let increment1 = cur_N/2;
+            while(count1 < N){
+                for (var w = 0; w < cur_N/2; w++){
+                    let current_xpos = xpos + ((count1 + w) * bottomlinelength/(N-1));
+                    let center = new paper.Point(current_xpos, ypos);
+                    let circle = new paper.Path.Circle(center, radius);
+                    threedmux_control.addChild(circle);
+
+                }
+
+                count1 += 2*increment1 ;
+            }
+
+            //right side
+            let ypos_adjust = vertlinelength/(2*valvenum + 2);
+            let count2 = 0;
+            let increment2 = cur_N/2;
+            ypos += ypos_adjust;
+
+            while(count2 < N){
+                for (var w = 0; w < cur_N/2; w++){
+                    let current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength/(N-1));
+                    let center = new paper.Point(current_xpos, ypos);
+                    let circle = new paper.Path.Circle(center, radius);
+                    threedmux_control.addChild(circle);
+                }
+                count2 += increment2 + cur_N/2;
+            }
+            ypos += ypos_adjust;
+            cur_N = cur_N/2;
+        }
+
         threedmux_control.fillColor = color;
         threedmux_control.rotate(rotation, new paper.Point(px, py));
 
         return threedmux_control;
-    }
+    } 
 }
