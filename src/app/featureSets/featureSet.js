@@ -35,7 +35,7 @@ import Via from "../library/via";
 import Filter from "../library/filter";
 import CellTrapS from "../library/celltrapS";
 import ThreeDMux from "../library/threeDMux";
-// import ChemostatRing from "../library/chemostatring";
+import ChemostatRing from "../library/chemostatring";
 import Incubation from "../library/incubation";
 import Merger from "../library/merger";
 import PicoInjection from "../library/picoinjection";
@@ -112,7 +112,8 @@ export default class FeatureSet {
             CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },
             "3DMux": { object: new ThreeDMux(), key: "FLOW" },
             "3DMux_control": { object: new ThreeDMux(), key: "CONTROL" },
-            // ChemostatRing: { object: new ChemostatRing(), key: "FLOW" },
+            ChemostatRing: { object: new ChemostatRing(), key: "FLOW" },
+            ChemostatRing_control: { object: new ChemostatRing(), key: "CONTROL" },
             Incubation: { object: new Incubation(), key: "FLOW" },
             Merger: { object: new Merger(), key: "FLOW" },
             PicoInjection: { object: new PicoInjection(), key: "FLOW" },
