@@ -4,6 +4,7 @@ module.exports = {
         es6: true,
         node: true
     },
+
     globals: {
         Atomics: "readonly",
         SharedArrayBuffer: "readonly"
@@ -31,6 +32,7 @@ module.exports = {
     },
 
     ignorePatterns: ["src/app/**", "src/test/**"],
+
     overrides: [
         {
             files: ["**/__tests__/*.{j,t}s?(x)", "**/tests/unit/**/*.spec.{j,t}s?(x)"],
@@ -38,5 +40,5 @@ module.exports = {
                 mocha: true
             }
         }
-    ]
+    ],
 };
