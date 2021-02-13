@@ -13,7 +13,6 @@
                 <ImportDXFDialog />
                 <v-divider />
                 <LayerToolbar />
-                <PropertyDrawer title="Properties" />
                 <ComponentToolbar />
             </div>
 
@@ -46,6 +45,7 @@
 </style>
 
 <script>
+import EventBus from "@/events/events";
 import HelpDialog from "@/components/HelpDialog.vue";
 import IntroHelpDialog from "@/components/IntroHelpDialog.vue";
 import EditDeviceDialog from "@/components/EditDeviceDialog.vue";
@@ -54,7 +54,6 @@ import ImportDXFDialog from "@/components/ImportDXFDialog.vue";
 import InsertTextDialog from "@/components/InsertTextDialog.vue";
 import LayerToolbar from "@/components/LayerToolbar.vue";
 import ComponentToolbar from "@/components/ComponentToolBar.vue";
-import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
 export default {
     components: {
         HelpDialog,
@@ -64,8 +63,7 @@ export default {
         ImportDXFDialog,
         InsertTextDialog,
         LayerToolbar,
-        ComponentToolbar,
-        PropertyDrawer
+        ComponentToolbar
     },
     data() {
         return {
@@ -78,6 +76,17 @@ export default {
             ]
         };
     },
-    methods: {}
+    mounted() {
+        const scrollElement = document.querySelector(".v-navigation-drawer__content");
+        scrollElement.addEventListener("scroll", this.handleScroll);
+    },
+    destroyed() {
+        // this.$el.removeEventListener("scroll", this.handleScroll);
+    },
+    methods: {
+        handleScroll() {
+            EventBus.get().emit(EventBus.NAVBAR_SCOLL_EVENT);
+        }
+    }
 };
 </script>
