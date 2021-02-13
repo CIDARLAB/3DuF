@@ -1,187 +1,131 @@
 <template>
     <div>
-        <span class="mdl-layout-title">Mix</span>
-        <nav id="feature-mix" class="mdl-navigation">
-            <div class="button_row">
-                <a id="bettermixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Mixer</a>
-                <button id="bettermixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="3dmixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">3D Mixer</a>
-                <button id="3dmixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="gradientgenerator_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Gradient Gen</a>
-                <button id="gradientgenerator_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
+        <v-divider />
+        <!-- feature  -->
+        <v-card elevation="0">
+            <v-card-title class="py-2">
+                <span>Feature</span>
+            </v-card-title>
+            <v-card-text class="px-1">
+                <PropertyDrawer title="Connection" :spec="ConnectionSpec" />
+                <PropertyDrawer title="Channel" :spec="channel3DSpec" />
+                <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
+                <PropertyDrawer title="Transition" :spec="transtionSpec" />
+                <PropertyDrawer title="Alignment Marks" :spec="alignmentMarks" />
+            </v-card-text>
+        </v-card>
 
-            <div class="button_row">
-                <a id="curvedmixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Curved Mixer</a>
-                <button id="curvedmixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="rotarymixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Rotary Mixer</a>
-                <button id="rotarymixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-        </nav>
-        <span class="mdl-layout-title">Control</span>
-        <nav id="feature-control" class="mdl-navigation">
-            <!--            <div class="button_row">-->
-            <!--                <a id="circleValve_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised feature-button">Circle Valve</a>-->
-            <!--                <button id="circleValve_params_button" class="params-button mdl-button mdl-js-button mdl-button&#45;&#45;icon">-->
-            <!--                    <i class="material-icons">settings</i>-->
-            <!--                </button>-->
-            <!--            </div>-->
-            <div class="button_row">
-                <a id="valve3d_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Valve3D</a>
-                <button id="valve3d_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="valve_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Valve</a>
-                <button id="valve_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="pump3d_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Pump3D</a>
-                <button id="pump3d_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="pump_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Pump</a>
-                <button id="pump_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-        </nav>
-        <span class="mdl-layout-title">Process</span>
-        <nav id="feature-process" class="mdl-navigation">
-            <div class="button_row">
-                <a id="llchamber_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">LL Chamber</a>
-                <button id="llchamber_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
+        <v-divider />
+        <!-- Mix -->
+        <v-card elevation="0">
+            <v-card-title class="py-2">
+                <span>Mix</span>
+            </v-card-title>
+            <v-card-text class="px-1">
+                <PropertyDrawer title="Mixer" :spec="mixSpec" />
+                <PropertyDrawer title="3D Mixer" :spec="mix3DSpec" />
+                <PropertyDrawer title="Gradient Gen" :spec="gradientGenSpec" />
+            </v-card-text>
+        </v-card>
 
-            <div class="button_row">
-                <a id="celltrapl_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Cell Trap</a>
-                <button id="celltrapl_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <!-- CK stuff-->
-            <div class="button_row">
-                <a id="gelchannel_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Gel channel</a>
-                <button id="gelchannel_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <!-- endCK stuff-->
-            <div class="button_row">
-                <a id="diamond_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Diamond Chamber</a>
-                <button id="diamond_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="thermoCycler_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">thermoCycler</a>
-                <button id="thermoCycler_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="chamber_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Chamber</a>
-                <button id="chamber_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="dropletgen_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised feature-button">Droplet Gen</a>
-                <button id="dropletgen_params_button" class="params-button mdl-button mdl-js-button mdl-button&#45;&#45;icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-        </nav>
-        <span class="mdl-layout-title">Distribute</span>
+        <v-divider />
+        <!-- Control -->
+        <v-card elevation="0">
+            <v-card-title class="py-2">
+                <span>Mix</span>
+            </v-card-title>
+            <v-card-text class="px-1">
+                <PropertyDrawer title="Valve3D" :spec="valve3DSpec" />
+                <PropertyDrawer title="Value" :spec="valveSpec" />
+                <PropertyDrawer title="Pump3D" :spec="pump3DSpec" />
+                <PropertyDrawer title="Pump" :spec="pumpSpec" />
+            </v-card-text>
+        </v-card>
 
-        <nav id="feature-distribute" class="mdl-navigation">
-            <!-- CK stuff-->
-            <div class="button_row">
-                <a id="anode_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Anode</a>
-                <button id="anode_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="cathode_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Cathode</a>
-                <button id="cathode_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <!--end CK stuff-->
-            <div class="button_row">
-                <a id="port_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Port</a>
-                <button id="port_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="via_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised feature-button">Via</a>
-                <button id="via_params_button" class="params-button mdl-button mdl-js-button mdl-button&#45;&#45;icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row" hidden="true">
-                <a id="mixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Mixer</a>
-                <button id="mixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="tree_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Tree</a>
-                <button id="tree_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="ytree_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Y-Tree</a>
-                <button id="ytree_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="mux_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Mux</a>
-                <button id="mux_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-            <div class="button_row">
-                <a id="transposer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Transposer</a>
-                <button id="transposer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-        </nav>
+        <v-divider />
+        <!-- Process -->
+        <v-card elevation="0">
+            <v-card-title class="py-2">
+                <span>Process</span>
+            </v-card-title>
+            <v-card-text class="px-1">
+                <PropertyDrawer title="LL Chamber" :spec="llChamberSpec" />
+                <PropertyDrawer title="Cell Trap" :spec="cellTrapSpec" />
+                <PropertyDrawer title="DiamondChamber" :spec="diamondChamberSpec" />
+                <PropertyDrawer title="Chamber" :spec="chamberSpec" />
+                <PropertyDrawer title="Droplet Gen" :spec="dropletGenSpec" />
+            </v-card-text>
+        </v-card>
+
+        <v-divider />
+        <!-- Distribute -->
+        <v-card elevation="0">
+            <v-card-title class="py-2">
+                <span>Distribute</span>
+            </v-card-title>
+            <v-card-text class="px-1">
+                <PropertyDrawer title="Port" :spec="portSpec" />
+                <PropertyDrawer title="Via" :spec="viaSpec" />
+                <PropertyDrawer title="Y-Tree" :spec="yTreeSpec" />
+                <PropertyDrawer title="Mux" :spec="muxSpec" />
+                <PropertyDrawer title="Transponder" :spec="transponderSpec" />
+            </v-card-text>
+        </v-card>
     </div>
 </template>
 
 <script>
+import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
+import ChannelSpec from "@/models/property-drawer/ChannelSpec.js";
+import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
+import TransitionSpec from "@/models/property-drawer/TransitionSpec.js";
+import AlignmentMarksSpec from "@/models/property-drawer/AlignmentMarksSpec.js";
+import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
+import MixSpec from "@/models/property-drawer/MixSpec.js";
+import Mix3DSpec from "@/models/property-drawer/Mix3DSpec.js";
+import GradientGenSpec from "@/models/property-drawer/GradientGenSpec.js";
+import Valve3DSpec from "@/models/property-drawer/Valve3DSpec.js";
+import ValveSpec from "@/models/property-drawer/ValveSpec.js";
+import Pump3DSpec from "@/models/property-drawer/Pump3DSpec.js";
+import PumpSpec from "@/models/property-drawer/PumpSpec.js";
+import LLChamberSpec from "@/models/property-drawer/LLChamberSpec.js";
+// import CellTrapSpec from "@/models/property-drawer/CellTrapSpec.js";
+// import DiamondChamberSpec from "@/models/property-drawer/DiamondChamberSpec.js";
+// import ChamberSpec from "@/models/property-drawer/ChamberSpec.js";
+// import DropletGenSpec from "@/models/property-drawer/DropletGenSpec.js";
+// import PortSpec from "@/models/property-drawer/PortSpec.js";
+// import ViaSpec from "@/models/property-drawer/ViaSpec.js";
+// import YTreeSpec from "@/models/property-drawer/YTreeSpec.js";
+// import MuxSpec from "@/models/property-drawer/MuxSpec.js";
+// import TransponderSpec from "@/models/property-drawer/TransponderSpec.js";
+
 export default {
+    components: { PropertyDrawer },
     data() {
-        return {};
+        return {
+            connectionSpec: ConnectionSpec,
+            channelSpec: ChannelSpec,
+            roundedChannelSpec: RoundedChannelSpec,
+            transitionSpec: TransitionSpec,
+            alignmentMarksSpec: AlignmentMarksSpec,
+            mixSpec: MixSpec,
+            mix3DSpec: Mix3DSpec,
+            gradientGenSpec: GradientGenSpec,
+            valve3DSpec: Valve3DSpec,
+            valveSpec: ValveSpec,
+            pump3DSpec: Pump3DSpec,
+            pumpSpec: PumpSpec,
+            llChamberSpec: LLChamberSpec
+            // cellTrapSpec: CellTrapSpec,
+            // diamondChamberSpec: DiamondChamberSpec,
+            // chamberSpec: ChamberSpec,
+            // dropletGenSpec: DropletGenSpec,
+            // portSpec: PortSpec,
+            // viaSpec: ViaSpec,
+            // yTreeSpec: YTreeSpec,
+            // muxSpec: MuxSpec,
+            // transponderSpec: TransponderSpec
+        };
     }
 };
 </script>
