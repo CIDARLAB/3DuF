@@ -1,6 +1,6 @@
 import dialogPolyfill from "dialog-polyfill";
 import * as Registry from "../../core/registry";
-import axios from 'axios';
+import axios from "axios";
 
 export default class DAMPFabricationDialog {
     constructor() {
@@ -20,27 +20,22 @@ export default class DAMPFabricationDialog {
             // Registry.viewManager.activateTool("InsertTextTool");
             let email = document.getElementById("fabricate_dialog_email_field").value;
             let address = document.getElementById("fabricate_dialog_address_field").value;
-            
-            let endpoint = 'http://localhost:8081/api/v1/submit';
-            axios.post(endpoint, {
-            "email": email,
-            "acceptance": "n/a",
-            "completion": "not completed",
-            "time": 10,
-            "cost": 1000,
-            "file": Registry.currentDevice.toInterchangeV1(),
-            "address": address
-            })
-            .then((res) => {
-                console.log(res);
-                alert("Add the submission code here")
-            })
-            .catch((err) => {
-                console.error(err);
-                alert("Error submiting the design for fabrication:" + err.message)
-            })
-
-            
+            console.log(Registry.currentDevice.toInterchangeV1());
+            let endpoint = "http://fabrication-service.damplab.org/api/v1/submit";
+            axios
+                .post(endpoint, {
+                    email: email,
+                    design: JSON.stringify(Registry.currentDevice.toInterchangeV1()),
+                    address: address
+                })
+                .then(res => {
+                    console.log(res);
+                    alert("Add the submission code here");
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Error submiting the design for fabrication:" + err.message);
+                });
         };
 
         this.__dialog.querySelector(".close").addEventListener("click", function() {
