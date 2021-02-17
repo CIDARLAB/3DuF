@@ -8,7 +8,7 @@ import BetterMixer from "../library/betterMixer";
 import RotaryMixer from "../library/rotaryMixer";
 import AlignmentMarks from "../library/alignmentMarks";
 import CellTrapL from "../library/celltrapL";
-import Gelchannel from "../library/gelchannel";//CK
+import Gelchannel from "../library/gelchannel"; //CK
 import Chamber from "../library/chamber";
 import Connection from "../library/connection";
 import CurvedMixer from "../library/curvedMixer";
@@ -19,7 +19,7 @@ import Mux from "../library/mux";
 import Pump from "../library/pump";
 import Pump3D from "../library/pump3D";
 import RoundedChannel from "../library/roundedChannel";
-import thermoCycler from "../library/thermoCycler"
+import thermoCycler from "../library/thermoCycler";
 import Transition from "../library/transition";
 import Transposer from "../library/transposer";
 import Valve from "../library/valve";
@@ -57,8 +57,8 @@ export default class FeatureSet {
         //TODO: Replace this cumbersome mechanism for generating different feature variants, etc.
         this.__library = {
             Port: { object: new Port(), key: null },
-            Anode: { object: new Anode(), key: null },//ck addition
-            Cathode: { object: new Cathode(), key: null },//ck addition
+            Anode: { object: new Anode(), key: null }, //ck addition
+            Cathode: { object: new Cathode(), key: null }, //ck addition
             Channel: { object: new Channel(), key: null },
             BetterMixer: { object: new BetterMixer(), key: "FLOW" },
             RotaryMixer: { object: new RotaryMixer(), key: "FLOW" },
@@ -70,8 +70,8 @@ export default class FeatureSet {
             },
             CellTrapL: { object: new CellTrapL(), key: "FLOW" },
             CellTrapL_cell: { object: new CellTrapL(), key: "CELL" },
-            Gelchannel: { object: new Gelchannel(), key: "FLOW" },//CK
-            Gelchannel_cell: { object: new Gelchannel(), key: "CELL" },//CK
+            Gelchannel: { object: new Gelchannel(), key: "FLOW" }, //CK
+            Gelchannel_cell: { object: new Gelchannel(), key: "CELL" }, //CK
             Chamber: { object: new Chamber(), key: null },
             Connection: { object: new Connection(), key: null },
             CurvedMixer: { object: new CurvedMixer(), key: null },
@@ -79,7 +79,6 @@ export default class FeatureSet {
                 object: new DiamondReactionChamber(),
                 key: null
             },
-
 
             DropletGen: { object: new DropletGenerator(), key: null },
             GradientGenerator: { object: new GradientGenerator(), key: null },
@@ -90,7 +89,7 @@ export default class FeatureSet {
             Pump3D: { object: new Pump3D(), key: "FLOW" },
             Pump3D_control: { object: new Pump3D(), key: "CONTROL" },
             RoundedChannel: { object: new RoundedChannel(), key: null },
-            thermoCycler: { object: new thermoCycler(), key: "FLOW"},
+            thermoCycler: { object: new thermoCycler(), key: "FLOW" },
             Transition: { object: new Transition(), key: null },
             Transposer: { object: new Transposer(), key: "FLOW" },
             Transposer_control: { object: new Transposer(), key: "CONTROL" },
@@ -103,11 +102,10 @@ export default class FeatureSet {
             LLChamber_control: { object: new LLChamber(), key: "CONTROL" },
             "3DMixer": { object: new ThreeDMixer(), key: "FLOW" },
             "3DMixer_control": { object: new ThreeDMixer(), key: "CONTROL" },
-            Via: {object: new Via(), key: "FLOW" },
-
+            Via: { object: new Via(), key: "FLOW" },
 
             //new
-            Filter: {object: new Filter(), key: "Flow"},
+            Filter: { object: new Filter(), key: "Flow" },
             CellTrapS: { object: new CellTrapS(), key: "FLOW" },
             CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },
             "3DMux": { object: new ThreeDMux(), key: "FLOW" },
@@ -120,12 +118,12 @@ export default class FeatureSet {
             Sorter: { object: new Sorter(), key: "FLOW" },
             Splitter: { object: new Splitter(), key: "FLOW" },
             CapacitanceSensor: { object: new CapacitanceSensor(), key: "FLOW" },
-            Node: {object: new Node(), key: "FLOW"},
+            Node: { object: new Node(), key: "FLOW" },
             DropletGenT: { object: new DropletGeneratorT(), key: null },
             DropletGenFlow: { object: new DropletGeneratorFlowFocus(), key: null },
-            LogicArray: { object: new LogicArray(), key: "FLOW"},
+            LogicArray: { object: new LogicArray(), key: "FLOW" },
             LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
-            LogicArray_cell: { object: new LogicArray(), key: "CELL"}
+            LogicArray_cell: { object: new LogicArray(), key: "CELL" }
         };
 
         // this.__checkDefinitions();
@@ -206,13 +204,13 @@ export default class FeatureSet {
     }
 
     /**
-     * Returns the instance object for the 
+     * Returns the instance object for the
      *
      * @param {*} typeString
      * @returns
      * @memberof FeatureSet
      */
-    getTechnology(typeString){
+    getTechnology(typeString) {
         if (!this.__library.hasOwnProperty(typeString)) {
             typeString = this.getTypeForMINT(typeString);
         }
@@ -272,6 +270,11 @@ export default class FeatureSet {
     getComponentPorts(params, typestring) {
         let definition = this.__library[typestring].object;
         return definition.getPorts(params);
+    }
+
+    getDrawOffset(params, typestring) {
+        let definition = this.__library[typestring].object;
+        return definition.getDrawOffset(params);
     }
 
     /**

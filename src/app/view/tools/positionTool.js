@@ -85,6 +85,19 @@ export default class PositionTool extends MouseTool {
         for (let key in paramdata) {
             cleanparamdata[key] = paramdata[key].getValue();
         }
+        // Subtract offsets for the given parameter type
+        let placed_position = cleanparamdata["position"];
+        let offsets = Registry.featureSet.getDrawOffset(cleanparamdata, typeString);
+
+        let x_new = placed_position[0] - offsets[0];
+        let y_new = placed_position[1] - offsets[1];
+
+        console.log("Offseted position:", x_new, y_new);
+
+        cleanparamdata["position"] = [x_new, y_new];
+
+        console.log("Check final position:", cleanparamdata["position"]);
+
         let params = new Params(cleanparamdata, definition.unique, definition.heritable);
         let componentid = Feature.generateID();
         let name = Registry.currentDevice.generateNewName(typeString);
