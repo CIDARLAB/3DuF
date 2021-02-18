@@ -13,6 +13,7 @@ export default class Chamber extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             width: "Float",
             length: "Float",
             height: "Float",
@@ -21,6 +22,7 @@ export default class Chamber extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             width: 5000,
             length: 5000,
             height: 250,
@@ -29,6 +31,7 @@ export default class Chamber extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             width: "&mu;m",
             length: "&mu;m",
             height: "&mu;m",
@@ -37,6 +40,7 @@ export default class Chamber extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             width: 5,
             length: 5,
             height: 1,
@@ -45,14 +49,16 @@ export default class Chamber extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             width: 50000,
             length: 50000,
             height: 50000,
             cornerRadius: 1000,
-            rotation: 90
+            rotation: 360
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             width: "width",
             length: "length",
@@ -62,6 +68,7 @@ export default class Chamber extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             width: "width",
             length: "length",

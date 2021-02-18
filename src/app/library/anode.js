@@ -13,6 +13,7 @@ export default class Anode extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             anodeRadius: "Float",
             pegHeight: "Float",
             pegWidth: "Float",
@@ -21,6 +22,7 @@ export default class Anode extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             anodeRadius: 0.9 * 1000,
             pegHeight: 0.2*1000,
             pegWidth: 0.7*1000,
@@ -29,6 +31,7 @@ export default class Anode extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             anodeRadius: "&mu;m",
             pegHeight: "&mu;m",
             pegWidth: "&mu;m",
@@ -37,6 +40,7 @@ export default class Anode extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             anodeRadius: 0.4 * 10,
             pegHeight: 0.1*1000,
             pegWidth: 0.1*1000,
@@ -45,6 +49,7 @@ export default class Anode extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             anodeRadius: 2000,
             pegHeight: 2*1000,
             pegWidth: 2*1000,
@@ -59,6 +64,7 @@ export default class Anode extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             anodeRadius: "anodeRadius",
             pegHeight: "pegHeight",
@@ -67,6 +73,7 @@ export default class Anode extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             anodeRadius: "anodeRadius",
             pegHeight: "pegHeight",
             pegWidth: "pegWidth",

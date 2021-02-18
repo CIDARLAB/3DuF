@@ -43,7 +43,7 @@ export default class Params {
     }
     /**
      * Checks if the object has certain parameter.
-     * @param {String} key The key is use to identify the parameter 
+     * @param {String} key The key is use to identify the parameter
      * @memberof Params
      * @returns {void}
      */
@@ -73,7 +73,7 @@ export default class Params {
     /**
      * Checks if param object has unique key.
      * @param {String} key Key to identify the param
-     * @returns {boolean} 
+     * @returns {boolean}
      * @memberof Params
      */
     isUnique(key) {
@@ -90,7 +90,7 @@ export default class Params {
     }
     /**
      * Checks if param has unique key.
-     * @param {Parameters} params Param to check if it is unique 
+     * @param {Parameters} params Param to check if it is unique
      * @returns {boolean}
      * @memberof Params
      */
@@ -101,8 +101,8 @@ export default class Params {
     /**
      * Returns the expected type for a specific param.
      * @param {String} key Identifier of the param
-     * @param {*} expected 
-     * @param {*} actual 
+     * @param {*} expected
+     * @param {*} actual
      * @memberof Params
      * @returns {void}
      */
@@ -124,7 +124,7 @@ export default class Params {
             if (this.isUnique(key)) {
                 newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
             } else if (this.isHeritable(key)) {
-                if (values[key]) {
+                if (values[key] != undefined || values[key] != null) {
                     newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
                 }
             } else {
@@ -181,9 +181,9 @@ export default class Params {
     }
     /**
      * Creates new params object from a JSON format.
-     * @param {JSON} json 
-     * @param {*} unique 
-     * @param {*} heritable 
+     * @param {JSON} json
+     * @param {*} unique
+     * @param {*} heritable
      * @returns {Params} Returns a new params object.
      * @memberof Params
      */

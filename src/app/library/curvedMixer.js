@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class CurvedMixer extends Template {
     constructor() {
@@ -12,64 +13,75 @@ export default class CurvedMixer extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
+            rotation: "Float",
             bendSpacing: "Float",
             numberOfBends: "Float",
             channelWidth: "Float",
             bendLength: "Float",
-            orientation: "String",
+            rotation: "Float",
             height: "Float"
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
+            rotation: 0,
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
-            orientation: "V",
+            rotation: 0,
             bendLength: 2.46 * 1000,
             height: 250
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
+            rotation: "&deg;",
             bendSpacing: "&mu;m",
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            orientation: "",
             height: "&mu;m"
         };
 
         this.__minimum = {
+            componentSpacing: 0,
+            rotation: 0,
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            orientation: "H",
+            rotation: 0,
             bendLength: 10,
             height: 10
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
+            rotation: 360,
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            orientation: "H",
+            rotation: 360,
             bendLength: 12 * 1000,
             height: 1200
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength"
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength"
         };
 
@@ -84,11 +96,26 @@ export default class CurvedMixer extends Template {
         this.__mint = "CURVED MIXER";
     }
 
+    getPorts(params) {
+        let channelWidth = params["channelWidth"];
+        let bendLength = params["bendLength"];
+        let bendSpacing = params["bendSpacing"];
+        let numberOfBends = params["numberOfBends"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", "FLOW"));
+
+        ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", "FLOW"));
+
+        return ports;
+    }
+
     render2D(params, key) {
         let channelWidth = params["channelWidth"];
         let bendLength = params["bendLength"];
         let bendSpacing = params["bendSpacing"];
-        let orientation = params["orientation"];
+        let rotation = params["rotation"];
         let numBends = params["numberOfBends"];
         let x = params["position"][0];
         let y = params["position"][1];
@@ -153,14 +180,8 @@ export default class CurvedMixer extends Template {
         }
         serp.addChild(toprect);
 
-        if (orientation == "V") {
-            serp.rotate(0, x + channelWidth, y);
-        } else {
-            serp.rotate(90, x + channelWidth, y);
-        }
-
         serp.fillColor = color;
-        return serp;
+        return serp.rotate(rotation, x, y);;
     }
 
     render2DTarget(key, params) {

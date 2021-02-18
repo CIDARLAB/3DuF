@@ -1471,5 +1471,745 @@ export const basicFeatures = {
             height: "Float",
             text: "String"
         }
-    }
+    },
+
+    // new
+    Filter: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            orientation: "String",
+            height: "Float",
+            pillarDiameter: "Float",
+            filterWidth: "Float",
+            barrierWidth: "Float",
+            filterLength: "Float",
+            filterNumber: "Float",
+            levelNumber: "Float",
+            inletWidth: "Float",
+            inletLength: "Float",
+            outletWidth: "Float",
+            outletLength: "Float"
+        },
+        units: {
+            orientation: "",
+            height: "&mu;m",
+            pillarDiameter: "&mu;m",
+            filterWidth: "&mu;m",
+            barrierWidth: "&mu;m",
+            filterLength: "&mu;m",
+            filterNumber: "",
+            levelNumber: "",
+            inletWidth: "&mu;m",
+            inletLength: "&mu;m",
+            outletWidth: "&mu;m",
+            outletLength: "&mu;m"
+        },
+        defaults: {
+            orientation: "V",
+            height: 250,
+            pillarDiameter: 2 * 1000,
+            filterWidth: 1 * 1000,
+            barrierWidth: 1 * 1000,
+            filterLength: 3 * 1000,
+            filterNumber: 5,
+            levelNumber: 2,
+            inletWidth: 1 * 1000,
+            inletLength: 3 * 1000,
+            outletWidth: 1 * 1000,
+            outletLength: 3 * 1000,
+        },
+        minimum: {
+            orientation: "H",
+            height: 10,
+            pillarDiameter: 1 * 1000,
+            filterWidth: 0.5 * 1000,
+            barrierWidth: 0.5 * 1000,
+            filterLength: 2 * 1000,
+            filterNumber: 2,
+            levelNumber: 1,
+            inletWidth: 0.5 * 1000,
+            inletLength: 1 * 1000,
+            outletWidth: 0.5 * 1000,
+            outletLength: 1 * 1000,
+        },
+        maximum: {
+            orientation: "H",
+            height: 1200,
+            pillarDiameter: 4 * 1000,
+            filterWidth: 4 * 1000,
+            barrierWidth: 6 * 1000,
+            filterLength: 9 * 1000,
+            filterNumber: 5,
+            levelNumber: 10,
+            inletWidth: 4 * 1000,
+            inletLength: 8 * 1000,
+            outletWidth: 4 * 1000,
+            outletLength: 8 * 1000,
+        }
+    },
+    CellTrapS: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            chamberLength: "Float",
+            feedingChannelWidth: "Float",
+            orientation: "String",
+            chamberWidth: "Float",
+            numberOfChambers: "Float",
+            chamberSpacing: "Float",
+            height: "Float"
+        },
+        units: {
+            chamberLength: "&mu;m",
+            feedingChannelWidth: "&mu;m",
+            orientation: "",
+            chamberWidth: "&mu;m",
+            numberOfChambers: "",
+            chamberSpacing: "&mu;m",
+            height: "&mu;m"
+        },
+        defaults: {
+            chamberLength: 1.2 * 1000,
+            feedingChannelWidth: 0.41 * 1000,
+            orientation: "H",
+            chamberWidth: 1.23 * 1000,
+            numberOfChambers: 6,
+            chamberSpacing: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            chamberLength: 30,
+            feedingChannelWidth: 10,
+            chamberWidth: 30,
+            numberOfChambers: 1,
+            chamberSpacing: 60,
+            height: 10
+        },
+        maximum: {
+            chamberLength: 6000,
+            feedingChannelWidth: 2000,
+            chamberWidth: 6000,
+            numberOfChambers: 10,
+            chamberSpacing: 12 * 1000,
+            height: 1200
+        }
+    },
+    CellTrapS_cell: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            chamberLength: "Float",
+            feedingChannelWidth: "Float",
+            orientation: "String",
+            chamberWidth: "Float",
+            numberOfChambers: "Float",
+            chamberSpacing: "Float",
+            height: "Float"
+        },
+        defaults: {
+            chamberLength: 1.2 * 1000,
+            feedingChannelWidth: 0.41 * 1000,
+            orientation: "H",
+            chamberWidth: 1.23 * 1000,
+            numberOfChambers: 6,
+            chamberSpacing: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            chamberLength: 30,
+            feedingChannelWidth: 10,
+            chamberWidth: 30,
+            numberOfChambers: 1,
+            chamberSpacing: 60,
+            height: 10
+        },
+        maximum: {
+            chamberLength: 6000,
+            feedingChannelWidth: 2000,
+            chamberWidth: 6000,
+            numberOfChambers: 10,
+            chamberSpacing: 12 * 1000,
+            height: 1200
+        }
+    },
+    ThreeDMux: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            inputNumber: "Float",
+            orientation: "String",
+            valveRadius: "Float",
+            height: "Float",
+            gap: "Float",
+            width: "Float",
+            length: "Float",
+            valveSpacing: "Float",
+            channelWidth: "Float"
+        },
+        units: {
+            inputNumber: "",
+            orientation: "",
+            valveRadius: "&mu;m",
+            height: "&mu;m",
+            gap: "&mu;m",
+            width: "&mu;m",
+            length: "&mu;m",
+            valveSpacing: "&mu;m",
+            channelWidth: "&mu;m"
+        },
+        defaults: {
+            inputNumber: 4,
+            orientation: "V",
+            valveRadius: 1.2 * 1000,
+            height: 0.8 * 1000,
+            gap: 0.6 * 1000,
+            width: 100,
+            length: 100,
+            valveSpacing: 0.6 * 1000,
+            channelWidth: 500
+        },
+        minimum: {
+            inputNumber: 2,
+            valveRadius: 0.1 * 100,
+            height: 0.1 * 100,
+            gap: 0.5 * 10,
+            width: 100,
+            length: 100,
+            valveSpacing: 0.1 * 1000,
+            channelWidth: 25
+        },
+        maximum: {
+            inputNumber: 32,
+            valveRadius: 0.2 * 10000,
+            height: 1.2 * 1000,
+            gap: 0.1 * 10000,
+            width: 100,
+            length: 100,
+            valveSpacing: 0.1 * 10000,
+            channelWidth: 25e3
+        }
+    },
+    ThreeDMux_control: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            inputNumber: "Float",
+            orientation: "String",
+            valveRadius: "Float",
+            height: "Float",
+            gap: "Float",
+            width: "Float",
+            length: "Float",
+            valveSpacing: "Float",
+            channelWidth: "Float"
+        },
+        units: {
+            inputNumber: "",
+            orientation: "",
+            valveRadius: "&mu;m",
+            height: "&mu;m",
+            gap: "&mu;m",
+            width: "&mu;m",
+            length: "&mu;m",
+            valveSpacing: "&mu;m",
+            channelWidth: "&mu;m"
+        },
+        defaults: {
+            inputNumber: 4,
+            orientation: "V",
+            valveRadius: 1.2 * 1000,
+            height: 0.8 * 1000,
+            gap: 0.6 * 1000,
+            width: 100,
+            length: 100,
+            valveSpacing: 0.6 * 1000,
+            channelWidth: 500
+        },
+        minimum: {
+            inputNumber: 2,
+            valveRadius: 0.1 * 100,
+            height: 0.1 * 100,
+            gap: 0.5 * 10,
+            width: 100,
+            length: 100,
+            valveSpacing: 0.1 * 1000,
+            channelWidth: 25
+        },
+        maximum: {
+            inputNumber: 32,
+            valveRadius: 0.2 * 10000,
+            height: 1.2 * 1000,
+            gap: 0.1 * 10000,
+            width: 100,
+            length: 100,
+            valveSpacing: 0.1 * 10000,
+            channelWidth: 25e3
+        }
+    },
+    ChemostatRing: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
+    Incubation: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
+    Merger: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            orientation: "String",
+            height: "Float",
+            inletWidth: "Float",
+            inletLength: "Float",
+            electrodeWidth: "Float",
+            electrodeLength: "Float",
+            electrodeDistance: "Float",
+            outletWidth: "Float",
+            outletLength: "Float",
+            chamberHeight: "Float",
+            chamberLength: "Float",
+            channelDepth: "Float",
+            electrodeDepth: "Float"
+        },
+        units: {
+            orientation: "",
+            height: "&mu;m",
+            inletWidth: "&mu;m",
+            inletLength: "&mu;m",
+            electrodeWidth: "&mu;m",
+            electrodeLength: "&mu;m",
+            electrodeDistance: "&mu;m",
+            outletWidth: "&mu;m",
+            outletLength: "&mu;m",
+            chamberHeight: "&mu;m",
+            chamberLength: "&mu;m",
+            channelDepth: "&mu;m",
+            electrodeDepth: "&mu;m"
+        },
+        defaults: {
+            orientation: "V",
+            height: 250,
+            inletWidth: 2 * 1000,
+            inletLength: 4 * 1000,
+            electrodeWidth: 1000,
+            electrodeLength: 5 * 1000,
+            electrodeDistance: 1000,
+            outletWidth: 2 * 1000,
+            outletLength: 4 * 1000,
+            chamberHeight: 2.7 * 1000,
+            chamberLength: 2 * 1000,
+            channelDepth: 1000,
+            electrodeDepth: 1000
+        },
+        minimum: {
+            orientation: "H",
+            height: 10,
+            inletWidth: 1000,
+            inletLength: 1000,
+            electrodeWidth: 500,
+            electrodeLength: 3 * 1000,
+            electrodeDistance: 500,
+            outletWidth: 1000,
+            outletLength: 1000,
+            chamberHeight: 1000,
+            chamberLength: 1000,
+            channelDepth: 1000,
+            electrodeDepth: 1000
+        },
+        maximum: {
+            orientation: "H",
+            height: 1200,
+            inletWidth: 3 * 1000,
+            inletLength: 6 * 1000,
+            electrodeWidth: 3 * 1000,
+            electrodeLength: 7 * 1000,
+            electrodeDistance: 1500,
+            outletWidth: 3 * 1000,
+            outletLength: 6 * 1000,
+            chamberHeight: 4 * 1000,
+            chamberLength: 4 * 1000,
+            channelDepth: 1000,
+            electrodeDepth: 1000
+        }
+    },
+    PicoInjection: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            height: "Float",
+            width: "Float",
+            injectorWidth: "Float",
+            injectorLength: "Float",
+            dropletWidth: "Float",
+            nozzleWidth: "Float",
+            nozzleLength: "Float",
+            electrodeDistance: "Float",
+            electrodeWidth: "Float",
+            electrodeLength: "Float",
+            orientation: "String"
+        },
+        units: {
+            height: "&mu;m",
+            width: "&mu;m",
+            injectorWidth: "&mu;m",
+            injectorLength: "&mu;m",
+            dropletWidth: "&mu;m",
+            nozzleWidth: "&mu;m",
+            nozzleLength: "&mu;m",
+            electrodeDistance: "&mu;m",
+            electrodeWidth: "&mu;m",
+            electrodeLength: "&mu;m",
+            orientation: ""
+        },
+        defaults: {
+            height: 250,
+            width: 10 * 1000,
+            injectorWidth: 2 * 1000,
+            injectorLength: 3 * 1000,
+            dropletWidth: 0.8 * 1000,
+            nozzleWidth: 0.4 * 1000,
+            nozzleLength: 0.4 * 1000,
+            electrodeDistance: 0.8 * 1000,
+            electrodeWidth: 0.8 * 1000,
+            electrodeLength: 3 * 1000,
+            orientation: "V"
+        },
+        minimum: {
+            height: 10,
+            width: 5 * 1000,
+            injectorWidth: 1000,
+            injectorLength: 1000,
+            dropletWidth: 100,
+            nozzleWidth: 80,
+            nozzleLength: 80,
+            electrodeDistance: 100,
+            electrodeWidth: 100,
+            electrodeLength: 1000,
+            orientation: "H"
+        },
+        maximum: {
+            height: 1200,
+            width: 5 * 1000,
+            injectorWidth: 4000,
+            injectorLength: 5000,
+            dropletWidth: 2000,
+            nozzleWidth: 1000,
+            nozzleLength: 500,
+            electrodeDistance: 2000,
+            electrodeWidth: 2000,
+            electrodeLength: 5000,
+            orientation: "H"
+        }
+    },
+    Sorter: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            orientation: "String",
+            height: "Float",
+            inletWidth: "Float",
+            inletLength: "Float",
+            electrodeDistance: "Float",
+            electrodeWidth: "Float",
+            electrodeLength: "Float",
+            outletWidth: "Float",
+            angle: "Float",
+            wasteWidth: "Float",
+            outputLength: "Float",
+            keepWidth: "Float",
+            pressureWidth: "Float",
+            pressureSpacing: "Float",
+            numberofDistributors: "Float",
+            channelDepth: "Float",
+            electrodeDepth: "Float",
+            pressureDepth: "Float"
+        },
+        units: {
+            orientation: "",
+            height: "&mu;m",
+            inletWidth: "&mu;m",
+            inletLength: "&mu;m",
+            electrodeDistance: "&mu;m",
+            electrodeWidth: "&mu;m",
+            electrodeLength: "&mu;m",
+            outletWidth: "&mu;m",
+            angle: "&deg;",
+            wasteWidth: "&mu;m",
+            outputLength: "&mu;m",
+            keepWidth: "&mu;m",
+            pressureWidth: "&mu;m",
+            pressureSpacing: "&mu;m",
+            numberofDistributors: "&mu;m",
+            channelDepth: "&mu;m",
+            electrodeDepth: "&mu;m",
+            pressureDepth: "&mu;m"
+        },
+        defaults: {
+            orientation: "V",
+            height: 250,
+            inletWidth: 0.8 * 1000,
+            inletLength: 4 * 1000,
+            electrodeDistance: 1 * 1000,
+            electrodeWidth: 0.7 * 1000,
+            electrodeLength: 5 * 1000,
+            outletWidth: 0.8 * 1000,
+            angle: 45,
+            wasteWidth: 1.2 * 1000,
+            outputLength: 4 * 1000,
+            keepWidth: 2 * 1000,
+            pressureWidth: 0.4 * 1000,
+            pressureSpacing: 1.5 * 1000,
+            numberofDistributors: 5,
+            channelDepth: 1000,
+            electrodeDepth: 1000,
+            pressureDepth: 1000
+        },
+        minimum: {
+            orientation: "H",
+            height: 10,
+            inletWidth: 0.5 * 1000,
+            inletLength: 2 * 1000,
+            electrodeDistance: 0.5 * 1000,
+            electrodeWidth: 0.5 * 1000,
+            electrodeLength: 2.5 * 1000,
+            outletWidth: 0.5 * 1000,
+            angle: 0,
+            wasteWidth: 0.5 * 1000,
+            outputLength: 2 * 1000,
+            keepWidth: 2 * 1000,
+            pressureWidth: 0.2 * 1000,
+            pressureSpacing: 0.5 * 1000,
+            numberofDistributors: 1,
+            channelDepth: 1000,
+            electrodeDepth: 1000,
+            pressureDepth: 1000
+        },
+        maximum: {
+            orientation: "H",
+            height: 1200,
+            inletWidth: 2 * 1000,
+            inletLength: 6 * 1000,
+            electrodeDistance: 1.5 * 1000,
+            electrodeWidth: 1.5 * 1000,
+            electrodeLength: 7.5 * 1000,
+            outletWidth: 2 * 1000,
+            angle: 180,
+            wasteWidth: 1.5 * 1000,
+            outputLength: 6 * 1000,
+            keepWidth: 3.5 * 1000,
+            pressureWidth: 1 * 1000,
+            pressureSpacing: 2 * 1000,
+            numberofDistributors: 10,
+            channelDepth: 1000,
+            electrodeDepth: 1000,
+            pressureDepth: 1000
+        }
+    },
+    Splitter: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            bendSpacing: "Float",
+            numberOfBends: "Float",
+            channelWidth: "Float",
+            bendLength: "Float",
+            orientation: "String",
+            height: "Float"
+        },
+        units: {
+            bendSpacing: "&mu;m",
+            numberOfBends: "",
+            channelWidth: "&mu;m",
+            bendLength: "&mu;m",
+            orientation: "",
+            height: "&mu;m"
+        },
+        defaults: {
+            channelWidth: 0.8 * 1000,
+            bendSpacing: 1.23 * 1000,
+            numberOfBends: 1,
+            orientation: "V",
+            bendLength: 2.46 * 1000,
+            height: 0.1 * 1000
+        },
+        minimum: {
+            channelWidth: 10,
+            bendSpacing: 10,
+            numberOfBends: 1,
+            orientation: "H",
+            bendLength: 10,
+            height: 10
+        },
+        maximum: {
+            channelWidth: 2000,
+            bendSpacing: 6000,
+            numberOfBends: 20,
+            orientation: "H",
+            bendLength: 12 * 1000,
+            height: 1200
+        }
+    },
+    CapacitanceSensor: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            orientation: "String",
+            height: "Float",
+            inletWidth: "Float",
+            inletLength: "Float",
+            electrodeWidth: "Float",
+            electrodeLength: "Float",
+            electrodeDistance: "Float",
+            sensorWidth: "Float",
+            sensorLength: "Float",
+            channelDepth: "Float",
+            electrodeDepth: "Float"
+        },
+        units: {
+            orientation: "",
+            height: "&mu;m",
+            inletWidth: "&mu;m",
+            inletLength: "&mu;m",
+            electrodeWidth: "&mu;m",
+            electrodeLength: "&mu;m",
+            electrodeDistance: "&mu;m",
+            sensorWidth: "&mu;m",
+            sensorLength: "&mu;m",
+            channelDepth: "&mu;m",
+            electrodeDepth: "&mu;m"
+        },
+        defaults: {
+            orientation: "V",
+            height: 250,
+            inletWidth: 1 * 1000,
+            inletLength: 10 * 1000,
+            electrodeWidth: 1.5 * 1000,
+            electrodeLength: 4 * 1000,
+            electrodeDistance: 2 * 1000,
+            sensorWidth: 1 * 1000,
+            sensorLength: 3 * 1000,
+            channelDepth: 1000,
+            electrodeDepth: 1000
+        },
+        minimum: {
+            orientation: "H",
+            height: 10,
+            inletWidth: 0.5 * 1000,
+            inletLength: 5 * 1000,
+            electrodeWidth: 1 * 1000,
+            electrodeLength: 2 * 1000,
+            electrodeDistance: 1 * 1000,
+            sensorWidth: 0.5 * 1000,
+            sensorLength: 1.5 * 1000,
+            channelDepth: 1000,
+            electrodeDepth: 1000
+        },
+        maximum: {
+            orientation: "H",
+            height: 1200,
+            inletWidth: 2 * 1000,
+            inletLength: 15 * 1000,
+            electrodeWidth: 3 * 1000,
+            electrodeLength: 6 * 1000,
+            electrodeDistance: 3 * 1000,
+            sensorWidth: 1.5 * 1000,
+            sensorLength: 4.5 * 1000,
+            channelDepth: 1000,
+            electrodeDepth: 1000
+        }
+    },
 };

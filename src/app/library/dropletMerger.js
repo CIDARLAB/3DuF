@@ -1,8 +1,9 @@
+
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export default class BetterMixer extends Template {
+export default class DropletMerger extends Template {
     constructor() {
         super();
     }
@@ -14,52 +15,52 @@ export default class BetterMixer extends Template {
 
         this.__heritable = {
             componentSpacing: "Float",
-            bendSpacing: "Float",
-            numberOfBends: "Float",
-            channelWidth: "Float",
-            bendLength: "Float",
-            rotation: "Float",
+            inputWidth1:"Float",
+            inputWidth2:"Float",
+            outputWidth:"Float",
+            stabilizationLength:"Float",
+            rotation:"Float",
             height: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 1000,
-            channelWidth: 0.8 * 1000,
-            bendSpacing: 1.23 * 1000,
-            numberOfBends: 1,
-            rotation: 0,
-            bendLength: 2.46 * 1000,
+            inputWidth1:400,
+            inputWidth2:400,
+            outputWidth:400,
+            stabilizationLength:5000,
+            rotation:0,
             height: 250
         };
 
         this.__units = {
             componentSpacing: "&mu;m",
-            bendSpacing: "&mu;m",
-            numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
-            
+            inputWidth1:"&mu;m",
+            inputWidth2:"&mu;m",
+            outputWidth:"&mu;m",
+            stabilizationLength:"&mu;m",
+            rotation:"&deg;",
             height: "&mu;m"
         };
 
         this.__minimum = {
             componentSpacing: 0,
-            channelWidth: 10,
-            bendSpacing: 10,
-            numberOfBends: 1,
-            rotation: 270,
-            bendLength: 10,
+            inputWidth1:1,
+            inputWidth2:1,
+            outputWidth:1,
+            stabilizationLength:10,
+            rotation:0,
             height: 10
         };
 
         this.__maximum = {
             componentSpacing: 10000,
-            channelWidth: 2000,
-            bendSpacing: 6000,
-            numberOfBends: 20,
+            inputWidth1:10000,
+            inputWidth2:10000,
+            outputWidth:10000,
+            stabilizationLength:500000,
             rotation: 360,
-            bendLength: 12 * 1000,
-            height: 1200
+            height: 10000
         };
 
         this.__placementTool = "componentPositionTool";
@@ -71,25 +72,26 @@ export default class BetterMixer extends Template {
         this.__featureParams = {
             componentSpacing: "componentSpacing",
             position: "position",
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
-            rotation: "rotation",
-            bendLength: "bendLength"
+            inputWidth1:"inputWidth1",
+            inputWidth2:"inputWidth2",
+            outputWidth:"outputWidth",
+            stabilizationLength:"stabilizationLength",
+            rotation:"rotation;",
+            height: "height"
         };
 
         this.__targetParams = {
             componentSpacing: "componentSpacing",
-            channelWidth: "channelWidth",
-            bendSpacing: "bendSpacing",
-            numberOfBends: "numberOfBends",
-            rotation: "rotation",
-            bendLength: "bendLength"
+            inputWidth1:"inputWidth1",
+            inputWidth2:"inputWidth2",
+            outputWidth:"outputWidth",
+            stabilizationLength:"stabilizationLength",
+            rotation:"rotation;",
         };
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "MIXER";
+        this.__mint = "DROPLET MERGER";
     }
 
     getPorts(params) {
@@ -140,7 +142,7 @@ export default class BetterMixer extends Template {
         }
 
         serp.fillColor = color;
-        return serp.rotate(rotation, new paper.Point(x, y));
+        return serp.rotate(rotation, new paper.Point(x, y));;
     }
 
     render2DTarget(key, params) {

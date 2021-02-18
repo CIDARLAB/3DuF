@@ -13,13 +13,32 @@ export default class Layer {
      * @param {*} values Value of the layer
      * @param {String} name Name of the layer
      */
-    constructor(values, name = "New Layer") {
+    constructor(values, name = "New Layer", type = "FLOW", group = "0") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = String(name);
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
         this.color = undefined;
+        this.__id = Layer.generateID();
+        this.__type = type;
+        this.group = group;
+    }
+
+    get type(){
+        return this.__type;
+    }
+
+    get id(){
+        return this.__id;
+    }
+
+    /**
+     * Generates a random id
+     * @returns {String} Random ID string
+     */
+    static generateID() {
+        return Registry.generateID();
     }
     /**
      * Adds a feature to the layer
@@ -275,10 +294,13 @@ export default class Layer {
      */
     toInterchangeV1() {
         let output = {};
+        output.id = this.__id;
         output.name = this.name;
-        output.color = this.color;
+        output.type = this.type;
+        // TODO - Add group and unique name parameters to the system and do type checking 
+        // against type and not name in the future
+        output.group = '0';
         output.params = this.params.toJSON();
-        output.features = this.__featuresInterchangeV1();
         return output;
     }
     /**
@@ -303,11 +325,7 @@ export default class Layer {
      * @memberof Layer
      */
     static fromInterchangeV1(json) {
-        //TODO: Need to be able to through all the features in the layer
-        if (!json.hasOwnProperty("features")) {
-            throw new Error("JSON layer has no features!");
-        }
-        let newLayer = new Layer(json.params, json.name);
+        let newLayer = new Layer(json.params, json.name, json.type, json.group);
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
         if (json.color) newLayer.color = json.color; //TODO: Figure out if this needs to change in the future
         return newLayer;

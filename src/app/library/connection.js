@@ -15,31 +15,37 @@ export default class Connection extends Template {
         };
 
         this.__heritable = {
+            connectionSpacing: "Float",
             channelWidth: "Float",
             height: "Float"
         };
 
         this.__defaults = {
+            connectionSpacing: 1600,
             channelWidth: 0.8 * 1000,
             height: 250
         };
 
         this.__units = {
+            connectionSpacing: "&mu;m",
             channelWidth: "&mu;m",
             height: "&mu;m"
         };
 
         this.__minimum = {
+            connectionSpacing: 0,
             channelWidth: 3,
             height: 10
         };
 
         this.__maximum = {
+            connectionSpacing: 10000,
             channelWidth: 2000,
             height: 1200
         };
 
         this.__featureParams = {
+            connectionSpacing: "connectionSpacing",
             start: "start",
             end: "end",
             wayPoints: "wayPoints",
@@ -49,6 +55,7 @@ export default class Connection extends Template {
         };
 
         this.__targetParams = {
+            connectionSpacing: "connectionSpacing",
             wayPoints: "wayPoints",
             channelWidth: "channelWidth",
             segments: "segments",
