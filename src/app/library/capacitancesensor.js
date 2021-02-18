@@ -124,7 +124,7 @@ export default class CapacitanceSensor extends Template {
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "CapacitanceSensor";
+        this.__mint = "DROPLET CAPACITANCE SENSOR";
     }
 
     getPorts(params) {

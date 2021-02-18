@@ -1,9 +1,8 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { LessStencilFunc } from "three";
 
-export default class Sorter extends Template{
+export default class Sorter extends Template {
     constructor() {
         super();
     }
@@ -174,7 +173,7 @@ export default class Sorter extends Template{
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "SORTER";
+        this.__mint = "DROPLET SORTER";
     }
 
     getPorts(params) {
@@ -185,15 +184,29 @@ export default class Sorter extends Template{
         let pressureSpacing = params["pressureSpacing"];
         let numberofDistributors = params["numberofDistributors"];
 
-        let outletLen = ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth)) / Math.cos((angle/2) * Math.PI / 180);
+        let outletLen = ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth)) / Math.cos(((angle / 2) * Math.PI) / 180);
 
         let ports = [];
 
-        ports.push(new ComponentPort(- inletLength, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(-inletLength, 0, "1", "FLOW"));
 
-        ports.push(new ComponentPort(outletLen * Math.cos(angle/2 * Math.PI / 180) + outputLength, - ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - (pressureWidth/2)) * Math.tan((angle/2) * Math.PI / 180), "2", "FLOW"));
+        ports.push(
+            new ComponentPort(
+                outletLen * Math.cos(((angle / 2) * Math.PI) / 180) + outputLength,
+                -((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180),
+                "2",
+                "FLOW"
+            )
+        );
 
-        ports.push(new ComponentPort(outletLen * Math.cos(angle/2 * Math.PI / 180) + outputLength, ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - (pressureWidth/2)) * Math.tan((angle/2) * Math.PI / 180), "3", "FLOW"));
+        ports.push(
+            new ComponentPort(
+                outletLen * Math.cos(((angle / 2) * Math.PI) / 180) + outputLength,
+                ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180),
+                "3",
+                "FLOW"
+            )
+        );
 
         return ports;
     }
@@ -219,13 +232,12 @@ export default class Sorter extends Template{
         let serp = new paper.CompoundPath();
 
         // pressure distributors
-        for (let i = 0; i < numberofDistributors; i++){
-
+        for (let i = 0; i < numberofDistributors; i++) {
             let newRightX = (i + 1.5) * (pressureSpacing + pressureWidth);
 
             let newLeftX = newRightX - pressureWidth;
 
-            let pHeight = (newRightX - (pressureWidth/2)) * Math.tan((angle/2) * Math.PI / 180);
+            let pHeight = (newRightX - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180);
             // upper
             let topLeft = new paper.Point(x + newLeftX, y - pHeight);
             let bottomRight = new paper.Point(x + newRightX, y);
@@ -237,58 +249,73 @@ export default class Sorter extends Template{
             serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
         }
 
-        let outletLen = ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth)) / Math.cos((angle/2) * Math.PI / 180);
-        let topLeft = new paper.Point(x, y - outletWidth/2);
-        let bottomRight = new paper.Point(x + outletLen, y + outletWidth/2);
+        let outletLen = ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth)) / Math.cos(((angle / 2) * Math.PI) / 180);
+        let topLeft = new paper.Point(x, y - outletWidth / 2);
+        let bottomRight = new paper.Point(x + outletLen, y + outletWidth / 2);
 
         // upper outlet
         let outlet = new paper.Path.Rectangle(topLeft, bottomRight);
-        outlet.rotate(-angle/2, new paper.Point(x, y));
+        outlet.rotate(-angle / 2, new paper.Point(x, y));
         serp.addChild(outlet);
 
         // lower outlet
         outlet = new paper.Path.Rectangle(topLeft, bottomRight);
-        outlet.rotate(angle/2, new paper.Point(x, y));
+        outlet.rotate(angle / 2, new paper.Point(x, y));
         serp.addChild(outlet);
 
         // inlet
-        topLeft = new paper.Point(x - inletLength, y - inletWidth/2);
-        bottomRight = new paper.Point(x, y + inletWidth/2);
+        topLeft = new paper.Point(x - inletLength, y - inletWidth / 2);
+        bottomRight = new paper.Point(x, y + inletWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // waste
-        topLeft = new paper.Point(x + outletLen * Math.cos(angle/2 * Math.PI / 180), y - ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - (pressureWidth/2)) * Math.tan((angle/2) * Math.PI / 180) - wasteWidth/2);
-        bottomRight = new paper.Point(x + outletLen * Math.cos(angle/2 * Math.PI / 180) + outputLength, y - ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - (pressureWidth/2)) * Math.tan((angle/2) * Math.PI / 180) + wasteWidth/2);
+        topLeft = new paper.Point(
+            x + outletLen * Math.cos(((angle / 2) * Math.PI) / 180),
+            y - ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180) - wasteWidth / 2
+        );
+        bottomRight = new paper.Point(
+            x + outletLen * Math.cos(((angle / 2) * Math.PI) / 180) + outputLength,
+            y - ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180) + wasteWidth / 2
+        );
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // keep
-        topLeft = new paper.Point(x + outletLen * Math.cos(angle/2 * Math.PI / 180), y + ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - (pressureWidth/2)) * Math.tan((angle/2) * Math.PI / 180) - keepWidth/2);
-        bottomRight = new paper.Point(x + outletLen * Math.cos(angle/2 * Math.PI / 180) + outputLength, y + ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - (pressureWidth/2)) * Math.tan((angle/2) * Math.PI / 180) + keepWidth/2);
+        topLeft = new paper.Point(
+            x + outletLen * Math.cos(((angle / 2) * Math.PI) / 180),
+            y + ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180) - keepWidth / 2
+        );
+        bottomRight = new paper.Point(
+            x + outletLen * Math.cos(((angle / 2) * Math.PI) / 180) + outputLength,
+            y + ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180) + keepWidth / 2
+        );
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // middle electrode
-        topLeft = new paper.Point(x - electrodeWidth/2, y + electrodeDistance);
-        bottomRight = new paper.Point(x + electrodeWidth/2, y + electrodeDistance + electrodeLength);
+        topLeft = new paper.Point(x - electrodeWidth / 2, y + electrodeDistance);
+        bottomRight = new paper.Point(x + electrodeWidth / 2, y + electrodeDistance + electrodeLength);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // left electrode
-        topLeft = new paper.Point(x - electrodeWidth/2 - 2 * electrodeWidth, y + electrodeDistance);
-        bottomRight = new paper.Point(x + electrodeWidth/2 - 2 * electrodeWidth, y + electrodeDistance + electrodeLength);
-        
+        topLeft = new paper.Point(x - electrodeWidth / 2 - 2 * electrodeWidth, y + electrodeDistance);
+        bottomRight = new paper.Point(x + electrodeWidth / 2 - 2 * electrodeWidth, y + electrodeDistance + electrodeLength);
+
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // right electrode
-        topLeft = new paper.Point(x - electrodeWidth/2 + 2 * electrodeWidth, y + electrodeDistance + 2 * electrodeWidth * Math.tan(angle/2 * Math.PI / 180));
-        bottomRight = new paper.Point(x + electrodeWidth/2 + 2 * electrodeWidth, y + electrodeDistance + 2 * electrodeWidth * Math.tan(angle/2 * Math.PI / 180) + electrodeLength);
+        topLeft = new paper.Point(x - electrodeWidth / 2 + 2 * electrodeWidth, y + electrodeDistance + 2 * electrodeWidth * Math.tan(((angle / 2) * Math.PI) / 180));
+        bottomRight = new paper.Point(
+            x + electrodeWidth / 2 + 2 * electrodeWidth,
+            y + electrodeDistance + 2 * electrodeWidth * Math.tan(((angle / 2) * Math.PI) / 180) + electrodeLength
+        );
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         serp.rotate(rotation, new paper.Point(x, y));
-        
+
         serp.fillColor = color;
         return serp;
     }

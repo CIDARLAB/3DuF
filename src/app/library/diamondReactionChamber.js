@@ -92,9 +92,9 @@ export default class DiamondReactionChamber extends Template {
 
         let ports = [];
 
-        ports.push(new ComponentPort(- l/2, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(-l / 2, 0, "1", "FLOW"));
 
-        ports.push(new ComponentPort(l/2, 0, 0, "2", "FLOW"));
+        ports.push(new ComponentPort(l / 2, 0, 0, "2", "FLOW"));
 
         return ports;
     }
@@ -107,6 +107,7 @@ export default class DiamondReactionChamber extends Template {
         let l = params["length"];
         let w = params["width"];
         let rotation = params["rotation"];
+        console.log("Rotation", rotation);
         let color = params["color"];
         let p0, p1, p2, p3, p4, p5;
         p0 = [px - l / 2, py - cw / 2];

@@ -81,7 +81,7 @@ export default class YTree extends Template {
             width: "width",
             in: "in",
             out: "out",
-            stageLength: "stageLength",
+            stageLength: "stageLength"
         };
 
         this.__targetParams = {
@@ -91,7 +91,7 @@ export default class YTree extends Template {
             spacing: "spacing",
             in: "in",
             out: "out",
-            stageLength: "stageLength",
+            stageLength: "stageLength"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -106,16 +106,15 @@ export default class YTree extends Template {
     }
 
     getPorts(params) {
-        
         let ports = [];
         let cw = params["flowChannelWidth"];
         let spacing = params["spacing"];
         let ins = params["in"];
         let outs = params["out"];
-        let leafs 
-        if( ins < outs){
+        let leafs;
+        if (ins < outs) {
             leafs = outs;
-        }else{
+        } else {
             leafs = ins;
             rotation += 180;
         }
@@ -125,12 +124,12 @@ export default class YTree extends Template {
         let w = spacing * (leafs / 2 + 1);
 
         let length = levels * stagelength;
-        let width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels); 
+        let width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
 
-        ports.push(new ComponentPort(0, - cw/2, "1", "FLOW"));        
+        ports.push(new ComponentPort(0, -cw / 2, "1", "FLOW"));
 
-        for (let i = 0; i < leafs; i++){
-            ports.push(new ComponentPort((leafs - 1) * width/2 - i * width, length + cw/2, (2 + i).toString(), "FLOW"));
+        for (let i = 0; i < leafs; i++) {
+            ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length + cw / 2, (2 + i).toString(), "FLOW"));
         }
 
         return ports;
@@ -143,10 +142,10 @@ export default class YTree extends Template {
         let spacing = params["spacing"];
         let ins = params["in"];
         let outs = params["out"];
-        let leafs 
-        if( ins < outs){
+        let leafs;
+        if (ins < outs) {
             leafs = outs;
-        }else{
+        } else {
             leafs = ins;
             rotation += 180;
         }
