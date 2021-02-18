@@ -392,7 +392,7 @@ export default class ViewManager {
         }
     }
     /**
-     * Removes all feature of the layer 
+     * Removes all feature of the layer
      * @param {Layer} layer Selected layer
      * @param {Boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
@@ -429,7 +429,7 @@ export default class ViewManager {
         this.refresh(refresh);
     }
     /**
-     * Removes the grid 
+     * Removes the grid
      * @param {Boolean} refresh Default to true
      * @returns {void}
      * @memberof ViewManager
@@ -441,7 +441,7 @@ export default class ViewManager {
         }
     }
     /**
-     * Update grid 
+     * Update grid
      * @param {Boolean} refresh Default to true
      * @returns {void}
      * @memberof ViewManager
@@ -470,7 +470,7 @@ export default class ViewManager {
     }
     /**
      * Sets a specific value of zoom
-     * @param {Number} zoom Zoom value 
+     * @param {Number} zoom Zoom value
      * @param {boolean} refresh Whether it will refresh or not. true by default
      * @returns {void}
      * @memberof ViewManager
@@ -581,8 +581,8 @@ export default class ViewManager {
     }
     /**
      * Update the target view
-     * @param {string} featureType 
-     * @param {string} featureSet 
+     * @param {string} featureType
+     * @param {string} featureSet
      * @param {Array<number>} position Array with X and Y coordinates
      * @param {boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
@@ -592,7 +592,6 @@ export default class ViewManager {
         this.view.addTarget(featureType, featureSet, position);
         this.view.updateAlignmentMarks();
         this.view.updateRatsNest();
-        this.view.updateComponentPortsRender();
         this.refresh(refresh);
     }
     /**
@@ -609,7 +608,7 @@ export default class ViewManager {
         this.refresh(refresh);
     }
     /**
-     * Adjust the zoom value in a certain point 
+     * Adjust the zoom value in a certain point
      * @param {Number} delta Value of zoom
      * @param {Array<number>} point Coordinates to zoom in
      * @param {Boolean} refresh Default to true
@@ -649,7 +648,7 @@ export default class ViewManager {
     }
     /**
      * Moves center by a certain value
-     * @param {number} delta 
+     * @param {number} delta
      * @param {boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
      * @memberof ViewManager
@@ -691,7 +690,7 @@ export default class ViewManager {
     }
     /**
      * Gets the coordinates of the project
-     * @param {*} event 
+     * @param {*} event
      * @returns {Array<number>} Returns the X and Y coordinates
      * @memberof ViewManager
      */
@@ -700,7 +699,7 @@ export default class ViewManager {
     }
     /**
      * Checks if it has current grid
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @memberof ViewManager
      */
     __hasCurrentGrid() {
@@ -729,7 +728,7 @@ export default class ViewManager {
     }
     /**
      * Loads a device from a JSON format
-     * @param {JSON} json 
+     * @param {JSON} json
      * @returns {void}
      * @memberof ViewManager
      */
@@ -747,20 +746,20 @@ export default class ViewManager {
         } else {
             console.log("Version Number: " + version);
             switch (version) {
-            case 1:
-                this.loadCustomComponents(json);
-                device = Device.fromInterchangeV1_1(json);
-                Registry.currentDevice = device;
-                this.__currentDevice = device;
-                break;
-            case 1.1:
-                this.loadCustomComponents(json);
-                device = Device.fromInterchangeV1_1(json);
-                Registry.currentDevice = device;
-                this.__currentDevice = device;
-                break;
-            default:
-                alert("Version '" + version + "' is not supported by 3DuF !");
+                case 1:
+                    this.loadCustomComponents(json);
+                    device = Device.fromInterchangeV1_1(json);
+                    Registry.currentDevice = device;
+                    this.__currentDevice = device;
+                    break;
+                case 1.1:
+                    this.loadCustomComponents(json);
+                    device = Device.fromInterchangeV1_1(json);
+                    Registry.currentDevice = device;
+                    this.__currentDevice = device;
+                    break;
+                default:
+                    alert("Version '" + version + "' is not supported by 3DuF !");
             }
         }
         //Common Code for rendering stuff
@@ -784,7 +783,7 @@ export default class ViewManager {
     }
     /**
      * Removes the features of the current device by searching on it's ID
-     * @param {*} paperElements 
+     * @param {*} paperElements
      * @returns {void}
      * @memberof ViewManager
      */
@@ -824,8 +823,8 @@ export default class ViewManager {
     }
     /**
      * Gets the features of a specific type ?
-     * @param {string} typeString 
-     * @param {string} setString 
+     * @param {string} typeString
+     * @param {string} setString
      * @param {Array} features Array with features
      * @returns {Array} Returns array with the features of a specific type
      * @memberof ViewManager
@@ -842,8 +841,8 @@ export default class ViewManager {
     }
     /**
      * Updates all feature parameters
-     * @param {string} valueString 
-     * @param {*} value 
+     * @param {string} valueString
+     * @param {*} value
      * @param {Array} features Array of features
      * @returns {void}
      * @memberof ViewManager
@@ -856,10 +855,10 @@ export default class ViewManager {
     }
     /**
      * Adjust all parameters of the same type
-     * @param {string} typeString 
-     * @param {string} setString 
-     * @param {string} valueString 
-     * @param {*} value 
+     * @param {string} typeString
+     * @param {string} setString
+     * @param {string} valueString
+     * @param {*} value
      * @returns {void}
      * @memberof ViewManager
      */
@@ -1184,8 +1183,8 @@ export default class ViewManager {
         this.tools["RectValve"] = new ComponentPositionTool("RectValve", "Basic");
         this.tools["Valve3D"] = new ValveInsertionTool("Valve3D", "Basic", true);
         this.tools["Port"] = new ComponentPositionTool("Port", "Basic");
-        this.tools["Anode"] = new ComponentPositionTool("Anode", "Basic");//Ck
-        this.tools["Cathode"] = new ComponentPositionTool("Cathode", "Basic");//Ck
+        this.tools["Anode"] = new ComponentPositionTool("Anode", "Basic"); //Ck
+        this.tools["Cathode"] = new ComponentPositionTool("Cathode", "Basic"); //Ck
         this.tools["Via"] = new PositionTool("Via", "Basic");
         this.tools["DiamondReactionChamber"] = new ComponentPositionTool("DiamondReactionChamber", "Basic");
         this.tools["thermoCycler"] = new ComponentPositionTool("thermoCycler", "Basic");
@@ -1199,7 +1198,7 @@ export default class ViewManager {
         this.tools["Transposer"] = new MultilayerPositionTool("Transposer", "Basic");
         this.tools["RotaryMixer"] = new MultilayerPositionTool("RotaryMixer", "Basic");
         this.tools["CellTrapL"] = new CellPositionTool("CellTrapL", "Basic");
-        this.tools["Gelchannel"] = new CellPositionTool("Gelchannel", "Basic");//ck
+        this.tools["Gelchannel"] = new CellPositionTool("Gelchannel", "Basic"); //ck
         this.tools["DropletGen"] = new ComponentPositionTool("DropletGen", "Basic");
         this.tools["Transition"] = new PositionTool("Transition", "Basic");
         this.tools["AlignmentMarks"] = new MultilayerPositionTool("AlignmentMarks", "Basic");
@@ -1225,12 +1224,12 @@ export default class ViewManager {
         this.tools["CapacitanceSensor"] = new ComponentPositionTool("CapacitanceSensor", "Basic");
         this.tools["DropletGenT"] = new ComponentPositionTool("DropletGenT", "Basic");
         this.tools["DropletGenFlow"] = new ComponentPositionTool("DropletGenFlow", "Basic");
-        this.tools["LogicArray"] = new ControlCellPositionTool("LogicArray", "Basic")
+        this.tools["LogicArray"] = new ControlCellPositionTool("LogicArray", "Basic");
     }
 
     /**
      * Adds a custom component tool
-     * @param {string} identifier 
+     * @param {string} identifier
      * @returns {void}
      * @memberof ViewManager
      */
@@ -1270,8 +1269,8 @@ export default class ViewManager {
         this.view.updateComponentPortsRender();
     }
     /**
-     * Generates the default placement for components 
-     * @param {Component} component 
+     * Generates the default placement for components
+     * @param {Component} component
      * @param {number} xpos Default X coordinate
      * @param {number} ypos Default Y coordinate
      * @returns {void}
@@ -1314,7 +1313,7 @@ export default class ViewManager {
     }
     /**
      * Activates DAFD plugin
-     * @param {*} params 
+     * @param {*} params
      * @returns {void}
      * @memberof ViewManager
      */
@@ -1336,43 +1335,39 @@ export default class ViewManager {
         DAFDPlugin.fixLayout(params);
     }
 
-
-    
     /**
      * This is the method we need to call to fix the valvemaps
      * @memberof ViewManager
      */
-    createValveMapFromSelection(){
-        //TODO: Run through the current selection and generate the valve map for every 
+    createValveMapFromSelection() {
+        //TODO: Run through the current selection and generate the valve map for every
         //vavle that is in the Selection
         let selection = this.tools["MouseSelectTool"].currentSelection;
         let valves = [];
         let connection = null;
         //TODO: run though the items
-        for(let render_element of selection){
+        for (let render_element of selection) {
             //Check if render_element is associated with a VALVE/VALVE3D
             let component = this.currentDevice.getComponentForFeatureID(render_element.featureID);
-            if(component != null){
+            if (component != null) {
                 console.log("Component Type:", component.getType());
                 let type = component.getType();
-                if(type == "Valve3D" || type == "Valve"){
+                if (type == "Valve3D" || type == "Valve") {
                     valves.push(component);
                 }
             }
 
             connection = this.currentDevice.getConnectionForFeatureID(render_element.featureID);
-            
         }
-        
+
         //Add to the valvemap
-        for(let valve of valves){
+        for (let valve of valves) {
             let valve_type = false;
-            if(valve.getType() == 'Valve3D'){
-                valve_type = true
+            if (valve.getType() == "Valve3D") {
+                valve_type = true;
             }
             console.log("Adding Valve: ", valve);
             this.currentDevice.insertValve(valve, connection, valve_type);
         }
-
     }
 }
