@@ -486,7 +486,7 @@ export default class Device {
     __featureLayersToInterchangeV1() {
         let output = [];
         for (let i in this.layers) {
-            output.push(this.layers[i].toInterchangeV1());
+            output.push(this.layers[i].toFeatureLayerJSON());
         }
         return output;
     }

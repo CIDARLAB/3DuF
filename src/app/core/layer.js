@@ -25,11 +25,11 @@ export default class Layer {
         this.group = group;
     }
 
-    get type(){
+    get type() {
         return this.__type;
     }
 
-    get id(){
+    get id() {
         return this.__id;
     }
 
@@ -66,7 +66,7 @@ export default class Layer {
     }
     /**
      * Sets color for the layer
-     * @param {String} layerColor 
+     * @param {String} layerColor
      * @memberof Layer
      * @returns {void}
      */
@@ -104,7 +104,8 @@ export default class Layer {
         }
         return 0;
     }
-*/  
+*/
+
     /**
      * Checks whether the argument pass is a feature
      * @param {Feature} feature Feature object
@@ -135,7 +136,7 @@ export default class Layer {
         if (!this.containsFeatureID(featureID)) throw new Error("Layer does not contain a feature with the specified ID!");
     }
     /**
-     * Returns unique parameters 
+     * Returns unique parameters
      * @returns {Params}
      * @memberof Layer
      * @returns {void}
@@ -157,7 +158,7 @@ export default class Layer {
     }
     /**
      * Returns feature based on it's ID
-     * @param {String} featureID 
+     * @param {String} featureID
      * @returns {Feature}
      * @memberof Layer
      */
@@ -297,12 +298,29 @@ export default class Layer {
         output.id = this.__id;
         output.name = this.name;
         output.type = this.type;
-        // TODO - Add group and unique name parameters to the system and do type checking 
+        // TODO - Add group and unique name parameters to the system and do type checking
         // against type and not name in the future
-        output.group = '0';
+        output.group = "0";
         output.params = this.params.toJSON();
         return output;
     }
+
+    /**
+     * Generate the feature layer json that is neccissary for
+     * seriailizing the visual of the 3DuF designs
+     *
+     * @returns {*} json of the features
+     * @memberof Layer
+     */
+    toFeatureLayerJSON() {
+        let output = {};
+        output.name = this.name;
+        output.color = this.color;
+        output.params = this.params.toJSON();
+        output.features = this.__featuresInterchangeV1();
+        return output;
+    }
+
     /**
      * Load from a JSON format a new layer object
      * @param {JSON} json JSON format
@@ -320,7 +338,7 @@ export default class Layer {
     }
     /**
      * Load from an Interchange format a new layer object
-     * @param {*} json 
+     * @param {*} json
      * @returns {Layer} Returns a new layer object
      * @memberof Layer
      */
@@ -332,7 +350,7 @@ export default class Layer {
     }
     /**
      * Render in 2D the features
-     * @param {*} paperScope 
+     * @param {*} paperScope
      * @returns {Feature} Returns the renders
      * @memberof Layer
      */
