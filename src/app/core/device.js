@@ -512,7 +512,20 @@ export default class Device {
      */
     __loadFeatureLayersFromInterchangeV1(json) {
         for (let i in json) {
-            let newLayer = Layer.fromInterchangeV1(json[i]);
+            let newLayer = Layer.loadFeaturesFromInterchangeV1(json[i]);
+            // this.addLayer(newLayer);
+        }
+    }
+
+    /**
+     * Loads the JSON layer object into the device object
+     *
+     * @param {*} json
+     * @memberof Device
+     */
+    __loadLayersFromInterchangeV1(json) {
+        for (let i in json) {
+            let newLayer = Layer.loadFromInterchangeV1(json[i]);
             this.addLayer(newLayer);
         }
     }
@@ -672,7 +685,8 @@ export default class Device {
         //TODO: Use these two generate a rat's nest
         newDevice.__loadComponentsFromInterchangeV1(json.components);
         newDevice.__loadConnectionsFromInterchangeV1(json.connections);
-        newDevice.__loadFeatureLayersFromInterchangeV1(json.layers);
+        newDevice.__loadLayersFromInterchangeV1(json.layers);
+
         //TODO: Use this to render the device features
 
         //Check if JSON has features else mark
@@ -739,7 +753,7 @@ export default class Device {
         //TODO: Use these two generate a rat's nest
         newDevice.__loadComponentsFromInterchangeV1(json.components);
         newDevice.__loadConnectionsFromInterchangeV1(json.connections);
-
+        newDevice.__loadLayersFromInterchangeV1(json.layers);
         let valve_map, valve_type_map;
         //Import ValveMap
         if (json.params.hasOwnProperty("valveMap") && json.params.hasOwnProperty("valveTypeMap")) {
@@ -772,12 +786,8 @@ export default class Device {
         if (json.hasOwnProperty("features")) {
             newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         } else {
-            //We need to add a default layer
-            let newlayer = new Layer(null, "flow" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
-            newDevice.addLayer(newlayer);
-            newlayer = new Layer(null, "control" + this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
-            newDevice.addLayer(newlayer);
-            this.__layerBlockIndex += 1;
+            //Print a console message
+            console.log("No features group found for representing the visualization");
         }
 
         //Updating cross-references

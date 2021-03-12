@@ -13,14 +13,30 @@ export default class Layer {
      * @param {*} values Value of the layer
      * @param {String} name Name of the layer
      */
-    constructor(values, name = "New Layer", type = "FLOW", group = "0") {
+    constructor(values, id = Layer.generateID(), name = "New Layer", type = "FLOW", group = "0") {
+        if (!values.hasOwnProperty("flip")) {
+            values["flip"] = false;
+        }
+        if (!values.hasOwnProperty("z_offset")) {
+            values["z_offset"] = 0;
+        }
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = String(name);
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
         this.color = undefined;
-        this.__id = Layer.generateID();
+        if (type == "FLOW") {
+            this.color = "indigo";
+            this.params.updateParameter("flip", false);
+        } else if (type == "CONTROL") {
+            this.color = "red";
+            this.params.updateParameter("flip", true);
+        } else if (type == "INTEGRATION") {
+            this.color = "gold";
+            this.params.updateParameter("flip", false);
+        }
+        this.__id = id;
         this.__type = type;
         this.group = group;
     }
@@ -331,19 +347,35 @@ export default class Layer {
         if (!json.hasOwnProperty("features")) {
             throw new Error("JSON layer has no features!");
         }
-        let newLayer = new Layer(json.params, json.name);
+        let newLayer = new Layer(json.params, json.id, json.name);
         newLayer.__loadFeaturesFromJSON(json.features);
         if (json.color) newLayer.color = json.color;
         return newLayer;
     }
+
     /**
-     * Load from an Interchange format a new layer object
+     * Loads the layer object from the interchange format
+     *
+     * @static
+     * @param {*} json
+     * @returns
+     * @memberof Layer
+     */
+    static loadFromInterchangeV1(json) {
+        let newLayer = new Layer(json.params, json.id, json.name, json.type, json.group);
+        return newLayer;
+    }
+
+    /**
+     * Load from an Interchange format all the features for the layer object
      * @param {*} json
      * @returns {Layer} Returns a new layer object
      * @memberof Layer
      */
-    static fromInterchangeV1(json) {
-        let newLayer = new Layer(json.params, json.name, json.type, json.group);
+    static loadFeaturesFromInterchangeV1(json) {
+        // let newLayer = new Layer(json.params, json.name, json.type, json.group);
+        //Get layer from registry
+        // Registry.currentDevice.layer
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
         if (json.color) newLayer.color = json.color; //TODO: Figure out if this needs to change in the future
         return newLayer;

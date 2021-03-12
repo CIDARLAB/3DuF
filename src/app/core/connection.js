@@ -14,11 +14,11 @@ import ComponentPort from "./componentPort";
 export default class Connection {
     /**
      * Default Connection Constructor
-     * @param {String} type 
-     * @param {Params} params 
-     * @param {String} name 
-     * @param {String} mint 
-     * @param {String} id 
+     * @param {String} type
+     * @param {Params} params
+     * @param {String} name
+     * @param {String} mint
+     * @param {String} id
      */
     constructor(type, params, name, mint, id = Feature.generateID()) {
         this.__params = params;
@@ -146,29 +146,26 @@ export default class Connection {
         return output;
     }
 
-
     /**
-     * 
+     *
      */
-    __findLayerReference(){
+    __findLayerReference() {
         let layers = Registry.currentDevice.getLayers();
         let layerrefs;
         let layer;
-        for(let i in layers){
+        for (let i in layers) {
             layer = layers[i];
             //Check if the connectino is in layer then put it there
             let feature;
-            for(let key in layer.features){
+            for (let key in layer.features) {
                 feature = layer.features[key];
-                if(feature.referenceID == this.getID()){
+                if (feature.referenceID == this.getID()) {
                     layerrefs = layer.id;
                 }
             }
         }
         return layerrefs;
     }
-
-
 
     /**
      * Returns the ID of the component
@@ -489,10 +486,12 @@ export default class Connection {
             //TODO: setting a single waypoint at origin
             params["wayPoints"] = [
                 [0, 0],
-                [1, 2]
+                [0, 0]
             ];
         }
+        let regenerate_flag = false;
         if (!params.hasOwnProperty("segments")) {
+            regenerate_flag = true;
             //TODO: Setting a default segment from origin to origin
             params["segments"] = [
                 [
@@ -509,11 +508,17 @@ export default class Connection {
         let paramstoadd = new Params(params, definition.unique, definition.heritable);
 
         let connection = new Connection(entity, paramstoadd, name, entity, id);
+
+        if (regenerate_flag) {
+            connection.regenerateSegments();
+        }
+
         if (json.hasOwnProperty("source")) {
             if (json.source != null && json.source != undefined) {
                 connection.setSourceFromJSON(device, json.source);
             }
         }
+
         if (json.hasOwnProperty("sinks")) {
             if (json.sinks != null && json.sinks != undefined) {
                 for (let i in json.sinks) {
@@ -522,12 +527,15 @@ export default class Connection {
                 }
             }
         }
+
         if (json.hasOwnProperty("paths")) {
             if (json.paths != null && json.paths != undefined) {
                 for (let i in json.paths) {
                     connection.addWayPoints(json.paths[i]);
                 }
             }
+
+            connection.regenerateSegments();
         }
 
         return connection;
@@ -568,7 +576,7 @@ export default class Connection {
 
     /**
      * Allows the user to add a sink to the connection
-     * @param {string} component 
+     * @param {string} component
      * @param {ComponentPort} port
      * @memberof Connection
      * @returns {void}
@@ -605,7 +613,7 @@ export default class Connection {
      * @param {string} componentid Component ID
      * @return {boolean} Returns true if any corresponding connection target is found
      * @memberof Connection
-     * 
+     *
      */
     tryDeleteConnectionTarget(componentid) {
         let ret = false;
@@ -638,7 +646,7 @@ export default class Connection {
     }
     /**
      * Merges connections
-     * @param {Connection} connection 
+     * @param {Connection} connection
      * @memberof Connection
      * @returns {void}
      */
@@ -655,8 +663,8 @@ export default class Connection {
     }
     /**
      * Converts from JSON format to connection object
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */
@@ -666,8 +674,8 @@ export default class Connection {
     }
     /**
      * ?
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */
