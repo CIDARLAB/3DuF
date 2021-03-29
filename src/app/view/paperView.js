@@ -140,16 +140,13 @@ export default class PaperView {
      */
     centerAll() {
         let layer = this.paperLayers[this.activeLayer];
-
         if (layer.children.length > 1) {
+            // Find the center of the design
             let leftBound = layer.children[0].position.x;
             let rightBound = layer.children[0].position.x;
             let upperBound = layer.children[0].position.y;
             let lowerBound = layer.children[0].position.y;
-
             for (var i = 0; i < layer.children.length -1; i++) {
-                // console.log(leftBound, rightBound, upperBound, lowerBound);
-
                 let component = layer.children[i].position;
                 if (component.x < leftBound) {
                     leftBound = component.x;
@@ -162,15 +159,13 @@ export default class PaperView {
                     lowerBound = component.y;
                 }
             }
-
             let centerX = (leftBound + rightBound) / 2;
             let centerY = (upperBound + lowerBound) / 2;
-
+            // Calculate the change of position
             let changeX = centerX - layer.children[layer.children.length-1].position.x;
             let changeY = centerY - layer.children[layer.children.length-1].position.y;
-
+            // Move every component to its center
             for (var i = 0; i < layer.children.length - 1; i++) {
-                // console.log(layer.children[i].position);
                 layer.children[i].position.x -= changeX;
                 layer.children[i].position.y -= changeY;
             }
