@@ -64,6 +64,7 @@ export default class ComponentToolBar {
         this.__dropletgenTButton = document.getElementById("dropletgenT_button");
         this.__dropletgenFlowButton = document.getElementById("dropletgenFlow_button");
         this.__logicarrayButton = document.getElementById("logicarray_button");
+        this.__meteringButton = document.getElementById("metering_button");
 
         //Create all the parameter menu buttons
 
@@ -115,6 +116,7 @@ export default class ComponentToolBar {
         this.__dropletgenTParams = document.getElementById("dropletgenT_params_button");
         this.__dropletgenFlowParams = document.getElementById("dropletgenFlow_params_button");
         this.__logicarrayParams = document.getElementById("logicarray_params_button");
+        this.__meteringParams = document.getElementById("metering_params_button");
 
         this.buttons = {
             SelectButton: this.__selectToolButton,
@@ -164,7 +166,8 @@ export default class ComponentToolBar {
             CapacitanceSensor: this.__capacitancesensorButton,
             DropletGenT: this.__dropletgenTButton,
             DropletGenFlow: this.__dropletgenFlowButton,
-            LogicArray: this.__logicarrayButton
+            LogicArray: this.__logicarrayButton,
+            Metering: this.__meteringButton
         };
             
 
@@ -475,6 +478,12 @@ export default class ComponentToolBar {
             ref.setActiveButton("LogicArray");
             ref.__viewManagerDelegate.switchTo2D();
         };
+        this.__meteringButton.onclick = function() {
+            Registry.viewManager.activateTool("Metering");
+
+            ref.setActiveButton("Metering");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
     }
 
     setActiveButton(feature) {
@@ -541,6 +550,7 @@ export default class ComponentToolBar {
         this.__dropletgenTParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenT", "Basic");
         this.__dropletgenFlowParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenFlow", "Basic");
         this.__logicarrayParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LogicArray", "Basic");
+        this.__meteringParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Metering", "Basic");
     }
 
     static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {
