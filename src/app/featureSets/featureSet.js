@@ -47,6 +47,8 @@ import DropletGeneratorT from "../library/dropletGeneratorT";
 import DropletGeneratorFlowFocus from "../library/dropletGeneratorFlowFocus";
 import LogicArray from "../library/logicArray";
 import Aspirator from "../library/aspirator";
+import Shaker from "../library/shaker";
+import MagneticBlock from "../library/magneticBlock";
 
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
@@ -126,6 +128,8 @@ export default class FeatureSet {
             LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
             LogicArray_cell: { object: new LogicArray(), key: "CELL" },
             Aspirator: { object: new Aspirator(), key: null },
+            Shaker: { object: new Shaker(), key: null },
+            MagneticBlock: { object: new MagneticBlock(), key: null }
         };
 
         // this.__checkDefinitions();

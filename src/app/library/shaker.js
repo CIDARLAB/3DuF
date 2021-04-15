@@ -2,7 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export default class Aspirator extends Template {
+export default class Shaker extends Template {
     constructor() {
         super();
     }
@@ -78,7 +78,7 @@ export default class Aspirator extends Template {
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "ASPIRATOR";
+        this.__mint = "SHAKER";
     }
 
     render2D(params, key) {
@@ -99,7 +99,7 @@ export default class Aspirator extends Template {
 
         let recSpout = new paper.Path.Rectangle({
             point: new paper.Point(px - w * 0.75, py - 1.5 * l),
-            size: [w / 2, l / 2],
+            size: [w / 2, l * 2],
         });
 
         rendered.addChild(recBody);

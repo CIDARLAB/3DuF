@@ -1234,6 +1234,8 @@ export default class ViewManager {
         this.tools["DropletGenFlow"] = new ComponentPositionTool("DropletGenFlow", "Basic");
         this.tools["LogicArray"] = new ControlCellPositionTool("LogicArray", "Basic");
         this.tools["Aspirator"] = new ComponentPositionTool("Aspirator", "Basic");
+        this.tools["Shaker"] = new ComponentPositionTool("Shaker", "Basic");
+        this.tools["MagneticBlock"] = new ComponentPositionTool("MagneticBlock", "Basic");
     }
 
     /**
