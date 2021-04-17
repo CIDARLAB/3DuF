@@ -125,7 +125,8 @@ export default class FeatureSet {
             LogicArray: { object: new LogicArray(), key: "FLOW" },
             LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
             LogicArray_cell: { object: new LogicArray(), key: "CELL" },
-            Metering: { object: new Metering(), key: "Flow" }
+            Metering: { object: new Metering(), key: "FLOW" },
+            Metering_control: { object: new Metering(), key: "CONTROL" }
         };
 
         // this.__checkDefinitions();

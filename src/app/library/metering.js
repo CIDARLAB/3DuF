@@ -1,6 +1,7 @@
 import Template from "./template";
 import paper, { Path } from "paper";
 import ComponentPort from "../core/componentPort";
+import ComponentPortRenderer2D from "../view/render2D/componentPortRenderer2D";
 
 export default class Metering extends Template {
     constructor() {
@@ -117,14 +118,39 @@ export default class Metering extends Template {
         ports.push(new ComponentPort(- width/2, -length/4, "3", "FLOW"));
         ports.push(new ComponentPort(width/2, -length/5, "4", "FLOW"));
         ports.push(new ComponentPort(-width/2, length/5, "5", "FLOW"));
-        ports.push(new ComponentPort(width/2, length/4, "6", "FLOW"));
+        // ports.push(new ComponentPort(width/2, length/4, "6", "FLOW"));
 
-        // ports.push(new ComponentPort(inletLength + 5 * pillarDiameter + 1.3 * levelNumber * filterLength + outletLength, 0, "2", "FLOW"));
+        let halfWidth = width/2;
+
+        ports.push(new ComponentPort(0, -length/6, "6", "CONTROL"));
+        ports.push(new ComponentPort(-halfWidth*4/5, -length/4, "7", "CONTROL"));
+        ports.push(new ComponentPort(halfWidth*4/5, - length/5, "8", "CONTROL"));
+        ports.push(new ComponentPort(- halfWidth*4/5, length/5, "9", "CONTROL"));
+        ports.push(new ComponentPort(0, length/6, "10", "CONTROL"));
 
         return ports;
     }
 
     render2D(params, key) {
+        if (key == "FLOW") {
+            return this.__drawFlow(params);
+        } else if (key == "CONTROL") {
+            return this.__drawControl(params);
+        }
+    }
+
+    render2DTarget(key, params) {
+        let ret = new paper.CompoundPath();
+        let flow = this.render2D(params, "FLOW");
+        let control = this.render2D(params, "CONTROL");
+        ret.addChild(control);
+        ret.addChild(flow);
+        ret.fillColor = params["color"];
+        ret.fillColor.alpha = 0.5;
+        return ret;
+    }
+
+    __drawFlow(params) {
         let rotation = params["rotation"];
         let x = params["position"][0];
         let y = params["position"][1];
@@ -321,42 +347,42 @@ export default class Metering extends Template {
 
 
          // bottom right
-         topLeft = new paper.Point(x, y + length/6 + valveGap/2);
-         bottomRight = new paper.Point(x + halfWidth*2/5, y + length/6 + valveGap/2 + flowChannelWidth);
+        //  topLeft = new paper.Point(x, y + length/6 + valveGap/2);
+        //  bottomRight = new paper.Point(x + halfWidth*2/5, y + length/6 + valveGap/2 + flowChannelWidth);
  
-         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+        //  serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
         
-         topLeft = new paper.Point(x + halfWidth*3/5 , y + length/4 - flowChannelWidth/2);
-         bottomRight = new paper.Point(x + halfWidth, y + length/4 + flowChannelWidth/2);
+        //  topLeft = new paper.Point(x + halfWidth*3/5 , y + length/4 - flowChannelWidth/2);
+        //  bottomRight = new paper.Point(x + halfWidth, y + length/4 + flowChannelWidth/2);
  
-         rec = new paper.Path.Rectangle(topLeft, bottomRight);
+        //  rec = new paper.Path.Rectangle(topLeft, bottomRight);
  
-         // space
-         topLeft = new paper.Point(x + halfWidth*4/5 - valveGap/2, y + length/4 - flowChannelWidth/2);
-         bottomRight = new paper.Point(x + halfWidth*4/5 + valveGap/2, y + length/4 + flowChannelWidth/2);
+        //  // space
+        //  topLeft = new paper.Point(x + halfWidth*4/5 - valveGap/2, y + length/4 - flowChannelWidth/2);
+        //  bottomRight = new paper.Point(x + halfWidth*4/5 + valveGap/2, y + length/4 + flowChannelWidth/2);
  
-         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
+        //  rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
  
-         serp.addChild(rec);
+        //  serp.addChild(rec);
  
-         // bridge
-         bridge = new paper.Path({
-             segments: [[x + halfWidth*3/5, y + length/4 - flowChannelWidth/2], [x + halfWidth*3/5, y + length/4 + flowChannelWidth/2], [x + halfWidth*2/5, y + length/6 + valveGap/2 + flowChannelWidth], [x + halfWidth*2/5, y + length/6 + valveGap/2]],
-         });
+        //  // bridge
+        //  bridge = new paper.Path({
+        //      segments: [[x + halfWidth*3/5, y + length/4 - flowChannelWidth/2], [x + halfWidth*3/5, y + length/4 + flowChannelWidth/2], [x + halfWidth*2/5, y + length/6 + valveGap/2 + flowChannelWidth], [x + halfWidth*2/5, y + length/6 + valveGap/2]],
+        //  });
  
-         serp.addChild(bridge);
+        //  serp.addChild(bridge);
  
-         // add valve
-         circ = new paper.Path.Circle(new paper.Point(x + halfWidth*4/5, y + length/4), valveRadius);
+        //  // add valve
+        //  circ = new paper.Path.Circle(new paper.Point(x + halfWidth*4/5, y + length/4), valveRadius);
  
-         cutout = paper.Path.Rectangle({
-             from: new paper.Point(x + halfWidth*4/5 - valveGap / 2, y + length/4 - valveRadius),
-             to: new paper.Point(x + halfWidth*4/5 + valveGap/2, y + length/4 + valveRadius)
-         });
+        //  cutout = paper.Path.Rectangle({
+        //      from: new paper.Point(x + halfWidth*4/5 - valveGap / 2, y + length/4 - valveRadius),
+        //      to: new paper.Point(x + halfWidth*4/5 + valveGap/2, y + length/4 + valveRadius)
+        //  });
  
-         valve = circ.subtract(cutout);
+        //  valve = circ.subtract(cutout);
  
-         serp.addChild(valve);
+        //  serp.addChild(valve);
  
 
         serp.rotate(rotation, new paper.Point(x, y));
@@ -365,10 +391,42 @@ export default class Metering extends Template {
         return serp;
     }
 
-    render2DTarget(key, params) {
-        let serp = this.render2D(params, key);
+    __drawControl(params) {
+        let rotation = params["rotation"];
+        let x = params["position"][0];
+        let y = params["position"][1];
+        let color = params["color"];
+        let valveRadius = params["valveRadius"];
+        let valveGap = params["valveGap"];
+        let flowChannelWidth = params["flowChannelWidth"];
+        let length = params["length"];
+        let width = params["width"];
 
-        serp.fillColor.alpha = 0.5;
+        let serp = new paper.CompoundPath();
+
+        let halfWidth = width/2;
+
+        let circ = new paper.Path.Circle(new paper.Point(x, y - length/6), valveRadius);
+        serp.addChild(circ);
+
+        circ = new paper.Path.Circle(new paper.Point(x, y + length/6), valveRadius);
+        serp.addChild(circ);
+
+        circ = new paper.Path.Circle(new paper.Point(x - halfWidth*4/5, y - length/4), valveRadius);
+        serp.addChild(circ);
+
+        circ = new paper.Path.Circle(new paper.Point(x + halfWidth*4/5, y - length/5), valveRadius);
+        serp.addChild(circ);
+
+        circ = new paper.Path.Circle(new paper.Point(x - halfWidth*4/5, y + length/5), valveRadius);
+        serp.addChild(circ);
+
+        // circ = new paper.Path.Circle(new paper.Point(x + halfWidth*4/5, y + length/4), valveRadius);
+        // serp.addChild(circ);
+
+        serp.rotate(rotation, new paper.Point(x, y));
+        serp.fillColor = color;
+
         return serp;
     }
 }
