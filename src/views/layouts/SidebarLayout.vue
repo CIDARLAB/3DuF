@@ -7,6 +7,7 @@
                 <IntroHelpDialog />
                 <HelpDialog />
                 <v-divider />
+                <MoveDialog />
                 <EditDeviceDialog />
                 <EditBorderDialog />
                 <InsertTextDialog />
@@ -49,6 +50,7 @@ import EventBus from "@/events/events";
 import HelpDialog from "@/components/HelpDialog.vue";
 import IntroHelpDialog from "@/components/IntroHelpDialog.vue";
 import EditDeviceDialog from "@/components/EditDeviceDialog.vue";
+import MoveDialog from "@/components/base/MoveDialog.vue";
 import EditBorderDialog from "@/components/EditBorderDialog.vue";
 import ImportDXFDialog from "@/components/ImportDXFDialog.vue";
 import InsertTextDialog from "@/components/InsertTextDialog.vue";
@@ -59,6 +61,7 @@ export default {
         HelpDialog,
         IntroHelpDialog,
         EditDeviceDialog,
+        MoveDialog,
         EditBorderDialog,
         ImportDXFDialog,
         InsertTextDialog,

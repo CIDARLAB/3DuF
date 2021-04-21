@@ -38,4 +38,13 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.property-drawer-parent {
+    overflow: visible;
+    position: relative;
+}
+
+.btn {
+    width: 100%;
+}
+</style>

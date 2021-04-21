@@ -33,6 +33,7 @@
         </template>
     </Dialog>
 </template>
+
 <script>
 import Dialog from "@/components/base/Dialog.vue";
 export default {
