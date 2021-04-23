@@ -1,3 +1,4 @@
+// based off of curved mixer code
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
@@ -238,13 +239,9 @@ export default class RotaryMixer extends Template {
         let topleft = null;
         let bottomright = null;
 
-        //Draw top right valve
-        topleft = new paper.Point(px + radius + flowChannelWidth + valvespacing, py - radius - flowChannelWidth / 2 - valvewidth / 2);
-        let topleftrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
-        rotarymixer.addChild(topleftrectangle);
-
-        let topLeft = new paper.Point(px + radius + flowChannelWidth + valvespacing + valvelength / 2 - controlChannelWidth / 2, py - radius - flowChannelWidth / 2 - valvewidth);
-        let bottomRight = new paper.Point(px + radius + flowChannelWidth + valvespacing + valvelength / 2 + controlChannelWidth / 2, py - radius);
+		//Removed 2 valves 
+		//could not test what my part looked like due to errors so I just went with removing 2 valves to have the # of valves match the magnetophoresis part
+      
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         //Draw top middle valve
@@ -274,14 +271,7 @@ export default class RotaryMixer extends Template {
         bottomRight = new paper.Point(px + controlChannelWidth / 2, py + radius + flowChannelWidth / 2 + valvewidth);
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //Draw bottom left valve
-        topleft = new paper.Point(px - radius - valvespacing - valvelength - flowChannelWidth, py + radius + flowChannelWidth / 2 - valvewidth / 2);
-        let bottomleftrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
-        rotarymixer.addChild(bottomleftrectangle);
-
-        topLeft = new paper.Point(px - radius - valvespacing - valvelength - flowChannelWidth / 2 - controlChannelWidth / 2, py + radius + flowChannelWidth / 2);
-        bottomRight = new paper.Point(px - radius - valvespacing - valvelength - flowChannelWidth / 2 + controlChannelWidth / 2, py + radius + flowChannelWidth / 2 + valvewidth);
-        rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+     
 
         rotarymixer.fillColor = color;
         return rotarymixer.rotate(rotation, px, py);
