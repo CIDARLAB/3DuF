@@ -35,6 +35,7 @@ export default class ComponentToolBar {
         this.__diamondButton = document.getElementById("diamond_button");
         this.__bettermixerButton = document.getElementById("bettermixer_button");
         this.__curvedmixerButton = document.getElementById("curvedmixer_button");
+        this.__magnetButton = document.getElementById("magnet_button");
         this.__mixerButton = document.getElementById("mixer_button");
         this.__gradientGeneratorButton = document.getElementById("gradientgenerator_button");
         this.__thermoCyclerButton = document.getElementById("thermoCycler_button")
@@ -85,6 +86,7 @@ export default class ComponentToolBar {
         this.__diamondParams = document.getElementById("diamond_params_button");
         this.__bettermixerParams = document.getElementById("bettermixer_params_button");
         this.__curvedmixerParams = document.getElementById("curvedmixer_params_button");
+        this.__magnetParams = document.getElementById("magnet_params_button");
         this.__mixerParams = document.getElementById("mixer_params_button");
         this.__gradientGeneratorParams = document.getElementById("gradientgenerator_params_button");
         this.__treeParams = document.getElementById("tree_params_button");
@@ -136,6 +138,7 @@ export default class ComponentToolBar {
             DiamondReactionChamber: this.__diamondButton,
             BetterMixer: this.__bettermixerButton,
             CurvedMixer: this.__curvedmixerButton,
+            Magnet: this.__magnetButton,
             Mixer: this.__mixerButton,
             GradientGenerator: this.__gradientGeneratorButton,
             Tree: this.__treeButton,
@@ -307,6 +310,12 @@ export default class ComponentToolBar {
             Registry.viewManager.activateTool("CurvedMixer");
 
             ref.setActiveButton("CurvedMixer");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__magnetButton.onclick = function() {
+            Registry.viewManager.activateTool("Magnet");
+
+            ref.setActiveButton("Magnet");
             ref.__viewManagerDelegate.switchTo2D();
         };
         this.__mixerButton.onclick = function() {
@@ -512,6 +521,7 @@ export default class ComponentToolBar {
         this.__diamondParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DiamondReactionChamber", "Basic");
         this.__bettermixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("BetterMixer", "Basic");
         this.__curvedmixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CurvedMixer", "Basic");
+        this.__magnetParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Magnet", "Basic");
         this.__mixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Mixer", "Basic");
         this.__gradientGeneratorParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("GradientGenerator", "Basic");
         this.__treeParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Tree", "Basic");

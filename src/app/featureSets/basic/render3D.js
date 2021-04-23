@@ -280,6 +280,16 @@ export const render3D = {
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
     },
+    Magnet: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            length: "length",
+            height: "height"
+        },
+        featurePrimitiveSet: "Basic3D",
+        featurePrimitive: "EdgedBoxFeature"
+    },
     Mixer: {
         featureParams: {
             position: "position",

@@ -1000,6 +1000,35 @@ export const basicFeatures = {
             height: 1200
         }
     },
+    Magnet: {
+        unique: {
+            position: "Point",
+        },
+        heritable: {
+            length: "Float",
+            width: "Float",
+            height: "Float",
+        },
+        defaults = {
+            length: 41,
+            width: 12,
+            height: 3,
+        },
+            length: "mm",
+            width: "mm",
+            height: "mm",
+        },
+        minimum = {
+            length: 20,
+            width: 5,
+            height: 1,
+        },
+        maximum = {
+            length: 60,
+            width: 20,
+            height: 5,
+        },
+    },
     Mixer: {
         unique: {
             position: "Point"
