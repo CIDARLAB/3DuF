@@ -504,6 +504,28 @@ export const render2D = {
         targetPrimitiveType: "CurvedMixerTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    //Remove me: position, orientation, channelWidth, numberOfBends, bendLength
+    SawtoothMixer: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "SawtoothMixer",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "SawtoothMixerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     Mixer: {
         featureParams: {
             position: "position",
