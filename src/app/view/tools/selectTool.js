@@ -121,7 +121,7 @@ export default class SelectTool extends MouseTool {
 
         //Find the component that owns this feature and then select all of the friends
         let component = this.__getComponentWithFeatureID(paperElement.featureID);
-        if (component == null) {
+        if (component === null) {
             //Does not belong to a component, hence this returns
             paperElement.selected = true;
         } else {
@@ -178,7 +178,7 @@ export default class SelectTool extends MouseTool {
                 //Find the component that owns this feature and then select all of the friends
                 let component = this.__getComponentWithFeatureID(paperFeature.featureID);
 
-                if (component == null) {
+                if (component === null) {
                     //Does not belong to a component hence do the normal stuff
                     paperFeature.selected = true;
                 } else {

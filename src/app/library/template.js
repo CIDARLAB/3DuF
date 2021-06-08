@@ -27,7 +27,7 @@ export default class Template {
      * TODO - Remove this thing's dependency
      */
     get featureParams() {
-        if (this.__featureParams == null) {
+        if (this.__featureParams === null) {
             throw new Error("placementtool cannot be null instantiate in the __setupDefinitions");
         }
 
@@ -38,7 +38,7 @@ export default class Template {
      * TODO - Remove this thing's dependency
      */
     get targetParams() {
-        if (this.__targetParams == null) {
+        if (this.__targetParams === null) {
             throw new Error("placementtool cannot be null instantiate in the __setupDefinitions");
         }
 
@@ -46,7 +46,7 @@ export default class Template {
     }
 
     get placementTool() {
-        if (this.__placementTool == null) {
+        if (this.__placementTool === null) {
             throw new Error("placementtool cannot be null instantiate in the __setupDefinitions");
         }
 
@@ -54,7 +54,7 @@ export default class Template {
     }
 
     get toolParams() {
-        if (this.__toolParams == null) {
+        if (this.__toolParams === null) {
             throw new Error("toolparams cannot be null instantiate in the __setupDefinitions");
         }
 
@@ -62,7 +62,7 @@ export default class Template {
     }
 
     get defaults() {
-        if (this.__defaults == null) {
+        if (this.__defaults === null) {
             throw new Error("defaults cannot be null instantiate in the __setupDefinitions");
         }
 
@@ -70,7 +70,7 @@ export default class Template {
     }
 
     get minimum() {
-        if (this.__minimum == null) {
+        if (this.__minimum === null) {
             throw new Error("minimum cannot be null instantiate in the __setupDefinitions");
         }
 
@@ -78,7 +78,7 @@ export default class Template {
     }
 
     get maximum() {
-        if (this.__maximum == null) {
+        if (this.__maximum === null) {
             throw new Error("maximum cannot be null instantiate in the __setupDefinitions");
         }
 
@@ -86,7 +86,7 @@ export default class Template {
     }
 
     get units() {
-        if (this.__units == null) {
+        if (this.__units === null) {
             throw new Error("units cannot be null instantiate in the __setupDefinitions");
         }
 
@@ -94,7 +94,7 @@ export default class Template {
     }
 
     get unique() {
-        if (this.__unique == null) {
+        if (this.__unique === null) {
             throw new Error("unique cannot be null instantiate in the __setupDefinitions");
         }
 
@@ -102,14 +102,14 @@ export default class Template {
     }
 
     get heritable() {
-        if (this.__heritable == null) {
+        if (this.__heritable === null) {
             throw new Error("Heritable cannot be null instantiate in the __setupDefinitions");
         }
         return this.__heritable;
     }
 
     get renderKeys() {
-        if (this.__renderKeys == null) {
+        if (this.__renderKeys === null) {
             throw new Error("renderKeys cannot be null instantiate in the __setupDefinitions");
         }
 

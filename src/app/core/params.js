@@ -13,7 +13,7 @@ export default class Params {
     constructor(values, unique, heritable, rawparameters) {
         this.unique = unique;
         this.heritable = heritable;
-        if (values != null) {
+        if (values !== null) {
             this.parameters = this.__sanitizeValues(values);
         } else {
             let value;
@@ -124,7 +124,7 @@ export default class Params {
             if (this.isUnique(key)) {
                 newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
             } else if (this.isHeritable(key)) {
-                if (values[key] != undefined || values[key] != null) {
+                if (values[key] != undefined || values[key] !== null) {
                     newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
                 }
             } else {

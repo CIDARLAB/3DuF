@@ -50,7 +50,7 @@ export default class Component {
         }
 
         let ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.__type);
-        if (ports != undefined && ports.length >= 0 && ports != null) {
+        if (ports != undefined && ports.length >= 0 && ports !== null) {
             for (let i in ports) {
                 this.setPort(ports[i].label, ports[i]);
             }
@@ -161,7 +161,7 @@ export default class Component {
         output["y-span"] = bounds.height;
         let portdata = [];
         let map = this.ports;
-        if (map != null) {
+        if (map !== null) {
             for (let key of map.keys()) {
                 let p = map.get(key).toInterchangeV1();
                 portdata.push(p);
@@ -307,7 +307,7 @@ export default class Component {
             renderedfeature = FeatureRenderer2D.renderFeature(feature);
             console.log("rendered:");
             console.log(renderedfeature);
-            if (bounds == null) {
+            if (bounds === null) {
                 bounds = renderedfeature.bounds;
             } else {
                 bounds = bounds.unite(renderedfeature.bounds);
@@ -331,7 +331,7 @@ export default class Component {
      * @memberof Component
      */
     getBoundingRectangle() {
-        if (this.features.length == 0 || this.features == null || this.features == undefined) {
+        if (this.features.length == 0 || this.features === null || this.features == undefined) {
             console.error("No features associated with the component");
         }
         let bounds = null;

@@ -123,7 +123,7 @@ export function renderFeature(feature, key = null) {
         ignoring that.
          */
 
-        if (null == key) {
+        if (null === key) {
             key = rendererinfo.key;
         }
 

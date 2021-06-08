@@ -740,7 +740,7 @@ export default class ViewManager {
         //Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
         let version = json.version;
-        if (null == version || undefined == version) {
+        if (null === version || undefined == version) {
             console.log("Loading Legacy Format...");
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
@@ -981,7 +981,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     activateTool(toolString, rightClickToolString = "SelectTool") {
-        if (this.tools[toolString] == null) {
+        if (this.tools[toolString] === null) {
             throw new Error("Could not find tool with the matching string");
         }
 
@@ -1328,7 +1328,7 @@ export default class ViewManager {
     activateDAFDPlugin(params = null) {
         this.loadDeviceFromJSON(JSON.parse(Examples.dafdtemplate));
 
-        if (null == params) {
+        if (null === params) {
             params = {
                 orificeSize: 750,
                 orificeLength: 200,
@@ -1357,7 +1357,7 @@ export default class ViewManager {
         for (let render_element of selection) {
             //Check if render_element is associated with a VALVE/VALVE3D
             let component = this.currentDevice.getComponentForFeatureID(render_element.featureID);
-            if (component != null) {
+            if (component !== null) {
                 console.log("Component Type:", component.getType());
                 let type = component.getType();
                 if (type == "Valve3D" || type == "Valve") {

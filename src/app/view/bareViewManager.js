@@ -556,7 +556,7 @@ export default class BareViewManager {
         //Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
         var version = json.version;
-        if (null == version || undefined == version) {
+        if (null === version || undefined == version) {
             console.log("Loading Legacy Format...");
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
