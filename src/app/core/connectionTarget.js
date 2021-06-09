@@ -6,9 +6,9 @@ import Device from "./device";
  */
 export default class ConnectionTarget {
     /**
-     * Default ConnectionTarget Constructor
-     * @param {Component} component
-     * @param {string} portLabel
+     * Default ConnectionTarget Constructor 
+     * @param {Component} component 
+     * @param {string} portLabel 
      */
     constructor(component, portLabel) {
         this.__component = component;
