@@ -328,7 +328,7 @@ export default class Layer {
      * @memberof Layer
      */
     static fromJSON(json) {
-        if (!json.hasOwnProperty("features")) {
+        if (!Object.prototype.hasOwnProperty.call(json, 'features')) {
             throw new Error("JSON layer has no features!");
         }
         let newLayer = new Layer(json.params, json.name);
