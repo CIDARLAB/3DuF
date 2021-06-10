@@ -19,7 +19,7 @@
 
             <v-list>
                 <v-list-item-group mandatory color="indigo">
-                    <v-list-item v-for="[icon, text] in buttons" :key="icon" link>
+                    <v-list-item v-for="[key, icon, text] in buttons" :key="key" link>
                         <v-list-item-icon>
                             <v-icon>{{ icon }}</v-icon>
                         </v-list-item-icon>
@@ -71,11 +71,11 @@ export default {
     data() {
         return {
             buttons: [
-                ["mdi-devices", "3DuF File (.json)"],
-                ["mdi-border-all", "Vector Art (.svg)"],
-                ["mdi-toolbox", "CNC (.svg)"],
-                ["mdi-toolbox", "Laser Cutting (.svg)"],
-                ["mdi-toolbox", "Publish on Metafluidics"]
+                ["json", "mdi-devices", "3DuF File (.json)"],
+                ["svg", "mdi-border-all", "Vector Art (.svg)"],
+                ["cnc", "mdi-toolbox", "CNC (.svg)"],
+                ["laser", "mdi-toolbox", "Laser Cutting (.svg)"],
+                ["metafluidics", "mdi-toolbox", "Publish on Metafluidics"]
             ]
         };
     },

@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import { Registry, BareViewManager } from "../app/index";
+import { Registry, BareViewManager, ViewManager } from "../app/index";
 import { Examples } from "../app/index";
 
 export default {
     mounted() {
-        let viewManager = new BareViewManager();
+        let viewManager = new ViewManager();
 
         Registry.viewManager = viewManager;
 

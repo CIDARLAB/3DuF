@@ -66,20 +66,20 @@ export default class ViewManager {
 
         this.tools = {};
         this.rightMouseTool = new SelectTool();
-        this.customComponentManager = new CustomComponentManager(this);
-        this.rightPanel = new RightPanel(this);
-        this.changeAllDialog = new ChangeAllDialog();
-        this.resolutionToolBar = new ResolutionToolBar();
-        this.borderDialog = new BorderSettingsDialog();
-        this.layerToolBar = new LayerToolBar();
-        this.messageBox = document.querySelector(".mdl-js-snackbar");
-        this.editDeviceDialog = new EditDeviceDialog(this);
-        this.helpDialog = new HelpDialog();
-        this.taguchiDesigner = new TaguchiDesigner(this);
-        this.rightClickMenu = new RightClickMenu();
+        // this.customComponentManager = new CustomComponentManager(this);
+        // this.rightPanel = new RightPanel(this);
+        // this.changeAllDialog = new ChangeAllDialog();
+        // this.resolutionToolBar = new ResolutionToolBar();
+        // this.borderDialog = new BorderSettingsDialog();
+        // this.layerToolBar = new LayerToolBar();
+        // this.messageBox = document.querySelector(".mdl-js-snackbar");
+        // this.editDeviceDialog = new EditDeviceDialog(this);
+        // this.helpDialog = new HelpDialog();
+        // this.taguchiDesigner = new TaguchiDesigner(this);
+        // this.rightClickMenu = new RightClickMenu();
         this.__currentDevice = null;
-        this._introDialog = new IntroDialog();
-        this._dampFabricateDialog = new DAMPFabricationDialog();
+        // this._introDialog = new IntroDialog();
+        // this._dampFabricateDialog = new DAMPFabricationDialog();
         let reference = this;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
@@ -107,14 +107,14 @@ export default class ViewManager {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
-        this.manufacturingPanel = new ManufacturingPanel(this);
+        // this.manufacturingPanel = new ManufacturingPanel(this);
 
-        this.exportPanel = new ExportPanel(this);
+        // this.exportPanel = new ExportPanel(this);
 
         this.view.setMouseWheelFunction(func);
         this.minZoom = 0.0001;
         this.maxZoom = 5;
-        this.setupTools();
+        // this.setupTools();
 
         //TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
@@ -122,9 +122,9 @@ export default class ViewManager {
         //Removed from Page Setup
         this.threeD = false;
         this.renderer = Registry.threeRenderer;
-        this.__button2D = document.getElementById("button_2D");
-        this.__canvasBlock = document.getElementById("canvas_block");
-        this.__renderBlock = document.getElementById("renderContainer");
+        // this.__button2D = document.getElementById("button_2D");
+        // this.__canvasBlock = document.getElementById("canvas_block");
+        // this.__renderBlock = document.getElementById("renderContainer");
         this.setupDragAndDropLoad("#c");
         this.setupDragAndDropLoad("#renderContainer");
         this.switchTo2D();
@@ -686,7 +686,8 @@ export default class ViewManager {
         this.updateQueue.run();
         //Update the toolbar
         let spacing = Registry.currentGrid.getSpacing();
-        this.resolutionToolBar.updateResolutionLabelAndSlider(spacing);
+        // TODO - undo this
+        // this.resolutionToolBar.updateResolutionLabelAndSlider(spacing);
     }
     /**
      * Gets the coordinates of the project
@@ -778,7 +779,7 @@ export default class ViewManager {
         this.updateDevice(Registry.currentDevice);
         this.refresh(true);
         Registry.currentLayer = Registry.currentDevice.layers[0];
-        this.layerToolBar.setActiveLayer("0");
+        // this.layerToolBar.setActiveLayer("0");
         Registry.viewManager.updateActiveLayer();
     }
     /**
