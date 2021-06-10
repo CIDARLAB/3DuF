@@ -19,6 +19,7 @@ import * as DXFSolidObjectRenderer from "./render2D/dxfSolidObjectRenderer2D";
 import Layer from "../core/layer";
 import Device from "../core/device";
 import Feature from "../core/feature";
+import components from "@dagrejs/graphlib/lib/alg/components";
 /**
  * Paper View class
  */
@@ -139,37 +140,68 @@ export default class PaperView {
      * @memberof PaperView
      */
     centerAll() {
-        let layer = this.paperLayers[this.activeLayer];
-        if (layer.children.length > 1) {
-            // Find the center of the design
-            let leftBound = layer.children[0].position.x;
-            let rightBound = layer.children[0].position.x;
-            let upperBound = layer.children[0].position.y;
-            let lowerBound = layer.children[0].position.y;
-            for (var i = 0; i < layer.children.length -1; i++) {
-                let component = layer.children[i].position;
-                if (component.x < leftBound) {
-                    leftBound = component.x;
-                } else if (component.x > rightBound) {
-                    rightBound = component.x;
-                }
-                if (component.y < upperBound) {
-                    upperBound = component.y;
-                } else if (component.y > lowerBound) {
-                    lowerBound = component.y;
-                }
-            }
+        let components = this.__viewManagerDelegate.currentDevice.getComponents();
+
+        if (components.length > 0) {
+            // Find the center of the desige
+            let leftBound = components[0].getParams().getValue("position")[0];
+            let rightBound = components[0].getParams().getValue("position")[0];
+            let upperBound = components[0].getParams().getValue("position")[1];
+            let lowerBound = components[0].getParams().getValue("position")[1];
+            components.forEach(component => {
+                let position = component.getParams().getValue("position");
+                leftBound = Math.min(leftBound, position[0]);
+                rightBound = Math.max(rightBound, position[0]);
+                upperBound = Math.min(upperBound, position[1]);
+                lowerBound = Math.max(lowerBound, position[1]);
+            });
             let centerX = (leftBound + rightBound) / 2;
             let centerY = (upperBound + lowerBound) / 2;
+
             // Calculate the change of position
-            let changeX = centerX - layer.children[layer.children.length-1].position.x;
-            let changeY = centerY - layer.children[layer.children.length-1].position.y;
-            // Move every component to its center
-            for (var i = 0; i < layer.children.length - 1; i++) {
-                layer.children[i].position.x -= changeX;
-                layer.children[i].position.y -= changeY;
-            }
+            let changeX = centerX - this.__viewManagerDelegate.currentDevice.getXSpan() / 2;
+            let changeY = centerY - this.__viewManagerDelegate.currentDevice.getYSpan() / 2;
+
+            components.forEach(component => {
+                let position = component.getParams().getValue("position");
+                component.updateComponetPosition([position[0] - changeX, position[1] - changeY]);
+            });
         }
+
+        // components.forEach((component) => component.updateComponetPosition(center))
+
+        // let layer = this.paperLayers[this.activeLayer];
+        // if (layer.children.length > 1) {
+        //
+        //     let leftBound = layer.children[0].position.x;
+        //     let rightBound = layer.children[0].position.x;
+        //     let upperBound = layer.children[0].position.y;
+        //     let lowerBound = layer.children[0].position.y;
+        //     for (var i = 0; i < layer.children.length -1; i++) {
+        //         let component = layer.children[i].position;
+        //         if (component.x < leftBound) {
+        //             leftBound = component.x;
+        //         } else if (component.x > rightBound) {
+        //             rightBound = component.x;
+        //         }
+        //         if (component.y < upperBound) {
+        //             upperBound = component.y;
+        //         } else if (component.y > lowerBound) {
+        //             lowerBound = component.y;
+        //         }
+        //     }
+        //     let centerX = (leftBound + rightBound) / 2;
+        //     let centerY = (upperBound + lowerBound) / 2;
+
+        //     // Calculate the change of position
+        //     let changeX = centerX - layer.children[layer.children.length-1].position.x;
+        //     let changeY = centerY - layer.children[layer.children.length-1].position.y;
+        //     // Move every component to its center
+        //     for (var i = 0; i < layer.children.length - 1; i++) {
+        //         layer.children[i].position.x -= changeX;
+        //         layer.children[i].position.y -= changeY;
+        //     }
+        // }
     }
 
     /**
