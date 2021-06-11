@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Pump extends Template {
     constructor() {
@@ -12,6 +13,7 @@ export default class Pump extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             length: "Float",
             width: "Float",
@@ -21,6 +23,7 @@ export default class Pump extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             width: 600,
             length: 300,
@@ -30,6 +33,7 @@ export default class Pump extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             rotation: "&deg",
             length: "&mu;m",
             width: "&mu;m",
@@ -39,6 +43,7 @@ export default class Pump extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             rotation: 0,
             width: 30,
             length: 120,
@@ -48,7 +53,8 @@ export default class Pump extends Template {
         };
 
         this.__maximum = {
-            rotation: 180,
+            componentSpacing: 10000,
+            rotation: 360,
             width: 6000,
             length: 24 * 1000,
             height: 1200,
@@ -57,6 +63,7 @@ export default class Pump extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             length: "length",
             width: "width",
@@ -66,6 +73,7 @@ export default class Pump extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             length: "length",
             width: "width",
             rotation: "rotation",
@@ -82,6 +90,26 @@ export default class Pump extends Template {
         this.__renderKeys = ["FLOW", "CONTROL"];
 
         this.__mint = "PUMP";
+    }
+
+    getPorts(params) {
+        let l = params["length"];
+        let w = params["width"];
+        let spacing = params["spacing"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(0, -l / 2 - spacing, "1", "FLOW"));
+
+        ports.push(new ComponentPort(0, l / 2 + spacing, "2", "FLOW"));
+
+        ports.push(new ComponentPort(0, -spacing, "3", "CONTROL"));
+
+        ports.push(new ComponentPort(0, 0, "4", "CONTROL"));
+
+        ports.push(new ComponentPort(0, spacing, "5", "CONTROL"));
+
+        return ports;
     }
 
     __drawFlow(params) {
@@ -169,7 +197,7 @@ export default class Pump extends Template {
         return ret.rotate(rotation, px, py);
     }
 
-    render2D(params, key) {
+    render2D(params, key = "FLOW") {
         if (key == "FLOW") {
             return this.__drawFlow(params);
         } else if (key == "CONTROL") {

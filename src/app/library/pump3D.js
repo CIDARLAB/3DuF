@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Pump3D extends Template {
     constructor() {
@@ -12,6 +13,7 @@ export default class Pump3D extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             valveRadius: "Float",
             height: "Float",
             gap: "Float",
@@ -21,6 +23,7 @@ export default class Pump3D extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             valveRadius: 1.2 * 1000,
             height: 250,
             gap: 0.6 * 1000,
@@ -32,6 +35,7 @@ export default class Pump3D extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             valveRadius: "&mu;m",
             height: "&mu;m",
             gap: "&mu;m",
@@ -43,6 +47,7 @@ export default class Pump3D extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
             gap: 0.5 * 10,
@@ -52,15 +57,17 @@ export default class Pump3D extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             valveRadius: 0.2 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
-            rotation: 180,
+            rotation: 360,
             spacing: 10000,
             flowChannelWidth: 10000
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
             valveRadius: "valveRadius",
@@ -70,6 +77,7 @@ export default class Pump3D extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             rotation: "rotation",
             valveRadius: "valveRadius",
             flowChannelWidth: "flowChannelWidth",
@@ -88,12 +96,29 @@ export default class Pump3D extends Template {
         this.__mint = "PUMP3D";
     }
 
-    render2D(params, key) {
+    getPorts(params) {
+        let radius = params["valveRadius"];
+        let spacing = params["spacing"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(0, -spacing - radius, "1", "FLOW"));
+        ports.push(new ComponentPort(0, spacing + radius, "2", "FLOW"));
+
+        ports.push(new ComponentPort(0, -spacing, "3", "CONTROL"));
+
+        ports.push(new ComponentPort(0, 0, "4", "CONTROL"));
+
+        ports.push(new ComponentPort(0, spacing, "5", "CONTROL"));
+        return ports;
+    }
+
+    render2D(params, key = "FLOW") {
         if (key == "FLOW") {
             return this.__drawFlow(params);
         } else if (key == "CONTROL") {
             return this.__drawControl(params);
-        } else if (key == "INVERSE"){
+        } else if (key == "INVERSE") {
             return this.__drawInverse(params);
         }
     }
@@ -214,8 +239,7 @@ export default class Pump3D extends Template {
         return ret;
     }
 
-
-    __drawInverse(params){
+    __drawInverse(params) {
         let circ;
         let position = params["position"];
         let radius = params["valveRadius"];

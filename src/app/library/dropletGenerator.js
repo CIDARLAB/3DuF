@@ -13,6 +13,7 @@ export default class DropletGenerator extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             orificeSize: "Float",
             orificeLength: "Float",
             oilInputWidth: "Float",
@@ -24,6 +25,7 @@ export default class DropletGenerator extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             orificeSize: 0.2 * 1000,
             orificeLength: 0.4 * 1000,
             oilInputWidth: 0.8 * 1000,
@@ -35,6 +37,7 @@ export default class DropletGenerator extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             orificeSize: "&mu;m",
             height: "&mu;m",
             orificeLength: "&mu;m",
@@ -46,6 +49,7 @@ export default class DropletGenerator extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             orificeSize: 10,
             orificeLength: 10,
             oilInputWidth: 10,
@@ -57,6 +61,7 @@ export default class DropletGenerator extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             orificeSize: 2000,
             orificeLength: 2000,
             oilInputWidth: 2000,
@@ -68,6 +73,7 @@ export default class DropletGenerator extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             orificeSize: "orificeSize",
             orificeLength: "orificeLength",
@@ -80,6 +86,7 @@ export default class DropletGenerator extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             orificeSize: "orificeSize",
             orificeLength: "orificeLength",
             oilInputWidth: "oilInputWidth",
@@ -126,7 +133,7 @@ export default class DropletGenerator extends Template {
         return ports;
     }
 
-    render2D(params, key) {
+    render2D(params, key="FLOW") {
         let pos = params["position"];
         let x = pos[0];
         let y = pos[1];
