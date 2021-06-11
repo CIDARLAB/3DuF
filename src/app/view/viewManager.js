@@ -748,13 +748,13 @@ export default class ViewManager {
             console.log("Version Number: " + version);
             switch (version) {
             case 1:
-                this.loadCustomComponents(json);
+                // this.loadCustomComponents(json);
                 device = Device.fromInterchangeV1(json);
                 Registry.currentDevice = device;
                 this.__currentDevice = device;
                 break;
             case 1.1:
-                this.loadCustomComponents(json);
+                // this.loadCustomComponents(json);
                 device = Device.fromInterchangeV1_1(json);
                 Registry.currentDevice = device;
                 this.__currentDevice = device;
@@ -1054,14 +1054,14 @@ export default class ViewManager {
             let reader = new FileReader();
             reader.onloadend = function(e) {
                 let result = this.result;
-                try {
+                // try {
                     result = JSON.parse(result);
                     Registry.viewManager.loadDeviceFromJSON(result);
                     Registry.viewManager.switchTo2D();
-                } catch (error) {
-                    console.error(error.message);
-                    alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
-                }
+                // } catch (error) {
+                //     console.error(error.message);
+                //     alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
+                // }
             };
             try {
                 reader.readAsText(f);

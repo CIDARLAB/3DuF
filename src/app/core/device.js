@@ -13,6 +13,7 @@ import DXFObject from "./dxfObject";
 import * as FeatureSets from "../featureSets";
 import Valve from "../library/valve";
 import ComponentPort from "./componentPort";
+import * as IOUtils from "../utils/ioUtils";
 
 const StringValue = Parameters.StringValue;
 
