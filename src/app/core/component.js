@@ -454,8 +454,9 @@ export default class Component {
 
             console.log("new entity:", entity);
         }
-
-        iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);
+        
+        //TODO - remove this dependency
+        // iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);
 
         let definition;
 
