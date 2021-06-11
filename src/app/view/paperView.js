@@ -141,6 +141,7 @@ export default class PaperView {
      */
     centerAll() {
         let components = this.__viewManagerDelegate.currentDevice.getComponents();
+        let connections = this.__viewManagerDelegate.currentDevice.getConnections();
 
         if (components.length > 0) {
             // Find the center of the desige
@@ -155,6 +156,13 @@ export default class PaperView {
                 upperBound = Math.min(upperBound, position[1]);
                 lowerBound = Math.max(lowerBound, position[1]);
             });
+            connections.forEach(connection => {
+                let position = connection.getParams().getValue("start");
+                leftBound = Math.min(leftBound, position[0]);
+                rightBound = Math.max(rightBound, position[0]);
+                upperBound = Math.min(upperBound, position[1]);
+                lowerBound = Math.max(lowerBound, position[1]);
+            });
             let centerX = (leftBound + rightBound) / 2;
             let centerY = (upperBound + lowerBound) / 2;
 
@@ -162,9 +170,15 @@ export default class PaperView {
             let changeX = centerX - this.__viewManagerDelegate.currentDevice.getXSpan() / 2;
             let changeY = centerY - this.__viewManagerDelegate.currentDevice.getYSpan() / 2;
 
+            // Move every component to its center
             components.forEach(component => {
                 let position = component.getParams().getValue("position");
                 component.updateComponetPosition([position[0] - changeX, position[1] - changeY]);
+            });
+
+            // Move every connection to its center
+            connections.forEach(connection => {
+                connection.updatePosition(changeX, changeY)
             });
         }
 

@@ -14,11 +14,11 @@ import ComponentPort from "./componentPort";
 export default class Connection {
     /**
      * Default Connection Constructor
-     * @param {String} type 
-     * @param {Params} params 
-     * @param {String} name 
-     * @param {String} mint 
-     * @param {String} id 
+     * @param {String} type
+     * @param {Params} params
+     * @param {String} name
+     * @param {String} mint
+     * @param {String} id
      */
     constructor(type, params, name, mint, id = Feature.generateID()) {
         this.__params = params;
@@ -116,6 +116,18 @@ export default class Connection {
         // this.updateView();
     }
 
+    updatePosition(changeX, changeY) {
+        let start = this.__params.parameters.start.getValue()
+        start[0] -= changeX
+        start[1] -= changeY
+        let end = this.__params.parameters.end.getValue()
+        end[0] -= changeX
+        end[1] -= changeY
+        this.__params.parameters.start.updateValue(start);
+        this.__params.parameters.end.updateValue(end);
+        // this.__params.parameters.segment
+    }
+
     /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
      * @returns {Connection} Object
@@ -146,29 +158,26 @@ export default class Connection {
         return output;
     }
 
-
     /**
-     * 
+     *
      */
-    __findLayerReference(){
+    __findLayerReference() {
         let layers = Registry.currentDevice.getLayers();
         let layerrefs;
         let layer;
-        for(let i in layers){
+        for (let i in layers) {
             layer = layers[i];
             //Check if the connectino is in layer then put it there
             let feature;
-            for(let key in layer.features){
+            for (let key in layer.features) {
                 feature = layer.features[key];
-                if(feature.referenceID == this.getID()){
+                if (feature.referenceID == this.getID()) {
                     layerrefs = layer.id;
                 }
             }
         }
         return layerrefs;
     }
-
-
 
     /**
      * Returns the ID of the component
@@ -568,7 +577,7 @@ export default class Connection {
 
     /**
      * Allows the user to add a sink to the connection
-     * @param {string} component 
+     * @param {string} component
      * @param {ComponentPort} port
      * @memberof Connection
      * @returns {void}
@@ -605,7 +614,7 @@ export default class Connection {
      * @param {string} componentid Component ID
      * @return {boolean} Returns true if any corresponding connection target is found
      * @memberof Connection
-     * 
+     *
      */
     tryDeleteConnectionTarget(componentid) {
         let ret = false;
@@ -638,7 +647,7 @@ export default class Connection {
     }
     /**
      * Merges connections
-     * @param {Connection} connection 
+     * @param {Connection} connection
      * @memberof Connection
      * @returns {void}
      */
@@ -655,8 +664,8 @@ export default class Connection {
     }
     /**
      * Converts from JSON format to connection object
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */
@@ -666,8 +675,8 @@ export default class Connection {
     }
     /**
      * ?
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */
