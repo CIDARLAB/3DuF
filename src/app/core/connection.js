@@ -116,16 +116,49 @@ export default class Connection {
         // this.updateView();
     }
 
-    updatePosition(changeX, changeY) {
-        let start = this.__params.parameters.start.getValue()
-        start[0] -= changeX
-        start[1] -= changeY
-        let end = this.__params.parameters.end.getValue()
-        end[0] -= changeX
-        end[1] -= changeY
-        this.__params.parameters.start.updateValue(start);
-        this.__params.parameters.end.updateValue(end);
-        // this.__params.parameters.segment
+    /**
+     * Updates the coordinates of the connections and all the other features
+     * @param {Array} center
+     * @memberof Connection
+     * @returns {void}
+     */
+    updateConnectionPosition(changeX, changeY) {
+        let waypoints = this.__params.parameters.wayPoints;
+        let waypoints_values = [];
+        waypoints.getValue().forEach(value => {
+            waypoints_values.push([value[0] + changeX, value[1] + changeY]);
+        });
+        waypoints.updateValue(waypoints_values);
+
+        let segments = this.__params.parameters.segments;
+        let segments_values = [];
+        segments.getValue().forEach(value => {
+            segments_values.push([
+                [value[0][0] + changeX, value[0][1] + changeY],
+                [value[1][0] + changeX, value[1][1] + changeY]
+            ]);
+        });
+        segments.updateValue(segments_values);
+
+        let start = this.__params.parameters.start.getValue();
+        start[0] += changeX;
+        start[1] += changeY;
+        this.__params.updateParameter("start", start);
+
+        let end = this.__params.parameters.end.getValue();
+        end[0] += changeX;
+        end[1] += changeY;
+        this.__params.updateParameter("end", end);
+
+        for (let i in this.__features) {
+            let featureidtochange = this.__features[i];
+
+            let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            feature.updateParameter("wayPoints", waypoints_values);
+            feature.updateParameter("segments", segments_values);
+            feature.updateParameter("start", start);
+            feature.updateParameter("end", end);
+        }
     }
 
     /**

@@ -167,55 +167,20 @@ export default class PaperView {
             let centerY = (upperBound + lowerBound) / 2;
 
             // Calculate the change of position
-            let changeX = centerX - this.__viewManagerDelegate.currentDevice.getXSpan() / 2;
-            let changeY = centerY - this.__viewManagerDelegate.currentDevice.getYSpan() / 2;
+            let changeX = this.__viewManagerDelegate.currentDevice.getXSpan() / 2 - centerX;
+            let changeY = this.__viewManagerDelegate.currentDevice.getYSpan() / 2 - centerY;
 
             // Move every component to its center
             components.forEach(component => {
                 let position = component.getParams().getValue("position");
-                component.updateComponetPosition([position[0] - changeX, position[1] - changeY]);
+                component.updateComponetPosition([position[0] + changeX, position[1] + changeY]);
             });
 
             // Move every connection to its center
             connections.forEach(connection => {
-                connection.updatePosition(changeX, changeY)
+                connection.updateConnectionPosition(changeX, changeY)
             });
         }
-
-        // components.forEach((component) => component.updateComponetPosition(center))
-
-        // let layer = this.paperLayers[this.activeLayer];
-        // if (layer.children.length > 1) {
-        //
-        //     let leftBound = layer.children[0].position.x;
-        //     let rightBound = layer.children[0].position.x;
-        //     let upperBound = layer.children[0].position.y;
-        //     let lowerBound = layer.children[0].position.y;
-        //     for (var i = 0; i < layer.children.length -1; i++) {
-        //         let component = layer.children[i].position;
-        //         if (component.x < leftBound) {
-        //             leftBound = component.x;
-        //         } else if (component.x > rightBound) {
-        //             rightBound = component.x;
-        //         }
-        //         if (component.y < upperBound) {
-        //             upperBound = component.y;
-        //         } else if (component.y > lowerBound) {
-        //             lowerBound = component.y;
-        //         }
-        //     }
-        //     let centerX = (leftBound + rightBound) / 2;
-        //     let centerY = (upperBound + lowerBound) / 2;
-
-        //     // Calculate the change of position
-        //     let changeX = centerX - layer.children[layer.children.length-1].position.x;
-        //     let changeY = centerY - layer.children[layer.children.length-1].position.y;
-        //     // Move every component to its center
-        //     for (var i = 0; i < layer.children.length - 1; i++) {
-        //         layer.children[i].position.x -= changeX;
-        //         layer.children[i].position.y -= changeY;
-        //     }
-        // }
     }
 
     /**
