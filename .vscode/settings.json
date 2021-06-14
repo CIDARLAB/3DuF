@@ -5,5 +5,10 @@
         "html",
         "javascript",
         "typescript",
-    ]
+    ],
+    "typescript.referencesCodeLens.enabled": true,
+    "typescript.updateImportsOnFileMove.enabled": "prompt",
+    "editor.defaultFormatter": "octref.vetur",
+    "editor.definitionLinkOpensInPeek": true,
+    "vetur.format.options.tabSize": 4
 }
