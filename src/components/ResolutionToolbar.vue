@@ -18,7 +18,15 @@
 </template>
 
 <script>
-export default {};
+import EventBus from "@/events/events";
+
+export default {
+    methods: {
+        handleGridSize() {
+            EventBus.get().emit(EventBus.UPDATE_GRID_SIZE);
+        }
+    }
+};
 </script>
 
 <style lang="scss" scoped></style>

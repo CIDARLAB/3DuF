@@ -18,6 +18,8 @@
 
 <script>
 import Dialog from "@/components/base/Dialog.vue";
+import Registry from "@/app/core/registry.ts";
+import insertTextTool from "@/app/view/tools/insertTextTool.js";
 export default {
     components: {
         Dialog
@@ -30,6 +32,11 @@ export default {
     methods: {
         onSave() {
             console.log("Saved data for Edit Device");
+        },
+        onclick() {
+            Registry.viewManager.activateTool("InsertTextTool");
+            insertTextTool.text(document.getElementById("inserttext_textinput").value);
+            this.__dialog.close();
         }
     }
 };

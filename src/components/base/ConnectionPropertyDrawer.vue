@@ -168,7 +168,7 @@ export default {
         }
     },
     mounted() {
-        EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
+        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
     },
     methods: {
         showProperties() {
