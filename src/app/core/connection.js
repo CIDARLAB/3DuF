@@ -123,13 +123,14 @@ export default class Connection {
      * @returns {void}
      */
     updateConnectionPosition(changeX, changeY) {
+        // update waypoints values
         let waypoints = this.__params.parameters.wayPoints;
         let waypoints_values = [];
         waypoints.getValue().forEach(value => {
             waypoints_values.push([value[0] + changeX, value[1] + changeY]);
         });
         waypoints.updateValue(waypoints_values);
-
+        // update segments values
         let segments = this.__params.parameters.segments;
         let segments_values = [];
         segments.getValue().forEach(value => {
@@ -139,17 +140,17 @@ export default class Connection {
             ]);
         });
         segments.updateValue(segments_values);
-
+        // update start value
         let start = this.__params.parameters.start.getValue();
         start[0] += changeX;
         start[1] += changeY;
         this.__params.updateParameter("start", start);
-
+        // update end value
         let end = this.__params.parameters.end.getValue();
         end[0] += changeX;
         end[1] += changeY;
         this.__params.updateParameter("end", end);
-
+        // update feature values
         for (let i in this.__features) {
             let featureidtochange = this.__features[i];
 
