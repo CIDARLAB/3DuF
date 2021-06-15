@@ -13,6 +13,7 @@ export default class Anode extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             anodeRadius: "Float",
             pegHeight: "Float",
             pegWidth: "Float",
@@ -21,14 +22,16 @@ export default class Anode extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             anodeRadius: 0.9 * 1000,
-            pegHeight: 0.2 * 1000,
-            pegWidth: 0.7 * 1000,
+            pegHeight: 0.2*1000,
+            pegWidth: 0.7*1000,
             height: 1.1 * 1000,
             rotation: 0
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             anodeRadius: "&mu;m",
             pegHeight: "&mu;m",
             pegWidth: "&mu;m",
@@ -37,17 +40,19 @@ export default class Anode extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             anodeRadius: 0.4 * 10,
-            pegHeight: 0.1 * 1000,
-            pegWidth: 0.1 * 1000,
+            pegHeight: 0.1*1000,
+            pegWidth: 0.1*1000,
             height: 10,
             rotation: 0
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             anodeRadius: 2000,
-            pegHeight: 2 * 1000,
-            pegWidth: 2 * 1000,
+            pegHeight: 2*1000,
+            pegWidth: 2*1000,
             height: 1200,
             rotation: 90
         };
@@ -59,6 +64,7 @@ export default class Anode extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             anodeRadius: "anodeRadius",
             pegHeight: "pegHeight",
@@ -67,6 +73,7 @@ export default class Anode extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             anodeRadius: "anodeRadius",
             pegHeight: "pegHeight",
             pegWidth: "pegWidth",
@@ -90,11 +97,13 @@ export default class Anode extends Template {
         let outerCircle = new paper.Path.Circle(pos, radius);
         outerCircle.fillColor = color1;
 
-        let peg = new paper.Path.Rectangle(position[0] - pegwidth / 2, position[1] - pegheight / 2, pegwidth, pegheight);
-        let finalCircle = outerCircle.subtract(peg);
+        let peg = new paper.Path.Rectangle(
+            position[0]-pegwidth/2,position[1]-pegheight/2,
+            pegwidth,pegheight)
+	let finalCircle = outerCircle.subtract(peg);
         finalCircle.fillColor = color1;
-        outerCircle.remove();
-        peg.remove();
+        outerCircle.remove()
+        peg.remove()
         return finalCircle.rotate(rotation, pos);
     }
 

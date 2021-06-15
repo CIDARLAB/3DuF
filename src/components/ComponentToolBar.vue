@@ -7,10 +7,10 @@
                 <span>Feature</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <PropertyDrawer title="Connection" :spec="ConnectionSpec" />
-                <PropertyDrawer title="Channel" :spec="channel3DSpec" />
+                <ConnectionPropertyDrawer title="Connection" :spec="connectionSpec" />
+                <PropertyDrawer title="Channel" :spec="channelSpec" />
                 <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
-                <PropertyDrawer title="Transition" :spec="transtionSpec" />
+                <PropertyDrawer title="Transition" :spec="transitionSpec" />
                 <PropertyDrawer title="Alignment Marks" :spec="alignmentMarks" />
             </v-card-text>
         </v-card>
@@ -81,6 +81,7 @@ import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
 import TransitionSpec from "@/models/property-drawer/TransitionSpec.js";
 import AlignmentMarksSpec from "@/models/property-drawer/AlignmentMarksSpec.js";
 import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
+import ConnectionPropertyDrawer from "@/components/base/ConnectionPropertyDrawer.vue";
 import MixSpec from "@/models/property-drawer/MixSpec.js";
 import Mix3DSpec from "@/models/property-drawer/Mix3DSpec.js";
 import GradientGenSpec from "@/models/property-drawer/GradientGenSpec.js";
@@ -100,7 +101,7 @@ import LLChamberSpec from "@/models/property-drawer/LLChamberSpec.js";
 // import TransponderSpec from "@/models/property-drawer/TransponderSpec.js";
 
 export default {
-    components: { PropertyDrawer },
+    components: { ConnectionPropertyDrawer, PropertyDrawer },
     data() {
         return {
             connectionSpec: ConnectionSpec,

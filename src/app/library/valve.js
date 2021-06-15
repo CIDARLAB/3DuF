@@ -13,6 +13,7 @@ export default class Valve extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             length: "Float",
             width: "Float",
@@ -20,6 +21,7 @@ export default class Valve extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             width: 1.23 * 1000,
             length: 4.92 * 1000,
@@ -27,6 +29,7 @@ export default class Valve extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             rotation: "&deg",
             length: "&mu;m",
             width: "&mu;m",
@@ -34,6 +37,7 @@ export default class Valve extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             rotation: 0,
             width: 30,
             length: 120,
@@ -41,6 +45,7 @@ export default class Valve extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             rotation: 180,
             width: 6000,
             length: 24 * 1000,
@@ -48,6 +53,7 @@ export default class Valve extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             length: "length",
             width: "width",
@@ -55,6 +61,7 @@ export default class Valve extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             length: "length",
             width: "width",
             rotation: "rotation"
@@ -77,15 +84,12 @@ export default class Valve extends Template {
 
         let ports = [];
 
-        ports.push(new ComponentPort(0, -l / 2, "1", "CONTROL"));
-
-        ports.push(new ComponentPort(0, l / 2, "2", "CONTROL"));
+        ports.push(new ComponentPort(0, 0, "1", "CONTROL"));
 
         return ports;
     }
 
-    render2D(params, key) {
-        let orientation = params["orientation"];
+    render2D(params, key = "FLOW") {
         let position = params["position"];
         let px = position[0];
         let py = position[1];
@@ -107,15 +111,11 @@ export default class Valve extends Template {
             strokeWidth: 0
         });
 
-        // if(orientation == "V"){
-        //     rotation = 90;
-        // }
-
         return rec.rotate(rotation, px, py);
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        let render = this.render2D(params, (key = "FLOW"));
         render.fillColor.alpha = 0.5;
         return render;
     }

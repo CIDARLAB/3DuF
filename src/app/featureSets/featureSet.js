@@ -56,14 +56,13 @@ export default class FeatureSet {
             Gelchannel: { object: new Gelchannel(), key: "FLOW" },//CK
             Gelchannel_cell: { object: new Gelchannel(), key: "CELL" },//CK
             Chamber: { object: new Chamber(), key: null },
-            Connection: { object: new Connection(), key: null },
             CurvedMixer: { object: new CurvedMixer(), key: null },
             DiamondReactionChamber: {
                 object: new DiamondReactionChamber(),
                 key: null
             },
 
-
+            Connection: { object: new Connection(), key: null },
             DropletGen: { object: new DropletGenerator(), key: null },
             GradientGenerator: { object: new GradientGenerator(), key: null },
             Mux: { object: new Mux(), key: "FLOW" },

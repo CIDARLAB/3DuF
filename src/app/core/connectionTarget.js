@@ -7,15 +7,7 @@ import Device from "./device";
 export default class ConnectionTarget {
     /**
      * Default ConnectionTarget Constructor 
-<<<<<<< HEAD
-<<<<<<< HEAD
      * @param {Component} component 
-=======
-     * @param {Object} component 
->>>>>>> 12/23/20
-=======
-     * @param {Component} component 
->>>>>>> Error corrected in the core folder
      * @param {string} portLabel 
      */
     constructor(component, portLabel) {
@@ -32,15 +24,7 @@ export default class ConnectionTarget {
     }
     /**
      * Gets the component in the connection
-<<<<<<< HEAD
-<<<<<<< HEAD
      * @returns {Component} Returns a component object
-=======
-     * @returns {Object} Returns a component object
->>>>>>> 12/23/20
-=======
-     * @returns {Component} Returns a component object
->>>>>>> Error corrected in the core folder
      * @memberof ConnectionTarget
      */
     get component() {
@@ -64,21 +48,9 @@ export default class ConnectionTarget {
     }
     /**
      * Creates a new connection from a JSON format
-<<<<<<< HEAD
-<<<<<<< HEAD
      * @param {Device} device Device in the connection
      * @param {JSON} json File where the connection is contain
      * @returns {ConnectionTarget} Returns a Connection Target Object
-=======
-     * @param {Object} device Device in the connection
-     * @param {JSON} json File where the connection is contain
-     * @returns {Object} Returns a Connection Target Object
->>>>>>> 12/23/20
-=======
-     * @param {Device} device Device in the connection
-     * @param {JSON} json File where the connection is contain
-     * @returns {ConnectionTarget} Returns a Connection Target Object
->>>>>>> Error corrected in the core folder
      * @memberof ConnectionTarget
      */
     static fromJSON(device, json) {
