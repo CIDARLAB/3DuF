@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Via extends Template {
     constructor() {
@@ -61,6 +62,16 @@ export default class Via extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "VIA";
+    }
+
+    getPorts(params) {
+        let radius = params["radius"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
+
+        return ports;
     }
 
     render2D(params, key) {

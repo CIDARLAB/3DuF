@@ -21,14 +21,14 @@ export function jsonToMap(jsonStr) {
 }
 
 function fixDeviceDimensionParams(json){
-    if (json.hasOwnProperty("params")) {
-        if (json.params.hasOwnProperty("width")){
+    if (Object.prototype.hasOwnProperty.call(json, 'params')) {
+        if (Object.prototype.hasOwnProperty.call(json.params, 'width')){
             let xspan = json.params.width;
             json.params.xspan = xspan;
             delete json.params.width;
             console.warn("Fixed issue with incorrect device xspan param");
         }
-        if (json.params.hasOwnProperty("length")) {
+        if (Object.prototype.hasOwnProperty.call(json.params, 'length')) {
             let yspan = json.params.length;
             json.params.yspan = yspan;
             delete json.params.length;

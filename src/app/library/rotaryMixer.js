@@ -1,7 +1,6 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import components from "@dagrejs/graphlib/lib/alg/components";
 
 export default class RotaryMixer extends Template {
     constructor() {
@@ -123,19 +122,19 @@ export default class RotaryMixer extends Template {
 
         let ports = [];
 
-        ports.push(new ComponentPort(channellength, - radius - flowChannelWidth/2, "1", "FLOW"));  
-        ports.push(new ComponentPort(- channellength, radius + flowChannelWidth/2, "2", "FLOW"));
+        ports.push(new ComponentPort(channellength, -radius - flowChannelWidth / 2, "1", "FLOW"));
+        ports.push(new ComponentPort(-channellength, radius + flowChannelWidth / 2, "2", "FLOW"));
 
         //top right
-        ports.push(new ComponentPort(radius + flowChannelWidth + valvespacing + valvelength/2, - radius - flowChannelWidth/2 - valvewidth, "3", "CONTROL"));
+        ports.push(new ComponentPort(radius + flowChannelWidth + valvespacing + valvelength / 2, -radius - flowChannelWidth / 2 - valvewidth, "3", "CONTROL"));
         //top bottom
-        ports.push(new ComponentPort(0, - radius - flowChannelWidth/2 - valvewidth, "4", "CONTROL"));
+        ports.push(new ComponentPort(0, -radius - flowChannelWidth / 2 - valvewidth, "4", "CONTROL"));
         //middle right
-        ports.push(new ComponentPort(flowChannelWidth/2 + radius + valvewidth, 0, "5", "CONTROL"));
+        ports.push(new ComponentPort(flowChannelWidth / 2 + radius + valvewidth, 0, "5", "CONTROL"));
         //bottom middle
         ports.push(new ComponentPort(0, radius + flowChannelWidth / 2 + valvewidth, "6", "CONTROL"));
         //bottom left
-        ports.push(new ComponentPort(- radius - valvespacing - valvelength - flowChannelWidth/2, radius + flowChannelWidth/2 + valvewidth, "7", "CONTROL"));
+        ports.push(new ComponentPort(-radius - valvespacing - valvelength - flowChannelWidth / 2, radius + flowChannelWidth / 2 + valvewidth, "7", "CONTROL"));
 
         return ports;
     }
@@ -244,8 +243,8 @@ export default class RotaryMixer extends Template {
         let topleftrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
         rotarymixer.addChild(topleftrectangle);
 
-        let topLeft = new paper.Point(px + radius + flowChannelWidth + valvespacing + valvelength/2 - controlChannelWidth/2, py - radius - flowChannelWidth/2 - valvewidth);
-        let bottomRight = new paper.Point(px + radius + flowChannelWidth + valvespacing + valvelength/2 + controlChannelWidth/2, py - radius);
+        let topLeft = new paper.Point(px + radius + flowChannelWidth + valvespacing + valvelength / 2 - controlChannelWidth / 2, py - radius - flowChannelWidth / 2 - valvewidth);
+        let bottomRight = new paper.Point(px + radius + flowChannelWidth + valvespacing + valvelength / 2 + controlChannelWidth / 2, py - radius);
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         //Draw top middle valve
@@ -253,8 +252,8 @@ export default class RotaryMixer extends Template {
         let topmiddlerectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
         rotarymixer.addChild(topmiddlerectangle);
 
-        topLeft = new paper.Point(px - controlChannelWidth/2, py - radius - flowChannelWidth/2 - valvewidth);
-        bottomRight = new paper.Point(px + controlChannelWidth/2, py - radius);
+        topLeft = new paper.Point(px - controlChannelWidth / 2, py - radius - flowChannelWidth / 2 - valvewidth);
+        bottomRight = new paper.Point(px + controlChannelWidth / 2, py - radius);
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         //Draw middle right valve
@@ -262,8 +261,8 @@ export default class RotaryMixer extends Template {
         let middlerightrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvewidth, valvelength));
         rotarymixer.addChild(middlerightrectangle);
 
-        topLeft = new paper.Point(px + flowChannelWidth/2 + radius, py - controlChannelWidth/2);
-        bottomRight = new paper.Point(px + flowChannelWidth/2 + radius + valvewidth, py + controlChannelWidth/2);
+        topLeft = new paper.Point(px + flowChannelWidth / 2 + radius, py - controlChannelWidth / 2);
+        bottomRight = new paper.Point(px + flowChannelWidth / 2 + radius + valvewidth, py + controlChannelWidth / 2);
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         //Draw Bottom middle valve
@@ -271,8 +270,8 @@ export default class RotaryMixer extends Template {
         let bottommiddlerectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
         rotarymixer.addChild(bottommiddlerectangle);
 
-        topLeft = new paper.Point(px - controlChannelWidth/2, py + radius + flowChannelWidth / 2);
-        bottomRight = new paper.Point(px + controlChannelWidth/2, py + radius + flowChannelWidth / 2 + valvewidth);
+        topLeft = new paper.Point(px - controlChannelWidth / 2, py + radius + flowChannelWidth / 2);
+        bottomRight = new paper.Point(px + controlChannelWidth / 2, py + radius + flowChannelWidth / 2 + valvewidth);
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         //Draw bottom left valve
@@ -280,8 +279,8 @@ export default class RotaryMixer extends Template {
         let bottomleftrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
         rotarymixer.addChild(bottomleftrectangle);
 
-        topLeft = new paper.Point(px - radius - valvespacing - valvelength - flowChannelWidth/2 - controlChannelWidth/2, py + radius + flowChannelWidth/2);
-        bottomRight = new paper.Point(px - radius - valvespacing - valvelength - flowChannelWidth/2 + controlChannelWidth/2, py + radius + flowChannelWidth/2 + valvewidth);
+        topLeft = new paper.Point(px - radius - valvespacing - valvelength - flowChannelWidth / 2 - controlChannelWidth / 2, py + radius + flowChannelWidth / 2);
+        bottomRight = new paper.Point(px - radius - valvespacing - valvelength - flowChannelWidth / 2 + controlChannelWidth / 2, py + radius + flowChannelWidth / 2 + valvewidth);
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         rotarymixer.fillColor = color;

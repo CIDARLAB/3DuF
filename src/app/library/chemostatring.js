@@ -1,8 +1,6 @@
 import Template from "./template";
 import paper, { CompoundPath } from "paper";
 import ComponentPort from "../core/componentPort";
-import { tokTypes } from "acorn";
-import components from "@dagrejs/graphlib/lib/alg/components";
 
 export default class ChemostatRing extends Template {
     constructor() {

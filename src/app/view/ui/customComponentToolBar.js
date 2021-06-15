@@ -10,7 +10,7 @@ export default class CustomComponentToolBar {
 
         //Generate the ToolBar
         this.__toolBar = document.getElementById("customComponentToolBar");
-        if (this.__toolBar == null) {
+        if (this.__toolBar === null) {
             throw new Error("Could not find DOM element for the custom component toolbar");
         }
 
