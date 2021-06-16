@@ -21,6 +21,7 @@ export default class PointArray extends Parameter {
                     return false;
                 }
             }
+            throw new Error("isValid is partially inoperable due to registeredParams deletion");
         } else {
             return false;
         }
