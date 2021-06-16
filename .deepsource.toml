@@ -1,5 +1,7 @@
 version = 1
 
+exclude_patterns = ["lib/*"]
+
 [[analyzers]]
 name = "javascript"
 enabled = true
