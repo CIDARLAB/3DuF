@@ -7,7 +7,6 @@ export default class IntegerValue extends Parameter {
 
     constructor(value: number) {
         super("Integer",value);
-        Parameter.registerParamType(this.typeString, true, this.description);
     }
 
     isValid(value: any) {

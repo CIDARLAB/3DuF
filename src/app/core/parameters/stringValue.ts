@@ -6,7 +6,6 @@ export default class StringValue extends Parameter {
 
     constructor(value: string) {
         super("String",value);
-        Parameter.registerParamType(this.typeString, true, this.description);
     }
 
     isValid(value: any) {

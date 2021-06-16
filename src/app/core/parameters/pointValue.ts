@@ -7,7 +7,6 @@ export default class PointValue extends Parameter {
 
     constructor(value: Array<number>) {
         super("Point",value);
-        Parameter.registerParamType(this.typeString, true, this.description);
     }
 
     isValid(value: any) {

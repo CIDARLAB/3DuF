@@ -55,10 +55,11 @@ export default class Parameter {
      * @returns {void}
      */
     static checkValue(type: string, value: any) {
-        let paramType = Registry.registeredParams[type];
+        /*let paramType = Registry.registeredParams[type];
         if (paramType.isValid(value)){
             return true;
-        }
+        }*/
+        throw new Error("checkValue is inoperable due to registeredParams deletion");
     }
     
     /**
@@ -86,10 +87,11 @@ export default class Parameter {
      * @returns {void}
      */
     static registerParamType(typeString: string, isValid: boolean, description: string) {
-        Registry.registeredParams[typeString] = {
+        /*Registry.registeredParams[typeString] = {
             isValid: isValid,
             description: description
-        };
+        };*/
+        throw new Error("registerParamType inoperable due to registeredParams deletion");
     }
     /**
      * Creates a new type of parameter with a specified value
@@ -99,11 +101,12 @@ export default class Parameter {
      * @memberof Parameter
      */
     static makeParam(type: string, value: any) {
-        if (Registry.registeredParams.hasOwnProperty(type)) {
+        /*if (Registry.registeredParams.hasOwnProperty(type)) {
             return new Parameter(type, value);
         } else {
             throw new Error("Type " + type + " has not been registered.");
-        }
+        }*/
+        throw new Error("makeParam inoperable due to registeredParams deletion");
     }
     /**
      * Creates a parameter from a JSON format

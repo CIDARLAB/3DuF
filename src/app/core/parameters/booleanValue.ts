@@ -6,7 +6,6 @@ export default class BooleanValue extends Parameter {
 
     constructor(value: boolean) {
         super("Boolean",value);
-        Parameter.registerParamType(this.typeString, true, this.description);
     }
 
     isValid(value: any) {

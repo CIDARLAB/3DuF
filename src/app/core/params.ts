@@ -3,8 +3,8 @@ import Parameter from "./parameter";
  * Params class
  */
 export default class Params {
-    unique: {[index: string]: string};
-    heritable: boolean;
+    private unique: boolean;
+    private heritable: boolean;
     parameters: any;
     
 
@@ -15,22 +15,10 @@ export default class Params {
      * @param {} heritable Boolean if it's heritable
      * @param {} rawparameters ?
      */
-    constructor(values: any, unique: boolean, heritable: boolean, rawparameters?: any) { 
+    constructor(values: any, unique: boolean, heritable: boolean) { 
         //rp must be optional for function further down. If no rp provided and values == null, what happens?
         this.unique = unique;
         this.heritable = heritable;
-        if (values != null) {
-            this.parameters = this.__sanitizeValues(values);
-        } else {
-            let value;
-            for (let key in rawparameters) {
-                value = rawparameters[key];
-                let oldParam = values[key]; //not sure about this
-                this.parameters[key] = Parameter.makeParam(this.unique[key], oldParam);
-            }
-
-            this.parameters = rawparameters;
-        }
     }
     /**
      * Updates parameter value.
@@ -43,9 +31,7 @@ export default class Params {
         if (this.parameters.hasOwnProperty(key)) {
             this.parameters[key].updateValue(value);
         } else {
-            if (this.isHeritable(key)) {
-                this.parameters[key] = Parameter.makeParam(this.heritable[key], value);
-            } else throw new Error(key + "parameter does not exist in Params object");
+            throw new Error(key + "parameter does not exist in Params object");
         }
     }
     /**
@@ -102,8 +88,9 @@ export default class Params {
      * @memberof Params
      */
     hasAllUniques(params: {[index:string]: Parameter}) {
-        for (let key in this.unique) if (!params.hasOwnProperty(key)) return false;
+        //for (let key in this.unique) if (!params.hasOwnProperty(key)) return false;
         return true;
+        throw new Error("Unique check inoperable, always returns true");
     }
     /**
      * Returns the expected type for a specific param.
@@ -125,7 +112,7 @@ export default class Params {
      * @memberof Params
      */
     __sanitizeValues(values: any) {
-        let newParams: any = {};
+        /*let newParams: any = {};
         for (let key in values) {
             let oldParam = values[key];
             if (this.isUnique(key)) {
@@ -140,6 +127,8 @@ export default class Params {
         }
         this.__checkParams(newParams);
         return newParams;
+        */
+       throw new Error("Sanitize values inoperable.");
     }
 
     /* Checks to make sure the set of sanitized parameters matches the expected ParamTypes.
@@ -157,13 +146,15 @@ export default class Params {
             if (!(param instanceof Parameter)) {
                 throw new Error(key + " is not a ParameterValue.");
             } else if (this.isUnique(key)) {
-                if (param.__type != this.unique[key]) {
-                    this.wrongTypeError(key, this.unique[key], param.type);
-                }
+                /*if (param.__type != this.unique[key]) {
+                    this.wrongTypeError(key, this.unique[key], param.__type);
+                }*/
+                throw new Error("Unique check inoperable");
             } else if (this.isHeritable(key)) {
-                if (param.__type != this.heritable[key]) {
-                    this.wrongTypeError(key, this.heritable[key], param.type);
-                }
+                /*if (param.__type != this.heritable[key]) {
+                    this.wrongTypeError(key, this.heritable[key], param.__type);
+                }*/
+                throw new Error("Heritable check inoperable");
             } else {
                 throw new Error(key + " does not exist in this set of ParamTypes.");
             }
@@ -178,11 +169,10 @@ export default class Params {
      * @memberof Params
      */
     toJSON() {
-        let json = {};
+        let json: {[index:string]: any} = {};
         for (let key in this.parameters) {
             if (this.parameters[key] != undefined) {
                 json[key] = this.parameters[key].getValue(); 
-                //would need to affect json definition
             }
         }
         return json;

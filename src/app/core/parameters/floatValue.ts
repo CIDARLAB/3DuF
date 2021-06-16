@@ -7,7 +7,6 @@ export default class FloatValue extends Parameter {
 
     constructor(value: number) {
         super("Float",value);
-        Parameter.registerParamType(this.typeString, true, this.description);
     }
 
     isValid(value: any) {

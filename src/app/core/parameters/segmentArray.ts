@@ -7,7 +7,6 @@ export default class SegmentArray extends Parameter {
 
     constructor(value: Array<Array<Array<number>>>) {
         super("SegmentArray",value);
-        Parameter.registerParamType(this.typeString, true, this.description);
     }
 
     isValid(value: any) {
@@ -15,13 +14,14 @@ export default class SegmentArray extends Parameter {
             if (value.length == 0) {
                 return true;
             }
-            for (var i in value) {
+            /*for (var i in value) {
                 let paramType = Registry.registeredParams["PointArray"];
                 if (!paramType.isValid(value[i])) {
                     console.log("Does not contain a valid point");
                     return false;
                 }
-            }
+            }*/
+            throw new Error("isValid partially inoperable due to registeredParams deletion");
         } else {
             return false;
         }
