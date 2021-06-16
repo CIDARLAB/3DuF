@@ -47,7 +47,6 @@ export default class Parameter {
     public get type(): string {
         return this.__type;
     }
-
     
     /**
      * Updates the value of parameter
