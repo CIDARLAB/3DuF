@@ -1,6 +1,6 @@
 version = 1
 
-exclude_patterns = ["lib/*"]
+exclude_patterns = ["**/lib/*","orbit_bundle.js"]
 
 [[analyzers]]
 name = "javascript"
