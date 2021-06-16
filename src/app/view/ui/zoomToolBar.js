@@ -8,7 +8,7 @@ export default class ZoomToolBar {
     }
 
     __setupZoomSlider(zoom_min, zoom_max) {
-        if (this.__zoomSlider == null) {
+        if (this.__zoomSlider === null) {
             throw new Error("Could not find HTML element for the grid resolution slider");
         }
 

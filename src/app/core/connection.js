@@ -172,13 +172,13 @@ export default class Connection {
         output.id = this.__id;
         output.name = this.__name;
         output.entity = this.__entity;
-        if (this.__source != null) {
+        if (this.__source !== null) {
             output.source = this.__source.toJSON();
         } else {
             output.source = null;
         }
         let sinks = [];
-        if (this.__sinks != null && this.__sinks.length > 0) {
+        if (this.__sinks !== null && this.__sinks.length > 0) {
             for (let i in this.__sinks) {
                 sinks.push(this.__sinks[i].toJSON());
             }
@@ -327,7 +327,7 @@ export default class Connection {
             renderedfeature = FeatureRenderer2D.renderFeature(feature);
             console.log("rendered:");
             console.log(renderedfeature);
-            if (bounds == null) {
+            if (bounds === null) {
                 bounds = renderedfeature.bounds;
             } else {
                 bounds = bounds.unite(renderedfeature.bounds);
@@ -520,22 +520,22 @@ export default class Connection {
         }
 
         //Check if the params have the other unique elements necessary otherwise add them as null
-        if (!params.hasOwnProperty("start")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'start')) {
             //Setting this value to origin
             params["start"] = [0, 0];
         }
-        if (!params.hasOwnProperty("end")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'end')) {
             //Setting this value to origin
             params["end"] = [0, 0];
         }
-        if (!params.hasOwnProperty("wayPoints")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'wayPoints')) {
             //TODO: setting a single waypoint at origin
             params["wayPoints"] = [
                 [0, 0],
                 [1, 2]
             ];
         }
-        if (!params.hasOwnProperty("segments")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'segments')) {
             //TODO: Setting a default segment from origin to origin
             params["segments"] = [
                 [
@@ -552,21 +552,21 @@ export default class Connection {
         let paramstoadd = new Params(params, definition.unique, definition.heritable);
 
         let connection = new Connection(entity, paramstoadd, name, entity, id);
-        if (json.hasOwnProperty("source")) {
-            if (json.source != null && json.source != undefined) {
+        if (Object.prototype.hasOwnProperty.call(json, 'source')) {
+            if (json.source !== null && json.source != undefined) {
                 connection.setSourceFromJSON(device, json.source);
             }
         }
-        if (json.hasOwnProperty("sinks")) {
-            if (json.sinks != null && json.sinks != undefined) {
+        if (Object.prototype.hasOwnProperty.call(json, 'sinks')) {
+            if (json.sinks !== null && json.sinks != undefined) {
                 for (let i in json.sinks) {
                     let sink = json.sinks[i];
                     connection.addSinkFromJSON(device, sink);
                 }
             }
         }
-        if (json.hasOwnProperty("paths")) {
-            if (json.paths != null && json.paths != undefined) {
+        if (Object.prototype.hasOwnProperty.call(json, 'paths')) {
+            if (json.paths !== null && json.paths != undefined) {
                 for (let i in json.paths) {
                     connection.addWayPoints(json.paths[i]);
                 }
@@ -631,11 +631,11 @@ export default class Connection {
      * @returns {void}
      */
     addConnectionTarget(connectiontarget) {
-        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget == null || connectiontarget == undefined) {
+        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget === null || connectiontarget == undefined) {
             console.error("Cannot add non-ConnectionTarget object as source or sink");
         }
 
-        if (this.__source == null) {
+        if (this.__source === null) {
             this.__source = connectiontarget;
         } else {
             //TODO: Check for duplicates - does it matter actually ?

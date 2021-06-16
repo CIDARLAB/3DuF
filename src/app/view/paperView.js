@@ -475,7 +475,7 @@ export default class PaperView {
      */
     setActiveLayer(index) {
         this.activeLayer = index;
-        if (this.activeLayer != null && this.activeLayer >= 0) this.showActiveLayer();
+        if (this.activeLayer !== null && this.activeLayer >= 0) this.showActiveLayer();
     }
     /**
      * Show the current active layer
@@ -814,7 +814,7 @@ export default class PaperView {
 
         let target;
 
-        if (onlyHitActiveLayer && this.activeLayer != null) {
+        if (onlyHitActiveLayer && this.activeLayer !== null) {
             target = this.paperLayers[this.activeLayer];
 
             let result = target.hitTest(point, hitOptions);
@@ -841,7 +841,7 @@ export default class PaperView {
      */
     hitFeaturesWithViewElement(paperElement, onlyHitActiveLayer = true) {
         let output = [];
-        if (onlyHitActiveLayer && this.activeLayer != null) {
+        if (onlyHitActiveLayer && this.activeLayer !== null) {
             let layer = this.paperLayers[this.activeLayer];
             for (let i = 0; i < layer.children.length; i++) {
                 let child = layer.children[i];

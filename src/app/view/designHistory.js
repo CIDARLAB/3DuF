@@ -62,7 +62,7 @@ export default class DesignHistory {
     __cloneObject(obj) {
         var clone = {};
         for (var i in obj) {
-            if (obj[i] != null && typeof obj[i] == "object") clone[i] = this.__cloneObject(obj[i]);
+            if (obj[i] !== null && typeof obj[i] == "object") clone[i] = this.__cloneObject(obj[i]);
             else clone[i] = obj[i];
         }
         return clone;

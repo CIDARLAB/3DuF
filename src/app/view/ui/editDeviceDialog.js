@@ -17,7 +17,7 @@ export default class EditDeviceDialog {
         this.saveDeviceSettingsButton.onclick = function() {
             //Save the name
             let devicename = ref.__deviceNameTextInput.value;
-            if (devicename != "" || devicename != null) {
+            if (devicename != "" || devicename !== null) {
                 Registry.currentDevice.setName(devicename);
             }
 

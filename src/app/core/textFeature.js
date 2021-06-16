@@ -200,7 +200,7 @@ export default class TextFeature {
      */
     static fromJSON(json) {
         let set;
-        if (json.hasOwnProperty("set")) set = json.set;
+        if (Object.prototype.hasOwnProperty.call(json, 'set')) set = json.set;
         else set = "Basic";
         return Feature.makeFeature(json.type, set, json.params, json.name, json.id);
     }
@@ -212,7 +212,7 @@ export default class TextFeature {
      */
     static fromInterchangeV1(json) {
         let set;
-        if (json.hasOwnProperty("set")) set = json.set;
+        if (Object.prototype.hasOwnProperty.call(json, 'set')) set = json.set;
         else set = "Basic";
         //TODO: This will have to change soon when the thing is updated
         return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);

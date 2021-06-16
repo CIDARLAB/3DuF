@@ -48,7 +48,7 @@ export function renderAlignmentMarks(position, radius, features) {
 
     for (let i in features) {
         let feature = features[i];
-        if (feature == null) {
+        if (feature === null) {
             continue;
         }
         if (calculateDistance(position, feature.getBounds().center) < radius) {
