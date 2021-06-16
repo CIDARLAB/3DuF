@@ -71,7 +71,8 @@ export function renderTextTarget(typeString, setString, position) {
     let rendered = new paper.PointText(new paper.Point(position[0], position[1]));
     rendered.justification = "center";
     rendered.fillColor = Colors.DEEP_PURPLE_500;
-    rendered.content = Registry.text;
+    //TODO: Replace Registry.text
+    //rendered.content = Registry.text;
     rendered.fontSize = 10000 / 3;
     return rendered;
 }

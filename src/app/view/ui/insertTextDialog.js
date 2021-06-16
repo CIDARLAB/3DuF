@@ -16,7 +16,8 @@ export default class InsertTextDialog {
         let ref = this;
         this.__acceptTextButton.onclick = function() {
             Registry.viewManager.activateTool("InsertTextTool");
-            Registry.text = document.getElementById("inserttext_textinput").value;
+            // Replace Registry.text
+            //Registry.text = document.getElementById("inserttext_textinput").value;
             ref.__dialog.close();
         };
 
