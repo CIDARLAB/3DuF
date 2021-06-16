@@ -205,7 +205,7 @@ export default class Connection {
             let feature;
             for (let key in layer.features) {
                 feature = layer.features[key];
-                if (feature.referenceID == this.getID()) {
+                if (feature.referenceID === this.getID()) {
                     layerrefs = layer.id;
                 }
             }

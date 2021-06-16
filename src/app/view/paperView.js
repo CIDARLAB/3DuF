@@ -19,7 +19,7 @@ import * as DXFSolidObjectRenderer from "./render2D/dxfSolidObjectRenderer2D";
 import Layer from "../core/layer";
 import Device from "../core/device";
 import Feature from "../core/feature";
-import components from "@dagrejs/graphlib/lib/alg/components";
+
 /**
  * Paper View class
  */
@@ -131,55 +131,6 @@ export default class PaperView {
         let layer = this.paperLayers[this.activeLayer];
         for (var i in layer.children) {
             layer.children[i].selected = true;
-        }
-    }
-
-    /**
-     * Center all the components on the canvas
-     * @returns {void}
-     * @memberof PaperView
-     */
-    centerAll() {
-        let components = this.__viewManagerDelegate.currentDevice.getComponents();
-        let connections = this.__viewManagerDelegate.currentDevice.getConnections();
-
-        if (components.length > 0) {
-            // Find the center of the desige
-            let leftBound = components[0].getParams().getValue("position")[0];
-            let rightBound = components[0].getParams().getValue("position")[0];
-            let upperBound = components[0].getParams().getValue("position")[1];
-            let lowerBound = components[0].getParams().getValue("position")[1];
-            components.forEach(component => {
-                let position = component.getParams().getValue("position");
-                leftBound = Math.min(leftBound, position[0]);
-                rightBound = Math.max(rightBound, position[0]);
-                upperBound = Math.min(upperBound, position[1]);
-                lowerBound = Math.max(lowerBound, position[1]);
-            });
-            connections.forEach(connection => {
-                let position = connection.getParams().getValue("start");
-                leftBound = Math.min(leftBound, position[0]);
-                rightBound = Math.max(rightBound, position[0]);
-                upperBound = Math.min(upperBound, position[1]);
-                lowerBound = Math.max(lowerBound, position[1]);
-            });
-            let centerX = (leftBound + rightBound) / 2;
-            let centerY = (upperBound + lowerBound) / 2;
-
-            // Calculate the change of position
-            let changeX = this.__viewManagerDelegate.currentDevice.getXSpan() / 2 - centerX;
-            let changeY = this.__viewManagerDelegate.currentDevice.getYSpan() / 2 - centerY;
-
-            // Move every component to its center
-            components.forEach(component => {
-                let position = component.getParams().getValue("position");
-                component.updateComponetPosition([position[0] + changeX, position[1] + changeY]);
-            });
-
-            // Move every connection to its center
-            connections.forEach(connection => {
-                connection.updateConnectionPosition(changeX, changeY)
-            });
         }
     }
 

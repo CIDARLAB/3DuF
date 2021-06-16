@@ -201,7 +201,7 @@ export default class MouseAndKeyboardHandler {
 
             if ((event.ctrlKey || event.metaKey) && key === 71) {
                 // Center the Design
-                reference.view.centerAll();
+                reference.centerAll();
                 return false;
             }
         });
