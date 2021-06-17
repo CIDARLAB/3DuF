@@ -7,10 +7,10 @@
     "babelify": "^10.0.0",
     "browserify": "^16.2.2",
     "eslint": "^6.8.0",
-    "jsdoc": "^3.6.6",
+    "jsdoc": "^3.6.7",
     "node-sass": "^4.14.1",
     "prettier": "1.19.1",
-    "watchify": "^3.11.1"
+    "watchify": "^4.0.0"
   },
   "browserify": {
     "transform": [
@@ -30,16 +30,16 @@
     "axios": "^0.21.1",
     "dialog-polyfill": "^0.5.0",
     "dxf-parser": "^0.6.1",
-    "exorcist": "^1.0.1",
+    "exorcist": "^2.0.0",
     "handsontable": "^6.2.2",
     "install": "^0.12.2",
     "jszip": "^2.6.1",
     "md5": "^2.2.1",
     "node-uuid": ">=1.4.3",
     "nouislider": "^11.1.0",
-    "npm": "^6.14.8",
+    "npm": "^7.7.5",
     "paper": "^0.12.3",
-    "three": "^0.114.0",
+    "three": "^0.126.1",
     "trackjs": "^3.1.2",
     "wnumb": "^1.1.0"
   },

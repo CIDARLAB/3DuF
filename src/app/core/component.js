@@ -354,7 +354,7 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-    updateComponetPosition(center) {
+    updateComponentPosition(center) {
         //This was not calling the right method earlier
         this.__params.updateParameter("position", center);
         for (let i in this.__features) {
@@ -404,7 +404,7 @@ export default class Component {
             currentlayer.addFeature(replica);
         }
         console.warn("TODO: Generate renders for the new Features for this new component");
-        ret.updateComponetPosition([xpos, ypos]);
+        ret.updateComponentPosition([xpos, ypos]);
         return ret;
     }
 

@@ -14,11 +14,11 @@ import ComponentPort from "./componentPort";
 export default class Connection {
     /**
      * Default Connection Constructor
-     * @param {String} type 
-     * @param {Params} params 
-     * @param {String} name 
-     * @param {String} mint 
-     * @param {String} id 
+     * @param {String} type
+     * @param {Params} params
+     * @param {String} name
+     * @param {String} mint
+     * @param {String} id
      */
     constructor(type, params, name, mint, id = Feature.generateID()) {
         this.__params = params;
@@ -117,6 +117,52 @@ export default class Connection {
     }
 
     /**
+     * Updates the coordinates of the connections and all the other features
+     * @param {Array} center
+     * @memberof Connection
+     * @returns {void}
+     */
+    updateConnectionPosition(changeX, changeY) {
+        // update waypoints values
+        const waypoints = this.__params.parameters.wayPoints;
+        const waypoints_values = [];
+        waypoints.getValue().forEach(value => {
+            waypoints_values.push([value[0] + changeX, value[1] + changeY]);
+        });
+        waypoints.updateValue(waypoints_values);
+        // update segments values
+        const segments = this.__params.parameters.segments;
+        const segments_values = [];
+        segments.getValue().forEach(value => {
+            segments_values.push([
+                [value[0][0] + changeX, value[0][1] + changeY],
+                [value[1][0] + changeX, value[1][1] + changeY]
+            ]);
+        });
+        segments.updateValue(segments_values);
+        // update start value
+        const start = this.__params.parameters.start.getValue();
+        start[0] += changeX;
+        start[1] += changeY;
+        this.__params.updateParameter("start", start);
+        // update end value
+        const end = this.__params.parameters.end.getValue();
+        end[0] += changeX;
+        end[1] += changeY;
+        this.__params.updateParameter("end", end);
+        // update feature values
+        for (const i in this.__features) {
+            const featureidtochange = this.__features[i];
+
+            const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            feature.updateParameter("wayPoints", waypoints_values);
+            feature.updateParameter("segments", segments_values);
+            feature.updateParameter("start", start);
+            feature.updateParameter("end", end);
+        }
+    }
+
+    /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
      * @returns {Connection} Object
      * @memberof Connection
@@ -146,29 +192,26 @@ export default class Connection {
         return output;
     }
 
-
     /**
-     * 
+     *
      */
-    __findLayerReference(){
+    __findLayerReference() {
         let layers = Registry.currentDevice.getLayers();
         let layerrefs;
         let layer;
-        for(let i in layers){
+        for (const i in layers) {
             layer = layers[i];
             //Check if the connectino is in layer then put it there
             let feature;
-            for(let key in layer.features){
+            for (const key in layer.features) {
                 feature = layer.features[key];
-                if(feature.referenceID == this.getID()){
+                if (feature.referenceID === this.getID()) {
                     layerrefs = layer.id;
                 }
             }
         }
         return layerrefs;
     }
-
-
 
     /**
      * Returns the ID of the component
@@ -568,7 +611,7 @@ export default class Connection {
 
     /**
      * Allows the user to add a sink to the connection
-     * @param {string} component 
+     * @param {string} component
      * @param {ComponentPort} port
      * @memberof Connection
      * @returns {void}
@@ -605,7 +648,7 @@ export default class Connection {
      * @param {string} componentid Component ID
      * @return {boolean} Returns true if any corresponding connection target is found
      * @memberof Connection
-     * 
+     *
      */
     tryDeleteConnectionTarget(componentid) {
         let ret = false;
@@ -638,7 +681,7 @@ export default class Connection {
     }
     /**
      * Merges connections
-     * @param {Connection} connection 
+     * @param {Connection} connection
      * @memberof Connection
      * @returns {void}
      */
@@ -655,8 +698,8 @@ export default class Connection {
     }
     /**
      * Converts from JSON format to connection object
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */
@@ -666,8 +709,8 @@ export default class Connection {
     }
     /**
      * ?
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */
