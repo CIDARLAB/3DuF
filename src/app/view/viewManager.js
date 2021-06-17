@@ -893,44 +893,47 @@ export default class ViewManager {
     }
 
     /**
-     * Center all the components on the canvas
+     * Center all the components and connections on the canvas
      * @returns {void}
      * @memberof ViewManager
      */
     centerAll() {
-        let components = Registry.currentDevice.getComponents();
-        let connections = Registry.currentDevice.getConnections();
+        const components = this.currentDevice.getComponents();
+        const connections = this.currentDevice.getConnections();
 
         if (components.length > 0) {
-            // Find the center of the desige
-            let leftBound, rightBound, upperBound, lowerBound;
+            // Find the center of the design
+            let leftBound = 0,
+                rightBound = 0,
+                upperBound = 0,
+                lowerBound = 0;
             [leftBound, upperBound] = components[0].getParams().getValue("position");
             [rightBound, lowerBound] = components[0].getParams().getValue("position");
             components.forEach(component => {
-                let position = component.getParams().getValue("position");
+                const position = component.getParams().getValue("position");
                 leftBound = Math.min(leftBound, position[0]);
                 rightBound = Math.max(rightBound, position[0]);
                 upperBound = Math.min(upperBound, position[1]);
                 lowerBound = Math.max(lowerBound, position[1]);
             });
             connections.forEach(connection => {
-                let position = connection.getParams().getValue("start");
+                const position = connection.getParams().getValue("start");
                 leftBound = Math.min(leftBound, position[0]);
                 rightBound = Math.max(rightBound, position[0]);
                 upperBound = Math.min(upperBound, position[1]);
                 lowerBound = Math.max(lowerBound, position[1]);
             });
-            let centerX = (leftBound + rightBound) / 2;
-            let centerY = (upperBound + lowerBound) / 2;
+            const centerX = (leftBound + rightBound) / 2;
+            const centerY = (upperBound + lowerBound) / 2;
 
             // Calculate the change of position
-            let changeX = Registry.currentDevice.getXSpan() / 2 - centerX;
-            let changeY = Registry.currentDevice.getYSpan() / 2 - centerY;
+            const changeX = this.currentDevice.getXSpan() / 2 - centerX;
+            const changeY = this.currentDevice.getYSpan() / 2 - centerY;
 
             // Move every component to its center
             components.forEach(component => {
-                let position = component.getParams().getValue("position");
-                component.updateComponetPosition([position[0] + changeX, position[1] + changeY]);
+                const position = component.getParams().getValue("position");
+                component.updateComponentPosition([position[0] + changeX, position[1] + changeY]);
             });
 
             // Move every connection to its center
@@ -1345,7 +1348,7 @@ export default class ViewManager {
         Registry.currentLayer.addFeature(newFeature);
 
         //Set the component position
-        component.updateComponetPosition([xpos, ypos]);
+        component.updateComponentPosition([xpos, ypos]);
     }
     /**
      * Generates a JSON format file to export it
@@ -1363,7 +1366,7 @@ export default class ViewManager {
      * @param json
      */
     loadCustomComponents(json) {
-        if (Object.prototype.hasOwnProperty.call(json, 'customComponents')) {
+        if (Object.prototype.hasOwnProperty.call(json, "customComponents")) {
             this.customComponentManager.loadFromJSON(json["customComponents"]);
         }
     }

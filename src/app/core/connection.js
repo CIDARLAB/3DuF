@@ -124,15 +124,15 @@ export default class Connection {
      */
     updateConnectionPosition(changeX, changeY) {
         // update waypoints values
-        let waypoints = this.__params.parameters.wayPoints;
-        let waypoints_values = [];
+        const waypoints = this.__params.parameters.wayPoints;
+        const waypoints_values = [];
         waypoints.getValue().forEach(value => {
             waypoints_values.push([value[0] + changeX, value[1] + changeY]);
         });
         waypoints.updateValue(waypoints_values);
         // update segments values
-        let segments = this.__params.parameters.segments;
-        let segments_values = [];
+        const segments = this.__params.parameters.segments;
+        const segments_values = [];
         segments.getValue().forEach(value => {
             segments_values.push([
                 [value[0][0] + changeX, value[0][1] + changeY],
@@ -141,20 +141,20 @@ export default class Connection {
         });
         segments.updateValue(segments_values);
         // update start value
-        let start = this.__params.parameters.start.getValue();
+        const start = this.__params.parameters.start.getValue();
         start[0] += changeX;
         start[1] += changeY;
         this.__params.updateParameter("start", start);
         // update end value
-        let end = this.__params.parameters.end.getValue();
+        const end = this.__params.parameters.end.getValue();
         end[0] += changeX;
         end[1] += changeY;
         this.__params.updateParameter("end", end);
         // update feature values
-        for (let i in this.__features) {
-            let featureidtochange = this.__features[i];
+        for (const i in this.__features) {
+            const featureidtochange = this.__features[i];
 
-            let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
             feature.updateParameter("wayPoints", waypoints_values);
             feature.updateParameter("segments", segments_values);
             feature.updateParameter("start", start);
@@ -199,11 +199,11 @@ export default class Connection {
         let layers = Registry.currentDevice.getLayers();
         let layerrefs;
         let layer;
-        for (let i in layers) {
+        for (const i in layers) {
             layer = layers[i];
             //Check if the connectino is in layer then put it there
             let feature;
-            for (let key in layer.features) {
+            for (const key in layer.features) {
                 feature = layer.features[key];
                 if (feature.referenceID === this.getID()) {
                     layerrefs = layer.id;
