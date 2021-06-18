@@ -8,24 +8,21 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}"
+            "name": "vuejs: chrome",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}/src",
+            "breakOnLoad": true,
+            "sourceMapPathOverrides": {
+                "webpack:///src/*": "${webRoot}/*"
+            }
         },
         {
-            "name": "Launch index.html",
-            "type": "chrome",
+            "type": "firefox",
             "request": "launch",
-            "url": "http://localhost:3000",
-            "file": "${workspaceFolder}/index.html"
-        },
-        {
-            "type": "chrome",
-            "request": "attach",
-            "port": 9222,
-            "name": "Attach Chrome",
-            "url": "http://localhost:8080/",
-            "webRoot": "${workspaceFolder}"
-          }
+            "name": "vuejs: firefox",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}/src",
+            "pathMappings": [{ "url": "webpack:///src/", "path": "${webRoot}/" }]
+        }
     ]
 }
