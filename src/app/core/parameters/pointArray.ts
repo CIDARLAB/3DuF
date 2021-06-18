@@ -10,14 +10,13 @@ export default class PointArray extends Parameter {
         super("PointArray",value);
     }
 
-    isValid(value: any) {
+    static isValid(value: any) {
         if (value instanceof Array) {
             if (value.length == 0) {
                 return true;
             }
-            let pointTest = new pointValue([0,0]);
             for (var i in value) {
-                if (!pointTest.isValid(i)) {
+                if (!pointValue.isValid(i)) {
                     console.log("Does not contain a valid point");
                     return false;
                 }

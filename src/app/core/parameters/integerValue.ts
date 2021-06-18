@@ -9,7 +9,7 @@ export default class IntegerValue extends Parameter {
         super("Integer",value);
     }
 
-    isValid(value: any) {
+    static isValid(value: any) {
         if (typeof value === "number" && NumberUtils.isInteger(value) && value >= 0) return true;
         else return false;
     }

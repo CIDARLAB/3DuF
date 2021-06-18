@@ -8,7 +8,7 @@ export default class StringValue extends Parameter {
         super("String",value);
     }
 
-    isValid(value: any) {
+    static isValid(value: any) {
         if (typeof value === "string") return true;
         else return false;
     }

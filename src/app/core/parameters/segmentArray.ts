@@ -10,14 +10,13 @@ export default class SegmentArray extends Parameter {
         super("SegmentArray",value);
     }
 
-    isValid(value: any) {
+    static isValid(value: any) {
         if (value instanceof Array) {
             if (value.length == 0) {
                 return true;
             }
             for (var i in value) {
-                let testArray = new pointArray([[0,0]]);
-                if (!testArray.isValid(i)) {
+                if (!pointArray.isValid(i)) {
                     console.log("Does not contain a valid point");
                     return false;
                 }

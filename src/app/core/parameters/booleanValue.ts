@@ -8,7 +8,7 @@ export default class BooleanValue extends Parameter {
         super("Boolean",value);
     }
 
-    isValid(value: any) {
+    static isValid(value: any) {
         if (typeof value === "boolean") return true;
         else return false;
     }
