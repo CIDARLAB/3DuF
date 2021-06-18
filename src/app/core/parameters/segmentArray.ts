@@ -1,5 +1,6 @@
 import Parameter from "../parameter";
 import Registry from "../registry";
+import pointArray from "./pointArray"
 
 export default class SegmentArray extends Parameter {
     typeString: string = "SegmentArray";
@@ -14,13 +15,13 @@ export default class SegmentArray extends Parameter {
             if (value.length == 0) {
                 return true;
             }
-            /*for (var i in value) {
-                let paramType = Registry.registeredParams["PointArray"];
-                if (!paramType.isValid(value[i])) {
+            for (var i in value) {
+                let testArray = new pointArray([[0,0]]);
+                if (!testArray.isValid(i)) {
                     console.log("Does not contain a valid point");
                     return false;
                 }
-            }*/
+            }
             throw new Error("isValid partially inoperable due to registeredParams deletion");
         } else {
             return false;
