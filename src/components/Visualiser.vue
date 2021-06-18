@@ -6,14 +6,19 @@
             </div>
             <div id="renderContainer" />
         </div>
+        <ResolutionToolbar />
     </div>
 </template>
 
 <script>
 import { Registry, BareViewManager, ViewManager } from "../app/index";
 import { Examples } from "../app/index";
+import ResolutionToolbar from "./ResolutionToolbar";
 
 export default {
+    components: {
+        ResolutionToolbar
+    },
     mounted() {
         let viewManager = new ViewManager();
 
@@ -27,7 +32,8 @@ export default {
         window.Registry = Registry;
 
         window.view = Registry.viewManager.view;
-    }
+    },
+    methods: {}
 };
 </script>
 
