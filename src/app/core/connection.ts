@@ -3,6 +3,8 @@ import paper from "paper";
 import Parameter from "./parameter";
 import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
+import ComponentPort from "./componentPort";
+import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 
 import Registry from './registry';
 
@@ -12,19 +14,19 @@ import Registry from './registry';
  * high level device model of the microfluidic.
  */
 export default class Connection {
-    private params;
-    private name: string;
-    private id;
-    private type;
-    private entity;
-    private features;
-    private nodes;
-    private bounds;
-    private source;
-    private sinks;
-    private paths;
-    private objects;
-    private routed;
+    private _params: Params;
+    private _name: string;
+    private _id: string;
+    private _type: string;
+    private _entity: string;
+    private _features: Feature[]; // Not sure if it's Feature[] or string[]
+    private _nodes: any;
+    private _bounds: paper.Rectangle | null;
+    private _source: ConnectionTarget | null;
+    private _sinks: ConnectionTarget[];
+    private _paths: [number, number][];
+    private _objects: any;
+    private _routed: boolean;
 
     /**
      * Default Connection Constructor
@@ -34,22 +36,22 @@ export default class Connection {
      * @param {String} mint 
      * @param {String} id 
      */
-    constructor(type, params, name: string, mint, id = Feature.generateID()) {
-        this.params = params;
-        this.name = name;
-        this.id = id;
-        this.type = type;
-        this.entity = mint;
+    constructor(type: string, params: Params, name: string, mint: string, id: string = Feature.generateID()) {
+        this._params = params;
+        this._name = name;
+        this._id = id;
+        this._type = type;
+        this._entity = mint;
         //This stores the features that are a part of the component
-        this.features = [];
-        this.nodes = [];
+        this._features = [];
+        this._nodes = [];
         //TODO: Need to figure out how to effectively search through these
-        this.bounds = null;
-        this.source = null;
-        this.sinks = [];
-        this.paths = [];
-        this.objects = [];
-        this.routed = false;
+        this._bounds = null;
+        this._source = null;
+        this._sinks = [];
+        this._paths = [];
+        this._objects = [];
+        this._routed = false;
     }
     /**
      * Gets the sinks in the connection
@@ -57,7 +59,7 @@ export default class Connection {
      * @memberof Connection
      */
     get sinks() {
-        return this.sinks;
+        return this._sinks;
     }
     /**
      * Gets the source of the connection
@@ -65,7 +67,7 @@ export default class Connection {
      * @memberof Connection
      */
     get source() {
-        return this.source;
+        return this._source;
     }
     /**
      * Checks if the connection is routed
@@ -73,7 +75,7 @@ export default class Connection {
      * @memberof Connection
      */
     get routed() {
-        return this.routed;
+        return this._routed;
     }
     /**
      * Sets if the connection is routed
@@ -81,8 +83,8 @@ export default class Connection {
      * @returns {void}
      * @memberof Connection
      */
-    set routed(value) {
-        this.routed = value;
+    set routed(value: boolean) {
+        this._routed = value;
     }
 
     /**
@@ -91,7 +93,7 @@ export default class Connection {
      * @memberof Connection
      */
     get features() {
-        return this.features;
+        return this._features;
     }
 
     /**
@@ -109,12 +111,12 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setBounds(bounds) {
-        this.bounds = bounds;
+    setBounds(bounds: paper.Rectangle) {
+        this._bounds = bounds;
         let topleftpt = bounds.topLeft;
-        this.params.position = [topleftpt.x, topleftpt.y];
-        this.params.xspan = bounds.width;
-        this.params.yspan = bounds.height;
+        this._params.position = [topleftpt.x, topleftpt.y];
+        this._params.xspan = bounds.width;
+        this._params.yspan = bounds.height;
     }
 
     /**
@@ -124,9 +126,9 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    updateParameter(key, value) {
+    updateParameter(key: string, value: {[index: string]: any}) {
         // this.__params.updateParameter(key, value);
-        this.params[key] = value;
+        this._params[key] = value;
         // this.updateView();
     }
 
@@ -136,26 +138,36 @@ export default class Connection {
      * @memberof Connection
      */
     toInterchangeV1() {
-        let output = {};
-        output.id = this.id;
-        output.name = this.name;
-        output.entity = this.entity;
-        if (this.source != null) {
-            output.source = this.source.toJSON();
-        } else {
-            output.source = null;
+        type InterchangeV1 = {
+            id: string
+            name: string
+            entity: string
+            source: any
+            sinks: any
+            paths: [number, number][]
+            params: any
         }
-        let sinks = [];
-        if (this.sinks != null && this.sinks.length > 0) {
-            for (let i in this.sinks) {
-                sinks.push(this.sinks[i].toJSON());
+
+        const output: InterchangeV1 = {
+            id : this._id,
+            name: this._name,
+            entity: this._entity,
+            source: null,
+            sinks: null,
+            paths: this._paths,
+            params: this._params.toJSON()
+        };
+
+        if (this._source != null) {
+            output.source = this._source.toJSON();
+        }  
+        if (this._sinks != null && this._sinks.length > 0) {
+            let sinks = [];
+            for (let i in this._sinks) {
+                sinks.push(this._sinks[i].toJSON());
             }
-            output.sinks = this.sinks;
-        } else {
-            output.sinks = null;
+            output.sinks = this._sinks;
         }
-        output.paths = this.paths;
-        output.params = this.params.toJSON();
         return output;
     }
 
@@ -164,8 +176,8 @@ export default class Connection {
      * @returns {string|*}
      * @memberof Connection
      */
-    getID() {
-        return this.id;
+    get id() {
+        return this._id;
     }
 
     /**
@@ -174,9 +186,8 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setName(name: string) {
-        console.log("test", name);
-        this.name = name;
+    set name(name: string) {
+        this._name = name;
     }
 
     /**
@@ -184,8 +195,8 @@ export default class Connection {
      * @returns {string} Name of the component
      * @memberof Connection
      */
-    getName() {
-        return this.name;
+    get name() {
+        return this._name;
     }
 
     /**
@@ -194,8 +205,8 @@ export default class Connection {
      * @returns {string}
      * @memberof Connection
      */
-    getType() {
-        return this.type;
+    get type() {
+        return this._type;
     }
 
     /**
@@ -203,8 +214,8 @@ export default class Connection {
      * @return {*|string}
      * @memberof Connection
      */
-    getPosition() {
-        return this.params["position"].getValue();
+    get position() {
+        return this._params["position"].getValue();
     }
 
     /**
@@ -213,9 +224,9 @@ export default class Connection {
      * @returns {*}
      * @memberof Connection
      */
-    getValue(key) {
+    getValue(key: string) {
         try {
-            return this.params.getValue(key);
+            return this._params.getValue(key);
         } catch (err) {
             throw new Error("Unable to get value for key: " + key);
         }
@@ -226,7 +237,7 @@ export default class Connection {
      * @memberof Connection
      */
     getFeatureIDs() {
-        return this.features;
+        return this._features;
     }
 
     /**
@@ -235,7 +246,7 @@ export default class Connection {
      * @returns {boolean}
      * @memberof Connection
      */
-    hasDefaultParam(key) {
+    hasDefaultParam(key: string) {
         if (this.getDefaults().hasOwnProperty(key)) return true;
         else return false;
     }
@@ -246,11 +257,8 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addFeatureID(featureID) {
-        if (typeof featureID != "string" && !(featureID instanceof String)) {
-            throw new Error("The reference object value can only be a string");
-        }
-        this.features.push(featureID);
+    addFeatureID(featureID: string) {
+        this._features.push(featureID);
         //Now update bounds
         // this.__updateBounds();
     }
@@ -261,14 +269,14 @@ export default class Connection {
      * @returns {void}
      * @private
      */
-    __updateBounds() {
+    private updateBounds() {
         console.log("test");
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
-        for (var i in this.features) {
+        for (var i in this._features) {
             // gets teh feature defined by the id
-            feature = Registry.currentDevice.getFeatureByID(this.features[i]);
+            feature = Registry.currentDevice.getFeatureByID(this._features[i]);
             console.log(feature);
             renderedfeature = FeatureRenderer2D.renderFeature(feature);
             console.log("rendered:");
@@ -279,7 +287,7 @@ export default class Connection {
                 bounds = bounds.unite(renderedfeature.bounds);
             }
         }
-        this.bounds = bounds;
+        this._bounds = bounds;
     }
 
     /**
@@ -287,8 +295,8 @@ export default class Connection {
      * @returns {Params}
      * @memberof Connection
      */
-    getParams() {
-        return this.params;
+    get params() {
+        return this._params;
     }
 
     /**
@@ -297,13 +305,13 @@ export default class Connection {
      * @returns {void}
      * @memberof Connection
      */
-    setParams(params) {
-        this.params = params;
+    set params(params: Params) {
+        this._params = params;
         //TODO: Modify all the associated Features
         for (let key in params) {
             let value = params[key];
-            for (let i in this.features) {
-                let featureidtochange = this.features[i];
+            for (let i in this._features) {
+                let featureidtochange = this._features[i];
 
                 //Get the feature id and modify it
                 let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
@@ -318,7 +326,7 @@ export default class Connection {
      * @memberof Connection
      */
     getPaths() {
-        return this.paths;
+        return this._paths;
     }
 
     /**
@@ -327,10 +335,10 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    updateSegments(segments) {
+    updateSegments(segments: number[][]) {
         this.updateParameter("segments", new Parameter("SegmentArray", segments));
-        for (let i in this.features) {
-            let featureidtochange = this.__features[i];
+        for (let i in this._features) {
+            let featureidtochange = this._features[i];
 
             let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
             // feature.updateParameter('position', center);
@@ -344,7 +352,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {boolean}
      */
-    insertFeatureGap(boundingbox) {
+    insertFeatureGap(boundingbox: any) {
         let foundflag = false;
         //Convert Rectangle to Path.Rectangle
         console.log(boundingbox, boundingbox.width, boundingbox.height);
@@ -359,7 +367,7 @@ export default class Connection {
             if (intersections.length === 2) {
                 let break1 = intersections[0].point;
                 let break2 = intersections[1].point;
-                let newsegs = this.__breakSegment(segment, break1, break2);
+                let newsegs = this.breakSegment(segment, break1, break2);
                 console.log("breaking:", segment, newsegs);
                 if (newsegs.length !== 2) {
                     throw new Error("Could not break the segments correctly");
@@ -406,7 +414,7 @@ export default class Connection {
      * @memberof Connection
      * @private
      */
-    __breakSegment(segment, break1, break2) {
+    private breakSegment(segment: [number, number][], break1: paper.Point, break2: paper.Point) {
         //Generate 2 segments from this 1 segemnt
         let p1 = new paper.Point(segment[0]);
         let p2 = new paper.Point(segment[1]);
@@ -448,7 +456,7 @@ export default class Connection {
      * @returns {Connection} Returns a connection object
      * @memberof Connection
      */
-    static fromInterchangeV1(device, json) {
+    static fromInterchangeV1(device: any, json: JSON) {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";
@@ -548,11 +556,11 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setSource(component, port) {
+    setSource(component: string, port: ComponentPort) {
         if (typeof component != "string" && !(component instanceof String)) {
             console.error("The reference object value can only be a string");
         }
-        this.source = new ConnectionTarget(component, port);
+        this._source = new ConnectionTarget(component, port);
     }
 
     /**
@@ -562,11 +570,11 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addSink(component, port) {
+    addSink(component: string, port: ComponentPort) {
         if (typeof component != "string" || !(component instanceof String)) {
             console.error("The reference object value can only be a string");
         }
-        this.sinks.push(new ConnectionTarget(component, port));
+        this._sinks.push(new ConnectionTarget(component, port));
     }
 
     /**
@@ -576,16 +584,16 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addConnectionTarget(connectiontarget) {
+    addConnectionTarget(connectiontarget: ConnectionTarget) {
         if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget == null || connectiontarget == undefined) {
             console.error("Cannot add non-ConnectionTarget object as source or sink");
         }
 
-        if (this.source == null) {
-            this.source = connectiontarget;
+        if (this._source == null) {
+            this._source = connectiontarget;
         } else {
             //TODO: Check for duplicates - does it matter actually ?
-            this.sinks.push(connectiontarget);
+            this._sinks.push(connectiontarget);
         }
     }
 
@@ -596,19 +604,19 @@ export default class Connection {
      * @memberof Connection
      * 
      */
-    tryDeleteConnectionTarget(componentid) {
+    tryDeleteConnectionTarget(componentid: string) {
         let ret = false;
         if (component.getID() == componentid) {
             //Remove the source object
-            this.source = null;
+            this._source = null;
             ret = true;
         }
 
-        for (let i in this.sinks) {
-            let sink = this.sinks[i];
+        for (let i in this._sinks) {
+            let sink = this._sinks[i];
 
             if (sink.component.getID() == componentid) {
-                this.sinks.splice(i, 1);
+                this._sinks.splice(i, 1);
                 ret = true;
             }
         }
@@ -622,8 +630,8 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addWayPoints(wayPoints) {
-        this.paths.push(wayPoints);
+    addWayPoints(wayPoints: [number, number]) {
+        this._paths.push(wayPoints);
     }
     /**
      * Merges connections
@@ -631,7 +639,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    mergeConnection(connection) {
+    mergeConnection(connection: Connection) {
         console.error("Merge the newly found connection with the new connection");
         //TODO:
         /*
@@ -649,9 +657,9 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setSourceFromJSON(device, json) {
+    setSourceFromJSON(device: any, json: JSON) {
         let target = ConnectionTarget.fromJSON(device, json);
-        this.source = target;
+        this._source = target;
     }
     /**
      * ?
@@ -660,8 +668,8 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addSinkFromJSON(device, json) {
+    addSinkFromJSON(device: any, json: JSON) {
         let target = ConnectionTarget.fromJSON(device, json);
-        this.sinks.push(target);
+        this._sinks.push(target);
     }
 }
