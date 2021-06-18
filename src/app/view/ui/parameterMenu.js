@@ -2,7 +2,9 @@ import * as HTMLUtils from "../../utils/htmlUtils";
 import Feature from "../../core/feature";
 
 import Registry from '../../core/registry';
-import {FloatValue, BooleanValue, StringValue} from '../../core/parameters';
+import FloatValue from '../../core/parameters/floatValue';
+import BooleanValue from '../../core/parameters/booleanValue';
+import StringValue from '../../core/parameters/stringValue';
 import * as FeatureSets from "../../featureSets";
 
 var createSlider = function(min, max, step, start, id) {
