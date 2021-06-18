@@ -9,7 +9,11 @@ export default class StringValue extends Parameter {
     }
 
     static isValid(value: any) {
+<<<<<<< HEAD
         if (typeof value === "string" || value instanceof String) return true;
+=======
+        if (typeof value === "string") return true;
+>>>>>>> Converted isValid to static
         else return false;
     }
 
