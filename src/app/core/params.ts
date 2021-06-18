@@ -70,7 +70,9 @@ export default class Params {
      * @memberof Params
      */
     isUnique(key: string) {
-        return this.unique.hasOwnProperty(key);
+        //return this.unique.hasOwnProperty(key);
+        throw new Error("isUnique inoperable");
+        return true;
     }
     /**
      * Checks if param object has heritable attribute.
@@ -79,7 +81,9 @@ export default class Params {
      * @memberof Params
      */
     isHeritable(key: string) {
-        return this.heritable.hasOwnProperty(key);
+        //return this.heritable.hasOwnProperty(key);
+        throw new Error("isHeritable inoperable");
+        return false;
     }
     /**
      * Checks if param has unique key.
