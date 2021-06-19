@@ -1,8 +1,26 @@
 version = 1
 
+test_patterns = [
+  "tests/**",
+  "src/test/**"
+]
+
+exclude_patterns = [
+  "lib/**",
+  "orbit_bundle.js",
+]
+
 [[analyzers]]
 name = "javascript"
 enabled = true
 
   [analyzers.meta]
   plugins = ["vue"]
+
+[[transformers]]
+name = "standardjs"
+enabled = true
+
+[[transformers]]
+name = "prettier"
+enabled = true
