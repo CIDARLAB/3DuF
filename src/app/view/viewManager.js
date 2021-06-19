@@ -749,28 +749,6 @@ export default class ViewManager {
         } else {
             console.log("Version Number: " + version);
             switch (version) {
-<<<<<<< HEAD
-                case 1:
-                    this.loadCustomComponents(json);
-                    device = Device.fromInterchangeV1(json);
-                    Registry.currentDevice = device;
-                    this.__currentDevice = device;
-                    break;
-                case 1.1:
-                    this.loadCustomComponents(json);
-                    device = Device.fromInterchangeV1_1(json);
-                    Registry.currentDevice = device;
-                    this.__currentDevice = device;
-                    break;
-                case 1.2:
-                    this.loadCustomComponents(json);
-                    device = Device.fromInterchangeV1_2(json);
-                    Registry.currentDevice = device;
-                    this.__currentDevice = device;
-                    break;
-                default:
-                    alert("Version '" + version + "' is not supported by 3DuF !");
-=======
             case 1:
                 // this.loadCustomComponents(json);
                 device = Device.fromInterchangeV1(json);
@@ -785,7 +763,6 @@ export default class ViewManager {
                 break;
             default:
                 alert("Version '" + version + "' is not supported by 3DuF !");
->>>>>>> Everything seems to be working right now
             }
         }
         //Common Code for rendering stuff
