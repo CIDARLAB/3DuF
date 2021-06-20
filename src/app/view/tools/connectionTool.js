@@ -252,7 +252,7 @@ export default class ConnectionTool extends MouseTool {
             }
             target = this.getNextOrthogonalPoint(lastwaypoint, target);
         }
-        if ((target.length = 2)) {
+        if ((target.length == 2)) {
             this.wayPoints.push(target);
         }
 
