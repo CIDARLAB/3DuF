@@ -1,6 +1,6 @@
 import Params from "./params";
 
-import * as Parameters from "./parameters";
+import StringValue from "./parameters/stringValue";
 import Feature from "./feature";
 
 import Registry from './registry';
@@ -15,7 +15,6 @@ import Valve from "../library/valve";
 import ComponentPort from "./componentPort";
 import * as IOUtils from "../utils/ioUtils";
 
-const StringValue = Parameters.StringValue;
 
 /**
  * The Device stores information about a design.
@@ -33,7 +32,7 @@ export default class Device {
         // this.setXSpan(values.width);
         // this.setYSpan(values.length);
 
-        this.name = StringValue(name);
+        this.name = new StringValue(name);
         this.__components = [];
         this.__nameMap = new Map();
         this.__connections = [];

@@ -2,8 +2,7 @@ import CustomComponent from "./customComponent";
 import Params from "./params";
 import Device from "./device";
 
-import * as Parameters from "./parameters";
-const StringValue = Parameters.StringValue;
+import StringValue from "../core/parameters/stringValue";
 import * as FeatureSets from "../featureSets";
 import Registry from './registry';
 
@@ -170,7 +169,7 @@ export default class Feature {
      * @returns {void}
      */
     setName(name) {
-        this.__name = StringValue(name);
+        this.__name = new StringValue(name);
     }
     /**
      * Gets the name of the feature object
