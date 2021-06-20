@@ -495,7 +495,7 @@ export default class Component {
         }
 
         // Do another check and see if position is present or not
-        if (!Object.prototype.hasOwnProperty.call(params, 'position')) {
+        if (!Object.prototype.hasOwnProperty.call(params, "position")) {
             params.position = [0.0, 0.0];
         }
 

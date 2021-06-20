@@ -33,7 +33,9 @@ function makeParams(feature, renderInfo) {
     const featureParams = renderInfo.featureParams;
     for (const key in featureParams) {
         const target = featureParams[key];
-        if (target == undefined || !Object.prototype.hasOwnProperty.call(feature.params, target)) throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
+        if (target == undefined || !Object.prototype.hasOwnProperty.call(feature.params, target)) {
+            throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
+        }
         const value = feature.params[target];
         params[key] = value;
     }

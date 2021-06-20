@@ -1354,7 +1354,7 @@ export default class ViewManager {
      * @param json
      */
     loadCustomComponents(json) {
-        if (Object.prototype.hasOwnProperty.call(json, 'customComponents')) {
+        if (Object.prototype.hasOwnProperty.call(json, "customComponents")) {
             this.customComponentManager.loadFromJSON(json.customComponents);
         }
     }
