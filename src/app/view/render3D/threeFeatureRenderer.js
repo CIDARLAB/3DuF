@@ -23,7 +23,7 @@ const layerMaterials = {
 
 function getFeatureMaterial(layer) {
     const colorString = layer.color;
-    if (colorString && layerMaterials.hasOwnProperty(colorString)) {
+    if (colorString && Object.prototype.hasOwnProperty.call(layerMaterials, colorString)) {
         return layerMaterials[colorString];
     } else return layerMaterials.grey;
 }
@@ -33,7 +33,7 @@ function makeParams(feature, renderInfo) {
     const featureParams = renderInfo.featureParams;
     for (const key in featureParams) {
         const target = featureParams[key];
-        if (target == undefined || !feature.params.hasOwnProperty(target)) throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
+        if (target == undefined || !Object.prototype.hasOwnProperty.call(feature.params, target)) throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
         const value = feature.params[target];
         params[key] = value;
     }

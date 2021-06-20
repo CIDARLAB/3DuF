@@ -478,22 +478,22 @@ export default class Connection {
         }
 
         // Check if the params have the other unique elements necessary otherwise add them as null
-        if (!params.hasOwnProperty("start")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'start')) {
             // Setting this value to origin
             params.start = [0, 0];
         }
-        if (!params.hasOwnProperty("end")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'end')) {
             // Setting this value to origin
             params.end = [0, 0];
         }
-        if (!params.hasOwnProperty("wayPoints")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'wayPoints')) {
             // TODO: setting a single waypoint at origin
             params.wayPoints = [
                 [0, 0],
                 [1, 2]
             ];
         }
-        if (!params.hasOwnProperty("segments")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'segments')) {
             // TODO: Setting a default segment from origin to origin
             params.segments = [
                 [
@@ -510,12 +510,12 @@ export default class Connection {
         const paramstoadd = new Params(params, definition.unique, definition.heritable);
 
         const connection = new Connection(entity, paramstoadd, name, entity, id);
-        if (json.hasOwnProperty("source")) {
+        if (Object.prototype.hasOwnProperty.call(json, 'source')) {
             if (json.source !== null && json.source != undefined) {
                 connection.setSourceFromJSON(device, json.source);
             }
         }
-        if (json.hasOwnProperty("sinks")) {
+        if (Object.prototype.hasOwnProperty.call(json, 'sinks')) {
             if (json.sinks !== null && json.sinks != undefined) {
                 for (const i in json.sinks) {
                     const sink = json.sinks[i];
@@ -523,7 +523,7 @@ export default class Connection {
                 }
             }
         }
-        if (json.hasOwnProperty("paths")) {
+        if (Object.prototype.hasOwnProperty.call(json, 'paths')) {
             if (json.paths !== null && json.paths != undefined) {
                 for (const i in json.paths) {
                     connection.addWayPoints(json.paths[i]);

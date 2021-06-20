@@ -96,7 +96,7 @@ export default class CustomComponent {
      */
     static fromInterchangeV1(json) {
         let set;
-        if (json.hasOwnProperty("set")) set = json.set;
+        if (Object.prototype.hasOwnProperty.call(json, 'set')) set = json.set;
         else set = "Basic";
         const dxfdata = [];
         for (const i in json.dxfData) {

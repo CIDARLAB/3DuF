@@ -102,7 +102,7 @@ export default class Params {
      * @memberof Params
      */
     hasAllUniques(params) {
-        for (const key in this.unique) if (!params.hasOwnProperty(key)) return false;
+        for (const key in this.unique) if (!Object.prototype.hasOwnProperty.call(params, key)) return false;
         return true;
     }
 
