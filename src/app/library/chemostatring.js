@@ -108,21 +108,21 @@ export default class ChemostatRing extends Template {
     }
 
     getPorts(params) {
-        let flowChannelWidth = params["flowChannelWidth"];
-        let controlChannelWidth = params["controlChannelWidth"];
-        let chemostatChannelWidth = params["chemostatChannelWidth"];
-        let volume = params["volume"];
-        let height = params["height"];
-        let radius = params["radius"];
+        const flowChannelWidth = params.flowChannelWidth;
+        const controlChannelWidth = params.controlChannelWidth;
+        const chemostatChannelWidth = params.chemostatChannelWidth;
+        const volume = params.volume;
+        const height = params.height;
+        const radius = params.radius;
 
-        let area = volume / height;
-        let chemostatLength = area / (4 * chemostatChannelWidth);
+        const area = volume / height;
+        const chemostatLength = area / (4 * chemostatChannelWidth);
 
-        let controlSpacing = chemostatLength / 10;
-        let controlendpoint = (-7 * chemostatLength) / 8;
-        let bendDist = chemostatLength / 15;
+        const controlSpacing = chemostatLength / 10;
+        const controlendpoint = (-7 * chemostatLength) / 8;
+        const bendDist = chemostatLength / 15;
 
-        let ports = [];
+        const ports = [];
 
         // flow
         ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 2, -chemostatLength / 3, "1", "FLOW"));
@@ -253,22 +253,22 @@ export default class ChemostatRing extends Template {
     }
 
     __drawFlow(params) {
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let flowChannelWidth = params["flowChannelWidth"];
-        let controlChannelWidth = params["controlChannelWidth"];
-        let chemostatChannelWidth = params["chemostatChannelWidth"];
-        let volume = params["volume"];
-        let height = params["height"];
-        let radius = params["radius"];
-        let rotation = params["rotation"];
-        let color = params["color"];
-        let serp = new paper.CompoundPath();
+        const x = params.position[0];
+        const y = params.position[1];
+        const flowChannelWidth = params.flowChannelWidth;
+        const controlChannelWidth = params.controlChannelWidth;
+        const chemostatChannelWidth = params.chemostatChannelWidth;
+        const volume = params.volume;
+        const height = params.height;
+        const radius = params.radius;
+        const rotation = params.rotation;
+        const color = params.color;
+        const serp = new paper.CompoundPath();
 
-        let area = volume / height;
-        let chemostatLength = area / (4 * chemostatChannelWidth);
+        const area = volume / height;
+        const chemostatLength = area / (4 * chemostatChannelWidth);
 
-        //// chemostat ring
+        /// / chemostat ring
 
         // chemostat ring top
         let topLeft = new paper.Point(x + chemostatChannelWidth, y);
@@ -333,14 +333,14 @@ export default class ChemostatRing extends Template {
 
         // in top circle
         let center = new paper.Point(x + chemostatChannelWidth / 2 + (5 * chemostatLength) / 7, y + chemostatChannelWidth / 2 + chemostatLength / 2);
-        let circ = new paper.Path.Circle(center, radius);
+        const circ = new paper.Path.Circle(center, radius);
         serp.addChild(circ);
 
         // calc H
-        let xval = Math.abs((5 * chemostatLength) / 7 - (3 * chemostatLength) / 5);
-        let yval = Math.abs(chemostatChannelWidth / 2 + chemostatLength / 2 - (chemostatChannelWidth / 2 + (2 * chemostatLength) / 5));
-        let hval = Math.sqrt(Math.pow(xval, 2) + Math.pow(yval, 2));
-        let angt = (Math.asin(yval / hval) * 180) / Math.PI;
+        const xval = Math.abs((5 * chemostatLength) / 7 - (3 * chemostatLength) / 5);
+        const yval = Math.abs(chemostatChannelWidth / 2 + chemostatLength / 2 - (chemostatChannelWidth / 2 + (2 * chemostatLength) / 5));
+        const hval = Math.sqrt(Math.pow(xval, 2) + Math.pow(yval, 2));
+        const angt = (Math.asin(yval / hval) * 180) / Math.PI;
 
         // in tilt
         topLeft = new paper.Point(
@@ -385,7 +385,7 @@ export default class ChemostatRing extends Template {
         center = new paper.Point(x + chemostatChannelWidth / 2 + (3 * chemostatLength) / 7, y + chemostatChannelWidth / 2 + (4 * chemostatLength) / 6);
         serp.addChild(new paper.Path.Circle(center, radius));
 
-        //// stuff outside the ring
+        /// / stuff outside the ring
 
         // left top hori
         topLeft = new paper.Point(x - chemostatLength / 3, y + chemostatLength / 5 - flowChannelWidth / 2);
@@ -544,28 +544,28 @@ export default class ChemostatRing extends Template {
     }
 
     __drawControl(params) {
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let flowChannelWidth = params["flowChannelWidth"];
-        let controlChannelWidth = params["controlChannelWidth"];
-        let chemostatChannelWidth = params["chemostatChannelWidth"];
-        let volume = params["volume"];
-        let height = params["height"];
-        let radius = params["radius"];
-        let rotation = params["rotation"];
-        let color = params["color"];
+        const x = params.position[0];
+        const y = params.position[1];
+        const flowChannelWidth = params.flowChannelWidth;
+        const controlChannelWidth = params.controlChannelWidth;
+        const chemostatChannelWidth = params.chemostatChannelWidth;
+        const volume = params.volume;
+        const height = params.height;
+        const radius = params.radius;
+        const rotation = params.rotation;
+        const color = params.color;
 
-        let area = volume / height;
-        let chemostatLength = area / (4 * chemostatChannelWidth);
+        const area = volume / height;
+        const chemostatLength = area / (4 * chemostatChannelWidth);
 
-        let control = new paper.CompoundPath();
+        const control = new paper.CompoundPath();
 
-        let valvelength = 1.5 * chemostatChannelWidth;
-        let valvewidth = 2 * controlChannelWidth;
-        let controlSpacing = chemostatLength / 10;
+        const valvelength = 1.5 * chemostatChannelWidth;
+        const valvewidth = 2 * controlChannelWidth;
+        const controlSpacing = chemostatLength / 10;
 
-        let controlendpoint = (-7 * chemostatLength) / 8;
-        let bendDist = chemostatLength / 15;
+        const controlendpoint = (-7 * chemostatLength) / 8;
+        const bendDist = chemostatLength / 15;
 
         // 1
         let topLeft = new paper.Point(x - chemostatLength / 3 - chemostatLength / 5 - controlChannelWidth / 2 - controlSpacing - radius, y + controlendpoint);
@@ -1149,7 +1149,7 @@ export default class ChemostatRing extends Template {
     }
 
     render2DTarget(key, params) {
-        let serp = this.__drawFlow(params);
+        const serp = this.__drawFlow(params);
         serp.addChild(this.__drawControl(params));
 
         serp.fillColor.alpha = 0.5;

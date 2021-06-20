@@ -4,7 +4,7 @@ import paper from "paper";
 
 export default class GeometryGraph {
     constructor() {
-        //TODO: Do all the initializations here
+        // TODO: Do all the initializations here
         this.__nodes = new Map();
         this.__nodecount = 0;
         this.__edgecount = 0;
@@ -14,10 +14,10 @@ export default class GeometryGraph {
     }
 
     addEdge(start, end, data) {
-        let startnode = this.findNode(start);
-        let endnode = this.findNode(end);
+        const startnode = this.findNode(start);
+        const endnode = this.findNode(end);
 
-        let edgeobject = new GeometryEdge(startnode, endnode, data.type, String(this.__edgecount++), data);
+        const edgeobject = new GeometryEdge(startnode, endnode, data.type, String(this.__edgecount++), data);
 
         this.__edgeData.set(edgeobject.id, edgeobject);
 
@@ -25,16 +25,16 @@ export default class GeometryGraph {
     }
 
     findNode(node) {
-        for (let key of this.__nodes.keys()) {
-            let nodetocheck = this.__nodes.get(key);
+        for (const key of this.__nodes.keys()) {
+            const nodetocheck = this.__nodes.get(key);
 
             if (GeometryGraph.computeDistance(node, nodetocheck) < 0.000001) {
                 return key;
             }
         }
 
-        //If it comes to this, then it means that the node does not exist
-        let newkey = String(this.__nodecount++);
+        // If it comes to this, then it means that the node does not exist
+        const newkey = String(this.__nodecount++);
         this.__nodes.set(newkey, node);
 
         return newkey;
@@ -45,10 +45,10 @@ export default class GeometryGraph {
         // console.log("Edges:", this.__networkGraph.edges());
         // console.log("Nodes:", this.__nodes);
         // console.log("Edge Data:", this.__edgeData);
-        let path = new paper.CompoundPath();
+        const path = new paper.CompoundPath();
 
-        //graphlib.alg.findCycles(this.__networkGraph);
-        let graphcomponents = graphlib.alg.components(this.__networkGraph);
+        // graphlib.alg.findCycles(this.__networkGraph);
+        const graphcomponents = graphlib.alg.components(this.__networkGraph);
         // console.log("Components:", graphcomponents);
 
         /*
@@ -56,7 +56,7 @@ export default class GeometryGraph {
         Step 2 - Draw outline for each of the components
          */
 
-        for (let component of graphcomponents) {
+        for (const component of graphcomponents) {
             this.drawComponent(component, path);
         }
 
@@ -71,34 +71,34 @@ export default class GeometryGraph {
 
         // console.log("Graph component",component);
 
-        //Get the first item in the component
+        // Get the first item in the component
 
         // let startnode = this.__nodes.get(component[0]);
         // console.log("startnode", startnode);
 
-        let segments = [];
-        let startnode = this.__nodes.get(component[0]);
-        let endnode = null;
+        const segments = [];
+        const startnode = this.__nodes.get(component[0]);
+        const endnode = null;
         // console.log("test ?");
-        //Get traversal
-        let traversal = graphlib.alg.preorder(this.__networkGraph, component[0]);
+        // Get traversal
+        const traversal = graphlib.alg.preorder(this.__networkGraph, component[0]);
 
-        let childpath = new paper.Path();
+        const childpath = new paper.Path();
 
         for (let i = 0; i < traversal.length; i++) {
-            let noderef = traversal[i];
-            let node = this.__nodes.get(noderef);
+            const noderef = traversal[i];
+            const node = this.__nodes.get(noderef);
             let nextnoderef;
             if (i + 1 == traversal.length) {
-                //Last Node
+                // Last Node
                 nextnoderef = traversal[0];
             } else {
-                //All other nodes
+                // All other nodes
                 nextnoderef = traversal[i + 1];
             }
 
-            //Get the edge
-            let edge = this.__getEdge(noderef, nextnoderef);
+            // Get the edge
+            const edge = this.__getEdge(noderef, nextnoderef);
 
             // console.log("Edge:", edge);
             // console.log("Edge Type:", edge.type);
@@ -108,9 +108,9 @@ export default class GeometryGraph {
                     break;
                 case "ARC":
                     childpath.add(new paper.Point(node.x, node.y));
-                    let nextnode = this.__nodes.get(nextnoderef);
-                    let endpoint = new paper.Point(nextnode.x, nextnode.y);
-                    let midpoint = this.getARCMidpoint(edge.dxfData);
+                    const nextnode = this.__nodes.get(nextnoderef);
+                    const endpoint = new paper.Point(nextnode.x, nextnode.y);
+                    const midpoint = this.getARCMidpoint(edge.dxfData);
                     childpath.arcTo(midpoint, endpoint);
                     break;
             }
@@ -140,7 +140,7 @@ export default class GeometryGraph {
         //
         // console.log(path);
 
-        //Now join all the segments
+        // Now join all the segments
         // let joinedpath = null;
         // for(let i = 0; i < segments.length; i++){
         //     if(joinedpath == null){
@@ -157,25 +157,25 @@ export default class GeometryGraph {
 
     getARCMidpoint(dxfData) {
         // console.log("DXF:",dxfData);
-        let center = new paper.Point(dxfData.center.x, dxfData.center.y);
-        let radius = dxfData.radius;
-        let startAngle = dxfData.startAngle;
-        let endAngle = dxfData.endAngle; //* 180/Math.PI;
-        let midAngle = (startAngle + endAngle) / 2;
+        const center = new paper.Point(dxfData.center.x, dxfData.center.y);
+        const radius = dxfData.radius;
+        const startAngle = dxfData.startAngle;
+        const endAngle = dxfData.endAngle; //* 180/Math.PI;
+        const midAngle = (startAngle + endAngle) / 2;
 
-        let midpoint = new paper.Point(center.x + radius * Math.cos(midAngle), center.y + radius * Math.sin(midAngle));
+        const midpoint = new paper.Point(center.x + radius * Math.cos(midAngle), center.y + radius * Math.sin(midAngle));
 
         return midpoint;
     }
 
     __getEdge(source, target) {
-        let edgeref = this.__networkGraph.edge(source, target);
+        const edgeref = this.__networkGraph.edge(source, target);
         return this.__edgeData.get(edgeref);
     }
 
     static computeDistance(node, nodetocheck) {
-        let sqdist = Math.pow(node.x - nodetocheck.x, 2) + Math.pow(node.y - nodetocheck.y, 2);
-        //TODO: check if there is a z component
+        const sqdist = Math.pow(node.x - nodetocheck.x, 2) + Math.pow(node.y - nodetocheck.y, 2);
+        // TODO: check if there is a z component
         return Math.sqrt(sqdist);
     }
 }

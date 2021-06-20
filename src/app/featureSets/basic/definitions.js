@@ -1518,7 +1518,7 @@ export const basicFeatures = {
             inletWidth: 1 * 1000,
             inletLength: 3 * 1000,
             outletWidth: 1 * 1000,
-            outletLength: 3 * 1000,
+            outletLength: 3 * 1000
         },
         minimum: {
             orientation: "H",
@@ -1532,7 +1532,7 @@ export const basicFeatures = {
             inletWidth: 0.5 * 1000,
             inletLength: 1 * 1000,
             outletWidth: 0.5 * 1000,
-            outletLength: 1 * 1000,
+            outletLength: 1 * 1000
         },
         maximum: {
             orientation: "H",
@@ -1546,7 +1546,7 @@ export const basicFeatures = {
             inletWidth: 4 * 1000,
             inletLength: 8 * 1000,
             outletWidth: 4 * 1000,
-            outletLength: 8 * 1000,
+            outletLength: 8 * 1000
         }
     },
     CellTrapS: {
@@ -2211,5 +2211,5 @@ export const basicFeatures = {
             channelDepth: 1000,
             electrodeDepth: 1000
         }
-    },
+    }
 };

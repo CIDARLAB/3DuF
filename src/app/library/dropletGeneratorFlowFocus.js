@@ -101,27 +101,27 @@ export default class DropletGeneratorFlowFocus extends Template {
     }
 
     getPorts(params) {
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
-        //Out
+        // Out
         return ports;
     }
 
     render2D(params, key) {
-        let pos = params["position"];
-        let x = pos[0];
-        let y = pos[1];
-        let color = params["color"];
-        let oilChannelWidth = params["oilChannelWidth"];
-        let waterChannelWidth = params["waterChannelWidth"];
-        let length = params["length"];
-        let angle = params["angle"];
-        let radius = params["radius"];
-        let rotation = params["rotation"];
+        const pos = params.position;
+        const x = pos[0];
+        const y = pos[1];
+        const color = params.color;
+        const oilChannelWidth = params.oilChannelWidth;
+        const waterChannelWidth = params.waterChannelWidth;
+        const length = params.length;
+        const angle = params.angle;
+        const radius = params.radius;
+        const rotation = params.rotation;
 
-        let ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath();
 
         // middle path
         let topLeft = new paper.Point(x - length / 3 - 2 * length, y - waterChannelWidth / 2);
@@ -133,7 +133,7 @@ export default class DropletGeneratorFlowFocus extends Template {
 
         ret.addChild(circ);
         // top tilt path
-        let Hlength = length / Math.cos((angle * Math.PI) / 180);
+        const Hlength = length / Math.cos((angle * Math.PI) / 180);
 
         topLeft = new paper.Point(x - length / 3 - Hlength, y - oilChannelWidth / 2);
         bottomRight = new paper.Point(x - length / 3, y + oilChannelWidth / 2);
@@ -150,9 +150,9 @@ export default class DropletGeneratorFlowFocus extends Template {
         ret.addChild(tiltBlock);
 
         // top part
-        let disFromMid = Hlength * Math.sin((angle * Math.PI) / 180);
-        let angleS = 90 - angle;
-        let seamCover = (oilChannelWidth / 2) * Math.tan((angleS * Math.PI) / 180);
+        const disFromMid = Hlength * Math.sin((angle * Math.PI) / 180);
+        const angleS = 90 - angle;
+        const seamCover = (oilChannelWidth / 2) * Math.tan((angleS * Math.PI) / 180);
 
         topLeft = new paper.Point(x - length / 3 - length - oilChannelWidth / 2, y - disFromMid - (2 * length) / 3 + seamCover);
         bottomRight = new paper.Point(x - length / 3 - length + oilChannelWidth / 2, y - disFromMid + seamCover);
@@ -183,7 +183,7 @@ export default class DropletGeneratorFlowFocus extends Template {
 
         ret.addChild(circ);
 
-        //Rotate the geometry
+        // Rotate the geometry
         ret.rotate(-rotation, new paper.Point(pos[0], pos[1]));
 
         ret.closed = true;
@@ -192,7 +192,7 @@ export default class DropletGeneratorFlowFocus extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

@@ -21,23 +21,24 @@ export default class DesignHistory {
      * @memberof DesignHistory
      */
     pushDesign(devicedata) {
-        //Calculate md5 hash and see if we want so save this design
-        let hash = md5(devicedata);
+        // Calculate md5 hash and see if we want so save this design
+        const hash = md5(devicedata);
         if (this.__mostRecentMD5) {
             if (hash === this.__mostRecentMD5) {
                 return;
             }
         }
-        //Remove data from the undo stack if there is too much info there
+        // Remove data from the undo stack if there is too much info there
         if (this.deviceData.length > HISTORY_SIZE) {
             this.deviceData.splice(0, 1);
         }
 
-        //Add to design
+        // Add to design
         this.deviceData.push(devicedata);
         this.__mostRecentMD5 = hash;
         console.log("Saved new state:", hash);
     }
+
     /**
      * Removes a design from the history
      * @returns {Device}
@@ -45,7 +46,7 @@ export default class DesignHistory {
      */
     popDesign() {
         if (this.deviceData.length > 0) {
-            let device = this.deviceData.pop();
+            const device = this.deviceData.pop();
             return device;
         } else {
             return null;
@@ -60,9 +61,9 @@ export default class DesignHistory {
      * @private
      */
     __cloneObject(obj) {
-        var clone = {};
-        for (var i in obj) {
-            if (obj[i] !== null && typeof obj[i] == "object") clone[i] = this.__cloneObject(obj[i]);
+        const clone = {};
+        for (const i in obj) {
+            if (obj[i] !== null && typeof obj[i] === "object") clone[i] = this.__cloneObject(obj[i]);
             else clone[i] = obj[i];
         }
         return clone;

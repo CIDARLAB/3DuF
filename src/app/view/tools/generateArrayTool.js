@@ -15,24 +15,24 @@ export default class GenerateArrayTool extends MouseTool {
         // this.lastPoint = null;
         // this.currentSelectBox = null;
         // this.currentSelection = [];
-        let ref = this;
+        const ref = this;
         // this.updateQueue = new SimpleQueue(function () {
         //     ref.dragHandler();
         // }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             // Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             // ref.dragging = true;
             // ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             // if (ref.dragging) {
             //     ref.lastPoint = MouseTool.getEventPosition(event);
             //     ref.updateQueue.run();
             // }
             // ref.showTarget();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             // ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
             // ref.showTarget();
@@ -41,7 +41,7 @@ export default class GenerateArrayTool extends MouseTool {
 
     activate(component) {
         console.log("Activating the tool for a new component", component);
-        //Store the component position here
+        // Store the component position here
         this.__currentComponent = component;
         this.__generateArrayWindow.showWindow();
     }
@@ -52,27 +52,27 @@ export default class GenerateArrayTool extends MouseTool {
 
     generateArray(xdim, ydim, xspacing, yspacing) {
         console.log("Generate array:", xdim, ydim, xspacing, yspacing);
-        let xposref = this.__currentComponent.getPosition()[0];
-        let yposref = this.__currentComponent.getPosition()[1];
-        let name = this.__currentComponent.getName();
+        const xposref = this.__currentComponent.getPosition()[0];
+        const yposref = this.__currentComponent.getPosition()[1];
+        const name = this.__currentComponent.getName();
         this.__currentComponent.setName(name + "_1_1");
-        let replicas = [];
-        //Loop to create the components at the new positions
+        const replicas = [];
+        // Loop to create the components at the new positions
         for (let y = 0; y < ydim; y++) {
             for (let x = 0; x < xdim; x++) {
-                //Skip the x=0, y=0 because thats the initial one
+                // Skip the x=0, y=0 because thats the initial one
                 if (x === 0 && y === 0) {
                     continue;
                 }
-                let xpos = xposref + x * xspacing;
-                let ypos = yposref + y * yspacing;
+                const xpos = xposref + x * xspacing;
+                const ypos = yposref + y * yspacing;
                 replicas.push(this.__currentComponent.replicate(xpos, ypos, name + "_" + String(x + 1) + "_" + String(y + 1)));
             }
         }
 
-        //Add the replicas to the device
+        // Add the replicas to the device
         console.log(replicas);
-        replicas.forEach(function(replica) {
+        replicas.forEach(function (replica) {
             Registry.currentDevice.addComponent(replica);
         });
 

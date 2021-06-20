@@ -1,20 +1,21 @@
 import ImportComponentDialog from "./ui/importComponentDialog";
 import CustomComponent from "../core/customComponent";
-import Registry from '../core/registry';
+import Registry from "../core/registry";
 
 export default class CustomComponentManager {
     /**
      * Default Constructor of the CustomComponentManger object
-     * @param {*} viewManager 
+     * @param {*} viewManager
      */
     constructor(viewManager) {
         this.viewManagerDelegate = viewManager;
         this.importComponentDialog = new ImportComponentDialog(this);
         this.__library = new Map();
 
-        //set up registry for custom tools
-        Registry.featureDefaults["Custom"] = {};
+        // set up registry for custom tools
+        Registry.featureDefaults.Custom = {};
     }
+
     /**
      * Gets the library
      * @memberof CustomComponentManager
@@ -35,13 +36,14 @@ export default class CustomComponentManager {
     importComponentFromDXF(type, dxfdata, renderData) {
         // console.log("Yay ! loaded the data", dxfdata);
         // console.log("Render Data", renderData);
-        //Create DXF Objects
-        let customcomponent = new CustomComponent(type, dxfdata);
+        // Create DXF Objects
+        const customcomponent = new CustomComponent(type, dxfdata);
         customcomponent.renderData = renderData;
         this.__library.set(type, customcomponent);
         this.viewManagerDelegate.addCustomComponentTool(type);
         this.viewManagerDelegate.rightPanel.customComponentToolBar.updateToolBar();
     }
+
     /**
      * Import a new component from a JSON format
      * @param {CustomComponent} customcomponent Custom component object
@@ -53,25 +55,27 @@ export default class CustomComponentManager {
         this.viewManagerDelegate.addCustomComponentTool(customcomponent.type);
         this.viewManagerDelegate.rightPanel.customComponentToolBar.updateToolBar();
     }
+
     /**
      * Gets the custom component
-     * @param {*} componenttype 
+     * @param {*} componenttype
      * @returns {}
      * @memberof CustomComponentManager
      */
     getCustomComponent(componenttype) {
         return this.__library.get(componenttype);
     }
+
     /**
      * Converts to JSON format
      * @returns {JSON}
      * @memberof CustomComponentManager
      */
     toJSON() {
-        let ret = {};
+        const ret = {};
 
-        for (let key of this.__library.keys()) {
-            let customcomponent = this.__library.get(key);
+        for (const key of this.__library.keys()) {
+            const customcomponent = this.__library.get(key);
             // console.log("Key:", key);
             // console.log("Key:", customcomponent);
             ret[key] = customcomponent.toJSON();
@@ -82,22 +86,24 @@ export default class CustomComponentManager {
 
         return ret;
     }
+
     /**
-     * Loads from a JSON format 
-     * @param {JSON} json 
+     * Loads from a JSON format
+     * @param {JSON} json
      * @memberof CustomComponentManager
      * @returns {void}
      */
     loadFromJSON(json) {
-        for (let key in json) {
-            let customcomponent = CustomComponent.fromInterchangeV1(json[key]);
+        for (const key in json) {
+            const customcomponent = CustomComponent.fromInterchangeV1(json[key]);
 
             this.__importComponentFromDeserializedJSON(customcomponent);
         }
     }
+
     /**
      * Checks if the library has a definition ?
-     * @param {*} entity 
+     * @param {*} entity
      * @returns {}
      * @memberof CustomComponentManager
      */

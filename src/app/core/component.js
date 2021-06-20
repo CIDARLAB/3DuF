@@ -2,7 +2,7 @@ import Params from "./params";
 import CustomComponent from "./customComponent";
 import ComponentPort from "./componentPort";
 
-import Registry from './registry';
+import Registry from "./registry";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
 
@@ -30,9 +30,9 @@ export default class Component {
         this.__id = id;
         this.__type = type;
         this.__entity = mint;
-        //This stores the features that are a part of the component
+        // This stores the features that are a part of the component
         this.__features = [];
-        //TODO: Need to figure out how to effectively search through these
+        // TODO: Need to figure out how to effectively search through these
         this.__bounds = null;
         this.__placed = false;
         this.__ports = new Map();
@@ -42,20 +42,21 @@ export default class Component {
         this._xspan = 0;
         this._yspan = 0;
 
-        //Create and set the ports here itself
+        // Create and set the ports here itself
 
-        let cleanparamdata = {};
-        for (let key in this.__params.parameters) {
+        const cleanparamdata = {};
+        for (const key in this.__params.parameters) {
             cleanparamdata[key] = this.__params.parameters[key].getValue();
         }
 
-        let ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.__type);
+        const ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.__type);
         if (ports != undefined && ports.length >= 0 && ports !== null) {
-            for (let i in ports) {
+            for (const i in ports) {
                 this.setPort(ports[i].label, ports[i]);
             }
         }
     }
+
     /**
      * Gets the ports of the component
      * @returns {Port} Returns ports of the component
@@ -64,6 +65,7 @@ export default class Component {
     get ports() {
         return this.__ports;
     }
+
     /**
      * Sets the port of the component
      * @param {} value
@@ -73,6 +75,7 @@ export default class Component {
     set ports(value) {
         this.__ports = value;
     }
+
     /**
      * Gets the place of the component
      * @returns {Number} Returns the place of the component
@@ -81,8 +84,9 @@ export default class Component {
     get placed() {
         return this.__placed;
     }
+
     /**
-     * Sets the place 
+     * Sets the place
      * @param {Number} value
      * @returns {void}
      * @memberof Component
@@ -117,7 +121,7 @@ export default class Component {
      */
     setBounds(bounds) {
         this.__bounds = bounds;
-        let topleftpt = bounds.topLeft;
+        const topleftpt = bounds.topLeft;
         this.__params.position = [topleftpt.x, topleftpt.y];
         this.__params.xspan = bounds.width;
         this.__params.yspan = bounds.height;
@@ -133,15 +137,15 @@ export default class Component {
     updateParameter(key, value) {
         this.__params.updateParameter(key, value);
 
-        for (let i in this.__features) {
-            let featureidtochange = this.__features[i];
+        for (const i in this.__features) {
+            const featureidtochange = this.__features[i];
 
-            //Get the feature id and modify it
-            let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            // Get the feature id and modify it
+            const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
             feature.updateParameter(key, value);
         }
 
-        //Update the ComponentPorts
+        // Update the ComponentPorts
         this.updateComponentPorts();
     }
 
@@ -151,19 +155,19 @@ export default class Component {
      * @memberof Component
      */
     toInterchangeV1() {
-        let output = {};
+        const output = {};
         output.id = this.__id;
         output.name = this.__name;
         output.entity = this.__entity;
         output.params = this.__params.toJSON();
-        let bounds = this.getBoundingRectangle();
+        const bounds = this.getBoundingRectangle();
         output["x-span"] = bounds.width;
         output["y-span"] = bounds.height;
-        let portdata = [];
-        let map = this.ports;
+        const portdata = [];
+        const map = this.ports;
         if (map !== null) {
-            for (let key of map.keys()) {
-                let p = map.get(key).toInterchangeV1();
+            for (const key of map.keys()) {
+                const p = map.get(key).toInterchangeV1();
                 portdata.push(p);
             }
         }
@@ -173,17 +177,17 @@ export default class Component {
         return output;
     }
 
-    __findLayerReferences(){
-        let layers = Registry.currentDevice.getLayers();
-        let layerrefs = [];
+    __findLayerReferences() {
+        const layers = Registry.currentDevice.getLayers();
+        const layerrefs = [];
         let layer;
-        for(let i in layers){
+        for (const i in layers) {
             layer = layers[i];
-            //Check if the component is in layer then put it there
+            // Check if the component is in layer then put it there
             let feature;
-            for(let key in layer.features){
+            for (const key in layer.features) {
                 feature = layer.features[key];
-                if(feature.referenceID == this.getID()){
+                if (feature.referenceID == this.getID()) {
                     layerrefs.push(layer.id);
                 }
             }
@@ -205,7 +209,7 @@ export default class Component {
      * @param {string} name
      * @returns {void}
      * @memberof Component
-     * 
+     *
      */
     setName(name) {
         this.__name = name;
@@ -258,7 +262,7 @@ export default class Component {
      * component
      * @return {Array|*} Returns an array with the correspondings features of the component
      * @memberof Component
-     * 
+     *
      */
     getFeatureIDs() {
         return this.__features;
@@ -282,11 +286,11 @@ export default class Component {
      * @returns {void}
      */
     addFeatureID(featureID) {
-        if (typeof featureID != "string" && !(featureID instanceof String)) {
+        if (typeof featureID !== "string" && !(featureID instanceof String)) {
             throw new Error("The reference object value can only be a string");
         }
         this.__features.push(featureID);
-        //Now update bounds
+        // Now update bounds
         // this.__updateBounds();
     }
 
@@ -300,7 +304,7 @@ export default class Component {
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
-        for (var i in this.__features) {
+        for (const i in this.__features) {
             // gets teh feature defined by the id
             feature = Registry.currentDevice.getFeatureByID(this.__features[i]);
             console.log(feature);
@@ -335,9 +339,9 @@ export default class Component {
             console.error("No features associated with the component");
         }
         let bounds = null;
-        for (let i in this.features) {
-            let featureid = this.features[i];
-            let render = Registry.viewManager.view.getRenderedFeature(featureid);
+        for (const i in this.features) {
+            const featureid = this.features[i];
+            const render = Registry.viewManager.view.getRenderedFeature(featureid);
             if (bounds && render) {
                 bounds = bounds.unite(render.bounds);
             } else {
@@ -355,12 +359,12 @@ export default class Component {
      * @returns {void}
      */
     updateComponetPosition(center) {
-        //This was not calling the right method earlier
+        // This was not calling the right method earlier
         this.__params.updateParameter("position", center);
-        for (let i in this.__features) {
-            let featureidtochange = this.__features[i];
+        for (const i in this.__features) {
+            const featureidtochange = this.__features[i];
 
-            let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
             // feature.updateParameter('position', center);
             feature.updateParameter("position", center);
         }
@@ -375,32 +379,32 @@ export default class Component {
      * @memberof Component
      */
     replicate(xpos, ypos, name = Registry.currentDevice.generateNewName(this.__type)) {
-        //TODO: Fix this ridiculous chain of converting params back and forth, there should be an easier way
-        //Converting all the params into raw values
+        // TODO: Fix this ridiculous chain of converting params back and forth, there should be an easier way
+        // Converting all the params into raw values
         // let paramvalues = {};
         // for(let key in this.__params.parameters){
         //     paramvalues[key] = this.getValue(key);
         // }
 
-        let definition = Registry.featureSet.getDefinition(this.__type);
-        //Clean Param Data
-        let cleanparamdata = {};
-        for (let key in this.__params.parameters) {
+        const definition = Registry.featureSet.getDefinition(this.__type);
+        // Clean Param Data
+        const cleanparamdata = {};
+        for (const key in this.__params.parameters) {
             cleanparamdata[key] = this.__params.parameters[key].getValue();
         }
-        let replicaparams = new Params(cleanparamdata, definition.unique, definition.heritable);
-        let ret = new Component(this.__type, replicaparams, name, this.__entity);
+        const replicaparams = new Params(cleanparamdata, definition.unique, definition.heritable);
+        const ret = new Component(this.__type, replicaparams, name, this.__entity);
         console.log("Checking what the new component params are:", ret.__params);
-        //Generate New features
-        for (let i in this.features) {
-            let feature = Registry.currentDevice.getFeatureByID(this.features[i]);
+        // Generate New features
+        for (const i in this.features) {
+            const feature = Registry.currentDevice.getFeatureByID(this.features[i]);
             console.log("test", this.getPosition()[0], this.getPosition()[1], this.getPosition());
-            let replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
+            const replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
             replica.referenceID = ret.getID();
             ret.features.push(replica.getID());
 
-            //TODO: add new feature to the layer in which the current feature is in
-            let currentlayer = Registry.currentDevice.getLayerFromFeatureID(this.features[i]);
+            // TODO: add new feature to the layer in which the current feature is in
+            const currentlayer = Registry.currentDevice.getLayerFromFeatureID(this.features[i]);
             currentlayer.addFeature(replica);
         }
         console.warn("TODO: Generate renders for the new Features for this new component");
@@ -414,7 +418,7 @@ export default class Component {
      * @memberof Component
      */
     getCenterPosition() {
-        let bounds = this.getBoundingRectangle();
+        const bounds = this.getBoundingRectangle();
         return [bounds.center.x, bounds.center.y];
     }
 
@@ -424,7 +428,7 @@ export default class Component {
      * @memberof Component
      */
     getTopLeftPosition() {
-        let bounds = this.getBoundingRectangle();
+        const bounds = this.getBoundingRectangle();
         return [bounds.topLeft.x, bounds.topLeft.y];
     }
 
@@ -440,22 +444,22 @@ export default class Component {
         // else set = "Basic";
         // //TODO: This will have to change soon when the thing is updated
         // throw new Error("Need to implement Interchange V1 Import for component object");
-        let iscustomcompnent = false;
-        let name = json.name;
-        let id = json.id;
+        const iscustomcompnent = false;
+        const name = json.name;
+        const id = json.id;
         let entity = json.entity;
         this.xspan = this._xspan;
         this.yspan = this._yspan;
 
-        let params = {};
+        const params = {};
         if (entity === "TEST MINT") {
             console.warn("Found legacy invalid entity string", entity);
-            entity = name.split("_")[0]; //'^.*?(?=_)'
+            entity = name.split("_")[0]; // '^.*?(?=_)'
 
             console.log("new entity:", entity);
         }
-        
-        //TODO - remove this dependency
+
+        // TODO - remove this dependency
         // iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);
 
         let definition;
@@ -464,15 +468,15 @@ export default class Component {
             definition = CustomComponent.defaultParameterDefinitions();
         } else {
             definition = Registry.featureSet.getDefinition(entity);
-            if(definition === null){
-                throw Error("Could not find definition for type: "+ entity);
+            if (definition === null) {
+                throw Error("Could not find definition for type: " + entity);
             }
         }
 
         // console.log(definition);
         let type;
         let value;
-        for (let key in json.params) {
+        for (const key in json.params) {
             // console.log("key:", key, "value:", json.params[key]);
             if (definition.heritable.hasOwnProperty(key)) {
                 type = definition.heritable[key];
@@ -480,9 +484,9 @@ export default class Component {
                 type = definition.unique[key];
             }
             // let paramobject = Parameter.generateComponentParameter(key, json.params[key]);
-            //Check if the value type is float and convert the value from string
+            // Check if the value type is float and convert the value from string
             value = json.params[key];
-            if (type === "Float" && typeof value == "string") {
+            if (type === "Float" && typeof value === "string") {
                 value = parseFloat(value);
             }
 
@@ -490,19 +494,19 @@ export default class Component {
             params[key] = value;
         }
 
-        //Do another check and see if position is present or not
+        // Do another check and see if position is present or not
         if (!params.hasOwnProperty("position")) {
-            params["position"] = [0.0, 0.0];
+            params.position = [0.0, 0.0];
         }
 
-        let paramstoadd = new Params(params, definition.unique, definition.heritable);
-        let typestring = Registry.featureSet.getTypeForMINT(entity);
-        let component = new Component(typestring, paramstoadd, name, entity, id);
+        const paramstoadd = new Params(params, definition.unique, definition.heritable);
+        const typestring = Registry.featureSet.getTypeForMINT(entity);
+        const component = new Component(typestring, paramstoadd, name, entity, id);
 
-        //Deserialize the component ports
-        let portdata = new Map();
-        for (let i in json.ports) {
-            let componentport = ComponentPort.fromInterchangeV1(json.ports[i]);
+        // Deserialize the component ports
+        const portdata = new Map();
+        for (const i in json.ports) {
+            const componentport = ComponentPort.fromInterchangeV1(json.ports[i]);
             portdata.set(componentport.label, componentport);
         }
 
@@ -510,16 +514,18 @@ export default class Component {
 
         return component;
     }
+
     /**
      * Set port for the component
-     * @param {string} label 
-     * @param {Port} port 
+     * @param {string} label
+     * @param {Port} port
      * @memberof Component
      * @returns {void}
      */
     setPort(label, port) {
         this.__ports.set(label, port);
     }
+
     /**
      * Gets the rotation of the component
      * @returns {Number} Returns the degree of rotation
@@ -529,7 +535,7 @@ export default class Component {
         if (this.__params.hasParam("rotation")) {
             return this.getValue("rotation");
         } else if (this.__params.hasParam("orientation")) {
-            let orientation = this.getValue("orientation");
+            const orientation = this.getValue("orientation");
             if (orientation === "V") {
                 return 0;
             } else {
@@ -540,10 +546,11 @@ export default class Component {
             return 0;
         }
     }
+
     /**
-     * 
-     * @param {string} label 
-     * @param {*} render 
+     *
+     * @param {string} label
+     * @param {*} render
      * @returns {void}
      * @memberof Component
      */
@@ -557,19 +564,19 @@ export default class Component {
      * @returns {void}
      */
     updateComponentPorts() {
-        //updating the Component Ports
+        // updating the Component Ports
 
-        let params = this.getParams().toMap();
+        const params = this.getParams().toMap();
 
-        let cleanparamdata = {};
+        const cleanparamdata = {};
 
-        for (let key of params.keys()) {
+        for (const key of params.keys()) {
             cleanparamdata[key] = params.get(key);
         }
 
-        let ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.getType());
+        const ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.getType());
 
-        for (let i in ports) {
+        for (const i in ports) {
             this.setPort(ports[i].label, ports[i]);
         }
     }

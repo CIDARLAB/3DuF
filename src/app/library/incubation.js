@@ -86,26 +86,26 @@ export default class Incubation extends Template {
     }
 
     getPorts(params) {
-        let length = params["length"];
+        const length = params.length;
 
-        let ports = [];
+        const ports = [];
 
-        ports.push(new ComponentPort(0, - length/2, "1", "FLOW"));
+        ports.push(new ComponentPort(0, -length / 2, "1", "FLOW"));
 
-        ports.push(new ComponentPort(0, length/2, "2", "FLOW"));
+        ports.push(new ComponentPort(0, length / 2, "2", "FLOW"));
 
         return ports;
     }
 
     render2D(params, key) {
-        let position = params["position"];
-        let px = position[0];
-        let py = position[1];
-        let cw = params["channelWidth"];
-        let l = params["length"];
-        let w = params["width"];
-        let rotation = params["rotation"];
-        let color = params["color"];
+        const position = params.position;
+        const px = position[0];
+        const py = position[1];
+        const cw = params.channelWidth;
+        const l = params.length;
+        const w = params.width;
+        const rotation = params.rotation;
+        const color = params.color;
         let p0, p1, p2, p3, p4, p5;
         // if (rotation == "H") {
         //     p0 = [px - l / 2, py - cw / 2];
@@ -115,14 +115,14 @@ export default class Incubation extends Template {
         //     p4 = [px + l / 2, py - cw / 2];
         //     p5 = [px, py - cw / 2 - w];
         // } else {
-            p0 = [px - cw / 2, py - l / 2];
-            p1 = [px + cw / 2, py - l / 2];
-            p2 = [px + w + cw / 2, py];
-            p3 = [px + cw / 2, py + l / 2];
-            p4 = [px - cw / 2, py + l / 2];
-            p5 = [px - cw / 2 - w, py];
+        p0 = [px - cw / 2, py - l / 2];
+        p1 = [px + cw / 2, py - l / 2];
+        p2 = [px + w + cw / 2, py];
+        p3 = [px + cw / 2, py + l / 2];
+        p4 = [px - cw / 2, py + l / 2];
+        p5 = [px - cw / 2 - w, py];
         // }
-        let hex = new paper.Path();
+        const hex = new paper.Path();
         hex.add(new paper.Point(p0));
         hex.add(new paper.Point(p1));
         hex.add(new paper.Point(p2));
@@ -138,7 +138,7 @@ export default class Incubation extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

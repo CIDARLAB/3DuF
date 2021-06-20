@@ -177,16 +177,16 @@ export default class Sorter extends Template {
     }
 
     getPorts(params) {
-        let inletLength = params["inletLength"];
-        let angle = params["angle"];
-        let outputLength = params["outputLength"];
-        let pressureWidth = params["pressureWidth"];
-        let pressureSpacing = params["pressureSpacing"];
-        let numberofDistributors = params["numberofDistributors"];
+        const inletLength = params.inletLength;
+        const angle = params.angle;
+        const outputLength = params.outputLength;
+        const pressureWidth = params.pressureWidth;
+        const pressureSpacing = params.pressureSpacing;
+        const numberofDistributors = params.numberofDistributors;
 
-        let outletLen = ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth)) / Math.cos(((angle / 2) * Math.PI) / 180);
+        const outletLen = ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth)) / Math.cos(((angle / 2) * Math.PI) / 180);
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(-inletLength, 0, "1", "FLOW"));
 
@@ -212,32 +212,32 @@ export default class Sorter extends Template {
     }
 
     render2D(params, key) {
-        let rotation = params["rotation"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let inletWidth = params["inletWidth"];
-        let inletLength = params["inletLength"];
-        let electrodeDistance = params["electrodeDistance"];
-        let electrodeWidth = params["electrodeWidth"];
-        let electrodeLength = params["electrodeLength"];
-        let outletWidth = params["outletWidth"];
-        let angle = params["angle"];
-        let wasteWidth = params["wasteWidth"];
-        let outputLength = params["outputLength"];
-        let keepWidth = params["keepWidth"];
-        let pressureWidth = params["pressureWidth"];
-        let pressureSpacing = params["pressureSpacing"];
-        let numberofDistributors = params["numberofDistributors"];
-        let serp = new paper.CompoundPath();
+        const rotation = params.rotation;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const inletWidth = params.inletWidth;
+        const inletLength = params.inletLength;
+        const electrodeDistance = params.electrodeDistance;
+        const electrodeWidth = params.electrodeWidth;
+        const electrodeLength = params.electrodeLength;
+        const outletWidth = params.outletWidth;
+        const angle = params.angle;
+        const wasteWidth = params.wasteWidth;
+        const outputLength = params.outputLength;
+        const keepWidth = params.keepWidth;
+        const pressureWidth = params.pressureWidth;
+        const pressureSpacing = params.pressureSpacing;
+        const numberofDistributors = params.numberofDistributors;
+        const serp = new paper.CompoundPath();
 
         // pressure distributors
         for (let i = 0; i < numberofDistributors; i++) {
-            let newRightX = (i + 1.5) * (pressureSpacing + pressureWidth);
+            const newRightX = (i + 1.5) * (pressureSpacing + pressureWidth);
 
-            let newLeftX = newRightX - pressureWidth;
+            const newLeftX = newRightX - pressureWidth;
 
-            let pHeight = (newRightX - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180);
+            const pHeight = (newRightX - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180);
             // upper
             let topLeft = new paper.Point(x + newLeftX, y - pHeight);
             let bottomRight = new paper.Point(x + newRightX, y);
@@ -249,7 +249,7 @@ export default class Sorter extends Template {
             serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
         }
 
-        let outletLen = ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth)) / Math.cos(((angle / 2) * Math.PI) / 180);
+        const outletLen = ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth)) / Math.cos(((angle / 2) * Math.PI) / 180);
         let topLeft = new paper.Point(x, y - outletWidth / 2);
         let bottomRight = new paper.Point(x + outletLen, y + outletWidth / 2);
 
@@ -321,7 +321,7 @@ export default class Sorter extends Template {
     }
 
     render2DTarget(key, params) {
-        let serp = this.render2D(params, key);
+        const serp = this.render2D(params, key);
 
         serp.fillColor.alpha = 0.5;
         return serp;

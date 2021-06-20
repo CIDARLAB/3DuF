@@ -93,11 +93,11 @@ export default class Pump extends Template {
     }
 
     getPorts(params) {
-        let l = params["length"];
-        let w = params["width"];
-        let spacing = params["spacing"];
+        const l = params.length;
+        const w = params.width;
+        const spacing = params.spacing;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, -l / 2 - spacing, "1", "FLOW"));
 
@@ -114,25 +114,25 @@ export default class Pump extends Template {
 
     __drawFlow(params) {
         let rec;
-        let position = params["position"];
-        let px = position[0];
-        let py = position[1];
-        let l = params["length"];
-        let w = params["width"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let spacing = params["spacing"];
-        let channelwidth = params["flowChannelWidth"];
+        const position = params.position;
+        const px = position[0];
+        const py = position[1];
+        const l = params.length;
+        const w = params.width;
+        const color = params.color;
+        const rotation = params.rotation;
+        const spacing = params.spacing;
+        const channelwidth = params.flowChannelWidth;
 
-        let startX = px - w / 2;
-        let startY = py - l / 2;
-        let endX = px + w / 2;
-        let endY = py + l / 2;
+        const startX = px - w / 2;
+        const startY = py - l / 2;
+        const endX = px + w / 2;
+        const endY = py + l / 2;
 
-        let ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath();
 
-        let startPoint = new paper.Point(startX, startY);
-        let endPoint = new paper.Point(endX, endY);
+        const startPoint = new paper.Point(startX, startY);
+        const endPoint = new paper.Point(endX, endY);
 
         rec = paper.Path.Rectangle({
             from: new paper.Point(px - channelwidth / 2, py - spacing - l / 2),
@@ -147,24 +147,24 @@ export default class Pump extends Template {
 
     __drawControl(params) {
         let rec;
-        let position = params["position"];
-        let px = position[0];
-        let py = position[1];
-        let l = params["length"];
-        let w = params["width"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let spacing = params["spacing"];
+        const position = params.position;
+        const px = position[0];
+        const py = position[1];
+        const l = params.length;
+        const w = params.width;
+        const color = params.color;
+        const rotation = params.rotation;
+        const spacing = params.spacing;
 
-        let startX = px - w / 2;
-        let startY = py - l / 2;
-        let endX = px + w / 2;
-        let endY = py + l / 2;
+        const startX = px - w / 2;
+        const startY = py - l / 2;
+        const endX = px + w / 2;
+        const endY = py + l / 2;
 
-        let ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath();
 
-        let startPoint = new paper.Point(startX, startY);
-        let endPoint = new paper.Point(endX, endY);
+        const startPoint = new paper.Point(startX, startY);
+        const endPoint = new paper.Point(endX, endY);
 
         rec = paper.Path.Rectangle({
             from: startPoint,
@@ -176,7 +176,7 @@ export default class Pump extends Template {
 
         ret.addChild(rec);
 
-        let topcenter = new paper.Point(px, py - spacing);
+        const topcenter = new paper.Point(px, py - spacing);
 
         rec = paper.Path.Rectangle({
             from: new paper.Point(topcenter.x - w / 2, topcenter.y - l / 2),
@@ -185,7 +185,7 @@ export default class Pump extends Template {
 
         ret.addChild(rec);
 
-        let bottomcenter = new paper.Point(px, py + spacing);
+        const bottomcenter = new paper.Point(px, py + spacing);
         rec = paper.Path.Rectangle({
             from: new paper.Point(bottomcenter.x - w / 2, bottomcenter.y - l / 2),
             to: new paper.Point(bottomcenter.x + w / 2, bottomcenter.y + l / 2)
@@ -206,12 +206,12 @@ export default class Pump extends Template {
     }
 
     render2DTarget(key, params) {
-        let ret = new paper.CompoundPath();
-        let flow = this.render2D(params, "FLOW");
-        let control = this.render2D(params, "CONTROL");
+        const ret = new paper.CompoundPath();
+        const flow = this.render2D(params, "FLOW");
+        const control = this.render2D(params, "CONTROL");
         ret.addChild(control);
         ret.addChild(flow);
-        ret.fillColor = params["color"];
+        ret.fillColor = params.color;
         ret.fillColor.alpha = 0.5;
         return ret;
     }

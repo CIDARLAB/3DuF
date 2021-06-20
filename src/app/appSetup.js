@@ -7,7 +7,7 @@ import * as Examples from "./examples/jsonExamples";
 
 let viewManager;
 
-window.onload = function() {
+window.onload = function () {
     viewManager = new BareViewManager();
 
     Registry.viewManager = viewManager;

@@ -1,8 +1,8 @@
 import Parameter from "../parameter";
 
-let typeString = "Boolean";
+const typeString = "Boolean";
 
-let description = "BooleanValue must be true or false.";
+const description = "BooleanValue must be true or false.";
 
 function isValid(value) {
     if (typeof value === "boolean") return true;

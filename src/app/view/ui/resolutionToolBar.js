@@ -1,9 +1,9 @@
-import Registry from '../../core/registry';
+import Registry from "../../core/registry";
 import wNumb from "wnumb";
 
 export default class ResolutionToolBar {
     constructor() {
-        //Enable all the UI hooks so that we can execute the updates, actions
+        // Enable all the UI hooks so that we can execute the updates, actions
         this.__gridResolution = 0;
         this.__smallresolutionLabel = document.getElementById("sm-resolution");
         this.__largeresolutionLabel = document.getElementById("lg-resolution");
@@ -11,24 +11,24 @@ export default class ResolutionToolBar {
         this.__snapRenderCheckBox = document.getElementById("render-snap-toggle");
         // this.__resolutionSlider = document.getElementById("grid-resolution-slider");
         this.__gridResolutionSlider = document.getElementById("grid-resolution-slider");
-        let ref = this; // User ref for referring to this object instance
-        this.__adaptiveGridCheckBox.onchange = function(event) {
+        const ref = this; // User ref for referring to this object instance
+        this.__adaptiveGridCheckBox.onchange = function (event) {
             if (ref.__adaptiveGridCheckBox.checked) {
-                //Enable Adaptive Grid
+                // Enable Adaptive Grid
                 Registry.currentGrid.enableAdaptiveGrid();
                 ref.__gridResolutionSlider.setAttribute("disabled", true);
             } else {
-                //Disable Adaptive Grid
+                // Disable Adaptive Grid
                 Registry.currentGrid.disableAdaptiveGrid();
                 ref.__gridResolutionSlider.removeAttribute("disabled");
             }
         };
-        this.__snapRenderCheckBox.onchange = function(event) {
+        this.__snapRenderCheckBox.onchange = function (event) {
             if (ref.__snapRenderCheckBox.checked) {
-                //Enable Adaptive Grid
+                // Enable Adaptive Grid
                 Registry.viewManager.view.enableSnapRender();
             } else {
-                //Disable Adaptive Grid
+                // Disable Adaptive Grid
                 Registry.viewManager.view.disableSnapRender();
             }
         };
@@ -51,11 +51,11 @@ export default class ResolutionToolBar {
     }
 
     __setupGridResolutionSlider() {
-        //Check if the div element has a different name now
+        // Check if the div element has a different name now
         if (this.__gridResolutionSlider === null) {
             throw new Error("Could not find HTML element for the grid resolution slider");
         }
-        //Create the noUiSlider
+        // Create the noUiSlider
         noUiSlider.create(this.__gridResolutionSlider, {
             start: [500],
             connect: "lower",
@@ -76,24 +76,24 @@ export default class ResolutionToolBar {
             // direction: 'rtl'
         });
 
-        //Associate an onchange function
-        let ref = this;
-        let registryref = Registry;
-        this.__gridResolutionSlider.noUiSlider.on("update", function(values, handle, unencoded, isTap, positions) {
+        // Associate an onchange function
+        const ref = this;
+        const registryref = Registry;
+        this.__gridResolutionSlider.noUiSlider.on("update", function (values, handle, unencoded, isTap, positions) {
             ref.__smallresolutionLabel.innerHTML = values[0] + " &mu;m";
         });
 
-        this.__gridResolutionSlider.noUiSlider.on("change", function(values, handle, unencoded, isTap, positions) {
-            let value = parseInt(values[0], 10);
+        this.__gridResolutionSlider.noUiSlider.on("change", function (values, handle, unencoded, isTap, positions) {
+            const value = parseInt(values[0], 10);
 
-            //This ensures that there is something valid present
+            // This ensures that there is something valid present
             if (registryref.currentGrid !== null) {
                 registryref.currentGrid.updateGridSpacing(value);
                 registryref.currentGrid.notifyViewManagerToUpdateView();
             }
         });
 
-        //Finally Disable it
+        // Finally Disable it
         this.__gridResolutionSlider.setAttribute("disabled", true);
         this.__gridResolutionSlider.setAttribute("height", "30%");
     }

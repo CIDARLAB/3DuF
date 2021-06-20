@@ -3,23 +3,23 @@ import * as NumberUtils from "../../utils/numberUtils";
 
 export default class GenerateArrayWindow {
     constructor(generateArrayToolDelegate) {
-        //Get the UI references
+        // Get the UI references
 
         this.generateArrayToolDelegate = generateArrayToolDelegate;
 
         this.__window = document.getElementById("arrayBox");
 
-        //Action Buttons
+        // Action Buttons
         this.__generateButton = this.__window.querySelector("#generate-replication");
         this.__cancelButton = this.__window.querySelector("#cancel-replication");
 
-        //Text Inputs
+        // Text Inputs
         this.__xSpacingInput = this.__window.querySelector("#textinput_xspacing");
         this.__ySpacingInput = this.__window.querySelector("#textinput_yspacing");
         this.__xDimInput = this.__window.querySelector("#replicate-x");
         this.__yDimInput = this.__window.querySelector("#replicate-y");
 
-        //Input Buttons
+        // Input Buttons
         this.__xSpacingUpButton = this.__window.querySelector("#button-xspacing-up");
         this.__xSpacingDownButton = this.__window.querySelector("#button-xspacing-down");
         this.__ySpacingUpButton = this.__window.querySelector("#button-yspacing-up");
@@ -27,20 +27,20 @@ export default class GenerateArrayWindow {
 
         this.setupInitialValues();
 
-        let ref = this;
+        const ref = this;
 
-        //Text input changes
-        this.__xSpacingInput.addEventListener("input", function(event) {
+        // Text input changes
+        this.__xSpacingInput.addEventListener("input", function (event) {
             ref.processNewArrayData();
         });
 
-        this.__ySpacingInput.addEventListener("input", function(event) {
+        this.__ySpacingInput.addEventListener("input", function (event) {
             ref.processNewArrayData();
         });
 
-        //Position buttons
-        //Decrease x
-        this.__xSpacingDownButton.addEventListener("click", function(event) {
+        // Position buttons
+        // Decrease x
+        this.__xSpacingDownButton.addEventListener("click", function (event) {
             let value = ref.__xSpacingInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -50,8 +50,8 @@ export default class GenerateArrayWindow {
             }
         });
 
-        //increase x
-        this.__xSpacingUpButton.addEventListener("click", function(event) {
+        // increase x
+        this.__xSpacingUpButton.addEventListener("click", function (event) {
             let value = ref.__xSpacingInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -61,8 +61,8 @@ export default class GenerateArrayWindow {
             }
         });
 
-        //increase y
-        this.__ySpacingUpButton.addEventListener("click", function(event) {
+        // increase y
+        this.__ySpacingUpButton.addEventListener("click", function (event) {
             let value = ref.__ySpacingInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -72,8 +72,8 @@ export default class GenerateArrayWindow {
             }
         });
 
-        //decrease y
-        this.__ySpacingDownButton.addEventListener("click", function(event) {
+        // decrease y
+        this.__ySpacingDownButton.addEventListener("click", function (event) {
             let value = ref.__ySpacingInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -83,17 +83,17 @@ export default class GenerateArrayWindow {
             }
         });
 
-        //Action button clicks
-        this.__generateButton.addEventListener("click", function(event) {
+        // Action button clicks
+        this.__generateButton.addEventListener("click", function (event) {
             console.log("Save button was pressed");
             ref.processNewArrayData();
             ref.hideWindow();
-            //Tell the generateArrayTool to set the position as the x,y pos
+            // Tell the generateArrayTool to set the position as the x,y pos
             ref.generateArrayToolDelegate.generateArray(ref.__xdim, ref.__ydim, ref.__xspacing, ref.__yspacing);
             ref.generateArrayToolDelegate.unactivate();
         });
 
-        this.__cancelButton.addEventListener("click", function(event) {
+        this.__cancelButton.addEventListener("click", function (event) {
             console.log("Cancel Button was Pressed");
             ref.hideWindow();
             ref.generateArrayToolDelegate.unactivate();
@@ -120,15 +120,15 @@ export default class GenerateArrayWindow {
     }
 
     processNewArrayData() {
-        let xspacing = Number.parseFloat(this.__xSpacingInput.value);
-        let yspacing = Number.parseFloat(this.__ySpacingInput.value);
+        const xspacing = Number.parseFloat(this.__xSpacingInput.value);
+        const yspacing = Number.parseFloat(this.__ySpacingInput.value);
 
-        //Check if the values are valid positions
+        // Check if the values are valid positions
         if (!NumberUtils.isFloatOrInt(xspacing) || !NumberUtils.isFloatOrInt(yspacing)) {
             console.error("Invalid spacing values");
             return;
         }
-        //Convert values from mm in to microns
+        // Convert values from mm in to microns
         this.__xspacing = xspacing * 1000;
         this.__yspacing = yspacing * 1000;
 

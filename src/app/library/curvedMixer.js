@@ -97,12 +97,12 @@ export default class CurvedMixer extends Template {
     }
 
     getPorts(params) {
-        let channelWidth = params["channelWidth"];
-        let bendLength = params["bendLength"];
-        let bendSpacing = params["bendSpacing"];
-        let numberOfBends = params["numberOfBends"];
+        const channelWidth = params.channelWidth;
+        const bendLength = params.bendLength;
+        const bendSpacing = params.bendSpacing;
+        const numberOfBends = params.numberOfBends;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", "FLOW"));
 
@@ -112,34 +112,34 @@ export default class CurvedMixer extends Template {
     }
 
     render2D(params, key) {
-        let channelWidth = params["channelWidth"];
-        let bendLength = params["bendLength"];
-        let bendSpacing = params["bendSpacing"];
-        let rotation = params["rotation"];
-        let numBends = params["numberOfBends"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let segHalf = bendLength / 2 + channelWidth;
-        let segLength = bendLength + 2 * channelWidth;
-        let segBend = bendSpacing + 2 * channelWidth;
-        let vRepeat = 2 * bendSpacing + 2 * channelWidth;
-        let vOffset = bendSpacing + channelWidth;
-        let hOffset = bendLength / 2 + channelWidth / 2;
-        let serp = new paper.CompoundPath();
+        const channelWidth = params.channelWidth;
+        const bendLength = params.bendLength;
+        const bendSpacing = params.bendSpacing;
+        const rotation = params.rotation;
+        const numBends = params.numberOfBends;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const segHalf = bendLength / 2 + channelWidth;
+        const segLength = bendLength + 2 * channelWidth;
+        const segBend = bendSpacing + 2 * channelWidth;
+        const vRepeat = 2 * bendSpacing + 2 * channelWidth;
+        const vOffset = bendSpacing + channelWidth;
+        const hOffset = bendLength / 2 + channelWidth / 2;
+        const serp = new paper.CompoundPath();
 
-        //draw first segment
+        // draw first segment
         let toprect = new paper.Path.Rectangle(x + channelWidth - 1, y, bendLength / 2 + channelWidth / 2 + 1, channelWidth);
         toprect.closed = true;
         for (let i = 0; i < numBends; i++) {
-            //draw left curved segment
+            // draw left curved segment
             let leftCurve = new paper.Path.Arc({
                 from: [x + channelWidth, y + vRepeat * i],
                 through: [x + channelWidth - (channelWidth + bendSpacing / 2), y + vRepeat * i + bendSpacing / 2 + channelWidth],
                 to: [x + channelWidth, y + vRepeat * i + bendSpacing + 2 * channelWidth]
             });
             leftCurve.closed = true;
-            let leftCurveSmall = new paper.Path.Arc({
+            const leftCurveSmall = new paper.Path.Arc({
                 from: [x + channelWidth, y + vRepeat * i + bendSpacing + channelWidth],
                 through: [x + channelWidth - bendSpacing / 2, y + vRepeat * i + bendSpacing / 2 + channelWidth],
                 to: [x + channelWidth, y + vRepeat * i + channelWidth]
@@ -148,17 +148,17 @@ export default class CurvedMixer extends Template {
             leftCurve = leftCurve.subtract(leftCurveSmall);
             toprect = toprect.unite(leftCurve);
             // serp.addChild(leftCurve);
-            //draw horizontal segment
+            // draw horizontal segment
             let hseg = new paper.Path.Rectangle(x + channelWidth - 1, y + vOffset + vRepeat * i, bendLength + 2, channelWidth);
             toprect = toprect.unite(hseg);
-            //draw right curved segment
+            // draw right curved segment
             let rightCurve = new paper.Path.Arc({
                 from: [x + channelWidth + bendLength, y + vOffset + vRepeat * i],
                 through: [x + channelWidth + bendLength + (channelWidth + bendSpacing / 2), y + vOffset + vRepeat * i + bendSpacing / 2 + channelWidth],
                 to: [x + channelWidth + bendLength, y + vOffset + vRepeat * i + bendSpacing + 2 * channelWidth]
             });
             rightCurve.closed = true;
-            let rightCurveSmall = new paper.Path.Arc({
+            const rightCurveSmall = new paper.Path.Arc({
                 from: [x + channelWidth + bendLength, y + vOffset + vRepeat * i + bendSpacing + channelWidth],
                 through: [x + channelWidth + bendLength + bendSpacing / 2, y + vOffset + vRepeat * i + bendSpacing / 2 + channelWidth],
                 to: [x + channelWidth + bendLength, y + vOffset + vRepeat * i + channelWidth]
@@ -168,11 +168,11 @@ export default class CurvedMixer extends Template {
             toprect = toprect.unite(rightCurve);
 
             if (i == numBends - 1) {
-                //draw half segment to close
+                // draw half segment to close
                 hseg = new paper.Path.Rectangle(x + channelWidth / 2 + bendLength / 2, y + vRepeat * (i + 1), (bendLength + channelWidth) / 2 + 1, channelWidth);
                 toprect = toprect.unite(hseg);
             } else {
-                //draw full segment
+                // draw full segment
                 hseg = new paper.Path.Rectangle(x + channelWidth - 1, y + vRepeat * (i + 1), bendLength + 2, channelWidth);
                 toprect = toprect.unite(hseg);
             }
@@ -181,11 +181,11 @@ export default class CurvedMixer extends Template {
         serp.addChild(toprect);
 
         serp.fillColor = color;
-        return serp.rotate(rotation, x, y);;
+        return serp.rotate(rotation, x, y);
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

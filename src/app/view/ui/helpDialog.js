@@ -1,18 +1,18 @@
 import dialogPolyfill from "dialog-polyfill";
 export default class HelpDialog {
     constructor() {
-        let helpdialog = document.querySelector("#help_dialog");
-        let showhelpModalButton = document.querySelector("#infobutton");
+        const helpdialog = document.querySelector("#help_dialog");
+        const showhelpModalButton = document.querySelector("#infobutton");
 
         if (!helpdialog.showModal) {
             dialogPolyfill.registerDialog(helpdialog);
         }
 
-        showhelpModalButton.addEventListener("click", function() {
+        showhelpModalButton.addEventListener("click", function () {
             helpdialog.showModal();
         });
 
-        helpdialog.querySelector(".close").addEventListener("click", function() {
+        helpdialog.querySelector(".close").addEventListener("click", function () {
             helpdialog.close();
         });
     }

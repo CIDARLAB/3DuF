@@ -7,7 +7,7 @@ import PanTool from "./tools/panTool";
 export default class MouseAndKeyboardHandler {
     /**
      * Default Constructor for MouseAndKeyboardHandler object
-     * @param {*} viewManagerDelegate 
+     * @param {*} viewManagerDelegate
      */
     constructor(viewManagerDelegate) {
         this.viewManagerDelegate = viewManagerDelegate;
@@ -16,9 +16,9 @@ export default class MouseAndKeyboardHandler {
         this.__rightMouseTool = null;
         this.__middleMouseTool = new PanTool();
 
-        //Prevent default keyboard window events
-        window.onkeydown = function(event) {
-            let key = event.keyCode || event.which;
+        // Prevent default keyboard window events
+        window.onkeydown = function (event) {
+            const key = event.keyCode || event.which;
             if (key === 46) {
                 event.preventDefault();
             }
@@ -27,6 +27,7 @@ export default class MouseAndKeyboardHandler {
         this.__setupDefaultKeyboardShortcuts();
         // this.__updateViewMouseEvents();
     }
+
     /**
      * Sets the tool for the left mouse
      * @returns {void}
@@ -35,6 +36,7 @@ export default class MouseAndKeyboardHandler {
     set leftMouseTool(tool) {
         this.__leftMouseTool = tool;
     }
+
     /**
      * Sets the tool for the right mouse
      * @param {} tool Selected tool
@@ -44,6 +46,7 @@ export default class MouseAndKeyboardHandler {
     set rightMouseTool(tool) {
         this.__rightMouseTool = tool;
     }
+
     /**
      * Gets the tool of the left mouse
      * @returns Returns left mouse tool
@@ -52,12 +55,13 @@ export default class MouseAndKeyboardHandler {
     get leftMouseTool() {
         return this.__leftMouseTool;
     }
+
     /**
      * Gets the tool of the right mouse
      * @returns Returns right mouse tool
      * @memberof MouseAndKeyboardHandler
      */
-    get rightMouseTool() {  
+    get rightMouseTool() {
         return this.__rightMouseTool;
     }
 
@@ -68,36 +72,36 @@ export default class MouseAndKeyboardHandler {
      * @private
      */
     __setupDefaultKeyboardShortcuts() {
-        let reference = this.viewManagerDelegate;
+        const reference = this.viewManagerDelegate;
 
-        window.addEventListener("keydown", function(event) {
-            let key = event.keyCode || event.which;
+        window.addEventListener("keydown", function (event) {
+            const key = event.keyCode || event.which;
 
-            //Saving
+            // Saving
             if ((event.ctrlKey || event.metaKey) && key == 83) {
                 event.preventDefault();
                 reference.exportPanel.saveJSON();
             }
 
             if (key === 70) {
-                //Reset the view
+                // Reset the view
                 reference.view.initializeView();
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
             }
 
-            //Escape key
+            // Escape key
             if (key === 27) {
-                //Deselect all
+                // Deselect all
                 paper.project.deselectAll();
 
-                //Change active tool to select tool
+                // Change active tool to select tool
                 reference.resetToDefaultTool();
             }
         });
 
-        reference.view.setKeyDownFunction(function(event) {
-            let key = event.keyCode || event.which;
+        reference.view.setKeyDownFunction(function (event) {
+            const key = event.keyCode || event.which;
 
             // Delete
             if (key == 46 || key == 8) {
@@ -106,13 +110,13 @@ export default class MouseAndKeyboardHandler {
             }
             // Copy
             if ((event.ctrlKey || event.metaKey) && key == 67) {
-                //console.log("Ctl c detected");
+                // console.log("Ctl c detected");
                 reference.initiateCopy();
             }
             // Cut
             if ((event.ctrlKey || event.metaKey) && key == 88) {
-                //console.log("Ctl x detected");
-                let selectedFeatures = reference.view.getSelectedFeatures();
+                // console.log("Ctl x detected");
+                const selectedFeatures = reference.view.getSelectedFeatures();
                 if (selectedFeatures.length > 0) {
                     reference.pasteboard[0] = selectedFeatures[0];
                 }
@@ -121,15 +125,15 @@ export default class MouseAndKeyboardHandler {
             }
             // Paste
             if ((event.ctrlKey || event.metaKey) && key == 86) {
-                //console.log("Ctl v detected");
-                let pasteboardFeatures = reference.pasteboard;
+                // console.log("Ctl v detected");
+                const pasteboardFeatures = reference.pasteboard;
                 if (pasteboardFeatures.length > 0) {
                     reference.updateDefaultsFromFeature(pasteboardFeatures[0]);
                     reference.activateTool(pasteboardFeatures[0].getType());
                 }
             }
 
-            //Undo
+            // Undo
             if (event.keyCode === 90 && (event.metaKey || event.ctrlKey)) {
                 console.log("Undo executed");
                 reference.undo();
@@ -138,7 +142,7 @@ export default class MouseAndKeyboardHandler {
             let pan_multiplier;
 
             if (key === 37) {
-                //console.log("left arrow");
+                // console.log("left arrow");
                 if (event.shiftKey) {
                     pan_multiplier = 10;
                 } else if (event.ctrlKey) {
@@ -152,7 +156,7 @@ export default class MouseAndKeyboardHandler {
             }
 
             if (key === 38) {
-                //console.log("Up arrow");
+                // console.log("Up arrow");
                 if (event.shiftKey) {
                     pan_multiplier = 10;
                 } else if (event.ctrlKey) {
@@ -166,7 +170,7 @@ export default class MouseAndKeyboardHandler {
             }
 
             if (key === 39) {
-                //console.log("right arrow");
+                // console.log("right arrow");
                 if (event.shiftKey) {
                     pan_multiplier = 10;
                 } else if (event.ctrlKey) {
@@ -180,7 +184,7 @@ export default class MouseAndKeyboardHandler {
             }
 
             if (key === 40) {
-                //console.log("down arrow");
+                // console.log("down arrow");
                 if (event.shiftKey) {
                     pan_multiplier = 10;
                 } else if (event.ctrlKey) {
@@ -194,12 +198,13 @@ export default class MouseAndKeyboardHandler {
             }
 
             if ((event.ctrlKey || event.metaKey) && key === 65) {
-                //Select all
+                // Select all
                 reference.view.selectAllActive();
                 return false;
             }
         });
     }
+
     /**
      * Updates mouse events
      * @returns {void}
@@ -240,11 +245,12 @@ export default class MouseAndKeyboardHandler {
     __mouseMoveCallback(event) {
         // console.log("testing move callback", event);
     }
+
     /**
-     * 
-     * @param {*} tool1 
-     * @param {*} tool2 
-     * @param {*} tool3 
+     *
+     * @param {*} tool1
+     * @param {*} tool2
+     * @param {*} tool3
      */
     constructMouseDownEvent(tool1, tool2, tool3) {
         if (tool1 == tool3) {
@@ -262,17 +268,18 @@ export default class MouseAndKeyboardHandler {
     constructMouseUpEvent(tool1, tool2, tool3) {
         return this.constructMouseEvent(tool1.up, tool2.up, tool3.up, this.__mouseMoveCallback);
     }
+
     /**
-     * 
-     * @param {*} func1 
-     * @param {*} func2 
-     * @param {*} func3 
-     * @param {*} buttondownCallback 
+     *
+     * @param {*} func1
+     * @param {*} func2
+     * @param {*} func3
+     * @param {*} buttondownCallback
      * @memberof MouseAndKeyboardHandler
      * @returns {Function}
      */
     constructMouseEvent(func1, func2, func3, buttondownCallback) {
-        return function(event) {
+        return function (event) {
             let target;
             if (event.buttons) {
                 buttondownCallback(event);
@@ -289,7 +296,7 @@ export default class MouseAndKeyboardHandler {
             }
         };
     }
-    
+
     static __eventButtonsToWhich(num) {
         if (num === 1) {
             return 1;

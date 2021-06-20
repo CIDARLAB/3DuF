@@ -101,11 +101,11 @@ export default class Transposer extends Template {
     }
 
     getPorts(params) {
-        let ports = [];
+        const ports = [];
 
-        let radius = params["valveRadius"];
-        let channelWidth = params["flowChannelWidth"];
-        let valvespacing = params["valveSpacing"];
+        const radius = params.valveRadius;
+        const channelWidth = params.flowChannelWidth;
+        const valvespacing = params.valveSpacing;
 
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
         ports.push(new ComponentPort(6 * valvespacing + 4 * radius + 3 * channelWidth, 0, "2", "FLOW"));
@@ -127,47 +127,47 @@ export default class Transposer extends Template {
     }
 
     render2DTarget(key, params) {
-        let ret = new paper.CompoundPath();
-        let flow = this.render2D(params, "FLOW");
-        let control = this.render2D(params, "CONTROL");
+        const ret = new paper.CompoundPath();
+        const flow = this.render2D(params, "FLOW");
+        const control = this.render2D(params, "CONTROL");
         ret.addChild(control);
         ret.addChild(flow);
-        ret.fillColor = params["color"];
+        ret.fillColor = params.color;
         ret.fillColor.alpha = 0.5;
         return ret;
     }
 
     __drawFlow(params) {
-        let position = params["position"];
-        let valveGap = params["valveGap"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let channelWidth = params["flowChannelWidth"];
-        let valvespacing = params["valveSpacing"];
-        let transposer_flow = new paper.CompoundPath();
+        const position = params.position;
+        const valveGap = params.valveGap;
+        const radius = params.valveRadius;
+        const color = params.color;
+        const rotation = params.rotation;
+        const channelWidth = params.flowChannelWidth;
+        const valvespacing = params.valveSpacing;
+        const transposer_flow = new paper.CompoundPath();
 
-        let px = position[0];
-        let py = position[1];
+        const px = position[0];
+        const py = position[1];
 
-        //Draw top left channel
+        // Draw top left channel
         let topleftpoint = new paper.Point(px, py - channelWidth / 2);
         let bottomrightpoint = new paper.Point(px + 4 * valvespacing + 2 * radius + 2 * channelWidth, py + channelWidth / 2);
         let channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
 
         transposer_flow.addChild(channel);
 
-        //Draw Valve
+        // Draw Valve
         this.__createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth / 2, valveGap, radius, "H", channelWidth);
 
-        //Draw top right channel
+        // Draw top right channel
         topleftpoint = new paper.Point(px + 4 * valvespacing + 4 * radius + 2 * channelWidth, py - channelWidth / 2);
         bottomrightpoint = new paper.Point(px + 6 * valvespacing + 4 * radius + 3 * channelWidth, py + channelWidth / 2);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
 
         transposer_flow.addChild(channel);
 
-        //Draw middle channels
+        // Draw middle channels
         topleftpoint = new paper.Point(px + 3 * valvespacing + channelWidth + 2 * radius, py + channelWidth / 2);
         bottomrightpoint = new paper.Point(topleftpoint.x + channelWidth, topleftpoint.y + valvespacing);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
@@ -175,7 +175,7 @@ export default class Transposer extends Template {
         transposer_flow.addChild(channel);
         this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, valveGap, radius, "V", channelWidth);
 
-        //2
+        // 2
         topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2 * radius);
         bottomrightpoint = new paper.Point(topleftpoint.x + channelWidth, topleftpoint.y + 2 * valvespacing + channelWidth);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
@@ -184,14 +184,14 @@ export default class Transposer extends Template {
 
         this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, valveGap, radius, "V", channelWidth);
 
-        //3
+        // 3
         topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2 * radius);
         bottomrightpoint = new paper.Point(topleftpoint.x + channelWidth, topleftpoint.y + valvespacing);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
 
         transposer_flow.addChild(channel);
 
-        //Bottom Channels
+        // Bottom Channels
         topleftpoint = new paper.Point(px, py + 1.5 * channelWidth + 4 * valvespacing + 2 * 2 * radius);
         bottomrightpoint = new paper.Point(topleftpoint.x + 2 * valvespacing + channelWidth, topleftpoint.y + channelWidth);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
@@ -200,14 +200,14 @@ export default class Transposer extends Template {
 
         this.__createTransposerValve(transposer_flow, bottomrightpoint.x + radius, topleftpoint.y + channelWidth / 2, valveGap, radius, "H", channelWidth);
 
-        //2
+        // 2
         topleftpoint = new paper.Point(bottomrightpoint.x + 2 * radius, topleftpoint.y);
         bottomrightpoint = new paper.Point(topleftpoint.x + 4 * valvespacing + 2 * channelWidth + 2 * radius, topleftpoint.y + channelWidth);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
 
         transposer_flow.addChild(channel);
 
-        //Draw the right channels
+        // Draw the right channels
         topleftpoint = new paper.Point(px + 5 * valvespacing + 2 * channelWidth + 4 * radius, py + channelWidth / 2);
         bottomrightpoint = new paper.Point(topleftpoint.x + channelWidth, topleftpoint.y + valvespacing);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
@@ -216,7 +216,7 @@ export default class Transposer extends Template {
 
         this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, valveGap, radius, "V", channelWidth);
 
-        //2
+        // 2
         topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2 * radius);
         bottomrightpoint = new paper.Point(topleftpoint.x + channelWidth, topleftpoint.y + valvespacing + channelWidth);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
@@ -225,7 +225,7 @@ export default class Transposer extends Template {
 
         transposer_flow.fillColor = color;
 
-        //Draw the left channels
+        // Draw the left channels
         topleftpoint = new paper.Point(px + valvespacing, py + 1.5 * channelWidth + 2 * valvespacing + 2 * radius);
         bottomrightpoint = new paper.Point(topleftpoint.x + channelWidth, topleftpoint.y + valvespacing);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
@@ -234,7 +234,7 @@ export default class Transposer extends Template {
 
         this.__createTransposerValve(transposer_flow, topleftpoint.x + channelWidth / 2, bottomrightpoint.y + radius, valveGap, radius, "V", channelWidth);
 
-        //2
+        // 2
         topleftpoint = new paper.Point(topleftpoint.x, bottomrightpoint.y + 2 * radius);
         bottomrightpoint = new paper.Point(topleftpoint.x + channelWidth, topleftpoint.y + valvespacing + channelWidth);
         channel = new paper.Path.Rectangle(topleftpoint, bottomrightpoint);
@@ -249,12 +249,12 @@ export default class Transposer extends Template {
     }
 
     __createTransposerValve(compound_path, xpos, ypos, valveGap, radius, orientation, channel_width) {
-        let center = new paper.Point(xpos, ypos);
+        const center = new paper.Point(xpos, ypos);
 
-        //Create the basic circle
+        // Create the basic circle
         let circ = new paper.Path.Circle(center, radius);
 
-        //Add the tiny channel pieces that jut out
+        // Add the tiny channel pieces that jut out
         let rec = new paper.Path.Rectangle({
             point: new paper.Point(xpos - channel_width / 2, ypos - radius),
             size: [channel_width, radius],
@@ -271,15 +271,15 @@ export default class Transposer extends Template {
 
         circ = circ.unite(rec);
 
-        let cutout = paper.Path.Rectangle({
+        const cutout = paper.Path.Rectangle({
             from: new paper.Point(xpos - radius, ypos - valveGap / 2),
             to: new paper.Point(xpos + radius, ypos + valveGap / 2)
         });
 
-        //cutout.fillColor = "white";
-        let valve = circ.subtract(cutout);
+        // cutout.fillColor = "white";
+        const valve = circ.subtract(cutout);
 
-        //TODO Rotate
+        // TODO Rotate
         if (orientation == "H") {
             valve.rotate(90, center);
         }
@@ -288,19 +288,19 @@ export default class Transposer extends Template {
     }
 
     __drawControl(params) {
-        let position = params["position"];
-        let valveGap = params["valveGap"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let channelWidth = params["controlChannelWidth"];
-        let valvespacing = params["valveSpacing"];
-        let transposer_control = new paper.CompoundPath();
+        const position = params.position;
+        const valveGap = params.valveGap;
+        const radius = params.valveRadius;
+        const color = params.color;
+        const rotation = params.rotation;
+        const channelWidth = params.controlChannelWidth;
+        const valvespacing = params.valveSpacing;
+        const transposer_control = new paper.CompoundPath();
 
-        let px = position[0];
-        let py = position[1];
+        const px = position[0];
+        const py = position[1];
 
-        //Top right valve
+        // Top right valve
         let center = new paper.Point(px + 4 * valvespacing + 2 * channelWidth + 2 * radius + radius, py);
         let circle = new paper.Path.Circle(center, radius);
         transposer_control.addChild(circle);
@@ -313,7 +313,7 @@ export default class Transposer extends Template {
         bottomRight = new paper.Point(px + 4 * valvespacing + 2 * channelWidth + 2 * radius + radius + channelWidth / 2, py - 2 * radius + channelWidth / 2);
         transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //2nd row valves
+        // 2nd row valves
 
         center = new paper.Point(px + 1.5 * channelWidth + 3 * valvespacing + 2 * radius, py + channelWidth / 2 + valvespacing + radius);
         circle = new paper.Path.Circle(center, radius);
@@ -327,7 +327,7 @@ export default class Transposer extends Template {
 
         let crosschannelend = center;
 
-        //Draw the cross channel connecting the 2nd row valves
+        // Draw the cross channel connecting the 2nd row valves
         let rect = new paper.Path.Rectangle({
             from: new paper.Point(crosschannelstart.x, crosschannelstart.y - channelWidth / 2),
             to: new paper.Point(crosschannelend.x, crosschannelstart.y + channelWidth / 2)
@@ -343,7 +343,7 @@ export default class Transposer extends Template {
         bottomRight = new paper.Point(crosschannelend.x + 2 * radius + channelWidth / 2, py + 1.5 * channelWidth + 3 * valvespacing + 2 * radius + radius);
         transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //3rd Row valves
+        // 3rd Row valves
 
         center = new paper.Point(px + 0.5 * channelWidth + valvespacing, py + 1.5 * channelWidth + 3 * valvespacing + 2 * radius + radius);
         circle = new paper.Path.Circle(center, radius);
@@ -357,7 +357,7 @@ export default class Transposer extends Template {
 
         crosschannelend = center;
 
-        //Draw the cross channel connecting the 3nd row valves
+        // Draw the cross channel connecting the 3nd row valves
         rect = new paper.Path.Rectangle({
             from: new paper.Point(crosschannelstart.x, crosschannelstart.y - channelWidth / 2),
             to: new paper.Point(crosschannelend.x, crosschannelstart.y + channelWidth / 2)
@@ -369,7 +369,7 @@ export default class Transposer extends Template {
         bottomRight = new paper.Point(center.x + 2 * valvespacing + 4 * radius + channelWidth + channelWidth / 2, crosschannelstart.y + channelWidth / 2);
         transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //Bottom Row valve
+        // Bottom Row valve
         center = new paper.Point(px + channelWidth + 2 * valvespacing + radius, py + 4 * valvespacing + 4 * radius + 2 * channelWidth);
         circle = new paper.Path.Circle(center, radius);
         transposer_control.addChild(circle);
@@ -386,10 +386,10 @@ export default class Transposer extends Template {
         bottomRight = new paper.Point(px + channelWidth + 2 * valvespacing + radius + channelWidth / 2, py + 4 * valvespacing + 6 * radius + 2 * channelWidth + channelWidth / 2);
         transposer_control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //Finally we draw the cross channel
-        let topleftpoint = new paper.Point(px + valvespacing, py + channelWidth / 2 + 2 * radius + 2 * valvespacing);
-        let bottomleftpoint = new paper.Point(topleftpoint.x + +4 * valvespacing + 3 * channelWidth + 4 * radius, topleftpoint.y + channelWidth);
-        let rectangle = new paper.Path.Rectangle(topleftpoint, bottomleftpoint);
+        // Finally we draw the cross channel
+        const topleftpoint = new paper.Point(px + valvespacing, py + channelWidth / 2 + 2 * radius + 2 * valvespacing);
+        const bottomleftpoint = new paper.Point(topleftpoint.x + +4 * valvespacing + 3 * channelWidth + 4 * radius, topleftpoint.y + channelWidth);
+        const rectangle = new paper.Path.Rectangle(topleftpoint, bottomleftpoint);
         transposer_control.addChild(rectangle);
 
         transposer_control.rotate(rotation, px + 3 * valvespacing + 1.5 * channelWidth + 2 * radius, py + channelWidth + 2 * valvespacing + 2 * radius);

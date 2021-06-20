@@ -1,6 +1,6 @@
 import MouseTool from "./mouseTool";
 
-import Registry from '../../core/registry';
+import Registry from "../../core/registry";
 import TextFeature from "../../core/textFeature";
 import SimpleQueue from "../../utils/simpleQueue";
 
@@ -14,23 +14,23 @@ export default class InsertTextTool extends MouseTool {
         this.typeString = "TEXT";
         this.setString = "Standard";
         this.currentFeatureID = null;
-        let ref = this;
+        const ref = this;
         this.lastPoint = null;
         this.showQueue = new SimpleQueue(
-            function() {
+            function () {
                 ref.showTarget();
             },
             20,
             false
         );
-        this.up = function(event) {
+        this.up = function (event) {
             // do nothing
         };
-        this.move = function(event) {
+        this.move = function (event) {
             ref.lastPoint = MouseTool.getEventPosition(event);
             ref.showQueue.run();
         };
-        this.down = function(event) {
+        this.down = function (event) {
             Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
@@ -38,7 +38,7 @@ export default class InsertTextTool extends MouseTool {
     }
 
     createNewFeature(point) {
-        let newFeature = TextFeature.makeFeature(
+        const newFeature = TextFeature.makeFeature(
             Registry.text,
             this.typeString,
             this.setString,
@@ -57,7 +57,7 @@ export default class InsertTextTool extends MouseTool {
     }
 
     showTarget() {
-        let target = PositionTool.getTarget(this.lastPoint);
+        const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }

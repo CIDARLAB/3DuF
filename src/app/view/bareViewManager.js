@@ -22,7 +22,7 @@ export default class BareViewManager {
      */
     constructor() {
         this.threeD;
-        let element = document.getElementById("c");
+        const element = document.getElementById("c");
         console.log(element, element.width, element.height);
 
         this.view = new PaperView("c", this);
@@ -44,12 +44,12 @@ export default class BareViewManager {
 
         this.__currentDevice = null;
 
-        let reference = this;
-        this.updateQueue = new SimpleQueue(function() {
+        const reference = this;
+        this.updateQueue = new SimpleQueue(function () {
             reference.view.refresh();
         }, 20);
 
-        this.saveQueue = new SimpleQueue(function() {
+        this.saveQueue = new SimpleQueue(function () {
             reference.saveToStorage();
         });
 
@@ -58,14 +58,14 @@ export default class BareViewManager {
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
-        this.view.setResizeFunction(function() {
+        this.view.setResizeFunction(function () {
             reference.updateGrid();
             reference.updateAlignmentMarks();
 
             reference.updateDevice(Registry.currentDevice);
         });
 
-        let func = function(event) {
+        const func = function (event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
@@ -75,10 +75,10 @@ export default class BareViewManager {
         // this.setupTools();
         // this.activateTool("Channel");
 
-        //TODO: Figure out how remove UpdateQueue as dependency mechanism
+        // TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
 
-        //Removed from Page Setup
+        // Removed from Page Setup
         this.threeD = false;
         this.renderer = Registry.threeRenderer;
         this.__canvasBlock = document.getElementById("canvas_block");
@@ -98,16 +98,18 @@ export default class BareViewManager {
     get currentDevice() {
         return this.__currentDevice;
     }
+
     /**
      * Initialize the zoom toolbar
      * @memberof BareViewManager
      * @returns {void}
      */
     setupToolBars() {
-        //Initiating the zoom toolbar
+        // Initiating the zoom toolbar
         this.zoomToolBar = new ZoomToolBar(0.0001, 5);
         // this.componentToolBar = new ComponentToolBar(this);
     }
+
     /**
      * Adds device to the view manager
      * @param {Device} device Device to add to the view manager
@@ -131,10 +133,11 @@ export default class BareViewManager {
      */
     __addAllDeviceLayers(device, refresh = true) {
         for (let i = 0; i < device.layers.length; i++) {
-            let layer = device.layers[i];
+            const layer = device.layers[i];
             this.addLayer(layer, i, false);
         }
     }
+
     /**
      * Removes all the layers in the device
      * @param {Device} device Selected device to removes all of it's layers
@@ -144,10 +147,11 @@ export default class BareViewManager {
      */
     __removeAllDeviceLayers(device, refresh = true) {
         for (let i = 0; i < device.layers.length; i++) {
-            let layer = device.layers[i];
+            const layer = device.layers[i];
             this.removeLayer(layer, i, false);
         }
     }
+
     /**
      * Removes device from the view
      * @param {Device} device Device to remove from the view
@@ -160,6 +164,7 @@ export default class BareViewManager {
         this.__removeAllDeviceLayers(device, false);
         this.refresh(refresh);
     }
+
     /**
      * Updates the device in the view
      * @param {Device} device Device to update
@@ -171,6 +176,7 @@ export default class BareViewManager {
         this.view.updateDevice(device);
         this.refresh(refresh);
     }
+
     /**
      * Adds feature in the view
      * @param {Feature} feature Feature to be addede to the view
@@ -184,6 +190,7 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates specific feature of the view
      * @param {Feature} feature Selected feature to update
@@ -197,6 +204,7 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Removes specific feature of the view
      * @param {Feature} feature Feature to remove from the view
@@ -210,6 +218,7 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Adds a layer in the view
      * @param {Layer} layer Layer to add to the view manager
@@ -232,32 +241,32 @@ export default class BareViewManager {
      * @memberof BareViewManager
      */
     createNewLayerBlock() {
-        let newlayers = Registry.currentDevice.createNewLayerBlock();
+        const newlayers = Registry.currentDevice.createNewLayerBlock();
 
-        //Find all the edge features
-        let edgefeatures = [];
-        let devicefeatures = Registry.currentDevice.layers[0].features;
+        // Find all the edge features
+        const edgefeatures = [];
+        const devicefeatures = Registry.currentDevice.layers[0].features;
         let feature;
 
-        for (let i in devicefeatures) {
+        for (const i in devicefeatures) {
             feature = devicefeatures[i];
             if (feature.fabType == "EDGE") {
                 edgefeatures.push(feature);
             }
         }
 
-        //Add the Edge Features from layer '0'
+        // Add the Edge Features from layer '0'
         // to all other layers
-        for (let i in newlayers) {
-            for (let j in edgefeatures) {
+        for (const i in newlayers) {
+            for (const j in edgefeatures) {
                 newlayers[i].addFeature(edgefeatures[j], false);
             }
         }
 
-        //Added the new layers
-        for (let i in newlayers) {
-            let layertoadd = newlayers[i];
-            let index = this.view.paperLayers.length;
+        // Added the new layers
+        for (const i in newlayers) {
+            const layertoadd = newlayers[i];
+            const index = this.view.paperLayers.length;
             this.addLayer(layertoadd, index, true);
         }
     }
@@ -270,18 +279,19 @@ export default class BareViewManager {
      * @memberof BareViewManager
      */
     deleteLayerBlock(levelindex) {
-        //Delete the levels in the device model
+        // Delete the levels in the device model
         Registry.currentDevice.deleteLayer(levelindex * 3);
         Registry.currentDevice.deleteLayer(levelindex * 3 + 1);
         Registry.currentDevice.deleteLayer(levelindex * 3 + 2);
 
-        //Delete the levels in the render model
+        // Delete the levels in the render model
         this.view.removeLayer(levelindex * 3);
         this.view.removeLayer(levelindex * 3 + 1);
         this.view.removeLayer(levelindex * 3 + 2);
         this.updateActiveLayer();
         this.refresh();
     }
+
     /**
      * Removes a specific layer of the view
      * @param {Layer} layer Layer object
@@ -297,6 +307,7 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Convers layers to SVG String format
      * @returns {}
@@ -315,12 +326,13 @@ export default class BareViewManager {
      * @private
      */
     __addAllLayerFeatures(layer, refresh = true) {
-        for (let key in layer.features) {
-            let feature = layer.features[key];
+        for (const key in layer.features) {
+            const feature = layer.features[key];
             this.addFeature(feature, false);
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates all features of the layers in the view manager
      * @param {Layer} layer Layer object
@@ -329,12 +341,13 @@ export default class BareViewManager {
      * @memberof BareViewManager
      */
     __updateAllLayerFeatures(layer, refresh = true) {
-        for (let key in layer.features) {
-            let feature = layer.features[key];
+        for (const key in layer.features) {
+            const feature = layer.features[key];
             this.updateFeature(feature, false);
             this.refresh(refresh);
         }
     }
+
     /**
      * Removes all features of the layers of the view manager
      * @param {Layer} layer Layer object
@@ -343,12 +356,13 @@ export default class BareViewManager {
      * @memberof BareViewManager
      */
     __removeAllLayerFeatures(layer, refresh = true) {
-        for (let key in layer.features) {
-            let feature = layer.features[key];
+        for (const key in layer.features) {
+            const feature = layer.features[key];
             this.removeFeature(feature, false);
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates a specific layer in the view manager
      * @param {Layer} layer Layer object
@@ -362,6 +376,7 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates the active layer in the view manager
      * @param {boolean} refresh Whether to refresh or not. true by default
@@ -372,6 +387,7 @@ export default class BareViewManager {
         this.view.setActiveLayer(Registry.currentDevice.layers.indexOf(Registry.currentLayer));
         this.refresh(refresh);
     }
+
     /**
      * Removes grid from the view manager
      * @param {boolean} refresh Whether to refresh or not. true by default
@@ -384,6 +400,7 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates the grid of the view manager
      * @param {boolean} refresh Whether to refresh or not. true by default
@@ -396,6 +413,7 @@ export default class BareViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates alignments marks of the view manager
      * @returns {void}
@@ -404,6 +422,7 @@ export default class BareViewManager {
     updateAlignmentMarks() {
         this.view.updateAlignmentMarks();
     }
+
     /**
      * Clears the view manager
      * @returns {void}
@@ -412,6 +431,7 @@ export default class BareViewManager {
     clear() {
         this.view.clear();
     }
+
     /**
      * Sets the zoom
      * @param {number} zoom Value of zoom
@@ -453,20 +473,21 @@ export default class BareViewManager {
      * @memberof BareViewManager
      */
     adjustZoom(delta, point, refresh = true) {
-        let belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
-        let aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
+        const belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
+        const aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
         if (!aboveMax && !belowMin) {
             this.view.adjustZoom(delta, point);
             this.updateGrid(false);
-            //this.updateAlignmentMarks();
+            // this.updateAlignmentMarks();
 
             this.updateDevice(Registry.currentDevice, false);
             // this.__updateViewTarget(false);
         } else {
-            //console.log("Too big or too small!");
+            // console.log("Too big or too small!");
         }
         this.refresh(refresh);
     }
+
     /**
      * Sets the center of the view manager
      * @param {Array<number>} center X and Y coordinates of the center
@@ -477,11 +498,12 @@ export default class BareViewManager {
     setCenter(center, refresh = true) {
         this.view.setCenter(center);
         this.updateGrid(false);
-        //this.updateAlighmentMarks();
+        // this.updateAlighmentMarks();
 
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }
+
     /**
      * Moves the center
      * @param {*} delta
@@ -497,6 +519,7 @@ export default class BareViewManager {
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }
+
     /**
      * Refresh?
      * @param {boolean} refresh Whether to refresh or not
@@ -505,10 +528,11 @@ export default class BareViewManager {
      */
     refresh(refresh = true) {
         this.updateQueue.run();
-        //Update the toolbar
-        let spacing = Registry.currentGrid.getSpacing();
+        // Update the toolbar
+        const spacing = Registry.currentGrid.getSpacing();
         // this.resolutionToolBar.updateResolutionLabelAndSlider(spacing);
     }
+
     /**
      * Gets the position of the project
      * @param {*} event
@@ -518,6 +542,7 @@ export default class BareViewManager {
     getEventPosition(event) {
         return this.view.getProjectPosition(event.clientX, event.clientY);
     }
+
     /**
      * Checks if it has current grid
      * @returns {Boolean}
@@ -527,6 +552,7 @@ export default class BareViewManager {
         if (Registry.currentGrid) return true;
         else return false;
     }
+
     /**
      * Checks if the layers is in the current device
      * @param {Layer} layer Layer object
@@ -537,6 +563,7 @@ export default class BareViewManager {
         if (Registry.currentDevice && layer.device == Registry.currentDevice) return true;
         else return false;
     }
+
     /**
      * Checks if the feature is in current device
      * @param {Feature} feature Feature object
@@ -547,6 +574,7 @@ export default class BareViewManager {
         if (Registry.currentDevice && this.__isLayerInCurrentDevice(feature.layer)) return true;
         else return false;
     }
+
     /**
      * Loads a device from a JSON format
      * @param {JSON} json
@@ -556,10 +584,10 @@ export default class BareViewManager {
     loadDeviceFromJSON(json) {
         let device;
         Registry.viewManager.clear();
-        //Check and see the version number if its 0 or none is present,
+        // Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
-        var version = json.version;
-        if (null === version || undefined == version) {
+        const version = json.version;
+        if (version === null || undefined == version) {
             console.log("Loading Legacy Format...");
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
@@ -577,11 +605,11 @@ export default class BareViewManager {
                     alert("Version '" + version + "' is not supported by 3DuF !");
             }
         }
-        //Common Code for rendering stuff
+        // Common Code for rendering stuff
         Registry.currentLayer = Registry.currentDevice.layers[0];
         Registry.currentTextLayer = Registry.currentDevice.textLa;
 
-        //TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
+        // TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
         Registry.viewManager.addDevice(Registry.currentDevice);
 
         this.view.initializeView();
@@ -722,8 +750,8 @@ export default class BareViewManager {
     switchTo2D() {
         if (this.threeD) {
             this.threeD = false;
-            let center = this.renderer.getCameraCenterInMicrometers();
-            let zoom = this.renderer.getZoom();
+            const center = this.renderer.getCameraCenterInMicrometers();
+            const zoom = this.renderer.getZoom();
             let newCenterX = center[0];
             if (newCenterX < 0) {
                 newCenterX = 0;
@@ -772,12 +800,12 @@ export default class BareViewManager {
      * @memberof BareViewManager
      */
     setupDragAndDropLoad(selector) {
-        let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
-            let f = files[0];
+        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
+            const f = files[0];
 
-            let reader = new FileReader();
-            reader.onloadend = function(e) {
-                let result = JSON.parse(this.result);
+            const reader = new FileReader();
+            reader.onloadend = function (e) {
+                const result = JSON.parse(this.result);
                 Registry.viewManager.loadDeviceFromJSON(result);
                 Registry.viewManager.switchTo2D();
             };
