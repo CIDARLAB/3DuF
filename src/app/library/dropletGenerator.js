@@ -109,68 +109,68 @@ export default class DropletGenerator extends Template {
     }
 
     getPorts(params) {
-        let orificeSize = params["orificeSize"];
-        let orificeLength = params["orificeLength"];
-        let oilInputWidth = params["oilInputWidth"];
-        let waterInputWidth = params["waterInputWidth"];
-        let outputWidth = params["outputWidth"];
-        let outputLength = params["outputLength"];
+        const orificeSize = params.orificeSize;
+        const orificeLength = params.orificeLength;
+        const oilInputWidth = params.oilInputWidth;
+        const waterInputWidth = params.waterInputWidth;
+        const outputWidth = params.outputWidth;
+        const outputLength = params.outputLength;
 
-        let ports = [];
+        const ports = [];
 
-        //Oil Top
+        // Oil Top
         ports.push(new ComponentPort(oilInputWidth / 2, -waterInputWidth / 2, "1", "FLOW"));
 
-        //Out
+        // Out
         ports.push(new ComponentPort(oilInputWidth + orificeLength + outputLength, 0, "2", "FLOW"));
 
-        //Oil Bottom
+        // Oil Bottom
         ports.push(new ComponentPort(oilInputWidth / 2, waterInputWidth / 2, "3", "FLOW"));
 
-        //Input
+        // Input
         ports.push(new ComponentPort(0, 0, "4", "FLOW"));
 
         return ports;
     }
 
-    render2D(params, key="FLOW") {
-        let pos = params["position"];
-        let x = pos[0];
-        let y = pos[1];
-        let color = params["color"];
-        let orificeSize = params["orificeSize"];
-        let orificeLength = params["orificeLength"];
-        let oilInputWidth = params["oilInputWidth"];
-        let waterInputWidth = params["waterInputWidth"];
-        let outputWidth = params["outputWidth"];
-        let outputLength = params["outputLength"];
-        let rotation = params["rotation"];
+    render2D(params, key = "FLOW") {
+        const pos = params.position;
+        const x = pos[0];
+        const y = pos[1];
+        const color = params.color;
+        const orificeSize = params.orificeSize;
+        const orificeLength = params.orificeLength;
+        const oilInputWidth = params.oilInputWidth;
+        const waterInputWidth = params.waterInputWidth;
+        const outputWidth = params.outputWidth;
+        const outputLength = params.outputLength;
+        const rotation = params.rotation;
 
-        let ret = new paper.Path();
+        const ret = new paper.Path();
 
-        let p1 = new paper.Point(x, y - waterInputWidth / 2);
+        const p1 = new paper.Point(x, y - waterInputWidth / 2);
 
-        let p2 = new paper.Point(p1.x + oilInputWidth, p1.y);
+        const p2 = new paper.Point(p1.x + oilInputWidth, p1.y);
 
-        let p3 = new paper.Point(p2.x, p2.y + (waterInputWidth / 2 - orificeSize / 2));
+        const p3 = new paper.Point(p2.x, p2.y + (waterInputWidth / 2 - orificeSize / 2));
 
-        let p4 = new paper.Point(p3.x + orificeLength, p3.y);
+        const p4 = new paper.Point(p3.x + orificeLength, p3.y);
 
-        let p5 = new paper.Point(p4.x, p4.y - (outputWidth / 2 - orificeSize / 2));
+        const p5 = new paper.Point(p4.x, p4.y - (outputWidth / 2 - orificeSize / 2));
 
-        let p6 = new paper.Point(p5.x + outputLength, p5.y);
+        const p6 = new paper.Point(p5.x + outputLength, p5.y);
 
-        let p7 = new paper.Point(p6.x, p6.y + outputWidth);
+        const p7 = new paper.Point(p6.x, p6.y + outputWidth);
 
-        let p8 = new paper.Point(p7.x - outputLength, p7.y);
+        const p8 = new paper.Point(p7.x - outputLength, p7.y);
 
-        let p9 = new paper.Point(p8.x, p8.y - (outputWidth / 2 - orificeSize / 2));
+        const p9 = new paper.Point(p8.x, p8.y - (outputWidth / 2 - orificeSize / 2));
 
-        let p10 = new paper.Point(p9.x - orificeLength, p9.y);
+        const p10 = new paper.Point(p9.x - orificeLength, p9.y);
 
-        let p11 = new paper.Point(p10.x, p10.y + (waterInputWidth / 2 - orificeSize / 2));
+        const p11 = new paper.Point(p10.x, p10.y + (waterInputWidth / 2 - orificeSize / 2));
 
-        let p12 = new paper.Point(p11.x - oilInputWidth, p11.y);
+        const p12 = new paper.Point(p11.x - oilInputWidth, p11.y);
 
         ret.add(p1);
         ret.add(p2);
@@ -185,7 +185,7 @@ export default class DropletGenerator extends Template {
         ret.add(p11);
         ret.add(p12);
 
-        //Rotate the geometry
+        // Rotate the geometry
         ret.rotate(-rotation, new paper.Point(pos[0], pos[1]));
 
         ret.closed = true;
@@ -194,7 +194,7 @@ export default class DropletGenerator extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

@@ -6,6 +6,6 @@ import ViewManager from "./view/viewManager";
 
 import * as Examples from "./examples/jsonExamples";
 
-import Registry from './core/registry';
+import Registry from "./core/registry";
 
 export { Registry, PaperView, AdaptiveGrid, Device, BareViewManager, ViewManager, Examples };

@@ -10,7 +10,7 @@ export default class RightClickMenu {
          */
         this.__contextMenu = document.getElementById("contextMenu");
 
-        //Context menu buttons
+        // Context menu buttons
         this.__copyButton = document.getElementById("context_button_copy");
         this.__deleteButton = document.getElementById("context_button_delete");
         this.__moveButton = document.getElementById("context_button_move");
@@ -19,64 +19,64 @@ export default class RightClickMenu {
         this.__renameComponentButton = document.getElementById("context_button_rename");
         this.__generateArrayButton = document.getElementById("context_button_arraygen");
 
-        //Textfield stuff
+        // Textfield stuff
         this.__renameComponentTextField = document.getElementById("rename_component_textfield");
         this.__renameIsVisible = false;
         this.__renameSaveButton = document.getElementById("context_rename_button_save");
         this.__renameCancelButton = document.getElementById("context_rename_button_cancel");
         this.__renameTextInput = document.getElementById("componentname_textinput");
-        //Collapse the textrename text input
+        // Collapse the textrename text input
         this.__collapseTextInput();
 
-        let ref = this;
+        const ref = this;
 
-        //Event handlers
-        this.__revertToDefaultsButton.addEventListener("click", function(event) {
+        // Event handlers
+        this.__revertToDefaultsButton.addEventListener("click", function (event) {
             revertToDefaultParams(ref.__featureTable, ref.__typeString, ref.__setString);
         });
-        this.__deleteButton.addEventListener("click", function(event) {
+        this.__deleteButton.addEventListener("click", function (event) {
             Registry.viewManager.view.deleteSelectedFeatures();
             ref.close();
         });
-        this.__copyButton.addEventListener("click", function(event) {
+        this.__copyButton.addEventListener("click", function (event) {
             Registry.viewManager.initiateCopy();
             ref.close();
         });
-        this.__copyToAllButton.addEventListener("click", function(event) {
+        this.__copyToAllButton.addEventListener("click", function (event) {
             console.log("Change all the component parameters", event);
             Registry.viewManager.changeAllDialog.showDialog();
             ref.close();
         });
-        this.__renameComponentButton.addEventListener("click", function(event) {
+        this.__renameComponentButton.addEventListener("click", function (event) {
             console.log("Show rename button", event);
             if (ref.__renameIsVisible) {
-                //Hide
+                // Hide
                 HTMLUtils.addClass(ref.__renameComponentTextField, "collapse");
             } else {
-                //Show
+                // Show
                 HTMLUtils.removeClass(ref.__renameComponentTextField, "collapse");
                 ref.__renameTextInput.value = ref.getComponentName();
             }
             ref.__renameIsVisible = !ref.__renameIsVisible;
         });
 
-        this.__moveButton.addEventListener("click", function(event) {
+        this.__moveButton.addEventListener("click", function (event) {
             ref.__activateMove();
         });
 
-        this.__generateArrayButton.addEventListener("click", function(event) {
+        this.__generateArrayButton.addEventListener("click", function (event) {
             ref.__activateGenerateArray();
         });
 
-        //Save Rename
-        this.__renameSaveButton.addEventListener("click", function(event) {
-            let nametext = ref.__renameTextInput.value;
+        // Save Rename
+        this.__renameSaveButton.addEventListener("click", function (event) {
+            const nametext = ref.__renameTextInput.value;
             ref.setComponentName(nametext);
         });
 
-        ///Cancel Rename
-        this.__renameCancelButton.addEventListener("click", function(event) {
-            let nametext = ref.getComponentName();
+        /// Cancel Rename
+        this.__renameCancelButton.addEventListener("click", function (event) {
+            const nametext = ref.getComponentName();
             document.getElementById("componentname_textinput").value = nametext;
         });
     }
@@ -85,7 +85,7 @@ export default class RightClickMenu {
         console.log("Feature", feature);
         this.__featureRef = feature;
 
-        //TODO: Figure out if feature belongs to component
+        // TODO: Figure out if feature belongs to component
         this.__typeString = feature.getType();
         this.__setString = feature.getSet();
 
@@ -93,29 +93,27 @@ export default class RightClickMenu {
         this.__contextMenu.style.height = "400px";
         this.__contextMenu.style.overflowY = "auto";
         this.__contextMenu.style.overflowX = "hidden";
-        console.log("WIDTH: "+this.__contextMenu.clientWidth);
-        console.log("HEIGHT: "+this.__contextMenu.clientHeight);
-        
+        console.log("WIDTH: " + this.__contextMenu.clientWidth);
+        console.log("HEIGHT: " + this.__contextMenu.clientHeight);
+
         if (event.clientX + 30 + this.__contextMenu.clientWidth > window.innerWidth) {
             this.__contextMenu.style.left = "" + (event.clientX - this.__contextMenu.clientWidth - 30) + "px";
-        }
-        else {
+        } else {
             this.__contextMenu.style.left = "" + (event.clientX + 30) + "px";
         }
         if (event.clientY - 20 + this.__contextMenu.clientHeight > window.innerHeight) {
             this.__contextMenu.style.top = "" + (event.clientY - this.__contextMenu.clientHeight + 20) + "px";
-        }
-        else {
+        } else {
             this.__contextMenu.style.top = "" + (event.clientY - 20) + "px";
         }
 
-        //Delete any table in the context menu
-        let table = this.__contextMenu.querySelector("table");
+        // Delete any table in the context menu
+        const table = this.__contextMenu.querySelector("table");
         if (table) {
             this.__contextMenu.removeChild(table);
         }
 
-        //Insert the table under the buttons
+        // Insert the table under the buttons
         this.__featureTable = createFeatureTable(this.__typeString, this.__setString);
         this.__contextMenu.appendChild(this.__featureTable);
 
@@ -133,16 +131,16 @@ export default class RightClickMenu {
         HTMLUtils.removeClass(this.__contextMenu, "shown-block");
         HTMLUtils.addClass(this.__contextMenu, "hidden-block");
 
-        //TODO: Need to delete the child table, need to check if this is the same thing
+        // TODO: Need to delete the child table, need to check if this is the same thing
         // if(this.__featureTable){
         //     this.__contextMenu.removeChild(this.__featureTable);
         // }
     }
 
     setComponentName(nametext) {
-        let id = this.__featureRef.getID();
-        //Find component for the feature id
-        let component = Registry.currentDevice.getComponentForFeatureID(id);
+        const id = this.__featureRef.getID();
+        // Find component for the feature id
+        const component = Registry.currentDevice.getComponentForFeatureID(id);
         if (component) {
             component.setName(nametext);
             console.log("renamed component", component);
@@ -152,9 +150,9 @@ export default class RightClickMenu {
     }
 
     getComponentName() {
-        let id = this.__featureRef.getID();
-        //Find component for the feature id
-        let component = Registry.currentDevice.getComponentForFeatureID(id);
+        const id = this.__featureRef.getID();
+        // Find component for the feature id
+        const component = Registry.currentDevice.getComponentForFeatureID(id);
         if (component) {
             return component.getName();
         } else {
@@ -170,14 +168,14 @@ export default class RightClickMenu {
     __activateGenerateArray() {
         this.close();
         Registry.viewManager.activateTool("GenerateArrayTool");
-        let component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.getID());
-        Registry.viewManager.tools["GenerateArrayTool"].activate(component);
+        const component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.getID());
+        Registry.viewManager.tools.GenerateArrayTool.activate(component);
     }
 
     __activateMove() {
         this.close();
         Registry.viewManager.activateTool("MoveTool");
-        let component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.getID());
-        Registry.viewManager.tools["MoveTool"].activate(component);
+        const component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.getID());
+        Registry.viewManager.tools.MoveTool.activate(component);
     }
 }

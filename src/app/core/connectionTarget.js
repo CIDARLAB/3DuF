@@ -6,9 +6,9 @@ import Device from "./device";
  */
 export default class ConnectionTarget {
     /**
-     * Default ConnectionTarget Constructor 
-     * @param {Component} component 
-     * @param {string} portLabel 
+     * Default ConnectionTarget Constructor
+     * @param {Component} component
+     * @param {string} portLabel
      */
     constructor(component, portLabel) {
         this.__component = component;
@@ -39,7 +39,7 @@ export default class ConnectionTarget {
      * @memberof ConnectionTarget
      */
     toJSON() {
-        //This is for the older design data
+        // This is for the older design data
         if (this.__component instanceof Component) {
             return {
                 component: this.__component.getID(),
@@ -58,7 +58,7 @@ export default class ConnectionTarget {
      * @memberof ConnectionTarget
      */
     static fromJSON(device, json) {
-        let component = device.getComponentByID(json.component);
+        const component = device.getComponentByID(json.component);
         return new ConnectionTarget(component, json.port);
     }
 }

@@ -1,17 +1,17 @@
-var appRoot = "../../app/";
-var should = require("should");
-var Feature = require(appRoot + "core/feature");
-var Parameters = require(appRoot + "core/parameters");
-//var Features = require(appRoot + "core/features");
+const appRoot = "../../app/";
+const should = require("should");
+const Feature = require(appRoot + "core/feature");
+const Parameters = require(appRoot + "core/parameters");
+// var Features = require(appRoot + "core/features");
 
-var FloatValue = Parameters.FloatValue;
-var IntegerValue = Parameters.IntegerValue;
+const FloatValue = Parameters.FloatValue;
+const IntegerValue = Parameters.IntegerValue;
 
-var CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
-var Port = Feature.getFeatureGenerator("Port", "Basic");
+const CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
+const Port = Feature.getFeatureGenerator("Port", "Basic");
 
-var feat1;
-var feat2;
+let feat1;
+let feat2;
 
 function initFeatures() {
     feat1 = new Port({
@@ -22,54 +22,54 @@ function initFeatures() {
     });
 }
 
-describe("Feature", function() {
+describe("Feature", function () {
     beforeEach(function initialize() {
         initFeatures();
     });
-    describe("#init", function() {
-        it("should be given a unique ID on initialization", function() {
+    describe("#init", function () {
+        it("should be given a unique ID on initialization", function () {
             feat1.getID().should.not.equal(feat2.getID());
         });
     });
-    describe("#updateParameter", function() {
-        it("should allow a parameter to be updated to a valid value", function() {
+    describe("#updateParameter", function () {
+        it("should allow a parameter to be updated to a valid value", function () {
             feat2.updateParameter("position", [13, 25]);
         });
-        it("should allow a parameter to be updated if a heritable value is missing", function() {
+        it("should allow a parameter to be updated if a heritable value is missing", function () {
             feat1.updateParameter("radius1", 13);
         });
-        it("should not allow a heritable parameter to be set to an invalid value", function() {
-            (function() {
+        it("should not allow a heritable parameter to be set to an invalid value", function () {
+            (function () {
                 feat1.updateParameter("radius1", [0, 0]);
             }.should.throwError());
         });
-        it("should not allow a parameter to be updated to an invalid value", function() {
-            (function() {
+        it("should not allow a parameter to be updated to an invalid value", function () {
+            (function () {
                 feat1.updateParameter("radius1", "foobar");
             }.should.throwError());
-            (function() {
+            (function () {
                 feat2.updateParameter("position", 5);
             }.should.throwError());
         });
-        it("should not allow updates to parameters that do not exist", function() {
-            (function() {
+        it("should not allow updates to parameters that do not exist", function () {
+            (function () {
                 feat1.updateParameter("wrongParamKey", 27);
             }.should.throwError());
-            (function() {
+            (function () {
                 feat2.updateParameter(56, 25);
             }.should.throwError());
         });
     });
-    describe("#toJSON", function() {
-        it("can produce JSON when containing multiple parameters", function() {
-            let json = feat1.toJSON();
+    describe("#toJSON", function () {
+        it("can produce JSON when containing multiple parameters", function () {
+            const json = feat1.toJSON();
             feat2.toJSON();
         });
     });
 
-    describe("#fromJSON", function() {
-        it("can produce a Feature from valid JSON", function() {
-            let json = {
+    describe("#fromJSON", function () {
+        it("can produce a Feature from valid JSON", function () {
+            const json = {
                 id: "someValue",
                 type: "CircleValve",
                 params: {
@@ -78,14 +78,14 @@ describe("Feature", function() {
                 },
                 name: "foobar"
             };
-            let feat3 = Feature.fromJSON(json);
+            const feat3 = Feature.fromJSON(json);
         });
-        it("can produce a Feature from the output of toJSON", function() {
-            let json = feat2.toJSON();
-            let feat3 = Feature.fromJSON(json);
+        it("can produce a Feature from the output of toJSON", function () {
+            const json = feat2.toJSON();
+            const feat3 = Feature.fromJSON(json);
         });
-        it("cannot produce a Feature from invalid JSON", function() {
-            let json = {
+        it("cannot produce a Feature from invalid JSON", function () {
+            const json = {
                 params: {
                     width: {
                         type: "Float",
@@ -98,7 +98,7 @@ describe("Feature", function() {
                 }
             };
             let feat;
-            (function() {
+            (function () {
                 feat = Feature.fromJSON(json);
             }.should.throwError());
         });

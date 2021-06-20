@@ -48,12 +48,8 @@
                         <v-row id="actions-row">
                             <v-card-actions>
                                 <slot name="actions" :callbacks="callbacks">
-                                    <v-btn color="green darken-1" text @click="callbacks.close()">
-                                        Cancel
-                                    </v-btn>
-                                    <v-btn color="green darken-1" text @click="callbacks.close(onSave)">
-                                        Save
-                                    </v-btn>
+                                    <v-btn color="green darken-1" text @click="callbacks.close()"> Cancel </v-btn>
+                                    <v-btn color="green darken-1" text @click="callbacks.close(onSave)"> Save </v-btn>
                                 </slot>
                             </v-card-actions>
                         </v-row>
@@ -116,7 +112,7 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "ml-4", "mb-2", "btn"];
         }
     },

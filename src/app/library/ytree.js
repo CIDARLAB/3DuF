@@ -106,11 +106,11 @@ export default class YTree extends Template {
     }
 
     getPorts(params) {
-        let ports = [];
-        let cw = params["flowChannelWidth"];
-        let spacing = params["spacing"];
-        let ins = params["in"];
-        let outs = params["out"];
+        const ports = [];
+        const cw = params.flowChannelWidth;
+        const spacing = params.spacing;
+        const ins = params.in;
+        const outs = params.out;
         let leafs;
         if (ins < outs) {
             leafs = outs;
@@ -118,13 +118,13 @@ export default class YTree extends Template {
             leafs = ins;
             rotation += 180;
         }
-        let stagelength = params["stageLength"];
+        const stagelength = params.stageLength;
 
-        let levels = Math.ceil(Math.log2(leafs));
-        let w = spacing * (leafs / 2 + 1);
+        const levels = Math.ceil(Math.log2(leafs));
+        const w = spacing * (leafs / 2 + 1);
 
-        let length = levels * stagelength;
-        let width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
+        const length = levels * stagelength;
+        const width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
 
         ports.push(new ComponentPort(0, -cw / 2, "1", "FLOW"));
 
@@ -136,12 +136,12 @@ export default class YTree extends Template {
     }
 
     render2D(params, key) {
-        let position = params["position"];
-        let cw = params["flowChannelWidth"];
-        let rotation = params["rotation"];
-        let spacing = params["spacing"];
-        let ins = params["in"];
-        let outs = params["out"];
+        const position = params.position;
+        const cw = params.flowChannelWidth;
+        let rotation = params.rotation;
+        const spacing = params.spacing;
+        const ins = params.in;
+        const outs = params.out;
         let leafs;
         if (ins < outs) {
             leafs = outs;
@@ -149,43 +149,43 @@ export default class YTree extends Template {
             leafs = ins;
             rotation += 180;
         }
-        let color = params["color"];
-        let stagelength = params["stageLength"];
-        let px = position[0];
-        let py = position[1];
+        const color = params.color;
+        const stagelength = params.stageLength;
+        const px = position[0];
+        const py = position[1];
 
-        let levels = Math.ceil(Math.log2(leafs));
-        let isodd = false; //This is used to figure out how many lines have to be made
+        const levels = Math.ceil(Math.log2(leafs));
+        let isodd = false; // This is used to figure out how many lines have to be made
         if (leafs % 2 == 0) {
             isodd = false;
         } else {
             isodd = true;
         }
-        let w = spacing * (leafs / 2 + 1);
-        let l = (levels + 1) * stagelength;
+        const w = spacing * (leafs / 2 + 1);
+        const l = (levels + 1) * stagelength;
 
-        var treepath = new paper.CompoundPath();
+        const treepath = new paper.CompoundPath();
 
         this.__generateYTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
-        //Draw the tree
+        // Draw the tree
 
         treepath.fillColor = color;
         return treepath.rotate(rotation, px, py);
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }
 
     __generateYTwig(treepath, px, py, cw, stagelength, newspacing, level, maxlevel, islast = false) {
-        let hspacing = newspacing / 2;
-        let lex = px - 0.5 * newspacing;
-        let ley = py + stagelength;
-        let rex = px + 0.5 * newspacing;
-        let rey = py + stagelength;
+        const hspacing = newspacing / 2;
+        const lex = px - 0.5 * newspacing;
+        const ley = py + stagelength;
+        const rex = px + 0.5 * newspacing;
+        const rey = py + stagelength;
 
         if (level == maxlevel) {
             islast = true;
@@ -200,16 +200,16 @@ export default class YTree extends Template {
     }
 
     __drawYtwig(treepath, px, py, cw, stagelength, spacing, drawleafs = false) {
-        let pivotpoint = new paper.Point(px, py);
+        const pivotpoint = new paper.Point(px, py);
 
-        //stem
-        let startPoint = new paper.Point(px - cw / 2, py - cw / 2);
+        // stem
+        const startPoint = new paper.Point(px - cw / 2, py - cw / 2);
 
-        let angle = Math.atan(spacing / 2 / stagelength);
+        const angle = Math.atan(spacing / 2 / stagelength);
 
-        let h = spacing / 2 / Math.sin(angle) + cw;
+        const h = spacing / 2 / Math.sin(angle) + cw;
 
-        //left leaf
+        // left leaf
         let rec = paper.Path.Rectangle({
             size: [cw, h],
             point: startPoint,
@@ -219,7 +219,7 @@ export default class YTree extends Template {
         rec.rotate((angle * 180) / Math.PI, pivotpoint);
         treepath.addChild(rec);
 
-        //right leaf
+        // right leaf
         rec = paper.Path.Rectangle({
             size: [cw, h],
             point: startPoint,

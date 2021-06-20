@@ -2,7 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export default class Merger extends Template{
+export default class Merger extends Template {
     constructor() {
         super();
     }
@@ -142,11 +142,11 @@ export default class Merger extends Template{
     }
 
     getPorts(params) {
-        let inletLength = params["inletLength"];
-        let outletLength = params["outletLength"];
-        let chamberLength = params["chamberLength"];
+        const inletLength = params.inletLength;
+        const outletLength = params.outletLength;
+        const chamberLength = params.chamberLength;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
@@ -156,64 +156,62 @@ export default class Merger extends Template{
     }
 
     render2D(params, key) {
-        let rotation = params["rotation"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let inletWidth = params["inletWidth"];
-        let inletLength = params["inletLength"];
-        let electrodeWidth = params["electrodeWidth"];
-        let electrodeLength = params["electrodeLength"];
-        let electrodeDistance = params["electrodeDistance"];
-        let outletWidth = params["outletWidth"];
-        let outletLength = params["outletLength"];
-        let chamberHeight = params["chamberHeight"];
-        let chamberLength = params["chamberLength"];
-        let channelDepth = params["channelDepth"];
-        let electrodeDepth = params["electrodeDepth"];
+        const rotation = params.rotation;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const inletWidth = params.inletWidth;
+        const inletLength = params.inletLength;
+        const electrodeWidth = params.electrodeWidth;
+        const electrodeLength = params.electrodeLength;
+        const electrodeDistance = params.electrodeDistance;
+        const outletWidth = params.outletWidth;
+        const outletLength = params.outletLength;
+        const chamberHeight = params.chamberHeight;
+        const chamberLength = params.chamberLength;
+        const channelDepth = params.channelDepth;
+        const electrodeDepth = params.electrodeDepth;
 
-        let serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath();
 
         // inlet
-        let topLeft = new paper.Point(x, y - inletWidth/2);
-        let bottomRight = new paper.Point(x + inletLength, y + inletWidth/2);
+        let topLeft = new paper.Point(x, y - inletWidth / 2);
+        let bottomRight = new paper.Point(x + inletLength, y + inletWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // merge chamber
-        topLeft = new paper.Point(x + inletLength, y - chamberHeight/2);
-        bottomRight = new paper.Point(x + inletLength + chamberLength, y + chamberHeight/2);
+        topLeft = new paper.Point(x + inletLength, y - chamberHeight / 2);
+        bottomRight = new paper.Point(x + inletLength + chamberLength, y + chamberHeight / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // outlet
-        topLeft = new paper.Point(x + inletLength + chamberLength, y - outletWidth/2);
-        bottomRight = new paper.Point(x + inletLength + chamberLength + outletLength, y + outletWidth/2);
+        topLeft = new paper.Point(x + inletLength + chamberLength, y - outletWidth / 2);
+        bottomRight = new paper.Point(x + inletLength + chamberLength + outletLength, y + outletWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // left electrode
-        topLeft = new paper.Point(x + inletLength, y - electrodeLength/2);
-        bottomRight = new paper.Point(x + inletLength + electrodeWidth, y + electrodeLength/2);
+        topLeft = new paper.Point(x + inletLength, y - electrodeLength / 2);
+        bottomRight = new paper.Point(x + inletLength + electrodeWidth, y + electrodeLength / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // right electrode
-        topLeft = new paper.Point(x + inletLength + electrodeWidth + electrodeDistance, y - electrodeLength/2);
-        bottomRight = new paper.Point(x + inletLength + 2 * electrodeWidth + electrodeDistance, y + electrodeLength/2);
+        topLeft = new paper.Point(x + inletLength + electrodeWidth + electrodeDistance, y - electrodeLength / 2);
+        bottomRight = new paper.Point(x + inletLength + 2 * electrodeWidth + electrodeDistance, y + electrodeLength / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
-        
 
         serp.rotate(rotation, new paper.Point(x, y));
-        
+
         serp.fillColor = color;
         return serp;
     }
 
-
     render2DTarget(key, params) {
-        let serp = this.render2D(params, key);
+        const serp = this.render2D(params, key);
 
         serp.fillColor.alpha = 0.5;
         return serp;

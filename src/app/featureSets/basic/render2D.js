@@ -758,7 +758,7 @@ export const render2D = {
         targetPrimitiveSet: "Basic2D"
     },
 
-    //new
+    // new
     Filter: {
         featureParams: {
             position: "position",
@@ -1095,5 +1095,5 @@ export const render2D = {
         featurePrimitiveSet: "Basic2D",
         targetPrimitiveType: "CapacitanceSensorTarget",
         targetPrimitiveSet: "Basic2D"
-    },
+    }
 };

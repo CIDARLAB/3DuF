@@ -78,19 +78,19 @@ export default class Transition extends Template {
     }
 
     render2D(params, key) {
-        let position = params["position"];
-        let cw1 = params["cw1"];
-        let cw2 = params["cw2"];
-        let length = params["length"];
-        let rotation = params["rotation"];
-        let color = params["color"];
-        let trap = new paper.Path();
+        const position = params.position;
+        const cw1 = params.cw1;
+        const cw2 = params.cw2;
+        const length = params.length;
+        const rotation = params.rotation;
+        const color = params.color;
+        const trap = new paper.Path();
 
         trap.add(new paper.Point(position[0] - cw1 / 2, position[1]));
         trap.add(new paper.Point(position[0] + cw1 / 2, position[1]));
         trap.add(new paper.Point(position[0] + cw2 / 2, position[1] + length));
         trap.add(new paper.Point(position[0] - cw2 / 2, position[1] + length));
-        //trap.add(new paper.Point(position[0] - cw1/2, position[1]));
+        // trap.add(new paper.Point(position[0] - cw1/2, position[1]));
 
         trap.closed = true;
         trap.fillColor = color;
@@ -98,7 +98,7 @@ export default class Transition extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

@@ -8,7 +8,7 @@ export default class GeometryEdge {
 
         this.__dxfData = data;
 
-        //TODO: Do classification of kind of edge (curve, horizontal, vertical, angled, etc), compute length
+        // TODO: Do classification of kind of edge (curve, horizontal, vertical, angled, etc), compute length
     }
 
     get id() {

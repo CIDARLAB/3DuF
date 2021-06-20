@@ -57,7 +57,7 @@ export default class Node extends Template {
     }
 
     getPorts(params) {
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
@@ -65,16 +65,15 @@ export default class Node extends Template {
     }
 
     render2D(params, key) {
-        //Regardless of the key...
-        let pos = new paper.Point(0, 0);
-        let outerCircle = new paper.Path.Circle(pos, 0);
+        // Regardless of the key...
+        const pos = new paper.Point(0, 0);
+        const outerCircle = new paper.Path.Circle(pos, 0);
         return outerCircle;
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }
-
 }

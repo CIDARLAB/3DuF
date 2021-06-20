@@ -1,4 +1,4 @@
-import Registry from '../../core/registry';
+import Registry from "../../core/registry";
 
 export default class EditDeviceDialog {
     constructor(viewManagerDelegate) {
@@ -12,34 +12,34 @@ export default class EditDeviceDialog {
 
         this.__deviceNameTextInput = document.getElementById("devicename_textinput");
 
-        let ref = this;
+        const ref = this;
 
-        this.saveDeviceSettingsButton.onclick = function() {
-            //Save the name
-            let devicename = ref.__deviceNameTextInput.value;
+        this.saveDeviceSettingsButton.onclick = function () {
+            // Save the name
+            const devicename = ref.__deviceNameTextInput.value;
             if (devicename != "" || devicename !== null) {
                 Registry.currentDevice.setName(devicename);
             }
 
-            //Do the resizing
-            let xspan = ref.__xspanTextInput.value;
-            let yspan = ref.__yspanTextInput.value;
+            // Do the resizing
+            const xspan = ref.__xspanTextInput.value;
+            const yspan = ref.__yspanTextInput.value;
             console.log("Resizing the device to: " + xspan + ", " + yspan);
 
             if (xspan != "" && yspan != "") {
-                //Convert the dimensions to microns from mm
+                // Convert the dimensions to microns from mm
                 Registry.currentDevice.setXSpan(xspan * 1000);
                 Registry.currentDevice.setYSpan(yspan * 1000);
 
-                //Delete the existing border
+                // Delete the existing border
                 ref.viewManagerDelegate.deleteBorder();
 
-                //Update the device borders
+                // Update the device borders
                 ref.viewManagerDelegate.generateBorder();
-                //Close the dialog
+                // Close the dialog
                 ref.__window.close();
 
-                //Refresh the view
+                // Refresh the view
                 ref.viewManagerDelegate.updateGrid();
                 Registry.currentDevice.updateView();
 
@@ -52,12 +52,12 @@ export default class EditDeviceDialog {
 
         this.showModalButton = document.querySelector("#resize_button");
 
-        this.showModalButton.addEventListener("click", function() {
+        this.showModalButton.addEventListener("click", function () {
             ref.__window.showModal();
             ref.setupInitialValues();
         });
 
-        this.__window.querySelector(".close").addEventListener("click", function() {
+        this.__window.querySelector(".close").addEventListener("click", function () {
             ref.__window.close();
         });
     }

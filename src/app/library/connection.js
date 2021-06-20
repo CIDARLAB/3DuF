@@ -75,20 +75,20 @@ export default class Connection extends Template {
     }
 
     render2D(params, key) {
-        let start = params["start"];
-        let end = params["end"];
-        let color = params["color"];
-        let width = params["width"];
-        let wayPoints = params["wayPoints"];
-        let channelWidth = params["channelWidth"];
-        let segments = params["segments"];
-        let connectionpath = new paper.CompoundPath();
+        const start = params.start;
+        const end = params.end;
+        const color = params.color;
+        const width = params.width;
+        const wayPoints = params.wayPoints;
+        const channelWidth = params.channelWidth;
+        const segments = params.segments;
+        const connectionpath = new paper.CompoundPath();
         let startpoint, endpoint;
 
         let p1, p2;
 
-        for (let i in segments) {
-            let segment = segments[i];
+        for (const i in segments) {
+            const segment = segments[i];
             p1 = segment[0];
             p2 = segment[1];
             startpoint = new paper.Point(p1[0], p1[1]);
@@ -101,9 +101,9 @@ export default class Connection extends Template {
     }
 
     __drawStraightConnection(compoundpath, startpoint, endpoint, channelWidth) {
-        //edit the points
-        let vec = endpoint.subtract(startpoint);
-        let rec = new paper.Path.Rectangle({
+        // edit the points
+        const vec = endpoint.subtract(startpoint);
+        const rec = new paper.Path.Rectangle({
             point: startpoint,
             radius: channelWidth / 2,
             size: [vec.length + channelWidth, channelWidth]
@@ -115,11 +115,11 @@ export default class Connection extends Template {
     }
 
     render2DTarget(key, params) {
-        let thickness = params["channelWidth"] / 5;
-        let length = params["channelWidth"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
+        const thickness = params.channelWidth / 5;
+        const length = params.channelWidth;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
         let chair = new paper.Path.Rectangle(x - length / 2, y - thickness / 2, length, thickness);
         chair = chair.unite(new paper.Path.Rectangle(x - thickness / 2, y - length / 2, thickness, length));
         chair.fillColor = color;

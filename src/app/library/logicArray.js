@@ -114,22 +114,22 @@ export default class LogicArray extends Template {
     }
 
     __drawFlow(params) {
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let spacing = params["componentSpacing"];
-        let chamberWidth = params["chamberWidth"];
-        let flowChannelWidth = params["flowChannelWidth"];
-        let controlChannelWidth = params["controlChannelWidth"];
-        let portRadius = params["portRadius"];
-        let chamberLength = params["chamberLength"];
-        let rotation = params["rotation"];
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const spacing = params.componentSpacing;
+        const chamberWidth = params.chamberWidth;
+        const flowChannelWidth = params.flowChannelWidth;
+        const controlChannelWidth = params.controlChannelWidth;
+        const portRadius = params.portRadius;
+        const chamberLength = params.chamberLength;
+        const rotation = params.rotation;
 
-        let ret = new paper.CompoundPath();
-        let topDistance = 14 * spacing;
-        let inWidth = 5 * spacing;
-        let pathLength = 20 * spacing;
-        let extraLength = 2 * spacing;
+        const ret = new paper.CompoundPath();
+        const topDistance = 14 * spacing;
+        const inWidth = 5 * spacing;
+        const pathLength = 20 * spacing;
+        const extraLength = 2 * spacing;
 
         // middle path
         let topLeft = new paper.Point(x, y - flowChannelWidth / 2);
@@ -137,17 +137,17 @@ export default class LogicArray extends Template {
 
         let rec = new paper.Path.Rectangle(topLeft, bottomRight);
 
-        //// left
+        /// / left
         topLeft = new paper.Point(x + (2 * inWidth) / 3 - controlChannelWidth, y - flowChannelWidth / 2 - controlChannelWidth);
         bottomRight = new paper.Point(x + (2 * inWidth) / 3 + controlChannelWidth, y + flowChannelWidth / 2 + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// second left
+        /// / second left
         topLeft = new paper.Point(x + inWidth + pathLength / 2 - extraLength - controlChannelWidth, y - flowChannelWidth / 2 - controlChannelWidth);
         bottomRight = new paper.Point(x + inWidth + pathLength / 2 - extraLength + controlChannelWidth, y + flowChannelWidth / 2 + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// right
+        /// / right
         topLeft = new paper.Point(x + inWidth + pathLength / 2 + extraLength - controlChannelWidth, y - flowChannelWidth / 2 - controlChannelWidth);
         bottomRight = new paper.Point(x + inWidth + pathLength / 2 + extraLength + controlChannelWidth, y + flowChannelWidth / 2 + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
@@ -162,7 +162,7 @@ export default class LogicArray extends Template {
         topLeft = new paper.Point(x + inWidth / 3 - controlChannelWidth, y - topDistance - flowChannelWidth / 2 - controlChannelWidth);
         bottomRight = new paper.Point(x + inWidth / 3 + controlChannelWidth, y - topDistance + flowChannelWidth / 2 + controlChannelWidth);
 
-        let cutrec = new paper.Path.Rectangle(topLeft, bottomRight);
+        const cutrec = new paper.Path.Rectangle(topLeft, bottomRight);
 
         rec = rec.subtract(cutrec);
 
@@ -189,22 +189,22 @@ export default class LogicArray extends Template {
 
         rec = new paper.Path.Rectangle(topLeft, bottomRight);
 
-        //// left
+        /// / left
         topLeft = new paper.Point(x + pathLength / 2 - extraLength - controlChannelWidth, y - topDistance / 2 - flowChannelWidth - controlChannelWidth);
         bottomRight = new paper.Point(x + pathLength / 2 - extraLength + controlChannelWidth, y - topDistance / 2 + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// second left
+        /// / second left
         topLeft = new paper.Point(x + inWidth + pathLength / 2 - extraLength - controlChannelWidth, y - topDistance / 2 - flowChannelWidth - controlChannelWidth);
         bottomRight = new paper.Point(x + inWidth + pathLength / 2 - extraLength + controlChannelWidth, y - topDistance / 2 + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// second right
+        /// / second right
         topLeft = new paper.Point(x + inWidth + pathLength / 2 + extraLength - controlChannelWidth, y - topDistance / 2 - flowChannelWidth - controlChannelWidth);
         bottomRight = new paper.Point(x + inWidth + pathLength / 2 + extraLength + controlChannelWidth, y - topDistance / 2 + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// right
+        /// / right
         topLeft = new paper.Point(x + 2 * inWidth + pathLength / 2 + extraLength - controlChannelWidth, y - topDistance / 2 - flowChannelWidth - controlChannelWidth);
         bottomRight = new paper.Point(x + 2 * inWidth + pathLength / 2 + extraLength + controlChannelWidth, y - topDistance / 2 + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
@@ -242,22 +242,22 @@ export default class LogicArray extends Template {
 
         rec = new paper.Path.Rectangle(topLeft, bottomRight);
 
-        //// left
+        /// / left
         topLeft = new paper.Point(x + pathLength / 2 - extraLength - controlChannelWidth, y + topDistance / 2 - controlChannelWidth);
         bottomRight = new paper.Point(x + pathLength / 2 - extraLength + controlChannelWidth, y + topDistance / 2 + flowChannelWidth + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// second left
+        /// / second left
         topLeft = new paper.Point(x + inWidth + pathLength / 2 - extraLength - controlChannelWidth, y + topDistance / 2 - controlChannelWidth);
         bottomRight = new paper.Point(x + inWidth + pathLength / 2 - extraLength + controlChannelWidth, y + topDistance / 2 + flowChannelWidth + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// second right
+        /// / second right
         topLeft = new paper.Point(x + inWidth + pathLength / 2 + extraLength - controlChannelWidth, y + topDistance / 2 - controlChannelWidth);
         bottomRight = new paper.Point(x + inWidth + pathLength / 2 + extraLength + controlChannelWidth, y + topDistance / 2 + flowChannelWidth + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// right
+        /// / right
         topLeft = new paper.Point(x + 2 * inWidth + pathLength / 2 + extraLength - controlChannelWidth, y + topDistance / 2 - controlChannelWidth);
         bottomRight = new paper.Point(x + 2 * inWidth + pathLength / 2 + extraLength + controlChannelWidth, y + topDistance / 2 + flowChannelWidth + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
@@ -269,12 +269,12 @@ export default class LogicArray extends Template {
 
         rec = new paper.Path.Rectangle(topLeft, bottomRight);
 
-        //// top
+        /// / top
         topLeft = new paper.Point(x + inWidth + pathLength / 2 - flowChannelWidth / 2 - controlChannelWidth, y - topDistance / 2 + 4 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + inWidth + pathLength / 2 + flowChannelWidth / 2 + controlChannelWidth, y - topDistance / 2 + 4 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// bottom
+        /// / bottom
         topLeft = new paper.Point(x + inWidth + pathLength / 2 - flowChannelWidth / 2 - controlChannelWidth, y + topDistance / 2 - 4 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + inWidth + pathLength / 2 + flowChannelWidth / 2 + controlChannelWidth, y + topDistance / 2 - 4 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
@@ -286,22 +286,22 @@ export default class LogicArray extends Template {
 
         rec = new paper.Path.Rectangle(topLeft, bottomRight);
 
-        //// top
+        /// / top
         topLeft = new paper.Point(x + pathLength / 2 - flowChannelWidth / 2 - controlChannelWidth, y - topDistance / 2 - 5 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + pathLength / 2 + flowChannelWidth / 2 + controlChannelWidth, y - topDistance / 2 - 5 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// second top
+        /// / second top
         topLeft = new paper.Point(x + pathLength / 2 - flowChannelWidth / 2 - controlChannelWidth, y - topDistance / 2 + 3 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + pathLength / 2 + flowChannelWidth / 2 + controlChannelWidth, y - topDistance / 2 + 3 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// second bottom
+        /// / second bottom
         topLeft = new paper.Point(x + pathLength / 2 - flowChannelWidth / 2 - controlChannelWidth, y + topDistance / 2 - 3 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + pathLength / 2 + flowChannelWidth / 2 + controlChannelWidth, y + topDistance / 2 - 3 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// bottom
+        /// / bottom
         topLeft = new paper.Point(x + pathLength / 2 - flowChannelWidth / 2 - controlChannelWidth, y + topDistance / 2 + 5 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + pathLength / 2 + flowChannelWidth / 2 + controlChannelWidth, y + topDistance / 2 + 5 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
@@ -321,22 +321,22 @@ export default class LogicArray extends Template {
 
         rec = new paper.Path.Rectangle(topLeft, bottomRight);
 
-        //// top
+        /// / top
         topLeft = new paper.Point(x + 2 * inWidth + pathLength / 2 - flowChannelWidth - controlChannelWidth, y - topDistance / 2 - 2 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + 2 * inWidth + pathLength / 2 + controlChannelWidth, y - topDistance / 2 - 2 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// second top
+        /// / second top
         topLeft = new paper.Point(x + 2 * inWidth + pathLength / 2 - flowChannelWidth - controlChannelWidth, y - topDistance / 2 + 5 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + 2 * inWidth + pathLength / 2 + controlChannelWidth, y - topDistance / 2 + 5 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// second bottom
+        /// / second bottom
         topLeft = new paper.Point(x + 2 * inWidth + pathLength / 2 - flowChannelWidth - controlChannelWidth, y + topDistance / 2 - 5 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + 2 * inWidth + pathLength / 2 + controlChannelWidth, y + topDistance / 2 - 5 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        //// bottom
+        /// / bottom
         topLeft = new paper.Point(x + 2 * inWidth + pathLength / 2 - flowChannelWidth - controlChannelWidth, y + topDistance / 2 + 2 * spacing - controlChannelWidth);
         bottomRight = new paper.Point(x + 2 * inWidth + pathLength / 2 + controlChannelWidth, y + topDistance / 2 + 2 * spacing + controlChannelWidth);
         rec = rec.subtract(new paper.Path.Rectangle(topLeft, bottomRight));
@@ -356,25 +356,25 @@ export default class LogicArray extends Template {
     }
 
     __drawControl(params) {
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let spacing = params["componentSpacing"];
-        let chamberWidth = params["chamberWidth"];
-        let flowChannelWidth = params["flowChannelWidth"];
-        let controlChannelWidth = params["controlChannelWidth"];
-        let portRadius = params["portRadius"];
-        let chamberLength = params["chamberLength"];
-        let rotation = params["rotation"];
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const spacing = params.componentSpacing;
+        const chamberWidth = params.chamberWidth;
+        const flowChannelWidth = params.flowChannelWidth;
+        const controlChannelWidth = params.controlChannelWidth;
+        const portRadius = params.portRadius;
+        const chamberLength = params.chamberLength;
+        const rotation = params.rotation;
 
-        let ret = new paper.CompoundPath();
-        let topDistance = 14 * spacing;
-        let inWidth = 5 * spacing;
-        let pathLength = 20 * spacing;
+        const ret = new paper.CompoundPath();
+        const topDistance = 14 * spacing;
+        const inWidth = 5 * spacing;
+        const pathLength = 20 * spacing;
 
-        let extraLength = 2 * spacing;
+        const extraLength = 2 * spacing;
 
-        let control = new paper.CompoundPath();
+        const control = new paper.CompoundPath();
 
         // control 24
         let topLeft = new paper.Point(x + inWidth / 3 - controlChannelWidth / 2, y - topDistance - topDistance / 2 - extraLength);
@@ -631,20 +631,20 @@ export default class LogicArray extends Template {
     }
 
     getPorts(params) {
-        let ports = [];
-        let chamberWidth = params["chamberWidth"];
-        let flowChannelWidth = params["flowChannelWidth"];
-        let controlChannelWidth = params["controlChannelWidth"];
-        let portRadius = params["portRadius"];
-        let chamberLength = params["chamberLength"];
-        let rotation = params["rotation"];
-        let spacing = params["componentSpacing"];
+        const ports = [];
+        const chamberWidth = params.chamberWidth;
+        const flowChannelWidth = params.flowChannelWidth;
+        const controlChannelWidth = params.controlChannelWidth;
+        const portRadius = params.portRadius;
+        const chamberLength = params.chamberLength;
+        const rotation = params.rotation;
+        const spacing = params.componentSpacing;
 
-        let topDistance = 14 * spacing;
-        let inWidth = 5 * spacing;
-        let pathLength = 20 * spacing;
+        const topDistance = 14 * spacing;
+        const inWidth = 5 * spacing;
+        const pathLength = 20 * spacing;
 
-        let extraLength = 2 * spacing;
+        const extraLength = 2 * spacing;
 
         // flow
         ports.push(new ComponentPort(0, -topDistance, "1", "FLOW"));
@@ -680,25 +680,25 @@ export default class LogicArray extends Template {
     }
 
     __drawCell(params) {
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let spacing = params["componentSpacing"];
-        let chamberWidth = params["chamberWidth"];
-        let flowChannelWidth = params["flowChannelWidth"];
-        let controlChannelWidth = params["controlChannelWidth"];
-        let portRadius = params["portRadius"];
-        let chamberLength = params["chamberLength"];
-        let rotation = params["rotation"];
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const spacing = params.componentSpacing;
+        const chamberWidth = params.chamberWidth;
+        const flowChannelWidth = params.flowChannelWidth;
+        const controlChannelWidth = params.controlChannelWidth;
+        const portRadius = params.portRadius;
+        const chamberLength = params.chamberLength;
+        const rotation = params.rotation;
 
-        let ret = new paper.CompoundPath();
-        let topDistance = 14 * spacing;
-        let inWidth = 5 * spacing;
-        let pathLength = 20 * spacing;
+        const ret = new paper.CompoundPath();
+        const topDistance = 14 * spacing;
+        const inWidth = 5 * spacing;
+        const pathLength = 20 * spacing;
 
-        let extraLength = 2 * spacing;
+        const extraLength = 2 * spacing;
 
-        let cell = new paper.CompoundPath();
+        const cell = new paper.CompoundPath();
 
         // top left
         let topLeft = new paper.Point(x + pathLength / 2 - chamberWidth / 2, y - topDistance / 2 - chamberLength / 2 - flowChannelWidth / 2);
@@ -727,7 +727,7 @@ export default class LogicArray extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.__drawFlow(params);
+        const render = this.__drawFlow(params);
         render.addChild(this.__drawControl(params));
         render.addChild(this.__drawCell(params));
 

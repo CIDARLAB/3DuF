@@ -2,7 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export default class CellTrapS extends Template{
+export default class CellTrapS extends Template {
     constructor() {
         super();
     }
@@ -20,7 +20,7 @@ export default class CellTrapS extends Template{
             channelLength: "Float",
             chamberWidth: "Float",
             chamberLength: "Float",
-            chamberHeight: "Float",
+            chamberHeight: "Float"
         };
 
         this.__defaults = {
@@ -42,7 +42,7 @@ export default class CellTrapS extends Template{
             channelLength: "&mu;m",
             chamberWidth: "&mu;m",
             chamberLength: "&mu;m",
-            chamberHeight: "&mu;m",
+            chamberHeight: "&mu;m"
         };
 
         this.__minimum = {
@@ -76,7 +76,7 @@ export default class CellTrapS extends Template{
             channelLength: "channelLength",
             chamberWidth: "chamberWidth",
             chamberLength: "chamberLength",
-            chamberHeight: "chamberHeight",
+            chamberHeight: "chamberHeight"
         };
 
         this.__targetParams = {
@@ -87,7 +87,7 @@ export default class CellTrapS extends Template{
             channelLength: "channelLength",
             chamberWidth: "chamberWidth",
             chamberLength: "chamberLength",
-            chamberHeight: "chamberHeight",
+            chamberHeight: "chamberHeight"
         };
 
         this.__placementTool = "CellPositionTool";
@@ -102,17 +102,17 @@ export default class CellTrapS extends Template{
     }
 
     getPorts(params) {
-        let channelLength = params["channelLength"];
+        const channelLength = params.channelLength;
 
-        let ports = [];
+        const ports = [];
 
-        ports.push(new ComponentPort(- channelLength/2, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(-channelLength / 2, 0, "1", "FLOW"));
 
-        ports.push(new ComponentPort(channelLength/2, 0, "2", "FLOW"));
+        ports.push(new ComponentPort(channelLength / 2, 0, "2", "FLOW"));
 
-        ports.push(new ComponentPort(0, - channelLength/2, "3", "FLOW"));
+        ports.push(new ComponentPort(0, -channelLength / 2, "3", "FLOW"));
 
-        ports.push(new ComponentPort(0, channelLength/2, "4", "FLOW"));
+        ports.push(new ComponentPort(0, channelLength / 2, "4", "FLOW"));
 
         return ports;
     }
@@ -126,7 +126,7 @@ export default class CellTrapS extends Template{
     }
 
     render2DTarget(key, params) {
-        let traps = this.__drawFlow(params);
+        const traps = this.__drawFlow(params);
         traps.addChild(this.__drawCell(params));
 
         traps.fillColor.alpha = 0.5;
@@ -135,25 +135,25 @@ export default class CellTrapS extends Template{
     }
 
     __drawFlow(params) {
-        let rotation = params["rotation"];
-        let position = params["position"];
-        let color = params["color"];
-        let x = position[0];
-        let y = position[1];
-        let channelWidth = params["channelWidth"];
-        let channelLength = params["channelLength"];
+        const rotation = params.rotation;
+        const position = params.position;
+        const color = params.color;
+        const x = position[0];
+        const y = position[1];
+        const channelWidth = params.channelWidth;
+        const channelLength = params.channelLength;
 
-        let traps = new paper.CompoundPath();
+        const traps = new paper.CompoundPath();
 
         // horizontal channel
-        let topLeft = new paper.Point(x - channelLength/2, y - channelWidth/2);
-        let bottomRight = new paper.Point(x + channelLength/2, y + channelWidth/2);
+        let topLeft = new paper.Point(x - channelLength / 2, y - channelWidth / 2);
+        let bottomRight = new paper.Point(x + channelLength / 2, y + channelWidth / 2);
 
         traps.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // vertical channel
-        topLeft = new paper.Point(x - channelWidth/2, y - channelLength/2);
-        bottomRight = new paper.Point(x + channelWidth/2, y + channelLength/2);
+        topLeft = new paper.Point(x - channelWidth / 2, y - channelLength / 2);
+        bottomRight = new paper.Point(x + channelWidth / 2, y + channelLength / 2);
 
         traps.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
@@ -165,22 +165,22 @@ export default class CellTrapS extends Template{
     }
 
     __drawCell(params) {
-        let rotation = params["rotation"];
-        let color = params["color"];
-        let position = params["position"];
-        let x = position[0];
-        let y = position[1];
-        let chamberWidth = params["chamberWidth"];
-        let chamberLength = params["chamberLength"];
+        const rotation = params.rotation;
+        const color = params.color;
+        const position = params.position;
+        const x = position[0];
+        const y = position[1];
+        const chamberWidth = params.chamberWidth;
+        const chamberLength = params.chamberLength;
 
-        let chamberList = new paper.CompoundPath();
+        const chamberList = new paper.CompoundPath();
 
         // chamber
-        let topLeft = new paper.Point(x - chamberWidth/2, y - chamberLength/2);
-        let bottomRight = new paper.Point(x + chamberWidth/2, y + chamberLength/2);
+        const topLeft = new paper.Point(x - chamberWidth / 2, y - chamberLength / 2);
+        const bottomRight = new paper.Point(x + chamberWidth / 2, y + chamberLength / 2);
 
         chamberList.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
-        
+
         chamberList.fillColor = color;
         chamberList.rotate(rotation, new paper.Point(x, y));
 

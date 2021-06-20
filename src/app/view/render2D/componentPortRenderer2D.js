@@ -1,15 +1,15 @@
-import * as Colors from '../colors';
-import paper from 'paper';
-import Registry from '../../core/registry';
+import * as Colors from "../colors";
+import paper from "paper";
+import Registry from "../../core/registry";
 
 export default class ComponentPortRenderer2D {
     static renderComponentPort(componentport, draworigin, rotation, portrendersize = 500) {
         // console.log("Rendering...", componentport, topleftposition, centerposition,rotation);
-        let xpos = draworigin[0];
-        let ypos = draworigin[1];
-        let point = new paper.Point(xpos + componentport.x, ypos + componentport.y);
+        const xpos = draworigin[0];
+        const ypos = draworigin[1];
+        const point = new paper.Point(xpos + componentport.x, ypos + componentport.y);
 
-        let circle = paper.Path.Circle(point, portrendersize);
+        const circle = paper.Path.Circle(point, portrendersize);
 
         circle.rotate(rotation, new paper.Point(draworigin[0], draworigin[1]));
 
@@ -19,7 +19,7 @@ export default class ComponentPortRenderer2D {
     }
 
     static getSizeforZoomLevel() {
-        let zoomlevel = paper.view.zoom;
+        const zoomlevel = paper.view.zoom;
         // console.log("Zoomlevel:", zoomlevel);
         let ret = 5 / zoomlevel;
         if (ret > 500) {
@@ -29,14 +29,14 @@ export default class ComponentPortRenderer2D {
     }
 
     static renderComponentPorts(component) {
-        let rendersize = ComponentPortRenderer2D.getSizeforZoomLevel();
-        let componentports = component.ports;
-        let ret = [];
-        for (let key of componentports.keys()) {
-            let position = component.getValue("position");
-            let rotation = component.getRotation();
-            let componentport = componentports.get(key);
-            let render = ComponentPortRenderer2D.renderComponentPort(componentport, position, rotation, rendersize);
+        const rendersize = ComponentPortRenderer2D.getSizeforZoomLevel();
+        const componentports = component.ports;
+        const ret = [];
+        for (const key of componentports.keys()) {
+            const position = component.getValue("position");
+            const rotation = component.getRotation();
+            const componentport = componentports.get(key);
+            const render = ComponentPortRenderer2D.renderComponentPort(componentport, position, rotation, rendersize);
             render.renderid = componentport.id;
             component.attachComponentPortRender(key, render);
             ret.push(render);

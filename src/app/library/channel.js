@@ -61,16 +61,16 @@ export default class Channel extends Template {
     }
 
     render2D(params, key) {
-        //Regardless of the key...
-        let start = params["start"];
-        let end = params["end"];
-        let color = params["color"];
-        let width = params["width"];
-        let baseColor = params["baseColor"];
-        let startPoint = new paper.Point(start[0], start[1]);
-        let endPoint = new paper.Point(end[0], end[1]);
-        let vec = endPoint.subtract(startPoint);
-        let rec = paper.Path.Rectangle({
+        // Regardless of the key...
+        const start = params.start;
+        const end = params.end;
+        const color = params.color;
+        const width = params.width;
+        const baseColor = params.baseColor;
+        const startPoint = new paper.Point(start[0], start[1]);
+        const endPoint = new paper.Point(end[0], end[1]);
+        const vec = endPoint.subtract(startPoint);
+        const rec = paper.Path.Rectangle({
             size: [vec.length, width],
             point: start,
             //  radius: width/2,
@@ -83,12 +83,12 @@ export default class Channel extends Template {
     }
 
     render2DTarget(key, params) {
-        let thickness = params["channelWidth"] / 5;
-        let length = params["channelWidth"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        var chair = new paper.Path.Rectangle(x - length / 2, y - thickness / 2, length, thickness);
+        const thickness = params.channelWidth / 5;
+        const length = params.channelWidth;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        let chair = new paper.Path.Rectangle(x - length / 2, y - thickness / 2, length, thickness);
         chair = chair.unite(new paper.Path.Rectangle(x - thickness / 2, y - length / 2, thickness, length));
         chair.fillColor = color;
         chair.fillColor.alpha = 0.5;

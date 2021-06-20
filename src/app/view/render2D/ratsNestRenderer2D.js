@@ -2,17 +2,17 @@ import paper from "paper";
 
 export default class RatsNestRenderer2D {
     static renderRatsNest(connectionlist, device) {
-        let ratsnestgroup = new paper.Group();
+        const ratsnestgroup = new paper.Group();
         let start, end, sink, render, sourceid, sinkid;
-        for (let i in connectionlist) {
-            let connection = connectionlist[i];
-            let source = connection.source;
-            let sinks = connection.sinks;
+        for (const i in connectionlist) {
+            const connection = connectionlist[i];
+            const source = connection.source;
+            const sinks = connection.sinks;
             // console.log("Sinks", sinks, sinks.length);
-            for (let ii in sinks) {
+            for (const ii in sinks) {
                 sink = sinks[ii];
-                let startcomponent = source.component;
-                let endcomponent = sink.component;
+                const startcomponent = source.component;
+                const endcomponent = sink.component;
                 start = startcomponent.getCenterPosition();
                 end = endcomponent.getCenterPosition();
                 // console.log(start, end);
@@ -25,10 +25,10 @@ export default class RatsNestRenderer2D {
     }
 
     static renderRatsNestConnection(start, end) {
-        let vstart = new paper.Point(start[0], start[1]);
-        let vend = new paper.Point(end[0], end[1]);
+        const vstart = new paper.Point(start[0], start[1]);
+        const vend = new paper.Point(end[0], end[1]);
 
-        let vpath = new paper.Path(vstart, vend);
+        const vpath = new paper.Path(vstart, vend);
 
         vpath.strokeColor = "#696965";
         vpath.strokeWidth = 500;

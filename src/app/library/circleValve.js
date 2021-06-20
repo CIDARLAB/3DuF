@@ -71,17 +71,17 @@ export default class CircleValve extends Template {
     }
 
     render2D(params, key) {
-        let position = params["position"];
-        let radius = params["portRadius"];
-        let color1 = params["color"];
-        let pos = new paper.Point(position[0], position[1]);
-        let outerCircle = new paper.Path.Circle(pos, radius);
+        const position = params.position;
+        const radius = params.portRadius;
+        const color1 = params.color;
+        const pos = new paper.Point(position[0], position[1]);
+        const outerCircle = new paper.Path.Circle(pos, radius);
         outerCircle.fillColor = color1;
         return outerCircle;
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

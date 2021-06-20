@@ -17,7 +17,7 @@ export default class Params {
             this.parameters = this.__sanitizeValues(values);
         } else {
             let value;
-            for (let key in rawparameters) {
+            for (const key in rawparameters) {
                 value = rawparameters[key];
                 this.parameters[key] = Parameter.makeParam(this.unique[key], oldParam);
             }
@@ -25,6 +25,7 @@ export default class Params {
             this.parameters = rawparameters;
         }
     }
+
     /**
      * Updates parameter value.
      * @param {String} key Identifier of the parameter
@@ -41,6 +42,7 @@ export default class Params {
             } else throw new Error(key + "parameter does not exist in Params object");
         }
     }
+
     /**
      * Checks if the object has certain parameter.
      * @param {String} key The key is use to identify the parameter
@@ -50,6 +52,7 @@ export default class Params {
     __ensureHasKey(key) {
         if (!this.parameters.hasOwnProperty(key)) throw new Error(key + " parameter not found in Params object.");
     }
+
     /**
      * Gets the value of the selected parameter.
      * @param {String} key The key is needed to identify the parameter
@@ -60,6 +63,7 @@ export default class Params {
         this.__ensureHasKey(key);
         return this.parameters[key].getValue();
     }
+
     /**
      * Gets the paramter.
      * @param {String} key The key is needed to search and identify the parameter
@@ -70,6 +74,7 @@ export default class Params {
         this.__ensureHasKey(key);
         return this.parameters[key];
     }
+
     /**
      * Checks if param object has unique key.
      * @param {String} key Key to identify the param
@@ -79,6 +84,7 @@ export default class Params {
     isUnique(key) {
         return this.unique.hasOwnProperty(key);
     }
+
     /**
      * Checks if param object has heritable attribute.
      * @param {String} key Key to identify the param
@@ -88,6 +94,7 @@ export default class Params {
     isHeritable(key) {
         return this.heritable.hasOwnProperty(key);
     }
+
     /**
      * Checks if param has unique key.
      * @param {Parameters} params Param to check if it is unique
@@ -95,9 +102,10 @@ export default class Params {
      * @memberof Params
      */
     hasAllUniques(params) {
-        for (let key in this.unique) if (!params.hasOwnProperty(key)) return false;
+        for (const key in this.unique) if (!params.hasOwnProperty(key)) return false;
         return true;
     }
+
     /**
      * Returns the expected type for a specific param.
      * @param {String} key Identifier of the param
@@ -109,18 +117,19 @@ export default class Params {
     wrongTypeError(key, expected, actual) {
         return new Error("Parameter " + key + " is the wrong type. " + "Expected: " + this.unique[key] + ", Actual: " + actual);
     }
+
     /**
      * Turns the raw key:value pairs passed into a user-written Feature declaration
     into key:Parameter pairs. This forces the checks for each Parameter type
     to execute on the provided values, and should throw an error for mismatches.
-     * @param {*} values 
+     * @param {*} values
      * @returns {Parameters} Returns a parameters object
      * @memberof Params
      */
     __sanitizeValues(values) {
-        let newParams = {};
-        for (let key in values) {
-            let oldParam = values[key];
+        const newParams = {};
+        for (const key in values) {
+            const oldParam = values[key];
             if (this.isUnique(key)) {
                 newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
             } else if (this.isHeritable(key)) {
@@ -136,17 +145,17 @@ export default class Params {
     }
 
     /* Checks to make sure the set of sanitized parameters matches the expected ParamTypes.
-    This method also checks to make sure that all unique (required) params are present.*/
+    This method also checks to make sure that all unique (required) params are present. */
     /**
      * Checks to make sure the set of sanitized parameters matches the expected ParamTypes.
     This method also checks to make sure that all unique (required) params are present.
-     * @param {Params} parameters 
+     * @param {Params} parameters
      * @memberof Params
      * @returns {void}
      */
     __checkParams(parameters) {
-        for (let key in parameters) {
-            let param = parameters[key];
+        for (const key in parameters) {
+            const param = parameters[key];
             if (!(param instanceof Parameter)) {
                 throw new Error(key + " is not a ParameterValue.");
             } else if (this.isUnique(key)) {
@@ -165,20 +174,22 @@ export default class Params {
             throw new Error("Unique values were not present in the provided parameters. Expected: " + Object.keys(this.unique) + ", saw: " + Object.keys(parameters));
         }
     }
+
     /**
      * Converts to JSON format.
      * @returns {JSON}  Returns JSON format.
      * @memberof Params
      */
     toJSON() {
-        let json = {};
-        for (let key in this.parameters) {
+        const json = {};
+        for (const key in this.parameters) {
             if (this.parameters[key] != undefined) {
                 json[key] = this.parameters[key].getValue();
             }
         }
         return json;
     }
+
     /**
      * Creates new params object from a JSON format.
      * @param {JSON} json
@@ -190,6 +201,7 @@ export default class Params {
     static fromJSON(json, unique, heritable) {
         return new Params(json, unique, heritable);
     }
+
     /**
      * Checks if it has parameters.
      * @param {String} key The key is use to identify the desire parameter.
@@ -206,8 +218,8 @@ export default class Params {
      * @memberof Params
      */
     toMap() {
-        let ret = new Map();
-        for (let key in this.parameters) {
+        const ret = new Map();
+        for (const key in this.parameters) {
             if (this.parameters[key] != undefined) {
                 ret.set(key, this.parameters[key].getValue());
             }
