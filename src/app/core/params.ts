@@ -16,7 +16,11 @@ export default class Params {
      * @param {} heritable Boolean if it's heritable
      * @param {} rawparameters ?
      */
+<<<<<<< HEAD
     constructor(values: any, unique: Array<string>, heritable: Array<string>) { 
+=======
+    constructor(values: any, unique: boolean, heritable: boolean) { 
+>>>>>>> Functions removed, properties modified
         this.unique = unique;
         this.heritable = heritable;
         this.parameters = {};
@@ -55,7 +59,11 @@ export default class Params {
      */
     getValue(key: string): any {
         this.__ensureHasKey(key);
+<<<<<<< HEAD
         return this.parameters[key].value;
+=======
+        return this.parameters[key].getValue();
+>>>>>>> Functions removed, properties modified
     }
 
     /**
@@ -73,8 +81,54 @@ export default class Params {
      * @returns {boolean}
      * @memberof Params
      */
+<<<<<<< HEAD
     isHeritable(key: string): boolean {
         return this.heritable.includes(key);
+=======
+    isHeritable(key: string) {
+        //return this.heritable.hasOwnProperty(key);
+        throw new Error("isHeritable inoperable");
+        return false;
+    }
+
+    /**
+     * Returns the expected type for a specific param.
+     * @param {String} key Identifier of the param
+     * @param {*} expected 
+     * @param {*} actual 
+     * @memberof Params
+     * @returns {void}
+     */
+    wrongTypeError(key: string, expected: string, actual: string) {
+        return new Error("Parameter " + key + " is the wrong type. " + "Expected: " + expected + ", Actual: " + actual);
+    }
+    /**
+     * Turns the raw key:value pairs passed into a user-written Feature declaration
+    into key:Parameter pairs. This forces the checks for each Parameter type
+    to execute on the provided values, and should throw an error for mismatches.
+     * @param {*} values 
+     * @returns {Parameters} Returns a parameters object
+     * @memberof Params
+     */
+    __sanitizeValues(values: any) {
+        /*let newParams: any = {};
+        for (let key in values) {
+            let oldParam = values[key];
+            if (this.isUnique(key)) {
+                newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
+            } else if (this.isHeritable(key)) {
+                if (values[key]) {
+                    newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
+                }
+            } else {
+                throw new Error(key + " does not exist in this set of ParamTypes: " + Object.keys(this.unique) + Object.keys(this.heritable));
+            }
+        }
+        this.__checkParams(newParams);
+        return newParams;
+        */
+       throw new Error("Sanitize values inoperable.");
+>>>>>>> Functions removed, properties modified
     }
 
     /**
