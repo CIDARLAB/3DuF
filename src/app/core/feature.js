@@ -366,7 +366,7 @@ export default class Feature {
      */
     static fromJSON(json) {
         let set;
-        if (Object.prototype.hasOwnProperty.call(json, 'set')) set = json.set;
+        if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
         else set = "Basic";
         return Device.makeFeature(json.type, set, json.params, json.name, json.id);
     }
@@ -380,11 +380,11 @@ export default class Feature {
     static fromInterchangeV1(json) {
         let ret;
         let set;
-        if (Object.prototype.hasOwnProperty.call(json, 'set')) set = json.set;
+        if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
         else set = "Basic";
         // TODO: This will have to change soon when the thing is updated
         ret = Device.makeFeature(json.macro, set, json.params, json.name, json.id, json.type, json.dxfData);
-        if (Object.prototype.hasOwnProperty.call(json, 'referenceID')) {
+        if (Object.prototype.hasOwnProperty.call(json, "referenceID")) {
             ret.referenceID = json.referenceID;
             // Registry.currentDevice.updateObjectReference(json.id, json.referenceID);
         }

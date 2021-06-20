@@ -4,7 +4,7 @@ export function sanitizeJSON(json) {
     for (const component of components) {
         const params = component.params;
 
-        if (Object.prototype.hasOwnProperty.call(params, 'orientation')) {
+        if (Object.prototype.hasOwnProperty.call(params, "orientation")) {
             let rotation = 0;
             const orientation = params.orientation;
             if (orientation === "V") {
@@ -27,10 +27,10 @@ export function sanitizeJSON(json) {
         for (const i in features) {
             const feature = features[i];
 
-            if (Object.prototype.hasOwnProperty.call(feature, 'params')) {
+            if (Object.prototype.hasOwnProperty.call(feature, "params")) {
                 const params = feature.params;
 
-                if (Object.prototype.hasOwnProperty.call(params, 'orientation')) {
+                if (Object.prototype.hasOwnProperty.call(params, "orientation")) {
                     let rotation = 0;
                     const orientation = params.orientation;
                     if (orientation === "V") {

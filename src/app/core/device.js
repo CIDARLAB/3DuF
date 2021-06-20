@@ -641,8 +641,8 @@ export default class Device {
         IOUtils.sanitizeV1Plus(json);
 
         let newDevice;
-        if (Object.prototype.hasOwnProperty.call(json, 'params')) {
-            if (Object.prototype.hasOwnProperty.call(json.params, 'width') && Object.prototype.hasOwnProperty.call(json.params, 'length')) {
+        if (Object.prototype.hasOwnProperty.call(json, "params")) {
+            if (Object.prototype.hasOwnProperty.call(json.params, "width") && Object.prototype.hasOwnProperty.call(json.params, "length")) {
                 newDevice = new Device(
                     {
                         width: json.params.width,
@@ -678,7 +678,7 @@ export default class Device {
         // TODO: Use this to render the device features
 
         // Check if JSON has features else mark
-        if (Object.prototype.hasOwnProperty.call(json, 'features')) {
+        if (Object.prototype.hasOwnProperty.call(json, "features")) {
             newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         } else {
             // We need to add a default layer
@@ -708,8 +708,8 @@ export default class Device {
         IOUtils.sanitizeV1Plus(json);
         let newDevice;
 
-        if (Object.prototype.hasOwnProperty.call(json, 'params')) {
-            if (Object.prototype.hasOwnProperty.call(json.params, 'xspan') && Object.prototype.hasOwnProperty.call(json.params, 'yspan')) {
+        if (Object.prototype.hasOwnProperty.call(json, "params")) {
+            if (Object.prototype.hasOwnProperty.call(json.params, "xspan") && Object.prototype.hasOwnProperty.call(json.params, "yspan")) {
                 newDevice = new Device(
                     {
                         width: json.params.xspan,
@@ -744,7 +744,7 @@ export default class Device {
 
         let valve_map, valve_type_map;
         // Import ValveMap
-        if (Object.prototype.hasOwnProperty.call(json.params, 'valveMap') && Object.prototype.hasOwnProperty.call(json.params, 'valveTypeMap')) {
+        if (Object.prototype.hasOwnProperty.call(json.params, "valveMap") && Object.prototype.hasOwnProperty.call(json.params, "valveTypeMap")) {
             valve_map = IOUtils.jsonToMap(json.params.valveMap);
             console.log("Imported valvemap", valve_map);
 
@@ -771,7 +771,7 @@ export default class Device {
         // TODO: Use this to render the device features
 
         // Check if JSON has features else mark
-        if (Object.prototype.hasOwnProperty.call(json, 'features')) {
+        if (Object.prototype.hasOwnProperty.call(json, "features")) {
             newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         } else {
             // We need to add a default layer
