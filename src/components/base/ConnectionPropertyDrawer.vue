@@ -16,8 +16,8 @@
                                     <template>
                                         <thead>
                                             <tr>
-                                                <th>Control</th>
-                                                <th>Key</th>
+                                                <th>Adjust</th>
+                                                <th>Parameter</th>
                                                 <th>Value</th>
                                             </tr>
                                         </thead>
