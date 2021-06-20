@@ -97,14 +97,14 @@ export default class RightClickMenu {
         console.log("HEIGHT: " + this.__contextMenu.clientHeight);
 
         if (event.clientX + 30 + this.__contextMenu.clientWidth > window.innerWidth) {
-            this.__contextMenu.style.left = "" + (event.clientX - this.__contextMenu.clientWidth - 30) + "px";
+            this.__contextMenu.style.left = String(event.clientX - this.__contextMenu.clientWidth - 30) + "px";
         } else {
-            this.__contextMenu.style.left = "" + (event.clientX + 30) + "px";
+            this.__contextMenu.style.left = String(event.clientX + 30) + "px";
         }
         if (event.clientY - 20 + this.__contextMenu.clientHeight > window.innerHeight) {
-            this.__contextMenu.style.top = "" + (event.clientY - this.__contextMenu.clientHeight + 20) + "px";
+            this.__contextMenu.style.top = String(event.clientY - this.__contextMenu.clientHeight + 20) + "px";
         } else {
-            this.__contextMenu.style.top = "" + (event.clientY - 20) + "px";
+            this.__contextMenu.style.top = String(event.clientY - 20) + "px";
         }
 
         // Delete any table in the context menu
