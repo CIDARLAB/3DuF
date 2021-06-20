@@ -16,7 +16,6 @@ export default class Params {
      * @param {} rawparameters ?
      */
     constructor(values: any, unique: boolean, heritable: boolean) { 
-        //rp must be optional for function further down. If no rp provided and values == null, what happens?
         this.unique = unique;
         this.heritable = heritable;
     }
@@ -53,16 +52,7 @@ export default class Params {
         this.__ensureHasKey(key);
         return this.parameters[key].getValue();
     }
-    /**
-     * Gets the paramter.
-     * @param {String} key The key is needed to search and identify the parameter
-     * @returns Returns parameter
-     * @memberof Params
-     */
-    getParameter(key: string) {
-        this.__ensureHasKey(key);
-        return this.parameters[key];
-    }
+
     /**
      * Checks if param object has unique key.
      * @param {String} key Key to identify the param
@@ -85,17 +75,7 @@ export default class Params {
         throw new Error("isHeritable inoperable");
         return false;
     }
-    /**
-     * Checks if param has unique key.
-     * @param {Parameters} params Param to check if it is unique 
-     * @returns {boolean}
-     * @memberof Params
-     */
-    hasAllUniques(params: {[index:string]: Parameter}) {
-        //for (let key in this.unique) if (!params.hasOwnProperty(key)) return false;
-        return true;
-        throw new Error("Unique check inoperable, always returns true");
-    }
+
     /**
      * Returns the expected type for a specific param.
      * @param {String} key Identifier of the param

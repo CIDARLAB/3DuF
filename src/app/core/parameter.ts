@@ -5,8 +5,8 @@ import * as NumberUtils from "../utils/numberUtils";
  * Parameter class
  */
 export default class Parameter {
-    __type: string;
-    __value: any;
+    private type: string;
+    private value: any;
 
     /**
      * Default Constructor of the Parameter object
@@ -21,15 +21,15 @@ export default class Parameter {
             value = parseInt(value);
         }
         Parameter.checkValue(type, value);
-        this.__type = type;
-        this.__value = value;
+        this.type = type;
+        this.value = value;
     }
     /**
      * @returns {}
      * @memberof Parameter
      */
     toJSON() {
-        return this.__value;
+        return this.value;
     }
     /**
      * Gets value of parameter
@@ -37,7 +37,7 @@ export default class Parameter {
      * @memberof Parameter
      */
     getValue() {
-        return this.__value;
+        return this.value;
     }
     /**
      * Gets type of parameter
@@ -45,7 +45,7 @@ export default class Parameter {
      * @memberof Parameter
      */
     getType() {
-        return this.__type;
+        return this.type;
     }
     /**
      * Checks if value of the parameter is valid or not
@@ -69,45 +69,12 @@ export default class Parameter {
      * @returns {void}
      */
     updateValue(value: any) {
-        Parameter.checkValue(this.__type, value);
-        this.__value = value;
+        Parameter.checkValue(this.type, value);
+        this.value = value;
     }
     
     resetValue() {}
 
-    //Takes a typestring to recognize that param type, and
-    // an isValid function which returns true if a value is OK for
-    // that type.
-    /**
-     * Registers a parameter
-     * @param {String} typeString Type of string ?
-     * @param {Boolean} isValid Boolean to asure the parameter is valid
-     * @param {String} description Description of the parameter
-     * @memberof Parameter
-     * @returns {void}
-     */
-    static registerParamType(typeString: string, isValid: boolean, description: string) {
-        /*Registry.registeredParams[typeString] = {
-            isValid: isValid,
-            description: description
-        };*/
-        throw new Error("registerParamType inoperable due to registeredParams deletion");
-    }
-    /**
-     * Creates a new type of parameter with a specified value
-     * @param {String} type Type of the new parameter
-     * @param {*} value Value of the new parameter
-     * @returns {Parameter} Returns a parameter object
-     * @memberof Parameter
-     */
-    static makeParam(type: string, value: any) {
-        /*if (Registry.registeredParams.hasOwnProperty(type)) {
-            return new Parameter(type, value);
-        } else {
-            throw new Error("Type " + type + " has not been registered.");
-        }*/
-        throw new Error("makeParam inoperable due to registeredParams deletion");
-    }
     /**
      * Creates a parameter from a JSON format
      * @param {JSON} json JSON format file with the parameters loaded
@@ -115,7 +82,7 @@ export default class Parameter {
      * @memberof Parameter
      */
     static fromJSON(json: any) {
-        return Parameter.makeParam(json.type, json.value);
+        return new Parameter(json.type, json.value);
     }
     /**
      * Generates a new parameter with a specific component
