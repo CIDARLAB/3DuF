@@ -478,9 +478,9 @@ export default class Component {
         let value;
         for (const key in json.params) {
             // console.log("key:", key, "value:", json.params[key]);
-            if (definition.heritable.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(definition.heritable, key)) {
                 type = definition.heritable[key];
-            } else if (definition.unique.hasOwnProperty(key)) {
+            } else if (Object.prototype.hasOwnProperty.call(definition.unique, key)) {
                 type = definition.unique[key];
             }
             // let paramobject = Parameter.generateComponentParameter(key, json.params[key]);
@@ -495,7 +495,7 @@ export default class Component {
         }
 
         // Do another check and see if position is present or not
-        if (!params.hasOwnProperty("position")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'position')) {
             params.position = [0.0, 0.0];
         }
 
