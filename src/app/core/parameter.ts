@@ -36,7 +36,7 @@ export default class Parameter {
      * @returns {} Returns value of the parameter
      * @memberof Parameter
      */
-    getValue() {
+    public get Value() {
         return this.value;
     }
     /**
@@ -44,7 +44,7 @@ export default class Parameter {
      * @returns {String} Returns the type of parameter
      * @memberof Parameter
      */
-    getType() {
+    public get Type() {
         return this.type;
     }
     /**
