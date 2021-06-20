@@ -9,6 +9,9 @@ import PositionTool from "./positionTool";
 import Params from "../../core/params";
 
 export default class InsertTextTool extends MouseTool {
+    
+    text;
+    
     constructor() {
         super();
         this.typeString = "TEXT";
@@ -60,5 +63,13 @@ export default class InsertTextTool extends MouseTool {
     showTarget() {
         let target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
+    }
+
+    get getText() {
+        return this.text;
+    }
+
+    set setText(text) {
+        this.text = text;
     }
 }
