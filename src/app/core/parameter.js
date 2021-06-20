@@ -101,7 +101,7 @@ export default class Parameter {
      * @memberof Parameter
      */
     static makeParam(type, value) {
-        if (Registry.registeredParams.hasOwnProperty(type)) {
+        if (Object.prototype.hasOwnProperty.call(Registry.registeredParams, type)) {
             return new Parameter(type, value);
         } else {
             throw new Error("Type " + type + " has not been registered.");
