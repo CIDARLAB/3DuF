@@ -65,6 +65,34 @@
                             </v-row>
                         </v-card-text>
                     </v-col>
+                    <v-divider vertical inset></v-divider>
+                    <v-col cols="3">
+                        <v-row no-gutters>
+                            <v-col cols="3" class="connection-profile">Connection Profile</v-col>
+                            <v-col cols="1"></v-col>
+                            <v-col cols="5">
+                                <v-menu offset-y>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn id="dropdown" color="orange" class="white--text" v-bind="attrs" v-on="on">DROPDOWN</v-btn>
+                                    </template>
+                                    <v-list>
+                                        <v-list-item v-for="(item, index) in items" :key="index">
+                                            <v-list-item-title>{{ item.title }}</v-list-item-title></v-list-item
+                                        >
+                                    </v-list>
+                                </v-menu>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-img
+                                lazy-src="https://picsum.photos/id/11/10/6"
+                                max-height="200"
+                                max-width="220"
+                                src="https://picsum.photos/id/11/500/300"
+                                class="image-placeholder"
+                            ></v-img>
+                        </v-row>
+                    </v-col>
                 </v-row>
             </v-card>
         </div>
@@ -73,8 +101,12 @@
 
 <script>
 import EventBus from "@/events/events";
-
 import "@mdi/font/css/materialdesignicons.css";
+import "vue-select/dist/vue-select.css";
+import Vue from "vue";
+import vSelect from "vue-select";
+
+Vue.component("v-select", vSelect);
 
 export default {
     name: "ConnectionPropertyDrawer",
@@ -125,7 +157,9 @@ export default {
             chip2: true,
             chip3: true,
             chip4: true,
-            activated: false
+            activated: false,
+            isOpen: false,
+            items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }]
         };
     },
     computed: {
@@ -156,6 +190,9 @@ export default {
             if (!this.activated) return;
             const bounds = this.$refs.activator.$el.getBoundingClientRect();
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
+        },
+        openClose() {
+            this.isOpen = !this.isOpen;
         }
     }
 };
@@ -196,7 +233,7 @@ export default {
 .connection-property-drawer {
     position: absolute;
     float: left;
-    width: 950px;
+    width: 1300px;
     left: 225px;
     z-index: 100;
 
@@ -219,5 +256,20 @@ export default {
     ::v-deep .v-text-field__details {
         display: none;
     }
+
+    .connection-profile {
+        margin-top: 10px;
+        margin-left: 20px;
+        text-align: center;
+    }
+}
+
+#dropdown {
+    margin-top: 10px;
+}
+
+.image-placeholder {
+    margin-left: 35px;
+    margin-top: 10px;
 }
 </style>
