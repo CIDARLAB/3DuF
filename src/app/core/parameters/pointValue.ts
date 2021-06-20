@@ -2,8 +2,8 @@ import Parameter from "../parameter";
 import * as NumberUtils from "../../utils/numberUtils";
 
 export default class PointValue extends Parameter {
-    typeString: string = "Point";
-    description: string = "PointValue must be an array containing exactly two numbers, such as [3,-5]";
+    static readonly typeString: string = "Point";
+    static readonly description: string = "PointValue must be an array containing exactly two numbers, such as [3,-5]";
 
     constructor(value: Array<number>) {
         super("Point",value);

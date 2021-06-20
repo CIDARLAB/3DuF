@@ -3,8 +3,8 @@ import Registry from "../registry";
 import pointArray from "./pointArray"
 
 export default class SegmentArray extends Parameter {
-    typeString: string = "SegmentArray";
-    description: string = "Should be an array of PointArrays";
+    static readonly typeString: string = "SegmentArray";
+    static readonly description: string = "Should be an array of PointArrays";
 
     constructor(value: Array<Array<Array<number>>>) {
         super("SegmentArray",value);

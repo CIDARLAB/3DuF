@@ -2,8 +2,8 @@ import Parameter from "../parameter";
 import * as NumberUtils from "../../utils/numberUtils";
 
 export default class IntegerValue extends Parameter {
-    typeString: string = "Integer";
-    description: string = "FloatValue must be an integer >= 0.";
+    static readonly typeString: string = "Integer";
+    static readonly description: string = "FloatValue must be an integer >= 0.";
 
     constructor(value: number) {
         super("Integer",value);

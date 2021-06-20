@@ -3,8 +3,8 @@ import Registry from "../registry";
 import pointValue from "./pointValue";
 
 export default class PointArray extends Parameter {
-    typeString: string = "PointArray";
-    description: string = "Should be an array of points";
+    static readonly typeString: string = "PointArray";
+    static readonly description: string = "Should be an array of points";
 
     constructor(value: Array<Array<number>>) {
         super("PointArray",value);

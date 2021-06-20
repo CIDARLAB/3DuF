@@ -1,8 +1,8 @@
 import Parameter from "../parameter";
 
 export default class BooleanValue extends Parameter {
-    typeString: string = "Boolean";
-    description: string = "BooleanValue must be true or false.";
+    static readonly typeString: string = "Boolean";
+    static readonly description: string = "BooleanValue must be true or false.";
 
     constructor(value: boolean) {
         super("Boolean",value);
