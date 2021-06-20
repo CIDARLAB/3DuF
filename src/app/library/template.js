@@ -11,7 +11,7 @@ export default class Template {
         this.__maximum = null;
         this.__units = null;
         this.__placementTool = null;
-        this.__toolParams = null; //{ position: "position" };
+        this.__toolParams = null; // { position: "position" };
         this.__featureParams = null;
         this.__targetParams = null;
         this.__mint = null;
@@ -149,37 +149,37 @@ export default class Template {
     }
 
     getBounds(params) {
-        let renderkeys = this.renderKeys;
-        let features = [];
+        const renderkeys = this.renderKeys;
+        const features = [];
         for (let i = 0; i < renderkeys.length; i++) {
             // console.log("Rendering layer: " + renderkeys[i]);
-            let feature = this.render2D(params, renderkeys[i]);
+            const feature = this.render2D(params, renderkeys[i]);
             features.push(feature);
         }
-        let unitedBounds = features.reduce((bbox, item) => {
+        const unitedBounds = features.reduce((bbox, item) => {
             return !bbox ? item.bounds : bbox.unite(item.bounds);
         }, null);
         return unitedBounds;
     }
 
     getDimensions(params) {
-        params["position"] = [0, 0];
+        params.position = [0, 0];
 
-        let unitedBounds = this.getBounds(params);
-        let xspan = unitedBounds.width;
-        let yspan = unitedBounds.height;
+        const unitedBounds = this.getBounds(params);
+        const xspan = unitedBounds.width;
+        const yspan = unitedBounds.height;
         // console.log("Dimensions:",xspan, yspan);
         return { xspan: xspan, yspan: yspan };
     }
 
     getDrawOffset(params) {
-        params["position"] = [0, 0];
-        params["rotation"] = 0;
-        let position = params["position"];
-        let positionUnitedBounds = this.getBounds(params);
+        params.position = [0, 0];
+        params.rotation = 0;
+        const position = params.position;
+        const positionUnitedBounds = this.getBounds(params);
         // console.log(positionUnitedBounds.topLeft, position);
-        let x_new = position[0] - positionUnitedBounds.topLeft.x;
-        let y_new = position[1] - positionUnitedBounds.topLeft.y;
+        const x_new = position[0] - positionUnitedBounds.topLeft.x;
+        const y_new = position[1] - positionUnitedBounds.topLeft.y;
         return [x_new, y_new];
     }
 }

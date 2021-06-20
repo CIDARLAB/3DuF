@@ -95,28 +95,28 @@ export default class DropletGeneratorT extends Template {
     }
 
     getPorts(params) {
-        let length = params["length"];
+        const length = params.length;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(length / 2, 0, "1", "FLOW"));
 
-        //Out
+        // Out
         return ports;
     }
 
     render2D(params, key) {
-        let pos = params["position"];
-        let x = pos[0];
-        let y = pos[1];
-        let color = params["color"];
-        let oilChannelWidth = params["oilChannelWidth"];
-        let waterChannelWidth = params["waterChannelWidth"];
-        let radius = params["radius"];
-        let rotation = params["rotation"];
-        let length = params["length"];
+        const pos = params.position;
+        const x = pos[0];
+        const y = pos[1];
+        const color = params.color;
+        const oilChannelWidth = params.oilChannelWidth;
+        const waterChannelWidth = params.waterChannelWidth;
+        const radius = params.radius;
+        const rotation = params.rotation;
+        const length = params.length;
 
-        let ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath();
 
         let topLeft = new paper.Point(x - length / 2, y - oilChannelWidth / 2);
         let bottomRight = new paper.Point(x + length / 2, y + oilChannelWidth / 2);
@@ -136,7 +136,7 @@ export default class DropletGeneratorT extends Template {
 
         ret.addChild(circ);
 
-        //Rotate the geometry
+        // Rotate the geometry
         ret.closed = true;
         ret.rotate(-rotation, new paper.Point(x, y));
         ret.fillColor = color;
@@ -145,7 +145,7 @@ export default class DropletGeneratorT extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
 
         render.fillColor.alpha = 0.5;
         return render;

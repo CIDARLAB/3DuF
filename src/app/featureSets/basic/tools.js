@@ -227,7 +227,7 @@ export const tools = {
         placementTool: "textInsertTool"
     },
 
-    //new
+    // new
     Filter: {
         toolParams: {
             cursorPosition: "position"
@@ -299,5 +299,5 @@ export const tools = {
             cursorPosition: "position"
         },
         placementTool: "componentPositionTool"
-    },
+    }
 };

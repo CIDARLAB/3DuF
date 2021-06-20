@@ -1,7 +1,7 @@
 import DXFObject from "./dxfObject";
 import Device from "./device";
 
-import Registry from './registry';
+import Registry from "./registry";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -21,7 +21,7 @@ export default class CustomComponent {
         this.dxfData = dxfdata;
         this.__params = null;
         this.__renderData = null;
-        //This stores the features that are a part of the component
+        // This stores the features that are a part of the component
         // this.__features = [];
         // //TODO: Need to figure out how to effectively search through these
         // this.__bounds = null;
@@ -61,8 +61,8 @@ export default class CustomComponent {
      * @memberof CustomComponent
      */
     generateComponent() {
-        let paramvalues = {};
-        let feature = Device.makeFeature(type, "custom", paramvalues, Registry.currentDevice.generateNewName(type), Feature.generateID(), this.dxfData);
+        const paramvalues = {};
+        const feature = Device.makeFeature(type, "custom", paramvalues, Registry.currentDevice.generateNewName(type), Feature.generateID(), this.dxfData);
         return feature;
     }
 
@@ -72,14 +72,14 @@ export default class CustomComponent {
      * @memberof CustomComponent
      */
     toJSON() {
-        let output = {};
+        const output = {};
         output.type = this.__type;
         output.entity = this.__entity;
         if (this.__params) {
             output.params = this.__params.toJSON();
         }
-        let dxfdata = [];
-        for (let i in this.dxfData) {
+        const dxfdata = [];
+        for (const i in this.dxfData) {
             dxfdata.push(this.dxfData[i].getData());
         }
         output.dxfData = dxfdata;
@@ -98,25 +98,26 @@ export default class CustomComponent {
         let set;
         if (json.hasOwnProperty("set")) set = json.set;
         else set = "Basic";
-        let dxfdata = [];
-        for (let i in json.dxfData) {
+        const dxfdata = [];
+        for (const i in json.dxfData) {
             dxfdata.push(new DXFObject(json.dxfData[i]));
         }
 
-        //TODO: This will have to change soon when the thing is updated
-        let ret = new CustomComponent(json.type, dxfdata, json.entity);
+        // TODO: This will have to change soon when the thing is updated
+        const ret = new CustomComponent(json.type, dxfdata, json.entity);
         // ret.renderData = json.renderData;
         // let render = DXFRenderer.renderDXFObjects(dxfdata);
         // ret.renderData = render.exportSVG();
         return ret;
     }
+
     /**
      * Contains the default parameters
      * @returns {Object} Returns an Object containing the default parameters
      * @memberof CustomComponent
      */
     static defaultParameterDefinitions() {
-        let params = {
+        const params = {
             unique: {
                 position: "Point"
             },

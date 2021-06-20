@@ -97,10 +97,10 @@ export default class Pump3D extends Template {
     }
 
     getPorts(params) {
-        let radius = params["valveRadius"];
-        let spacing = params["spacing"];
+        const radius = params.valveRadius;
+        const spacing = params.spacing;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, -spacing - radius, "1", "FLOW"));
         ports.push(new ComponentPort(0, spacing + radius, "2", "FLOW"));
@@ -124,12 +124,12 @@ export default class Pump3D extends Template {
     }
 
     render2DTarget(key, params) {
-        let ret = new paper.CompoundPath();
-        let flow = this.render2D(params, "FLOW");
-        let control = this.render2D(params, "CONTROL");
+        const ret = new paper.CompoundPath();
+        const flow = this.render2D(params, "FLOW");
+        const control = this.render2D(params, "CONTROL");
         ret.addChild(control);
         ret.addChild(flow);
-        ret.fillColor = params["color"];
+        ret.fillColor = params.color;
         ret.fillColor.alpha = 0.5;
         return ret;
     }
@@ -139,64 +139,64 @@ export default class Pump3D extends Template {
         let cutout;
         let circ;
         let center;
-        let ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath();
 
-        let position = params["position"];
-        let gap = params["gap"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let spacing = params["spacing"];
-        let channelwidth = params["flowChannelWidth"];
+        const position = params.position;
+        const gap = params.gap;
+        const radius = params.valveRadius;
+        const color = params.color;
+        const rotation = params.rotation;
+        const spacing = params.spacing;
+        const channelwidth = params.flowChannelWidth;
 
         center = new paper.Point(position[0], position[1]);
         // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
         circ = new paper.Path.Circle(center, radius);
-        //circ.fillColor = color;
+        // circ.fillColor = color;
         //   if (String(color) == "3F51B5") {
         cutout = paper.Path.Rectangle({
             from: new paper.Point(position[0] - radius, position[1] - gap / 2),
             to: new paper.Point(position[0] + radius, position[1] + gap / 2)
         });
-        //cutout.fillColor = "white";
+        // cutout.fillColor = "white";
         valve = circ.subtract(cutout);
         ret.addChild(valve);
 
-        let bottomcenter = new paper.Point(position[0], position[1] + spacing);
+        const bottomcenter = new paper.Point(position[0], position[1] + spacing);
         console.log(bottomcenter);
         circ = new paper.Path.Circle(bottomcenter, radius);
-        //circ.fillColor = color;
+        // circ.fillColor = color;
         //   if (String(color) == "3F51B5") {
         cutout = paper.Path.Rectangle({
             from: new paper.Point(bottomcenter.x - radius, bottomcenter.y - gap / 2),
             to: new paper.Point(bottomcenter.x + radius, bottomcenter.y + gap / 2)
         });
-        //cutout.fillColor = "white";
+        // cutout.fillColor = "white";
         valve = circ.subtract(cutout);
         ret.addChild(valve);
 
-        let topcenter = new paper.Point(position[0], position[1] - spacing);
+        const topcenter = new paper.Point(position[0], position[1] - spacing);
 
         circ = new paper.Path.Circle(topcenter, radius);
-        //circ.fillColor = color;
+        // circ.fillColor = color;
         //   if (String(color) == "3F51B5") {
         cutout = paper.Path.Rectangle({
             from: new paper.Point(topcenter.x - radius, topcenter.y - gap / 2),
             to: new paper.Point(topcenter.x + radius, topcenter.y + gap / 2)
         });
-        //cutout.fillColor = "white";
+        // cutout.fillColor = "white";
         valve = circ.subtract(cutout);
         ret.addChild(valve);
 
-        //Create the channels that go through
-        let bottomchannel = new paper.Path.Rectangle({
+        // Create the channels that go through
+        const bottomchannel = new paper.Path.Rectangle({
             from: new paper.Point(bottomcenter.x - channelwidth / 2, bottomcenter.y - gap / 2),
             to: new paper.Point(center.x + channelwidth / 2, center.y + gap / 2)
         });
 
         ret.addChild(bottomchannel);
 
-        let topchannel = new paper.Path.Rectangle({
+        const topchannel = new paper.Path.Rectangle({
             from: new paper.Point(topcenter.x - channelwidth / 2, topcenter.y + gap / 2),
             to: new paper.Point(center.x + channelwidth / 2, center.y - gap / 2)
         });
@@ -211,26 +211,26 @@ export default class Pump3D extends Template {
 
     __drawControl(params) {
         let circ;
-        let position = params["position"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let spacing = params["spacing"];
+        const position = params.position;
+        const radius = params.valveRadius;
+        const color = params.color;
+        const rotation = params.rotation;
+        const spacing = params.spacing;
 
         console.log("Spacing:", spacing);
 
-        let ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath();
 
-        let center = new paper.Point(position[0], position[1]);
+        const center = new paper.Point(position[0], position[1]);
 
         circ = new paper.Path.Circle(center, radius);
         ret.addChild(circ);
 
-        let topcenter = new paper.Point(position[0], position[1] - spacing);
+        const topcenter = new paper.Point(position[0], position[1] - spacing);
         circ = new paper.Path.Circle(topcenter, radius);
         ret.addChild(circ);
 
-        let bottomcenter = new paper.Point(position[0], position[1] + spacing);
+        const bottomcenter = new paper.Point(position[0], position[1] + spacing);
         circ = new paper.Path.Circle(bottomcenter, radius);
         ret.addChild(circ);
 
@@ -241,26 +241,26 @@ export default class Pump3D extends Template {
 
     __drawInverse(params) {
         let circ;
-        let position = params["position"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let spacing = params["spacing"];
+        const position = params.position;
+        const radius = params.valveRadius;
+        const color = params.color;
+        const rotation = params.rotation;
+        const spacing = params.spacing;
 
         console.log("Spacing:", spacing);
 
-        let ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath();
 
-        let center = new paper.Point(position[0], position[1]);
+        const center = new paper.Point(position[0], position[1]);
 
         circ = new paper.Path.Circle(center, radius);
         ret.addChild(circ);
 
-        let topcenter = new paper.Point(position[0], position[1] - spacing);
+        const topcenter = new paper.Point(position[0], position[1] - spacing);
         circ = new paper.Path.Circle(topcenter, radius);
         ret.addChild(circ);
 
-        let bottomcenter = new paper.Point(position[0], position[1] + spacing);
+        const bottomcenter = new paper.Point(position[0], position[1] + spacing);
         circ = new paper.Path.Circle(bottomcenter, radius);
         ret.addChild(circ);
 

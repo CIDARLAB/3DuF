@@ -1,6 +1,6 @@
 import PositionTool from "./positionTool";
-import Registry from '../../core/registry';
-import Device from '../../core/device';
+import Registry from "../../core/registry";
+import Device from "../../core/device";
 
 export default class ComponentPositionTool extends PositionTool {
     constructor(typeString, setString) {
@@ -8,9 +8,9 @@ export default class ComponentPositionTool extends PositionTool {
     }
 
     createNewFeature(point) {
-        let featureIDs = [];
+        const featureIDs = [];
 
-        let newFeature = Device.makeFeature(this.typeString, this.setString, {
+        const newFeature = Device.makeFeature(this.typeString, this.setString, {
             position: PositionTool.getTarget(point)
         });
         this.currentFeatureID = newFeature.getID();
@@ -19,14 +19,14 @@ export default class ComponentPositionTool extends PositionTool {
 
         featureIDs.push(newFeature.getID());
 
-        let params_to_copy = newFeature.getParams();
+        const params_to_copy = newFeature.getParams();
 
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager.saveDeviceState();
     }
 
     showTarget() {
-        let target = PositionTool.getTarget(this.lastPoint);
+        const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }

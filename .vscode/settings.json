@@ -1,11 +1,6 @@
 {
     "files.eol": "\n",
-    "eslint.validate": [
-        "vue",
-        "html",
-        "javascript",
-        "typescript",
-    ],
+    "eslint.validate": ["vue", "html", "javascript", "typescript"],
     "typescript.referencesCodeLens.enabled": true,
     "typescript.updateImportsOnFileMove.enabled": "prompt",
     "editor.defaultFormatter": "octref.vetur",

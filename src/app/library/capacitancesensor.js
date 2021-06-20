@@ -128,73 +128,73 @@ export default class CapacitanceSensor extends Template {
     }
 
     getPorts(params) {
-        let inletLength = params["inletLength"];
+        const inletLength = params.inletLength;
 
-        let ports = [];
+        const ports = [];
 
-        ports.push(new ComponentPort(- inletLength/2, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(-inletLength / 2, 0, "1", "FLOW"));
 
-        ports.push(new ComponentPort(inletLength/2 , 0, "2", "FLOW"));
+        ports.push(new ComponentPort(inletLength / 2, 0, "2", "FLOW"));
 
         return ports;
     }
 
     render2D(params, key) {
-        let rotation = params["rotation"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let inletWidth = params["inletWidth"];
-        let inletLength = params["inletLength"];
-        let electrodeWidth = params["electrodeWidth"];
-        let electrodeLength = params["electrodeLength"];
-        let electrodeDistance = params["electrodeDistance"];
-        let sensorWidth = params["sensorWidth"];
-        let sensorLength = params["sensorLength"];
-        let serp = new paper.CompoundPath();
-        
+        const rotation = params.rotation;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const inletWidth = params.inletWidth;
+        const inletLength = params.inletLength;
+        const electrodeWidth = params.electrodeWidth;
+        const electrodeLength = params.electrodeLength;
+        const electrodeDistance = params.electrodeDistance;
+        const sensorWidth = params.sensorWidth;
+        const sensorLength = params.sensorLength;
+        const serp = new paper.CompoundPath();
+
         // inlet
-        let topLeft = new paper.Point(x - inletLength/2, y - inletWidth/2);
-        let bottomRight = new paper.Point(x + inletLength/2, y + inletWidth/2);
-        
+        let topLeft = new paper.Point(x - inletLength / 2, y - inletWidth / 2);
+        let bottomRight = new paper.Point(x + inletLength / 2, y + inletWidth / 2);
+
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // top electrode
-        topLeft = new paper.Point(x - electrodeWidth/2, y - inletWidth/2 - electrodeDistance - sensorWidth/2 - electrodeLength);
-        bottomRight = new paper.Point(x + electrodeWidth/2, y - inletWidth/2 - electrodeDistance - sensorWidth/2);
+        topLeft = new paper.Point(x - electrodeWidth / 2, y - inletWidth / 2 - electrodeDistance - sensorWidth / 2 - electrodeLength);
+        bottomRight = new paper.Point(x + electrodeWidth / 2, y - inletWidth / 2 - electrodeDistance - sensorWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // top sensor
         let elli = new paper.Path.Ellipse({
-            point: [x - sensorLength/2, y - inletWidth/2 - electrodeDistance - sensorWidth],
+            point: [x - sensorLength / 2, y - inletWidth / 2 - electrodeDistance - sensorWidth],
             size: [sensorLength, sensorWidth]
         });
 
         serp.addChild(elli);
 
         // bottom electrode
-        topLeft = new paper.Point(x - electrodeWidth/2, y + inletWidth/2 + electrodeDistance + sensorWidth/2 + electrodeLength);
-        bottomRight = new paper.Point(x + electrodeWidth/2, y + inletWidth/2 + electrodeDistance + sensorWidth/2);
+        topLeft = new paper.Point(x - electrodeWidth / 2, y + inletWidth / 2 + electrodeDistance + sensorWidth / 2 + electrodeLength);
+        bottomRight = new paper.Point(x + electrodeWidth / 2, y + inletWidth / 2 + electrodeDistance + sensorWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // bottom sensor
         elli = new paper.Path.Ellipse({
-            point: [x - sensorLength/2, y + inletWidth/2 + electrodeDistance],
+            point: [x - sensorLength / 2, y + inletWidth / 2 + electrodeDistance],
             size: [sensorLength, sensorWidth]
-        })
+        });
 
         serp.addChild(elli);
 
         serp.rotate(rotation, new paper.Point(x, y));
-        
+
         serp.fillColor = color;
         return serp;
     }
 
     render2DTarget(key, params) {
-        let serp = this.render2D(params, key);
+        const serp = this.render2D(params, key);
 
         serp.fillColor.alpha = 0.5;
         return serp;

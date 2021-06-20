@@ -79,10 +79,10 @@ export default class Valve extends Template {
     }
 
     getPorts(params) {
-        let l = params["length"];
-        let w = params["width"];
+        const l = params.length;
+        const w = params.width;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, 0, "1", "CONTROL"));
 
@@ -90,20 +90,20 @@ export default class Valve extends Template {
     }
 
     render2D(params, key = "FLOW") {
-        let position = params["position"];
-        let px = position[0];
-        let py = position[1];
-        let l = params["length"];
-        let w = params["width"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let startX = px - w / 2;
-        let startY = py - l / 2;
-        let endX = px + w / 2;
-        let endY = py + l / 2;
-        let startPoint = new paper.Point(startX, startY);
-        let endPoint = new paper.Point(endX, endY);
-        let rec = paper.Path.Rectangle({
+        const position = params.position;
+        const px = position[0];
+        const py = position[1];
+        const l = params.length;
+        const w = params.width;
+        const color = params.color;
+        const rotation = params.rotation;
+        const startX = px - w / 2;
+        const startY = py - l / 2;
+        const endX = px + w / 2;
+        const endY = py + l / 2;
+        const startPoint = new paper.Point(startX, startY);
+        const endPoint = new paper.Point(endX, endY);
+        const rec = paper.Path.Rectangle({
             from: startPoint,
             to: endPoint,
             radius: 0,
@@ -115,7 +115,7 @@ export default class Valve extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, (key = "FLOW"));
+        const render = this.render2D(params, (key = "FLOW"));
         render.fillColor.alpha = 0.5;
         return render;
     }

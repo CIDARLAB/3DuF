@@ -89,10 +89,10 @@ export default class Chamber extends Template {
     }
 
     getPorts(params) {
-        let l = params["length"];
-        let w = params["width"];
+        const l = params.length;
+        const w = params.width;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, -l / 2, "1", "FLOW"));
 
@@ -106,18 +106,18 @@ export default class Chamber extends Template {
     }
 
     render2D(params, key) {
-        let position = params["position"];
-        let px = position[0];
-        let py = position[1];
-        let l = params["length"];
-        let w = params["width"];
-        let rotation = params["rotation"];
-        let color = params["color"];
-        let radius = params["cornerRadius"];
+        const position = params.position;
+        const px = position[0];
+        const py = position[1];
+        const l = params.length;
+        const w = params.width;
+        const rotation = params.rotation;
+        const color = params.color;
+        const radius = params.cornerRadius;
 
-        let rendered = new paper.CompoundPath();
+        const rendered = new paper.CompoundPath();
 
-        let rec = new paper.Path.Rectangle({
+        const rec = new paper.Path.Rectangle({
             point: new paper.Point(px - w / 2, py - l / 2),
             size: [w, l],
             radius: radius
@@ -130,7 +130,7 @@ export default class Chamber extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

@@ -1,9 +1,7 @@
 <template>
     <dialog id="doe_dialog" class="mdl-dialog">
         <div class="mdl-card__title">
-            <h2 class="mdl-card__title-text">
-                Generate Design of Experiments for a Single Component
-            </h2>
+            <h2 class="mdl-card__title-text">Generate Design of Experiments for a Single Component</h2>
         </div>
         <div class="mdl-dialog__content">
             <input id="doe_input" type="file" class="upload" />
@@ -17,12 +15,8 @@
         <!--</form>-->
         <br />
         <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
-            <button id="download-doe-button" type="button" class="mdl-button">
-                Download Designs
-            </button>
-            <button type="button" class="mdl-button close">
-                Cancel
-            </button>
+            <button id="download-doe-button" type="button" class="mdl-button">Download Designs</button>
+            <button type="button" class="mdl-button close">Cancel</button>
         </div>
     </dialog>
 </template>

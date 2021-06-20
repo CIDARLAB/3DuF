@@ -7,10 +7,10 @@ export default class AdaptiveGrid {
         this.__viewManagerDelegate = viewmanager;
 
         this.origin = new paper.Point(origin[0], origin[1]);
-        this.thinWidth = thinWidth; //pixel
+        this.thinWidth = thinWidth; // pixel
         this.thickWidth = thickWidth; // pixels
-        this.minSpacing = minSpacing; //pixels
-        this.maxSpacing = maxSpacing; //pixels
+        this.minSpacing = minSpacing; // pixels
+        this.maxSpacing = maxSpacing; // pixels
         this.thickCount = thickCount;
         this.__spacing = 500;
         this.__isAutomaticEnabled = true;
@@ -26,8 +26,8 @@ export default class AdaptiveGrid {
     }
 
     getClosestGridPoint(point) {
-        let x = Math.round((point.x - this.origin.x) / this.__spacing) * this.__spacing + this.origin.x;
-        let y = Math.round((point.y - this.origin.y) / this.__spacing) * this.__spacing + this.origin.y;
+        const x = Math.round((point.x - this.origin.x) / this.__spacing) * this.__spacing + this.origin.x;
+        const y = Math.round((point.y - this.origin.y) / this.__spacing) * this.__spacing + this.origin.y;
         return new paper.Point(x, y);
     }
 
@@ -63,7 +63,7 @@ export default class AdaptiveGrid {
 
     getSpacing() {
         if (this.__isAutomaticEnabled) {
-            let zoomlevel = paper.view.zoom;
+            const zoomlevel = paper.view.zoom;
             if (zoomlevel <= 0.02) {
                 this.__spacing = 1000;
             } else if (zoomlevel <= 0.05) {
@@ -110,13 +110,13 @@ export default class AdaptiveGrid {
     }
 
     static isValidZoom(value) {
-        //First check if its a valid number
+        // First check if its a valid number
 
-        //TODO: figure out if we want to round it off
+        // TODO: figure out if we want to round it off
 
-        //Then check if its in bounds
+        // Then check if its in bounds
 
-        //TODO: change this to be actually functional
+        // TODO: change this to be actually functional
         return true;
     }
 }

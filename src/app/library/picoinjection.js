@@ -2,7 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export default class PicoInjection extends Template{
+export default class PicoInjection extends Template {
     constructor() {
         super();
     }
@@ -128,75 +128,75 @@ export default class PicoInjection extends Template{
     }
 
     getPorts(params) {
-        let width = params["width"];
-        let injectorLength = params["injectorLength"];
-        let dropletWidth = params["dropletWidth"];
-        let nozzleLength = params["nozzleLength"];
-        let electrodeDistance = params["electrodeDistance"];
-        let electrodeWidth = params["electrodeWidth"];
-        let electrodeLength = params["electrodeLength"];
+        const width = params.width;
+        const injectorLength = params.injectorLength;
+        const dropletWidth = params.dropletWidth;
+        const nozzleLength = params.nozzleLength;
+        const electrodeDistance = params.electrodeDistance;
+        const electrodeWidth = params.electrodeWidth;
+        const electrodeLength = params.electrodeLength;
 
-        let ports = [];
+        const ports = [];
 
         // droplet channel
-        ports.push(new ComponentPort(-width/2, 0, "1", "FLOW"));
-        ports.push(new ComponentPort(width/2, 0, "2", "FLOW"));
+        ports.push(new ComponentPort(-width / 2, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(width / 2, 0, "2", "FLOW"));
 
         // injector
-        ports.push(new ComponentPort(0, - dropletWidth/2 - nozzleLength - injectorLength, "3", "FLOW"));
+        ports.push(new ComponentPort(0, -dropletWidth / 2 - nozzleLength - injectorLength, "3", "FLOW"));
 
         return ports;
     }
 
     render2D(params, key) {
-        let rotation = params["rotation"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let width = params["width"];
-        let injectorWidth = params["injectorWidth"];
-        let injectorLength = params["injectorLength"];
-        let dropletWidth = params["dropletWidth"];
-        let nozzleWidth = params["nozzleWidth"];
-        let nozzleLength = params["nozzleLength"];
-        let electrodeDistance = params["electrodeDistance"];
-        let electrodeWidth = params["electrodeWidth"];
-        let electrodeLength = params["electrodeLength"];
-        let serp = new paper.CompoundPath();
+        const rotation = params.rotation;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const width = params.width;
+        const injectorWidth = params.injectorWidth;
+        const injectorLength = params.injectorLength;
+        const dropletWidth = params.dropletWidth;
+        const nozzleWidth = params.nozzleWidth;
+        const nozzleLength = params.nozzleLength;
+        const electrodeDistance = params.electrodeDistance;
+        const electrodeWidth = params.electrodeWidth;
+        const electrodeLength = params.electrodeLength;
+        const serp = new paper.CompoundPath();
 
         // droplet channel
-        let topLeft = new paper.Point(x - width/2, y - dropletWidth/2);
-        let bottomRight = new paper.Point(x + width/2, y + dropletWidth/2);
+        let topLeft = new paper.Point(x - width / 2, y - dropletWidth / 2);
+        let bottomRight = new paper.Point(x + width / 2, y + dropletWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // nozzle
-        topLeft = new paper.Point(x - nozzleWidth/2, y - dropletWidth/2 - nozzleLength);
-        bottomRight = new paper.Point(x + nozzleWidth/2, y - dropletWidth/2);
+        topLeft = new paper.Point(x - nozzleWidth / 2, y - dropletWidth / 2 - nozzleLength);
+        bottomRight = new paper.Point(x + nozzleWidth / 2, y - dropletWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // injector
-        topLeft = new paper.Point(x - injectorWidth/2, y - dropletWidth/2 - nozzleLength - injectorLength);
-        bottomRight = new paper.Point(x + injectorWidth/2, y - dropletWidth/2 - nozzleLength);
+        topLeft = new paper.Point(x - injectorWidth / 2, y - dropletWidth / 2 - nozzleLength - injectorLength);
+        bottomRight = new paper.Point(x + injectorWidth / 2, y - dropletWidth / 2 - nozzleLength);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // middle electrode
-        topLeft = new paper.Point(x - electrodeWidth/2, y + electrodeDistance);
-        bottomRight = new paper.Point(x + electrodeWidth/2, y + electrodeDistance + electrodeLength);
+        topLeft = new paper.Point(x - electrodeWidth / 2, y + electrodeDistance);
+        bottomRight = new paper.Point(x + electrodeWidth / 2, y + electrodeDistance + electrodeLength);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // left electrode
-        topLeft = new paper.Point(x - electrodeWidth/2 - 2 * electrodeWidth, y + electrodeDistance);
-        bottomRight = new paper.Point(x + electrodeWidth/2 - 2 * electrodeWidth, y + electrodeDistance + electrodeLength);
+        topLeft = new paper.Point(x - electrodeWidth / 2 - 2 * electrodeWidth, y + electrodeDistance);
+        bottomRight = new paper.Point(x + electrodeWidth / 2 - 2 * electrodeWidth, y + electrodeDistance + electrodeLength);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // right electrode
-        topLeft = new paper.Point(x - electrodeWidth/2 + 2 * electrodeWidth, y + electrodeDistance);
-        bottomRight = new paper.Point(x + electrodeWidth/2 + 2 * electrodeWidth, y + electrodeDistance + electrodeLength);
+        topLeft = new paper.Point(x - electrodeWidth / 2 + 2 * electrodeWidth, y + electrodeDistance);
+        bottomRight = new paper.Point(x + electrodeWidth / 2 + 2 * electrodeWidth, y + electrodeDistance + electrodeLength);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
@@ -207,7 +207,7 @@ export default class PicoInjection extends Template{
     }
 
     render2DTarget(key, params) {
-        let serp = this.render2D(params, key);
+        const serp = this.render2D(params, key);
 
         serp.fillColor.alpha = 0.5;
         return serp;

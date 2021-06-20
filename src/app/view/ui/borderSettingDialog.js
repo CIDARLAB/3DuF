@@ -1,7 +1,7 @@
 import * as HTMLUtils from "../../utils/htmlUtils";
 
-import Registry from '../../core/registry';
-import DxfParser from 'dxf-parser';
+import Registry from "../../core/registry";
+import DxfParser from "dxf-parser";
 
 export default class BorderSettingsDialog {
     get _dxfObject() {
@@ -14,7 +14,7 @@ export default class BorderSettingsDialog {
     constructor() {
         this.__dxfObject = null;
 
-        //TODO: Register all event handlers, etc.
+        // TODO: Register all event handlers, etc.
         this.__editBorderDialogButton = document.getElementById("edit_border_button");
 
         this.__dialog = document.getElementById("border_settings_dialog");
@@ -24,40 +24,40 @@ export default class BorderSettingsDialog {
 
         this.__importBorderButton = document.getElementById("import_border_button");
 
-        let ref = this;
+        const ref = this;
 
-        this.__dialog.querySelector(".close").addEventListener("click", function() {
+        this.__dialog.querySelector(".close").addEventListener("click", function () {
             ref.__dialog.close();
         });
 
-        let registryref = Registry;
+        const registryref = Registry;
         if (this.__editBorderDialogButton) {
-            this.__editBorderDialogButton.addEventListener("click", function(event) {
+            this.__editBorderDialogButton.addEventListener("click", function (event) {
                 ref.__dialog.showModal();
             });
         }
 
         if (this.__deleteBorderButton) {
-            this.__deleteBorderButton.addEventListener("click", function(event) {
+            this.__deleteBorderButton.addEventListener("click", function (event) {
                 console.log("Generate border clicked");
                 // registryref.viewManager.generateBorder();
                 registryref.viewManager.deleteBorder();
-                //Auto generate the border
+                // Auto generate the border
                 this.generateBorder();
             });
         }
 
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            //console.log(reader.result);
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            // console.log(reader.result);
             ref.loadDXFText(reader.result);
         };
 
         if (this.__dxffileinput) {
             this.__dxffileinput.addEventListener(
                 "change",
-                function() {
-                    let file = this.files[0];
+                function () {
+                    const file = this.files[0];
                     console.log(file.name);
                     console.log(file.size);
                     reader.readAsText(file);
@@ -67,7 +67,7 @@ export default class BorderSettingsDialog {
         }
 
         if (this.__importBorderButton) {
-            this.__importBorderButton.addEventListener("click", function(event) {
+            this.__importBorderButton.addEventListener("click", function (event) {
                 console.log("import button clicked");
                 registryref.viewManager.deleteBorder();
                 registryref.viewManager.importBorder(ref.getDXFObject());
@@ -82,7 +82,7 @@ export default class BorderSettingsDialog {
      * @param dxftext
      */
     loadDXFText(dxftext) {
-        let parser = new DxfParser();
+        const parser = new DxfParser();
         try {
             this.__dxfObject = parser.parseSync(dxftext);
             console.log("parsed dxf object", this.__dxfObject);
@@ -105,12 +105,12 @@ export default class BorderSettingsDialog {
      * @private
      */
     __setupDragAndDropLoad(selector) {
-        let ref = this;
-        let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
-            let f = files[0];
+        const ref = this;
+        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
+            const f = files[0];
 
-            let reader = new FileReader();
-            reader.onloadend = function(e) {
+            const reader = new FileReader();
+            reader.onloadend = function (e) {
                 ref.__loadDXFData(this.result);
             };
             try {

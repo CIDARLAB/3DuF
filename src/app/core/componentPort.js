@@ -16,6 +16,7 @@ export default class ComponentPort {
         this._label = label;
         this._layer = layer;
     }
+
     /**
      * Gets the layer of the component port
      * @returns {layer} Returns layer
@@ -24,6 +25,7 @@ export default class ComponentPort {
     get layer() {
         return this._layer;
     }
+
     /**
      * Sets the layer
      * @param {} value Value of the layer
@@ -33,6 +35,7 @@ export default class ComponentPort {
     set layer(value) {
         this._layer = value;
     }
+
     /**
      * Gets the label
      * @returns {string} Returns the label of the component port
@@ -41,6 +44,7 @@ export default class ComponentPort {
     get label() {
         return this._label;
     }
+
     /**
      * Sets the label of the component port
      * @param {string} value Label
@@ -50,14 +54,16 @@ export default class ComponentPort {
     set label(value) {
         this._label = value;
     }
+
     /**
      * Gets the Y coordinate of the component port
      * @returns {number} Returns the y coordinate
-     * @memberof ComponentPort 
+     * @memberof ComponentPort
      */
     get y() {
         return this._y;
     }
+
     /**
      * Sets the Y coordinate of the component port
      * @param {number} y Value of the Y coordinate
@@ -67,6 +73,7 @@ export default class ComponentPort {
     set y(value) {
         this._y = value;
     }
+
     /**
      * Gets the X coordinate of the component port
      * @returns {number} Returns the X coordinate
@@ -75,6 +82,7 @@ export default class ComponentPort {
     get x() {
         return this._x;
     }
+
     /**
      * Sets the X coordinate of the component port
      * @param {number} value Value of the X coordinate
@@ -84,6 +92,7 @@ export default class ComponentPort {
     set x(value) {
         this._x = value;
     }
+
     /**
      * Gets the ID of the component port
      * @returns {string} Returns the ID
@@ -92,6 +101,7 @@ export default class ComponentPort {
     get id() {
         return this._id;
     }
+
     /**
      * Set the ID of the component port
      * @param {string} value ID
@@ -101,6 +111,7 @@ export default class ComponentPort {
     set id(value) {
         this._id = value;
     }
+
     /**
      * Converts to Interchange V1 format
      * @returns {Object} Returns a object with Interchange V1 format
@@ -114,25 +125,27 @@ export default class ComponentPort {
             label: this._label
         };
     }
+
     /**
-     * Returns the absolute postition of the component 
+     * Returns the absolute postition of the component
      * @param {Object} componentport Component port object
      * @param {Object} component Component object
      * @returns {Array} Returns an array which contains the X absolute coordinate and the y absolute coordinate
      * @memberof ComponentPort
      */
     static calculateAbsolutePosition(componentport, component) {
-        let topleftposition = component.getValue("position");
-        let point = new paper.Point(topleftposition[0] + componentport.x, topleftposition[1] + componentport.y);
+        const topleftposition = component.getValue("position");
+        const point = new paper.Point(topleftposition[0] + componentport.x, topleftposition[1] + componentport.y);
         console.log("Unchanged point:", point);
         console.log(component.getRotation());
-        let rotatedpoint = point.rotate(component.getRotation(), topleftposition);
+        const rotatedpoint = point.rotate(component.getRotation(), topleftposition);
         console.log("Rotated point:", point);
         return [rotatedpoint.x, rotatedpoint.y];
     }
+
     /**
      * Creates a new Component Port from an Interchange V1 format
-     * @param {} json 
+     * @param {} json
      * @returns {ComponentPort} Returns a component port object
      * @memberof ComponentPort
      */

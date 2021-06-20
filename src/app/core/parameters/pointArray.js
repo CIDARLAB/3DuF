@@ -2,16 +2,16 @@ import Parameter from "../parameter";
 
 import Registry from "../registry";
 
-let typeString = "PointArray";
-let description = "Should be an array of points";
+const typeString = "PointArray";
+const description = "Should be an array of points";
 
 function isValid(value) {
     if (value instanceof Array) {
         if (value.length == 0) {
             return true;
         }
-        for (var i in value) {
-            let paramType = Registry.registeredParams["Point"];
+        for (const i in value) {
+            const paramType = Registry.registeredParams.Point;
             if (!paramType.isValid(value[i])) {
                 console.log("Does not contain a valid point");
                 return false;

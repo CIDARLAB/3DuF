@@ -141,21 +141,21 @@ export default class ThreeDMux extends Template {
     }
 
     render2DTarget(key, params) {
-        let ret = new paper.CompoundPath();
-        let flow = this.render2D(params, "FLOW");
-        let control = this.render2D(params, "CONTROL");
+        const ret = new paper.CompoundPath();
+        const flow = this.render2D(params, "FLOW");
+        const control = this.render2D(params, "CONTROL");
         ret.addChild(control);
         ret.addChild(flow);
-        ret.fillColor = params["color"];
+        ret.fillColor = params.color;
         ret.fillColor.alpha = 0.5;
         return ret;
     }
 
     getPorts(params) {
-        let ins = params["in"];
-        let outs = params["out"];
+        const ins = params.in;
+        const outs = params.out;
         let N;
-        let channelWidth = params["channelWidth"];
+        const channelWidth = params.channelWidth;
 
         if (ins < outs) {
             N = outs;
@@ -164,38 +164,38 @@ export default class ThreeDMux extends Template {
             rotation += 180;
         }
 
-        let horizontal_length = N * 4000;
-        let vertical_length = N * 3000;
-        let ports = [];
+        const horizontal_length = N * 4000;
+        const vertical_length = N * 3000;
+        const ports = [];
 
         for (var i = 0; i < N; i++) {
-            let xpos = i * (horizontal_length / (N - 1));
+            const xpos = i * (horizontal_length / (N - 1));
             ports.push(new ComponentPort(xpos, 0, (i + 1).toString(), "FLOW"));
         }
 
         ports.push(new ComponentPort(horizontal_length / 2, vertical_length + N * 1000, (N + 1).toString(), "FLOW"));
-        let bottomlinelength = N * 4000; //modify, so it depends on the input N
-        let vertlinelength = N * 3000; //same as above
+        const bottomlinelength = N * 4000; // modify, so it depends on the input N
+        const vertlinelength = N * 3000; // same as above
 
-        let leftInput = -N * 1000;
-        let rightInput = bottomlinelength + N * 1000;
+        const leftInput = -N * 1000;
+        const rightInput = bottomlinelength + N * 1000;
         let indexN = N;
-        let valvenum = Math.log(N) / Math.log(2);
-        let vertholder = vertlinelength / (2 * valvenum);
+        const valvenum = Math.log(N) / Math.log(2);
+        const vertholder = vertlinelength / (2 * valvenum);
 
         let count = N + 2;
 
         for (var i = 0; i < 2 * valvenum; i++) {
-            //left side
+            // left side
             if (i % 2 === 0) {
                 indexN /= 2;
-                let cur_ind = N - indexN - 1;
+                const cur_ind = N - indexN - 1;
                 // let leftsideLeft = new paper.Point(leftInput, vertholder + (i) * vertlinelength/(2*valvenum + 2) - channelWidth/2);
                 ports.push(new ComponentPort(leftInput, vertholder + (i * vertlinelength) / (2 * valvenum + 2), count.toString(), "CONTROL"));
                 console.log(count);
                 count++;
             }
-            //right side
+            // right side
             else {
                 ports.push(new ComponentPort(rightInput, vertholder + (i * vertlinelength) / (2 * valvenum + 2), count.toString(), "CONTROL"));
                 console.log(count);
@@ -207,18 +207,18 @@ export default class ThreeDMux extends Template {
     }
 
     __drawFlow(params) {
-        let position = params["position"];
-        let gap = params["gap"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let channelWidth = params["channelWidth"];
-        let threedmux_flow = new paper.CompoundPath();
+        const position = params.position;
+        const gap = params.gap;
+        const radius = params.valveRadius;
+        const color = params.color;
+        let rotation = params.rotation;
+        const channelWidth = params.channelWidth;
+        const threedmux_flow = new paper.CompoundPath();
 
-        let px = position[0];
-        let py = position[1];
-        let ins = params["in"];
-        let outs = params["out"];
+        const px = position[0];
+        const py = position[1];
+        const ins = params.in;
+        const outs = params.out;
         let N;
         if (ins < outs) {
             N = outs;
@@ -226,73 +226,73 @@ export default class ThreeDMux extends Template {
             N = ins;
             rotation += 180;
         }
-        let bottomlinelength = N * 4000; //modify, so it depends on the input N
-        let vertlinelength = N * 3000; //same as above
+        const bottomlinelength = N * 4000; // modify, so it depends on the input N
+        const vertlinelength = N * 3000; // same as above
 
-        let bottomlineleft = new paper.Point(px, py - channelWidth / 2 + vertlinelength);
-        let bottomlineright = new paper.Point(px + bottomlinelength, py + channelWidth / 2 + vertlinelength);
-        let channel = new paper.Path.Rectangle(bottomlineleft, bottomlineright);
+        const bottomlineleft = new paper.Point(px, py - channelWidth / 2 + vertlinelength);
+        const bottomlineright = new paper.Point(px + bottomlinelength, py + channelWidth / 2 + vertlinelength);
+        const channel = new paper.Path.Rectangle(bottomlineleft, bottomlineright);
 
         threedmux_flow.addChild(channel);
 
-        let valvenum = Math.log(N) / Math.log(2);
-        let valveselect = vertlinelength / (2 * valvenum);
-        let branchArray = new Array(N);
-        let centerArray = new Array(N);
+        const valvenum = Math.log(N) / Math.log(2);
+        const valveselect = vertlinelength / (2 * valvenum);
+        const branchArray = new Array(N);
+        const centerArray = new Array(N);
 
         // create base flow
         for (var i = 0; i < N; i++) {
-            let xposbranch = i * (bottomlinelength / (N - 1));
+            const xposbranch = i * (bottomlinelength / (N - 1));
 
-            let vertlinebottom = new paper.Point(px + xposbranch - channelWidth / 2, py + vertlinelength);
-            let vertlinetop = new paper.Point(px + xposbranch + channelWidth / 2, py);
+            const vertlinebottom = new paper.Point(px + xposbranch - channelWidth / 2, py + vertlinelength);
+            const vertlinetop = new paper.Point(px + xposbranch + channelWidth / 2, py);
             branchArray[i] = new paper.Path.Rectangle(vertlinebottom, vertlinetop);
         }
 
         // create output port
-        let portCon = new paper.Point(px + bottomlinelength / 2 - channelWidth / 2, py + vertlinelength);
-        let portOut = new paper.Point(px + bottomlinelength / 2 + channelWidth / 2, py + vertlinelength + N * 1000);
+        const portCon = new paper.Point(px + bottomlinelength / 2 - channelWidth / 2, py + vertlinelength);
+        const portOut = new paper.Point(px + bottomlinelength / 2 + channelWidth / 2, py + vertlinelength + N * 1000);
 
-        let portRec = new paper.Path.Rectangle(portCon, portOut);
+        const portRec = new paper.Path.Rectangle(portCon, portOut);
 
         threedmux_flow.addChild(portRec);
 
         // add valves and remove parts of channels
         let cur_N = N;
-        let xpos = px;
+        const xpos = px;
         let ypos = py + valveselect;
 
-        for (var j = 0; j < valvenum; j++) {
+        for (let j = 0; j < valvenum; j++) {
             // left side
             let count1 = 0;
-            let increment1 = cur_N / 2;
+            const increment1 = cur_N / 2;
             while (count1 < N) {
                 for (var w = 0; w < cur_N / 2; w++) {
-                    let current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
+                    const current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
 
-                    let cutrec = paper.Path.Rectangle({
+                    const cutrec = paper.Path.Rectangle({
                         from: new paper.Point(current_xpos - channelWidth / 2, ypos - gap / 2),
                         to: new paper.Point(current_xpos + channelWidth / 2, ypos + gap / 2)
                     });
 
                     this.__createthreedmuxValve(threedmux_flow, current_xpos, ypos, gap, radius, rotation, channelWidth);
-                    branchArray[count1 + w] = branchArray[count1 + w].subtract(cutrec); //remove a portion from the selected channel
+                    branchArray[count1 + w] = branchArray[count1 + w].subtract(cutrec); // remove a portion from the selected channel
                 }
 
                 count1 += 2 * increment1;
             }
 
-            //right side
-            let ypos_adjust = vertlinelength / (2 * valvenum + 2);
+            // right side
+            const ypos_adjust = vertlinelength / (2 * valvenum + 2);
             let count2 = 0;
-            let increment2 = cur_N / 2;
+            const increment2 = cur_N / 2;
             ypos += ypos_adjust;
 
             while (count2 < N) {
                 for (var w = 0; w < cur_N / 2; w++) {
-                    let current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
+                    const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
 
-                    let cutrec = paper.Path.Rectangle({
+                    const cutrec = paper.Path.Rectangle({
                         from: new paper.Point(current_xpos - channelWidth / 2, ypos - gap / 2),
                         to: new paper.Point(current_xpos + channelWidth / 2, ypos + gap / 2)
                     });
@@ -319,12 +319,12 @@ export default class ThreeDMux extends Template {
     }
 
     __createthreedmuxValve(compound_path, xpos, ypos, gap, radius, rotation, channel_width) {
-        let center = new paper.Point(xpos, ypos);
+        const center = new paper.Point(xpos, ypos);
 
-        //Create the basic circle
+        // Create the basic circle
         let circ = new paper.Path.Circle(center, radius);
 
-        //Add the tiny channel pieces that jut out
+        // Add the tiny channel pieces that jut out
         let rec = new paper.Path.Rectangle({
             point: new paper.Point(xpos - channel_width / 2, ypos - radius),
             size: [channel_width, radius],
@@ -341,29 +341,29 @@ export default class ThreeDMux extends Template {
 
         circ = circ.unite(rec);
 
-        let cutout = paper.Path.Rectangle({
+        const cutout = paper.Path.Rectangle({
             from: new paper.Point(xpos - radius, ypos - gap / 2),
             to: new paper.Point(xpos + radius, ypos + gap / 2)
         });
 
-        let valve = circ.subtract(cutout);
+        const valve = circ.subtract(cutout);
 
         compound_path.addChild(valve);
     }
 
     __drawControl(params) {
-        let position = params["position"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let channelWidth = params["controlChannelWidth"];
-        let threedmux_control = new paper.CompoundPath();
+        const position = params.position;
+        const radius = params.valveRadius;
+        const color = params.color;
+        let rotation = params.rotation;
+        const channelWidth = params.controlChannelWidth;
+        const threedmux_control = new paper.CompoundPath();
 
-        let px = position[0];
-        let py = position[1];
+        const px = position[0];
+        const py = position[1];
 
-        let ins = params["in"];
-        let outs = params["out"];
+        const ins = params.in;
+        const outs = params.out;
 
         let N;
         if (ins < outs) {
@@ -373,68 +373,68 @@ export default class ThreeDMux extends Template {
             rotation += 180;
         }
 
-        let bottomlinelength = N * 4000; //modify, so it depends on the input N
-        let vertlinelength = N * 3000; //same as above
+        const bottomlinelength = N * 4000; // modify, so it depends on the input N
+        const vertlinelength = N * 3000; // same as above
 
-        let leftInput = px - N * 1000;
-        let rightInput = px + bottomlinelength + N * 1000;
+        const leftInput = px - N * 1000;
+        const rightInput = px + bottomlinelength + N * 1000;
         let indexN = N;
-        let valvenum = Math.log(N) / Math.log(2);
-        let vertholder = vertlinelength / (2 * valvenum);
-        let valveselect = vertlinelength / (2 * valvenum);
+        const valvenum = Math.log(N) / Math.log(2);
+        const vertholder = vertlinelength / (2 * valvenum);
+        const valveselect = vertlinelength / (2 * valvenum);
 
-        for (var i = 0; i < 2 * valvenum; i++) {
-            //left side
+        for (let i = 0; i < 2 * valvenum; i++) {
+            // left side
             if (i % 2 === 0) {
                 indexN /= 2;
-                let cur_ind = N - indexN - 1;
-                let leftsideLeft = new paper.Point(leftInput, py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) - channelWidth / 2);
-                let leftsideRight = new paper.Point(px + cur_ind * (bottomlinelength / (N - 1)), py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) + channelWidth / 2);
-                let leftcontrol = new paper.Path.Rectangle(leftsideLeft, leftsideRight);
+                const cur_ind = N - indexN - 1;
+                const leftsideLeft = new paper.Point(leftInput, py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) - channelWidth / 2);
+                const leftsideRight = new paper.Point(px + cur_ind * (bottomlinelength / (N - 1)), py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) + channelWidth / 2);
+                const leftcontrol = new paper.Path.Rectangle(leftsideLeft, leftsideRight);
 
                 threedmux_control.addChild(leftcontrol);
             }
-            //right side
+            // right side
             else {
-                let cur_ind = indexN;
-                let rightsideLeft = new paper.Point(px + cur_ind * (bottomlinelength / (N - 1)), py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) - channelWidth / 2);
-                let rightsideRight = new paper.Point(rightInput, py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) + channelWidth / 2);
-                let rightcontrol = new paper.Path.Rectangle(rightsideLeft, rightsideRight);
+                const cur_ind = indexN;
+                const rightsideLeft = new paper.Point(px + cur_ind * (bottomlinelength / (N - 1)), py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) - channelWidth / 2);
+                const rightsideRight = new paper.Point(rightInput, py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) + channelWidth / 2);
+                const rightcontrol = new paper.Path.Rectangle(rightsideLeft, rightsideRight);
 
                 threedmux_control.addChild(rightcontrol);
             }
         }
 
         let cur_N = N;
-        let xpos = px;
+        const xpos = px;
         let ypos = py + valveselect;
 
         for (let j = 0; j < valvenum; j++) {
             // left side
             let count1 = 0;
-            let increment1 = cur_N / 2;
+            const increment1 = cur_N / 2;
             while (count1 < N) {
                 for (var w = 0; w < cur_N / 2; w++) {
-                    let current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
-                    let center = new paper.Point(current_xpos, ypos);
-                    let circle = new paper.Path.Circle(center, radius);
+                    const current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
+                    const center = new paper.Point(current_xpos, ypos);
+                    const circle = new paper.Path.Circle(center, radius);
                     threedmux_control.addChild(circle);
                 }
 
                 count1 += 2 * increment1;
             }
 
-            //right side
-            let ypos_adjust = vertlinelength / (2 * valvenum + 2);
+            // right side
+            const ypos_adjust = vertlinelength / (2 * valvenum + 2);
             let count2 = 0;
-            let increment2 = cur_N / 2;
+            const increment2 = cur_N / 2;
             ypos += ypos_adjust;
 
             while (count2 < N) {
                 for (var w = 0; w < cur_N / 2; w++) {
-                    let current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
-                    let center = new paper.Point(current_xpos, ypos);
-                    let circle = new paper.Path.Circle(center, radius);
+                    const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
+                    const center = new paper.Point(current_xpos, ypos);
+                    const circle = new paper.Path.Circle(center, radius);
                     threedmux_control.addChild(circle);
                 }
                 count2 += increment2 + cur_N / 2;

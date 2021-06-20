@@ -86,11 +86,11 @@ export default class DiamondReactionChamber extends Template {
     }
 
     getPorts(params) {
-        let channelWidth = params["channelWidth"];
-        let l = params["length"];
-        let w = params["width"];
+        const channelWidth = params.channelWidth;
+        const l = params.length;
+        const w = params.width;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(-l / 2, 0, "1", "FLOW"));
 
@@ -100,15 +100,15 @@ export default class DiamondReactionChamber extends Template {
     }
 
     render2D(params, key) {
-        let position = params["position"];
-        let px = position[0];
-        let py = position[1];
-        let cw = params["channelWidth"];
-        let l = params["length"];
-        let w = params["width"];
-        let rotation = params["rotation"];
+        const position = params.position;
+        const px = position[0];
+        const py = position[1];
+        const cw = params.channelWidth;
+        const l = params.length;
+        const w = params.width;
+        const rotation = params.rotation;
         console.log("Rotation", rotation);
-        let color = params["color"];
+        const color = params.color;
         let p0, p1, p2, p3, p4, p5;
         p0 = [px - l / 2, py - cw / 2];
         p1 = [px - l / 2, py + cw / 2];
@@ -116,7 +116,7 @@ export default class DiamondReactionChamber extends Template {
         p3 = [px + l / 2, py + cw / 2];
         p4 = [px + l / 2, py - cw / 2];
         p5 = [px, py - cw / 2 - w];
-        let hex = new paper.Path();
+        const hex = new paper.Path();
         hex.add(new paper.Point(p0));
         hex.add(new paper.Point(p1));
         hex.add(new paper.Point(p2));
@@ -130,7 +130,7 @@ export default class DiamondReactionChamber extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

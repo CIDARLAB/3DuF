@@ -4,11 +4,12 @@
 export default class PanAndZoom {
     /**
      * Default Constructor for the PanAndZoom object
-     * @param {*} paperView 
+     * @param {*} paperView
      */
     constructor(paperView) {
         this.view = paperView;
     }
+
     /**
      * Sets a zoom value to a certain position
      * @param {number} zoom Zoom value
@@ -17,15 +18,16 @@ export default class PanAndZoom {
      * @memberof PanAndZoom
      */
     stableZoom(zoom, position) {
-        let newZoom = zoom;
-        let p = position;
-        let c = this.view.getCenter();
-        let beta = this.view.getZoom() / newZoom;
-        let pc = p.subtract(c);
-        let a = p.subtract(pc.multiply(beta)).subtract(c);
+        const newZoom = zoom;
+        const p = position;
+        const c = this.view.getCenter();
+        const beta = this.view.getZoom() / newZoom;
+        const pc = p.subtract(c);
+        const a = p.subtract(pc.multiply(beta)).subtract(c);
         this.view.setCenter(this.view.getCenter().add(a));
         this.view.setZoom(newZoom);
     }
+
     /**
      * Adjust the zoom and the position
      * @param {number} delta Value of adjustment of the zoom value
@@ -50,6 +52,7 @@ export default class PanAndZoom {
         else if (delta > 0) return this.view.getZoom() / multiplier;
         else return this.view.getZoom();
     }
+
     /**
      * Updates the center coordinates
      * @param {number} delta Value of adjustment of the zoom value
@@ -59,6 +62,7 @@ export default class PanAndZoom {
     moveCenter(delta) {
         this.view.setCenter(this.calcCenter(delta));
     }
+
     /**
      * Calculates the new center position
      * @param {number} delta Value of adjustment of the zoom value
