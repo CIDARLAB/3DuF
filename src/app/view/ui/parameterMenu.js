@@ -355,8 +355,8 @@ export function generateTableFunction(tableID, typeString, setString, isTransluc
                 table.style.opacity = 0.7;
             }
             table.style.position = "absolute";
-            table.style.left = "" + (event.clientX + 30) + "px";
-            table.style.top = "" + (event.clientY - 20) + "px";
+            table.style.left = String(event.clientX + 30) + "px";
+            table.style.top = String(event.clientY - 20) + "px";
             HTMLUtils.removeClass(table, "hidden-block");
             HTMLUtils.addClass(table, "shown-block");
             document.body.appendChild(table);
