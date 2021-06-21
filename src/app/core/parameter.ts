@@ -1,12 +1,15 @@
 import Registry from './registry';
 import * as NumberUtils from "../utils/numberUtils";
 
+import StringValue from './parameters/stringValue';
+
+
 /**
  * Parameter class
  */
 export default class Parameter {
-    private type: string;
-    private value: any;
+    private __type: string;
+    private __value: any;
 
     /**
      * Default Constructor of the Parameter object
@@ -20,47 +23,34 @@ export default class Parameter {
         } else if (typeof value === "string" && type === "Integer") {
             value = parseInt(value);
         }
-        Parameter.checkValue(type, value);
-        this.type = type;
-        this.value = value;
+        //Parameter.checkValue(type, value);
+        this.__type = type;
+        this.__value = value;
     }
     /**
      * @returns {}
      * @memberof Parameter
      */
-    toJSON() {
-        return this.value;
+    toJSON(): any {
+        return this.__value;
     }
     /**
      * Gets value of parameter
      * @returns {} Returns value of the parameter
      * @memberof Parameter
      */
-    public get getValue() {
-        return this.value;
+    public get value(): any {
+        return this.__value;
     }
     /**
      * Gets type of parameter
      * @returns {String} Returns the type of parameter
      * @memberof Parameter
      */
-    public get getType() {
-        return this.type;
+    public get type(): string {
+        return this.__type;
     }
-    /**
-     * Checks if value of the parameter is valid or not
-     * @param {String} type Type of the parameter
-     * @param {*} value Value of the parameter
-     * @memberof Parameter
-     * @returns {void}
-     */
-    static checkValue(type: string, value: any) {
-        /*let paramType = Registry.registeredParams[type];
-        if (paramType.isValid(value)){
-            return true;
-        }*/
-        throw new Error("checkValue is inoperable due to registeredParams deletion");
-    }
+
     
     /**
      * Updates the value of parameter
@@ -68,12 +58,12 @@ export default class Parameter {
      * @memberof Parameter
      * @returns {void}
      */
-    updateValue(value: any) {
-        Parameter.checkValue(this.type, value);
-        this.value = value;
+    updateValue(value: any): void {
+        //Parameter.checkValue(this.__type, value);
+        this.__value = value;
     }
     
-    resetValue() {}
+    resetValue(): void {}
 
     /**
      * Creates a parameter from a JSON format
@@ -81,7 +71,7 @@ export default class Parameter {
      * @returns {Parameter} Returns a new parameter
      * @memberof Parameter
      */
-    static fromJSON(json: any) {
+    static fromJSON(json: any): Parameter {
         return new Parameter(json.type, json.value);
     }
     /**
@@ -91,7 +81,7 @@ export default class Parameter {
      * @returns {Parameter} Returns a new parameter 
      * @memberof Parameter
      */
-    static generateComponentParameter(key: string, value: any) {
+    static generateComponentParameter(key: string, value: any): Parameter | Parameter[] {
         let ret;
 
         if (key == "position") {
@@ -100,6 +90,8 @@ export default class Parameter {
             ret = new Parameter("Float", value);
         } else if (typeof value == "string" || value instanceof String) {
             ret = new Parameter("String", value);
+        } else {
+            throw new Error("Non-component passed to generateComponentParameter");
         }
 
         return ret;
@@ -111,7 +103,7 @@ export default class Parameter {
      * @returns {Parameter} Returns a parameter object
      * @memberof Parameter
      */
-    static generateConnectionParameter(key: string, value: any) {
+    static generateConnectionParameter(key: string, value: any): Parameter | Parameter[] {
         let ret;
 
         if (key == "paths") {
@@ -122,11 +114,14 @@ export default class Parameter {
                 ret.push(new Parameter("Point", point));
             }
         } else if (key == "segments") {
-            //Something goes here
+            ret = new Parameter("SegmentArray", value)
         } else if (NumberUtils.isFloatOrInt(value)) {
             ret = new Parameter("Float", value);
         } else if (typeof value == "string" || value instanceof String) {
-            ret = new Parameter("String", value);
+            //ret = new Parameter("String", value);
+            ret = new StringValue(value);
+        } else {
+            throw new Error("Non-connection passed to generateConnectionParameter");
         }
 
         return ret;
