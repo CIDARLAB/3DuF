@@ -2,6 +2,12 @@ import Registry from './registry';
 import * as NumberUtils from "../utils/numberUtils";
 
 import StringValue from './parameters/stringValue';
+import FloatValue from './parameters/floatValue';
+import SegmentArray from './parameters/segmentArray';
+import PointArray from './parameters/pointArray';
+import PointValue from './parameters/pointValue';
+import IntegerValue from './parameters/integerValue';
+import BooleanValue from './parameters/booleanValue';
 
 
 /**
@@ -71,8 +77,25 @@ export default class Parameter {
      * @returns {Parameter} Returns a new parameter
      * @memberof Parameter
      */
-    static fromJSON(json: any): Parameter {
-        return new Parameter(json.type, json.value);
+    static fromJSON(json: {type:string, value:any}): Parameter {
+        if (json.type == "String") {
+            return new StringValue(json.value);
+        } else if (json.type == "Float") {
+            return new FloatValue(json.value);
+        } else if (json.type == "Integer") {
+            return new IntegerValue(json.value);
+        } else if (json.type == "Point") {
+            return new PointValue(json.value);
+        } else if (json.type == "PointArray") {
+            return new PointArray(json.value);
+        } else if (json.type == "SegmentArray") {
+            return new SegmentArray(json.value);
+        } else if (json.type == "Boolean") {
+            return new BooleanValue(json.value);
+        } else {
+            throw new Error("json contains invalid type");
+        }
+
     }
     /**
      * Generates a new parameter with a specific component
@@ -85,11 +108,11 @@ export default class Parameter {
         let ret;
 
         if (key == "position") {
-            ret = new Parameter("Point", value);
+            ret = new PointValue(value);
         } else if (NumberUtils.isFloatOrInt(value)) {
-            ret = new Parameter("Float", value);
+            ret = new FloatValue(value);
         } else if (typeof value == "string" || value instanceof String) {
-            ret = new Parameter("String", value);
+            ret = new StringValue(value);
         } else {
             throw new Error("Non-component passed to generateComponentParameter");
         }
@@ -111,14 +134,13 @@ export default class Parameter {
             let point;
             for (let i in value) {
                 point = value[i];
-                ret.push(new Parameter("Point", point));
+                ret.push(new PointValue(point));
             }
         } else if (key == "segments") {
-            ret = new Parameter("SegmentArray", value)
+            ret = new SegmentArray(value);
         } else if (NumberUtils.isFloatOrInt(value)) {
-            ret = new Parameter("Float", value);
+            ret = new FloatValue(value);
         } else if (typeof value == "string" || value instanceof String) {
-            //ret = new Parameter("String", value);
             ret = new StringValue(value);
         } else {
             throw new Error("Non-connection passed to generateConnectionParameter");
