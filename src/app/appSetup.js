@@ -1,5 +1,7 @@
-import "../../lib/material/material.min.css";
-import "../../lib/material/material.min.js";
+import Registry from "./core/registry";
+
+import ViewManager from "./view/viewManager";
+import { TrackJS } from "trackjs";
 
 import Registry from "./core/registry";
 import BareViewManager from "./view/bareViewManager";

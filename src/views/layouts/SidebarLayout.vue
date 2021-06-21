@@ -8,6 +8,7 @@
                 <HelpDialog />
                 <v-divider />
                 <MoveDialog />
+                <ChangeAllDialog />
                 <EditDeviceDialog />
                 <EditBorderDialog />
                 <InsertTextDialog />
@@ -51,6 +52,7 @@ import HelpDialog from "@/components/HelpDialog.vue";
 import IntroHelpDialog from "@/components/IntroHelpDialog.vue";
 import EditDeviceDialog from "@/components/EditDeviceDialog.vue";
 import MoveDialog from "@/components/base/MoveDialog.vue";
+import ChangeAllDialog from "@/components/base/ChangeAllDialog.vue";
 import EditBorderDialog from "@/components/EditBorderDialog.vue";
 import ImportDXFDialog from "@/components/ImportDXFDialog.vue";
 import InsertTextDialog from "@/components/InsertTextDialog.vue";
@@ -62,6 +64,7 @@ export default {
         IntroHelpDialog,
         EditDeviceDialog,
         MoveDialog,
+        ChangeAllDialog,
         EditBorderDialog,
         ImportDXFDialog,
         InsertTextDialog,

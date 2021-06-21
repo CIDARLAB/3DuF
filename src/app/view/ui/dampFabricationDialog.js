@@ -1,6 +1,6 @@
 import dialogPolyfill from "dialog-polyfill";
-import * as Registry from "../../core/registry";
-import axios from "axios";
+import Registry from "../../core/registry";
+import axios from 'axios';
 
 export default class DAMPFabricationDialog {
     constructor() {
