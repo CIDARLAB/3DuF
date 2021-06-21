@@ -21,7 +21,6 @@ export default class SegmentArray extends Parameter {
                     return false;
                 }
             }
-            throw new Error("isValid partially inoperable due to registeredParams deletion");
         } else {
             return false;
         }
