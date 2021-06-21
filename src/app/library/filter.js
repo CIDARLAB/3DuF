@@ -41,7 +41,7 @@ export default class Filter extends Template {
             inletWidth: 1 * 1000,
             inletLength: 3 * 1000,
             outletWidth: 1 * 1000,
-            outletLength: 3 * 1000,
+            outletLength: 3 * 1000
         };
 
         this.__units = {
@@ -73,7 +73,7 @@ export default class Filter extends Template {
             inletWidth: 0.5 * 1000,
             inletLength: 1 * 1000,
             outletWidth: 0.5 * 1000,
-            outletLength: 1 * 1000,
+            outletLength: 1 * 1000
         };
 
         this.__maximum = {
@@ -89,7 +89,7 @@ export default class Filter extends Template {
             inletWidth: 4 * 1000,
             inletLength: 8 * 1000,
             outletWidth: 4 * 1000,
-            outletLength: 8 * 1000,
+            outletLength: 8 * 1000
         };
 
         this.__placementTool = "componentPositionTool";
@@ -135,13 +135,13 @@ export default class Filter extends Template {
     }
 
     getPorts(params) {
-        let inletLength = params["inletLength"];
-        let filterLength = params["filterLength"];
-        let outletLength = params["outletLength"];
-        let levelNumber = params["levelNumber"];
-        let pillarDiameter = params["pillarDiameter"];
+        const inletLength = params.inletLength;
+        const filterLength = params.filterLength;
+        const outletLength = params.outletLength;
+        const levelNumber = params.levelNumber;
+        const pillarDiameter = params.pillarDiameter;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
@@ -151,36 +151,36 @@ export default class Filter extends Template {
     }
 
     render2D(params, key) {
-        let rotation = params["rotation"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let pillarDiameter = params["pillarDiameter"];
-        let filterWidth = params["filterWidth"];
-        let barrierWidth = params["barrierWidth"];
-        let filterLength = params["filterLength"];
-        let filterNumber = params["filterNumber"];
-        let levelNumber = params["levelNumber"];
-        let inletWidth = params["inletWidth"];
-        let inletLength = params["inletLength"];
-        let outletWidth = params["outletWidth"];
-        let outletLength = params["outletLength"];
+        const rotation = params.rotation;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const pillarDiameter = params.pillarDiameter;
+        const filterWidth = params.filterWidth;
+        const barrierWidth = params.barrierWidth;
+        const filterLength = params.filterLength;
+        const filterNumber = params.filterNumber;
+        const levelNumber = params.levelNumber;
+        const inletWidth = params.inletWidth;
+        const inletLength = params.inletLength;
+        const outletWidth = params.outletWidth;
+        const outletLength = params.outletLength;
 
-        let serp = new paper.CompoundPath();
-        
-        let bodyWidth = filterNumber * filterWidth + (filterNumber - 1) * barrierWidth;
+        const serp = new paper.CompoundPath();
+
+        const bodyWidth = filterNumber * filterWidth + (filterNumber - 1) * barrierWidth;
 
         // inlet
-        let topLeft = new paper.Point(x, y - inletWidth/2);
-        let bottomRight = new paper.Point(x + inletLength, y + inletWidth/2);
+        let topLeft = new paper.Point(x, y - inletWidth / 2);
+        let bottomRight = new paper.Point(x + inletLength, y + inletWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // left pillar
-        topLeft = new paper.Point(x + inletLength, y - inletWidth/2);
-        let topRight = new paper.Point(x + inletLength + 2.5 * pillarDiameter, y - bodyWidth/2);
-        let bottomLeft = new paper.Point(x + inletLength, y + inletWidth/2);
-        bottomRight = new paper.Point(x + inletLength + 2.5 * pillarDiameter, y + bodyWidth/2);
+        topLeft = new paper.Point(x + inletLength, y - inletWidth / 2);
+        let topRight = new paper.Point(x + inletLength + 2.5 * pillarDiameter, y - bodyWidth / 2);
+        let bottomLeft = new paper.Point(x + inletLength, y + inletWidth / 2);
+        bottomRight = new paper.Point(x + inletLength + 2.5 * pillarDiameter, y + bodyWidth / 2);
 
         let pillarPath = new paper.Path();
         pillarPath.add(topLeft);
@@ -188,52 +188,50 @@ export default class Filter extends Template {
         pillarPath.add(bottomRight);
         pillarPath.add(bottomLeft);
 
-        let circ = new paper.Path.Circle(new paper.Point(x + inletLength + 1.5 * pillarDiameter, y), pillarDiameter/2);
-        
+        let circ = new paper.Path.Circle(new paper.Point(x + inletLength + 1.5 * pillarDiameter, y), pillarDiameter / 2);
+
         pillarPath = pillarPath.subtract(circ);
 
         serp.addChild(pillarPath);
 
         // body tube
         let startBody = inletLength + 2.5 * pillarDiameter;
-        let extraSpace = 0.3 * filterLength;
+        const extraSpace = 0.3 * filterLength;
 
-        for (let i = 0; i < levelNumber; i++){
-            topLeft = new paper.Point(x + startBody, y - bodyWidth/2);
-            bottomRight = new paper.Point(x + startBody + filterLength + extraSpace, y + bodyWidth/2);
+        for (let i = 0; i < levelNumber; i++) {
+            topLeft = new paper.Point(x + startBody, y - bodyWidth / 2);
+            bottomRight = new paper.Point(x + startBody + filterLength + extraSpace, y + bodyWidth / 2);
 
             let rec = new paper.Path.Rectangle(topLeft, bottomRight);
 
-            if (i % 2 === 0){
-                let division = (bodyWidth - (filterNumber - 1) * barrierWidth) / filterNumber;
+            if (i % 2 === 0) {
+                const division = (bodyWidth - (filterNumber - 1) * barrierWidth) / filterNumber;
                 let heightAccum = division;
 
-                for (let j = 0; j < filterNumber - 1; j++){
-                    topLeft = new paper.Point(x + startBody + extraSpace/2, y - bodyWidth/2 + heightAccum);
+                for (let j = 0; j < filterNumber - 1; j++) {
+                    topLeft = new paper.Point(x + startBody + extraSpace / 2, y - bodyWidth / 2 + heightAccum);
                     heightAccum += barrierWidth;
-                    bottomRight = new paper.Point(x + startBody + filterLength, y - bodyWidth/2 + heightAccum);
+                    bottomRight = new paper.Point(x + startBody + filterLength, y - bodyWidth / 2 + heightAccum);
 
-                    let cutrec = new paper.Path.Rectangle(topLeft, bottomRight);
+                    const cutrec = new paper.Path.Rectangle(topLeft, bottomRight);
 
                     rec = rec.subtract(cutrec);
-                    
+
                     heightAccum += division;
                 }
-            }
-
-            else {
-                let division = (bodyWidth - (filterNumber - 2) * barrierWidth) / (filterNumber - 1);
+            } else {
+                const division = (bodyWidth - (filterNumber - 2) * barrierWidth) / (filterNumber - 1);
                 let heightAccum = division;
 
-                for (let j = 0; j < filterNumber - 2; j++){
-                    topLeft = new paper.Point(x + startBody + extraSpace/2, y - bodyWidth/2 + heightAccum);
+                for (let j = 0; j < filterNumber - 2; j++) {
+                    topLeft = new paper.Point(x + startBody + extraSpace / 2, y - bodyWidth / 2 + heightAccum);
                     heightAccum += barrierWidth;
-                    bottomRight = new paper.Point(x + startBody + filterLength, y - bodyWidth/2 + heightAccum);
+                    bottomRight = new paper.Point(x + startBody + filterLength, y - bodyWidth / 2 + heightAccum);
 
-                    let cutrec = new paper.Path.Rectangle(topLeft, bottomRight);
+                    const cutrec = new paper.Path.Rectangle(topLeft, bottomRight);
 
                     rec = rec.subtract(cutrec);
-                    
+
                     heightAccum += division;
                 }
             }
@@ -244,10 +242,10 @@ export default class Filter extends Template {
         }
 
         // right pillar
-        topLeft = new paper.Point(x + startBody, y - bodyWidth/2);
-        topRight = new paper.Point(x + startBody + 2.5 * pillarDiameter, y - outletWidth/2);
-        bottomRight = new paper.Point(x + startBody + 2.5 * pillarDiameter, y + outletWidth/2);
-        bottomLeft = new paper.Point(x + startBody, y + bodyWidth/2);
+        topLeft = new paper.Point(x + startBody, y - bodyWidth / 2);
+        topRight = new paper.Point(x + startBody + 2.5 * pillarDiameter, y - outletWidth / 2);
+        bottomRight = new paper.Point(x + startBody + 2.5 * pillarDiameter, y + outletWidth / 2);
+        bottomLeft = new paper.Point(x + startBody, y + bodyWidth / 2);
 
         pillarPath = new paper.Path();
 
@@ -258,27 +256,26 @@ export default class Filter extends Template {
 
         startBody += 2.5 * pillarDiameter;
 
-        circ = new paper.Path.Circle(new paper.Point(x + startBody - 1.5 * pillarDiameter, y), pillarDiameter/2);
+        circ = new paper.Path.Circle(new paper.Point(x + startBody - 1.5 * pillarDiameter, y), pillarDiameter / 2);
 
         pillarPath = pillarPath.subtract(circ);
 
         serp.addChild(pillarPath);
 
         // outlet
-        topLeft = new paper.Point(x + startBody, y - outletWidth/2);
-        bottomRight = new paper.Point(x + startBody + outletLength, y + outletWidth/2);
+        topLeft = new paper.Point(x + startBody, y - outletWidth / 2);
+        bottomRight = new paper.Point(x + startBody + outletLength, y + outletWidth / 2);
 
-        serp.addChild((new paper.Path.Rectangle(topLeft, bottomRight)));
-        
-       
+        serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+
         serp.rotate(rotation, new paper.Point(x, y));
-        
+
         serp.fillColor = color;
         return serp;
     }
 
     render2DTarget(key, params) {
-        let serp = this.render2D(params, key);
+        const serp = this.render2D(params, key);
 
         serp.fillColor.alpha = 0.5;
         return serp;

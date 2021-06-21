@@ -38,7 +38,7 @@ export default class BetterMixer extends Template {
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            
+
             height: "&mu;m"
         };
 
@@ -93,13 +93,13 @@ export default class BetterMixer extends Template {
     }
 
     getPorts(params) {
-        let channelWidth = params["channelWidth"];
-        let bendLength = params["bendLength"];
-        let bendSpacing = params["bendSpacing"];
-        let rotation = params["rotation"];
-        let numberOfBends = params["numberOfBends"];
+        const channelWidth = params.channelWidth;
+        const bendLength = params.bendLength;
+        const bendSpacing = params.bendSpacing;
+        const rotation = params.rotation;
+        const numberOfBends = params.numberOfBends;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", "FLOW"));
 
@@ -109,32 +109,32 @@ export default class BetterMixer extends Template {
     }
 
     render2D(params, key) {
-        let channelWidth = params["channelWidth"];
-        let bendLength = params["bendLength"];
-        let bendSpacing = params["bendSpacing"];
-        let rotation = params["rotation"];
-        let numBends = params["numberOfBends"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let segHalf = bendLength / 2 + channelWidth;
-        let segLength = bendLength + 2 * channelWidth;
-        let segBend = bendSpacing + 2 * channelWidth;
-        let vRepeat = 2 * bendSpacing + 2 * channelWidth;
-        let vOffset = bendSpacing + channelWidth;
-        let hOffset = bendLength / 2 + channelWidth / 2;
-        let serp = new paper.CompoundPath();
-        //draw first segment
+        const channelWidth = params.channelWidth;
+        const bendLength = params.bendLength;
+        const bendSpacing = params.bendSpacing;
+        const rotation = params.rotation;
+        const numBends = params.numberOfBends;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const segHalf = bendLength / 2 + channelWidth;
+        const segLength = bendLength + 2 * channelWidth;
+        const segBend = bendSpacing + 2 * channelWidth;
+        const vRepeat = 2 * bendSpacing + 2 * channelWidth;
+        const vOffset = bendSpacing + channelWidth;
+        const hOffset = bendLength / 2 + channelWidth / 2;
+        const serp = new paper.CompoundPath();
+        // draw first segment
         serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));
         for (let i = 0; i < numBends; i++) {
             serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
             serp.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
             serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
             if (i == numBends - 1) {
-                //draw half segment to close
+                // draw half segment to close
                 serp.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
             } else {
-                //draw full segment
+                // draw full segment
                 serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth));
             }
         }
@@ -144,7 +144,7 @@ export default class BetterMixer extends Template {
     }
 
     render2DTarget(key, params) {
-        let serp = this.render2D(params, key);
+        const serp = this.render2D(params, key);
 
         serp.fillColor.alpha = 0.5;
         return serp;

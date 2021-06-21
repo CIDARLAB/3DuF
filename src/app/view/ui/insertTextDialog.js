@@ -1,4 +1,4 @@
-import Registry from '../../core/registry';
+import Registry from "../../core/registry";
 
 export default class InsertTextDialog {
     constructor() {
@@ -9,18 +9,18 @@ export default class InsertTextDialog {
         if (!this.__dialog.showModal) {
             dialogPolyfill.registerDialog(this.__dialog);
         }
-        this.__showTextLabelButton.addEventListener("click", function() {
+        this.__showTextLabelButton.addEventListener("click", function () {
             this.__dialog.showModal();
         });
 
-        let ref = this;
-        this.__acceptTextButton.onclick = function() {
+        const ref = this;
+        this.__acceptTextButton.onclick = function () {
             Registry.viewManager.activateTool("InsertTextTool");
             Registry.text = document.getElementById("inserttext_textinput").value;
             ref.__dialog.close();
         };
 
-        this.__dialog.querySelector(".close").addEventListener("click", function() {
+        this.__dialog.querySelector(".close").addEventListener("click", function () {
             ref.__dialog.close();
         });
     }

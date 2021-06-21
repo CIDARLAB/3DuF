@@ -10,16 +10,12 @@
                 {{ title }}
             </v-card-title>
             <v-card-text>
-                <slot name="content">
-                    Dialog content goes here
-                </slot>
+                <slot name="content"> Dialog content goes here </slot>
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
                 <slot name="actions" :callbacks="callbacks">
-                    <v-btn color="green darken-1" text @click="callbacks.close()">
-                        Close
-                    </v-btn>
+                    <v-btn color="green darken-1" text @click="callbacks.close()"> Close </v-btn>
                 </slot>
             </v-card-actions>
         </v-card>
@@ -54,10 +50,10 @@ export default {
         };
     },
     computed: {
-        buttonID: function() {
+        buttonID: function () {
             return this.title.toLowerCase().replace(" ", "_") + "_dialog_button";
         },
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [
                 this.color && this.color.length > 0 ? this.color : "white",
                 this.textColor && this.textColor.length > 0 ? this.textColor : "blue--text",

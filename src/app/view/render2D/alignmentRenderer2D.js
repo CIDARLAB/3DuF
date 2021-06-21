@@ -4,19 +4,19 @@ import * as FeatureSets from "../../featureSets";
 import paper from "paper";
 
 function getLayerColor(feature) {
-    let height = feature.getValue("height");
-    let layerHeight = 1; // feature.layer.estimateLayerHeight();
+    const height = feature.getValue("height");
+    const layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
     if (decimal > 1) decimal = 1;
     if (!feature.layer.flip) decimal = 1 - decimal;
-    let targetColorSet = Colors.getLayerColors(feature.layer);
+    const targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 }
 
 function getBaseColor(feature) {
     let decimal = 0;
     if (!feature.layer.flip) decimal = 1 - decimal;
-    let targetColorSet = Colors.getLayerColors(feature.layer);
+    const targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 }
 
@@ -25,7 +25,7 @@ function getDefaultValueForType(typeString, setString, key) {
 }
 
 function getFeatureRenderer(typeString, setString) {
-    let rendererInfo = FeatureSets.getRender2D(typeString, setString);
+    const rendererInfo = FeatureSets.getRender2D(typeString, setString);
     return rendererInfo;
 }
 
@@ -44,32 +44,32 @@ export function renderAlignmentMarks(position, radius, features) {
     // primParams["position"] = position;
     // primParams["color"] = Colors.getDefaultFeatureColor(typeString, setString, Registry.currentLayer);
     // let rendered = prim(primParams);
-    let alignmentmarkergroup = new paper.Group();
+    const alignmentmarkergroup = new paper.Group();
 
-    for (let i in features) {
-        let feature = features[i];
+    for (const i in features) {
+        const feature = features[i];
         if (feature === null) {
             continue;
         }
         if (calculateDistance(position, feature.getBounds().center) < radius) {
-            //TODO: figure out how check for different kinds of components and then generate
+            // TODO: figure out how check for different kinds of components and then generate
 
-            //Generate the alignment H | V lines for each of the features
+            // Generate the alignment H | V lines for each of the features
 
-            //Get the bounds of the feature
+            // Get the bounds of the feature
 
-            let bounds = feature.getBounds();
+            const bounds = feature.getBounds();
 
-            //Only the centroid alignment marks
-            let center = bounds.center;
-            let hstart = new paper.Point(center.x - radius, center.y);
-            let hend = new paper.Point(center.x + radius, center.y);
+            // Only the centroid alignment marks
+            const center = bounds.center;
+            const hstart = new paper.Point(center.x - radius, center.y);
+            const hend = new paper.Point(center.x + radius, center.y);
 
-            let vstart = new paper.Point(center.x, center.y - radius);
-            let vend = new paper.Point(center.x, center.y + radius);
+            const vstart = new paper.Point(center.x, center.y - radius);
+            const vend = new paper.Point(center.x, center.y + radius);
 
-            let hpath = new paper.Path(hstart, hend);
-            let vpath = new paper.Path(vstart, vend);
+            const hpath = new paper.Path(hstart, hend);
+            const vpath = new paper.Path(vstart, vend);
 
             hpath.strokeColor = "#696965";
             hpath.strokeWidth = 500;

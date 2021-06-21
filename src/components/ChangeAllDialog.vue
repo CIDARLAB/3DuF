@@ -11,22 +11,14 @@
             <thead>
                 <tr>
                     <th>Select</th>
-                    <th scope="col">
-                        Name
-                    </th>
-                    <th scope="col">
-                        Change
-                    </th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Change</th>
                 </tr>
             </thead>
         </table>
         <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
-            <button id="change_all_button" type="button" class="mdl-button">
-                Change
-            </button>
-            <button type="button" class="mdl-button close">
-                Cancel
-            </button>
+            <button id="change_all_button" type="button" class="mdl-button">Change</button>
+            <button type="button" class="mdl-button close">Cancel</button>
         </div>
     </dialog>
 </template>

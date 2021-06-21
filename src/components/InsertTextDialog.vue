@@ -10,12 +10,8 @@
         </template>
         <template v-slot:actions="{ callbacks }">
             <v-spacer />
-            <v-btn color="green darken-1" text @click="callbacks.close()">
-                Cancel
-            </v-btn>
-            <v-btn color="green darken-1" text @click="callbacks.close()">
-                Insert
-            </v-btn>
+            <v-btn color="green darken-1" text @click="callbacks.close()"> Cancel </v-btn>
+            <v-btn color="green darken-1" text @click="callbacks.close()"> Insert </v-btn>
         </template>
     </Dialog>
 </template>

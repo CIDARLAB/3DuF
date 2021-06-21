@@ -2,7 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 
-export default class Splitter extends Template{
+export default class Splitter extends Template {
     constructor() {
         super();
     }
@@ -109,67 +109,67 @@ export default class Splitter extends Template{
     }
 
     getPorts(params) {
-        let inletWidth = params["inletWidth"];
-        let inletLength = params["inletLength"];
-        let outletWidth1 = params["outletWidth1"];
-        let outletLength1 = params["outletLength1"];
-        let outletWidth2 = params["outletWidth2"];
-        let outletLength2 = params["outletLength2"];
+        const inletWidth = params.inletWidth;
+        const inletLength = params.inletLength;
+        const outletWidth1 = params.outletWidth1;
+        const outletLength1 = params.outletLength1;
+        const outletWidth2 = params.outletWidth2;
+        const outletLength2 = params.outletLength2;
 
-        let ports = [];
+        const ports = [];
 
         // inlet
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
         // outlet 1
-        ports.push(new ComponentPort(inletLength - outletWidth1/2, - inletWidth/2 - outletLength1, "2", "FLOW"));
+        ports.push(new ComponentPort(inletLength - outletWidth1 / 2, -inletWidth / 2 - outletLength1, "2", "FLOW"));
 
         // outlet 2
-        ports.push(new ComponentPort(inletLength - outletWidth2/2, inletWidth/2 + outletLength2, "3", "FLOW"));
+        ports.push(new ComponentPort(inletLength - outletWidth2 / 2, inletWidth / 2 + outletLength2, "3", "FLOW"));
 
         return ports;
     }
 
     render2D(params, key) {
-        let rotation = params["rotation"];
-        let x = params["position"][0];
-        let y = params["position"][1];
-        let color = params["color"];
-        let inletWidth = params["inletWidth"];
-        let inletLength = params["inletLength"];
-        let outletWidth1 = params["outletWidth1"];
-        let outletLength1 = params["outletLength1"];
-        let outletWidth2 = params["outletWidth2"];
-        let outletLength2 = params["outletLength2"];
+        const rotation = params.rotation;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const inletWidth = params.inletWidth;
+        const inletLength = params.inletLength;
+        const outletWidth1 = params.outletWidth1;
+        const outletLength1 = params.outletLength1;
+        const outletWidth2 = params.outletWidth2;
+        const outletLength2 = params.outletLength2;
 
-        let serp = new paper.CompoundPath();      
-        
+        const serp = new paper.CompoundPath();
+
         // inlet
-        let topLeft = new paper.Point(x, y - inletWidth/2);
-        let bottomRight = new paper.Point(x + inletLength, y + inletWidth/2);
+        let topLeft = new paper.Point(x, y - inletWidth / 2);
+        let bottomRight = new paper.Point(x + inletLength, y + inletWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // outlet 1
-        topLeft = new paper.Point(x + inletLength - outletWidth1, y - inletWidth/2 - outletLength1);
-        bottomRight = new paper.Point(x + inletLength, y - inletWidth/2);
+        topLeft = new paper.Point(x + inletLength - outletWidth1, y - inletWidth / 2 - outletLength1);
+        bottomRight = new paper.Point(x + inletLength, y - inletWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         // outlet 2
-        topLeft = new paper.Point(x + inletLength - outletWidth2, y + inletWidth/2);
-        bottomRight = new paper.Point(x + inletLength, y + inletWidth/2 + outletLength2);
+        topLeft = new paper.Point(x + inletLength - outletWidth2, y + inletWidth / 2);
+        bottomRight = new paper.Point(x + inletLength, y + inletWidth / 2 + outletLength2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         serp.rotate(rotation, new paper.Point(x, y));
-        
+
         serp.fillColor = color;
         return serp;
     }
 
     render2DTarget(key, params) {
-        let serp = this.render2D(params, key);
+        const serp = this.render2D(params, key);
 
         serp.fillColor.alpha = 0.5;
         return serp;

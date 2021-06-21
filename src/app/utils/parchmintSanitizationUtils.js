@@ -1,12 +1,12 @@
 export function sanitizeJSON(json) {
-    let components = json.components;
+    const components = json.components;
 
-    for (let component of components) {
-        let params = component.params;
+    for (const component of components) {
+        const params = component.params;
 
-        if (params.hasOwnProperty("orientation")) {
+        if (Object.prototype.hasOwnProperty.call(params, "orientation")) {
             let rotation = 0;
-            let orientation = params.orientation;
+            const orientation = params.orientation;
             if (orientation === "V") {
                 rotation = 0;
             } else {
@@ -18,21 +18,21 @@ export function sanitizeJSON(json) {
         }
     }
 
-    let features_layers = json.features;
+    const features_layers = json.features;
 
-    for (let i in features_layers) {
-        let feature_layer = features_layers[i];
-        let features = feature_layer.features;
+    for (const i in features_layers) {
+        const feature_layer = features_layers[i];
+        const features = feature_layer.features;
         console.log(features);
-        for (let i in features) {
-            let feature = features[i];
+        for (const i in features) {
+            const feature = features[i];
 
-            if (feature.hasOwnProperty("params")) {
-                let params = feature.params;
+            if (Object.prototype.hasOwnProperty.call(feature, "params")) {
+                const params = feature.params;
 
-                if (params.hasOwnProperty("orientation")) {
+                if (Object.prototype.hasOwnProperty.call(params, "orientation")) {
                     let rotation = 0;
-                    let orientation = params.orientation;
+                    const orientation = params.orientation;
                     if (orientation === "V") {
                         rotation = 0;
                     } else {

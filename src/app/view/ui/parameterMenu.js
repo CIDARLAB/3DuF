@@ -1,15 +1,15 @@
 import * as HTMLUtils from "../../utils/htmlUtils";
 import Feature from "../../core/feature";
 
-import Registry from '../../core/registry';
-import {FloatValue, BooleanValue, StringValue} from '../../core/parameters';
+import Registry from "../../core/registry";
+import { FloatValue, BooleanValue, StringValue } from "../../core/parameters";
 import * as FeatureSets from "../../featureSets";
 
-var createSlider = function(min, max, step, start, id) {
-    var div = document.createElement("div");
-    var p = document.createElement("p");
+const createSlider = function (min, max, step, start, id) {
+    const div = document.createElement("div");
+    const p = document.createElement("p");
     p.setAttribute("style", "min-width: 240px");
-    var slider = document.createElement("input");
+    const slider = document.createElement("input");
     slider.className = "mdl-slider mdl-js-slider";
     slider.setAttribute("type", "range");
     slider.setAttribute("id", id);
@@ -23,10 +23,10 @@ var createSlider = function(min, max, step, start, id) {
     return div;
 };
 
-var createButton = function(iconString) {
-    var button = document.createElement("button");
+const createButton = function (iconString) {
+    const button = document.createElement("button");
     button.className = "mdl-button mdl-js-button mdl-button--icon";
-    var icon = document.createElement("i");
+    const icon = document.createElement("i");
     icon.className = "material-icons";
     icon.innerHTML = iconString;
     button.appendChild(icon);
@@ -34,16 +34,16 @@ var createButton = function(iconString) {
     return button;
 };
 
-var createValueField = function(start, id, unittext = "") {
-    var div = document.createElement("div");
-    var error = document.createElement("span");
-    var span = document.createElement("span");
+const createValueField = function (start, id, unittext = "") {
+    const div = document.createElement("div");
+    const error = document.createElement("span");
+    const span = document.createElement("span");
     span.innerHTML = unittext;
     span.style.fontSize = "14px";
     error.className = "mdl-textfield__error";
     error.innerHTML = "Digits only";
     div.className = "mdl-textfield mdl-js-textfield";
-    var field = document.createElement("input");
+    const field = document.createElement("input");
     field.className = "mdl-textfield__input";
     field.setAttribute("type", "text");
     field.setAttribute("id", id);
@@ -58,18 +58,18 @@ var createValueField = function(start, id, unittext = "") {
     return div;
 };
 
-var createTableElement = function(child) {
-    var td = document.createElement("td");
+const createTableElement = function (child) {
+    const td = document.createElement("td");
     td.appendChild(child);
     return td;
 };
 
-var createCheckbox = function(checked, id) {
-    var div = document.createElement("div");
-    var label = document.createElement("label");
+const createCheckbox = function (checked, id) {
+    const div = document.createElement("div");
+    const label = document.createElement("label");
     label.className = "mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect";
     label.setAttribute("for", id);
-    var input = document.createElement("input");
+    const input = document.createElement("input");
     input.setAttribute("type", "checkbox");
     input.setAttribute("id", id);
     if (checked) input.checked = true;
@@ -81,9 +81,9 @@ var createCheckbox = function(checked, id) {
     return div;
 };
 
-var createSpan = function(value, id) {
-    var div = document.createElement("div");
-    var span = document.createElement("span");
+const createSpan = function (value, id) {
+    const div = document.createElement("div");
+    const span = document.createElement("span");
     span.innerHTML = value;
     span.setAttribute("id", id);
     span.setAttribute("style", "font-size: 16px;");
@@ -92,8 +92,8 @@ var createSpan = function(value, id) {
     return div;
 };
 
-var createTableRow = function(one, two, three) {
-    var tr = document.createElement("tr");
+const createTableRow = function (one, two, three) {
+    const tr = document.createElement("tr");
     one.style.borderBottom = "none";
     tr.appendChild(one);
     tr.appendChild(two);
@@ -101,11 +101,11 @@ var createTableRow = function(one, two, three) {
     return tr;
 };
 
-var generateUpdateFunction = function(sourceID, targetID, typeString, setString, paramString) {
-    return function() {
-        var source = document.getElementById(sourceID);
-        var target = document.getElementById(targetID);
-        var param;
+const generateUpdateFunction = function (sourceID, targetID, typeString, setString, paramString) {
+    return function () {
+        const source = document.getElementById(sourceID);
+        const target = document.getElementById(targetID);
+        let param;
         if (!source.value || source.value == "") {
             return;
         }
@@ -136,12 +136,12 @@ var generateUpdateFunctionString = function(sourceID, targetID, typeString, setS
   }
 }
 */
-var generateCheckFunction = function(sourceID, targetID, typeString, setString, paramString) {
-    return function() {
-        var source = document.getElementById(sourceID);
-        var target = document.getElementById(targetID);
-        var param;
-        var param_to_pass;
+const generateCheckFunction = function (sourceID, targetID, typeString, setString, paramString) {
+    return function () {
+        const source = document.getElementById(sourceID);
+        const target = document.getElementById(targetID);
+        let param;
+        let param_to_pass;
         try {
             param = new BooleanValue(source.checked);
         } catch (err) {
@@ -159,12 +159,12 @@ var generateCheckFunction = function(sourceID, targetID, typeString, setString, 
     };
 };
 
-var generateCheckFunctionDir = function(sourceID, targetID, typeString, setString, paramString) {
-    return function() {
-        var source = document.getElementById(sourceID);
-        var target = document.getElementById(targetID);
-        var param;
-        var param_to_pass;
+const generateCheckFunctionDir = function (sourceID, targetID, typeString, setString, paramString) {
+    return function () {
+        const source = document.getElementById(sourceID);
+        const target = document.getElementById(targetID);
+        let param;
+        let param_to_pass;
         try {
             param = new BooleanValue(source.checked);
         } catch (err) {
@@ -182,25 +182,25 @@ var generateCheckFunctionDir = function(sourceID, targetID, typeString, setStrin
     };
 };
 
-var createSliderRow = function(featureID, typeString, setString, key) {
-    let definition = FeatureSets.getDefinition(typeString, setString);
-    let min = definition.minimum[key];
-    let max = definition.maximum[key];
-    let value = Feature.getDefaultsForType(typeString, setString)[key];
-    let step = 10;
-    let titleID = featureID + "_" + key + "_title";
-    let sliderID = featureID + "_" + key + "_slider";
-    let fieldID = featureID + "_" + key + "_value";
-    let title = createSpan(key, titleID);
-    let titleContainer = createTableElement(title);
+const createSliderRow = function (featureID, typeString, setString, key) {
+    const definition = FeatureSets.getDefinition(typeString, setString);
+    const min = definition.minimum[key];
+    const max = definition.maximum[key];
+    const value = Feature.getDefaultsForType(typeString, setString)[key];
+    const step = 10;
+    const titleID = featureID + "_" + key + "_title";
+    const sliderID = featureID + "_" + key + "_slider";
+    const fieldID = featureID + "_" + key + "_value";
+    const title = createSpan(key, titleID);
+    const titleContainer = createTableElement(title);
     titleContainer.style.borderBottom = "none";
-    let slider = createSlider(min, max, step, value, sliderID);
-    let sliderContainer = createTableElement(slider);
+    const slider = createSlider(min, max, step, value, sliderID);
+    const sliderContainer = createTableElement(slider);
     sliderContainer.setAttribute("style", "padding-left: 0px; padding-right: 0px");
-    let unittext = definition.units[key];
-    let field = createValueField(value, fieldID, unittext);
-    let fieldContainer = createTableElement(field);
-    let row = createTableRow(sliderContainer, titleContainer, fieldContainer);
+    const unittext = definition.units[key];
+    const field = createValueField(value, fieldID, unittext);
+    const fieldContainer = createTableElement(field);
+    const row = createTableRow(sliderContainer, titleContainer, fieldContainer);
     field.oninput = generateUpdateFunction(fieldID, sliderID, typeString, setString, key);
     slider.oninput = generateUpdateFunction(sliderID, fieldID, typeString, setString, key);
     return row;
@@ -222,57 +222,57 @@ var createStringRow = function(featureID, typeString, setString, key) {
 }
 */
 
-var createDefaultsRow = function(featureID, typeString, setString, key) {
-    var title = createSpan(key);
-    var buttonID = "defaults_button";
-    var spanID = "defaults_span";
-    var value = Feature.getDefaultsForType(typeString, setString)[key];
+const createDefaultsRow = function (featureID, typeString, setString, key) {
+    const title = createSpan(key);
+    const buttonID = "defaults_button";
+    const spanID = "defaults_span";
+    const value = Feature.getDefaultsForType(typeString, setString)[key];
 };
 
-var createCheckboxRow = function(featureID, typeString, setString, key) {
-    var title = createSpan(key);
-    var checkID = featureID + "_" + key + "_checkbox";
-    var spanID = featureID + "_" + key + "_span";
-    var value = Feature.getDefaultsForType(typeString, setString)[key];
-    var checkBox = createCheckbox(value, checkID);
-    var spanValue;
+const createCheckboxRow = function (featureID, typeString, setString, key) {
+    const title = createSpan(key);
+    const checkID = featureID + "_" + key + "_checkbox";
+    const spanID = featureID + "_" + key + "_span";
+    const value = Feature.getDefaultsForType(typeString, setString)[key];
+    const checkBox = createCheckbox(value, checkID);
+    let spanValue;
     if (value == "V") spanValue = "V";
     else spanValue = "H";
-    var span = createSpan(spanValue, spanID);
-    var titleContainer = createTableElement(title);
-    var checkContainer = createTableElement(checkBox);
-    var spanContainer = createTableElement(span);
-    var row = createTableRow(checkContainer, titleContainer, spanContainer);
+    const span = createSpan(spanValue, spanID);
+    const titleContainer = createTableElement(title);
+    const checkContainer = createTableElement(checkBox);
+    const spanContainer = createTableElement(span);
+    const row = createTableRow(checkContainer, titleContainer, spanContainer);
     checkBox.onchange = generateCheckFunction(checkID, spanID, typeString, setString, key);
     return row;
 };
 
-var createInOutRow = function(featureID, typeString, setString, key) {
-    var title = createSpan(key);
-    var checkID = featureID + "_" + key + "_checkbox";
-    var spanID = featureID + "_" + key + "_span";
-    var value = Feature.getDefaultsForType(typeString, setString)[key];
-    var checkBox = createCheckbox(value, checkID);
-    var spanValue = value;
-    //if (value == "IN") spanValue = "IN";
-    //else spanValue = "OUT";
-    var span = createSpan(spanValue, spanID);
-    var titleContainer = createTableElement(title);
-    var checkContainer = createTableElement(checkBox);
-    var spanContainer = createTableElement(span);
-    var row = createTableRow(checkContainer, titleContainer, spanContainer);
+const createInOutRow = function (featureID, typeString, setString, key) {
+    const title = createSpan(key);
+    const checkID = featureID + "_" + key + "_checkbox";
+    const spanID = featureID + "_" + key + "_span";
+    const value = Feature.getDefaultsForType(typeString, setString)[key];
+    const checkBox = createCheckbox(value, checkID);
+    const spanValue = value;
+    // if (value == "IN") spanValue = "IN";
+    // else spanValue = "OUT";
+    const span = createSpan(spanValue, spanID);
+    const titleContainer = createTableElement(title);
+    const checkContainer = createTableElement(checkBox);
+    const spanContainer = createTableElement(span);
+    const row = createTableRow(checkContainer, titleContainer, spanContainer);
     checkBox.onchange = generateCheckFunctionDir(checkID, spanID, typeString, setString, key);
     return row;
 };
 
-var createFeatureTableRows = function(typeString, setString) {
-    let def = FeatureSets.getDefinition(typeString, setString);
-    let heritable = def.heritable;
-    let id = "fake_ID";
-    let rows = [];
-    for (let key in heritable) {
+const createFeatureTableRows = function (typeString, setString) {
+    const def = FeatureSets.getDefinition(typeString, setString);
+    const heritable = def.heritable;
+    const id = "fake_ID";
+    const rows = [];
+    for (const key in heritable) {
         let row;
-        let type = heritable[key];
+        const type = heritable[key];
         if (type == "Float" || type == "Integer") {
             row = createSliderRow(id, typeString, setString, key);
         } else if (key == "orientation") {
@@ -285,51 +285,51 @@ var createFeatureTableRows = function(typeString, setString) {
     return rows;
 };
 
-var createFeatureTableHeaders = function(typeString) {
-    var thead = document.createElement("thead");
-    var tr = document.createElement("tr");
+const createFeatureTableHeaders = function (typeString) {
+    const thead = document.createElement("thead");
+    const tr = document.createElement("tr");
     thead.appendChild(tr);
-    var param = document.createElement("th");
+    const param = document.createElement("th");
     param.className = "mdl-data-table__cell--non-numeric";
     param.innerHTML = "Parameter &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;";
-    var value = document.createElement("th");
+    const value = document.createElement("th");
     value.className = "mdl-data-table__cell--non-numeric";
     value.innerHTML = "Value";
-    var type = document.createElement("th");
+    const type = document.createElement("th");
     type.className = "mdl-data-table__cell--non-numeric";
     type.innerHTML = "Parameters";
     type.style.fontSize = "18px";
     type.style.color = "#000000";
-    //type.style.right = "35px";
+    // type.style.right = "35px";
     tr.appendChild(type);
     tr.appendChild(param);
     tr.appendChild(value);
     return thead;
 };
 
-var createFeatureTableBody = function(typeString, setString) {
-    var body = document.createElement("tbody");
+const createFeatureTableBody = function (typeString, setString) {
+    const body = document.createElement("tbody");
     body.setAttribute("id", "featureTable");
-    var rows = createFeatureTableRows(typeString, setString);
-    for (var i = 0; i < rows.length; i++) {
+    const rows = createFeatureTableRows(typeString, setString);
+    for (let i = 0; i < rows.length; i++) {
         body.appendChild(rows[i]);
     }
     return body;
 };
 
 export function createFeatureTable(typeString, setString, position) {
-    var table = document.createElement("table");
+    const table = document.createElement("table");
     table.className = "mdl-data-table mdl-js-data-table mdl-shadow--2dp feature-table fade-transition";
-    var head = createFeatureTableHeaders(typeString);
+    const head = createFeatureTableHeaders(typeString);
     table.appendChild(head);
-    var body = createFeatureTableBody(typeString, setString);
+    const body = createFeatureTableBody(typeString, setString);
     table.appendChild(body);
-    var closeButton = createCloseButton();
+    const closeButton = createCloseButton();
     closeButton.style.position = "absolute";
     closeButton.style.right = "0px";
     closeButton.style.top = "0px";
-    //table.appendChild(closeButton);
-    closeButton.onclick = function() {
+    // table.appendChild(closeButton);
+    closeButton.onclick = function () {
         table.parentElement.removeChild(table);
     };
     HTMLUtils.addClass(table, "hidden-block");
@@ -337,15 +337,15 @@ export function createFeatureTable(typeString, setString, position) {
     return table;
 }
 
-var createCloseButton = function() {
-    var button = createButton("close");
+var createCloseButton = function () {
+    const button = createButton("close");
     button.style.color = "#313131";
     return button;
 };
 
 export function generateTableFunction(tableID, typeString, setString, isTranslucent) {
-    return function(event) {
-        var table = document.getElementById(tableID);
+    return function (event) {
+        let table = document.getElementById(tableID);
         if (table) {
             table.parentElement.removeChild(table);
         } else {
@@ -355,8 +355,8 @@ export function generateTableFunction(tableID, typeString, setString, isTransluc
                 table.style.opacity = 0.7;
             }
             table.style.position = "absolute";
-            table.style.left = "" + (event.clientX + 30) + "px";
-            table.style.top = "" + (event.clientY - 20) + "px";
+            table.style.left = String(event.clientX + 30) + "px";
+            table.style.top = String(event.clientY - 20) + "px";
             HTMLUtils.removeClass(table, "hidden-block");
             HTMLUtils.addClass(table, "shown-block");
             document.body.appendChild(table);
@@ -365,25 +365,25 @@ export function generateTableFunction(tableID, typeString, setString, isTransluc
 }
 
 export function revertToDefaultParams(table, typeString, setString) {
-    let def = FeatureSets.getDefinition(typeString, setString);
-    let heritable = def.heritable;
-    let defaults = def.defaults;
+    const def = FeatureSets.getDefinition(typeString, setString);
+    const heritable = def.heritable;
+    const defaults = def.defaults;
 
-    for (let key in heritable) {
-        let type = heritable[key];
+    for (const key in heritable) {
+        const type = heritable[key];
 
         if (type == "Float" || type == "Integer") {
-            let inputID = "fake_ID_" + key + "_slider";
-            //Modify the text in the input element
-            let element = document.querySelector("#" + inputID);
+            const inputID = "fake_ID_" + key + "_slider";
+            // Modify the text in the input element
+            const element = document.querySelector("#" + inputID);
             element.MaterialSlider.change(defaults[key]);
             Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
         } else if (key == "orientation") {
-            //TODO - Change the checkbox
-            let inputID = "fake_ID_" + key + "_checkbox";
-            let element = document.querySelector("#" + inputID);
-            let materialelement = table.querySelector(".mdl-js-checkbox");
-            let spanelement = table.querySelector("#fake_ID_" + key + "_span");
+            // TODO - Change the checkbox
+            const inputID = "fake_ID_" + key + "_checkbox";
+            const element = document.querySelector("#" + inputID);
+            const materialelement = table.querySelector(".mdl-js-checkbox");
+            const spanelement = table.querySelector("#fake_ID_" + key + "_span");
             if (defaults[key] == "V") {
                 element.checked = true;
                 materialelement.MaterialCheckbox.check();
@@ -395,11 +395,11 @@ export function revertToDefaultParams(table, typeString, setString) {
             }
             Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
         } else if (key == "direction") {
-            //TODO Change the Checkbox
-            let inputID = "fake_ID_" + key + "_checkbox";
-            let materialelement = table.querySelector(".mdl-js-checkbox");
-            let element = document.querySelector("#" + inputID);
-            let spanelement = table.querySelector("#fake_ID_" + key + "_span");
+            // TODO Change the Checkbox
+            const inputID = "fake_ID_" + key + "_checkbox";
+            const materialelement = table.querySelector(".mdl-js-checkbox");
+            const element = document.querySelector("#" + inputID);
+            const spanelement = table.querySelector("#fake_ID_" + key + "_span");
             if (defaults[key] == "IN") {
                 element.checked = true;
                 materialelement.MaterialCheckbox.check();

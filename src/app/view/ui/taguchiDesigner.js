@@ -11,7 +11,7 @@ export default class TaguchiDesigner {
         this.__orthogonalArray = null;
         this.__parameterHeaders = [];
 
-        //Setup the Dialog
+        // Setup the Dialog
         this.__dialog = document.getElementById("doe_dialog");
         this.__doeFileInput = document.getElementById("doe_input");
 
@@ -19,12 +19,12 @@ export default class TaguchiDesigner {
             dialogPolyfill.registerDialog(this.__dialog);
         }
 
-        let ref = this;
-        this.__dialog.querySelector(".close").addEventListener("click", function() {
+        const ref = this;
+        this.__dialog.querySelector(".close").addEventListener("click", function () {
             ref.__dialog.close();
         });
 
-        //Setup the tableview
+        // Setup the tableview
 
         this.__tablecontainer = document.getElementById("taguchi-table");
 
@@ -34,23 +34,23 @@ export default class TaguchiDesigner {
 
         this.__generateDesignsButton = document.getElementById("download-doe-button");
 
-        this.__generateDesignsButton.addEventListener("click", function(el, ev) {
+        this.__generateDesignsButton.addEventListener("click", function (el, ev) {
             ref.generateAndDownloadTaguchiDesigns();
         });
 
         this.__handsonTableObject = null;
 
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            //console.log(reader.result);
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            // console.log(reader.result);
             ref.loadCSVData(reader.result);
         };
 
         if (this.__doeFileInput) {
             this.__doeFileInput.addEventListener(
                 "change",
-                function() {
-                    let file = this.files[0];
+                function () {
+                    const file = this.files[0];
                     reader.readAsText(file);
                 },
                 false
@@ -59,33 +59,33 @@ export default class TaguchiDesigner {
     }
 
     openDialog(componentName) {
-        let component = this.__viewManagerDelegate.currentDevice.getComponentByName(componentName);
+        const component = this.__viewManagerDelegate.currentDevice.getComponentByName(componentName);
         this.__selectedComponent = component;
 
         this.__dialog.showModal();
     }
 
     loadCSVData(text) {
-        //Initialize the table based on the data in the CSV
+        // Initialize the table based on the data in the CSV
         this.parseCSV(text);
 
-        //Initialize the params table UI so that the user can input the DOE parameters
+        // Initialize the params table UI so that the user can input the DOE parameters
         this.__initializeTable();
     }
 
     parseCSV(text) {
         let lines = text.split("\n");
-        let headers = lines[0].split(",");
+        const headers = lines[0].split(",");
         this.__parameterHeaders = headers;
         this.__numberOfParameters = headers.length;
         // console.log(headers);
         let max = 0;
-        //Find the highest value for the parameter values
-        for (let i in lines) {
-            let line = lines[i];
-            let items = line.split(",");
-            for (let ii in items) {
-                let val = parseInt(items[ii]);
+        // Find the highest value for the parameter values
+        for (const i in lines) {
+            const line = lines[i];
+            const items = line.split(",");
+            for (const ii in items) {
+                const val = parseInt(items[ii]);
                 if (val > max) {
                     max = val;
                 }
@@ -95,30 +95,30 @@ export default class TaguchiDesigner {
         this.__numberOfLevels = max;
         // console.log("Max number of values = ", max);
 
-        //Number of parameters
+        // Number of parameters
         // console.log("# parameters", headers.length);
 
         this.__orthogonalArray = [];
         lines = lines.splice(1, lines.length - 1);
-        for (let i in lines) {
-            let line = lines[i];
+        for (const i in lines) {
+            const line = lines[i];
             this.__orthogonalArray.push(line.split(","));
         }
     }
 
     __initializeTable() {
-        let heritables = this.__selectedComponent.getParams().heritable;
-        let paramoptions = [];
+        const heritables = this.__selectedComponent.getParams().heritable;
+        const paramoptions = [];
 
-        for (let key in heritables) {
+        for (const key in heritables) {
             paramoptions.push(key);
         }
-        let blank_column_format = { type: "numeric" };
+        const blank_column_format = { type: "numeric" };
 
-        let data = [];
+        const data = [];
         let rowdata;
 
-        //fill out blank data
+        // fill out blank data
         for (let y = 0; y < this.__numberOfParameters; y++) {
             rowdata = [];
             rowdata.push(paramoptions[y]);
@@ -128,15 +128,15 @@ export default class TaguchiDesigner {
             data.push(rowdata);
         }
 
-        let selectionboxcell = {
+        const selectionboxcell = {
             editor: "select",
             selectOptions: paramoptions
         };
 
-        let column_data = [];
+        const column_data = [];
         column_data.push(selectionboxcell);
 
-        let col_header = ["Parameter"];
+        const col_header = ["Parameter"];
 
         for (let i = 0; i < this.__numberOfLevels; i++) {
             column_data.push(blank_column_format);
@@ -154,46 +154,46 @@ export default class TaguchiDesigner {
     }
 
     generateAndDownloadTaguchiDesigns() {
-        let paramdata = this.__handsonTableObject;
-        let jsons = [];
-        //Go through each design
-        for (let i in this.__orthogonalArray) {
-            let iteration = this.__generateOrthogonalDesign(this.__orthogonalArray[i], paramdata);
+        const paramdata = this.__handsonTableObject;
+        const jsons = [];
+        // Go through each design
+        for (const i in this.__orthogonalArray) {
+            const iteration = this.__generateOrthogonalDesign(this.__orthogonalArray[i], paramdata);
 
             jsons.push(iteration);
         }
 
-        //Create a Zip
-        let zipper = new JSZip();
+        // Create a Zip
+        const zipper = new JSZip();
         for (let i = 0; i < jsons.length; i++) {
             zipper.file(this.__viewManagerDelegate.currentDevice.getName() + "_" + i + ".json", jsons[i]);
         }
 
-        let content = zipper.generate({
+        const content = zipper.generate({
             type: "blob"
         });
         saveAs(content, "Taguchi_DOE.zip");
     }
 
     __generateOrthogonalDesign(orthogonalArrayElement, paramdata) {
-        //Read the orthogonal array for each experiment
-        let paramMap = {};
+        // Read the orthogonal array for each experiment
+        const paramMap = {};
         // console.log("ORthogonal array", orthogonalArrayElement);
 
         for (let i = 0; i < orthogonalArrayElement.length; i++) {
-            let columnindex = parseInt(orthogonalArrayElement[i]);
+            const columnindex = parseInt(orthogonalArrayElement[i]);
             // console.log(i, columnindex);
             paramMap[paramdata.getDataAtCell(i, 0)] = paramdata.getDataAtCell(i, columnindex);
         }
 
-        //TODO: Update the component and then download the design
+        // TODO: Update the component and then download the design
         // console.log(paramMap);
-        for (let key in paramMap) {
+        for (const key in paramMap) {
             this.__selectedComponent.updateParameter(key, paramMap[key]);
         }
 
-        //Serialize each design
-        let json = JSON.stringify(this.__viewManagerDelegate.currentDevice.toInterchangeV1());
+        // Serialize each design
+        const json = JSON.stringify(this.__viewManagerDelegate.currentDevice.toInterchangeV1());
 
         return json;
     }

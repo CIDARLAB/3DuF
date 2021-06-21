@@ -8,20 +8,20 @@ export default class DAMPFabricationDialog {
         this.__dialog = document.getElementById("damp_fabricate_dialog");
         this.__showFabDialogButton = document.querySelector("#damp_fabricate");
 
-        let ref = this;
+        const ref = this;
         if (!this.__dialog.showModal) {
             dialogPolyfill.registerDialog(this.__dialog);
         }
-        this.__showFabDialogButton.addEventListener("click", function() {
+        this.__showFabDialogButton.addEventListener("click", function () {
             ref.__dialog.showModal();
         });
 
-        this.__sendFabricationSubmissionButton.onclick = function() {
+        this.__sendFabricationSubmissionButton.onclick = function () {
             // Registry.viewManager.activateTool("InsertTextTool");
-            let email = document.getElementById("fabricate_dialog_email_field").value;
-            let address = document.getElementById("fabricate_dialog_address_field").value;
+            const email = document.getElementById("fabricate_dialog_email_field").value;
+            const address = document.getElementById("fabricate_dialog_address_field").value;
             console.log(Registry.currentDevice.toInterchangeV1());
-            let endpoint = "http://fabrication-service.damplab.org/api/v1/submit";
+            const endpoint = "http://fabrication-service.damplab.org/api/v1/submit";
             axios
                 .post(endpoint, {
                     email: email,
@@ -38,7 +38,7 @@ export default class DAMPFabricationDialog {
                 });
         };
 
-        this.__dialog.querySelector(".close").addEventListener("click", function() {
+        this.__dialog.querySelector(".close").addEventListener("click", function () {
             ref.__dialog.close();
         });
     }

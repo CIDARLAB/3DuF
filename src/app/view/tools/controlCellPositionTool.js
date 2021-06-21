@@ -9,12 +9,12 @@ export default class ControlCellPositionTool extends PositionTool {
     }
 
     createNewFeature(point) {
-        let featureIDs = [];
+        const featureIDs = [];
 
-        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
-        let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
-        let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
-        let cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
+        const currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
+        const flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
+        const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
+        const cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
 
         let newFeature = Device.makeFeature(this.typeString, this.setString, {
             position: PositionTool.getTarget(point)
@@ -57,7 +57,7 @@ export default class ControlCellPositionTool extends PositionTool {
     }
 
     showTarget() {
-        let target = PositionTool.getTarget(this.lastPoint);
+        const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }

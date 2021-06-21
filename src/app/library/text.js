@@ -44,16 +44,16 @@ export default class Text extends Template {
     }
 
     render2D(params, key) {
-        //Regardless of the key...
-        let start = params["start"];
-        let end = params["end"];
-        let color = params["color"];
-        let width = params["width"];
-        let baseColor = params["baseColor"];
-        let startPoint = new paper.Point(start[0], start[1]);
-        let endPoint = new paper.Point(end[0], end[1]);
-        let vec = endPoint.subtract(startPoint);
-        let rec = paper.Path.Rectangle({
+        // Regardless of the key...
+        const start = params.start;
+        const end = params.end;
+        const color = params.color;
+        const width = params.width;
+        const baseColor = params.baseColor;
+        const startPoint = new paper.Point(start[0], start[1]);
+        const endPoint = new paper.Point(end[0], end[1]);
+        const vec = endPoint.subtract(startPoint);
+        const rec = paper.Path.Rectangle({
             size: [vec.length, width],
             point: start,
             //  radius: width/2,
@@ -66,7 +66,7 @@ export default class Text extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
     }
 }

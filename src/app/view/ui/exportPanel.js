@@ -1,7 +1,7 @@
 import JSZip from "jszip";
 import ManufacturingLayer from "../../manufacturing/manufacturingLayer";
 
-import Registry from '../../core/registry';
+import Registry from "../../core/registry";
 
 export default class ExportPanel {
     constructor(viewManagerDelegate) {
@@ -28,18 +28,18 @@ export default class ExportPanel {
         // });
 
         this.__svgButton = document.getElementById("svg_button");
-        this.__svgButton.onclick = function() {
-            let svgs = Registry.viewManager.layersToSVGStrings();
+        this.__svgButton.onclick = function () {
+            const svgs = Registry.viewManager.layersToSVGStrings();
             for (let i = 0; i < svgs.length; i++) {
                 svgs[i] =
                     ManufacturingLayer.generateSVGTextPrepend(Registry.currentDevice.getXSpan(), Registry.currentDevice.getYSpan()) +
                     svgs[i] +
                     ManufacturingLayer.generateSVGTextAppend();
             }
-            //let svg = paper.project.exportSVG({asString: true});
-            let blobs = [];
+            // let svg = paper.project.exportSVG({asString: true});
+            const blobs = [];
             let success = 0;
-            let zipper = new JSZip();
+            const zipper = new JSZip();
             for (let i = 0; i < svgs.length; i++) {
                 if (svgs[i].slice(0, 4) == "<svg") {
                     zipper.file("Device_layer_" + i + ".svg", svgs[i]);
@@ -49,7 +49,7 @@ export default class ExportPanel {
 
             if (success == 0) throw new Error("Unable to generate any valid SVGs. Do all layers have at least one non-channel item in them?");
             else {
-                let content = zipper.generate({
+                const content = zipper.generate({
                     type: "blob"
                 });
                 saveAs(content, "device_layers.zip");
@@ -62,7 +62,7 @@ export default class ExportPanel {
     }
 
     saveJSON() {
-        let json = new Blob([JSON.stringify(Registry.viewManager.generateExportJSON())], {
+        const json = new Blob([JSON.stringify(Registry.viewManager.generateExportJSON())], {
             type: "application/json"
         });
         saveAs(json, Registry.currentDevice.getName() + ".json");

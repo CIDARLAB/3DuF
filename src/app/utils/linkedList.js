@@ -11,19 +11,19 @@ export default class LinkedList {
     }
 
     removeCurrent() {
-        let prev = this.current.prev;
-        let next = this.current.next;
+        const prev = this.current.prev;
+        const next = this.current.next;
 
         prev.next = next;
         next.prev = prev;
     }
 
     removeNode(node) {
-        let cnode = this.head;
+        const cnode = this.head;
         if (node.id === cnode.id) {
-            //remove the node
-            let prev = cnode.prev;
-            let next = cnode.next;
+            // remove the node
+            const prev = cnode.prev;
+            const next = cnode.next;
 
             prev.next = next;
             if (next) {
@@ -33,9 +33,9 @@ export default class LinkedList {
             let nextnode = LinkedList.getNextNode(cnode);
             while (nextnode) {
                 if (nextnode.id === node.id) {
-                    //remove the node
-                    let prev = nextnode.prev;
-                    let next = nextnode.next;
+                    // remove the node
+                    const prev = nextnode.prev;
+                    const next = nextnode.next;
 
                     prev.next = next;
                     if (next) {
@@ -55,20 +55,20 @@ export default class LinkedList {
     }
 
     push(data) {
-        //Incase its the first one
+        // Incase its the first one
         if (this.count === 0) {
-            let node = new Node(data);
+            const node = new Node(data);
             this.head = node;
             this.tail = node;
         } else {
-            //Save the old head
-            let temp = this.head;
+            // Save the old head
+            const temp = this.head;
 
-            //Set the new head
-            let node = new Node(data);
+            // Set the new head
+            const node = new Node(data);
             node.id = this.count;
 
-            //Create new links
+            // Create new links
             node.next = temp;
             temp.prev = node;
 
@@ -78,7 +78,7 @@ export default class LinkedList {
     }
 
     getArray() {
-        let retarray = [];
+        const retarray = [];
         retarray.push(this.head.data);
         let nextnode = LinkedList.getNextNode(this.head);
         while (nextnode) {

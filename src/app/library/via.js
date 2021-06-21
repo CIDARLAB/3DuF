@@ -65,9 +65,9 @@ export default class Via extends Template {
     }
 
     getPorts(params) {
-        let radius = params["radius"];
+        const radius = params.radius;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
@@ -75,18 +75,18 @@ export default class Via extends Template {
     }
 
     render2D(params, key) {
-        //Regardless of the key...
-        let position = params["position"];
-        let radius = params["radius"];
-        let color1 = params["color"];
-        let pos = new paper.Point(position[0], position[1]);
-        let outerCircle = new paper.Path.Circle(pos, radius);
+        // Regardless of the key...
+        const position = params.position;
+        const radius = params.radius;
+        const color1 = params.color;
+        const pos = new paper.Point(position[0], position[1]);
+        const outerCircle = new paper.Path.Circle(pos, radius);
         outerCircle.fillColor = color1;
         return outerCircle;
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

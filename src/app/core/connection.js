@@ -4,8 +4,7 @@ import Parameter from "./parameter";
 import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
 
-import Registry from './registry';
-
+import Registry from "./registry";
 
 /**
  * This class contains the connection abstraction used in the interchange format and the
@@ -14,11 +13,11 @@ import Registry from './registry';
 export default class Connection {
     /**
      * Default Connection Constructor
-     * @param {String} type 
-     * @param {Params} params 
-     * @param {String} name 
-     * @param {String} mint 
-     * @param {String} id 
+     * @param {String} type
+     * @param {Params} params
+     * @param {String} name
+     * @param {String} mint
+     * @param {String} id
      */
     constructor(type, params, name, mint, id = Feature.generateID()) {
         this.__params = params;
@@ -26,10 +25,10 @@ export default class Connection {
         this.__id = id;
         this.__type = type;
         this.__entity = mint;
-        //This stores the features that are a part of the component
+        // This stores the features that are a part of the component
         this.__features = [];
         this.__nodes = [];
-        //TODO: Need to figure out how to effectively search through these
+        // TODO: Need to figure out how to effectively search through these
         this.__bounds = null;
         this.__source = null;
         this.__sinks = [];
@@ -37,6 +36,7 @@ export default class Connection {
         this.__objects = [];
         this.__routed = false;
     }
+
     /**
      * Gets the sinks in the connection
      * @returns {Array<ConnectionTarget>} Returns an array with the sinks
@@ -45,6 +45,7 @@ export default class Connection {
     get sinks() {
         return this.__sinks;
     }
+
     /**
      * Gets the source of the connection
      * @returns {} Returns the source of the connection
@@ -53,6 +54,7 @@ export default class Connection {
     get source() {
         return this.__source;
     }
+
     /**
      * Checks if the connection is routed
      * @returns {Boolean} Returns true whether if it is routed or not
@@ -61,6 +63,7 @@ export default class Connection {
     get routed() {
         return this.__routed;
     }
+
     /**
      * Sets if the connection is routed
      * @param {Boolean} value true if it's router or false if it's not
@@ -97,7 +100,7 @@ export default class Connection {
      */
     setBounds(bounds) {
         this.__bounds = bounds;
-        let topleftpt = bounds.topLeft;
+        const topleftpt = bounds.topLeft;
         this.__params.position = [topleftpt.x, topleftpt.y];
         this.__params.xspan = bounds.width;
         this.__params.yspan = bounds.height;
@@ -122,7 +125,7 @@ export default class Connection {
      * @memberof Connection
      */
     toInterchangeV1() {
-        let output = {};
+        const output = {};
         output.id = this.__id;
         output.name = this.__name;
         output.entity = this.__entity;
@@ -131,9 +134,9 @@ export default class Connection {
         } else {
             output.source = null;
         }
-        let sinks = [];
+        const sinks = [];
         if (this.__sinks !== null && this.__sinks.length > 0) {
-            for (let i in this.__sinks) {
+            for (const i in this.__sinks) {
                 sinks.push(this.__sinks[i].toJSON());
             }
             output.sinks = this.__sinks;
@@ -146,29 +149,26 @@ export default class Connection {
         return output;
     }
 
-
     /**
-     * 
+     *
      */
-    __findLayerReference(){
-        let layers = Registry.currentDevice.getLayers();
+    __findLayerReference() {
+        const layers = Registry.currentDevice.getLayers();
         let layerrefs;
         let layer;
-        for(let i in layers){
+        for (const i in layers) {
             layer = layers[i];
-            //Check if the connectino is in layer then put it there
+            // Check if the connectino is in layer then put it there
             let feature;
-            for(let key in layer.features){
+            for (const key in layer.features) {
                 feature = layer.features[key];
-                if(feature.referenceID == this.getID()){
+                if (feature.referenceID == this.getID()) {
                     layerrefs = layer.id;
                 }
             }
         }
         return layerrefs;
     }
-
-
 
     /**
      * Returns the ID of the component
@@ -215,7 +215,7 @@ export default class Connection {
      * @memberof Connection
      */
     getPosition() {
-        return this.__params["position"].getValue();
+        return this.__params.position.getValue();
     }
 
     /**
@@ -231,6 +231,7 @@ export default class Connection {
             throw new Error("Unable to get value for key: " + key);
         }
     }
+
     /**
      * Returns the feature ID
      * @returns {string}
@@ -258,11 +259,11 @@ export default class Connection {
      * @returns {void}
      */
     addFeatureID(featureID) {
-        if (typeof featureID != "string" && !(featureID instanceof String)) {
+        if (typeof featureID !== "string" && !(featureID instanceof String)) {
             throw new Error("The reference object value can only be a string");
         }
         this.__features.push(featureID);
-        //Now update bounds
+        // Now update bounds
         // this.__updateBounds();
     }
 
@@ -277,7 +278,7 @@ export default class Connection {
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
-        for (var i in this.__features) {
+        for (const i in this.__features) {
             // gets teh feature defined by the id
             feature = Registry.currentDevice.getFeatureByID(this.__features[i]);
             console.log(feature);
@@ -310,14 +311,14 @@ export default class Connection {
      */
     setParams(params) {
         this.__params = params;
-        //TODO: Modify all the associated Features
-        for (let key in params) {
-            let value = params[key];
-            for (let i in this.__features) {
-                let featureidtochange = this.__features[i];
+        // TODO: Modify all the associated Features
+        for (const key in params) {
+            const value = params[key];
+            for (const i in this.__features) {
+                const featureidtochange = this.__features[i];
 
-                //Get the feature id and modify it
-                let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+                // Get the feature id and modify it
+                const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
                 feature.updateParameter(key, value.getValue());
             }
         }
@@ -340,10 +341,10 @@ export default class Connection {
      */
     updateSegments(segments) {
         this.updateParameter("segments", new Parameter("SegmentArray", segments));
-        for (let i in this.__features) {
-            let featureidtochange = this.__features[i];
+        for (const i in this.__features) {
+            const featureidtochange = this.__features[i];
 
-            let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
             // feature.updateParameter('position', center);
             feature.updateParameter("segments", segments);
         }
@@ -357,20 +358,20 @@ export default class Connection {
      */
     insertFeatureGap(boundingbox) {
         let foundflag = false;
-        //Convert Rectangle to Path.Rectangle
+        // Convert Rectangle to Path.Rectangle
         console.log(boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
-        //Check which segment I need to break
-        let segments = this.getValue("segments");
-        for (let i in segments) {
-            let segment = segments[i];
-            let line = new paper.Path.Line(new paper.Point(segment[0]), new paper.Point(segment[1]));
-            let intersections = line.getIntersections(boundingbox);
+        // Check which segment I need to break
+        const segments = this.getValue("segments");
+        for (const i in segments) {
+            const segment = segments[i];
+            const line = new paper.Path.Line(new paper.Point(segment[0]), new paper.Point(segment[1]));
+            const intersections = line.getIntersections(boundingbox);
             // console.log("Intersections found", intersections);
             if (intersections.length === 2) {
-                let break1 = intersections[0].point;
-                let break2 = intersections[1].point;
-                let newsegs = this.__breakSegment(segment, break1, break2);
+                const break1 = intersections[0].point;
+                const break2 = intersections[1].point;
+                const newsegs = this.__breakSegment(segment, break1, break2);
                 console.log("breaking:", segment, newsegs);
                 if (newsegs.length !== 2) {
                     throw new Error("Could not break the segments correctly");
@@ -394,7 +395,7 @@ export default class Connection {
             }
         }
 
-        //Now that we exit the check for every segment we can verify if this is ok
+        // Now that we exit the check for every segment we can verify if this is ok
         if (!foundflag) {
             console.error("There's something funky going on with the intersection,no intersections found");
             console.log("Segments:", segments);
@@ -418,19 +419,19 @@ export default class Connection {
      * @private
      */
     __breakSegment(segment, break1, break2) {
-        //Generate 2 segments from this 1 segemnt
-        let p1 = new paper.Point(segment[0]);
-        let p2 = new paper.Point(segment[1]);
+        // Generate 2 segments from this 1 segemnt
+        const p1 = new paper.Point(segment[0]);
+        const p2 = new paper.Point(segment[1]);
 
         let segment1, segment2;
-        let p1_break1 = p1.getDistance(break1);
-        let p2_break1 = p2.getDistance(break1);
-        let p1_break2 = p1.getDistance(break2);
-        let p2_break2 = p2.getDistance(break2);
+        const p1_break1 = p1.getDistance(break1);
+        const p2_break1 = p2.getDistance(break1);
+        const p1_break2 = p1.getDistance(break2);
+        const p2_break2 = p2.getDistance(break2);
 
-        //Find out if break1 is closer to p1 or p2
+        // Find out if break1 is closer to p1 or p2
         if (p1_break1 + p2_break2 < p2_break1 + p1_break2) {
-            //break1 is closer to p1 and break2 is closer to p2\
+            // break1 is closer to p1 and break2 is closer to p2\
             segment1 = [
                 [Math.round(p1.x), Math.round(p1.y)],
                 [Math.round(break1.x), Math.round(break1.y)]
@@ -440,7 +441,7 @@ export default class Connection {
                 [Math.round(break2.x), Math.round(break2.y)]
             ];
         } else {
-            //break1 is closer to p2 and break1 is closer to p1
+            // break1 is closer to p2 and break1 is closer to p1
             segment1 = [
                 [Math.round(p2.x), Math.round(p2.y)],
                 [Math.round(break1.x), Math.round(break1.y)]
@@ -466,35 +467,35 @@ export default class Connection {
         // //TODO: This will have to change soon when the thing is updated
         // throw new Error("Need to implement Interchange V1 Import for component object");
         // //return Device.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
-        let name = json.name;
-        let id = json.id;
-        let entity = json.entity;
-        let params = {};
-        for (let key in json.params) {
+        const name = json.name;
+        const id = json.id;
+        const entity = json.entity;
+        const params = {};
+        for (const key in json.params) {
             // console.log("key:", key, "value:", json.params[key]);
             // let paramobject = Parameter.generateConnectionParameter(key, json.params[key]);
             params[key] = json.params[key];
         }
 
-        //Check if the params have the other unique elements necessary otherwise add them as null
-        if (!params.hasOwnProperty("start")) {
-            //Setting this value to origin
-            params["start"] = [0, 0];
+        // Check if the params have the other unique elements necessary otherwise add them as null
+        if (!Object.prototype.hasOwnProperty.call(params, "start")) {
+            // Setting this value to origin
+            params.start = [0, 0];
         }
-        if (!params.hasOwnProperty("end")) {
-            //Setting this value to origin
-            params["end"] = [0, 0];
+        if (!Object.prototype.hasOwnProperty.call(params, "end")) {
+            // Setting this value to origin
+            params.end = [0, 0];
         }
-        if (!params.hasOwnProperty("wayPoints")) {
-            //TODO: setting a single waypoint at origin
-            params["wayPoints"] = [
+        if (!Object.prototype.hasOwnProperty.call(params, "wayPoints")) {
+            // TODO: setting a single waypoint at origin
+            params.wayPoints = [
                 [0, 0],
                 [1, 2]
             ];
         }
-        if (!params.hasOwnProperty("segments")) {
-            //TODO: Setting a default segment from origin to origin
-            params["segments"] = [
+        if (!Object.prototype.hasOwnProperty.call(params, "segments")) {
+            // TODO: Setting a default segment from origin to origin
+            params.segments = [
                 [
                     [0, 0],
                     [0, 0]
@@ -505,26 +506,26 @@ export default class Connection {
                 ]
             ];
         }
-        let definition = Registry.featureSet.getDefinition("Connection");
-        let paramstoadd = new Params(params, definition.unique, definition.heritable);
+        const definition = Registry.featureSet.getDefinition("Connection");
+        const paramstoadd = new Params(params, definition.unique, definition.heritable);
 
-        let connection = new Connection(entity, paramstoadd, name, entity, id);
-        if (json.hasOwnProperty("source")) {
+        const connection = new Connection(entity, paramstoadd, name, entity, id);
+        if (Object.prototype.hasOwnProperty.call(json, "source")) {
             if (json.source !== null && json.source != undefined) {
                 connection.setSourceFromJSON(device, json.source);
             }
         }
-        if (json.hasOwnProperty("sinks")) {
+        if (Object.prototype.hasOwnProperty.call(json, "sinks")) {
             if (json.sinks !== null && json.sinks != undefined) {
-                for (let i in json.sinks) {
-                    let sink = json.sinks[i];
+                for (const i in json.sinks) {
+                    const sink = json.sinks[i];
                     connection.addSinkFromJSON(device, sink);
                 }
             }
         }
-        if (json.hasOwnProperty("paths")) {
+        if (Object.prototype.hasOwnProperty.call(json, "paths")) {
             if (json.paths !== null && json.paths != undefined) {
-                for (let i in json.paths) {
+                for (const i in json.paths) {
                     connection.addWayPoints(json.paths[i]);
                 }
             }
@@ -539,13 +540,13 @@ export default class Connection {
      * @memberof Connection
      */
     regenerateSegments() {
-        let pathscopy = this.getPaths();
-        let ret = [];
+        const pathscopy = this.getPaths();
+        const ret = [];
         let waypointscopy;
-        for (let j in pathscopy) {
+        for (const j in pathscopy) {
             waypointscopy = pathscopy[j];
             for (let i = 0; i < waypointscopy.length - 1; i++) {
-                let segment = [waypointscopy[i], waypointscopy[i + 1]];
+                const segment = [waypointscopy[i], waypointscopy[i + 1]];
                 ret.push(segment);
             }
         }
@@ -560,7 +561,7 @@ export default class Connection {
      * @returns {void}
      */
     setSource(component, port) {
-        if (typeof component != "string" && !(component instanceof String)) {
+        if (typeof component !== "string" && !(component instanceof String)) {
             console.error("The reference object value can only be a string");
         }
         this.__source = new ConnectionTarget(component, port);
@@ -568,13 +569,13 @@ export default class Connection {
 
     /**
      * Allows the user to add a sink to the connection
-     * @param {string} component 
+     * @param {string} component
      * @param {ComponentPort} port
      * @memberof Connection
      * @returns {void}
      */
     addSink(component, port) {
-        if (typeof component != "string" || !(component instanceof String)) {
+        if (typeof component !== "string" || !(component instanceof String)) {
             console.error("The reference object value can only be a string");
         }
         this.__sinks.push(new ConnectionTarget(component, port));
@@ -595,7 +596,7 @@ export default class Connection {
         if (this.__source === null) {
             this.__source = connectiontarget;
         } else {
-            //TODO: Check for duplicates - does it matter actually ?
+            // TODO: Check for duplicates - does it matter actually ?
             this.__sinks.push(connectiontarget);
         }
     }
@@ -605,18 +606,18 @@ export default class Connection {
      * @param {string} componentid Component ID
      * @return {boolean} Returns true if any corresponding connection target is found
      * @memberof Connection
-     * 
+     *
      */
     tryDeleteConnectionTarget(componentid) {
         let ret = false;
         if (component.getID() == componentid) {
-            //Remove the source object
+            // Remove the source object
             this.__source = null;
             ret = true;
         }
 
-        for (let i in this.__sinks) {
-            let sink = this.__sinks[i];
+        for (const i in this.__sinks) {
+            const sink = this.__sinks[i];
 
             if (sink.component.getID() == componentid) {
                 this.__sinks.splice(i, 1);
@@ -636,15 +637,16 @@ export default class Connection {
     addWayPoints(wayPoints) {
         this.__paths.push(wayPoints);
     }
+
     /**
      * Merges connections
-     * @param {Connection} connection 
+     * @param {Connection} connection
      * @memberof Connection
      * @returns {void}
      */
     mergeConnection(connection) {
         console.error("Merge the newly found connection with the new connection");
-        //TODO:
+        // TODO:
         /*
         1. Transfer all the paths
         2. Transfer all the ConnectionTargets
@@ -653,26 +655,28 @@ export default class Connection {
         5.
          */
     }
+
     /**
      * Converts from JSON format to connection object
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */
     setSourceFromJSON(device, json) {
-        let target = ConnectionTarget.fromJSON(device, json);
+        const target = ConnectionTarget.fromJSON(device, json);
         this.__source = target;
     }
+
     /**
      * ?
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */
     addSinkFromJSON(device, json) {
-        let target = ConnectionTarget.fromJSON(device, json);
+        const target = ConnectionTarget.fromJSON(device, json);
         this.__sinks.push(target);
     }
 }

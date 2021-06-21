@@ -424,7 +424,7 @@ export const render3D = {
         featurePrimitive: "ConeFeature"
     },
 
-    //new
+    // new
     Filter: {
         featureParams: {
             position: "position",
@@ -573,5 +573,5 @@ export const render3D = {
         },
         featurePrimitiveSet: "Basic3D",
         featurePrimitive: "ConeFeature"
-    },
+    }
 };

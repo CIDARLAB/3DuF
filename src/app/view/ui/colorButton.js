@@ -1,6 +1,6 @@
 import * as Colors from "../colors";
-var inactiveBackgroundColor = Colors.GREY_200;
-var inactiveTextColor = Colors.BLACK;
+const inactiveBackgroundColor = Colors.GREY_200;
+const inactiveTextColor = Colors.BLACK;
 
 export default class ColorButton {
     constructor(id) {

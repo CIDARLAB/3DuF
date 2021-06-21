@@ -90,7 +90,7 @@ export default class Valve3D extends Template {
     }
 
     getPorts(params) {
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, 0, "1", "CONTROL"));
 
@@ -98,37 +98,37 @@ export default class Valve3D extends Template {
     }
 
     __drawFlow(params) {
-        let position = params["position"];
-        let gap = params["gap"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
+        const position = params.position;
+        const gap = params.gap;
+        const radius = params.valveRadius;
+        const color = params.color;
+        const rotation = params.rotation;
 
-        let center = new paper.Point(position[0], position[1]);
+        const center = new paper.Point(position[0], position[1]);
         // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
-        let circ = new paper.Path.Circle(center, radius);
-        //circ.fillColor = color;
+        const circ = new paper.Path.Circle(center, radius);
+        // circ.fillColor = color;
         //   if (String(color) == "3F51B5") {
-        let cutout = paper.Path.Rectangle({
+        const cutout = paper.Path.Rectangle({
             from: new paper.Point(position[0] - radius, position[1] - gap / 2),
             to: new paper.Point(position[0] + radius, position[1] + gap / 2)
         });
-        //cutout.fillColor = "white";
-        let valve = circ.subtract(cutout);
+        // cutout.fillColor = "white";
+        const valve = circ.subtract(cutout);
         valve.rotate(rotation, center);
         valve.fillColor = color;
         return valve;
     }
 
     __drawControll(params) {
-        let position = params["position"];
-        let gap = params["gap"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let center = new paper.Point(position[0], position[1]);
+        const position = params.position;
+        const gap = params.gap;
+        const radius = params.valveRadius;
+        const color = params.color;
+        const rotation = params.rotation;
+        const center = new paper.Point(position[0], position[1]);
         // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
-        let circ = new paper.Path.Circle(center, radius);
+        const circ = new paper.Path.Circle(center, radius);
         circ.fillColor = color;
         return circ;
     }
@@ -146,21 +146,21 @@ export default class Valve3D extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, "FLOW");
+        const render = this.render2D(params, "FLOW");
         render.fillColor.alpha = 0.5;
         return render;
     }
 
     __drawInverseFlow(params) {
-        let position = params["position"];
-        let gap = params["gap"];
-        let radius = params["valveRadius"];
-        let color = params["color"];
+        const position = params.position;
+        const gap = params.gap;
+        const radius = params.valveRadius;
+        const color = params.color;
         console.log("Coloer:", color);
-        let rotation = params["rotation"];
-        let center = new paper.Point(position[0], position[1]);
+        const rotation = params.rotation;
+        const center = new paper.Point(position[0], position[1]);
         // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
-        let circ = new paper.Path.Circle(center, radius);
+        const circ = new paper.Path.Circle(center, radius);
         circ.fillColor = color;
         return circ.rotate(rotation, center);
     }

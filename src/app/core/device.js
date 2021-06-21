@@ -3,7 +3,7 @@ import Params from "./params";
 import * as Parameters from "./parameters";
 import Feature from "./feature";
 
-import Registry from './registry';
+import Registry from "./registry";
 
 import Layer from "./layer";
 import Component from "./component";
@@ -38,16 +38,17 @@ export default class Device {
         this.__nameMap = new Map();
         this.__connections = [];
 
-        //Map to store <componentID, connectionID>
+        // Map to store <componentID, connectionID>
         this.__valveMap = new Map();
         this.__valveIs3DMap = new Map();
 
-        //New layerblock indices for naming, etc.
+        // New layerblock indices for naming, etc.
         // TODO - Figure out how to handle this in the case
         // where things are imported from other tools because
         // this will not work anymore
         this.__layerBlockIndex = 0;
     }
+
     /**
      * Returns a string with the name of the Device
      * @returns {string}
@@ -94,7 +95,7 @@ export default class Device {
      * @returns {void}
      */
     removeConnection(connection) {
-        let i = this.__connections.indexOf(connection);
+        const i = this.__connections.indexOf(connection);
         if (i != -1) {
             this.__connections.splice(i, 1);
         }
@@ -121,14 +122,14 @@ export default class Device {
      * @returns {void}
      */
     removeComponent(component) {
-        //Remove the component from the map
+        // Remove the component from the map
         let trydelete;
-        let componentid = component.getID();
+        const componentid = component.getID();
         let connectiontorefresh = null;
 
-        //Remove component from connections
-        for (let i in this.__connections) {
-            let connection = this.__connections[i];
+        // Remove component from connections
+        for (const i in this.__connections) {
+            const connection = this.__connections[i];
             try {
                 trydelete = connection.tryDeleteConnectionTarget(componentid);
                 if (trydelete) {
@@ -138,13 +139,13 @@ export default class Device {
                 console.error(e);
             }
         }
-        //Check if the valve map has the component
+        // Check if the valve map has the component
         if (this.__valveMap.has(componentid)) {
             connectiontorefresh = this.getConnectionByID(this.__valveMap.get(componentid));
             this.__valveMap.delete(componentid);
         }
 
-        let i = this.__components.indexOf(component);
+        const i = this.__components.indexOf(component);
         if (i != -1) {
             this.__components.splice(i, 1);
         }
@@ -191,7 +192,7 @@ export default class Device {
      * @memberof Device
      */
     sortLayers() {
-        this.layers.sort(function(a, b) {
+        this.layers.sort(function (a, b) {
             return a.params.getValue("z_offset") - b.params.getValue("z_offset");
         });
     }
@@ -204,13 +205,13 @@ export default class Device {
      */
     getLayerFromFeatureID(featureID) {
         for (let i = 0; i < this.layers.length; i++) {
-            let layer = this.layers[i];
+            const layer = this.layers[i];
             if (layer.containsFeatureID(featureID)) {
                 return layer;
             }
         }
         for (let i = 0; i < this.textLayers.length; i++) {
-            let layer = this.textLayers[i];
+            const layer = this.textLayers[i];
             if (layer.containsFeatureID(featureID)) {
                 return layer;
             }
@@ -237,11 +238,11 @@ export default class Device {
      * @memberof Device
      */
     getAllFeaturesFromDevice() {
-        let features = [];
-        for (let i in this.layers) {
-            //features.push.apply(features, layer.features);
-            let layer = this.layers[i];
-            for (let j in layer.features) {
+        const features = [];
+        for (const i in this.layers) {
+            // features.push.apply(features, layer.features);
+            const layer = this.layers[i];
+            for (const j in layer.features) {
                 // console.log(layer.features[j]);
                 features.push(layer.features[j]);
             }
@@ -256,7 +257,7 @@ export default class Device {
      * @memberof Device
      */
     getFeatureByID(featureID) {
-        let layer = this.getLayerFromFeatureID(featureID);
+        const layer = this.getLayerFromFeatureID(featureID);
         return layer.getFeature(featureID);
     }
 
@@ -272,8 +273,8 @@ export default class Device {
         for (let i = 0; i < this.layers.length; i++) {
             layer = this.layers[i];
             features = layer.getAllFeaturesFromLayer();
-            for (let ii in features) {
-                let feature = features[ii];
+            for (const ii in features) {
+                const feature = features[ii];
                 if (feature.getName() === name) {
                     return feature;
                 }
@@ -282,8 +283,8 @@ export default class Device {
         for (let i = 0; i < this.textLayers.length; i++) {
             layer = this.layers[i];
             features = layer.getAllFeaturesFromLayer();
-            for (let ii in features) {
-                let feature = features[i];
+            for (const ii in features) {
+                const feature = features[i];
                 if (feature.getName() === name) {
                     return feature;
                 }
@@ -301,7 +302,7 @@ export default class Device {
     addLayer(layer) {
         layer.device = this;
         this.layers.push(layer);
-        //this.sortLayers();
+        // this.sortLayers();
         if (Registry.viewManager) Registry.viewManager.addLayer(this.layers.indexOf(layer));
     }
 
@@ -322,7 +323,7 @@ export default class Device {
      * @returns {void}
      */
     removeFeatureByID(featureID) {
-        let layer = this.getLayerFromFeatureID(featureID);
+        const layer = this.getLayerFromFeatureID(featureID);
         layer.removeFeatureByID(featureID);
     }
 
@@ -363,10 +364,10 @@ export default class Device {
      * @returns {void}
      */
     updateObjectReference(objectID, featureID) {
-        //Goes through the components to update the reference
+        // Goes through the components to update the reference
         let component;
         let foundflag = false;
-        for (let i in this.__components) {
+        for (const i in this.__components) {
             component = this.__components[i];
             // console.log(objectID, component.getID());
             if (objectID == component.getID()) {
@@ -376,9 +377,9 @@ export default class Device {
             }
         }
 
-        //Goes through the connection to update the reference
+        // Goes through the connection to update the reference
         let connection;
-        for (let i in this.__connections) {
+        for (const i in this.__connections) {
             connection = this.__connections[i];
             if (objectID == connection.getID()) {
                 connection.addFeatureID(featureID);
@@ -405,7 +406,7 @@ export default class Device {
      * @memberof Device
      */
     __renderLayers2D() {
-        let output = [];
+        const output = [];
         for (let i = 0; i < this.layers.length; i++) {
             output.push(this.layers[i].render2D());
         }
@@ -418,8 +419,8 @@ export default class Device {
      * @memberof Device
      */
     __groupsToJSON() {
-        let output = [];
-        for (let i in this.groups) {
+        const output = [];
+        for (const i in this.groups) {
             output.push(this.groups[i].toJSON());
         }
         return output;
@@ -431,8 +432,8 @@ export default class Device {
      * @memberof Device
      */
     __layersToJSON() {
-        let output = [];
-        for (let i in this.layers) {
+        const output = [];
+        for (const i in this.layers) {
             output.push(this.layers[i].toJSON());
         }
         return output;
@@ -444,8 +445,8 @@ export default class Device {
      * @memberof Device
      */
     __componentsToInterchangeV1() {
-        let output = [];
-        for (let i in this.__components) {
+        const output = [];
+        for (const i in this.__components) {
             output.push(this.__components[i].toInterchangeV1());
         }
         return output;
@@ -457,8 +458,8 @@ export default class Device {
      * @memberof Device
      */
     __connectionToInterchangeV1() {
-        let output = [];
-        for (let i in this.__connections) {
+        const output = [];
+        for (const i in this.__connections) {
             output.push(this.__connections[i].toInterchangeV1());
         }
         return output;
@@ -471,8 +472,8 @@ export default class Device {
      * @memberof Device
      */
     __layersToInterchangeV1() {
-        let output = [];
-        for (let i in this.layers) {
+        const output = [];
+        for (const i in this.layers) {
             output.push(this.layers[i].toInterchangeV1());
         }
         return output;
@@ -484,8 +485,8 @@ export default class Device {
      * @memberof Device
      */
     __featureLayersToInterchangeV1() {
-        let output = [];
-        for (let i in this.layers) {
+        const output = [];
+        for (const i in this.layers) {
             output.push(this.layers[i].toFeatureLayerJSON());
         }
         return output;
@@ -498,8 +499,8 @@ export default class Device {
      * @returns {void}
      */
     __loadLayersFromJSON(json) {
-        for (let i in json) {
-            let newLayer = Layer.fromJSON(json[i]);
+        for (const i in json) {
+            const newLayer = Layer.fromJSON(json[i]);
             this.addLayer(newLayer);
         }
     }
@@ -511,8 +512,8 @@ export default class Device {
      * @returns {void}
      */
     __loadFeatureLayersFromInterchangeV1(json) {
-        for (let i in json) {
-            let newLayer = Layer.fromInterchangeV1(json[i]);
+        for (const i in json) {
+            const newLayer = Layer.fromInterchangeV1(json[i]);
             this.addLayer(newLayer);
         }
     }
@@ -527,7 +528,7 @@ export default class Device {
     __loadComponentsFromInterchangeV1(components) {
         let componenttoadd;
 
-        for (let i in components) {
+        for (const i in components) {
             componenttoadd = Component.fromInterchangeV1(components[i]);
             this.__components.push(componenttoadd);
         }
@@ -541,7 +542,7 @@ export default class Device {
      */
     __loadConnectionsFromInterchangeV1(connections) {
         let connectiontoload;
-        for (let i in connections) {
+        for (const i in connections) {
             connectiontoload = Connection.fromInterchangeV1(this, connections[i]);
             this.__connections.push(connectiontoload);
         }
@@ -553,7 +554,7 @@ export default class Device {
      * @memberof Device
      */
     toJSON() {
-        let output = {};
+        const output = {};
         output.name = this.name.toJSON();
         output.params = this.params.toJSON();
         output.layers = this.__layersToJSON();
@@ -561,24 +562,25 @@ export default class Device {
         output.defaults = this.defaults;
         return output;
     }
+
     /**
      * Converts to Interchange V1 format
      * @returns {Device} Returns an Device object in Interchange V1 format
      * @memberof Device
      */
     toInterchangeV1() {
-        let output = {};
+        const output = {};
         output.name = this.name;
         output.params = {
             width: this.getXSpan(),
             length: this.getYSpan()
         };
-        //TODO: Use this to dynamically create enough layers to scroll through
+        // TODO: Use this to dynamically create enough layers to scroll through
         // output.layers = this.__layersToInterchangeV1();
         output.components = this.__componentsToInterchangeV1();
         output.connections = this.__connectionToInterchangeV1();
         output.layers = this.__layersToInterchangeV1();
-        //TODO: Use this to render the device features
+        // TODO: Use this to render the device features
         output.features = this.__featureLayersToInterchangeV1();
         output.version = 1;
         output.groups = this.__groupsToJSON();
@@ -586,13 +588,13 @@ export default class Device {
     }
 
     toInterchangeV1_1() {
-        let output = {};
+        const output = {};
         output.name = this.name;
 
-        let valvetypemap = {};
-        for (let [key, value] of this.__valveIs3DMap) {
+        const valvetypemap = {};
+        for (const [key, value] of this.__valveIs3DMap) {
             if (value) {
-                //3D Valve
+                // 3D Valve
                 valvetypemap[key] = "NORMALLY_CLOSED";
             } else {
                 valvetypemap[key] = "NORMALLY_OPEN";
@@ -605,11 +607,11 @@ export default class Device {
             valveMap: IOUtils.mapToJson(this.__valveMap),
             valveTypeMap: valvetypemap
         };
-        //TODO: Use this to dynamically create enough layers to scroll through
+        // TODO: Use this to dynamically create enough layers to scroll through
         output.components = this.__componentsToInterchangeV1();
         output.connections = this.__connectionToInterchangeV1();
         output.layers = this.__layersToInterchangeV1();
-        //TODO: Use this to render the device features
+        // TODO: Use this to render the device features
         output.features = this.__featureLayersToInterchangeV1();
         output.version = 1.1;
         output.groups = this.__groupsToJSON();
@@ -623,8 +625,8 @@ export default class Device {
      * @memberof Device
      */
     static fromJSON(json) {
-        let defaults = json.defaults;
-        let newDevice = new Device(
+        const defaults = json.defaults;
+        const newDevice = new Device(
             {
                 width: json.params.width,
                 length: json.params.length
@@ -639,8 +641,8 @@ export default class Device {
         IOUtils.sanitizeV1Plus(json);
 
         let newDevice;
-        if (json.hasOwnProperty("params")) {
-            if (json.params.hasOwnProperty("width") && json.params.hasOwnProperty("length")) {
+        if (Object.prototype.hasOwnProperty.call(json, "params")) {
+            if (Object.prototype.hasOwnProperty.call(json.params, "width") && Object.prototype.hasOwnProperty.call(json.params, "length")) {
                 newDevice = new Device(
                     {
                         width: json.params.width,
@@ -667,19 +669,19 @@ export default class Device {
                 json.name
             );
         }
-        //TODO: Use this to dynamically create enough layers to scroll through
-        //newDevice.__loadLayersFromInterchangeV1(json.layers);
-        //TODO: Use these two generate a rat's nest
+        // TODO: Use this to dynamically create enough layers to scroll through
+        // newDevice.__loadLayersFromInterchangeV1(json.layers);
+        // TODO: Use these two generate a rat's nest
         newDevice.__loadComponentsFromInterchangeV1(json.components);
         newDevice.__loadConnectionsFromInterchangeV1(json.connections);
         newDevice.__loadFeatureLayersFromInterchangeV1(json.layers);
-        //TODO: Use this to render the device features
+        // TODO: Use this to render the device features
 
-        //Check if JSON has features else mark
-        if (json.hasOwnProperty("features")) {
+        // Check if JSON has features else mark
+        if (Object.prototype.hasOwnProperty.call(json, "features")) {
             newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         } else {
-            //We need to add a default layer
+            // We need to add a default layer
             let newlayer = new Layer(null, "flow" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
             newDevice.addLayer(newlayer);
             newlayer = new Layer(null, "control" + this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
@@ -688,11 +690,11 @@ export default class Device {
             this.__layerBlockIndex += 1;
         }
 
-        //Updating cross-references
-        let features = newDevice.getAllFeaturesFromDevice();
+        // Updating cross-references
+        const features = newDevice.getAllFeaturesFromDevice();
         let feature;
-        for (let i in features) {
-            //console.log("Feature:", features[i]);
+        for (const i in features) {
+            // console.log("Feature:", features[i]);
             feature = features[i];
             if (feature.referenceID !== null) {
                 newDevice.updateObjectReference(feature.referenceID, feature.getID());
@@ -706,8 +708,8 @@ export default class Device {
         IOUtils.sanitizeV1Plus(json);
         let newDevice;
 
-        if (json.hasOwnProperty("params")) {
-            if (json.params.hasOwnProperty("xspan") && json.params.hasOwnProperty("yspan")) {
+        if (Object.prototype.hasOwnProperty.call(json, "params")) {
+            if (Object.prototype.hasOwnProperty.call(json.params, "xspan") && Object.prototype.hasOwnProperty.call(json.params, "yspan")) {
                 newDevice = new Device(
                     {
                         width: json.params.xspan,
@@ -734,15 +736,15 @@ export default class Device {
                 json.name
             );
         }
-        //TODO: Use this to dynamically create enough layers to scroll through
-        //newDevice.__loadLayersFromInterchangeV1(json.layers);
-        //TODO: Use these two generate a rat's nest
+        // TODO: Use this to dynamically create enough layers to scroll through
+        // newDevice.__loadLayersFromInterchangeV1(json.layers);
+        // TODO: Use these two generate a rat's nest
         newDevice.__loadComponentsFromInterchangeV1(json.components);
         newDevice.__loadConnectionsFromInterchangeV1(json.connections);
 
         let valve_map, valve_type_map;
-        //Import ValveMap
-        if (json.params.hasOwnProperty("valveMap") && json.params.hasOwnProperty("valveTypeMap")) {
+        // Import ValveMap
+        if (Object.prototype.hasOwnProperty.call(json.params, "valveMap") && Object.prototype.hasOwnProperty.call(json.params, "valveTypeMap")) {
             valve_map = IOUtils.jsonToMap(json.params.valveMap);
             console.log("Imported valvemap", valve_map);
 
@@ -750,8 +752,8 @@ export default class Device {
             valve_type_map = IOUtils.jsonToMap(json.params.valveTypeMap);
 
             console.log(json.params.valveTypeMap, valve_type_map);
-            let valveis3dmap = new Map();
-            for (let [key, value] of valve_type_map) {
+            const valveis3dmap = new Map();
+            for (const [key, value] of valve_type_map) {
                 console.log("Setting type:", key, value);
                 switch (value) {
                     case "NORMALLY_OPEN":
@@ -766,13 +768,13 @@ export default class Device {
             newDevice.setValveMap(valve_map, valveis3dmap);
         }
 
-        //TODO: Use this to render the device features
+        // TODO: Use this to render the device features
 
-        //Check if JSON has features else mark
-        if (json.hasOwnProperty("features")) {
+        // Check if JSON has features else mark
+        if (Object.prototype.hasOwnProperty.call(json, "features")) {
             newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
         } else {
-            //We need to add a default layer
+            // We need to add a default layer
             let newlayer = new Layer(null, "flow" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
             newDevice.addLayer(newlayer);
             newlayer = new Layer(null, "control" + this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
@@ -780,11 +782,11 @@ export default class Device {
             this.__layerBlockIndex += 1;
         }
 
-        //Updating cross-references
-        let features = newDevice.getAllFeaturesFromDevice();
+        // Updating cross-references
+        const features = newDevice.getAllFeaturesFromDevice();
         let feature;
-        for (let i in features) {
-            //console.log("Feature:", features[i]);
+        for (const i in features) {
+            // console.log("Feature:", features[i]);
             feature = features[i];
             if (feature.referenceID !== null) {
                 newDevice.updateObjectReference(feature.referenceID, feature.getID());
@@ -842,15 +844,15 @@ export default class Device {
      * @memberof Device
      */
     createNewLayerBlock() {
-        let flowlayer = new Layer({ z_offset: 0, flip: false }, "flow" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
-        let controllayer = new Layer({ z_offset: 0, flip: false }, "control" + this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
-        //TODO: remove cell layer from the whole system
-        let cell = new Layer({ z_offset: 0, flip: false }, "cell" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
+        const flowlayer = new Layer({ z_offset: 0, flip: false }, "flow" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
+        const controllayer = new Layer({ z_offset: 0, flip: false }, "control" + this.__layerBlockIndex.toString(), "CONTROL", this.__layerBlockIndex.toString());
+        // TODO: remove cell layer from the whole system
+        const cell = new Layer({ z_offset: 0, flip: false }, "cell" + this.__layerBlockIndex.toString(), "FLOW", this.__layerBlockIndex.toString());
 
         this.addLayer(flowlayer);
         this.addLayer(controllayer);
 
-        //TODO:Remove Cell layer from the whole system
+        // TODO:Remove Cell layer from the whole system
         this.addLayer(cell);
 
         this.__layerBlockIndex += 1;
@@ -877,11 +879,11 @@ export default class Device {
      * @memberof Device
      */
     getComponentForFeatureID(id) {
-        for (let i in this.__components) {
-            let component = this.__components[i];
-            //go through each component's features
-            for (let j in component.features) {
-                let feature = component.features[j];
+        for (const i in this.__components) {
+            const component = this.__components[i];
+            // go through each component's features
+            for (const j in component.features) {
+                const feature = component.features[j];
                 if (feature === id) {
                     return component;
                 }
@@ -899,7 +901,7 @@ export default class Device {
      */
     generateNewName(type) {
         if (this.__nameMap.has(type)) {
-            let value = this.__nameMap.get(type);
+            const value = this.__nameMap.get(type);
             this.__nameMap.set(type, value + 1);
             return type + "_" + String(value + 1);
         } else {
@@ -915,11 +917,11 @@ export default class Device {
      * @memberof Device
      */
     getConnectionForFeatureID(id) {
-        for (let i in this.__connections) {
-            let connection = this.__connections[i];
-            //go through each component's features
-            for (let j in connection.features) {
-                let feature = connection.features[j];
+        for (const i in this.__connections) {
+            const connection = this.__connections[i];
+            // go through each component's features
+            for (const j in connection.features) {
+                const feature = connection.features[j];
                 if (feature === id) {
                     return connection;
                 }
@@ -940,6 +942,7 @@ export default class Device {
         this.__valveMap.set(valve.getID(), connection.getID());
         this.__valveIs3DMap.set(valve.getID(), is3D);
     }
+
     /**
      * Returns connections of the device
      * @returns {Connections} Connections object
@@ -956,9 +959,9 @@ export default class Device {
      * @memberof Device
      */
     getValvesForConnection(connection) {
-        let connectionid = connection.getID();
-        let ret = [];
-        for (let [key, value] of this.__valveMap) {
+        const connectionid = connection.getID();
+        const ret = [];
+        for (const [key, value] of this.__valveMap) {
             // let  = pair;
             if (connectionid == value) {
                 ret.push(this.getComponentByID(key));
@@ -975,7 +978,7 @@ export default class Device {
      * @memberof Device
      */
     getIsValve3D(valve) {
-        let valveid = valve.getID();
+        const valveid = valve.getID();
         return this.__valveIs3DMap.get(valveid);
     }
 
@@ -986,8 +989,8 @@ export default class Device {
      * @memberof Device
      */
     getComponentByID(key) {
-        for (let i in this.__components) {
-            let component = this.__components[i];
+        for (const i in this.__components) {
+            const component = this.__components[i];
             if (component.getID() === key) {
                 return component;
             }
@@ -1001,8 +1004,8 @@ export default class Device {
      * @memberof Device
      */
     getConnectionByID(key) {
-        for (let i in this.__connections) {
-            let connection = this.__connections[i];
+        for (const i in this.__connections) {
+            const connection = this.__connections[i];
             if (connection.getID() === key) {
                 return connection;
             }
@@ -1016,8 +1019,8 @@ export default class Device {
      * @memberof Device
      */
     getComponentByName(name) {
-        let components = this.getComponents();
-        for (let i in components) {
+        const components = this.getComponents();
+        for (const i in components) {
             if (name == components[i].getName()) {
                 return components[i];
             }
@@ -1031,15 +1034,16 @@ export default class Device {
      * @memberof Device
      */
     getUnroutedConnections() {
-        let ret = [];
-        let connections = this.getConnections();
-        for (let i in connections) {
+        const ret = [];
+        const connections = this.getConnections();
+        for (const i in connections) {
             if (!connections[i].routed) {
                 ret.push(connections[i]);
             }
         }
         return ret;
     }
+
     /**
      * Gets the position of the component port based depending which port you selected
      * @param {ComponentPort} componentport Component port object
@@ -1048,12 +1052,12 @@ export default class Device {
      */
     getPositionOfComponentPort(componentport) {
         let component;
-        let components = this.getComponents();
-        for (let i in components) {
+        const components = this.getComponents();
+        for (const i in components) {
             component = components[i];
-            for (let key of component.ports.keys()) {
+            for (const key of component.ports.keys()) {
                 if (componentport.id == component.ports.get(key).id) {
-                    //Found the component so return the position
+                    // Found the component so return the position
                     return componentport.calculateAbsolutePosition(component);
                 }
             }
@@ -1079,7 +1083,7 @@ export default class Device {
         if (typeString === "EDGE") {
             return new EdgeFeature(fabtype, params, id);
         }
-        let featureType = FeatureSets.getDefinition(typeString, setString);
+        const featureType = FeatureSets.getDefinition(typeString, setString);
         if (paramvalues && featureType) {
             Feature.checkDefaults(paramvalues, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
             params = new Params(paramvalues, featureType.unique, featureType.heritable);
@@ -1087,9 +1091,9 @@ export default class Device {
             params = new Params(paramvalues, { position: "Point" }, null);
         }
 
-        let feature = new Feature(typeString, setString, params, name, id);
+        const feature = new Feature(typeString, setString, params, name, id);
 
-        for (let i in dxfdata) {
+        for (const i in dxfdata) {
             feature.addDXFObject(DXFObject.fromJSON(dxfdata[i]));
         }
 
