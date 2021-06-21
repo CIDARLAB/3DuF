@@ -1,6 +1,6 @@
 import * as HTMLUtils from "../../utils/htmlUtils";
 import { createFeatureTable, revertToDefaultParams } from "./parameterMenu";
-import * as Registry from "../../core/registry";
+import Registry from "../../core/registry";
 
 export default class RightClickMenu {
     constructor() {
