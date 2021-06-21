@@ -35,7 +35,11 @@ export default {
         },
         onclick() {
             Registry.viewManager.activateTool("InsertTextTool");
+<<<<<<< HEAD
             insertTextTool.text = document.getElementById("inserttext_textinput").value;
+=======
+            insertTextTool.text(document.getElementById("inserttext_textinput").value);
+>>>>>>> Added onclick()
             this.__dialog.close();
         }
     }
