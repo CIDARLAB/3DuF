@@ -1,6 +1,5 @@
 import Registry from "../../core/registry";
 import wNumb from "wnumb";
-export class resolutionToolBar{};
 
 export default class ResolutionToolBar {
     constructor() {
