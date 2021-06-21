@@ -10,10 +10,14 @@ export default class StringValue extends Parameter {
 
     static isValid(value: any) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (typeof value === "string" || value instanceof String) return true;
 =======
         if (typeof value === "string") return true;
 >>>>>>> Converted isValid to static
+=======
+        if (typeof value === "string" || value instanceof String) return true;
+>>>>>>> Added String type allowance
         else return false;
     }
 
