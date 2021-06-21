@@ -42,8 +42,7 @@ export default class InsertTextTool extends MouseTool {
 
     createNewFeature(point) {
         let newFeature = TextFeature.makeFeature(
-            // Replace Registry.text
-            //Registry.text,
+            this.text,
             this.typeString,
             this.setString,
             new Params(
@@ -65,11 +64,11 @@ export default class InsertTextTool extends MouseTool {
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 
-    get getText() {
+    get text() {
         return this.text;
     }
 
-    set setText(text) {
+    set text(text) {
         this.text = text;
     }
 }
