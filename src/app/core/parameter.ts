@@ -2,6 +2,12 @@ import Registry from './registry';
 import * as NumberUtils from "../utils/numberUtils";
 
 import StringValue from './parameters/stringValue';
+import FloatValue from './parameters/floatValue';
+import SegmentArray from './parameters/segmentArray';
+import PointArray from './parameters/pointArray';
+import PointValue from './parameters/pointValue';
+import IntegerValue from './parameters/integerValue';
+import BooleanValue from './parameters/booleanValue';
 
 
 /**
