@@ -23,12 +23,8 @@
                 <v-row id="actions-row">
                     <v-card-actions>
                         <slot name="actions" :callbacks="callbacks">
-                            <v-btn color="green" class="white--text" @click="callbacks.close(onSave)">
-                                Change
-                            </v-btn>
-                            <v-btn color="red" class="white--text ml-9" @click="callbacks.close()">
-                                Cancel
-                            </v-btn>
+                            <v-btn color="green" class="white--text" @click="callbacks.close(onSave)"> Change </v-btn>
+                            <v-btn color="red" class="white--text ml-9" @click="callbacks.close()"> Cancel </v-btn>
                         </slot>
                     </v-card-actions>
                 </v-row>
@@ -93,18 +89,18 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "ml-4", "mb-2", "btn"];
         },
         selectAll: {
-            get: function() {
+            get: function () {
                 return this.mixers ? this.selected.length == this.mixers.length : false;
             },
-            set: function(value) {
+            set: function (value) {
                 var selected = [];
 
                 if (value) {
-                    this.mixers.forEach(function(mixer) {
+                    this.mixers.forEach(function (mixer) {
                         selected.push(mixer.id);
                     });
                 }
