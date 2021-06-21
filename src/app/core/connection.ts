@@ -616,7 +616,7 @@ export default class Connection {
             let sink = this._sinks[i];
 
             if (sink.component.getID() == componentid) {
-                this._sinks.splice(i, 1);
+                this._sinks.splice(+i, 1);
                 ret = true;
             }
         }
