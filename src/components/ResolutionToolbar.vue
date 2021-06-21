@@ -6,21 +6,13 @@
         <v-btn v-if="hover" id="grid-hover" class="grey white--text" x-small depressed>Grid Settings</v-btn>
         <div v-if="activated" id="resolution-toolbar">
             <div>
-                <toggle-button :value="true" color="#304FFE" :width="40" :height="18" @change="clicked()" />
-                <span class="mdl-switch__label" style="thick">Enable Automatic Grid</span>
-            </div>
-            <div>
-                <toggle-button :value="true" color="#304FFE" :width="40" :height="18" @change="clicked()" />
-                <span class="mdl-switch__label" style="thick">Render Snap Points</span>
+                <v-switch :value="true" color="#304FFE" @change="clickedGrid" />
+                <span class="mdl-switch__label">Enable Automatic Grid</span>
+                <v-switch :value="true" color="#304FFE" @change="clickedSnap" />
+                <span class="mdl-switch__label">Render Snap Points</span>
             </div>
             <div id="grid-resolution-slider">
-                <veeno
-                    id="__gridResolutionSlider"
-                    :connect="[true, false]"
-                    :pipsy="{ mode: 'steps', density: 5 }"
-                    :handles="1000"
-                    :range="{ min: [1], '10%': [10], '30%': [100], '90%': [1000], max: [5000] }"
-                />
+                <veeno ref="slider" v-bind="sliderOptions" @change="updateGrid" />
             </div>
         </div>
     </div>
@@ -29,7 +21,8 @@
 <script>
 import veeno from "veeno";
 import "nouislider/distribute/nouislider.min.css";
-import resolutionToolBar from "../app/view/ui/resolutionToolBar";
+import Registry from "../app/core/registry";
+import wNumb from "wnumb";
 
 export default {
     name: "ResolutionToolbar",
@@ -42,7 +35,13 @@ export default {
         return {
             activated: false,
             hover: false,
-            value: true
+            value: true,
+            sliderOptions: {
+                connect: [true, false],
+                pipsy: { mode: "range", density: 5 },
+                handles: 1000,
+                range: { min: [1], "10%": [10], "30%": [100], "90%": [1000], max: [5000] }
+            }
         };
     },
     //mode(){
@@ -63,19 +62,24 @@ export default {
             this.activated = !this.activated;
             console.log("test clicked");
         },
-        clicked() {
+        clickedGrid() {
             this.value = !this.value;
             console.log("test clicked");
         },
-        reolutionToolBar.__gridResolutionSlider.noUiSlider.on("change", function(values, handle, unencoded, isTap, positions) {
-            let value = parseInt(values[0], 10);
-
+        clickedSnap() {
+            this.value = !this.value;
+            console.log("test clicked");
+        },
+        updateGrid(event) {
+            let registryref = Registry;
+            const { values } = event;
+            //let value1 = parseInt(values[0], 10);
             //This ensures that there is something valid present
-            if (Registry.currentGrid != null) {
-                Registry.currentGrid.updateGridSpacing(value);
-                Registry.currentGrid.notifyViewManagerToUpdateView();
+            if (registryref.currentGrid != null) {
+                registryref.currentGrid.updateGridSpacing(values);
+                registryref.currentGrid.notifyViewManagerToUpdateView();
             }
-        });
+        }
     }
 };
 </script>
