@@ -1,6 +1,9 @@
 import Registry from './registry';
 import * as NumberUtils from "../utils/numberUtils";
 
+import StringValue from './parameters/stringValue';
+
+
 /**
  * Parameter class
  */
@@ -47,6 +50,7 @@ export default class Parameter {
     public get type(): string {
         return this.__type;
     }
+
     
     /**
      * Updates the value of parameter
