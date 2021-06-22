@@ -57,13 +57,7 @@ export default class Params {
      */
     getValue(key: string): any {
         this.__ensureHasKey(key);
-<<<<<<< HEAD
-
         return this.parameters[key].value;
-
-=======
-        return this.parameters[key].value();
->>>>>>> Added output types
     }
 
     /**
@@ -84,11 +78,7 @@ export default class Params {
     isHeritable(key: string): boolean {
         return this.heritable.includes(key);
     }
-<<<<<<< HEAD
     
-=======
-
->>>>>>> Added output types
     /**
      * Converts to JSON format.
      * @returns {JSON}  Returns JSON format.
@@ -98,11 +88,7 @@ export default class Params {
         let json: {[index:string]: any} = {};
         for (let key in this.parameters) {
             if (this.parameters[key] != undefined) {
-<<<<<<< HEAD
                 json[key] = this.parameters[key].value; 
-=======
-                json[key] = this.parameters[key].value(); 
->>>>>>> Added output types
             }
         }
         return json;
