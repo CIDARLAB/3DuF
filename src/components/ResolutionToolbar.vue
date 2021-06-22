@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import EventBus from "@/events/events";
+
 export default {
     methods: {
         handleGridSize() {
