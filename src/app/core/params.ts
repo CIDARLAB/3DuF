@@ -55,7 +55,7 @@ export default class Params {
      */
     getValue(key: string): any {
         this.__ensureHasKey(key);
-        return this.parameters[key].value();
+        return this.parameters[key].value;
     }
 
     /**
@@ -86,7 +86,7 @@ export default class Params {
         let json: {[index:string]: any} = {};
         for (let key in this.parameters) {
             if (this.parameters[key] != undefined) {
-                json[key] = this.parameters[key].value(); 
+                json[key] = this.parameters[key].value; 
             }
         }
         return json;
@@ -110,7 +110,6 @@ export default class Params {
      */
     hasParam(key: string): boolean {
         return this.parameters.hasOwnProperty(key);
-        //return Object.hasOwnProperty(this.parameters, key);
     }
 
     /**
@@ -122,7 +121,7 @@ export default class Params {
         let ret = new Map();
         for (let key in this.parameters) {
             if (this.parameters[key] != undefined) {
-                ret.set(key, this.parameters[key].value());
+                ret.set(key, this.parameters[key].value);
             }
         }
         return ret;
