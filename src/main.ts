@@ -3,9 +3,15 @@ import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
+import Vuetify from "vuetify";
 
 Vue.config.productionTip = false;
-
+Vue.use(Vuetify);
+export default new Vuetify({
+    icons: {
+        iconfont: "mdiSvg"
+    }
+});
 new Vue({
     vuetify,
     render: h => h(App)
