@@ -5,13 +5,13 @@
         </v-btn>
         <v-btn v-if="hover" id="grid-hover" class="grey white--text" x-small depressed>Grid Settings</v-btn>
         <div v-if="activated" id="resolution-toolbar">
-            <v-switch v-model="switch1" color="#304FFE" hide-details @change="clickedGrid">
+            <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
                 <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
             </v-switch>
             <v-switch v-model="switch2" color="#304FFE" @change="clickedSnap">
                 <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
             </v-switch>
-            <veeno ref="slider" v-bind="sliderOptions" @change="updateGrid" />
+            <veeno ref="slider" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
         </div>
     </div>
 </template>
@@ -33,7 +33,7 @@ export default {
         return {
             activated: false,
             hover: false,
-            switch1: true,
+            slider_enabled: true,
             switch2: true,
             sliderOptions: {
                 connect: [true, false],
@@ -43,15 +43,17 @@ export default {
             }
         };
     },
-
+    mounted() {
+        Registry.currentGrid.enableAdaptiveGrid();
+    },
     methods: {
         showProperties() {
             this.activated = !this.activated;
             console.log("grid clicked");
         },
         clickedGrid() {
-            console.log(this.switch1);
-            if (this.switch1) {
+            console.log(this.slider_enabled);
+            if (this.slider_enabled) {
                 //Enable Adaptive Grid
                 Registry.currentGrid.enableAdaptiveGrid();
                 //this.$ref.slider.setAttribute("disabled", true);
