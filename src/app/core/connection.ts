@@ -3,6 +3,8 @@ import paper from "paper";
 import Parameter from "./parameter";
 import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
+import ComponentPort from "./componentPort";
+import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 
 import Registry from "./registry";
 
@@ -11,6 +13,20 @@ import Registry from "./registry";
  * high level device model of the microfluidic.
  */
 export default class Connection {
+    private _params: Params;
+    private _name: string;
+    private _id: string;
+    private _type: string;
+    private _entity: string;
+    private _features: Feature[]; // Not sure if it's Feature[] or string[]
+    private _nodes: any;
+    private _bounds: paper.Rectangle | null;
+    private _source: ConnectionTarget | null;
+    private _sinks: ConnectionTarget[];
+    private _paths: [number, number][];
+    private _objects: any;
+    private _routed: boolean;
+
     /**
      * Default Connection Constructor
      * @param {String} type
@@ -19,22 +35,22 @@ export default class Connection {
      * @param {String} mint
      * @param {String} id
      */
-    constructor(type, params, name, mint, id = Feature.generateID()) {
-        this.__params = params;
-        this.__name = name;
-        this.__id = id;
-        this.__type = type;
-        this.__entity = mint;
-        // This stores the features that are a part of the component
-        this.__features = [];
-        this.__nodes = [];
-        // TODO: Need to figure out how to effectively search through these
-        this.__bounds = null;
-        this.__source = null;
-        this.__sinks = [];
-        this.__paths = [];
-        this.__objects = [];
-        this.__routed = false;
+    constructor(type: string, params: Params, name: string, mint: string, id: string = Feature.generateID()) {
+        this._params = params;
+        this._name = name;
+        this._id = id;
+        this._type = type;
+        this._entity = mint;
+        //This stores the features that are a part of the component
+        this._features = [];
+        this._nodes = [];
+        //TODO: Need to figure out how to effectively search through these
+        this._bounds = null;
+        this._source = null;
+        this._sinks = [];
+        this._paths = [];
+        this._objects = [];
+        this._routed = false;
     }
 
     /**
@@ -43,7 +59,7 @@ export default class Connection {
      * @memberof Connection
      */
     get sinks() {
-        return this.__sinks;
+        return this._sinks;
     }
 
     /**
@@ -52,7 +68,7 @@ export default class Connection {
      * @memberof Connection
      */
     get source() {
-        return this.__source;
+        return this._source;
     }
 
     /**
@@ -61,7 +77,7 @@ export default class Connection {
      * @memberof Connection
      */
     get routed() {
-        return this.__routed;
+        return this._routed;
     }
 
     /**
@@ -70,8 +86,8 @@ export default class Connection {
      * @returns {void}
      * @memberof Connection
      */
-    set routed(value) {
-        this.__routed = value;
+    set routed(value: boolean) {
+        this._routed = value;
     }
 
     /**
@@ -80,7 +96,7 @@ export default class Connection {
      * @memberof Connection
      */
     get features() {
-        return this.__features;
+        return this._features;
     }
 
     /**
@@ -98,12 +114,12 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setBounds(bounds) {
-        this.__bounds = bounds;
-        const topleftpt = bounds.topLeft;
-        this.__params.position = [topleftpt.x, topleftpt.y];
-        this.__params.xspan = bounds.width;
-        this.__params.yspan = bounds.height;
+    setBounds(bounds: paper.Rectangle) {
+        this._bounds = bounds;
+        let topleftpt = bounds.topLeft;
+        this._params.position = [topleftpt.x, topleftpt.y];
+        this._params.xspan = bounds.width;
+        this._params.yspan = bounds.height;
     }
 
     /**
@@ -113,9 +129,9 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    updateParameter(key, value) {
+    updateParameter(key: string, value: {[index: string]: any}) {
         // this.__params.updateParameter(key, value);
-        this.__params[key] = value;
+        this._params[key] = value;
         // this.updateView();
     }
 
@@ -125,27 +141,36 @@ export default class Connection {
      * @memberof Connection
      */
     toInterchangeV1() {
-        const output = {};
-        output.id = this.__id;
-        output.name = this.__name;
-        output.entity = this.__entity;
-        if (this.__source !== null) {
-            output.source = this.__source.toJSON();
-        } else {
-            output.source = null;
+        type InterchangeV1 = {
+            id: string
+            name: string
+            entity: string
+            source: any
+            sinks: any
+            paths: [number, number][]
+            params: any
         }
-        const sinks = [];
-        if (this.__sinks !== null && this.__sinks.length > 0) {
-            for (const i in this.__sinks) {
-                sinks.push(this.__sinks[i].toJSON());
+
+        const output: InterchangeV1 = {
+            id : this._id,
+            name: this._name,
+            entity: this._entity,
+            source: null,
+            sinks: null,
+            paths: this._paths,
+            params: this._params.toJSON()
+        };
+
+        if (this._source != null) {
+            output.source = this._source.toJSON();
+        }  
+        if (this._sinks != null && this._sinks.length > 0) {
+            let sinks = [];
+            for (let i in this._sinks) {
+                sinks.push(this._sinks[i].toJSON());
             }
-            output.sinks = this.__sinks;
-        } else {
-            output.sinks = null;
+            output.sinks = this._sinks;
         }
-        output.paths = this.__paths;
-        output.params = this.__params.toJSON();
-        output.layer = this.__findLayerReference();
         return output;
     }
 
@@ -175,8 +200,8 @@ export default class Connection {
      * @returns {string|*}
      * @memberof Connection
      */
-    getID() {
-        return this.__id;
+    get id() {
+        return this._id;
     }
 
     /**
@@ -185,9 +210,8 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setName(name) {
-        console.log("test", name);
-        this.__name = name;
+    set name(name: string) {
+        this._name = name;
     }
 
     /**
@@ -195,8 +219,8 @@ export default class Connection {
      * @returns {string} Name of the component
      * @memberof Connection
      */
-    getName() {
-        return this.__name;
+    get name() {
+        return this._name;
     }
 
     /**
@@ -205,8 +229,8 @@ export default class Connection {
      * @returns {string}
      * @memberof Connection
      */
-    getType() {
-        return this.__type;
+    get type() {
+        return this._type;
     }
 
     /**
@@ -214,19 +238,14 @@ export default class Connection {
      * @return {*|string}
      * @memberof Connection
      */
-    getPosition() {
-        return this.__params.position.getValue();
-    }
-
     /**
      * Returns the value of the parameter stored against the following key in teh component params
-     * @param {String} key Key is get the value
      * @returns {*}
      * @memberof Connection
      */
-    getValue(key) {
+    getValue(key: string) {
         try {
-            return this.__params.getValue(key);
+            return this._params.getValue(key);
         } catch (err) {
             throw new Error("Unable to get value for key: " + key);
         }
@@ -238,7 +257,7 @@ export default class Connection {
      * @memberof Connection
      */
     getFeatureIDs() {
-        return this.__features;
+        return this._features;
     }
 
     /**
@@ -247,7 +266,7 @@ export default class Connection {
      * @returns {boolean}
      * @memberof Connection
      */
-    hasDefaultParam(key) {
+    hasDefaultParam(key: string) {
         if (this.getDefaults().hasOwnProperty(key)) return true;
         else return false;
     }
@@ -258,12 +277,9 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addFeatureID(featureID) {
-        if (typeof featureID !== "string" && !(featureID instanceof String)) {
-            throw new Error("The reference object value can only be a string");
-        }
-        this.__features.push(featureID);
-        // Now update bounds
+    addFeatureID(featureID: string) {
+        this._features.push(featureID);
+        //Now update bounds
         // this.__updateBounds();
     }
 
@@ -273,14 +289,14 @@ export default class Connection {
      * @returns {void}
      * @private
      */
-    __updateBounds() {
+    private updateBounds() {
         console.log("test");
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
-        for (const i in this.__features) {
+        for (var i in this._features) {
             // gets teh feature defined by the id
-            feature = Registry.currentDevice.getFeatureByID(this.__features[i]);
+            feature = Registry.currentDevice.getFeatureByID(this._features[i]);
             console.log(feature);
             renderedfeature = FeatureRenderer2D.renderFeature(feature);
             console.log("rendered:");
@@ -291,7 +307,7 @@ export default class Connection {
                 bounds = bounds.unite(renderedfeature.bounds);
             }
         }
-        this.__bounds = bounds;
+        this._bounds = bounds;
     }
 
     /**
@@ -299,8 +315,8 @@ export default class Connection {
      * @returns {Params}
      * @memberof Connection
      */
-    getParams() {
-        return this.__params;
+    get params() {
+        return this._params;
     }
 
     /**
@@ -309,16 +325,16 @@ export default class Connection {
      * @returns {void}
      * @memberof Connection
      */
-    setParams(params) {
-        this.__params = params;
-        // TODO: Modify all the associated Features
-        for (const key in params) {
-            const value = params[key];
-            for (const i in this.__features) {
-                const featureidtochange = this.__features[i];
+    set params(params: Params) {
+        this._params = params;
+        //TODO: Modify all the associated Features
+        for (let key in params) {
+            let value = params[key];
+            for (let i in this._features) {
+                let featureidtochange = this._features[i];
 
-                // Get the feature id and modify it
-                const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+                //Get the feature id and modify it
+                let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
                 feature.updateParameter(key, value.getValue());
             }
         }
@@ -330,7 +346,7 @@ export default class Connection {
      * @memberof Connection
      */
     getPaths() {
-        return this.__paths;
+        return this._paths;
     }
 
     /**
@@ -339,10 +355,10 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    updateSegments(segments) {
+    updateSegments(segments: number[][]) {
         this.updateParameter("segments", new Parameter("SegmentArray", segments));
-        for (const i in this.__features) {
-            const featureidtochange = this.__features[i];
+        for (let i in this._features) {
+            let featureidtochange = this._features[i];
 
             const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
             // feature.updateParameter('position', center);
@@ -356,7 +372,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {boolean}
      */
-    insertFeatureGap(boundingbox) {
+    insertFeatureGap(boundingbox: any) {
         let foundflag = false;
         // Convert Rectangle to Path.Rectangle
         console.log(boundingbox, boundingbox.width, boundingbox.height);
@@ -369,9 +385,9 @@ export default class Connection {
             const intersections = line.getIntersections(boundingbox);
             // console.log("Intersections found", intersections);
             if (intersections.length === 2) {
-                const break1 = intersections[0].point;
-                const break2 = intersections[1].point;
-                const newsegs = this.__breakSegment(segment, break1, break2);
+                let break1 = intersections[0].point;
+                let break2 = intersections[1].point;
+                let newsegs = this.breakSegment(segment, break1, break2);
                 console.log("breaking:", segment, newsegs);
                 if (newsegs.length !== 2) {
                     throw new Error("Could not break the segments correctly");
@@ -418,10 +434,10 @@ export default class Connection {
      * @memberof Connection
      * @private
      */
-    __breakSegment(segment, break1, break2) {
-        // Generate 2 segments from this 1 segemnt
-        const p1 = new paper.Point(segment[0]);
-        const p2 = new paper.Point(segment[1]);
+    private breakSegment(segment: [number, number][], break1: paper.Point, break2: paper.Point) {
+        //Generate 2 segments from this 1 segemnt
+        let p1 = new paper.Point(segment[0]);
+        let p2 = new paper.Point(segment[1]);
 
         let segment1, segment2;
         const p1_break1 = p1.getDistance(break1);
@@ -460,7 +476,7 @@ export default class Connection {
      * @returns {Connection} Returns a connection object
      * @memberof Connection
      */
-    static fromInterchangeV1(device, json) {
+    static fromInterchangeV1(device: any, json: JSON) {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";
@@ -560,11 +576,11 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setSource(component, port) {
-        if (typeof component !== "string" && !(component instanceof String)) {
+    setSource(component: string, port: ComponentPort) {
+        if (typeof component != "string" && !(component instanceof String)) {
             console.error("The reference object value can only be a string");
         }
-        this.__source = new ConnectionTarget(component, port);
+        this._source = new ConnectionTarget(component, port);
     }
 
     /**
@@ -574,11 +590,11 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addSink(component, port) {
-        if (typeof component !== "string" || !(component instanceof String)) {
+    addSink(component: string, port: ComponentPort) {
+        if (typeof component != "string" || !(component instanceof String)) {
             console.error("The reference object value can only be a string");
         }
-        this.__sinks.push(new ConnectionTarget(component, port));
+        this._sinks.push(new ConnectionTarget(component, port));
     }
 
     /**
@@ -588,16 +604,16 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addConnectionTarget(connectiontarget) {
-        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget === null || connectiontarget == undefined) {
+    addConnectionTarget(connectiontarget: ConnectionTarget) {
+        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget == null || connectiontarget == undefined) {
             console.error("Cannot add non-ConnectionTarget object as source or sink");
         }
 
-        if (this.__source === null) {
-            this.__source = connectiontarget;
+        if (this._source == null) {
+            this._source = connectiontarget;
         } else {
-            // TODO: Check for duplicates - does it matter actually ?
-            this.__sinks.push(connectiontarget);
+            //TODO: Check for duplicates - does it matter actually ?
+            this._sinks.push(connectiontarget);
         }
     }
 
@@ -608,19 +624,19 @@ export default class Connection {
      * @memberof Connection
      *
      */
-    tryDeleteConnectionTarget(componentid) {
+    tryDeleteConnectionTarget(componentid: string) {
         let ret = false;
         if (component.getID() == componentid) {
-            // Remove the source object
-            this.__source = null;
+            //Remove the source object
+            this._source = null;
             ret = true;
         }
 
-        for (const i in this.__sinks) {
-            const sink = this.__sinks[i];
+        for (let i in this._sinks) {
+            let sink = this._sinks[i];
 
             if (sink.component.getID() == componentid) {
-                this.__sinks.splice(i, 1);
+                this._sinks.splice(+i, 1);
                 ret = true;
             }
         }
@@ -634,8 +650,8 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addWayPoints(wayPoints) {
-        this.__paths.push(wayPoints);
+    addWayPoints(wayPoints: [number, number]) {
+        this._paths.push(wayPoints);
     }
 
     /**
@@ -644,7 +660,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    mergeConnection(connection) {
+    mergeConnection(connection: Connection) {
         console.error("Merge the newly found connection with the new connection");
         // TODO:
         /*
@@ -663,9 +679,9 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setSourceFromJSON(device, json) {
-        const target = ConnectionTarget.fromJSON(device, json);
-        this.__source = target;
+    setSourceFromJSON(device: any, json: JSON) {
+        let target = ConnectionTarget.fromJSON(device, json);
+        this._source = target;
     }
 
     /**
@@ -675,8 +691,8 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addSinkFromJSON(device, json) {
-        const target = ConnectionTarget.fromJSON(device, json);
-        this.__sinks.push(target);
+    addSinkFromJSON(device: any, json: JSON) {
+        let target = ConnectionTarget.fromJSON(device, json);
+        this._sinks.push(target);
     }
 }
