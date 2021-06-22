@@ -91,7 +91,7 @@ export default {
     },
     methods: {
         handleScroll() {
-            EventBus.get().emit(EventBus.NAVBAR_SCOLL_EVENT);
+            EventBus.get().emit(EventBus.NAVBAR_SCROLL_EVENT);
         }
     }
 };

@@ -1,6 +1,6 @@
 import Params from "./params";
 
-import * as Parameters from "./parameters";
+import StringValue from "./parameters/stringValue";
 import Feature from "./feature";
 
 import Registry from "./registry";
@@ -15,12 +15,13 @@ import Valve from "../library/valve";
 import ComponentPort from "./componentPort";
 import * as IOUtils from "../utils/ioUtils";
 
-const StringValue = Parameters.StringValue;
 
 /**
  * The Device stores information about a design.
  */
 export default class Device {
+    
+    //TODO - Fix how the constructor here to not be ambiguous taking in values list for designs that need more specific thing
     /**
      * Default Constructor
      * @param {*} values
@@ -33,7 +34,7 @@ export default class Device {
         // this.setXSpan(values.width);
         // this.setYSpan(values.length);
 
-        this.name = StringValue(name);
+        this.name = new StringValue(name);
         this.__components = [];
         this.__nameMap = new Map();
         this.__connections = [];
@@ -626,6 +627,7 @@ export default class Device {
      */
     static fromJSON(json) {
         const defaults = json.defaults;
+
         const newDevice = new Device(
             {
                 width: json.params.width,
@@ -633,6 +635,8 @@ export default class Device {
             },
             json.name
         );
+        newDevice.setXSpan(json.params.width);
+        newDevice.setYSpan(json.params.length);
         newDevice.__loadLayersFromJSON(json.layers);
         return newDevice;
     }

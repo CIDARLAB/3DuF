@@ -48,7 +48,10 @@ describe("Params", function () {
             const params = new Params(values, unique, heritable);
             params.getValue("flo").should.be.approximately(12.3, 0.0001);
             params.getValue("str").should.equal("foobar");
-            params.getParameter("boo").getType().should.equal("Boolean");
+            params
+                .getValue("boo")
+                .getType()
+                .should.equal("Boolean");
         });
         it("cannot be initialized if unique values are missing", function () {
             delete values.flo;
@@ -80,7 +83,10 @@ describe("Params", function () {
             delete values.poi;
             params = new Params(values, unique, heritable);
             params.updateParameter("poi", [0, 17]);
-            params.getParameter("poi").getType().should.equal("Point");
+            params
+                .getValue("poi")
+                .getType()
+                .should.equal("Point");
             params.getValue("poi")[1].should.equal(17);
         });
         it("should not allow a parameter to be updated to an invalid value", function () {
@@ -108,16 +114,16 @@ describe("Params", function () {
         });
     });
 
-    describe("#getParameter", function () {
-        it("should return the correct parameter when given a valid key", function () {
-            const p = params.getParameter("boo");
+    describe("#getParameter", function() {
+        it("should return the correct parameter when given a valid key", function() {
+            let p = params.getValue("boo");
             (p instanceof Parameter).should.equal(true);
             p.getValue().should.equal(true);
             p.getType().should.equal("Boolean");
         });
-        it("should throw an error for an invalid key", function () {
-            (function () {
-                const p = params.getParameter("invalidKey");
+        it("should throw an error for an invalid key", function() {
+            (function() {
+                let p = params.getValue("invalidKey");
             }.should.throwError());
         });
     });
@@ -135,7 +141,10 @@ describe("Params", function () {
             const json = values; // they happen to be the same structure!
             const params = Params.fromJSON(json, unique, heritable);
             params.getValue("boo").should.equal(true);
-            params.getParameter("str").getType().should.equal("String");
+            params
+                .getValue("str")
+                .getType()
+                .should.equal("String");
         });
         it("should not allow fromJSON to be called without unique and heritable types", function () {
             (function () {
@@ -153,7 +162,10 @@ describe("Params", function () {
             const json = params.toJSON();
             const newParams = Params.fromJSON(json, unique, heritable);
             newParams.getValue("boo").should.equal(true);
-            newParams.getParameter("str").getType().should.equal("String");
+            newParams
+                .getValue("str")
+                .getType()
+                .should.equal("String");
         });
     });
 });
