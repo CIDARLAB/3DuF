@@ -50,10 +50,10 @@ export default {
         };
     },
     computed: {
-        buttonID: function() {
+        buttonID: function () {
             return this.title.toLowerCase().replace(" ", "_") + "_dialog_button";
         },
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [
                 this.color && this.color.length > 0 ? this.color : "white",
                 this.textColor && this.textColor.length > 0 ? this.textColor : "blue--text",
