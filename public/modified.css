@@ -1,0 +1,132 @@
+#c {
+    z-index: 0;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    cursor: default;
+    width: 100%;
+    height: 100%;
+}
+
+.params-button {
+    margin: 0px;
+    position: absolute;
+    top: 2px;
+    right: 17px;
+    color: #ffffff;
+}
+
+.button_row {
+    width: 100%;
+}
+
+#view_container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.mdl-layout__drawer > .mdl-layout-title {
+    height: 35px;
+    padding-left: 0px;
+    text-align: center;
+}
+
+.fade-transition {
+    -moz-transition: opacity 500ms linear, visibility 0s linear;
+    -o-transition: opacity 500ms linear, visibility 0s linear;
+    -webkit-transition: opacity 500ms linear, visibility 0s linear;
+    transition: opacity 500ms linear, visibility 0s linear;
+    transition-delay: 0.5s;
+    -moz-transition-delay: 0.5s;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+}
+
+.shown-block {
+    visibility: visible;
+    opacity: 100;
+}
+
+.mdl-menu {
+    z-index: 3;
+}
+
+.hidden-block {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.feature-button {
+    display: block;
+    width: auto;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 0;
+}
+
+.view-button {
+    margin: 15px;
+    margin-top: 0;
+}
+
+.button-spacer {
+    padding: 20px;
+}
+
+#renderContainer {
+    z-index: 0;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.logo {
+    position: relative;
+    max-width: 80%;
+    min-width: 80%;
+    padding: 20px 20px 0px;
+}
+
+#main_window {
+    height: 100%;
+    min-height: 100%;
+}
+
+.layer-button {
+    width: 36px;
+}
+
+.mdl-button-group button {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#layer-toolbar {
+    margin-left: 15px;
+}
+
+div#moveBox {
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+
+div#arrayBox {
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+
+body {
+    /* ...or body.dialogShowing */
+    overflow: hidden;
+}

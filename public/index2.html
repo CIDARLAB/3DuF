@@ -1,0 +1,829 @@
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="lib/jquery/jquery-1.11.3.min.js"></script>
+    <script src="lib/nouislider/nouislider.min.js"></script>
+    <script src="lib/filesaver/FileSaver.min.js"></script>
+    <script src="lib/three/three.min.js"></script>
+    <script src="lib/popdown/jquery.popdown.min.js"></script>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="lib/nouislider/nouislider.min.css" />
+
+    <link rel="stylesheet" href="lib/material/material.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css" />
+    <link rel="stylesheet" href="lib/handsontable/handsontable.full.min.css" />
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="modified.css" />
+    <link rel="stylesheet" href="animations.css" />
+</head>
+
+<body>
+    <script>
+        // Warning before leaving the page (back button, or outgoinglink)
+        window.onbeforeunload = function () {
+            return "Do you really want to leave 3DuF?";
+            //if we return nothing here (just calling return;) then there will be no pop-up question at all
+            //return;
+        };
+    </script>
+    <div id="main_window" class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--overlay-drawer-button">
+        <div id="button_drawer" class="mdl-layout__drawer">
+            <img class="logo" src="img/logo.png" />
+            <br />
+            <a id="getting-started-button" class="popdown mdl-button mdl-js-button mdl-js-ripple-effect" title="About" style="color: hotpink">Getting Started</a>
+
+            <nav class="mdl-navigation" id="general-tools">
+                <div class="button_row">
+                    <a id="resize_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button"> Edit Device</a>
+                </div>
+
+                <div class="button_row">
+                    <a id="edit_border_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button"> Edit Border</a>
+                </div>
+
+                <div class="button_row">
+                    <a id="select_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button"> Select Tool</a>
+                </div>
+
+                <div class="button_row">
+                    <a id="insert_text_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button"> Insert Text</a>
+                </div>
+            </nav>
+
+            <span class="mdl-layout-title">Select Layer</span>
+
+            <nav class="mdl-navigation" id="layer-controls">
+                <!--<a id="control_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised view-button">Control</a>-->
+
+                <div id="layer-toolbar">
+                    <div id="template-layer-block" class="mdl-button-group layer-block" data-levelindex="0">
+                        <span class="level-index">LEVEL 1</span>
+                        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored delete-level" style="visibility: hidden" data-levelindex="0">
+                            <i class="material-icons">delete</i>
+                        </button>
+                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon mdl-button&#45;&#45;colored">-->
+                        <!--<i class="material-icons">visibility_off</i>-->
+                        <!--</button>-->
+                        <br />
+                        <a class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect layer-button flow-button" data-layerindex="0">Flow</a>
+                        <a class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect layer-button control-button" data-layerindex="1">Control</a>
+                    </div>
+                </div>
+
+                <button id="add-new-level" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                    <i class="material-icons">add_box</i>
+                </button>
+                <!--<a id="cells_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised view-button">Cells</a>-->
+            </nav>
+
+            <span class="mdl-layout-title">Select Feature</span>
+            <nav class="mdl-navigation" id="feature-misc">
+                <div class="button_row">
+                    <a id="connection_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Connection</a>
+                    <button id="connection_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+
+                <div class="button_row">
+                    <a id="channel_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Channel</a>
+                    <button id="channel_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="roundedchannel_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Rounded Channel</a>
+                    <button id="roundedchannel_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+
+                <div class="button_row">
+                    <a id="transition_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Transition</a>
+                    <button id="transition_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="alignmentmarks_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Alignment Marks</a>
+                    <button id="alignmentmarks_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+            </nav>
+
+            <span class="mdl-layout-title">Imported</span>
+            <nav class="mdl-navigation" id="feature-import-static">
+                <a id="show_import_dialog" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button mdl-button--colored">Import</a>
+                <div id="customComponentToolBar">
+                    <div id="template-custom-component-button" class="button_row" style="visibility: hidden; display: none">
+                        <a class="custom-component-button mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Mixer</a>
+                        <button class="params-button mdl-button mdl-js-button mdl-button--icon">
+                            <i class="material-icons">settings</i>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            <span class="mdl-layout-title">Mix</span>
+            <nav class="mdl-navigation" id="feature-mix">
+                <div class="button_row">
+                    <a id="bettermixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Mixer</a>
+                    <button id="bettermixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="3dmixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">3D Mixer</a>
+                    <button id="3dmixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="gradientgenerator_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Gradient Gen</a>
+                    <button id="gradientgenerator_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+
+                <div class="button_row">
+                    <a id="curvedmixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Curved Mixer</a>
+                    <button id="curvedmixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="rotarymixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Rotary Mixer</a>
+                    <button id="rotarymixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+            </nav>
+            <span class="mdl-layout-title">Control</span>
+            <nav class="mdl-navigation" id="feature-control">
+                <!--            <div class="button_row">-->
+                <!--                <a id="circleValve_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised feature-button">Circle Valve</a>-->
+                <!--                <button id="circleValve_params_button" class="params-button mdl-button mdl-js-button mdl-button&#45;&#45;icon">-->
+                <!--                    <i class="material-icons">settings</i>-->
+                <!--                </button>-->
+                <!--            </div>-->
+                <div class="button_row">
+                    <a id="valve3d_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Valve3D</a>
+                    <button id="valve3d_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="valve_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Valve</a>
+                    <button id="valve_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="pump3d_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Pump3D</a>
+                    <button id="pump3d_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="pump_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Pump</a>
+                    <button id="pump_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+            </nav>
+            <span class="mdl-layout-title">Process</span>
+            <nav class="mdl-navigation" id="feature-process">
+                <div class="button_row">
+                    <a id="llchamber_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">LL Chamber</a>
+                    <button id="llchamber_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+
+                <div class="button_row">
+                    <a id="celltrapl_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Cell Trap</a>
+                    <button id="celltrapl_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <!-- CK stuff-->
+                <div class="button_row">
+                    <a id="gelchannel_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Gel channel</a>
+                    <button id="gelchannel_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <!-- endCK stuff-->
+                <div class="button_row">
+                    <a id="diamond_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Diamond Chamber</a>
+                    <button id="diamond_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="thermoCycler_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">thermoCycler</a>
+                    <button id="thermoCycler_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="chamber_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Chamber</a>
+                    <button id="chamber_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="dropletgen_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised feature-button">Droplet Gen</a>
+                    <button id="dropletgen_params_button" class="params-button mdl-button mdl-js-button mdl-button&#45;&#45;icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+            </nav>
+            <span class="mdl-layout-title">Distribute</span>
+
+            <nav class="mdl-navigation" id="feature-distribute">
+                <!-- CK stuff-->
+                <div class="button_row">
+                    <a id="anode_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Anode</a>
+                    <button id="anode_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="cathode_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Cathode</a>
+                    <button id="cathode_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <!--end CK stuff-->
+                <div class="button_row">
+                    <a id="port_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Port</a>
+                    <button id="port_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="via_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised feature-button">Via</a>
+                    <button id="via_params_button" class="params-button mdl-button mdl-js-button mdl-button&#45;&#45;icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row" hidden="true">
+                    <a id="mixer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Mixer</a>
+                    <button id="mixer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="tree_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Tree</a>
+                    <button id="tree_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="ytree_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Y-Tree</a>
+                    <button id="ytree_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="mux_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Mux</a>
+                    <button id="mux_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+                <div class="button_row">
+                    <a id="transposer_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised feature-button">Transposer</a>
+                    <button id="transposer_params_button" class="params-button mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">settings</i>
+                    </button>
+                </div>
+            </nav>
+            <!--<span class="mdl-layout-title">QoL Operations</span>-->
+            <!--<nav class="mdl-navigation" id="qol-controls">-->
+            <!--<a id="revertdefaults_button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised view-button">Flow</a>-->
+            <!--</nav>-->
+            <!--<span class="mdl-layout-title">Select View</span>-->
+            <!--<nav class="mdl-navigation">-->
+            <!--<a id="button_2D" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised view-button">2D</a>-->
+            <!--&lt;!&ndash;<a id="button_3D" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;raised view-button">3D</a>&ndash;&gt;-->
+            <!--</nav>-->
+            <span class="mdl-layout-title">Save</span>
+            <nav class="mdl-navigation">
+                <a id="interchange_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">JSON (.json)</a>
+                <a id="svg_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">Vector Art (.svg)</a>
+                <a id="cnc_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">CNC (.svg)</a>
+                <a id="laser_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">Laser Cutting (.svg)</a>
+                <a id="metafluidics_save" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button" target="_blank" href="https://metafluidics.org/create-part/"
+                    >Publish on Metafluidics</a
+                >
+                <a id="damp_fabricate" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">Fabricate</a>
+                <!-- <a id="damp_fabricate" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button" ></a>Fabricate</a> -->
+                <!-- <a id="stl_button" class="mdl-button mdl-js-button mdl-js-ripple-effect view-button">3D Model (.stl)</a>-->
+            </nav>
+            <a id="infobutton" class="popdown mdl-button mdl-js-button mdl-js-ripple-effect" title="About" style="color: hotpink">About/Help</a>
+            <br />
+            <br />
+        </div>
+        <main class="mdl-layout__content">
+            <div id="view_container" class="page-content">
+                <div id="canvas_block" class="shown-block fade-transition">
+                    <canvas id="c" tabindex="0" resize></canvas>
+                </div>
+                <div id="renderContainer" class="hidden-block fade-transition"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Colored FAB button with ripple -->
+    <div id="toolbar-button-panel">
+        <button id="grid-toolbar-show-button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+            <i class="material-icons">grid_on</i>
+        </button>
+        <div class="mdl-tooltip mdl-tooltip--left" for="grid-toolbar-show-button">Grid Settings</div>
+    </div>
+
+    <div id="zoom-toolbar">
+        <div id="zoom-slider" height="200px" style="z-index: 9"></div>
+    </div>
+
+    <div id="contextMenu" style="z-index: 19; left: 500px; top: 500px; position: absolute; background-color: #fff" class="hidden-block">
+        <div id="rename_component_textfield" class="collapse">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="componentname_textinput" />
+                <label class="mdl-textfield__label" for="devicename_textinput">Component Name</label>
+            </div>
+            <div id="context_rename_button_save" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                <i class="material-icons">check_circle</i>
+            </div>
+            <div class="mdl-tooltip" data-mdl-for="context_button_rename">Save</div>
+            <div id="context_rename_button_cancel" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                <i class="material-icons">cancel</i>
+            </div>
+            <div class="mdl-tooltip" data-mdl-for="context_button_rename">Save</div>
+        </div>
+
+        <!-- Colored icon button -->
+        <div id="context_button_copy" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">file_copy</i>
+        </div>
+        <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_copy">Copy</div>
+        <!-- Colored icon button -->
+        <div id="context_button_delete" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">delete</i>
+        </div>
+        <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_delete">Delete</div>
+        <!-- Colored icon button -->
+        <div id="context_button_move" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">open_with</i>
+        </div>
+        <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_move">Move</div>
+        <!-- Colored icon button -->
+        <div id="context_button_revert" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">settings_backup_restore</i>
+        </div>
+        <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_revert">Revert</div>
+        <!-- Colored icon button -->
+        <div id="context_button_copytoall" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">select_all</i>
+        </div>
+        <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_copytoall">Change All</div>
+        <!-- Colored icon button -->
+        <div id="context_button_rename" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">title</i>
+        </div>
+        <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_rename">Rename</div>
+        <!-- Colored icon button -->
+        <div id="context_button_arraygen" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">view_comfy</i>
+        </div>
+        <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_arraygen">Generate Array</div>
+    </div>
+
+    <div id="moveBox" style="z-index: 20; left: 250px; top: 30px; position: absolute; background-color: #fff" class="hidden-block">
+        <h5>Specify Position</h5>
+        <label>X (mm) :</label>
+        <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+            <input class="mdl-textfield__input" type="text" id="textinput_xpos" />
+            <!--<label class="mdl-textfield__label" for="textinput_xpos">x (mm)</label>-->
+        </div>
+        <button id="button-xpos-up" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">arrow_upward</i>
+        </button>
+        <button id="button-xpos-down" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">arrow_downward</i>
+        </button>
+        <br />
+        <label>Y (mm) :</label>
+        <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+            <input class="mdl-textfield__input" type="text" id="textinput_ypos" />
+            <!--<label class="mdl-textfield__label" for="textinput_ypos">y (mm)</label>-->
+        </div>
+        <button id="button-ypos-up" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">arrow_upward</i>
+        </button>
+        <button id="button-ypos-down" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">arrow_downward</i>
+        </button>
+        <br />
+        <!-- Raised button with ripple -->
+        <button id="save-position" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Save</button>
+        <!-- Raised button with ripple -->
+        <button id="cancel-edit-position" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Cancel</button>
+    </div>
+
+    <div id="arrayBox" style="z-index: 20; left: 250px; top: 30px; position: absolute; background-color: #fff" class="hidden-block">
+        <h5>Generate:</h5>
+
+        <!--<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">-->
+        <!--<input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>-->
+        <!--<span class="mdl-radio__label">Bank</span>-->
+        <!--</label>-->
+        <!--<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">-->
+        <!--<input type="radio" id="option-2" class="mdl-radio__button" name="options" value="2">-->
+        <!--<span class="mdl-radio__label">Grid</span>-->
+        <!--</label>-->
+
+        <!--<br/>-->
+
+        <label>X :</label>
+        <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="replicate-x" />
+            <span class="mdl-textfield__error">Input is not an integer !</span>
+        </div>
+        <label>Y :</label>
+        <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="replicate-y" />
+            <span class="mdl-textfield__error">Input is not an integer !</span>
+        </div>
+
+        <h5>Spacing:</h5>
+
+        <label>X (mm) :</label>
+        <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+            <input class="mdl-textfield__input" type="text" id="textinput_xspacing" />
+            <!--<label class="mdl-textfield__label" for="textinput_xpos">x (mm)</label>-->
+        </div>
+        <button id="button-xspacing-up" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">arrow_upward</i>
+        </button>
+        <button id="button-xspacing-down" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">arrow_downward</i>
+        </button>
+        <br />
+        <label>Y (mm) :</label>
+        <div class="mdl-textfield mdl-js-textfield" style="width: 50px">
+            <input class="mdl-textfield__input" type="text" id="textinput_yspacing" />
+            <!--<label class="mdl-textfield__label" for="textinput_ypos">y (mm)</label>-->
+        </div>
+        <button id="button-yspacing-up" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">arrow_upward</i>
+        </button>
+        <button id="button-yspacing-down" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">arrow_downward</i>
+        </button>
+
+        <br />
+
+        <!-- Raised button with ripple -->
+        <button id="generate-replication" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Generate</button>
+        <!-- Raised button with ripple -->
+        <button id="cancel-replication" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Cancel</button>
+    </div>
+
+    <div id="resolution-toolbar" class="hidetoolbar">
+        <div>
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="grid-enable-toggle">
+                <input type="checkbox" id="grid-enable-toggle" class="mdl-switch__input" checked />
+                <span class="mdl-switch__label">Enable Automatic Grid</span>
+            </label>
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="render-snap-toggle">
+                <input type="checkbox" id="render-snap-toggle" class="mdl-switch__input" checked />
+                <span class="mdl-switch__label">Render Snap Points</span>
+            </label>
+            <br />
+            <div id="grid-resolution-slider"></div>
+            <br />
+            <br />
+        </div>
+    </div>
+
+    <div id="bottom-info-bar" style="z-index: 9; bottom: 2px; right: 50px; position: absolute">Grid Size : <label id="sm-resolution"></label></div>
+
+    <dialog id="help_dialog" class="mdl-dialog">
+        <div class="mdl-dialog__content">
+            <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">3DuF v1.1</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <img src="img/cidar_logo.png" width="100%" />
+                    3DuF is microfluidic design environment developed by <a href="http://cidarlab.org" target="_blank">CIDAR</a>. For any help or queries, please send an email to
+                    <a href="mailto: 3dufhelp@gmail.com"> 3dufhelp@gmail.com </a>. Source code, issue tracking and feature requests are available at
+                    <a href="https://github.com/CIDARLAB/3DuF/" target="_blank">Github</a>.
+                    <hr />
+                    Developed by: Aaron Heuckroth, Joshua Lippai and Radhakrishna Sanka.
+                    <hr />
+                    Error Tracking powered by <a href="https://trackjs.com">https://trackjs.com</a>.
+                </div>
+
+                <div class="mdl-card__menu">
+                    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect close">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="intro_help_dialog" class="mdl-dialog" style="overflow-y: auto">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Getting Started</h2>
+        </div>
+        <div class="mdl-dialog__content">
+            <div style="overflow-y: visible; max-height: 600px">
+                <h5>Academic Publications:</h5>
+                <p>
+                    Sanka, Radhakrishna, Joshua Lippai, Dinithi Samarasekera, Sarah Nemsick, and Douglas Densmore. <br />
+                    “3DμF - Interactive Design Environment for Continuous Flow Microfluidic Devices.” <br />
+                    Scientific Reports 9, no. 1 (December 2019).
+                </p>
+                <a href="https://doi.org/10.1038/s41598-019-45623-z">https://doi.org/10.1038/s41598-019-45623-z</a>
+
+                <h5>Videos</h5>
+
+                <table>
+                    <tr>
+                        <td>
+                            <iframe
+                                width="355"
+                                height="200"
+                                src="https://www.youtube.com/embed/05nU8eQ73U8"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </td>
+                        <td>
+                            <iframe
+                                width="355"
+                                height="200"
+                                src="https://www.youtube.com/embed/YOrnnZjma28"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center">Introduction</td>
+                        <td style="text-align: center">Long Tutorial</td>
+                    </tr>
+                </table>
+                <br />
+
+                <p><b>Send in comments, suggestions and issues to</b> <a href="mailto: 3dufhelp@gmail.com"> 3dufhelp@gmail.com </a>.</p>
+
+                <h5>Designs From Literature</h5>
+                Check the various designs from microfluidic literature recreated in 3DµF can be found
+                <a href="https://cidarlab.github.io/3DuF-Paper-Designs/" target="_blank">here</a>.
+                <h5>Usage</h5>
+                <table class="tg">
+                    <tr>
+                        <td class="tg-yw4l"><pre>del</pre></td>
+                        <td class="tg-yw4l">- Delete Feature</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>F</pre></td>
+                        <td class="tg-yw4l">- Reset Canvas</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>Esc</pre></td>
+                        <td class="tg-yw4l">- Activate Select Tool/ Deselect Selected Components</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>ctrl+C , ctrl+V</pre></td>
+                        <td class="tg-yw4l">- Activate Component Copy Mode</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>ctrl+Z</pre></td>
+                        <td class="tg-yw4l">- Undo Last Edit</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>ctrl+A</pre></td>
+                        <td class="tg-yw4l">- Select All</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>ctrl+S</pre></td>
+                        <td class="tg-yw4l">- Save JSON file</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>left click</pre></td>
+                        <td class="tg-yw4l">- Place Feature</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>right click</pre></td>
+                        <td class="tg-yw4l">- Select Feature</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>mouse scroll</pre></td>
+                        <td class="tg-yw4l">- Zoom</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-yw4l"><pre>arrow keys</pre></td>
+                        <td class="tg-yw4l">- Pan</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="mdl-card__menu">
+                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect close">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="import_dialog" class="mdl-dialog">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Drag and drop the DXF file on the canvas</h2>
+        </div>
+        <div class="mdl-dialog__content">
+            <canvas id="component_preview_canvas" tabindex="1" width="500" height="400"></canvas>
+        </div>
+        <form action="#">
+            <div class="mdl-textfield mdl-js-textfield" width="300px">
+                <input class="mdl-textfield__input" type="text" id="new_component_name" />
+                <label class="mdl-textfield__label" for="new_component_name">Name...</label>
+            </div>
+        </form>
+        <br />
+        <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+            <button id="import_component_button" type="button" class="mdl-button">Import</button>
+            <button type="button" class="mdl-button close">Cancel</button>
+        </div>
+    </dialog>
+
+    <dialog id="doe_dialog" class="mdl-dialog">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Generate Design of Experiments for a Single Component</h2>
+        </div>
+        <div class="mdl-dialog__content">
+            <input type="file" class="upload" id="doe_input" />
+            <div id="taguchi-table"></div>
+        </div>
+        <!--<form action="#">-->
+        <!--<div class="mdl-textfield mdl-js-textfield" width="300px">-->
+        <!--<input class="mdl-textfield__input" type="text" id="new_component_name">-->
+        <!--<label class="mdl-textfield__label" for="new_component_name">Name...</label>-->
+        <!--</div>-->
+        <!--</form>-->
+        <br />
+        <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+            <button id="download-doe-button" type="button" class="mdl-button">Download Designs</button>
+            <button type="button" class="mdl-button close">Cancel</button>
+        </div>
+    </dialog>
+
+    <dialog id="edit_device_dialog" class="mdl-dialog">
+        <div class="mdl-dialog__content">
+            <!-- Textfield with Floating Label -->
+            <h4>Rename:</h4>
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="devicename_textinput" />
+                    <label class="mdl-textfield__label" for="devicename_textinput">Device Name</label>
+                </div>
+            </form>
+
+            <h4>Resize:</h4>
+            <!-- Numeric Textfield with Floating Label -->
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="xspan_textinput" />
+                    <label class="mdl-textfield__label" for="xspan_textinput">X-Span (mm)</label>
+                    <span class="mdl-textfield__error">Input is not a number!</span>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="yspan_textinput" />
+                    <label class="mdl-textfield__label" for="yspan_textinput">Y-Span (mm)</label>
+                    <span class="mdl-textfield__error">Input is not a number!</span>
+                </div>
+            </form>
+        </div>
+        <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+            <button id="accept_resize_button" type="button" class="mdl-button">Save</button>
+            <button type="button" class="mdl-button close">Cancel</button>
+        </div>
+    </dialog>
+    <dialog id="insert_text_dialog" class="mdl-dialog">
+        <div class="mdl-dialog__content">
+            <!-- Textfield with Floating Label -->
+            <h4>Insert Text:</h4>
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="inserttext_textinput" />
+                    <label class="mdl-textfield__label" for="inserttext_textinput">Text</label>
+                </div>
+            </form>
+        </div>
+        <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+            <button id="accept_text_button" type="button" class="mdl-button">Insert</button>
+            <button type="button" class="mdl-button close">Cancel</button>
+        </div>
+    </dialog>
+    <dialog id="border_settings_dialog" class="mdl-dialog">
+        <div class="mdl-dialog__content">
+            <!-- Textfield with Floating Label -->
+            <h4>Drag Drop the DXF file containing border to import:</h4>
+            <div class="mdl-dialog__content">
+                <canvas id="border_import_panel" tabindex="1" width="300" height="200"></canvas>
+                <br />
+                <input type="file" class="upload" id="dxf_input" />
+            </div>
+        </div>
+        <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+            <button id="import_border_button" type="button" class="mdl-button">Import Border</button>
+            <button id="delete_border_button" type="button" class="mdl-button">Delete Border</button>
+            <button type="button" class="mdl-button close">Close</button>
+        </div>
+    </dialog>
+    <dialog id="change_all_dialog" class="mdl-dialog">
+        <div class="mdl-dialog__content">
+            <!-- Textfield with Floating Label -->
+            <h5>Change All Components: <span id="component_type_span"></span></h5>
+        </div>
+        <table id="similar_components_table">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Change</th>
+                </tr>
+            </thead>
+        </table>
+        <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+            <button id="change_all_button" type="button" class="mdl-button">Change</button>
+            <button type="button" class="mdl-button close">Cancel</button>
+        </div>
+    </dialog>
+
+    <dialog id="damp_fabricate_dialog" class="mdl-dialog">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Send your design for fabrication at DAMP LAB</h2>
+        </div>
+        <div class="mdl-dialog__content">
+            <!-- Textfield with Floating Label -->
+            <h6>Enter your contact information:</h6>
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="fabricate_dialog_email_field" />
+                    <label class="mdl-textfield__label" for="fabricate_dialog_email_field">Email</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="fabricate_dialog_address_field" />
+                    <label class="mdl-textfield__label" for="fabricate_dialog_email_field">Shipping Address</label>
+                </div>
+            </form>
+
+            <p>Learn more about the DAMP LAB fabrication service <a href="https://www.damplab.org/damp-lab-6-services" target="_blank">here</a>.</p>
+        </div>
+        <!--<form action="#">-->
+        <!--<div class="mdl-textfield mdl-js-textfield" width="300px">-->
+        <!--<input class="mdl-textfield__input" type="text" id="new_component_name">-->
+        <!--<label class="mdl-textfield__label" for="new_component_name">Name...</label>-->
+        <!--</div>-->
+        <!--</form>-->
+        <br />
+        <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+            <button id="send_designs_button" type="button" class="mdl-button">Send Design</button>
+            <button type="button" class="mdl-button close">Cancel</button>
+        </div>
+    </dialog>
+
+    <!--Snackbar for all user feedback-->
+    <div aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button type="button" class="mdl-snackbar__action"></button>
+    </div>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-57223580-12"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+
+        gtag("config", "UA-57223580-12");
+    </script>
+</body>
+
+<script src="3DuF.js"></script>
