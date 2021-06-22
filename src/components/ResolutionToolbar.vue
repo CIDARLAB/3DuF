@@ -5,15 +5,13 @@
         </v-btn>
         <v-btn v-if="hover" id="grid-hover" class="grey white--text" x-small depressed>Grid Settings</v-btn>
         <div v-if="activated" id="resolution-toolbar">
-            <div>
-                <v-switch :value="true" color="#304FFE" @change="clickedGrid" />
-                <span class="mdl-switch__label">Enable Automatic Grid</span>
-                <v-switch :value="true" color="#304FFE" @change="clickedSnap" />
-                <span class="mdl-switch__label">Render Snap Points</span>
-            </div>
-            <div id="grid-resolution-slider">
-                <veeno ref="slider" v-bind="sliderOptions" @change="updateGrid" />
-            </div>
+            <v-switch v-model="switch1" color="#304FFE" hide-details @change="clickedGrid">
+                <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
+            </v-switch>
+            <v-switch v-model="switch2" color="#304FFE" @change="clickedSnap">
+                <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
+            </v-switch>
+            <veeno ref="slider" v-bind="sliderOptions" @change="updateGrid" />
         </div>
     </div>
 </template>
@@ -35,7 +33,8 @@ export default {
         return {
             activated: false,
             hover: false,
-            value: true,
+            switch1: true,
+            switch2: true,
             sliderOptions: {
                 connect: [true, false],
                 pipsy: { mode: "range", density: 5 },
@@ -44,39 +43,40 @@ export default {
             }
         };
     },
-    //mode(){
 
-    // if (this.$refs.grid-enable.checked == true){
-    //             //Enable Adaptive Grid
-    //             Registry.currentGrid.enableAdaptiveGrid()
-    //             grid-resolution-slider
-    //         }
-    //     else {
-    //             //Disable Adaptive Grid
-    //             Registry.currentGrid.disableAdaptiveGrid();
-    //             ref.__gridResolutionSlider.removeAttribute("disabled");
-    //         }
-    // },
     methods: {
         showProperties() {
             this.activated = !this.activated;
-            console.log("test clicked");
+            console.log("grid clicked");
         },
         clickedGrid() {
-            this.value = !this.value;
-            console.log("test clicked");
+            console.log(this.switch1);
+            if (this.switch1) {
+                //Enable Adaptive Grid
+                Registry.currentGrid.enableAdaptiveGrid();
+                //this.$ref.slider.setAttribute("disabled", true);
+            } else {
+                //Disable Adaptive Grid
+                Registry.currentGrid.disableAdaptiveGrid();
+                //this.$ref.slider.removeAttribute("disabled");
+            }
         },
         clickedSnap() {
-            this.value = !this.value;
-            console.log("test clicked");
+            if (this.switch2) {
+                //Enable Snap
+                Registry.viewManager.view.enableSnapRender();
+            } else {
+                //Disable Snap
+                Registry.viewManager.view.disableSnapRender();
+            }
         },
         updateGrid(event) {
             let registryref = Registry;
             const { values } = event;
-            //let value1 = parseInt(values[0], 10);
+            let value1 = parseInt(values[0], 10);
             //This ensures that there is something valid present
             if (registryref.currentGrid != null) {
-                registryref.currentGrid.updateGridSpacing(values);
+                registryref.currentGrid.updateGridSpacing(value1);
                 registryref.currentGrid.notifyViewManagerToUpdateView();
             }
         }
@@ -89,7 +89,7 @@ export default {
     align-content: center;
     position: absolute;
     width: 500px;
-    height: 120px;
+    height: 200px;
     top: 10px;
     right: 100px;
     background-color: rgb(250, 250, 250);
