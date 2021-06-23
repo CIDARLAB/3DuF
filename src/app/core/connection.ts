@@ -260,16 +260,16 @@ export default class Connection {
         return this._features;
     }
 
-    /**
-     * If it has their own properties returns true
-     * @param {String} key
-     * @returns {boolean}
-     * @memberof Connection
-     */
-    hasDefaultParam(key: string) {
-        if (this.getDefaults().hasOwnProperty(key)) return true;
-        else return false;
-    }
+    // /**
+    //  * If it has their own properties returns true
+    //  * @param {String} key
+    //  * @returns {boolean}
+    //  * @memberof Connection
+    //  */
+    // hasDefaultParam(key: string) {
+    //     if (this.getDefaults().hasOwnProperty(key)) return true;
+    //     else return false;
+    // }
 
     /**
      * Adds a feature that is associated with the component

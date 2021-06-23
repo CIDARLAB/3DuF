@@ -30,6 +30,7 @@
     "dependencies": {
         "@dagrejs/graphlib": "^2.1.4",
         "@mdi/font": "^5.9.55",
+        "@types/node-uuid": "0.0.28",
         "acorn": "^8.1.0",
         "axios": "^0.21.1",
         "core-js": "^3.8.3",
@@ -88,6 +89,7 @@
         "eslint-plugin-prettier": "^3.3.1",
         "eslint-plugin-prettier-vue": "^2.1.1",
         "eslint-plugin-vue": "^6.2.2",
+        "npm-merge-driver": "^2.3.6",
         "prettier": "^1.19.1",
         "prettier-eslint-cli": "^5.0.0",
         "sass": "^1.19.0",
