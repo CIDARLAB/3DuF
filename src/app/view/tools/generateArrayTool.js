@@ -80,7 +80,7 @@ export default class GenerateArrayTool extends MouseTool {
     }
 
     revertToOriginalPosition() {
-        this.__currentComponent.updateComponetPosition(this.__originalPosition);
+        this.__currentComponent.updateComponentPosition(this.__originalPosition);
     }
 
     dragHandler() {

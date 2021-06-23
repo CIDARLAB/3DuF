@@ -198,6 +198,12 @@ export default class MouseAndKeyboardHandler {
                 reference.view.selectAllActive();
                 return false;
             }
+
+            if ((event.ctrlKey || event.metaKey) && key === 71) {
+                // Center the Design
+                reference.centerAll();
+                return false;
+            }
         });
     }
     /**
