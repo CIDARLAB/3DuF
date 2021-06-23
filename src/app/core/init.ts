@@ -8,6 +8,10 @@ type InterchangeV1 = {
     entity: string
     source: any
     sinks: any
-    paths: [number, number][]
+    paths?: [number, number][]
     params: any
+    xspan: number
+    yspan: number
+    ports: any[]
+    layers: any[]
 }
