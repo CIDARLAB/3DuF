@@ -117,9 +117,9 @@ export default class Connection {
     setBounds(bounds: paper.Rectangle) {
         this._bounds = bounds;
         let topleftpt = bounds.topLeft;
-        this._params.position = [topleftpt.x, topleftpt.y];
-        this._params.xspan = bounds.width;
-        this._params.yspan = bounds.height;
+        this._params.updateParameter('position', [topleftpt.x, topleftpt.y])
+        this._params.updateParameter('xspan', bounds.width)
+        this._params.updateParameter('yspan', bounds.height)
     }
 
     /**
@@ -130,8 +130,8 @@ export default class Connection {
      * @returns {void}
      */
     updateParameter(key: string, value: {[index: string]: any}) {
-        // this.__params.updateParameter(key, value);
-        this._params[key] = value;
+        this._params.updateParameter(key, value);
+        // this._params[key] = value;
         // this.updateView();
     }
 
@@ -174,26 +174,26 @@ export default class Connection {
         return output;
     }
 
-    /**
-     *
-     */
-    __findLayerReference() {
-        const layers = Registry.currentDevice.getLayers();
-        let layerrefs;
-        let layer;
-        for (const i in layers) {
-            layer = layers[i];
-            // Check if the connectino is in layer then put it there
-            let feature;
-            for (const key in layer.features) {
-                feature = layer.features[key];
-                if (feature.referenceID == this.getID()) {
-                    layerrefs = layer.id;
-                }
-            }
-        }
-        return layerrefs;
-    }
+    // /**
+    //  *
+    //  */
+    // private _findLayerReference() {
+    //     const layers = Registry.currentDevice.getLayers();
+    //     let layerrefs;
+    //     let layer;
+    //     for (const i in layers) {
+    //         layer = layers[i];
+    //         // Check if the connectino is in layer then put it there
+    //         let feature;
+    //         for (const key in layer.features) {
+    //             feature = layer.features[key];
+    //             if (feature.referenceID == this.getID()) {
+    //                 layerrefs = layer.id;
+    //             }
+    //         }
+    //     }
+    //     return layerrefs;
+    // }
 
     /**
      * Returns the ID of the component
@@ -271,44 +271,44 @@ export default class Connection {
     //     else return false;
     // }
 
-    /**
-     * Adds a feature that is associated with the component
-     * @param {String} featureID String id of the feature
-     * @memberof Connection
-     * @returns {void}
-     */
-    addFeatureID(featureID: string) {
-        this._features.push(featureID);
-        //Now update bounds
-        // this.__updateBounds();
-    }
+    // /**
+    //  * Adds a feature that is associated with the component
+    //  * @param {String} featureID String id of the feature
+    //  * @memberof Connection
+    //  * @returns {void}
+    //  */
+    // addFeatureID(featureID: string) {
+    //     this._features.push(featureID);
+    //     //Now update bounds
+    //     // this.__updateBounds();
+    // }
 
-    /**
-     * This method updates the bounds of the component
-     * @memberof Connection
-     * @returns {void}
-     * @private
-     */
-    private updateBounds() {
-        console.log("test");
-        let bounds = null;
-        let feature = null;
-        let renderedfeature = null;
-        for (var i in this._features) {
-            // gets teh feature defined by the id
-            feature = Registry.currentDevice.getFeatureByID(this._features[i]);
-            console.log(feature);
-            renderedfeature = FeatureRenderer2D.renderFeature(feature);
-            console.log("rendered:");
-            console.log(renderedfeature);
-            if (bounds === null) {
-                bounds = renderedfeature.bounds;
-            } else {
-                bounds = bounds.unite(renderedfeature.bounds);
-            }
-        }
-        this._bounds = bounds;
-    }
+    // /**
+    //  * This method updates the bounds of the component
+    //  * @memberof Connection
+    //  * @returns {void}
+    //  * @private
+    //  */
+    // private updateBounds() {
+    //     console.log("test");
+    //     let bounds = null;
+    //     let feature = null;
+    //     let renderedfeature = null;
+    //     for (var i in this._features) {
+    //         // gets teh feature defined by the id
+    //         feature = Registry.currentDevice.getFeatureByID(this._features[i]);
+    //         console.log(feature);
+    //         renderedfeature = FeatureRenderer2D.renderFeature(feature);
+    //         console.log("rendered:");
+    //         console.log(renderedfeature);
+    //         if (bounds === null) {
+    //             bounds = renderedfeature.bounds;
+    //         } else {
+    //             bounds = bounds.unite(renderedfeature.bounds);
+    //         }
+    //     }
+    //     this._bounds = bounds;
+    // }
 
     /**
      * Returns the params associated with the component
@@ -319,26 +319,26 @@ export default class Connection {
         return this._params;
     }
 
-    /**
-     * Sets the params associated with the component
-     * @param {Params} params key -> Parameter Set
-     * @returns {void}
-     * @memberof Connection
-     */
-    set params(params: Params) {
-        this._params = params;
-        //TODO: Modify all the associated Features
-        for (let key in params) {
-            let value = params[key];
-            for (let i in this._features) {
-                let featureidtochange = this._features[i];
+    // /**
+    //  * Sets the params associated with the component
+    //  * @param {Params} params key -> Parameter Set
+    //  * @returns {void}
+    //  * @memberof Connection
+    //  */
+    // set params(params: Params) {
+    //     this._params = params;
+    //     //TODO: Modify all the associated Features
+    //     for (let key in params) {
+    //         let value = params.getValue(key);
+    //         for (let i in this._features) {
+    //             let featureidtochange = this._features[i];
 
-                //Get the feature id and modify it
-                let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
-                feature.updateParameter(key, value.getValue());
-            }
-        }
-    }
+    //             //Get the feature id and modify it
+    //             let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+    //             feature.updateParameter(key, value.getValue());
+    //         }
+    //     }
+    // }
 
     /**
      * Returns the list of waypoints associated with the connection
@@ -483,6 +483,7 @@ export default class Connection {
         // //TODO: This will have to change soon when the thing is updated
         // throw new Error("Need to implement Interchange V1 Import for component object");
         // //return Device.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
+
         const name = json.name;
         const id = json.id;
         const entity = json.entity;
@@ -569,33 +570,33 @@ export default class Connection {
         this.updateSegments(ret);
     }
 
-    /**
-     * Allows the user to set the source of the connection
-     * @param {Object} component
-     * @param {ComponentPort} port
-     * @memberof Connection
-     * @returns {void}
-     */
-    setSource(component: string, port: ComponentPort) {
-        if (typeof component != "string" && !(component instanceof String)) {
-            console.error("The reference object value can only be a string");
-        }
-        this._source = new ConnectionTarget(component, port);
-    }
+    // /**
+    //  * Allows the user to set the source of the connection
+    //  * @param {Object} component
+    //  * @param {ComponentPort} port
+    //  * @memberof Connection
+    //  * @returns {void}
+    //  */
+    // setSource(component: string, port: ComponentPort) {
+    //     if (typeof component != "string" && !(component instanceof String)) {
+    //         console.error("The reference object value can only be a string");
+    //     }
+    //     this._source = new ConnectionTarget(component, port);
+    // }
 
-    /**
-     * Allows the user to add a sink to the connection
-     * @param {string} component
-     * @param {ComponentPort} port
-     * @memberof Connection
-     * @returns {void}
-     */
-    addSink(component: string, port: ComponentPort) {
-        if (typeof component != "string" || !(component instanceof String)) {
-            console.error("The reference object value can only be a string");
-        }
-        this._sinks.push(new ConnectionTarget(component, port));
-    }
+    // /**
+    //  * Allows the user to add a sink to the connection
+    //  * @param {string} component
+    //  * @param {ComponentPort} port
+    //  * @memberof Connection
+    //  * @returns {void}
+    //  */
+    // addSink(component: string, port: ComponentPort) {
+    //     if (typeof component != "string" || !(component instanceof String)) {
+    //         console.error("The reference object value can only be a string");
+    //     }
+    //     this._sinks.push(new ConnectionTarget(component, port));
+    // }
 
     /**
      * Adds a new connection target to either the source or the sinks of the connection object. Requires the user to pass
@@ -617,32 +618,32 @@ export default class Connection {
         }
     }
 
-    /**
-     * Tries to delete any connection target reference that uses the said component
-     * @param {string} componentid Component ID
-     * @return {boolean} Returns true if any corresponding connection target is found
-     * @memberof Connection
-     *
-     */
-    tryDeleteConnectionTarget(componentid: string) {
-        let ret = false;
-        if (component.getID() == componentid) {
-            //Remove the source object
-            this._source = null;
-            ret = true;
-        }
+    // /**
+    //  * Tries to delete any connection target reference that uses the said component
+    //  * @param {string} componentid Component ID
+    //  * @return {boolean} Returns true if any corresponding connection target is found
+    //  * @memberof Connection
+    //  *
+    //  */
+    // tryDeleteConnectionTarget(componentid: string) {
+    //     let ret = false;
+    //     if (component.getID() == componentid) {
+    //         //Remove the source object
+    //         this._source = null;
+    //         ret = true;
+    //     }
 
-        for (let i in this._sinks) {
-            let sink = this._sinks[i];
+    //     for (let i in this._sinks) {
+    //         let sink = this._sinks[i];
 
-            if (sink.component.getID() == componentid) {
-                this._sinks.splice(+i, 1);
-                ret = true;
-            }
-        }
+    //         if (sink.component.getID() == componentid) {
+    //             this._sinks.splice(+i, 1);
+    //             ret = true;
+    //         }
+    //     }
 
-        return ret;
-    }
+    //     return ret;
+    // }
 
     /**
      * Adds a new set of waypoints to the path field of the connection
