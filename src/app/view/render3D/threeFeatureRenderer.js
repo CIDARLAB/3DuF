@@ -33,7 +33,7 @@ function makeParams(feature, renderInfo) {
     let featureParams = renderInfo.featureParams;
     for (let key in featureParams) {
         let target = featureParams[key];
-        if (target == undefined || !Object.prototype.hasOwnProperty.call(feature.params, target)) throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
+        if (target === undefined || !Object.prototype.hasOwnProperty.call(feature.params, target)) throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
         let value = feature.params[target];
         params[key] = value;
     }

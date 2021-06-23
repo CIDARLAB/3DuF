@@ -160,7 +160,7 @@ export default class Connection {
             let feature;
             for(let key in layer.features){
                 feature = layer.features[key];
-                if(feature.referenceID == this.getID()){
+                if(feature.referenceID === this.getID()){
                     layerrefs = layer.id;
                 }
             }
@@ -510,12 +510,12 @@ export default class Connection {
 
         let connection = new Connection(entity, paramstoadd, name, entity, id);
         if (Object.prototype.hasOwnProperty.call(json, 'source')) {
-            if (json.source !== null && json.source != undefined) {
+            if (json.source !== null && json.source !== undefined) {
                 connection.setSourceFromJSON(device, json.source);
             }
         }
         if (Object.prototype.hasOwnProperty.call(json, 'sinks')) {
-            if (json.sinks !== null && json.sinks != undefined) {
+            if (json.sinks !== null && json.sinks !== undefined) {
                 for (let i in json.sinks) {
                     let sink = json.sinks[i];
                     connection.addSinkFromJSON(device, sink);
@@ -523,7 +523,7 @@ export default class Connection {
             }
         }
         if (Object.prototype.hasOwnProperty.call(json, 'paths')) {
-            if (json.paths !== null && json.paths != undefined) {
+            if (json.paths !== null && json.paths !== undefined) {
                 for (let i in json.paths) {
                     connection.addWayPoints(json.paths[i]);
                 }
@@ -588,7 +588,7 @@ export default class Connection {
      * @returns {void}
      */
     addConnectionTarget(connectiontarget) {
-        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget === null || connectiontarget == undefined) {
+        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget === null || connectiontarget === undefined) {
             console.error("Cannot add non-ConnectionTarget object as source or sink");
         }
 
@@ -609,7 +609,7 @@ export default class Connection {
      */
     tryDeleteConnectionTarget(componentid) {
         let ret = false;
-        if (component.getID() == componentid) {
+        if (component.getID() === componentid) {
             //Remove the source object
             this.__source = null;
             ret = true;
@@ -618,7 +618,7 @@ export default class Connection {
         for (let i in this.__sinks) {
             let sink = this.__sinks[i];
 
-            if (sink.component.getID() == componentid) {
+            if (sink.component.getID() === componentid) {
                 this.__sinks.splice(i, 1);
                 ret = true;
             }

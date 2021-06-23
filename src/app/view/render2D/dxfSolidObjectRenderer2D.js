@@ -72,12 +72,12 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
 
     // console.log(chordvector, "Angle:",chordvector.angle, Math.round(chordvector.angle), "Dist from midpoint:", p);
 
-    if (Math.round(chordvector.angle) == 0) {
+    if (Math.round(chordvector.angle) === 0) {
         //Horizontal
         // console.log("Horizontal Case");
         throughpoint = new paper.Point(midpoint.x, midpoint.y - p);
         return throughpoint;
-    } else if (Math.round(chordvector.angle) == 90) {
+    } else if (Math.round(chordvector.angle) === 90) {
         //Vertical
         // console.log("Vertical Case");
         throughpoint = new paper.Point(midpoint.x + p, midpoint.y);
@@ -172,7 +172,7 @@ function processLine(geometryGraph, data) {
 export function renderDXFObjects(dxfobjectarray) {
     // let path = new paper.CompoundPath();
 
-    if (dxfobjectarray == undefined) {
+    if (dxfobjectarray === undefined) {
         throw new Error("Cannot find DXF DATA");
     }
     // console.log("DXF Object Array to render:", dxfobjectarray);

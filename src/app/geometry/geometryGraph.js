@@ -89,7 +89,7 @@ export default class GeometryGraph {
             let noderef = traversal[i];
             let node = this.__nodes.get(noderef);
             let nextnoderef;
-            if (i + 1 == traversal.length) {
+            if (i + 1 === traversal.length) {
                 //Last Node
                 nextnoderef = traversal[0];
             } else {

@@ -260,7 +260,7 @@ export default class GradientGenerator extends Template {
             serpentine.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
             serpentine.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
             serpentine.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
-            if (i == numBends - 1) {
+            if (i === numBends - 1) {
                 //draw half segment to close
                 serpentine.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
             } else {

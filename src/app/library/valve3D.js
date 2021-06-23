@@ -134,11 +134,11 @@ export default class Valve3D extends Template {
     }
 
     render2D(params, key = "FLOW") {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CONTROL") {
+        } else if (key === "CONTROL") {
             return this.__drawControll(params);
-        } else if (key == "INVERSE") {
+        } else if (key === "INVERSE") {
             return this.__drawInverseFlow(params);
         } else {
             throw new Error("No render procedure defined for component:" + this.__mint + ", key: " + key);

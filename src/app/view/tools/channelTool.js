@@ -96,7 +96,7 @@ export default class ChannelTool extends MouseTool {
     finishChannel(point) {
         let target = ChannelTool.getTarget(point);
         if (this.currentChannelID) {
-            if (this.startPoint.x == target[0] && this.startPoint.y == target[1]) {
+            if (this.startPoint.x === target[0] && this.startPoint.y === target[1]) {
                 Registry.currentLayer.removeFeatureByID(this.currentChannelID);
             }
         } else {

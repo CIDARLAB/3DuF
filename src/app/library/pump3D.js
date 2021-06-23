@@ -114,11 +114,11 @@ export default class Pump3D extends Template {
     }
 
     render2D(params, key = "FLOW") {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CONTROL") {
+        } else if (key === "CONTROL") {
             return this.__drawControl(params);
-        } else if (key == "INVERSE") {
+        } else if (key === "INVERSE") {
             return this.__drawInverse(params);
         }
     }

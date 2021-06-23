@@ -17,7 +17,7 @@ export default class EditDeviceDialog {
         this.saveDeviceSettingsButton.onclick = function() {
             //Save the name
             let devicename = ref.__deviceNameTextInput.value;
-            if (devicename != "" || devicename !== null) {
+            if (devicename !== "" || devicename !== null) {
                 Registry.currentDevice.setName(devicename);
             }
 
@@ -26,7 +26,7 @@ export default class EditDeviceDialog {
             let yspan = ref.__yspanTextInput.value;
             console.log("Resizing the device to: " + xspan + ", " + yspan);
 
-            if (xspan != "" && yspan != "") {
+            if (xspan !== "" && yspan !== "") {
                 //Convert the dimensions to microns from mm
                 Registry.currentDevice.setXSpan(xspan * 1000);
                 Registry.currentDevice.setYSpan(yspan * 1000);

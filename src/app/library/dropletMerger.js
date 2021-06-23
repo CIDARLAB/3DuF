@@ -132,7 +132,7 @@ export default class DropletMerger extends Template {
             serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
             serp.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
             serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
-            if (i == numBends - 1) {
+            if (i === numBends - 1) {
                 //draw half segment to close
                 serp.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
             } else {

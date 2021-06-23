@@ -119,9 +119,9 @@ export default class Transposer extends Template {
     }
 
     render2D(params, key = "FLOW") {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CONTROL") {
+        } else if (key === "CONTROL") {
             return this.__drawControl(params);
         }
     }
@@ -280,7 +280,7 @@ export default class Transposer extends Template {
         let valve = circ.subtract(cutout);
 
         //TODO Rotate
-        if (orientation == "H") {
+        if (orientation === "H") {
             valve.rotate(90, center);
         }
 

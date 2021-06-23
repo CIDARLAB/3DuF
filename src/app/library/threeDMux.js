@@ -133,9 +133,9 @@ export default class ThreeDMux extends Template {
     }
 
     render2D(params, key) {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CONTROL") {
+        } else if (key === "CONTROL") {
             return this.__drawControl(params);
         }
     }
