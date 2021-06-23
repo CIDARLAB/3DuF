@@ -163,7 +163,7 @@ export default class Feature {
      * @returns {String} Returns the ID
      * @memberof Feature
      */
-    getID() {
+    get ID() {
         return this.__id;
     }
 

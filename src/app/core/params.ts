@@ -4,8 +4,8 @@ import Parameter from "./parameter";
  * Params class
  */
 export default class Params {
-    private unique: Array<string>;
-    private heritable: Array<string>;
+    private unique: {[index: string]: string};
+    private heritable: {[index: string]: string};
     private parameters: {[index: string]: Parameter};
     
 
@@ -16,7 +16,7 @@ export default class Params {
      * @param {} heritable Boolean if it's heritable
      * @param {} rawparameters ?
      */
-    constructor(values: any, unique: Array<string>, heritable: Array<string>) { 
+    constructor(values: any, unique: {[index: string]: string}, heritable: {[index: string]: string}) { 
         this.unique = unique;
         this.heritable = heritable;
         this.parameters = {};
@@ -65,7 +65,11 @@ export default class Params {
      * @memberof Params
      */
     isUnique(key: string): boolean {
-        return this.unique.includes(key);
+        if (typeof this.unique[key] == "undefined") {
+            return false;
+        } else {
+            return true;
+        }
     }
     /**
      * Checks if param object has heritable attribute.
@@ -74,7 +78,11 @@ export default class Params {
      * @memberof Params
      */
     isHeritable(key: string): boolean {
-        return this.heritable.includes(key);
+        if (typeof this.heritable[key] == "undefined") {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
