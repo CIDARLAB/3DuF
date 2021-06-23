@@ -28,7 +28,7 @@ export default class TaguchiDesigner {
 
         this.__tablecontainer = document.getElementById("taguchi-table");
 
-        if (this.__tablecontainer === null || this.__tablecontainer == undefined) {
+        if (this.__tablecontainer === null || this.__tablecontainer === undefined) {
             throw new Error("Cannot find table element");
         }
 

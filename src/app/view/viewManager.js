@@ -299,7 +299,7 @@ export default class ViewManager {
 
         for (let i in devicefeatures) {
             feature = devicefeatures[i];
-            if (feature.fabType == "EDGE") {
+            if (feature.fabType === "EDGE") {
                 edgefeatures.push(feature);
             }
         }
@@ -561,7 +561,7 @@ export default class ViewManager {
 
         for (let i in features) {
             //Check if the feature is EDGE or not
-            if ("EDGE" == features[i].fabType) {
+            if ("EDGE" === features[i].fabType) {
                 edgefeatures.push(features[i]);
             }
         }
@@ -715,7 +715,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     __isLayerInCurrentDevice(layer) {
-        if (Registry.currentDevice && layer.device == Registry.currentDevice) return true;
+        if (Registry.currentDevice && layer.device === Registry.currentDevice) return true;
         else return false;
     }
     /**
@@ -740,7 +740,7 @@ export default class ViewManager {
         //Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
         let version = json.version;
-        if (null === version || undefined == version) {
+        if (null === version || undefined === version) {
             console.log("Loading Legacy Format...");
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
@@ -841,7 +841,7 @@ export default class ViewManager {
         let output = [];
         for (let i = 0; i < features.length; i++) {
             let feature = features[i];
-            if (feature.getType() == typeString && feature.getSet() == setString) {
+            if (feature.getType() === typeString && feature.getSet() === setString) {
                 output.push(feature);
             }
         }
@@ -1311,7 +1311,7 @@ export default class ViewManager {
             let component = components[i];
             let currentposition = component.getPosition();
             //TODO: Refine this logic, it sucks
-            if (currentposition[0] == 0 && currentposition == 0) {
+            if (currentposition[0] === 0 && currentposition === 0) {
                 if (!component.placed) {
                     this.__generateDefaultPlacementForComponent(component, xpos * (parseInt(i) + 1), ypos * (Math.floor(parseInt(i) / 5) + 1));
                 }
@@ -1411,7 +1411,7 @@ export default class ViewManager {
             if (component !== null) {
                 console.log("Component Type:", component.getType());
                 let type = component.getType();
-                if (type == "Valve3D" || type == "Valve") {
+                if (type === "Valve3D" || type === "Valve") {
                     valves.push(component);
                 }
             }
@@ -1422,7 +1422,7 @@ export default class ViewManager {
         //Add to the valvemap
         for (let valve of valves) {
             let valve_type = false;
-            if (valve.getType() == "Valve3D") {
+            if (valve.getType() === "Valve3D") {
                 valve_type = true;
             }
             console.log("Adding Valve: ", valve);

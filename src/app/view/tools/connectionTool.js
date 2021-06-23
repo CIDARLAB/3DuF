@@ -84,7 +84,7 @@ export default class ConnectionTool extends MouseTool {
             let point = MouseTool.getEventPosition(event);
             let target = ConnectionTool.getTarget(point);
 
-            if (event.altKey && ref.__STATE == "WAYPOINT") {
+            if (event.altKey && ref.__STATE === "WAYPOINT") {
                 let lastwaypoint = ref.startPoint;
                 if (ref.wayPoints.length > 0) {
                     lastwaypoint = ref.wayPoints[ref.wayPoints.length - 1];
@@ -252,7 +252,7 @@ export default class ConnectionTool extends MouseTool {
             }
             target = this.getNextOrthogonalPoint(lastwaypoint, target);
         }
-        if ((target.length = 2)) {
+        if ((target.length == 2)) {
             this.wayPoints.push(target);
         }
 
@@ -305,7 +305,7 @@ export default class ConnectionTool extends MouseTool {
     __isPointOnConnection(point) {
         // console.log("Point to check", point);
         let render = Registry.viewManager.hitFeature(point);
-        if (render != false && render !== null && render != undefined) {
+        if (render !== false && render !== null && render !== undefined) {
             let feature = Registry.currentDevice.getFeatureByID(render.featureID);
             let connection = Registry.currentDevice.getConnectionByID(feature.referenceID);
             // console.log("Feature that intersects:", feature);
@@ -325,12 +325,12 @@ export default class ConnectionTool extends MouseTool {
     __isPointOnComponent(point) {
         // console.log("Point to check", point);
         let render = Registry.viewManager.hitFeature(point);
-        if (render != false && render !== null && render != undefined) {
+        if (render !== false && render !== null && render !== undefined) {
             let feature = Registry.currentDevice.getFeatureByID(render.featureID);
             // console.log("Feature that intersects:", feature);
             let component = Registry.currentDevice.getComponentByID(feature.referenceID);
             // console.log("Associated object:", component);
-            if (component !== null || component != undefined) {
+            if (component !== null || component !== undefined) {
                 return component;
             } else {
                 return false;
@@ -417,7 +417,7 @@ export default class ConnectionTool extends MouseTool {
      * @private
      */
     __addConnectionTargets(connection) {
-        if (this.source !== null || this.source != undefined) {
+        if (this.source !== null || this.source !== undefined) {
             connection.addConnectionTarget(this.source);
         }
 
@@ -445,10 +445,10 @@ export default class ConnectionTool extends MouseTool {
         let gridsize = Registry.currentGrid.getSpacing();
         console.log("Grid Size: ", gridsize);
 
-        if ("control" == Registry.currentLayer.name) {
+        if ("control" === Registry.currentLayer.name) {
             layertype = "CONTROL";
             console.log("This layer :", layertype);
-        } else if ("flow" == Registry.currentLayer.name) {
+        } else if ("flow" === Registry.currentLayer.name) {
             layertype = "FLOW";
             console.log("This layer: ", layertype);
         }

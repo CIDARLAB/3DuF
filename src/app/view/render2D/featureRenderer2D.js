@@ -30,10 +30,10 @@ export function getDefaultValueForType(typeString, setString, key) {
 }
 
 export function getFeatureRenderer(typeString, setString) {
-    if (typeString == "TEXT") {
+    if (typeString === "TEXT") {
         let rendererInfo = renderTextTarget;
         return rendererInfo;
-    } else if (typeString == "EDGE") {
+    } else if (typeString === "EDGE") {
         return renderEdge;
     } else {
         let rendererInfo = FeatureSets.getRender2D(typeString, setString);
@@ -104,7 +104,7 @@ export function renderFeature(feature, key = null) {
     let params;
     let type = feature.getType();
     let set = feature.getSet();
-    if (type == "TEXT") {
+    if (type === "TEXT") {
         return renderText(feature);
     } else if (set === "Custom") {
         rendered = DXFSolidObjectRenderer2D.renderCustomComponentFeature(feature, getBaseColor(feature));

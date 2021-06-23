@@ -142,7 +142,7 @@ export default class Mux extends Template {
 
         let levels = Math.ceil(Math.log2(leafs));
         let isodd = false; //This is used to figure out how many lines have to be made
-        if (leafs % 2 == 0) {
+        if (leafs % 2 === 0) {
             isodd = false;
         } else {
             isodd = true;
@@ -267,9 +267,9 @@ export default class Mux extends Template {
     }
 
     render2D(params, key) {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CONTROL") {
+        } else if (key === "CONTROL") {
             return this.__drawControl(params);
         }
     }
@@ -289,7 +289,7 @@ export default class Mux extends Template {
         let rex = px + 0.5 * newspacing;
         let rey = py + cw + stagelength;
 
-        if (level == maxlevel) {
+        if (level === maxlevel) {
             islast = true;
             // console.log("Final Spacing: " + newspacing)
         }
@@ -375,7 +375,7 @@ export default class Mux extends Template {
         let rex = px + 0.5 * newspacing;
         let rey = py + cw + stagelength;
 
-        if (level == maxlevel) {
+        if (level === maxlevel) {
             islast = true;
             // console.log("Final Spacing: " + newspacing)
         }

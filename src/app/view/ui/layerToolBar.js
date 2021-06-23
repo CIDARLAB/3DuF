@@ -70,9 +70,9 @@ export default class LayerToolBar {
         }
 
         let bgColor; // = Colors.getDefaultLayerColor(Registry.currentLayer);
-        if (layerName % 3 == 0) {
+        if (layerName % 3 === 0) {
             bgColor = Colors.INDIGO_500;
-        } else if (layerName % 3 == 1) {
+        } else if (layerName % 3 === 1) {
             bgColor = Colors.RED_500;
         } else {
             bgColor = Colors.GREEN_500;
@@ -168,7 +168,7 @@ export default class LayerToolBar {
         let buttongroups = this.__toolBar.querySelectorAll(".layer-block");
 
         for (let i = 0; i < buttongroups.length; i++) {
-            if (buttongroups[i].dataset.levelindex == levelindex) {
+            if (buttongroups[i].dataset.levelindex === levelindex) {
                 this.__toolBar.removeChild(buttongroups[i]);
             }
         }

@@ -40,11 +40,11 @@ export default class SelectTool extends MouseTool {
     }
 
     keyHandler(event) {
-        if (event.key == "delete" || event.key == "backspace") {
+        if (event.key === "delete" || event.key === "backspace") {
             console.log("Removing feature");
             this.removeFeatures();
         }
-        if (event.key == "c") {
+        if (event.key === "c") {
             console.log("Detected a ctrlC");
             console.log(this.currentSelection);
         }
@@ -157,7 +157,7 @@ export default class SelectTool extends MouseTool {
             let componentfeatures = component.getFeatureIDs();
             let index = componentfeatures.indexOf(featureid);
 
-            if (index != -1) {
+            if (index !== -1) {
                 //Found it !!
                 console.log("Found Feature: " + featureid + " in component: " + component.getID());
                 return component;

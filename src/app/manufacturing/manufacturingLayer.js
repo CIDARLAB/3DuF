@@ -32,7 +32,7 @@ export default class ManufacturingLayer {
      * @returns {boolean} 
      */
     addFeature(feature) {
-        if (null === feature || undefined == feature) {
+        if (null === feature || undefined === feature) {
             return false;
         }
         let copy = feature.clone();

@@ -41,13 +41,13 @@ export default class ExportPanel {
             let success = 0;
             let zipper = new JSZip();
             for (let i = 0; i < svgs.length; i++) {
-                if (svgs[i].slice(0, 4) == "<svg") {
+                if (svgs[i].slice(0, 4) === "<svg") {
                     zipper.file("Device_layer_" + i + ".svg", svgs[i]);
                     success++;
                 }
             }
 
-            if (success == 0) throw new Error("Unable to generate any valid SVGs. Do all layers have at least one non-channel item in them?");
+            if (success === 0) throw new Error("Unable to generate any valid SVGs. Do all layers have at least one non-channel item in them?");
             else {
                 let content = zipper.generate({
                     type: "blob"

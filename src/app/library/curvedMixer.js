@@ -167,7 +167,7 @@ export default class CurvedMixer extends Template {
             rightCurve = rightCurve.subtract(rightCurveSmall);
             toprect = toprect.unite(rightCurve);
 
-            if (i == numBends - 1) {
+            if (i === numBends - 1) {
                 //draw half segment to close
                 hseg = new paper.Path.Rectangle(x + channelWidth / 2 + bendLength / 2, y + vRepeat * (i + 1), (bendLength + channelWidth) / 2 + 1, channelWidth);
                 toprect = toprect.unite(hseg);

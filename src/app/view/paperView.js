@@ -452,7 +452,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     removeLayer(index) {
-        if (index != -1) {
+        if (index !== -1) {
             this.paperLayers.splice(index, 1);
         }
     }
@@ -623,10 +623,10 @@ export default class PaperView {
         this.removeTarget();
         if (this.lastTargetType && this.lastTargetPosition) {
             //Checks if the target is a text type target
-            if (this.lastTargetType == "TEXT") {
+            if (this.lastTargetType === "TEXT") {
                 this.currentTarget = FeatureRenderer2D.renderTextTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
                 this.uiLayer.addChild(this.currentTarget);
-            } else if (this.lastTargetSet == "Custom") {
+            } else if (this.lastTargetSet === "Custom") {
                 let customcomponent = this.__viewManagerDelegate.customComponentManager.getCustomComponent(this.lastTargetType);
                 let params = Registry.featureDefaults[this.lastTargetSet][this.lastTargetType];
                 params["position"] = this.lastTargetPosition;

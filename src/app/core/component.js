@@ -50,7 +50,7 @@ export default class Component {
         }
 
         let ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.__type);
-        if (ports != undefined && ports.length >= 0 && ports !== null) {
+        if (ports !== undefined && ports.length >= 0 && ports !== null) {
             for (let i in ports) {
                 this.setPort(ports[i].label, ports[i]);
             }
@@ -183,7 +183,7 @@ export default class Component {
             let feature;
             for(let key in layer.features){
                 feature = layer.features[key];
-                if(feature.referenceID == this.getID()){
+                if(feature.referenceID === this.getID()){
                     layerrefs.push(layer.id);
                 }
             }
@@ -331,7 +331,7 @@ export default class Component {
      * @memberof Component
      */
     getBoundingRectangle() {
-        if (this.features.length == 0 || this.features === null || this.features == undefined) {
+        if (this.features.length === 0 || this.features === null || this.features === undefined) {
             console.error("No features associated with the component");
         }
         let bounds = null;

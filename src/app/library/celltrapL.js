@@ -119,9 +119,9 @@ export default class CellTrapL extends Template {
     }
 
     render2D(params, key="FLOW") {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CELL") {
+        } else if (key === "CELL") {
             return this.__drawCell(params);
         }else{
             let flow = this.__drawFlow(params);

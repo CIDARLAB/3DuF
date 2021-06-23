@@ -140,9 +140,9 @@ export default class RotaryMixer extends Template {
     }
 
     render2D(params, key = null) {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__renderFlow(params);
-        } else if (key == "CONTROL") {
+        } else if (key === "CONTROL") {
             return this.__renderControl(params);
         } else {
             throw new Error("No valid key found");

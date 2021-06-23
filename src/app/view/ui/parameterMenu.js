@@ -106,7 +106,7 @@ var generateUpdateFunction = function(sourceID, targetID, typeString, setString,
         var source = document.getElementById(sourceID);
         var target = document.getElementById(targetID);
         var param;
-        if (!source.value || source.value == "") {
+        if (!source.value || source.value === "") {
             return;
         }
         try {
@@ -236,7 +236,7 @@ var createCheckboxRow = function(featureID, typeString, setString, key) {
     var value = Feature.getDefaultsForType(typeString, setString)[key];
     var checkBox = createCheckbox(value, checkID);
     var spanValue;
-    if (value == "V") spanValue = "V";
+    if (value === "V") spanValue = "V";
     else spanValue = "H";
     var span = createSpan(spanValue, spanID);
     var titleContainer = createTableElement(title);
@@ -273,11 +273,11 @@ var createFeatureTableRows = function(typeString, setString) {
     for (let key in heritable) {
         let row;
         let type = heritable[key];
-        if (type == "Float" || type == "Integer") {
+        if (type === "Float" || type === "Integer") {
             row = createSliderRow(id, typeString, setString, key);
-        } else if (key == "orientation") {
+        } else if (key === "orientation") {
             row = createCheckboxRow(id, typeString, setString, key);
-        } else if (key == "direction") {
+        } else if (key === "direction") {
             row = createInOutRow(id, typeString, setString, key);
         }
         rows.push(row);
@@ -372,19 +372,19 @@ export function revertToDefaultParams(table, typeString, setString) {
     for (let key in heritable) {
         let type = heritable[key];
 
-        if (type == "Float" || type == "Integer") {
+        if (type === "Float" || type === "Integer") {
             let inputID = "fake_ID_" + key + "_slider";
             //Modify the text in the input element
             let element = document.querySelector("#" + inputID);
             element.MaterialSlider.change(defaults[key]);
             Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
-        } else if (key == "orientation") {
+        } else if (key === "orientation") {
             //TODO - Change the checkbox
             let inputID = "fake_ID_" + key + "_checkbox";
             let element = document.querySelector("#" + inputID);
             let materialelement = table.querySelector(".mdl-js-checkbox");
             let spanelement = table.querySelector("#fake_ID_" + key + "_span");
-            if (defaults[key] == "V") {
+            if (defaults[key] === "V") {
                 element.checked = true;
                 materialelement.MaterialCheckbox.check();
                 spanelement.textContent = defaults[key];
@@ -394,13 +394,13 @@ export function revertToDefaultParams(table, typeString, setString) {
                 spanelement.textContent = defaults[key];
             }
             Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
-        } else if (key == "direction") {
+        } else if (key === "direction") {
             //TODO Change the Checkbox
             let inputID = "fake_ID_" + key + "_checkbox";
             let materialelement = table.querySelector(".mdl-js-checkbox");
             let element = document.querySelector("#" + inputID);
             let spanelement = table.querySelector("#fake_ID_" + key + "_span");
-            if (defaults[key] == "IN") {
+            if (defaults[key] === "IN") {
                 element.checked = true;
                 materialelement.MaterialCheckbox.check();
                 spanelement.textContent = defaults[key];

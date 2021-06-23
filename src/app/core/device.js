@@ -95,7 +95,7 @@ export default class Device {
      */
     removeConnection(connection) {
         let i = this.__connections.indexOf(connection);
-        if (i != -1) {
+        if (i !== -1) {
             this.__connections.splice(i, 1);
         }
     }
@@ -145,7 +145,7 @@ export default class Device {
         }
 
         let i = this.__components.indexOf(component);
-        if (i != -1) {
+        if (i !== -1) {
             this.__components.splice(i, 1);
         }
 
@@ -369,7 +369,7 @@ export default class Device {
         for (let i in this.__components) {
             component = this.__components[i];
             // console.log(objectID, component.getID());
-            if (objectID == component.getID()) {
+            if (objectID === component.getID()) {
                 component.addFeatureID(featureID);
                 component.placed = true;
                 foundflag = true;
@@ -380,7 +380,7 @@ export default class Device {
         let connection;
         for (let i in this.__connections) {
             connection = this.__connections[i];
-            if (objectID == connection.getID()) {
+            if (objectID === connection.getID()) {
                 connection.addFeatureID(featureID);
                 connection.routed = true;
                 foundflag = true;
@@ -865,7 +865,7 @@ export default class Device {
      * @returns {void}
      */
     deleteLayer(index) {
-        if (index != -1) {
+        if (index !== -1) {
             this.layers.splice(index, 1);
         }
     }
@@ -960,7 +960,7 @@ export default class Device {
         let ret = [];
         for (let [key, value] of this.__valveMap) {
             // let  = pair;
-            if (connectionid == value) {
+            if (connectionid === value) {
                 ret.push(this.getComponentByID(key));
             }
         }
@@ -1018,7 +1018,7 @@ export default class Device {
     getComponentByName(name) {
         let components = this.getComponents();
         for (let i in components) {
-            if (name == components[i].getName()) {
+            if (name === components[i].getName()) {
                 return components[i];
             }
         }
@@ -1052,7 +1052,7 @@ export default class Device {
         for (let i in components) {
             component = components[i];
             for (let key of component.ports.keys()) {
-                if (componentport.id == component.ports.get(key).id) {
+                if (componentport.id === component.ports.get(key).id) {
                     //Found the component so return the position
                     return componentport.calculateAbsolutePosition(component);
                 }
