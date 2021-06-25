@@ -269,7 +269,7 @@ export default class Connection {
      * @returns {void}
      */
     addFeatureID(featureID: string) {
-        this._features.push(featureID);
+        this._features.push(Registry.currentDevice.getFeatureByID(featureID));
         //Now update bounds
         // this.__updateBounds();
     }
@@ -467,7 +467,7 @@ export default class Connection {
      * @returns {Connection} Returns a connection object
      * @memberof Connection
      */
-    static fromInterchangeV1(device: Device, json: JSON) {
+    static fromInterchangeV1(device: Device, json: InterchangeV1) {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";
@@ -671,7 +671,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setSourceFromJSON(device: Device, json: JSON) {
+    setSourceFromJSON(device: Device, json: InterchangeV1) {
         let target = ConnectionTarget.fromJSON(device, json);
         this._source = target;
     }
@@ -683,7 +683,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addSinkFromJSON(device: Device, json: JSON) {
+    addSinkFromJSON(device: Device, json: InterchangeV1) {
         let target = ConnectionTarget.fromJSON(device, json);
         this._sinks.push(target);
     }

@@ -45,7 +45,7 @@ export default class ConnectionTarget {
         // This is for the older design data
         if (this._component instanceof Component) {
             return {
-                component: this._component.getID(),
+                component: this._component.id,
                 port: this._portLabel
             };
         } else {
@@ -60,8 +60,8 @@ export default class ConnectionTarget {
      * @returns {ConnectionTarget} Returns a Connection Target Object
      * @memberof ConnectionTarget
      */
-    static fromJSON(device: Device, json: JSON) {
-        const component = device.getComponentByID(json.component);
-        return new ConnectionTarget(component, json.port);
+    static fromJSON(device: Device, json: InterchangeV1) {
+        const component = device.getComponentByID(json.id);
+        return new ConnectionTarget(component, json.name);
     }
 }

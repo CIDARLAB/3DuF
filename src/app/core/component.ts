@@ -200,7 +200,7 @@ export default class Component {
             let feature;
             for (const key in layer.features) {
                 feature = layer.features[key];
-                if (feature.referenceID == this.getID()) {
+                if (feature.referenceID == this.id) {
                     layerrefs.push(layer.id);
                 }
             }
@@ -299,10 +299,7 @@ export default class Component {
      * @returns {void}
      */
     addFeatureID(featureID: string) {
-        if (typeof featureID !== "string" && !(featureID instanceof String)) {
-            throw new Error("The reference object value can only be a string");
-        }
-        this._features.push(featureID);
+        this._features.push(Registry.currentDevice.getFeatureByID(featureID));
         // Now update bounds
         // this.__updateBounds();
     }
@@ -413,8 +410,8 @@ export default class Component {
             const feature = Registry.currentDevice.getFeatureByID(this.features[i]);
             console.log("test", this.getPosition()[0], this.getPosition()[1], this.getPosition());
             const replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
-            replica.referenceID = ret.getID();
-            ret.features.push(replica.getID());
+            replica.referenceID = ret.id;
+            ret.features.push(replica.id);
 
             // TODO: add new feature to the layer in which the current feature is in
             const currentlayer = Registry.currentDevice.getLayerFromFeatureID(this.features[i]);
@@ -451,7 +448,7 @@ export default class Component {
      * @returns {*}
      * @memberof component
      */
-    static fromInterchangeV1(json: JSON) {
+    static fromInterchangeV1(json: InterchangeV1) {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";

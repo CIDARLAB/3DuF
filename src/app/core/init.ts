@@ -10,8 +10,8 @@ type InterchangeV1 = {
     sinks: any
     paths?: [number, number][]
     params: any
-    xspan: number
-    yspan: number
-    ports: any[]
-    layers: any[]
+    xspan?: number
+    yspan?: number
+    ports?: any[]
+    layers?: any[]
 }
