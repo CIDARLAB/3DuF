@@ -35,10 +35,9 @@ export default class Feature {
      * Returns the reference object id
      * @return {String}
      * @memberof Feature
-     * @private
      */
     get referenceID() {
-        return this.__referenceObject;
+        return this.__referenceID;
     }
 
     /**
@@ -52,7 +51,7 @@ export default class Feature {
         if (typeof value !== "string" && !(value instanceof String)) {
             throw new Error("The reference object value can only be a string");
         }
-        this.__referenceObject = value;
+        this.__referenceID = value;
     }
 
     /**

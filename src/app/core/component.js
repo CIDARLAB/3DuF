@@ -59,7 +59,7 @@ export default class Component {
 
     /**
      * Gets the ports of the component
-     * @returns {Port} Returns ports of the component
+     * @returns {Map()} Returns ports of the component
      * @memberof Component
      */
     get ports() {
@@ -78,7 +78,7 @@ export default class Component {
 
     /**
      * Gets the place of the component
-     * @returns {Number} Returns the place of the component
+     * @returns {Boolean} Returns the place of the component
      * @memberof Component
      */
     get placed() {
@@ -87,7 +87,7 @@ export default class Component {
 
     /**
      * Sets the place
-     * @param {Number} value
+     * @param {Boolean} value
      * @returns {void}
      * @memberof Component
      */
@@ -151,7 +151,7 @@ export default class Component {
 
     /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
-     * @returns {Object} Object
+     * @returns {InterchangeV1} Object
      * @memberof Component
      */
     toInterchangeV1() {

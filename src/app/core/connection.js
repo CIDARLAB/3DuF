@@ -121,7 +121,7 @@ export default class Connection {
 
     /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
-     * @returns {Connection} Object
+     * @returns {InterchangeV1} Object
      * @memberof Connection
      */
     toInterchangeV1() {
