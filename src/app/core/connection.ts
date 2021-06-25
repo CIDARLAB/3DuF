@@ -478,12 +478,7 @@ export default class Connection {
         const name = json.name;
         const id = json.id;
         const entity = json.entity;
-        const params = {};
-        for (const key in json.params) {
-            // console.log("key:", key, "value:", json.params[key]);
-            // let paramobject = Parameter.generateConnectionParameter(key, json.params[key]);
-            params[key] = json.params[key];
-        }
+        const params = json.params
 
         // Check if the params have the other unique elements necessary otherwise add them as null
         if (!Object.prototype.hasOwnProperty.call(params, "start")) {

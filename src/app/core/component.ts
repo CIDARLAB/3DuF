@@ -20,8 +20,8 @@ export default class Component {
     protected _features: Feature[]; // Not sure if it's Feature[] or string[]
     protected _bounds: paper.Rectangle | null;
     protected _placed: Boolean;
-    protected _ports: Map;
-    protected _componentPortTRenders: Map;
+    protected _ports: Map<string, Port>;
+    protected _componentPortTRenders: Map<string, Port>;
     protected _xspan: number;
     protected _yspan: number;
     /**
@@ -52,10 +52,7 @@ export default class Component {
 
         // Create and set the ports here itself
 
-        const cleanparamdata = {};
-        for (const key in this._params.parameters) {
-            cleanparamdata[key] = this._params.parameters[key].getValue();
-        }
+        const cleanparamdata = this._params.parameters
 
         const ports = Registry.featureSet.getComponentPorts(cleanparamdata, this._type);
         if (ports != undefined && ports.length >= 0 && ports !== null) {
@@ -398,10 +395,8 @@ export default class Component {
 
         const definition = Registry.featureSet.getDefinition(this._type);
         // Clean Param Data
-        const cleanparamdata = {};
-        for (const key in this._params.parameters) {
-            cleanparamdata[key] = this._params.parameters[key].getValue();
-        }
+        const cleanparamdata = this._params.parameters
+  
         const replicaparams = new Params(cleanparamdata, definition.unique, definition.heritable);
         const ret = new Component(this._type, replicaparams, name, this._entity);
         console.log("Checking what the new component params are:", ret._params);
@@ -461,7 +456,7 @@ export default class Component {
         this.xspan = this._xspan;
         this.yspan = this._yspan;
 
-        const params = {};
+        const params = json.params
         if (entity === "TEST MINT") {
             console.warn("Found legacy invalid entity string", entity);
             entity = name.split("_")[0]; // '^.*?(?=_)'
@@ -578,11 +573,7 @@ export default class Component {
 
         const params = this.params.toMap();
 
-        const cleanparamdata = {};
-
-        for (const key of params.keys()) {
-            cleanparamdata[key] = params.get(key);
-        }
+        const cleanparamdata = params;
 
         const ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.type);
 
