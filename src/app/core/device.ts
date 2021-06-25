@@ -1,7 +1,14 @@
+/// <reference types="node" />
+
 import Params from "./params";
 
 import StringValue from "./parameters/stringValue";
 import Feature from "./feature";
+import {DeviceInterchangeV1} from "./init"
+import {ComponentInterchangeV1} from "./init"
+import {ConnectionInterchangeV1} from "./init"
+import {LayerInterchangeV1} from "./init"
+import {FeatureInterchangeV1} from "./init"
 
 import Registry from './registry';
 
@@ -21,28 +28,34 @@ import * as IOUtils from "../utils/ioUtils";
  */
 export default class Device {
     private __layers: Array<Layer>;
-    private __textLayers: ;
+    private __textLayers: Array<Layer>;
     private __params: Params;
     private __name: StringValue;
-    private __components: ;
-    private __nameMap: Map<,>;
+    private __components: Array<Component>;
+    private __nameMap: Map<string,number>;
     private __connections: Array<Connection>;
-    private __valveMap: Map<,>;
-    private __valveIs3DMap: Map<,>;
+    private __valveMap: Map<string,string>;
+    private __valveIs3DMap: Map<string,boolean>;
+    private __groups: Array<string>;
+    private __features: Array<Feature>;
+    private __version: number;
+    private __defaults: ;
 
     /**
      * Default Constructor
      * @param {*} values 
      * @param {string} name Name of the Device
      */
-    constructor(values: any, name: string = "New Device") {
+    constructor(values: any, name: StringValue = new StringValue("New Device")) {
         this.__layers = [];
         this.__textLayers = [];
+        this.__features = [];
+        this.__groups = [];
         this.__params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
         // this.setXSpan(values.width);
         // this.setYSpan(values.length);
 
-        this.__name = new StringValue(name);
+        this.__name = name;
         this.__components = [];
         this.__nameMap = new Map();
         this.__connections = [];
@@ -50,13 +63,15 @@ export default class Device {
         //Map to store <componentID, connectionID>
         this.__valveMap = new Map();
         this.__valveIs3DMap = new Map();
+
+        this.__version = 1;
     }
     /**
      * Returns a string with the name of the Device
      * @returns {string} 
      * @memberof Device
      */
-    setValveMap(valvemap, isvalve3Ddata){
+    setValveMap(valvemap: Map<string,string>, isvalve3Ddata: Map<string,boolean>): void{
         this.__valveMap = valvemap;
         this.__valveIs3DMap = isvalve3Ddata;
     }
@@ -142,8 +157,9 @@ export default class Device {
             }
         }
         //Check if the valve map has the component
-        if (this.__valveMap.has(componentid)) {
-            connectiontorefresh = this.getConnectionByID(this.__valveMap.get(componentid));
+        let checkConnection: string | undefined = this.__valveMap.get(componentid);
+        if (checkConnection != undefined) {
+            connectiontorefresh = this.getConnectionByID(checkConnection);
             this.__valveMap.delete(componentid);
         }
 
@@ -186,18 +202,6 @@ export default class Device {
     updateParameter(key: string, value: any) {
         this.__params.updateParameter(key, value);
         this.updateView();
-    }
-
-    /**
-     * Sort the layers such that they are ordered from lowest to highest z_offset
-     * @returns {void}
-     * @memberof Device
-     */
-    sortLayers(): number {
-        //Does this need to be set up as a function?
-        this.__layers.sort(function(a, b) {
-            return a.params.getValue("z_offset") - b.params.getValue("z_offset");
-        });
     }
 
     /**
@@ -244,10 +248,10 @@ export default class Device {
         let features: Feature[] = [];
         for (let i in this.__layers) {
             //features.push.apply(features, layer.features);
-            let layer = this.__layers[i];
+            let layer: Layer = this.__layers[i];
             for (let j in layer.features) {
                 // console.log(layer.features[j]);
-                features.push(layer.features[j]);
+                features.push(layer.getFeature(j));
             }
         }
         return features;
@@ -315,7 +319,7 @@ export default class Device {
      * @returns {void}
      */
     removeFeature(feature: Feature): void {
-        this.removeFeatureByID(feature.getID());
+        this.removeFeatureByID(feature.ID);
     }
     /**
      * Removes feature with the corresponding ID
@@ -361,9 +365,9 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    updateObjectReference(objectID: string | String, featureID: string | String) {
+    updateObjectReference(objectID: string | String, featureID: string): void {
         //Goes through the components to update the reference
-        let component;
+        let component: Component;
         let foundflag = false;
         for (let i in this.__components) {
             component = this.__components[i];
@@ -393,7 +397,7 @@ export default class Device {
     /**
      * ?
      */
-    static getHeritableParameters() {
+    static getHeritableParameters(): {[index: string]: string} {
         return {};
     }
     /**
@@ -401,11 +405,12 @@ export default class Device {
      * @returns {Array<Layer>} Returns an array with the layers
      * @memberof Device
      */
-    __renderLayers2D() {
-        let output = [];
-        for (let i = 0; i < this.__layers.length; i++) {
-            output.push(this.__layers[i].render2D());
-        }
+    __renderLayers2D(): Array<Layer> {
+    //TODO: This function currently results in Array<void> due to Feature.render2D
+        let output: Array<Layer> = [];
+        // for (let i = 0; i < this.__layers.length; i++) {
+        //     output.push(this.__layers[i].render2D());
+        // }
         return output;
     }
     /**
@@ -413,10 +418,10 @@ export default class Device {
      * @returns {JSON}
      * @memberof Device
      */
-    __groupsToJSON() {
-        let output = [];
+    __groupsToJSON(): Array<string> {
+        let output: Array<string> = [];
         for (let i in this.__groups) {
-            output.push(this.__groups[i].toJSON());
+            output.push(this.__groups[i]);
         }
         return output;
     }
@@ -425,8 +430,8 @@ export default class Device {
      * @returns {JSON}
      * @memberof Device
      */
-    __layersToJSON() {
-        let output = [];
+    __layersToJSON(): Array<JSON> {
+        let output: Array<JSON> = [];
         for (let i in this.__layers) {
             output.push(this.__layers[i].toJSON());
         }
@@ -434,11 +439,11 @@ export default class Device {
     }
     /**
      * Returns an array with the components
-     * @returns {Array<Component>}
+     * @returns {Array<ComponentInterchangeV1>}
      * @memberof Device
      */
-    __componentsToInterchangeV1() {
-        let output = [];
+    __componentsToInterchangeV1(): Array<ComponentInterchangeV1> {
+        let output: Array<ComponentInterchangeV1> = [];
         for (let i in this.__components) {
             output.push(this.__components[i].toInterchangeV1());
         }
@@ -449,8 +454,8 @@ export default class Device {
      * @returns {Array} Returns an array with the connections
      * @memberof Device
      */
-    __connectionToInterchangeV1() {
-        let output = [];
+    __connectionToInterchangeV1(): Array<ConnectionInterchangeV1> {
+        let output: Array<ConnectionInterchangeV1> = [];
         for (let i in this.__connections) {
             output.push(this.__connections[i].toInterchangeV1());
         }
@@ -458,11 +463,11 @@ export default class Device {
     }
     /**
      * Converts feature layers to InterchangeV1
-     * @return {Array<Layer>} Returns an array with the feature layers
+     * @return {Array<LayerInterchangeV1>} Returns an array with the feature layers
      * @memberof Device
      */
-    __featureLayersToInterchangeV1() {
-        let output = [];
+    __featureLayersToInterchangeV1(): Array<LayerInterchangeV1> {
+        let output: Array<LayerInterchangeV1> = [];
         for (let i in this.__layers) {
             output.push(this.__layers[i].toInterchangeV1());
         }
@@ -474,7 +479,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    __loadLayersFromJSON(json: {[index: string]: JSON}): void {
+    __loadLayersFromJSON(json: {[index: string]: any}): void {
         for (let i in json) {
             let newLayer = Layer.fromJSON(json[i]);
             this.addLayer(newLayer);
@@ -486,7 +491,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    __loadFeatureLayersFromInterchangeV1(json: {[index: string]: any}): void {
+    __loadFeatureLayersFromInterchangeV1(json: Array<LayerInterchangeV1>): void {
         for (let i in json) {
             let newLayer = Layer.fromInterchangeV1(json[i]);
             this.addLayer(newLayer);
@@ -495,12 +500,12 @@ export default class Device {
 
     /**
      * Loads the JSON Component object into the device object
-     * @param {Component} components
+     * @param {ComponentInterchangeV1} components
      * @memberof Device
      * @returns {void}
      * @private
      */
-    __loadComponentsFromInterchangeV1(components: {[index: string]: Component}): void {
+    __loadComponentsFromInterchangeV1(components: Array<ComponentInterchangeV1>): void {
         let componenttoadd;
 
         for (let i in components) {
@@ -514,7 +519,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    __loadConnectionsFromInterchangeV1(connections: {[index:string]: Connection}) {
+    __loadConnectionsFromInterchangeV1(connections: Array<ConnectionInterchangeV1>): void {
         let connectiontoload;
         for (let i in connections) {
             connectiontoload = Connection.fromInterchangeV1(this, connections[i]);
@@ -526,13 +531,13 @@ export default class Device {
      * @returns {JSON} Returns a JSON format with the properties of the device
      * @memberof Device
      */
-    toJSON() {
-        let output = {};
+    toJSON(): {[index: string]: any} {
+        let output: {[index: string]: any} = {};
         output.name = this.__name.toJSON();
         output.params = this.__params.toJSON();
         output.layers = this.__layersToJSON();
         output.groups = this.__groupsToJSON();
-        output.defaults = this.defaults;
+        output.defaults = this.__defaults;
         return output;
     }
     /**
@@ -540,21 +545,22 @@ export default class Device {
      * @returns {Device} Returns an Device object in Interchange V1 format
      * @memberof Device
      */
-    toInterchangeV1() {
-        let output = Device;
-        output.name = this.__name;
-        output.params = {
-            width: this.getXSpan(),
-            length: this.getYSpan()
-        };
+    toInterchangeV1(): DeviceInterchangeV1 {
+        let output: DeviceInterchangeV1 = {
+            name = this.__name,
+            params = {
+                width: this.getXSpan(),
+                length: this.getYSpan()
+            },
         //TODO: Use this to dynamically create enough layers to scroll through
         // output.layers = this.__layersToInterchangeV1();
-        output.components = this.__componentsToInterchangeV1();
-        output.connections = this.__connectionToInterchangeV1();
+            components = this.__componentsToInterchangeV1(),
+            connections = this.__connectionToInterchangeV1(),
         //TODO: Use this to render the device features
-        output.features = this.__featureLayersToInterchangeV1();
-        output.version = 1;
-        output.groups = this.__groupsToJSON();
+            features = this.__featureLayersToInterchangeV1(),
+            version = 1,
+            groups = this.__groupsToJSON()
+        }
         return output;
     }
     /**
@@ -563,20 +569,20 @@ export default class Device {
      * @returns {Device} Returns a device object
      * @memberof Device
      */
-    static fromJSON(json): Device {
-        let defaults = json.defaults;
+    static fromJSON(json: {[index: string]: any}): Device {
+        let defaults = json["defaults"];
         let newDevice = new Device(
             {
-                width: json.params.width,
-                length: json.params.length
+                width: json["params"].width,
+                length: json["params"].length
             },
-            json.name
+            json["name"]
         );
-        newDevice.__loadLayersFromJSON(json.layers);
+        newDevice.__loadLayersFromJSON(json["layers"]);
         return newDevice;
     }
 
-    static fromInterchangeV1(json): Device {
+    static fromInterchangeV1(json: DeviceInterchangeV1): Device {
         let newDevice: Device;
         if (json.hasOwnProperty("params")) {
             if (json.params.hasOwnProperty("width") && json.params.hasOwnProperty("length")) {
@@ -631,14 +637,14 @@ export default class Device {
             //console.log("Feature:", features[i]);
             feature = features[i];
             if (feature.referenceID != null) {
-                newDevice.updateObjectReference(feature.referenceID, feature.getID());
+                newDevice.updateObjectReference(feature.referenceID, feature.ID);
             }
         }
 
         return newDevice;
     }
 
-    static fromInterchangeV1_1(json) {
+    static fromInterchangeV1_1(json: DeviceInterchangeV1): Device {
         IOUtils.sanitizeV1Plus(json);
         let newDevice;
         
@@ -724,7 +730,7 @@ export default class Device {
             //console.log("Feature:", features[i]);
             feature = features[i];
             if (feature.referenceID != null) {
-                newDevice.updateObjectReference(feature.referenceID, feature.getID());
+                newDevice.updateObjectReference(feature.referenceID, feature.ID);
             }
         }
 
@@ -732,7 +738,7 @@ export default class Device {
     }
 
 
-    render2D() {
+    render2D(): Array<Layer> {
         return this.__renderLayers2D();
     }
 
@@ -829,13 +835,13 @@ export default class Device {
 
     /**
      * Generates a new new name for the type, use this to autogenerate the names for components that are typespecific
-     * @param {String} type
+     * @param {string} type
      * @return {string}
      * @memberof Device
      */
-    generateNewName(type: string | String): string {
-        if (this.__nameMap.has(type)) {
-            let value = this.__nameMap.get(type);
+    generateNewName(type: string): string {
+        let value: number | undefined = this.__nameMap.get(type);
+        if (value != undefined) {
             this.__nameMap.set(type, value + 1);
             return type + "_" + String(value + 1);
         } else {
@@ -867,12 +873,12 @@ export default class Device {
 
     /**
      * Insert a connection between a valve component and the connection component
-     * @param {Valve} valve Valve object
+     * @param {Component} valve Valve object
      * @param {Connection} connection Connection object
      * @memberof Device
      * @returns {void}
      */
-    insertValve(valve: Valve, connection: Connection, is3D: boolean = false): void {
+    insertValve(valve: Component, connection: Connection, is3D: boolean = false): void {
         this.__valveMap.set(valve.getID(), connection.getID());
         this.__valveIs3DMap.set(valve.getID(), is3D);
     }
@@ -881,7 +887,7 @@ export default class Device {
      * @returns {Connections} Connections object
      * @memberof Device
      */
-    getConnections() {
+    get connections(): Array<Connection> {
         return this.__connections;
     }
 
@@ -891,9 +897,9 @@ export default class Device {
      * @return {Array<values>}
      * @memberof Device
      */
-    getValvesForConnection(connection: Connection): Array<any> {
-        let connectionid = connection.getID();
-        let ret = [];
+    getValvesForConnection(connection: Connection): Array<Component | null> {
+        let connectionid: string = connection.getID();
+        let ret: Array<Component | null> = [];
         for (let [key, value] of this.__valveMap) {
             // let  = pair;
             if (connectionid == value) {
@@ -906,11 +912,11 @@ export default class Device {
 
     /**
      * Returns whether or not the valve generates a break
-     * @param {Valve} valve Valve device
+     * @param {Component} valve Valve device
      * @return {any}
      * @memberof Device
      */
-    getIsValve3D(valve: Valve): string {
+    get IsValve3D(valve: Component): boolean | undefined {
         let valveid = valve.getID();
         return this.__valveIs3DMap.get(valveid);
     }
@@ -921,14 +927,14 @@ export default class Device {
      * @return {Component} 
      * @memberof Device
      */
-    getComponentByID(key: string | String): Component | null{
+    getComponentByID(key: string | String): Component {
         for (let i in this.__components) {
             let component = this.__components[i];
             if (component.getID() === key) {
                 return component;
             }
         }
-        return null;
+        throw new Error("Component with ID " + key + " does not exist");
     }
 
     /**
@@ -937,14 +943,14 @@ export default class Device {
      * @return {Connection} 
      * @memberof Device
      */
-    getConnectionByID(key: string | String): Connection | null {
+    getConnectionByID(key: string | String): Connection {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
             if (connection.getID() === key) {
                 return connection;
             }
         }
-        return null;
+        throw new Error("Connection with ID " + key + " does not exist")
     }
 
     /**
@@ -953,14 +959,14 @@ export default class Device {
      * @return {Component|null}
      * @memberof Device
      */
-    getComponentByName(name: string | String): Component | null {
-        let components = this.__components();
+    getComponentByName(name: string | String): Component {
+        let components = this.__components;
         for (let i in components) {
             if (name == components[i].getName()) {
                 return components[i];
             }
         }
-        return null;
+        throw new Error("Component with name " + name + "does not exist")
     }
 
     /**
@@ -970,7 +976,7 @@ export default class Device {
      */
     getUnroutedConnections(): Array<Connection> {
         let ret: Array<Connection> = [];
-        let connections = this.getConnections();
+        let connections = this.__connections;
         for (let i in connections) {
             if (!connections[i].routed) {
                 ret.push(connections[i]);
@@ -985,14 +991,14 @@ export default class Device {
      * @returns {Array<number>} Returns array with the absolute positions of the component port
      */
     getPositionOfComponentPort(componentport: ComponentPort) {
-        let component;
-        let components = this.__components();
+        let component: Component;
+        let components: Array<Component> = this.__components;
         for (let i in components) {
             component = components[i];
-            for (let key of component.ports.keys()) {
+            for (const key of component.ports.keys()) {
                 if (componentport.id == component.ports.get(key).id) {
                     //Found the component so return the position
-                    return componentport.calculateAbsolutePosition(component);
+                    return ComponentPort.calculateAbsolutePosition(componentport, component);
                 }
             }
         }
@@ -1001,20 +1007,22 @@ export default class Device {
     /**
      * This is the method that is called when one needs to make the feature object. The static function encapsulates
      * all the functionality that needs to be implemented.
-     * @param {String} typeString
-     * @param {String} setString
+     * @param {string} typeString
+     * @param {string} setString
      * @param {} paramvalues
-     * @param {String} name
-     * @param {String} id
+     * @param {string} name
+     * @param {string} id
      * @param {} fabtype
      * @param {DXFObject} dxfdata
      * @return {EdgeFeature|Feature}
      * @memberof Device
      */
-    static makeFeature(typeString: string|String, setString: string|String, paramvalues, name: string = "New Feature", id: string|undefined = undefined, fabtype, dxfdata: DXFObject) {
-        let params;
+    static makeFeature(typeString: string, setString: string, paramvalues: any, name: string = "New Feature", id: string|undefined = undefined, fabtype: string, dxfdata: Array<JSON>): Feature {
+        
+        let params: Params;
 
         if (typeString === "EDGE") {
+            //TODO: Put in params initialization
             return new EdgeFeature(fabtype, params, id);
         }
         let featureType = FeatureSets.getDefinition(typeString, setString);
