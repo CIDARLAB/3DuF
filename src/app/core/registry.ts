@@ -20,7 +20,7 @@ class Registry {
     viewManager = null;
     featureSet = null;
 
-    generateID() {
+    generateID(): string {
         return uuid.v1();
     }
 }
