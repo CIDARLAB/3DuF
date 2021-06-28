@@ -181,7 +181,7 @@ export default class GenerateArrayTool extends MouseTool {
     // __getComponentWithFeatureID(featureid) {
     //     // Get component with the features
     //
-    //     let device_components = Registry.currentDevice.getComponents();
+    //     let device_components = Registry.currentDevice.components;
     //
     //     //Check against every component
     //     for (let i in device_components) {

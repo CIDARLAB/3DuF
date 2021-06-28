@@ -39,7 +39,7 @@ export default class LaserCuttingGenerator {
         Step 3 - Create a manufacturing layer
                 -  Populate with the ports
          */
-        // let components = this.__device.getComponents();
+        // let components = this.__device.components;
         const layers = this.__device.getLayers();
 
         const mfglayers = [];

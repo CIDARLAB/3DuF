@@ -164,7 +164,7 @@ export default class MouseSelectTool extends MouseTool {
     __getComponentWithFeatureID(featureid) {
         // Get component with the features
 
-        const device_components = Registry.currentDevice.getComponents();
+        const device_components = Registry.currentDevice.components;
 
         // Check against every component
         for (const i in device_components) {
