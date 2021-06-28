@@ -2,7 +2,7 @@ type Point = [number, number]
 
 type Segment = number[]
 
-type InterchangeV1 = {
+type ConnectionInterchangeV1 = {
     id: string
     name: string
     entity: string
@@ -13,5 +13,5 @@ type InterchangeV1 = {
     xspan?: number
     yspan?: number
     ports?: any[]
-    layers?: any[]
+    layer?: string
 }

@@ -171,7 +171,7 @@ export default class Component {
             }
         }
 
-        const output: InterchangeV1 = {
+        const output: ConnectionInterchangeV1 = {
             id : this._id,
             name: this._name,
             entity: this._entity,
@@ -443,7 +443,7 @@ export default class Component {
      * @returns {*}
      * @memberof component
      */
-    static fromInterchangeV1(json: InterchangeV1) {
+    static fromInterchangeV1(json: ConnectionInterchangeV1) {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";

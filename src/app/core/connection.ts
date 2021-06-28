@@ -4,9 +4,9 @@ import Parameter from "./parameter";
 import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
 import ComponentPort from "./componentPort";
-import Device from './device'
+import Device from './device';
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
-
+import Layer from './layer';
 import Registry from "./registry";
 
 /**
@@ -27,6 +27,8 @@ export default class Connection {
     protected _paths: Point[];
     protected _objects: any;
     protected _routed: boolean;
+
+    protected _layer: Layer;
 
     /**
      * Default Connection Constructor
@@ -52,8 +54,16 @@ export default class Connection {
         this._paths = [];
         this._objects = [];
         this._routed = false;
+        this._layer = null;
     }
 
+    get layer(): Layer{
+        return this._layer;
+    }
+
+    set layer(layer:Layer){
+        this._layer = layer;
+    }
     /**
      * Gets the sinks in the connection
      * @returns {ConnectionTarget[]} Returns an array with the sinks
@@ -138,18 +148,19 @@ export default class Connection {
 
     /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
-     * @returns {InterchangeV1} Object
+     * @returns {ConnectionInterchangeV1} Object
      * @memberof Connection
      */
     toInterchangeV1() {
-        const output: InterchangeV1 = {
+        const output: ConnectionInterchangeV1 = {
             id : this._id,
             name: this._name,
             entity: this._entity,
             source: null,
             sinks: null,
             paths: this._paths,
-            params: this._params.toJSON()
+            params: this._params.toJSON(),
+            layer: this._layer.id
         };
 
         if (this._source != null) {
@@ -163,27 +174,6 @@ export default class Connection {
             output.sinks = this._sinks;
         }
         return output;
-    }
-
-    /**
-     *
-     */
-    protected findLayerReference() {
-        const layers = Registry.currentDevice.getLayers();
-        let layerrefs;
-        let layer;
-        for (const i in layers) {
-            layer = layers[i];
-            // Check if the connectino is in layer then put it there
-            let feature;
-            for (const key in layer.features) {
-                feature = layer.features[key];
-                if (feature.referenceID == this.id) {
-                    layerrefs = layer.id;
-                }
-            }
-        }
-        return layerrefs;
     }
 
     /**
@@ -467,7 +457,7 @@ export default class Connection {
      * @returns {Connection} Returns a connection object
      * @memberof Connection
      */
-    static fromInterchangeV1(device: Device, json: InterchangeV1) {
+    static fromInterchangeV1(device: Device, json: ConnectionInterchangeV1) {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";
@@ -509,7 +499,11 @@ export default class Connection {
                 ]
             ];
         }
-        const definition = Registry.featureSet.getDefinition("Connection");
+        let definition;
+        if(Registry.featureSet !== null){
+            definition = Registry.featureSet.getDefinition("Connection");
+
+        }
         const paramstoadd = new Params(params, definition.unique, definition.heritable);
 
         const connection = new Connection(entity, paramstoadd, name, entity, id);
@@ -666,7 +660,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setSourceFromJSON(device: Device, json: InterchangeV1) {
+    setSourceFromJSON(device: Device, json: ConnectionInterchangeV1) {
         let target = ConnectionTarget.fromJSON(device, json);
         this._source = target;
     }
@@ -678,7 +672,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addSinkFromJSON(device: Device, json: InterchangeV1) {
+    addSinkFromJSON(device: Device, json: ConnectionInterchangeV1) {
         let target = ConnectionTarget.fromJSON(device, json);
         this._sinks.push(target);
     }
