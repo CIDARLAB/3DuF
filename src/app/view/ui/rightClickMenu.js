@@ -53,7 +53,7 @@ export default class RightClickMenu {
                 // Hide
                 HTMLUtils.addClass(ref.__renameComponentTextField, "collapse");
             } else {
-                // Show
+                // Show                       
                 HTMLUtils.removeClass(ref.__renameComponentTextField, "collapse");
                 ref.__renameTextInput.value = ref.getComponentName();
             }
