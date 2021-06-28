@@ -1,6 +1,5 @@
 /// <reference types="node" />
 
-import uuid from "node-uuid";
 import Params from "./params";
 
 import StringValue from "./parameters/stringValue";
