@@ -46,6 +46,8 @@ export type LayerInterchangeV1 = {
     params: any
     group: string
     type: string
+    features: Array<FeatureInterchangeV1>
+    color: string | undefined
 }
 
 export type FeatureInterchangeV1 = {
