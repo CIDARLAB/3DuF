@@ -8,7 +8,7 @@ type Point = [number, number]
 type Segment = number[]
 
 export type DeviceInterchangeV1 = {
-    name: StringValue
+    name: string
     params: any
     //layers: any[]
     groups: Array<string>

@@ -45,7 +45,7 @@ export default class Device {
      * @param {*} values 
      * @param {string} name Name of the Device
      */
-    constructor(values: {[index: string]: any}, name: StringValue = new StringValue("New Device")) {
+    constructor(values: {[index: string]: any}, name: string = "New Device") {
         this.__layers = [];
         this.__textLayers = [];
         this.__features = [];
@@ -54,7 +54,7 @@ export default class Device {
         // this.setXSpan(values.width);
         // this.setYSpan(values.length);
 
-        this.__name = name;
+        this.__name = new StringValue(name);
         this.__components = [];
         this.__nameMap = new Map();
         this.__connections = [];
@@ -515,7 +515,7 @@ export default class Device {
      */
     toInterchangeV1(): DeviceInterchangeV1 {
         let output: DeviceInterchangeV1 = {
-            name : this.__name,
+            name : this.__name.value,
             params : {
                 width: this.getXSpan(),
                 length: this.getYSpan()
