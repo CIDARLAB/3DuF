@@ -65,11 +65,7 @@ export default class Params {
      * @memberof Params
      */
     isUnique(key: string): boolean {
-        if (typeof this.unique.get(key) == "undefined") {
-            return false;
-        } else {
-            return true;
-        }
+        return this.unique.has(key)
     }
     /**
      * Checks if param object has heritable attribute.
@@ -78,11 +74,7 @@ export default class Params {
      * @memberof Params
      */
     isHeritable(key: string): boolean {
-        if (typeof this.heritable.get(key) == "undefined") {
-            return false;
-        } else {
-            return true;
-        }
+        return this.heritable.has(key)
     }
 
     /**
