@@ -1,8 +1,8 @@
+import uuid from "node-uuid";
 import EdgeFeature from "./edgeFeature";
 import Feature from "./feature";
 import TextFeature from "./textFeature";
 import Params from "./params";
-import Registry from "./registry";
 import Device from "./device";
 import {FeatureInterchangeV1} from "./init"
 import {LayerInterchangeV1} from "./init"
@@ -55,7 +55,7 @@ export default class Layer {
      * @returns {String} Random ID string
      */
     static generateID(): string {
-        return Registry.generateID();
+        return uuid.v1();
     }
 
     /**

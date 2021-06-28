@@ -1,5 +1,6 @@
 /// <reference types="node" />
 
+import uuid from "node-uuid";
 import Params from "./params";
 
 import StringValue from "./parameters/stringValue";
@@ -9,8 +10,6 @@ import {ComponentInterchangeV1} from "./init"
 import {ConnectionInterchangeV1} from "./init"
 import {LayerInterchangeV1} from "./init"
 import {FeatureInterchangeV1} from "./init"
-
-import Registry from './registry';
 
 import Layer from "./layer";
 import Component from "./component";
