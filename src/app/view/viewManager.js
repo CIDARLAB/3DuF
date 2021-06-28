@@ -57,10 +57,13 @@ import ControlCellPositionTool from "./tools/controlCellPositionTool";
 import { MultiplyOperation } from "three";
 
 export default class ViewManager {
+    static instance;
     /**
      * Default ViewManger Constructor
      */
     constructor() {
+        this.instance = this;
+
         this.threeD;
         this.view = new PaperView("c", this);
 
@@ -1290,7 +1293,7 @@ export default class ViewManager {
      */
     __initializeRatsNest() {
         // Step 1 generate features for all the components with some basic layout
-        const components = this.currentDevice.getComponents();
+        const components = this.currentDevice.components;
         const xpos = 10000;
         const ypos = 10000;
         for (const i in components) {
@@ -1417,5 +1420,13 @@ export default class ViewManager {
             console.log("Adding Valve: ", valve);
             this.currentDevice.insertValve(valve, connection, valve_type);
         }
+    }
+
+    static getInstance() {
+        if (!ViewManager.instance) {
+            ViewManager.instance = new ViewManager();
+        }
+
+        return ViewManager.instance;
     }
 }
