@@ -4,8 +4,8 @@ import Parameter from "./parameter";
  * Params class
  */
 export default class Params {
-    private unique: {[index: string]: string};
-    private heritable: {[index: string]: string};
+    private unique: Map<string,string>;
+    private heritable: Map<string,string>;
     private parameters: {[index: string]: Parameter};
     
 
@@ -16,7 +16,7 @@ export default class Params {
      * @param {} heritable Boolean if it's heritable
      * @param {} rawparameters ?
      */
-    constructor(values: any, unique: {[index: string]: string}, heritable: {[index: string]: string}) { 
+    constructor(values: {[index: string]: any}, unique: Map<string,string>, heritable: Map<string,string>) { 
         this.unique = unique;
         this.heritable = heritable;
         this.parameters = {};
@@ -65,7 +65,7 @@ export default class Params {
      * @memberof Params
      */
     isUnique(key: string): boolean {
-        if (typeof this.unique[key] == "undefined") {
+        if (typeof this.unique.get(key) == "undefined") {
             return false;
         } else {
             return true;
@@ -78,7 +78,7 @@ export default class Params {
      * @memberof Params
      */
     isHeritable(key: string): boolean {
-        if (typeof this.heritable[key] == "undefined") {
+        if (typeof this.heritable.get(key) == "undefined") {
             return false;
         } else {
             return true;
@@ -107,7 +107,7 @@ export default class Params {
      * @returns {Params} Returns a new params object.
      * @memberof Params
      */
-    static fromJSON(json: JSON, unique: any, heritable: any): Params {
+    static fromJSON(json: Map<string,any>, unique: Map<string,string>, heritable: Map<string,string>): Params {
         return new Params(json, unique, heritable); 
     }
     /**
