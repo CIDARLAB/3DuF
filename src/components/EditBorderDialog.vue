@@ -1,18 +1,17 @@
 <template>
     <Dialog title="Edit Border">
         <template #content>
-            <h4>Drag Drop the DXF file containing border to import:</h4>
+            <h4>Drag Drop the DXF Boarder File:</h4>
             <div class="mdl-dialog__content">
                 <canvas id="border_import_panel" tabindex="1" width="300" height="200" />
                 <br />
-                <input id="dxf_input" type="file" class="upload" />
+                <input id="dxf_input" type="file" class="upload" color="gray" />
             </div>
         </template>
         <template v-slot:actions="{ callbacks }">
-            <v-btn color="green darken-1" text @click="callbacks.close()"> Import Border </v-btn>
-            <v-btn color="green darken-1" text @click="callbacks.close()"> Delete Border </v-btn>
-            <v-btn color="green darken-1" text @click="callbacks.close(onSave)"> Save </v-btn>
-            <v-btn color="green darken-1" text @click="callbacks.close()"> Cancel </v-btn>
+            <v-btn dark color="green dark" @click="callbacks.close()"> Import Border </v-btn>
+            <v-btn dark color="red dark" @click="callbacks.close()"> Delete Border </v-btn>
+            <v-btn color="white" @click="callbacks.close(onSave)"> Okay </v-btn>
         </template>
     </Dialog>
 </template>
