@@ -359,7 +359,7 @@ export default class Feature {
     /**
      * Loads from JSON format the features for a device
      * @param {JSON} json
-     * @returns {Device} Returns a Device object with the features in the JSON
+     * @returns {Feature} Returns a Device object with the features in the JSON
      * @memberof Feature
      */
     static fromJSON(json) {
@@ -372,7 +372,7 @@ export default class Feature {
     /**
      * Loads from an InetchangeV1 format the features for a device object
      * @param {*} json
-     * @returns {Device}
+     * @returns {Feature}
      * @memberof Feature
      */
     static fromInterchangeV1(json) {
@@ -410,15 +410,6 @@ export default class Feature {
      */
     updateView() {
         if (Registry.viewManager) Registry.viewManager.updateFeature(this);
-    }
-
-    // I wish I had abstract methods. :(
-    /**
-     * @memberof Feature
-     * @returns {void}
-     */
-    render2D() {
-        throw new Error("Base class Feature cannot be rendered in 2D.");
     }
 
     /**
