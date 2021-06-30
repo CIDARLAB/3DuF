@@ -3,9 +3,9 @@ import Component from "./component"
 import Connection from "./connection"
 import Feature from "./feature"
 
-type Point = [number, number]
+export type Point = [number, number]
 
-type Segment = number[]
+export type Segment = Array<[number,number]>
 
 export type DeviceInterchangeV1 = {
     name: string
@@ -64,7 +64,7 @@ export type FeatureInterchangeV1 = {
     type: string
 }
 
-type ComponentPortInterchangeV1 = {
+export type ComponentPortInterchangeV1 = {
     x: number,
     y: number,
     label: string,
