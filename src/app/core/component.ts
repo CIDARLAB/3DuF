@@ -6,6 +6,9 @@ import Feature from './feature'
 import Registry from "./registry";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
+import { ComponentPortInterchangeV1 } from "./init";
+import { ConnectionInterchangeV1 } from "./init";
+import { ComponentInterchangeV1 } from "./init";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -20,7 +23,7 @@ export default class Component {
     protected _features: Feature[]; // Not sure if it's Feature[] or string[]
     protected _bounds: paper.Rectangle | null;
     protected _placed: Boolean;
-    protected _ports: Map<string, Port>;
+    protected _ports: Map<string, ComponentPort>;
     protected _componentPortTRenders: Map<string, Port>;
     protected _xspan: number;
     protected _yspan: number;
@@ -171,7 +174,7 @@ export default class Component {
             }
         }
 
-        const output: ConnectionInterchangeV1 = {
+        const output: ComponentInterchangeV1 = {
             id : this._id,
             name: this._name,
             entity: this._entity,
@@ -443,7 +446,7 @@ export default class Component {
      * @returns {*}
      * @memberof component
      */
-    static fromInterchangeV1(json: ConnectionInterchangeV1) {
+    static fromInterchangeV1(json: ComponentInterchangeV1) {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";
@@ -526,7 +529,7 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-    setPort(label: string, port: Port) {
+    setPort(label: string, port: ComponentPort) {
         this._ports.set(label, port);
     }
 

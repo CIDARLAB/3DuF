@@ -2,6 +2,7 @@ import uuid from "node-uuid";
 import paper from "paper";
 import Layer from './layer'
 import Component from './component'
+import { ComponentPortInterchangeV1 } from "./init";
 
 export default class ComponentPort {
     protected _id: string;

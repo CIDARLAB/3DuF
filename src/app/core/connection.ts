@@ -8,6 +8,8 @@ import Device from './device';
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Layer from './layer';
 import Registry from "./registry";
+import { ConnectionInterchangeV1 } from "./init";
+import {Segment, Point} from "./init"
 
 /**
  * This class contains the connection abstraction used in the interchange format and the
@@ -53,7 +55,7 @@ export default class Connection {
         this._paths = [];
         this._objects = [];
         this._routed = false;
-        this._layer = new Layer(null);
+        this._layer = new Layer({});
     }
 
     get layer() {
@@ -597,32 +599,32 @@ export default class Connection {
         }
     }
 
-    // /**
-    //  * Tries to delete any connection target reference that uses the said component
-    //  * @param {string} componentid Component ID
-    //  * @return {boolean} Returns true if any corresponding connection target is found
-    //  * @memberof Connection
-    //  *
-    //  */
-    // tryDeleteConnectionTarget(componentid: string) {
-    //     let ret = false;
-    //     if (component.getID() == componentid) {
-    //         //Remove the source object
-    //         this._source = null;
-    //         ret = true;
-    //     }
+    /**
+     * Tries to delete any connection target reference that uses the said component
+     * @param {string} componentid Component ID
+     * @return {boolean} Returns true if any corresponding connection target is found
+     * @memberof Connection
+     *
+     */
+    tryDeleteConnectionTarget(componentid: string) {
+        let ret = false;
+        if (component.getID() == componentid) {
+            //Remove the source object
+            this._source = null;
+            ret = true;
+        }
 
-    //     for (let i in this._sinks) {
-    //         let sink = this._sinks[i];
+        for (let i in this._sinks) {
+            let sink = this._sinks[i];
 
-    //         if (sink.component.getID() == componentid) {
-    //             this._sinks.splice(+i, 1);
-    //             ret = true;
-    //         }
-    //     }
+            if (sink.component.id == componentid) {
+                this._sinks.splice(+i, 1);
+                ret = true;
+            }
+        }
 
-    //     return ret;
-    // }
+        return ret;
+    }
 
     /**
      * Adds a new set of waypoints to the path field of the connection
