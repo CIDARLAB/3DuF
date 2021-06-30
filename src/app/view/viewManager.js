@@ -57,13 +57,10 @@ import ControlCellPositionTool from "./tools/controlCellPositionTool";
 import { MultiplyOperation } from "three";
 
 export default class ViewManager {
-    static instance;
     /**
      * Default ViewManger Constructor
      */
     constructor() {
-        this.instance = this;
-
         this.threeD;
         this.view = new PaperView("c", this);
 
@@ -1420,13 +1417,5 @@ export default class ViewManager {
             console.log("Adding Valve: ", valve);
             this.currentDevice.insertValve(valve, connection, valve_type);
         }
-    }
-
-    static getInstance() {
-        if (!ViewManager.instance) {
-            ViewManager.instance = new ViewManager();
-        }
-
-        return ViewManager.instance;
     }
 }
