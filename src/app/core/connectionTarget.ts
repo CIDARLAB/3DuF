@@ -5,14 +5,17 @@ import Device from "./device";
  * Connection target class
  */
 export default class ConnectionTarget {
+    protected _component: Component;
+    protected _portLabel: string;
+
     /**
      * Default ConnectionTarget Constructor
      * @param {Component} component
      * @param {string} portLabel
      */
-    constructor(component, portLabel) {
-        this.__component = component;
-        this.__portLabel = portLabel;
+    constructor(component: Component, portLabel: string) {
+        this._component = component;
+        this._portLabel = portLabel;
     }
 
     /**
@@ -21,7 +24,7 @@ export default class ConnectionTarget {
      * @memberof ConnectionTarget
      */
     get portLabel() {
-        return this.__portLabel;
+        return this._portLabel;
     }
 
     /**
@@ -30,7 +33,7 @@ export default class ConnectionTarget {
      * @memberof ConnectionTarget
      */
     get component() {
-        return this.__component;
+        return this._component;
     }
 
     /**
@@ -40,13 +43,13 @@ export default class ConnectionTarget {
      */
     toJSON() {
         // This is for the older design data
-        if (this.__component instanceof Component) {
+        if (this._component instanceof Component) {
             return {
-                component: this.__component.getID(),
-                port: this.__portLabel
+                component: this._component.id,
+                port: this._portLabel
             };
         } else {
-            return { component: this.__component, port: this.__portLabel };
+            return { component: this._component, port: this._portLabel };
         }
     }
 
@@ -57,8 +60,8 @@ export default class ConnectionTarget {
      * @returns {ConnectionTarget} Returns a Connection Target Object
      * @memberof ConnectionTarget
      */
-    static fromJSON(device, json) {
-        const component = device.getComponentByID(json.component);
-        return new ConnectionTarget(component, json.port);
+    static fromJSON(device: Device, json: ConnectionInterchangeV1) {
+        const component = device.getComponentByID(json.id);
+        return new ConnectionTarget(component, json.name);
     }
 }

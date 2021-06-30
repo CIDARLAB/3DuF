@@ -35,9 +35,12 @@ export type ConnectionInterchangeV1 = {
     entity: string
     source: any
     sinks: any
-    paths: [number, number][]
+    paths?: [number, number][]
     params: any
-    layer: string
+    xspan?: number
+    yspan?: number
+    ports?: any[]
+    layer?: string
 }
 
 export type LayerInterchangeV1 = {
@@ -59,4 +62,11 @@ export type FeatureInterchangeV1 = {
     params: any
     dxfData: any
     type: string
+}
+
+type ComponentPortInterchangeV1 = {
+    x: number,
+    y: number,
+    label: string,
+    layer: any
 }

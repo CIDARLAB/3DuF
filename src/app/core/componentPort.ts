@@ -1,15 +1,23 @@
 import uuid from "node-uuid";
 import paper from "paper";
+import Layer from './layer'
+import Component from './component'
 
 export default class ComponentPort {
+    protected _id: string;
+    protected _x: number;
+    protected _y: number;
+    protected _label: string;
+    protected _layer: Layer;
+    
     /**
      * Default constructor for ComponentPorts
      * @param {Number} x X coordinate
      * @param {Number} y Y coordinate
      * @param {String} label Name of the component
-     * @param {} layer
+     * @param {Layer} layer
      */
-    constructor(x, y, label, layer) {
+    constructor(x: number, y: number, label: string, layer: Layer) {
         this._id = uuid.v1();
         this._x = x;
         this._y = y;
@@ -133,7 +141,7 @@ export default class ComponentPort {
      * @returns {Array} Returns an array which contains the X absolute coordinate and the y absolute coordinate
      * @memberof ComponentPort
      */
-    static calculateAbsolutePosition(componentport, component) {
+    static calculateAbsolutePosition(componentport: ComponentPort, component: Component) {
         const topleftposition = component.getValue("position");
         const point = new paper.Point(topleftposition[0] + componentport.x, topleftposition[1] + componentport.y);
         console.log("Unchanged point:", point);
@@ -149,7 +157,7 @@ export default class ComponentPort {
      * @returns {ComponentPort} Returns a component port object
      * @memberof ComponentPort
      */
-    static fromInterchangeV1(json) {
+    static fromInterchangeV1(json: ComponentPortInterchangeV1) {
         return new ComponentPort(json.x, json.y, json.label, json.layer);
     }
 }
