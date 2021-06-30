@@ -70,17 +70,6 @@ export default class Layer {
     }
 
     /**
-     * Sets color for the layer
-     * @param {String} layerColor
-     * @memberof Layer
-     * @returns {void}
-     */
-    setColor(layerColor: string): void {
-        this.color = layerColor;
-        //this.__viewManager.updateLayer(this);
-    }
-
-    /**
      * Returns index of layer
      * @returns {Number}
      * @memberof Layer

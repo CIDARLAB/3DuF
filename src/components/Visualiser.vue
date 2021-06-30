@@ -22,7 +22,7 @@ export default {
         viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
         viewManager.updateGrid();
         //Registry.currentDevice.updateView();
-        Registry.viewManager.updateDevice();
+        Registry.viewManager.updateDevice(viewManager.currentDevice);
 
         window.dev = Registry.currentDevice;
         window.Registry = Registry;

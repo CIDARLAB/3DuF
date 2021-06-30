@@ -533,6 +533,8 @@ export default class Device {
             },
             json["name"]
         );
+        newDevice.setXSpan(json["params"].width);
+        newDevice.setYSpan(json["params"].length);
         newDevice.__loadLayersFromJSON(json["layers"]);
         return newDevice;
     }
