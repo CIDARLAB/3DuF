@@ -22,8 +22,6 @@ export default class Layer {
     private __type: string;
     private group: string;
 
-    private __viewManager: ViewManager;
-
     /**
      * Default Constructor for the layer
      * @param {*} values Value of the layer
@@ -39,7 +37,6 @@ export default class Layer {
         this.__id = Layer.generateID();
         this.__type = type;
         this.group = group;
-        this.__viewManager = ViewManager.getInstance();
     }
 
     get type(): string {
@@ -69,7 +66,7 @@ export default class Layer {
         this.features[feature.ID] = feature;
         this.featureCount += 1;
         //feature.layer = this;
-        this.__viewManager.addFeature(feature);
+        //this.__viewManager.addFeature(feature);
     }
 
     /**
@@ -81,7 +78,7 @@ export default class Layer {
      */
     updateParameter(key: string, value: any): void {
         this.params.updateParameter(key, value);
-        this.__viewManager.updateLayer(this);
+        //this.__viewManager.updateLayer(this);
     }
 
     /**
@@ -92,7 +89,7 @@ export default class Layer {
      */
     setColor(layerColor: string): void {
         this.color = layerColor;
-        this.__viewManager.updateLayer(this);
+        //this.__viewManager.updateLayer(this);
     }
 
     /**
@@ -218,7 +215,7 @@ export default class Layer {
         this.__ensureFeatureIDExists(featureID);
         const feature: Feature = this.features[featureID];
         this.featureCount -= 1;
-        this.__viewManager.removeFeature(feature);
+        //this.__viewManager.removeFeature(feature);
         delete this.features[featureID];
     }
 

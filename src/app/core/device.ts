@@ -38,7 +38,6 @@ export default class Device {
     private __groups: Array<string>;
     private __features: Array<Feature>;
     private __version: number;
-    private __viewManager: ViewManager;
 
     /**
      * Default Constructor
@@ -64,8 +63,6 @@ export default class Device {
         this.__valveIs3DMap = new Map();
 
         this.__version = 1;
-
-        this.__viewManager = ViewManager.getInstance();
     }
     /**
      * Returns a string with the name of the Device
@@ -139,7 +136,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    removeComponent(component: Component): void {
+    removeComponent(component: Component): null | Connection{
         //Remove the component from the map
         let trydelete;
         let componentid = component.getID();
@@ -169,9 +166,7 @@ export default class Device {
             this.__components.splice(i, 1);
         }
 
-        if (connectiontorefresh) {
-            this.__viewManager.updatesConnectionRender(connectiontorefresh);
-        }
+        return connectiontorefresh;
     }
 
     /**
@@ -190,7 +185,7 @@ export default class Device {
      */
     set name(name: string | String) {
         this.__name = new StringValue(name);
-        this.updateView();
+        //this.updateView();
     }
 
     /**
@@ -202,7 +197,7 @@ export default class Device {
      */
     updateParameter(key: string, value: any) {
         this.__params.updateParameter(key, value);
-        this.updateView();
+        //this.updateView();
     }
 
     /**
@@ -311,7 +306,8 @@ export default class Device {
         layer.device = this;
         this.__layers.push(layer);
         //this.sortLayers();
-        this.__viewManager.addLayer(layer, this.__layers.indexOf(layer));
+        // TODO: Fix layer system
+        //this.__viewManager.addLayer(layer, this.__layers.indexOf(layer));
     }
     /**
      * Removes feature of the Device
@@ -333,14 +329,6 @@ export default class Device {
         layer.removeFeatureByID(featureID);
     }
 
-    /**
-     * Updates view of the Device
-     * @memberof Device
-     * @returns {void}
-     */
-    updateView(): void {
-        this.__viewManager.updateDevice(this);
-    }
     /**
      * Gets the unique parameters 
      * @returns {Object} 
