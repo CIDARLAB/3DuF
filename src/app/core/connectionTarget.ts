@@ -1,5 +1,6 @@
 import Component from "./component";
 import Device from "./device";
+import { ConnectionInterchangeV1 } from "./init";
 
 /**
  * Connection target class
