@@ -178,8 +178,8 @@ export default class Component {
             source: null,
             sinks: null,
             params: this._params.toJSON(),
-            xspan: bounds.width,
-            yspan: bounds.height,
+            xspan: this._xspan,
+            yspan: this._yspan,
             ports: portdata,
             layers: this.findLayerReferences()
         };
@@ -249,7 +249,7 @@ export default class Component {
      * @return {number[]}
      * @memberof Component
      */
-    getPosition() {
+    getPosition(): number[] {
         return this._params.getValue("position");
     }
 
@@ -278,16 +278,16 @@ export default class Component {
         return this._features;
     }
 
-    // /**
-    //  * Checks if the component has default parameters
-    //  * @param {String} key Key to access the component
-    //  * @returns {boolean} Returns true whether it has default parameters or not
-    //  * @memberof Component
-    //  */
-    // hasDefaultParam(key: string) {
-    //     if (this.getDefaults().hasOwnProperty(key)) return true;
-    //     else return false;
-    // }
+    /**
+     * Checks if the component has default parameters
+     * @param {String} key Key to access the component
+     * @returns {boolean} Returns true whether it has default parameters or not
+     * @memberof Component
+     */
+    hasDefaultParam(key: string) {
+        if (this.getDefaults().hasOwnProperty(key)) return true;
+        else return false;
+    }
 
     /**
      * Adds a feature that is associated with the component

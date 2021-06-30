@@ -27,7 +27,6 @@ export default class Connection {
     protected _paths: Point[];
     protected _objects: any;
     protected _routed: boolean;
-
     protected _layer: Layer;
 
     /**
@@ -54,10 +53,10 @@ export default class Connection {
         this._paths = [];
         this._objects = [];
         this._routed = false;
-        this._layer = null;
+        this._layer = new Layer(null);
     }
 
-    get layer(): Layer{
+    get layer() {
         return this._layer;
     }
 
@@ -241,16 +240,16 @@ export default class Connection {
         return this._features;
     }
 
-    // /**
-    //  * If it has their own properties returns true
-    //  * @param {String} key
-    //  * @returns {boolean}
-    //  * @memberof Connection
-    //  */
-    // hasDefaultParam(key: string) {
-    //     if (this.getDefaults().hasOwnProperty(key)) return true;
-    //     else return false;
-    // }
+    /**
+     * If it has their own properties returns true
+     * @param {String} key
+     * @returns {boolean}
+     * @memberof Connection
+     */
+    hasDefaultParam(key: string) {
+        if (this.getDefaults().hasOwnProperty(key)) return true;
+        else return false;
+    }
 
     /**
      * Adds a feature that is associated with the component
