@@ -1,11 +1,12 @@
 import Parameter from "../parameter";
 import * as NumberUtils from "../../utils/numberUtils";
+import {Point} from "@/app/core/init"
 
 export default class PointValue extends Parameter {
     static readonly typeString: string = "Point";
     static readonly description: string = "PointValue must be an array containing exactly two numbers, such as [3,-5]";
 
-    constructor(value: Array<number>) {
+    constructor(value: Point) {
         super("Point",value);
     }
 
