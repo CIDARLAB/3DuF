@@ -15,3 +15,10 @@ type ConnectionInterchangeV1 = {
     ports?: any[]
     layer?: string
 }
+
+type ComponentPortInterchangeV1 = {
+    x: number,
+    y: number,
+    label: string,
+    layer: any
+}

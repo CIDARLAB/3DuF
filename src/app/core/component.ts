@@ -246,7 +246,7 @@ export default class Component {
 
     /**
      * Returns an Array of size two containing the X and Y coordinates
-     * @return {Array<number>}
+     * @return {number[]}
      * @memberof Component
      */
     getPosition() {
@@ -457,12 +457,11 @@ export default class Component {
         this.yspan = this._yspan;
 
         const params = json.params
-        if (entity === "TEST MINT") {
-            console.warn("Found legacy invalid entity string", entity);
-            entity = name.split("_")[0]; // '^.*?(?=_)'
 
-            console.log("new entity:", entity);
-        }
+        entity = name.split("_")[0]; // '^.*?(?=_)'
+
+        console.log("new entity:", entity);
+
 
         // TODO - remove this dependency
         // iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);
