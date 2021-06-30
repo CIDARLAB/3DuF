@@ -337,7 +337,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    updateSegments(segments: Segment[]) {
+    updateSegments(segments: Segment) {
         this.updateParameter("segments", new Parameter("SegmentArray", segments));
         for (let i in this._features) {
             let featureidtochange = this._features[i];
@@ -539,12 +539,12 @@ export default class Connection {
      */
     regenerateSegments() {
         const pathscopy = this.getPaths();
-        const ret = [];
+        const ret: Segment = [];
         let waypointscopy;
         for (const j in pathscopy) {
             waypointscopy = pathscopy[j];
             for (let i = 0; i < waypointscopy.length - 1; i++) {
-                const segment = [waypointscopy[i], waypointscopy[i + 1]];
+                const segment: Point = [waypointscopy[i], waypointscopy[i + 1]];
                 ret.push(segment);
             }
         }

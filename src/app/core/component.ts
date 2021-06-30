@@ -6,9 +6,8 @@ import Feature from './feature'
 import Registry from "./registry";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
-import { ComponentPortInterchangeV1 } from "./init";
-import { ConnectionInterchangeV1 } from "./init";
-import { ComponentInterchangeV1 } from "./init";
+import { ComponentPortInterchangeV1, ComponentInterchangeV1 } from "./init";
+import { ConnectionInterchangeV1, Point } from "./init";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -178,13 +177,11 @@ export default class Component {
             id : this._id,
             name: this._name,
             entity: this._entity,
-            source: null,
-            sinks: null,
             params: this._params.toJSON(),
             xspan: this._xspan,
             yspan: this._yspan,
             ports: portdata,
-            layers: this.findLayerReferences()
+            layer: this.findLayerReferences()
         };
         
         return output;
@@ -456,8 +453,11 @@ export default class Component {
         const name = json.name;
         const id = json.id;
         let entity = json.entity;
-        this.xspan = this._xspan;
-        this.yspan = this._yspan;
+
+        // Idk whether this is correct
+        // It was originially this._span = this.span which threw several errors so I patterned in off the above const var
+        const xspan = json.xspan;
+        const yspan = json.yspan;
 
         const params = json.params
 
