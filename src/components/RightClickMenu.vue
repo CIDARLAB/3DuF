@@ -84,35 +84,35 @@
 //import { defineComponent } from "@vue/composition-api";
 //import specname from "@/models/property-drawer/'specname'.js";
 import { createFeatureTable, revertToDefaultParams } from "./parameterMenu";
-import Registry from "../../core/registry";
+import Registry from "@/core/registry";
 import EventBus from "@/events/events";
 import ChangeAllDialog from "@/app/view/ui/changeAllDialog";
 import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
 
 export default {
     components: ChangeAllDialog,
-    props: {
-        title: feature.getType(),
-        spec: {
-            spec: RoundedChannelSpec,
-            validator: spec => {
-                if (!Array.isArray(spec)) {
-                    console.error("PropertyDrawer: Spec is not an array, unable to validate");
-                    return "danger";
-                }
-                spec.forEach(item => {
-                    ["min", "max", "key", "units", "value"].forEach(key => {
-                        if (!Object.hasOwnProperty.call(item, key)) {
-                            console.error("Missing key " + key + " from item", item);
-                            return "danger";
-                        }
-                    });
-                });
+    // props: {
+    //     title: Round, //feature.getType(),
+    //     spec: {
+    //         RoundedChannelSpec,
+    //         validator: spec => {
+    //             if (!Array.isArray(spec)) {
+    //                 console.error("PropertyDrawer: Spec is not an array, unable to validate");
+    //                 return "danger";
+    //             }
+    //             spec.forEach(item => {
+    //                 ["min", "max", "key", "units", "value"].forEach(key => {
+    //                     if (!Object.hasOwnProperty.call(item, key)) {
+    //                         console.error("Missing key " + key + " from item", item);
+    //                         return "danger";
+    //                     }
+    //                 });
+    //             });
 
-                return "success";
-            }
-        }
-    },
+    //             return "success";
+    //         }
+    //     }
+    // },
     data() {
         return {
             activated: false,
