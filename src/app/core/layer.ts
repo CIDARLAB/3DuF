@@ -4,9 +4,9 @@ import Feature from "./feature";
 import TextFeature from "./textFeature";
 import Params from "./params";
 import Device from "./device";
+import LayerUtils from "@/app/utils/layerUtils"
 import {FeatureInterchangeV1} from "./init"
 import {LayerInterchangeV1} from "./init"
-import ViewManager from "@/app/view/viewManager"
 
 /**
  * Layer class
@@ -66,19 +66,7 @@ export default class Layer {
         this.features[feature.ID] = feature;
         this.featureCount += 1;
         //feature.layer = this;
-        //this.__viewManager.addFeature(feature);
-    }
-
-    /**
-     * Selects a parameter corresponding to the key identifier and assigns it to the new value
-     * @param {String} key Key to identify the parameter
-     * @param {*} value Value to be assing to the parameter
-     * @memberof Layer
-     * @returns {void}
-     */
-    updateParameter(key: string, value: any): void {
-        this.params.updateParameter(key, value);
-        //this.__viewManager.updateLayer(this);
+        LayerUtils.addFeature(feature);
     }
 
     /**
@@ -215,7 +203,7 @@ export default class Layer {
         this.__ensureFeatureIDExists(featureID);
         const feature: Feature = this.features[featureID];
         this.featureCount -= 1;
-        //this.__viewManager.removeFeature(feature);
+        LayerUtils.removeFeature(feature);
         delete this.features[featureID];
     }
 

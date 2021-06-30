@@ -13,13 +13,15 @@ import {FeatureInterchangeV1} from "./init"
 import Layer from "./layer";
 import Component from "./component";
 import Connection from "./connection";
+import Port from "../library/port";
 import EdgeFeature from "./edgeFeature";
 import DXFObject from "./dxfObject";
 import * as FeatureSets from "../featureSets";
 import Valve from "../library/valve";
 import ComponentPort from "./componentPort";
 import * as IOUtils from "../utils/ioUtils";
-import ViewManager from "@/app/view/viewManager";
+
+import DeviceUtils from "@/app/utils/deviceUtils"
 
 
 /**
@@ -139,7 +141,7 @@ export default class Device {
     removeComponent(component: Component): null | Connection{
         //Remove the component from the map
         let trydelete;
-        let componentid = component.getID();
+        let componentid = component.id;
         let connectiontorefresh = null;
 
         //Remove component from connections
@@ -148,7 +150,7 @@ export default class Device {
             try {
                 trydelete = connection.tryDeleteConnectionTarget(componentid);
                 if (trydelete) {
-                    console.log("Removed Component from Connection : ", connection.getID());
+                    console.log("Removed Component from Connection : ", connection.id);
                 }
             } catch (e) {
                 console.error(e);
@@ -185,7 +187,6 @@ export default class Device {
      */
     set name(name: string | String) {
         this.__name = new StringValue(name);
-        //this.updateView();
     }
 
     /**
@@ -197,7 +198,6 @@ export default class Device {
      */
     updateParameter(key: string, value: any) {
         this.__params.updateParameter(key, value);
-        //this.updateView();
     }
 
     /**
@@ -307,7 +307,7 @@ export default class Device {
         this.__layers.push(layer);
         //this.sortLayers();
         // TODO: Fix layer system
-        //this.__viewManager.addLayer(layer, this.__layers.indexOf(layer));
+        DeviceUtils.addLayer(layer, this.__layers.indexOf(layer));
     }
     /**
      * Removes feature of the Device
@@ -353,8 +353,8 @@ export default class Device {
         let foundflag = false;
         for (let i in this.__components) {
             component = this.__components[i];
-            // console.log(objectID, component.getID());
-            if (objectID == component.getID()) {
+            // console.log(objectID, component.id);
+            if (objectID == component.id) {
                 component.addFeatureID(featureID);
                 component.placed = true;
                 foundflag = true;
@@ -365,7 +365,7 @@ export default class Device {
         let connection;
         for (let i in this.__connections) {
             connection = this.__connections[i];
-            if (objectID == connection.getID()) {
+            if (objectID == connection.id) {
                 connection.addFeatureID(featureID);
                 connection.routed = true;
                 foundflag = true;
@@ -774,7 +774,7 @@ export default class Device {
             //go through each component's features
             for (let j in component.features) {
                 let feature = component.features[j];
-                if (feature === id) {
+                if (feature.ID === id) {
                     return component;
                 }
             }
@@ -829,8 +829,8 @@ export default class Device {
      * @returns {void}
      */
     insertValve(valve: Component, connection: Connection, is3D: boolean = false): void {
-        this.__valveMap.set(valve.getID(), connection.getID());
-        this.__valveIs3DMap.set(valve.getID(), is3D);
+        this.__valveMap.set(valve.id, connection.id);
+        this.__valveIs3DMap.set(valve.id, is3D);
     }
     /**
      * Returns connections of the device
@@ -848,7 +848,7 @@ export default class Device {
      * @memberof Device
      */
     getValvesForConnection(connection: Connection): Array<Component | null> {
-        let connectionid: string = connection.getID();
+        let connectionid: string = connection.id;
         let ret: Array<Component | null> = [];
         for (let [key, value] of this.__valveMap) {
             // let  = pair;
@@ -867,7 +867,7 @@ export default class Device {
      * @memberof Device
      */
     getIsValve3D(valve: Component): boolean | undefined {
-        let valveid = valve.getID();
+        let valveid = valve.id;
         return this.__valveIs3DMap.get(valveid);
     }
 
@@ -880,7 +880,7 @@ export default class Device {
     getComponentByID(key: string | String): Component {
         for (let i in this.__components) {
             let component = this.__components[i];
-            if (component.getID() === key) {
+            if (component.id === key) {
                 return component;
             }
         }
@@ -896,7 +896,7 @@ export default class Device {
     getConnectionByID(key: string | String): Connection {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
-            if (connection.getID() === key) {
+            if (connection.id === key) {
                 return connection;
             }
         }
@@ -912,7 +912,7 @@ export default class Device {
     getComponentByName(name: string | String): Component {
         let components = this.__components;
         for (let i in components) {
-            if (name == components[i].getName()) {
+            if (name == components[i].name) {
                 return components[i];
             }
         }
@@ -946,9 +946,12 @@ export default class Device {
         for (let i in components) {
             component = components[i];
             for (const key of component.ports.keys()) {
-                if (componentport.id == component.ports.get(key).id) {
-                    //Found the component so return the position
-                    return ComponentPort.calculateAbsolutePosition(componentport, component);
+                let port: undefined | ComponentPort = component.ports.get(key);
+                if (port != undefined) {
+                    if (componentport.id == port.id) {
+                        //Found the component so return the position
+                        return ComponentPort.calculateAbsolutePosition(componentport, component);
+                    }
                 }
             }
         }
