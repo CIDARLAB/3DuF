@@ -3,7 +3,8 @@
         <template #content>
             <h4>Drag Drop the DXF Boarder File:</h4>
             <div class="mdl-dialog__content">
-                <canvas id="border_import_panel" tabindex="1" width="300" height="200" color="gray" @drop.prevent="addFile()" @dragover.prevent />
+                <!-- <canvas id="border_import_panel" tabindex="1" width="300" height="200" color="gray" @drop.prevent="addFile()" @dragover.prevent /> -->
+                <canvas id="border_import_panel" tabindex="1" width="300" height="200" color="gray" />
                 <br />
                 <input id="dxf_input" type="file" class="upload" />
             </div>
@@ -18,7 +19,7 @@
 
 <script>
 import Dialog from "@/components/base/Dialog.vue";
-import Registry from "@/core/registry";
+// import Registry from "@/src/app/core/registry";
 
 export default {
     components: {
@@ -51,7 +52,7 @@ export default {
                 this.files = this.files.filter(f => {
                     return f != file;
                 });
-                Registry.viewManager.deleteBorder();
+                // Registry.viewManager.deleteBorder();
                 console.log("Delete border clicked");
                 this.generateBorder();
             },
@@ -73,8 +74,8 @@ export default {
                         .catch(e => {
                             console.error(JSON.stringify(e.message));
                         });
-                    Registry.viewManager.deleteBorder();
-                    Registry.viewManager.importBorder(formData);
+                    // Registry.viewManager.deleteBorder();
+                    // Registry.viewManager.importBorder(formData);
                     //callbacks.close();
                 }
             }
