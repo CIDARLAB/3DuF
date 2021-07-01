@@ -10,7 +10,7 @@ export type Segment = Array<[number,number]>
 export type DeviceInterchangeV1 = {
     name: string
     params: any
-    //layers: any[]
+    layers: Array<LayerInterchangeV1>
     groups: Array<string>
     components: Array<ComponentInterchangeV1>
     connections: Array<ConnectionInterchangeV1>

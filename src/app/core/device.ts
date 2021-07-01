@@ -443,6 +443,18 @@ export default class Device {
         return output;
     }
     /**
+     * Converts layers to InterchangeV1
+     * @return {Array<LayerInterchangeV1>} Returns an array with the layers
+     * @memberof Device
+     */
+    __layersToInterchangeV1(): Array<LayerInterchangeV1> {
+        const output: Array<LayerInterchangeV1> = [];
+        for (const i in this.__layers) {
+            output.push(this.__layers[i].toInterchangeV1());
+        }
+        return output;
+    }
+    /**
      * Loads layers from a JSON format into the device object
      * @param {JSON} json 
      * @memberof Device
@@ -509,7 +521,7 @@ export default class Device {
                 length: this.getYSpan()
             },
         //TODO: Use this to dynamically create enough layers to scroll through
-        // output.layers = this.__layersToInterchangeV1();
+            layers : this.__layersToInterchangeV1(),
             components : this.__componentsToInterchangeV1(),
             connections : this.__connectionToInterchangeV1(),
         //TODO: Use this to render the device features
