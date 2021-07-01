@@ -1,4 +1,4 @@
-    <template>
+<template>
     <div id="contextMenu" class="hidden-block">
         <v-simple-table dense fixed-header>
             <template>
