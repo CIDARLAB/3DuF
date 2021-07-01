@@ -153,7 +153,7 @@ export default class GenerateArrayTool extends MouseTool {
     //
     //     //Find the component that owns this feature and then select all of the friends
     //     let component = this.__getComponentWithFeatureID(paperElement.featureID);
-    //     if (component == null) {
+    //     if (component === null) {
     //         //Does not belong to a component, hence this returns
     //         paperElement.selected = true;
     //
@@ -190,7 +190,7 @@ export default class GenerateArrayTool extends MouseTool {
     //         let componentfeatures = component.getFeatureIDs();
     //         let index = componentfeatures.indexOf(featureid);
     //
-    //         if (index != -1) {
+    //         if (index !== -1) {
     //             //Found it !!
     //             console.log("Found Feature: " + featureid + " in component: " + component.getID());
     //             return component;
@@ -211,7 +211,7 @@ export default class GenerateArrayTool extends MouseTool {
     //             //Find the component that owns this feature and then select all of the friends
     //             let component = this.__getComponentWithFeatureID(paperFeature.featureID);
     //
-    //             if (component == null) {
+    //             if (component === null) {
     //                 //Does not belong to a component hence do the normal stuff
     //                 paperFeature.selected = true;
     //

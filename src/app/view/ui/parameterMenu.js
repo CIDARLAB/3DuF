@@ -106,7 +106,7 @@ const generateUpdateFunction = function (sourceID, targetID, typeString, setStri
         const source = document.getElementById(sourceID);
         const target = document.getElementById(targetID);
         let param;
-        if (!source.value || source.value == "") {
+        if (!source.value || source.value === "") {
             return;
         }
         try {
@@ -236,7 +236,7 @@ const createCheckboxRow = function (featureID, typeString, setString, key) {
     const value = Feature.getDefaultsForType(typeString, setString)[key];
     const checkBox = createCheckbox(value, checkID);
     let spanValue;
-    if (value == "V") spanValue = "V";
+    if (value === "V") spanValue = "V";
     else spanValue = "H";
     const span = createSpan(spanValue, spanID);
     const titleContainer = createTableElement(title);
@@ -254,7 +254,7 @@ const createInOutRow = function (featureID, typeString, setString, key) {
     const value = Feature.getDefaultsForType(typeString, setString)[key];
     const checkBox = createCheckbox(value, checkID);
     const spanValue = value;
-    // if (value == "IN") spanValue = "IN";
+    // if (value === "IN") spanValue = "IN";
     // else spanValue = "OUT";
     const span = createSpan(spanValue, spanID);
     const titleContainer = createTableElement(title);
@@ -273,11 +273,11 @@ const createFeatureTableRows = function (typeString, setString) {
     for (const key in heritable) {
         let row;
         const type = heritable[key];
-        if (type == "Float" || type == "Integer") {
+        if (type === "Float" || type === "Integer") {
             row = createSliderRow(id, typeString, setString, key);
-        } else if (key == "orientation") {
+        } else if (key === "orientation") {
             row = createCheckboxRow(id, typeString, setString, key);
-        } else if (key == "direction") {
+        } else if (key === "direction") {
             row = createInOutRow(id, typeString, setString, key);
         }
         rows.push(row);
@@ -372,19 +372,19 @@ export function revertToDefaultParams(table, typeString, setString) {
     for (const key in heritable) {
         const type = heritable[key];
 
-        if (type == "Float" || type == "Integer") {
+        if (type === "Float" || type === "Integer") {
             const inputID = "fake_ID_" + key + "_slider";
             // Modify the text in the input element
             const element = document.querySelector("#" + inputID);
             element.MaterialSlider.change(defaults[key]);
             Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
-        } else if (key == "orientation") {
+        } else if (key === "orientation") {
             // TODO - Change the checkbox
             const inputID = "fake_ID_" + key + "_checkbox";
             const element = document.querySelector("#" + inputID);
             const materialelement = table.querySelector(".mdl-js-checkbox");
             const spanelement = table.querySelector("#fake_ID_" + key + "_span");
-            if (defaults[key] == "V") {
+            if (defaults[key] === "V") {
                 element.checked = true;
                 materialelement.MaterialCheckbox.check();
                 spanelement.textContent = defaults[key];
@@ -394,13 +394,13 @@ export function revertToDefaultParams(table, typeString, setString) {
                 spanelement.textContent = defaults[key];
             }
             Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
-        } else if (key == "direction") {
+        } else if (key === "direction") {
             // TODO Change the Checkbox
             const inputID = "fake_ID_" + key + "_checkbox";
             const materialelement = table.querySelector(".mdl-js-checkbox");
             const element = document.querySelector("#" + inputID);
             const spanelement = table.querySelector("#fake_ID_" + key + "_span");
-            if (defaults[key] == "IN") {
+            if (defaults[key] === "IN") {
                 element.checked = true;
                 materialelement.MaterialCheckbox.check();
                 spanelement.textContent = defaults[key];
