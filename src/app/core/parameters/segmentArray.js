@@ -7,7 +7,7 @@ const description = "Should be an array of PointArrays";
 
 function isValid(value) {
     if (value instanceof Array) {
-        if (value.length == 0) {
+        if (value.length === 0) {
             return true;
         }
         for (const i in value) {
