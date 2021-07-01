@@ -31,7 +31,7 @@ export default class Device {
     private __layers: Array<Layer>;
     private __textLayers: Array<Layer>;
     private __params: Params;
-    private __name: StringValue;
+    private __name: string;
     private __components: Array<Component>;
     private __nameMap: Map<string,number>;
     private __connections: Array<Connection>;
@@ -55,7 +55,7 @@ export default class Device {
         // this.setXSpan(values.width);
         // this.setYSpan(values.length);
 
-        this.__name = new StringValue(name);
+        this.__name = name;
         this.__components = [];
         this.__nameMap = new Map();
         this.__connections = [];
@@ -82,8 +82,8 @@ export default class Device {
      * @returns {String}
      * @memberof Device
      */
-    get name(): string | String {
-        return this.__name.value;
+    get name(): string {
+        return this.__name;
     }
 
     /**
@@ -185,8 +185,8 @@ export default class Device {
      * @param {string} name Name of the device
      * @memberof Device
      */
-    set name(name: string | String) {
-        this.__name = new StringValue(name);
+    set name(name: string) {
+        this.__name = name;
     }
 
     /**
@@ -503,7 +503,7 @@ export default class Device {
      */
     toInterchangeV1(): DeviceInterchangeV1 {
         let output: DeviceInterchangeV1 = {
-            name : this.__name.value,
+            name : this.__name,
             params : {
                 width: this.getXSpan(),
                 length: this.getYSpan()

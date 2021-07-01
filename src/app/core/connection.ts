@@ -312,8 +312,8 @@ export default class Connection {
         //TODO: Modify all the associated Features
         for (let key in params) {
             let value = params.getValue(key);
-            for (let i in this._features) {
-                let featureidtochange = this._features[i];
+            for (const i in this._features) {
+                const featureidtochange = this._features[i];
 
                 //Get the feature id and modify it
                 let feature = Registry.currentDevice.getFeatureByID(featureidtochange);
@@ -367,9 +367,9 @@ export default class Connection {
             const intersections = line.getIntersections(boundingbox);
             // console.log("Intersections found", intersections);
             if (intersections.length === 2) {
-                let break1 = intersections[0].point;
-                let break2 = intersections[1].point;
-                let newsegs = this.breakSegment(segment, break1, break2);
+                const break1 = intersections[0].point;
+                const break2 = intersections[1].point;
+                const newsegs = this.breakSegment(segment, break1, break2);
                 console.log("breaking:", segment, newsegs);
                 if (newsegs.length !== 2) {
                     throw new Error("Could not break the segments correctly");
@@ -418,8 +418,8 @@ export default class Connection {
      */
     protected breakSegment(segment: Point[], break1: paper.Point, break2: paper.Point) {
         //Generate 2 segments from this 1 segemnt
-        let p1 = new paper.Point(segment[0]);
-        let p2 = new paper.Point(segment[1]);
+        const p1 = new paper.Point(segment[0]);
+        const p2 = new paper.Point(segment[1]);
 
         let segment1, segment2;
         const p1_break1 = p1.getDistance(break1);
@@ -662,7 +662,7 @@ export default class Connection {
      * @returns {void}
      */
     setSourceFromJSON(device: Device, json: ConnectionInterchangeV1) {
-        let target = ConnectionTarget.fromJSON(device, json);
+        const target = ConnectionTarget.fromJSON(device, json);
         this._source = target;
     }
 

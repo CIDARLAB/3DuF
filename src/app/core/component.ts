@@ -129,9 +129,9 @@ export default class Component {
     setBounds(bounds: paper.Rectangle) {
         this._bounds = bounds;
         const topleftpt = bounds.topLeft;
-        this._params.updateParameter('position', [topleftpt.x, topleftpt.y])
-        this._params.updateParameter('xspan', bounds.width)
-        this._params.updateParameter('yspan', bounds.height)
+        this._params.updateParameter('position', [topleftpt.x, topleftpt.y]);
+        this._params.updateParameter('xspan', bounds.width);
+        this._params.updateParameter('yspan', bounds.height);
     }
 
     /**
