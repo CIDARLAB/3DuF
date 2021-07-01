@@ -21,7 +21,7 @@ export default class Params {
         this.__heritable = heritable;
         this.__parameters = {};
         for (let key in values) {
-            this.__parameters[key] = new Parameter(values[key],key);
+            this.__parameters[key] = new Parameter(typeof values[key],values[key]);
         }
     }
 
