@@ -3,7 +3,7 @@
         <template #content>
             <h4>Drag Drop the DXF Border File:</h4>
             <div class="mdl-dialog__content">
-                <canvas id="border_import_panel" tabindex="1" width="400" height="200" color="gray" @change="setup()" />
+                <canvas id="border_import_panel" tabindex="1" width="400" height="200" color="gray" />
                 <br />
                 <input id="dxf_input" ref="file" type="file" class="upload" @change="addFile()" />
             </div>
@@ -36,22 +36,20 @@ export default {
     // computed: {
     //     dxfObject
     // },
-
+    mounted: () => {
+        this.__setupDragAndDropLoad("border_import_panel");
+        //TODO - Need to setup paper for the canvas here so that the import dxf border can be visualized
+    },
     methods: {
         onSave() {
             console.log("Saved data for Edit Border");
         },
-
         // addFile(e) {
         //     let droppedFiles = e.dataTransfer.files;
         //     console.log(droppedFiles.name);
         //     console.log(droppedFiles.size);
         //     if (!droppedFiles) return;
         // },
-        setup() {
-            this.__setupDragAndDropLoad("border_import_panel");
-        },
-
         deleteBorder() {
             Registry.viewManager.deleteBorder();
             console.log("Delete border clicked");
@@ -87,10 +85,11 @@ export default {
         // },
 
         addFile() {
+            const ref = this;
             const reader = new FileReader();
             reader.onload = function(e) {
                 // console.log(reader.result);
-                this.loadDXFText(reader.result);
+                ref.loadDXFText(reader.result);
             };
 
             let file = this.$refs.file.files[0];
