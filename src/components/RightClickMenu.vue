@@ -92,7 +92,7 @@ import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
 export default {
     components: ChangeAllDialog,
     props: {
-        title: feature.getType(),
+        //title: mom,
         spec: {
             spec: RoundedChannelSpec,
             validator: spec => {
