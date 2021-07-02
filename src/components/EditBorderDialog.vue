@@ -1,16 +1,16 @@
 <template>
     <Dialog title="Edit Border">
         <template #content>
-            <h4>Drag Drop the DXF Boarder File:</h4>
+            <h4>Drag Drop the DXF Border File:</h4>
             <div class="mdl-dialog__content">
-                <canvas id="border_import_panel" tabindex="1" width="300" height="200" />
+                <canvas id="border_import_panel" tabindex="1" width="400" height="200" color="gray" @change="setup()" />
                 <br />
-                <input id="dxf_input" type="file" class="upload" color="gray" />
+                <input id="dxf_input" ref="file" type="file" class="upload" @change="addFile()" />
             </div>
         </template>
         <template v-slot:actions="{ callbacks }">
-            <v-btn dark color="green dark" @click="callbacks.close()"> Import Border </v-btn>
-            <v-btn dark color="red dark" @click="callbacks.close()"> Delete Border </v-btn>
+            <v-btn dark color="green dark" @click="importBorder()"> Import Border </v-btn>
+            <v-btn dark color="red dark" @click="deleteBorder()"> Delete Border </v-btn>
             <v-btn color="white" @click="callbacks.close(onSave)"> Okay </v-btn>
         </template>
     </Dialog>
@@ -18,18 +18,127 @@
 
 <script>
 import Dialog from "@/components/base/Dialog.vue";
+import Registry from "../app/core/registry";
+import DxfParser from "dxf-parser";
+import DXFObject from "../app/core/dxfObject";
+import * as HTMLUtils from "@/app/utils/htmlUtils";
+
 export default {
     components: {
         Dialog
     },
     data() {
         return {
-            dialog: false
+            dialog: false,
+            Registry
         };
     },
+    // computed: {
+    //     dxfObject
+    // },
+
     methods: {
         onSave() {
             console.log("Saved data for Edit Border");
+        },
+
+        // addFile(e) {
+        //     let droppedFiles = e.dataTransfer.files;
+        //     console.log(droppedFiles.name);
+        //     console.log(droppedFiles.size);
+        //     if (!droppedFiles) return;
+        // },
+        setup() {
+            this.__setupDragAndDropLoad("border_import_panel");
+        },
+
+        deleteBorder() {
+            Registry.viewManager.deleteBorder();
+            console.log("Delete border clicked");
+            Registry.viewManager.generateBorder();
+        },
+        // uploadBorder() {
+        //     const file = this.files[0];
+        //     console.log(file.name);
+        //     console.log(file.size);
+        //     reader.readAsText(file);
+        // },
+        // dragover(event) {
+        //     event.preventDefault();
+        //     // visual effect
+        //     if (!event.currentTarget.classList.contains("bg-green-300")) {
+        //         event.currentTarget.classList.remove("bg-gray-100");
+        //         event.currentTarget.classList.add("bg-green-300");
+        //     }
+        // },
+
+        // dragleave(event) {
+        //     // Clean up
+        //     event.currentTarget.classList.add("bg-gray-100");
+        //     event.currentTarget.classList.remove("bg-green-300");
+        // },
+
+        // drop(event) {
+        //     event.preventDefault();
+        //     this.$refs.file.files = event.dataTransfer.files;
+        //     this.addFile(); // Trigger the add File event manually
+        //     event.currentTarget.classList.add("bg-gray-100");
+        //     event.currentTarget.classList.remove("bg-green-300");
+        // },
+
+        addFile() {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // console.log(reader.result);
+                this.loadDXFText(reader.result);
+            };
+
+            let file = this.$refs.file.files[0];
+            console.log(file.name);
+            console.log(file.size);
+            reader.readAsText(file);
+        },
+
+        importBorder() {
+            console.log("import button clicked");
+            Registry.viewManager.deleteBorder();
+            Registry.viewManager.importBorder(this.dxfObject);
+        },
+
+        loadDXFText(dxftext) {
+            const parser = new DxfParser();
+            try {
+                let dxfObject = parser.parseSync(dxftext);
+                console.log("parsed dxf object", dxfObject);
+            } catch (e) {
+                console.error(e.stack);
+            }
+        },
+
+        __setupDragAndDropLoad(selector) {
+            const ref = this;
+            const dnd = new HTMLUtils.DnDFileController(selector, function(file) {
+                const files = this.$refs.file.files[0];
+
+                const reader = new FileReader();
+                reader.onloadend = function(e) {
+                    ref.__loadDXFData(this.result);
+                };
+                try {
+                    reader.readAsText(files);
+                } catch (err) {
+                    console.log("unable to load DXF: " + files);
+                }
+            });
+        },
+        __loadDXFData(text) {
+            const parser = new DxfParser();
+            const dxfdata = parser.parseSync(text);
+            const dxfobjects = [];
+            for (const i in dxfdata.entities) {
+                const entity = dxfdata.entities[i];
+                dxfobjects.push(new DXFObject(entity));
+            }
         }
     }
 };
