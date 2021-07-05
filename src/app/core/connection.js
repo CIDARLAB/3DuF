@@ -400,7 +400,6 @@ export default class Connection {
      * @returns {boolean}
      */
     insertFeatureGap(boundingbox) {
-        let foundflag = false;
         //Convert Rectangle to Path.Rectangle
         console.log(boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
@@ -438,15 +437,6 @@ export default class Connection {
             }
         }
 
-        //Now that we exit the check for every segment we can verify if this is ok
-        if (!foundflag) {
-            console.error("There's something funky going on with the intersection,no intersections found");
-            console.log("Segments:", segments);
-            // console.log("line:", line);
-            console.log("Bounding Box:", boundingbox);
-            throw new Error("Could not find 2 intersection points, hence aborting the whole thing");
-        }
-        // console.log("raw new segments:", segments);
         this.updateSegments(segments);
 
         return foundflag;
@@ -474,14 +464,14 @@ export default class Connection {
 
         //Find out if break1 is closer to p1 or p2
         if (p1_break1 + p2_break2 < p2_break1 + p1_break2) {
-            //break1 is closer to p1 and break2 is closer to p2\
+            //break1 is closer to p1 and break2 is closer to p2
             segment1 = [
                 [Math.round(p1.x), Math.round(p1.y)],
                 [Math.round(break1.x), Math.round(break1.y)]
             ];
             segment2 = [
-                [Math.round(p2.x), Math.round(p2.y)],
-                [Math.round(break2.x), Math.round(break2.y)]
+                [Math.round(break2.x), Math.round(break2.y)],
+                [Math.round(p2.x), Math.round(p2.y)]
             ];
         } else {
             //break1 is closer to p2 and break1 is closer to p1
@@ -490,8 +480,8 @@ export default class Connection {
                 [Math.round(break1.x), Math.round(break1.y)]
             ];
             segment2 = [
-                [Math.round(p1.x), Math.round(p1.y)],
-                [Math.round(break2.x), Math.round(break2.y)]
+                [Math.round(break2.x), Math.round(break2.y)],
+                [Math.round(p1.x), Math.round(p1.y)]
             ];
         }
         return [segment1, segment2];

@@ -1204,14 +1204,22 @@ export default class ViewManager {
         let valves = Registry.currentDevice.getValvesForConnection(connection);
 
         //Cycle through each of the valves
-        for (let j in valves) {
-            let valve = valves[j];
+        valves.forEach(valve => {
             let is3D = Registry.currentDevice.getIsValve3D(valve);
             if (is3D) {
                 let boundingbox = valve.getBoundingRectangle();
                 connection.insertFeatureGap(boundingbox);
             }
-        }
+        });
+
+        // for (let j in valves) {
+        //     let valve = valves[j];
+        //     let is3D = Registry.currentDevice.getIsValve3D(valve);
+        //     if (is3D) {
+        //         let boundingbox = valve.getBoundingRectangle();
+        //         connection.insertFeatureGap(boundingbox);
+        //     }
+        // }
     }
     /**
      * Shows in the UI a message
