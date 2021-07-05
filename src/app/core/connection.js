@@ -419,7 +419,6 @@ export default class Connection {
                     throw new Error("Could not break the segments correctly");
                 }
                 segments.splice(i, 1, newsegs[0], newsegs[1]);
-                foundflag = true;
             } else if (intersections.length === 1) {
                 console.error("Only found 1 intersection point so going to use a different method");
                 console.log("Found Intersection:", intersections);
