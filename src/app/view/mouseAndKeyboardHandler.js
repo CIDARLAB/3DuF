@@ -78,7 +78,7 @@ export default class MouseAndKeyboardHandler {
             const key = event.keyCode || event.which;
 
             // Saving
-            if ((event.ctrlKey || event.metaKey) && key == 83) {
+            if ((event.ctrlKey || event.metaKey) && key === 83) {
                 event.preventDefault();
                 reference.exportPanel.saveJSON();
             }
@@ -104,17 +104,17 @@ export default class MouseAndKeyboardHandler {
             const key = event.keyCode || event.which;
 
             // Delete
-            if (key == 46 || key == 8) {
+            if (key === 46 || key === 8) {
                 reference.saveDeviceState();
                 reference.view.deleteSelectedFeatures();
             }
             // Copy
-            if ((event.ctrlKey || event.metaKey) && key == 67) {
+            if ((event.ctrlKey || event.metaKey) && key === 67) {
                 // console.log("Ctl c detected");
                 reference.initiateCopy();
             }
             // Cut
-            if ((event.ctrlKey || event.metaKey) && key == 88) {
+            if ((event.ctrlKey || event.metaKey) && key === 88) {
                 // console.log("Ctl x detected");
                 const selectedFeatures = reference.view.getSelectedFeatures();
                 if (selectedFeatures.length > 0) {
@@ -124,7 +124,7 @@ export default class MouseAndKeyboardHandler {
                 reference.view.deleteSelectedFeatures();
             }
             // Paste
-            if ((event.ctrlKey || event.metaKey) && key == 86) {
+            if ((event.ctrlKey || event.metaKey) && key === 86) {
                 // console.log("Ctl v detected");
                 const pasteboardFeatures = reference.pasteboard;
                 if (pasteboardFeatures.length > 0) {
@@ -253,7 +253,7 @@ export default class MouseAndKeyboardHandler {
      * @param {*} tool3
      */
     constructMouseDownEvent(tool1, tool2, tool3) {
-        if (tool1 == tool3) {
+        if (tool1 === tool3) {
             console.log("Both right and left tool is the same");
             return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown, this.__mouseDownCallback);
         } else {

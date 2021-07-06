@@ -133,7 +133,7 @@ export default class Params {
             if (this.isUnique(key)) {
                 newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
             } else if (this.isHeritable(key)) {
-                if (values[key] != undefined || values[key] !== null) {
+                if (values[key] !== undefined || values[key] !== null) {
                     newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
                 }
             } else {
@@ -159,11 +159,11 @@ export default class Params {
             if (!(param instanceof Parameter)) {
                 throw new Error(key + " is not a ParameterValue.");
             } else if (this.isUnique(key)) {
-                if (param.type != this.unique[key]) {
+                if (param.type !== this.unique[key]) {
                     this.wrongTypeError(key, this.unique[key], param.type);
                 }
             } else if (this.isHeritable(key)) {
-                if (param.type != this.heritable[key]) {
+                if (param.type !== this.heritable[key]) {
                     this.wrongTypeError(key, this.heritable[key], param.type);
                 }
             } else {
@@ -183,7 +183,7 @@ export default class Params {
     toJSON() {
         const json = {};
         for (const key in this.parameters) {
-            if (this.parameters[key] != undefined) {
+            if (this.parameters[key] !== undefined) {
                 json[key] = this.parameters[key].getValue();
             }
         }
@@ -220,7 +220,7 @@ export default class Params {
     toMap() {
         const ret = new Map();
         for (const key in this.parameters) {
-            if (this.parameters[key] != undefined) {
+            if (this.parameters[key] !== undefined) {
                 ret.set(key, this.parameters[key].getValue());
             }
         }

@@ -108,7 +108,7 @@ export default class Valve3D extends Template {
         // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
         const circ = new paper.Path.Circle(center, radius);
         // circ.fillColor = color;
-        //   if (String(color) == "3F51B5") {
+        //   if (String(color) === "3F51B5") {
         const cutout = paper.Path.Rectangle({
             from: new paper.Point(position[0] - radius, position[1] - gap / 2),
             to: new paper.Point(position[0] + radius, position[1] + gap / 2)
@@ -134,11 +134,11 @@ export default class Valve3D extends Template {
     }
 
     render2D(params, key = "FLOW") {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CONTROL") {
+        } else if (key === "CONTROL") {
             return this.__drawControll(params);
-        } else if (key == "INVERSE") {
+        } else if (key === "INVERSE") {
             return this.__drawInverseFlow(params);
         } else {
             throw new Error("No render procedure defined for component:" + this.__mint + ", key: " + key);
