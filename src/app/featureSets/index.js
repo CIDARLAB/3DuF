@@ -33,7 +33,7 @@ export function getSet(setString) {
 export function getDefinition(typeString, setString) {
     const set = getSet(setString);
     // console.log("Set:", set);
-    if (set != undefined || set !== null) {
+    if (set !== undefined || set !== null) {
         const def = set.getDefinition(typeString);
         return def;
     } else if (setString === "Custom") {
