@@ -1,4 +1,5 @@
 import uuid from "node-uuid";
+import ViewManager from "../view/viewManager";
 
 class Registry {
     /*
@@ -20,7 +21,7 @@ class Registry {
     currentTextLayer = null;
     currentGrid = null;
     view = null;
-    viewManager = null;
+    viewManager = ViewManager;
     featureSet = null;
 
     generateID() {

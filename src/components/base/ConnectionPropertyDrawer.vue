@@ -1,6 +1,6 @@
 <template>
     <div class="property-drawer-parent">
-        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">{{ title }}</v-btn>
+        <v-btn ref="activator" :class="buttonClasses" :id="connection_button" @click="showProperties()">{{ title }}</v-btn>
         <div ref="drawer" class="connection-property-drawer">
             <v-card v-if="activated">
                 <v-row>
@@ -8,7 +8,8 @@
                         <v-row>
                             <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                             <v-icon size="20px" class="pencil">mdi-pencil</v-icon>
-                            <div class="d-inline">Right Click to End Connection</div>
+                            <div v-if="isEditing" class="d-inline">Right Click to End Connection</div>
+                            <div v-else class="d-inline" @click="connectionStatus">Left Click to Choose a Point</div>
                         </v-row>
                         <v-row>
                             <v-card-text>
@@ -101,6 +102,7 @@
 
 <script>
 import EventBus from "@/events/events";
+import Registry from "@/app/core/registry";
 import "@mdi/font/css/materialdesignicons.css";
 import "vue-select/dist/vue-select.css";
 import Vue from "vue";
@@ -159,16 +161,18 @@ export default {
             chip4: true,
             activated: false,
             isOpen: false,
+            isEditing: false,
             items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }]
         };
     },
     computed: {
-        buttonClasses: function () {
+        buttonClasses: function() {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
         }
     },
     mounted() {
         EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
+        Registry.viewManager.activateTool("Connection", "Connection");
     },
     methods: {
         showProperties() {
@@ -193,6 +197,9 @@ export default {
         },
         openClose() {
             this.isOpen = !this.isOpen;
+        },
+        connectionStatus() {
+            this.isEditing = true;
         }
     }
 };
