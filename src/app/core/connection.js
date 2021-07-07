@@ -438,7 +438,7 @@ export default class Connection {
 
         this.updateSegments(segments);
 
-        return foundflag;
+        return true;
     }
 
     /**
