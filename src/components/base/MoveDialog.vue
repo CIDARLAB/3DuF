@@ -112,7 +112,7 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function () {
+        buttonClasses: function() {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "ml-4", "mb-2", "btn"];
         }
     },
