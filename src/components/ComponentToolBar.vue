@@ -7,7 +7,7 @@
                 <span>Feature</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <ConnectionPropertyDrawer title="Connection" />
+                <ConnectionPropertyDrawer title="Connection" :spec="connectionSpec" />
                 <PropertyDrawer title="Channel" :spec="channelSpec" />
                 <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
                 <PropertyDrawer title="Transition" :spec="transitionSpec" />
@@ -105,18 +105,18 @@ export default {
     data() {
         return {
             connectionSpec: ConnectionSpec,
-            channelSpec: ChannelSpec,
-            roundedChannelSpec: RoundedChannelSpec,
-            transitionSpec: TransitionSpec,
+            channelSpec: MixSpec,
+            roundedChannelSpec: MixSpec,
+            transitionSpec: MixSpec,
             alignmentMarksSpec: MixSpec,
             mixSpec: MixSpec,
-            mix3DSpec: Mix3DSpec,
-            gradientGenSpec: GradientGenSpec,
-            valve3DSpec: Valve3DSpec,
-            valveSpec: ValveSpec,
-            pump3DSpec: Pump3DSpec,
-            pumpSpec: PumpSpec,
-            llChamberSpec: LLChamberSpec,
+            mix3DSpec: MixSpec,
+            gradientGenSpec: MixSpec,
+            valve3DSpec: MixSpec,
+            valveSpec: MixSpec,
+            pump3DSpec: MixSpec,
+            pumpSpec: MixSpec,
+            llChamberSpec: MixSpec,
             cellTrapSpec: MixSpec,
             diamondChamberSpec: MixSpec,
             chamberSpec: MixSpec,
