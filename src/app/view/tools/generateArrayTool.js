@@ -7,7 +7,6 @@ export default class GenerateArrayTool extends MouseTool {
     constructor() {
         super();
 
-
         // this.dragging = false;
         // this.dragStart = null;
         // this.lastPoint = null;
