@@ -7,11 +7,11 @@
                 <span>Feature</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <ConnectionPropertyDrawer title="Connection" :spec="connectionSpec" />
+                <ConnectionPropertyDrawer title="Connection" />
                 <PropertyDrawer title="Channel" :spec="channelSpec" />
                 <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
                 <PropertyDrawer title="Transition" :spec="transitionSpec" />
-                <PropertyDrawer title="Alignment Marks" :spec="alignmentMarks" />
+                <PropertyDrawer title="Alignment Marks" :spec="alignmentMarksSpec" />
             </v-card-text>
         </v-card>
 
@@ -79,7 +79,7 @@ import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
 import ChannelSpec from "@/models/property-drawer/ChannelSpec.js";
 import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
 import TransitionSpec from "@/models/property-drawer/TransitionSpec.js";
-import AlignmentMarksSpec from "@/models/property-drawer/AlignmentMarksSpec.js";
+// import AlignmentMarksSpec from "@/models/property-drawer/AlignmentMarksSpec.js";
 import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
 import ConnectionPropertyDrawer from "@/components/base/ConnectionPropertyDrawer.vue";
 import MixSpec from "@/models/property-drawer/MixSpec.js";
@@ -108,7 +108,7 @@ export default {
             channelSpec: ChannelSpec,
             roundedChannelSpec: RoundedChannelSpec,
             transitionSpec: TransitionSpec,
-            alignmentMarksSpec: AlignmentMarksSpec,
+            alignmentMarksSpec: MixSpec,
             mixSpec: MixSpec,
             mix3DSpec: Mix3DSpec,
             gradientGenSpec: GradientGenSpec,
@@ -116,16 +116,16 @@ export default {
             valveSpec: ValveSpec,
             pump3DSpec: Pump3DSpec,
             pumpSpec: PumpSpec,
-            llChamberSpec: LLChamberSpec
-            // cellTrapSpec: CellTrapSpec,
-            // diamondChamberSpec: DiamondChamberSpec,
-            // chamberSpec: ChamberSpec,
-            // dropletGenSpec: DropletGenSpec,
-            // portSpec: PortSpec,
-            // viaSpec: ViaSpec,
-            // yTreeSpec: YTreeSpec,
-            // muxSpec: MuxSpec,
-            // transponderSpec: TransponderSpec
+            llChamberSpec: LLChamberSpec,
+            cellTrapSpec: MixSpec,
+            diamondChamberSpec: MixSpec,
+            chamberSpec: MixSpec,
+            dropletGenSpec: MixSpec,
+            portSpec: MixSpec,
+            viaSpec: MixSpec,
+            yTreeSpec: MixSpec,
+            muxSpec: MixSpec,
+            transponderSpec: MixSpec
         };
     }
 };
