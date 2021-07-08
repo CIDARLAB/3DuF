@@ -7,7 +7,7 @@
                 <span>Feature</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <ConnectionPropertyDrawer title="Connection" :spec="connectionSpec" />
+                <ConnectionPropertyDrawer title="Connection" />
                 <PropertyDrawer title="Channel" :spec="channelSpec" />
                 <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
                 <PropertyDrawer title="Transition" :spec="transitionSpec" />
