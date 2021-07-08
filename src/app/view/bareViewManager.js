@@ -728,7 +728,6 @@ export default class BareViewManager {
         return this.view.hitFeaturesWithViewElement(element);
     }
 
-<<<<<<< HEAD
     /**
      * Activates the given tool
      * @param toolString
@@ -742,21 +741,6 @@ export default class BareViewManager {
         this.mouseAndKeyboardHandler.rightMouseTool = this.tools[rightClickToolString];
         this.mouseAndKeyboardHandler.updateViewMouseEvents();
     }
-=======
-    // /**
-    //  * Activates the given tool
-    //  * @param toolString
-    //  * @param rightClickToolString
-    //  */
-    // activateTool(toolString , rightClickToolString = "SelectTool") {
-    //     if(this.tools[toolString] === null){
-    //         throw new Error("Could not find tool with the matching string");
-    //     }
-    //     this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
-    //     this.mouseAndKeyboardHandler.rightMouseTool = this.tools[rightClickToolString];
-    //     this.mouseAndKeyboardHandler.updateViewMouseEvents();
-    // }
->>>>>>> 946f12757155b0b774b80190f5341a81a66f2975
 
     /**
      * Switches to 2D

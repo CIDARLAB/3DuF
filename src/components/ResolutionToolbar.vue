@@ -43,7 +43,7 @@ export default {
             }
         };
     },
-    mounted() {
+    updated() {
         Registry.currentGrid.enableAdaptiveGrid();
     },
     methods: {
