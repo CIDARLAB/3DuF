@@ -1,4 +1,3 @@
-import GenerateArrayWindow from "../ui/generateArrayWindow";
 import MouseTool from "./mouseTool";
 
 import Registry from "../../core/registry";
@@ -8,7 +7,6 @@ export default class GenerateArrayTool extends MouseTool {
     constructor() {
         super();
 
-        this.__generateArrayWindow = new GenerateArrayWindow(this);
 
         // this.dragging = false;
         // this.dragStart = null;
