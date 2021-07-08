@@ -155,7 +155,7 @@ export default class Tree extends Template {
 
         const levels = Math.ceil(Math.log2(leafs));
         let isodd = false; // This is used to figure out how many lines have to be made
-        if (leafs % 2 == 0) {
+        if (leafs % 2 === 0) {
             isodd = false;
         } else {
             isodd = true;
@@ -183,7 +183,7 @@ export default class Tree extends Template {
         const rex = px + 0.5 * newspacing;
         const rey = py + cw + stagelength;
 
-        if (level == maxlevel) {
+        if (level === maxlevel) {
             islast = true;
             // console.log("Final Spacing: " + newspacing)
         }

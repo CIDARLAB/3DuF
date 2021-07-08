@@ -250,7 +250,7 @@ export default class BareViewManager {
 
         for (const i in devicefeatures) {
             feature = devicefeatures[i];
-            if (feature.fabType == "EDGE") {
+            if (feature.fabType === "EDGE") {
                 edgefeatures.push(feature);
             }
         }
@@ -560,7 +560,7 @@ export default class BareViewManager {
      * @memberof BareViewManager
      */
     __isLayerInCurrentDevice(layer) {
-        if (Registry.currentDevice && layer.device == Registry.currentDevice) return true;
+        if (Registry.currentDevice && layer.device === Registry.currentDevice) return true;
         else return false;
     }
 
@@ -587,7 +587,7 @@ export default class BareViewManager {
         // Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
-        if (version === null || undefined == version) {
+        if (version === null || undefined === version) {
             console.log("Loading Legacy Format...");
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
@@ -635,7 +635,7 @@ export default class BareViewManager {
     //     let output = [];
     //     for (let i =0; i < features.length; i++){
     //         let feature = features[i];
-    //         if (feature.getType() == typeString && feature.getSet() == setString){
+    //         if (feature.getType() === typeString && feature.getSet() === setString){
     //             output.push(feature);
     //         }
     //     }
@@ -728,6 +728,7 @@ export default class BareViewManager {
         return this.view.hitFeaturesWithViewElement(element);
     }
 
+<<<<<<< HEAD
     /**
      * Activates the given tool
      * @param toolString
@@ -741,6 +742,21 @@ export default class BareViewManager {
         this.mouseAndKeyboardHandler.rightMouseTool = this.tools[rightClickToolString];
         this.mouseAndKeyboardHandler.updateViewMouseEvents();
     }
+=======
+    // /**
+    //  * Activates the given tool
+    //  * @param toolString
+    //  * @param rightClickToolString
+    //  */
+    // activateTool(toolString , rightClickToolString = "SelectTool") {
+    //     if(this.tools[toolString] === null){
+    //         throw new Error("Could not find tool with the matching string");
+    //     }
+    //     this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
+    //     this.mouseAndKeyboardHandler.rightMouseTool = this.tools[rightClickToolString];
+    //     this.mouseAndKeyboardHandler.updateViewMouseEvents();
+    // }
+>>>>>>> 946f12757155b0b774b80190f5341a81a66f2975
 
     /**
      * Switches to 2D
