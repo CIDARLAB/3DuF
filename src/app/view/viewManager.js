@@ -117,7 +117,7 @@ export default class ViewManager {
         this.view.setMouseWheelFunction(func);
         this.minZoom = 0.0001;
         this.maxZoom = 5;
-        // this.setupTools();
+        this.setupTools();
 
         // TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
