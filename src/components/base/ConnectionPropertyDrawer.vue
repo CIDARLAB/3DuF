@@ -1,6 +1,6 @@
 <template>
     <div class="property-drawer-parent">
-        <v-btn ref="activator" :class="buttonClasses" :id="connection_button" @click="showProperties()">{{ title }}</v-btn>
+        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">{{ title }}</v-btn>
         <div ref="drawer" class="connection-property-drawer">
             <v-card v-if="activated">
                 <v-row>
@@ -8,8 +8,7 @@
                         <v-row>
                             <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                             <v-icon size="20px" class="pencil">mdi-pencil</v-icon>
-                            <div v-if="isEditing" class="d-inline">Right Click to End Connection</div>
-                            <div v-else class="d-inline" @click="connectionStatus">Left Click to Choose a Point</div>
+                            <div class="d-inline">{{ current_connection_suggestion }}</div>
                         </v-row>
                         <v-row>
                             <v-card-text>
@@ -162,7 +161,9 @@ export default {
             activated: false,
             isOpen: false,
             isEditing: false,
-            items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }]
+            items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }],
+            connection_suggestions: { state1: "Left Click to Choose a Point", state2: "Right Click to End Connection" },
+            current_connection_suggestion: null
         };
     },
     computed: {
@@ -172,6 +173,9 @@ export default {
     },
     mounted() {
         EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
+        this.current_connection_suggestion = this.connection_suggestions["state1"];
+    },
+    updated() {
         Registry.viewManager.activateTool("Connection", "Connection");
     },
     methods: {
