@@ -223,7 +223,7 @@ export default class MouseAndKeyboardHandler {
      * @private
      */
     __mouseDownCallback(event) {
-        // console.log("testing down callback", event);
+        console.log("testing down callback", event);
     }
 
     /**
@@ -233,7 +233,7 @@ export default class MouseAndKeyboardHandler {
      * @private
      */
     __mouseUpCallback(event) {
-        // console.log("testing up callback", event);
+        console.log("testing up callback", event);
     }
 
     /**
@@ -243,7 +243,7 @@ export default class MouseAndKeyboardHandler {
      * @private
      */
     __mouseMoveCallback(event) {
-        // console.log("testing move callback", event);
+        console.log("testing move callback", event);
     }
 
     /**
@@ -253,6 +253,7 @@ export default class MouseAndKeyboardHandler {
      * @param {*} tool3
      */
     constructMouseDownEvent(tool1, tool2, tool3) {
+        console.log(tool1, tool2, tool3)
         if (tool1 === tool3) {
             console.log("Both right and left tool is the same");
             return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown, this.__mouseDownCallback);
@@ -279,6 +280,7 @@ export default class MouseAndKeyboardHandler {
      * @returns {Function}
      */
     constructMouseEvent(func1, func2, func3, buttondownCallback) {
+        console.log("construct mouse event!")
         return function (event) {
             let target;
             if (event.buttons) {
