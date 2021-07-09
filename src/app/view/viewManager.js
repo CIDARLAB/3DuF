@@ -1335,7 +1335,7 @@ export default class ViewManager {
         Registry.currentLayer.addFeature(newFeature);
 
         // Set the component position
-        component.updateComponetPosition([xpos, ypos]);
+        component.updateComponentPosition([xpos, ypos]);
     }
 
     /**

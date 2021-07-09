@@ -68,7 +68,7 @@ export default class MoveTool extends MouseTool {
      * @param ypos
      */
     processUIPosition(xpos, ypos) {
-        this.__currentComponent.updateComponetPosition([xpos, ypos]);
+        this.__currentComponent.updateComponentPosition([xpos, ypos]);
     }
 
     /**
@@ -86,7 +86,7 @@ export default class MoveTool extends MouseTool {
      * Reverts the position to the original position
      */
     revertToOriginalPosition() {
-        this.__currentComponent.updateComponetPosition(this.__originalPosition);
+        this.__currentComponent.updateComponentPosition(this.__originalPosition);
     }
 
     /**
@@ -110,7 +110,7 @@ export default class MoveTool extends MouseTool {
             //
             // let newposition = [oldposition[0] + delta.x, oldposition[1] + delta.y];
             // console.log("Newposition:", newposition);
-            // this.__currentComponent.updateComponetPosition(newposition);
+            // this.__currentComponent.updateComponentPosition(newposition);
             this.__updatePosition(target.x, target.y);
         }
     }
