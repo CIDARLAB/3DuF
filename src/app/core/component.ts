@@ -70,7 +70,7 @@ export default class Component {
      * @returns {Map()} Returns ports of the component
      * @memberof Component
      */
-    get ports() {
+    get ports(): Map<string, ComponentPort> {
         return this._ports;
     }
 
@@ -166,11 +166,14 @@ export default class Component {
         const bounds = this.getBoundingRectangle();
 
         const portdata: Array<ComponentPortInterchangeV1> = [];
-        const map = this.ports;
+        const map: Map<string, ComponentPort> = this.ports;
         if (map !== null) {
             for (const key of map.keys()) {
-                const p = map.get(key).toInterchangeV1();
-                portdata.push(p);
+                let part = map.get(key);
+                if (part != undefined) {
+                    let p = part.toInterchangeV1()
+                    portdata.push(p);
+                }
             }
         }
 
