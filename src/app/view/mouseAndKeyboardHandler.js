@@ -88,6 +88,7 @@ export default class MouseAndKeyboardHandler {
                 reference.view.initializeView();
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
+                event.preventDefault();
             }
 
             // Escape key

@@ -32,6 +32,7 @@ export default {
         window.Registry = Registry;
 
         window.view = Registry.viewManager.view;
+        Registry.viewManager.setupToolBars();
     },
     methods: {}
 };
@@ -41,5 +42,9 @@ export default {
 #view-container {
     width: 100%;
     height: 100%;
+    overflow-y: hidden;
+}
+#c {
+    z-index: 1;
 }
 </style>
