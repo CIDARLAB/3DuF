@@ -169,7 +169,7 @@ export default class Component {
         const map: Map<string, ComponentPort> = this.ports;
         if (map !== null) {
             for (const key of map.keys()) {
-                let part = map.get(key);
+                let part: ComponentPort | undefined = map.get(key);
                 if (part != undefined) {
                     let p = part.toInterchangeV1()
                     portdata.push(p);
