@@ -22,12 +22,12 @@ export default class Connection {
     protected _id: string;
     protected _type: string;
     protected _entity: string;
-    protected _features: string[]; // Not sure if it's Feature[] or string[]
+    protected _featureIDs: Array<string>;
     protected _nodes: any;
     protected _bounds: paper.Rectangle | null;
     protected _source: ConnectionTarget | null;
-    protected _sinks: ConnectionTarget[];
-    protected _paths: Point[];
+    protected _sinks: Array<ConnectionTarget>;
+    protected _paths: Array<Array<Point>>;
     protected _objects: any;
     protected _routed: boolean;
     protected _layer: Layer;
@@ -47,7 +47,7 @@ export default class Connection {
         this._type = type;
         this._entity = mint;
         //This stores the features that are a part of the component
-        this._features = [];
+        this._featureIDs = [];
         this._nodes = [];
         //TODO: Need to figure out how to effectively search through these
         this._bounds = null;
@@ -108,8 +108,8 @@ export default class Connection {
      * @return {Feature[]}
      * @memberof Connection
      */
-    get features() {
-        return this._features;
+    get featureIDs() {
+        return this._featureIDs;
     }
 
     /**
@@ -235,22 +235,13 @@ export default class Connection {
     }
 
     /**
-     * Returns the feature ID
-     * @returns {string[]}
-     * @memberof Connection
-     */
-    getFeatureIDs(): Array<string> {
-        return this._features;
-    }
-
-    /**
      * Adds a feature that is associated with the component
      * @param {String} featureID String id of the feature
      * @memberof Connection
      * @returns {void}
      */
     addFeatureID(featureID: string): void {
-        this._features.push(featureID);
+        this._featureIDs.push(featureID);
         //Now update bounds
         // this.__updateBounds();
     }
@@ -266,9 +257,9 @@ export default class Connection {
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
-        for (var i in this._features) {
+        for (var i in this._featureIDs) {
             // gets teh feature defined by the id
-            feature = ConnectionUtils.getFeatureFromID(this._features[i]);
+            feature = ConnectionUtils.getFeatureFromID(this._featureIDs[i]);
             console.log(feature);
             renderedfeature = FeatureRenderer2D.renderFeature(feature);
             console.log("rendered:");
@@ -293,8 +284,8 @@ export default class Connection {
         //TODO: Modify all the associated Features
         for (let key in params) {
             let value = params.getValue(key);
-            for (const i in this._features) {
-                const featureidtochange = this._features[i];
+            for (const i in this._featureIDs) {
+                const featureidtochange = this._featureIDs[i];
 
                 //Get the feature id and modify it
                 let feature = ConnectionUtils.getFeatureFromID(featureidtochange);
@@ -308,7 +299,7 @@ export default class Connection {
      * @return {Point[]}
      * @memberof Connection
      */
-    getPaths(): Segment {
+    getPaths(): Array<Array<Point>> {
         return this._paths;
     }
 
@@ -318,10 +309,10 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    updateSegments(segments: Segment): void {
+    updateSegments(segments: Array<Segment>): void {
         this.updateParameter("segments", new Parameter("SegmentArray", segments));
-        for (let i in this._features) {
-            let featureidtochange = this._features[i];
+        for (let i in this._featureIDs) {
+            let featureidtochange = this._featureIDs[i];
 
             const feature = ConnectionUtils.getFeatureFromID(featureidtochange);
             // feature.updateParameter('position', center);
@@ -520,12 +511,12 @@ export default class Connection {
      */
     regenerateSegments(): void {
         const pathscopy = this.getPaths();
-        const ret: Segment = [];
+        const ret: Array<Segment>= [];
         let waypointscopy;
         for (const j in pathscopy) {
             waypointscopy = pathscopy[j];
             for (let i = 0; i < waypointscopy.length - 1; i++) {
-                const segment: Point = [waypointscopy[i], waypointscopy[i + 1]];
+                const segment: Segment = [waypointscopy[i], waypointscopy[i + 1]];
                 ret.push(segment);
             }
         }
@@ -617,7 +608,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addWayPoints(wayPoints: Point): void {
+    addWayPoints(wayPoints: Array<Point>): void {
         this._paths.push(wayPoints);
     }
 
