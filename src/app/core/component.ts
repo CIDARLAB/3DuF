@@ -20,9 +20,9 @@ export default class Component {
     protected _id: string;
     protected _type: string;
     protected _entity: string;
-    protected _features: Array<string>;
+    protected _featureIDs: Array<string>;
     protected _bounds: paper.Rectangle | null;
-    protected _placed: Boolean;
+    protected _placed: boolean;
     protected _ports: Map<string, ComponentPort>;
     protected _componentPortTRenders: Map<string, Port>;
     protected _xspan: number;
@@ -42,7 +42,7 @@ export default class Component {
         this._type = type;
         this._entity = mint;
         // This stores the features that are a part of the component
-        this._features = [];
+        this._featureIDs = [];
         // TODO: Need to figure out how to effectively search through these
         this._bounds = null;
         this._placed = false;
@@ -89,7 +89,7 @@ export default class Component {
      * @returns {Boolean} Returns the place of the component
      * @memberof Component
      */
-    get placed() {
+    get placed(): boolean {
         return this._placed;
     }
 
@@ -108,8 +108,8 @@ export default class Component {
      * @return {Array} Returns an array with the features
      * @memberof Component
      */
-    get features() {
-        return this._features;
+    get featureIDs(): Array<String> {
+        return this._featureIDs;
     }
 
     /**
@@ -145,8 +145,8 @@ export default class Component {
     updateParameter(key: string, value: any): void {
         this._params.updateParameter(key, value);
 
-        for (const i in this._features) {
-            const featureidtochange = this._features[i];
+        for (const i in this._featureIDs) {
+            const featureidtochange = this._featureIDs[i];
 
             // Get the feature id and modify it
             const feature = ComponentUtils.getFeatureFromID(featureidtochange);
@@ -165,7 +165,7 @@ export default class Component {
     toInterchangeV1(): ComponentInterchangeV1 {
         const bounds = this.getBoundingRectangle();
 
-        const portdata = [];
+        const portdata: Array<ComponentPortInterchangeV1> = [];
         const map = this.ports;
         if (map !== null) {
             for (const key of map.keys()) {
@@ -269,24 +269,13 @@ export default class Component {
     }
 
     /**
-     * Gets the list of feature ids that are associated with this
-     * component
-     * @return {Array|*} Returns an array with the correspondings features of the component
-     * @memberof Component
-     *
-     */
-    getFeatureIDs(): Array<string> {
-        return this._features;
-    }
-
-    /**
      * Adds a feature that is associated with the component
      * @param {String} featureID String id of the feature
      * @memberof Component
      * @returns {void}
      */
     addFeatureID(featureID: string): void {
-        this._features.push(featureID);
+        this._featureIDs.push(featureID);
         // Now update bounds
         // this.__updateBounds();
     }
@@ -301,9 +290,9 @@ export default class Component {
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
-        for (const i in this._features) {
+        for (const i in this._featureIDs) {
             // gets teh feature defined by the id
-            feature = ComponentUtils.getFeatureFromID(this._features[i]);
+            feature = ComponentUtils.getFeatureFromID(this._featureIDs[i]);
             console.log(feature);
             renderedfeature = FeatureRenderer2D.renderFeature(feature);
             console.log("rendered:");
@@ -332,12 +321,12 @@ export default class Component {
      * @memberof Component
      */
     getBoundingRectangle(): paper.Rectangle {
-        if (this._features.length == 0 || this._features === null || this._features == undefined) {
+        if (this._featureIDs.length == 0 || this._featureIDs === null || this._featureIDs == undefined) {
             console.error("No features associated with the component");
         }
         let bounds = null;
-        for (const i in this._features) {
-            const featureid = this._features[i];
+        for (const i in this._featureIDs) {
+            const featureid = this._featureIDs[i];
             const render = ComponentUtils.getRenderedFeature(featureid);
             if (bounds && render) {
                 bounds = bounds.unite(render.bounds);
@@ -358,8 +347,8 @@ export default class Component {
     updateComponentPosition(center: Point): void {
         // This was not calling the right method earlier
         this._params.updateParameter("position", center);
-        for (const i in this._features) {
-            const featureidtochange = this._features[i];
+        for (const i in this._featureIDs) {
+            const featureidtochange = this._featureIDs[i];
 
             const feature = ComponentUtils.getFeatureFromID(featureidtochange);
             // feature.updateParameter('position', center);
@@ -391,15 +380,15 @@ export default class Component {
         const ret = new Component(this._type, replicaparams, name, this._entity);
         console.log("Checking what the new component params are:", ret._params);
         // Generate New features
-        for (const i in this._features) {
-            const feature = ComponentUtils.getFeatureFromID(this._features[i]);
+        for (const i in this._featureIDs) {
+            const feature = ComponentUtils.getFeatureFromID(this._featureIDs[i]);
             console.log("test", this.getPosition()[0], this.getPosition()[1], this.getPosition());
             const replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
             replica.referenceID = ret.id;
-            ret.features.push(replica.id);
+            ret.featureIDs.push(replica.id);
 
             // TODO: add new feature to the layer in which the current feature is in
-            const currentlayer = ComponentUtils.getDeviceLayerFromID(this._features[i]);
+            const currentlayer = ComponentUtils.getDeviceLayerFromID(this._featureIDs[i]);
             currentlayer.addFeature(replica);
         }
         console.warn("TODO: Generate renders for the new Features for this new component");

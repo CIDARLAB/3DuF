@@ -126,7 +126,7 @@ export default class ComponentPort {
      * @returns {Object} Returns a object with Interchange V1 format
      * @memberof ComponentPort
      */
-    toInterchangeV1() {
+    toInterchangeV1(): ComponentPortInterchangeV1 {
         return {
             x: this._x,
             y: this._y,
