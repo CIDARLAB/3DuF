@@ -193,15 +193,6 @@ export default class TextFeature {
     }
 
     /**
-     * Gets the parameters of the object.
-     * @returns {Feature.parameters}
-     * @memberof TextFeature
-     */
-    getParams() {
-        return this.__params.parameters;
-    }
-
-    /**
      * Sets the parameters of the object.
      * @param {Params} params
      * @memberof TextFeature
