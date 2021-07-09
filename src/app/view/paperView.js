@@ -111,9 +111,12 @@ export default class PaperView {
                 this.__viewManagerDelegate.currentDevice.removeFeatureByID(items[i].featureID);
             }
 
-            // Delete the selected Components !!!!
+            // Delete the selected Components !!!
             for (const i in this.selectedComponents) {
-                this.__viewManagerDelegate.currentDevice.removeComponent(this.selectedComponents[i]);
+                connection = this.__viewManagerDelegate.currentDevice.removeComponent(this.selectedComponents[i]);
+                if (connection){
+                    Registry.__viewManagerDelegate.updatesConnectionRender(connection);
+                }
             }
 
             // Delete the selected Connecitons

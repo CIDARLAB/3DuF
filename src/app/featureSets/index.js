@@ -12,9 +12,8 @@ const requiredSets = {
     Basic: Basic
 };
 
-registerSets(requiredSets);
 
-function registerSets(sets) {
+export function registerSets(sets) {
     for (const key in sets) {
         const name = key;
         const set = sets[key];
