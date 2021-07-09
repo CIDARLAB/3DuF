@@ -403,6 +403,7 @@ export default class Connection {
         //Convert Rectangle to Path.Rectangle
         console.log(boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
+        boundingbox.rotate(angle, boundingbox.center);
         //Check which segment I need to break
         let segments = this.getValue("segments");
         for (let i in segments) {
@@ -411,10 +412,8 @@ export default class Connection {
             let intersections = line.getIntersections(boundingbox);
             // console.log("Intersections found", intersections);
             if (intersections.length === 2) {
-                let radius = (boundingbox.width * Math.sqrt(2)) / 2;
-                let center = boundingbox.center;
-                let break1 = paper.Point(center + radius * Math.cos(-angle - 90), center + Math.sin(-angle - 90));
-                let break2 = paper.Point(center - radius * Math.cos(-angle - 90), center - Math.sin(-angle - 90));
+                let break1 = intersections[0].point;
+                let break2 = intersections[1].point;
                 let newsegs = this.__breakSegment(segment, break1, break2);
                 console.log("breaking:", segment, newsegs);
                 if (newsegs.length !== 2) {
