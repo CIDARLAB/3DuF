@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { registerSets } from "@/app/featureSets";
 import { Registry, BareViewManager, ViewManager } from "../app/index";
 import { Examples } from "../app/index";
 import ResolutionToolbar from "./ResolutionToolbar";
@@ -20,6 +21,7 @@ export default {
         ResolutionToolbar
     },
     mounted() {
+        // registerSets({ Basic: Basic });
         let viewManager = new ViewManager();
 
         Registry.viewManager = viewManager;
