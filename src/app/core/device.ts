@@ -8,7 +8,7 @@ import {DeviceInterchangeV1} from "./init"
 import {ComponentInterchangeV1} from "./init"
 import {ConnectionInterchangeV1} from "./init"
 import {LayerInterchangeV1} from "./init"
-import {FeatureInterchangeV1} from "./init"
+import {FeatureInterchangeV0} from "./init"
 
 import Layer from "./layer";
 import Component from "./component";
@@ -241,7 +241,7 @@ export default class Device {
      * @memberof Device
      */
     getAllFeaturesFromDevice(): Array<Feature> {
-        let features: Feature[] = [];
+        let features: Array<Feature> = [];
         for (let i in this.__layers) {
             //features.push.apply(features, layer.features);
             let layer: Layer = this.__layers[i];
@@ -786,8 +786,8 @@ export default class Device {
         for (let i in this.__components) {
             let component = this.__components[i];
             //go through each component's features
-            for (let j in component.features) {
-                let featureid = component.features[j];
+            for (let j in component.featureIDs) {
+                let featureid = component.featureIDs[j];
                 if (featureid === id) {
                     return component;
                 }
@@ -824,8 +824,8 @@ export default class Device {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
             //go through each component's features
-            for (let j in connection.features) {
-                let featureid = connection.features[j];
+            for (let j in connection.featureIDs) {
+                let featureid = connection.featureIDs[j];
                 if (featureid === id) {
                     return connection;
                 }
