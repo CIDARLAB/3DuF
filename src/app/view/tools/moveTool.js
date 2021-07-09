@@ -171,7 +171,7 @@ export default class MoveTool extends MouseTool {
     //
     //     } else {
     //         //Belongs to the component so we basically select all features with this id
-    //         let featureIDs = component.getFeatureIDs();
+    //         let featureIDs = component.featureIDs;
     //         for (let i in featureIDs) {
     //             let featureid = featureIDs[i];
     //             let actualfeature = Registry.viewManager.view.paperFeatures[featureid];
@@ -199,7 +199,7 @@ export default class MoveTool extends MouseTool {
     //     for (let i in device_components) {
     //         let component = device_components[i];
     //         //Check against features in the in the component
-    //         let componentfeatures = component.getFeatureIDs();
+    //         let componentfeatures = component.featureIDs;
     //         let index = componentfeatures.indexOf(featureid);
     //
     //         if (index != -1) {
@@ -229,7 +229,7 @@ export default class MoveTool extends MouseTool {
     //
     //             } else {
     //                 //Belongs to the component so we basically select all features with this id
-    //                 let featureIDs = component.getFeatureIDs();
+    //                 let featureIDs = component.featureIDs;
     //                 for (let i in featureIDs) {
     //                     let featureid = featureIDs[i];
     //                     let actualfeature = Registry.viewManager.view.paperFeatures[featureid];
