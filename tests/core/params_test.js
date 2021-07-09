@@ -2,7 +2,7 @@ const appRoot = "../../app/";
 const should = require("should");
 const Parameters = require(appRoot + "core/parameters");
 const Parameter = require(appRoot + "core/parameter");
-const Feature = require("../../app/core/feature");
+const Feature = require("../../src/app/core/feature");
 // var Features = require(appRoot + "core/features");
 const Params = require(appRoot + "core/params");
 
