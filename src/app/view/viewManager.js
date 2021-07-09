@@ -1196,7 +1196,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updatesConnectionRender(connection, angle) {
+    updatesConnectionRender(connection, angle = 0) {
         //First Redraw all the segements without valves or insertions
         connection.regenerateSegments();
 

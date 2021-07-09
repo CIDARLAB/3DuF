@@ -399,7 +399,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {boolean}
      */
-    insertFeatureGap(boundingbox, angle) {
+    insertFeatureGap(boundingbox, angle = 0) {
         //Convert Rectangle to Path.Rectangle
         console.log(boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
