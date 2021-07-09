@@ -153,7 +153,7 @@ export default class ConnectionTool extends MouseTool {
                 feat.updateParameter("segments", this.generateSegments());
             } else {
                 const newChannel = this.createChannel(this.startPoint, this.startPoint);
-                this.currentChannelID = newChannel.getID();
+                this.currentChannelID = newChannel.id;
                 Registry.currentLayer.addFeature(newChannel);
             }
         }
@@ -182,16 +182,16 @@ export default class ConnectionTool extends MouseTool {
                 connection.routed = true;
                 connection.addFeatureID(feat.getID());
                 connection.addWayPoints(this.wayPoints);
-                feat.referenceID = connection.getID();
+                feat.referenceID = connection.id;
                 this.__addConnectionTargets(connection);
                 Registry.currentDevice.addConnection(connection);
             } else {
                 // console.error("Implement conneciton tool to update existing connection");
                 // TODO: Update the connection with more sinks and paths and what not
                 this.__currentConnectionObject.addFeatureID(feat.getID());
-                feat.referenceID = this.__currentConnectionObject.getID();
+                feat.referenceID = this.__currentConnectionObject.id;
                 this.__currentConnectionObject.addWayPoints(this.wayPoints);
-                feat.referenceID = this.__currentConnectionObject.getID();
+                feat.referenceID = this.__currentConnectionObject.id;
                 this.__addConnectionTargets(this.__currentConnectionObject);
             }
 

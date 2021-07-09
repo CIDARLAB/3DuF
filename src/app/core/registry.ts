@@ -1,6 +1,7 @@
 import uuid from "node-uuid";
 import { registerSets } from "../featureSets";
 import FeatureSet from "../featureSets/featureSet";
+import * as Basic from "@/app/featureSets/basic";
 
 class Registry {
     /*
@@ -8,14 +9,16 @@ class Registry {
     TODO: Change this from this awful hacky implementation
   */
   constructor(){
-    registerSets()
+    // registerSets({ Basic: Basic });
   }
 
     //TODO: Convert this into multiple text layers for use with multiple layers
     id_counter = 0;
     threeRenderer = null;
 
-    featureDefaults: FeatureSet | null = null;
+    featureDefaults = {
+      Basic: new FeatureSet(Basic.definitions, Basic.tools, Basic.render2D, Basic.render3D, "Basic").getDefaults()
+    };
     currentDevice = null;
     canvasManager = null;
     currentLayer = null;
