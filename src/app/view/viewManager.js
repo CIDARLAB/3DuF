@@ -1196,7 +1196,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updatesConnectionRender(connection) {
+    updatesConnectionRender(connection, angle) {
         //First Redraw all the segements without valves or insertions
         connection.regenerateSegments();
 
@@ -1208,7 +1208,7 @@ export default class ViewManager {
             let is3D = Registry.currentDevice.getIsValve3D(valve);
             if (is3D) {
                 let boundingbox = valve.getBoundingRectangle();
-                connection.insertFeatureGap(boundingbox);
+                connection.insertFeatureGap(boundingbox, angle);
             }
         });
 

@@ -399,7 +399,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {boolean}
      */
-    insertFeatureGap(boundingbox) {
+    insertFeatureGap(boundingbox, angle) {
         //Convert Rectangle to Path.Rectangle
         console.log(boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
@@ -411,8 +411,10 @@ export default class Connection {
             let intersections = line.getIntersections(boundingbox);
             // console.log("Intersections found", intersections);
             if (intersections.length === 2) {
-                let break1 = intersections[0].point;
-                let break2 = intersections[1].point;
+                let radius = (boundingbox.width * Math.sqrt(2)) / 2;
+                let center = boundingbox.center;
+                let break1 = paper.Point(center + radius * Math.cos(-angle - 90), center + Math.sin(-angle - 90));
+                let break2 = paper.Point(center - radius * Math.cos(-angle - 90), center - Math.sin(-angle - 90));
                 let newsegs = this.__breakSegment(segment, break1, break2);
                 console.log("breaking:", segment, newsegs);
                 if (newsegs.length !== 2) {
@@ -510,22 +512,22 @@ export default class Connection {
         }
 
         //Check if the params have the other unique elements necessary otherwise add them as null
-        if (!Object.prototype.hasOwnProperty.call(params, 'start')) {
+        if (!Object.prototype.hasOwnProperty.call(params, "start")) {
             //Setting this value to origin
             params["start"] = [0, 0];
         }
-        if (!Object.prototype.hasOwnProperty.call(params, 'end')) {
+        if (!Object.prototype.hasOwnProperty.call(params, "end")) {
             //Setting this value to origin
             params["end"] = [0, 0];
         }
-        if (!Object.prototype.hasOwnProperty.call(params, 'wayPoints')) {
+        if (!Object.prototype.hasOwnProperty.call(params, "wayPoints")) {
             //TODO: setting a single waypoint at origin
             params["wayPoints"] = [
                 [0, 0],
                 [1, 2]
             ];
         }
-        if (!Object.prototype.hasOwnProperty.call(params, 'segments')) {
+        if (!Object.prototype.hasOwnProperty.call(params, "segments")) {
             //TODO: Setting a default segment from origin to origin
             params["segments"] = [
                 [
@@ -542,12 +544,12 @@ export default class Connection {
         let paramstoadd = new Params(params, definition.unique, definition.heritable);
 
         let connection = new Connection(entity, paramstoadd, name, entity, id);
-        if (Object.prototype.hasOwnProperty.call(json, 'source')) {
+        if (Object.prototype.hasOwnProperty.call(json, "source")) {
             if (json.source !== null && json.source !== undefined) {
                 connection.setSourceFromJSON(device, json.source);
             }
         }
-        if (Object.prototype.hasOwnProperty.call(json, 'sinks')) {
+        if (Object.prototype.hasOwnProperty.call(json, "sinks")) {
             if (json.sinks !== null && json.sinks !== undefined) {
                 for (let i in json.sinks) {
                     let sink = json.sinks[i];
@@ -555,7 +557,7 @@ export default class Connection {
                 }
             }
         }
-        if (Object.prototype.hasOwnProperty.call(json, 'paths')) {
+        if (Object.prototype.hasOwnProperty.call(json, "paths")) {
             if (json.paths !== null && json.paths !== undefined) {
                 for (let i in json.paths) {
                     connection.addWayPoints(json.paths[i]);
