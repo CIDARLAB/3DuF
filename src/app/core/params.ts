@@ -4,9 +4,9 @@ import Parameter from "./parameter";
  * Params class
  */
 export default class Params {
-    private unique: Array<string>;
-    private heritable: Array<string>;
-    private parameters: {[index: string]: Parameter};
+    private __unique: Map<string,string>;
+    private __heritable: Map<string,string>;
+    private __parameters: {[index: string]: Parameter};
     
 
     /**
@@ -16,14 +16,19 @@ export default class Params {
      * @param {} heritable Boolean if it's heritable
      * @param {} rawparameters ?
      */
-    constructor(values: any, unique: Array<string>, heritable: Array<string>) { 
-        this.unique = unique;
-        this.heritable = heritable;
-        this.parameters = {};
+    constructor(values: {[index: string]: any}, unique: Map<string,string>, heritable: Map<string,string>) { 
+        this.__unique = unique;
+        this.__heritable = heritable;
+        this.__parameters = {};
         for (let key in values) {
-            this.parameters[key] = new Parameter(values[key],key);
+            this.__parameters[key] = new Parameter(typeof values[key],values[key]);
         }
     }
+
+    get parameters() {
+        return this.__parameters
+    }
+    
     /**
      * Updates parameter value.
      * @param {String} key Identifier of the parameter
@@ -32,8 +37,8 @@ export default class Params {
      * @returns {void}
      */
     updateParameter(key: string, value: any): void {
-        if (this.parameters.hasOwnProperty(key)) {
-            this.parameters[key].updateValue(value);
+        if (this.__parameters.hasOwnProperty(key)) {
+            this.__parameters[key].updateValue(value);
         } else {
             throw new Error(key + "parameter does not exist in Params object");
         }
@@ -45,7 +50,7 @@ export default class Params {
      * @returns {void}
      */
     __ensureHasKey(key: string): void {
-        if (!this.parameters.hasOwnProperty(key)) throw new Error(key + " parameter not found in Params object.");
+        if (!this.__parameters.hasOwnProperty(key)) throw new Error(key + " parameter not found in Params object.");
     }
     /**
      * Gets the value of the selected parameter.
@@ -55,7 +60,7 @@ export default class Params {
      */
     getValue(key: string): any {
         this.__ensureHasKey(key);
-        return this.parameters[key].value;
+        return this.__parameters[key].value;
     }
 
     /**
@@ -65,7 +70,7 @@ export default class Params {
      * @memberof Params
      */
     isUnique(key: string): boolean {
-        return this.unique.includes(key);
+        return this.__unique.has(key)
     }
     /**
      * Checks if param object has heritable attribute.
@@ -74,7 +79,7 @@ export default class Params {
      * @memberof Params
      */
     isHeritable(key: string): boolean {
-        return this.heritable.includes(key);
+        return this.__heritable.has(key)
     }
 
     /**
@@ -84,9 +89,9 @@ export default class Params {
      */
     toJSON(): {[index: string]: any} {
         let json: {[index:string]: any} = {};
-        for (let key in this.parameters) {
-            if (this.parameters[key] != undefined) {
-                json[key] = this.parameters[key].value; 
+        for (let key in this.__parameters) {
+            if (this.__parameters[key] != undefined) {
+                json[key] = this.__parameters[key].value; 
             }
         }
         return json;
@@ -99,7 +104,7 @@ export default class Params {
      * @returns {Params} Returns a new params object.
      * @memberof Params
      */
-    static fromJSON(json: JSON, unique: any, heritable: any): Params {
+    static fromJSON(json: Map<string,any>, unique: Map<string,string>, heritable: Map<string,string>): Params {
         return new Params(json, unique, heritable); 
     }
     /**
@@ -109,7 +114,7 @@ export default class Params {
      * @memberof Params
      */
     hasParam(key: string): boolean {
-        return this.parameters.hasOwnProperty(key);
+        return this.__parameters.hasOwnProperty(key);
     }
 
     /**
@@ -119,9 +124,9 @@ export default class Params {
      */
     toMap(): Map<string,any> {
         let ret = new Map();
-        for (let key in this.parameters) {
-            if (this.parameters[key] != undefined) {
-                ret.set(key, this.parameters[key].value);
+        for (let key in this.__parameters) {
+            if (this.__parameters[key] != undefined) {
+                ret.set(key, this.__parameters[key].value);
             }
         }
         return ret;

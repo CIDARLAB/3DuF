@@ -131,7 +131,7 @@ export default class MouseSelectTool extends MouseTool {
             paperElement.selected = true;
         } else if (component !== null) {
             // Belongs to the component so we basically select all features with this id
-            const featureIDs = component.getFeatureIDs();
+            const featureIDs = component.featureIDs;
             for (const i in featureIDs) {
                 const featureid = featureIDs[i];
                 const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
@@ -140,7 +140,7 @@ export default class MouseSelectTool extends MouseTool {
 
             Registry.viewManager.view.selectedComponents.push(component);
         } else if (connection !== null) {
-            const featureIDs = connection.getFeatureIDs();
+            const featureIDs = connection.featureIDs;
             for (const i in featureIDs) {
                 const featureid = featureIDs[i];
                 const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
@@ -164,13 +164,13 @@ export default class MouseSelectTool extends MouseTool {
     __getComponentWithFeatureID(featureid) {
         // Get component with the features
 
-        const device_components = Registry.currentDevice.getComponents();
+        const device_components = Registry.currentDevice.components;
 
         // Check against every component
         for (const i in device_components) {
             const component = device_components[i];
             // Check against features in the in the component
-            const componentfeatures = component.getFeatureIDs();
+            const componentfeatures = component.featureIDs;
             const index = componentfeatures.indexOf(featureid);
 
             if (index != -1) {
@@ -199,7 +199,7 @@ export default class MouseSelectTool extends MouseTool {
         for (const i in device_connections) {
             const connection = device_connections[i];
             // Check against features in the in the component
-            const connection_features = connection.getFeatureIDs();
+            const connection_features = connection.featureIDs;
             const index = connection_features.indexOf(featureid);
 
             if (index != -1) {
@@ -227,7 +227,7 @@ export default class MouseSelectTool extends MouseTool {
                     paperFeature.selected = true;
                 } else {
                     // Belongs to the component so we basically select all features with this id
-                    const featureIDs = component.getFeatureIDs();
+                    const featureIDs = component.featureIDs;
                     for (const i in featureIDs) {
                         const featureid = featureIDs[i];
                         const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
