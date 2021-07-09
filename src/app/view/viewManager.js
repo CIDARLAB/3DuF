@@ -1290,7 +1290,7 @@ export default class ViewManager {
      */
     __initializeRatsNest() {
         // Step 1 generate features for all the components with some basic layout
-        const components = this.currentDevice.getComponents();
+        const components = this.currentDevice.components;
         const xpos = 10000;
         const ypos = 10000;
         for (const i in components) {
@@ -1335,7 +1335,7 @@ export default class ViewManager {
         Registry.currentLayer.addFeature(newFeature);
 
         // Set the component position
-        component.updateComponetPosition([xpos, ypos]);
+        component.updateComponentPosition([xpos, ypos]);
     }
 
     /**

@@ -56,16 +56,16 @@ export default class Selection {
     selectAll() {
         for (const i in this.__components) {
             const component = Registry.currentDevice.getComponentByID(this.__components[i]);
-            for (const j in component.features) {
-                const render = Registry.currentDevice.getFeatureByID(component.features[i]);
+            for (const j in component.featureIDs) {
+                const render = Registry.currentDevice.getFeatureByID(component.featureIDs[i]);
                 render.selected = true;
             }
         }
 
         for (const i in this.__connections) {
             const connection = Registry.currentDevice.getConnectionByID(this.__connections[i]);
-            for (const j in connection.features) {
-                const render = Registry.currentDevice.getFeatureByID(connection.features[i]);
+            for (const j in connection.featureIDs) {
+                const render = Registry.currentDevice.getFeatureByID(connection.featureIDs[i]);
                 render.selected = true;
             }
         }

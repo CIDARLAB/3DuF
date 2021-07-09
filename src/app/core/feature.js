@@ -35,10 +35,9 @@ export default class Feature {
      * Returns the reference object id
      * @return {String}
      * @memberof Feature
-     * @private
      */
     get referenceID() {
-        return this.__referenceObject;
+        return this.__referenceID;
     }
 
     /**
@@ -52,7 +51,7 @@ export default class Feature {
         if (typeof value !== "string" && !(value instanceof String)) {
             throw new Error("The reference object value can only be a string");
         }
-        this.__referenceObject = value;
+        this.__referenceID = value;
     }
 
     /**
@@ -163,7 +162,7 @@ export default class Feature {
      * @returns {String} Returns the ID
      * @memberof Feature
      */
-    getID() {
+    get ID() {
         return this.__id;
     }
 
@@ -360,7 +359,7 @@ export default class Feature {
     /**
      * Loads from JSON format the features for a device
      * @param {JSON} json
-     * @returns {Device} Returns a Device object with the features in the JSON
+     * @returns {Feature} Returns a Device object with the features in the JSON
      * @memberof Feature
      */
     static fromJSON(json) {
@@ -373,7 +372,7 @@ export default class Feature {
     /**
      * Loads from an InetchangeV1 format the features for a device object
      * @param {*} json
-     * @returns {Device}
+     * @returns {Feature}
      * @memberof Feature
      */
     static fromInterchangeV1(json) {
@@ -411,15 +410,6 @@ export default class Feature {
      */
     updateView() {
         if (Registry.viewManager) Registry.viewManager.updateFeature(this);
-    }
-
-    // I wish I had abstract methods. :(
-    /**
-     * @memberof Feature
-     * @returns {void}
-     */
-    render2D() {
-        throw new Error("Base class Feature cannot be rendered in 2D.");
     }
 
     /**
