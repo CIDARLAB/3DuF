@@ -5,7 +5,7 @@ import Feature from "./feature"
 
 export type Point = [number, number]
 
-export type Segment = Array<[number,number]>
+export type Segment = [Point,Point]
 
 export type DeviceInterchangeV1 = {
     name: string
@@ -25,7 +25,7 @@ export type ComponentInterchangeV1 = {
     params: any
     xspan: number
     yspan: number
-    ports: any[]
+    ports: Array<ComponentPortInterchangeV1>
     layer: Array<string>
 }
 
@@ -35,11 +35,10 @@ export type ConnectionInterchangeV1 = {
     entity: string
     source: any
     sinks: any
-    paths?: [number, number][]
+    paths?: Array<Array<Point>>
     params: any
     xspan?: number
     yspan?: number
-    ports?: any[]
     layer?: string
 }
 
@@ -49,11 +48,11 @@ export type LayerInterchangeV1 = {
     params: any
     group: string
     type: string
-    features: Array<FeatureInterchangeV1>
+    features: Array<FeatureInterchangeV0>
     color: string | undefined
 }
 
-export type FeatureInterchangeV1 = {
+export type FeatureInterchangeV0 = {
     id: string
     name: string
     macro: string

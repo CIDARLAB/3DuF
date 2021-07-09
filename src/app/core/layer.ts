@@ -5,7 +5,7 @@ import TextFeature from "./textFeature";
 import Params from "./params";
 import Device from "./device";
 import LayerUtils from "@/app/utils/layerUtils"
-import {FeatureInterchangeV1} from "./init"
+import {FeatureInterchangeV0} from "./init"
 import {LayerInterchangeV1} from "./init"
 
 /**
@@ -244,8 +244,8 @@ export default class Layer {
      * @returns {Array} Returns an array with the features in Interchange format
      * @memberof Layer
      */
-    __featuresInterchangeV1(): Array<FeatureInterchangeV1> {
-        const output: Array<FeatureInterchangeV1> = [];
+    __featuresInterchangeV1(): Array<FeatureInterchangeV0> {
+        const output: Array<FeatureInterchangeV0> = [];
         for (const i in this.features) {
             output.push(this.features[i].toInterchangeV1());
         }
