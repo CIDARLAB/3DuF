@@ -3,11 +3,12 @@ import CustomComponent from "./customComponent";
 import ComponentPort from "./componentPort";
 import Feature from './feature'
 
-import Registry from "./registry";
+import uuid from "node-uuid";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
 import { ComponentPortInterchangeV1, ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1, Point } from "./init";
+import ComponentUtils from "../utils/componentUtils"
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -19,7 +20,7 @@ export default class Component {
     protected _id: string;
     protected _type: string;
     protected _entity: string;
-    protected _features: Feature[]; // Not sure if it's Feature[] or string[]
+    protected _features: Array<string>;
     protected _bounds: paper.Rectangle | null;
     protected _placed: Boolean;
     protected _ports: Map<string, ComponentPort>;
@@ -56,7 +57,7 @@ export default class Component {
 
         const cleanparamdata = this._params.parameters
 
-        const ports = Registry.featureSet.getComponentPorts(cleanparamdata, this._type);
+        const ports = ComponentUtils.getComponentPorts(cleanparamdata, this._type);
         if (ports != undefined && ports.length >= 0 && ports !== null) {
             for (const i in ports) {
                 this.setPort(ports[i].label, ports[i]);
@@ -116,8 +117,8 @@ export default class Component {
      * @returns {String} Random ID string
      * @memberof component
      */
-    static generateID() {
-        return Registry.generateID();
+    static generateID(): string {
+        return uuid.v1();
     }
 
     /**
@@ -126,7 +127,7 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-    setBounds(bounds: paper.Rectangle) {
+    setBounds(bounds: paper.Rectangle): void {
         this._bounds = bounds;
         const topleftpt = bounds.topLeft;
         this._params.updateParameter('position', [topleftpt.x, topleftpt.y]);
@@ -141,14 +142,14 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-    updateParameter(key: string, value: any) {
+    updateParameter(key: string, value: any): void {
         this._params.updateParameter(key, value);
 
         for (const i in this._features) {
             const featureidtochange = this._features[i];
 
             // Get the feature id and modify it
-            const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            const feature = ComponentUtils.getFeatureFromID(featureidtochange);
             feature.updateParameter(key, value);
         }
 
@@ -161,7 +162,7 @@ export default class Component {
      * @returns {ComponentInterchangeV1} Object
      * @memberof Component
      */
-    toInterchangeV1() {
+    toInterchangeV1(): ComponentInterchangeV1 {
         const bounds = this.getBoundingRectangle();
 
         const portdata = [];
@@ -187,8 +188,8 @@ export default class Component {
         return output;
     }
 
-    private findLayerReferences() {
-        const layers = Registry.currentDevice.getLayers();
+    private findLayerReferences(): Array<string> {
+        const layers = ComponentUtils.getDeviceLayers();
         const layerrefs = [];
         let layer;
         for (const i in layers) {
@@ -259,7 +260,7 @@ export default class Component {
      * @returns {*} Returns the value or an error
      * @memberof Component
      */
-    getValue(key: string) {
+    getValue(key: string): any {
         try {
             return this._params.getValue(key);
         } catch (err) {
@@ -274,19 +275,8 @@ export default class Component {
      * @memberof Component
      *
      */
-    getFeatureIDs() {
+    getFeatureIDs(): Array<string> {
         return this._features;
-    }
-
-    /**
-     * Checks if the component has default parameters
-     * @param {String} key Key to access the component
-     * @returns {boolean} Returns true whether it has default parameters or not
-     * @memberof Component
-     */
-    hasDefaultParam(key: string) {
-        if (this.getDefaults().hasOwnProperty(key)) return true;
-        else return false;
     }
 
     /**
@@ -295,8 +285,8 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-    addFeatureID(featureID: string) {
-        this._features.push(Registry.currentDevice.getFeatureByID(featureID));
+    addFeatureID(featureID: string): void {
+        this._features.push(featureID);
         // Now update bounds
         // this.__updateBounds();
     }
@@ -307,13 +297,13 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-     private updateBounds() {
+     private updateBounds(): void {
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
         for (const i in this._features) {
             // gets teh feature defined by the id
-            feature = Registry.currentDevice.getFeatureByID(this._features[i]);
+            feature = ComponentUtils.getFeatureFromID(this._features[i]);
             console.log(feature);
             renderedfeature = FeatureRenderer2D.renderFeature(feature);
             console.log("rendered:");
@@ -341,14 +331,14 @@ export default class Component {
      * @return {Object}
      * @memberof Component
      */
-    getBoundingRectangle() {
-        if (this.features.length == 0 || this.features === null || this.features == undefined) {
+    getBoundingRectangle(): paper.Rectangle {
+        if (this._features.length == 0 || this._features === null || this._features == undefined) {
             console.error("No features associated with the component");
         }
         let bounds = null;
-        for (const i in this.features) {
-            const featureid = this.features[i];
-            const render = Registry.viewManager.view.getRenderedFeature(featureid);
+        for (const i in this._features) {
+            const featureid = this._features[i];
+            const render = ComponentUtils.getRenderedFeature(featureid);
             if (bounds && render) {
                 bounds = bounds.unite(render.bounds);
             } else {
@@ -365,13 +355,13 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-    updateComponetPosition(center: Point) {
+    updateComponentPosition(center: Point): void {
         // This was not calling the right method earlier
         this._params.updateParameter("position", center);
         for (const i in this._features) {
             const featureidtochange = this._features[i];
 
-            const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            const feature = ComponentUtils.getFeatureFromID(featureidtochange);
             // feature.updateParameter('position', center);
             feature.updateParameter("position", center);
         }
@@ -385,7 +375,7 @@ export default class Component {
      * @return {Component}
      * @memberof Component
      */
-    replicate(xpos: number, ypos: number, name: string = Registry.currentDevice.generateNewName(this._type)) {
+    replicate(xpos: number, ypos: number, name: string = ComponentUtils.generateDeviceName(this._type)): Component {
         // TODO: Fix this ridiculous chain of converting params back and forth, there should be an easier way
         // Converting all the params into raw values
         // let paramvalues = {};
@@ -393,7 +383,7 @@ export default class Component {
         //     paramvalues[key] = this.getValue(key);
         // }
 
-        const definition = Registry.featureSet.getDefinition(this._type);
+        const definition = ComponentUtils.getFeatureSetDefinition(this._type);
         // Clean Param Data
         const cleanparamdata = this._params.parameters
   
@@ -401,19 +391,19 @@ export default class Component {
         const ret = new Component(this._type, replicaparams, name, this._entity);
         console.log("Checking what the new component params are:", ret._params);
         // Generate New features
-        for (const i in this.features) {
-            const feature = Registry.currentDevice.getFeatureByID(this.features[i]);
+        for (const i in this._features) {
+            const feature = ComponentUtils.getFeatureFromID(this._features[i]);
             console.log("test", this.getPosition()[0], this.getPosition()[1], this.getPosition());
             const replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
             replica.referenceID = ret.id;
             ret.features.push(replica.id);
 
             // TODO: add new feature to the layer in which the current feature is in
-            const currentlayer = Registry.currentDevice.getLayerFromFeatureID(this.features[i]);
+            const currentlayer = ComponentUtils.getDeviceLayerFromID(this._features[i]);
             currentlayer.addFeature(replica);
         }
         console.warn("TODO: Generate renders for the new Features for this new component");
-        ret.updateComponetPosition([xpos, ypos]);
+        ret.updateComponentPosition([xpos, ypos]);
         return ret;
     }
 
@@ -422,7 +412,7 @@ export default class Component {
      * @return {Array}
      * @memberof Component
      */
-    getCenterPosition() {
+    getCenterPosition(): Point {
         const bounds = this.getBoundingRectangle();
         return [bounds.center.x, bounds.center.y];
     }
@@ -432,7 +422,7 @@ export default class Component {
      * @return {Array}
      * @memberof Component
      */
-    getTopLeftPosition() {
+    getTopLeftPosition(): Point {
         const bounds = this.getBoundingRectangle();
         return [bounds.topLeft.x, bounds.topLeft.y];
     }
@@ -443,7 +433,7 @@ export default class Component {
      * @returns {*}
      * @memberof component
      */
-    static fromInterchangeV1(json: ComponentInterchangeV1) {
+    static fromInterchangeV1(json: ComponentInterchangeV1): Component {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";
@@ -474,7 +464,7 @@ export default class Component {
         if (iscustomcompnent) {
             definition = CustomComponent.defaultParameterDefinitions();
         } else {
-            definition = Registry.featureSet.getDefinition(entity);
+            definition = ComponentUtils.getFeatureSetDefinition(entity);
             if (definition === null) {
                 throw Error("Could not find definition for type: " + entity);
             }
@@ -507,7 +497,7 @@ export default class Component {
         }
 
         const paramstoadd = new Params(params, definition.unique, definition.heritable);
-        const typestring = Registry.featureSet.getTypeForMINT(entity);
+        const typestring = ComponentUtils.getMintType(entity);
         const component = new Component(typestring, paramstoadd, name, entity, id);
 
         // Deserialize the component ports
@@ -529,7 +519,7 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-    setPort(label: string, port: ComponentPort) {
+    setPort(label: string, port: ComponentPort): void {
         this._ports.set(label, port);
     }
 
@@ -538,7 +528,7 @@ export default class Component {
      * @returns {Number} Returns the degree of rotation
      * @memberof Component
      */
-    getRotation() {
+    getRotation(): number {
         if (this._params.hasParam("rotation")) {
             return this.getValue("rotation");
         } else if (this._params.hasParam("orientation")) {
@@ -561,7 +551,7 @@ export default class Component {
      * @returns {void}
      * @memberof Component
      */
-    attachComponentPortRender(label: string, render: any) {
+    attachComponentPortRender(label: string, render: any): void {
         this._componentPortTRenders.set(label, render);
     }
 
@@ -570,14 +560,14 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-    updateComponentPorts() {
+    updateComponentPorts(): void {
         // updating the Component Ports
 
         const params = this.params.toMap();
 
         const cleanparamdata = params;
 
-        const ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.type);
+        const ports = ComponentUtils.getComponentPorts(cleanparamdata, this.type);
 
         for (const i in ports) {
             this.setPort(ports[i].label, ports[i]);

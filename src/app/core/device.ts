@@ -787,8 +787,8 @@ export default class Device {
             let component = this.__components[i];
             //go through each component's features
             for (let j in component.features) {
-                let feature = component.features[j];
-                if (feature.ID === id) {
+                let featureid = component.features[j];
+                if (featureid === id) {
                     return component;
                 }
             }
@@ -825,8 +825,8 @@ export default class Device {
             let connection = this.__connections[i];
             //go through each component's features
             for (let j in connection.features) {
-                let feature = connection.features[j];
-                if (feature.ID === id) {
+                let featureid = connection.features[j];
+                if (featureid === id) {
                     return connection;
                 }
             }
