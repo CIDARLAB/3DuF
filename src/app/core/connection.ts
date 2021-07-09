@@ -402,7 +402,7 @@ export default class Connection {
         const p1 = new paper.Point(segment[0]);
         const p2 = new paper.Point(segment[1]);
 
-        let segment1, segment2;
+        let segment1: Segment, segment2: Segment;
         const p1_break1 = p1.getDistance(break1);
         const p2_break1 = p2.getDistance(break1);
         const p1_break2 = p1.getDistance(break2);
