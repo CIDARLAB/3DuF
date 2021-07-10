@@ -117,7 +117,7 @@ export default class ViewManager {
         this.view.setMouseWheelFunction(func);
         this.minZoom = 0.0001;
         this.maxZoom = 5;
-        // this.setupTools();
+        this.setupTools();
 
         // TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
@@ -163,8 +163,8 @@ export default class ViewManager {
      */
     setupToolBars() {
         // Initiating the zoom toolbar
-        this.zoomToolBar = new ZoomToolBar(0.0001, 5);
-        this.componentToolBar = new ComponentToolBar(this);
+        // this.zoomToolBar = new ZoomToolBar(0.0001, 5);
+        // this.componentToolBar = new ComponentToolBar(this);
         this.resetToDefaultTool();
     }
 
@@ -1157,7 +1157,7 @@ export default class ViewManager {
     resetToDefaultTool() {
         this.cleanupActiveTools();
         this.activateTool("MouseSelectTool");
-        this.componentToolBar.setActiveButton("SelectButton");
+        // this.componentToolBar.setActiveButton("SelectButton");
     }
 
     /**

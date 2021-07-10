@@ -1,4 +1,3 @@
-import MoveToolBar from "../ui/moveToolBar";
 import MouseTool from "./mouseTool";
 
 import Registry from "../../core/registry";
@@ -9,7 +8,6 @@ export default class MoveTool extends MouseTool {
 
         // Use the startpoint to calculate the delta for movement
         this.__startPoint = null;
-        this.__moveWindow = new MoveToolBar(this);
         this.__dragging = false;
 
         // this.dragging = false;
