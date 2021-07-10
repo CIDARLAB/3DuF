@@ -19,7 +19,7 @@ class Registry {
     featureDefaults = {
       Basic: new FeatureSet(Basic.definitions, Basic.tools, Basic.render2D, Basic.render3D, "Basic").getDefaults()
     };
-    currentDevice = null;
+    public currentDevice = null;
     canvasManager = null;
     currentLayer = null;
     currentTextLayer = null;

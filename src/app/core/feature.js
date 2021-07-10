@@ -29,6 +29,7 @@ export default class Feature {
         this.__fabtype = fabtype;
         this.__dxfObjects = [];
         this.__referenceID = null;
+        this.layer = null;
     }
 
     /**
