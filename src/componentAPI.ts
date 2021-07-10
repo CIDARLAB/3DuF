@@ -58,12 +58,10 @@ class componentAPI {
     __render3D: any;
     name: any;
     setString: string | undefined;
-    constructor(definitions: any, tools: any, render2D: any, render3D: any, setString: any, library: any) {
+    constructor(definitions: any, tools: any, setString: any, library: any) {
         this.__definitions = definitions;
         this.__setString = setString;
         this.__tools = tools;
-        this.__render2D = render2D;
-        this.__render3D = render3D;
         // TODO: Replace this cumbersome mechanism for generating different feature variants, etc.
         this.__library = {
             Port: { object: new Port(), key: null },
@@ -135,61 +133,10 @@ class componentAPI {
             LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
             LogicArray_cell: { object: new LogicArray(), key: "CELL" }
         };
-
-        // this.__checkDefinitions();
-        console.warn("Skipping definition check over here ");
     }
 
-    /**
-     * Returns the 3DuF type for MINT syntax (need to get rid of this in the future)
-     * @param minttype
-     * @return {string|null}
-     */
-
-    /**
-     * Returns the default params and values for the entire library
-     */
-
-    /**
-     * Returns the definition of the given typestring
-     * @param typeString
-     * @return {null|{mint: *, defaults: *, unique: *, maximum: *, units: *, heritable: *, minimum: *}}
-     */
-
-    /**
-     * Returns the library/technology description instead of the function pointer as it was doing before
-     * @param typeString
-     * @return {*}
-     */
-    /**
-     * Returns the Tool that is being used by the definition
-     * @param typeString
-     * @return {Document.tool|null}
-     */
-
-    /**
-     * Creates a Feature (Outdated, I think)
-     * @param typeString
-     * @param setString
-     * @param values
-     * @param name
-     * @return {*}
-     */
-    /**
-     * Returns the component ports for a given component
-     * @param params
-     * @param typestring
-     * @return {void|Array}
-     */
-
-    /**
-     * Checks if the component definition in the library has the Inverse Render generation support
-     * @param typestring
-     * @return {*|boolean}
-     */
-
-    getAllComponents(): string[] {
-        var components = new Array();
+    getAllComponents(): Array<Template> {
+        let components = new Array();
         for(const key in this.__library){
             const definition = this.__library[key].object;
             const ret = {
