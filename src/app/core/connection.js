@@ -399,11 +399,11 @@ export default class Connection {
      * @memberof Connection
      * @returns {boolean}
      */
-    insertFeatureGap(boundingbox) {
-        let foundflag = false;
+    insertFeatureGap(boundingbox, angle = 0) {
         //Convert Rectangle to Path.Rectangle
         console.log(boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
+        boundingbox.rotate(angle, boundingbox.center);
         //Check which segment I need to break
         let segments = this.getValue("segments");
         for (let i in segments) {
@@ -420,7 +420,6 @@ export default class Connection {
                     throw new Error("Could not break the segments correctly");
                 }
                 segments.splice(i, 1, newsegs[0], newsegs[1]);
-                foundflag = true;
             } else if (intersections.length === 1) {
                 console.error("Only found 1 intersection point so going to use a different method");
                 console.log("Found Intersection:", intersections);
@@ -438,18 +437,9 @@ export default class Connection {
             }
         }
 
-        //Now that we exit the check for every segment we can verify if this is ok
-        if (!foundflag) {
-            console.error("There's something funky going on with the intersection,no intersections found");
-            console.log("Segments:", segments);
-            // console.log("line:", line);
-            console.log("Bounding Box:", boundingbox);
-            throw new Error("Could not find 2 intersection points, hence aborting the whole thing");
-        }
-        // console.log("raw new segments:", segments);
         this.updateSegments(segments);
 
-        return foundflag;
+        return true;
     }
 
     /**
@@ -474,14 +464,14 @@ export default class Connection {
 
         //Find out if break1 is closer to p1 or p2
         if (p1_break1 + p2_break2 < p2_break1 + p1_break2) {
-            //break1 is closer to p1 and break2 is closer to p2\
+            //break1 is closer to p1 and break2 is closer to p2
             segment1 = [
                 [Math.round(p1.x), Math.round(p1.y)],
                 [Math.round(break1.x), Math.round(break1.y)]
             ];
             segment2 = [
-                [Math.round(p2.x), Math.round(p2.y)],
-                [Math.round(break2.x), Math.round(break2.y)]
+                [Math.round(break2.x), Math.round(break2.y)],
+                [Math.round(p2.x), Math.round(p2.y)]
             ];
         } else {
             //break1 is closer to p2 and break1 is closer to p1
@@ -490,8 +480,8 @@ export default class Connection {
                 [Math.round(break1.x), Math.round(break1.y)]
             ];
             segment2 = [
-                [Math.round(p1.x), Math.round(p1.y)],
-                [Math.round(break2.x), Math.round(break2.y)]
+                [Math.round(break2.x), Math.round(break2.y)],
+                [Math.round(p1.x), Math.round(p1.y)]
             ];
         }
         return [segment1, segment2];
@@ -521,22 +511,22 @@ export default class Connection {
         }
 
         //Check if the params have the other unique elements necessary otherwise add them as null
-        if (!Object.prototype.hasOwnProperty.call(params, 'start')) {
+        if (!Object.prototype.hasOwnProperty.call(params, "start")) {
             //Setting this value to origin
             params["start"] = [0, 0];
         }
-        if (!Object.prototype.hasOwnProperty.call(params, 'end')) {
+        if (!Object.prototype.hasOwnProperty.call(params, "end")) {
             //Setting this value to origin
             params["end"] = [0, 0];
         }
-        if (!Object.prototype.hasOwnProperty.call(params, 'wayPoints')) {
+        if (!Object.prototype.hasOwnProperty.call(params, "wayPoints")) {
             //TODO: setting a single waypoint at origin
             params["wayPoints"] = [
                 [0, 0],
                 [1, 2]
             ];
         }
-        if (!Object.prototype.hasOwnProperty.call(params, 'segments')) {
+        if (!Object.prototype.hasOwnProperty.call(params, "segments")) {
             //TODO: Setting a default segment from origin to origin
             params["segments"] = [
                 [
@@ -553,12 +543,12 @@ export default class Connection {
         let paramstoadd = new Params(params, definition.unique, definition.heritable);
 
         let connection = new Connection(entity, paramstoadd, name, entity, id);
-        if (Object.prototype.hasOwnProperty.call(json, 'source')) {
+        if (Object.prototype.hasOwnProperty.call(json, "source")) {
             if (json.source !== null && json.source !== undefined) {
                 connection.setSourceFromJSON(device, json.source);
             }
         }
-        if (Object.prototype.hasOwnProperty.call(json, 'sinks')) {
+        if (Object.prototype.hasOwnProperty.call(json, "sinks")) {
             if (json.sinks !== null && json.sinks !== undefined) {
                 for (let i in json.sinks) {
                     let sink = json.sinks[i];
@@ -566,7 +556,7 @@ export default class Connection {
                 }
             }
         }
-        if (Object.prototype.hasOwnProperty.call(json, 'paths')) {
+        if (Object.prototype.hasOwnProperty.call(json, "paths")) {
             if (json.paths !== null && json.paths !== undefined) {
                 for (let i in json.paths) {
                     connection.addWayPoints(json.paths[i]);
