@@ -1,4 +1,4 @@
-import RightClickMenu from "../ui/rightClickMenu";
+import RightClickMenu from "@/components/RightClickMenu";
 import MouseTool from "./mouseTool";
 
 import Registry from "../../core/registry";
@@ -88,9 +88,9 @@ export default class MouseSelectTool extends MouseTool {
             if (target.selected) {
                 const feat = Registry.currentDevice.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
-                const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
-                rightclickmenu.show(event, feat);
-                this.rightClickMenu = rightclickmenu;
+                //const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
+                //rightclickmenu.show(event, feat);
+                //this.rightClickMenu = rightclickmenu;
                 // let func = PageSetup.getParamsWindowCallbackFunction(feat.getType(), feat.getSet());
                 // func(event);
             } else {

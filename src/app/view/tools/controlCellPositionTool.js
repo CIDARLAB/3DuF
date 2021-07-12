@@ -1,5 +1,4 @@
 import PositionTool from "./positionTool";
-
 import * as Registry from "../../core/registry";
 import Device from "../../core/device";
 

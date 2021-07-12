@@ -11,12 +11,14 @@
 <script>
 import Visualiser from "./components/Visualiser.vue";
 import LayoutSidebar from "./views/layouts/SidebarLayout.vue";
+//import RightClickMenu from "./components/RightClickMenu.vue";
 
 export default {
     name: "App",
     components: {
         LayoutSidebar,
         Visualiser
+        //RightClickMenu
     }
 };
 </script>

@@ -55,6 +55,7 @@
                         </v-row>
                     </v-col>
                 </v-row>
+                -->
             </v-card>
         </div>
     </div>
@@ -63,8 +64,9 @@
 <script>
 import Vue from "vue";
 import EventBus from "@/events/events";
-
+//import RightClickMenu from "@/components/RightClickMenu.vue";
 import "@mdi/font/css/materialdesignicons.css";
+import PumpSpec from "@/models/property-drawer/PumpSpec.js";
 
 export default {
     name: "Move",
@@ -108,7 +110,8 @@ export default {
     data() {
         return {
             activated: false,
-            callbacks: {}
+            callbacks: {},
+            pumpSpec: PumpSpec
         };
     },
     computed: {

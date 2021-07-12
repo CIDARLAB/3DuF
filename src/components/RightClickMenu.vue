@@ -1,100 +1,105 @@
-    <template>
-    <div id="contextMenu" class="hidden-block">
-        <v-simple-table dense fixed-header>
-            <template>
-                <thead>
-                    <tr>
-                        <th>
+<template>
+    <div v-if="activeMenu" id="contextMenu">
+        <v-container>
+            <v-row>
+                <v-col>
+                    <thead v-if="Rename"></thead>
+                    <v-row>
+                        <v-col>
                             <!-- Colored icon button -->
                             <v-btn id="context_button_copy" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" @click="copyButton()">
                                 <span class="material-icons">file_copy</span>
                             </v-btn>
                             <!-- <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_copy">Copy</div> -->
-                        </th>
-                        <th>
                             <v-btn id="context_button_delete" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" @click="deleteButton()">
                                 <span class="material-icons">delete</span>
                             </v-btn>
                             <!-- <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_delete">Delete</div> -->
-                        </th>
-                        <th>
                             <v-btn id="context_button_move" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" @click="moveButton()">
                                 <span class="material-icons">open_with</span>
                             </v-btn>
+                            <div v-if="activeMove">
+                                <MoveDialog />
+                            </div>
                             <!-- <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_move">Move</div> -->
-                        </th>
-                        <th>
                             <v-btn id="context_button_revert" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" @click="revertToDefaults()">
                                 <span class="material-icons">settings_backup_restore</span>
                             </v-btn>
                             <!-- <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_revert">Revert</div> -->
-                        </th>
-                        <th>
                             <v-btn id="context_button_copytoall" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" @click="copyToAllButton()">
                                 <span class="material-icons">select_all</span>
                             </v-btn>
                             <!-- <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_copytoall">Change All</div> -->
-                        </th>
-                        <div v-if="activated">
-                            <ChangeAllDialog />
-                        </div>
-                        <th>
+                            <div v-if="activeChange">
+                                <ChangeAllDialog />
+                            </div>
                             <v-btn id="context_button_rename" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" @click="renameButton()">
                                 <span class="material-icons">title</span>
                             </v-btn>
                             <!-- <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_rename">Rename</div> -->
-                        </th>
-                        <th>
                             <v-btn id="context_button_arraygen" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" @click="generateArrayButton()">
                                 <span class="material-icons">view_comfy</span>
                             </v-btn>
                             <!-- <div class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large" data-mdl-for="context_button_arraygen">Generate Array</div> -->
-                        </th>
-                    </tr>
-                </thead>
-                <div ref="drawer" class="property-drawer">
-                    <tbody>
+                        </v-col>
+                    </v-row>
+                    <v-row>
                         <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                         <v-card-text>
-                            <tr>
-                                <td>Control</td>
-                                <td>Key</td>
-                                <td>Value</td>
-                            </tr>
-                            <tr v-for="item in spec" :key="item.key">
-                                <td width="200px">
-                                    <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min"></v-slider>
-                                </td>
-                                <td>
-                                    <code>{{ item.name }}</code>
-                                </td>
-                                <td width="125px">
-                                    <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units"> </v-text-field>
-                                </td>
-                            </tr>
+                            <v-simple-table dense fixed-header>
+                                <template>
+                                    <thead>
+                                        <tr>
+                                            <th>Control</th>
+                                            <th>Key</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in spec" :key="item.key">
+                                            <td width="200px">
+                                                <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min"></v-slider>
+                                            </td>
+                                            <td>
+                                                <code>{{ item.name }}</code>
+                                            </td>
+                                            <td width="125px">
+                                                <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units"> </v-text-field>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </template>
+                            </v-simple-table>
                         </v-card-text>
-                    </tbody>
-                </div>
-            </template>
-        </v-simple-table>
+                    </v-row>
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>
 
 <script>
 //import { defineComponent } from "@vue/composition-api";
 //import specname from "@/models/property-drawer/'specname'.js";
-import { createFeatureTable, revertToDefaultParams } from "./parameterMenu";
-import Registry from "../../core/registry";
+import { createFeatureTable, revertToDefaultParams } from "@/app/view/ui/parameterMenu";
+import Registry from "@/app/core/registry";
 import EventBus from "@/events/events";
-import ChangeAllDialog from "@/app/view/ui/changeAllDialog";
-import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
+import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
+import MoveDialog from "@/components/base/MoveDialog.vue";
+import MouseSelectTool from "@/app/view/tools/mouseSelectTool";
+import MouseTool from "@/app/view/tools/mouseTool";
+//import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
 
 export default {
-    components: ChangeAllDialog,
+    components: { ChangeAllDialog, MoveDialog },
     props: {
-        title: "feature.getType()",
+        title: {
+            type: String,
+            required: true
+        },
         spec: {
-            spec: RoundedChannelSpec,
+            type: Object,
+            required: true,
             validator: spec => {
                 if (!Array.isArray(spec)) {
                     console.error("PropertyDrawer: Spec is not an array, unable to validate");
@@ -115,21 +120,45 @@ export default {
     },
     data() {
         return {
-            activated: false,
-            specname: this.title + "Spec"
+            title: this.getTitle(),
+            spec: this.getSpec(),
+            activeMenu: false,
+            activeChange: false,
+            activeMove: false,
+            Rename: false
         };
+    },
+    computed() {
+        //title getTitle();
+        //spec = getSpec();
     },
     mounted() {
         EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
+        EventBus.get().on(EventBus.DBL_CLICK, this.activeMenu(event));
     },
     methods: {
-        // Event Handeling
+        activateMenu(event) {
+            //alternate: Paperview.canvas.onmousedown
+            if (MouseTool.down) {
+                if (MouseTool.down) {
+                    MouseSelectTool.down;
+                    const point = MouseTool.getEventPosition(event);
+                    const target = MouseSelectTool.hitFeature(point);
+                    if (target) {
+                        if (target.selected) {
+                            this.activeMenu = !this.activeMenu;
+                        }
+                    }
+                }
+            }
+        },
         revertToDefaults() {
             revertToDefaultParams(this.__featureTable, this.__typeString, this.__setString);
         },
         deleteButton() {
+            let This = new this();
             Registry.viewManager.view.deleteSelectedFeatures();
-            this.close();
+            This.close();
         },
         copyButton() {
             Registry.viewManager.initiateCopy();
@@ -137,13 +166,13 @@ export default {
         },
         copyToAllButton() {
             console.log("Change all the component parameters");
-            this.activated = !this.activated;
+            this.activeChange = !this.activeChange;
         },
         moveButton() {
-            //TODO call move dialog
+            this.activeMove = !this.activeMove;
         },
         renameButton() {
-            //TODO make rename Dialog
+            this.Rename = !this.Rename;
         },
         generateArrayButton() {
             this.close();
@@ -159,6 +188,14 @@ export default {
             if (!this.activated) return;
             const bounds = this.$refs.activator.$el.getBoundingClientRect();
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
+        },
+        getTitle() {
+            //TODO
+            this.title = "Rounded Spec";
+        },
+        getSpec() {
+            //TODO
+            this.spec = RoundedChannelSpec;
         }
     }
 };
