@@ -64,6 +64,7 @@ export default class ComponentToolBar {
         this.__dropletgenTButton = document.getElementById("dropletgenT_button");
         this.__dropletgenFlowButton = document.getElementById("dropletgenFlow_button");
         this.__logicarrayButton = document.getElementById("logicarray_button");
+		this.__magnetophoresisButton = document.getElementById("magnetophoresis_button")
 
         //Create all the parameter menu buttons
 
@@ -115,6 +116,7 @@ export default class ComponentToolBar {
         this.__dropletgenTParams = document.getElementById("dropletgenT_params_button");
         this.__dropletgenFlowParams = document.getElementById("dropletgenFlow_params_button");
         this.__logicarrayParams = document.getElementById("logicarray_params_button");
+		this.__magnetophoresisParams = document.getElementById("magnetophoresis_params_button");
 
         this.buttons = {
             SelectButton: this.__selectToolButton,
@@ -165,6 +167,7 @@ export default class ComponentToolBar {
             DropletGenT: this.__dropletgenTButton,
             DropletGenFlow: this.__dropletgenFlowButton,
             LogicArray: this.__logicarrayButton
+			magnetophoresis: this.__magnetophoresisButton,
         };
             
 
@@ -176,6 +179,14 @@ export default class ComponentToolBar {
 
     __setupEventHandlers() {
         let ref = this;
+		
+		 this.__magnetophoresisButton.onclick = function() {
+            Registry.viewManager.activateTool("magnetophoresis");
+
+5           ref.setActiveButton("magnetophoresis");
+6           ref.__viewManagerDelegate.switchTo2D();
+        };
+		
 
         this.__channelButton.onclick = function() {
             Registry.viewManager.activateTool("Channel");
@@ -540,6 +551,7 @@ export default class ComponentToolBar {
         this.__capacitancesensorParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CapacitanceSensor", "Basic");
         this.__dropletgenTParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenT", "Basic");
         this.__dropletgenFlowParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenFlow", "Basic");
+		this.__magnetophoresisParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("magnetophoresis", "Basic");
         this.__logicarrayParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LogicArray", "Basic");
     }
 
