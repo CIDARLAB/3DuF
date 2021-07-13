@@ -137,7 +137,7 @@ class componentAPI {
 
     getAllComponents(): Array<Template> {
         let components = new Array();
-        for(const key in this.__library){
+        for (const key in this.__library) {
             const definition = this.__library[key].object;
             const ret = {
                 unique: definition.unique,
@@ -151,12 +151,12 @@ class componentAPI {
             var render2D = this.__render2D[key];
             var render3D = this.__render3D[key];
             var tool = this.__definitions[key].tool;
-            components.push(render2D,render3D,tool);
+            components.push(render2D, render3D, tool);
         }
         return components;
     }
 
-     getComponentwithMint(minttype:string): Template  { 
+    getComponentwithMint(minttype: string): Template {
         const checkmint = minttype;
         for (const key in this.__library) {
             if (checkmint == this.__library[key].object.mint) {
@@ -164,6 +164,5 @@ class componentAPI {
             }
         }
         return null;
-
     }
 }
