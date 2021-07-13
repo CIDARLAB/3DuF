@@ -50,7 +50,7 @@ export function renderEdgeFeature(feature) {
 
     // Add the feature id to the rendered object or else the whole things breaks down
     // TODO: Streamline the feature ID insertion for each rendered object business
-    path.featureID = feature.getID();
+    path.featureID = feature.ID;
     return path;
 }
 

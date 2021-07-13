@@ -118,7 +118,7 @@ describe("Layer", function() {
         it("should not let the user remove a feature by ID", function() {
             lay1.addFeature(feat1);
             (function() {
-                lay1.removeFeature(feat1.getID());
+                lay1.removeFeature(feat1.ID);
             }.should.throwError());
         });
         it("should not let the user remove a feature when empty", function() {
@@ -170,7 +170,7 @@ describe("Layer", function() {
     describe("#getFeature", function() {
         it("should return a feature when passed an ID", function() {
             lay1.addFeature(feat1);
-            lay1.getFeature(feat1.getID()).should.be.exactly(feat1);
+            lay1.getFeature(feat1.ID).should.be.exactly(feat1);
         });
         it("should not allow the user to retrieve a feature for an ID that does not exist in the layer", function() {
             (function() {
@@ -186,7 +186,7 @@ describe("Layer", function() {
         it("can produce JSON when containing a feature", function() {
             lay1.addFeature(feat1);
             const json = lay1.toJSON();
-            json.features[feat1.getID()].id.should.equal(feat1.getID());
+            json.features[feat1.ID].id.should.equal(feat1.ID);
         });
         it("can produce JSON when containing multiple features", function() {
             lay1.addFeature(feat1);

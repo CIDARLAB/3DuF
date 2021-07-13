@@ -146,14 +146,17 @@ export default class ConnectionTool extends MouseTool {
     updateChannel() {
         if (this.lastPoint && this.startPoint) {
             if (this.currentChannelID) {
+                console.log("Here");
                 const target = ConnectionTool.getTarget(this.lastPoint);
                 const feat = Registry.currentLayer.getFeature(this.currentChannelID);
                 feat.updateParameter("end", target);
                 feat.updateParameter("wayPoints", this.wayPoints);
                 feat.updateParameter("segments", this.generateSegments());
             } else {
+                console.log("There");
                 const newChannel = this.createChannel(this.startPoint, this.startPoint);
-                this.currentChannelID = newChannel.id;
+                this.currentChannelID = newChannel.ID;
+                console.log(this.currentChannelID);
                 Registry.currentLayer.addFeature(newChannel);
             }
         }
@@ -180,7 +183,7 @@ export default class ConnectionTool extends MouseTool {
             if (this.__currentConnectionObject === null || this.__currentConnectionObject === undefined) {
                 const connection = new Connection("Connection", params, Registry.currentDevice.generateNewName("CHANNEL"), "CHANNEL");
                 connection.routed = true;
-                connection.addFeatureID(feat.getID());
+                connection.addFeatureID(feat.ID);
                 connection.addWayPoints(this.wayPoints);
                 feat.referenceID = connection.id;
                 this.__addConnectionTargets(connection);
@@ -188,7 +191,7 @@ export default class ConnectionTool extends MouseTool {
             } else {
                 // console.error("Implement conneciton tool to update existing connection");
                 // TODO: Update the connection with more sinks and paths and what not
-                this.__currentConnectionObject.addFeatureID(feat.getID());
+                this.__currentConnectionObject.addFeatureID(feat.ID);
                 feat.referenceID = this.__currentConnectionObject.id;
                 this.__currentConnectionObject.addWayPoints(this.wayPoints);
                 feat.referenceID = this.__currentConnectionObject.id;
@@ -325,7 +328,15 @@ export default class ConnectionTool extends MouseTool {
     __isPointOnComponent(point) {
         // console.log("Point to check", point);
         const render = Registry.viewManager.hitFeature(point);
+        console.log("Mere");
+        console.log(Registry.viewManager.hitFeature(point).featureID);
+        console.log("Cere");
         if (render !== false && render !== null && render !== undefined) {
+            console.log(Registry.currentDevice.getFeatureByID(Registry.viewManager.hitFeature(point).featureID));
+            console.log("Bere");
+            console.log(Registry.currentDevice.getFeatureByID(Registry.viewManager.hitFeature(point).featureID).referenceID);
+            console.log(Registry.currentDevice.getFeatureByID(Registry.viewManager.hitFeature(point).featureID).ID);
+            console.log("Mere");
             const feature = Registry.currentDevice.getFeatureByID(render.featureID);
             // console.log("Feature that intersects:", feature);
             const component = Registry.currentDevice.getComponentByID(feature.referenceID);

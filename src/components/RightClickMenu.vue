@@ -148,7 +148,7 @@ export default {
         generateArrayButton() {
             this.close();
             Registry.viewManager.activateTool("GenerateArrayTool");
-            const component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.getID());
+            const component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.ID);
             Registry.viewManager.tools.GenerateArrayTool.activate(component);
         },
         // Property Drawer methods

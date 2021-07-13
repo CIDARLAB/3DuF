@@ -58,11 +58,11 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
         const newFeature = Device.makeFeature(this.typeString, this.setString, overridedata);
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
 
         controllayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         const params_to_copy = newFeature.getParams();
 
@@ -97,10 +97,10 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
         let newFeature = Device.makeFeature(this.typeString, this.setString, overridedata);
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         flowlayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         const params_to_copy = newFeature.getParams();
 
@@ -109,10 +109,10 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         newFeature = Device.makeFeature(newtypestring, this.setString, overridedata);
         newFeature.setParams(paramstoadd);
 
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         controllayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         const component = super.createNewComponent(this.typeString, params_to_copy, featureIDs);
 

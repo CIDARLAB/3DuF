@@ -28,7 +28,7 @@ describe("Feature", function() {
     });
     describe("#init", function() {
         it("should be given a unique ID on initialization", function() {
-            feat1.getID().should.not.equal(feat2.getID());
+            feat1.ID.should.not.equal(feat2.ID);
         });
     });
     describe("#updateParameter", function() {

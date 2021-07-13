@@ -596,7 +596,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     updateFeature(feature) {
-        const existingFeature = this.paperFeatures[feature.getID()];
+        const existingFeature = this.paperFeatures[feature.ID];
         let selected;
         if (existingFeature) selected = existingFeature.selected;
         else selected = false;
@@ -681,9 +681,12 @@ export default class PaperView {
      * @memberof PaperView
      */
     removeFeature(feature) {
-        const paperFeature = this.paperFeatures[feature.getID()];
-        if (paperFeature) paperFeature.remove();
-        this.paperFeatures[feature.getID()] = null;
+        const paperFeature = this.paperFeatures[feature.ID];
+        if (paperFeature) {
+            paperFeature.remove();
+            console.log("here");
+        }
+        this.paperFeatures[feature.ID] = null;
     }
 
     /**

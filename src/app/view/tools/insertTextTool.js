@@ -54,7 +54,7 @@ export default class InsertTextTool extends MouseTool {
                 { height: "Float", text: "String" }
             )
         );
-        // this.currentFeatureID = newFeature.getID();
+        // this.currentFeatureID = newFeature.ID;
         Registry.currentLayer.addFeature(newFeature);
         Registry.viewManager.saveDeviceState();
     }
