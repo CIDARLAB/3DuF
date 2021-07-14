@@ -18,7 +18,8 @@
 
 <script>
 import Dialog from "@/components/base/Dialog.vue";
-import { Registry , ViewManager } from "../app/core/registry";
+import Registry from "../app/core/registry";
+import viewManager from "@/app/view/viewManager";
 import DxfParser from "dxf-parser";
 import DXFObject from "../app/core/dxfObject";
 import * as HTMLUtils from "@/app/utils/htmlUtils";
@@ -30,7 +31,7 @@ export default {
     },
     data() {
         return {
-            dialog: false,
+            dialog: false
         };
     },
     // computed: {
@@ -38,35 +39,20 @@ export default {
     // },
     mounted: () => {
         this.__setupDragAndDropLoad("border_import_panel");
-        let viewManager = new ViewManager();
-        Registry.viewManager = viewManager;
-        
         Registry.currentDevice.updateView();
-
-        Registry.ViewManager.importBorder(this.dxfObject);
+        Registry.viewManager.importBorder(this.getDXFfile());
+        //Registry.viewManager.importBorder(this.file);
         //TODO - Need to setup paper for the canvas here so that the import dxf border can be visualized
     },
     methods: {
         onSave() {
             console.log("Saved data for Edit Border");
         },
-        // addFile(e) {
-        //     let droppedFiles = e.dataTransfer.files;
-        //     console.log(droppedFiles.name);
-        //     console.log(droppedFiles.size);
-        //     if (!droppedFiles) return;
-        // },
         deleteBorderButton() {
-            viewManager.deleteBorder();
+            Registry.viewManager.deleteBorder();
             console.log("Delete border clicked");
-            viewManager.generateBorder();
+            Registry.viewManager.generateBorder();
         },
-        // uploadBorder() {
-        //     const file = this.files[0];
-        //     console.log(file.name);
-        //     console.log(file.size);
-        //     reader.readAsText(file);
-        // },
         // dragover(event) {
         //     event.preventDefault();
         //     // visual effect
@@ -91,45 +77,50 @@ export default {
         // },
 
         addFile() {
+            // file reader
             const ref = this;
             const reader = new FileReader();
             reader.onload = function(e) {
-                // console.log(reader.result);
+                console.log(reader.result);
                 ref.loadDXFText(reader.result);
             };
-
-            let file = this.$refs.file.files[0];
-            console.log(file.name);
-            console.log(file.size);
-            reader.readAsText(file);
+            // log file
+            let files = this.$refs.file.files[0];
+            console.log(files.name);
+            console.log(files.size);
+            reader.readAsText(files);
         },
-
         importBorderButton() {
-            let viewManager = new ViewManager();
-            Registry.viewManager = viewManager;
+            // import file
             console.log("import button clicked");
             Registry.viewManager.deleteBorder();
-            Registry.viewManager.importBorder(this.dxfObject);
+            Registry.viewManager.importBorder(this.getDXFfile());
         },
-
-        loadDXFText(dxftext) {
-            const parser = new DxfParser();
-            try {
-                let dxfObject = parser.parseSync(dxftext);
-                console.log("parsed dxf object", dxfObject);
-            } catch (e) {
-                console.error(e.stack);
+        getDXFfile() {
+            return this.dxfObject;
+        },
+        loadDXFText(file) {
+            {
+                //let files = file.files[0];
+                const parser = new DxfParser();
+                try {
+                    let dxfObject = [];
+                    dxfObject = parser.parseSync(file);
+                    console.log("parsed dxf object", dxfObject);
+                } catch (e) {
+                    console.error(e.stack);
+                }
             }
         },
 
         __setupDragAndDropLoad(selector) {
             const ref = this;
-            const dnd = new HTMLUtils.DnDFileController(selector, function(file) {
-                const files = this.$refs.file.files[0];
+            new HTMLUtils.DnDFileController(selector, function(file) {
+                const files = file.files[0];
 
                 const reader = new FileReader();
                 reader.onloadend = function(e) {
-                    ref.__loadDXFData(this.result);
+                    ref.loadDXFText(reader.result);
                 };
                 try {
                     reader.readAsText(files);
@@ -137,16 +128,16 @@ export default {
                     console.log("unable to load DXF: " + files);
                 }
             });
-        },
-        __loadDXFData(text) {
-            const parser = new DxfParser();
-            const dxfdata = parser.parseSync(text);
-            const dxfobjects = [];
-            for (const i in dxfdata.entities) {
-                const entity = dxfdata.entities[i];
-                dxfobjects.push(new DXFObject(entity));
-            }
         }
+        // __loadDXFData(text) {
+        //     const parser = new DxfParser();
+        //     const dxfdata = parser.parseSync(text);
+        //     const dxfobjects = [];
+        //     for (const i in dxfdata.entities) {
+        //         const entity = dxfdata.entities[i];
+        //         dxfobjects.push(new DXFObject(entity));
+        //     }
+        // }
     }
 };
 </script>
