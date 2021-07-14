@@ -143,7 +143,7 @@ export default class FeatureSet {
     getTypeForMINT(minttype) {
         const checkmint = minttype;
         for (const key in this.__library) {
-            if (checkmint == this.__library[key].object.mint) {
+            if (checkmint === this.__library[key].object.mint) {
                 return key;
             }
         }
