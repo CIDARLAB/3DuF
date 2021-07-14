@@ -3,7 +3,7 @@
         <template #content>
             <h4>Drag Drop the DXF Border File:</h4>
             <div class="mdl-dialog__content">
-                <canvas id="border_import_panel" tabindex="1" width="400" height="200" color="gray" />
+                <canvas id="border_import_panel" tabindex="1" width="400" height="200" color="gray" @dragover="dragover" @dragleave="dragleave" @drop="drop" />
                 <br />
                 <input id="dxf_input" ref="file" type="file" class="upload" @change="addFile()" />
             </div>
@@ -39,10 +39,10 @@ export default {
     //     dxfObject
     // },
     mounted: () => {
-        this.__setupDragAndDropLoad("border_import_panel");
+        //this.__setupDragAndDropLoad("border_import_panel");
+        Registry.viewManager.importBorder(this.$refs.getDXFfile());
         Registry.currentDevice.updateView();
-        Registry.viewManager.importBorder(this.getDXFfile());
-        //Registry.viewManager.importBorder(this.file);
+        //Registry.viewManager.importBorder();
         //TODO - Need to setup paper for the canvas here so that the import dxf border can be visualized
     },
     methods: {
@@ -54,35 +54,35 @@ export default {
             console.log("Delete border clicked");
             Registry.viewManager.generateBorder();
         },
-        // dragover(event) {
-        //     event.preventDefault();
-        //     // visual effect
-        //     if (!event.currentTarget.classList.contains("bg-green-300")) {
-        //         event.currentTarget.classList.remove("bg-gray-100");
-        //         event.currentTarget.classList.add("bg-green-300");
-        //     }
-        // },
+        dragover(event) {
+            event.preventDefault();
+            // visual effect
+            if (!event.currentTarget.classList.contains("bg-gray-300")) {
+                event.currentTarget.classList.remove("bg-gray-100");
+                event.currentTarget.classList.add("bg-gray-300");
+            }
+        },
 
-        // dragleave(event) {
-        //     // Clean up
-        //     event.currentTarget.classList.add("bg-gray-100");
-        //     event.currentTarget.classList.remove("bg-green-300");
-        // },
+        dragleave(event) {
+            // Clean up
+            event.currentTarget.classList.add("bg-gray-100");
+            event.currentTarget.classList.remove("bg-gray-300");
+        },
 
-        // drop(event) {
-        //     event.preventDefault();
-        //     this.$refs.file.files = event.dataTransfer.files;
-        //     this.addFile(); // Trigger the add File event manually
-        //     event.currentTarget.classList.add("bg-gray-100");
-        //     event.currentTarget.classList.remove("bg-green-300");
-        // },
+        drop(event) {
+            event.preventDefault();
+            this.$refs.file.files = event.dataTransfer.files;
+            this.addFile(); // Trigger the add File event manually
+            event.currentTarget.classList.add("bg-gray-100");
+            event.currentTarget.classList.remove("bg-gray-300");
+        },
 
         addFile() {
             // file reader
             const ref = this;
             const reader = new FileReader();
             reader.onload = function(e) {
-                console.log(reader.result);
+                //console.log(reader.result);
                 ref.loadDXFText(reader.result);
             };
             // log file
@@ -111,31 +111,33 @@ export default {
                     console.error(e.stack);
                 }
             }
-        },
-
-        __setupDragAndDropLoad(selector) {
-            const ref = this;
-            new HTMLUtils.DnDFileController(selector, function(file) {
-                const files = file.files[0];
-
-                const reader = new FileReader();
-                reader.onloadend = function(e) {
-                    ref.loadDXFText(reader.result);
-                };
-                try {
-                    reader.readAsText(files);
-                } catch (err) {
-                    console.log("unable to load DXF: " + files);
-                }
-            });
         }
-        // __loadDXFData(text) {
-        //     const parser = new DxfParser();
-        //     const dxfdata = parser.parseSync(text);
-        //     const dxfobjects = [];
-        //     for (const i in dxfdata.entities) {
-        //         const entity = dxfdata.entities[i];
-        //         dxfobjects.push(new DXFObject(entity));
+
+        // __setupDragAndDropLoad(selector) {
+        //     const ref = this;
+        //     HTMLUtils.DnDFileController(selector, function(file) {
+        //         const files = file.files[0];
+
+        //         const reader = new FileReader();
+        //         reader.onloadend = function(e) {
+        //             ref.loadDXFtext(reader.result);
+        //             Registry.viewManager.importBorder(this.getDXFfile());
+        //         };
+        //         try {
+        //             reader.readAsText(files);
+        //         } catch (err) {
+        //             console.log("unable to load DXF: " + files);
+        //         }
+        //     });
+        // }
+        //     __loadDXFData(text) {
+        //         const parser = new DxfParser();
+        //         const dxfdata = parser.parseSync(text);
+        //         const dxfobjects = [];
+        //         for (const i in dxfdata.entities) {
+        //             const entity = dxfdata.entities[i];
+        //             dxfobjects.push(new DXFObject(entity));
+        //         }
         //     }
         // }
     }
