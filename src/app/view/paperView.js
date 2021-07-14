@@ -684,7 +684,6 @@ export default class PaperView {
         const paperFeature = this.paperFeatures[feature.ID];
         if (paperFeature) {
             paperFeature.remove();
-            console.log("here");
         }
         this.paperFeatures[feature.ID] = null;
     }
