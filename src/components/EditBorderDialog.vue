@@ -31,7 +31,8 @@ export default {
     },
     data() {
         return {
-            dialog: false
+            dialog: false,
+            dxfObject: []
         };
     },
     // computed: {
@@ -97,16 +98,15 @@ export default {
             Registry.viewManager.importBorder(this.getDXFfile());
         },
         getDXFfile() {
-            return this.dxfObject;
+            return this.$refs.dxfObject;
         },
         loadDXFText(file) {
             {
                 //let files = file.files[0];
                 const parser = new DxfParser();
                 try {
-                    let dxfObject = [];
-                    dxfObject = parser.parseSync(file);
-                    console.log("parsed dxf object", dxfObject);
+                    this.$refs.dxfObject = parser.parseSync(file);
+                    console.log("parsed dxf object", this.$refs.dxfObject);
                 } catch (e) {
                     console.error(e.stack);
                 }
