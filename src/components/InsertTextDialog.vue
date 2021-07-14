@@ -1,6 +1,6 @@
 <template>
     <Dialog title="Insert Text"
-        ><v-card-title class="h6">{{ Insert }}</v-card-title>
+        ><v-card-title class="h6">Insert</v-card-title>
         <template #content>
             <form action="#">
                 <tr>
@@ -28,18 +28,7 @@
                         <v-card-text><p class="text--primary subtitle-1">Select Layer:</p></v-card-text>
                     </td>
                     <td>
-                        <v-menu offset-y>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                                    Dropdown
-                                </v-btn>
-                            </template>
-                            <v-list>
-                                <v-list-item v-for="(item, index) in items" :key="index">
-                                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
+                        <v-select :items="items" label="Dropdown"> </v-select>
                     </td>
                 </tr>
             </form>
@@ -65,11 +54,15 @@ export default {
         Dialog
     },
     data: () => ({
-        items: [{ title: "Level1- FLOW" }, { title: "Level1- CONTROL" }, { title: "Level1- INTEGRATION" }]
+        items: ["Level1- FLOW", "Level1- CONTROL", "Level1- INTEGRATION"]
     }),
     methods: {
         onSave() {
             console.log("Saved data for Edit Device");
+        },
+        onClick() {
+            Registry.viewManager.activateTool("InsertTextTool");
+            Registry.text = document.getElementById("inserttext_textinput").value;
         }
     }
 };
