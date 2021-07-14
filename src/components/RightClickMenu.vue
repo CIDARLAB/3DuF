@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
     <div v-if="activeMenu" id="contextMenu">
         <v-container>
             <v-row>
@@ -6,6 +7,14 @@
                     <thead v-if="Rename"></thead>
                     <v-row>
                         <v-col>
+=======
+    <div id="contextMenu" class="hidden-block">
+        <v-simple-table dense fixed-header>
+            <template>
+                <thead>
+                    <tr>
+                        <th>
+>>>>>>> CIDARLAB-webpack-build
                             <!-- Colored icon button -->
                             <v-btn id="context_button_copy" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" @click="copyButton()">
                                 <span class="material-icons">file_copy</span>
@@ -114,10 +123,10 @@ export default {
                     });
                 });
 
-                return "success";
-            }
-        }
-    },
+    //             return "success";
+    //         }
+    //     }
+    // },
     data() {
         return {
             title: this.getTitle(),

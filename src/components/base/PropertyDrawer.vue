@@ -46,25 +46,25 @@ export default {
             required: true
         },
         spec: {
-            type: Object,
-            required: true,
-            validator: spec => {
-                if (!Array.isArray(spec)) {
-                    console.error("PropertyDrawer: Spec is not an array, unable to validate");
-                    return "danger";
-                }
+            type: Array,
+            required: true
+            // validator: spec => {
+            //     if (!Array.isArray(spec)) {
+            //         console.error("PropertyDrawer: Spec is not an array, unable to validate");
+            //         return "danger";
+            //     }
 
-                spec.forEach(item => {
-                    ["min", "max", "key", "units", "value"].forEach(key => {
-                        if (!Object.hasOwnProperty.call(item, key)) {
-                            console.error("Missing key " + key + " from item", item);
-                            return "danger";
-                        }
-                    });
-                });
+            //     spec.forEach(item => {
+            //         ["min", "max", "key", "units", "value"].forEach(key => {
+            //             if (!Object.hasOwnProperty.call(item, key)) {
+            //                 console.error("Missing key " + key + " from item", item);
+            //                 return "danger";
+            //             }
+            //         });
+            //     });
 
-                return "success";
-            }
+            //     return "success";
+            // }
         },
         activatedColor: {
             type: String,
@@ -83,7 +83,7 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
         }
     },

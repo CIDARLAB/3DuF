@@ -43,7 +43,7 @@ export default {
             }
         };
     },
-    mounted() {
+    updated() {
         Registry.currentGrid.enableAdaptiveGrid();
     },
     methods: {
@@ -77,7 +77,7 @@ export default {
             const { values } = event;
             let value1 = parseInt(values[0], 10);
             //This ensures that there is something valid present
-            if (registryref.currentGrid != null) {
+            if (registryref.currentGrid !== null) {
                 registryref.currentGrid.updateGridSpacing(value1);
                 registryref.currentGrid.notifyViewManagerToUpdateView();
             }
