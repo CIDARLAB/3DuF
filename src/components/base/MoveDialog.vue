@@ -68,43 +68,6 @@ import "@mdi/font/css/materialdesignicons.css";
 
 export default {
     name: "Move",
-    props: {
-        title: {
-            type: String,
-            required: true
-        },
-        spec: {
-            type: Object,
-            required: true,
-            validator: spec => {
-                if (!Array.isArray(spec)) {
-                    console.error("PropertyDrawer: Spec is not an array, unable to validate");
-                    return "danger";
-                }
-
-                spec.forEach(item => {
-                    ["min", "max", "key", "units", "value"].forEach(key => {
-                        if (!Object.hasOwnProperty.call(item, key)) {
-                            console.error("Missing key " + key + " from item", item);
-                            return "danger";
-                        }
-                    });
-                });
-
-                return "success";
-            }
-        },
-        activatedColor: {
-            type: String,
-            required: false,
-            default: "primary"
-        },
-        activatedTextColor: {
-            type: String,
-            required: false,
-            default: "white--text"
-        }
-    },
     data() {
         return {
             activated: false,
@@ -112,7 +75,7 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "ml-4", "mb-2", "btn"];
         }
     },

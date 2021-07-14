@@ -8,7 +8,7 @@
                         <v-row>
                             <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                             <v-icon size="20px" class="pencil">mdi-pencil</v-icon>
-                            <div class="d-inline">Right Click to End Connection</div>
+                            <div class="d-inline">{{ current_connection_suggestion }}</div>
                         </v-row>
                         <v-row>
                             <v-card-text>
@@ -101,6 +101,7 @@
 
 <script>
 import EventBus from "@/events/events";
+import Registry from "@/app/core/registry";
 import "@mdi/font/css/materialdesignicons.css";
 import "vue-select/dist/vue-select.css";
 import Vue from "vue";
@@ -118,27 +119,6 @@ export default {
             type: String,
             required: true
         },
-        spec: {
-            type: Object,
-            required: true,
-            validator: spec => {
-                if (!Array.isArray(spec)) {
-                    console.error("PropertyDrawer: Spec is not an array, unable to validate");
-                    return "danger";
-                }
-
-                spec.forEach(item => {
-                    ["min", "max", "key", "units", "value"].forEach(key => {
-                        if (!Object.hasOwnProperty.call(item, key)) {
-                            console.error("Missing key " + key + " from item", item);
-                            return "danger";
-                        }
-                    });
-                });
-
-                return "success";
-            }
-        },
         activatedColor: {
             type: String,
             required: false,
@@ -148,6 +128,27 @@ export default {
             type: String,
             required: false,
             default: "white--text"
+        },
+        spec: {
+            type: Array,
+            required: true
+            // validator: spec => {
+            //     if (!Array.isArray(spec)) {
+            //         console.error("PropertyDrawer: Spec is not an array, unable to validate");
+            //         return "danger";
+            //     }
+
+            //     spec.forEach(item => {
+            //         ["min", "max", "key", "units", "value"].forEach(key => {
+            //             if (!Object.hasOwnProperty.call(item, key)) {
+            //                 console.error("Missing key " + key + " from item", item);
+            //                 return "danger";
+            //             }
+            //         });
+            //     });
+
+            //     return "success";
+            // }
         }
     },
     data() {
@@ -159,16 +160,23 @@ export default {
             chip4: true,
             activated: false,
             isOpen: false,
-            items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }]
+            isEditing: false,
+            items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }],
+            connection_suggestions: { state1: "Left Click to Choose a Point", state2: "Right Click to End Connection" },
+            current_connection_suggestion: null
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
         }
     },
     mounted() {
         EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
+        this.current_connection_suggestion = this.connection_suggestions["state1"];
+    },
+    updated() {
+        Registry.viewManager.activateTool("Connection", "Connection");
     },
     methods: {
         showProperties() {
@@ -193,6 +201,9 @@ export default {
         },
         openClose() {
             this.isOpen = !this.isOpen;
+        },
+        connectionStatus() {
+            this.isEditing = true;
         }
     }
 };

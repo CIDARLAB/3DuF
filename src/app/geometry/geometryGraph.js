@@ -89,7 +89,7 @@ export default class GeometryGraph {
             const noderef = traversal[i];
             const node = this.__nodes.get(noderef);
             let nextnoderef;
-            if (i + 1 == traversal.length) {
+            if (i + 1 === traversal.length) {
                 // Last Node
                 nextnoderef = traversal[0];
             } else {
@@ -143,7 +143,7 @@ export default class GeometryGraph {
         // Now join all the segments
         // let joinedpath = null;
         // for(let i = 0; i < segments.length; i++){
-        //     if(joinedpath == null){
+        //     if(joinedpath === null){
         //         joinedpath = segments[i];
         //     }
         //     joinedpath.join(segments[i]);

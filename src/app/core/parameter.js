@@ -128,7 +128,7 @@ export default class Parameter {
     static generateComponentParameter(key, value) {
         let ret;
 
-        if (key == "position") {
+        if (key === "position") {
             ret = new Parameter("Point", value);
         } else if (NumberUtils.isFloatOrInt(value)) {
             ret = new Parameter("Float", value);
@@ -149,14 +149,14 @@ export default class Parameter {
     static generateConnectionParameter(key, value) {
         let ret;
 
-        if (key == "paths") {
+        if (key === "paths") {
             ret = [];
             let point;
             for (const i in value) {
                 point = value[i];
                 ret.push(new Parameter("Point", point));
             }
-        } else if (key == "segments") {
+        } else if (key === "segments") {
         } else if (NumberUtils.isFloatOrInt(value)) {
             ret = new Parameter("Float", value);
         } else if (typeof value === "string" || value instanceof String) {

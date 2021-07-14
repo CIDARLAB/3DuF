@@ -1,4 +1,3 @@
-import MoveToolBar from "../ui/moveToolBar";
 import MouseTool from "./mouseTool";
 
 import Registry from "../../core/registry";
@@ -9,7 +8,6 @@ export default class MoveTool extends MouseTool {
 
         // Use the startpoint to calculate the delta for movement
         this.__startPoint = null;
-        this.__moveWindow = new MoveToolBar(this);
         this.__dragging = false;
 
         // this.dragging = false;
@@ -165,7 +163,7 @@ export default class MoveTool extends MouseTool {
     //
     //     //Find the component that owns this feature and then select all of the friends
     //     let component = this.__getComponentWithFeatureID(paperElement.featureID);
-    //     if (component == null) {
+    //     if (component === null) {
     //         //Does not belong to a component, hence this returns
     //         paperElement.selected = true;
     //
@@ -202,7 +200,7 @@ export default class MoveTool extends MouseTool {
     //         let componentfeatures = component.getFeatureIDs();
     //         let index = componentfeatures.indexOf(featureid);
     //
-    //         if (index != -1) {
+    //         if (index !== -1) {
     //             //Found it !!
     //             console.log("Found Feature: " + featureid + " in component: " + component.getID());
     //             return component;
@@ -223,7 +221,7 @@ export default class MoveTool extends MouseTool {
     //             //Find the component that owns this feature and then select all of the friends
     //             let component = this.__getComponentWithFeatureID(paperFeature.featureID);
     //
-    //             if (component == null) {
+    //             if (component === null) {
     //                 //Does not belong to a component hence do the normal stuff
     //                 paperFeature.selected = true;
     //

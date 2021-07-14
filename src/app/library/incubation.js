@@ -107,7 +107,7 @@ export default class Incubation extends Template {
         const rotation = params.rotation;
         const color = params.color;
         let p0, p1, p2, p3, p4, p5;
-        // if (rotation == "H") {
+        // if (rotation === "H") {
         //     p0 = [px - l / 2, py - cw / 2];
         //     p1 = [px - l / 2, py + cw / 2];
         //     p2 = [px, py + w + cw / 2];
