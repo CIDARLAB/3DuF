@@ -1,6 +1,6 @@
 import RightClickMenu from "@/components/RightClickMenu";
 import MouseTool from "./mouseTool";
-
+import EventBus from "@/events/events";
 import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
@@ -88,6 +88,8 @@ export default class MouseSelectTool extends MouseTool {
             if (target.selected) {
                 const feat = Registry.currentDevice.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
+                EventBus.get().emit(EventBus.DBL_CLICK, this.event);
+                console.log("clicked this");
                 //const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
                 //rightclickmenu.show(event, feat);
                 //this.rightClickMenu = rightclickmenu;

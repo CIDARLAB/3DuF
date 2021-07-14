@@ -44,7 +44,7 @@
                         </v-col>
                     </v-row>
                     <v-row>
-                        <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
+                        <v-card-title class="subtitle-1 pb-0" :title="getTitle()">{{ title }}</v-card-title>
                         <v-card-text>
                             <v-simple-table dense fixed-header>
                                 <template>
@@ -56,7 +56,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="item in spec" :key="item.key">
+                                        <tr v-for="item in spec" :key="item.key" :spec="getSpec()">
                                             <td width="200px">
                                                 <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min"></v-slider>
                                             </td>
@@ -134,22 +134,22 @@ export default {
     },
     mounted() {
         EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
-        EventBus.get().on(EventBus.DBL_CLICK, this.activeMenu(event));
+        EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
     },
     methods: {
         activateMenu(event) {
             //alternate: Paperview.canvas.onmousedown
-            if (MouseTool.down) {
-                if (MouseTool.down) {
-                    MouseSelectTool.down;
-                    const point = MouseTool.getEventPosition(event);
-                    const target = MouseSelectTool.hitFeature(point);
-                    if (target) {
-                        if (target.selected) {
-                            this.activeMenu = !this.activeMenu;
-                        }
-                    }
-                }
+               this.activeMenu = !this.activeMenu;
+
+            if (event.clientX + 30 + this.$refs.contextMenu.clientWidth > window.innerWidth) {
+                let contextMenu_left = String(event.clientX - this.$refs.contextMenu.clientWidth - 30) + "px";
+            } else {
+                let contextMenu_left = String(event.clientX + 30) + "px";
+            }
+            if (event.clientY - 20 + this.$refs.contextMenu.clientHeight > window.innerHeight) {
+                let contextMenu_top = String(event.clientY - this.$refs.contextMenu.clientHeight + 20) + "px";
+            } else {
+                let contextMenu_top = String(event.clientY - 20) + "px";
             }
         },
         revertToDefaults() {
