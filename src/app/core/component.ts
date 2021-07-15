@@ -1,14 +1,14 @@
 import Params from "./params";
 import CustomComponent from "./customComponent";
 import ComponentPort from "./componentPort";
-import Feature from './feature'
+import Feature from "./feature";
 
 import uuid from "node-uuid";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
 import { ComponentPortInterchangeV1, ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1, Point } from "./init";
-import ComponentUtils from "../utils/componentUtils"
+import ComponentUtils from "../utils/componentUtils";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -55,7 +55,7 @@ export default class Component {
 
         // Create and set the ports here itself
 
-        const cleanparamdata = this._params.parameters
+        const cleanparamdata = this._params.parameters;
 
         const ports = ComponentUtils.getComponentPorts(cleanparamdata, this._type);
         if (ports != undefined && ports.length >= 0 && ports !== null) {
@@ -130,9 +130,9 @@ export default class Component {
     setBounds(bounds: paper.Rectangle): void {
         this._bounds = bounds;
         const topleftpt = bounds.topLeft;
-        this._params.updateParameter('position', [topleftpt.x, topleftpt.y]);
-        this._params.updateParameter('xspan', bounds.width);
-        this._params.updateParameter('yspan', bounds.height);
+        this._params.updateParameter("position", [topleftpt.x, topleftpt.y]);
+        this._params.updateParameter("xspan", bounds.width);
+        this._params.updateParameter("yspan", bounds.height);
     }
 
     /**
@@ -171,14 +171,14 @@ export default class Component {
             for (const key of map.keys()) {
                 let part: ComponentPort | undefined = map.get(key);
                 if (part != undefined) {
-                    let p = part.toInterchangeV1()
+                    let p = part.toInterchangeV1();
                     portdata.push(p);
                 }
             }
         }
 
         const output: ComponentInterchangeV1 = {
-            id : this._id,
+            id: this._id,
             name: this._name,
             entity: this._entity,
             params: this._params.toJSON(),
@@ -187,7 +187,7 @@ export default class Component {
             ports: portdata,
             layer: this.findLayerReferences()
         };
-        
+
         return output;
     }
 
@@ -289,7 +289,7 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-     private updateBounds(): void {
+    private updateBounds(): void {
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
@@ -377,8 +377,8 @@ export default class Component {
 
         const definition = ComponentUtils.getFeatureSetDefinition(this._type);
         // Clean Param Data
-        const cleanparamdata = this._params.parameters
-  
+        const cleanparamdata = this._params.parameters;
+
         const replicaparams = new Params(cleanparamdata, definition.unique, definition.heritable);
         const ret = new Component(this._type, replicaparams, name, this._entity);
         console.log("Checking what the new component params are:", ret._params);
@@ -441,12 +441,11 @@ export default class Component {
         const xspan = json.xspan;
         const yspan = json.yspan;
 
-        const params = json.params
+        const params = json.params;
 
         entity = name.split("_")[0]; // '^.*?(?=_)'
 
         console.log("new entity:", entity);
-
 
         // TODO - remove this dependency
         // iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);

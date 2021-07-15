@@ -24,7 +24,7 @@ export default class ConnectionTarget {
      * @returns {string} Returns the port label of the object
      * @memberof ConnectionTarget
      */
-    get portLabel():string {
+    get portLabel(): string {
         return this._portLabel;
     }
 
@@ -33,7 +33,7 @@ export default class ConnectionTarget {
      * @returns {Component} Returns a component object
      * @memberof ConnectionTarget
      */
-    get component():Component {
+    get component(): Component {
         return this._component;
     }
 
@@ -61,7 +61,7 @@ export default class ConnectionTarget {
      * @returns {ConnectionTarget} Returns a Connection Target Object
      * @memberof ConnectionTarget
      */
-    static fromJSON(device: Device, json: ConnectionTargetInterchangeV1):ConnectionTarget {
+    static fromJSON(device: Device, json: ConnectionTargetInterchangeV1): ConnectionTarget {
         const component = device.getComponentByID(json.component);
         return new ConnectionTarget(component, json.port);
     }

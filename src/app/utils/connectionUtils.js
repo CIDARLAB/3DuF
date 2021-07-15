@@ -1,7 +1,6 @@
 import Registry from "@/app/core/registry";
 
 export default class ConnectionUtils {
-
     constructor() {}
 
     static hasFeatureSet() {
@@ -15,8 +14,8 @@ export default class ConnectionUtils {
     static getDefinition(stringname) {
         return Registry.featureSet.getDefinition("Connection");
     }
-    
+
     static getFeatureFromID(featureid) {
-        return Registry.currentDevice.getFeatureByID(featureid)
+        return Registry.currentDevice.getFeatureByID(featureid);
     }
 }

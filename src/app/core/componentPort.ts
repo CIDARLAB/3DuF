@@ -1,7 +1,7 @@
 import uuid from "node-uuid";
 import paper from "paper";
-import Layer from './layer'
-import Component from './component'
+import Layer from "./layer";
+import Component from "./component";
 import { ComponentPortInterchangeV1, Point } from "./init";
 
 export default class ComponentPort {
@@ -10,7 +10,7 @@ export default class ComponentPort {
     protected _y: number;
     protected _label: string;
     protected _layer: Layer;
-    
+
     /**
      * Default constructor for ComponentPorts
      * @param {Number} x X coordinate

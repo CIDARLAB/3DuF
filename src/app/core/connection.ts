@@ -4,13 +4,13 @@ import Parameter from "./parameter";
 import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
 import ComponentPort from "./componentPort";
-import Device from './device';
+import Device from "./device";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
-import Layer from './layer';
+import Layer from "./layer";
 import uuid from "node-uuid";
 import { ConnectionInterchangeV1, ConnectionTargetInterchangeV1 } from "./init";
-import {Segment, Point} from "./init"
-import ConnectionUtils from '../utils/connectionUtils'
+import { Segment, Point } from "./init";
+import ConnectionUtils from "../utils/connectionUtils";
 
 /**
  * This class contains the connection abstraction used in the interchange format and the
@@ -59,11 +59,11 @@ export default class Connection {
         this._layer = new Layer({});
     }
 
-    get layer():Layer {
+    get layer(): Layer {
         return this._layer;
     }
 
-    set layer(layer:Layer) {
+    set layer(layer: Layer) {
         this._layer = layer;
     }
     /**
@@ -71,7 +71,7 @@ export default class Connection {
      * @returns {ConnectionTarget[]} Returns an array with the sinks
      * @memberof Connection
      */
-    get sinks():Array<ConnectionTarget> {
+    get sinks(): Array<ConnectionTarget> {
         return this._sinks;
     }
 
@@ -80,7 +80,7 @@ export default class Connection {
      * @returns {ConnectionTarget} Returns the source of the connection
      * @memberof Connection
      */
-    get source():ConnectionTarget | null {
+    get source(): ConnectionTarget | null {
         return this._source;
     }
 
@@ -89,7 +89,7 @@ export default class Connection {
      * @returns {Boolean} Returns true whether if it is routed or not
      * @memberof Connection
      */
-    get routed():boolean {
+    get routed(): boolean {
         return this._routed;
     }
 
@@ -108,7 +108,7 @@ export default class Connection {
      * @return {Feature[]}
      * @memberof Connection
      */
-    get featureIDs():Array<string> {
+    get featureIDs(): Array<string> {
         return this._featureIDs;
     }
 
@@ -130,9 +130,9 @@ export default class Connection {
     setBounds(bounds: paper.Rectangle): void {
         this._bounds = bounds;
         let topleftpt = bounds.topLeft;
-        this._params.updateParameter('position', [topleftpt.x, topleftpt.y])
-        this._params.updateParameter('xspan', bounds.width)
-        this._params.updateParameter('yspan', bounds.height)
+        this._params.updateParameter("position", [topleftpt.x, topleftpt.y]);
+        this._params.updateParameter("xspan", bounds.width);
+        this._params.updateParameter("yspan", bounds.height);
     }
 
     /**
@@ -155,7 +155,7 @@ export default class Connection {
      */
     toInterchangeV1(): ConnectionInterchangeV1 {
         const output: ConnectionInterchangeV1 = {
-            id : this._id,
+            id: this._id,
             name: this._name,
             entity: this._entity,
             source: null,
@@ -167,7 +167,7 @@ export default class Connection {
 
         if (this._source != null) {
             output.source = this._source.toJSON();
-        }  
+        }
         if (this._sinks != null && this._sinks.length > 0) {
             let sinks = [];
             for (let i in this._sinks) {
@@ -183,7 +183,7 @@ export default class Connection {
      * @returns {String}
      * @memberof Connection
      */
-    get id():string {
+    get id(): string {
         return this._id;
     }
 
@@ -202,7 +202,7 @@ export default class Connection {
      * @returns {String} Name of the component
      * @memberof Connection
      */
-    get name():string {
+    get name(): string {
         return this._name;
     }
 
@@ -212,7 +212,7 @@ export default class Connection {
      * @returns {String}
      * @memberof Connection
      */
-    get type():string {
+    get type(): string {
         return this._type;
     }
 
@@ -441,7 +441,7 @@ export default class Connection {
         const name = json.name;
         const id = json.id;
         const entity = json.entity;
-        const params = json.params
+        const params = json.params;
 
         // Check if the params have the other unique elements necessary otherwise add them as null
         if (!Object.prototype.hasOwnProperty.call(params, "start")) {
@@ -473,9 +473,8 @@ export default class Connection {
             ];
         }
         let definition;
-        if(ConnectionUtils.hasFeatureSet()){
+        if (ConnectionUtils.hasFeatureSet()) {
             definition = ConnectionUtils.getDefinition("Connection");
-
         }
         const paramstoadd = new Params(params, definition.unique, definition.heritable);
 
@@ -511,7 +510,7 @@ export default class Connection {
      */
     regenerateSegments(): void {
         const pathscopy = this.getPaths();
-        const ret: Array<Segment>= [];
+        const ret: Array<Segment> = [];
         let waypointscopy;
         for (const j in pathscopy) {
             waypointscopy = pathscopy[j];
@@ -582,7 +581,7 @@ export default class Connection {
         let ret = false;
 
         let source = this._source;
-        if(source != null) {
+        if (source != null) {
             if (source.component.id == componentid) {
                 //Remove the source object
                 this._source = null;
