@@ -1,6 +1,6 @@
 import Component from "./component";
 import Device from "./device";
-import { ConnectionInterchangeV1 } from "./init";
+import { ConnectionInterchangeV1, ConnectionTargetInterchangeV1 } from "./init";
 
 /**
  * Connection target class
@@ -24,7 +24,7 @@ export default class ConnectionTarget {
      * @returns {string} Returns the port label of the object
      * @memberof ConnectionTarget
      */
-    get portLabel() {
+    get portLabel():string {
         return this._portLabel;
     }
 
@@ -33,7 +33,7 @@ export default class ConnectionTarget {
      * @returns {Component} Returns a component object
      * @memberof ConnectionTarget
      */
-    get component() {
+    get component():Component {
         return this._component;
     }
 
@@ -61,8 +61,8 @@ export default class ConnectionTarget {
      * @returns {ConnectionTarget} Returns a Connection Target Object
      * @memberof ConnectionTarget
      */
-    static fromJSON(device: Device, json: ConnectionInterchangeV1) {
-        const component = device.getComponentByID(json.id);
-        return new ConnectionTarget(component, json.name);
+    static fromJSON(device: Device, json: ConnectionTargetInterchangeV1) {
+        const component = device.getComponentByID(json.component);
+        return new ConnectionTarget(component, json.port);
     }
 }

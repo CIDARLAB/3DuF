@@ -69,3 +69,8 @@ export type ComponentPortInterchangeV1 = {
     label: string,
     layer: any
 }
+
+export type ConnectionTargetInterchangeV1 = {
+    component: string,
+    port: string
+}

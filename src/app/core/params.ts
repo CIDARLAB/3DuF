@@ -14,7 +14,6 @@ export default class Params {
      * @param {} values Values of the params
      * @param {Boolean} unique Boolean if it's unique
      * @param {} heritable Boolean if it's heritable
-     * @param {} rawparameters ?
      */
     constructor(values: {[index: string]: any}, unique: Map<string,string>, heritable: Map<string,string>) { 
         this.__unique = unique;

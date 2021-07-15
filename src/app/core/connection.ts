@@ -8,7 +8,7 @@ import Device from './device';
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Layer from './layer';
 import uuid from "node-uuid";
-import { ConnectionInterchangeV1 } from "./init";
+import { ConnectionInterchangeV1, ConnectionTargetInterchangeV1 } from "./init";
 import {Segment, Point} from "./init"
 import ConnectionUtils from '../utils/connectionUtils'
 
@@ -59,7 +59,7 @@ export default class Connection {
         this._layer = new Layer({});
     }
 
-    get layer() {
+    get layer():Layer {
         return this._layer;
     }
 
@@ -71,7 +71,7 @@ export default class Connection {
      * @returns {ConnectionTarget[]} Returns an array with the sinks
      * @memberof Connection
      */
-    get sinks() {
+    get sinks():Array<ConnectionTarget> {
         return this._sinks;
     }
 
@@ -80,7 +80,7 @@ export default class Connection {
      * @returns {ConnectionTarget} Returns the source of the connection
      * @memberof Connection
      */
-    get source() {
+    get source():ConnectionTarget | null {
         return this._source;
     }
 
@@ -89,7 +89,7 @@ export default class Connection {
      * @returns {Boolean} Returns true whether if it is routed or not
      * @memberof Connection
      */
-    get routed() {
+    get routed():boolean {
         return this._routed;
     }
 
@@ -108,7 +108,7 @@ export default class Connection {
      * @return {Feature[]}
      * @memberof Connection
      */
-    get featureIDs() {
+    get featureIDs():Array<string> {
         return this._featureIDs;
     }
 
@@ -183,7 +183,7 @@ export default class Connection {
      * @returns {String}
      * @memberof Connection
      */
-    get id() {
+    get id():string {
         return this._id;
     }
 
@@ -202,7 +202,7 @@ export default class Connection {
      * @returns {String} Name of the component
      * @memberof Connection
      */
-    get name() {
+    get name():string {
         return this._name;
     }
 
@@ -212,7 +212,7 @@ export default class Connection {
      * @returns {String}
      * @memberof Connection
      */
-    get type() {
+    get type():string {
         return this._type;
     }
 
@@ -637,7 +637,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    setSourceFromJSON(device: Device, json: ConnectionInterchangeV1): void {
+    setSourceFromJSON(device: Device, json: ConnectionTargetInterchangeV1): void {
         const target = ConnectionTarget.fromJSON(device, json);
         this._source = target;
     }
@@ -649,7 +649,7 @@ export default class Connection {
      * @memberof Connection
      * @returns {void}
      */
-    addSinkFromJSON(device: Device, json: ConnectionInterchangeV1): void {
+    addSinkFromJSON(device: Device, json: ConnectionTargetInterchangeV1): void {
         let target = ConnectionTarget.fromJSON(device, json);
         this._sinks.push(target);
     }
