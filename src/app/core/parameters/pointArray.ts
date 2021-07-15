@@ -1,14 +1,14 @@
 import Parameter from "../parameter";
 import Registry from "../registry";
 import pointValue from "./pointValue";
-import {Segment} from "@/app/core/init"
+import { Segment } from "@/app/core/init";
 
 export default class PointArray extends Parameter {
     static readonly typeString: string = "PointArray";
     static readonly description: string = "Should be an array of points";
 
     constructor(value: Segment) {
-        super("PointArray",value);
+        super("PointArray", value);
     }
 
     static isValid(value: any): boolean {

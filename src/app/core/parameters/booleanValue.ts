@@ -5,7 +5,7 @@ export default class BooleanValue extends Parameter {
     static readonly description: string = "BooleanValue must be true or false.";
 
     constructor(value: boolean) {
-        super("Boolean",value);
+        super("Boolean", value);
     }
 
     static isValid(value: any): boolean {

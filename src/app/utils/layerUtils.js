@@ -1,4 +1,4 @@
-import Registry from "@/app/core/registry"
+import Registry from "@/app/core/registry";
 
 export default class layerUtls {
     constructor() {}

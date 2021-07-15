@@ -1,6 +1,5 @@
-import Registry from './registry';
+import Registry from "./registry";
 import * as NumberUtils from "../utils/numberUtils";
-
 
 /**
  * Parameter class
@@ -11,10 +10,10 @@ export default class Parameter {
 
     /**
      * Default Constructor of the Parameter object
-     * @param {String} type 
-     * @param {*} value 
+     * @param {String} type
+     * @param {*} value
      */
-    constructor(type:string, value: any) {
+    constructor(type: string, value: any) {
         //Check value if its parsable string
         if (typeof value === "string" && type === "Float") {
             value = parseInt(value);
@@ -49,7 +48,6 @@ export default class Parameter {
         return this.__type;
     }
 
-    
     /**
      * Updates the value of parameter
      * @param {*} value New value of the parameter
@@ -60,6 +58,6 @@ export default class Parameter {
         //Parameter.checkValue(this.__type, value);
         this.__value = value;
     }
-    
+
     resetValue(): void {}
 }

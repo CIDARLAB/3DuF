@@ -6,7 +6,7 @@ import paper from "paper";
 import Params from "../../core/params";
 import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
-import {ComponentAPI} from "@/componentAPI";
+import { ComponentAPI } from "@/componentAPI";
 
 import Registry from "../../core/registry";
 
