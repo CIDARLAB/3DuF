@@ -114,7 +114,7 @@ export default class PaperView {
             // Delete the selected Components !!!
             for (const i in this.selectedComponents) {
                 connection = this.__viewManagerDelegate.currentDevice.removeComponent(this.selectedComponents[i]);
-                if (connection){
+                if (connection) {
                     this.__viewManagerDelegate.updatesConnectionRender(connection);
                 }
             }

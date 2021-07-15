@@ -4,9 +4,9 @@ import Feature from "./feature";
 import TextFeature from "./textFeature";
 import Params from "./params";
 import Device from "./device";
-import LayerUtils from "@/app/utils/layerUtils"
-import {FeatureInterchangeV0} from "./init"
-import {LayerInterchangeV1} from "./init"
+import LayerUtils from "@/app/utils/layerUtils";
+import { FeatureInterchangeV0 } from "./init";
+import { LayerInterchangeV1 } from "./init";
 
 /**
  * Layer class
@@ -14,7 +14,7 @@ import {LayerInterchangeV1} from "./init"
 export default class Layer {
     params: Params;
     name: string;
-    features: {[index: string]: Feature};
+    features: { [index: string]: Feature };
     featureCount: number;
     device: Device | undefined;
     color: string | undefined;
@@ -27,7 +27,7 @@ export default class Layer {
      * @param {*} values Value of the layer
      * @param {String} name Name of the layer
      */
-    constructor(values: {[index: string]: any}, name: string = "New Layer", type: string = "FLOW", group: string = "0") {
+    constructor(values: { [index: string]: any }, name: string = "New Layer", type: string = "FLOW", group: string = "0") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = name;
         this.features = {};
@@ -144,7 +144,7 @@ export default class Layer {
      * @returns {void}
      */
     static getUniqueParameters(): Map<string, string> {
-        let unique: Map<string,string> = new Map();
+        let unique: Map<string, string> = new Map();
         unique.set("z_offset", "Float");
         unique.set("flip", "Boolean");
         return unique;
@@ -156,7 +156,7 @@ export default class Layer {
      * @memberof Layer
      * @returns {void}
      */
-    static getHeritableParameters(): Map<string,string> {
+    static getHeritableParameters(): Map<string, string> {
         return new Map();
     }
 
@@ -222,7 +222,7 @@ export default class Layer {
      * @returns {Array} Returns all features from the layers
      * @memberof Layer
      */
-    getAllFeaturesFromLayer(): {[index: string]: Feature} {
+    getAllFeaturesFromLayer(): { [index: string]: Feature } {
         return this.features;
     }
 
@@ -231,8 +231,8 @@ export default class Layer {
      * @returns {JSON} Returns a JSON format with the features in a JSON format
      * @memberof Layer
      */
-    __featuresToJSON(): {[index: string]: any} {
-        const output: {[index: string]: any} = {};
+    __featuresToJSON(): { [index: string]: any } {
+        const output: { [index: string]: any } = {};
         for (const i in this.features) {
             output[i] = this.features[i].toJSON();
         }
@@ -257,7 +257,7 @@ export default class Layer {
      * @param {JSON} json JSON format file
      * @memberof Layer
      */
-    __loadFeaturesFromJSON(json: {[index: string]: any}): void {
+    __loadFeaturesFromJSON(json: { [index: string]: any }): void {
         for (const i in json) {
             this.addFeature(Feature.fromJSON(json[i]));
         }
@@ -268,7 +268,7 @@ export default class Layer {
      * @param {*} json Interchange format file
      * @memberof Layer
      */
-    __loadFeaturesFromInterchangeV1(json: {[index: string]: any}): void {
+    __loadFeaturesFromInterchangeV1(json: { [index: string]: any }): void {
         for (const i in json) {
             this.addFeature(Feature.fromInterchangeV1(json[i]));
         }
@@ -280,8 +280,8 @@ export default class Layer {
      * @returns {JSON} Returns a JSON format with the attributes of the object
      * @memberof Layer
      */
-    toJSON(): {[index: string]: any} {
-        const output: {[index: string]: any} = {};
+    toJSON(): { [index: string]: any } {
+        const output: { [index: string]: any } = {};
         output.name = this.name;
         output.color = this.color;
         output.params = this.params.toJSON();
@@ -296,15 +296,15 @@ export default class Layer {
      */
     toInterchangeV1(): LayerInterchangeV1 {
         const output: LayerInterchangeV1 = {
-            id : this.__id,
-            name : this.name,
-            type : this.type,
-        // TODO - Add group and unique name parameters to the system and do type checking
-        // against type and not name in the future
-            group : "0",
-            params : this.params.toJSON(),
-            features : this.__featuresInterchangeV1(),
-            color : this.color
+            id: this.__id,
+            name: this.name,
+            type: this.type,
+            // TODO - Add group and unique name parameters to the system and do type checking
+            // against type and not name in the future
+            group: "0",
+            params: this.params.toJSON(),
+            features: this.__featuresInterchangeV1(),
+            color: this.color
         };
         return output;
     }
@@ -316,8 +316,8 @@ export default class Layer {
      * @returns {*} json of the features
      * @memberof Layer
      */
-    toFeatureLayerJSON(): {[index: string]: any} {
-        const output: {[index: string]: any} = {};
+    toFeatureLayerJSON(): { [index: string]: any } {
+        const output: { [index: string]: any } = {};
         output.name = this.name;
         output.color = this.color;
         output.params = this.params.toJSON();
@@ -331,7 +331,7 @@ export default class Layer {
      * @returns {Layer} Returns a new layer object
      * @memberof Layer
      */
-    static fromJSON(json: {[index:string]: any}): Layer {
+    static fromJSON(json: { [index: string]: any }): Layer {
         if (!Object.prototype.hasOwnProperty.call(json, "features")) {
             throw new Error("JSON layer has no features!");
         }

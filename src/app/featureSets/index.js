@@ -4,13 +4,13 @@ import FeatureSet from "./featureSet";
 import * as Basic from "./basic";
 import Registry from "../core/registry";
 
-let registeredFeatureSets = {
+const registeredFeatureSets = {
     Basic: new FeatureSet(Basic.definitions, Basic.tools, Basic.render2D, Basic.render3D, "Basic")
 };
-let typeStrings = {};
+const typeStrings = {};
 
 // add more sets here!
-let requiredSets = {
+const requiredSets = {
     Basic: Basic
 };
 

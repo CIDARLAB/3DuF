@@ -9,9 +9,8 @@ import PositionTool from "./positionTool";
 import Params from "../../core/params";
 
 export default class InsertTextTool extends MouseTool {
-    
     text;
-    
+
     constructor() {
         super();
         this.typeString = "TEXT";

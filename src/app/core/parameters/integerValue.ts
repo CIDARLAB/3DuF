@@ -6,7 +6,7 @@ export default class IntegerValue extends Parameter {
     static readonly description: string = "FloatValue must be an integer >= 0.";
 
     constructor(value: number) {
-        super("Integer",value);
+        super("Integer", value);
     }
 
     static isValid(value: any): boolean {
