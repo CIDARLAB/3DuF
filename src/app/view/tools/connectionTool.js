@@ -6,6 +6,7 @@ import paper from "paper";
 import Params from "../../core/params";
 import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
+import {ComponentAPI} from "@/componentAPI";
 
 import Registry from "../../core/registry";
 
@@ -175,7 +176,7 @@ export default class ConnectionTool extends MouseTool {
             for (const key in rawparams) {
                 values[key] = rawparams[key].value;
             }
-            const definition = Registry.featureSet.getDefinition("Connection");
+            const definition = ComponentAPI.getDefinition("Connection");
             const params = new Params(values, definition.unique, definition.heritable);
             if (this.__currentConnectionObject === null || this.__currentConnectionObject === undefined) {
                 const connection = new Connection("Connection", params, Registry.currentDevice.generateNewName("CHANNEL"), "CHANNEL");
