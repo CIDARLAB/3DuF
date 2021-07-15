@@ -19,7 +19,7 @@ let lay2;
 let feat1;
 let feat2;
 
-const initDevice = function () {
+const initDevice = function() {
     dev = new Device(
         {
             width: 50,
@@ -50,21 +50,21 @@ const initDevice = function () {
     });
 };
 
-describe("Device", function () {
+describe("Device", function() {
     beforeEach(function initialize() {
         initDevice();
     });
-    describe("#init", function () {
-        it("should start with no layers", function () {
+    describe("#init", function() {
+        it("should start with no layers", function() {
             dev.layers.length.should.equal(0);
         });
-        it("should start with the correct width, height, and name", function () {
+        it("should start with the correct width, height, and name", function() {
             dev.name.getValue().should.equal("dev1");
             dev.getXSpan().should.equal(50);
             dev.getYSpan().should.equal(60);
         });
-        it("should be able to be constructed without a name", function () {
-            (function () {
+        it("should be able to be constructed without a name", function() {
+            (function() {
                 const dev2 = new Device({
                     width: 50,
                     height: 70
@@ -73,17 +73,17 @@ describe("Device", function () {
         });
     });
 
-    describe("#addLayer", function () {
-        it("should let the user add a layer", function () {
+    describe("#addLayer", function() {
+        it("should let the user add a layer", function() {
             dev.addLayer(lay1);
             dev.layers.length.should.equal(1);
         });
-        it("should let the user add multiple layers", function () {
+        it("should let the user add multiple layers", function() {
             dev.addLayer(lay1);
             dev.addLayer(lay2);
             dev.layers.length.should.equal(2);
         });
-        it("should place layers into the correct order", function () {
+        it("should place layers into the correct order", function() {
             dev.addLayer(lay2);
             dev.addLayer(lay1);
             dev.layers[0].should.be.exactly(lay1);
@@ -91,20 +91,20 @@ describe("Device", function () {
         });
     });
 
-    describe("#toJSON", function () {
-        it("can output JSON with no layers", function () {
+    describe("#toJSON", function() {
+        it("can output JSON with no layers", function() {
             dev.toJSON();
         });
-        it("can output JSON with one layer", function () {
+        it("can output JSON with one layer", function() {
             dev.addLayer(lay1);
             dev.toJSON();
         });
-        it("can output JSON with two layers", function () {
+        it("can output JSON with two layers", function() {
             dev.addLayer(lay1);
             dev.addLayer(lay2);
             dev.toJSON();
         });
-        it("can output JSON with layers which contain features", function () {
+        it("can output JSON with layers which contain features", function() {
             dev.addLayer(lay1);
             lay1.addFeature(feat1);
             dev.addLayer(lay2);
@@ -113,8 +113,8 @@ describe("Device", function () {
         });
     });
 
-    describe("#fromJSON", function () {
-        it("can load a device from valid JSON", function () {
+    describe("#fromJSON", function() {
+        it("can load a device from valid JSON", function() {
             lay1.addFeature(feat1);
             lay2.addFeature(feat2);
             const json = {
@@ -130,7 +130,7 @@ describe("Device", function () {
             };
             const dev2 = Device.fromJSON(json);
         });
-        it("can load a Device from the output of toJSON", function () {
+        it("can load a Device from the output of toJSON", function() {
             dev.addLayer(lay1);
             dev.addLayer(lay2);
             lay1.addFeature(feat1);
@@ -138,7 +138,7 @@ describe("Device", function () {
             const json = dev.toJSON();
             const dev2 = Device.fromJSON(json);
         });
-        it("cannot load a device from malformed JSON", function () {
+        it("cannot load a device from malformed JSON", function() {
             const json = {
                 params: {
                     height: {
@@ -156,7 +156,7 @@ describe("Device", function () {
                 }
             };
             let dev2;
-            (function () {
+            (function() {
                 dev2 = Device.fromJSON(json);
             }.should.throwError());
         });
