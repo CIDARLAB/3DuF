@@ -3,14 +3,15 @@ const appRoot = "../../app/";
 const Feature = require("../../app/core/feature");
 const Device = require(appRoot + "/core/device");
 const Layer = require(appRoot + "/core/layer");
-// var Features = require(appRoot + '/core/features');
+const it = require("mocha").it;
+const describe = require("mocha").describe;
 
 const Channel = Feature.getFeatureGenerator("Channel", "Basic");
 const CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
 
-describe("Integration", function () {
-    describe("#core", function () {
-        it("Create a device, add layers and features, toJSON, fromJSON", function () {
+describe("Integration", function() {
+    describe("#core", function() {
+        it("Create a device, add layers and features, toJSON, fromJSON", function() {
             const dev = new Device(
                 {
                     width: 60,
