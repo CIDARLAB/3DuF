@@ -42,12 +42,12 @@ function initLayer() {
     );
 }
 
-describe("Layer", function() {
+describe("Layer", function () {
     beforeEach(function initialize() {
         initLayer();
     });
-    describe("#init", function() {
-        it("should start with the correct z_offset, flip, and name", function() {
+    describe("#init", function () {
+        it("should start with the correct z_offset, flip, and name", function () {
             lay1.params.getValue("z_offset").should.equal(0);
             lay1.params.getValue("flip").should.equal(false);
             lay1.name.getValue().should.equal("layer1");
@@ -56,147 +56,147 @@ describe("Layer", function() {
             lay2.params.getValue("flip").should.equal(true);
             lay2.name.getValue().should.equal("layer2");
         });
-        it("should be able to be constructed without a name", function() {
-            (function() {
+        it("should be able to be constructed without a name", function () {
+            (function () {
                 const lay3 = new Layer({
                     z_offset: 1.2,
                     flip: true
                 });
             }.should.not.throwError());
         });
-        it("should not permit a z_offset less than 0", function() {
-            (function() {
+        it("should not permit a z_offset less than 0", function () {
+            (function () {
                 const lay3 = new Layer(-0.6, false);
             }.should.throwError());
         });
-        it("should start with 0 features", function() {
+        it("should start with 0 features", function () {
             lay1.featureCount.should.equal(0);
         });
     });
 
-    describe("#addFeature", function() {
-        it("should let the user add a feature", function() {
+    describe("#addFeature", function () {
+        it("should let the user add a feature", function () {
             lay1.addFeature(feat1);
             lay1.featureCount.should.equal(1);
         });
-        it("should not let a user add a feature by id", function() {
-            (function() {
+        it("should not let a user add a feature by id", function () {
+            (function () {
                 lay1.addFeature("some_ID");
             }.should.throwError());
         });
-        it("should let the user add multiple features", function() {
+        it("should let the user add multiple features", function () {
             lay1.addFeature(feat1);
             lay1.addFeature(feat2);
             lay1.featureCount.should.equal(2);
         });
     });
 
-    describe("#__ensureIsAFeature", function() {
-        it("should not error if the value is a feature", function() {
+    describe("#__ensureIsAFeature", function () {
+        it("should not error if the value is a feature", function () {
             lay1.__ensureIsAFeature(feat1);
         });
-        it("Should error if the value is not a feature", function() {
-            (function() {
+        it("Should error if the value is not a feature", function () {
+            (function () {
                 lay1.__ensureIsAFeature("foo");
             }.should.throwError());
-            (function() {
+            (function () {
                 lay1.__ensureIsAFeature(dev1);
             }.should.throwError());
-            (function() {
+            (function () {
                 lay1.__ensureIsAFeature(lay2);
             }.should.throwError());
         });
     });
 
-    describe("#removeFeature", function() {
-        it("should let the user remove a feature", function() {
+    describe("#removeFeature", function () {
+        it("should let the user remove a feature", function () {
             lay1.featureCount.should.equal(0);
             lay1.addFeature(feat1);
             lay1.removeFeature(feat1);
             lay1.featureCount.should.equal(0);
         });
-        it("should not let the user remove a feature by ID", function() {
+        it("should not let the user remove a feature by ID", function () {
             lay1.addFeature(feat1);
-            (function() {
+            (function () {
                 lay1.removeFeature(feat1.ID);
             }.should.throwError());
         });
-        it("should not let the user remove a feature when empty", function() {
-            (function() {
+        it("should not let the user remove a feature when empty", function () {
+            (function () {
                 lay1.removeFeature(feat1);
             }.should.throwError());
         });
-        it("should not let the user remove a feature that does not exist", function() {
+        it("should not let the user remove a feature that does not exist", function () {
             lay1.addFeature(feat1);
-            (function() {
+            (function () {
                 lay1.removeFeature(feat2);
             }.should.throwError());
         });
     });
 
-    describe("#containsFeature", function() {
-        it("should return true if the feature exists in the layer", function() {
+    describe("#containsFeature", function () {
+        it("should return true if the feature exists in the layer", function () {
             lay1.addFeature(feat1);
             lay1.containsFeature(feat1).should.equal(true);
             lay1.addFeature(feat2);
             lay1.containsFeature(feat2).should.equal(true);
         });
-        it("should return false if the feature does not exist in the layer", function() {
+        it("should return false if the feature does not exist in the layer", function () {
             lay1.containsFeature(feat1).should.equal(false);
             lay1.addFeature(feat1);
             lay1.containsFeature(feat2).should.equal(false);
         });
-        it("should return true after a feature has been added", function() {
+        it("should return true after a feature has been added", function () {
             lay1.containsFeature(feat1).should.equal(false);
             lay1.addFeature(feat1);
             lay1.containsFeature(feat1).should.equal(true);
         });
-        it("should not allow the user to check for the presence of something other than a feature", function() {
-            (function() {
+        it("should not allow the user to check for the presence of something other than a feature", function () {
+            (function () {
                 lay1.containsFeature("foo");
             }.should.throwError());
-            (function() {
+            (function () {
                 lay1.containsFeature(12);
             }.should.throwError());
-            (function() {
+            (function () {
                 lay1.containsFeature("featureID");
             }.should.throwError());
-            (function() {
+            (function () {
                 lay1.containsFeature(dev1);
             }.should.throwError());
         });
     });
 
-    describe("#getFeature", function() {
-        it("should return a feature when passed an ID", function() {
+    describe("#getFeature", function () {
+        it("should return a feature when passed an ID", function () {
             lay1.addFeature(feat1);
             lay1.getFeature(feat1.ID).should.be.exactly(feat1);
         });
-        it("should not allow the user to retrieve a feature for an ID that does not exist in the layer", function() {
-            (function() {
+        it("should not allow the user to retrieve a feature for an ID that does not exist in the layer", function () {
+            (function () {
                 lay1.containsFeature(dev1);
             }.should.throwError());
         });
     });
 
-    describe("#toJSON", function() {
-        it("can produce JSON when empty", function() {
+    describe("#toJSON", function () {
+        it("can produce JSON when empty", function () {
             lay1.toJSON();
         });
-        it("can produce JSON when containing a feature", function() {
+        it("can produce JSON when containing a feature", function () {
             lay1.addFeature(feat1);
             const json = lay1.toJSON();
             json.features[feat1.ID].id.should.equal(feat1.ID);
         });
-        it("can produce JSON when containing multiple features", function() {
+        it("can produce JSON when containing multiple features", function () {
             lay1.addFeature(feat1);
             lay1.addFeature(feat2);
             lay1.toJSON();
         });
     });
 
-    describe("#fromJSON", function() {
-        it("can construct a Layer from valid JSON", function() {
+    describe("#fromJSON", function () {
+        it("can construct a Layer from valid JSON", function () {
             const json = {
                 name: "layer3",
                 params: layerParams,
@@ -207,7 +207,7 @@ describe("Layer", function() {
 
             const lay3 = Layer.fromJSON(json);
         });
-        it("cannot construct a layer form invalid JSON", function() {
+        it("cannot construct a layer form invalid JSON", function () {
             const json = {
                 name: {
                     type: "String",
@@ -216,11 +216,11 @@ describe("Layer", function() {
                 params: layerParams
             };
             let lay3;
-            (function() {
+            (function () {
                 lay3 = Layer.fromJSON(json);
             }.should.throwError());
         });
-        it("can construct a layer from the output of toJSON", function() {
+        it("can construct a layer from the output of toJSON", function () {
             const json = lay2.toJSON();
             const lay3 = Layer.fromJSON(json);
         });
