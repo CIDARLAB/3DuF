@@ -35,6 +35,7 @@ export default class ComponentToolBar {
         this.__diamondButton = document.getElementById("diamond_button");
         this.__bettermixerButton = document.getElementById("bettermixer_button");
         this.__curvedmixerButton = document.getElementById("curvedmixer_button");
+        this.__sawtoothmixerButton = document.getElementById("sawtoothmixer_button");
         this.__mixerButton = document.getElementById("mixer_button");
         this.__gradientGeneratorButton = document.getElementById("gradientgenerator_button");
         this.__thermoCyclerButton = document.getElementById("thermoCycler_button")
@@ -50,7 +51,7 @@ export default class ComponentToolBar {
         this.__llChamberButton = document.getElementById("llchamber_button");
         this.__threeDMixerButton = document.getElementById("3dmixer_button");
 
-        //new 
+        //new
         this.__filterButton = document.getElementById("filter_button");
         this.__celltrapsButton = document.getElementById("celltraps_button");
         this.__threeDMuxButton = document.getElementById("3dmux_button");
@@ -85,6 +86,7 @@ export default class ComponentToolBar {
         this.__diamondParams = document.getElementById("diamond_params_button");
         this.__bettermixerParams = document.getElementById("bettermixer_params_button");
         this.__curvedmixerParams = document.getElementById("curvedmixer_params_button");
+        this.__sawtoothmixerParams = document.getElementById("sawtoothmixer_params_button");
         this.__mixerParams = document.getElementById("mixer_params_button");
         this.__gradientGeneratorParams = document.getElementById("gradientgenerator_params_button");
         this.__treeParams = document.getElementById("tree_params_button");
@@ -100,7 +102,7 @@ export default class ComponentToolBar {
         this.__threeDMixerParams = document.getElementById("3dmixer_params_button");
 
         this.__insertTextDialog = new InsertTextDialog();
-        
+
         //new
         this.__filterParams = document.getElementById("filter_params_button");
         this.__celltrapsParams = document.getElementById("celltraps_params_button");
@@ -136,6 +138,7 @@ export default class ComponentToolBar {
             DiamondReactionChamber: this.__diamondButton,
             BetterMixer: this.__bettermixerButton,
             CurvedMixer: this.__curvedmixerButton,
+            SawtoothMixer: this.__sawtoothmixerButton,
             Mixer: this.__mixerButton,
             GradientGenerator: this.__gradientGeneratorButton,
             Tree: this.__treeButton,
@@ -166,12 +169,12 @@ export default class ComponentToolBar {
             DropletGenFlow: this.__dropletgenFlowButton,
             LogicArray: this.__logicarrayButton
         };
-            
+
 
         this.__setupEventHandlers();
 
         this.__setupParamButtonEventHandlers();
-        
+
     }
 
     __setupEventHandlers() {
@@ -236,7 +239,7 @@ export default class ComponentToolBar {
             ref.setActiveButton("Pump3D");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        
+
         this.__alignmentMarksButton.onclick = function() {
             Registry.viewManager.activateTool("AlignmentMarks");
 
@@ -257,7 +260,7 @@ export default class ComponentToolBar {
             ref.setActiveButton("Port");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        
+
         this.__anodeButton.onclick = function() {//ck
             Registry.viewManager.activateTool("Anode");//ck
 
@@ -274,7 +277,7 @@ export default class ComponentToolBar {
 
         this.__viaButton.onclick = function() {
             Registry.viewManager.activateTool("Via");
-        
+
             ref.setActiveButton("Via");
             ref.__viewManagerDelegate.switchTo2D();
         };
@@ -307,6 +310,12 @@ export default class ComponentToolBar {
             Registry.viewManager.activateTool("CurvedMixer");
 
             ref.setActiveButton("CurvedMixer");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__sawtoothmixerButton.onclick = function() {
+            Registry.viewManager.activateTool("SawtoothMixer");
+
+            ref.setActiveButton("SawtoothMixer");
             ref.__viewManagerDelegate.switchTo2D();
         };
         this.__mixerButton.onclick = function() {
@@ -512,6 +521,7 @@ export default class ComponentToolBar {
         this.__diamondParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DiamondReactionChamber", "Basic");
         this.__bettermixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("BetterMixer", "Basic");
         this.__curvedmixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CurvedMixer", "Basic");
+        this.__sawtoothmixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("SawtoothMixer", "Basic");
         this.__mixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Mixer", "Basic");
         this.__gradientGeneratorParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("GradientGenerator", "Basic");
         this.__treeParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Tree", "Basic");

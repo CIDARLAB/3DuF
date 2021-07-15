@@ -12,6 +12,7 @@ import Gelchannel from "../library/gelchannel"; //CK
 import Chamber from "../library/chamber";
 import Connection from "../library/connection";
 import CurvedMixer from "../library/curvedMixer";
+import SawtoothMixer from "../library/sawtoothMixer";
 import DiamondReactionChamber from "../library/diamondReactionChamber";
 import DropletGenerator from "../library/dropletGenerator";
 import GradientGenerator from "../library/gradientGenerator";
@@ -75,6 +76,7 @@ export default class FeatureSet {
             Chamber: { object: new Chamber(), key: null },
             Connection: { object: new Connection(), key: null },
             CurvedMixer: { object: new CurvedMixer(), key: null },
+            SawtoothMixer: { object: new SawtoothMixer(), key: null },
             DiamondReactionChamber: {
                 object: new DiamondReactionChamber(),
                 key: null

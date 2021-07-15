@@ -166,6 +166,12 @@ export const tools = {
         },
         placementTool: "PositionTool"
     },
+    SawtoothMixer: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
     Mixer: {
         toolParams: {
             position: "position"
