@@ -17,10 +17,10 @@ export default class MultilayerPositionTool extends PositionTool {
         let newFeature = Device.makeFeature(this.typeString, this.setString, {
             position: PositionTool.getTarget(point)
         });
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         flowlayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         const params_to_copy = newFeature.getParams();
 
@@ -31,10 +31,10 @@ export default class MultilayerPositionTool extends PositionTool {
         });
         newFeature.setParams(paramstoadd);
 
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         controllayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager.saveDeviceState();

@@ -41,7 +41,7 @@ export default class EditDeviceDialog {
 
                 // Refresh the view
                 ref.viewManagerDelegate.updateGrid();
-                Registry.currentDevice.updateView();
+                Registry.viewManager.updateDevice(viewManager.currentDevice);
 
                 ref.viewManagerDelegate.view.initializeView();
                 ref.viewManagerDelegate.view.refresh();

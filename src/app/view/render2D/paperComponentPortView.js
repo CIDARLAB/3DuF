@@ -29,7 +29,7 @@ export default class PaperComponentPortView {
             return;
         }
         this.clearActiveRenders();
-        const components = this._viewManagerDelegate.currentDevice.getComponents();
+        const components = this._viewManagerDelegate.currentDevice.components;
         for (const i in components) {
             const component = components[i];
             const renders = ComponentPortRenderer2D.renderComponentPorts(component);

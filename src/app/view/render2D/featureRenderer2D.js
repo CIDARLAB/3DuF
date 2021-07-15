@@ -71,7 +71,7 @@ export function renderTextTarget(typeString, setString, position) {
     const rendered = new paper.PointText(new paper.Point(position[0], position[1]));
     rendered.justification = "center";
     rendered.fillColor = Colors.DEEP_PURPLE_500;
-    rendered.content = Registry.text;
+    rendered.content = insertTextTool.text;
     rendered.fontSize = 10000 / 3;
     return rendered;
 }
@@ -90,7 +90,7 @@ export function renderText(feature) {
     /// rendered.content = feature.getText();
     rendered.content = feature.getValue("text");
     rendered.fontSize = 10000 / 3;
-    rendered.featureID = feature.getID();
+    rendered.featureID = feature.ID;
     return rendered;
 }
 
@@ -108,7 +108,7 @@ export function renderFeature(feature, key = null) {
         return renderText(feature);
     } else if (set === "Custom") {
         rendered = DXFSolidObjectRenderer2D.renderCustomComponentFeature(feature, getBaseColor(feature));
-        rendered.featureID = feature.getID();
+        rendered.featureID = feature.ID;
 
         return rendered;
     } else if (type === "EDGE") {
@@ -140,7 +140,7 @@ export function renderFeature(feature, key = null) {
         primParams.color = getLayerColor(feature);
         primParams.baseColor = getBaseColor(feature);
         rendered = renderer.render2D(primParams, key);
-        rendered.featureID = feature.getID();
+        rendered.featureID = feature.ID;
 
         return rendered;
     }

@@ -19,11 +19,11 @@ export default class CustomComponentPositionTool extends PositionTool {
         const newFeature = Feature.makeCustomComponentFeature(this.__customComponent, this.setString, {
             position: PositionTool.getTarget(point)
         });
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
 
         Registry.currentLayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         const params_to_copy = newFeature.getParams();
 

@@ -48,7 +48,7 @@ export default class PositionTool extends MouseTool {
             },
             name
         );
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         Registry.currentLayer.addFeature(newFeature);
     }
 
