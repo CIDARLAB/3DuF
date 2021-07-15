@@ -138,7 +138,7 @@ export default class RightClickMenu {
     }
 
     setComponentName(nametext) {
-        const id = this.__featureRef.getID();
+        const id = this.__featureRef.ID;
         // Find component for the feature id
         const component = Registry.currentDevice.getComponentForFeatureID(id);
         if (component) {
@@ -150,7 +150,7 @@ export default class RightClickMenu {
     }
 
     getComponentName() {
-        const id = this.__featureRef.getID();
+        const id = this.__featureRef.ID;
         // Find component for the feature id
         const component = Registry.currentDevice.getComponentForFeatureID(id);
         if (component) {
@@ -168,14 +168,14 @@ export default class RightClickMenu {
     __activateGenerateArray() {
         this.close();
         Registry.viewManager.activateTool("GenerateArrayTool");
-        const component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.getID());
+        const component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.ID);
         Registry.viewManager.tools.GenerateArrayTool.activate(component);
     }
 
     __activateMove() {
         this.close();
         Registry.viewManager.activateTool("MoveTool");
-        const component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.getID());
+        const component = Registry.currentDevice.getComponentForFeatureID(this.__featureRef.ID);
         Registry.viewManager.tools.MoveTool.activate(component);
     }
 }

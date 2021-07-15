@@ -83,12 +83,12 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function () {
+        buttonClasses: function() {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
         }
     },
     mounted() {
-        EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
+        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
     },
     methods: {
         showProperties() {

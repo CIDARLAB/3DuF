@@ -6,6 +6,7 @@ import paper from "paper";
 import Params from "../../core/params";
 import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
+import {ComponentAPI} from "@/componentAPI";
 
 import Registry from "../../core/registry";
 
@@ -153,7 +154,7 @@ export default class ConnectionTool extends MouseTool {
                 feat.updateParameter("segments", this.generateSegments());
             } else {
                 const newChannel = this.createChannel(this.startPoint, this.startPoint);
-                this.currentChannelID = newChannel.getID();
+                this.currentChannelID = newChannel.ID;
                 Registry.currentLayer.addFeature(newChannel);
             }
         }
@@ -173,25 +174,25 @@ export default class ConnectionTool extends MouseTool {
             const rawparams = feat.getParams();
             const values = {};
             for (const key in rawparams) {
-                values[key] = rawparams[key].getValue();
+                values[key] = rawparams[key].value;
             }
-            const definition = Registry.featureSet.getDefinition("Connection");
+            const definition = ComponentAPI.getDefinition("Connection");
             const params = new Params(values, definition.unique, definition.heritable);
             if (this.__currentConnectionObject === null || this.__currentConnectionObject === undefined) {
                 const connection = new Connection("Connection", params, Registry.currentDevice.generateNewName("CHANNEL"), "CHANNEL");
                 connection.routed = true;
-                connection.addFeatureID(feat.getID());
+                connection.addFeatureID(feat.ID);
                 connection.addWayPoints(this.wayPoints);
-                feat.referenceID = connection.getID();
+                feat.referenceID = connection.id;
                 this.__addConnectionTargets(connection);
                 Registry.currentDevice.addConnection(connection);
             } else {
                 // console.error("Implement conneciton tool to update existing connection");
                 // TODO: Update the connection with more sinks and paths and what not
-                this.__currentConnectionObject.addFeatureID(feat.getID());
-                feat.referenceID = this.__currentConnectionObject.getID();
+                this.__currentConnectionObject.addFeatureID(feat.ID);
+                feat.referenceID = this.__currentConnectionObject.id;
                 this.__currentConnectionObject.addWayPoints(this.wayPoints);
-                feat.referenceID = this.__currentConnectionObject.getID();
+                feat.referenceID = this.__currentConnectionObject.id;
                 this.__addConnectionTargets(this.__currentConnectionObject);
             }
 
@@ -307,7 +308,12 @@ export default class ConnectionTool extends MouseTool {
         const render = Registry.viewManager.hitFeature(point);
         if (render !== false && render !== null && render !== undefined) {
             const feature = Registry.currentDevice.getFeatureByID(render.featureID);
-            const connection = Registry.currentDevice.getConnectionByID(feature.referenceID);
+            // TODO: Replace this logic
+            if (feature.referenceID == null) {
+                return false;
+            } else {
+                const connection = Registry.currentDevice.getConnectionByID(feature.referenceID);
+            }
             // console.log("Feature that intersects:", feature);
             // console.log("Associated object:", connection);
             return connection;
@@ -328,7 +334,12 @@ export default class ConnectionTool extends MouseTool {
         if (render !== false && render !== null && render !== undefined) {
             const feature = Registry.currentDevice.getFeatureByID(render.featureID);
             // console.log("Feature that intersects:", feature);
-            const component = Registry.currentDevice.getComponentByID(feature.referenceID);
+            // TODO: Replace this logic
+            if (feature.referenceID == null) {
+                return false;
+            } else {
+                const component = Registry.currentDevice.getComponentByID(feature.referenceID);
+            }
             // console.log("Associated object:", component);
             if (component !== null || component !== undefined) {
                 return component;

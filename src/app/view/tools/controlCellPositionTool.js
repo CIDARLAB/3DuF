@@ -19,10 +19,10 @@ export default class ControlCellPositionTool extends PositionTool {
         let newFeature = Device.makeFeature(this.typeString, this.setString, {
             position: PositionTool.getTarget(point)
         });
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         flowlayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         let params_to_copy = newFeature.getParams();
 
@@ -33,10 +33,10 @@ export default class ControlCellPositionTool extends PositionTool {
         });
         newFeature.setParams(paramstoadd);
 
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         controllayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         params_to_copy = newFeature.getParams();
 
@@ -47,10 +47,10 @@ export default class ControlCellPositionTool extends PositionTool {
         });
         newFeature.setParams(paramstoadd);
 
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         cell_layer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager.saveDeviceState();

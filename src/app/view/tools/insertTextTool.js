@@ -9,6 +9,9 @@ import PositionTool from "./positionTool";
 import Params from "../../core/params";
 
 export default class InsertTextTool extends MouseTool {
+    
+    text;
+    
     constructor() {
         super();
         this.typeString = "TEXT";
@@ -38,8 +41,8 @@ export default class InsertTextTool extends MouseTool {
     }
 
     createNewFeature(point) {
-        const newFeature = TextFeature.makeFeature(
-            Registry.text,
+        let newFeature = TextFeature.makeFeature(
+            this.text,
             this.typeString,
             this.setString,
             new Params(
@@ -51,7 +54,7 @@ export default class InsertTextTool extends MouseTool {
                 { height: "Float", text: "String" }
             )
         );
-        // this.currentFeatureID = newFeature.getID();
+        // this.currentFeatureID = newFeature.ID;
         Registry.currentLayer.addFeature(newFeature);
         Registry.viewManager.saveDeviceState();
     }
@@ -59,5 +62,13 @@ export default class InsertTextTool extends MouseTool {
     showTarget() {
         const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
+    }
+
+    get text() {
+        return this.text;
+    }
+
+    set text(text) {
+        this.text = text;
     }
 }

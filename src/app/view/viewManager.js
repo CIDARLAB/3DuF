@@ -552,7 +552,7 @@ export default class ViewManager {
         }
 
         // Get the bounds for the border feature and then update the device dimensions
-        const bounds = this.view.getRenderedFeature(customborderfeature.getID()).bounds;
+        const bounds = this.view.getRenderedFeature(customborderfeature.ID).bounds;
 
         Registry.currentDevice.setXSpan(bounds.width);
         Registry.currentDevice.setYSpan(bounds.height);
@@ -588,7 +588,7 @@ export default class ViewManager {
 
         // Delete all the features
         for (const i in edgefeatures) {
-            Registry.currentDevice.removeFeatureByID(edgefeatures[i].getID());
+            Registry.currentDevice.removeFeatureByID(edgefeatures[i].ID);
         }
 
         console.log("Edgefeatures", edgefeatures);
@@ -1290,7 +1290,7 @@ export default class ViewManager {
      */
     __initializeRatsNest() {
         // Step 1 generate features for all the components with some basic layout
-        const components = this.currentDevice.getComponents();
+        const components = this.currentDevice.components;
         const xpos = 10000;
         const ypos = 10000;
         for (const i in components) {
@@ -1330,12 +1330,12 @@ export default class ViewManager {
         // Get default params and overwrite them with json params, this can account for inconsistencies
         const newFeature = Device.makeFeature(component.getType(), "Basic", params_to_copy);
 
-        component.addFeatureID(newFeature.getID());
+        component.addFeatureID(newFeature.ID);
 
         Registry.currentLayer.addFeature(newFeature);
 
         // Set the component position
-        component.updateComponetPosition([xpos, ypos]);
+        component.updateComponentPosition([xpos, ypos]);
     }
 
     /**

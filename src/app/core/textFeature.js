@@ -1,8 +1,7 @@
 // TODO: Restructure the TextFeature and all its implementation
 import Parameter from "./parameter";
-import * as Parameters from "./parameters";
+import StringValue from "./parameters/stringValue";
 import Registry from "./registry";
-const StringValue = Parameters.StringValue;
 
 /**
  * Text Feature class
@@ -77,7 +76,7 @@ export default class TextFeature {
      * @returns {void}
      */
     setName(name) {
-        this.__name = StringValue(name);
+        this.__name = new StringValue(name);
     }
 
     /**
@@ -191,15 +190,6 @@ export default class TextFeature {
      */
     getDefaults() {
         return Feature.getDefaultsForType(this.getType(), this.getSet());
-    }
-
-    /**
-     * Gets the parameters of the object.
-     * @returns {Feature.parameters}
-     * @memberof TextFeature
-     */
-    getParams() {
-        return this.__params.parameters;
     }
 
     /**

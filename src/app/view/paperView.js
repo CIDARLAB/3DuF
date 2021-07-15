@@ -111,9 +111,12 @@ export default class PaperView {
                 this.__viewManagerDelegate.currentDevice.removeFeatureByID(items[i].featureID);
             }
 
-            // Delete the selected Components !!!!
+            // Delete the selected Components !!!
             for (const i in this.selectedComponents) {
-                this.__viewManagerDelegate.currentDevice.removeComponent(this.selectedComponents[i]);
+                connection = this.__viewManagerDelegate.currentDevice.removeComponent(this.selectedComponents[i]);
+                if (connection){
+                    this.__viewManagerDelegate.updatesConnectionRender(connection);
+                }
             }
 
             // Delete the selected Connecitons
@@ -593,7 +596,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     updateFeature(feature) {
-        const existingFeature = this.paperFeatures[feature.getID()];
+        const existingFeature = this.paperFeatures[feature.ID];
         let selected;
         if (existingFeature) selected = existingFeature.selected;
         else selected = false;
@@ -678,9 +681,11 @@ export default class PaperView {
      * @memberof PaperView
      */
     removeFeature(feature) {
-        const paperFeature = this.paperFeatures[feature.getID()];
-        if (paperFeature) paperFeature.remove();
-        this.paperFeatures[feature.getID()] = null;
+        const paperFeature = this.paperFeatures[feature.ID];
+        if (paperFeature) {
+            paperFeature.remove();
+        }
+        this.paperFeatures[feature.ID] = null;
     }
 
     /**

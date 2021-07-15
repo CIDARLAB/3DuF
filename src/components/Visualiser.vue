@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { registerSets } from "@/app/featureSets";
 import { Registry, BareViewManager, ViewManager } from "../app/index";
 import { Examples } from "../app/index";
 import ResolutionToolbar from "./ResolutionToolbar";
@@ -20,13 +21,14 @@ export default {
         ResolutionToolbar
     },
     mounted() {
+        // registerSets({ Basic: Basic });
         let viewManager = new ViewManager();
 
         Registry.viewManager = viewManager;
 
         viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
         viewManager.updateGrid();
-        Registry.currentDevice.updateView();
+        Registry.viewManager.updateDevice(viewManager.currentDevice);
 
         window.dev = Registry.currentDevice;
         window.Registry = Registry;
