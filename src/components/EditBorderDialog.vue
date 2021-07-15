@@ -87,7 +87,7 @@ export default {
         addFile() {
             const ref = this;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 // console.log(reader.result);
                 ref.loadDXFText(reader.result);
             };
@@ -116,11 +116,11 @@ export default {
 
         __setupDragAndDropLoad(selector) {
             const ref = this;
-            const dnd = new HTMLUtils.DnDFileController(selector, function(file) {
+            const dnd = new HTMLUtils.DnDFileController(selector, function (file) {
                 const files = this.$refs.file.files[0];
 
                 const reader = new FileReader();
-                reader.onloadend = function(e) {
+                reader.onloadend = function (e) {
                     ref.__loadDXFData(this.result);
                 };
                 try {
