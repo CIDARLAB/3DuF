@@ -10,7 +10,7 @@ export default class PointValue extends Parameter {
         super("Point",value);
     }
 
-    static isValid(value: any) {
+    static isValid(value: any): boolean {
         if (value instanceof Array && value.length == 2 && NumberUtils.isFloatOrInt(value[0]) && NumberUtils.isFloatOrInt(value[1])) return true;
         else return false;
     }

@@ -8,7 +8,7 @@ export default class StringValue extends Parameter {
         super("String",value);
     }
 
-    static isValid(value: any) {
+    static isValid(value: any): boolean {
         if (typeof value === "string" || value instanceof String) return true;
         else return false;
     }

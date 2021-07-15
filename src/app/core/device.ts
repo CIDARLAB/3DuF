@@ -4,7 +4,7 @@ import Params from "./params";
 
 import StringValue from "./parameters/stringValue";
 import Feature from "./feature";
-import {DeviceInterchangeV1} from "./init"
+import {DeviceInterchangeV1, Point} from "./init"
 import {ComponentInterchangeV1} from "./init"
 import {ConnectionInterchangeV1} from "./init"
 import {LayerInterchangeV1} from "./init"
@@ -954,7 +954,7 @@ export default class Device {
      * @memberof Device
      * @returns {Array<number>} Returns array with the absolute positions of the component port
      */
-    getPositionOfComponentPort(componentport: ComponentPort) {
+    getPositionOfComponentPort(componentport: ComponentPort): Point | undefined {
         let component: Component;
         let components: Array<Component> = this.__components;
         for (let i in components) {

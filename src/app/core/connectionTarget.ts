@@ -61,7 +61,7 @@ export default class ConnectionTarget {
      * @returns {ConnectionTarget} Returns a Connection Target Object
      * @memberof ConnectionTarget
      */
-    static fromJSON(device: Device, json: ConnectionTargetInterchangeV1) {
+    static fromJSON(device: Device, json: ConnectionTargetInterchangeV1):ConnectionTarget {
         const component = device.getComponentByID(json.component);
         return new ConnectionTarget(component, json.port);
     }

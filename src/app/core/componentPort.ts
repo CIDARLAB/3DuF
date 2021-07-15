@@ -2,7 +2,7 @@ import uuid from "node-uuid";
 import paper from "paper";
 import Layer from './layer'
 import Component from './component'
-import { ComponentPortInterchangeV1 } from "./init";
+import { ComponentPortInterchangeV1, Point } from "./init";
 
 export default class ComponentPort {
     protected _id: string;
@@ -142,7 +142,7 @@ export default class ComponentPort {
      * @returns {Array} Returns an array which contains the X absolute coordinate and the y absolute coordinate
      * @memberof ComponentPort
      */
-    static calculateAbsolutePosition(componentport: ComponentPort, component: Component) {
+    static calculateAbsolutePosition(componentport: ComponentPort, component: Component): Point {
         const topleftposition = component.getValue("position");
         const point = new paper.Point(topleftposition[0] + componentport.x, topleftposition[1] + componentport.y);
         console.log("Unchanged point:", point);
@@ -158,7 +158,7 @@ export default class ComponentPort {
      * @returns {ComponentPort} Returns a component port object
      * @memberof ComponentPort
      */
-    static fromInterchangeV1(json: ComponentPortInterchangeV1) {
+    static fromInterchangeV1(json: ComponentPortInterchangeV1): ComponentPort {
         return new ComponentPort(json.x, json.y, json.label, json.layer);
     }
 }

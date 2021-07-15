@@ -11,7 +11,7 @@ export default class SegmentArray extends Parameter {
         super("SegmentArray",value);
     }
 
-    static isValid(value: any) {
+    static isValid(value: any): boolean {
         if (value instanceof Array) {
             if (value.length == 0) {
                 return true;

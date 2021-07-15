@@ -11,7 +11,7 @@ export default class PointArray extends Parameter {
         super("PointArray",value);
     }
 
-    static isValid(value: any) {
+    static isValid(value: any): boolean {
         if (value instanceof Array) {
             if (value.length == 0) {
                 return true;

@@ -99,7 +99,7 @@ export default class Component {
      * @returns {void}
      * @memberof Component
      */
-    set placed(value) {
+    set placed(value: boolean) {
         this._placed = value;
     }
 

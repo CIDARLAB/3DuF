@@ -9,7 +9,7 @@ export default class FloatValue extends Parameter {
         super("Float",value);
     }
 
-    static isValid(value: any) {
+    static isValid(value: any): boolean {
         if (typeof value === "number" && NumberUtils.isFloatOrInt(value) && value >= 0) return true;
         else return false;
     }
