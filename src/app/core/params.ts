@@ -25,6 +25,12 @@ export default class Params {
         }
     }
 
+    /**
+     * Returns the parameters object (TODO - Remove this in the future)
+     *
+     * @readonly
+     * @memberof Params
+     */
     get parameters() {
         return this.__parameters
     }
