@@ -9,9 +9,9 @@ const describe = require("mocha").describe;
 const Channel = Feature.getFeatureGenerator("Channel", "Basic");
 const CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
 
-describe("Integration", function() {
-    describe("#core", function() {
-        it("Create a device, add layers and features, toJSON, fromJSON", function() {
+describe("Integration", function () {
+    describe("#core", function () {
+        it("Create a device, add layers and features, toJSON, fromJSON", function () {
             const dev = new Device(
                 {
                     width: 60,
