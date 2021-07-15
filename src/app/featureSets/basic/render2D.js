@@ -504,6 +504,23 @@ export const render2D = {
         targetPrimitiveType: "CurvedMixerTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    Magnet: {
+        featureParams: {
+            position: "position",
+            length: "length",
+            width: "width",
+            height: "height",
+        },
+        targetParams: {
+            length: "length",
+            width: "width",
+            height: "height",
+        },
+        featurePrimitiveType: "Magnet",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "MagnetTarget",
+        targetPrimitiveSet: "Basic2D",
+    },
     Mixer: {
         featureParams: {
             position: "position",

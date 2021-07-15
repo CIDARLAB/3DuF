@@ -12,6 +12,7 @@ import Gelchannel from "../library/gelchannel"; //CK
 import Chamber from "../library/chamber";
 import Connection from "../library/connection";
 import CurvedMixer from "../library/curvedMixer";
+import Magnet from "../library/magnet";
 import DiamondReactionChamber from "../library/diamondReactionChamber";
 import DropletGenerator from "../library/dropletGenerator";
 import GradientGenerator from "../library/gradientGenerator";
@@ -79,7 +80,7 @@ export default class FeatureSet {
                 object: new DiamondReactionChamber(),
                 key: null
             },
-
+            Magnet: { object: new Magnet(), key: null};
             DropletGen: { object: new DropletGenerator(), key: null },
             GradientGenerator: { object: new GradientGenerator(), key: null },
             Mux: { object: new Mux(), key: "FLOW" },

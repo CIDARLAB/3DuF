@@ -166,6 +166,12 @@ export const tools = {
         },
         placementTool: "PositionTool"
     },
+    Magnet: {
+        toolParms: {
+            cursorPosition: "position",
+        },
+        placementTool: "componentPositionTool",
+    }
     Mixer: {
         toolParams: {
             position: "position"
