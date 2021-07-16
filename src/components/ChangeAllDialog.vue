@@ -1,5 +1,5 @@
 <template>
-    <dialog id="change_all_dialog" class="mdl-dialog">
+    <dialog v-if="clicked" id="change_all_dialog" class="mdl-dialog">
         <div class="mdl-dialog__content">
             <!-- Textfield with Floating Label -->
             <h5>
@@ -24,7 +24,22 @@
 </template>
 
 <script>
-export default {};
+import EventBus from "@/events/events";
+export default {
+    data() {
+        return {
+            clicked: false
+        };
+    },
+    mounted() {
+        EventBus.get().on(EventBus.COPY_ALL, this.clickedCopy);
+    },
+    methods: {
+        clickedCopy() {
+            this.clicked = !this.clicked;
+        }
+    }
+};
 </script>
 
 <style lang="scss" scoped></style>

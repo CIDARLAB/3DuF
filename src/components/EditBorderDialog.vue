@@ -35,15 +35,8 @@ export default {
             dxfObject: []
         };
     },
-    // computed: {
-    //     dxfObject
-    // },
     mounted: () => {
-        //this.__setupDragAndDropLoad("border_import_panel");
-        Registry.viewManager.importBorder(this.$refs.getDXFfile());
         Registry.currentDevice.updateView();
-        //Registry.viewManager.importBorder();
-        //TODO - Need to setup paper for the canvas here so that the import dxf border can be visualized
     },
     methods: {
         onSave() {
@@ -112,34 +105,6 @@ export default {
                 }
             }
         }
-
-        // __setupDragAndDropLoad(selector) {
-        //     const ref = this;
-        //     HTMLUtils.DnDFileController(selector, function(file) {
-        //         const files = file.files[0];
-
-        //         const reader = new FileReader();
-        //         reader.onloadend = function(e) {
-        //             ref.loadDXFtext(reader.result);
-        //             Registry.viewManager.importBorder(this.getDXFfile());
-        //         };
-        //         try {
-        //             reader.readAsText(files);
-        //         } catch (err) {
-        //             console.log("unable to load DXF: " + files);
-        //         }
-        //     });
-        // }
-        //     __loadDXFData(text) {
-        //         const parser = new DxfParser();
-        //         const dxfdata = parser.parseSync(text);
-        //         const dxfobjects = [];
-        //         for (const i in dxfdata.entities) {
-        //             const entity = dxfdata.entities[i];
-        //             dxfobjects.push(new DXFObject(entity));
-        //         }
-        //     }
-        // }
     }
 };
 </script>
