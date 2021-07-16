@@ -1,0 +1,18 @@
+{
+    "recommendations": [
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode",
+        "oouo-diogo-perdigao.docthis",
+        "msjsdiag.debugger-for-chrome",
+        "octref.vetur",
+        "alefragnani.bookmarks",
+        "dzannotti.vscode-babel-coloring",
+        "ms-vsliveshare.vsliveshare-pack",
+        "redhat.vscode-yaml",
+        "yzhang.markdown-all-in-one",
+        "github.vscode-pull-request-github",
+        "streetsidesoftware.code-spell-checker",
+        "eamodio.gitlens",
+        "firefox-devtools.vscode-firefox-debug"
+    ]
+}
