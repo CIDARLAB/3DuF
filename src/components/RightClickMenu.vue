@@ -5,34 +5,36 @@
                 <v-col>
                     <thead v-if="Rename">
                         <form action="#">
-                                <input id="inserttext_textinput" class="mdl-textfield__input" type="text" />
-                                <label class="mdl-textfield__label" for="inserttext_textinput">Text</label>
+                            <input id="inserttext_textinput" class="mdl-textfield__input" type="text" />
+                            <label class="mdl-textfield__label" for="inserttext_textinput">Text</label>
                         </form>
                     </thead>
                     <v-row>
                         <v-col>
-                            <!-- Colored icon button -->
-                            <v-btn id="context_button_copy" @click="copyButton()">
-                                <span class="material-icons">file_copy</span>
-                            </v-btn>
-                            <v-btn id="context_button_delete" @click="deleteButton()">
-                                <span class="material-icons">delete</span>
-                            </v-btn>
-                            <v-btn id="context_button_move" @click="moveButton()">
-                                <span class="material-icons">open_with</span>
-                            </v-btn>
-                            <v-btn id="context_button_revert" @click="revertToDefaults()">
-                                <span class="material-icons">settings_backup_restore</span>
-                            </v-btn>
-                            <v-btn id="context_button_copytoall" @click="copyToAllButton()">
-                                <span class="material-icons">select_all</span>
-                            </v-btn>
-                            <v-btn id="context_button_rename" @click="renameButton()">
-                                <span class="material-icons">title</span>
-                            </v-btn>
-                            <v-btn id="context_button_arraygen" @click="generateArrayButton()">
-                                <span class="material-icons">view_comfy</span>
-                            </v-btn>
+                            <div id="buttonClass" class="buttonClass">
+                                <!-- Colored icon button -->
+                                <v-btn id="context_button_copy" @click="copyButton()">
+                                    <span class="material-icons">file_copy</span>
+                                </v-btn>
+                                <v-btn id="context_button_delete" @click="deleteButton()">
+                                    <span class="material-icons">delete</span>
+                                </v-btn>
+                                <v-btn id="context_button_move" @click="moveButton()">
+                                    <span class="material-icons">open_with</span>
+                                </v-btn>
+                                <v-btn id="context_button_revert" @click="revertToDefaults()">
+                                    <span class="material-icons">settings_backup_restore</span>
+                                </v-btn>
+                                <v-btn id="context_button_copytoall" @click="copyToAllButton()">
+                                    <span class="material-icons">select_all</span>
+                                </v-btn>
+                                <v-btn id="context_button_rename" @click="renameButton()">
+                                    <span class="material-icons">title</span>
+                                </v-btn>
+                                <v-btn id="context_button_arraygen" @click="generateArrayButton()">
+                                    <span class="material-icons">view_comfy</span>
+                                </v-btn>
+                            </div>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -148,11 +150,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.contextMenu {
-    position: absolute;
-    z-index: 19;
-    left: 500px;
-    top: 500px;
-    background-color: "#fff";
+#buttonClass {
+    margin-left: 15px;
+}
+#context_button_copy {
+    margin-left: 10px;
+}
+#context_button_delete {
+    margin-left: 10px;
+}
+#context_button_move {
+    margin-left: 10px;
+}
+#context_button_revert {
+    margin-left: 10px;
+}
+#context_button_copytoall {
+    margin-left: 10px;
+}
+#context_button_rename {
+    margin-left: 10px;
+}
+#context_button_arraygen {
+    margin-left: 10px;
 }
 </style>

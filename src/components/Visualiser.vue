@@ -1,7 +1,7 @@
 <template>
     <div>
         <div id="view-container">
-            <div id="canvas_block">
+            <div id="canvas_block" @click="callbacks.close()">
                 <canvas id="c" tabindex="0" resize />
                 <slot v-if="activeMenu"><RightClickMenu id="rightclickmenu" :spec="roundedChannelSpec"/></slot>
             </div>
@@ -14,6 +14,7 @@
 <script>
 import { Registry, BareViewManager, ViewManager } from "../app/index";
 import { Examples } from "../app/index";
+import Vue from "vue";
 import ResolutionToolbar from "./ResolutionToolbar";
 import EventBus from "@/events/events";
 import RightClickMenu from "@/components/RightClickMenu.vue";
@@ -51,6 +52,10 @@ export default {
         window.view = Registry.viewManager.view;
         Registry.viewManager.setupToolBars();
         EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
+        Vue.set(this.callbacks, "close", callback => {
+            if (callback) callback();
+            this.activeMenu = false;
+        });
     },
     methods: {
         activateMenu(event) {

@@ -64,7 +64,6 @@
 <script>
 import Vue from "vue";
 import EventBus from "@/events/events";
-//import RightClickMenu from "@/components/RightClickMenu.vue";
 import "@mdi/font/css/materialdesignicons.css";
 import PumpSpec from "@/models/property-drawer/PumpSpec.js";
 

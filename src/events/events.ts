@@ -11,8 +11,9 @@ class EventBus extends EventEmitter {
     }
 
     static NAVBAR_SCOLL_EVENT = "navbar_scroll_event";
-
     static DBL_CLICK = "dbl_click";
+    static MOVE = "move";
+    static COPY_ALL = "copy-all";
 }
 
 export default EventBus;
