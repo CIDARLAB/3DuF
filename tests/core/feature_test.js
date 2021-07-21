@@ -9,6 +9,9 @@ const IntegerValue = Parameters.IntegerValue;
 
 const CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
 const Port = Feature.getFeatureGenerator("Port", "Basic");
+const it = require("mocha").it;
+const describe = require("mocha").describe;
+const beforeEach = require("mocha").beforeEach;
 
 let feat1;
 let feat2;

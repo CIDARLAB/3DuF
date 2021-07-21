@@ -1,5 +1,7 @@
 const should = require("should");
 const IntegerValue = require("../../../app/core/parameters").IntegerValue;
+const it = require("mocha").it;
+const describe = require("mocha").describe;
 
 describe("IntegerValue", function() {
     it("should allow a value of 1", function() {
