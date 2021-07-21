@@ -90,8 +90,7 @@ export default {
             required: true
         },
         rename: {
-            type: String,
-            required: true
+            type: String
         }
     },
     data() {
@@ -100,9 +99,9 @@ export default {
             activeMove: false,
             activeCopy: false,
             Rename: false,
-            featureRef: Array,
-            typeString: String,
-            setString: String
+            featureRef: null,
+            typeString: "",
+            setString: "",
             //roundedChannelSpec: RoundedChannelSpec
         };
     },
@@ -111,7 +110,7 @@ export default {
         EventBus.get().on(EventBus.DBL_CLICK, this.activateFeat);
     },
     methods: {
-        activateFeat(event, feat, arg3) {
+        activateFeat: function(event, feat, arg3) {
             this.featureRef = feat;
             this.typeString = feat.getType();
             this.setString = feat.getSet();

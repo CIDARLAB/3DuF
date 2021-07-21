@@ -4,7 +4,7 @@
             <div id="canvas_block">
                 <canvas id="c" tabindex="0" resize />
                 <slot>
-                    <RightClickMenu id="contextMenu" ref="contextMenu" v-bind="post" :spec="specs" />
+                    <RightClickMenu v-show="activeMenu" id="contextMenu" ref="contextMenu" :spec="specs" />
                 </slot>
             </div>
             <div id="renderContainer" />
@@ -51,12 +51,11 @@ export default {
         RightClickMenu
     },
     post: {
-        style: { top: this.function2() + "px", left: this.placement() + "px" }
+        //style: { top: this.placement2 + "px", left: this.placement + "px" }
     },
     data() {
         return {
             activeMenu: false,
-            Feature: Object,
             clientWidth: this.$refs.contextMenu.clientWidth,
             clientHeight: this.$refs.contextMenu.clientHeight
         };
@@ -73,7 +72,7 @@ export default {
                 return event.clientX + 30;
             }
         },
-        function2(event) {
+        placement2: function(event) {
             if (event.clientY - 20 + this.clientHeight > window.innerHeight) {
                 return event.clientY - this.clientHeight + 20;
             } else {
@@ -95,7 +94,7 @@ export default {
 
         window.view = Registry.viewManager.view;
         Registry.viewManager.setupToolBars();
-        EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu, this.placement, this.function2);
+        EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu, this.placement, this.placement2);
         //Function call
         // Vue.set(this.callbacks, "close", callback => {
         //     if (callback) callback();
@@ -104,8 +103,8 @@ export default {
     methods: {
         activateMenu: function(event, feat, arg3) {
             console.log(event, feat, arg3);
-            this.$refs.activeMenu = !this.activeMenu;
-            this.$refs.Feature = feat;
+            this.activeMenu = !this.activeMenu;
+            this.Feature = feat;
             console.log(this.activeMenu);
         },
         returnWidth() {
