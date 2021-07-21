@@ -193,7 +193,7 @@ export default class MouseSelectTool extends MouseTool {
     __getConnectionWithFeatureID(featureid) {
         // Get component with the features
 
-        const device_connections = Registry.currentDevice.getConnections();
+        const device_connections = Registry.currentDevice.connections;
 
         // Check against every component
         for (const i in device_connections) {

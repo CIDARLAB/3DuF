@@ -49,15 +49,16 @@ import LogicArray from "./app/library/logicArray";
 import { getComponentPorts, getDefinition, getRender2D, getRender3D, getTool } from "./app/featureSets";
 import Template from "./app/library/template";
 import Params from "./app/core/params";
+import ComponentPort from "./app/core/componentPort";
 
 export type LibraryEntryDefinition = {
     unique: { [key: string]: string };
-    heritable: { [key: string]: number };
-    units: { [key: string]: number };
+    heritable: { [key: string]: string };
+    units: { [key: string]: string };
     defaults: { [key: string]: number };
     minimum: { [key: string]: number };
     maximum: { [key: string]: number };
-    mint: { [key: string]: number };
+    mint: string;
 };
 
 type LibraryEntry = {
@@ -220,7 +221,7 @@ export class ComponentAPI {
     static getDefinition(threeduftype: string): LibraryEntryDefinition | null {
         // If threeduftype is a key present in library, return the definition
         // TODO: Change this to use minttype in the future
-        if (ComponentAPI.library.hasOwnProperty(threeduftype)) {
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftype)) {
             const template = ComponentAPI.library[threeduftype].object;
             const definition = {
                 unique: template.unique,
@@ -260,13 +261,14 @@ export class ComponentAPI {
      * @param minttypestring
      * @return {void|Array}
      */
-    static getComponentPorts(params: any, minttypestring: string) {
+    static getComponentPorts(params: any, minttypestring: string): Array<ComponentPort> {
         const threeduftypesting = ComponentAPI.getTypeForMINT(minttypestring);
         if (threeduftypesting == null) {
             throw new Error("Component Ports of: " + threeduftypesting + " not found in library");
         }
         const definition = ComponentAPI.library[threeduftypesting].object;
-        return definition.getPorts(params);
+        const ports = definition.getPorts(params);
+        return ports;
     }
 
     /**
@@ -274,7 +276,7 @@ export class ComponentAPI {
      * @param typestring
      * @return {*|boolean}
      */
-    static hasInverseRenderLayer(typestring: string) {
+    static hasInverseRenderLayer(typestring: string): boolean {
         const definition = ComponentAPI.library[typestring].object;
         // Go through the renderkeys and check if inverse is available
         const renderkeys = definition.renderKeys;
