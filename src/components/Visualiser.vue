@@ -1,9 +1,11 @@
 <template>
     <div>
         <div id="view-container">
-            <div id="canvas_block" @click="callbacks.close()">
+            <div id="canvas_block">
                 <canvas id="c" tabindex="0" resize />
-                <slot v-if="activeMenu"><RightClickMenu id="rightclickmenu" :spec="roundedChannelSpec"/></slot>
+                <slot>
+                    <RightClickMenu id="contextMenu" ref="contextMenu" v-bind="post" :spec="specs" />
+                </slot>
             </div>
             <div id="renderContainer" />
         </div>
@@ -18,23 +20,65 @@ import Vue from "vue";
 import ResolutionToolbar from "./ResolutionToolbar";
 import EventBus from "@/events/events";
 import RightClickMenu from "@/components/RightClickMenu.vue";
+import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
+import ChannelSpec from "@/models/property-drawer/ChannelSpec.js";
 import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
+import TransitionSpec from "@/models/property-drawer/TransitionSpec.js";
+// import AlignmentMarksSpec from "@/models/property-drawer/AlignmentMarksSpec.js";
+import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
+import ConnectionPropertyDrawer from "@/components/base/ConnectionPropertyDrawer.vue";
+import MixSpec from "@/models/property-drawer/MixSpec.js";
+import Mix3DSpec from "@/models/property-drawer/Mix3DSpec.js";
+import GradientGenSpec from "@/models/property-drawer/GradientGenSpec.js";
+import Valve3DSpec from "@/models/property-drawer/Valve3DSpec.js";
+import ValveSpec from "@/models/property-drawer/ValveSpec.js";
+import Pump3DSpec from "@/models/property-drawer/Pump3DSpec.js";
+import PumpSpec from "@/models/property-drawer/PumpSpec.js";
+import LLChamberSpec from "@/models/property-drawer/LLChamberSpec.js";
+// import CellTrapSpec from "@/models/property-drawer/CellTrapSpec.js";
+// import DiamondChamberSpec from "@/models/property-drawer/DiamondChamberSpec.js";
+// import ChamberSpec from "@/models/property-drawer/ChamberSpec.js";
+// import DropletGenSpec from "@/models/property-drawer/DropletGenSpec.js";
+// import PortSpec from "@/models/property-drawer/PortSpec.js";
+// import ViaSpec from "@/models/property-drawer/ViaSpec.js";
+// import YTreeSpec from "@/models/property-drawer/YTreeSpec.js";
+// import MuxSpec from "@/models/property-drawer/MuxSpec.js";
+// import TransponderSpec from "@/models/property-drawer/TransponderSpec.js";
 
 export default {
     components: {
         ResolutionToolbar,
         RightClickMenu
     },
+    post: {
+        style: { top: this.function2() + "px", left: this.placement() + "px" }
+    },
     data() {
         return {
             activeMenu: false,
-            contextMenu_left: String,
-            contextMenu_top: String
+            Feature: Object,
+            clientWidth: this.$refs.contextMenu.clientWidth,
+            clientHeight: this.$refs.contextMenu.clientHeight
         };
     },
     computed: {
-        roundedChannelSpec: function() {
+        specs: function() {
+            //if (this.Feature
             return RoundedChannelSpec;
+        },
+        placement: function(event) {
+            if (event.clientX + 30 + this.clientWidth > window.innerWidth) {
+                return event.clientX - this.clientWidth - 30;
+            } else {
+                return event.clientX + 30;
+            }
+        },
+        function2(event) {
+            if (event.clientY - 20 + this.clientHeight > window.innerHeight) {
+                return event.clientY - this.clientHeight + 20;
+            } else {
+                return event.clientY - 20;
+            }
         }
     },
     mounted() {
@@ -51,30 +95,26 @@ export default {
 
         window.view = Registry.viewManager.view;
         Registry.viewManager.setupToolBars();
-        EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
-        Vue.set(this.callbacks, "close", callback => {
-            if (callback) callback();
-            this.activeMenu = false;
-        });
+        EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu, this.placement, this.function2);
+        //Function call
+        // Vue.set(this.callbacks, "close", callback => {
+        //     if (callback) callback();
+        //     this.activeMenu = false;
     },
     methods: {
-        activateMenu(event) {
-            //alternate: Paperview.canvas.onmousedown
-            this.activeMenu = !this.activeMenu;
+        activateMenu: function(event, feat, arg3) {
+            console.log(event, feat, arg3);
+            this.$refs.activeMenu = !this.activeMenu;
+            this.$refs.Feature = feat;
             console.log(this.activeMenu);
-            console.log(this.event);
-            // if (event.clientX + 30 + this.$refs.rightclickmenu.clientWidth > window.innerWidth) {
-            //     this.contextMenu_left = String(event.clientX - this.$refs.rightclickmenu.clientWidth - 30) + "px";
-            //     console.log("this.contextMenu_left");
-            // } else {
-            //     this.contextMenu_left = String(event.clientX + 30) + "px";
-            //     console.log("this.contextMenu_left");
-            // }
-            // if (event.clientY - 20 + this.$refs.rightclickmenu.clientHeight > window.innerHeight) {
-            //     this.contextMenu_top = String(event.clientY - this.$refs.rightclickmenu.clientHeight + 20) + "px";
-            // } else {
-            //     this.contextMenu_top = String(event.clientY - 20) + "px";
-            // }
+        },
+        returnWidth() {
+            console.log(this.contextMenu_left);
+            return this.contextMenu_left;
+        },
+        returnHeight() {
+            console.log(this.contextMenu_top);
+            return this.contextMenu_top;
         }
     }
 };
@@ -89,11 +129,11 @@ export default {
 #c {
     z-index: 1;
 }
-#rightclickmenu {
+#contextMenu {
     position: absolute;
     z-index: 19;
-    left: 500px;
-    top: 500px;
+    margin-left: 400px;
+    margin-top: 300px;
     background-color: "#fff";
 }
 </style>

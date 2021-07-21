@@ -88,11 +88,11 @@ export default class MouseSelectTool extends MouseTool {
             if (target.selected) {
                 const feat = Registry.currentDevice.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
-                EventBus.get().emit(EventBus.DBL_CLICK, event);
+                EventBus.get().emit(EventBus.DBL_CLICK, event, feat, "arg3");
                 console.log("clicked this"); 
-                //const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
+                //const rightclickmenu = new RightClickMenu(feat); // new RightClickMenu(feat);
                 //rightclickmenu.show(event, feat);
-                //this.rightClickMenu = rightclickmenu;
+                //this.rightClickMenu = Rightclickmenu;
                 // let func = PageSetup.getParamsWindowCallbackFunction(feat.getType(), feat.getSet());
                 // func(event);
             } else {

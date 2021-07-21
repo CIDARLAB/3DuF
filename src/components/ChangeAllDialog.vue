@@ -1,5 +1,5 @@
 <template>
-    <dialog v-if="clicked" id="change_all_dialog" class="mdl-dialog">
+    <dialog id="change_all_dialog" class="mdl-dialog">
         <div class="mdl-dialog__content">
             <!-- Textfield with Floating Label -->
             <h5>
