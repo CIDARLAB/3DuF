@@ -8,13 +8,13 @@
                         <v-card-text><p class="text--primary subtitle-1">Text:</p></v-card-text>
                     </td>
                     <td width="125px">
-                        <v-text-field></v-text-field>
+                        <v-text-field id='textfield'></v-text-field>
                     </td>
                     <td>
                         <v-card-text><p class="text--primary subtitle-1">Font Size:</p></v-card-text>
                     </td>
                     <td width="125px">
-                        <v-text-field v-model="number" :step="1" type="number"></v-text-field>
+                        <v-text-field v-model="number" :step="1" type="number" id='fontsize'></v-text-field>
                     </td>
                 </tr>
                 <tr>
@@ -58,13 +58,19 @@ export default {
     }),
     methods: {
         onSave() {
+            document.getElementById('textfield').value='';
+            document.getElementById('fontsize').value='';
             console.log("Saved data for Edit Device");
         },
         onClick() {
             Registry.viewManager.activateTool("InsertTextTool");
             Registry.text = document.getElementById("inserttext_textinput").value;
         }
-    }
+    },
+    mounted: () => ({
+        var :list= document.getElementByID('dropdown')
+
+    })
 };
 </script>
 
