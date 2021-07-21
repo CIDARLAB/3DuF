@@ -14,6 +14,10 @@ const CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
 // var Channel = require(appRoot + "core/features/channel");
 // var CircleValve = require(appRoot + "core/features/circleValve");
 
+const it = require("mocha").it;
+const describe = require("mocha").describe;
+const beforeEach = require("mocha").beforeEach;
+
 let layerParams;
 let feat1;
 let feat2;

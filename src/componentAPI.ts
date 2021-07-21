@@ -48,6 +48,7 @@ import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
 import { getComponentPorts, getDefinition, getRender2D, getRender3D, getTool } from "./app/featureSets";
 import Template from "./app/library/template";
+import Params from "./app/core/params";
 
 export type LibraryEntryDefinition = {
     unique: { [key: string]: string };
@@ -233,5 +234,50 @@ export class ComponentAPI {
             return definition;
         }
         return null;
+    }
+
+    static getTypeForMINT(minttype: string): string | null {
+        for (const key in ComponentAPI.library) {
+            if (minttype === ComponentAPI.library[key].object.mint) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    static getMINTForType(threeduftype: string): string | null {
+        for (const key in ComponentAPI.library) {
+            if (threeduftype === key) {
+                return ComponentAPI.library[key].object.mint;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the component ports for a given component
+     * @param params
+     * @param minttypestring
+     * @return {void|Array}
+     */
+    static getComponentPorts(params: any, minttypestring: string) {
+        const threeduftypesting = ComponentAPI.getTypeForMINT(minttypestring);
+        if (threeduftypesting == null) {
+            throw new Error("Component Ports of: " + threeduftypesting + " not found in library");
+        }
+        const definition = ComponentAPI.library[threeduftypesting].object;
+        return definition.getPorts(params);
+    }
+
+    /**
+     * Checks if the component definition in the library has the Inverse Render generation support
+     * @param typestring
+     * @return {*|boolean}
+     */
+    static hasInverseRenderLayer(typestring: string) {
+        const definition = ComponentAPI.library[typestring].object;
+        // Go through the renderkeys and check if inverse is available
+        const renderkeys = definition.renderKeys;
+        return renderkeys.includes("INVERSE");
     }
 }

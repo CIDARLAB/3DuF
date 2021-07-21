@@ -9,6 +9,10 @@ const PointValue = Parameters.PointValue;
 const BooleanValue = Parameters.BooleanValue;
 const StringValue = Parameters.StringValue;
 
+const it = require("mocha").it;
+const describe = require("mocha").describe;
+const beforeEach = require("mocha").beforeEach;
+
 const makeParam = Parameter.makeParam;
 
 describe("Parameter", function() {
