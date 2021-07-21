@@ -72,7 +72,7 @@ export default {
             // file reader
             const ref = this;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 //console.log(reader.result);
                 ref.loadDXFText(reader.result);
             };

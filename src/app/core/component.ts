@@ -490,7 +490,7 @@ export default class Component {
 
         const paramstoadd = new Params(params, definition.unique, definition.heritable);
         const typestring = ComponentAPI.getMINTForType(entity);
-        if (typestring == null){
+        if (typestring == null) {
             throw Error("Could not find definition for type: " + entity + " MINT: " + typestring);
         }
         const component = new Component(typestring, paramstoadd, name, entity, id);
