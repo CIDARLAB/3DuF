@@ -1,7 +1,6 @@
 import Registry from "@/app/core/registry";
 
 export default class DeviceUtils {
-
     static __nameMap = new Map();
 
     static addLayer(layer, index) {
