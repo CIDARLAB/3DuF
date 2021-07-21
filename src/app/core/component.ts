@@ -9,6 +9,7 @@ import Port from "../library/port";
 import { ComponentPortInterchangeV1, ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1, Point } from "./init";
 import ComponentUtils from "../utils/componentUtils";
+import { ComponentAPI } from "@/componentAPI";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -57,7 +58,7 @@ export default class Component {
 
         const cleanparamdata = this._params.parameters;
 
-        const ports = ComponentUtils.getComponentPorts(cleanparamdata, this._type);
+        const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._type);
         if (ports != undefined && ports.length >= 0 && ports !== null) {
             for (const i in ports) {
                 this.setPort(ports[i].label, ports[i]);
@@ -375,7 +376,7 @@ export default class Component {
         //     paramvalues[key] = this.getValue(key);
         // }
 
-        const definition = ComponentUtils.getFeatureSetDefinition(this._type);
+        const definition = ComponentAPI.getDefinition(this._type);
         // Clean Param Data
         const cleanparamdata = this._params.parameters;
 
@@ -455,7 +456,7 @@ export default class Component {
         if (iscustomcompnent) {
             definition = CustomComponent.defaultParameterDefinitions();
         } else {
-            definition = ComponentUtils.getFeatureSetDefinition(entity);
+            definition = ComponentAPI.getDefinition(entity);
             if (definition === null) {
                 throw Error("Could not find definition for type: " + entity);
             }
@@ -488,7 +489,10 @@ export default class Component {
         }
 
         const paramstoadd = new Params(params, definition.unique, definition.heritable);
-        const typestring = ComponentUtils.getMintType(entity);
+        const typestring = ComponentAPI.getMINTForType(entity);
+        if (typestring == null){
+            throw Error("Could not find definition for type: " + entity + " MINT: " + typestring);
+        }
         const component = new Component(typestring, paramstoadd, name, entity, id);
 
         // Deserialize the component ports
@@ -558,7 +562,7 @@ export default class Component {
 
         const cleanparamdata = params;
 
-        const ports = ComponentUtils.getComponentPorts(cleanparamdata, this.type);
+        const ports = ComponentAPI.getComponentPorts(cleanparamdata, this.type);
 
         for (const i in ports) {
             this.setPort(ports[i].label, ports[i]);
