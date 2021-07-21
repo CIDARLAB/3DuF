@@ -220,7 +220,7 @@ export class ComponentAPI {
     static getDefinition(threeduftype: string): LibraryEntryDefinition | null {
         // If threeduftype is a key present in library, return the definition
         // TODO: Change this to use minttype in the future
-        if (ComponentAPI.library.hasOwnProperty(threeduftype)) {
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftype)) {
             const template = ComponentAPI.library[threeduftype].object;
             const definition = {
                 unique: template.unique,
