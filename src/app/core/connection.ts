@@ -478,7 +478,7 @@ export default class Connection {
         if (ConnectionUtils.hasFeatureSet()) {
             definition = ConnectionUtils.getDefinition("Connection");
         }
-        if (definition === null || definition === undefined){
+        if (definition === null || definition === undefined) {
             throw new Error("Could not find the definition for the Connection");
         }
         const paramstoadd = new Params(params, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));

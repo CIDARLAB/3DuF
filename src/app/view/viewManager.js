@@ -119,8 +119,8 @@ export default class ViewManager {
         this.minZoom = 0.0001;
         this.maxZoom = 5;
         this.setupTools();
-        let ref = this;
-        EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true) {
+        const ref = this;
+        EventBus.get().on(EventBus.UPDATE_RENDERS, function (feature, refresh = true) {
             if (ref.isFeatureInCurrentDevice(feature)) {
                 ref.view.updateFeature(feature);
                 ref.refresh(refresh);
