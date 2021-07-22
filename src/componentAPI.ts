@@ -193,6 +193,14 @@ export class ComponentAPI {
         return null;
     }
 
+    /**
+     * Get the definition of a component given by the corresponding mint type
+     *
+     * @static
+     * @param {string} minttype
+     * @returns {(LibraryEntryDefinition | null)}
+     * @memberof ComponentAPI
+     */
     static getDefinitionForMINT(minttype: string): LibraryEntryDefinition | null {
         const checkmint = minttype;
         let ret: LibraryEntryDefinition | null = null;
@@ -240,6 +248,14 @@ export class ComponentAPI {
         return null;
     }
 
+    /**
+     * Gets the 3duf type for mint type
+     *
+     * @static
+     * @param {string} minttype
+     * @returns {(string | null)}
+     * @memberof ComponentAPI
+     */
     static getTypeForMINT(minttype: string): string | null {
         for (const key in ComponentAPI.library) {
             if (minttype === ComponentAPI.library[key].object.mint) {
@@ -249,6 +265,14 @@ export class ComponentAPI {
         return null;
     }
 
+    /**
+     * Gets the mint type for 3duf type
+     *
+     * @static
+     * @param {string} threeduftype
+     * @returns {(string | null)}
+     * @memberof ComponentAPI
+     */
     static getMINTForType(threeduftype: string): string | null {
         for (const key in ComponentAPI.library) {
             if (threeduftype === key) {
@@ -301,6 +325,14 @@ export class ComponentAPI {
         }
     }
 
+    /**
+     * Gets the heritable keys for a given component
+     *
+     * @static
+     * @param {string} threeduftypeString
+     * @returns {{ [key: string]: string }}
+     * @memberof ComponentAPI
+     */
     static getHeritableForType(threeduftypeString: string): { [key: string]: string } {
         if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
             return ComponentAPI.library[threeduftypeString].object.heritable;
@@ -309,6 +341,14 @@ export class ComponentAPI {
         }
     }
 
+    /**
+     * Gets the unique keys for a given component
+     *
+     * @static
+     * @param {string} threeduftypeString
+     * @returns {{ [key: string]: string }}
+     * @memberof ComponentAPI
+     */
     static getUniqueForType(threeduftypeString: string): { [key: string]: string } {
         if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
             return ComponentAPI.library[threeduftypeString].object.unique;
@@ -317,6 +357,14 @@ export class ComponentAPI {
         }
     }
 
+    /**
+     * Checks if the component definition belongs to a custom component
+     *
+     * @static
+     * @param {string} threeduftypeString
+     * @returns {boolean}
+     * @memberof ComponentAPI
+     */
     static isCustomType(threeduftypeString: string): boolean {
         if (threeduftypeString in ComponentAPI.customTypes.keys()) {
             return true;
@@ -324,6 +372,13 @@ export class ComponentAPI {
         return false;
     }
 
+    /**
+     * Generates a unique ID
+     *
+     * @static
+     * @returns {string}
+     * @memberof ComponentAPI
+     */
     static generateID(): string {
         return uuid.v1();
     }

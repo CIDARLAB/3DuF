@@ -5,5 +5,17 @@
     "typescript.updateImportsOnFileMove.enabled": "prompt",
     "editor.defaultFormatter": "octref.vetur",
     "editor.definitionLinkOpensInPeek": true,
-    "vetur.format.options.tabSize": 4
+    "vetur.format.options.tabSize": 4,
+    "[typescript]": {
+        "editor.autoClosingBrackets": "languageDefined",
+    },
+    "[typescriptreact]": {
+        "editor.autoClosingBrackets": "languageDefined"
+    },
+    "[javascript]": {
+        "editor.autoClosingBrackets": "languageDefined"
+    },
+    "[javascriptreact]": {
+        "editor.autoClosingBrackets": "languageDefined"
+    }    
 }
