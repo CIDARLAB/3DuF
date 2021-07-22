@@ -7,7 +7,7 @@
     "editor.definitionLinkOpensInPeek": true,
     "vetur.format.options.tabSize": 4,
     "[typescript]": {
-        "editor.autoClosingBrackets": "languageDefined",
+        "editor.autoClosingBrackets": "languageDefined"
     },
     "[typescriptreact]": {
         "editor.autoClosingBrackets": "languageDefined"
@@ -17,5 +17,5 @@
     },
     "[javascriptreact]": {
         "editor.autoClosingBrackets": "languageDefined"
-    }    
+    }
 }
