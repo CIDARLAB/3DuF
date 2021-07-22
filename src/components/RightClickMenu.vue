@@ -102,7 +102,6 @@ export default {
             Rename: false,
             featureRef: null,
             typeString: "",
-            setString: "",
             marginLeft: 500,
             marginTop: 100
             //roundedChannelSpec: RoundedChannelSpec
@@ -113,16 +112,15 @@ export default {
         EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
     },
     methods: {
-        activateMenu: function(event, feat, arg3) {
+        activateMenu: function(event, feat) {
             //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
 
             // Activate feat code
             this.featureRef = feat;
             this.typeString = feat.getType();
-            this.setString = feat.getSet();
             //console.log(feat);
 
-            console.log(event, feat, arg3);
+            console.log(event, feat);
             this.activeMenu = !this.activeMenu;
             console.log(this.activeMenu);
 
