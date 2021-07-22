@@ -4,6 +4,7 @@ import MouseTool from "./mouseTool";
 import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
+import EventBus from "@/events/events";
 
 export default class MouseSelectTool extends MouseTool {
     constructor(paperview) {
@@ -88,9 +89,10 @@ export default class MouseSelectTool extends MouseTool {
             if (target.selected) {
                 const feat = Registry.currentDevice.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
-                const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
-                rightclickmenu.show(event, feat);
-                this.rightClickMenu = rightclickmenu;
+                EventBus.get().emit(EventBus.DBL_CLICK, event, feat);
+                // const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
+                // rightclickmenu.show(event, feat);
+                // this.rightClickMenu = rightclickmenu;
                 // let func = PageSetup.getParamsWindowCallbackFunction(feat.getType(), feat.getSet());
                 // func(event);
             } else {
