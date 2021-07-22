@@ -16,7 +16,7 @@ export default class ControlCellPositionTool extends PositionTool {
         const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
         const cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
 
-        let newFeature = Device.makeFeature(this.typeString, this.setString, {
+        let newFeature = Device.makeFeature(this.typeString, {
             position: PositionTool.getTarget(point)
         });
         this.currentFeatureID = newFeature.ID;
@@ -28,7 +28,7 @@ export default class ControlCellPositionTool extends PositionTool {
 
         let newtypestring = this.typeString + "_control";
         let paramstoadd = newFeature.getParams();
-        newFeature = Device.makeFeature(newtypestring, this.setString, {
+        newFeature = Device.makeFeature(newtypestring, {
             position: PositionTool.getTarget(point)
         });
         newFeature.setParams(paramstoadd);
@@ -42,7 +42,7 @@ export default class ControlCellPositionTool extends PositionTool {
 
         newtypestring = this.typeString + "_cell";
         paramstoadd = newFeature.getParams();
-        newFeature = Device.makeFeature(newtypestring, this.setString, {
+        newFeature = Device.makeFeature(newtypestring, {
             position: PositionTool.getTarget(point)
         });
         newFeature.setParams(paramstoadd);

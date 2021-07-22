@@ -22,6 +22,8 @@ import ComponentPort from "./componentPort";
 import * as IOUtils from "../utils/ioUtils";
 
 import DeviceUtils from "@/app/utils/deviceUtils";
+import { ComponentAPI } from "@/componentAPI";
+import MapUtils from "../utils/mapUtils";
 
 /**
  * The Device stores information about a design.
@@ -983,7 +985,6 @@ export default class Device {
      */
     static makeFeature(
         typeString: string,
-        setString: string,
         paramvalues: any,
         name: string = "New Feature",
         id: string | undefined = undefined,
@@ -996,16 +997,16 @@ export default class Device {
             //TODO: Put in params initialization
             return new EdgeFeature(fabtype, params, id);
         }
-        let featureType = FeatureSets.getDefinition(typeString, setString);
+        let featureType = ComponentAPI.getDefinition(typeString);
         if (paramvalues && featureType) {
-            Feature.checkDefaults(paramvalues, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
-            params = new Params(paramvalues, featureType.unique, featureType.heritable);
+            Feature.checkDefaults(paramvalues, featureType.heritable, ComponentAPI.getDefaultsForType(typeString));
+            params = new Params(paramvalues, MapUtils.toMap(featureType.unique), MapUtils.toMap(featureType.heritable));
         } else {
             let unique: Map<string, string> = new Map();
             params = new Params(paramvalues, unique.set("position", "Point"), new Map());
         }
 
-        let feature = new Feature(typeString, setString, params, name, id);
+        let feature = new Feature(typeString, params, name, id);
 
         for (let i in dxfdata) {
             feature.addDXFObject(DXFObject.fromJSON(dxfdata[i]));

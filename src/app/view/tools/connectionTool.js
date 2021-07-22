@@ -358,7 +358,7 @@ export default class ConnectionTool extends MouseTool {
      * @return {EdgeFeature}
      */
     createChannel(start, end) {
-        return Device.makeFeature(this.typeString, this.setString, {
+        return Device.makeFeature(this.typeString, {
             start: start,
             end: end,
             wayPoints: this.wayPoints,

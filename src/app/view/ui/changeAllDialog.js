@@ -30,7 +30,7 @@ export default class ChangeAllDialog {
         }
 
         const selectedcomponent = Registry.viewManager.view.selectedComponents[0];
-        const selectedcomponenttype = selectedcomponent.getType();
+        const selectedcomponenttype = selectedcomponent.type;
         const params = selectedcomponent.getParams();
         this.__paramsToChange = {};
         for (const key in params.heritable) {

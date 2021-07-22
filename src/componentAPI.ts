@@ -50,6 +50,8 @@ import { getComponentPorts, getDefinition, getRender2D, getRender3D, getTool } f
 import Template from "./app/library/template";
 import Params from "./app/core/params";
 import ComponentPort from "./app/core/componentPort";
+import CustomComponent from "./app/core/customComponent";
+import uuid from "node-uuid";
 
 export type LibraryEntryDefinition = {
     unique: { [key: string]: string };
@@ -145,6 +147,7 @@ export class ComponentAPI {
         LogicArray_cell: { object: new LogicArray(), key: "CELL" }
     };
 
+    static customTypes: Map<string, CustomComponent> = new Map();
     __setString: any;
     __tools: any;
     __render2D: any;
@@ -281,5 +284,47 @@ export class ComponentAPI {
         // Go through the renderkeys and check if inverse is available
         const renderkeys = definition.renderKeys;
         return renderkeys.includes("INVERSE");
+    }
+
+    /**
+     * ?
+     * @param {String} typeString
+     * @param {String} setString
+     * @returns {Template.defaults}
+     * @memberof Feature
+     */
+    static getDefaultsForType(threeduftypeString: string): { [key: string]: number } {
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString].object.defaults;
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
+    }
+
+    static getHeritableForType(threeduftypeString: string): { [key: string]: string } {
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString].object.heritable;
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
+    }
+
+    static getUniqueForType(threeduftypeString: string): { [key: string]: string } {
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString].object.unique;
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
+    }
+
+    static isCustomType(threeduftypeString: string): boolean {
+        if (threeduftypeString in ComponentAPI.customTypes.keys()) {
+            return true;
+        }
+        return false;
+    }
+
+    static generateID(): string {
+        return uuid.v1();
     }
 }

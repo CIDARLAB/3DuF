@@ -13,7 +13,7 @@ export default class EdgeFeature extends Feature {
      * @param {Params} params
      * @param {String} id
      */
-    constructor(edgeObjects, params, id = Feature.generateID()) {
+    constructor(edgeObjects, params, id = ComponentAPI.generateID()) {
         super("EDGE", "Basic", params, id, id, "EDGE");
         if (edgeObjects) {
             this.__edgeObjects = edgeObjects;

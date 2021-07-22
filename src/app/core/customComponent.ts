@@ -7,7 +7,7 @@ import Params from "./params";
 import Template from "../library/template";
 import Feature from "./feature";
 import DeviceUtils from "../utils/deviceUtils";
-import { LibraryEntryDefinition } from "@/componentAPI";
+import { ComponentAPI, LibraryEntryDefinition } from "@/componentAPI";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -77,11 +77,10 @@ export default class CustomComponent extends Template {
     generateComponent(): Feature {
         const paramvalues = {};
         const feature = Device.makeFeature(
-            this.type, 
-            "custom",
+            this.type,
             paramvalues, 
             DeviceUtils.generateNewName(this.type), 
-            Feature.generateID(),
+            ComponentAPI.generateID(),
             "XY",
             this.dxfData);
         return feature;

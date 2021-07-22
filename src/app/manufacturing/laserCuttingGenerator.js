@@ -1,6 +1,7 @@
 import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
 import Device from "../core/device";
+import { ComponentAPI } from "@/componentAPI";
 
 /**
  * Lasser Cutting Generator object
@@ -285,7 +286,7 @@ export default class LaserCuttingGenerator {
                         continue;
                     }
 
-                    if (Registry.featureSet.hasInverseRenderLayer(type)) {
+                    if (ComponentAPI.hasInverseRenderLayer(type)) {
                         /*
                         If the type has an inverse layer, then generate the inverse feature render
                          and throw it into the manufacturing layer.

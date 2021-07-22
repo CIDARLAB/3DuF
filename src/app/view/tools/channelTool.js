@@ -108,7 +108,7 @@ export default class ChannelTool extends MouseTool {
     }
 
     static createChannel(start, end, typestring = null, setstring = null) {
-        return Device.makeFeature(typestring, setstring, {
+        return Device.makeFeature(typestring, {
             start: start,
             end: end
         });
