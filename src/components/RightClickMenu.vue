@@ -1,5 +1,5 @@
 <template>
-    <v-card id="RightClickMenu" :style="{ width: 550 }">
+    <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, top: marginTop + 'px', left: marginLeft + 'px' }">
         <div>
             <thead v-if="Rename">
                 <v-col>
@@ -95,6 +95,7 @@ export default {
     },
     data() {
         return {
+            activeMenu: false,
             activeChange: false,
             activeMove: false,
             activeCopy: false,
@@ -102,19 +103,60 @@ export default {
             featureRef: null,
             typeString: "",
             setString: "",
+            marginLeft: 500,
+            marginTop: 100
             //roundedChannelSpec: RoundedChannelSpec
         };
     },
     mounted() {
         EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
-        EventBus.get().on(EventBus.DBL_CLICK, this.activateFeat);
+        EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
     },
     methods: {
-        activateFeat: function(event, feat, arg3) {
+        activateMenu: function(event, feat, arg3) {
+            //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
+
+            // Activate feat code
             this.featureRef = feat;
             this.typeString = feat.getType();
             this.setString = feat.getSet();
-            console.log(feat);
+            //console.log(feat);
+
+            console.log(event, feat, arg3);
+            this.activeMenu = !this.activeMenu;
+            console.log(this.activeMenu);
+
+            //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
+
+            /**
+            //Margin Left Calculation
+            if (event.clientX + 30 + this.clientWidth > window.innerWidth) {
+                this.marginLeft = event.clientX - this.clientWidth - 30;
+            } else {
+                this.marginLeft = event.clientX + 30;
+            }
+
+            //Margin Right Calculation
+            if (event.clientY - 20 + this.clientHeight > window.innerHeight) {
+                this.marginTop = event.clientY - this.clientHeight + 20;
+            } else {
+                this.marginTop = event.clientY - 20;
+            }
+            **/
+
+            //Margin Left Calculation
+            if (event.clientX + 30 > window.innerWidth) {
+                this.marginLeft = event.clientX - 30;
+            } else {
+                this.marginLeft = event.clientX + 30;
+            }
+
+            //Margin Right Calculation
+            if (event.clientY - 20 > window.innerHeight) {
+                this.marginTop = event.clientY + 20;
+            } else {
+                this.marginTop = event.clientY - 20;
+            }
         },
         onSave() {
             const nametext = this.getComponentName();
@@ -135,9 +177,9 @@ export default {
             console.log("Change all the component parameters");
         },
         moveButton() {
-            Registry.viewManager.activateTool("MoveTool");
-            const component = Registry.currentDevice.getComponentForFeatureID(this.featureRef.getID());
-            Registry.viewManager.tools.MoveTool.activate(component);
+            // Registry.viewManager.activateTool("MoveTool");
+            // const component = Registry.currentDevice.getComponentForFeatureID(this.featureRef.getID());
+            // Registry.viewManager.tools.MoveTool.activate(component);
             EventBus.get().emit(EventBus.MOVE);
         },
         renameButton() {

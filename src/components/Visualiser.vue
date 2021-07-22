@@ -4,7 +4,7 @@
             <div id="canvas_block">
                 <canvas id="c" tabindex="0" resize />
                 <slot>
-                    <RightClickMenu v-show="activeMenu" id="contextMenu" ref="contextMenu" :spec="specs" />
+                    <RightClickMenu id="contextMenu" ref="contextMenu" :spec="specs" />
                 </slot>
             </div>
             <div id="renderContainer" />
@@ -50,34 +50,13 @@ export default {
         ResolutionToolbar,
         RightClickMenu
     },
-    post: {
-        //style: { top: this.placement2 + "px", left: this.placement + "px" }
-    },
     data() {
-        return {
-            activeMenu: false,
-            clientWidth: this.$refs.contextMenu.clientWidth,
-            clientHeight: this.$refs.contextMenu.clientHeight
-        };
+        return {};
     },
     computed: {
         specs: function() {
             //if (this.Feature
             return RoundedChannelSpec;
-        },
-        placement: function(event) {
-            if (event.clientX + 30 + this.clientWidth > window.innerWidth) {
-                return event.clientX - this.clientWidth - 30;
-            } else {
-                return event.clientX + 30;
-            }
-        },
-        placement2: function(event) {
-            if (event.clientY - 20 + this.clientHeight > window.innerHeight) {
-                return event.clientY - this.clientHeight + 20;
-            } else {
-                return event.clientY - 20;
-            }
         }
     },
     mounted() {
@@ -94,28 +73,13 @@ export default {
 
         window.view = Registry.viewManager.view;
         Registry.viewManager.setupToolBars();
-        EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu, this.placement, this.placement2);
+        //EventBus.get().on(EventBus.DBL_CLICK, this.placement, this.placement2);
         //Function call
         // Vue.set(this.callbacks, "close", callback => {
         //     if (callback) callback();
         //     this.activeMenu = false;
     },
-    methods: {
-        activateMenu: function(event, feat, arg3) {
-            console.log(event, feat, arg3);
-            this.activeMenu = !this.activeMenu;
-            this.Feature = feat;
-            console.log(this.activeMenu);
-        },
-        returnWidth() {
-            console.log(this.contextMenu_left);
-            return this.contextMenu_left;
-        },
-        returnHeight() {
-            console.log(this.contextMenu_top);
-            return this.contextMenu_top;
-        }
-    }
+    methods: {}
 };
 </script>
 
@@ -131,8 +95,6 @@ export default {
 #contextMenu {
     position: absolute;
     z-index: 19;
-    margin-left: 400px;
-    margin-top: 300px;
     background-color: "#fff";
 }
 </style>
