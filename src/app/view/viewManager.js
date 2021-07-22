@@ -51,6 +51,7 @@ import Component from "../core/component";
 import DAMPFabricationDialog from "./ui/dampFabricationDialog";
 import ControlCellPositionTool from "./tools/controlCellPositionTool";
 import EventBus from "@/events/events";
+import { ComponentAPI } from "@/componentAPI";
 
 /**
  * View manager class
@@ -942,7 +943,9 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateDefault(typeString, setString, valueString, value) {
-        Registry.featureDefaults[setString][typeString][valueString] = value;
+        //Registry.featureDefaults[setString][typeString][valueString] = value;
+        let defaults = ComponentAPI.getDefaultsForType(typeString);
+        defaults[valueString] = value;
     }
 
     /**
@@ -954,7 +957,7 @@ export default class ViewManager {
     updateDefaultsFromFeature(feature) {
         const heritable = feature.getHeritableParams();
         for (const key in heritable) {
-            this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
+            this.updateDefault(feature.getType(), null, key, feature.getValue(key));
         }
     }
 
