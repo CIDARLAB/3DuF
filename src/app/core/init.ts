@@ -56,8 +56,7 @@ export type FeatureInterchangeV0 = {
     id: string;
     name: string;
     macro: string;
-    set: any;
-    referenceID: string;
+    referenceID: string | null;
     params: any;
     dxfData: any;
     type: string;

@@ -1,3 +1,5 @@
+import ComponentPort from "../core/componentPort";
+
 export default class Template {
     /**
      *Creates an instance of Template.
@@ -145,7 +147,8 @@ export default class Template {
      * @param params
      */
     getPorts(params) {
-        console.error("User needs to provide method for getting component ports, look at examples");
+        throw new Error("User needs to provide method for component definition, look at examples");
+        return [new ComponentPort()];
     }
 
     getBounds(params) {

@@ -28,9 +28,6 @@ class Registry {
     viewManager = null;
     featureSet = null;
 
-    generateID(): string {
-        return uuid.v1();
-    }
 }
 
 const instance = new Registry();

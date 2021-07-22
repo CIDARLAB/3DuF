@@ -43,7 +43,6 @@ export default class InsertTextTool extends MouseTool {
         let newFeature = TextFeature.makeFeature(
             this.text,
             this.typeString,
-            this.setString,
             new Params(
                 {
                     position: PositionTool.getTarget(point),

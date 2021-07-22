@@ -2,6 +2,7 @@
 import Parameter from "./parameter";
 import StringValue from "./parameters/stringValue";
 import Registry from "./registry";
+import { ComponentAPI } from "@/componentAPI";
 
 /**
  * Text Feature class
@@ -13,19 +14,10 @@ export default class TextFeature {
      * @param {Parameter} params
      * @param {String} id
      */
-    constructor(text, params, id = TextFeature.generateID()) {
+    constructor(text, params, id = ComponentAPI.generateID()) {
         // super("TEXT", "Basic", params, id, id);
         this.__text = text;
         this.__params.updateParameter("text", text);
-    }
-
-    /**
-     * Generates an ID.
-     * @returns {String} Returns the generated ID.
-     * @memberof TextFeature
-     */
-    static generateID() {
-        return Registry.generateID();
     }
 
     /**
@@ -104,19 +96,6 @@ export default class TextFeature {
      */
     getText() {
         return this.__text;
-    }
-
-    /**
-     * Generates a feature.
-     * @param {String} typeString
-     * @param {String} setString
-     * @returns {Feature}  Returns a feature object.
-     * @memberof TextFeature
-     */
-    static getFeatureGenerator(typeString, setString) {
-        return function (values) {
-            return Feature.makeFeature(typeString, setString, values);
-        };
     }
 
     /**
@@ -212,7 +191,7 @@ export default class TextFeature {
         let set;
         if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
         else set = "Basic";
-        return Feature.makeFeature(json.type, set, json.params, json.name, json.id);
+        return Feature.makeFeature(json.type, json.params, json.name, json.id);
     }
 
     /**
@@ -226,7 +205,7 @@ export default class TextFeature {
         if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
         else set = "Basic";
         // TODO: This will have to change soon when the thing is updated
-        return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
+        return Feature.makeFeature(json.macro, json.params, json.name, json.id, json.type);
     }
 
     /**
@@ -245,15 +224,6 @@ export default class TextFeature {
         // Feature.checkDefaults(values, featureType.heritable, Feature.getDefaultsForType(typeString, setString));
         // let params = new Params(values, featureType.unique, featureType.heritable);
         return new TextFeature(textcontent, values, id);
-    }
-
-    /**
-     * Updates the feature
-     * @memberof TextFeature
-     * @returns {void}
-     */
-    updateView() {
-        if (Registry.viewManager) Registry.viewManager.updateFeature(this);
     }
 
     // I wish I had abstract methods. :(

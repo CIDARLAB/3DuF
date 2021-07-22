@@ -50,6 +50,8 @@ import Layer from "../core/layer";
 import Component from "../core/component";
 import DAMPFabricationDialog from "./ui/dampFabricationDialog";
 import ControlCellPositionTool from "./tools/controlCellPositionTool";
+import EventBus from "@/events/events";
+import { ComponentAPI } from "@/componentAPI";
 
 /**
  * View manager class
@@ -118,6 +120,13 @@ export default class ViewManager {
         this.minZoom = 0.0001;
         this.maxZoom = 5;
         this.setupTools();
+        let ref = this;
+        EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true) {
+            if (ref.isFeatureInCurrentDevice(feature)) {
+                ref.view.updateFeature(feature);
+                ref.refresh(refresh);
+            }
+        });
 
         // TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
@@ -243,7 +252,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     addFeature(feature, refresh = true) {
-        if (this.__isFeatureInCurrentDevice(feature)) {
+        if (this.isFeatureInCurrentDevice(feature)) {
             this.view.addFeature(feature);
             this.refresh(refresh);
         }
@@ -257,7 +266,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateFeature(feature, refresh = true) {
-        if (this.__isFeatureInCurrentDevice(feature)) {
+        if (this.isFeatureInCurrentDevice(feature)) {
             this.view.updateFeature(feature);
             this.refresh(refresh);
         }
@@ -271,7 +280,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     removeFeature(feature, refresh = true) {
-        if (this.__isFeatureInCurrentDevice(feature)) {
+        if (this.isFeatureInCurrentDevice(feature)) {
             this.view.removeFeature(feature);
             this.refresh(refresh);
         }
@@ -757,7 +766,7 @@ export default class ViewManager {
      * @returns {Boolean}
      * @memberof ViewManager
      */
-    __isFeatureInCurrentDevice(feature) {
+    isFeatureInCurrentDevice(feature) {
         if (Registry.currentDevice && this.__isLayerInCurrentDevice(feature.layer)) return true;
         else return false;
     }
@@ -934,7 +943,9 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateDefault(typeString, setString, valueString, value) {
-        Registry.featureDefaults[setString][typeString][valueString] = value;
+        //Registry.featureDefaults[setString][typeString][valueString] = value;
+        let defaults = ComponentAPI.getDefaultsForType(typeString);
+        defaults[valueString] = value;
     }
 
     /**
@@ -946,7 +957,7 @@ export default class ViewManager {
     updateDefaultsFromFeature(feature) {
         const heritable = feature.getHeritableParams();
         for (const key in heritable) {
-            this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
+            this.updateDefault(feature.getType(), null, key, feature.getValue(key));
         }
     }
 
@@ -1328,7 +1339,7 @@ export default class ViewManager {
         params_to_copy.position = [xpos, ypos];
 
         // Get default params and overwrite them with json params, this can account for inconsistencies
-        const newFeature = Device.makeFeature(component.getType(), "Basic", params_to_copy);
+        const newFeature = Device.makeFeature(component.getType(), params_to_copy);
 
         component.addFeatureID(newFeature.ID);
 

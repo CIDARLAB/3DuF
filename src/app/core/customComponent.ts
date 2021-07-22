@@ -2,25 +2,39 @@ import DXFObject from "./dxfObject";
 import Device from "./device";
 
 import Registry from "./registry";
+import Component from "./component";
+import Params from "./params";
+import Template from "../library/template";
+import Feature from "./feature";
+import DeviceUtils from "../utils/deviceUtils";
+import { ComponentAPI, LibraryEntryDefinition } from "@/componentAPI";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
  * high level device model of the microfluidic.
  */
-export default class CustomComponent {
+export default class CustomComponent extends Template {
+
+    dxfData: any = null;
+    protected _type: string = "";
+    protected _entity: string = "";
+    protected _renderData:any = null;
+    protected _params: Params = new Params({}, new Map(), new Map());
+
     /**
      * Default constructor
      * @param {String} type Type of component
      * @param {DXFObject} dxfdata DXFObject
      * @param {String} mint Unique MINT identifier
      */
-    constructor(type, dxfdata, mint = type.toUpperCase()) {
+    constructor(type: string, dxfdata: any, mint:string = type.toUpperCase()) {
+        super();
         // this.__params = params;
-        this.__type = type;
-        this.__entity = mint;
+        this._type = type;
+        this._entity = mint;
         this.dxfData = dxfdata;
-        this.__params = null;
-        this.__renderData = null;
+        // this.__params = null;
+        // this.__renderData = null;
         // This stores the features that are a part of the component
         // this.__features = [];
         // //TODO: Need to figure out how to effectively search through these
@@ -32,8 +46,8 @@ export default class CustomComponent {
      * @return {string}
      * @memberof CustomComponent
      */
-    get entity() {
-        return this.__entity;
+    get entity(): string {
+        return this._entity;
     }
 
     /**
@@ -41,8 +55,8 @@ export default class CustomComponent {
      * @return {string}
      * @memberof CustomComponent
      */
-    get type() {
-        return this.__type;
+    get type(): string {
+        return this._type;
     }
 
     /**
@@ -51,8 +65,8 @@ export default class CustomComponent {
      * @memberof CustomComponent
      * @returns {void}
      */
-    set renderData(data) {
-        this.__renderData = data;
+    set renderData(data:any) {
+        this._renderData = data;
     }
 
     /**
@@ -60,9 +74,15 @@ export default class CustomComponent {
      * @returns {Feature} Returns a feature based on the data
      * @memberof CustomComponent
      */
-    generateComponent() {
+    generateComponent(): Feature {
         const paramvalues = {};
-        const feature = Device.makeFeature(type, "custom", paramvalues, Registry.currentDevice.generateNewName(type), Feature.generateID(), this.dxfData);
+        const feature = Device.makeFeature(
+            this.type,
+            paramvalues, 
+            DeviceUtils.generateNewName(this.type), 
+            ComponentAPI.generateID(),
+            "XY",
+            this.dxfData);
         return feature;
     }
 
@@ -72,19 +92,17 @@ export default class CustomComponent {
      * @memberof CustomComponent
      */
     toJSON() {
-        const output = {};
-        output.type = this.__type;
-        output.entity = this.__entity;
-        if (this.__params) {
-            output.params = this.__params.toJSON();
-        }
         const dxfdata = [];
         for (const i in this.dxfData) {
             dxfdata.push(this.dxfData[i].getData());
         }
-        output.dxfData = dxfdata;
-        // output.renderData = this.__renderData;
-        // console.log(output);
+
+        const output = {
+            type: this.type,
+            entity: this.entity,
+            params: this._params.toJSON(),
+            dxfData: dxfdata
+        };
         return output;
     }
 
@@ -94,7 +112,7 @@ export default class CustomComponent {
      * @returns {CustomComponent}
      * @memberof CustomComponent
      */
-    static fromInterchangeV1(json) {
+    static fromInterchangeV1(json: any) {
         let set;
         if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
         else set = "Basic";
@@ -116,7 +134,7 @@ export default class CustomComponent {
      * @returns {Object} Returns an Object containing the default parameters
      * @memberof CustomComponent
      */
-    static defaultParameterDefinitions() {
+    static defaultParameterDefinitions(): LibraryEntryDefinition {
         const params = {
             unique: {
                 position: "Point"
@@ -150,7 +168,8 @@ export default class CustomComponent {
                 // "width": 6000,
                 // "length": 24 * 1000,
                 height: 1200
-            }
+            },
+            mint: ""
         };
         return params;
     }

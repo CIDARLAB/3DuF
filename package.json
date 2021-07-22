@@ -34,6 +34,7 @@
         "acorn": "^8.1.0",
         "axios": "^0.21.1",
         "core-js": "^3.8.3",
+        "dependencies": "0.0.1",
         "dialog-polyfill": "^0.5.6",
         "dxf-parser": "^0.6.1",
         "eventemitter3": "^4.0.7",

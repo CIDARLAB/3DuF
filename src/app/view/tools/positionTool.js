@@ -8,6 +8,7 @@ import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
 import Params from "../../core/params";
 import Component from "../../core/component";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class PositionTool extends MouseTool {
     constructor(typeString, setString) {
@@ -42,7 +43,6 @@ export default class PositionTool extends MouseTool {
         const name = Registry.currentDevice.generateNewName(this.typeString);
         const newFeature = Device.makeFeature(
             this.typeString,
-            this.setString,
             {
                 position: PositionTool.getTarget(point)
             },
@@ -79,14 +79,14 @@ export default class PositionTool extends MouseTool {
      * @param featureIDs [String] Feature id's of all the features that will be a part of this component
      */
     createNewComponent(typeString, paramdata, featureIDs) {
-        const definition = Registry.featureSet.getDefinition(typeString);
+        const definition = ComponentAPI.getDefinition(typeString);
         // Clean Param Data
         const cleanparamdata = {};
         for (const key in paramdata) {
             cleanparamdata[key] = paramdata[key].getValue();
         }
         const params = new Params(cleanparamdata, definition.unique, definition.heritable);
-        const componentid = Feature.generateID();
+        const componentid = ComponentAPI.generateID();
         const name = Registry.currentDevice.generateNewName(typeString);
         const newComponent = new Component(typeString, params, name, definition.mint, componentid);
         let feature;

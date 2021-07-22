@@ -1,4 +1,5 @@
 import Registry from "@/app/core/registry";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class ConnectionUtils {
     constructor() {}
@@ -12,7 +13,7 @@ export default class ConnectionUtils {
     }
 
     static getDefinition(stringname) {
-        return Registry.featureSet.getDefinition("Connection");
+        return ComponentAPI.getDefinition("Connection");
     }
 
     static getFeatureFromID(featureid) {

@@ -7,6 +7,7 @@ import * as FeatureSets from "../../featureSets";
 import Registry from "../../core/registry";
 import { renderEdgeFeature } from "../../view/render2D/dxfObjectRenderer2D";
 import paper from "paper";
+import { ComponentAPI } from "@/componentAPI";
 
 const getLayerColor = function (feature) {
     const height = feature.getValue("height");
@@ -26,7 +27,7 @@ const getBaseColor = function (feature) {
 };
 
 export function getDefaultValueForType(typeString, setString, key) {
-    return Feature.getDefaultsForType(typeString, setString)[key];
+    return ComponentAPI.getDefaultsForType(typeString)[key];
 }
 
 export function getFeatureRenderer(typeString, setString) {
@@ -103,10 +104,11 @@ export function renderFeature(feature, key = null) {
     let rendered;
     let params;
     const type = feature.getType();
-    const set = feature.getSet();
+    const set = "Basic";
     if (type === "TEXT") {
         return renderText(feature);
-    } else if (set === "Custom") {
+    } else if (ComponentAPI.isCustomType(type)) {
+        set = "Custom";
         rendered = DXFSolidObjectRenderer2D.renderCustomComponentFeature(feature, getBaseColor(feature));
         rendered.featureID = feature.ID;
 

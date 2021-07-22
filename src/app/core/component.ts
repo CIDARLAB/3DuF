@@ -10,6 +10,7 @@ import { ComponentPortInterchangeV1, ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1, Point } from "./init";
 import ComponentUtils from "../utils/componentUtils";
 import { ComponentAPI } from "@/componentAPI";
+import MapUtils from "../utils/mapUtils";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -377,10 +378,14 @@ export default class Component {
         // }
 
         const definition = ComponentAPI.getDefinition(this._type);
+        if(definition === null){
+            throw new Error("Unable to find definition for component type: " + this._type);
+        }
         // Clean Param Data
         const cleanparamdata = this._params.parameters;
-
-        const replicaparams = new Params(cleanparamdata, definition.unique, definition.heritable);
+        const unique_map = MapUtils.toMap(definition.unique);
+        const heritable_map = MapUtils.toMap(definition.heritable);
+        const replicaparams = new Params(cleanparamdata, unique_map, heritable_map);
         const ret = new Component(this._type, replicaparams, name, this._entity);
         console.log("Checking what the new component params are:", ret._params);
         // Generate New features
@@ -457,9 +462,10 @@ export default class Component {
             definition = CustomComponent.defaultParameterDefinitions();
         } else {
             definition = ComponentAPI.getDefinition(entity);
-            if (definition === null) {
-                throw Error("Could not find definition for type: " + entity);
-            }
+        }
+
+        if (definition === null) {
+            throw Error("Could not find definition for type: " + entity);
         }
 
         // console.log(definition);
@@ -487,8 +493,9 @@ export default class Component {
         if (!Object.prototype.hasOwnProperty.call(params, "position")) {
             params.position = [0.0, 0.0];
         }
-
-        const paramstoadd = new Params(params, definition.unique, definition.heritable);
+        const unique_map = MapUtils.toMap(definition.unique);
+        const heritable_map = MapUtils.toMap(definition.heritable);
+        const paramstoadd = new Params(params, unique_map, heritable_map);
         const typestring = ComponentAPI.getMINTForType(entity);
         if (typestring == null){
             throw Error("Could not find definition for type: " + entity + " MINT: " + typestring);

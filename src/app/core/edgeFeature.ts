@@ -1,3 +1,4 @@
+import { ComponentAPI } from "@/componentAPI";
 import DXFObject from "./dxfObject";
 
 import Feature from "./feature";
@@ -7,18 +8,21 @@ import Params from "./params";
  * Edge Feature class
  */
 export default class EdgeFeature extends Feature {
+
+    protected _edgeObjects: any;
+
     /**
      * Default constructor for the edge feature
      * @param {Object} edgeObjects
      * @param {Params} params
      * @param {String} id
      */
-    constructor(edgeObjects, params, id = Feature.generateID()) {
-        super("EDGE", "Basic", params, id, id, "EDGE");
+    constructor(edgeObjects: any, params: Params, id = ComponentAPI.generateID()) {
+        super("EDGE", params, id, id, "EDGE");
         if (edgeObjects) {
-            this.__edgeObjects = edgeObjects;
+            this._edgeObjects = edgeObjects;
         } else {
-            this.__edgeObjects = [];
+            this._edgeObjects = [];
         }
     }
 
@@ -29,7 +33,7 @@ export default class EdgeFeature extends Feature {
      * @memberof EdgeFeature
      * @returns {void}
      */
-    generateRectEdge(xspan, yspan) {
+    generateRectEdge(xspan: number, yspan: number): void {
         // TODO: Fix this by trying to incorporate a system where the unit is given
         xspan /= 1000;
         yspan /= 1000;
