@@ -378,7 +378,7 @@ export default class Component {
         // }
 
         const definition = ComponentAPI.getDefinition(this._type);
-        if(definition === null){
+        if (definition === null) {
             throw new Error("Unable to find definition for component type: " + this._type);
         }
         // Clean Param Data
@@ -497,7 +497,7 @@ export default class Component {
         const heritable_map = MapUtils.toMap(definition.heritable);
         const paramstoadd = new Params(params, unique_map, heritable_map);
         const typestring = ComponentAPI.getMINTForType(entity);
-        if (typestring == null){
+        if (typestring == null) {
             throw Error("Could not find definition for type: " + entity + " MINT: " + typestring);
         }
         const component = new Component(typestring, paramstoadd, name, entity, id);

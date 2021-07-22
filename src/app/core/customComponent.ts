@@ -14,11 +14,10 @@ import { LibraryEntryDefinition } from "@/componentAPI";
  * high level device model of the microfluidic.
  */
 export default class CustomComponent extends Template {
-
     dxfData: any = null;
     protected _type: string = "";
     protected _entity: string = "";
-    protected _renderData:any = null;
+    protected _renderData: any = null;
     protected _params: Params = new Params({}, new Map(), new Map());
 
     /**
@@ -27,7 +26,7 @@ export default class CustomComponent extends Template {
      * @param {DXFObject} dxfdata DXFObject
      * @param {String} mint Unique MINT identifier
      */
-    constructor(type: string, dxfdata: any, mint:string = type.toUpperCase()) {
+    constructor(type: string, dxfdata: any, mint: string = type.toUpperCase()) {
         super();
         // this.__params = params;
         this._type = type;
@@ -65,7 +64,7 @@ export default class CustomComponent extends Template {
      * @memberof CustomComponent
      * @returns {void}
      */
-    set renderData(data:any) {
+    set renderData(data: any) {
         this._renderData = data;
     }
 
@@ -76,14 +75,7 @@ export default class CustomComponent extends Template {
      */
     generateComponent(): Feature {
         const paramvalues = {};
-        const feature = Device.makeFeature(
-            this.type, 
-            "custom",
-            paramvalues, 
-            DeviceUtils.generateNewName(this.type), 
-            Feature.generateID(),
-            "XY",
-            this.dxfData);
+        const feature = Device.makeFeature(this.type, "custom", paramvalues, DeviceUtils.generateNewName(this.type), Feature.generateID(), "XY", this.dxfData);
         return feature;
     }
 
