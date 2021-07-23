@@ -52,6 +52,14 @@ export type LayerInterchangeV1 = {
     color: string | undefined;
 };
 
+export type RenderLayerInterchangeV1 = {
+    id: string;
+    group: string;
+    features: Array<FeatureInterchangeV0>;
+    color: string | undefined;
+    type: string;
+};
+
 export type FeatureInterchangeV0 = {
     id: string;
     name: string;

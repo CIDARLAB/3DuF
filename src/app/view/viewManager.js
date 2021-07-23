@@ -52,6 +52,7 @@ import DAMPFabricationDialog from "./ui/dampFabricationDialog";
 import ControlCellPositionTool from "./tools/controlCellPositionTool";
 import EventBus from "@/events/events";
 import { ComponentAPI } from "@/componentAPI";
+import RenderLayer from "@/app/view/renderLayer";
 
 /**
  * View manager class
@@ -68,7 +69,7 @@ export default class ViewManager {
 
         this.__grid = new AdaptiveGrid(this);
         Registry.currentGrid = this.__grid;
-
+        this.renderLayers = [];
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         // this.customComponentManager = new CustomComponentManager(this);
@@ -336,6 +337,17 @@ export default class ViewManager {
             const index = this.view.paperLayers.length;
             this.addLayer(layertoadd, index, true);
         }
+
+        // Add new renderLayers
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("flow");
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("control");
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("cell");
+        for (const i in edgefeatures) {
+            this.renderLayers[this.renderLayers.length - 3].addFeature(edgefeatures[i]);
+            this.renderLayers[this.renderLayers.length - 2].addFeature(edgefeatures[i]);
+            this.renderLayers[this.renderLayers.length - 1].addFeature(edgefeatures[i]);
+        }
+
     }
 
     /**
@@ -350,6 +362,9 @@ export default class ViewManager {
         Registry.currentDevice.deleteLayer(levelindex * 3);
         Registry.currentDevice.deleteLayer(levelindex * 3 + 1);
         Registry.currentDevice.deleteLayer(levelindex * 3 + 2);
+
+        // Delete levels in render model
+        this.renderLayers.splice(levelindex * 3, 3)
 
         // Delete the levels in the render model
         this.view.removeLayer(levelindex * 3);
