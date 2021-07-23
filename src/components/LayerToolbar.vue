@@ -1,24 +1,24 @@
 <template>
     <v-card elevation="0">
         <v-card-title class="py-2">
-            <span>Layers</span>
-            <v-btn icon small fab color="primary" @click="addLayer">
+            <span>Levels</span>
+            <v-btn icon small fab color="primary" @click="addLevel">
                 <v-icon>mdi-plus</v-icon>
             </v-btn>
         </v-card-title>
 
         <v-card-text class="px-1">
-            <div v-for="layer in layers" :key="layer.id" class="my-1 mx-3">
-                <v-btn icon small @click="deleteLayer(layer)">
+            <div v-for="level in levels" :key="level.id" class="my-1 mx-3">
+                <v-btn icon small @click="deleteLevel(level)">
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
 
-                <v-btn-toggle v-model="layer.mode" mandatory tile borderless>
-                    <v-btn small :color="getButtonColor(layer, 0)" @click="layerModeClicked(layer, 0)">
+                <v-btn-toggle v-model="level.mode" mandatory tile borderless>
+                    <v-btn small :color="getButtonColor(level, 0)" @click="layerModeClicked(level, 0)">
                         <span>Flow</span>
                     </v-btn>
 
-                    <v-btn small :color="getButtonColor(layer, 1)" @click="layerModeClicked(layer, 1)">
+                    <v-btn small :color="getButtonColor(level, 1)" @click="layerModeClicked(level, 1)">
                         <span>Control</span>
                     </v-btn>
                 </v-btn-toggle>
@@ -28,45 +28,56 @@
 </template>
 
 <script>
+import Registry from "@/app/core/registry";
 export default {
     name: "ComponentToolbar",
     data() {
         return {
-            layers: [],
-            selectedLayer: 0,
+            levels: [],
+            selectedLevel: 0,
             selectedMode: 0,
             disabled: false
         };
     },
     mounted() {
-        this.addLayer();
+        this.addLevel();
     },
     methods: {
-        addLayer() {
-            let layer = {
-                id: this.layers.length,
+        addLevel() {
+            let level = {
+                id: this.levels.length,
                 mode: 0
             };
-            this.selectedLayer = layer.id;
-            this.layers.push(layer);
+            this.selectedLevel = level.id;
+            this.levels.push(level);
+            Registry.viewManager.createNewLayerBlock();
         },
 
-        layerModeClicked(layer) {
-            this.selectedLayer = layer.id;
+        layerModeClicked(level) {
+            console.log(level.id);
+            this.selectedLevel = level.id;
         },
 
-        deleteLayer(layer) {
-            let idx = this.layers.findIndex(l => l.id == layer.id);
-            if (idx > -1) this.layers.splice(idx, 1);
+        deleteLevel(level) {
+            if (level.id > -1) this.levels.splice(level.id, 1);
+            this.updateIndices();
+            Registry.viewManager.deleteLayerBlock(level.id);
         },
 
-        getButtonColor(layer, buttonMode) {
-            if (layer.id != this.selectedLayer) return "";
-            if (layer.id == this.selectedLayer && layer.mode == buttonMode) {
+        getButtonColor(level, buttonMode) {
+            if (level.id != this.selectedLevel) return "";
+            if (level.id == this.selectedLevel && level.mode == buttonMode) {
                 if (buttonMode == 0) return "blue white--text";
                 else return "red white--text";
             }
             return "";
+        },
+
+        updateIndices() {
+            for (var i = 0; i < this.levels.length; i++) {
+                console.log(this.levels[i].id, " and ", i);
+                this.levels[i].id = i;
+            }
         }
     }
 };
