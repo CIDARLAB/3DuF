@@ -39,6 +39,7 @@
         "dxf-parser": "^0.6.1",
         "eventemitter3": "^4.0.7",
         "exorcist": "^2.0.0",
+        "file-saver": "^2.0.5",
         "fsevents": "^2.1.2",
         "handsontable": "^6.2.2",
         "install": "^0.12.2",
@@ -109,7 +110,8 @@
         "vuetify-loader": "^1.7.1",
         "webpack": "^4.46.0",
         "webpack-cli": "^3.3.12",
-        "webpack-dev-server": "^3.11.2"
+        "webpack-dev-server": "^3.11.2",
+        "yeoman-generator": "^5.4.0"
     },
     "bugs": {
         "url": "https://github.com/CIDARLAB/3DuF/issues"
@@ -129,5 +131,8 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/CIDARLAB/3DuF.git"
-    }
+    },
+    "files": [
+        "src/app/core"
+    ]
 }

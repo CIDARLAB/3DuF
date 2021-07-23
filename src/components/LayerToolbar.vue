@@ -13,14 +13,17 @@
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
 
-                <v-btn-toggle v-model="level.mode" mandatory tile borderless>
-                    <v-btn small :color="getButtonColor(level, 0)" @click="layerModeClicked(level, 0)">
-                        <span>Flow</span>
-                    </v-btn>
-
-                    <v-btn small :color="getButtonColor(level, 1)" @click="layerModeClicked(level, 1)">
-                        <span>Control</span>
-                    </v-btn>
+                <v-btn-toggle :v-model="level.mode" mandatory tile borderless>
+                    <v-btn-toggle :v-model="level.mode" mandatory tile borderless>
+                        <v-btn small :color="getButtonColor(level, 0)" @click="layerModeClicked(level, 0)">
+                            <span>Flow</span>
+                        </v-btn>
+                    </v-btn-toggle>
+                    <v-btn-toggle :v-model="level.mode" mandatory tile borderless>
+                        <v-btn small :color="getButtonColor(level, 1)" @click="layerModeClicked(level, 1)">
+                            <span>Control</span>
+                        </v-btn>
+                    </v-btn-toggle>
                 </v-btn-toggle>
             </div>
         </v-card-text>
@@ -30,37 +33,49 @@
 <script>
 import Registry from "@/app/core/registry";
 export default {
-    name: "ComponentToolbar",
+    name: "LayerToolbar",
     data() {
         return {
-            levels: [],
             selectedLevel: 0,
             selectedMode: 0,
-            disabled: false
+            disabled: false,
+            renderLayers: [],
+            layers: []
         };
     },
+    computed: {
+        levels: function() {
+            let ret = [];
+            for (let i in this.layers) {
+                if (i % 3 == 0) {
+                    ret.push({
+                        id: i / 3,
+                        mode: 0
+                    });
+                }
+            }
+            return ret;
+        }
+    },
     mounted() {
-        this.addLevel();
+        // Load what layers are there in the device
+        setTimeout(() => {
+            this.layers = Registry.currentDevice.layers;
+        }, 1000);
     },
     methods: {
         addLevel() {
-            let level = {
-                id: this.levels.length,
-                mode: 0
-            };
-            this.selectedLevel = level.id;
-            this.levels.push(level);
             Registry.viewManager.createNewLayerBlock();
         },
 
-        layerModeClicked(level) {
+        layerModeClicked(level, mode) {
             console.log(level.id);
+            console.log(this.levels);
+            this.levels[level.id].mode = mode;
             this.selectedLevel = level.id;
         },
 
         deleteLevel(level) {
-            if (level.id > -1) this.levels.splice(level.id, 1);
-            this.updateIndices();
             Registry.viewManager.deleteLayerBlock(level.id);
         },
 
@@ -71,13 +86,6 @@ export default {
                 else return "red white--text";
             }
             return "";
-        },
-
-        updateIndices() {
-            for (var i = 0; i < this.levels.length; i++) {
-                console.log(this.levels[i].id, " and ", i);
-                this.levels[i].id = i;
-            }
         }
     }
 };

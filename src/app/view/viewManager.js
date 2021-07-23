@@ -1,4 +1,4 @@
-import ZoomToolBar from "./ui/zoomToolBar";
+import ZoomToolBar from "@/components/zoomSlider.vue";
 import BorderSettingsDialog from "./ui/borderSettingDialog";
 import paper from "paper";
 
@@ -1371,7 +1371,7 @@ export default class ViewManager {
      */
     generateExportJSON() {
         const json = this.currentDevice.toInterchangeV1_1();
-        json.customComponents = this.customComponentManager.toJSON();
+        // json.customComponents = this.customComponentManager.toJSON();
         return json;
     }
 

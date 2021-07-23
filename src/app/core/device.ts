@@ -4,7 +4,7 @@ import Params from "./params";
 
 import StringValue from "./parameters/stringValue";
 import Feature from "./feature";
-import { DeviceInterchangeV1, Point } from "./init";
+import { DeviceInterchangeV1, DeviceInterchangeV1_1, Point } from "./init";
 import { ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1 } from "./init";
 import { LayerInterchangeV1 } from "./init";
@@ -532,6 +532,26 @@ export default class Device {
         };
         return output;
     }
+
+    toInterchangeV1_1(): DeviceInterchangeV1_1 {
+        let output: DeviceInterchangeV1_1 = {
+            name: this.__name,
+            params: {
+                width: this.getXSpan(),
+                length: this.getYSpan()
+            },
+            //TODO: Use this to dynamically create enough layers to scroll through
+            layers: this.__layersToInterchangeV1(),
+            components: this.__componentsToInterchangeV1(),
+            connections: this.__connectionToInterchangeV1(),
+            //TODO: Use this to render the device features
+            features: this.__featureLayersToInterchangeV1(),
+            version: 1,
+            groups: this.__groupsToJSON()
+        };
+        return output;
+    }
+
     /**
      * Creates a new device object from a JSON format
      * @param {JSON} json
