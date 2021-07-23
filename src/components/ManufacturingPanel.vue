@@ -28,6 +28,15 @@
                         <v-list-item-title>CNC (.svg)</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+
+                <v-list-item @click="downloadLASER">
+                    <v-list-item-icon>
+                        <v-icon>LASER</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Laser Cutting (.svg)</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list-item-group>
         </v-list>
     </div>
@@ -45,7 +54,8 @@ import Registry from "@/app/core/registry";
 import { saveAs } from "file-saver";
 import ManufacturingLayer from "@/app/manufacturing/manufacturingLayer";
 import JSZip from "jszip";
-import CNCGenerator from "@/app/manufacturing/cncGenerator.js";
+import CNCGenerator from "@/app/manufacturing/cncGenerator";
+import LaserCuttingGenerator from "@/app/manufacturing/laserCuttingGenerator";
 
 export default {
     name: "ManufacturingPanel",
@@ -108,8 +118,6 @@ export default {
             cncGenerator.generateDepthLayers();
             cncGenerator.generateEdgeLayers();
 
-            console.log("SVG Data:", cncGenerator.getSVGOutputs());
-
             const zipper = new JSZip();
 
             let svgOutputs = cncGenerator.getSVGOutputs();
@@ -124,6 +132,29 @@ export default {
             saveAs(content, Registry.currentDevice.name + ".zip");
 
             cncGenerator.flushData();
+        },
+        downloadLASER() {
+            const laserCuttingGenerator = new LaserCuttingGenerator(Registry.currentDevice, Registry.viewManager);
+            laserCuttingGenerator.setDevice(Registry.currentDevice);
+            laserCuttingGenerator.generatePortLayers();
+            laserCuttingGenerator.generateDepthLayers();
+            laserCuttingGenerator.generateEdgeLayers();
+            laserCuttingGenerator.generateInverseControlLayers();
+
+            const zipper = new JSZip();
+
+            let svgOutputs = laserCuttingGenerator.getSVGOutputs();
+            for (const key of svgOutputs.keys()) {
+                zipper.file(key + ".svg", svgOutputs.get(key));
+            }
+
+            const content = zipper.generate({
+                type: "blob"
+            });
+
+            saveAs(content, Registry.currentDevice.name + ".zip");
+
+            laserCuttingGenerator.flushData();
         }
     }
 };

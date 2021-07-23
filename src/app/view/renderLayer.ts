@@ -50,7 +50,7 @@ export default class RenderLayer {
         this.__ensureIsAFeature(feature);
         this.features[feature.ID] = feature;
         this.featureCount += 1;
-        feature.layer = this;
+        // feature.layer = this;
     }
 
 
