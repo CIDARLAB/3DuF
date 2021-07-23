@@ -4,7 +4,7 @@
             <v-list-item-group mandatory color="indigo">
                 <v-list-item @click="downloadJSON">
                     <v-list-item-icon>
-                        <v-icon>JSON</v-icon>
+                        <v-icon>JSN</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title>3DuF File (.json)</v-list-item-title>
@@ -31,10 +31,19 @@
 
                 <v-list-item @click="downloadLASER">
                     <v-list-item-icon>
-                        <v-icon>LASER</v-icon>
+                        <v-icon>LAS</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title>Laser Cutting (.svg)</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item @click="downloadMETAFLUIDICS">
+                    <v-list-item-icon>
+                        <v-icon>MET</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Publish on Metafluidics</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list-item-group>
@@ -155,6 +164,9 @@ export default {
             saveAs(content, Registry.currentDevice.name + ".zip");
 
             laserCuttingGenerator.flushData();
+        },
+        downloadMETAFLUIDICS() {
+            console.log("coming soon");
         }
     }
 };
