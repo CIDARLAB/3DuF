@@ -10,6 +10,7 @@
             <div id="renderContainer" />
         </div>
         <ResolutionToolbar />
+        <zoomSlider />
     </div>
 </template>
 
@@ -19,6 +20,7 @@ import { Registry, BareViewManager, ViewManager } from "../app/index";
 import { Examples } from "../app/index";
 import Vue from "vue";
 import ResolutionToolbar from "./ResolutionToolbar";
+import zoomSlider from "@/components/zoomSlider.vue";
 import EventBus from "@/events/events";
 import RightClickMenu from "@/components/RightClickMenu.vue";
 import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
@@ -49,13 +51,14 @@ import LLChamberSpec from "@/models/property-drawer/LLChamberSpec.js";
 export default {
     components: {
         ResolutionToolbar,
-        RightClickMenu
+        RightClickMenu,
+        zoomSlider
     },
     data() {
         return {};
     },
     computed: {
-        specs: function() {
+        specs: function () {
             //if (this.Feature
             return RoundedChannelSpec;
         }

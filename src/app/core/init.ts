@@ -18,6 +18,17 @@ export type DeviceInterchangeV1 = {
     version: number;
 };
 
+export type DeviceInterchangeV1_1 = {
+    name: string;
+    params: any;
+    layers: Array<LayerInterchangeV1>;
+    groups: Array<string>;
+    components: Array<ComponentInterchangeV1>;
+    connections: Array<ConnectionInterchangeV1>;
+    features: Array<LayerInterchangeV1>;
+    version: number;
+};
+
 export type ComponentInterchangeV1 = {
     id: string;
     name: string;

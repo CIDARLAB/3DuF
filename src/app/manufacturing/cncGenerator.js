@@ -40,7 +40,7 @@ export default class CNCGenerator {
                 -  Populate with the ports
          */
         // let components = this.__device.components;
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
 
@@ -113,7 +113,7 @@ export default class CNCGenerator {
                    Step 2.2 - Generate manufacturing layers for each of the depths
 
          */
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
         let isControl = false;
@@ -183,7 +183,7 @@ export default class CNCGenerator {
         Step 2 - Get all the EDGE features in the drawing
         Step 3 - Generate separate SVGs
          */
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
 

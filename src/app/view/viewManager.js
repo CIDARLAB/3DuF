@@ -1,4 +1,4 @@
-import ZoomToolBar from "./ui/zoomToolBar";
+import ZoomToolBar from "@/components/zoomSlider.vue";
 import BorderSettingsDialog from "./ui/borderSettingDialog";
 import paper from "paper";
 
@@ -121,8 +121,8 @@ export default class ViewManager {
         this.minZoom = 0.0001;
         this.maxZoom = 5;
         this.setupTools();
-        let ref = this;
-        EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true) {
+        const ref = this;
+        EventBus.get().on(EventBus.UPDATE_RENDERS, function (feature, refresh = true) {
             if (ref.isFeatureInCurrentDevice(feature)) {
                 ref.view.updateFeature(feature);
                 ref.refresh(refresh);
@@ -347,7 +347,6 @@ export default class ViewManager {
             this.renderLayers[this.renderLayers.length - 2].addFeature(edgefeatures[i]);
             this.renderLayers[this.renderLayers.length - 1].addFeature(edgefeatures[i]);
         }
-
     }
 
     /**
@@ -364,7 +363,7 @@ export default class ViewManager {
         Registry.currentDevice.deleteLayer(levelindex * 3 + 2);
 
         // Delete levels in render model
-        this.renderLayers.splice(levelindex * 3, 3)
+        this.renderLayers.splice(levelindex * 3, 3);
 
         // Delete the levels in the render model
         this.view.removeLayer(levelindex * 3);
@@ -958,8 +957,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateDefault(typeString, setString, valueString, value) {
-        //Registry.featureDefaults[setString][typeString][valueString] = value;
-        let defaults = ComponentAPI.getDefaultsForType(typeString);
+        // Registry.featureDefaults[setString][typeString][valueString] = value;
+        const defaults = ComponentAPI.getDefaultsForType(typeString);
         defaults[valueString] = value;
     }
 
@@ -1371,7 +1370,7 @@ export default class ViewManager {
      */
     generateExportJSON() {
         const json = this.currentDevice.toInterchangeV1_1();
-        json.customComponents = this.customComponentManager.toJSON();
+        // json.customComponents = this.customComponentManager.toJSON();
         return json;
     }
 

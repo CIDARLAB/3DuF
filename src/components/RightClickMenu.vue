@@ -88,9 +88,6 @@ export default {
         spec: {
             type: Array,
             required: true
-        },
-        rename: {
-            type: String
         }
     },
     data() {
@@ -100,6 +97,7 @@ export default {
             activeMove: false,
             activeCopy: false,
             Rename: false,
+            rename: null,
             featureRef: null,
             typeString: "",
             marginLeft: 500,
@@ -112,7 +110,7 @@ export default {
         EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
     },
     methods: {
-        activateMenu: function(event, feat) {
+        activateMenu: function (event, feat) {
             //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
 
             // Activate feat code
