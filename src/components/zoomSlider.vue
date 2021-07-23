@@ -1,6 +1,19 @@
 <template>
     <div class="zoomsliderbase">
-        <veeno ref="Zoomslider" vertical v-bind="sliderOptions" @change="updateSlider" />
+        <veeno
+            ref="Zoomslider"
+            v-model="dummy"
+            vertical
+            rtl
+            :connect="[true, false]"
+            :set="dummy"
+            :handles="dummy"
+            :range="{
+                min: 0.001,
+                max: 5
+            }"
+            @change="updateSlider"
+        />
     </div>
 </template>
 
@@ -15,24 +28,20 @@ export default {
     },
     data() {
         return {
-            zoom: 0,
-            zoom_optimal: 0,
-            isUserGeneratedEvent: false,
-            sliderOptions: {
-                connect: [false, true],
-                handles: 0.5,
-                behavior: "tap-drag",
-                range: {
-                    min: -3.61,
-                    max: 0.6545
-                }
-            }
+            dummy: 0.1,
+            isUserGeneratedEvent: false
         };
     },
+    computed: {
+        dummy2: function() {
+            return this.convertLinearToZoomScale(this.dummy);
+        }
+    },
     mounted() {
-        // setTimeout(() => {
-        //     this.zoom_optimal = Math.log10(Registry.viewManager.view.computeOptimalZoom());
-        // }, 1000);
+        setTimeout(() => {
+            this.dummy = Math.log10(Registry.viewManager.view.computeOptimalZoom());
+            console.log(this.dummy);
+        }, 10);
     },
     methods: {
         updateSlider: function(event) {
@@ -68,7 +77,7 @@ export default {
 .zoomsliderbase {
     position: absolute;
     top: 200px;
-    right: 50px;
+    right: 35px;
     z-index: 9;
     height: 300px;
 }
