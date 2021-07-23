@@ -30,7 +30,7 @@ export default class Template {
      */
     get featureParams() {
         if (this.__featureParams === null) {
-            throw new Error("placementtool cannot be null instantiate in the __setupDefinitions");
+            throw new Error("featureParams cannot be null instantiate in the __setupDefinitions");
         }
 
         return this.__featureParams;
@@ -41,7 +41,7 @@ export default class Template {
      */
     get targetParams() {
         if (this.__targetParams === null) {
-            throw new Error("placementtool cannot be null instantiate in the __setupDefinitions");
+            throw new Error("targetParams cannot be null instantiate in the __setupDefinitions");
         }
 
         return this.__targetParams;
