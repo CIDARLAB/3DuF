@@ -1,7 +1,6 @@
 import uuid from "node-uuid";
 import Feature from "../core/feature";
 import EdgeFeature from "../core/edgeFeature";
-import TextFeature from "../core/textFeature";
 
 import { RenderLayerInterchangeV1, FeatureInterchangeV0 } from "../core/init";
 import Layer from "../core/layer";
@@ -61,7 +60,7 @@ export default class RenderLayer {
      * @returns {void}
      */
      __ensureIsAFeature(feature: any): void {
-        if (!(feature instanceof Feature) && !(feature instanceof TextFeature) && !(feature instanceof EdgeFeature)) {
+        if (!(feature instanceof Feature) && !(feature instanceof EdgeFeature)) {
             throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
         }
     }

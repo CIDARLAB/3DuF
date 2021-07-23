@@ -1,15 +1,14 @@
 import MouseTool from "./mouseTool";
-
+import Device from "@/app/core/device";
 import Registry from "../../core/registry";
-import TextFeature from "../../core/textFeature";
 import SimpleQueue from "../../utils/simpleQueue";
 
 import paper from "paper";
 import PositionTool from "./positionTool";
 import Params from "../../core/params";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class InsertTextTool extends MouseTool {
-    text;
 
     constructor() {
         super();
@@ -18,6 +17,8 @@ export default class InsertTextTool extends MouseTool {
         this.currentFeatureID = null;
         const ref = this;
         this.lastPoint = null;
+        this._text = "TESTING-TEXT";
+        this.fontSize = 12;
         this.showQueue = new SimpleQueue(
             function () {
                 ref.showTarget();
@@ -40,18 +41,29 @@ export default class InsertTextTool extends MouseTool {
     }
 
     createNewFeature(point) {
-        let newFeature = TextFeature.makeFeature(
-            this.text,
-            this.typeString,
-            new Params(
-                {
-                    position: PositionTool.getTarget(point),
-                    height: 200
-                },
-                { position: "Point" },
-                { height: "Float", text: "String" }
+
+        // new Params(
+        //     {
+        //         position: PositionTool.getTarget(point),
+        //         height: 200
+        //     },
+        //     { position: "Point" },
+        //     { height: "Float", text: "String" }
+        // )
+        let fixedpoint = PositionTool.getTarget(point);
+        let newFeature = Device.makeFeature(
+            "Text",
+            {
+                position: fixedpoint,
+                height: 200,
+                text: this._text,
+                fontSize: this.fontSize
+            },
+            "TEXT_"+this._text,
+            ComponentAPI.generateID(),
+            "XY",
+            null
             )
-        );
         // this.currentFeatureID = newFeature.ID;
         Registry.currentLayer.addFeature(newFeature);
         Registry.viewManager.saveDeviceState();
@@ -63,10 +75,10 @@ export default class InsertTextTool extends MouseTool {
     }
 
     get text() {
-        return this.text;
+        return this._text;
     }
 
     set text(text) {
-        this.text = text;
+        this._text = text;
     }
 }

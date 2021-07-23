@@ -12,57 +12,73 @@ export default class Text extends Template {
         };
 
         this.__heritable = {
-            portRadius: "Float",
-            height: "Float"
+            text: "String",
+            height: "Float",
+            fontSize: "Float"
         };
 
         this.__defaults = {
-            portRadius: 0.7 * 1000,
+            text: "ADD_TEXT",
+            fontSize: 10000 / 3,
             height: 250
         };
 
         this.__units = {
-            portRadius: "&mu;m",
+            text: "",
+            fontSize: "&mu;m",
             height: "&mu;m"
         };
 
         this.__minimum = {
-            portRadius: 0.8 * 10,
-            height: 10
+            text: "ADD_TEXT",
+            fontSize: 10000 / 3,
+            height: 1
         };
 
         this.__maximum = {
-            portRadius: 2000,
-            height: 1200
+            text: "ADD_TEXT",
+            fontSize: 10000 / 3,
+            height: 10000
         };
-
-        this.__placementTool = "componentPositionTool";
 
         this.__toolParams = {
             position: "position"
         };
+
+        this.__featureParams = {
+            position: "position",
+            text: "text",
+            fontSize: "fontSize",
+            height: "height",
+        };
+
+        this.__targetParams = {
+            text: "text",
+            fontSize: "fontSize",
+            height: "height",
+        };
+
+        this.__placementTool = "PositionTool";
+
+        this.__renderKeys = ["FLOW"];
+
+        this.__mint = "TEXT";
+
+
     }
 
     render2D(params, key) {
         // Regardless of the key...
-        const start = params.start;
-        const end = params.end;
+        const position = params.position;
+        const text = params.text;
         const color = params.color;
-        const width = params.width;
-        const baseColor = params.baseColor;
-        const startPoint = new paper.Point(start[0], start[1]);
-        const endPoint = new paper.Point(end[0], end[1]);
-        const vec = endPoint.subtract(startPoint);
-        const rec = paper.Path.Rectangle({
-            size: [vec.length, width],
-            point: start,
-            //  radius: width/2,
-            fillColor: color,
-            strokeWidth: 0
-        });
-        rec.translate([0, -width / 2]);
-        rec.rotate(vec.angle, start);
-        return rec;
+        const rendered = new paper.PointText(new paper.Point(position[0], position[1]));
+        rendered.justification = "center";
+        rendered.fillColor = color;
+        /// rendered.content = feature.getText();
+        rendered.content = text;
+        rendered.fontSize = 10000 / 3;
+        return rendered;
     }
 
     render2DTarget(key, params) {

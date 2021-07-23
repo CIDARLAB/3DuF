@@ -8,7 +8,7 @@
                         <v-card-text><p class="text--primary subtitle-1">Text:</p></v-card-text>
                     </td>
                     <td width="125px">
-                        <v-text-field :v-model="text"></v-text-field>
+                        <v-text-field v-model="text"></v-text-field>
                     </td>
                     <td>
                         <v-card-text><p class="text--primary subtitle-1">Font Size:</p></v-card-text>
@@ -28,7 +28,7 @@
                         <v-card-text><p class="text--primary subtitle-1">Select Layer:</p></v-card-text>
                     </td>
                     <td>
-                        <v-select :items="items" label="Dropdown"> </v-select>
+                        <v-select :items="displayLayers" label="Dropdown"> </v-select>
                     </td>
                 </tr>
             </form>
@@ -41,7 +41,7 @@
                 </v-btn>
                 <v-spacer />
             </v-col>
-            <v-btn class="pa-2" color="green darken-1" dark :style="{ right: '30%', transform: 'translateX(-30%)' }" @click="onClick">
+            <v-btn class="pa-2" color="green darken-1" dark :style="{ right: '30%', transform: 'translateX(-30%)' }" @click="callbacks.close(insertText)">
                 Insert
             </v-btn>
         </template>
@@ -55,18 +55,31 @@ export default {
         Dialog
     },
     data: () => ({
-        items: ["Level1- FLOW", "Level1- CONTROL", "Level1- INTEGRATION"],
         text: "",
-        fontSize: 12
+        fontSize: "12",
+        layers: []
     }),
+    computed: {
+        displayLayers: function() {
+            let ret = this.layers.map((layer, index) => {
+                let item = `Layer ${Math.floor(index / 3) + 1} - ${layer.name}`;
+                return item;
+            });
+            return ret;
+        }
+    },
+    mounted() {
+        // Load All the layers with some delay
+        setTimeout(() => {
+            this.layers = Registry.currentDevice.layers;
+            this.fontSize = Registry.viewManager.tools.InsertTextTool.fontSize;
+        }, 1000);
+    },
     methods: {
-        onSave() {
-            console.log("Saved data for Edit Device");
-        },
-        onClick() {
-            Registry.viewManager.activateTool("InsertTextTool");
+        insertText() {
             Registry.viewManager.tools.InsertTextTool.text = this.text;
-            this.close();
+            Registry.viewManager.tools.fontSize = parseInt(this.fontSize);
+            Registry.viewManager.activateTool("InsertTextTool");
         }
     }
 };

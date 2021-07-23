@@ -31,10 +31,7 @@ export function getDefaultValueForType(typeString, setString, key) {
 }
 
 export function getFeatureRenderer(typeString, setString) {
-    if (typeString === "TEXT") {
-        const rendererInfo = renderTextTarget;
-        return rendererInfo;
-    } else if (typeString === "EDGE") {
+    if (typeString === "EDGE") {
         return renderEdge;
     } else {
         const rendererInfo = FeatureSets.getRender2D(typeString, setString);
@@ -72,7 +69,7 @@ export function renderTextTarget(typeString, setString, position) {
     const rendered = new paper.PointText(new paper.Point(position[0], position[1]));
     rendered.justification = "center";
     rendered.fillColor = Colors.DEEP_PURPLE_500;
-    rendered.content = insertTextTool.text;
+    rendered.content = Registry.viewManager.tools.InsertTextTool.text;
     rendered.fontSize = 10000 / 3;
     return rendered;
 }
@@ -105,9 +102,7 @@ export function renderFeature(feature, key = null) {
     let params;
     const type = feature.getType();
     const set = "Basic";
-    if (type === "TEXT") {
-        return renderText(feature);
-    } else if (ComponentAPI.isCustomType(type)) {
+    if (ComponentAPI.isCustomType(type)) {
         set = "Custom";
         rendered = DXFSolidObjectRenderer2D.renderCustomComponentFeature(feature, getBaseColor(feature));
         rendered.featureID = feature.ID;
@@ -116,8 +111,8 @@ export function renderFeature(feature, key = null) {
     } else if (type === "EDGE") {
         return renderEdge(feature);
     } else {
-        const rendererinfo = getFeatureRenderer(type, set);
-        const renderer = rendererinfo.object;
+        const rendererinfo = ComponentAPI.getRendererInfo(type);
+        const renderer = ComponentAPI.getRenderer(type);
 
         /*
         If the user does not specify the key, then extract it from the rendering info of the feature.
