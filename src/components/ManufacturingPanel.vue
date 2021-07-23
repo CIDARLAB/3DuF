@@ -62,7 +62,7 @@ export default {
             viewManagerRef: null
         };
     },
-    mounted: function() {
+    mounted: function () {
         setTimeout(() => {
             this.viewManagerRef = Registry.viewManager;
         }, 100);

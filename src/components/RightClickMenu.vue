@@ -110,7 +110,7 @@ export default {
         EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
     },
     methods: {
-        activateMenu: function(event, feat) {
+        activateMenu: function (event, feat) {
             //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
 
             // Activate feat code

@@ -58,7 +58,7 @@ export default {
         return {};
     },
     computed: {
-        specs: function() {
+        specs: function () {
             //if (this.Feature
             return RoundedChannelSpec;
         }
