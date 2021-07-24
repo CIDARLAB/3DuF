@@ -33,7 +33,7 @@ export default {
         };
     },
     computed: {
-        dummy2: function() {
+        dummy2: function () {
             return this.convertLinearToZoomScale(this.dummy);
         }
     },
@@ -44,7 +44,7 @@ export default {
         }, 10);
     },
     methods: {
-        updateSlider: function(event) {
+        updateSlider: function (event) {
             console.log(event);
             this.zoom = event.values[0];
             if (this.isUserGeneratedEvent) {

@@ -140,7 +140,7 @@ export default class GradientGenerator extends Template {
 
         const vRepeat = 2 * bendSpacing + 2 * channelWidth;
 
-        for (var i = 0; i < invalue; i++) {
+        for (let i = 0; i < invalue; i++) {
             // Generate the ports for each of the inputs
             const x = xref + spacing * i + channelWidth / 2;
             ports.push(new ComponentPort(x, 0, (i + 1).toString(), "FLOW"));

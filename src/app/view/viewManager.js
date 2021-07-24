@@ -87,11 +87,11 @@ export default class ViewManager {
         // this._introDialog = new IntroDialog();
         // this._dampFabricateDialog = new DAMPFabricationDialog();
         const reference = this;
-        this.updateQueue = new SimpleQueue(function() {
+        this.updateQueue = new SimpleQueue(function () {
             reference.view.refresh();
         }, 20);
 
-        this.saveQueue = new SimpleQueue(function() {
+        this.saveQueue = new SimpleQueue(function () {
             reference.saveToStorage();
         });
 
@@ -100,7 +100,7 @@ export default class ViewManager {
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
-        this.view.setResizeFunction(function() {
+        this.view.setResizeFunction(function () {
             reference.updateGrid();
             reference.updateAlignmentMarks();
 
@@ -109,7 +109,7 @@ export default class ViewManager {
             reference.updateDevice(Registry.currentDevice);
         });
 
-        const func = function(event) {
+        const func = function (event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
@@ -122,7 +122,7 @@ export default class ViewManager {
         this.maxZoom = 5;
         this.setupTools();
         const ref = this;
-        EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true) {
+        EventBus.get().on(EventBus.UPDATE_RENDERS, function (feature, refresh = true) {
             if (ref.isFeatureInCurrentDevice(feature)) {
                 ref.view.updateFeature(feature);
                 ref.refresh(refresh);
@@ -1114,11 +1114,11 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     setupDragAndDropLoad(selector) {
-        const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
             const f = files[0];
 
             const reader = new FileReader();
-            reader.onloadend = function(e) {
+            reader.onloadend = function (e) {
                 let result = this.result;
                 // try {
                 result = JSON.parse(result);

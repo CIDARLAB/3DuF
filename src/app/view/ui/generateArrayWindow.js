@@ -30,17 +30,17 @@ export default class GenerateArrayWindow {
         const ref = this;
 
         // Text input changes
-        this.__xSpacingInput.addEventListener("input", function(event) {
+        this.__xSpacingInput.addEventListener("input", function (event) {
             ref.processNewArrayData();
         });
 
-        this.__ySpacingInput.addEventListener("input", function(event) {
+        this.__ySpacingInput.addEventListener("input", function (event) {
             ref.processNewArrayData();
         });
 
         // Position buttons
         // Decrease x
-        this.__xSpacingDownButton.addEventListener("click", function(event) {
+        this.__xSpacingDownButton.addEventListener("click", function (event) {
             let value = ref.__xSpacingInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -51,7 +51,7 @@ export default class GenerateArrayWindow {
         });
 
         // increase x
-        this.__xSpacingUpButton.addEventListener("click", function(event) {
+        this.__xSpacingUpButton.addEventListener("click", function (event) {
             let value = ref.__xSpacingInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -62,7 +62,7 @@ export default class GenerateArrayWindow {
         });
 
         // increase y
-        this.__ySpacingUpButton.addEventListener("click", function(event) {
+        this.__ySpacingUpButton.addEventListener("click", function (event) {
             let value = ref.__ySpacingInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -73,7 +73,7 @@ export default class GenerateArrayWindow {
         });
 
         // decrease y
-        this.__ySpacingDownButton.addEventListener("click", function(event) {
+        this.__ySpacingDownButton.addEventListener("click", function (event) {
             let value = ref.__ySpacingInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -84,7 +84,7 @@ export default class GenerateArrayWindow {
         });
 
         // Action button clicks
-        this.__generateButton.addEventListener("click", function(event) {
+        this.__generateButton.addEventListener("click", function (event) {
             console.log("Save button was pressed");
             ref.processNewArrayData();
             ref.hideWindow();
@@ -93,7 +93,7 @@ export default class GenerateArrayWindow {
             ref.generateArrayToolDelegate.unactivate();
         });
 
-        this.__cancelButton.addEventListener("click", function(event) {
+        this.__cancelButton.addEventListener("click", function (event) {
             console.log("Cancel Button was Pressed");
             ref.hideWindow();
             ref.generateArrayToolDelegate.unactivate();

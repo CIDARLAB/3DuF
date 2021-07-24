@@ -16,20 +16,20 @@ export default class GenerateArrayTool extends MouseTool {
         // this.updateQueue = new SimpleQueue(function () {
         //     ref.dragHandler();
         // }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             // Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             // ref.dragging = true;
             // ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             // if (ref.dragging) {
             //     ref.lastPoint = MouseTool.getEventPosition(event);
             //     ref.updateQueue.run();
             // }
             // ref.showTarget();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             // ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
             // ref.showTarget();
@@ -69,7 +69,7 @@ export default class GenerateArrayTool extends MouseTool {
 
         // Add the replicas to the device
         console.log(replicas);
-        replicas.forEach(function(replica) {
+        replicas.forEach(function (replica) {
             Registry.currentDevice.addComponent(replica);
         });
 

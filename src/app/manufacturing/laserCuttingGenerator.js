@@ -86,7 +86,7 @@ export default class LaserCuttingGenerator {
         console.log("mfglayers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        mfglayers.forEach(function (mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -160,7 +160,7 @@ export default class LaserCuttingGenerator {
 
         console.log("XY Manufacturing Layers:", mfglayers);
         const ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        mfglayers.forEach(function (mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -218,7 +218,7 @@ export default class LaserCuttingGenerator {
         console.log("EDGE Manufacturing Layers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        mfglayers.forEach(function (mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -303,7 +303,7 @@ export default class LaserCuttingGenerator {
         console.log("Inverse Control Manufacturing Layers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        mfglayers.forEach(function (mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });

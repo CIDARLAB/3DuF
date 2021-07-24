@@ -94,7 +94,7 @@ const layerColors = {
  * @param {number} indices
  * @returns {number}
  */
-const decimalToIndex = function(decimal, indices) {
+const decimalToIndex = function (decimal, indices) {
     return Math.round((indices - 1) * decimal);
 };
 /**
