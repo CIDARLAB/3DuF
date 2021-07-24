@@ -14,7 +14,6 @@ export default class CurvedMixer extends Template {
 
         this.__heritable = {
             componentSpacing: "Float",
-            rotation: "Float",
             bendSpacing: "Float",
             numberOfBends: "Float",
             channelWidth: "Float",
@@ -29,7 +28,6 @@ export default class CurvedMixer extends Template {
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
-            rotation: 0,
             bendLength: 2.46 * 1000,
             height: 250
         };
@@ -50,7 +48,6 @@ export default class CurvedMixer extends Template {
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            rotation: 0,
             bendLength: 10,
             height: 10
         };
@@ -61,7 +58,6 @@ export default class CurvedMixer extends Template {
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            rotation: 360,
             bendLength: 12 * 1000,
             height: 1200
         };

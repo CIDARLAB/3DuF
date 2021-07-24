@@ -2,7 +2,6 @@
  * DXFObject class
  */
 export default class DXFObject {
-
     protected _rootObject: any;
     protected _type: string;
 

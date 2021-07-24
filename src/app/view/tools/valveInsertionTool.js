@@ -13,7 +13,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
 
         const ref = this;
 
-        this.down = function (event) {
+        this.down = function(event) {
             console.log(event);
             const point = MouseTool.getEventPosition(event);
             const target = PositionTool.getTarget(point);

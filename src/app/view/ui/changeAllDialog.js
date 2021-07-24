@@ -1,3 +1,4 @@
+import Registry from "@/app/core/registry";
 export default class ChangeAllDialog {
     constructor() {
         this.__componentsToChangeMap = new Map();
@@ -10,11 +11,11 @@ export default class ChangeAllDialog {
 
         const ref = this;
 
-        this.__dialog.querySelector(".close").addEventListener("click", function () {
+        this.__dialog.querySelector(".close").addEventListener("click", function() {
             ref.__dialog.close();
         });
 
-        this.__changeAllButton.addEventListener("click", function (event) {
+        this.__changeAllButton.addEventListener("click", function(event) {
             // TODO: Change values of all the features associated with the components
             ref.__modifyComponentParams();
             ref.__dialog.close();
@@ -81,7 +82,7 @@ export default class ChangeAllDialog {
         checkbox.value = componentid;
         // Track all the changes
         const ref = this;
-        checkbox.addEventListener("change", function (event) {
+        checkbox.addEventListener("change", function(event) {
             const id = event.target.value;
             ref.__componentsToChangeMap.set(id, event.target.checked);
         });

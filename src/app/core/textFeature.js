@@ -3,6 +3,7 @@ import Parameter from "./parameter";
 import StringValue from "./parameters/stringValue";
 import Registry from "./registry";
 import { ComponentAPI } from "@/componentAPI";
+import Feature from "@/app/core/feature";
 
 /**
  * Text Feature class

@@ -1,6 +1,6 @@
 import PositionTool from "./positionTool";
 
-import * as Registry from "../../core/registry";
+import Registry from "../../core/registry";
 import Device from "../../core/device";
 
 export default class CellPositionTool extends PositionTool {
@@ -15,7 +15,7 @@ export default class CellPositionTool extends PositionTool {
         const flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
         const cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
 
-        let newFeature = Device.makeFeature(this.typeString,  {
+        let newFeature = Device.makeFeature(this.typeString, {
             position: PositionTool.getTarget(point)
         });
         this.currentFeatureID = newFeature.ID;

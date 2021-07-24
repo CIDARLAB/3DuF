@@ -11,24 +11,24 @@ export function addClass(el, className) {
 // From http://stackoverflow.com/questions/8869403/drag-drop-json-into-chrome
 export function DnDFileController(selector, onDropCallback) {
     const el_ = document.querySelector(selector);
-    this.dragenter = function (e) {
+    this.dragenter = function(e) {
         e.stopPropagation();
         e.preventDefault();
         el_.classList.add("dropping");
     };
 
-    this.dragover = function (e) {
+    this.dragover = function(e) {
         e.stopPropagation();
         e.preventDefault();
     };
 
-    this.dragleave = function (e) {
+    this.dragleave = function(e) {
         e.stopPropagation();
         e.preventDefault();
         // el_.classList.remove('dropping');
     };
 
-    this.drop = function (e) {
+    this.drop = function(e) {
         e.stopPropagation();
         e.preventDefault();
 
