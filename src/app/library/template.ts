@@ -1,34 +1,38 @@
 import ComponentPort from "../core/componentPort";
 
 export default class Template {
+    protected __unique: { [key: string]: string } | null = null;
+    protected __heritable: { [key: string]: string } | null = null;
+    protected __defaults: { [key: string]: number } | null = null;
+    protected __minimum: { [key: string]: number } | null = null;
+    protected __maximum: { [key: string]: number } | null = null;
+    protected __units: { [key: string]: string } | null = null;
+    protected __placementTool: string | null = null;
+    protected __toolParams: { [key: string]: string } | null = null; // { position: "position" };
+    protected __featureParams: { [key: string]: string } | null = null;
+    protected __targetParams: { [key: string]: string } | null = null;
+    protected __mint: string | null = null;
+    protected __renderKeys: Array<string> | null = null;
+
     /**
      *Creates an instance of Template.
      * @memberof Template
      */
     constructor() {
-        this.__unique = null;
-        this.__heritable = null;
-        this.__defaults = null;
-        this.__minimum = null;
-        this.__maximum = null;
-        this.__units = null;
-        this.__placementTool = null;
-        this.__toolParams = null; // { position: "position" };
-        this.__featureParams = null;
-        this.__targetParams = null;
-        this.__mint = null;
-        this.__renderKeys = null;
         this.__setupDefinitions();
     }
 
-    get mint() {
+    get mint(): string {
+        if (this.__mint === null) {
+            throw new Error("User needs to provide unique MINT string for component type");
+        }
         return this.__mint;
     }
 
     /**
      * TODO - Remove this thing's dependency
      */
-    get featureParams() {
+    get featureParams(): { [key: string]: string } {
         if (this.__featureParams === null) {
             throw new Error("placementtool cannot be null instantiate in the __setupDefinitions");
         }
@@ -39,7 +43,7 @@ export default class Template {
     /**
      * TODO - Remove this thing's dependency
      */
-    get targetParams() {
+    get targetParams(): { [key: string]: string } {
         if (this.__targetParams === null) {
             throw new Error("placementtool cannot be null instantiate in the __setupDefinitions");
         }
@@ -47,7 +51,7 @@ export default class Template {
         return this.__targetParams;
     }
 
-    get placementTool() {
+    get placementTool(): string {
         if (this.__placementTool === null) {
             throw new Error("placementtool cannot be null instantiate in the __setupDefinitions");
         }
@@ -55,7 +59,7 @@ export default class Template {
         return this.__placementTool;
     }
 
-    get toolParams() {
+    get toolParams(): { [key: string]: string } {
         if (this.__toolParams === null) {
             throw new Error("toolparams cannot be null instantiate in the __setupDefinitions");
         }
@@ -63,7 +67,7 @@ export default class Template {
         return this.__toolParams;
     }
 
-    get defaults() {
+    get defaults(): { [key: string]: number } {
         if (this.__defaults === null) {
             throw new Error("defaults cannot be null instantiate in the __setupDefinitions");
         }
@@ -71,7 +75,7 @@ export default class Template {
         return this.__defaults;
     }
 
-    get minimum() {
+    get minimum(): { [key: string]: number } {
         if (this.__minimum === null) {
             throw new Error("minimum cannot be null instantiate in the __setupDefinitions");
         }
@@ -79,7 +83,7 @@ export default class Template {
         return this.__minimum;
     }
 
-    get maximum() {
+    get maximum(): { [key: string]: number } {
         if (this.__maximum === null) {
             throw new Error("maximum cannot be null instantiate in the __setupDefinitions");
         }
@@ -87,7 +91,7 @@ export default class Template {
         return this.__maximum;
     }
 
-    get units() {
+    get units(): { [key: string]: string } {
         if (this.__units === null) {
             throw new Error("units cannot be null instantiate in the __setupDefinitions");
         }
@@ -95,7 +99,7 @@ export default class Template {
         return this.__units;
     }
 
-    get unique() {
+    get unique(): { [key: string]: string } {
         if (this.__unique === null) {
             throw new Error("unique cannot be null instantiate in the __setupDefinitions");
         }
@@ -103,14 +107,14 @@ export default class Template {
         return this.__unique;
     }
 
-    get heritable() {
+    get heritable(): { [key: string]: string } {
         if (this.__heritable === null) {
             throw new Error("Heritable cannot be null instantiate in the __setupDefinitions");
         }
         return this.__heritable;
     }
 
-    get renderKeys() {
+    get renderKeys(): Array<string> {
         if (this.__renderKeys === null) {
             throw new Error("renderKeys cannot be null instantiate in the __setupDefinitions");
         }
@@ -118,7 +122,7 @@ export default class Template {
         return this.__renderKeys;
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void {
         /*
         Check https://github.com/CIDARLAB/3DuF/wiki/Adding-new-components-v2 for more example data
          */
@@ -134,11 +138,11 @@ export default class Template {
      * compatibility.
      * @param key
      */
-    render2D(params, key) {
+    render2D(params: { [key: string]: any }, key: string): any {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    render2DTarget(key, params) {
+    render2DTarget(key: string, params: { [key: string]: any }) {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
@@ -146,11 +150,11 @@ export default class Template {
      * Returns the ports for the component definition
      * @param params
      */
-    getPorts(params) {
+    getPorts(params: { [key: string]: any }): Array<ComponentPort> {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    getBounds(params) {
+    getBounds(params: { [key: string]: any }) {
         const renderkeys = this.renderKeys;
         const features = [];
         for (let i = 0; i < renderkeys.length; i++) {
@@ -164,7 +168,7 @@ export default class Template {
         return unitedBounds;
     }
 
-    getDimensions(params) {
+    getDimensions(params: { [key: string]: any }) {
         params.position = [0, 0];
 
         const unitedBounds = this.getBounds(params);
@@ -174,7 +178,7 @@ export default class Template {
         return { xspan: xspan, yspan: yspan };
     }
 
-    getDrawOffset(params) {
+    getDrawOffset(params: { [key: string]: any }) {
         params.position = [0, 0];
         params.rotation = 0;
         const position = params.position;

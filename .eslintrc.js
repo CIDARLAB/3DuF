@@ -31,7 +31,8 @@ module.exports = {
         "vue/max-attributes-per-line": "off",
         "no-prototype-builtins": "off",
         "space-before-function-paren": "off",
-        "no-useless-escape": "off"
+        "no-useless-escape": "off",
+        "no-empty-pattern": "warn"
     },
 
     ignorePatterns: ["src/test/**", "tests/**", "**/examples/**", "**/parameterMenu.js"],
