@@ -13,6 +13,7 @@ export default class RenderLayer {
     private __id: string;
     private __type: string;
     name: string;
+    protected _physicalLayer: Layer | null = null;
 
     constructor(name: string = "New Layer", type: string = "FLOW", group: string = "0") {
         this.__type = type;
@@ -21,6 +22,13 @@ export default class RenderLayer {
         this.name = name;
         this.color = undefined;
         this.__id = RenderLayer.generateID();
+    }
+
+    set physicalLayer(layer: Layer | null) {
+        this._physicalLayer = layer;
+    }
+    get physicalLayer(): Layer | null {
+        return this._physicalLayer;
     }
 
     get type(): string {
@@ -49,7 +57,7 @@ export default class RenderLayer {
         this.__ensureIsAFeature(feature);
         this.features[feature.ID] = feature;
         this.featureCount += 1;
-        feature.layer = this;
+        feature.layer = this.physicalLayer;
     }
 
     /**

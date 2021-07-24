@@ -8,6 +8,7 @@ import MapUtils from "../utils/mapUtils";
 import { FeatureInterchangeV0 } from "./init";
 import Parameter from "./parameter";
 import EventBus from "@/events/events";
+import RenderLayer from "../view/renderLayer";
 
 /**
  * Feature class
