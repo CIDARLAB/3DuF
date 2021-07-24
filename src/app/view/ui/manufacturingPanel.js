@@ -2,7 +2,7 @@ import CNCGenerator from "../../manufacturing/cncGenerator";
 
 import JSZip from "jszip";
 import LaserCuttingGenerator from "../../manufacturing/laserCuttingGenerator";
-
+import { saveAs } from "file-saver";
 import Registry from "../../core/registry";
 
 export default class ManufacturingPanel {
@@ -17,7 +17,7 @@ export default class ManufacturingPanel {
         const registryref = Registry;
 
         const ref = this;
-        this.__cncButton.addEventListener("click", function (event) {
+        this.__cncButton.addEventListener("click", function(event) {
             console.log("Generating CNC Layers");
             cncGenerator.setDevice(registryref.currentDevice);
             cncGenerator.generatePortLayers();
@@ -31,7 +31,7 @@ export default class ManufacturingPanel {
             cncGenerator.flushData();
         });
 
-        this.__laserButton.addEventListener("click", function (event) {
+        this.__laserButton.addEventListener("click", function(event) {
             console.log("Generating Laser Cutting Layers");
 
             laserCuttingGenerator.setDevice(registryref.currentDevice);

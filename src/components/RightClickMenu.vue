@@ -88,9 +88,6 @@ export default {
         spec: {
             type: Array,
             required: true
-        },
-        rename: {
-            type: String
         }
     },
     data() {

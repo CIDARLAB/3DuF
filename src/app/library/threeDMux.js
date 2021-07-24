@@ -156,6 +156,7 @@ export default class ThreeDMux extends Template {
         const outs = params.out;
         let N;
         const channelWidth = params.channelWidth;
+        let rotation = params.rotation;
 
         if (ins < outs) {
             N = outs;
@@ -185,7 +186,7 @@ export default class ThreeDMux extends Template {
 
         let count = N + 2;
 
-        for (var i = 0; i < 2 * valvenum; i++) {
+        for (let i = 0; i < 2 * valvenum; i++) {
             // left side
             if (i % 2 === 0) {
                 indexN /= 2;
@@ -289,7 +290,7 @@ export default class ThreeDMux extends Template {
             ypos += ypos_adjust;
 
             while (count2 < N) {
-                for (var w = 0; w < cur_N / 2; w++) {
+                for (let w = 0; w < cur_N / 2; w++) {
                     const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
 
                     const cutrec = paper.Path.Rectangle({
@@ -306,7 +307,7 @@ export default class ThreeDMux extends Template {
             cur_N = cur_N / 2;
         }
 
-        for (var i = 0; i < N; i++) {
+        for (let i = 0; i < N; i++) {
             threedmux_flow.addChild(branchArray[i]);
             // threedmux_flow.addChild(centerArray[i]);
         }
@@ -431,7 +432,7 @@ export default class ThreeDMux extends Template {
             ypos += ypos_adjust;
 
             while (count2 < N) {
-                for (var w = 0; w < cur_N / 2; w++) {
+                for (let w = 0; w < cur_N / 2; w++) {
                     const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
                     const center = new paper.Point(current_xpos, ypos);
                     const circle = new paper.Path.Circle(center, radius);

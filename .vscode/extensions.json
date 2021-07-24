@@ -1,7 +1,6 @@
 {
     "recommendations": [
         "ms-vscode.vscode-typescript-next",
-        "esbenp.prettier-vscode",
         "oouo-diogo-perdigao.docthis",
         "msjsdiag.debugger-for-chrome",
         "octref.vetur",
@@ -13,6 +12,8 @@
         "github.vscode-pull-request-github",
         "streetsidesoftware.code-spell-checker",
         "eamodio.gitlens",
-        "firefox-devtools.vscode-firefox-debug"
+        "firefox-devtools.vscode-firefox-debug",
+        "jcbuisson.vue",
+        "dbaeumer.vscode-eslint"
     ]
 }

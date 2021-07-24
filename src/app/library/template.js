@@ -148,7 +148,6 @@ export default class Template {
      */
     getPorts(params) {
         throw new Error("User needs to provide method for component definition, look at examples");
-        return [new ComponentPort()];
     }
 
     getBounds(params) {

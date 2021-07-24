@@ -13,7 +13,6 @@ import EventBus from "@/events/events";
  * Feature class
  */
 export default class Feature {
-
     protected _type: string;
     protected _params: Params;
     protected _name: string;
@@ -22,7 +21,6 @@ export default class Feature {
     protected _dxfObjects: Array<DXFObject>;
     protected _referenceID: string | null;
     public layer: Layer | null;
-
 
     /**
      * Feature Object
@@ -33,7 +31,7 @@ export default class Feature {
      * @param {String} id
      * @param {} fabtype
      */
-    constructor(type: string, params: Params, name:string, id: string = ComponentAPI.generateID(), fabtype: string = "XY") {
+    constructor(type: string, params: Params, name: string, id: string = ComponentAPI.generateID(), fabtype: string = "XY") {
         this._type = type;
         this._params = params;
         this._name = name;
@@ -91,7 +89,7 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    updateParameter(key:string, value: any) {
+    updateParameter(key: string, value: any) {
         this._params.updateParameter(key, value);
         EventBus.get().emit(EventBus.UPDATE_RENDERS, this);
     }
@@ -126,7 +124,9 @@ export default class Feature {
             params: this._params.toJSON(),
             type: this._fabtype,
             referenceID: this._referenceID,
-            dxfData: this._dxfObjects.map(function (dxfObject) { return dxfObject.toJSON(); })
+            dxfData: this._dxfObjects.map(function(dxfObject) {
+                return dxfObject.toJSON();
+            })
         };
         return output;
     }
@@ -256,7 +256,7 @@ export default class Feature {
      * @returns {Array<Feature.parameters>} Returns the parameters of the feature object
      * @memberof Feature
      */
-    getParams():{ [index: string]: Parameter } {
+    getParams(): { [index: string]: Parameter } {
         return this._params.parameters;
     }
 
@@ -292,7 +292,9 @@ export default class Feature {
             this._name,
             ComponentAPI.generateID(),
             "XY",
-            this._dxfObjects.map(function (dxfObject) {return dxfObject.toJSON(); })
+            this._dxfObjects.map(function(dxfObject) {
+                return dxfObject.toJSON();
+            })
         );
 
         return ret;
@@ -351,7 +353,7 @@ export default class Feature {
      * @returns {Feature} Returns a new feature object
      * @memberof Feature
      */
-    static makeCustomComponentFeature(customcomponent: CustomComponent, setstring: string, paramvalues:{[key: string]: any}, name = "New Feature", id = undefined) {
+    static makeCustomComponentFeature(customcomponent: CustomComponent, setstring: string, paramvalues: { [key: string]: any }, name = "New Feature", id = undefined) {
         const definitions = CustomComponent.defaultParameterDefinitions();
         Feature.checkDefaults(paramvalues, definitions.heritable, ComponentAPI.getDefaultsForType(customcomponent.type));
         const params = new Params(paramvalues, MapUtils.toMap(definitions.unique), MapUtils.toMap(definitions.heritable));
@@ -359,7 +361,6 @@ export default class Feature {
         ret.dxfObjects = customcomponent.dxfData;
         return ret;
     }
-
 
     /**
      * Returns the dxf objects

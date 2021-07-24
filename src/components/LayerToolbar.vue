@@ -33,11 +33,24 @@ export default {
     name: "ComponentToolbar",
     data() {
         return {
-            levels: [],
             selectedLevel: 0,
             selectedMode: 0,
             disabled: false
         };
+    },
+    computed: {
+        levels: function() {
+            let ret = [];
+            for (let i in this.layers) {
+                if (i % 3 == 0) {
+                    ret.push({
+                        id: i / 3,
+                        mode: 0
+                    });
+                }
+            }
+            return ret;
+        }
     },
     mounted() {
         this.addLevel();

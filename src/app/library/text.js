@@ -41,6 +41,25 @@ export default class Text extends Template {
         this.__toolParams = {
             position: "position"
         };
+
+        this.__featureParams = {
+            position: "position",
+            text: "text",
+            fontSize: "fontSize",
+            height: "height"
+        };
+
+        this.__targetParams = {
+            text: "text",
+            fontSize: "fontSize",
+            height: "height"
+        };
+
+        this.__placementTool = "PositionTool";
+
+        this.__renderKeys = ["FLOW"];
+
+        this.__mint = "TEXT";
     }
 
     render2D(params, key) {

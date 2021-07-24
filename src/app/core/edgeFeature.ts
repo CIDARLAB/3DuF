@@ -8,7 +8,6 @@ import Params from "./params";
  * Edge Feature class
  */
 export default class EdgeFeature extends Feature {
-
     protected _edgeObjects: any;
 
     /**

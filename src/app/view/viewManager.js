@@ -20,7 +20,7 @@ import ChangeAllDialog from "./ui/changeAllDialog";
 import LayerToolBar from "./ui/layerToolBar";
 import * as HTMLUtils from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
-import ComponentToolBar from "./ui/componentToolBar";
+import { ComponentToolBar, inactiveBackground, inactiveText, activeText } from "./ui/componentToolBar";
 import DesignHistory from "./designHistory";
 import MoveTool from "./tools/moveTool";
 import ComponentPositionTool from "./tools/componentPositionTool";
@@ -87,11 +87,11 @@ export default class ViewManager {
         // this._introDialog = new IntroDialog();
         // this._dampFabricateDialog = new DAMPFabricationDialog();
         const reference = this;
-        this.updateQueue = new SimpleQueue(function () {
+        this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
         }, 20);
 
-        this.saveQueue = new SimpleQueue(function () {
+        this.saveQueue = new SimpleQueue(function() {
             reference.saveToStorage();
         });
 
@@ -100,7 +100,7 @@ export default class ViewManager {
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
-        this.view.setResizeFunction(function () {
+        this.view.setResizeFunction(function() {
             reference.updateGrid();
             reference.updateAlignmentMarks();
 
@@ -109,7 +109,7 @@ export default class ViewManager {
             reference.updateDevice(Registry.currentDevice);
         });
 
-        const func = function (event) {
+        const func = function(event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
@@ -121,7 +121,7 @@ export default class ViewManager {
         this.minZoom = 0.0001;
         this.maxZoom = 5;
         this.setupTools();
-        let ref = this;
+        const ref = this;
         EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true) {
             if (ref.isFeatureInCurrentDevice(feature)) {
                 ref.view.updateFeature(feature);
@@ -347,7 +347,6 @@ export default class ViewManager {
             this.renderLayers[this.renderLayers.length - 2].addFeature(edgefeatures[i]);
             this.renderLayers[this.renderLayers.length - 1].addFeature(edgefeatures[i]);
         }
-
     }
 
     /**
@@ -364,7 +363,7 @@ export default class ViewManager {
         Registry.currentDevice.deleteLayer(levelindex * 3 + 2);
 
         // Delete levels in render model
-        this.renderLayers.splice(levelindex * 3, 3)
+        this.renderLayers.splice(levelindex * 3, 3);
 
         // Delete the levels in the render model
         this.view.removeLayer(levelindex * 3);
@@ -1115,11 +1114,11 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     setupDragAndDropLoad(selector) {
-        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
+        const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
             const f = files[0];
 
             const reader = new FileReader();
-            reader.onloadend = function (e) {
+            reader.onloadend = function(e) {
                 let result = this.result;
                 // try {
                 result = JSON.parse(result);

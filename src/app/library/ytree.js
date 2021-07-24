@@ -111,6 +111,7 @@ export default class YTree extends Template {
         const spacing = params.spacing;
         const ins = params.in;
         const outs = params.out;
+        let rotation = params.rotation;
         let leafs;
         if (ins < outs) {
             leafs = outs;
