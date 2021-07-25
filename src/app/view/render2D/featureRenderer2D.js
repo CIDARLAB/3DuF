@@ -9,7 +9,7 @@ import { renderEdgeFeature } from "../../view/render2D/dxfObjectRenderer2D";
 import paper from "paper";
 import { ComponentAPI } from "@/componentAPI";
 
-const getLayerColor = function (feature) {
+const getLayerColor = function(feature) {
     const height = feature.getValue("height");
     const layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
@@ -19,7 +19,7 @@ const getLayerColor = function (feature) {
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 };
 
-const getBaseColor = function (feature) {
+const getBaseColor = function(feature) {
     let decimal = 0;
     if (!feature.layer.flip) decimal = 1 - decimal;
     const targetColorSet = Colors.getLayerColors(feature.layer);
@@ -101,7 +101,7 @@ export function renderFeature(feature, key = null) {
     let rendered;
     let params;
     const type = feature.getType();
-    const set = "Basic";
+    let set = "Basic";
     if (ComponentAPI.isCustomType(type)) {
         set = "Custom";
         rendered = DXFSolidObjectRenderer2D.renderCustomComponentFeature(feature, getBaseColor(feature));

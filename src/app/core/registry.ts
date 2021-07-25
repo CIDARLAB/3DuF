@@ -27,7 +27,6 @@ class Registry {
     view = null;
     viewManager = null;
     featureSet = null;
-
 }
 
 const instance = new Registry();

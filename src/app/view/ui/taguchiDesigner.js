@@ -1,6 +1,7 @@
 import dialogPolyfill from "dialog-polyfill";
 import Handsontable from "handsontable";
 import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 export default class TaguchiDesigner {
     constructor(viewmanager) {
@@ -20,7 +21,7 @@ export default class TaguchiDesigner {
         }
 
         const ref = this;
-        this.__dialog.querySelector(".close").addEventListener("click", function () {
+        this.__dialog.querySelector(".close").addEventListener("click", function() {
             ref.__dialog.close();
         });
 
@@ -34,14 +35,14 @@ export default class TaguchiDesigner {
 
         this.__generateDesignsButton = document.getElementById("download-doe-button");
 
-        this.__generateDesignsButton.addEventListener("click", function (el, ev) {
+        this.__generateDesignsButton.addEventListener("click", function(el, ev) {
             ref.generateAndDownloadTaguchiDesigns();
         });
 
         this.__handsonTableObject = null;
 
         const reader = new FileReader();
-        reader.onload = function (e) {
+        reader.onload = function(e) {
             // console.log(reader.result);
             ref.loadCSVData(reader.result);
         };
@@ -49,7 +50,7 @@ export default class TaguchiDesigner {
         if (this.__doeFileInput) {
             this.__doeFileInput.addEventListener(
                 "change",
-                function () {
+                function() {
                     const file = this.files[0];
                     reader.readAsText(file);
                 },

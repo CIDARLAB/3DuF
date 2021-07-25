@@ -17,5 +17,8 @@
     },
     "[javascriptreact]": {
         "editor.autoClosingBrackets": "languageDefined"
-    }    
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
 }

@@ -12,7 +12,7 @@ export default class RenderLayer {
     private __id: string;
     private __type: string;
     name: string;
-
+    protected _physicalLayer: Layer | null = null;
 
     constructor(name: string = "New Layer", type: string = "FLOW", group: string = "0") {
         this.__type = type;
@@ -21,6 +21,13 @@ export default class RenderLayer {
         this.name = name;
         this.color = undefined;
         this.__id = RenderLayer.generateID();
+    }
+
+    set physicalLayer(layer: Layer | null) {
+        this._physicalLayer = layer;
+    }
+    get physicalLayer(): Layer | null {
+        return this._physicalLayer;
     }
 
     get type(): string {
@@ -39,7 +46,7 @@ export default class RenderLayer {
         return uuid.v1();
     }
 
-        /**
+    /**
      * Adds a feature to the layer
      * @param {Feature} feature Feature to pass to add to the layer
      * @memberof Layer
@@ -49,9 +56,8 @@ export default class RenderLayer {
         this.__ensureIsAFeature(feature);
         this.features[feature.ID] = feature;
         this.featureCount += 1;
-        feature.layer = this;
+        feature.layer = this.physicalLayer;
     }
-
 
     /**
      * Checks whether the argument pass is a feature
@@ -59,7 +65,7 @@ export default class RenderLayer {
      * @memberof Layer
      * @returns {void}
      */
-     __ensureIsAFeature(feature: any): void {
+    __ensureIsAFeature(feature: any): void {
         if (!(feature instanceof Feature) && !(feature instanceof EdgeFeature)) {
             throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
         }
@@ -91,7 +97,7 @@ export default class RenderLayer {
      * @returns {Feature}
      * @memberof Layer
      */
-     getFeature(featureID: string): Feature {
+    getFeature(featureID: string): Feature {
         this.__ensureFeatureIDExists(featureID);
         return this.features[featureID];
     }
@@ -197,7 +203,7 @@ export default class RenderLayer {
             this.addFeature(Feature.fromInterchangeV1(json[i]));
         }
     }
-    
+
     /**
      * Generate the feature layer json that is neccissary for
      * seriailizing the visual of the 3DuF designs
@@ -205,7 +211,7 @@ export default class RenderLayer {
      * @returns {*} json of the features
      * @memberof Layer
      */
-     toFeatureLayerJSON(): { [index: string]: any } {
+    toFeatureLayerJSON(): { [index: string]: any } {
         const output: { [index: string]: any } = {};
         //output.name = this.name;
         output.color = this.color;
@@ -219,7 +225,7 @@ export default class RenderLayer {
      * @returns {LayerInterchangeV1} Returns a Interchange format with the attributes of the object
      * @memberof Layer
      */
-     toInterchangeV1(): RenderLayerInterchangeV1 {
+    toInterchangeV1(): RenderLayerInterchangeV1 {
         const output: RenderLayerInterchangeV1 = {
             id: this.__id,
             //name: this.name,
@@ -229,7 +235,7 @@ export default class RenderLayer {
             group: "0",
             //params: this.params.toJSON(),
             features: this.__featuresInterchangeV1(),
-            color: this.color,
+            color: this.color
         };
         return output;
     }

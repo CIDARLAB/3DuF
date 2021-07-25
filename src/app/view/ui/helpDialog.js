@@ -8,11 +8,11 @@ export default class HelpDialog {
             dialogPolyfill.registerDialog(helpdialog);
         }
 
-        showhelpModalButton.addEventListener("click", function () {
+        showhelpModalButton.addEventListener("click", function() {
             helpdialog.showModal();
         });
 
-        helpdialog.querySelector(".close").addEventListener("click", function () {
+        helpdialog.querySelector(".close").addEventListener("click", function() {
             helpdialog.close();
         });
     }

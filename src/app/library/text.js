@@ -49,13 +49,13 @@ export default class Text extends Template {
             position: "position",
             text: "text",
             fontSize: "fontSize",
-            height: "height",
+            height: "height"
         };
 
         this.__targetParams = {
             text: "text",
             fontSize: "fontSize",
-            height: "height",
+            height: "height"
         };
 
         this.__placementTool = "PositionTool";
@@ -63,8 +63,6 @@ export default class Text extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "TEXT";
-
-
     }
 
     render2D(params, key) {

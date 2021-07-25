@@ -1,5 +1,6 @@
 import JSZip from "jszip";
 import ManufacturingLayer from "../../manufacturing/manufacturingLayer";
+import { saveAs } from "file-saver";
 
 import Registry from "../../core/registry";
 
@@ -28,7 +29,7 @@ export default class ExportPanel {
         // });
 
         this.__svgButton = document.getElementById("svg_button");
-        this.__svgButton.onclick = function () {
+        this.__svgButton.onclick = function() {
             const svgs = Registry.viewManager.layersToSVGStrings();
             for (let i = 0; i < svgs.length; i++) {
                 svgs[i] =

@@ -40,7 +40,7 @@ export default {
         };
     },
     computed: {
-        levels: function () {
+        levels: function() {
             let ret = [];
             for (let i in this.layers) {
                 if (i % 3 == 0) {
@@ -65,6 +65,8 @@ export default {
         },
 
         layerModeClicked(level, mode) {
+            console.log(level.id);
+            console.log(this.levels);
             this.levels[level.id].mode = mode;
             this.selectedLevel = level.id;
         },
