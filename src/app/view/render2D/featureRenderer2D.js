@@ -31,10 +31,7 @@ export function getDefaultValueForType(typeString, setString, key) {
 }
 
 export function getFeatureRenderer(typeString, setString) {
-    if (typeString === "TEXT") {
-        const rendererInfo = renderTextTarget;
-        return rendererInfo;
-    } else if (typeString === "EDGE") {
+    if (typeString === "EDGE") {
         return renderEdge;
     } else {
         const rendererInfo = FeatureSets.getRender2D(typeString, setString);
@@ -114,8 +111,8 @@ export function renderFeature(feature, key = null) {
     } else if (type === "EDGE") {
         return renderEdge(feature);
     } else {
-        const rendererinfo = getFeatureRenderer(type, set);
-        const renderer = rendererinfo.object;
+        const rendererinfo = ComponentAPI.getRendererInfo(type);
+        const renderer = ComponentAPI.getRenderer(type);
 
         /*
         If the user does not specify the key, then extract it from the rendering info of the feature.
