@@ -17,6 +17,7 @@ class EventBus extends EventEmitter {
     static EDIT_CONNECTION = "edit_connection";
     static DBL_CLICK = "dbl_click";
     static UPDATE_RENDERS = "update_renders";
+    static RIGHT_CLICK = "right_click";
 }
 
 export default EventBus;

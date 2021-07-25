@@ -7,6 +7,7 @@ import Params from "../../core/params";
 import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
 import { ComponentAPI } from "@/componentAPI";
+import EventBus from "@/events/events";
 
 import Registry from "../../core/registry";
 
@@ -78,6 +79,7 @@ export default class ConnectionTool extends MouseTool {
             const end = ref.wayPoints.pop();
             ref.lastPoint = end;
             ref.finishChannel();
+            EventBus.get().emit(EventBus.DBL_CLICK);
         };
 
         this.move = function(event) {

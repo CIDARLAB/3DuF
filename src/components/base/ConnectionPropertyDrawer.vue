@@ -7,8 +7,8 @@
                     <v-col>
                         <v-row>
                             <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
-                            <v-icon size="20px" class="pencil">mdi-pencil</v-icon>
-                            <div class="d-inline">{{ current_connection_suggestion }}</div>
+                            <v-icon size="20px" class="pencil" @click="startConnection()">mdi-pencil</v-icon>
+                            <div class="pt-5 pl-16 d-block">{{ current_connection_suggestion }}</div>
                         </v-row>
                         <v-row>
                             <v-card-text>
@@ -68,7 +68,7 @@
                     <v-divider vertical inset></v-divider>
                     <v-col cols="3">
                         <v-row no-gutters>
-                            <v-col cols="3" class="connection-profile">Connection Profile</v-col>
+                            <v-col cols="4" class="connection-profile">Connection Profile</v-col>
                             <v-col cols="1"></v-col>
                             <v-col cols="5">
                                 <v-menu offset-y>
@@ -163,7 +163,7 @@ export default {
             isEditing: false,
             items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }],
             connection_suggestions: { state1: "Left Click to Choose a Point", state2: "Right Click to End Connection" },
-            current_connection_suggestion: null
+            current_connection_suggestion: "Left Click to Choose a Point"
         };
     },
     computed: {
@@ -172,11 +172,8 @@ export default {
         }
     },
     mounted() {
-        EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
-        this.current_connection_suggestion = this.connection_suggestions["state1"];
-    },
-    updated() {
-        Registry.viewManager.activateTool("Connection", "Connection");
+        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
+        EventBus.get().on(EventBus.RIGHT_CLICK, this.endConnection);
     },
     methods: {
         showProperties() {
@@ -197,13 +194,20 @@ export default {
         setDrawerPosition() {
             if (!this.activated) return;
             const bounds = this.$refs.activator.$el.getBoundingClientRect();
-            this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
         },
         openClose() {
             this.isOpen = !this.isOpen;
         },
         connectionStatus() {
             this.isEditing = true;
+        },
+        startConnection() {
+            Registry.viewManager.activateTool("Connection", "Connection");
+            this.current_connection_suggestion = this.connection_suggestions["state2"];
+        },
+        endConnection: function() {
+            this.current_connection_suggestion = this.connection_suggestions["state1"];
+            console.log(this.connection_suggestions["state1"]);
         }
     }
 };
@@ -246,6 +250,7 @@ export default {
     float: left;
     width: 1300px;
     left: 225px;
+    top: 10px;
     z-index: 100;
 
     ::v-deep .v-messages {
