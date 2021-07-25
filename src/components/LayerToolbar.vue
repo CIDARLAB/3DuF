@@ -40,7 +40,7 @@ export default {
         };
     },
     computed: {
-        levels: function() {
+        levels: function () {
             let ret = [];
             for (let i in this.layers) {
                 if (i % 3 == 0) {
