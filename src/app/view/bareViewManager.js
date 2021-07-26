@@ -734,7 +734,7 @@ export default class BareViewManager {
      * @param rightClickToolString
      */
     activateTool(toolString, rightClickToolString = "SelectTool") {
-        if (this.tools[toolString] == null) {
+        if (this.tools[toolString] === null) {
             throw new Error("Could not find tool with the matching string");
         }
         this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];

@@ -5,7 +5,7 @@ export default class ConnectionUtils {
     constructor() {}
 
     static hasFeatureSet() {
-        if (Registry.featureSet == null) {
+        if (Registry.featureSet === null) {
             return false;
         } else {
             return true;

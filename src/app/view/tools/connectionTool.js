@@ -310,7 +310,7 @@ export default class ConnectionTool extends MouseTool {
             let connection;
             const feature = Registry.currentDevice.getFeatureByID(render.featureID);
             // TODO: Replace this logic
-            if (feature.referenceID == null) {
+            if (feature.referenceID === null) {
                 return false;
             } else {
                 connection = Registry.currentDevice.getConnectionByID(feature.referenceID);
@@ -338,7 +338,7 @@ export default class ConnectionTool extends MouseTool {
             const feature = Registry.currentDevice.getFeatureByID(render.featureID);
             // console.log("Feature that intersects:", feature);
             // TODO: Replace this logic
-            if (feature.referenceID == null) {
+            if (feature.referenceID === null) {
                 return false;
             } else {
                 component = Registry.currentDevice.getComponentByID(feature.referenceID);

@@ -167,10 +167,10 @@ export default class Connection {
             layer: this._layer.id
         };
 
-        if (this._source != null) {
+        if (this._source !== null) {
             output.source = this._source.toJSON();
         }
-        if (this._sinks != null && this._sinks.length > 0) {
+        if (this._sinks !== null && this._sinks.length > 0) {
             let sinks = [];
             for (let i in this._sinks) {
                 sinks.push(this._sinks[i].toJSON());
@@ -563,11 +563,11 @@ export default class Connection {
      * @returns {void}
      */
     addConnectionTarget(connectiontarget: ConnectionTarget): void {
-        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget == null || connectiontarget == undefined) {
+        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget === null || connectiontarget == undefined) {
             console.error("Cannot add non-ConnectionTarget object as source or sink");
         }
 
-        if (this._source == null) {
+        if (this._source === null) {
             this._source = connectiontarget;
         } else {
             //TODO: Check for duplicates - does it matter actually ?
@@ -586,7 +586,7 @@ export default class Connection {
         let ret = false;
 
         let source = this._source;
-        if (source != null) {
+        if (source !== null) {
             if (source.component.id == componentid) {
                 //Remove the source object
                 this._source = null;
