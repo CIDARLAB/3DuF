@@ -7,7 +7,7 @@
                     <v-col>
                         <v-row>
                             <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
-                            <v-icon size="20px" class="pencil" @click="startConnection()">mdi-pencil</v-icon>
+                            <v-icon size="20px" class="pencil">mdi-pencil</v-icon>
                             <div class="pt-5 pl-16 d-block">{{ current_connection_suggestion }}</div>
                         </v-row>
                         <v-row>
@@ -187,6 +187,12 @@ export default {
             this.setDrawerPosition();
 
             attachPoint.appendChild(this.$refs.drawer);
+
+            this.startConnection();
+
+            if (this.activated == false) {
+                this.deactivateTool();
+            }
         },
         handleScroll() {
             this.setDrawerPosition();
@@ -202,12 +208,15 @@ export default {
             this.isEditing = true;
         },
         startConnection() {
+            if (!this.activated) return;
             Registry.viewManager.activateTool("Connection", "Connection");
             this.current_connection_suggestion = this.connection_suggestions["state2"];
         },
-        endConnection: function() {
+        endConnection() {
             this.current_connection_suggestion = this.connection_suggestions["state1"];
-            console.log(this.connection_suggestions["state1"]);
+        },
+        deactivateTool() {
+            Registry.viewManager.activateTool("MouseSelectTool");
         }
     }
 };

@@ -55,6 +55,7 @@ export default class ConnectionTool extends MouseTool {
             Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             console.log("Current State:", ref.__STATE);
+            EventBus.get().emit(EventBus.LEFT_CLICK);
             switch (ref.__STATE) {
                 case "SOURCE":
                     ref.__STATE = "WAYPOINT";
@@ -79,7 +80,7 @@ export default class ConnectionTool extends MouseTool {
             const end = ref.wayPoints.pop();
             ref.lastPoint = end;
             ref.finishChannel();
-            EventBus.get().emit(EventBus.DBL_CLICK);
+            EventBus.get().emit(EventBus.RIGHT_CLICK);
         };
 
         this.move = function(event) {
