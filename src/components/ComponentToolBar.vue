@@ -7,6 +7,7 @@
                 <span>Feature</span>
             </v-card-title>
             <v-card-text class="px-1">
+                <PropertyDrawer v-for="item in componentAPI" :key="item.id" :title="item.title" :spec="item.spec" />
                 <ConnectionPropertyDrawer title="Connection" :spec="connectionSpec" />
                 <PropertyDrawer title="Channel" :spec="channelSpec" />
                 <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
@@ -46,7 +47,7 @@
         <!-- Process -->
         <v-card elevation="0">
             <v-card-title class="py-2">
-                <span>Process</span>
+                <span>Process</span> 
             </v-card-title>
             <v-card-text class="px-1">
                 <PropertyDrawer title="LL Chamber" :spec="llChamberSpec" />
@@ -75,6 +76,7 @@
 </template>
 
 <script>
+import ComponentAPI from "@/componentAPI.ts";
 import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
 import ChannelSpec from "@/models/property-drawer/ChannelSpec.js";
 import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
@@ -104,6 +106,14 @@ export default {
     components: { ConnectionPropertyDrawer, PropertyDrawer },
     data() {
         return {
+            componentAPI: {
+                name = ComponentAPI.ret.unique,
+                min = ComponentAPI.ret.minimum,
+                max = ComponentAPI.ret.maximum,
+                step = ComponentAPI.ret.step,
+                units = ComponentAPI.ret.units,
+                value = ComponentAPI.ret.value,
+            },
             connectionSpec: ConnectionSpec,
             channelSpec: MixSpec,
             roundedChannelSpec: MixSpec,
