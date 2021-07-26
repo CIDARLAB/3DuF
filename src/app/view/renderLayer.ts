@@ -1,7 +1,6 @@
 import uuid from "node-uuid";
 import Feature from "../core/feature";
 import EdgeFeature from "../core/edgeFeature";
-import TextFeature from "../core/textFeature";
 
 import { RenderLayerInterchangeV1, FeatureInterchangeV0 } from "../core/init";
 import Layer from "../core/layer";

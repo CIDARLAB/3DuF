@@ -9,7 +9,6 @@ import DeviceRenderer from "./render2D/deviceRenderer2D";
 // var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
 import PanAndZoom from "./panAndZoom";
 import * as Colors from "./colors";
-import TextFeature from "../core/textFeature";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
 import ComponentPortRenderer2D from "./render2D/componentPortRenderer2D";
@@ -603,10 +602,7 @@ export default class PaperView {
         else selected = false;
         this.removeFeature(feature);
         let newPaperFeature;
-        if (feature instanceof TextFeature) {
-            // TODO:Create render textfeature method that doesnt take other params
-            newPaperFeature = FeatureRenderer2D.renderText(feature);
-        } else if (feature instanceof EdgeFeature) {
+        if (feature instanceof EdgeFeature) {
             newPaperFeature = DXFObjectRenderer2D.renderEdgeFeature(feature);
             newPaperFeature.selected = selected;
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;

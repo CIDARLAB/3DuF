@@ -1,7 +1,6 @@
 import uuid from "node-uuid";
 import EdgeFeature from "./edgeFeature";
 import Feature from "./feature";
-import TextFeature from "./textFeature";
 import Params from "./params";
 import Device from "./device";
 import LayerUtils from "@/app/utils/layerUtils";
@@ -113,7 +112,7 @@ export default class Layer {
      * @returns {void}
      */
     __ensureIsAFeature(feature: any): void {
-        if (!(feature instanceof Feature) && !(feature instanceof TextFeature) && !(feature instanceof EdgeFeature)) {
+        if (!(feature instanceof Feature) && !(feature instanceof EdgeFeature)) {
             throw new Error("Provided value" + feature + " is not a Feature! Did you pass an ID by mistake?");
         }
     }

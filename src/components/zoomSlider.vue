@@ -28,18 +28,18 @@ export default {
     },
     data() {
         return {
-            dummy: 0.1,
+            dummy: [0.1],
             isUserGeneratedEvent: false
         };
     },
     computed: {
         dummy2: function() {
-            return this.convertLinearToZoomScale(this.dummy);
+            return this.convertLinearToZoomScale(this.dummy[0]);
         }
     },
     mounted() {
         setTimeout(() => {
-            this.dummy = Math.log10(Registry.viewManager.view.computeOptimalZoom());
+            this.dummy = [Math.log10(Registry.viewManager.view.computeOptimalZoom())];
             console.log(this.dummy);
         }, 10);
     },
