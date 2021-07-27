@@ -7,11 +7,19 @@
                 <span>Feature</span>
             </v-card-title>
             <v-card-text class="px-1">
+<<<<<<< HEAD
                 <PropertyDrawer title="Connection" :spec="ConnectionSpec" />
                 <PropertyDrawer title="Channel" :spec="channel3DSpec" />
                 <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
                 <PropertyDrawer title="Transition" :spec="transtionSpec" />
                 <PropertyDrawer title="Alignment Marks" :spec="alignmentMarks" />
+=======
+                <ConnectionPropertyDrawer title="Connection" :spec="connectionSpec" />
+                <PropertyDrawer title="Channel" :spec="channelSpec" />
+                <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
+                <PropertyDrawer title="Transition" :spec="transitionSpec" />
+                <PropertyDrawer title="Alignment Marks" :spec="alignmentMarksSpec" />
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
             </v-card-text>
         </v-card>
 
@@ -79,8 +87,14 @@ import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
 import ChannelSpec from "@/models/property-drawer/ChannelSpec.js";
 import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
 import TransitionSpec from "@/models/property-drawer/TransitionSpec.js";
+<<<<<<< HEAD
 import AlignmentMarksSpec from "@/models/property-drawer/AlignmentMarksSpec.js";
 import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
+=======
+// import AlignmentMarksSpec from "@/models/property-drawer/AlignmentMarksSpec.js";
+import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
+import ConnectionPropertyDrawer from "@/components/base/ConnectionPropertyDrawer.vue";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 import MixSpec from "@/models/property-drawer/MixSpec.js";
 import Mix3DSpec from "@/models/property-drawer/Mix3DSpec.js";
 import GradientGenSpec from "@/models/property-drawer/GradientGenSpec.js";
@@ -100,6 +114,7 @@ import LLChamberSpec from "@/models/property-drawer/LLChamberSpec.js";
 // import TransponderSpec from "@/models/property-drawer/TransponderSpec.js";
 
 export default {
+<<<<<<< HEAD
     components: { PropertyDrawer },
     data() {
         return {
@@ -125,6 +140,33 @@ export default {
             // yTreeSpec: YTreeSpec,
             // muxSpec: MuxSpec,
             // transponderSpec: TransponderSpec
+=======
+    components: { ConnectionPropertyDrawer, PropertyDrawer },
+    data() {
+        return {
+            connectionSpec: ConnectionSpec,
+            channelSpec: MixSpec,
+            roundedChannelSpec: MixSpec,
+            transitionSpec: MixSpec,
+            alignmentMarksSpec: MixSpec,
+            mixSpec: MixSpec,
+            mix3DSpec: MixSpec,
+            gradientGenSpec: MixSpec,
+            valve3DSpec: MixSpec,
+            valveSpec: MixSpec,
+            pump3DSpec: MixSpec,
+            pumpSpec: MixSpec,
+            llChamberSpec: MixSpec,
+            cellTrapSpec: MixSpec,
+            diamondChamberSpec: MixSpec,
+            chamberSpec: MixSpec,
+            dropletGenSpec: MixSpec,
+            portSpec: MixSpec,
+            viaSpec: MixSpec,
+            yTreeSpec: MixSpec,
+            muxSpec: MixSpec,
+            transponderSpec: MixSpec
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
         };
     }
 };

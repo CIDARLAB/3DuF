@@ -24,6 +24,7 @@
             </form>
         </template>
         <template v-slot:actions="{ callbacks }">
+<<<<<<< HEAD
             <v-btn color="green darken-1" text @click="callbacks.close()">
                 Cancel
             </v-btn>
@@ -33,6 +34,14 @@
         </template>
     </Dialog>
 </template>
+=======
+            <v-btn color="green darken-1" text @click="callbacks.close()"> Cancel </v-btn>
+            <v-btn color="green darken-1" text @click="callbacks.close(onSave)"> Save </v-btn>
+        </template>
+    </Dialog>
+</template>
+
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 <script>
 import Dialog from "@/components/base/Dialog.vue";
 export default {

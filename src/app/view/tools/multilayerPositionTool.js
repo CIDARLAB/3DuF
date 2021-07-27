@@ -1,7 +1,12 @@
 import PositionTool from "./positionTool";
 
+<<<<<<< HEAD
 import Registry from '../../core/registry';
 import Device from '../../core/device';
+=======
+import Registry from "../../core/registry";
+import Device from "../../core/device";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 
 export default class MultilayerPositionTool extends PositionTool {
     constructor(typeString, setString) {
@@ -9,39 +14,39 @@ export default class MultilayerPositionTool extends PositionTool {
     }
 
     createNewFeature(point) {
-        let featureIDs = [];
-        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
-        let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
-        let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
+        const featureIDs = [];
+        const currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
+        const flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
+        const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
         let newFeature = Device.makeFeature(this.typeString, this.setString, {
             position: PositionTool.getTarget(point)
         });
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         flowlayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
-        let params_to_copy = newFeature.getParams();
+        const params_to_copy = newFeature.getParams();
 
-        let newtypestring = this.typeString + "_control";
-        let paramstoadd = newFeature.getParams();
+        const newtypestring = this.typeString + "_control";
+        const paramstoadd = newFeature.getParams();
         newFeature = Device.makeFeature(newtypestring, this.setString, {
             position: PositionTool.getTarget(point)
         });
         newFeature.setParams(paramstoadd);
 
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         controllayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager.saveDeviceState();
     }
 
     showTarget() {
-        let target = PositionTool.getTarget(this.lastPoint);
+        const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }

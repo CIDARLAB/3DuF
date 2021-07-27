@@ -2,7 +2,7 @@
 import * as paper from "paper";
 import Layer from "../core/layer";
 
-//Colors taken from: http://www.google.ch/design/spec/style/color.html
+// Colors taken from: http://www.google.ch/design/spec/style/color.html
 export const RED_500 = "#F44336";
 export const INDIGO_500 = "#3F51B5";
 export const GREEN_500 = "#4CAF50";
@@ -32,6 +32,7 @@ export const WHITE = "#FFFFFF";
 export const defaultColorKeys = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
 export const darkColorKeys = ["300", "400", "500", "600", "700", "800", "900"];
 
+<<<<<<< HEAD
 var indigo = {
     "900": "#" + "1A237E",
     "800": "#" + "283593",
@@ -81,37 +82,88 @@ var blue = {
     "A200": "#" + "536DFE",
     "A400": "#" + "3D5AFE",
     "A700": "#" + "304FFE"
+=======
+const indigo = {
+    900: "#" + "1A237E",
+    800: "#" + "283593",
+    700: "#" + "303F9F",
+    600: "#" + "3949AB",
+    500: "#" + "3F51B5",
+    400: "#" + "5C6BC0",
+    300: "#" + "7986CB",
+    200: "#" + "9FA8DA",
+    100: "#" + "C5CAE9",
+    50: "#" + "E8EAF6",
+    A100: "#" + "8C9EFF",
+    A200: "#" + "536DFE",
+    A400: "#" + "3D5AFE",
+    A700: "#" + "304FFE"
 };
 
-var layerColors = {
+const red = {
+    900: "#" + "B71C1C",
+    800: "#" + "C62828",
+    700: "#" + "D32F2F",
+    600: "#" + "E53935",
+    500: "#" + "F44336",
+    400: "#" + "EF5350",
+    300: "#" + "E57373",
+    200: "#" + "EF9A9A",
+    100: "#" + "FFCDD2",
+    50: "#" + "FFEBEE",
+    A100: "#" + "FF8A80",
+    A200: "#" + "FF5252",
+    A400: "#" + "FF1744",
+    A700: "#" + "D50000"
+};
+
+const blue = {
+    900: "#" + "1A237E",
+    800: "#" + "283593",
+    700: "#" + "303F9F",
+    600: "#" + "3949AB",
+    500: "#" + "3F51B5",
+    400: "#" + "5C6BC0",
+    300: "#" + "7986CB",
+    200: "#" + "9FA8DA",
+    100: "#" + "C5CAE9",
+    50: "#" + "E8EAF6",
+    A100: "#" + "8C9EFF",
+    A200: "#" + "536DFE",
+    A400: "#" + "3D5AFE",
+    A700: "#" + "304FFE"
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
+};
+
+const layerColors = {
     indigo: indigo,
     red: red,
     blue: blue
 };
 /**
  * Converts from decimal to index
- * @param {number} decimal 
- * @param {number} indices 
- * @returns {number} 
+ * @param {number} decimal
+ * @param {number} indices
+ * @returns {number}
  */
-var decimalToIndex = function(decimal, indices) {
+const decimalToIndex = function (decimal, indices) {
     return Math.round((indices - 1) * decimal);
 };
 /**
  * Converts the decimal to the corresponding layer color
- * @param {number} decimal 
- * @param {Object} layerColors 
- * @param {Array} orderedKeys 
+ * @param {number} decimal
+ * @param {Object} layerColors
+ * @param {Array} orderedKeys
  */
 export function decimalToLayerColor(decimal, layerColors, orderedKeys) {
-    let index = decimalToIndex(decimal, orderedKeys.length);
-    let key = orderedKeys[index];
+    const index = decimalToIndex(decimal, orderedKeys.length);
+    const key = orderedKeys[index];
     return layerColors["700"];
 }
 /**
  * Renders all the colors
- * @param {Layer} layer 
- * @param {Array} orderedKeys 
+ * @param {Layer} layer
+ * @param {Array} orderedKeys
  */
 export function renderAllColors(layer, orderedKeys) {
     for (let i = 0; i < orderedKeys.length; i++) {
@@ -123,7 +175,7 @@ export function renderAllColors(layer, orderedKeys) {
     }
 
     for (let i = 0; i < orderedKeys.length; i++) {
-        let color = decimalToLayerColor(i / orderedKeys.length, layer, orderedKeys);
+        const color = decimalToLayerColor(i / orderedKeys.length, layer, orderedKeys);
         new paper.Path.Circle({
             position: new paper.Point(0 + i * 1000, 2000),
             fillColor: layer[orderedKeys[i]],
@@ -133,7 +185,7 @@ export function renderAllColors(layer, orderedKeys) {
 }
 /**
  * Gets the color corresponding to the layer
- * @param {Layer} layer 
+ * @param {Layer} layer
  */
 export function getLayerColors(layer) {
     if (!layer) {
@@ -142,23 +194,24 @@ export function getLayerColors(layer) {
     if (layer.color) {
         return layerColors[layer.color];
     } else {
-        if (layer.name == "flow") {
-            return layerColors["indigo"];
-        } else if (layer.name == "control") {
-            return layerColors["red"];
-        } else if (layer.name == "cell") {
-            return layerColors["green"];
+        if (layer.name === "flow") {
+            return layerColors.indigo;
+        } else if (layer.name === "control") {
+            return layerColors.red;
+        } else if (layer.name === "cell") {
+            return layerColors.green;
         }
     }
 }
 /**
  * Gets the default color for the layer
- * @param {Layer} layer 
+ * @param {Layer} layer
  */
 export function getDefaultLayerColor(layer) {
     return getLayerColors(layer)["500"];
 }
 
+<<<<<<< HEAD
 //TODO: We need to fix how this works and remove the circular dependency form this chain
 export function getDefaultFeatureColor(typeString, setString, layer){
 	if (layer){
@@ -172,3 +225,17 @@ export function getDefaultFeatureColor(typeString, setString, layer){
 		return decimalToLayerColor(0,layerColors["indigo"], darkColorKeys);
 	}
 };
+=======
+// TODO: We need to fix how this works and remove the circular dependency form this chain
+export function getDefaultFeatureColor(typeString, setString, layer) {
+    if (layer) {
+        // let height = Feature.getDefaultsForType(typeString, setString)["height"];
+        let decimal = 500; // layer.estimateLayerHeight();
+        if (!layer.flip) decimal = 1 - decimal;
+        const colors = getLayerColors(layer);
+        return decimalToLayerColor(decimal, colors, darkColorKeys);
+    } else {
+        return decimalToLayerColor(0, layerColors.indigo, darkColorKeys);
+    }
+}
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a

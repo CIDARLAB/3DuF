@@ -13,6 +13,7 @@ export default class Valve extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             rotation: "Float",
             length: "Float",
             width: "Float",
@@ -20,6 +21,7 @@ export default class Valve extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             rotation: 0,
             width: 1.23 * 1000,
             length: 4.92 * 1000,
@@ -27,6 +29,7 @@ export default class Valve extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             rotation: "&deg",
             length: "&mu;m",
             width: "&mu;m",
@@ -34,6 +37,7 @@ export default class Valve extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             rotation: 0,
             width: 30,
             length: 120,
@@ -41,6 +45,7 @@ export default class Valve extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             rotation: 180,
             width: 6000,
             length: 24 * 1000,
@@ -48,6 +53,7 @@ export default class Valve extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             length: "length",
             width: "width",
@@ -55,6 +61,7 @@ export default class Valve extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             length: "length",
             width: "width",
             rotation: "rotation"
@@ -72,34 +79,31 @@ export default class Valve extends Template {
     }
 
     getPorts(params) {
-        let l = params["length"];
-        let w = params["width"];
+        const l = params.length;
+        const w = params.width;
 
-        let ports = [];
+        const ports = [];
 
-        ports.push(new ComponentPort(0, -l / 2, "1", "CONTROL"));
-
-        ports.push(new ComponentPort(0, l / 2, "2", "CONTROL"));
+        ports.push(new ComponentPort(0, 0, "1", "CONTROL"));
 
         return ports;
     }
 
-    render2D(params, key) {
-        let orientation = params["orientation"];
-        let position = params["position"];
-        let px = position[0];
-        let py = position[1];
-        let l = params["length"];
-        let w = params["width"];
-        let color = params["color"];
-        let rotation = params["rotation"];
-        let startX = px - w / 2;
-        let startY = py - l / 2;
-        let endX = px + w / 2;
-        let endY = py + l / 2;
-        let startPoint = new paper.Point(startX, startY);
-        let endPoint = new paper.Point(endX, endY);
-        let rec = paper.Path.Rectangle({
+    render2D(params, key = "FLOW") {
+        const position = params.position;
+        const px = position[0];
+        const py = position[1];
+        const l = params.length;
+        const w = params.width;
+        const color = params.color;
+        const rotation = params.rotation;
+        const startX = px - w / 2;
+        const startY = py - l / 2;
+        const endX = px + w / 2;
+        const endY = py + l / 2;
+        const startPoint = new paper.Point(startX, startY);
+        const endPoint = new paper.Point(endX, endY);
+        const rec = paper.Path.Rectangle({
             from: startPoint,
             to: endPoint,
             radius: 0,
@@ -107,15 +111,11 @@ export default class Valve extends Template {
             strokeWidth: 0
         });
 
-        // if(orientation == "V"){
-        //     rotation = 90;
-        // }
-
         return rec.rotate(rotation, px, py);
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, (key = "FLOW"));
         render.fillColor.alpha = 0.5;
         return render;
     }

@@ -1,5 +1,6 @@
 {
     "files.eol": "\n",
+<<<<<<< HEAD
     "eslint.validate": [
         "vue",
         "html",
@@ -7,3 +8,12 @@
         "typescript",
     ]
 }
+=======
+    "eslint.validate": ["vue", "html", "javascript", "typescript"],
+    "typescript.referencesCodeLens.enabled": true,
+    "typescript.updateImportsOnFileMove.enabled": "prompt",
+    "editor.defaultFormatter": "octref.vetur",
+    "editor.definitionLinkOpensInPeek": true,
+    "vetur.format.options.tabSize": 4
+}
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a

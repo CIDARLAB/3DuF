@@ -8,20 +8,20 @@ import Registry from "../../core/registry";
 import { renderEdgeFeature } from "../../view/render2D/dxfObjectRenderer2D";
 import paper from "paper";
 
-var getLayerColor = function(feature) {
-    let height = feature.getValue("height");
-    let layerHeight = 1; // feature.layer.estimateLayerHeight();
+const getLayerColor = function (feature) {
+    const height = feature.getValue("height");
+    const layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
     if (decimal > 1) decimal = 1;
     if (!feature.layer.flip) decimal = 1 - decimal;
-    let targetColorSet = Colors.getLayerColors(feature.layer);
+    const targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 };
 
-var getBaseColor = function(feature) {
+const getBaseColor = function (feature) {
     let decimal = 0;
     if (!feature.layer.flip) decimal = 1 - decimal;
-    let targetColorSet = Colors.getLayerColors(feature.layer);
+    const targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 };
 
@@ -30,33 +30,33 @@ export function getDefaultValueForType(typeString, setString, key) {
 }
 
 export function getFeatureRenderer(typeString, setString) {
-    if (typeString == "TEXT") {
-        let rendererInfo = renderTextTarget;
+    if (typeString === "TEXT") {
+        const rendererInfo = renderTextTarget;
         return rendererInfo;
-    } else if (typeString == "EDGE") {
+    } else if (typeString === "EDGE") {
         return renderEdge;
     } else {
-        let rendererInfo = FeatureSets.getRender2D(typeString, setString);
+        const rendererInfo = FeatureSets.getRender2D(typeString, setString);
         return rendererInfo;
     }
 }
 
 export function getPrimitive2D(typeString, setString) {
     console.error("What are Primitive sets ?");
-    //return PrimitiveSets2D[setString][typeString]; //Looks like the primitivesets2d are the function pointers
+    // return PrimitiveSets2D[setString][typeString]; //Looks like the primitivesets2d are the function pointers
 }
 
 export function renderTarget(typeString, setString, position) {
-    let rendererinfo = getFeatureRenderer(typeString, setString);
-    let renderer = rendererinfo.object;
-    let params = renderer.targetParams;
-    let primParams = {};
-    for (let key in params) {
+    const rendererinfo = getFeatureRenderer(typeString, setString);
+    const renderer = rendererinfo.object;
+    const params = renderer.targetParams;
+    const primParams = {};
+    for (const key in params) {
         primParams[key] = getDefaultValueForType(typeString, setString, params[key]);
     }
-    primParams["position"] = position;
-    primParams["color"] = Colors.getDefaultFeatureColor(typeString, setString, Registry.currentLayer);
-    let rendered = renderer.render2DTarget(null, primParams);
+    primParams.position = position;
+    primParams.color = Colors.getDefaultFeatureColor(typeString, setString, Registry.currentLayer);
+    const rendered = renderer.render2DTarget(null, primParams);
     return rendered;
 }
 
@@ -68,29 +68,29 @@ export function renderTarget(typeString, setString, position) {
  * @return {d}
  */
 export function renderTextTarget(typeString, setString, position) {
-    let rendered = new paper.PointText(new paper.Point(position[0], position[1]));
+    const rendered = new paper.PointText(new paper.Point(position[0], position[1]));
     rendered.justification = "center";
     rendered.fillColor = Colors.DEEP_PURPLE_500;
-    rendered.content = Registry.text;
+    rendered.content = insertTextTool.text;
     rendered.fontSize = 10000 / 3;
     return rendered;
 }
 
 export function renderEdge(feature) {
-    //TODO: Just call the DXF renderer (outline) for this
+    // TODO: Just call the DXF renderer (outline) for this
     renderEdgeFeature(feature);
 }
 
 export function renderText(feature) {
-    //TODO - Figure out where to save the position of the feature
-    let position = feature.getValue("position");
-    let rendered = new paper.PointText(new paper.Point(position[0], position[1]));
+    // TODO - Figure out where to save the position of the feature
+    const position = feature.getValue("position");
+    const rendered = new paper.PointText(new paper.Point(position[0], position[1]));
     rendered.justification = "center";
     rendered.fillColor = Colors.DEEP_PURPLE_500;
-    ///rendered.content = feature.getText();
+    /// rendered.content = feature.getText();
     rendered.content = feature.getValue("text");
     rendered.fontSize = 10000 / 3;
-    rendered.featureID = feature.getID();
+    rendered.featureID = feature.ID;
     return rendered;
 }
 
@@ -102,20 +102,20 @@ export function renderText(feature) {
 export function renderFeature(feature, key = null) {
     let rendered;
     let params;
-    let type = feature.getType();
-    let set = feature.getSet();
-    if (type == "TEXT") {
+    const type = feature.getType();
+    const set = feature.getSet();
+    if (type === "TEXT") {
         return renderText(feature);
     } else if (set === "Custom") {
         rendered = DXFSolidObjectRenderer2D.renderCustomComponentFeature(feature, getBaseColor(feature));
-        rendered.featureID = feature.getID();
+        rendered.featureID = feature.ID;
 
         return rendered;
     } else if (type === "EDGE") {
         return renderEdge(feature);
     } else {
-        let rendererinfo = getFeatureRenderer(type, set);
-        let renderer = rendererinfo.object;
+        const rendererinfo = getFeatureRenderer(type, set);
+        const renderer = rendererinfo.object;
 
         /*
         If the user does not specify the key, then extract it from the rendering info of the feature.
@@ -123,7 +123,7 @@ export function renderFeature(feature, key = null) {
         ignoring that.
          */
 
-        if (null == key) {
+        if (key === null) {
             key = rendererinfo.key;
         }
 
@@ -133,14 +133,14 @@ export function renderFeature(feature, key = null) {
             params = renderer.featureParams;
         }
 
-        let primParams = {};
-        for (let key in params) {
+        const primParams = {};
+        for (const key in params) {
             primParams[key] = feature.getValue(params[key]);
         }
-        primParams["color"] = getLayerColor(feature);
-        primParams["baseColor"] = getBaseColor(feature);
+        primParams.color = getLayerColor(feature);
+        primParams.baseColor = getBaseColor(feature);
         rendered = renderer.render2D(primParams, key);
-        rendered.featureID = feature.getID();
+        rendered.featureID = feature.ID;
 
         return rendered;
     }

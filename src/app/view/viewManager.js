@@ -2,7 +2,11 @@ import ZoomToolBar from "./ui/zoomToolBar";
 import BorderSettingsDialog from "./ui/borderSettingDialog";
 import paper from "paper";
 
+<<<<<<< HEAD
 import Registry from '../core/registry';
+=======
+import Registry from "../core/registry";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 import * as Colors from "./colors";
 
 import Device from "../core/device";
@@ -49,10 +53,13 @@ import Feature from "../core/feature";
 import Layer from "../core/layer";
 import Component from "../core/component";
 import DAMPFabricationDialog from "./ui/dampFabricationDialog";
+import ControlCellPositionTool from "./tools/controlCellPositionTool";
 
 /**
  * View manager class
  */
+import { MultiplyOperation } from "three";
+
 export default class ViewManager {
     /**
      * Default ViewManger Constructor
@@ -66,26 +73,26 @@ export default class ViewManager {
 
         this.tools = {};
         this.rightMouseTool = new SelectTool();
-        this.customComponentManager = new CustomComponentManager(this);
-        this.rightPanel = new RightPanel(this);
-        this.changeAllDialog = new ChangeAllDialog();
-        this.resolutionToolBar = new ResolutionToolBar();
-        this.borderDialog = new BorderSettingsDialog();
-        this.layerToolBar = new LayerToolBar();
-        this.messageBox = document.querySelector(".mdl-js-snackbar");
-        this.editDeviceDialog = new EditDeviceDialog(this);
-        this.helpDialog = new HelpDialog();
-        this.taguchiDesigner = new TaguchiDesigner(this);
-        this.rightClickMenu = new RightClickMenu();
+        // this.customComponentManager = new CustomComponentManager(this);
+        // this.rightPanel = new RightPanel(this);
+        // this.changeAllDialog = new ChangeAllDialog();
+        // this.resolutionToolBar = new ResolutionToolBar();
+        // this.borderDialog = new BorderSettingsDialog();
+        // this.layerToolBar = new LayerToolBar();
+        // this.messageBox = document.querySelector(".mdl-js-snackbar");
+        // this.editDeviceDialog = new EditDeviceDialog(this);
+        // this.helpDialog = new HelpDialog();
+        // this.taguchiDesigner = new TaguchiDesigner(this);
+        // this.rightClickMenu = new RightClickMenu();
         this.__currentDevice = null;
-        this._introDialog = new IntroDialog();
-        this._dampFabricateDialog = new DAMPFabricationDialog();
-        let reference = this;
-        this.updateQueue = new SimpleQueue(function() {
+        // this._introDialog = new IntroDialog();
+        // this._dampFabricateDialog = new DAMPFabricationDialog();
+        const reference = this;
+        this.updateQueue = new SimpleQueue(function () {
             reference.view.refresh();
         }, 20);
 
-        this.saveQueue = new SimpleQueue(function() {
+        this.saveQueue = new SimpleQueue(function () {
             reference.saveToStorage();
         });
 
@@ -94,7 +101,7 @@ export default class ViewManager {
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
-        this.view.setResizeFunction(function() {
+        this.view.setResizeFunction(function () {
             reference.updateGrid();
             reference.updateAlignmentMarks();
 
@@ -103,28 +110,28 @@ export default class ViewManager {
             reference.updateDevice(Registry.currentDevice);
         });
 
-        let func = function(event) {
+        const func = function (event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
-        this.manufacturingPanel = new ManufacturingPanel(this);
+        // this.manufacturingPanel = new ManufacturingPanel(this);
 
-        this.exportPanel = new ExportPanel(this);
+        // this.exportPanel = new ExportPanel(this);
 
         this.view.setMouseWheelFunction(func);
         this.minZoom = 0.0001;
         this.maxZoom = 5;
         this.setupTools();
 
-        //TODO: Figure out how remove UpdateQueue as dependency mechanism
+        // TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
 
-        //Removed from Page Setup
+        // Removed from Page Setup
         this.threeD = false;
         this.renderer = Registry.threeRenderer;
-        this.__button2D = document.getElementById("button_2D");
-        this.__canvasBlock = document.getElementById("canvas_block");
-        this.__renderBlock = document.getElementById("renderContainer");
+        // this.__button2D = document.getElementById("button_2D");
+        // this.__canvasBlock = document.getElementById("canvas_block");
+        // this.__renderBlock = document.getElementById("renderContainer");
         this.setupDragAndDropLoad("#c");
         this.setupDragAndDropLoad("#renderContainer");
         this.switchTo2D();
@@ -147,22 +154,24 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     initiateCopy() {
-        let selectedFeatures = this.view.getSelectedFeatures();
+        const selectedFeatures = this.view.getSelectedFeatures();
         if (selectedFeatures.length > 0) {
             this.pasteboard[0] = selectedFeatures[0];
         }
     }
+
     /**
      * Initiating the zoom toolbar
      * @memberof ViewManager
      * @returns {void}
      */
     setupToolBars() {
-        //Initiating the zoom toolbar
-        this.zoomToolBar = new ZoomToolBar(0.0001, 5);
-        this.componentToolBar = new ComponentToolBar(this);
+        // Initiating the zoom toolbar
+        // this.zoomToolBar = new ZoomToolBar(0.0001, 5);
+        // this.componentToolBar = new ComponentToolBar(this);
         this.resetToDefaultTool();
     }
+
     /**
      * Adds a device to the view manager
      * @param {Device} device Device to be added
@@ -186,10 +195,11 @@ export default class ViewManager {
      */
     __addAllDeviceLayers(device, refresh = true) {
         for (let i = 0; i < device.layers.length; i++) {
-            let layer = device.layers[i];
+            const layer = device.layers[i];
             this.addLayer(layer, i, false);
         }
     }
+
     /**
      * Removes all layers in the device
      * @param {Device} device Selected device
@@ -199,10 +209,11 @@ export default class ViewManager {
      */
     __removeAllDeviceLayers(device, refresh = true) {
         for (let i = 0; i < device.layers.length; i++) {
-            let layer = device.layers[i];
+            const layer = device.layers[i];
             this.removeLayer(layer, i, false);
         }
     }
+
     /**
      * Removes the device from the view
      * @param {Device} device Selected device to remove
@@ -215,6 +226,7 @@ export default class ViewManager {
         this.__removeAllDeviceLayers(device, false);
         this.refresh(refresh);
     }
+
     /**
      * Updates the device in the view
      * @param {Device} device Selected device to update
@@ -226,6 +238,7 @@ export default class ViewManager {
         this.view.updateDevice(device);
         this.refresh(refresh);
     }
+
     /**
      * Adds a feature to the view
      * @param {Feature} feature Feature to add
@@ -239,6 +252,7 @@ export default class ViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates a feature from the view
      * @param {Feature} feature Feature to update
@@ -252,6 +266,7 @@ export default class ViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Removes feature from the view
      * @param {Feature} feature Feature to remove
@@ -265,6 +280,7 @@ export default class ViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Adds layer to the view
      * @param {Layer} layer Layer to add
@@ -287,32 +303,32 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     createNewLayerBlock() {
-        let newlayers = Registry.currentDevice.createNewLayerBlock();
+        const newlayers = Registry.currentDevice.createNewLayerBlock();
 
-        //Find all the edge features
-        let edgefeatures = [];
-        let devicefeatures = Registry.currentDevice.layers[0].features;
+        // Find all the edge features
+        const edgefeatures = [];
+        const devicefeatures = Registry.currentDevice.layers[0].features;
         let feature;
 
-        for (let i in devicefeatures) {
+        for (const i in devicefeatures) {
             feature = devicefeatures[i];
-            if (feature.fabType == "EDGE") {
+            if (feature.fabType === "EDGE") {
                 edgefeatures.push(feature);
             }
         }
 
-        //Add the Edge Features from layer '0'
+        // Add the Edge Features from layer '0'
         // to all other layers
-        for (let i in newlayers) {
-            for (let j in edgefeatures) {
+        for (const i in newlayers) {
+            for (const j in edgefeatures) {
                 newlayers[i].addFeature(edgefeatures[j], false);
             }
         }
 
-        //Added the new layers
-        for (let i in newlayers) {
-            let layertoadd = newlayers[i];
-            let index = this.view.paperLayers.length;
+        // Added the new layers
+        for (const i in newlayers) {
+            const layertoadd = newlayers[i];
+            const index = this.view.paperLayers.length;
             this.addLayer(layertoadd, index, true);
         }
     }
@@ -325,18 +341,19 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     deleteLayerBlock(levelindex) {
-        //Delete the levels in the device model
+        // Delete the levels in the device model
         Registry.currentDevice.deleteLayer(levelindex * 3);
         Registry.currentDevice.deleteLayer(levelindex * 3 + 1);
         Registry.currentDevice.deleteLayer(levelindex * 3 + 2);
 
-        //Delete the levels in the render model
+        // Delete the levels in the render model
         this.view.removeLayer(levelindex * 3);
         this.view.removeLayer(levelindex * 3 + 1);
         this.view.removeLayer(levelindex * 3 + 2);
         this.updateActiveLayer();
         this.refresh();
     }
+
     /**
      * Removes layer from the view
      * @param {Layer} layer Layer to be removed from the view
@@ -352,6 +369,7 @@ export default class ViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Converts the layers to SVG format
      * @returns {}
@@ -370,12 +388,13 @@ export default class ViewManager {
      * @private
      */
     __addAllLayerFeatures(layer, refresh = true) {
-        for (let key in layer.features) {
-            let feature = layer.features[key];
+        for (const key in layer.features) {
+            const feature = layer.features[key];
             this.addFeature(feature, false);
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates all the feature of the layer
      * @param {Layer} layer Selected layer
@@ -384,26 +403,28 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     __updateAllLayerFeatures(layer, refresh = true) {
-        for (let key in layer.features) {
-            let feature = layer.features[key];
+        for (const key in layer.features) {
+            const feature = layer.features[key];
             this.updateFeature(feature, false);
             this.refresh(refresh);
         }
     }
+
     /**
-     * Removes all feature of the layer 
+     * Removes all feature of the layer
      * @param {Layer} layer Selected layer
      * @param {Boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
      * @memberof ViewManager
      */
     __removeAllLayerFeatures(layer, refresh = true) {
-        for (let key in layer.features) {
-            let feature = layer.features[key];
+        for (const key in layer.features) {
+            const feature = layer.features[key];
             this.removeFeature(feature, false);
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates layer
      * @param {Layer} layer Selected layer to be updated
@@ -417,6 +438,7 @@ export default class ViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Updates the active layer
      * @param {Boolean} refresh Default to true
@@ -427,8 +449,9 @@ export default class ViewManager {
         this.view.setActiveLayer(Registry.currentDevice.layers.indexOf(Registry.currentLayer));
         this.refresh(refresh);
     }
+
     /**
-     * Removes the grid 
+     * Removes the grid
      * @param {Boolean} refresh Default to true
      * @returns {void}
      * @memberof ViewManager
@@ -439,8 +462,9 @@ export default class ViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
-     * Update grid 
+     * Update grid
      * @param {Boolean} refresh Default to true
      * @returns {void}
      * @memberof ViewManager
@@ -451,6 +475,7 @@ export default class ViewManager {
             this.refresh(refresh);
         }
     }
+
     /**
      * Update the alignment marks of the view
      * @returns {void}
@@ -459,6 +484,7 @@ export default class ViewManager {
     updateAlignmentMarks() {
         this.view.updateAlignmentMarks();
     }
+
     /**
      * Clear the view
      * @returns {void}
@@ -467,9 +493,10 @@ export default class ViewManager {
     clear() {
         this.view.clear();
     }
+
     /**
      * Sets a specific value of zoom
-     * @param {Number} zoom Zoom value 
+     * @param {Number} zoom Zoom value
      * @param {boolean} refresh Whether it will refresh or not. true by default
      * @returns {void}
      * @memberof ViewManager
@@ -495,16 +522,16 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     generateBorder() {
-        let borderfeature = new EdgeFeature(null, null);
+        const borderfeature = new EdgeFeature(null, null);
 
-        //Get the bounds for the border feature and then update the device dimensions
-        let xspan = Registry.currentDevice.getXSpan();
-        let yspan = Registry.currentDevice.getYSpan();
+        // Get the bounds for the border feature and then update the device dimensions
+        const xspan = Registry.currentDevice.getXSpan();
+        const yspan = Registry.currentDevice.getYSpan();
         borderfeature.generateRectEdge(xspan, yspan);
 
-        //Adding the feature to all the layers
-        for (let i in Registry.currentDevice.layers) {
-            let layer = Registry.currentDevice.layers[i];
+        // Adding the feature to all the layers
+        for (const i in Registry.currentDevice.layers) {
+            const layer = Registry.currentDevice.layers[i];
             layer.addFeature(borderfeature);
         }
     }
@@ -516,24 +543,24 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     importBorder(dxfobject) {
-        let customborderfeature = new EdgeFeature(null, null);
-        for (let i in dxfobject.entities) {
-            let foo = new DXFObject(dxfobject.entities[i]);
+        const customborderfeature = new EdgeFeature(null, null);
+        for (const i in dxfobject.entities) {
+            const foo = new DXFObject(dxfobject.entities[i]);
             customborderfeature.addDXFObject(foo);
         }
 
-        //Adding the feature to all the layers
-        for (let i in Registry.currentDevice.layers) {
-            let layer = Registry.currentDevice.layers[i];
+        // Adding the feature to all the layers
+        for (const i in Registry.currentDevice.layers) {
+            const layer = Registry.currentDevice.layers[i];
             layer.addFeature(customborderfeature);
         }
 
-        //Get the bounds for the border feature and then update the device dimensions
-        let bounds = this.view.getRenderedFeature(customborderfeature.getID()).bounds;
+        // Get the bounds for the border feature and then update the device dimensions
+        const bounds = this.view.getRenderedFeature(customborderfeature.ID).bounds;
 
         Registry.currentDevice.setXSpan(bounds.width);
         Registry.currentDevice.setYSpan(bounds.height);
-        //Refresh the view
+        // Refresh the view
         Registry.viewManager.view.initializeView();
         Registry.viewManager.view.refresh();
     }
@@ -551,25 +578,26 @@ export default class ViewManager {
 
         console.log("Deleting border...");
 
-        let features = Registry.currentDevice.getAllFeaturesFromDevice();
+        const features = Registry.currentDevice.getAllFeaturesFromDevice();
         console.log("All features", features);
 
-        let edgefeatures = [];
+        const edgefeatures = [];
 
-        for (let i in features) {
-            //Check if the feature is EDGE or not
-            if ("EDGE" == features[i].fabType) {
+        for (const i in features) {
+            // Check if the feature is EDGE or not
+            if (features[i].fabType === "EDGE") {
                 edgefeatures.push(features[i]);
             }
         }
 
-        //Delete all the features
-        for (let i in edgefeatures) {
-            Registry.currentDevice.removeFeatureByID(edgefeatures[i].getID());
+        // Delete all the features
+        for (const i in edgefeatures) {
+            Registry.currentDevice.removeFeatureByID(edgefeatures[i].ID);
         }
 
         console.log("Edgefeatures", edgefeatures);
     }
+
     /**
      * Removes the target view
      * @memberof ViewManager
@@ -578,10 +606,11 @@ export default class ViewManager {
     removeTarget() {
         this.view.removeTarget();
     }
+
     /**
      * Update the target view
-     * @param {string} featureType 
-     * @param {string} featureSet 
+     * @param {string} featureType
+     * @param {string} featureSet
      * @param {Array<number>} position Array with X and Y coordinates
      * @param {boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
@@ -591,9 +620,9 @@ export default class ViewManager {
         this.view.addTarget(featureType, featureSet, position);
         this.view.updateAlignmentMarks();
         this.view.updateRatsNest();
-        this.view.updateComponentPortsRender();
         this.refresh(refresh);
     }
+
     /**
      * Update the view target
      * @param {Boolean} refresh Default to true
@@ -607,8 +636,9 @@ export default class ViewManager {
         this.view.updateComponentPortsRender();
         this.refresh(refresh);
     }
+
     /**
-     * Adjust the zoom value in a certain point 
+     * Adjust the zoom value in a certain point
      * @param {Number} delta Value of zoom
      * @param {Array<number>} point Coordinates to zoom in
      * @param {Boolean} refresh Default to true
@@ -616,21 +646,22 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     adjustZoom(delta, point, refresh = true) {
-        let belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
-        let aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
+        const belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
+        const aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
         if (!aboveMax && !belowMin) {
             this.view.adjustZoom(delta, point);
             this.updateGrid(false);
-            //this.updateAlignmentMarks();
+            // this.updateAlignmentMarks();
             this.view.updateRatsNest();
             this.view.updateComponentPortsRender();
             this.updateDevice(Registry.currentDevice, false);
             this.__updateViewTarget(false);
         } else {
-            //console.log("Too big or too small!");
+            // console.log("Too big or too small!");
         }
         this.refresh(refresh);
     }
+
     /**
      * Sets the center value
      * @param {Array<number>} center Center coordinates
@@ -641,14 +672,15 @@ export default class ViewManager {
     setCenter(center, refresh = true) {
         this.view.setCenter(center);
         this.updateGrid(false);
-        //this.updateAlighmentMarks();
+        // this.updateAlighmentMarks();
 
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }
+
     /**
      * Moves center by a certain value
-     * @param {number} delta 
+     * @param {number} delta
      * @param {boolean} refresh Whether to refresh or not. true by default
      * @returns {void}
      * @memberof ViewManager
@@ -662,6 +694,7 @@ export default class ViewManager {
         this.updateDevice(Registry.currentDevice, false);
         this.refresh(refresh);
     }
+
     /**
      * Save the device to JSON format
      * @returns {void}
@@ -676,6 +709,7 @@ export default class ViewManager {
             }
         }
     }
+
     /**
      * Refresh the view
      * @param {boolean} refresh Whether to refresh or not. true by default
@@ -684,28 +718,32 @@ export default class ViewManager {
      */
     refresh(refresh = true) {
         this.updateQueue.run();
-        //Update the toolbar
-        let spacing = Registry.currentGrid.getSpacing();
-        this.resolutionToolBar.updateResolutionLabelAndSlider(spacing);
+        // Update the toolbar
+        const spacing = Registry.currentGrid.getSpacing();
+        // TODO - undo this
+        // this.resolutionToolBar.updateResolutionLabelAndSlider(spacing);
     }
+
     /**
      * Gets the coordinates of the project
-     * @param {*} event 
+     * @param {*} event
      * @returns {Array<number>} Returns the X and Y coordinates
      * @memberof ViewManager
      */
     getEventPosition(event) {
         return this.view.getProjectPosition(event.clientX, event.clientY);
     }
+
     /**
      * Checks if it has current grid
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @memberof ViewManager
      */
     __hasCurrentGrid() {
         if (Registry.currentGrid) return true;
         else return false;
     }
+
     /**
      * Checks if layer is in the current device
      * @param {Layer} layer Layer to check if it's on the current device
@@ -713,9 +751,10 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     __isLayerInCurrentDevice(layer) {
-        if (Registry.currentDevice && layer.device == Registry.currentDevice) return true;
+        if (Registry.currentDevice && layer.device === Registry.currentDevice) return true;
         else return false;
     }
+
     /**
      * Checks if feature is in the current device
      * @param {Object} feature Feature to check if it's on the current device
@@ -726,19 +765,20 @@ export default class ViewManager {
         if (Registry.currentDevice && this.__isLayerInCurrentDevice(feature.layer)) return true;
         else return false;
     }
+
     /**
      * Loads a device from a JSON format
-     * @param {JSON} json 
+     * @param {JSON} json
      * @returns {void}
      * @memberof ViewManager
      */
     loadDeviceFromJSON(json) {
         let device;
         Registry.viewManager.clear();
-        //Check and see the version number if its 0 or none is present,
+        // Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
-        let version = json.version;
-        if (null == version || undefined == version) {
+        const version = json.version;
+        if (version === null || undefined === version) {
             console.log("Loading Legacy Format...");
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
@@ -746,31 +786,31 @@ export default class ViewManager {
         } else {
             console.log("Version Number: " + version);
             switch (version) {
-            case 1:
-                this.loadCustomComponents(json);
-                device = Device.fromInterchangeV1(json);
-                Registry.currentDevice = device;
-                this.__currentDevice = device;
-                break;
-            case 1.1:
-                this.loadCustomComponents(json);
-                device = Device.fromInterchangeV1_1(json);
-                Registry.currentDevice = device;
-                this.__currentDevice = device;
-                break;
-            default:
-                alert("Version '" + version + "' is not supported by 3DuF !");
+                case 1:
+                    // this.loadCustomComponents(json);
+                    device = Device.fromInterchangeV1(json);
+                    Registry.currentDevice = device;
+                    this.__currentDevice = device;
+                    break;
+                case 1.1:
+                    // this.loadCustomComponents(json);
+                    device = Device.fromInterchangeV1_1(json);
+                    Registry.currentDevice = device;
+                    this.__currentDevice = device;
+                    break;
+                default:
+                    alert("Version '" + version + "' is not supported by 3DuF !");
             }
         }
-        //Common Code for rendering stuff
+        // Common Code for rendering stuff
         // console.log("Feature Layers", Registry.currentDevice.layers);
         Registry.currentLayer = Registry.currentDevice.layers[0];
         Registry.currentTextLayer = Registry.currentDevice.textLayers[0];
 
-        //TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
+        // TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
         Registry.viewManager.addDevice(Registry.currentDevice);
 
-        //In case of MINT exported json, generate layouts for rats nests
+        // In case of MINT exported json, generate layouts for rats nests
         this.__initializeRatsNest();
 
         this.view.initializeView();
@@ -778,19 +818,20 @@ export default class ViewManager {
         this.updateDevice(Registry.currentDevice);
         this.refresh(true);
         Registry.currentLayer = Registry.currentDevice.layers[0];
-        this.layerToolBar.setActiveLayer("0");
+        // this.layerToolBar.setActiveLayer("0");
         Registry.viewManager.updateActiveLayer();
     }
+
     /**
      * Removes the features of the current device by searching on it's ID
-     * @param {*} paperElements 
+     * @param {*} paperElements
      * @returns {void}
      * @memberof ViewManager
      */
     removeFeaturesByPaperElements(paperElements) {
         if (paperElements.length > 0) {
             for (let i = 0; i < paperElements.length; i++) {
-                let paperFeature = paperElements[i];
+                const paperFeature = paperElements[i];
                 Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
             }
             this.currentSelection = [];
@@ -805,8 +846,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateComponentParameters(componentname, params) {
-        let component = this.__currentDevice.getComponentByName(componentname);
-        for (let key in params) {
+        const component = this.__currentDevice.getComponentByName(componentname);
+        for (const key in params) {
             component.updateParameter(key, params[key]);
         }
     }
@@ -821,62 +862,65 @@ export default class ViewManager {
         if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);
         else return point;
     }
+
     /**
      * Gets the features of a specific type ?
-     * @param {string} typeString 
-     * @param {string} setString 
+     * @param {string} typeString
+     * @param {string} setString
      * @param {Array} features Array with features
      * @returns {Array} Returns array with the features of a specific type
      * @memberof ViewManager
      */
     getFeaturesOfType(typeString, setString, features) {
-        let output = [];
+        const output = [];
         for (let i = 0; i < features.length; i++) {
-            let feature = features[i];
-            if (feature.getType() == typeString && feature.getSet() == setString) {
+            const feature = features[i];
+            if (feature.getType() === typeString && feature.getSet() === setString) {
                 output.push(feature);
             }
         }
         return output;
     }
+
     /**
      * Updates all feature parameters
-     * @param {string} valueString 
-     * @param {*} value 
+     * @param {string} valueString
+     * @param {*} value
      * @param {Array} features Array of features
      * @returns {void}
      * @memberof ViewManager
      */
     adjustAllFeatureParams(valueString, value, features) {
         for (let i = 0; i < features.length; i++) {
-            let feature = features[i];
+            const feature = features[i];
             feature.updateParameter(valueString, value);
         }
     }
+
     /**
      * Adjust all parameters of the same type
-     * @param {string} typeString 
-     * @param {string} setString 
-     * @param {string} valueString 
-     * @param {*} value 
+     * @param {string} typeString
+     * @param {string} setString
+     * @param {string} valueString
+     * @param {*} value
      * @returns {void}
      * @memberof ViewManager
      */
     adjustParams(typeString, setString, valueString, value) {
-        let selectedFeatures = this.view.getSelectedFeatures();
+        const selectedFeatures = this.view.getSelectedFeatures();
         if (selectedFeatures.length > 0) {
-            let correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
+            const correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
             if (correctType.length > 0) {
                 this.adjustAllFeatureParams(valueString, value, correctType);
             }
 
-            //Check if any components are selected
-            //TODO: modify parameters window to not have chain of updates
-            //Cycle through all components and connections and change the parameters
-            for (let i in this.view.selectedComponents) {
+            // Check if any components are selected
+            // TODO: modify parameters window to not have chain of updates
+            // Cycle through all components and connections and change the parameters
+            for (const i in this.view.selectedComponents) {
                 this.view.selectedComponents[i].updateParameter(valueString, value);
             }
-            for (let i in this.view.selectedConnections) {
+            for (const i in this.view.selectedConnections) {
                 this.view.selectedConnections[i].updateParameter(valueString, value);
             }
         } else {
@@ -904,8 +948,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateDefaultsFromFeature(feature) {
-        let heritable = feature.getHeritableParams();
-        for (let key in heritable) {
+        const heritable = feature.getHeritableParams();
+        for (const key in heritable) {
             this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
         }
     }
@@ -928,11 +972,12 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     revertFeatureToDefaults(feature) {
-        let heritable = feature.getHeritableParams();
-        for (let key in heritable) {
+        const heritable = feature.getHeritableParams();
+        for (const key in heritable) {
             this.revertFieldToDefault(key, feature);
         }
     }
+
     /**
      * Reverts features to defaults
      * @param {Array} features Features to revert to default
@@ -940,7 +985,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     revertFeaturesToDefaults(features) {
-        for (let feature in features) {
+        for (const feature in features) {
             this.revertFeatureToDefaults(feature);
         }
     }
@@ -973,11 +1018,11 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     activateTool(toolString, rightClickToolString = "SelectTool") {
-        if (this.tools[toolString] == null) {
+        if (this.tools[toolString] === null) {
             throw new Error("Could not find tool with the matching string");
         }
 
-        //Cleanup job when activating new tool
+        // Cleanup job when activating new tool
         this.view.clearSelectedItems();
 
         this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
@@ -993,8 +1038,8 @@ export default class ViewManager {
     switchTo2D() {
         if (this.threeD) {
             this.threeD = false;
-            let center = this.renderer.getCameraCenterInMicrometers();
-            let zoom = this.renderer.getZoom();
+            const center = this.renderer.getCameraCenterInMicrometers();
+            const zoom = this.renderer.getZoom();
             let newCenterX = center[0];
             if (newCenterX < 0) {
                 newCenterX = 0;
@@ -1017,6 +1062,7 @@ export default class ViewManager {
             HTMLUtils.addClass(this.__canvasBlock, "shown-block");
         }
     }
+
     /**
      * Switches to 3D
      * @returns {void}
@@ -1028,9 +1074,9 @@ export default class ViewManager {
             setButtonColor(this.__button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
             setButtonColor(this.__button2D, inactiveBackground, inactiveText);
             this.renderer.loadJSON(Registry.currentDevice.toJSON());
-            let cameraCenter = this.view.getViewCenterInMillimeters();
-            let height = Registry.currentDevice.params.getValue("height") / 1000;
-            let pixels = this.view.getDeviceHeightInPixels();
+            const cameraCenter = this.view.getViewCenterInMillimeters();
+            const height = Registry.currentDevice.params.getValue("height") / 1000;
+            const pixels = this.view.getDeviceHeightInPixels();
             this.renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
             this.renderer.showMockup();
             HTMLUtils.removeClass(this.__renderBlock, "hidden-block");
@@ -1047,20 +1093,20 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     setupDragAndDropLoad(selector) {
-        let dnd = new HTMLUtils.DnDFileController(selector, function(files) {
-            let f = files[0];
+        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
+            const f = files[0];
 
-            let reader = new FileReader();
-            reader.onloadend = function(e) {
+            const reader = new FileReader();
+            reader.onloadend = function (e) {
                 let result = this.result;
-                try {
-                    result = JSON.parse(result);
-                    Registry.viewManager.loadDeviceFromJSON(result);
-                    Registry.viewManager.switchTo2D();
-                } catch (error) {
-                    console.error(error.message);
-                    alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
-                }
+                // try {
+                result = JSON.parse(result);
+                Registry.viewManager.loadDeviceFromJSON(result);
+                Registry.viewManager.switchTo2D();
+                // } catch (error) {
+                //     console.error(error.message);
+                //     alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
+                // }
             };
             try {
                 reader.readAsText(f);
@@ -1076,7 +1122,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     killParamsWindow() {
-        let paramsWindow = document.getElementById("parameter_menu");
+        const paramsWindow = document.getElementById("parameter_menu");
         if (paramsWindow) paramsWindow.parentElement.removeChild(paramsWindow);
     }
 
@@ -1088,7 +1134,7 @@ export default class ViewManager {
     saveDeviceState() {
         console.log("Saving to statck");
 
-        let save = JSON.stringify(Registry.currentDevice.toInterchangeV1());
+        const save = JSON.stringify(Registry.currentDevice.toInterchangeV1());
 
         this.undoStack.pushDesign(save);
     }
@@ -1099,10 +1145,10 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     undo() {
-        let previousdesign = this.undoStack.popDesign();
+        const previousdesign = this.undoStack.popDesign();
         console.log(previousdesign);
         if (previousdesign) {
-            let result = JSON.parse(previousdesign);
+            const result = JSON.parse(previousdesign);
             this.loadDeviceFromJSON(result);
         }
     }
@@ -1115,7 +1161,7 @@ export default class ViewManager {
     resetToDefaultTool() {
         this.cleanupActiveTools();
         this.activateTool("MouseSelectTool");
-        this.componentToolBar.setActiveButton("SelectButton");
+        // this.componentToolBar.setActiveButton("SelectButton");
     }
 
     /**
@@ -1138,22 +1184,23 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updatesConnectionRender(connection) {
-        //First Redraw all the segements without valves or insertions
+        // First Redraw all the segements without valves or insertions
         connection.regenerateSegments();
 
-        //Get all the valves for a connection
-        let valves = Registry.currentDevice.getValvesForConnection(connection);
+        // Get all the valves for a connection
+        const valves = Registry.currentDevice.getValvesForConnection(connection);
 
-        //Cycle through each of the valves
-        for (let j in valves) {
-            let valve = valves[j];
-            let is3D = Registry.currentDevice.getIsValve3D(valve);
+        // Cycle through each of the valves
+        for (const j in valves) {
+            const valve = valves[j];
+            const is3D = Registry.currentDevice.getIsValve3D(valve);
             if (is3D) {
-                let boundingbox = valve.getBoundingRectangle();
+                const boundingbox = valve.getBoundingRectangle();
                 connection.insertFeatureGap(boundingbox);
             }
         }
     }
+
     /**
      * Shows in the UI a message
      * @param {string} message Messsage to display
@@ -1165,78 +1212,96 @@ export default class ViewManager {
             message: message
         });
     }
+
     /**
      * Sets up all the tools to be used by the user
      * @returns {void}
      * @memberof ViewManager
      */
     setupTools() {
-        this.tools["MouseSelectTool"] = new MouseSelectTool(this.view);
-        this.tools["InsertTextTool"] = new InsertTextTool();
-        this.tools["Chamber"] = new ComponentPositionTool("Chamber", "Basic");
-        this.tools["Valve"] = new ValveInsertionTool("Valve", "Basic");
-        this.tools["Channel"] = new ChannelTool("Channel", "Basic");
-        this.tools["Connection"] = new ConnectionTool("Connection", "Basic");
-        this.tools["RoundedChannel"] = new ChannelTool("RoundedChannel", "Basic");
-        this.tools["Node"] = new ComponentPositionTool("Node", "Basic");
-        this.tools["CircleValve"] = new ValveInsertionTool("CircleValve", "Basic");
-        this.tools["RectValve"] = new ComponentPositionTool("RectValve", "Basic");
-        this.tools["Valve3D"] = new ValveInsertionTool("Valve3D", "Basic", true);
-        this.tools["Port"] = new ComponentPositionTool("Port", "Basic");
-        this.tools["Anode"] = new ComponentPositionTool("Anode", "Basic");//Ck
-        this.tools["Cathode"] = new ComponentPositionTool("Cathode", "Basic");//Ck
-        this.tools["Via"] = new PositionTool("Via", "Basic");
-        this.tools["DiamondReactionChamber"] = new ComponentPositionTool("DiamondReactionChamber", "Basic");
-        this.tools["thermoCycler"] = new ComponentPositionTool("thermoCycler", "Basic");
-        this.tools["BetterMixer"] = new ComponentPositionTool("BetterMixer", "Basic");
-        this.tools["CurvedMixer"] = new ComponentPositionTool("CurvedMixer", "Basic");
-        this.tools["Mixer"] = new ComponentPositionTool("Mixer", "Basic");
-        this.tools["GradientGenerator"] = new ComponentPositionTool("GradientGenerator", "Basic");
-        this.tools["Tree"] = new ComponentPositionTool("Tree", "Basic");
-        this.tools["YTree"] = new ComponentPositionTool("YTree", "Basic");
-        this.tools["Mux"] = new MultilayerPositionTool("Mux", "Basic");
-        this.tools["Transposer"] = new MultilayerPositionTool("Transposer", "Basic");
-        this.tools["RotaryMixer"] = new MultilayerPositionTool("RotaryMixer", "Basic");
-        this.tools["CellTrapL"] = new CellPositionTool("CellTrapL", "Basic");
-        this.tools["Gelchannel"] = new CellPositionTool("Gelchannel", "Basic");//ck
-        this.tools["DropletGen"] = new ComponentPositionTool("DropletGen", "Basic");
-        this.tools["Transition"] = new PositionTool("Transition", "Basic");
-        this.tools["AlignmentMarks"] = new MultilayerPositionTool("AlignmentMarks", "Basic");
-        this.tools["Pump"] = new MultilayerPositionTool("Pump", "Basic");
-        this.tools["Pump3D"] = new MultilayerPositionTool("Pump3D", "Basic");
-        this.tools["LLChamber"] = new MultilayerPositionTool("LLChamber", "Basic");
+        this.tools.MouseSelectTool = new MouseSelectTool(this.view);
+        this.tools.InsertTextTool = new InsertTextTool();
+        this.tools.Chamber = new ComponentPositionTool("Chamber", "Basic");
+        this.tools.Valve = new ValveInsertionTool("Valve", "Basic");
+        this.tools.Channel = new ChannelTool("Channel", "Basic");
+        this.tools.Connection = new ConnectionTool("Connection", "Basic");
+        this.tools.RoundedChannel = new ChannelTool("RoundedChannel", "Basic");
+        this.tools.Node = new ComponentPositionTool("Node", "Basic");
+        this.tools.CircleValve = new ValveInsertionTool("CircleValve", "Basic");
+        this.tools.RectValve = new ComponentPositionTool("RectValve", "Basic");
+        this.tools.Valve3D = new ValveInsertionTool("Valve3D", "Basic", true);
+        this.tools.Port = new ComponentPositionTool("Port", "Basic");
+        this.tools.Anode = new ComponentPositionTool("Anode", "Basic"); // Ck
+        this.tools.Cathode = new ComponentPositionTool("Cathode", "Basic"); // Ck
+        this.tools.Via = new PositionTool("Via", "Basic");
+        this.tools.DiamondReactionChamber = new ComponentPositionTool("DiamondReactionChamber", "Basic");
+        this.tools.thermoCycler = new ComponentPositionTool("thermoCycler", "Basic");
+        this.tools.BetterMixer = new ComponentPositionTool("BetterMixer", "Basic");
+        this.tools.CurvedMixer = new ComponentPositionTool("CurvedMixer", "Basic");
+        this.tools.Mixer = new ComponentPositionTool("Mixer", "Basic");
+        this.tools.GradientGenerator = new ComponentPositionTool("GradientGenerator", "Basic");
+        this.tools.Tree = new ComponentPositionTool("Tree", "Basic");
+        this.tools.YTree = new ComponentPositionTool("YTree", "Basic");
+        this.tools.Mux = new MultilayerPositionTool("Mux", "Basic");
+        this.tools.Transposer = new MultilayerPositionTool("Transposer", "Basic");
+        this.tools.RotaryMixer = new MultilayerPositionTool("RotaryMixer", "Basic");
+        this.tools.CellTrapL = new CellPositionTool("CellTrapL", "Basic");
+        this.tools.Gelchannel = new CellPositionTool("Gelchannel", "Basic"); // ck
+        this.tools.DropletGen = new ComponentPositionTool("DropletGen", "Basic");
+        this.tools.Transition = new PositionTool("Transition", "Basic");
+        this.tools.AlignmentMarks = new MultilayerPositionTool("AlignmentMarks", "Basic");
+        this.tools.Pump = new MultilayerPositionTool("Pump", "Basic");
+        this.tools.Pump3D = new MultilayerPositionTool("Pump3D", "Basic");
+        this.tools.LLChamber = new MultilayerPositionTool("LLChamber", "Basic");
         this.tools["3DMixer"] = new MultilayerPositionTool("3DMixer", "Basic");
 
-        //All the new tools
-        this.tools["MoveTool"] = new MoveTool();
-        this.tools["GenerateArrayTool"] = new GenerateArrayTool();
+        // All the new tools
+        this.tools.MoveTool = new MoveTool();
+        this.tools.GenerateArrayTool = new GenerateArrayTool();
+
+        // new
+        this.tools.Filter = new ComponentPositionTool("Filter", "Basic");
+        this.tools.CellTrapS = new CellPositionTool("CellTrapS", "Basic");
+        this.tools["3DMux"] = new MultilayerPositionTool("3DMux", "Basic");
+        this.tools.ChemostatRing = new MultilayerPositionTool("ChemostatRing", "Basic");
+        this.tools.Incubation = new ComponentPositionTool("Incubation", "Basic");
+        this.tools.Merger = new ComponentPositionTool("Merger", "Basic");
+        this.tools.PicoInjection = new ComponentPositionTool("PicoInjection", "Basic");
+        this.tools.Sorter = new ComponentPositionTool("Sorter", "Basic");
+        this.tools.Splitter = new ComponentPositionTool("Splitter", "Basic");
+        this.tools.CapacitanceSensor = new ComponentPositionTool("CapacitanceSensor", "Basic");
+        this.tools.DropletGenT = new ComponentPositionTool("DropletGenT", "Basic");
+        this.tools.DropletGenFlow = new ComponentPositionTool("DropletGenFlow", "Basic");
+        this.tools.LogicArray = new ControlCellPositionTool("LogicArray", "Basic");
     }
+
     /**
      * Adds a custom component tool
-     * @param {string} identifier 
+     * @param {string} identifier
      * @returns {void}
      * @memberof ViewManager
      */
     addCustomComponentTool(identifier) {
-        let customcomponent = this.customComponentManager.getCustomComponent(identifier);
+        const customcomponent = this.customComponentManager.getCustomComponent(identifier);
         this.tools[identifier] = new CustomComponentPositionTool(customcomponent, "Custom");
-        Registry.featureDefaults["Custom"][identifier] = CustomComponent.defaultParameterDefinitions().defaults;
+        Registry.featureDefaults.Custom[identifier] = CustomComponent.defaultParameterDefinitions().defaults;
     }
+
     /**
      * Initialize the default placement for components
      * @returns {void}
      * @memberof ViewManager
      */
     __initializeRatsNest() {
-        //Step 1 generate features for all the components with some basic layout
-        let components = this.currentDevice.getComponents();
-        let xpos = 10000;
-        let ypos = 10000;
-        for (let i in components) {
-            let component = components[i];
-            let currentposition = component.getPosition();
-            //TODO: Refine this logic, it sucks
-            if (currentposition[0] == 0 && currentposition == 0) {
+        // Step 1 generate features for all the components with some basic layout
+        const components = this.currentDevice.components;
+        const xpos = 10000;
+        const ypos = 10000;
+        for (const i in components) {
+            const component = components[i];
+            const currentposition = component.getPosition();
+            // TODO: Refine this logic, it sucks
+            if (currentposition[0] === 0 && currentposition === 0) {
                 if (!component.placed) {
                     this.__generateDefaultPlacementForComponent(component, xpos * (parseInt(i) + 1), ypos * (Math.floor(parseInt(i) / 5) + 1));
                 }
@@ -1247,41 +1312,43 @@ export default class ViewManager {
             }
         }
 
-        //TODO: Step 2 generate rats nest renders for all the components
+        // TODO: Step 2 generate rats nest renders for all the components
 
         this.view.updateRatsNest();
         this.view.updateComponentPortsRender();
     }
+
     /**
-     * Generates the default placement for components 
-     * @param {Component} component 
+     * Generates the default placement for components
+     * @param {Component} component
      * @param {number} xpos Default X coordinate
      * @param {number} ypos Default Y coordinate
      * @returns {void}
      * @memberof ViewManager
      */
     __generateDefaultPlacementForComponent(component, xpos, ypos) {
-        let params_to_copy = component.getParams().toJSON();
+        const params_to_copy = component.getParams().toJSON();
 
-        params_to_copy["position"] = [xpos, ypos];
+        params_to_copy.position = [xpos, ypos];
 
-        //Get default params and overwrite them with json params, this can account for inconsistencies
-        let newFeature = Device.makeFeature(component.getType(), "Basic", params_to_copy);
+        // Get default params and overwrite them with json params, this can account for inconsistencies
+        const newFeature = Device.makeFeature(component.getType(), "Basic", params_to_copy);
 
-        component.addFeatureID(newFeature.getID());
+        component.addFeatureID(newFeature.ID);
 
         Registry.currentLayer.addFeature(newFeature);
 
-        //Set the component position
-        component.updateComponetPosition([xpos, ypos]);
+        // Set the component position
+        component.updateComponentPosition([xpos, ypos]);
     }
+
     /**
      * Generates a JSON format file to export it
      * @returns {void}
      * @memberof ViewManager
      */
     generateExportJSON() {
-        let json = this.currentDevice.toInterchangeV1();
+        const json = this.currentDevice.toInterchangeV1_1();
         json.customComponents = this.customComponentManager.toJSON();
         return json;
     }
@@ -1291,20 +1358,21 @@ export default class ViewManager {
      * @param json
      */
     loadCustomComponents(json) {
-        if (json.hasOwnProperty("customComponents")) {
-            this.customComponentManager.loadFromJSON(json["customComponents"]);
+        if (Object.prototype.hasOwnProperty.call(json, "customComponents")) {
+            this.customComponentManager.loadFromJSON(json.customComponents);
         }
     }
+
     /**
      * Activates DAFD plugin
-     * @param {*} params 
+     * @param {*} params
      * @returns {void}
      * @memberof ViewManager
      */
     activateDAFDPlugin(params = null) {
         this.loadDeviceFromJSON(JSON.parse(Examples.dafdtemplate));
 
-        if (null == params) {
+        if (params === null) {
             params = {
                 orificeSize: 750,
                 orificeLength: 200,
@@ -1319,43 +1387,39 @@ export default class ViewManager {
         DAFDPlugin.fixLayout(params);
     }
 
-
-    
     /**
      * This is the method we need to call to fix the valvemaps
      * @memberof ViewManager
      */
-    createValveMapFromSelection(){
-        //TODO: Run through the current selection and generate the valve map for every 
-        //vavle that is in the Selection
-        let selection = this.tools["MouseSelectTool"].currentSelection;
-        let valves = [];
+    createValveMapFromSelection() {
+        // TODO: Run through the current selection and generate the valve map for every
+        // vavle that is in the Selection
+        const selection = this.tools.MouseSelectTool.currentSelection;
+        const valves = [];
         let connection = null;
-        //TODO: run though the items
-        for(let render_element of selection){
-            //Check if render_element is associated with a VALVE/VALVE3D
-            let component = this.currentDevice.getComponentForFeatureID(render_element.featureID);
-            if(component != null){
+        // TODO: run though the items
+        for (const render_element of selection) {
+            // Check if render_element is associated with a VALVE/VALVE3D
+            const component = this.currentDevice.getComponentForFeatureID(render_element.featureID);
+            if (component !== null) {
                 console.log("Component Type:", component.getType());
-                let type = component.getType();
-                if(type == "Valve3D" || type == "Valve"){
+                const type = component.getType();
+                if (type === "Valve3D" || type === "Valve") {
                     valves.push(component);
                 }
             }
 
             connection = this.currentDevice.getConnectionForFeatureID(render_element.featureID);
-            
         }
-        
-        //Add to the valvemap
-        for(let valve of valves){
+
+        // Add to the valvemap
+        for (const valve of valves) {
             let valve_type = false;
-            if(valve.getType() == 'Valve3D'){
-                valve_type = true
+            if (valve.getType() === "Valve3D") {
+                valve_type = true;
             }
             console.log("Adding Valve: ", valve);
             this.currentDevice.insertValve(valve, connection, valve_type);
         }
-
     }
 }

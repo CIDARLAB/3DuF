@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class GradientGenerator extends Template {
     constructor() {
@@ -12,6 +13,7 @@ export default class GradientGenerator extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             bendSpacing: "Float",
             numberOfBends: "Float",
             channelWidth: "Float",
@@ -24,10 +26,11 @@ export default class GradientGenerator extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
-            orientation: "V",
+            rotation: 0,
             bendLength: 2.46 * 1000,
             in: 1,
             out: 3,
@@ -37,11 +40,11 @@ export default class GradientGenerator extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             bendSpacing: "&mu;m",
             numberOfBends: "",
             channelWidth: "&mu;m",
             bendLength: "&mu;m",
-            orientation: "",
             in: "",
             out: "",
             spacing: "&mu;m",
@@ -50,10 +53,11 @@ export default class GradientGenerator extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            orientation: "H",
+            rotation: 270,
             bendLength: 10,
             in: 1,
             out: 3,
@@ -63,10 +67,11 @@ export default class GradientGenerator extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            orientation: "H",
+            rotation: 270,
             bendLength: 12 * 1000,
             in: 30,
             out: 90,
@@ -76,28 +81,28 @@ export default class GradientGenerator extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength",
             in: "in",
             out: "out",
-            spacing: "spacing",
-            rotation: "rotation"
+            spacing: "spacing"
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             channelWidth: "channelWidth",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
-            orientation: "orientation",
+            rotation: "rotation",
             bendLength: "bendLength",
             in: "in",
             out: "out",
-            spacing: "spacing",
-            rotation: "rotation"
+            spacing: "spacing"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -111,36 +116,83 @@ export default class GradientGenerator extends Template {
         this.__mint = "GRADIENT GENERATOR";
     }
 
+    getPorts(params) {
+        const bendSpacing = params.bendSpacing;
+        const numBends = params.numberOfBends;
+        const channelWidth = params.channelWidth;
+        const invalue = params.in;
+        const outvalue = params.out;
+        const spacing = params.spacing; // Center to Center
+
+        const ports = [];
+
+        const maxstagewidth = (outvalue - 1) * spacing;
+        const posx = maxstagewidth / 2;
+
+        const stagelength = channelWidth * (2 * numBends + 1) + (2 * numBends + 2) * bendSpacing + channelWidth;
+
+        const segBend = bendSpacing + 2 * channelWidth;
+
+        const fullLength = (outvalue - 1) * (4 * segBend - 3.5 * channelWidth) + stagelength;
+
+        let stagevalue = invalue;
+        let totalstagewidth = (stagevalue - 1) * spacing;
+
+        let xref = -totalstagewidth / 2;
+        let yref = stagelength * (stagevalue - invalue);
+
+        const vRepeat = 2 * bendSpacing + 2 * channelWidth;
+
+        for (var i = 0; i < invalue; i++) {
+            // Generate the ports for each of the inputs
+            const x = xref + spacing * i + channelWidth / 2;
+            ports.push(new ComponentPort(x, 0, (i + 1).toString(), "FLOW"));
+        }
+
+        stagevalue = outvalue;
+        totalstagewidth = (stagevalue - 1) * spacing;
+
+        xref = -totalstagewidth / 2;
+        yref = stagelength * (stagevalue - invalue + 1);
+
+        for (var i = 0; i < outvalue; i++) {
+            // Generate the ports for each of the outputs
+            const x = xref + spacing * i + channelWidth / 2;
+            ports.push(new ComponentPort(x, yref + channelWidth, (invalue + 1 + i).toString(), "FLOW"));
+        }
+
+        return ports;
+    }
+
     render2D(params, key) {
-        let position = params["position"];
-        let bendSpacing = params["bendSpacing"];
-        let numBends = params["numberOfBends"];
-        let channelWidth = params["channelWidth"];
-        let bendLength = params["bendLength"];
-        let orientation = params["orientation"];
-        let invalue = params["in"];
-        let outvalue = params["out"];
-        let spacing = params["spacing"]; //Center to Center
-        let rotation = params["rotation"];
-        let color = params["color"];
+        const position = params.position;
+        const bendSpacing = params.bendSpacing;
+        const numBends = params.numberOfBends;
+        const channelWidth = params.channelWidth;
+        const bendLength = params.bendLength;
+        const rotation = params.rotation;
+        const invalue = params.in;
+        const outvalue = params.out;
+        const spacing = params.spacing; // Center to Center
+        const color = params.color;
 
-        let posx = position[0];
-        let posy = position[1];
-        let stagelength = channelWidth * (2 * numBends + 1) + (2 * numBends + 2) * bendSpacing + channelWidth;
-        let gradientgenerator = new paper.CompoundPath();
+        const posx = position[0];
+        const posy = position[1];
+        const stagelength = channelWidth * (2 * numBends + 1) + (2 * numBends + 2) * bendSpacing + channelWidth;
+        const gradientgenerator = new paper.CompoundPath();
         // insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, posx, posy, color);
-        //Iterate through each of the stages
+        // Iterate through each of the stages
 
-        //Draw the first stage which is just channels
-        let totalstagewidth = (invalue - 1) * spacing;
+        // Draw the first stage which is just channels
+        const totalstagewidth = (invalue - 1) * spacing;
         let xref = posx - totalstagewidth / 2;
         let yref = posy;
-        //Draw straight channels for each of the input lines
+        // Draw straight channels for each of the input lines
         for (let i = 0; i < invalue; i++) {
-            let x = xref + spacing * i;
-            let y = yref;
+            const x = xref + spacing * i;
+            const y = yref;
 
-            //Insert Straight channel
+            // Insert Straight channel
             gradientgenerator.addChild(
                 new paper.Path.Rectangle({
                     point: new paper.Point(x, y),
@@ -150,30 +202,30 @@ export default class GradientGenerator extends Template {
         }
 
         for (let stagevalue = invalue + 1; stagevalue <= outvalue; stagevalue++) {
-            //For each stage : do the following
+            // For each stage : do the following
             /*
             Check if each stagevalue is odd or even
 
             if (not last stage) place horizontal bar connecting eveything
              */
 
-            //Calculate the total width and start placing mixers
-            let totalstagewidth = (stagevalue - 1) * spacing;
+            // Calculate the total width and start placing mixers
+            const totalstagewidth = (stagevalue - 1) * spacing;
 
             xref = posx - totalstagewidth / 2;
             yref = posy + stagelength * (stagevalue - invalue);
 
-            //Start from the left
+            // Start from the left
             for (let i = 0; i < stagevalue; i++) {
-                let x = xref + spacing * i;
+                const x = xref + spacing * i;
 
-                let y = yref;
-                //insert the mixer
+                const y = yref;
+                // insert the mixer
                 this.__insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, x, y, color);
             }
 
             // Insert horizontal bar
-            let hbar = new paper.Path.Rectangle({
+            const hbar = new paper.Path.Rectangle({
                 point: new paper.Point(xref, yref),
                 size: [totalstagewidth, channelWidth],
                 fillColor: color,
@@ -186,21 +238,21 @@ export default class GradientGenerator extends Template {
         gradientgenerator.fillColor = color;
         // console.log("testing");
 
-        gradientgenerator.rotate(-rotation, new paper.Point(posx, posy));
+        gradientgenerator.rotate(rotation, new paper.Point(posx, posy));
 
         return gradientgenerator;
     }
 
     __insertMixer(serpentine, bendSpacing, numBends, channelWidth, bendLength, x, y, color) {
-        let segHalf = bendLength / 2 + channelWidth;
-        let segLength = bendLength + 2 * channelWidth;
-        let segBend = bendSpacing + 2 * channelWidth;
-        let vRepeat = 2 * bendSpacing + 2 * channelWidth;
-        let vOffset = bendSpacing + channelWidth;
-        let hOffset = bendLength / 2 + channelWidth / 2;
+        const segHalf = bendLength / 2 + channelWidth;
+        const segLength = bendLength + 2 * channelWidth;
+        const segBend = bendSpacing + 2 * channelWidth;
+        const vRepeat = 2 * bendSpacing + 2 * channelWidth;
+        const vOffset = bendSpacing + channelWidth;
+        const hOffset = bendLength / 2 + channelWidth / 2;
 
         x -= hOffset;
-        //TopRectangle
+        // TopRectangle
         serpentine.addChild(new paper.Path.Rectangle(x + hOffset, y, channelWidth, 2 * channelWidth + bendSpacing));
         y += channelWidth + bendSpacing;
         serpentine.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));
@@ -208,23 +260,23 @@ export default class GradientGenerator extends Template {
             serpentine.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
             serpentine.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
             serpentine.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
-            if (i == numBends - 1) {
-                //draw half segment to close
+            if (i === numBends - 1) {
+                // draw half segment to close
                 serpentine.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
             } else {
-                //draw full segment
+                // draw full segment
                 serpentine.addChild(new paper.Path.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth));
             }
         }
 
-        //Bottom rectabvke
+        // Bottom rectabvke
         serpentine.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * numBends, channelWidth, 2 * channelWidth + bendSpacing));
 
         return serpentine;
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, (key = "FLOW"));
         render.fillColor.alpha = 0.5;
         return render;
     }

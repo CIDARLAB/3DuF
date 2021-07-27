@@ -5,9 +5,9 @@ import LinkedList from "../../utils/linkedList";
 import GeometryGraph from "../../geometry/geometryGraph";
 
 export function renderCustomComponentFeature(feature, color) {
-    let position = feature.getValue("position");
-    let rotation = feature.getValue("rotation");
-    let render = renderDXFObjects(feature.dxfObjects);
+    const position = feature.getValue("position");
+    const rotation = feature.getValue("rotation");
+    const render = renderDXFObjects(feature.dxfObjects);
     render.translate(new paper.Point(position[0], position[1]));
     render.rotate(rotation);
     render.fillColor = color;
@@ -16,11 +16,11 @@ export function renderCustomComponentFeature(feature, color) {
 
 export function renderCustomComponentTarget(customcomponent, params) {
     // console.log("Render Posiition:", position);
-    let position = params["position"];
-    let color = params["color"];
-    let rotation = params["rotation"];
-    let p = new paper.Point(position[0], position[1]);
-    let render = renderDXFObjects(customcomponent.dxfData);
+    const position = params.position;
+    const color = params.color;
+    const rotation = params.rotation;
+    const p = new paper.Point(position[0], position[1]);
+    const render = renderDXFObjects(customcomponent.dxfData);
 
     render.fillColor = color;
     render.fillColor.alpha = 0.5;
@@ -31,8 +31,8 @@ export function renderCustomComponentTarget(customcomponent, params) {
 
 export function renderFeatureObjects(feature) {
     console.log("rendering the features dxf objects");
-    for (let i in feature.getDXFObjects()) {
-        let dxfobject = feature.getDXFObjects()[i];
+    for (const i in feature.getDXFObjects()) {
+        const dxfobject = feature.getDXFObjects()[i];
     }
     throw new Error("Implement the renderer");
 }
@@ -47,22 +47,22 @@ export function renderFeatureObjects(feature) {
 function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
     let throughpoint = 0;
 
-    let start = new paper.Point(startpoint.x, startpoint.y);
-    let end = new paper.Point(endpoint.x, endpoint.y);
-    let angle = 4 * Math.atan(bulgevalue);
+    const start = new paper.Point(startpoint.x, startpoint.y);
+    const end = new paper.Point(endpoint.x, endpoint.y);
+    const angle = 4 * Math.atan(bulgevalue);
 
     /*
     https://math.stackexchange.com/questions/9365/endpoint-of-a-line-knowing-slope-start-and-distance
      */
-    let epsilon = angle / 4;
+    const epsilon = angle / 4;
 
-    let midpoint = new paper.Point(startpoint.x / 2 + endpoint.x / 2, startpoint.y / 2 + endpoint.y / 2);
+    const midpoint = new paper.Point(startpoint.x / 2 + endpoint.x / 2, startpoint.y / 2 + endpoint.y / 2);
 
-    let p = new paper.Point(startpoint.x, startpoint.y).getDistance(midpoint) * bulgevalue;
+    const p = new paper.Point(startpoint.x, startpoint.y).getDistance(midpoint) * bulgevalue;
 
     let slope = (endpoint.y - startpoint.y) / (endpoint.x - startpoint.x);
 
-    let chordvector = end.subtract(start);
+    const chordvector = end.subtract(start);
 
     // console.log("all points:", start, end, chordvector);
     /*
@@ -71,13 +71,13 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
 
     // console.log(chordvector, "Angle:",chordvector.angle, Math.round(chordvector.angle), "Dist from midpoint:", p);
 
-    if (Math.round(chordvector.angle) == 0) {
-        //Horizontal
+    if (Math.round(chordvector.angle) === 0) {
+        // Horizontal
         // console.log("Horizontal Case");
         throughpoint = new paper.Point(midpoint.x, midpoint.y - p);
         return throughpoint;
-    } else if (Math.round(chordvector.angle) == 90) {
-        //Vertical
+    } else if (Math.round(chordvector.angle) === 90) {
+        // Vertical
         // console.log("Vertical Case");
         throughpoint = new paper.Point(midpoint.x + p, midpoint.y);
         return throughpoint;
@@ -86,21 +86,21 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
         // console.log("Angled Case")
         slope = -1 * slope;
 
-        //midpoint
-        let k = -p / Math.sqrt(1 + slope * slope);
+        // midpoint
+        const k = -p / Math.sqrt(1 + slope * slope);
 
         throughpoint = midpoint.add(new paper.Point(k, k * slope));
     }
 
-    //let base = startpoint
+    // let base = startpoint
 
-    //Find the distance on the perpendicular
+    // Find the distance on the perpendicular
 
     return throughpoint;
 }
 
 function isClosedPolyline(dxfobject) {
-    let data = dxfobject.getData();
+    const data = dxfobject.getData();
     // console.log(data, data.shape);
     return data.shape;
 }
@@ -128,24 +128,24 @@ function processARC(geometryGraph, data) {
 
      */
 
-    let center = new paper.Point(data.center.x * 1000, data.center.y * 1000);
-    let radius = data.radius * 1000;
-    let startAngle = data.startAngle;
-    let endAngle = data.endAngle; //* 180/Math.PI;
+    const center = new paper.Point(data.center.x * 1000, data.center.y * 1000);
+    const radius = data.radius * 1000;
+    const startAngle = data.startAngle;
+    const endAngle = data.endAngle; //* 180/Math.PI;
 
-    let startpoint = new paper.Point(center.x + radius * Math.cos(startAngle), center.y + radius * Math.sin(startAngle));
+    const startpoint = new paper.Point(center.x + radius * Math.cos(startAngle), center.y + radius * Math.sin(startAngle));
 
-    let endpoint = new paper.Point(center.x + radius * Math.cos(endAngle), center.y + radius * Math.sin(endAngle));
+    const endpoint = new paper.Point(center.x + radius * Math.cos(endAngle), center.y + radius * Math.sin(endAngle));
 
     geometryGraph.addEdge(startpoint, endpoint, data);
 }
 
 function processClosedPolyLine(entity) {
-    let polygon = new paper.Path();
+    const polygon = new paper.Path();
     polygon.origin = "POLYLINE";
     // // create geometry
     for (let i = 0; i < entity.vertices.length; i++) {
-        let dxfvertex = entity.vertices[i];
+        const dxfvertex = entity.vertices[i];
         polygon.add(new paper.Point(dxfvertex.x * 1000, dxfvertex.y * 1000));
     }
     polygon.closed = true;
@@ -162,8 +162,8 @@ function processSpline(geometryGraph, data) {
 }
 
 function processLine(geometryGraph, data) {
-    let startPoint = data.vertices[0];
-    let endPoint = data.vertices[1];
+    const startPoint = data.vertices[0];
+    const endPoint = data.vertices[1];
 
     geometryGraph.addEdge(startPoint, endPoint, data);
 }
@@ -171,18 +171,18 @@ function processLine(geometryGraph, data) {
 export function renderDXFObjects(dxfobjectarray) {
     // let path = new paper.CompoundPath();
 
-    if (dxfobjectarray == undefined) {
+    if (dxfobjectarray === undefined) {
         throw new Error("Cannot find DXF DATA");
     }
     // console.log("DXF Object Array to render:", dxfobjectarray);
 
-    let patharray = new LinkedList();
-    let closedshapes = [];
+    const patharray = new LinkedList();
+    const closedshapes = [];
 
-    let geometryGraph = new GeometryGraph();
+    const geometryGraph = new GeometryGraph();
 
-    for (let i in dxfobjectarray) {
-        let dxfobject = dxfobjectarray[i];
+    for (const i in dxfobjectarray) {
+        const dxfobject = dxfobjectarray[i];
 
         /*
         If ARC - Get the start and end points - save to edge graph as
@@ -205,7 +205,11 @@ export function renderDXFObjects(dxfobjectarray) {
         } else if (dxfobject.getType() === "SPLINE") {
             alert("The current version of the DXF Parser does not support SPLINE objects. Support will be added in future versions");
             throw new Error("Unsupported DXF render object - SPLINE");
+<<<<<<< HEAD
             //processSpline(geometryGraph, dxfobject.getData());
+=======
+            // processSpline(geometryGraph, dxfobject.getData());
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
         } else if (dxfobject.getType() === "DIMENSION") {
             console.warn("DIMENSION entry in DXF will be ignored. Please ensure that all the designs are of the correct dimensions");
         } else if (dxfobject.getType() === "MTEXT") {
@@ -221,13 +225,13 @@ export function renderDXFObjects(dxfobjectarray) {
 
     // console.log("Geometry grpah:",geometryGraph);
     // console.log("Closed Shapes:", closedshapes);
-    //TODO: Generate the Geometry from the geometry graph , this should a return a compound path that takes care of the
+    // TODO: Generate the Geometry from the geometry graph , this should a return a compound path that takes care of the
     // right kind of correct connected paths
 
-    let path = geometryGraph.generateGeometry();
+    const path = geometryGraph.generateGeometry();
 
-    //TODO: Now add all the remainder closed shapes to the compound paths
-    for (let child of closedshapes) {
+    // TODO: Now add all the remainder closed shapes to the compound paths
+    for (const child of closedshapes) {
         path.addChild(child);
     }
 
@@ -236,11 +240,11 @@ export function renderDXFObjects(dxfobjectarray) {
     path.closed = true;
     path.fillColor = "#ff7606";
     path.fillRule = "evenodd";
-    let topleft = path.bounds.topLeft;
+    const topleft = path.bounds.topLeft;
     path.translate(new paper.Point(-topleft.x, -topleft.y));
-    path.scale(1, -1); //The coordinate system is all different for DXF
+    path.scale(1, -1); // The coordinate system is all different for DXF
 
-    path.scale(1000, 1000); //Scale the coordinates to microns
+    path.scale(1000, 1000); // Scale the coordinates to microns
 
     return path;
 }
@@ -251,11 +255,11 @@ export function renderDXFObjects(dxfobjectarray) {
  * @param feature
  */
 export function renderEdgeFeature(feature) {
-    let path = new paper.CompoundPath();
+    const path = new paper.CompoundPath();
 
     // console.log('rendering the outline dxf objects....', feature.getDXFObjects());
-    for (let i in feature.getDXFObjects()) {
-        let dxfobject = feature.getDXFObjects()[i];
+    for (const i in feature.getDXFObjects()) {
+        const dxfobject = feature.getDXFObjects()[i];
         // Figure out what entity this is and then based on that do the drawing
         let mesh;
         if (dxfobject.getType() === "ARC") {
@@ -272,35 +276,35 @@ export function renderEdgeFeature(feature) {
             console.error("Unsupported DXF Entity Type for Outline Generation : " + dxfobject.getType());
         }
     }
-    //Set the visual properties for the path
+    // Set the visual properties for the path
     path.strokeColor = "#ff7606";
     path.strokeWidth = 200;
-    //Since this is an outline we need to do the required transformations to it
-    path.scale(1, -1); //The coordinate system is all different for DXF
+    // Since this is an outline we need to do the required transformations to it
+    path.scale(1, -1); // The coordinate system is all different for DXF
     // console.log(path.bounds.topLeft);
-    let topleft = path.bounds.topLeft;
+    const topleft = path.bounds.topLeft;
     path.translate(new paper.Point(-topleft.x, -topleft.y));
 
-    //Add the feature id to the rendered object or else the whole things breaks down
-    //TODO: Streamline the feature ID insertion for each rendered object business
-    path.featureID = feature.getID();
+    // Add the feature id to the rendered object or else the whole things breaks down
+    // TODO: Streamline the feature ID insertion for each rendered object business
+    path.featureID = feature.ID;
     return path;
 }
 
 function getLayerColor(feature) {
-    let height = feature.getValue("height");
-    let layerHeight = 1; // feature.layer.estimateLayerHeight();
+    const height = feature.getValue("height");
+    const layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
     if (decimal > 1) decimal = 1;
     if (!feature.layer.flip) decimal = 1 - decimal;
-    let targetColorSet = Colors.getLayerColors(feature.layer);
+    const targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 }
 
 function getBaseColor(feature) {
     let decimal = 0;
     if (!feature.layer.flip) decimal = 1 - decimal;
-    let targetColorSet = Colors.getLayerColors(feature.layer);
+    const targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 }
 
@@ -314,10 +318,10 @@ function drawEllipse(entity) {
      */
     // console.log("DXF Data", entity);
 
-    let center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
-    let axisratio = entity.axisRatio;
-    let majoraxislength = Math.sqrt(Math.pow(entity.majorAxisEndPoint.x * 1000, 2) + Math.pow(entity.majorAxisEndPoint.y * 1000, 2));
-    let minoraxislength = majoraxislength * axisratio;
+    const center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
+    const axisratio = entity.axisRatio;
+    const majoraxislength = Math.sqrt(Math.pow(entity.majorAxisEndPoint.x * 1000, 2) + Math.pow(entity.majorAxisEndPoint.y * 1000, 2));
+    const minoraxislength = majoraxislength * axisratio;
     let rotation = (Math.atan(entity.majorAxisEndPoint.y / entity.majorAxisEndPoint.x) * 180) / Math.PI;
     // console.log("Rotation:", rotation);
     if (Number.isNaN(rotation)) {
@@ -325,7 +329,7 @@ function drawEllipse(entity) {
     }
     // console.log("Rotation:", rotation);
     // console.log("lengths:", majoraxislength, minoraxislength);
-    let ellipse = new paper.Path.Ellipse({
+    const ellipse = new paper.Path.Ellipse({
         center: [center.x, center.y],
         radius: [majoraxislength, minoraxislength]
     });
@@ -417,7 +421,7 @@ function drawEllipse(entity) {
 
 function drawSpline(entity, path) {
     let curve;
-    var points = entity.controlPoints.map(function(vec) {
+    const points = entity.controlPoints.map(function (vec) {
         return new paper.Point(vec.x, vec.y);
     });
     throw "Spline entity is not supported !";
@@ -445,8 +449,8 @@ function drawSpline(entity, path) {
 }
 
 function drawCircle(entity) {
-    let center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
-    let circle = new paper.Path.Circle(center, entity.radius * 1000);
+    const center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
+    const circle = new paper.Path.Circle(center, entity.radius * 1000);
     return circle;
 }
 
@@ -455,8 +459,8 @@ function drawCircle(entity) {
  * @param entity DXF Data
  */
 function drawLine(entity) {
-    //Create a path
-    let basepath = new paper.Path();
+    // Create a path
+    const basepath = new paper.Path();
     basepath.origin = "LINE";
 
     let bulge, bugleGeometry;
@@ -467,7 +471,7 @@ function drawLine(entity) {
         // console.log("Point:", i , entity.vertices[i]);
         if (entity.vertices[i].bulge) {
             console.log("Drawing arc segment to incorporate bulge values");
-            //TODO: Figure out what to do with the bugle value
+            // TODO: Figure out what to do with the bugle value
             bulge = entity.vertices[i].bulge;
             startPoint = entity.vertices[i];
             if (i < entity.vertices.length - 1) {
@@ -479,12 +483,12 @@ function drawLine(entity) {
             // endPoint = (i + 1 < entity.vertices.length) ? entity.vertices[i + 1] :entity.vertices[0];
             console.log("Start Point:", startPoint);
             console.log("End Point:", endPoint);
-            let throughpoint = calculateBulgeThroughPoint(startPoint, endPoint, bulge);
+            const throughpoint = calculateBulgeThroughPoint(startPoint, endPoint, bulge);
 
             console.log("Throughpoint:", throughpoint);
 
             basepath.add(new paper.Point(startPoint.x * 1000, startPoint.y * 1000));
-            //basepath.add(new paper.Point(endPoint.x, endPoint.y));
+            // basepath.add(new paper.Point(endPoint.x, endPoint.y));
             basepath.arcTo(throughpoint, new paper.Point(endPoint.x * 1000, endPoint.y * 1000));
             i++;
         } else {
@@ -496,7 +500,7 @@ function drawLine(entity) {
             // let line = new paper.Path.Line(point, nextpoint);
             // path.addChild(line);
 
-            let dxfvertex = entity.vertices[i];
+            const dxfvertex = entity.vertices[i];
             basepath.add(new paper.Point(dxfvertex.x * 1000, dxfvertex.y * 1000));
         }
     }
@@ -532,19 +536,19 @@ function drawArc(entity) {
 
      */
 
-    let center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
-    let radius = entity.radius * 1000;
-    let startAngle = entity.startAngle;
-    let endAngle = entity.endAngle; //* 180/Math.PI;
-    let midAngle = (startAngle + endAngle) / 2;
+    const center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
+    const radius = entity.radius * 1000;
+    const startAngle = entity.startAngle;
+    const endAngle = entity.endAngle; //* 180/Math.PI;
+    const midAngle = (startAngle + endAngle) / 2;
 
-    let startpoint = new paper.Point(center.x + radius * Math.cos(startAngle), center.y + radius * Math.sin(startAngle));
+    const startpoint = new paper.Point(center.x + radius * Math.cos(startAngle), center.y + radius * Math.sin(startAngle));
 
-    let midpoint = new paper.Point(center.x + radius * Math.cos(midAngle), center.y + radius * Math.sin(midAngle));
+    const midpoint = new paper.Point(center.x + radius * Math.cos(midAngle), center.y + radius * Math.sin(midAngle));
 
-    let endpoint = new paper.Point(center.x + radius * Math.cos(endAngle), center.y + radius * Math.sin(endAngle));
+    const endpoint = new paper.Point(center.x + radius * Math.cos(endAngle), center.y + radius * Math.sin(endAngle));
 
-    let arc = paper.Path.Arc(startpoint, midpoint, endpoint);
+    const arc = paper.Path.Arc(startpoint, midpoint, endpoint);
 
     arc.origin = "ARC";
     return arc;

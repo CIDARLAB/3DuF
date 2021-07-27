@@ -1,7 +1,11 @@
-//TODO: Restructure the TextFeature and all its implementation
+// TODO: Restructure the TextFeature and all its implementation
 import Parameter from "./parameter";
+<<<<<<< HEAD
 import * as Parameters from "./parameters";
 var StringValue = Parameters.StringValue;
+=======
+import StringValue from "./parameters/stringValue";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 import Registry from "./registry";
 
 /**
@@ -10,15 +14,16 @@ import Registry from "./registry";
 export default class TextFeature {
     /**
      * Default Constructor of the TextFeature object.
-     * @param {String} text 
-     * @param {Parameter} params 
-     * @param {String} id 
+     * @param {String} text
+     * @param {Parameter} params
+     * @param {String} id
      */
     constructor(text, params, id = TextFeature.generateID()) {
         // super("TEXT", "Basic", params, id, id);
         this.__text = text;
         this.__params.updateParameter("text", text);
     }
+
     /**
      * Generates an ID.
      * @returns {String} Returns the generated ID.
@@ -27,13 +32,14 @@ export default class TextFeature {
     static generateID() {
         return Registry.generateID();
     }
+
     /**
      * Converts to JSON format.
      * @returns {JSON} Returns object in JSON.
      * @memberof TextFeature
      */
     toJSON() {
-        let output = {};
+        const output = {};
         output.id = this.__id;
         output.name = this.__name.toJSON();
         output.type = this.__type;
@@ -41,14 +47,15 @@ export default class TextFeature {
         output.params = this.__params.toJSON();
         return output;
     }
+
     /**
      * Converts to Interchange format.
      * @returns {TextFeature} Returns object in Interchange.
      * @memberof TextFeature
      */
     toInterchangeV1() {
-        //TODO: We need to figure out what to do and what the final feature format will be
-        let output = {};
+        // TODO: We need to figure out what to do and what the final feature format will be
+        const output = {};
         output.id = this.__id;
         output.name = this.__name;
         output.macro = this.__type;
@@ -57,6 +64,7 @@ export default class TextFeature {
         output.type = this.__fabtype;
         return output;
     }
+
     /**
      * Gets the ID of the object.
      * @returns {String} Returns the ID of the object.
@@ -65,6 +73,7 @@ export default class TextFeature {
     getID() {
         return this.__id;
     }
+
     /**
      * Sets the name for the object.
      * @param {String} name Name we want to assign to the object.
@@ -72,8 +81,9 @@ export default class TextFeature {
      * @returns {void}
      */
     setName(name) {
-        this.__name = StringValue(name);
+        this.__name = new StringValue(name);
     }
+
     /**
      * Gets the name of the object.
      * @returns {String} Returns the name of the object.
@@ -82,6 +92,7 @@ export default class TextFeature {
     getName() {
         return this.__name.getValue();
     }
+
     /**
      * Gets what type is the object.
      * @returns {} Returns the type of the object.
@@ -90,6 +101,7 @@ export default class TextFeature {
     getType() {
         return this.__type;
     }
+
     /**
      * Gets the text in the TextFeature object.
      * @returns {String} Returns the text of the TextFeature object.
@@ -98,18 +110,20 @@ export default class TextFeature {
     getText() {
         return this.__text;
     }
+
     /**
      * Generates a feature.
-     * @param {String} typeString 
+     * @param {String} typeString
      * @param {String} setString
      * @returns {Feature}  Returns a feature object.
      * @memberof TextFeature
      */
     static getFeatureGenerator(typeString, setString) {
-        return function(values) {
+        return function (values) {
             return Feature.makeFeature(typeString, setString, values);
         };
     }
+
     /**
      * Gets the value of a given parameter.
      * @param {String} key The key is use to identify the parameter we want to modify it's value.
@@ -124,9 +138,10 @@ export default class TextFeature {
             else throw new Error("Unable to get value for key: " + key);
         }
     }
+
     /**
      * Checks whether the object has default parameters.
-     * @param {String} key 
+     * @param {String} key
      * @returns {Boolean} true if it has default parameters
      * @memberof TextFeature
      */
@@ -134,24 +149,27 @@ export default class TextFeature {
         if (this.getDefaults().hasOwnProperty(key)) return true;
         else return false;
     }
+
     /**
      * Checks whether the object has unique parameters.
-     * @param {String} key 
+     * @param {String} key
      * @returns {Boolean} Returns true if it has unique parameters
      * @memberof TextFeature
      */
     hasUniqueParam(key) {
         return this.__params.isUnique(key);
     }
+
     /**
      * Checks whether the object has heritable parameters.
-     * @param {string} key 
+     * @param {string} key
      * @returns {Boolean} Returns true if it has heritable parameters.
      * @memberof TextFeature
      */
     hasHeritableParam(key) {
         return this.__params.isHeritable(key);
     }
+
     /**
      * Gets the heritable parameters of the object.
      * @returns {Feature.heritable}
@@ -160,6 +178,7 @@ export default class TextFeature {
     getHeritableParams() {
         return Feature.getDefinitionForType(this.getType(), this.getSet()).heritable;
     }
+
     /**
      * Gets the unique parameters of the object.
      * @returns {Feature.unique}
@@ -168,6 +187,7 @@ export default class TextFeature {
     getUniqueParams() {
         return Feature.getDefinitionForType(this.getType(), this.getSet()).unique;
     }
+
     /**
      * Gets the default parameters of the object.
      * @returns {Feature}
@@ -176,56 +196,52 @@ export default class TextFeature {
     getDefaults() {
         return Feature.getDefaultsForType(this.getType(), this.getSet());
     }
-    /**
-     * Gets the parameters of the object.
-     * @returns {Feature.parameters}
-     * @memberof TextFeature
-     */
-    getParams() {
-        return this.__params.parameters;
-    }
+
     /**
      * Sets the parameters of the object.
-     * @param {Params} params 
+     * @param {Params} params
      * @memberof TextFeature
      * @returns {void}
      */
     setParams(params) {
         this.__params.parameters = params;
     }
+
     /**
      * Creates a feature from a JSON format.
-     * @param {JSON} json 
+     * @param {JSON} json
      * @returns {Feature}
      * @memberof TextFeature
      */
     static fromJSON(json) {
         let set;
-        if (json.hasOwnProperty("set")) set = json.set;
+        if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
         else set = "Basic";
         return Feature.makeFeature(json.type, set, json.params, json.name, json.id);
     }
+
     /**
      * Creates a feature from an Interchange format.
-     * @param {*} json 
+     * @param {*} json
      * @returns {Feature}
      * @memberof TextFeature
      */
     static fromInterchangeV1(json) {
         let set;
-        if (json.hasOwnProperty("set")) set = json.set;
+        if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
         else set = "Basic";
-        //TODO: This will have to change soon when the thing is updated
+        // TODO: This will have to change soon when the thing is updated
         return Feature.makeFeature(json.macro, set, json.params, json.name, json.id, json.type);
     }
+
     /**
      * Creates a new TextFeature object.
-     * @param {*} textcontent 
-     * @param {String} typeString 
-     * @param {String} setString 
-     * @param {*} values 
-     * @param {string} name 
-     * @param {string} id 
+     * @param {*} textcontent
+     * @param {String} typeString
+     * @param {String} setString
+     * @param {*} values
+     * @param {string} name
+     * @param {string} id
      * @returns {TextFeature} Returns new TextFeature object.
      * @memberof TextFeature
      */
@@ -235,6 +251,7 @@ export default class TextFeature {
         // let params = new Params(values, featureType.unique, featureType.heritable);
         return new TextFeature(textcontent, values, id);
     }
+
     /**
      * Updates the feature
      * @memberof TextFeature
@@ -244,7 +261,7 @@ export default class TextFeature {
         if (Registry.viewManager) Registry.viewManager.updateFeature(this);
     }
 
-    //I wish I had abstract methods. :(
+    // I wish I had abstract methods. :(
     /**
      * @memberof TextFeature
      * @returns {void}

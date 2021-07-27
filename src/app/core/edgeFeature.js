@@ -30,10 +30,10 @@ export default class EdgeFeature extends Feature {
      * @returns {void}
      */
     generateRectEdge(xspan, yspan) {
-        //TODO: Fix this by trying to incorporate a system where the unit is given
+        // TODO: Fix this by trying to incorporate a system where the unit is given
         xspan /= 1000;
         yspan /= 1000;
-        let object = new DXFObject({
+        const object = new DXFObject({
             type: "POLYLINE",
             vertices: [
                 {

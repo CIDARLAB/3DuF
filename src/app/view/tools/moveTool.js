@@ -1,15 +1,17 @@
-import MoveToolBar from "../ui/moveToolBar";
 import MouseTool from "./mouseTool";
 
+<<<<<<< HEAD
 import Registry from '../../core/registry';
+=======
+import Registry from "../../core/registry";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 
 export default class MoveTool extends MouseTool {
     constructor() {
         super();
 
-        //Use the startpoint to calculate the delta for movement
+        // Use the startpoint to calculate the delta for movement
         this.__startPoint = null;
-        this.__moveWindow = new MoveToolBar(this);
         this.__dragging = false;
 
         // this.dragging = false;
@@ -17,17 +19,17 @@ export default class MoveTool extends MouseTool {
         // this.lastPoint = null;
         // this.currentSelectBox = null;
         // this.currentSelection = [];
-        let ref = this;
+        const ref = this;
         // this.updateQueue = new SimpleQueue(function () {
         //     ref.dragHandler();
         // }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             // Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             // ref.dragging = true;
             // ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             // if (ref.dragging) {
             //     ref.lastPoint = MouseTool.getEventPosition(event);
             //     ref.updateQueue.run();
@@ -35,7 +37,7 @@ export default class MoveTool extends MouseTool {
             // ref.showTarget();
             ref.dragHandler(event);
         };
-        this.up = function(event) {
+        this.up = function (event) {
             // ref.dragging = false;
             ref.mouseUpHandler(event);
             // ref.showTarget();
@@ -48,7 +50,7 @@ export default class MoveTool extends MouseTool {
      */
     activate(component) {
         // console.log("Activating the tool for a new component", component);
-        //Store the component position here
+        // Store the component position here
         this.__currentComponent = component;
         this.__originalPosition = component.getPosition();
         this.__moveWindow.showWindow();
@@ -68,7 +70,7 @@ export default class MoveTool extends MouseTool {
      * @param ypos
      */
     processUIPosition(xpos, ypos) {
-        this.__currentComponent.updateComponetPosition([xpos, ypos]);
+        this.__currentComponent.updateComponentPosition([xpos, ypos]);
     }
 
     /**
@@ -86,7 +88,7 @@ export default class MoveTool extends MouseTool {
      * Reverts the position to the original position
      */
     revertToOriginalPosition() {
-        this.__currentComponent.updateComponetPosition(this.__originalPosition);
+        this.__currentComponent.updateComponentPosition(this.__originalPosition);
     }
 
     /**
@@ -95,10 +97,10 @@ export default class MoveTool extends MouseTool {
      */
     dragHandler(event) {
         if (this.__dragging) {
-            let point = MouseTool.getEventPosition(event);
-            let target = Registry.viewManager.snapToGrid(point);
+            const point = MouseTool.getEventPosition(event);
+            const target = Registry.viewManager.snapToGrid(point);
             // console.log("Point:", point, target, this.__startPoint);
-            let delta = {
+            const delta = {
                 x: target.x - this.__startPoint.y,
                 y: target.y - this.__startPoint.y
             };
@@ -110,7 +112,7 @@ export default class MoveTool extends MouseTool {
             //
             // let newposition = [oldposition[0] + delta.x, oldposition[1] + delta.y];
             // console.log("Newposition:", newposition);
-            // this.__currentComponent.updateComponetPosition(newposition);
+            // this.__currentComponent.updateComponentPosition(newposition);
             this.__updatePosition(target.x, target.y);
         }
     }
@@ -124,9 +126,9 @@ export default class MoveTool extends MouseTool {
      * @param event
      */
     mouseUpHandler(event) {
-        let point = MouseTool.getEventPosition(event);
+        const point = MouseTool.getEventPosition(event);
         // console.log("Point:", point, event);
-        let target = Registry.viewManager.snapToGrid(point);
+        const target = Registry.viewManager.snapToGrid(point);
 
         // console.log("Start:",this.__startPoint, "End:" ,target);
         this.__dragging = false;
@@ -137,8 +139,8 @@ export default class MoveTool extends MouseTool {
      * @param event
      */
     mouseDownHandler(event) {
-        let point = MouseTool.getEventPosition(event);
-        let target = Registry.viewManager.snapToGrid(point);
+        const point = MouseTool.getEventPosition(event);
+        const target = Registry.viewManager.snapToGrid(point);
         this.__startPoint = target;
         this.__dragging = true;
     }
@@ -165,13 +167,13 @@ export default class MoveTool extends MouseTool {
     //
     //     //Find the component that owns this feature and then select all of the friends
     //     let component = this.__getComponentWithFeatureID(paperElement.featureID);
-    //     if (component == null) {
+    //     if (component === null) {
     //         //Does not belong to a component, hence this returns
     //         paperElement.selected = true;
     //
     //     } else {
     //         //Belongs to the component so we basically select all features with this id
-    //         let featureIDs = component.getFeatureIDs();
+    //         let featureIDs = component.featureIDs;
     //         for (let i in featureIDs) {
     //             let featureid = featureIDs[i];
     //             let actualfeature = Registry.viewManager.view.paperFeatures[featureid];
@@ -193,16 +195,16 @@ export default class MoveTool extends MouseTool {
     // __getComponentWithFeatureID(featureid) {
     //     // Get component with the features
     //
-    //     let device_components = Registry.currentDevice.getComponents();
+    //     let device_components = Registry.currentDevice.components;
     //
     //     //Check against every component
     //     for (let i in device_components) {
     //         let component = device_components[i];
     //         //Check against features in the in the component
-    //         let componentfeatures = component.getFeatureIDs();
+    //         let componentfeatures = component.featureIDs;
     //         let index = componentfeatures.indexOf(featureid);
     //
-    //         if (index != -1) {
+    //         if (index !== -1) {
     //             //Found it !!
     //             console.log("Found Feature: " + featureid + " in component: " + component.getID());
     //             return component;
@@ -223,13 +225,13 @@ export default class MoveTool extends MouseTool {
     //             //Find the component that owns this feature and then select all of the friends
     //             let component = this.__getComponentWithFeatureID(paperFeature.featureID);
     //
-    //             if (component == null) {
+    //             if (component === null) {
     //                 //Does not belong to a component hence do the normal stuff
     //                 paperFeature.selected = true;
     //
     //             } else {
     //                 //Belongs to the component so we basically select all features with this id
-    //                 let featureIDs = component.getFeatureIDs();
+    //                 let featureIDs = component.featureIDs;
     //                 for (let i in featureIDs) {
     //                     let featureid = featureIDs[i];
     //                     let actualfeature = Registry.viewManager.view.paperFeatures[featureid];

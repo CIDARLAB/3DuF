@@ -1,29 +1,29 @@
 import * as OrbitControls from "./threeLib/orbitControls";
 import * as STLExporter from "./threeLib/stlExporter";
 import * as Detector from "./threeLib/detector";
-var getSTLString = STLExporter.getSTLString;
 import { Device3D } from "./primitiveSets3D";
 import { renderFeature } from "./threeFeatureRenderer";
 import * as Colors from "../colors";
 import * as THREE from "three";
+const getSTLString = STLExporter.getSTLString;
 
-var SLIDE_HOLDER_MATERIAL = new THREE.MeshLambertMaterial({
+const SLIDE_HOLDER_MATERIAL = new THREE.MeshLambertMaterial({
     color: 0x9e9e9e,
     shading: THREE.SmoothShading
 });
-var SLIDE_GLASS_MATERIAL = new THREE.MeshLambertMaterial({
+const SLIDE_GLASS_MATERIAL = new THREE.MeshLambertMaterial({
     color: 0xffffff,
     opacity: 0.0,
     transparent: true
 });
-var DEVICE_PLANE_MATERIAL = new THREE.MeshBasicMaterial({
+const DEVICE_PLANE_MATERIAL = new THREE.MeshBasicMaterial({
     color: 0xffffff,
     shading: THREE.FlatShading
 });
 
-var HOLDER_BORDER_WIDTH = 0.41;
-var INTERLOCK_TOLERANCE = 0.125;
-var SLIDE_THICKNESS = 1.2;
+const HOLDER_BORDER_WIDTH = 0.41;
+const INTERLOCK_TOLERANCE = 0.125;
+const SLIDE_THICKNESS = 1.2;
 
 export class ThreeDeviceRenderer {
     constructor(renderContainer) {
@@ -49,10 +49,10 @@ export class ThreeDeviceRenderer {
         this.initControls();
         this.initScene();
         this.initRenderer();
-        let reference = this;
+        const reference = this;
         window.addEventListener(
             "resize",
-            function() {
+            function () {
                 reference.onWindowResize();
             },
             false
@@ -65,17 +65,17 @@ export class ThreeDeviceRenderer {
     }
 
     getLayerSTL(json, index) {
-        let scene = this.emptyScene();
-        let layer = json.layers[index];
+        const scene = this.emptyScene();
+        const layer = json.layers[index];
         scene.add(this.renderLayer(json, index, false));
         this.renderer.render(scene, this.camera);
-        let string = getSTLString(scene);
+        const string = getSTLString(scene);
         this.renderer.render(this.scene, this.camera);
         return getSTLString(scene);
     }
 
     getLayerSTLStrings(json) {
-        let output = [];
+        const output = [];
         for (let i = 0; i < json.layers.length; i++) {
             output.push(this.getLayerSTL(json, i));
         }
@@ -95,8 +95,8 @@ export class ThreeDeviceRenderer {
     initControls() {
         this.controls = new THREE.OrbitControls(this.camera, this.container);
         this.controls.damping = 0.2;
-        let reference = this;
-        this.controls.addEventListener("change", function() {
+        const reference = this;
+        this.controls.addEventListener("change", function () {
             reference.render();
         });
     }
@@ -104,16 +104,16 @@ export class ThreeDeviceRenderer {
     emptyScene() {
         let scene = new THREE.Scene();
         scene = new THREE.Scene();
-        //lights
-        var light1 = new THREE.DirectionalLight(0xffffff);
+        // lights
+        const light1 = new THREE.DirectionalLight(0xffffff);
         light1.position.set(1, 1, 1);
         scene.add(light1);
 
-        var light2 = new THREE.DirectionalLight(0xffffff);
+        const light2 = new THREE.DirectionalLight(0xffffff);
         light2.position.set(-1, -1, -1);
         scene.add(light2);
 
-        var light3 = new THREE.AmbientLight(0x333333);
+        const light3 = new THREE.AmbientLight(0x333333);
         scene.add(light3);
         return scene;
     }
@@ -133,18 +133,18 @@ export class ThreeDeviceRenderer {
 
     static sanitizeJSON(json) {
         ThreeDeviceRenderer.sanitizeParams(json.params);
-        for (var i = 0; i < json.layers.length; i++) {
+        for (let i = 0; i < json.layers.length; i++) {
             ThreeDeviceRenderer.sanitizeParams(json.layers[i].params, json.params.height);
-            for (var key in json.layers[i].features) {
+            for (const key in json.layers[i].features) {
                 ThreeDeviceRenderer.sanitizeParams(json.layers[i].features[key].params, json.params.height);
             }
         }
     }
 
     static sanitizeParams(params, height) {
-        for (var key in params) {
-            if (key == "start" || key == "end" || key == "position") {
-                var pos = params[key];
+        for (const key in params) {
+            if (key === "start" || key === "end" || key === "position") {
+                const pos = params[key];
                 params[key] = [pos[0] / 1000, height - pos[1] / 1000];
             } else {
                 params[key] = params[key] / 1000;
@@ -174,34 +174,34 @@ export class ThreeDeviceRenderer {
     }
 
     getCameraCenterInMicrometers() {
-        let position = this.camera.position;
+        const position = this.camera.position;
         return [position.x * 1000, (this.camera.position.y - this.initialY) * 1000];
     }
 
     getZoom() {
-        let height = this.json.params.height / 1000;
-        let distance = this.camera.position.z;
+        const height = this.json.params.height / 1000;
+        const distance = this.camera.position.z;
         if (distance < 0) {
             return this.initialZoom;
         }
-        let pixels = this.computeHeightInPixels(height, distance);
-        let zoom = pixels / this.json.params.height;
+        const pixels = this.computeHeightInPixels(height, distance);
+        const zoom = pixels / this.json.params.height;
         return zoom;
     }
 
     getCameraDistance(objectHeight, pixelHeight) {
-        var vFOV = (this.camera.fov * Math.PI) / 180;
-        var ratio = pixelHeight / this.container.clientHeight;
-        var height = objectHeight / ratio;
-        var distance = height / (2 * Math.tan(vFOV / 2));
+        const vFOV = (this.camera.fov * Math.PI) / 180;
+        const ratio = pixelHeight / this.container.clientHeight;
+        const height = objectHeight / ratio;
+        const distance = height / (2 * Math.tan(vFOV / 2));
         return distance;
     }
 
     computeHeightInPixels(objectHeight, distance) {
-        var vFOV = (this.camera.fov * Math.PI) / 180; //
-        var height = 2 * Math.tan(vFOV / 2) * distance; // visible height
-        var ratio = objectHeight / height;
-        var pixels = this.container.clientHeight * ratio;
+        const vFOV = (this.camera.fov * Math.PI) / 180; //
+        const height = 2 * Math.tan(vFOV / 2) * distance; // visible height
+        const ratio = objectHeight / height;
+        const pixels = this.container.clientHeight * ratio;
         return pixels;
     }
 
@@ -220,7 +220,7 @@ export class ThreeDeviceRenderer {
 
     showLayer(index) {
         if (this.layers && this.json) {
-            let layer = this.layers[index].clone();
+            const layer = this.layers[index].clone();
             this.loadDevice(layer);
             this.showingLayer = true;
         }
@@ -234,45 +234,45 @@ export class ThreeDeviceRenderer {
     }
 
     renderFeatures(layer, z_offset) {
-        var renderedFeatures = new THREE.Group();
-        for (var featureID in layer.features) {
-            var feature = layer.features[featureID];
+        const renderedFeatures = new THREE.Group();
+        for (const featureID in layer.features) {
+            const feature = layer.features[featureID];
             renderedFeatures.add(renderFeature(feature, layer, z_offset));
         }
         return renderedFeatures;
     }
 
     renderLayers(json) {
-        var renderedLayers = [];
-        for (var i = 0; i < json.layers.length; i++) {
+        const renderedLayers = [];
+        for (let i = 0; i < json.layers.length; i++) {
             renderedLayers.push(this.renderLayer(json, i, true));
         }
         return renderedLayers;
     }
 
     renderSlide(width, height, thickness, slideMaterial = SLIDE_GLASS_MATERIAL, planeMaterial = DEVICE_PLANE_MATERIAL) {
-        let slideParams = {
+        const slideParams = {
             width: width,
             height: height,
             thickness: thickness
         };
 
-        let planeParams = {
+        const planeParams = {
             width: width,
             height: height
         };
-        let slideGeometry = Device3D.Slide(slideParams);
-        let planeGeometry = Device3D.DevicePlane(planeParams);
-        let group = new THREE.Group();
-        let planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-        let slideMesh = new THREE.Mesh(slideGeometry, slideMaterial);
+        const slideGeometry = Device3D.Slide(slideParams);
+        const planeGeometry = Device3D.DevicePlane(planeParams);
+        const group = new THREE.Group();
+        const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+        const slideMesh = new THREE.Mesh(slideGeometry, slideMaterial);
         group.add(planeMesh);
         group.add(slideMesh);
         return group;
     }
 
     renderSlideHolder(width, height, slideThickness, borderWidth, interlock, material = SLIDE_HOLDER_MATERIAL) {
-        let holderParams = {
+        const holderParams = {
             width: width,
             height: height,
             slideThickness: slideThickness,
@@ -280,17 +280,17 @@ export class ThreeDeviceRenderer {
             interlock: interlock
         };
 
-        let holderGeometry = Device3D.SlideHolder(holderParams);
-        let holderMesh = new THREE.Mesh(holderGeometry, material);
+        const holderGeometry = Device3D.SlideHolder(holderParams);
+        const holderMesh = new THREE.Mesh(holderGeometry, material);
         return holderMesh;
     }
 
     renderSlideAssembly(width, height, slide = false, slideThickness = SLIDE_THICKNESS, borderWidth = HOLDER_BORDER_WIDTH, interlock = INTERLOCK_TOLERANCE) {
-        let assembly = new THREE.Group();
-        let holder = this.renderSlideHolder(width, height, slideThickness, borderWidth, interlock);
+        const assembly = new THREE.Group();
+        const holder = this.renderSlideHolder(width, height, slideThickness, borderWidth, interlock);
         assembly.add(holder);
         if (slide) {
-            let slide = this.renderSlide(width, height, slideThickness);
+            const slide = this.renderSlide(width, height, slideThickness);
             assembly.add(slide);
         }
         assembly.position.z -= slideThickness;
@@ -298,16 +298,16 @@ export class ThreeDeviceRenderer {
     }
 
     renderLayer(json, layerIndex, viewOnly = false) {
-        var width = json.params.width;
-        var height = json.params.height;
-        var layer = json.layers[layerIndex];
-        var renderedFeatures = new THREE.Group();
-        var renderedLayer = new THREE.Group();
+        const width = json.params.width;
+        const height = json.params.height;
+        const layer = json.layers[layerIndex];
+        const renderedFeatures = new THREE.Group();
+        const renderedLayer = new THREE.Group();
         if (viewOnly) renderedFeatures.add(this.renderFeatures(layer, layer.params.z_offset));
         else renderedFeatures.add(this.renderFeatures(layer, 0));
         if (layer.params.flip && !viewOnly) this.flipLayer(renderedFeatures, height, layer.params.z_offset);
         renderedLayer.add(renderedFeatures);
-        let assembly = this.renderSlideAssembly(width, height, viewOnly);
+        const assembly = this.renderSlideAssembly(width, height, viewOnly);
         renderedLayer.add(assembly);
         return renderedLayer;
     }
@@ -319,16 +319,16 @@ export class ThreeDeviceRenderer {
     }
 
     renderMockup(json) {
-        let width = json.params.width;
-        let height = json.params.height;
-        var renderedMockup = new THREE.Group();
-        var layers = json.layers;
-        for (var i = 0; i < layers.length; i++) {
-            var layer = layers[i];
-            var renderedLayer = this.renderFeatures(layer, layer.params.z_offset);
+        const width = json.params.width;
+        const height = json.params.height;
+        const renderedMockup = new THREE.Group();
+        const layers = json.layers;
+        for (let i = 0; i < layers.length; i++) {
+            const layer = layers[i];
+            const renderedLayer = this.renderFeatures(layer, layer.params.z_offset);
             renderedMockup.add(renderedLayer);
         }
-        var renderedHolder = this.renderSlideAssembly(width, height, true);
+        const renderedHolder = this.renderSlideAssembly(width, height, true);
         renderedMockup.add(renderedHolder);
         return renderedMockup;
     }

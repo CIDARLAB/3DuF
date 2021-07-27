@@ -1,4 +1,3 @@
-import GenerateArrayWindow from "../ui/generateArrayWindow";
 import MouseTool from "./mouseTool";
 
 import Registry from "../../core/registry";
@@ -8,31 +7,29 @@ export default class GenerateArrayTool extends MouseTool {
     constructor() {
         super();
 
-        this.__generateArrayWindow = new GenerateArrayWindow(this);
-
         // this.dragging = false;
         // this.dragStart = null;
         // this.lastPoint = null;
         // this.currentSelectBox = null;
         // this.currentSelection = [];
-        let ref = this;
+        const ref = this;
         // this.updateQueue = new SimpleQueue(function () {
         //     ref.dragHandler();
         // }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             // Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             // ref.dragging = true;
             // ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             // if (ref.dragging) {
             //     ref.lastPoint = MouseTool.getEventPosition(event);
             //     ref.updateQueue.run();
             // }
             // ref.showTarget();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             // ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
             // ref.showTarget();
@@ -41,7 +38,7 @@ export default class GenerateArrayTool extends MouseTool {
 
     activate(component) {
         console.log("Activating the tool for a new component", component);
-        //Store the component position here
+        // Store the component position here
         this.__currentComponent = component;
         this.__generateArrayWindow.showWindow();
     }
@@ -52,27 +49,27 @@ export default class GenerateArrayTool extends MouseTool {
 
     generateArray(xdim, ydim, xspacing, yspacing) {
         console.log("Generate array:", xdim, ydim, xspacing, yspacing);
-        let xposref = this.__currentComponent.getPosition()[0];
-        let yposref = this.__currentComponent.getPosition()[1];
-        let name = this.__currentComponent.getName();
+        const xposref = this.__currentComponent.getPosition()[0];
+        const yposref = this.__currentComponent.getPosition()[1];
+        const name = this.__currentComponent.getName();
         this.__currentComponent.setName(name + "_1_1");
-        let replicas = [];
-        //Loop to create the components at the new positions
+        const replicas = [];
+        // Loop to create the components at the new positions
         for (let y = 0; y < ydim; y++) {
             for (let x = 0; x < xdim; x++) {
-                //Skip the x=0, y=0 because thats the initial one
+                // Skip the x=0, y=0 because thats the initial one
                 if (x === 0 && y === 0) {
                     continue;
                 }
-                let xpos = xposref + x * xspacing;
-                let ypos = yposref + y * yspacing;
+                const xpos = xposref + x * xspacing;
+                const ypos = yposref + y * yspacing;
                 replicas.push(this.__currentComponent.replicate(xpos, ypos, name + "_" + String(x + 1) + "_" + String(y + 1)));
             }
         }
 
-        //Add the replicas to the device
+        // Add the replicas to the device
         console.log(replicas);
-        replicas.forEach(function(replica) {
+        replicas.forEach(function (replica) {
             Registry.currentDevice.addComponent(replica);
         });
 
@@ -80,7 +77,7 @@ export default class GenerateArrayTool extends MouseTool {
     }
 
     revertToOriginalPosition() {
-        this.__currentComponent.updateComponetPosition(this.__originalPosition);
+        this.__currentComponent.updateComponentPosition(this.__originalPosition);
     }
 
     dragHandler() {
@@ -153,13 +150,13 @@ export default class GenerateArrayTool extends MouseTool {
     //
     //     //Find the component that owns this feature and then select all of the friends
     //     let component = this.__getComponentWithFeatureID(paperElement.featureID);
-    //     if (component == null) {
+    //     if (component === null) {
     //         //Does not belong to a component, hence this returns
     //         paperElement.selected = true;
     //
     //     } else {
     //         //Belongs to the component so we basically select all features with this id
-    //         let featureIDs = component.getFeatureIDs();
+    //         let featureIDs = component.featureIDs;
     //         for (let i in featureIDs) {
     //             let featureid = featureIDs[i];
     //             let actualfeature = Registry.viewManager.view.paperFeatures[featureid];
@@ -181,16 +178,16 @@ export default class GenerateArrayTool extends MouseTool {
     // __getComponentWithFeatureID(featureid) {
     //     // Get component with the features
     //
-    //     let device_components = Registry.currentDevice.getComponents();
+    //     let device_components = Registry.currentDevice.components;
     //
     //     //Check against every component
     //     for (let i in device_components) {
     //         let component = device_components[i];
     //         //Check against features in the in the component
-    //         let componentfeatures = component.getFeatureIDs();
+    //         let componentfeatures = component.featureIDs;
     //         let index = componentfeatures.indexOf(featureid);
     //
-    //         if (index != -1) {
+    //         if (index !== -1) {
     //             //Found it !!
     //             console.log("Found Feature: " + featureid + " in component: " + component.getID());
     //             return component;
@@ -211,13 +208,13 @@ export default class GenerateArrayTool extends MouseTool {
     //             //Find the component that owns this feature and then select all of the friends
     //             let component = this.__getComponentWithFeatureID(paperFeature.featureID);
     //
-    //             if (component == null) {
+    //             if (component === null) {
     //                 //Does not belong to a component hence do the normal stuff
     //                 paperFeature.selected = true;
     //
     //             } else {
     //                 //Belongs to the component so we basically select all features with this id
-    //                 let featureIDs = component.getFeatureIDs();
+    //                 let featureIDs = component.featureIDs;
     //                 for (let i in featureIDs) {
     //                     let featureid = featureIDs[i];
     //                     let actualfeature = Registry.viewManager.view.paperFeatures[featureid];

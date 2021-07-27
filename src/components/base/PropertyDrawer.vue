@@ -46,6 +46,7 @@ export default {
             required: true
         },
         spec: {
+<<<<<<< HEAD
             type: Object,
             required: true,
             validator: spec => {
@@ -65,6 +66,27 @@ export default {
 
                 return "success";
             }
+=======
+            type: Array,
+            required: true
+            // validator: spec => {
+            //     if (!Array.isArray(spec)) {
+            //         console.error("PropertyDrawer: Spec is not an array, unable to validate");
+            //         return "danger";
+            //     }
+
+            //     spec.forEach(item => {
+            //         ["min", "max", "key", "units", "value"].forEach(key => {
+            //             if (!Object.hasOwnProperty.call(item, key)) {
+            //                 console.error("Missing key " + key + " from item", item);
+            //                 return "danger";
+            //             }
+            //         });
+            //     });
+
+            //     return "success";
+            // }
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
         },
         activatedColor: {
             type: String,
@@ -88,7 +110,11 @@ export default {
         }
     },
     mounted() {
+<<<<<<< HEAD
         EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
+=======
+        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
     },
     methods: {
         showProperties() {
@@ -152,4 +178,8 @@ export default {
         display: none;
     }
 }
+<<<<<<< HEAD
 </style>
+=======
+</style>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a

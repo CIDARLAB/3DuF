@@ -1,7 +1,11 @@
 import RightClickMenu from "../ui/rightClickMenu";
 import MouseTool from "./mouseTool";
 
+<<<<<<< HEAD
 import Registry from '../../core/registry';
+=======
+import Registry from "../../core/registry";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
 
@@ -14,24 +18,24 @@ export default class MouseSelectTool extends MouseTool {
         this.lastPoint = null;
         this.currentSelectBox = null;
         this.currentSelection = [];
-        let ref = this;
-        this.updateQueue = new SimpleQueue(function() {
+        const ref = this;
+        this.updateQueue = new SimpleQueue(function () {
             ref.dragHandler();
         }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
             ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             if (ref.dragging) {
                 ref.lastPoint = MouseTool.getEventPosition(event);
                 ref.updateQueue.run();
             }
             ref.showTarget();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
             ref.showTarget();
@@ -39,11 +43,11 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     keyHandler(event) {
-        if (event.key == "delete" || event.key == "backspace") {
+        if (event.key === "delete" || event.key === "backspace") {
             console.log("Removing feature");
             this.removeFeatures();
         }
-        if (event.key == "c") {
+        if (event.key === "c") {
             console.log("Detected a ctrlC");
             console.log(this.currentSelection);
         }
@@ -73,7 +77,7 @@ export default class MouseSelectTool extends MouseTool {
     removeFeatures() {
         if (this.currentSelection.length > 0) {
             for (let i = 0; i < this.currentSelection.length; i++) {
-                let paperFeature = this.currentSelection[i];
+                const paperFeature = this.currentSelection[i];
                 Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
             }
             this.currentSelection = [];
@@ -82,17 +86,17 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     mouseDownHandler(event) {
-        let point = MouseTool.getEventPosition(event);
-        let target = this.hitFeature(point);
+        const point = MouseTool.getEventPosition(event);
+        const target = this.hitFeature(point);
         if (target) {
             if (target.selected) {
-                let feat = Registry.currentDevice.getFeatureByID(target.featureID);
+                const feat = Registry.currentDevice.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
-                let rightclickmenu = Registry.viewManager.rightClickMenu; //new RightClickMenu(feat);
+                const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
                 rightclickmenu.show(event, feat);
                 this.rightClickMenu = rightclickmenu;
                 // let func = PageSetup.getParamsWindowCallbackFunction(feat.getType(), feat.getSet());
-                //func(event);
+                // func(event);
             } else {
                 this.deselectFeatures();
                 this.selectFeature(target);
@@ -112,7 +116,7 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     hitFeature(point) {
-        let target = Registry.viewManager.hitFeature(point);
+        const target = Registry.viewManager.hitFeature(point);
         return target;
     }
 
@@ -123,27 +127,27 @@ export default class MouseSelectTool extends MouseTool {
     selectFeature(paperElement) {
         this.currentSelection.push(paperElement);
 
-        //Find the component that owns this feature and then select all of the friends
-        let component = this.__getComponentWithFeatureID(paperElement.featureID);
-        let connection = this.__getConnectionWithFeatureID(paperElement.featureID);
-        if (component == null && connection == null) {
-            //Does not belong to a component, hence this returns
+        // Find the component that owns this feature and then select all of the friends
+        const component = this.__getComponentWithFeatureID(paperElement.featureID);
+        const connection = this.__getConnectionWithFeatureID(paperElement.featureID);
+        if (component === null && connection === null) {
+            // Does not belong to a component, hence this returns
             paperElement.selected = true;
-        } else if (component != null) {
-            //Belongs to the component so we basically select all features with this id
-            let featureIDs = component.getFeatureIDs();
-            for (let i in featureIDs) {
-                let featureid = featureIDs[i];
-                let actualfeature = Registry.viewManager.view.paperFeatures[featureid];
+        } else if (component !== null) {
+            // Belongs to the component so we basically select all features with this id
+            const featureIDs = component.featureIDs;
+            for (const i in featureIDs) {
+                const featureid = featureIDs[i];
+                const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
                 actualfeature.selected = true;
             }
 
             Registry.viewManager.view.selectedComponents.push(component);
-        } else if (connection != null) {
-            let featureIDs = connection.getFeatureIDs();
-            for (let i in featureIDs) {
-                let featureid = featureIDs[i];
-                let actualfeature = Registry.viewManager.view.paperFeatures[featureid];
+        } else if (connection !== null) {
+            const featureIDs = connection.featureIDs;
+            for (const i in featureIDs) {
+                const featureid = featureIDs[i];
+                const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
                 actualfeature.selected = true;
             }
 
@@ -164,17 +168,17 @@ export default class MouseSelectTool extends MouseTool {
     __getComponentWithFeatureID(featureid) {
         // Get component with the features
 
-        let device_components = Registry.currentDevice.getComponents();
+        const device_components = Registry.currentDevice.components;
 
-        //Check against every component
-        for (let i in device_components) {
-            let component = device_components[i];
-            //Check against features in the in the component
-            let componentfeatures = component.getFeatureIDs();
-            let index = componentfeatures.indexOf(featureid);
+        // Check against every component
+        for (const i in device_components) {
+            const component = device_components[i];
+            // Check against features in the in the component
+            const componentfeatures = component.featureIDs;
+            const index = componentfeatures.indexOf(featureid);
 
-            if (index != -1) {
-                //Found it !!
+            if (index !== -1) {
+                // Found it !!
                 return component;
             }
         }
@@ -193,17 +197,17 @@ export default class MouseSelectTool extends MouseTool {
     __getConnectionWithFeatureID(featureid) {
         // Get component with the features
 
-        let device_connections = Registry.currentDevice.getConnections();
+        const device_connections = Registry.currentDevice.getConnections();
 
-        //Check against every component
-        for (let i in device_connections) {
-            let connection = device_connections[i];
-            //Check against features in the in the component
-            let connection_features = connection.getFeatureIDs();
-            let index = connection_features.indexOf(featureid);
+        // Check against every component
+        for (const i in device_connections) {
+            const connection = device_connections[i];
+            // Check against features in the in the component
+            const connection_features = connection.featureIDs;
+            const index = connection_features.indexOf(featureid);
 
-            if (index != -1) {
-                //Found it !!
+            if (index !== -1) {
+                // Found it !!
                 return connection;
             }
         }
@@ -217,20 +221,20 @@ export default class MouseSelectTool extends MouseTool {
     selectFeatures() {
         if (this.currentSelection) {
             for (let i = 0; i < this.currentSelection.length; i++) {
-                let paperFeature = this.currentSelection[i];
+                const paperFeature = this.currentSelection[i];
 
-                //Find the component that owns this feature and then select all of the friends
-                let component = this.__getComponentWithFeatureID(paperFeature.featureID);
+                // Find the component that owns this feature and then select all of the friends
+                const component = this.__getComponentWithFeatureID(paperFeature.featureID);
 
-                if (component == null) {
-                    //Does not belong to a component hence do the normal stuff
+                if (component === null) {
+                    // Does not belong to a component hence do the normal stuff
                     paperFeature.selected = true;
                 } else {
-                    //Belongs to the component so we basically select all features with this id
-                    let featureIDs = component.getFeatureIDs();
-                    for (let i in featureIDs) {
-                        let featureid = featureIDs[i];
-                        let actualfeature = Registry.viewManager.view.paperFeatures[featureid];
+                    // Belongs to the component so we basically select all features with this id
+                    const featureIDs = component.featureIDs;
+                    for (const i in featureIDs) {
+                        const featureid = featureIDs[i];
+                        const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
                         actualfeature.selected = true;
                     }
 
@@ -254,7 +258,7 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     rectSelect(point1, point2) {
-        let rect = new paper.Path.Rectangle(point1, point2);
+        const rect = new paper.Path.Rectangle(point1, point2);
         rect.fillColor = new paper.Color(0, 0.3, 1, 0.4);
         rect.strokeColor = new paper.Color(0, 0, 0);
         rect.strokeWidth = 2;

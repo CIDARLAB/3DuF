@@ -1,8 +1,14 @@
 import MouseTool from "./mouseTool";
 
+<<<<<<< HEAD
 import Registry from '../../core/registry';
 import Feature from '../../core/feature';
 import Device from '../../core/device';
+=======
+import Registry from "../../core/registry";
+import Feature from "../../core/feature";
+import Device from "../../core/device";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 import SimpleQueue from "../../utils/simpleQueue";
 
 import paper from "paper";
@@ -15,23 +21,23 @@ export default class PositionTool extends MouseTool {
         this.typeString = typeString;
         this.setString = setString;
         this.currentFeatureID = null;
-        let ref = this;
+        const ref = this;
         this.lastPoint = null;
         this.showQueue = new SimpleQueue(
-            function() {
+            function () {
                 ref.showTarget();
             },
             20,
             false
         );
-        this.up = function(event) {
+        this.up = function (event) {
             // do nothing
         };
-        this.move = function(event) {
+        this.move = function (event) {
             ref.lastPoint = MouseTool.getEventPosition(event);
             ref.showQueue.run();
         };
-        this.down = function(event) {
+        this.down = function (event) {
             Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
@@ -39,8 +45,8 @@ export default class PositionTool extends MouseTool {
     }
 
     createNewFeature(point) {
-        let name = Registry.currentDevice.generateNewName(this.typeString);
-        let newFeature = Device.makeFeature(
+        const name = Registry.currentDevice.generateNewName(this.typeString);
+        const newFeature = Device.makeFeature(
             this.typeString,
             this.setString,
             {
@@ -48,7 +54,7 @@ export default class PositionTool extends MouseTool {
             },
             name
         );
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         Registry.currentLayer.addFeature(newFeature);
     }
 
@@ -58,7 +64,7 @@ export default class PositionTool extends MouseTool {
      * @return {Point}
      */
     static getTarget(point) {
-        let target = Registry.viewManager.snapToGrid(point);
+        const target = Registry.viewManager.snapToGrid(point);
         return [target.x, target.y];
     }
 
@@ -66,7 +72,7 @@ export default class PositionTool extends MouseTool {
      * Renders the target
      */
     showTarget() {
-        let target = PositionTool.getTarget(this.lastPoint);
+        const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 
@@ -79,22 +85,22 @@ export default class PositionTool extends MouseTool {
      * @param featureIDs [String] Feature id's of all the features that will be a part of this component
      */
     createNewComponent(typeString, paramdata, featureIDs) {
-        let definition = Registry.featureSet.getDefinition(typeString);
-        //Clean Param Data
-        let cleanparamdata = {};
-        for (let key in paramdata) {
+        const definition = Registry.featureSet.getDefinition(typeString);
+        // Clean Param Data
+        const cleanparamdata = {};
+        for (const key in paramdata) {
             cleanparamdata[key] = paramdata[key].getValue();
         }
-        let params = new Params(cleanparamdata, definition.unique, definition.heritable);
-        let componentid = Feature.generateID();
-        let name = Registry.currentDevice.generateNewName(typeString);
-        let newComponent = new Component(typeString, params, name, definition.mint, componentid);
+        const params = new Params(cleanparamdata, definition.unique, definition.heritable);
+        const componentid = Feature.generateID();
+        const name = Registry.currentDevice.generateNewName(typeString);
+        const newComponent = new Component(typeString, params, name, definition.mint, componentid);
         let feature;
 
-        for (let i in featureIDs) {
+        for (const i in featureIDs) {
             newComponent.addFeatureID(featureIDs[i]);
 
-            //Update the component reference
+            // Update the component reference
             feature = Registry.currentDevice.getFeatureByID(featureIDs[i]);
             feature.referenceID = componentid;
         }

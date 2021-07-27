@@ -10,16 +10,24 @@
                 {{ title }}
             </v-card-title>
             <v-card-text>
+<<<<<<< HEAD
                 <slot name="content">
                     Dialog content goes here
                 </slot>
+=======
+                <slot name="content"> Dialog content goes here </slot>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
                 <slot name="actions" :callbacks="callbacks">
+<<<<<<< HEAD
                     <v-btn color="green darken-1" text @click="callbacks.close()">
                         Close
                     </v-btn>
+=======
+                    <v-btn color="green darken-1" text @click="callbacks.close()"> Close </v-btn>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                 </slot>
             </v-card-actions>
         </v-card>

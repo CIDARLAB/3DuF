@@ -1,6 +1,10 @@
 import * as Colors from "../colors";
 import ColorButton from "./colorButton";
+<<<<<<< HEAD
 import Registry from '../../core/registry';
+=======
+import Registry from "../../core/registry";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 
 export default class featureButton extends ColorButton {
     constructor(id, typeString, setString) {

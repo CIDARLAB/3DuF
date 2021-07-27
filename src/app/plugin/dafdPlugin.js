@@ -6,29 +6,29 @@ import ComponentPort from "../core/componentPort";
 
 export default class DAFDPlugin {
     static fixLayout(params) {
-        //Update Params
+        // Update Params
         let channelid;
-        let orificeSize = params["orificeSize"];
-        let orificeLength = params["orificeLength"];
-        let oilInputWidth = params["oilInputWidth"];
-        let waterInputWidth = params["waterInputWidth"];
-        let outputWidth = params["outputWidth"];
-        let outputLength = params["outputLength"];
-        let height = params["height"];
+        const orificeSize = params.orificeSize;
+        const orificeLength = params.orificeLength;
+        const oilInputWidth = params.oilInputWidth;
+        const waterInputWidth = params.waterInputWidth;
+        const outputWidth = params.outputWidth;
+        const outputLength = params.outputLength;
+        const height = params.height;
 
-        //Load up all the components and change their positions based on the component dimensions
-        let dropgen = Registry.currentDevice.getComponentByName("DropletGen_1");
-        let port_in = Registry.currentDevice.getComponentByName("Port_in");
-        let port_oil1 = Registry.currentDevice.getComponentByName("Port_oil1");
-        let port_oil2 = Registry.currentDevice.getComponentByName("Port_oil2");
-        let port_out = Registry.currentDevice.getComponentByName("Port_out");
+        // Load up all the components and change their positions based on the component dimensions
+        const dropgen = Registry.currentDevice.getComponentByName("DropletGen_1");
+        const port_in = Registry.currentDevice.getComponentByName("Port_in");
+        const port_oil1 = Registry.currentDevice.getComponentByName("Port_oil1");
+        const port_oil2 = Registry.currentDevice.getComponentByName("Port_oil2");
+        const port_out = Registry.currentDevice.getComponentByName("Port_out");
 
-        let transition_in = Registry.currentDevice.getFeatureByName("Transition_3");
-        let transition_oil1 = Registry.currentDevice.getFeatureByName("Transition_6");
-        let transition_oil2 = Registry.currentDevice.getFeatureByName("Transition_5");
-        let transition_out = Registry.currentDevice.getFeatureByName("Transition_4");
+        const transition_in = Registry.currentDevice.getFeatureByName("Transition_3");
+        const transition_oil1 = Registry.currentDevice.getFeatureByName("Transition_6");
+        const transition_oil2 = Registry.currentDevice.getFeatureByName("Transition_5");
+        const transition_out = Registry.currentDevice.getFeatureByName("Transition_4");
 
-        //Update all the droplet generator params
+        // Update all the droplet generator params
         dropgen.updateParameter("orificeSize", orificeSize);
         dropgen.updateParameter("orificeLength", orificeLength);
         dropgen.updateParameter("oilInputWidth", oilInputWidth);
@@ -37,38 +37,38 @@ export default class DAFDPlugin {
         dropgen.updateParameter("outputLength", outputLength);
         dropgen.updateParameter("height", height);
 
-        //Update the transitions
+        // Update the transitions
         transition_out.updateParameter("cw2", outputWidth);
         transition_in.updateParameter("cw2", waterInputWidth);
         transition_oil1.updateParameter("cw2", oilInputWidth);
         transition_oil2.updateParameter("cw2", oilInputWidth);
 
-        let componentports = dropgen.ports;
+        const componentports = dropgen.ports;
         console.log("component ports:", componentports);
-        //Draw the channels
+        // Draw the channels
         let startpoint;
         let endpoint;
         let cp;
 
-        //Align ports  to the droplet generator
-        let dxpos = dropgen.getPosition()[0];
-        let xpos = dxpos + oilInputWidth / 2;
+        // Align ports  to the droplet generator
+        const dxpos = dropgen.getPosition()[0];
+        const xpos = dxpos + oilInputWidth / 2;
         let ypos = port_oil1.getCenterPosition()[1];
-        port_oil1.updateComponetPosition([xpos, ypos]);
+        port_oil1.updateComponentPosition([xpos, ypos]);
         ypos = port_oil2.getCenterPosition()[1];
-        port_oil2.updateComponetPosition([xpos, ypos]);
+        port_oil2.updateComponentPosition([xpos, ypos]);
 
-        //Moving teh transistions to align with droplet generators
+        // Moving teh transistions to align with droplet generators
         ypos = port_oil1.getValue("position")[1];
         transition_oil1.updateParameter("position", [xpos, ypos]);
         ypos = port_oil2.getValue("position")[1];
         transition_oil2.updateParameter("position", [xpos, ypos]);
-        let inpos = port_in.getValue("position");
-        let outpos = port_out.getValue("position");
+        const inpos = port_in.getValue("position");
+        const outpos = port_out.getValue("position");
         transition_in.updateParameter("position", inpos);
         transition_out.updateParameter("position", outpos);
 
-        //Input Channel
+        // Input Channel
         startpoint = port_in.getCenterPosition();
         cp = componentports.get("4");
         endpoint = ComponentPort.calculateAbsolutePosition(cp, dropgen);
@@ -81,7 +81,7 @@ export default class DAFDPlugin {
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
         newChannel.updateParameter("channelWidth", waterInputWidth);
 
-        //oil top Channel
+        // oil top Channel
         startpoint = port_oil1.getCenterPosition();
         cp = componentports.get("1");
         endpoint = ComponentPort.calculateAbsolutePosition(cp, dropgen);
@@ -93,7 +93,7 @@ export default class DAFDPlugin {
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
         newChannel.updateParameter("channelWidth", oilInputWidth);
 
-        //output Channel
+        // output Channel
         startpoint = port_out.getCenterPosition();
         cp = componentports.get("2");
         endpoint = ComponentPort.calculateAbsolutePosition(cp, dropgen);
@@ -106,7 +106,7 @@ export default class DAFDPlugin {
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
         newChannel.updateParameter("channelWidth", outputWidth);
 
-        //oil bottom Channel
+        // oil bottom Channel
         startpoint = port_oil2.getCenterPosition();
         cp = componentports.get("3");
         console.log("cp", cp);

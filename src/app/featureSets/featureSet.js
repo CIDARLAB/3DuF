@@ -1,14 +1,14 @@
 import Device from "../core/device";
 
 import Port from "../library/port";
-import Anode from "../library/anode"; //new from CK
-import Cathode from "../library/cathode"; //new from CK
+import Anode from "../library/anode"; // new from CK
+import Cathode from "../library/cathode"; // new from CK
 import Channel from "../library/channel";
 import BetterMixer from "../library/betterMixer";
 import RotaryMixer from "../library/rotaryMixer";
 import AlignmentMarks from "../library/alignmentMarks";
 import CellTrapL from "../library/celltrapL";
-import Gelchannel from "../library/gelchannel";//CK
+import Gelchannel from "../library/gelchannel"; // CK
 import Chamber from "../library/chamber";
 import Connection from "../library/connection";
 import CurvedMixer from "../library/curvedMixer";
@@ -19,7 +19,7 @@ import Mux from "../library/mux";
 import Pump from "../library/pump";
 import Pump3D from "../library/pump3D";
 import RoundedChannel from "../library/roundedChannel";
-import thermoCycler from "../library/thermoCycler"
+import thermoCycler from "../library/thermoCycler";
 import Transition from "../library/transition";
 import Transposer from "../library/transposer";
 import Valve from "../library/valve";
@@ -30,6 +30,23 @@ import LLChamber from "../library/llChamber";
 import ThreeDMixer from "../library/threeDMixer";
 import Via from "../library/via";
 
+// new
+
+import Filter from "../library/filter";
+import CellTrapS from "../library/celltrapS";
+import ThreeDMux from "../library/threeDMux";
+import ChemostatRing from "../library/chemostatring";
+import Incubation from "../library/incubation";
+import Merger from "../library/merger";
+import PicoInjection from "../library/picoinjection";
+import Sorter from "../library/sorter";
+import CapacitanceSensor from "../library/capacitancesensor";
+import Splitter from "../library/splitter";
+import Node from "../library/node";
+import DropletGeneratorT from "../library/dropletGeneratorT";
+import DropletGeneratorFlowFocus from "../library/dropletGeneratorFlowFocus";
+import LogicArray from "../library/logicArray";
+
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
         this.__definitions = definitions;
@@ -37,11 +54,11 @@ export default class FeatureSet {
         this.__tools = tools;
         this.__render2D = render2D;
         this.__render3D = render3D;
-        //TODO: Replace this cumbersome mechanism for generating different feature variants, etc.
+        // TODO: Replace this cumbersome mechanism for generating different feature variants, etc.
         this.__library = {
             Port: { object: new Port(), key: null },
-            Anode: { object: new Anode(), key: null },//ck addition
-            Cathode: { object: new Cathode(), key: null },//ck addition
+            Anode: { object: new Anode(), key: null }, // ck addition
+            Cathode: { object: new Cathode(), key: null }, // ck addition
             Channel: { object: new Channel(), key: null },
             BetterMixer: { object: new BetterMixer(), key: "FLOW" },
             RotaryMixer: { object: new RotaryMixer(), key: "FLOW" },
@@ -53,17 +70,16 @@ export default class FeatureSet {
             },
             CellTrapL: { object: new CellTrapL(), key: "FLOW" },
             CellTrapL_cell: { object: new CellTrapL(), key: "CELL" },
-            Gelchannel: { object: new Gelchannel(), key: "FLOW" },//CK
-            Gelchannel_cell: { object: new Gelchannel(), key: "CELL" },//CK
+            Gelchannel: { object: new Gelchannel(), key: "FLOW" }, // CK
+            Gelchannel_cell: { object: new Gelchannel(), key: "CELL" }, // CK
             Chamber: { object: new Chamber(), key: null },
-            Connection: { object: new Connection(), key: null },
             CurvedMixer: { object: new CurvedMixer(), key: null },
             DiamondReactionChamber: {
                 object: new DiamondReactionChamber(),
                 key: null
             },
 
-
+            Connection: { object: new Connection(), key: null },
             DropletGen: { object: new DropletGenerator(), key: null },
             GradientGenerator: { object: new GradientGenerator(), key: null },
             Mux: { object: new Mux(), key: "FLOW" },
@@ -73,7 +89,7 @@ export default class FeatureSet {
             Pump3D: { object: new Pump3D(), key: "FLOW" },
             Pump3D_control: { object: new Pump3D(), key: "CONTROL" },
             RoundedChannel: { object: new RoundedChannel(), key: null },
-            thermoCycler: { object: new thermoCycler(), key: "FLOW"},
+            thermoCycler: { object: new thermoCycler(), key: "FLOW" },
             Transition: { object: new Transition(), key: null },
             Transposer: { object: new Transposer(), key: "FLOW" },
             Transposer_control: { object: new Transposer(), key: "CONTROL" },
@@ -86,7 +102,28 @@ export default class FeatureSet {
             LLChamber_control: { object: new LLChamber(), key: "CONTROL" },
             "3DMixer": { object: new ThreeDMixer(), key: "FLOW" },
             "3DMixer_control": { object: new ThreeDMixer(), key: "CONTROL" },
-            Via: {object: new Via(), key: "FLOW" }
+            Via: { object: new Via(), key: "FLOW" },
+
+            // new
+            Filter: { object: new Filter(), key: "Flow" },
+            CellTrapS: { object: new CellTrapS(), key: "FLOW" },
+            CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },
+            "3DMux": { object: new ThreeDMux(), key: "FLOW" },
+            "3DMux_control": { object: new ThreeDMux(), key: "CONTROL" },
+            ChemostatRing: { object: new ChemostatRing(), key: "FLOW" },
+            ChemostatRing_control: { object: new ChemostatRing(), key: "CONTROL" },
+            Incubation: { object: new Incubation(), key: "FLOW" },
+            Merger: { object: new Merger(), key: "FLOW" },
+            PicoInjection: { object: new PicoInjection(), key: "FLOW" },
+            Sorter: { object: new Sorter(), key: "FLOW" },
+            Splitter: { object: new Splitter(), key: "FLOW" },
+            CapacitanceSensor: { object: new CapacitanceSensor(), key: "FLOW" },
+            Node: { object: new Node(), key: "FLOW" },
+            DropletGenT: { object: new DropletGeneratorT(), key: null },
+            DropletGenFlow: { object: new DropletGeneratorFlowFocus(), key: null },
+            LogicArray: { object: new LogicArray(), key: "FLOW" },
+            LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
+            LogicArray_cell: { object: new LogicArray(), key: "CELL" }
         };
 
         // this.__checkDefinitions();
@@ -104,9 +141,9 @@ export default class FeatureSet {
      * @return {string|null}
      */
     getTypeForMINT(minttype) {
-        let checkmint = minttype.replace(/\s/g, '');
-        for (let key in this.__library) {
-            if (checkmint == this.__library[key].object.mint) {
+        const checkmint = minttype;
+        for (const key in this.__library) {
+            if (checkmint === this.__library[key].object.mint) {
                 return key;
             }
         }
@@ -117,17 +154,17 @@ export default class FeatureSet {
      * Returns the default params and values for the entire library
      */
     getDefaults() {
-        let output = {};
-        for (let key in this.__library) {
+        const output = {};
+        for (const key in this.__library) {
             output[key] = this.__library[key].object.defaults;
         }
         return output;
     }
 
     getFeatureType(typeString) {
-        let setString = this.name;
-        let defaultName = "New " + setString + "." + typeString;
-        return function(values, name = defaultName) {
+        const setString = this.name;
+        const defaultName = "New " + setString + "." + typeString;
+        return function (values, name = defaultName) {
             return Device.makeFeature(typeString, setString, values, name);
         };
     }
@@ -143,7 +180,7 @@ export default class FeatureSet {
      */
     getDefinition(typeString) {
         // console.log("Called", typeString);
-        //TODO:Clean up this hacky code and shift everything to use MINT convention
+        // TODO:Clean up this hacky code and shift everything to use MINT convention
         if (!this.__library.hasOwnProperty(typeString)) {
             typeString = this.getTypeForMINT(typeString);
         }
@@ -153,8 +190,8 @@ export default class FeatureSet {
             return null;
         }
 
-        let definition = this.__library[typeString].object;
-        let ret = {
+        const definition = this.__library[typeString].object;
+        const ret = {
             unique: definition.unique,
             heritable: definition.heritable,
             units: definition.units,
@@ -199,8 +236,8 @@ export default class FeatureSet {
     makeFeature(typeString, setString, values, name) {
         throw new Error("MAke featre in feature set is being called");
         console.log(setString);
-        let set = getSet(setString);
-        let featureType = getFeatureType(typeString);
+        const set = getSet(setString);
+        const featureType = getFeatureType(typeString);
         return featureType(values, name);
     }
 
@@ -211,7 +248,7 @@ export default class FeatureSet {
      * @return {void|Array}
      */
     getComponentPorts(params, typestring) {
-        let definition = this.__library[typestring].object;
+        const definition = this.__library[typestring].object;
         return definition.getPorts(params);
     }
 
@@ -221,14 +258,14 @@ export default class FeatureSet {
      * @return {*|boolean}
      */
     hasInverseRenderLayer(typestring) {
-        let definition = this.__library[typestring].object;
+        const definition = this.__library[typestring].object;
         // Go through the renderkeys and check if inverse is available
-        let renderkeys = definition.renderKeys;
+        const renderkeys = definition.renderKeys;
         return renderkeys.includes("INVERSE");
     }
 
     __checkDefinitions() {
-        for (let key in this.__definitions) {
+        for (const key in this.__definitions) {
             if (!this.__tools.hasOwnProperty(key) || !this.__render2D.hasOwnProperty(key) || !this.__render3D.hasOwnProperty(key)) {
                 throw new Error("Feature set does not contain a renderer or tool definition for: " + key);
             }

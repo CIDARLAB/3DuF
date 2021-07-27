@@ -4,9 +4,13 @@
             <a v-bind="attrs" class="popdown mdl-button mdl-js-button mdl-js-ripple-effect" title="About" style="color: hotpink" v-on="on">Getting Started</a>
         </template>
         <v-card>
+<<<<<<< HEAD
             <v-card-title class="headline">
                 Getting Started
             </v-card-title>
+=======
+            <v-card-title class="headline"> Getting Started </v-card-title>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
             <v-card-text>
                 <h5>Academic Publications:</h5>
                 <p>
@@ -41,12 +45,17 @@
                         </td>
                     </tr>
                     <tr>
+<<<<<<< HEAD
                         <td style="text-align: center">
                             Introduction
                         </td>
                         <td style="text-align: center">
                             Long Tutorial
                         </td>
+=======
+                        <td style="text-align: center">Introduction</td>
+                        <td style="text-align: center">Long Tutorial</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                 </table>
 
@@ -66,97 +75,145 @@
                         <td class="tg-yw4l">
                             <pre>del</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Delete Feature
                         </td>
+=======
+                        <td class="tg-yw4l">- Delete Feature</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>F</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Reset Canvas
                         </td>
+=======
+                        <td class="tg-yw4l">- Reset Canvas</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>Esc</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Activate Select Tool/ Deselect Selected Components
                         </td>
+=======
+                        <td class="tg-yw4l">- Activate Select Tool/ Deselect Selected Components</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>ctrl+C , ctrl+V</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Activate Component Copy Mode
                         </td>
+=======
+                        <td class="tg-yw4l">- Activate Component Copy Mode</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>ctrl+Z</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Undo Last Edit
                         </td>
+=======
+                        <td class="tg-yw4l">- Undo Last Edit</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>ctrl+A</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Select All
                         </td>
+=======
+                        <td class="tg-yw4l">- Select All</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>ctrl+S</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Save JSON file
                         </td>
+=======
+                        <td class="tg-yw4l">- Save JSON file</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>left click</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Place Feature
                         </td>
+=======
+                        <td class="tg-yw4l">- Place Feature</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>right click</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Select Feature
                         </td>
+=======
+                        <td class="tg-yw4l">- Select Feature</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>mouse scroll</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Zoom
                         </td>
+=======
+                        <td class="tg-yw4l">- Zoom</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>arrow keys</pre>
                         </td>
+<<<<<<< HEAD
                         <td class="tg-yw4l">
                             - Pan
                         </td>
+=======
+                        <td class="tg-yw4l">- Pan</td>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                     </tr>
                 </table>
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
+<<<<<<< HEAD
                 <v-btn color="green darken-1" text @click="dialog = false">
                     Close
                 </v-btn>
+=======
+                <v-btn color="green darken-1" text @click="dialog = false"> Close </v-btn>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
             </v-card-actions>
         </v-card>
     </v-dialog>

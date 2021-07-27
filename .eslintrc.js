@@ -28,7 +28,12 @@ module.exports = {
         semi: ["warn", "always"],
         "no-unused-vars": "off",
         "no-case-declarations": "off",
+<<<<<<< HEAD
         "vue/max-attributes-per-line": "off"
+=======
+        "vue/max-attributes-per-line": "off",
+        "no-prototype-builtins": "off"
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
     },
 
     ignorePatterns: ["src/app/**", "src/test/**"],

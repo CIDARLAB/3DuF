@@ -11,21 +11,21 @@ export default class IntroDialog {
             dialogPolyfill.registerDialog(this._dialog);
         }
 
-        let ref = this;
+        const ref = this;
 
-        this._dialog.querySelector(".close").addEventListener("click", function() {
+        this._dialog.querySelector(".close").addEventListener("click", function () {
             ref._dialog.close();
         });
 
-        let isfirsttime = CookieUtils.getCookie("isfirst");
+        const isfirsttime = CookieUtils.getCookie("isfirst");
         console.log("cookie data:", isfirsttime);
-        if (isfirsttime != "true") {
+        if (isfirsttime !== "true") {
             this._dialog.showModal();
         } else {
             CookieUtils.setCookie("isfirst", "false");
         }
 
-        this._gettingStartedButton.addEventListener("click", function(e, el) {
+        this._gettingStartedButton.addEventListener("click", function (e, el) {
             ref._dialog.showModal();
         });
     }

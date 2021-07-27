@@ -18,3 +18,18 @@ publish.sh
 
 docs/
 build/*
+<<<<<<< HEAD
+=======
+
+# Folder view configuration files
+.DS_Store
+Desktop.ini
+
+# Thumbnail cache files
+._*
+Thumbs.db
+
+# Files that might appear on external disks
+.Spotlight-V100
+.Trashes
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a

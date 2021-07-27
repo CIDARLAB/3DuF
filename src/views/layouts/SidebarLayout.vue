@@ -7,6 +7,11 @@
                 <IntroHelpDialog />
                 <HelpDialog />
                 <v-divider />
+<<<<<<< HEAD
+=======
+                <MoveDialog />
+                <ChangeAllDialog />
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                 <EditDeviceDialog />
                 <EditBorderDialog />
                 <InsertTextDialog />
@@ -18,7 +23,11 @@
 
             <v-list>
                 <v-list-item-group mandatory color="indigo">
+<<<<<<< HEAD
                     <v-list-item v-for="[icon, text] in buttons" :key="icon" link>
+=======
+                    <v-list-item v-for="[key, icon, text] in buttons" :key="key" link>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
                         <v-list-item-icon>
                             <v-icon>{{ icon }}</v-icon>
                         </v-list-item-icon>
@@ -49,6 +58,11 @@ import EventBus from "@/events/events";
 import HelpDialog from "@/components/HelpDialog.vue";
 import IntroHelpDialog from "@/components/IntroHelpDialog.vue";
 import EditDeviceDialog from "@/components/EditDeviceDialog.vue";
+<<<<<<< HEAD
+=======
+import MoveDialog from "@/components/base/MoveDialog.vue";
+import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 import EditBorderDialog from "@/components/EditBorderDialog.vue";
 import ImportDXFDialog from "@/components/ImportDXFDialog.vue";
 import InsertTextDialog from "@/components/InsertTextDialog.vue";
@@ -59,6 +73,11 @@ export default {
         HelpDialog,
         IntroHelpDialog,
         EditDeviceDialog,
+<<<<<<< HEAD
+=======
+        MoveDialog,
+        ChangeAllDialog,
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
         EditBorderDialog,
         ImportDXFDialog,
         InsertTextDialog,
@@ -68,11 +87,19 @@ export default {
     data() {
         return {
             buttons: [
+<<<<<<< HEAD
                 ["mdi-devices", "3DuF File (.json)"],
                 ["mdi-border-all", "Vector Art (.svg)"],
                 ["mdi-toolbox", "CNC (.svg)"],
                 ["mdi-toolbox", "Laser Cutting (.svg)"],
                 ["mdi-toolbox", "Publish on Metafluidics"]
+=======
+                ["json", "mdi-devices", "3DuF File (.json)"],
+                ["svg", "mdi-border-all", "Vector Art (.svg)"],
+                ["cnc", "mdi-toolbox", "CNC (.svg)"],
+                ["laser", "mdi-toolbox", "Laser Cutting (.svg)"],
+                ["metafluidics", "mdi-toolbox", "Publish on Metafluidics"]
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
             ]
         };
     },
@@ -85,7 +112,11 @@ export default {
     },
     methods: {
         handleScroll() {
+<<<<<<< HEAD
             EventBus.get().emit(EventBus.NAVBAR_SCOLL_EVENT);
+=======
+            EventBus.get().emit(EventBus.NAVBAR_SCROLL_EVENT);
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
         }
     }
 };

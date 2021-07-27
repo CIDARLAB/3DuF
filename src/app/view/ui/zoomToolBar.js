@@ -9,13 +9,13 @@ export default class ZoomToolBar {
     }
 
     __setupZoomSlider(zoom_min, zoom_max) {
-        if (this.__zoomSlider == null) {
+        if (this.__zoomSlider === null) {
             throw new Error("Could not find HTML element for the grid resolution slider");
         }
 
-        //Create the nouislider
-        let zoom_optimal = Math.log10(Registry.viewManager.view.computeOptimalZoom());
-        //Create the noUiSlider
+        // Create the nouislider
+        const zoom_optimal = Math.log10(Registry.viewManager.view.computeOptimalZoom());
+        // Create the noUiSlider
         noUiSlider.create(this.__zoomSlider, {
             start: [zoom_optimal],
             connect: "lower",
@@ -28,13 +28,13 @@ export default class ZoomToolBar {
             direction: "rtl"
         });
 
-        //Create the onupdate method
-        let registryref = Registry;
-        let ref = this;
-        this.__zoomSlider.noUiSlider.on("update", function(values, handle, unencoded, tap, positions) {
+        // Create the onupdate method
+        const registryref = Registry;
+        const ref = this;
+        this.__zoomSlider.noUiSlider.on("update", function (values, handle, unencoded, tap, positions) {
             if (ref.__isUserGeneratedEvent) {
                 console.log("Zoom Value:", values[0]);
-                //TODO - Map this directly to the zoom functions
+                // TODO - Map this directly to the zoom functions
                 console.log(registryref);
                 try {
                     registryref.viewManager.setZoom(ZoomToolBar.convertLinearToZoomScale(values[0]));

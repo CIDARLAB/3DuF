@@ -11,8 +11,8 @@ export default class Selection {
         this.__components = [];
         this.__connections = [];
         this.__otherFeatures = [];
-        //Sort out wether each of the items selected belongs to one of the following
-        for (let i in items) {
+        // Sort out wether each of the items selected belongs to one of the following
+        for (const i in items) {
             console.log(items[i]);
         }
         this.__bounds = this.__calculateSelectionBounds();
@@ -31,49 +31,51 @@ export default class Selection {
         2. Go through each of the items
         3. Clone components/connections/other features
          */
-        let referencepoint = this.__bounds.topleft;
+        const referencepoint = this.__bounds.topleft;
 
         console.log("reference point:", referencepoint);
 
-        for (let i in this.__components) {
-            let render = Registry.currentDevice.getFeatureByID(this.__components[i]);
+        for (const i in this.__components) {
+            const render = Registry.currentDevice.getFeatureByID(this.__components[i]);
         }
 
-        for (let i in this.__connections) {
-            let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+        for (const i in this.__connections) {
+            const render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
         }
 
-        for (let i in this.__otherFeatures) {
-            let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+        for (const i in this.__otherFeatures) {
+            const render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
         }
     }
+
     /**
      * Selects all the components, connections and features
      * @returns {void}
      * @memberof Selection
      */
     selectAll() {
-        for (let i in this.__components) {
-            let component = Registry.currentDevice.getComponentByID(this.__components[i]);
-            for (let j in component.features) {
-                let render = Registry.currentDevice.getFeatureByID(component.features[i]);
+        for (const i in this.__components) {
+            const component = Registry.currentDevice.getComponentByID(this.__components[i]);
+            for (const j in component.featureIDs) {
+                const render = Registry.currentDevice.getFeatureByID(component.featureIDs[i]);
                 render.selected = true;
             }
         }
 
-        for (let i in this.__connections) {
-            let connection = Registry.currentDevice.getConnectionByID(this.__connections[i]);
-            for (let j in connection.features) {
-                let render = Registry.currentDevice.getFeatureByID(connection.features[i]);
+        for (const i in this.__connections) {
+            const connection = Registry.currentDevice.getConnectionByID(this.__connections[i]);
+            for (const j in connection.featureIDs) {
+                const render = Registry.currentDevice.getFeatureByID(connection.featureIDs[i]);
                 render.selected = true;
             }
         }
 
-        for (let i in this.__otherFeatures) {
-            let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+        for (const i in this.__otherFeatures) {
+            const render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
             render.selected = true;
         }
     }
+
     /**
      * Gets all the bounds
      * @returns {Array<number>} Returns an array containing the bounds of the selection
@@ -82,6 +84,7 @@ export default class Selection {
     get bounds() {
         return this.__bounds;
     }
+
     /**
      * Calculates how much area has been selected
      * @returns {void}
@@ -94,8 +97,8 @@ export default class Selection {
         let ymax = 0;
         let bounds;
 
-        for (let i in this.__components) {
-            let render = Registry.currentDevice.getFeatureByID(this.__components[i]);
+        for (const i in this.__components) {
+            const render = Registry.currentDevice.getFeatureByID(this.__components[i]);
             bounds = render.bounds;
             if (bounds.x < xmin) {
                 xmin = bounds.x;
@@ -111,8 +114,8 @@ export default class Selection {
             }
         }
 
-        for (let i in this.__connections) {
-            let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+        for (const i in this.__connections) {
+            const render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
             bounds = render.bounds;
             if (bounds.x < xmin) {
                 xmin = bounds.x;
@@ -128,8 +131,8 @@ export default class Selection {
             }
         }
 
-        for (let i in this.__otherFeatures) {
-            let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+        for (const i in this.__otherFeatures) {
+            const render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
             bounds = render.bounds;
             if (bounds.x < xmin) {
                 xmin = bounds.x;
@@ -145,7 +148,7 @@ export default class Selection {
             }
         }
 
-        let ret = new paper.Rectangle(new paper.Point(xmin, ymin), new paper.Point(xmax, ymax));
+        const ret = new paper.Rectangle(new paper.Point(xmin, ymin), new paper.Point(xmax, ymax));
         return ret;
     }
 }

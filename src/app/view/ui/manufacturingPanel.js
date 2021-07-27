@@ -3,7 +3,11 @@ import CNCGenerator from "../../manufacturing/cncGenerator";
 import JSZip from "jszip";
 import LaserCuttingGenerator from "../../manufacturing/laserCuttingGenerator";
 
+<<<<<<< HEAD
 import Registry from '../../core/registry';
+=======
+import Registry from "../../core/registry";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 
 export default class ManufacturingPanel {
     constructor(viewManagerDelegate) {
@@ -12,12 +16,12 @@ export default class ManufacturingPanel {
         this.__cncButton = document.getElementById("cnc_button");
         this.__laserButton = document.getElementById("laser_button");
         console.log("current device:", Registry.currentDevice);
-        let cncGenerator = new CNCGenerator(Registry.currentDevice, this.__viewManagerDelegate);
-        let laserCuttingGenerator = new LaserCuttingGenerator(Registry.currentDevice, this.__viewManagerDelegate);
-        let registryref = Registry;
+        const cncGenerator = new CNCGenerator(Registry.currentDevice, this.__viewManagerDelegate);
+        const laserCuttingGenerator = new LaserCuttingGenerator(Registry.currentDevice, this.__viewManagerDelegate);
+        const registryref = Registry;
 
-        let ref = this;
-        this.__cncButton.addEventListener("click", function(event) {
+        const ref = this;
+        this.__cncButton.addEventListener("click", function (event) {
             console.log("Generating CNC Layers");
             cncGenerator.setDevice(registryref.currentDevice);
             cncGenerator.generatePortLayers();
@@ -31,7 +35,7 @@ export default class ManufacturingPanel {
             cncGenerator.flushData();
         });
 
-        this.__laserButton.addEventListener("click", function(event) {
+        this.__laserButton.addEventListener("click", function (event) {
             console.log("Generating Laser Cutting Layers");
 
             laserCuttingGenerator.setDevice(registryref.currentDevice);
@@ -45,13 +49,13 @@ export default class ManufacturingPanel {
     }
 
     packageAndDownloadBundle(svgOutputs) {
-        let zipper = new JSZip();
+        const zipper = new JSZip();
 
         for (const key of svgOutputs.keys()) {
             zipper.file(key + ".svg", svgOutputs.get(key));
         }
 
-        let content = zipper.generate({
+        const content = zipper.generate({
             type: "blob"
         });
 

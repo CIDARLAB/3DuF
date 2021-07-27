@@ -9,40 +9,40 @@ export default class CellPositionTool extends PositionTool {
     }
 
     createNewFeature(point) {
-        let featureIDs = [];
+        const featureIDs = [];
 
-        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
-        let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
-        let cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
+        const currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
+        const flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
+        const cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
 
         let newFeature = Device.makeFeature(this.typeString, this.setString, {
             position: PositionTool.getTarget(point)
         });
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         flowlayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
-        let params_to_copy = newFeature.getParams();
+        const params_to_copy = newFeature.getParams();
 
-        let newtypestring = this.typeString + "_cell";
-        let paramstoadd = newFeature.getParams();
+        const newtypestring = this.typeString + "_cell";
+        const paramstoadd = newFeature.getParams();
         newFeature = Device.makeFeature(newtypestring, this.setString, {
             position: PositionTool.getTarget(point)
         });
         newFeature.setParams(paramstoadd);
 
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         cell_layer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager.saveDeviceState();
     }
 
     showTarget() {
-        let target = PositionTool.getTarget(this.lastPoint);
+        const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 }

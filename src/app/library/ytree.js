@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class YTree extends Template {
     constructor() {
@@ -12,75 +13,85 @@ export default class YTree extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             flowChannelWidth: "Float",
-            orientation: "String",
+            rotation: "Float",
             spacing: "Float",
-            leafs: "Float",
+            in: "Integer",
+            out: "Integer",
             width: "Float",
             height: "Float",
-            direction: "String",
             stageLength: "Float"
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             flowChannelWidth: 0.8 * 1000,
-            orientation: "V",
+            rotation: 0,
             spacing: 4 * 1000,
-            leafs: 8,
+            in: 1,
+            out: 8,
             width: 2.46 * 1000,
             height: 250,
-            direction: "IN",
             stageLength: 4000
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             flowChannelWidth: "&mu;m",
-            orientation: "",
+            rotation: "&deg;",
             spacing: "&mu;m",
-            leafs: "",
+            in: "",
+            out: "",
             width: "&mu;m",
             height: "&mu;m",
-            direction: "",
             stageLength: "&mu;m"
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             flowChannelWidth: 10,
             spacing: 30,
-            leafs: 2,
+            in: 1,
+            out: 2,
             width: 60,
             height: 10,
-            stageLength: 100
+            stageLength: 100,
+            rotation: 0
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             flowChannelWidth: 2000,
             spacing: 12000,
-            leafs: 2,
+            in: 1,
+            out: 128,
             width: 12 * 1000,
             height: 1200,
-            stageLength: 6000
+            stageLength: 6000,
+            rotation: 360
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             flowChannelWidth: "flowChannelWidth",
-            orientation: "orientation",
+            rotation: "rotation",
             spacing: "spacing",
             width: "width",
-            leafs: "leafs",
-            stageLength: "stageLength",
-            direction: "direction"
+            in: "in",
+            out: "out",
+            stageLength: "stageLength"
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             flowChannelWidth: "flowChannelWidth",
-            orientation: "orientation",
+            rotation: "rotation",
             spacing: "spacing",
-            width: "width",
-            leafs: "leafs",
-            stageLength: "stageLength",
-            direction: "direction"
+            in: "in",
+            out: "out",
+            stageLength: "stageLength"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -94,60 +105,89 @@ export default class YTree extends Template {
         this.__mint = "YTREE";
     }
 
-    render2D(params, key) {
-        let position = params["position"];
-        let cw = params["flowChannelWidth"];
-        let orientation = params["orientation"];
-        let direction = params["direction"];
-        let spacing = params["spacing"];
-        let leafs = params["leafs"];
-        let color = params["color"];
-        let stagelength = params["stageLength"];
-        let px = position[0];
-        let py = position[1];
+    getPorts(params) {
+        const ports = [];
+        const cw = params.flowChannelWidth;
+        const spacing = params.spacing;
+        const ins = params.in;
+        const outs = params.out;
+        let leafs;
+        if (ins < outs) {
+            leafs = outs;
+        } else {
+            leafs = ins;
+            rotation += 180;
+        }
+        const stagelength = params.stageLength;
 
-        let levels = Math.ceil(Math.log2(leafs));
-        let isodd = false; //This is used to figure out how many lines have to be made
-        if (leafs % 2 == 0) {
+        const levels = Math.ceil(Math.log2(leafs));
+        const w = spacing * (leafs / 2 + 1);
+
+        const length = levels * stagelength;
+        const width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
+
+        ports.push(new ComponentPort(0, -cw / 2, "1", "FLOW"));
+
+        for (let i = 0; i < leafs; i++) {
+            ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length + cw / 2, (2 + i).toString(), "FLOW"));
+        }
+
+        return ports;
+    }
+
+    render2D(params, key) {
+        const position = params.position;
+        const cw = params.flowChannelWidth;
+        let rotation = params.rotation;
+        const spacing = params.spacing;
+        const ins = params.in;
+        const outs = params.out;
+        let leafs;
+        if (ins < outs) {
+            leafs = outs;
+        } else {
+            leafs = ins;
+            rotation += 180;
+        }
+        const color = params.color;
+        const stagelength = params.stageLength;
+        const px = position[0];
+        const py = position[1];
+
+        const levels = Math.ceil(Math.log2(leafs));
+        let isodd = false; // This is used to figure out how many lines have to be made
+        if (leafs % 2 === 0) {
             isodd = false;
         } else {
             isodd = true;
         }
-        let w = spacing * (leafs / 2 + 1);
-        let l = (levels + 1) * stagelength;
+        const w = spacing * (leafs / 2 + 1);
+        const l = (levels + 1) * stagelength;
 
-        var treepath = new paper.CompoundPath();
+        const treepath = new paper.CompoundPath();
 
         this.__generateYTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
-        //Draw the tree
+        // Draw the tree
 
         treepath.fillColor = color;
-        let rotation = 0;
-        if (orientation == "H" && direction == "OUT") {
-            rotation = 180;
-        } else if (orientation == "V" && direction == "IN") {
-            rotation = 270;
-        } else if (orientation == "V" && direction == "OUT") {
-            rotation = 90;
-        }
         return treepath.rotate(rotation, px, py);
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }
 
     __generateYTwig(treepath, px, py, cw, stagelength, newspacing, level, maxlevel, islast = false) {
-        let hspacing = newspacing / 2;
-        let lex = px - 0.5 * newspacing;
-        let ley = py + stagelength;
-        let rex = px + 0.5 * newspacing;
-        let rey = py + stagelength;
+        const hspacing = newspacing / 2;
+        const lex = px - 0.5 * newspacing;
+        const ley = py + stagelength;
+        const rex = px + 0.5 * newspacing;
+        const rey = py + stagelength;
 
-        if (level == maxlevel) {
+        if (level === maxlevel) {
             islast = true;
         }
 
@@ -160,16 +200,16 @@ export default class YTree extends Template {
     }
 
     __drawYtwig(treepath, px, py, cw, stagelength, spacing, drawleafs = false) {
-        let pivotpoint = new paper.Point(px, py);
+        const pivotpoint = new paper.Point(px, py);
 
-        //stem
-        let startPoint = new paper.Point(px - cw / 2, py - cw / 2);
+        // stem
+        const startPoint = new paper.Point(px - cw / 2, py - cw / 2);
 
-        let angle = Math.atan(spacing / 2 / stagelength);
+        const angle = Math.atan(spacing / 2 / stagelength);
 
-        let h = spacing / 2 / Math.sin(angle) + cw;
+        const h = spacing / 2 / Math.sin(angle) + cw;
 
-        //left leaf
+        // left leaf
         let rec = paper.Path.Rectangle({
             size: [cw, h],
             point: startPoint,
@@ -179,7 +219,7 @@ export default class YTree extends Template {
         rec.rotate((angle * 180) / Math.PI, pivotpoint);
         treepath.addChild(rec);
 
-        //right leaf
+        // right leaf
         rec = paper.Path.Rectangle({
             size: [cw, h],
             point: startPoint,

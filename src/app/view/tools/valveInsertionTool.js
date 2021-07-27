@@ -1,8 +1,14 @@
 import MultilayerPositionTool from "./multilayerPositionTool";
 
+<<<<<<< HEAD
 import Registry from '../../core/registry';
 import Device from '../../core/device';
 import MouseTool from './mouseTool';
+=======
+import Registry from "../../core/registry";
+import Device from "../../core/device";
+import MouseTool from "./mouseTool";
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
 import PositionTool from "./positionTool";
 import paper from "paper";
 
@@ -11,23 +17,23 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         super(typeString, setString);
         this.is3D = is3D;
 
-        let ref = this;
+        const ref = this;
 
-        this.down = function(event) {
+        this.down = function (event) {
             console.log(event);
-            let point = MouseTool.getEventPosition(event);
-            let target = PositionTool.getTarget(point);
-            //Check if connection exists at point
-            let connection = ref.checkIfConnectionExistsAt(target);
-            //if connection exists then place the valve
+            const point = MouseTool.getEventPosition(event);
+            const target = PositionTool.getTarget(point);
+            // Check if connection exists at point
+            const connection = ref.checkIfConnectionExistsAt(target);
+            // if connection exists then place the valve
             if (connection) {
                 ref.insertValve(point, connection);
             } else if (event.ctrlKey || event.metaKey) {
-                //Forced placement of the Valve
+                // Forced placement of the Valve
                 console.warn("Forcing placement of valve, a lot of things will not work correct if done this way");
                 ref.forceInsertValve(point);
             } else {
-                //Send out error message
+                // Send out error message
                 console.log("Could not find connection at this location");
             }
         };
@@ -40,7 +46,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @return {Component}
      */
     createNewFeature(point, rotation = null) {
-        let featureIDs = [];
+        const featureIDs = [];
         let overridedata;
 
         if (rotation) {
@@ -54,19 +60,19 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             };
         }
 
-        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
-        let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
+        const currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
+        const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
-        let newFeature = Device.makeFeature(this.typeString, this.setString, overridedata);
-        this.currentFeatureID = newFeature.getID();
+        const newFeature = Device.makeFeature(this.typeString, this.setString, overridedata);
+        this.currentFeatureID = newFeature.ID;
 
         controllayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
-        let params_to_copy = newFeature.getParams();
+        const params_to_copy = newFeature.getParams();
 
-        let component = super.createNewComponent(this.typeString, params_to_copy, featureIDs);
+        const component = super.createNewComponent(this.typeString, params_to_copy, featureIDs);
 
         return component;
     }
@@ -78,7 +84,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @return {Component}
      */
     createNewMultiLayerFeature(point, rotation = null) {
-        let featureIDs = [];
+        const featureIDs = [];
         let overridedata;
 
         if (rotation) {
@@ -92,29 +98,29 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             };
         }
 
-        let currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
-        let flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
-        let controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
+        const currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
+        const flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
+        const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
 
         let newFeature = Device.makeFeature(this.typeString, this.setString, overridedata);
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         flowlayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
-        let params_to_copy = newFeature.getParams();
+        const params_to_copy = newFeature.getParams();
 
-        let newtypestring = this.typeString + "_control";
-        let paramstoadd = newFeature.getParams();
+        const newtypestring = this.typeString + "_control";
+        const paramstoadd = newFeature.getParams();
         newFeature = Device.makeFeature(newtypestring, this.setString, overridedata);
         newFeature.setParams(paramstoadd);
 
-        this.currentFeatureID = newFeature.getID();
+        this.currentFeatureID = newFeature.ID;
         controllayer.addFeature(newFeature);
 
-        featureIDs.push(newFeature.getID());
+        featureIDs.push(newFeature.ID);
 
-        let component = super.createNewComponent(this.typeString, params_to_copy, featureIDs);
+        const component = super.createNewComponent(this.typeString, params_to_copy, featureIDs);
 
         return component;
     }
@@ -123,7 +129,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * Shows the target
      */
     showTarget() {
-        let target = PositionTool.getTarget(this.lastPoint);
+        const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager.updateTarget(this.typeString, this.setString, target);
     }
 
@@ -133,10 +139,10 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @return {*}
      */
     checkIfConnectionExistsAt(target) {
-        let hit = Registry.viewManager.view.hitFeature(target, false);
-        //TODO: check if the hit feature belongs to a connection
+        const hit = Registry.viewManager.view.hitFeature(target, false);
+        // TODO: check if the hit feature belongs to a connection
         if (hit) {
-            let connection = Registry.currentDevice.getConnectionForFeatureID(hit.featureID);
+            const connection = Registry.currentDevice.getConnectionForFeatureID(hit.featureID);
             return connection;
         }
 
@@ -157,11 +163,11 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         let component;
         if (this.is3D) {
             angle += 90;
-            //TODO: Insert the valve features in both flow and control
+            // TODO: Insert the valve features in both flow and control
             component = this.createNewMultiLayerFeature(point, angle);
-            //TODO: Redraw the connection
+            // TODO: Redraw the connection
         } else {
-            //TODO: Insert the valve feature in flow
+            // TODO: Insert the valve feature in flow
             component = this.createNewFeature(point, angle);
         }
 
@@ -178,11 +184,11 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
     forceInsertValve(point) {
         let component;
         if (this.is3D) {
-            //TODO: Insert the valve features in both flow and control
+            // TODO: Insert the valve features in both flow and control
             component = this.createNewMultiLayerFeature(point);
-            //TODO: Redraw the connection
+            // TODO: Redraw the connection
         } else {
-            //TODO: Insert the valve feature in flow
+            // TODO: Insert the valve feature in flow
             component = this.createNewFeature(point);
         }
 
@@ -197,25 +203,25 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @private
      */
     __getRotation(point, connection) {
-        //Find closes normal intersection of the point and place the
+        // Find closes normal intersection of the point and place the
         let conn_waypoints;
         let lowestdist = 1000000000000000000000;
         let p0, p1, sol;
-        let paths = ([] = connection.getPaths());
-        let waypoints = [];
-        for (let j in paths) {
+        const paths = ([] = connection.getPaths());
+        const waypoints = [];
+        for (const j in paths) {
             conn_waypoints = paths[j];
-            //conn_waypoints = connection.getValue("wayPoints");
+            // conn_waypoints = connection.getValue("wayPoints");
             for (let i = 0; i < conn_waypoints.length; i++) {
                 waypoints.push(conn_waypoints[i]);
             }
 
-            //Find out which segment the point is on
+            // Find out which segment the point is on
             for (let i = 0; i < waypoints.length - 1; i++) {
                 p0 = waypoints[i];
                 p1 = waypoints[i + 1];
 
-                let tempdist = this.__calculateNormalDistance(point, p0, p1);
+                const tempdist = this.__calculateNormalDistance(point, p0, p1);
                 if (tempdist < lowestdist || i === 0) {
                     sol = i;
                     lowestdist = tempdist;
@@ -227,9 +233,9 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         }
         // waypoints.splice(0, 0, connection.getValue("start"));
 
-        let to = new paper.Point(p0[0], p0[1]);
-        let from = new paper.Point(p1[0], p1[1]);
-        let vec = from.subtract(to);
+        const to = new paper.Point(p0[0], p0[1]);
+        const from = new paper.Point(p1[0], p1[1]);
+        const vec = from.subtract(to);
 
         return vec.angle;
     }
@@ -242,10 +248,10 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @private
      */
     __calculateNormalDistance(point, p0, p1) {
-        let line = new paper.Path.Line(new paper.Point(p0[0], p0[1]), new paper.Point(p1[0], p1[1]));
-        let target = new paper.Point(point.x, point.y);
-        let closestpt = line.getNearestPoint(target);
-        let dist = closestpt.getDistance(point);
+        const line = new paper.Path.Line(new paper.Point(p0[0], p0[1]), new paper.Point(p1[0], p1[1]));
+        const target = new paper.Point(point.x, point.y);
+        const closestpt = line.getNearestPoint(target);
+        const dist = closestpt.getDistance(point);
         return dist;
     }
 }

@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Mux extends Template {
     constructor() {
@@ -12,90 +13,101 @@ export default class Mux extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             flowChannelWidth: "Float",
-            orientation: "String",
+            rotation: "Float",
             spacing: "Float",
-            leafs: "Float",
+            in: "Integer",
+            out: "Integer",
             width: "Float",
             length: "Float",
             height: "Float",
-            direction: "String",
             stageLength: "Float",
             controlChannelWidth: "Float"
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             flowChannelWidth: 0.8 * 1000,
-            orientation: "V",
+            rotation: 0,
             spacing: 4 * 1000,
-            leafs: 8,
+            in: 1,
+            out: 8,
             width: 1.6 * 1000,
             length: 1.6 * 1000,
             height: 250,
-            direction: "IN",
             stageLength: 4000,
             controlChannelWidth: 0.4 * 1000
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             flowChannelWidth: "&mu;m",
-            orientation: "",
+            rotation: "&deg;",
             spacing: "&mu;m",
-            leafs: "",
+            in: "",
+            out: "",
             width: "&mu;m",
             length: "&mu;m",
             height: "&mu;m",
-            direction: "",
             stageLength: "&mu;m",
             controlChannelWidth: "&mu;m"
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             flowChannelWidth: 10,
             spacing: 30,
-            leafs: 2,
+            in: 1,
+            out: 2,
             width: 60,
             length: 60,
             height: 10,
             stageLength: 100,
-            controlChannelWidth: 10
+            controlChannelWidth: 10,
+            rotation: 0
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             flowChannelWidth: 2000,
             spacing: 12000,
-            leafs: 2,
+            in: 1,
+            out: 128,
             width: 12 * 1000,
             length: 12 * 1000,
             height: 1200,
             stageLength: 6000,
-            controlChannelWidth: 2000
+            controlChannelWidth: 2000,
+            rotation: 360
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
-            orientation: "orientation",
+            rotation: "rotation",
             spacing: "spacing",
             width: "width",
             length: "length",
-            leafs: "leafs",
-            stageLength: "stageLength",
-            direction: "direction"
+            in: "in",
+            out: "out",
+            stageLength: "stageLength"
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
-            orientation: "orientation",
+            rotation: "rotation",
             spacing: "spacing",
             width: "width",
             length: "length",
-            leafs: "leafs",
-            stageLength: "stageLength",
-            direction: "direction"
+            in: "in",
+            out: "out",
+            stageLength: "stageLength"
         };
 
         this.__placementTool = "MultilayerPositionTool";
@@ -110,117 +122,173 @@ export default class Mux extends Template {
     }
 
     __drawFlow(params) {
-        let position = params["position"];
-        let cw = params["flowChannelWidth"];
-        let orientation = params["orientation"];
-        let direction = params["direction"];
-        let spacing = params["spacing"];
-        let leafs = params["leafs"];
-        let color = params["color"];
-        let stagelength = params["stageLength"];
-        let px = position[0];
-        let py = position[1];
+        const position = params.position;
+        const cw = params.flowChannelWidth;
+        let rotation = params.rotation;
+        const spacing = params.spacing;
+        const ins = params.in;
+        const outs = params.out;
+        let leafs;
+        if (ins < outs) {
+            leafs = outs;
+        } else {
+            leafs = ins;
+            rotation += 180;
+        }
+        const color = params.color;
+        const stagelength = params.stageLength;
+        const px = position[0];
+        const py = position[1];
 
-        let levels = Math.ceil(Math.log2(leafs));
-        let isodd = false; //This is used to figure out how many lines have to be made
-        if (leafs % 2 == 0) {
+        const levels = Math.ceil(Math.log2(leafs));
+        let isodd = false; // This is used to figure out how many lines have to be made
+        if (leafs % 2 === 0) {
             isodd = false;
         } else {
             isodd = true;
         }
-        let w = spacing * (leafs / 2 + 1);
-        let l = (levels + 1) * stagelength;
+        const w = spacing * (leafs / 2 + 1);
+        const l = (levels + 1) * stagelength;
 
         // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
-        let treepath = new paper.CompoundPath();
+        const treepath = new paper.CompoundPath();
 
         this.__generateMuxTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
-        //Draw the tree
+        // Draw the tree
 
         treepath.fillColor = color;
-        let rotation = 0;
-        if (orientation == "H" && direction == "OUT") {
-            rotation = 180;
-        } else if (orientation == "V" && direction == "IN") {
-            rotation = 270;
-        } else if (orientation == "V" && direction == "OUT") {
-            rotation = 90;
-        }
         return treepath.rotate(rotation, px, py);
     }
 
     __drawControl(params) {
-        let position = params["position"];
-        let cw = params["flowChannelWidth"];
-        let ctlcw = params["controlChannelWidth"];
-        let orientation = params["orientation"];
-        let direction = params["direction"];
-        let spacing = params["spacing"];
-        let leafs = params["leafs"];
-        let color = params["color"];
-        let stagelength = params["stageLength"];
-        let valvelength = params["length"];
-        let valvewidth = params["width"];
-        let px = position[0];
-        let py = position[1];
+        const position = params.position;
+        const cw = params.flowChannelWidth;
+        const ctlcw = params.controlChannelWidth;
+        let rotation = params.rotation;
+        const spacing = params.spacing;
+        const ins = params.in;
+        const outs = params.out;
+        let leafs;
+        if (ins < outs) {
+            leafs = outs;
+        } else {
+            leafs = ins;
+            rotation += 180;
+        }
+        const color = params.color;
+        const stagelength = params.stageLength;
+        const valvelength = params.length;
+        const valvewidth = params.width;
+        const px = position[0];
+        const py = position[1];
 
-        let treeWidth = (leafs - 1) * spacing + leafs * cw + valvewidth;
-        let leftEdge = px - treeWidth / 2;
-        let rightEdge = px + treeWidth / 2;
+        const treeWidth = (leafs - 1) * spacing + leafs * cw + valvewidth;
+        const leftEdge = px - treeWidth / 2;
+        const rightEdge = px + treeWidth / 2;
 
-        let levels = Math.ceil(Math.log2(leafs));
+        const levels = Math.ceil(Math.log2(leafs));
 
-        let isodd = !(leafs % 2);
-        let w = spacing * (leafs / 2 + 1);
-        let l = (levels + 1) * stagelength;
+        const isodd = !(leafs % 2);
+        const w = spacing * (leafs / 2 + 1);
+        const l = (levels + 1) * stagelength;
 
         // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
-        var treepath = new paper.CompoundPath();
+        const treepath = new paper.CompoundPath();
 
         this.__generateMuxControlTwig(treepath, px, py, cw, ctlcw, stagelength, w, 1, levels, valvewidth, valvelength, leftEdge, rightEdge);
 
-        //Draw the tree
+        // Draw the tree
 
         treepath.fillColor = color;
-        var rotation = 0;
-        // console.log("Orientation: " + orientation);
-        // console.log("Direction: " + direction);
-        if (orientation == "H" && direction == "OUT") {
-            rotation = 180;
-        } else if (orientation == "V" && direction == "IN") {
-            rotation = 270;
-        } else if (orientation == "V" && direction == "OUT") {
-            rotation = 90;
-        }
         return treepath.rotate(rotation, px, py);
     }
 
+    getPorts(params) {
+        const ports = [];
+        const cw = params.flowChannelWidth;
+        const spacing = params.spacing;
+        const ins = params.in;
+        const outs = params.out;
+        let leafs;
+        if (ins < outs) {
+            leafs = outs;
+        } else {
+            leafs = ins;
+        }
+        const stagelength = params.stageLength;
+
+        const levels = Math.ceil(Math.log2(leafs));
+        const w = spacing * (leafs / 2 + 1);
+
+        const length = levels * (cw + stagelength) + stagelength;
+        const width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
+
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
+
+        for (let i = 0; i < leafs; i++) {
+            ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length, (2 + i).toString(), "FLOW"));
+        }
+
+        let count = 2 + leafs;
+        const lstartx = -0.5 * (cw + spacing);
+        const lendx = lstartx + cw;
+        const lstarty = stagelength + cw;
+        const lendy = lstarty + stagelength;
+
+        const lcenterx = (lstartx + lendx) / 2;
+        const lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
+        const valvewidth = params.width;
+
+        const treeWidth = (leafs - 1) * spacing + leafs * cw + valvewidth;
+
+        const leftEdge = -treeWidth / 2;
+        const rightEdge = treeWidth / 2;
+
+        const rstartx = 0.5 * (spacing - cw);
+        const rendx = rstartx + cw;
+        const rstarty = stagelength + cw;
+        const rendy = rstarty + stagelength;
+
+        const rcenterx = (rstartx + rendx) / 2;
+        const rcentery = rstarty + (Math.abs(rstarty - rendy) * 3) / 4;
+
+        for (let i = 0; i < Math.log2(leafs); i++) {
+            ports.push(new ComponentPort(leftEdge, i * (cw + stagelength) + lcentery, count.toString(), "CONTROL"));
+            count++;
+            ports.push(new ComponentPort(rightEdge, i * (cw + stagelength) + rcentery, count.toString(), "CONTROL"));
+            count++;
+        }
+
+        return ports;
+    }
+
     render2D(params, key) {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CONTROL") {
+        } else if (key === "CONTROL") {
             return this.__drawControl(params);
         }
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, "FLOW");
+        const render = this.render2D(params, "FLOW");
+        render.addChild(this.render2D(params, "CONTROL"));
         render.fillColor.alpha = 0.5;
         return render;
     }
 
     __generateMuxTwig(treepath, px, py, cw, stagelength, newspacing, level, maxlevel, islast = false) {
-        //var newspacing = 2 * (spacing + cw);
-        let hspacing = newspacing / 2;
-        let lex = px - 0.5 * newspacing;
-        let ley = py + cw + stagelength;
-        let rex = px + 0.5 * newspacing;
-        let rey = py + cw + stagelength;
+        // var newspacing = 2 * (spacing + cw);
+        const hspacing = newspacing / 2;
+        const lex = px - 0.5 * newspacing;
+        const ley = py + cw + stagelength;
+        const rex = px + 0.5 * newspacing;
+        const rey = py + cw + stagelength;
 
-        if (level == maxlevel) {
+        if (level === maxlevel) {
             islast = true;
             // console.log("Final Spacing: " + newspacing)
         }
@@ -234,7 +302,7 @@ export default class Mux extends Template {
     }
 
     __drawmuxtwig(treepath, px, py, cw, stagelength, spacing, drawleafs = false) {
-        //stem
+        // stem
         let startPoint = new paper.Point(px - cw / 2, py);
         let endPoint = new paper.Point(px + cw / 2, py + stagelength);
         let rec = paper.Path.Rectangle({
@@ -246,18 +314,18 @@ export default class Mux extends Template {
 
         treepath.addChild(rec);
 
-        //Draw 2 leafs
-        //left leaf
-        let lstartx = px - 0.5 * (cw + spacing);
-        let lendx = lstartx + cw;
-        let lstarty = py + stagelength + cw;
-        let lendy = lstarty + stagelength;
+        // Draw 2 leafs
+        // left leaf
+        const lstartx = px - 0.5 * (cw + spacing);
+        const lendx = lstartx + cw;
+        const lstarty = py + stagelength + cw;
+        const lendy = lstarty + stagelength;
 
         // //right leaf
-        let rstartx = px + 0.5 * (spacing - cw);
-        let rendx = rstartx + cw;
-        let rstarty = py + stagelength + cw;
-        let rendy = rstarty + stagelength;
+        const rstartx = px + 0.5 * (spacing - cw);
+        const rendx = rstartx + cw;
+        const rstarty = py + stagelength + cw;
+        const rendy = rstarty + stagelength;
 
         if (drawleafs) {
             startPoint = new paper.Point(lstartx, lstarty);
@@ -281,11 +349,11 @@ export default class Mux extends Template {
             treepath.addChild(rec);
         }
 
-        //Horizontal bar
-        let hstartx = px - 0.5 * (cw + spacing);
-        let hendx = rendx;
-        let hstarty = py + stagelength;
-        let hendy = hstarty + cw;
+        // Horizontal bar
+        const hstartx = px - 0.5 * (cw + spacing);
+        const hendx = rendx;
+        const hstarty = py + stagelength;
+        const hendy = hstarty + cw;
         startPoint = new paper.Point(hstartx, hstarty);
         endPoint = new paper.Point(hendx, hendy);
         rec = paper.Path.Rectangle({
@@ -299,14 +367,14 @@ export default class Mux extends Template {
     }
 
     __generateMuxControlTwig(treepath, px, py, cw, ctlcw, stagelength, newspacing, level, maxlevel, valvewidth, valvelength, leftEdge, rightEdge, islast = false) {
-        //var newspacing = 2 * (spacing + cw);
-        let hspacing = newspacing / 2;
-        let lex = px - 0.5 * newspacing;
-        let ley = py + cw + stagelength;
-        let rex = px + 0.5 * newspacing;
-        let rey = py + cw + stagelength;
+        // var newspacing = 2 * (spacing + cw);
+        const hspacing = newspacing / 2;
+        const lex = px - 0.5 * newspacing;
+        const ley = py + cw + stagelength;
+        const rex = px + 0.5 * newspacing;
+        const rey = py + cw + stagelength;
 
-        if (level == maxlevel) {
+        if (level === maxlevel) {
             islast = true;
             // console.log("Final Spacing: " + newspacing)
         }
@@ -320,26 +388,26 @@ export default class Mux extends Template {
     }
 
     __drawmuxcontroltwig(treepath, px, py, cw, ctlcw, stagelength, spacing, valvewidth, valvelength, leftEdge, rightEdge, drawleafs = false) {
-        //stem - don't bother with valves
+        // stem - don't bother with valves
 
-        //Draw 2 valves
-        //left leaf
-        let lstartx = px - 0.5 * (cw + spacing);
-        let lendx = lstartx + cw;
-        let lstarty = py + stagelength + cw;
-        let lendy = lstarty + stagelength;
+        // Draw 2 valves
+        // left leaf
+        const lstartx = px - 0.5 * (cw + spacing);
+        const lendx = lstartx + cw;
+        const lstarty = py + stagelength + cw;
+        const lendy = lstarty + stagelength;
 
-        let lcenterx = (lstartx + lendx) / 2;
-        let lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
+        const lcenterx = (lstartx + lendx) / 2;
+        const lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
 
         // //right leaf
-        let rstartx = px + 0.5 * (spacing - cw);
-        let rendx = rstartx + cw;
-        let rstarty = py + stagelength + cw;
-        let rendy = rstarty + stagelength;
+        const rstartx = px + 0.5 * (spacing - cw);
+        const rendx = rstartx + cw;
+        const rstarty = py + stagelength + cw;
+        const rendy = rstarty + stagelength;
 
-        let rcenterx = (rstartx + rendx) / 2;
-        let rcentery = rstarty + (Math.abs(rstarty - rendy) * 3) / 4;
+        const rcenterx = (rstartx + rendx) / 2;
+        const rcentery = rstarty + (Math.abs(rstarty - rendy) * 3) / 4;
 
         let startPoint = new paper.Point(lcenterx - valvewidth / 2, lcentery - valvelength / 2);
         let endPoint = new paper.Point(lcenterx + valvewidth / 2, lcentery + valvewidth / 2);
@@ -351,10 +419,10 @@ export default class Mux extends Template {
         });
         treepath.addChild(rec);
 
-        let leftChannelStart = new paper.Point(startPoint.x, lcentery - ctlcw / 2);
-        let leftChannelEnd = new paper.Point(leftEdge, lcentery + ctlcw / 2);
+        const leftChannelStart = new paper.Point(startPoint.x, lcentery - ctlcw / 2);
+        const leftChannelEnd = new paper.Point(leftEdge, lcentery + ctlcw / 2);
 
-        let leftChannel = paper.Path.Rectangle({
+        const leftChannel = paper.Path.Rectangle({
             from: leftChannelStart,
             to: leftChannelEnd,
             radius: 0,
@@ -372,10 +440,10 @@ export default class Mux extends Template {
         });
 
         treepath.addChild(rec);
-        let rightChannelStart = new paper.Point(endPoint.x, rcentery - ctlcw / 2);
-        let rightChannelEnd = new paper.Point(rightEdge, rcentery + ctlcw / 2);
+        const rightChannelStart = new paper.Point(endPoint.x, rcentery - ctlcw / 2);
+        const rightChannelEnd = new paper.Point(rightEdge, rcentery + ctlcw / 2);
 
-        let rightChannel = paper.Path.Rectangle({
+        const rightChannel = paper.Path.Rectangle({
             from: rightChannelStart,
             to: rightChannelEnd,
             radius: 0,

@@ -4,9 +4,13 @@
             <a color="primary" dark v-bind="attrs" class="popdown mdl-button mdl-js-button mdl-js-ripple-effect" title="About" style="color: hotpink" v-on="on">About/Help</a>
         </template>
         <v-card>
+<<<<<<< HEAD
             <v-card-title class="headline">
                 3DuF v1.1
             </v-card-title>
+=======
+            <v-card-title class="headline"> 3DuF v1.1 </v-card-title>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
             <v-card-text>
                 <img src="img/cidar_logo.png" width="100%" />
                 3DuF is microfluidic design environment developed by
@@ -20,9 +24,13 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
+<<<<<<< HEAD
                 <v-btn color="green darken-1" text @click="dialog = false">
                     Close
                 </v-btn>
+=======
+                <v-btn color="green darken-1" text @click="dialog = false"> Close </v-btn>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -38,4 +46,17 @@ export default {
 };
 </script>
 
+<<<<<<< HEAD
 <style lang="scss" scoped></style>
+=======
+<style lang="scss" scoped>
+.property-drawer-parent {
+    overflow: visible;
+    position: relative;
+}
+
+.btn {
+    width: 100%;
+}
+</style>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a

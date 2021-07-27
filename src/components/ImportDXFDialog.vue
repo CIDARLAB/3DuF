@@ -12,12 +12,17 @@
             </form>
         </template>
         <template #actions="{ callbacks }">
+<<<<<<< HEAD
             <v-btn color="green darken-1" text @click="callbacks.close()">
                 Cancel
             </v-btn>
             <v-btn color="green darken-1" text @click="callbacks.close()">
                 Import
             </v-btn>
+=======
+            <v-btn color="green darken-1" text @click="callbacks.close()"> Cancel </v-btn>
+            <v-btn color="green darken-1" text @click="callbacks.close()"> Import </v-btn>
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
         </template>
     </Dialog>
 </template>

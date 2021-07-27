@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Via extends Template {
     constructor() {
@@ -12,26 +13,31 @@ export default class Via extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             radius: "Float",
             height: "Float"
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             radius: 0.7 * 1000,
             height: 0
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             radius: "&mu;m",
             height: "&mu;m"
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             radius: 0.8 * 10,
             height: 0
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             radius: 2000,
             height: 0
         };
@@ -43,11 +49,13 @@ export default class Via extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             radius: "radius"
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             radius: "radius"
         };
 
@@ -56,19 +64,29 @@ export default class Via extends Template {
         this.__mint = "VIA";
     }
 
+    getPorts(params) {
+        const radius = params.radius;
+
+        const ports = [];
+
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
+
+        return ports;
+    }
+
     render2D(params, key) {
-        //Regardless of the key...
-        let position = params["position"];
-        let radius = params["radius"];
-        let color1 = params["color"];
-        let pos = new paper.Point(position[0], position[1]);
-        let outerCircle = new paper.Path.Circle(pos, radius);
+        // Regardless of the key...
+        const position = params.position;
+        const radius = params.radius;
+        const color1 = params.color;
+        const pos = new paper.Point(position[0], position[1]);
+        const outerCircle = new paper.Path.Circle(pos, radius);
         outerCircle.fillColor = color1;
         return outerCircle;
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

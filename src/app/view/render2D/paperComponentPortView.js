@@ -10,15 +10,19 @@ export default class PaperComponentPortView {
     }
 
     addComponentPortElements(component) {
+<<<<<<< HEAD
         let zfactor = 1;
+=======
+        const zfactor = 1;
+>>>>>>> b84163b05e74292ef9cf15dd065df530a04d8d7a
         if (!this._componentAndRenderMap.has(component.getID())) {
             this._componentAndRenderMap.set(component.getID(), []);
         }
 
-        let componentportrenders = this._componentAndRenderMap.get(component.getID());
+        const componentportrenders = this._componentAndRenderMap.get(component.getID());
 
-        for (let key of component.ports.keys()) {
-            let render = ComponentPortRenderer2D.renderComponentPort(component.ports.get(key), undefined, undefined, zfactor);
+        for (const key of component.ports.keys()) {
+            const render = ComponentPortRenderer2D.renderComponentPort(component.ports.get(key), undefined, undefined, zfactor);
             componentportrenders.push(render);
         }
     }
@@ -29,11 +33,11 @@ export default class PaperComponentPortView {
             return;
         }
         this.clearActiveRenders();
-        let components = this._viewManagerDelegate.currentDevice.getComponents();
-        for (let i in components) {
-            let component = components[i];
-            let renders = ComponentPortRenderer2D.renderComponentPorts(component);
-            for (let i in renders) {
+        const components = this._viewManagerDelegate.currentDevice.components;
+        for (const i in components) {
+            const component = components[i];
+            const renders = ComponentPortRenderer2D.renderComponentPorts(component);
+            for (const i in renders) {
                 this._activeRenders.push(renders[i]);
                 this._paperlayer.addChild(renders[i]);
             }
@@ -45,7 +49,7 @@ export default class PaperComponentPortView {
             return;
         }
         if (this._activeRenders) {
-            for (let i in this._activeRenders) {
+            for (const i in this._activeRenders) {
                 this._activeRenders[i].remove();
             }
         }

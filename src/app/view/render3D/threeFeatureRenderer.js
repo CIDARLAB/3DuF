@@ -2,7 +2,7 @@ import * as PrimitiveSets3D from "./primitiveSets3D";
 import * as FeatureSets from "../../featureSets";
 import * as THREE from "three";
 
-var layerMaterials = {
+const layerMaterials = {
     red: new THREE.MeshLambertMaterial({
         color: 0xf44336,
         shading: THREE.SmoothShading
@@ -22,19 +22,21 @@ var layerMaterials = {
 };
 
 function getFeatureMaterial(layer) {
-    var colorString = layer.color;
-    if (colorString && layerMaterials.hasOwnProperty(colorString)) {
+    const colorString = layer.color;
+    if (colorString && Object.prototype.hasOwnProperty.call(layerMaterials, colorString)) {
         return layerMaterials[colorString];
-    } else return layerMaterials["grey"];
+    } else return layerMaterials.grey;
 }
 
 function makeParams(feature, renderInfo) {
-    let params = {};
-    let featureParams = renderInfo.featureParams;
-    for (let key in featureParams) {
-        let target = featureParams[key];
-        if (target == undefined || !feature.params.hasOwnProperty(target)) throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
-        let value = feature.params[target];
+    const params = {};
+    const featureParams = renderInfo.featureParams;
+    for (const key in featureParams) {
+        const target = featureParams[key];
+        if (target === undefined || !Object.prototype.hasOwnProperty.call(feature.params, target)) {
+            throw new Error("Key value: " + key + " for value: " + target + " not found in renderInfo.");
+        }
+        const value = feature.params[target];
         params[key] = value;
     }
     return params;
@@ -45,17 +47,17 @@ function getRenderInfo(type, set) {
 }
 
 export function renderFeature(feature, layer, z_offset) {
-    let flip = layer.params.flip;
-    let type = feature.type;
-    let set = feature.set;
-    let renderInfo = getRenderInfo(type, set);
-    let renderingSet = renderInfo.featurePrimitiveSet;
-    let renderingPrimitive = renderInfo.featurePrimitive;
-    let primSet = PrimitiveSets3D[renderingSet];
-    let targetFunction = PrimitiveSets3D[renderingSet][renderingPrimitive];
-    let params = makeParams(feature, renderInfo);
-    let geom = targetFunction(params, flip, z_offset);
-    let material = getFeatureMaterial(layer);
-    let renderedFeature = new THREE.Mesh(geom, material);
+    const flip = layer.params.flip;
+    const type = feature.type;
+    const set = feature.set;
+    const renderInfo = getRenderInfo(type, set);
+    const renderingSet = renderInfo.featurePrimitiveSet;
+    const renderingPrimitive = renderInfo.featurePrimitive;
+    const primSet = PrimitiveSets3D[renderingSet];
+    const targetFunction = PrimitiveSets3D[renderingSet][renderingPrimitive];
+    const params = makeParams(feature, renderInfo);
+    const geom = targetFunction(params, flip, z_offset);
+    const material = getFeatureMaterial(layer);
+    const renderedFeature = new THREE.Mesh(geom, material);
     return renderedFeature;
 }

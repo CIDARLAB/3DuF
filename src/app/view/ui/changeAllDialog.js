@@ -6,16 +6,16 @@ export default class ChangeAllDialog {
         this.__componentTable = document.getElementById("similar_components_table");
         this.__changeAllButton = document.getElementById("change_all_button");
         this.__paramsToChange = null;
-        //Assign all event handlers
+        // Assign all event handlers
 
-        let ref = this;
+        const ref = this;
 
-        this.__dialog.querySelector(".close").addEventListener("click", function() {
+        this.__dialog.querySelector(".close").addEventListener("click", function () {
             ref.__dialog.close();
         });
 
-        this.__changeAllButton.addEventListener("click", function(event) {
-            //TODO: Change values of all the features associated with the components
+        this.__changeAllButton.addEventListener("click", function (event) {
+            // TODO: Change values of all the features associated with the components
             ref.__modifyComponentParams();
             ref.__dialog.close();
         });
@@ -25,29 +25,29 @@ export default class ChangeAllDialog {
      * Method used to show the dialog
      */
     showDialog() {
-        for (let i in this.__similarComponents) {
+        for (const i in this.__similarComponents) {
             this.__componentTable.deleteRow(-1);
         }
 
-        let selectedcomponent = Registry.viewManager.view.selectedComponents[0];
-        let selectedcomponenttype = selectedcomponent.getType();
-        let params = selectedcomponent.getParams();
+        const selectedcomponent = Registry.viewManager.view.selectedComponents[0];
+        const selectedcomponenttype = selectedcomponent.getType();
+        const params = selectedcomponent.getParams();
         this.__paramsToChange = {};
-        for (let key in params.heritable) {
+        for (const key in params.heritable) {
             this.__paramsToChange[key] = params.getValue(key);
         }
         // //TODO: Find a better way to do this
         // if(this.__paramsToChange['position']){
         //     delete this.__paramsToChange['position'];
         // }
-        let allcomponents = Registry.currentDevice.getComponents();
+        const allcomponents = Registry.currentDevice.getComponents();
 
-        let similarcomponents = [];
+        const similarcomponents = [];
 
-        //Find all the similar components
-        for (let i in allcomponents) {
-            let component = allcomponents[i];
-            if (selectedcomponenttype == component.getType() && selectedcomponent.getID() != component.getID()) {
+        // Find all the similar components
+        for (const i in allcomponents) {
+            const component = allcomponents[i];
+            if (selectedcomponenttype === component.getType() && selectedcomponent.getID() !== component.getID()) {
                 this.__componentsToChangeMap.set(component.getID(), true);
                 similarcomponents.push(component);
             }
@@ -59,7 +59,7 @@ export default class ChangeAllDialog {
         let cell;
         let componenttoadd;
 
-        for (let i in similarcomponents) {
+        for (const i in similarcomponents) {
             componenttoadd = similarcomponents[i];
             tr = this.__componentTable.insertRow();
             cell = tr.insertCell(-1);
@@ -72,17 +72,17 @@ export default class ChangeAllDialog {
     }
 
     __createOptionButton(componentid, checked) {
-        let checkbox = document.createElement("input");
+        const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         // checkbox.name = "name";
         // checkbox.value = "value";
         checkbox.id = "select_" + componentid;
         checkbox.checked = checked;
         checkbox.value = componentid;
-        //Track all the changes
-        let ref = this;
-        checkbox.addEventListener("change", function(event) {
-            let id = event.target.value;
+        // Track all the changes
+        const ref = this;
+        checkbox.addEventListener("change", function (event) {
+            const id = event.target.value;
             ref.__componentsToChangeMap.set(id, event.target.checked);
         });
 
@@ -90,13 +90,13 @@ export default class ChangeAllDialog {
     }
 
     __modifyComponentParams() {
-        for (let i in this.__similarComponents) {
+        for (const i in this.__similarComponents) {
             console.log(this.__similarComponents);
-            let componenttochange = this.__similarComponents[i];
+            const componenttochange = this.__similarComponents[i];
             if (this.__componentsToChangeMap.get(componenttochange.getID())) {
-                //Call upateParameter for everything
+                // Call upateParameter for everything
 
-                for (let key in this.__paramsToChange) {
+                for (const key in this.__paramsToChange) {
                     componenttochange.updateParameter(key, this.__paramsToChange[key]);
                 }
             }

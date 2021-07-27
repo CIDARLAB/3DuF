@@ -13,6 +13,7 @@ export default class Chamber extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             width: "Float",
             length: "Float",
             height: "Float",
@@ -21,6 +22,7 @@ export default class Chamber extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             width: 5000,
             length: 5000,
             height: 250,
@@ -29,6 +31,7 @@ export default class Chamber extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             width: "&mu;m",
             length: "&mu;m",
             height: "&mu;m",
@@ -37,6 +40,7 @@ export default class Chamber extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             width: 5,
             length: 5,
             height: 1,
@@ -45,14 +49,16 @@ export default class Chamber extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             width: 50000,
             length: 50000,
             height: 50000,
             cornerRadius: 1000,
-            rotation: 90
+            rotation: 360
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             width: "width",
             length: "length",
@@ -62,6 +68,7 @@ export default class Chamber extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             width: "width",
             length: "length",
@@ -82,10 +89,10 @@ export default class Chamber extends Template {
     }
 
     getPorts(params) {
-        let l = params["length"];
-        let w = params["width"];
+        const l = params.length;
+        const w = params.width;
 
-        let ports = [];
+        const ports = [];
 
         ports.push(new ComponentPort(0, -l / 2, "1", "FLOW"));
 
@@ -99,18 +106,18 @@ export default class Chamber extends Template {
     }
 
     render2D(params, key) {
-        let position = params["position"];
-        let px = position[0];
-        let py = position[1];
-        let l = params["length"];
-        let w = params["width"];
-        let rotation = params["rotation"];
-        let color = params["color"];
-        let radius = params["cornerRadius"];
+        const position = params.position;
+        const px = position[0];
+        const py = position[1];
+        const l = params.length;
+        const w = params.width;
+        const rotation = params.rotation;
+        const color = params.color;
+        const radius = params.cornerRadius;
 
-        let rendered = new paper.CompoundPath();
+        const rendered = new paper.CompoundPath();
 
-        let rec = new paper.Path.Rectangle({
+        const rec = new paper.Path.Rectangle({
             point: new paper.Point(px - w / 2, py - l / 2),
             size: [w, l],
             radius: radius
@@ -123,7 +130,7 @@ export default class Chamber extends Template {
     }
 
     render2DTarget(key, params) {
-        let render = this.render2D(params, key);
+        const render = this.render2D(params, key);
         render.fillColor.alpha = 0.5;
         return render;
     }

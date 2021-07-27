@@ -9,7 +9,7 @@ export default class LaserCuttingGenerator {
     /**
      * Default Constructor for the laser cutting generator object
      * @param {Device} device Device object
-     * @param {*} viewManagerDelegate 
+     * @param {*} viewManagerDelegate
      */
     constructor(device, viewManagerDelegate) {
         this.__device = device;
@@ -17,6 +17,7 @@ export default class LaserCuttingGenerator {
 
         this.__svgData = new Map();
     }
+
     /**
      * Gets the SVG data
      * @returns Returns the SVG data
@@ -38,45 +39,44 @@ export default class LaserCuttingGenerator {
         Step 3 - Create a manufacturing layer
                 -  Populate with the ports
          */
-        // let components = this.__device.getComponents();
-        let layers = this.__device.getLayers();
+        // let components = this.__device.components;
+        const layers = this.__device.getLayers();
 
-        let mfglayers = [];
+        const mfglayers = [];
 
+        for (const i in layers) {
+            const layer = layers[i];
+            const ports = [];
 
-        for (let i in layers) {
-            let layer = layers[i];
-            let ports = [];
+            const features = layer.features;
 
-            let features = layer.features;
-
-            for (let key in features) {
-                let feature = features[key];
-                //TODO: Include fabtype check also
-                if (feature.getType() == "Port") {
+            for (const key in features) {
+                const feature = features[key];
+                // TODO: Include fabtype check also
+                if (feature.getType() === "Port") {
                     ports.push(key);
                 }
             }
 
-            if (ports.length == 0) {
+            if (ports.length === 0) {
                 continue;
             }
 
-            let manufacturinglayer = new ManufacturingLayer("ports_" + layer.name + "_" + i);
+            const manufacturinglayer = new ManufacturingLayer("ports_" + layer.name + "_" + i);
             // console.log("manufacturing layer :", manufacturinglayer);
 
-            for (let fi in ports) {
-                let featurekey = ports[fi];
+            for (const fi in ports) {
+                const featurekey = ports[fi];
                 // console.log("Key:", featurekey);
                 // console.log("rendered:feature", this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
-                let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
+                const issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
                 if (!issuccess) {
                     console.error("Could not find the feature for the corresponding id: " + featurekey);
                 }
             }
 
-            //We flip all the ports for this system
-            //TODO: Future manufacturing user interface will require us to have options for each of the UI elements
+            // We flip all the ports for this system
+            // TODO: Future manufacturing user interface will require us to have options for each of the UI elements
             manufacturinglayer.flipX();
 
             mfglayers.push(manufacturinglayer);
@@ -84,8 +84,8 @@ export default class LaserCuttingGenerator {
 
         console.log("mfglayers:", mfglayers);
 
-        let ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        const ref = this;
+        mfglayers.forEach(function (mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -106,42 +106,42 @@ export default class LaserCuttingGenerator {
                    Step 2.2 - Generate manufacturing layers for each of the depths
 
          */
-        let layers = this.__device.getLayers();
+        const layers = this.__device.getLayers();
 
-        let mfglayers = [];
+        const mfglayers = [];
         let isControl = false;
 
-        for (let i in layers) {
-            let layer = layers[i];
+        for (const i in layers) {
+            const layer = layers[i];
 
-            let features = layer.features;
+            const features = layer.features;
 
-            if (layer.name == "control") {
+            if (layer.name === "control") {
                 isControl = true;
             }
 
-            //Create the depthmap for this
-            let featuredepthmap = new DepthFeatureMap(layer.name);
+            // Create the depthmap for this
+            const featuredepthmap = new DepthFeatureMap(layer.name);
 
-            for (let key in features) {
-                let feature = features[key];
-                //TODO: Modify the port check
-                if (feature.fabType == "XY" && feature.getType() != "Port") {
-                    let depth = feature.getValue("height");
+            for (const key in features) {
+                const feature = features[key];
+                // TODO: Modify the port check
+                if (feature.fabType === "XY" && feature.getType() !== "Port") {
+                    const depth = feature.getValue("height");
                     console.log("Depth of feature: ", key, depth);
                     featuredepthmap.addFeature(depth, key);
                 }
             }
 
-            //Generate Manufacturing Layers for each depth
+            // Generate Manufacturing Layers for each depth
             let manufacturinglayer;
-            for (let depth of featuredepthmap.getDepths()) {
+            for (const depth of featuredepthmap.getDepths()) {
                 manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_" + depth);
-                let depthfeatures = featuredepthmap.getFeaturesAtDepth(depth);
-                for (let j in depthfeatures) {
-                    let featurekey = depthfeatures[j];
+                const depthfeatures = featuredepthmap.getFeaturesAtDepth(depth);
+                for (const j in depthfeatures) {
+                    const featurekey = depthfeatures[j];
 
-                    let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
+                    const issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
                     if (!issuccess) {
                         console.error("Could not find the feature for the corresponding id: " + featurekey);
                     }
@@ -158,8 +158,8 @@ export default class LaserCuttingGenerator {
         }
 
         console.log("XY Manufacturing Layers:", mfglayers);
-        let ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        const ref = this;
+        mfglayers.forEach(function (mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -176,30 +176,30 @@ export default class LaserCuttingGenerator {
         Step 2 - Get all the EDGE features in the drawing
         Step 3 - Generate separate SVGs
          */
-        let layers = this.__device.getLayers();
+        const layers = this.__device.getLayers();
 
-        let mfglayers = [];
+        const mfglayers = [];
 
         let manufacturinglayer;
 
         let isControl = false;
 
-        for (let i in layers) {
-            let layer = layers[i];
+        for (const i in layers) {
+            const layer = layers[i];
             manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_EDGE");
 
-            if (layer.name == "control") {
+            if (layer.name === "control") {
                 isControl = true;
             }
 
-            let features = layer.features;
+            const features = layer.features;
 
-            for (let key in features) {
-                let feature = features[key];
-                //TODO: Modify the port check
-                if (feature.fabType == "EDGE") {
+            for (const key in features) {
+                const feature = features[key];
+                // TODO: Modify the port check
+                if (feature.fabType === "EDGE") {
                     console.log("EDGE Feature: ", key);
-                    let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
+                    const issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
                     if (!issuccess) {
                         console.error("Could not find the feature for the corresponding id: " + key);
                     }
@@ -216,8 +216,8 @@ export default class LaserCuttingGenerator {
 
         console.log("EDGE Manufacturing Layers:", mfglayers);
 
-        let ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        const ref = this;
+        mfglayers.forEach(function (mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -250,37 +250,37 @@ export default class LaserCuttingGenerator {
      */
     generateInverseControlLayers() {
         console.log("Generating inverse layers");
-        let layers = this.__device.getLayers();
+        const layers = this.__device.getLayers();
 
-        let mfglayers = [];
+        const mfglayers = [];
 
         let isControl = false;
 
-        for (let i in layers) {
-            let layer = layers[i];
-            let negatives = [];
+        for (const i in layers) {
+            const layer = layers[i];
+            const negatives = [];
 
-            let features = layer.features;
+            const features = layer.features;
 
-            if (layer.name == "control") {
+            if (layer.name === "control") {
                 isControl = true;
             }
 
-            //Add logic to generate the here to check if its control...
+            // Add logic to generate the here to check if its control...
             if (isControl) {
-                let manufacturinglayer = new ManufacturingLayer("control_negative_" + layer.name + "_" + i);
+                const manufacturinglayer = new ManufacturingLayer("control_negative_" + layer.name + "_" + i);
 
-                //Do the actual feature generation part here
-                for (let key in features) {
-                    let feature = features[key];
-                    //TODO: Include fabtype check also
-                    let type = feature.getType();
+                // Do the actual feature generation part here
+                for (const key in features) {
+                    const feature = features[key];
+                    // TODO: Include fabtype check also
+                    const type = feature.getType();
 
                     /*
                     Check if type has an inverse layer
                      */
 
-                    //Skip the EDGE features
+                    // Skip the EDGE features
                     if (type === "EDGE") {
                         continue;
                     }
@@ -301,8 +301,8 @@ export default class LaserCuttingGenerator {
 
         console.log("Inverse Control Manufacturing Layers:", mfglayers);
 
-        let ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        const ref = this;
+        mfglayers.forEach(function (mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
