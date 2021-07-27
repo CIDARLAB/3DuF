@@ -32,7 +32,6 @@ export default {
     name: "LayerToolbar",
     data() {
         return {
-            selectedLevel: 0,
             selectedMode: 0,
             disabled: false,
             renderLayers: [],
@@ -51,6 +50,13 @@ export default {
                 }
             }
             return ret;
+        },
+        selectedLevel: function() {
+            let layer = Registry.viewManager.activeRenderLayer;
+            let remain = layer % 3;
+            layer = layer - remain;
+
+            return layer / 3;
         }
     },
     mounted() {
@@ -65,10 +71,9 @@ export default {
         },
 
         layerModeClicked(level, mode) {
-            console.log(level.id);
-            console.log(this.levels);
             this.levels[level.id].mode = mode;
             this.selectedLevel = level.id;
+            Registry.viewManager.setActiveRenderLayer(level.id * 3 + mode);
         },
 
         deleteLevel(level) {
