@@ -45,11 +45,11 @@ export default class BareViewManager {
         this.__currentDevice = null;
 
         const reference = this;
-        this.updateQueue = new SimpleQueue(function() {
+        this.updateQueue = new SimpleQueue(function () {
             reference.view.refresh();
         }, 20);
 
-        this.saveQueue = new SimpleQueue(function() {
+        this.saveQueue = new SimpleQueue(function () {
             reference.saveToStorage();
         });
 
@@ -58,14 +58,14 @@ export default class BareViewManager {
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
-        this.view.setResizeFunction(function() {
+        this.view.setResizeFunction(function () {
             reference.updateGrid();
             reference.updateAlignmentMarks();
 
             reference.updateDevice(Registry.currentDevice);
         });
 
-        const func = function(event) {
+        const func = function (event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
@@ -734,7 +734,7 @@ export default class BareViewManager {
      * @param rightClickToolString
      */
     activateTool(toolString, rightClickToolString = "SelectTool") {
-        if (this.tools[toolString] == null) {
+        if (this.tools[toolString] === null) {
             throw new Error("Could not find tool with the matching string");
         }
         this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
@@ -749,11 +749,11 @@ export default class BareViewManager {
      * @memberof BareViewManager
      */
     setupDragAndDropLoad(selector) {
-        const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
             const f = files[0];
 
             const reader = new FileReader();
-            reader.onloadend = function(e) {
+            reader.onloadend = function (e) {
                 const result = JSON.parse(this.result);
                 Registry.viewManager.loadDeviceFromJSON(result);
                 Registry.viewManager.switchTo2D();
