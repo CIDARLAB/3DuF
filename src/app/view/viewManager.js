@@ -1,4 +1,4 @@
-import ZoomToolBar from "@/components/zoomSlider.vue";
+//import ZoomToolBar from "@/components/zoomSlider.vue";
 import BorderSettingsDialog from "./ui/borderSettingDialog";
 import paper from "paper";
 
@@ -66,10 +66,10 @@ export default class ViewManager {
     constructor() {
         this.threeD;
         this.view = new PaperView("c", this);
-
         this.__grid = new AdaptiveGrid(this);
         Registry.currentGrid = this.__grid;
         this.renderLayers = [];
+        this.activeRenderLayer = null;
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         // this.customComponentManager = new CustomComponentManager(this);
@@ -348,6 +348,8 @@ export default class ViewManager {
             this.renderLayers[this.renderLayers.length - 1].addFeature(edgefeatures[i]);
         }
 
+        this.setActiveRenderLayer(this.renderLayers.length - 3)
+
     }
 
     /**
@@ -365,6 +367,21 @@ export default class ViewManager {
 
         // Delete levels in render model
         this.renderLayers.splice(levelindex * 3, 3)
+        if (this.activeRenderLayer > levelindex * 3 + 2) {
+            this.setActiveRenderLayer(this.activeRenderLayer - 3);
+        } else if (this.activeRenderLayer < levelindex * 3) {
+            console.log("No change");
+        } else {
+            if (levelindex == 0) {
+                if (this.renderLayers.length == 0) {
+                    this.setActiveRenderLayer(null);
+                } else {
+                    this.setActiveRenderLayer(0);
+                }
+            } else {
+                this.setActiveRenderLayer((levelindex - 1) * 3);
+            }
+        }
 
         // Delete the levels in the render model
         this.view.removeLayer(levelindex * 3);
@@ -372,6 +389,12 @@ export default class ViewManager {
         this.view.removeLayer(levelindex * 3 + 2);
         this.updateActiveLayer();
         this.refresh();
+
+
+    }
+
+    setActiveRenderLayer(index) {
+        this.activeRenderLayer = index;
     }
 
     /**
@@ -803,6 +826,13 @@ export default class ViewManager {
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
             this.__currentDevice = device;
+
+            // TODO: Add separate render layers to initializing json
+            for (const i in json.layers) {
+                const newRenderLayer = RenderLayer.fromJSON(json.layers[i]);
+                this.renderLayers.push(newRenderLayer);
+            }
+
         } else {
             console.log("Version Number: " + version);
             switch (version) {
@@ -811,12 +841,26 @@ export default class ViewManager {
                     device = Device.fromInterchangeV1(json);
                     Registry.currentDevice = device;
                     this.__currentDevice = device;
+
+                    // TODO: Add separate render layers to initializing json
+                    for (const i in json.layers) {
+                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.layers[i]);
+                        this.renderLayers.push(newRenderLayer);
+                    }
+
                     break;
                 case 1.1:
                     // this.loadCustomComponents(json);
                     device = Device.fromInterchangeV1_1(json);
                     Registry.currentDevice = device;
                     this.__currentDevice = device;
+
+                    // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
+                    for (const i in json.layers) {
+                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.layers[i]);
+                        this.renderLayers.push(newRenderLayer);
+                    }
+
                     break;
                 default:
                     alert("Version '" + version + "' is not supported by 3DuF !");
@@ -826,6 +870,8 @@ export default class ViewManager {
         // console.log("Feature Layers", Registry.currentDevice.layers);
         Registry.currentLayer = Registry.currentDevice.layers[0];
         Registry.currentTextLayer = Registry.currentDevice.textLayers[0];
+
+        this.activeRenderLayer = 0;
 
         // TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
         Registry.viewManager.addDevice(Registry.currentDevice);

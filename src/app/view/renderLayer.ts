@@ -223,6 +223,7 @@ export default class RenderLayer {
      toInterchangeV1(): RenderLayerInterchangeV1 {
         const output: RenderLayerInterchangeV1 = {
             id: this.__id,
+            name: this.name,
             //name: this.name,
             // TODO - Add group and unique name parameters to the system and do type checking
             // against type and not name in the future
@@ -245,7 +246,7 @@ export default class RenderLayer {
         if (!Object.prototype.hasOwnProperty.call(json, "features")) {
             throw new Error("JSON layer has no features!");
         }
-        const newLayer = new RenderLayer(json.type);
+        const newLayer = new RenderLayer(json.name, json.type, json.group);
         newLayer.__loadFeaturesFromJSON(json.features);
         if (json.color) newLayer.color = json.color;
         return newLayer;
@@ -258,7 +259,7 @@ export default class RenderLayer {
      * @memberof Layer
      */
     static fromInterchangeV1(json: RenderLayerInterchangeV1): RenderLayer {
-        const newLayer: RenderLayer = new RenderLayer(json.type, json.group);
+        const newLayer: RenderLayer = new RenderLayer(json.name, json.type, json.group);
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
         if (json.color) newLayer.color = json.color; // TODO: Figure out if this needs to change in the future
         return newLayer;
