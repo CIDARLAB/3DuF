@@ -7,7 +7,7 @@
                 <span>Feature</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <PropertyDrawer v-for="item in componentAPI" :key="item.id" :title="item.title" :spec="item.spec" />
+                <PropertyDrawer v-for="item in componentAPI" :key="item.name" :title="item.title" :spec="item.spec" />
                 <ConnectionPropertyDrawer title="Connection" :spec="connectionSpec" />
                 <PropertyDrawer title="Channel" :spec="channelSpec" />
                 <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
@@ -106,14 +106,6 @@ export default {
     components: { ConnectionPropertyDrawer, PropertyDrawer },
     data() {
         return {
-            componentAPI: {
-                name = ComponentAPI.ret.unique,
-                min = ComponentAPI.ret.minimum,
-                max = ComponentAPI.ret.maximum,
-                step = ComponentAPI.ret.step,
-                units = ComponentAPI.ret.units,
-                value = ComponentAPI.ret.value,
-            },
             connectionSpec: ConnectionSpec,
             channelSpec: MixSpec,
             roundedChannelSpec: MixSpec,
@@ -137,6 +129,27 @@ export default {
             muxSpec: MixSpec,
             transponderSpec: MixSpec
         };
+    },
+    computed: {
+        computedSpec: function(minttype) {
+            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
+            let definition = ComponentAPI.getDefinitionForMINT(minttype);
+            let spec = [];
+            for (let key in definition.unique){
+                let item = {
+                    name: key,
+                    min: definition.minimum[key],
+                    max: definition.maximum[key],
+                    default: definition.default[key],
+                    mint: definition.mint,
+                }
+                spec.push(item);
+            }
+            return spec;
+        }
+    },
+    updated() {
+        Registry.viewManager.activateTool(spec.name, spec.name);
     }
 };
 </script>

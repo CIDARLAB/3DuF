@@ -56,7 +56,7 @@ export type LibraryEntryDefinition = {
     defaults: { [key: string]: number };
     minimum: { [key: string]: number };
     maximum: { [key: string]: number };
-    mint: { [key: string]: number };
+    mint: string;
 };
 
 type LibraryEntry = {
