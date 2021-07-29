@@ -4,7 +4,7 @@
             <v-list-item-group mandatory color="indigo">
                 <v-list-item @click="downloadJSON">
                     <v-list-item-icon>
-                        <v-icon>JSN</v-icon>
+                        <v-icon>mdi-code-json</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title>3DuF File (.json)</v-list-item-title>
@@ -13,7 +13,7 @@
 
                 <v-list-item @click="downloadSVG">
                     <v-list-item-icon>
-                        <v-icon>SVG</v-icon>
+                        <v-icon>mdi-vector-line</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title>Vector Art (.svg)</v-list-item-title>
@@ -22,7 +22,7 @@
 
                 <v-list-item @click="downloadCNC">
                     <v-list-item-icon>
-                        <v-icon>CNC</v-icon>
+                        <v-icon>mdi-file</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title>CNC (.svg)</v-list-item-title>
@@ -31,7 +31,7 @@
 
                 <v-list-item @click="downloadLASER">
                     <v-list-item-icon>
-                        <v-icon>LAS</v-icon>
+                        <v-icon>mdi-laser-pointer</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title>Laser Cutting (.svg)</v-list-item-title>
@@ -40,7 +40,7 @@
 
                 <v-list-item @click="downloadMETAFLUIDICS">
                     <v-list-item-icon>
-                        <v-icon>MET</v-icon>
+                        <v-icon>mdi-chip</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title>Publish on Metafluidics</v-list-item-title>
