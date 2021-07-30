@@ -1,25 +1,25 @@
-import "../../lib/material/material.min.css";
-import "../../lib/material/material.min.js";
+import '../../lib/material/material.min.css'
+import '../../lib/material/material.min.js'
 
-import Registry from "./core/registry";
-import BareViewManager from "./view/bareViewManager";
-import * as Examples from "./examples/jsonExamples";
+import Registry from './core/registry'
+import BareViewManager from './view/bareViewManager'
+import * as Examples from './examples/jsonExamples'
 
-let viewManager;
+let viewManager
 
-window.onload = function() {
-    viewManager = new BareViewManager();
+window.onload = function () {
+  viewManager = new BareViewManager()
 
-    Registry.viewManager = viewManager;
+  Registry.viewManager = viewManager
 
-    viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
-    viewManager.updateGrid();
-    Registry.viewManager.updateDevice(viewManager.currentDevice);
+  viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2))
+  viewManager.updateGrid()
+  Registry.viewManager.updateDevice(viewManager.currentDevice)
 
-    window.dev = Registry.currentDevice;
-    window.Registry = Registry;
+  window.dev = Registry.currentDevice
+  window.Registry = Registry
 
-    window.view = Registry.viewManager.view;
-    // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
-    Registry.viewManager.setupToolBars();
-};
+  window.view = Registry.viewManager.view
+  // Registry.threeRenderer = new ThreeDeviceRenderer(document.getElementById("renderContainer"));
+  Registry.viewManager.setupToolBars()
+}

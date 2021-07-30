@@ -1,303 +1,303 @@
 export const tools = {
-    Via: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "PositionTool"
+  Via: {
+    toolParams: {
+      position: 'position'
     },
-    Port: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'PositionTool'
+  },
+  Port: {
+    toolParams: {
+      position: 'position'
     },
-    Node: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  Node: {
+    toolParams: {
+      position: 'position'
     },
-    CircleValve: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  CircleValve: {
+    toolParams: {
+      position: 'position'
     },
-    RectValve: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  RectValve: {
+    toolParams: {
+      position: 'position'
     },
+    placementTool: 'componentPositionTool'
+  },
 
-    Pump: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+  Pump: {
+    toolParams: {
+      position: 'position'
     },
+    placementTool: 'MultilayerPositionTool'
+  },
 
-    Pump_control: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+  Pump_control: {
+    toolParams: {
+      position: 'position'
     },
-    Valve3D: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  Valve3D: {
+    toolParams: {
+      position: 'position'
     },
-    Pump3D: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  Pump3D: {
+    toolParams: {
+      position: 'position'
     },
-    Pump3D_control: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  Pump3D_control: {
+    toolParams: {
+      position: 'position'
     },
-    AlignmentMarks: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  AlignmentMarks: {
+    toolParams: {
+      position: 'position'
     },
-    AlignmentMarks_control: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  AlignmentMarks_control: {
+    toolParams: {
+      position: 'position'
     },
-    Valve3D_control: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  Valve3D_control: {
+    toolParams: {
+      position: 'position'
     },
-    Transposer: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  Transposer: {
+    toolParams: {
+      position: 'position'
     },
-    Transposer_control: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  Transposer_control: {
+    toolParams: {
+      position: 'position'
     },
-    RotaryMixer: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  RotaryMixer: {
+    toolParams: {
+      position: 'position'
     },
-    RotaryMixer_control: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  RotaryMixer_control: {
+    toolParams: {
+      position: 'position'
     },
-    Channel: {
-        toolParams: {
-            start: "start",
-            end: "end"
-        },
-        placementTool: "DragTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  Channel: {
+    toolParams: {
+      start: 'start',
+      end: 'end'
     },
-    Connection: {
-        toolParams: {
-            start: "start",
-            end: "end"
-        },
-        placementTool: "ConnectionTool"
+    placementTool: 'DragTool'
+  },
+  Connection: {
+    toolParams: {
+      start: 'start',
+      end: 'end'
     },
-    RoundedChannel: {
-        toolParams: {
-            start: "start",
-            end: "end"
-        },
-        placementTool: "DragTool"
+    placementTool: 'ConnectionTool'
+  },
+  RoundedChannel: {
+    toolParams: {
+      start: 'start',
+      end: 'end'
     },
-    Transition: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "PositionTool"
+    placementTool: 'DragTool'
+  },
+  Transition: {
+    toolParams: {
+      position: 'position'
     },
-    Chamber: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'PositionTool'
+  },
+  Chamber: {
+    toolParams: {
+      position: 'position'
     },
-    DiamondReactionChamber: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  DiamondReactionChamber: {
+    toolParams: {
+      position: 'position'
     },
-    Circuit: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  Circuit: {
+    toolParams: {
+      position: 'position'
     },
-    Valve: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  Valve: {
+    toolParams: {
+      position: 'position'
     },
-    BetterMixer: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  BetterMixer: {
+    toolParams: {
+      cursorPosition: 'position'
     },
-    CurvedMixer: {
-        toolParams: {
-            position: "componentposition"
-        },
-        placementTool: "PositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  CurvedMixer: {
+    toolParams: {
+      position: 'componentposition'
     },
-    Mixer: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'PositionTool'
+  },
+  Mixer: {
+    toolParams: {
+      position: 'position'
     },
-    GradientGenerator: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  GradientGenerator: {
+    toolParams: {
+      position: 'position'
     },
-    Tree: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  Tree: {
+    toolParams: {
+      position: 'position'
     },
-    YTree: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  YTree: {
+    toolParams: {
+      position: 'position'
     },
-    Mux: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  Mux: {
+    toolParams: {
+      position: 'position'
     },
-    Mux_control: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  Mux_control: {
+    toolParams: {
+      position: 'position'
     },
-    CellTrapL: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "CellPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  CellTrapL: {
+    toolParams: {
+      position: 'position'
     },
-    CellTrapL_cell: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "CellPositionTool"
+    placementTool: 'CellPositionTool'
+  },
+  CellTrapL_cell: {
+    toolParams: {
+      position: 'position'
     },
-    DropletGen: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'CellPositionTool'
+  },
+  DropletGen: {
+    toolParams: {
+      position: 'position'
     },
-    TEXT: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "textInsertTool"
+    placementTool: 'componentPositionTool'
+  },
+  TEXT: {
+    toolParams: {
+      position: 'position'
     },
+    placementTool: 'textInsertTool'
+  },
 
-    // new
-    Filter: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
+  // new
+  Filter: {
+    toolParams: {
+      cursorPosition: 'position'
     },
-    CellTrapS: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "CellPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  CellTrapS: {
+    toolParams: {
+      position: 'position'
     },
-    CellTrapS_cell: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "CellPositionTool"
+    placementTool: 'CellPositionTool'
+  },
+  CellTrapS_cell: {
+    toolParams: {
+      position: 'position'
     },
-    ThreeDMux: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'CellPositionTool'
+  },
+  ThreeDMux: {
+    toolParams: {
+      cursorPosition: 'position'
     },
-    ThreeDMux_control: {
-        toolParams: {
-            position: "position"
-        },
-        placementTool: "MultilayerPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  ThreeDMux_control: {
+    toolParams: {
+      position: 'position'
     },
-    ChemostatRing: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'MultilayerPositionTool'
+  },
+  ChemostatRing: {
+    toolParams: {
+      cursorPosition: 'position'
     },
-    Incubation: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  Incubation: {
+    toolParams: {
+      cursorPosition: 'position'
     },
-    Merger: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  Merger: {
+    toolParams: {
+      cursorPosition: 'position'
     },
-    PicoInjection: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  PicoInjection: {
+    toolParams: {
+      cursorPosition: 'position'
     },
-    Sorter: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  Sorter: {
+    toolParams: {
+      cursorPosition: 'position'
     },
-    Splitter: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
+    placementTool: 'componentPositionTool'
+  },
+  Splitter: {
+    toolParams: {
+      cursorPosition: 'position'
     },
-    CapacitanceSensor: {
-        toolParams: {
-            cursorPosition: "position"
-        },
-        placementTool: "componentPositionTool"
-    }
-};
+    placementTool: 'componentPositionTool'
+  },
+  CapacitanceSensor: {
+    toolParams: {
+      cursorPosition: 'position'
+    },
+    placementTool: 'componentPositionTool'
+  }
+}

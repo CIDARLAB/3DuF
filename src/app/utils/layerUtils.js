@@ -1,13 +1,13 @@
-import Registry from "@/app/core/registry";
+import Registry from '@/app/core/registry'
 
 export default class layerUtls {
-    constructor() {}
+  constructor () {}
 
-    static addFeature(feature) {
-        Registry.viewManager.addFeature(feature);
-    }
+  static addFeature (feature) {
+    Registry.viewManager.addFeature(feature)
+  }
 
-    static removeFeature(feature) {
-        Registry.viewManager.removeFeature(feature);
-    }
+  static removeFeature (feature) {
+    Registry.viewManager.removeFeature(feature)
+  }
 }
