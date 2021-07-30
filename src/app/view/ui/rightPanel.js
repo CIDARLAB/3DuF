@@ -9,7 +9,7 @@ export default class RightPanel {
 
         // Do the click handler here
         const ref = this;
-        this.__showResolutionToolBarButton.onclick = function (event) {
+        this.__showResolutionToolBarButton.onclick = function(event) {
             // console.log(ref.__resolutionToolBar.classList);
             ref.__resolutionToolBar.classList.toggle("showtoolbar");
             ref.__resolutionToolBar.classList.toggle("hidetoolbar");

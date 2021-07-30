@@ -5,30 +5,7 @@
             <v-card v-if="activated">
                 <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                 <v-card-text>
-                    <v-simple-table dense fixed-header>
-                        <template>
-                            <thead>
-                                <tr>
-                                    <th>Control</th>
-                                    <th>Key</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="item in spec" :key="item.key">
-                                    <td width="200px">
-                                        <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min"></v-slider>
-                                    </td>
-                                    <td>
-                                        <code>{{ item.name }}</code>
-                                    </td>
-                                    <td width="125px">
-                                        <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units"> </v-text-field>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </template>
-                    </v-simple-table>
+                    <PropertyBlock :title="title" :spec="spec" />
                 </v-card-text>
             </v-card>
         </div>
@@ -37,9 +14,11 @@
 
 <script>
 import EventBus from "@/events/events";
+import PropertyBlock from "@/components/base/PropertyBlock.vue";
 
 export default {
     name: "PropertyDrawer",
+    components: { PropertyBlock },
     props: {
         title: {
             type: String,

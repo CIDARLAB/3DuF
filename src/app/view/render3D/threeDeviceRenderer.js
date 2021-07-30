@@ -1,6 +1,6 @@
 import * as OrbitControls from "./threeLib/orbitControls";
-import * as STLExporter from "./threeLib/stlExporter";
-import * as Detector from "./threeLib/detector";
+import * as STLExporter from "three";
+import * as Detector from "three";
 import { Device3D } from "./primitiveSets3D";
 import { renderFeature } from "./threeFeatureRenderer";
 import * as Colors from "../colors";
@@ -52,7 +52,7 @@ export class ThreeDeviceRenderer {
         const reference = this;
         window.addEventListener(
             "resize",
-            function () {
+            function() {
                 reference.onWindowResize();
             },
             false
@@ -96,7 +96,7 @@ export class ThreeDeviceRenderer {
         this.controls = new THREE.OrbitControls(this.camera, this.container);
         this.controls.damping = 0.2;
         const reference = this;
-        this.controls.addEventListener("change", function () {
+        this.controls.addEventListener("change", function() {
             reference.render();
         });
     }
@@ -334,7 +334,7 @@ export class ThreeDeviceRenderer {
     }
 
     animate() {
-        requestAnimationFrame(animate);
+        requestAnimationFrame(this.animate);
         this.controls.update();
     }
 }

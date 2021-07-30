@@ -3,14 +3,11 @@ import "../../lib/material/material.min.js";
 
 import Registry from "./core/registry";
 import BareViewManager from "./view/bareViewManager";
-
-import Registry from "./core/registry";
-import BareViewManager from "./view/bareViewManager";
 import * as Examples from "./examples/jsonExamples";
 
 let viewManager;
 
-window.onload = function () {
+window.onload = function() {
     viewManager = new BareViewManager();
 
     Registry.viewManager = viewManager;

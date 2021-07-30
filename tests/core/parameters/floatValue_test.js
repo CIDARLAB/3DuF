@@ -1,5 +1,7 @@
 const should = require("should");
 const FloatValue = require("../../../app/core/parameters").FloatValue;
+const it = require("mocha").it;
+const describe = require("mocha").describe;
 
 describe("FloatValue", function() {
     it("should allow a value of 1.1", function() {

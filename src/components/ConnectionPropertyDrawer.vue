@@ -1,43 +1,21 @@
 <template>
     <div class="property-drawer-parent">
-        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">{{ title }}</v-btn>
+        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">Connection</v-btn>
         <div ref="drawer" class="connection-property-drawer">
             <v-card v-if="activated">
                 <v-row>
                     <v-col>
-                        <v-row>
-                            <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
-                            <v-icon size="20px" class="pencil">mdi-pencil</v-icon>
-                            <div class="d-inline">{{ current_connection_suggestion }}</div>
-                        </v-row>
-                        <v-row>
-                            <v-card-text>
-                                <v-simple-table dense fixed-header class="table">
-                                    <template>
-                                        <thead>
-                                            <tr>
-                                                <th>Adjust</th>
-                                                <th>Parameter</th>
-                                                <th>Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="item in spec" :key="item.key">
-                                                <td width="200px">
-                                                    <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min"></v-slider>
-                                                </td>
-                                                <td>
-                                                    <code>{{ item.name }}</code>
-                                                </td>
-                                                <td width="125px">
-                                                    <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units"> </v-text-field>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </template>
-                                </v-simple-table>
-                            </v-card-text>
-                        </v-row>
+                        <v-card-text>
+                            <v-row>
+                                <v-card-title class="subtitle-1 pb-0">{{ connectionName }}</v-card-title>
+                                <v-icon size="20px" class="pencil" @click="startConnection()">mdi-pencil</v-icon>
+                                <div class="pt-5 pl-16 d-block">{{ current_connection_suggestion }}</div>
+                            </v-row>
+                            <v-row>
+                                <!-- Connection properties -->
+                                <PropertyBlock title="Connection" :spec="spec" />
+                            </v-row>
+                        </v-card-text>
                     </v-col>
                     <v-divider vertical inset></v-divider>
                     <v-col>
@@ -68,7 +46,7 @@
                     <v-divider vertical inset></v-divider>
                     <v-col cols="3">
                         <v-row no-gutters>
-                            <v-col cols="3" class="connection-profile">Connection Profile</v-col>
+                            <v-col cols="4" class="connection-profile">Connection Profile</v-col>
                             <v-col cols="1"></v-col>
                             <v-col cols="5">
                                 <v-menu offset-y>
@@ -86,8 +64,8 @@
                         <v-row>
                             <v-img
                                 lazy-src="https://picsum.photos/id/11/10/6"
-                                max-height="200"
-                                max-width="220"
+                                max-height="150"
+                                max-width="150"
                                 src="https://picsum.photos/id/11/500/300"
                                 class="image-placeholder"
                             ></v-img>
@@ -106,53 +84,20 @@ import "@mdi/font/css/materialdesignicons.css";
 import "vue-select/dist/vue-select.css";
 import Vue from "vue";
 import vSelect from "vue-select";
-
+import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
+import PropertyBlock from "@/components/base/PropertyBlock.vue";
 Vue.component("v-select", vSelect);
 
 export default {
     name: "ConnectionPropertyDrawer",
+    components: { PropertyBlock },
     icons: {
         iconfont: "mdi"
     },
-    props: {
-        title: {
-            type: String,
-            required: true
-        },
-        activatedColor: {
-            type: String,
-            required: false,
-            default: "primary"
-        },
-        activatedTextColor: {
-            type: String,
-            required: false,
-            default: "white--text"
-        },
-        spec: {
-            type: Array,
-            required: true
-            // validator: spec => {
-            //     if (!Array.isArray(spec)) {
-            //         console.error("PropertyDrawer: Spec is not an array, unable to validate");
-            //         return "danger";
-            //     }
-
-            //     spec.forEach(item => {
-            //         ["min", "max", "key", "units", "value"].forEach(key => {
-            //             if (!Object.hasOwnProperty.call(item, key)) {
-            //                 console.error("Missing key " + key + " from item", item);
-            //                 return "danger";
-            //             }
-            //         });
-            //     });
-
-            //     return "success";
-            // }
-        }
-    },
     data() {
         return {
+            connectionName: "NewConnection",
+            spec: ConnectionSpec,
             component: "Component Name",
             chip1: true,
             chip2: true,
@@ -163,7 +108,7 @@ export default {
             isEditing: false,
             items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }],
             connection_suggestions: { state1: "Left Click to Choose a Point", state2: "Right Click to End Connection" },
-            current_connection_suggestion: null
+            current_connection_suggestion: "Left Click to Choose a Point"
         };
     },
     computed: {
@@ -172,11 +117,8 @@ export default {
         }
     },
     mounted() {
-        EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
-        this.current_connection_suggestion = this.connection_suggestions["state1"];
-    },
-    updated() {
-        Registry.viewManager.activateTool("Connection", "Connection");
+        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
+        EventBus.get().on(EventBus.RIGHT_CLICK, this.endConnection);
     },
     methods: {
         showProperties() {
@@ -190,6 +132,11 @@ export default {
             this.setDrawerPosition();
 
             attachPoint.appendChild(this.$refs.drawer);
+            if (this.activated) {
+                this.startConnection();
+            } else {
+                this.endConnection();
+            }
         },
         handleScroll() {
             this.setDrawerPosition();
@@ -197,13 +144,20 @@ export default {
         setDrawerPosition() {
             if (!this.activated) return;
             const bounds = this.$refs.activator.$el.getBoundingClientRect();
-            this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
         },
         openClose() {
             this.isOpen = !this.isOpen;
         },
         connectionStatus() {
             this.isEditing = true;
+        },
+        startConnection() {
+            Registry.viewManager.activateTool("Connection", "Connection");
+            this.current_connection_suggestion = this.connection_suggestions["state2"];
+        },
+        endConnection: function() {
+            this.current_connection_suggestion = this.connection_suggestions["state1"];
+            console.log(this.connection_suggestions["state1"]);
         }
     }
 };
@@ -246,6 +200,7 @@ export default {
     float: left;
     width: 1300px;
     left: 225px;
+    top: 10px;
     z-index: 100;
 
     ::v-deep .v-messages {

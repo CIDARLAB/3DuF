@@ -1,5 +1,7 @@
 const should = require("should");
 const utils = require("../../app/utils/geometryUtils");
+const it = require("mocha").it;
+const describe = require("mocha").describe;
 
 describe("GeometryUtils", function() {
     describe("#degToRad", function() {

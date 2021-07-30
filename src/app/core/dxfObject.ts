@@ -2,14 +2,17 @@
  * DXFObject class
  */
 export default class DXFObject {
+    protected _rootObject: any;
+    protected _type: string;
+
     /**
      * Default Constructor
      * @param {*} jsondata
      */
-    constructor(jsondata) {
-        this.__rootObject = jsondata;
+    constructor(jsondata: any) {
+        this._rootObject = jsondata;
 
-        this.__type = jsondata.type;
+        this._type = jsondata.type;
     }
 
     /**
@@ -18,9 +21,9 @@ export default class DXFObject {
      * @memberof DXFObject
      * @returns {void}
      */
-    setType(type) {
-        this.__type = type;
-        this.__rootObject.type = type;
+    setType(type: string) {
+        this._type = type;
+        this._rootObject.type = type;
     }
 
     /**
@@ -28,8 +31,8 @@ export default class DXFObject {
      * @returns {String} Returns type of the object
      * @memberof DXFObject
      */
-    getType() {
-        return this.__type;
+    getType(): string {
+        return this._type;
     }
 
     /**
@@ -37,8 +40,8 @@ export default class DXFObject {
      * @returns {} Returns the data of the object
      * @memberof DXFObject
      */
-    getData() {
-        return this.__rootObject;
+    getData(): any {
+        return this._rootObject;
     }
 
     /**
@@ -48,8 +51,8 @@ export default class DXFObject {
      * @memberof DXFObject
      * @returns {void}
      */
-    addData(key, value) {
-        this.__rootObject[key] = value;
+    addData(key: string, value: any) {
+        this._rootObject[key] = value;
     }
 
     /**
@@ -57,8 +60,8 @@ export default class DXFObject {
      * @returns {Object}
      * @memberof DXFObject
      */
-    toJSON() {
-        return this.__rootObject;
+    toJSON(): JSON {
+        return this._rootObject;
     }
 
     /**
@@ -67,7 +70,7 @@ export default class DXFObject {
      * @returns {DXFObject} Returns new DXFObject object
      * @memberof DXFObject
      */
-    static fromJSON(json) {
+    static fromJSON(json: JSON): DXFObject {
         return new DXFObject(json);
     }
 }

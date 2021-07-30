@@ -18,19 +18,7 @@
                 <ComponentToolbar />
             </div>
 
-            <v-list>
-                <v-list-item-group mandatory color="indigo">
-                    <v-list-item v-for="[key, icon, text] in buttons" :key="key" link>
-                        <v-list-item-icon>
-                            <v-icon>{{ icon }}</v-icon>
-                        </v-list-item-icon>
-
-                        <v-list-item-content>
-                            <v-list-item-title>{{ text }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list-item-group>
-            </v-list>
+            <ManufacturingPanel />
         </v-navigation-drawer>
 
         <v-main id="visualizer-slot">
@@ -58,6 +46,7 @@ import ImportDXFDialog from "@/components/ImportDXFDialog.vue";
 import InsertTextDialog from "@/components/InsertTextDialog.vue";
 import LayerToolbar from "@/components/LayerToolbar.vue";
 import ComponentToolbar from "@/components/ComponentToolBar.vue";
+import ManufacturingPanel from "@/components/ManufacturingPanel.vue";
 export default {
     components: {
         HelpDialog,
@@ -69,7 +58,8 @@ export default {
         ImportDXFDialog,
         InsertTextDialog,
         LayerToolbar,
-        ComponentToolbar
+        ComponentToolbar,
+        ManufacturingPanel
     },
     data() {
         return {

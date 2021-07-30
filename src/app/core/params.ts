@@ -135,4 +135,16 @@ export default class Params {
         }
         return ret;
     }
+
+    /**
+     * Sets the parameters of the params
+     *
+     * @param {{ [index: string]: Parameter }} parameters
+     * @memberof Params
+     */
+    loadParameters(parameters: { [index: string]: Parameter }): void {
+        for (let key in parameters) {
+            this.__parameters[key] = parameters[key];
+        }
+    }
 }

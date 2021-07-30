@@ -30,7 +30,6 @@ export default class GradientGenerator extends Template {
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
-            rotation: 0,
             bendLength: 2.46 * 1000,
             in: 1,
             out: 3,
@@ -57,7 +56,6 @@ export default class GradientGenerator extends Template {
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            rotation: 270,
             bendLength: 10,
             in: 1,
             out: 3,
@@ -71,7 +69,6 @@ export default class GradientGenerator extends Template {
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            rotation: 270,
             bendLength: 12 * 1000,
             in: 30,
             out: 90,
@@ -155,7 +152,7 @@ export default class GradientGenerator extends Template {
         xref = -totalstagewidth / 2;
         yref = stagelength * (stagevalue - invalue + 1);
 
-        for (var i = 0; i < outvalue; i++) {
+        for (let i = 0; i < outvalue; i++) {
             // Generate the ports for each of the outputs
             const x = xref + spacing * i + channelWidth / 2;
             ports.push(new ComponentPort(x, yref + channelWidth, (invalue + 1 + i).toString(), "FLOW"));

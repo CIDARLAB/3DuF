@@ -1,15 +1,28 @@
 import CustomComponent from "./customComponent";
 import Params from "./params";
 import Device from "./device";
-
-import StringValue from "../core/parameters/stringValue";
-import * as FeatureSets from "../featureSets";
-import Registry from "./registry";
+import Layer from "./layer";
+import DXFObject from "./dxfObject";
+import { ComponentAPI } from "@/componentAPI";
+import MapUtils from "../utils/mapUtils";
+import { FeatureInterchangeV0 } from "./init";
+import Parameter from "./parameter";
+import EventBus from "@/events/events";
+import RenderLayer from "../view/renderLayer";
 
 /**
  * Feature class
  */
 export default class Feature {
+    protected _type: string;
+    protected _params: Params;
+    protected _name: string;
+    protected _id: string;
+    protected _fabtype: string;
+    protected _dxfObjects: Array<DXFObject>;
+    protected _referenceID: string | null;
+    public layer: RenderLayer | Layer | null;
+
     /**
      * Feature Object
      * @param {String} type
@@ -19,16 +32,15 @@ export default class Feature {
      * @param {String} id
      * @param {} fabtype
      */
-    constructor(type, set, params, name, id = Feature.generateID(), fabtype = "XY") {
-        this.__type = type;
-        this.__params = params;
-        this.__name = name;
-        this.__id = id;
-        this.__type = type;
-        this.__set = set;
-        this.__fabtype = fabtype;
-        this.__dxfObjects = [];
-        this.__referenceID = null;
+    constructor(type: string, params: Params, name: string, id: string = ComponentAPI.generateID(), fabtype: string = "XY") {
+        this._type = type;
+        this._params = params;
+        this._name = name;
+        this._id = id;
+        this._type = type;
+        this._fabtype = fabtype;
+        this._dxfObjects = [];
+        this._referenceID = null;
         this.layer = null;
     }
 
@@ -37,8 +49,8 @@ export default class Feature {
      * @return {String}
      * @memberof Feature
      */
-    get referenceID() {
-        return this.__referenceID;
+    get referenceID(): string | null {
+        return this._referenceID;
     }
 
     /**
@@ -48,11 +60,8 @@ export default class Feature {
      * @returns {void}
      * @private
      */
-    set referenceID(value) {
-        if (typeof value !== "string" && !(value instanceof String)) {
-            throw new Error("The reference object value can only be a string");
-        }
-        this.__referenceID = value;
+    set referenceID(value: string | null) {
+        this._referenceID = value;
     }
 
     /**
@@ -61,8 +70,8 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    set dxfObjects(dxfdata) {
-        this.__dxfObjects = dxfdata;
+    set dxfObjects(dxfdata: Array<DXFObject>) {
+        this._dxfObjects = dxfdata;
     }
 
     /**
@@ -70,16 +79,8 @@ export default class Feature {
      * @return {string|*}
      * @memberof Feature
      */
-    get fabType() {
-        return this.__fabtype;
-    }
-
-    /**
-     * Generates an unique feature id
-     * @return {String}
-     */
-    static generateID() {
-        return Registry.generateID();
+    get fabType(): string {
+        return this._fabtype;
     }
 
     /**
@@ -89,9 +90,9 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    updateParameter(key, value) {
-        this.__params.updateParameter(key, value);
-        this.updateView();
+    updateParameter(key: string, value: any) {
+        this._params.updateParameter(key, value);
+        EventBus.get().emit(EventBus.UPDATE_RENDERS, this);
     }
 
     /**
@@ -100,12 +101,13 @@ export default class Feature {
      * @memberof Feature
      */
     toJSON() {
-        const output = {};
-        output.id = this.__id;
-        output.name = this.__name;
-        output.type = this.__type;
-        output.set = this.__set;
-        output.params = this.__params.toJSON();
+        const output = {
+            id: this._id,
+            name: this._name,
+            type: this._type,
+            params: this._params.toJSON()
+        };
+
         return output;
     }
 
@@ -114,29 +116,19 @@ export default class Feature {
      * @returns {}
      * @memberof Feature
      */
-    toInterchangeV1() {
+    toInterchangeV1(): FeatureInterchangeV0 {
         // TODO: We need to figure out what to do and what the final feature format will be
-        const output = {};
-        output.id = this.__id;
-        output.name = this.__name;
-        output.macro = this.__type;
-        output.set = this.__set;
-        output.referenceID = this.referenceID;
-
-        if (this.__params) {
-            output.params = this.__params.toJSON();
-        }
-
-        output.dxfData = [];
-
-        if (this.__dxfObjects) {
-            for (const i in this.__dxfObjects) {
-                output.dxfData.push(this.__dxfObjects[i].toJSON());
-            }
-        }
-
-        output.type = this.__fabtype;
-        // console.log("serialized feature: ", output);
+        const output = {
+            id: this._id,
+            name: this._name,
+            macro: this._type,
+            params: this._params.toJSON(),
+            type: this._fabtype,
+            referenceID: this._referenceID,
+            dxfData: this._dxfObjects.map(function(dxfObject) {
+                return dxfObject.toJSON();
+            })
+        };
         return output;
     }
 
@@ -146,16 +138,7 @@ export default class Feature {
      * @memberof Feature
      */
     get dxfObjects() {
-        return this.__dxfObjects;
-    }
-
-    /**
-     * Gets the set of the feature
-     * @returns {}
-     * @memberof Feature
-     */
-    getSet() {
-        return this.__set;
+        return this._dxfObjects;
     }
 
     /**
@@ -164,7 +147,7 @@ export default class Feature {
      * @memberof Feature
      */
     get ID() {
-        return this.__id;
+        return this._id;
     }
 
     /**
@@ -173,8 +156,8 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    setName(name) {
-        this.__name = new StringValue(name);
+    setName(name: string) {
+        this._name = name;
     }
 
     /**
@@ -184,7 +167,7 @@ export default class Feature {
      *
      */
     getName() {
-        return this.__name;
+        return this._name;
     }
 
     /**
@@ -193,20 +176,7 @@ export default class Feature {
      * @memberof Feature
      */
     getType() {
-        return this.__type;
-    }
-
-    /**
-     * Generates a feature for a Device object
-     * @param {String} typeString
-     * @param {String} setString
-     * @returns {Feature} Returns a device feature object
-     * @memberof Feature
-     */
-    static getFeatureGenerator(typeString, setString) {
-        return function (values) {
-            return Device.makeFeature(typeString, setString, values);
-        };
+        return this._type;
     }
 
     /**
@@ -215,9 +185,9 @@ export default class Feature {
      * @returns {} Returns the value of the parameters
      * @memberof Feature
      */
-    getValue(key) {
+    getValue(key: string) {
         try {
-            return this.__params.getValue(key);
+            return this._params.getValue(key);
         } catch (err) {
             if (this.hasDefaultParam(key)) return this.getDefaults()[key];
             else throw new Error("Unable to get value for key: " + key);
@@ -230,7 +200,7 @@ export default class Feature {
      * @returns {boolean} Returns true if it has default parameters
      * @memberof Feature
      */
-    hasDefaultParam(key) {
+    hasDefaultParam(key: string): boolean {
         if (this.getDefaults().hasOwnProperty(key)) return true;
         else return false;
     }
@@ -241,8 +211,8 @@ export default class Feature {
      * @returns {boolean}
      * @memberof Feature
      */
-    hasUniqueParam(key) {
-        return this.__params.isUnique(key);
+    hasUniqueParam(key: string): boolean {
+        return this._params.isUnique(key);
     }
 
     /**
@@ -251,8 +221,8 @@ export default class Feature {
      * @returns {boolean}
      * @memberof Feature
      */
-    hasHeritableParam(key) {
-        return this.__params.isHeritable(key);
+    hasHeritableParam(key: string): boolean {
+        return this._params.isHeritable(key);
     }
 
     /**
@@ -260,8 +230,8 @@ export default class Feature {
      * @returns {Array<Feature.parameters.heritable>} Returns the heritable parameters of the feature object
      * @memberof Feature
      */
-    getHeritableParams() {
-        return Feature.getDefinitionForType(this.getType(), this.getSet()).heritable;
+    getHeritableParams(): { [key: string]: string } {
+        return ComponentAPI.getHeritableForType(this.getType());
     }
 
     /**
@@ -269,8 +239,8 @@ export default class Feature {
      * @returns {Array<Feature.parameters.unique>} Returns the unique parameters of the feature object
      * @memberof Feature
      */
-    getUniqueParams() {
-        return Feature.getDefinitionForType(this.getType(), this.getSet()).unique;
+    getUniqueParams(): { [key: string]: string } {
+        return ComponentAPI.getUniqueForType(this.getType());
     }
 
     /**
@@ -278,8 +248,8 @@ export default class Feature {
      * @returns {Array<Feature.parameters.defaults>} Returns the default paramets of the feature object
      * @memberof Feature
      */
-    getDefaults() {
-        return Feature.getDefaultsForType(this.getType(), this.getSet());
+    getDefaults(): { [key: string]: number } {
+        return ComponentAPI.getDefaultsForType(this.getType());
     }
 
     /**
@@ -287,8 +257,8 @@ export default class Feature {
      * @returns {Array<Feature.parameters>} Returns the parameters of the feature object
      * @memberof Feature
      */
-    getParams() {
-        return this.__params.parameters;
+    getParams(): { [index: string]: Parameter } {
+        return this._params.parameters;
     }
 
     /**
@@ -297,8 +267,8 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    setParams(params) {
-        this.__params.parameters = params;
+    setParams(params: { [index: string]: Parameter }): void {
+        this._params.loadParameters(params);
     }
 
     /**
@@ -308,38 +278,27 @@ export default class Feature {
      * @returns {Feature}
      * @memberof Feature
      */
-    replicate(xpos, ypos) {
-        const paramscopy = this.__params;
-        const replicaparams = {};
-        for (const key in this.__params.parameters) {
+    replicate(xpos: number, ypos: number): Feature {
+        const paramscopy = this._params;
+        const replicaparams: { [key: string]: any } = {
+            position: [xpos, ypos]
+        };
+        for (const key in this._params.parameters) {
             replicaparams[key] = this.getValue(key);
         }
-        replicaparams.position = [xpos, ypos];
-        const ret = Device.makeFeature(this.__type, this.__set, replicaparams, this.__name, Feature.generateID(), this.__dxfObjects);
+
+        const ret = Device.makeFeature(
+            this._type,
+            replicaparams,
+            this._name,
+            ComponentAPI.generateID(),
+            "XY",
+            this._dxfObjects.map(function(dxfObject) {
+                return dxfObject.toJSON();
+            })
+        );
 
         return ret;
-    }
-
-    /**
-     * ?
-     * @param {String} typeString
-     * @param {String} setString
-     * @returns {Feature.defaults}
-     * @memberof Feature
-     */
-    static getDefaultsForType(typeString, setString) {
-        return Registry.featureDefaults[setString][typeString];
-    }
-
-    /**
-     * Gets the definition for a certain type of feture object
-     * @param {String} typeString
-     * @param {String} setString
-     * @returns {Feature.definitions}
-     * @memberof Feature
-     */
-    static getDefinitionForType(typeString, setString) {
-        return FeatureSets.getDefinition(typeString, setString);
     }
 
     /**
@@ -350,7 +309,7 @@ export default class Feature {
      * @returns Returns the values
      * @memberof Feature
      */
-    static checkDefaults(values, heritable, defaults) {
+    static checkDefaults(values: { [key: string]: number }, heritable: { [key: string]: string }, defaults: { [key: string]: number }) {
         for (const key in heritable) {
             if (!Object.prototype.hasOwnProperty.call(values, key)) values[key] = defaults[key];
         }
@@ -363,11 +322,11 @@ export default class Feature {
      * @returns {Feature} Returns a Device object with the features in the JSON
      * @memberof Feature
      */
-    static fromJSON(json) {
+    static fromJSON(json: any) {
         let set;
         if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
         else set = "Basic";
-        return Device.makeFeature(json.type, set, json.params, json.name, json.id);
+        return Device.makeFeature(json.type, json.params, json.name, json.id, "XY", []);
     }
 
     /**
@@ -376,13 +335,13 @@ export default class Feature {
      * @returns {Feature}
      * @memberof Feature
      */
-    static fromInterchangeV1(json) {
+    static fromInterchangeV1(json: any) {
         let ret;
         let set;
         if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
         else set = "Basic";
         // TODO: This will have to change soon when the thing is updated
-        ret = Device.makeFeature(json.macro, set, json.params, json.name, json.id, json.type, json.dxfData);
+        ret = Device.makeFeature(json.macro, json.params, json.name, json.id, json.type, json.dxfData);
         if (Object.prototype.hasOwnProperty.call(json, "referenceID")) {
             ret.referenceID = json.referenceID;
             // Registry.currentDevice.updateObjectReference(json.id, json.referenceID);
@@ -395,22 +354,13 @@ export default class Feature {
      * @returns {Feature} Returns a new feature object
      * @memberof Feature
      */
-    static makeCustomComponentFeature(customcomponent, setstring, paramvalues, name = "New Feature", id = undefined) {
+    static makeCustomComponentFeature(customcomponent: CustomComponent, setstring: string, paramvalues: { [key: string]: any }, name = "New Feature", id = undefined) {
         const definitions = CustomComponent.defaultParameterDefinitions();
-        Feature.checkDefaults(paramvalues, definitions.heritable, Feature.getDefaultsForType(customcomponent.type, setstring));
-        const params = new Params(paramvalues, definitions.unique, definitions.heritable);
-        const ret = new Feature(customcomponent.type, setstring, params, name, id);
+        Feature.checkDefaults(paramvalues, definitions.heritable, ComponentAPI.getDefaultsForType(customcomponent.type));
+        const params = new Params(paramvalues, MapUtils.toMap(definitions.unique), MapUtils.toMap(definitions.heritable));
+        const ret = new Feature(customcomponent.type, params, name, id, "XY");
         ret.dxfObjects = customcomponent.dxfData;
         return ret;
-    }
-
-    /**
-     * Updates the view
-     * @memberof Feature
-     * @returns {void}
-     */
-    updateView() {
-        if (Registry.viewManager) Registry.viewManager.updateFeature(this);
     }
 
     /**
@@ -418,8 +368,8 @@ export default class Feature {
      * @return {DXFObject}
      * @memberof Feature
      */
-    getDXFObjects() {
-        return this.__dxfObjects;
+    getDXFObjects(): Array<DXFObject> {
+        return this._dxfObjects;
     }
 
     /**
@@ -428,7 +378,7 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    addDXFObject(dxfobject) {
-        this.__dxfObjects.push(dxfobject);
+    addDXFObject(dxfobject: DXFObject) {
+        this._dxfObjects.push(dxfobject);
     }
 }

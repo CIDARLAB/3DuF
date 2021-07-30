@@ -40,7 +40,7 @@ export default class CNCGenerator {
                 -  Populate with the ports
          */
         // let components = this.__device.components;
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
 
@@ -92,7 +92,7 @@ export default class CNCGenerator {
         console.log("mfglayers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function (mfglayer, index) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -113,7 +113,7 @@ export default class CNCGenerator {
                    Step 2.2 - Generate manufacturing layers for each of the depths
 
          */
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
         let isControl = false;
@@ -166,7 +166,7 @@ export default class CNCGenerator {
 
         console.log("XY Manufacturing Layers:", mfglayers);
         const ref = this;
-        mfglayers.forEach(function (mfglayer, index) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -183,7 +183,7 @@ export default class CNCGenerator {
         Step 2 - Get all the EDGE features in the drawing
         Step 3 - Generate separate SVGs
          */
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
 
@@ -224,7 +224,7 @@ export default class CNCGenerator {
         console.log("EDGE Manufacturing Layers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function (mfglayer, index) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });

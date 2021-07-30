@@ -1,10 +1,11 @@
 import Registry from "@/app/core/registry";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class ConnectionUtils {
     constructor() {}
 
     static hasFeatureSet() {
-        if (Registry.featureSet == null) {
+        if (Registry.featureSet === null) {
             return false;
         } else {
             return true;
@@ -12,7 +13,7 @@ export default class ConnectionUtils {
     }
 
     static getDefinition(stringname) {
-        return Registry.featureSet.getDefinition("Connection");
+        return ComponentAPI.getDefinition("Connection");
     }
 
     static getFeatureFromID(featureid) {

@@ -1,11 +1,8 @@
 import Registry from "@/app/core/registry";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class ComponentUtils {
     constructor() {}
-
-    static getComponentPorts(cleanparamdata, type) {
-        return Registry.featureSet.getComponentPorts(cleanparamdata, type);
-    }
 
     static getFeatureFromID(featureid) {
         return Registry.currentDevice.getFeatureByID(featureid);
@@ -15,20 +12,8 @@ export default class ComponentUtils {
         return Registry.viewManager.view.getRenderedFeature(featureid);
     }
 
-    static getMintType(entity) {
-        return Registry.featureSet.getTypeForMINT(entity);
-    }
-
-    static getComponentPorts(cleanparamdata, type) {
-        return Registry.featureSet.getComponentPorts(cleanparamdata, type);
-    }
-
     static generateDeviceName(type) {
         return Registry.currentDevice.generateNewName(type);
-    }
-
-    static getFeatureSetDefinition(type) {
-        return Registry.featureSet.getDefinition(type);
     }
 
     static getDeviceLayers() {

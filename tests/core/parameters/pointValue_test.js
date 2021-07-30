@@ -1,5 +1,7 @@
 const should = require("should");
 const PointValue = require("../../../app/core/parameters").PointValue;
+const it = require("mocha").it;
+const describe = require("mocha").describe;
 
 describe("PointValue", function() {
     it("should allow the point [0,1]", function() {
