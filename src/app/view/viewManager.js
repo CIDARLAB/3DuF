@@ -53,7 +53,6 @@ import ControlCellPositionTool from "./tools/controlCellPositionTool";
 import EventBus from "@/events/events";
 import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
-
 /**
  * View manager class
  */
