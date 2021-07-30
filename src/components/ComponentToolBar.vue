@@ -46,7 +46,7 @@
         <!-- Process -->
         <v-card elevation="0">
             <v-card-title class="py-2">
-                <span>Process</span>
+                <span>Process</span> 
             </v-card-title>
             <v-card-text class="px-1">
                 <PropertyDrawer title="LL Chamber" :spec="llChamberSpec" />
@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import ComponentAPI from "@/componentAPI.ts";
 import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
 import ChannelSpec from "@/models/property-drawer/ChannelSpec.js";
 import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
@@ -127,6 +128,27 @@ export default {
             muxSpec: MixSpec,
             transponderSpec: MixSpec
         };
+    },
+    computed: {
+        computedSpec: function(minttype) {
+            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
+            let definition = ComponentAPI.getDefinitionForMINT(minttype);
+            let spec = [];
+            for (let key in definition.unique){
+                let item = {
+                    name: key,
+                    min: definition.minimum[key],
+                    max: definition.maximum[key],
+                    default: definition.default[key],
+                    mint: definition.mint,
+                }
+                spec.push(item);
+            }
+            return spec;
+        }
+    },
+    updated() {
+        Registry.viewManager.activateTool(spec.name, spec.name);
     }
 };
 </script>
