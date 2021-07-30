@@ -60,13 +60,13 @@ export type LayerInterchangeV1 = {
     group: string;
     type: string;
     features: Array<FeatureInterchangeV0>;
-    color: string | undefined;
 };
 
 export type RenderLayerInterchangeV1 = {
     id: string;
     group: string;
     features: Array<FeatureInterchangeV0>;
+    modellayer: LayerInterchangeV1 | null;
     color: string | undefined;
     name: string;
     type: string;

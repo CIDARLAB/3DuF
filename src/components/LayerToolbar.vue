@@ -18,7 +18,10 @@
                         <span>Flow</span>
                     </v-btn>
                     <v-btn small :color="getButtonColor(level, 1)" @click="layerModeClicked(level, 1)">
-                        <span>Control</span>
+                        <span>Ctrl</span>
+                    </v-btn>
+                    <v-btn small :color="getButtonColor(level, 2)" @click="layerModeClicked(level, 2)">
+                        <span>Int</span>
                     </v-btn>
                 </v-btn-toggle>
             </div>
@@ -84,7 +87,8 @@ export default {
             if (level.id != this.selectedLevel) return "";
             if (level.id == this.selectedLevel && level.mode == buttonMode) {
                 if (buttonMode == 0) return "blue white--text";
-                else return "red white--text";
+                if (buttonMode == 1) return "red white--text";
+                else return "green white--text";
             }
             return "";
         }

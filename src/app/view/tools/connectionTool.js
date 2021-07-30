@@ -35,7 +35,7 @@ export default class ConnectionTool extends MouseTool {
         const ref = this;
 
         this.showQueue = new SimpleQueue(
-            function () {
+            function() {
                 ref.showTarget();
             },
             20,
@@ -43,14 +43,14 @@ export default class ConnectionTool extends MouseTool {
         );
 
         this.updateQueue = new SimpleQueue(
-            function () {
+            function() {
                 ref.updateChannel();
             },
             20,
             false
         );
 
-        this.down = function (event) {
+        this.down = function(event) {
             Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             console.log("Current State:", ref.__STATE);
@@ -72,7 +72,7 @@ export default class ConnectionTool extends MouseTool {
             }
         };
 
-        this.rightdown = function (event) {
+        this.rightdown = function(event) {
             ref.__STATE = "TARGET";
             ref.dragging = false;
             const end = ref.wayPoints.pop();
@@ -80,7 +80,7 @@ export default class ConnectionTool extends MouseTool {
             ref.finishChannel();
         };
 
-        this.move = function (event) {
+        this.move = function(event) {
             // Check if orthogonal
             const point = MouseTool.getEventPosition(event);
             const target = ConnectionTool.getTarget(point);
@@ -308,7 +308,8 @@ export default class ConnectionTool extends MouseTool {
         const render = Registry.viewManager.hitFeature(point);
         if (render !== false && render !== null && render !== undefined) {
             let connection;
-            const feature = Registry.currentDevice.getFeatureByID(render.featureID);
+            const feature = Registry.viewManager.getFeatureByID(render.featureID);
+            //const feature = Registry.currentDevice.getFeatureByID(render.featureID);
             // TODO: Replace this logic
             if (feature.referenceID === null) {
                 return false;
@@ -335,7 +336,8 @@ export default class ConnectionTool extends MouseTool {
 
         if (render !== false && render !== null && render !== undefined) {
             let component;
-            const feature = Registry.currentDevice.getFeatureByID(render.featureID);
+            const feature = Registry.viewManager.getFeatureByID(render.featureID);
+            //const feature = Registry.currentDevice.getFeatureByID(render.featureID);
             // console.log("Feature that intersects:", feature);
             // TODO: Replace this logic
             if (feature.referenceID === null) {
@@ -406,7 +408,7 @@ export default class ConnectionTool extends MouseTool {
     generateSegments() {
         const waypointscopy = [];
         waypointscopy.push(this.startPoint);
-        this.wayPoints.forEach(function (waypoint) {
+        this.wayPoints.forEach(function(waypoint) {
             waypointscopy.push(waypoint);
         });
         // TODO: Fix this bullshit where teh points are not always arrays

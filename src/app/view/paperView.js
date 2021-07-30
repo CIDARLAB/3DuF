@@ -80,7 +80,7 @@ export default class PaperView {
         const output = [];
         const items = paper.project.selectedItems;
         for (let i = 0; i < items.length; i++) {
-            output.push(this.__viewManagerDelegate.currentDevice.getFeatureByID(items[i].featureID));
+            output.push(this.__viewManagerDelegate.getFeatureByID(items[i].featureID));
         }
         return output;
     }
@@ -107,7 +107,7 @@ export default class PaperView {
         const items = paper.project.selectedItems;
         if (items && items.length > 0) {
             for (let i = 0; i < items.length; i++) {
-                this.__viewManagerDelegate.currentDevice.removeFeatureByID(items[i].featureID);
+                this.__viewManagerDelegate.removeFeatureByID(items[i].featureID);
             }
 
             // Delete the selected Components !!!
@@ -536,8 +536,8 @@ export default class PaperView {
     comparePaperFeatureHeights(a, b) {
         let bHeight;
         let aHeight;
-        const aFeature = this.__viewManagerDelegate.currentDevice.getFeatureByID(a.featureID);
-        const bFeature = this.__viewManagerDelegate.currentDevice.getFeatureByID(b.featureID);
+        const aFeature = this.__viewManagerDelegate.getFeatureByID(a.featureID);
+        const bFeature = this.__viewManagerDelegate.getFeatureByID(b.featureID);
 
         // TODO: So this needs to be eliminated form the entire sequence
         try {
@@ -613,7 +613,7 @@ export default class PaperView {
         }
         newPaperFeature.selected = selected;
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
-        const index = this.__viewManagerDelegate.currentDevice.layers.indexOf(feature.layer);
+        const index = this.__viewManagerDelegate.renderLayers.indexOf(this.__viewManagerDelegate.getRenderLayerByID(feature.ID));
         const layer = this.paperLayers[index];
         this.insertChildByHeight(layer, newPaperFeature);
     }
@@ -790,7 +790,7 @@ export default class PaperView {
     getFeaturesByViewElements(paperFeatures) {
         const output = [];
         for (let i = 0; i < paperFeatures.length; i++) {
-            output.push(this.__viewManagerDelegate.currentDevice.getFeatureByID(paperFeatures[i].featureID));
+            output.push(this.__viewManagerDelegate.getFeatureByID(paperFeatures[i].featureID));
         }
         return output;
     }
