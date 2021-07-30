@@ -3,7 +3,6 @@ import EdgeFeature from "./edgeFeature";
 import Feature from "./feature";
 import Params from "./params";
 import Device from "./device";
-import LayerUtils from "@/app/utils/layerUtils";
 import { FeatureInterchangeV0 } from "./init";
 import { LayerInterchangeV1 } from "./init";
 
@@ -16,7 +15,6 @@ export default class Layer {
     features: { [index: string]: Feature };
     featureCount: number;
     device: Device | undefined;
-    color: string | undefined;
     private __id: string;
     private __type: string;
     private group: string;
@@ -32,7 +30,6 @@ export default class Layer {
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
-        this.color = undefined;
         this.__id = Layer.generateID();
         this.__type = type;
         this.group = group;
@@ -66,7 +63,6 @@ export default class Layer {
         this.featureCount += 1;
         //TODO - Verify that this is not a problem anymore
         feature.layer = this;
-        LayerUtils.addFeature(feature);
     }
 
     /**
@@ -192,7 +188,6 @@ export default class Layer {
         this.__ensureFeatureIDExists(featureID);
         const feature: Feature = this.features[featureID];
         this.featureCount -= 1;
-        LayerUtils.removeFeature(feature);
         delete this.features[featureID];
     }
 
@@ -283,7 +278,6 @@ export default class Layer {
     toJSON(): { [index: string]: any } {
         const output: { [index: string]: any } = {};
         output.name = this.name;
-        output.color = this.color;
         output.params = this.params.toJSON();
         output.features = this.__featuresToJSON();
         return output;
@@ -303,8 +297,7 @@ export default class Layer {
             // against type and not name in the future
             group: "0",
             params: this.params.toJSON(),
-            features: this.__featuresInterchangeV1(),
-            color: this.color
+            features: this.__featuresInterchangeV1()
         };
         return output;
     }
@@ -319,7 +312,6 @@ export default class Layer {
     toFeatureLayerJSON(): { [index: string]: any } {
         const output: { [index: string]: any } = {};
         output.name = this.name;
-        output.color = this.color;
         output.params = this.params.toJSON();
         output.features = this.__featuresInterchangeV1();
         return output;
@@ -337,7 +329,6 @@ export default class Layer {
         }
         const newLayer = new Layer(json.params, json.name);
         newLayer.__loadFeaturesFromJSON(json.features);
-        if (json.color) newLayer.color = json.color;
         return newLayer;
     }
 
@@ -350,7 +341,6 @@ export default class Layer {
     static fromInterchangeV1(json: LayerInterchangeV1): Layer {
         const newLayer: Layer = new Layer(json.params, json.name, json.type, json.group);
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
-        if (json.color) newLayer.color = json.color; // TODO: Figure out if this needs to change in the future
         return newLayer;
     }
 }

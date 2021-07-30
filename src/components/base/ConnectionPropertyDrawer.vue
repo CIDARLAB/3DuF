@@ -68,8 +68,9 @@
                     <v-divider vertical inset></v-divider>
                     <v-col>
                         <v-row no-gutters>
-                            <v-col cols="4" style="font-size:13px" class="connection-profile">Connection Profile</v-col>
-                            <v-col cols="3">
+                            <v-col cols="4" class="connection-profile">Connection Profile</v-col>
+                            <v-col cols="1"></v-col>
+                            <v-col cols="5">
                                 <v-menu offset-y>
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn id="dropdown" color="orange" class="white--text" v-bind="attrs" style="width: 80px; font-size:10px;" v-on="on">DROPDOWN</v-btn>
@@ -210,17 +211,12 @@ export default {
             this.isEditing = true;
         },
         startConnection() {
-            if (!this.activated) return;
             Registry.viewManager.activateTool("Connection", "Connection");
-            if (Registry.viewManager.tools.ConnectionTool.state() == "SOURCE") {
-                this.current_connection_suggestion = this.connection_suggestions["state2"];
-            }
+            this.current_connection_suggestion = this.connection_suggestions["state2"];
         },
-        endConnection() {
+        endConnection: function() {
             this.current_connection_suggestion = this.connection_suggestions["state1"];
-        },
-        deactivateTool() {
-            Registry.viewManager.activateTool("MouseSelectTool");
+            console.log(this.connection_suggestions["state1"]);
         }
     }
 };
