@@ -2,7 +2,7 @@ import uuid from "node-uuid";
 import Feature from "../core/feature";
 import EdgeFeature from "../core/edgeFeature";
 
-import { RenderLayerInterchangeV1, FeatureInterchangeV0 } from "../core/init";
+import { RenderLayerInterchangeV1, FeatureInterchangeV0, LayerInterchangeV1 } from "../core/init";
 import Layer from "../core/layer";
 
 export default class RenderLayer {
@@ -12,14 +12,23 @@ export default class RenderLayer {
     private __id: string;
     private __type: string;
     name: string;
-    protected _physicalLayer: Layer | null = null;
+    protected _physicalLayer: Layer | null;
 
-    constructor(name: string = "New Layer", type: string = "FLOW", group: string = "0") {
+    constructor(name: string = "New Layer", modellayer: Layer | null = null, type: string = "FLOW", group: string = "0") {
         this.__type = type;
         this.features = {};
         this.featureCount = 0;
         this.name = name;
-        this.color = undefined;
+        this._physicalLayer = modellayer;
+        if (name == "flow") {
+            this.color = "indigo";
+        } else if (name == "control") {
+            this.color = "red";
+        } else if (name == "integration") {
+            this.color = "green";
+        } else {
+            this.color = undefined;
+        }
         this.__id = RenderLayer.generateID();
     }
 
@@ -52,11 +61,14 @@ export default class RenderLayer {
      * @memberof Layer
      * @returns {void}
      */
-    addFeature(feature: Feature): void {
+    addFeature(feature: Feature, physfeat: boolean = true): void {
         this.__ensureIsAFeature(feature);
         this.features[feature.ID] = feature;
         this.featureCount += 1;
-        feature.layer = this.physicalLayer;
+        if (this.physicalLayer != null && physfeat == true) {
+            this.physicalLayer.addFeature(feature);
+            feature.layer = this.physicalLayer;
+        }
     }
 
     /**
@@ -123,6 +135,10 @@ export default class RenderLayer {
         this.__ensureFeatureIDExists(featureID);
         const feature: Feature = this.features[featureID];
         this.featureCount -= 1;
+        let physLayer = this._physicalLayer;
+        if (physLayer != null) {
+            if (physLayer.containsFeatureID(featureID)) physLayer.removeFeatureByID(featureID);
+        }
         delete this.features[featureID];
     }
 
@@ -195,29 +211,34 @@ export default class RenderLayer {
 
     /**
      * Loads features from Interchange format
-     * @param {*} json Interchange format file
-     * @memberof Layer
+     * @param {FeatureInterchangeV0} json Interchange format file
+     * @memberof RenderLayer
      */
-    __loadFeaturesFromInterchangeV1(json: { [index: string]: any }): void {
+    __loadFeaturesFromInterchangeV1(json: Array<FeatureInterchangeV0>): void {
         for (const i in json) {
             this.addFeature(Feature.fromInterchangeV1(json[i]));
         }
     }
 
     /**
-     * Generate the feature layer json that is neccissary for
-     * seriailizing the visual of the 3DuF designs
-     *
-     * @returns {*} json of the features
-     * @memberof Layer
+     * Converts the model layer into Interchange format
+     * @returns {LayerInterchangeV1 | null} Returns a Interchange format with the attributes of the object
+     * @memberof RenderLayer
      */
-    toFeatureLayerJSON(): { [index: string]: any } {
-        const output: { [index: string]: any } = {};
-        //output.name = this.name;
-        output.color = this.color;
-        //output.params = this.params.toJSON();
-        output.features = this.__featuresInterchangeV1();
-        return output;
+    __layerToInterchangeV1(): LayerInterchangeV1 | null {
+        if (this._physicalLayer != null) {
+            return this._physicalLayer.toInterchangeV1();
+        }
+        return null;
+    }
+
+    /**
+     * Loads physical layer from Interchange format
+     * @param {LayerInterchangeV1} json Interchange format file
+     * @memberof RenderLayer
+     */
+    __loadLayerFromInterchange(json: LayerInterchangeV1): void {
+        this.physicalLayer = Layer.fromJSON(json);
     }
 
     /**
@@ -228,9 +249,11 @@ export default class RenderLayer {
     toInterchangeV1(): RenderLayerInterchangeV1 {
         const output: RenderLayerInterchangeV1 = {
             id: this.__id,
+            name: this.name,
             //name: this.name,
             // TODO - Add group and unique name parameters to the system and do type checking
             // against type and not name in the future
+            modellayer: this.__layerToInterchangeV1(),
             type: this.__type,
             group: "0",
             //params: this.params.toJSON(),
@@ -250,7 +273,7 @@ export default class RenderLayer {
         if (!Object.prototype.hasOwnProperty.call(json, "features")) {
             throw new Error("JSON layer has no features!");
         }
-        const newLayer = new RenderLayer(json.type);
+        const newLayer = new RenderLayer(json.name, json.type, json.group);
         newLayer.__loadFeaturesFromJSON(json.features);
         if (json.color) newLayer.color = json.color;
         return newLayer;
@@ -263,7 +286,10 @@ export default class RenderLayer {
      * @memberof Layer
      */
     static fromInterchangeV1(json: RenderLayerInterchangeV1): RenderLayer {
-        const newLayer: RenderLayer = new RenderLayer(json.type, json.group);
+        const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
+        if (json.modellayer != null) {
+            newLayer.__loadLayerFromInterchange(json.modellayer);
+        }
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
         if (json.color) newLayer.color = json.color; // TODO: Figure out if this needs to change in the future
         return newLayer;

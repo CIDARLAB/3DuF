@@ -768,19 +768,10 @@ export default class Device {
      * @return {Array<Layer>} Returns a the layer objects created
      * @memberof Device
      */
-    createNewLayerBlock(): Array<Layer> {
-        let flowlayer = new Layer({ z_offset: 0, flip: false }, "flow");
-        let controllayer = new Layer({ z_offset: 0, flip: false }, "control");
-        //TODO: remove cell layer from the whole system
-        let cell = new Layer({ z_offset: 0, flip: false }, "cell");
-
-        this.addLayer(flowlayer);
-        this.addLayer(controllayer);
-
-        //TODO:Remove Cell layer from the whole system
-        this.addLayer(cell);
-
-        return [flowlayer, controllayer, cell];
+    createNewLayerBlock(layers: Array<Layer>): void {
+        for (let i in layers) {
+            this.addLayer(layers[i]);
+        }
     }
 
     /**
@@ -910,14 +901,15 @@ export default class Device {
      * @return {Component}
      * @memberof Device
      */
-    getComponentByID(key: string | String): Component {
+    getComponentByID(key: string | String): Component | null {
         for (let i in this.__components) {
             let component = this.__components[i];
             if (component.id === key) {
                 return component;
             }
         }
-        throw new Error("Component with ID " + key + " does not exist");
+        return null;
+        //throw new Error("Component with ID " + key + " does not exist");
     }
 
     /**
@@ -926,14 +918,15 @@ export default class Device {
      * @return {Connection}
      * @memberof Device
      */
-    getConnectionByID(key: string | String): Connection {
+    getConnectionByID(key: string | String): Connection | null {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
             if (connection.id === key) {
                 return connection;
             }
         }
-        throw new Error("Connection with ID " + key + " does not exist");
+        return null;
+        //throw new Error("Connection with ID " + key + " does not exist");
     }
 
     /**

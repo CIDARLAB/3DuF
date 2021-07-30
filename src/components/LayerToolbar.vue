@@ -18,7 +18,10 @@
                         <span>Flow</span>
                     </v-btn>
                     <v-btn small :color="getButtonColor(level, 1)" @click="layerModeClicked(level, 1)">
-                        <span>Control</span>
+                        <span>Ctrl</span>
+                    </v-btn>
+                    <v-btn small :color="getButtonColor(level, 2)" @click="layerModeClicked(level, 2)">
+                        <span>Int</span>
                     </v-btn>
                 </v-btn-toggle>
             </div>
@@ -32,7 +35,6 @@ export default {
     name: "LayerToolbar",
     data() {
         return {
-            selectedLevel: 0,
             selectedMode: 0,
             disabled: false,
             renderLayers: [],
@@ -51,6 +53,13 @@ export default {
                 }
             }
             return ret;
+        },
+        selectedLevel: function() {
+            let layer = Registry.viewManager.activeRenderLayer;
+            let remain = layer % 3;
+            layer = layer - remain;
+
+            return layer / 3;
         }
     },
     mounted() {
@@ -65,10 +74,9 @@ export default {
         },
 
         layerModeClicked(level, mode) {
-            console.log(level.id);
-            console.log(this.levels);
             this.levels[level.id].mode = mode;
             this.selectedLevel = level.id;
+            Registry.viewManager.setActiveRenderLayer(level.id * 3 + mode);
         },
 
         deleteLevel(level) {
@@ -79,7 +87,8 @@ export default {
             if (level.id != this.selectedLevel) return "";
             if (level.id == this.selectedLevel && level.mode == buttonMode) {
                 if (buttonMode == 0) return "blue white--text";
-                else return "red white--text";
+                if (buttonMode == 1) return "red white--text";
+                else return "green white--text";
             }
             return "";
         }

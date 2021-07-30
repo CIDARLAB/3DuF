@@ -21,7 +21,7 @@ export default class Feature {
     protected _fabtype: string;
     protected _dxfObjects: Array<DXFObject>;
     protected _referenceID: string | null;
-    public layer: Layer | null;
+    public layer: RenderLayer | Layer | null;
 
     /**
      * Feature Object
