@@ -626,7 +626,7 @@ export default class Device {
         for (let i in features) {
             //console.log("Feature:", features[i]);
             feature = features[i];
-            if (feature.referenceID != null) {
+            if (feature.referenceID !== null) {
                 newDevice.updateObjectReference(feature.referenceID, feature.ID);
             }
         }
@@ -717,7 +717,7 @@ export default class Device {
         for (let i in features) {
             //console.log("Feature:", features[i]);
             feature = features[i];
-            if (feature.referenceID != null) {
+            if (feature.referenceID !== null) {
                 newDevice.updateObjectReference(feature.referenceID, feature.ID);
             }
         }
