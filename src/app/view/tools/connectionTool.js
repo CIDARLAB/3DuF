@@ -12,6 +12,15 @@ import EventBus from "@/events/events";
 import Registry from "../../core/registry";
 
 export default class ConnectionTool extends MouseTool {
+    get state() {
+        return this.__STATE;
+    }
+    get source() {
+        return this.source;
+    }
+    get sinks() {
+        return this.sinks;
+    }
     constructor(typeString, setString) {
         super();
         this.typeString = typeString;

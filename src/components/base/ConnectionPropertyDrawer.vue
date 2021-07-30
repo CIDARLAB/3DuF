@@ -43,37 +43,36 @@
                     <v-col>
                         <v-card-text>
                             <v-row no-gutters>
-                                <v-col cols="2">Source:</v-col>
+                                <v-col cols="3">Source:</v-col>
                                 <v-col cols="5"
-                                    ><v-chip v-if="chip1" close color="green" text-color="white" closable @click:close="chip1 = false">{{ component }}</v-chip></v-col
+                                    ><v-chip v-if="chip1" close color="green" text-color="white" closable @click:close="chip1 = false">{{ source }}</v-chip></v-col
                                 >
                             </v-row>
                             <v-row no-gutters>
-                                <v-col cols="2">Sinks:</v-col>
+                                <v-col cols="3">Sinks:</v-col>
                                 <v-col cols="5"
-                                    ><v-chip v-if="chip2" close color="green" text-color="white" @click:close="chip2 = false">{{ component }}</v-chip></v-col
+                                    ><v-chip v-if="chip2" close color="green" text-color="white" @click:close="chip2 = false">{{ sink1 }}</v-chip></v-col
                                 >
-                                <v-col cols="5"
-                                    ><v-chip v-if="chip3" close color="green" text-color="white" @click:close="chip3 = false">{{ component }}</v-chip></v-col
+                                <v-col cols="4"
+                                    ><v-chip v-if="chip3" close color="green" text-color="white" @click:close="chip3 = false">{{ sink2 }}</v-chip></v-col
                                 >
                             </v-row>
                             <v-row no-gutters>
-                                <v-col cols="2"></v-col>
-                                <v-col cols="5"
-                                    ><v-chip v-if="chip4" close color="green" text-color="white" @click:close="chip4 = false">{{ component }}</v-chip></v-col
+                                <v-col cols="3"></v-col>
+                                <v-col cols="4"
+                                    ><v-chip v-if="chip4" close color="green" text-color="white" @click:close="chip4 = false">{{ sink3 }}</v-chip></v-col
                                 >
                             </v-row>
                         </v-card-text>
                     </v-col>
                     <v-divider vertical inset></v-divider>
-                    <v-col cols="3">
+                    <v-col>
                         <v-row no-gutters>
-                            <v-col cols="4" class="connection-profile">Connection Profile</v-col>
-                            <v-col cols="1"></v-col>
-                            <v-col cols="5">
+                            <v-col cols="4" style="font-size:13px" class="connection-profile">Connection Profile</v-col>
+                            <v-col cols="3">
                                 <v-menu offset-y>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn id="dropdown" color="orange" class="white--text" v-bind="attrs" v-on="on">DROPDOWN</v-btn>
+                                        <v-btn id="dropdown" color="orange" class="white--text" v-bind="attrs" style="width: 80px; font-size:10px;" v-on="on">DROPDOWN</v-btn>
                                     </template>
                                     <v-list>
                                         <v-list-item v-for="(item, index) in items" :key="index">
@@ -86,8 +85,8 @@
                         <v-row>
                             <v-img
                                 lazy-src="https://picsum.photos/id/11/10/6"
-                                max-height="200"
-                                max-width="220"
+                                max-height="170"
+                                max-width="170"
                                 src="https://picsum.photos/id/11/500/300"
                                 class="image-placeholder"
                             ></v-img>
@@ -153,7 +152,10 @@ export default {
     },
     data() {
         return {
-            component: "Component Name",
+            source: Registry.viewManager.tools.ConnectionTool.source(),
+            sink1: Registry.viewManager.tools.ConnectionTool.sinks()[0],
+            sink2: Registry.viewManager.tools.ConnectionTool.sinks()[1],
+            sink3: Registry.viewManager.tools.ConnectionTool.sinks()[2],
             chip1: true,
             chip2: true,
             chip3: true,
@@ -210,7 +212,9 @@ export default {
         startConnection() {
             if (!this.activated) return;
             Registry.viewManager.activateTool("Connection", "Connection");
-            this.current_connection_suggestion = this.connection_suggestions["state2"];
+            if (Registry.viewManager.tools.ConnectionTool.state() == "SOURCE") {
+                this.current_connection_suggestion = this.connection_suggestions["state2"];
+            }
         },
         endConnection() {
             this.current_connection_suggestion = this.connection_suggestions["state1"];
@@ -233,7 +237,7 @@ export default {
 }
 
 .table {
-    width: 480px;
+    width: 400px;
 }
 
 .d-inline {
@@ -257,7 +261,7 @@ export default {
 .connection-property-drawer {
     position: absolute;
     float: left;
-    width: 1300px;
+    width: 950px;
     left: 225px;
     top: 10px;
     z-index: 100;
