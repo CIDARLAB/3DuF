@@ -394,6 +394,16 @@ export class ComponentAPI {
         }
     }
 
+    static getRendererForMINT(minttype: string): Template {
+        // Go through all the objects in the library and return the one that matches the minttype
+        for (const key in ComponentAPI.library) {
+            if (ComponentAPI.library[key].object.mint === minttype) {
+                return ComponentAPI.library[key].object;
+            }
+        }
+        throw new Error("Component Type definition: " + minttype + " not found in library");
+    }
+
     static getRendererInfo(threeduftypeString: string): LibraryEntry {
         //Check if threeduftypestring in library
         if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {

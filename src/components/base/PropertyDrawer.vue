@@ -1,6 +1,6 @@
 <template>
     <div class="property-drawer-parent">
-        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">{{ title }}</v-btn>
+        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">{{ mint }}</v-btn>
         <div ref="drawer" class="property-drawer">
             <v-card v-if="activated">
                 <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
@@ -15,35 +15,19 @@
 <script>
 import EventBus from "@/events/events";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
+import Registry from "@/app/core/registry";
 
 export default {
     name: "PropertyDrawer",
     components: { PropertyBlock },
     props: {
-        title: {
+        mint: {
             type: String,
             required: true
         },
         spec: {
             type: Array,
             required: true
-            // validator: spec => {
-            //     if (!Array.isArray(spec)) {
-            //         console.error("PropertyDrawer: Spec is not an array, unable to validate");
-            //         return "danger";
-            //     }
-
-            //     spec.forEach(item => {
-            //         ["min", "max", "key", "units", "value"].forEach(key => {
-            //             if (!Object.hasOwnProperty.call(item, key)) {
-            //                 console.error("Missing key " + key + " from item", item);
-            //                 return "danger";
-            //             }
-            //         });
-            //     });
-
-            //     return "success";
-            // }
         },
         activatedColor: {
             type: String,
@@ -81,6 +65,13 @@ export default {
             this.setDrawerPosition();
 
             attachPoint.appendChild(this.$refs.drawer);
+
+            if (this.activated) {
+                Registry.viewManager.activateComponentPlacementTool(this.mint);
+                // Registry.viewManager.activateTool("CurvedMixer");
+            } else {
+                Registry.viewManager.deactivateComponentPlacementTool();
+            }
         },
         handleScroll() {
             this.setDrawerPosition();

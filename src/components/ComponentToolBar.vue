@@ -3,15 +3,18 @@
         <v-divider />
         <!-- feature  -->
         <v-card elevation="0">
+            <v-card-text class="px-1">
+                <ConnectionPropertyDrawer />
+            </v-card-text>
             <v-card-title class="py-2">
-                <span>Feature</span>
+                <span>Features</span>
             </v-card-title>
             <v-card-text class="px-1">
                 <ConnectionPropertyDrawer />
-                <PropertyDrawer title="Channel" :spec="channelSpec" />
-                <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
-                <PropertyDrawer title="Transition" :spec="transitionSpec" />
-                <PropertyDrawer title="Alignment Marks" :spec="alignmentMarksSpec" />
+                <PropertyDrawer mint="Channel" :spec="channelSpec" />
+                <PropertyDrawer mint="Rounded Channel" :spec="roundedChannelSpec" />
+                <PropertyDrawer mint="Transition" :spec="transitionSpec" />
+                <PropertyDrawer mint="Alignment Marks" :spec="alignmentMarksSpec" />
             </v-card-text>
         </v-card>
 
@@ -22,9 +25,9 @@
                 <span>Mix</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <PropertyDrawer title="Mixer" :spec="mixSpec" />
-                <PropertyDrawer title="3D Mixer" :spec="mix3DSpec" />
-                <PropertyDrawer title="Gradient Gen" :spec="gradientGenSpec" />
+                <PropertyDrawer mint="MIXER" :spec="testSpec" />
+                <PropertyDrawer mint="3D Mixer" :spec="mix3DSpec" />
+                <PropertyDrawer mint="Gradient Gen" :spec="gradientGenSpec" />
             </v-card-text>
         </v-card>
 
@@ -35,10 +38,10 @@
                 <span>Mix</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <PropertyDrawer title="Valve3D" :spec="valve3DSpec" />
-                <PropertyDrawer title="Value" :spec="valveSpec" />
-                <PropertyDrawer title="Pump3D" :spec="pump3DSpec" />
-                <PropertyDrawer title="Pump" :spec="pumpSpec" />
+                <PropertyDrawer mint="Valve3D" :spec="valve3DSpec" />
+                <PropertyDrawer mint="Value" :spec="valveSpec" />
+                <PropertyDrawer mint="Pump3D" :spec="pump3DSpec" />
+                <PropertyDrawer mint="Pump" :spec="pumpSpec" />
             </v-card-text>
         </v-card>
 
@@ -46,14 +49,14 @@
         <!-- Process -->
         <v-card elevation="0">
             <v-card-title class="py-2">
-                <span>Process</span> 
+                <span>Process</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <PropertyDrawer title="LL Chamber" :spec="llChamberSpec" />
-                <PropertyDrawer title="Cell Trap" :spec="cellTrapSpec" />
-                <PropertyDrawer title="DiamondChamber" :spec="diamondChamberSpec" />
-                <PropertyDrawer title="Chamber" :spec="chamberSpec" />
-                <PropertyDrawer title="Droplet Gen" :spec="dropletGenSpec" />
+                <PropertyDrawer mint="LL Chamber" :spec="llChamberSpec" />
+                <PropertyDrawer mint="Cell Trap" :spec="cellTrapSpec" />
+                <PropertyDrawer mint="DiamondChamber" :spec="diamondChamberSpec" />
+                <PropertyDrawer mint="Chamber" :spec="chamberSpec" />
+                <PropertyDrawer mint="Droplet Gen" :spec="dropletGenSpec" />
             </v-card-text>
         </v-card>
 
@@ -64,18 +67,18 @@
                 <span>Distribute</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <PropertyDrawer title="Port" :spec="portSpec" />
-                <PropertyDrawer title="Via" :spec="viaSpec" />
-                <PropertyDrawer title="Y-Tree" :spec="yTreeSpec" />
-                <PropertyDrawer title="Mux" :spec="muxSpec" />
-                <PropertyDrawer title="Transponder" :spec="transponderSpec" />
+                <PropertyDrawer mint="Port" :spec="portSpec" />
+                <PropertyDrawer mint="Via" :spec="viaSpec" />
+                <PropertyDrawer mint="Y-Tree" :spec="yTreeSpec" />
+                <PropertyDrawer mint="Mux" :spec="muxSpec" />
+                <PropertyDrawer mint="Transponder" :spec="transponderSpec" />
             </v-card-text>
         </v-card>
     </div>
 </template>
 
 <script>
-import ComponentAPI from "@/componentAPI.ts";
+import { ComponentAPI } from "@/componentAPI.ts";
 import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
 import ChannelSpec from "@/models/property-drawer/ChannelSpec.js";
 import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
@@ -91,6 +94,9 @@ import ValveSpec from "@/models/property-drawer/ValveSpec.js";
 import Pump3DSpec from "@/models/property-drawer/Pump3DSpec.js";
 import PumpSpec from "@/models/property-drawer/PumpSpec.js";
 import LLChamberSpec from "@/models/property-drawer/LLChamberSpec.js";
+import Registry from "@/app/core/registry";
+import he from "he";
+
 // import CellTrapSpec from "@/models/property-drawer/CellTrapSpec.js";
 // import DiamondChamberSpec from "@/models/property-drawer/DiamondChamberSpec.js";
 // import ChamberSpec from "@/models/property-drawer/ChamberSpec.js";
@@ -130,25 +136,34 @@ export default {
         };
     },
     computed: {
+        testSpec: function() {
+            return this.computedSpec("MIXER");
+        }
+    },
+    methods: {
+        activateTool: function(tool) {
+            console.log(tool);
+            Registry.viewManager.activateTool(tool);
+        },
         computedSpec: function(minttype) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let definition = ComponentAPI.getDefinitionForMINT(minttype);
             let spec = [];
-            for (let key in definition.unique){
+            for (let key in definition.heritable) {
+                console.log(definition.units[key]);
+                // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
                 let item = {
                     name: key,
                     min: definition.minimum[key],
                     max: definition.maximum[key],
-                    default: definition.default[key],
-                    mint: definition.mint,
-                }
+                    value: definition.defaults[key],
+                    units: definition.units[key],
+                    steps: (definition.maximum[key] - definition.minimum[key]) / 10
+                };
                 spec.push(item);
             }
             return spec;
         }
-    },
-    updated() {
-        Registry.viewManager.activateTool(spec.name, spec.name);
     }
 };
 </script>

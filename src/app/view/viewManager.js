@@ -1564,4 +1564,31 @@ export default class ViewManager {
             this.currentDevice.insertValve(valve, connection, valve_type);
         }
     }
+
+    activateComponentPlacementTool(minttype) {
+        if (minttype === null) {
+            throw new Error("Could not find tool with the matching string");
+        }
+
+        // Cleanup job when activating new tool
+        this.view.clearSelectedItems();
+
+        let activeTool = null;
+        const renderer = ComponentAPI.getRendererForMINT(minttype);
+        if (renderer.placementTool === "componentPositionTool") {
+            activeTool = new ComponentPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+        } else if (renderer.placementTool === "controlCellPositionTool") {
+            activeTool = new ControlCellPositionTool("ControlCell", "Basic");
+        } else if (renderer.placementTool === "customComponentPositionTool") {
+            activeTool = CustomComponentPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+        }
+
+        if (activeTool === null) {
+            throw new Error("Could not initialize the tool");
+        }
+
+        this.mouseAndKeyboardHandler.leftMouseTool = activeTool;
+        this.mouseAndKeyboardHandler.rightMouseTool = activeTool;
+        this.mouseAndKeyboardHandler.updateViewMouseEvents();
+    }
 }
