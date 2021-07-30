@@ -1,4 +1,4 @@
-//import ZoomToolBar from "@/components/zoomSlider.vue";
+// import ZoomToolBar from "@/components/zoomSlider.vue";
 import BorderSettingsDialog from "./ui/borderSettingDialog";
 import paper from "paper";
 
