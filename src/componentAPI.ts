@@ -292,7 +292,7 @@ export class ComponentAPI {
      */
     static getComponentPorts(params: any, minttypestring: string): Array<ComponentPort> {
         const threeduftypesting = ComponentAPI.getTypeForMINT(minttypestring);
-        if (threeduftypesting == null) {
+        if (threeduftypesting === null) {
             throw new Error("Component Ports of: " + threeduftypesting + " not found in library");
         }
         const definition = ComponentAPI.library[threeduftypesting].object;
