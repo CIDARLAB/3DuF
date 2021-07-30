@@ -7,7 +7,7 @@
                 <span>Feature</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <ConnectionPropertyDrawer title="Connection" :spec="connectionSpec" />
+                <ConnectionPropertyDrawer />
                 <PropertyDrawer title="Channel" :spec="channelSpec" />
                 <PropertyDrawer title="Rounded Channel" :spec="roundedChannelSpec" />
                 <PropertyDrawer title="Transition" :spec="transitionSpec" />
@@ -81,7 +81,7 @@ import RoundedChannelSpec from "@/models/property-drawer/RoundedChannelSpec.js";
 import TransitionSpec from "@/models/property-drawer/TransitionSpec.js";
 // import AlignmentMarksSpec from "@/models/property-drawer/AlignmentMarksSpec.js";
 import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
-import ConnectionPropertyDrawer from "@/components/base/ConnectionPropertyDrawer.vue";
+import ConnectionPropertyDrawer from "@/components/ConnectionPropertyDrawer.vue";
 import MixSpec from "@/models/property-drawer/MixSpec.js";
 import Mix3DSpec from "@/models/property-drawer/Mix3DSpec.js";
 import GradientGenSpec from "@/models/property-drawer/GradientGenSpec.js";
