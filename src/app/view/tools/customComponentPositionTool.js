@@ -4,6 +4,7 @@ import Feature from "../../core/feature";
 import CustomComponent from "../../core/customComponent";
 import Params from "../../core/params";
 import Component from "../../core/component";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class CustomComponentPositionTool extends PositionTool {
     constructor(customcomponent, setString) {

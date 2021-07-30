@@ -21,4 +21,7 @@
     "cSpell.words": [
         "registryref"
     ]
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
 }

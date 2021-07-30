@@ -88,9 +88,6 @@ export default {
         spec: {
             type: Array,
             required: true
-        },
-        rename: {
-            type: String
         }
     },
     data() {
@@ -100,6 +97,7 @@ export default {
             activeMove: false,
             activeCopy: false,
             Rename: false,
+            rename: null,
             featureRef: null,
             typeString: "",
             marginLeft: 500,

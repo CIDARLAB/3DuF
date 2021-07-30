@@ -14,16 +14,12 @@
                 </v-btn>
 
                 <v-btn-toggle :v-model="level.mode" mandatory tile borderless>
-                    <v-btn-toggle :v-model="level.mode" mandatory tile borderless>
-                        <v-btn small :color="getButtonColor(level, 0)" @click="layerModeClicked(level, 0)">
-                            <span>Flow</span>
-                        </v-btn>
-                    </v-btn-toggle>
-                    <v-btn-toggle :v-model="level.mode" mandatory tile borderless>
-                        <v-btn small :color="getButtonColor(level, 1)" @click="layerModeClicked(level, 1)">
-                            <span>Control</span>
-                        </v-btn>
-                    </v-btn-toggle>
+                    <v-btn small :color="getButtonColor(level, 0)" @click="layerModeClicked(level, 0)">
+                        <span>Flow</span>
+                    </v-btn>
+                    <v-btn small :color="getButtonColor(level, 1)" @click="layerModeClicked(level, 1)">
+                        <span>Control</span>
+                    </v-btn>
                 </v-btn-toggle>
             </div>
         </v-card-text>

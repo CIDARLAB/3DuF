@@ -1,5 +1,6 @@
 import Device from "./app/core/device";
 
+import Text from "@/app/library/text";
 import Port from "./app/library/port";
 import Anode from "./app/library/anode"; // new from CK
 import Cathode from "./app/library/cathode"; // new from CK
@@ -77,6 +78,7 @@ type LibraryEntry = {
  */
 export class ComponentAPI {
     static library: { [key: string]: LibraryEntry } = {
+        Text: { object: new Text(), key: null },
         Port: { object: new Port(), key: null },
         Anode: { object: new Anode(), key: null }, // ck addition
         Cathode: { object: new Cathode(), key: null }, // ck addition
@@ -290,7 +292,7 @@ export class ComponentAPI {
      */
     static getComponentPorts(params: any, minttypestring: string): Array<ComponentPort> {
         const threeduftypesting = ComponentAPI.getTypeForMINT(minttypestring);
-        if (threeduftypesting == null) {
+        if (threeduftypesting === null) {
             throw new Error("Component Ports of: " + threeduftypesting + " not found in library");
         }
         const definition = ComponentAPI.library[threeduftypesting].object;
@@ -381,5 +383,23 @@ export class ComponentAPI {
      */
     static generateID(): string {
         return uuid.v1();
+    }
+
+    static getRenderer(threeduftypeString: string): Template {
+        //Check if threeduftypestring in library
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString].object;
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
+    }
+
+    static getRendererInfo(threeduftypeString: string): LibraryEntry {
+        //Check if threeduftypestring in library
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString];
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
     }
 }

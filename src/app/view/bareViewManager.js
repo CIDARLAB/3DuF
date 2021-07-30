@@ -45,11 +45,11 @@ export default class BareViewManager {
         this.__currentDevice = null;
 
         const reference = this;
-        this.updateQueue = new SimpleQueue(function () {
+        this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
         }, 20);
 
-        this.saveQueue = new SimpleQueue(function () {
+        this.saveQueue = new SimpleQueue(function() {
             reference.saveToStorage();
         });
 
@@ -58,14 +58,14 @@ export default class BareViewManager {
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
-        this.view.setResizeFunction(function () {
+        this.view.setResizeFunction(function() {
             reference.updateGrid();
             reference.updateAlignmentMarks();
 
             reference.updateDevice(Registry.currentDevice);
         });
 
-        const func = function (event) {
+        const func = function(event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
@@ -734,7 +734,7 @@ export default class BareViewManager {
      * @param rightClickToolString
      */
     activateTool(toolString, rightClickToolString = "SelectTool") {
-        if (this.tools[toolString] == null) {
+        if (this.tools[toolString] === null) {
             throw new Error("Could not find tool with the matching string");
         }
         this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
@@ -743,68 +743,17 @@ export default class BareViewManager {
     }
 
     /**
-     * Switches to 2D
-     * @returns {void}
-     * @memberof BareViewManager
-     */
-    switchTo2D() {
-        if (this.threeD) {
-            this.threeD = false;
-            const center = this.renderer.getCameraCenterInMicrometers();
-            const zoom = this.renderer.getZoom();
-            let newCenterX = center[0];
-            if (newCenterX < 0) {
-                newCenterX = 0;
-            } else if (newCenterX > Registry.currentDevice.params.getValue("width")) {
-                newCenterX = Registry.currentDevice.params.getValue("width");
-            }
-            let newCenterY = paper.view.center.y - center[1];
-            if (newCenterY < 0) {
-                newCenterY = 0;
-            } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
-                newCenterY = Registry.currentDevice.params.getValue("height");
-            }
-            HTMLUtils.setButtonColor(this.__button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-            HTMLUtils.setButtonColor(this.__button3D, inactiveBackground, inactiveText);
-            Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
-            Registry.viewManager.setZoom(zoom);
-            HTMLUtils.addClass(this.__renderBlock, "hidden-block");
-            HTMLUtils.removeClass(this.__canvasBlock, "hidden-block");
-            HTMLUtils.removeClass(this.__renderBlock, "shown-block");
-            HTMLUtils.addClass(this.__canvasBlock, "shown-block");
-        }
-    }
-
-    // switchTo3D() {
-    //     if (!this.threeD) {
-    //         this.threeD = true;
-    //         setButtonColor(this.__button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-    //         setButtonColor(this.__button2D, inactiveBackground, inactiveText);
-    //         this.renderer.loadJSON(Registry.currentDevice.toJSON());
-    //         let cameraCenter = this.view.getViewCenterInMillimeters();
-    //         let height = Registry.currentDevice.params.getValue("height") / 1000;
-    //         let pixels = this.view.getDeviceHeightInPixels();
-    //         this.renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
-    //         this.renderer.showMockup();
-    //         HTMLUtils.removeClass(this.__renderBlock, "hidden-block");
-    //         HTMLUtils.addClass(this.__canvasBlock, "hidden-block");
-    //         HTMLUtils.addClass(this.__renderBlock, "shown-block");
-    //         HTMLUtils.removeClass(this.__canvasBlock, "shown-block");
-    //     }
-    // }
-
-    /**
      * Reads a selected file of the user
      * @param {Object} selector Selector object
      * @returns {void}
      * @memberof BareViewManager
      */
     setupDragAndDropLoad(selector) {
-        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
+        const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
             const f = files[0];
 
             const reader = new FileReader();
-            reader.onloadend = function (e) {
+            reader.onloadend = function(e) {
                 const result = JSON.parse(this.result);
                 Registry.viewManager.loadDeviceFromJSON(result);
                 Registry.viewManager.switchTo2D();

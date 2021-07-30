@@ -12,11 +12,11 @@ export default class DAMPFabricationDialog {
         if (!this.__dialog.showModal) {
             dialogPolyfill.registerDialog(this.__dialog);
         }
-        this.__showFabDialogButton.addEventListener("click", function () {
+        this.__showFabDialogButton.addEventListener("click", function() {
             ref.__dialog.showModal();
         });
 
-        this.__sendFabricationSubmissionButton.onclick = function () {
+        this.__sendFabricationSubmissionButton.onclick = function() {
             // Registry.viewManager.activateTool("InsertTextTool");
             const email = document.getElementById("fabricate_dialog_email_field").value;
             const address = document.getElementById("fabricate_dialog_address_field").value;
@@ -38,7 +38,7 @@ export default class DAMPFabricationDialog {
                 });
         };
 
-        this.__dialog.querySelector(".close").addEventListener("click", function () {
+        this.__dialog.querySelector(".close").addEventListener("click", function() {
             ref.__dialog.close();
         });
     }

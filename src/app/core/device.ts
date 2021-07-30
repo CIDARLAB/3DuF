@@ -626,7 +626,7 @@ export default class Device {
         for (let i in features) {
             //console.log("Feature:", features[i]);
             feature = features[i];
-            if (feature.referenceID != null) {
+            if (feature.referenceID !== null) {
                 newDevice.updateObjectReference(feature.referenceID, feature.ID);
             }
         }
@@ -717,7 +717,7 @@ export default class Device {
         for (let i in features) {
             //console.log("Feature:", features[i]);
             feature = features[i];
-            if (feature.referenceID != null) {
+            if (feature.referenceID !== null) {
                 newDevice.updateObjectReference(feature.referenceID, feature.ID);
             }
         }
@@ -1003,14 +1003,7 @@ export default class Device {
      * @return {EdgeFeature|Feature}
      * @memberof Device
      */
-    static makeFeature(
-        typeString: string,
-        paramvalues: any,
-        name: string = "New Feature",
-        id: string | undefined = undefined,
-        fabtype: string,
-        dxfdata: Array<JSON>
-    ): Feature {
+    static makeFeature(typeString: string, paramvalues: any, name: string = "New Feature", id: string | undefined = undefined, fabtype: string, dxfdata: Array<JSON>): Feature {
         let params: Params = new Params(new Map(), new Map(), new Map());
 
         if (typeString === "EDGE") {

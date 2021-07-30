@@ -220,52 +220,10 @@ export default class LLChamber extends Template {
     render2D(params, key = "FLOW") {
         if (key === "FLOW") {
             return this.__renderFlow(params);
-        } else {
+        } else if (key === "CONTROL") {
             return this.__renderControl(params);
         }
-
-        const position = params.position;
-        const px = position[0];
-        const py = position[1];
-        const l = params.length;
-        const w = params.width;
-        const rotation = params.rotation;
-        const color = params.color;
-        // let radius = params["cornerRadius"];
-
-        const numArray = params.numberOfChambers;
-        const spacing = params.spacing;
-
-        const rendered = new paper.CompoundPath();
-
-        let rec;
-
-        for (let i = 0; i < numArray; i++) {
-            rec = new paper.Path.Rectangle({
-                point: new paper.Point(px + (i + 1) * spacing + i * w, py - 1),
-                size: [w, l + 2],
-                radius: 0
-            });
-
-            rendered.addChild(rec);
-        }
-
-        const topchannel = new paper.Path.Rectangle({
-            point: new paper.Point(px, py - w),
-            size: [numArray * w + (numArray + 1) * spacing, w]
-        });
-
-        rendered.addChild(topchannel);
-
-        const bottomchannel = new paper.Path.Rectangle({
-            point: new paper.Point(px, py + l),
-            size: [numArray * w + (numArray + 1) * spacing, w]
-        });
-
-        rendered.addChild(bottomchannel);
-
-        rendered.fillColor = color;
-        return rendered.rotate(rotation, px, py);
+        throw new Error("Unknown render key found in LLCHAMBER: " + key);
     }
 
     render2DTarget(key, params) {

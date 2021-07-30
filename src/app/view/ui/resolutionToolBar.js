@@ -1,5 +1,6 @@
 import Registry from "../../core/registry";
 import wNumb from "wnumb";
+import noUiSlider from "nouislider";
 
 export default class ResolutionToolBar {
     constructor() {
@@ -12,7 +13,7 @@ export default class ResolutionToolBar {
         // this.__resolutionSlider = document.getElementById("grid-resolution-slider");
         this.__gridResolutionSlider = document.getElementById("grid-resolution-slider");
         const ref = this; // User ref for referring to this object instance
-        this.__adaptiveGridCheckBox.onchange = function (event) {
+        this.__adaptiveGridCheckBox.onchange = function(event) {
             if (ref.__adaptiveGridCheckBox.checked) {
                 // Enable Adaptive Grid
                 Registry.currentGrid.enableAdaptiveGrid();
@@ -23,7 +24,7 @@ export default class ResolutionToolBar {
                 ref.__gridResolutionSlider.removeAttribute("disabled");
             }
         };
-        this.__snapRenderCheckBox.onchange = function (event) {
+        this.__snapRenderCheckBox.onchange = function(event) {
             if (ref.__snapRenderCheckBox.checked) {
                 // Enable Adaptive Grid
                 Registry.viewManager.view.enableSnapRender();
@@ -79,11 +80,11 @@ export default class ResolutionToolBar {
         // Associate an onchange function
         const ref = this;
         const registryref = Registry;
-        this.__gridResolutionSlider.noUiSlider.on("update", function (values, handle, unencoded, isTap, positions) {
+        this.__gridResolutionSlider.noUiSlider.on("update", function(values, handle, unencoded, isTap, positions) {
             ref.__smallresolutionLabel.innerHTML = values[0] + " &mu;m";
         });
 
-        this.__gridResolutionSlider.noUiSlider.on("change", function (values, handle, unencoded, isTap, positions) {
+        this.__gridResolutionSlider.noUiSlider.on("change", function(values, handle, unencoded, isTap, positions) {
             const value = parseInt(values[0], 10);
 
             // This ensures that there is something valid present
