@@ -43,7 +43,7 @@ export default class CustomComponentPositionTool extends PositionTool {
         // Clean Param Data
         const cleanparamdata = {};
         for (const key in paramdata) {
-            cleanparamdata[key] = paramdata[key].getValue();
+            cleanparamdata[key] = paramdata[key].value;
         }
         // console.log(cleanparamdata);
         const params = new Params(cleanparamdata, definition.unique, definition.heritable);
