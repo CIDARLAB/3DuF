@@ -1581,6 +1581,10 @@ export default class ViewManager {
             activeTool = new ControlCellPositionTool("ControlCell", "Basic");
         } else if (renderer.placementTool === "customComponentPositionTool") {
             activeTool = CustomComponentPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+        } else if (renderer.placementTool === "positionTool") {
+            activeTool = new PositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+        } else if (renderer.placementTool === "multilayerPositionTool") {
+            activeTool = new MultilayerPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
         }
 
         if (activeTool === null) {
