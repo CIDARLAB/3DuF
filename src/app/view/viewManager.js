@@ -1595,4 +1595,8 @@ export default class ViewManager {
         this.mouseAndKeyboardHandler.rightMouseTool = activeTool;
         this.mouseAndKeyboardHandler.updateViewMouseEvents();
     }
+
+    deactivateComponentPlacementTool() {
+        console.log("Deactivating Component Placement Tool");
+    }
 }
