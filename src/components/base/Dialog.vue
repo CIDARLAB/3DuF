@@ -27,6 +27,7 @@
 <script>
 import Vue from "vue";
 export default {
+    name: "Dialog",
     props: {
         title: {
             type: String,

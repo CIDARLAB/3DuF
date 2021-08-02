@@ -23,16 +23,11 @@
                     <v-btn id="context_button_delete" color="white indigo--text" depressed @click="deleteButton()">
                         <span class="material-icons">delete</span>
                     </v-btn>
-                    <v-btn id="context_button_move" color="white indigo--text" depressed @click="moveButton()">
-                        <span class="material-icons">open_with</span>
-                    </v-btn>
+                    <MoveDialog />
                     <v-btn id="context_button_revert" color="white indigo--text" depressed @click="revertToDefaults()">
                         <span class="material-icons">settings_backup_restore</span>
                     </v-btn>
-                    <v-btn id="context_button_copytoall" color="white indigo--text" depressed @click="copyToAllButton()">
-                        <span class="material-icons">select_all</span>
-                    </v-btn>
-                    <ChangeAll v-if="activeCopy" />
+                    <ChangeAllDialog />
                     <v-btn id="context_button_rename" color="white indigo--text" depressed @click="renameButton()">
                         <span class="material-icons">title</span>
                     </v-btn>
@@ -79,11 +74,12 @@
 import { revertToDefaultParams, generateUpdateFunction } from "@/app/view/ui/parameterMenu";
 import Registry from "@/app/core/registry";
 import EventBus from "@/events/events";
-import ChangeAll from "@/components/ChangeAllDialog.vue";
+import MoveDialog from "@/components/MoveDialog.vue";
+import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
 
 export default {
     name: "RightClickMenu",
-    components: { ChangeAll },
+    components: { MoveDialog, ChangeAllDialog },
     props: {
         spec: {
             type: Array,

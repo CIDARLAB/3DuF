@@ -35,7 +35,25 @@ export default {
             specs: this.computedSpec("Connection")
         };
     },
-    computed: {
+    computed: {},
+    mounted() {
+        // registerSets({Basic: Basic});
+        let viewManager = new ViewManager();
+
+        Registry.viewManager = viewManager;
+
+        viewManager.loadDeviceFromJSON(JSON.parse(Examples.UpdatedExample));
+        viewManager.updateGrid();
+        Registry.viewManager.updateDevice(viewManager.currentDevice);
+
+        window.dev = Registry.currentDevice;
+        window.Registry = Registry;
+
+        window.view = Registry.viewManager.view;
+        Registry.viewManager.setupToolBars();
+        //EventBus.get().on(EventBus.DBL_CLICK, this.placement, this.placement2);
+    },
+    methods: {
         computedSpec: function(threeduftype) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let definition = ComponentAPI.getDefinition(threeduftype);
@@ -56,25 +74,7 @@ export default {
             }
             return spec;
         }
-    },
-    mounted() {
-        // registerSets({Basic: Basic});
-        let viewManager = new ViewManager();
-
-        Registry.viewManager = viewManager;
-
-        viewManager.loadDeviceFromJSON(JSON.parse(Examples.UpdatedExample));
-        viewManager.updateGrid();
-        Registry.viewManager.updateDevice(viewManager.currentDevice);
-
-        window.dev = Registry.currentDevice;
-        window.Registry = Registry;
-
-        window.view = Registry.viewManager.view;
-        Registry.viewManager.setupToolBars();
-        //EventBus.get().on(EventBus.DBL_CLICK, this.placement, this.placement2);
-    },
-    methods: {}
+    }
 };
 </script>
 
