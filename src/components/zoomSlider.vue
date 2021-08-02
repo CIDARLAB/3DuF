@@ -23,6 +23,7 @@ import veeno from "veeno";
 import "nouislider/distribute/nouislider.min.css";
 
 export default {
+    name: "ZoomSlider",
     components: {
         veeno
     },
