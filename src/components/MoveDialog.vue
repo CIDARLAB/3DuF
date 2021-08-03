@@ -157,7 +157,7 @@ export default {
             const d = {};
             document.addEventListener("mousedown", e => {
                 const closestDialog = e.target.closest(".draggable-dialog");
-                if (e.button === 0 && closestDialog != null && e.target.classList.contains("v-card__title")) {
+                if (e.button === 0 && closestDialog !== null && e.target.classList.contains("v-card__title")) {
                     // element which can be used to move element
                     d.el = closestDialog; // element which should be moved
                     d.mouseStartX = e.clientX;
