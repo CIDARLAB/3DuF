@@ -13,7 +13,7 @@
                             </v-row>
                             <v-row>
                                 <!-- Connection properties -->
-                                <PropertyBlock title="Connection" :spec="spec" />
+                                <PropertyBlock title="Connection" />
                             </v-row>
                         </v-card-text>
                     </v-col>
@@ -84,7 +84,6 @@ import "@mdi/font/css/materialdesignicons.css";
 import "vue-select/dist/vue-select.css";
 import Vue from "vue";
 import vSelect from "vue-select";
-import ConnectionSpec from "@/models/property-drawer/ConnectionSpec.js";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
 Vue.component("v-select", vSelect);
 
@@ -97,7 +96,7 @@ export default {
     data() {
         return {
             connectionName: "NewConnection",
-            spec: ConnectionSpec,
+            //spec: ConnectionSpec,
             component: "Component Name",
             chip1: true,
             chip2: true,

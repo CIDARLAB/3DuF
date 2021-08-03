@@ -175,6 +175,10 @@ export default class Layer {
      */
     removeFeature(feature: Feature): void {
         this.removeFeatureByID(feature.ID);
+        console.log("Device: ", this.device);
+        if (this.device != null) {
+            this.device.removeFeature(feature);
+        }
     }
 
     // TODO: Stop using delete, it's slow!
