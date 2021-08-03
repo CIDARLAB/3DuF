@@ -4,7 +4,7 @@
             <div id="canvas_block">
                 <canvas id="c" tabindex="0" resize />
                 <slot>
-                    <RightClickMenu id="contextMenu" ref="contextMenu" :spec="specs" />
+                    <RightClickMenu id="contextMenu" ref="contextMenu" />
                 </slot>
             </div>
             <div id="renderContainer" />

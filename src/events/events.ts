@@ -15,7 +15,9 @@ class EventBus extends EventEmitter {
     static SHOW_CONNECTION_PARAMS = "show_connection_params_event";
     static UPDATE_GRID_SIZE = "update_grid_size";
     static EDIT_CONNECTION = "edit_connection";
-    static DBL_CLICK = "dbl_click";
+    static DBL_CLICK_COMPONENT = "dbl_click_component";
+    static DBL_CLICK_CONNECTION = "dbl_click_connection";
+    static DBL_CLICK_FEATURE = "dbl_click_connection";
     static UPDATE_RENDERS = "update_renders";
     static RIGHT_CLICK = "right_click";
     static CLOSE_ALL_WINDOWS = "close_all_windows";

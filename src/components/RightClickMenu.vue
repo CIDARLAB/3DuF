@@ -5,10 +5,10 @@
                 <v-col>
                     <v-row id="rename" align-start>
                         <v-text-field label="Rename" type="input"> {{ rename }} </v-text-field>
-                        <v-btn id="close" xsmall depressed @click="callbacks.close()">
+                        <v-btn id="close" x-small depressed @click="callbacks.close()">
                             <span class="material-icons">close</span>
                         </v-btn>
-                        <v-btn id="close" xsmall depressed @click="Save">
+                        <v-btn id="close" x-small depressed @click="Save">
                             <span class="material-icons">check</span>
                         </v-btn>
                     </v-row>
@@ -38,7 +38,7 @@
             </v-row>
             <v-row>
                 <v-card-text>
-                    <PropertyBlock :title="title" :spec="spec" />
+                    <PropertyBlock :title="mint" :spec="spec" />
                 </v-card-text>
             </v-row>
         </div>
@@ -54,18 +54,15 @@ import EventBus from "@/events/events";
 import MoveDialog from "@/components/MoveDialog.vue";
 import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
+import { ComponentAPI } from "@/componentAPI";
 
 export default {
     name: "RightClickMenu",
     components: { MoveDialog, ChangeAllDialog, PropertyBlock },
-    props: {
-        spec: {
-            type: Array,
-            required: true
-        }
-    },
     data() {
         return {
+            mint: "",
+            spec: null,
             activeMenu: false,
             activeChange: false,
             activeMove: false,
@@ -85,18 +82,55 @@ export default {
         EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
             ref.activeMenu = false;
         });
-        EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
+        EventBus.get().on(EventBus.DBL_CLICK_COMPONENT, this.activateMenu);
     },
     methods: {
-        activateMenu: function(event, feat) {
-            //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
+        // computedSpec: function(definition) {
+        //     // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
+        //     let spec = [];
+        //     for (let key in definition.heritable) {
+        //         console.log(definition.units[key]);
+        //         // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
+        //         let item = {
+        //             mint: key,
+        //             min: definition.minimum[key],
+        //             max: definition.maximum[key],
+        //             value: definition.defaults[key],
+        //             units: definition.units[key],
+        //             steps: (definition.maximum[key] - definition.minimum[key]) / 10,
+        //             name: key
+        //         };
+        //         spec.push(item);
+        //     }
+        //     return spec;
+        // },
+        computeSpec: function(mint, params) {
+            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
+            let spec = [];
+            const definition = ComponentAPI.getDefinitionForMINT(mint);
+            for (let i in params.heritable) {
+                let key = params.heritable[i];
+                let item = {
+                    min: definition.minimum[key],
+                    max: definition.maximum[key],
+                    value: params.getValue(key),
+                    units: definition.units[key],
+                    steps: (definition.maximum[key] - definition.minimum[key]) / 10,
+                    name: key
+                };
+                spec.push(item);
+            }
+            return spec;
+        },
+        activateMenu: function(event, component) {
+            console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
 
             // Activate feat code
-            this.featureRef = feat;
-            this.typeString = feat.getType();
+            this.featureRef = component;
+            this.typeString = component.mint;
             //console.log(feat);
 
-            console.log(event, feat);
+            console.log(event, component);
             this.activeMenu = !this.activeMenu;
             console.log(this.activeMenu);
 
@@ -131,6 +165,12 @@ export default {
             } else {
                 this.marginTop = event.clientY - 20;
             }
+
+            // Compute the from the params and then handle whatever needs to get handeled
+            const spec = this.computeSpec(component.mint, component.params);
+            this.mint = component.mint;
+            console.log(spec);
+            this.spec = spec;
         },
         onSave() {
             const nametext = this.getComponentName();

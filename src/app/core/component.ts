@@ -66,6 +66,17 @@ export default class Component {
     }
 
     /**
+     * Returns the mint type of the component
+     *
+     * @readonly
+     * @type {string}
+     * @memberof Component
+     */
+    get mint(): string {
+        return this._entity;
+    }
+
+    /**
      * Gets the ports of the component
      * @returns {Map()} Returns ports of the component
      * @memberof Component

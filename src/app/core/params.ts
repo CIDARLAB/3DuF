@@ -147,4 +147,26 @@ export default class Params {
             this.__parameters[key] = parameters[key];
         }
     }
+
+    /**
+     * Returns the list of unique keys of the params.
+     *
+     * @readonly
+     * @type {Array<string>}
+     * @memberof Params
+     */
+    get unique(): Array<string> {
+        return Array.from(this.__unique.keys());
+    }
+
+    /**
+     * Returns the list of heritable keys of the params.
+     *
+     * @readonly
+     * @type {Array<string>}
+     * @memberof Params
+     */
+    get heritable(): Array<string> {
+        return Array.from(this.__heritable.keys());
+    }
 }
