@@ -23,7 +23,7 @@
                     <v-btn id="context_button_delete" color="white indigo--text" depressed @click="deleteButton()">
                         <span class="material-icons">delete</span>
                     </v-btn>
-                    <MoveDialog />
+                    <MoveDialog :component="currentComponent" />
                     <v-btn id="context_button_revert" color="white indigo--text" depressed @click="revertToDefaults()">
                         <span class="material-icons">settings_backup_restore</span>
                     </v-btn>

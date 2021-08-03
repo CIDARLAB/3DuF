@@ -49,8 +49,6 @@ export default class MoveTool extends MouseTool {
         // Store the component position here
         this.__currentComponent = component;
         this.__originalPosition = component.getPosition();
-        this.__moveWindow.showWindow();
-        this.__moveWindow.updateUIPos(this.__originalPosition);
     }
 
     /**
@@ -77,7 +75,6 @@ export default class MoveTool extends MouseTool {
      */
     __updatePosition(xpos, ypos) {
         this.processUIPosition(xpos, ypos);
-        this.__moveWindow.updateUIPos([xpos * 1000, ypos * 1000]);
     }
 
     /**
