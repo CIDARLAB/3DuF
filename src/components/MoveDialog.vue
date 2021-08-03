@@ -61,68 +61,6 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
-
-    <!-- <div class="property-drawer-parent">
-        <v-btn id="context_button_move" color="white indigo--text" depressed @click="showProperties()">
-            <span class="material-icons">open_with</span>
-        </v-btn>
-        <div ref="drawer" class="move-drawer">
-            <v-card v-if="activated">
-                <v-row>
-                    <v-col>
-                        <v-row>
-                            <v-card-title class="subtitle-1 pb-0">Move Component</v-card-title>
-                        </v-row>
-                        <v-row>
-                            <v-col id="left-col" cols="3">
-                                <v-row>
-                                    <v-card-text>X,Y</v-card-text>
-                                </v-row>
-                                <v-row>
-                                    <v-card-text class="bottom-xy">X,Y</v-card-text>
-                                </v-row>
-                            </v-col>
-                            <v-col id="box"></v-col>
-                            <v-col cols="3">
-                                <v-row>
-                                    <v-card-text>X,Y</v-card-text>
-                                </v-row>
-                                <v-row>
-                                    <v-card-text class="bottom-xy">X,Y</v-card-text>
-                                </v-row>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                    <v-col id="right-col">
-                        <tr>
-                            <td>
-                                <v-card-text>X (mm):</v-card-text>
-                            </td>
-                            <td width="125px">
-                                <v-text-field v-model="number" placeholder="0" :step="1" type="number"> </v-text-field>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <v-card-text>Y (mm):</v-card-text>
-                            </td>
-                            <td width="125px">
-                                <v-text-field v-model="number" placeholder="0" :step="1" type="number"> </v-text-field>
-                            </td>
-                        </tr>
-                        <v-row id="actions-row">
-                            <v-card-actions>
-                                <slot name="actions" :callbacks="callbacks">
-                                    <v-btn color="green darken-1" text @click="callbacks.close()"> Cancel </v-btn>
-                                    <v-btn color="green darken-1" text @click="callbacks.close(onSave)"> Save </v-btn>
-                                </slot>
-                            </v-card-actions>
-                        </v-row>
-                    </v-col>
-                </v-row>
-            </v-card>
-        </div>
-    </div> -->
 </template>
 
 <script>

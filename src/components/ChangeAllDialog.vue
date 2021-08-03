@@ -123,6 +123,10 @@ export default {
         }
     },
     mounted() {
+        // Setup an event for closing all the dialogs
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+            this.dialog = false;
+        });
         EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
         Vue.set(this.callbacks, "close", callback => {
             if (callback) callback();

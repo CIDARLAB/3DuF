@@ -16,7 +16,14 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <slot name="actions">
-                <v-btn color="white" flat @click="dialog = false">
+                <v-btn
+                    color="red"
+                    class="white--text ml-9"
+                    @click="
+                        dialog = false;
+                        activated = false;
+                    "
+                >
                     Cancel
                 </v-btn>
             </slot>
@@ -41,7 +48,8 @@ export default {
     data() {
         return {
             activated: false,
-            callbacks: {}
+            callbacks: {},
+            dialog: false
         };
     },
     computed: {
@@ -50,7 +58,11 @@ export default {
         }
     },
     mounted() {
-        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
+        // Setup an event for closing all the dialogs
+        const ref = this;
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+            ref.dialog = false;
+        });
         Vue.set(this.callbacks, "close", callback => {
             if (callback) callback();
             this.activated = false;

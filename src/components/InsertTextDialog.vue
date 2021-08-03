@@ -50,6 +50,7 @@
 <script>
 import Dialog from "@/components/base/Dialog.vue";
 import Registry from "@/app/core/registry.ts";
+
 export default {
     components: {
         Dialog

@@ -51,6 +51,10 @@ export default {
         }
     },
     mounted() {
+        // Setup an event for closing all the dialogs
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+            this.dialog = false;
+        });
         EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
     },
     methods: {

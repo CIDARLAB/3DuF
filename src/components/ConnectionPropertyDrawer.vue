@@ -118,6 +118,11 @@ export default {
         }
     },
     mounted() {
+        // Setup an event for closing all the dialogs
+        const ref = this;
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+            ref.activated = false;
+        });
         EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
         EventBus.get().on(EventBus.RIGHT_CLICK, this.endConnection);
     },

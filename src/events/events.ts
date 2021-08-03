@@ -18,6 +18,7 @@ class EventBus extends EventEmitter {
     static DBL_CLICK = "dbl_click";
     static UPDATE_RENDERS = "update_renders";
     static RIGHT_CLICK = "right_click";
+    static CLOSE_ALL_WINDOWS = "close_all_windows";
 }
 
 export default EventBus;

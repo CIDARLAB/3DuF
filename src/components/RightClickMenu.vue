@@ -1,7 +1,7 @@
 <template>
     <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, top: marginTop + 'px', left: marginLeft + 'px' }">
         <div>
-            <thead v-if="Rename">
+            <thead v-show="Rename">
                 <v-col>
                     <v-row id="rename" align-start>
                         <v-text-field label="Rename" type="input"> {{ rename }} </v-text-field>
@@ -38,30 +38,7 @@
             </v-row>
             <v-row>
                 <v-card-text>
-                    <v-simple-table dense fixed-header>
-                        <thead>
-                            <tr>
-                                <th>Control</th>
-                                <th>Key</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody ref="table" dense>
-                            <tr v-for="item in spec" :key="item.key">
-                                <td width="250px">
-                                    <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min" @change="UpdateFeatureSlider"></v-slider>
-                                </td>
-                                <td width="50px">
-                                    <code>{{ item.name }}</code>
-                                </td>
-                                <td width="100px">
-                                    <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units" @change="UpdateFeatureValue">{{
-                                        item.value
-                                    }}</v-text-field>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </v-simple-table>
+                    <PropertyBlock :title="title" :spec="spec" />
                 </v-card-text>
             </v-row>
         </div>
@@ -76,10 +53,11 @@ import Registry from "@/app/core/registry";
 import EventBus from "@/events/events";
 import MoveDialog from "@/components/MoveDialog.vue";
 import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
+import PropertyBlock from "@/components/base/PropertyBlock.vue";
 
 export default {
     name: "RightClickMenu",
-    components: { MoveDialog, ChangeAllDialog },
+    components: { MoveDialog, ChangeAllDialog, PropertyBlock },
     props: {
         spec: {
             type: Array,
@@ -102,7 +80,11 @@ export default {
         };
     },
     mounted() {
-        EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
+        // Setup an event for closing all the dialogs
+        const ref = this;
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+            ref.activeMenu = false;
+        });
         EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
     },
     methods: {
@@ -167,12 +149,6 @@ export default {
         copyToAllButton() {
             this.activeCopy = !this.activeCopy;
             console.log("Change all the component parameters");
-        },
-        moveButton() {
-            // Registry.viewManager.activateTool("MoveTool");
-            // const component = Registry.currentDevice.getComponentForFeatureID(this.featureRef.getID());
-            // Registry.viewManager.tools.MoveTool.activate(component);
-            EventBus.get().emit(EventBus.MOVE);
         },
         renameButton() {
             this.Rename = !this.Rename;

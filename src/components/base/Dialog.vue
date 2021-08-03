@@ -26,6 +26,7 @@
 
 <script>
 import Vue from "vue";
+import EventBus from "@/events/events";
 export default {
     name: "Dialog",
     props: {
@@ -65,6 +66,12 @@ export default {
         }
     },
     mounted() {
+        // Setup an event for closing all the dialogs
+        const ref = this;
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+            ref.dialog = false;
+        });
+
         // Here we set ouf default callbacks for the dialog in mounted to ensure the properties exist in the slot scope
         // when called by the children. Setting this up in data would result in undefined slot scope values
         Vue.set(this.callbacks, "close", callback => {
