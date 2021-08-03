@@ -46,8 +46,6 @@
 </template>
 
 <script>
-//import { defineComponent } from "@vue/composition-api";
-//import specname from "@/models/property-drawer/'specname'.js";
 import { revertToDefaultParams, generateUpdateFunction } from "@/app/view/ui/parameterMenu";
 import Registry from "@/app/core/registry";
 import EventBus from "@/events/events";
@@ -57,7 +55,7 @@ import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import { ComponentAPI } from "@/componentAPI";
 
 export default {
-    name: "RightClickMenu",
+    name: "ComponentContextMenu",
     components: { MoveDialog, ChangeAllDialog, PropertyBlock },
     data() {
         return {
@@ -72,8 +70,8 @@ export default {
             featureRef: null,
             typeString: "",
             marginLeft: 500,
-            marginTop: 100
-            //roundedChannelSpec: RoundedChannelSpec
+            marginTop: 100,
+            currentComponent: null
         };
     },
     mounted() {
@@ -85,25 +83,6 @@ export default {
         EventBus.get().on(EventBus.DBL_CLICK_COMPONENT, this.activateMenu);
     },
     methods: {
-        // computedSpec: function(definition) {
-        //     // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
-        //     let spec = [];
-        //     for (let key in definition.heritable) {
-        //         console.log(definition.units[key]);
-        //         // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
-        //         let item = {
-        //             mint: key,
-        //             min: definition.minimum[key],
-        //             max: definition.maximum[key],
-        //             value: definition.defaults[key],
-        //             units: definition.units[key],
-        //             steps: (definition.maximum[key] - definition.minimum[key]) / 10,
-        //             name: key
-        //         };
-        //         spec.push(item);
-        //     }
-        //     return spec;
-        // },
         computeSpec: function(mint, params) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let spec = [];
@@ -124,7 +103,7 @@ export default {
         },
         activateMenu: function(event, component) {
             console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
-
+            this.currentComponent = component;
             // Activate feat code
             this.featureRef = component;
             this.typeString = component.mint;

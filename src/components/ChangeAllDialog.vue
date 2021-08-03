@@ -33,41 +33,6 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
-
-    <!-- <div class="property-drawer-parent">
-        <v-btn id="context_button_copytoall" color="white indigo--text" depressed @click="showProperties()">
-            <span class="material-icons">select_all</span>
-        </v-btn>
-        <div ref="drawer" class="change-all-drawer">
-            <v-card v-if="activated">
-                <v-row>
-                    <v-card-title class="heading-6 pb-0">Change All Components:</v-card-title>
-                </v-row>
-                <table>
-                    <tr>
-                        <th class="font-weight-bold pl-10 pt-4 pb-2">
-                            <input v-model="selectAll" type="checkbox" />
-                            <v-text class="pl-1">Select</v-text>
-                        </th>
-                        <th class="font-weight-bold pl-15 pt-4 pb-2">Name</th>
-                    </tr>
-                    <tr v-for="component in components" :key="component.id">
-                        <td class="pl-15 pb-2"><input v-model="selected" type="checkbox" :value="component.id" /></td>
-                        <td class="pl-15 pb-2">{{ component.name }}</td>
-                    </tr>
-                </table>
-
-                <v-row id="actions-row">
-                    <v-card-actions>
-                        <slot name="actions" :callbacks="callbacks">
-                            <v-btn color="green" class="white--text" @click="callbacks.close(onSave)"> Change </v-btn>
-                            <v-btn color="red" class="white--text ml-9" @click="callbacks.close()"> Cancel </v-btn>
-                        </slot>
-                    </v-card-actions>
-                </v-row>
-            </v-card>
-        </div>
-    </div> -->
 </template>
 
 <script>
