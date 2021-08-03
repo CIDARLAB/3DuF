@@ -4,7 +4,7 @@
             <div id="canvas_block">
                 <canvas id="c" tabindex="0" resize />
                 <slot>
-                    <RightClickMenu id="contextMenu" ref="contextMenu" :spec="specs" />
+                    <ComponentContextMenu id="contextMenu" ref="contextMenu" />
                 </slot>
             </div>
             <div id="renderContainer" />
@@ -15,32 +15,24 @@
 </template>
 
 <script>
-import { registerSets } from "@/app/featureSets";
 import { Registry, BareViewManager, ViewManager } from "../app/index";
-import { Examples } from "../app/index";
-import Vue from "vue";
-import ResolutionToolbar from "./ResolutionToolbar";
-import zoomSlider from "@/components/zoomSlider.vue";
-import EventBus from "@/events/events";
-import RightClickMenu from "@/components/RightClickMenu.vue";
-import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
-import ConnectionPropertyDrawer from "@/components/ConnectionPropertyDrawer.vue";
+import { Examples } from "@/app/index";
+import ResolutionToolbar from "@/components/ResolutionToolbar";
+import ZoomSlider from "@/components/ZoomSlider";
+import ComponentContextMenu from "@/components/ComponentContextMenu";
 
 export default {
     components: {
         ResolutionToolbar,
-        RightClickMenu,
-        zoomSlider
+        ComponentContextMenu,
+        ZoomSlider
     },
     data() {
-        return {};
+        return {
+            specs: this.computedSpec("Connection")
+        };
     },
-    // computed: {
-    //     specs: function() {
-    //         //if (this.Feature
-    //         return RoundedChannelSpec;
-    //     }
-    // },
+    computed: {},
     mounted() {
         // registerSets({Basic: Basic});
         let viewManager = new ViewManager();
@@ -62,7 +54,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 #view-container {
     width: 100%;
     height: 100%;

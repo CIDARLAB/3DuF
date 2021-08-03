@@ -35,16 +35,6 @@ import ConnectionPropertyDrawer from "@/components/ConnectionPropertyDrawer.vue"
 import Registry from "@/app/core/registry";
 import he from "he";
 
-// import CellTrapSpec from "@/models/property-drawer/CellTrapSpec.js";
-// import DiamondChamberSpec from "@/models/property-drawer/DiamondChamberSpec.js";
-// import ChamberSpec from "@/models/property-drawer/ChamberSpec.js";
-// import DropletGenSpec from "@/models/property-drawer/DropletGenSpec.js";
-// import PortSpec from "@/models/property-drawer/PortSpec.js";
-// import ViaSpec from "@/models/property-drawer/ViaSpec.js";
-// import YTreeSpec from "@/models/property-drawer/YTreeSpec.js";
-// import MuxSpec from "@/models/property-drawer/MuxSpec.js";
-// import TransponderSpec from "@/models/property-drawer/TransponderSpec.js";
-
 export default {
     components: { ConnectionPropertyDrawer, PropertyDrawer },
     data() {

@@ -1,14 +1,14 @@
 <template>
     <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, top: marginTop + 'px', left: marginLeft + 'px' }">
         <div>
-            <thead v-if="Rename">
+            <thead v-show="Rename">
                 <v-col>
                     <v-row id="rename" align-start>
                         <v-text-field label="Rename" type="input"> {{ rename }} </v-text-field>
-                        <v-btn id="close" xsmall depressed @click="callbacks.close()">
+                        <v-btn id="close" x-small depressed @click="callbacks.close()">
                             <span class="material-icons">close</span>
                         </v-btn>
-                        <v-btn id="close" xsmall depressed @click="Save">
+                        <v-btn id="close" x-small depressed @click="Save">
                             <span class="material-icons">check</span>
                         </v-btn>
                     </v-row>
@@ -23,16 +23,11 @@
                     <v-btn id="context_button_delete" color="white indigo--text" depressed @click="deleteButton()">
                         <span class="material-icons">delete</span>
                     </v-btn>
-                    <v-btn id="context_button_move" color="white indigo--text" depressed @click="moveButton()">
-                        <span class="material-icons">open_with</span>
-                    </v-btn>
+                    <MoveDialog />
                     <v-btn id="context_button_revert" color="white indigo--text" depressed @click="revertToDefaults()">
                         <span class="material-icons">settings_backup_restore</span>
                     </v-btn>
-                    <v-btn id="context_button_copytoall" color="white indigo--text" depressed @click="copyToAllButton()">
-                        <span class="material-icons">select_all</span>
-                    </v-btn>
-                    <ChangeAll v-if="activeCopy" />
+                    <ChangeAllDialog />
                     <v-btn id="context_button_rename" color="white indigo--text" depressed @click="renameButton()">
                         <span class="material-icons">title</span>
                     </v-btn>
@@ -43,30 +38,7 @@
             </v-row>
             <v-row>
                 <v-card-text>
-                    <v-simple-table dense fixed-header>
-                        <thead>
-                            <tr>
-                                <th>Control</th>
-                                <th>Key</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody ref="table" dense>
-                            <tr v-for="item in spec" :key="item.key">
-                                <td width="250px">
-                                    <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min" @change="UpdateFeatureSlider"></v-slider>
-                                </td>
-                                <td width="50px">
-                                    <code>{{ item.name }}</code>
-                                </td>
-                                <td width="100px">
-                                    <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units" @change="UpdateFeatureValue">{{
-                                        item.value
-                                    }}</v-text-field>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </v-simple-table>
+                    <PropertyBlock :title="mint" :spec="spec" />
                 </v-card-text>
             </v-row>
         </div>
@@ -74,24 +46,21 @@
 </template>
 
 <script>
-//import { defineComponent } from "@vue/composition-api";
-//import specname from "@/models/property-drawer/'specname'.js";
 import { revertToDefaultParams, generateUpdateFunction } from "@/app/view/ui/parameterMenu";
 import Registry from "@/app/core/registry";
 import EventBus from "@/events/events";
-import ChangeAll from "@/components/ChangeAllDialog.vue";
+import MoveDialog from "@/components/MoveDialog.vue";
+import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
+import PropertyBlock from "@/components/base/PropertyBlock.vue";
+import { ComponentAPI } from "@/componentAPI";
 
 export default {
-    name: "RightClickMenu",
-    components: { ChangeAll },
-    props: {
-        spec: {
-            type: Array,
-            required: true
-        }
-    },
+    name: "ComponentContextMenu",
+    components: { MoveDialog, ChangeAllDialog, PropertyBlock },
     data() {
         return {
+            mint: "",
+            spec: null,
             activeMenu: false,
             activeChange: false,
             activeMove: false,
@@ -101,24 +70,46 @@ export default {
             featureRef: null,
             typeString: "",
             marginLeft: 500,
-            marginTop: 100
-            //roundedChannelSpec: RoundedChannelSpec
+            marginTop: 100,
+            currentComponent: null
         };
     },
     mounted() {
-        EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
-        EventBus.get().on(EventBus.DBL_CLICK, this.activateMenu);
+        // Setup an event for closing all the dialogs
+        const ref = this;
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+            ref.activeMenu = false;
+        });
+        EventBus.get().on(EventBus.DBL_CLICK_COMPONENT, this.activateMenu);
     },
     methods: {
-        activateMenu: function(event, feat) {
-            //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
-
+        computeSpec: function(mint, params) {
+            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
+            let spec = [];
+            const definition = ComponentAPI.getDefinitionForMINT(mint);
+            for (let i in params.heritable) {
+                let key = params.heritable[i];
+                let item = {
+                    min: definition.minimum[key],
+                    max: definition.maximum[key],
+                    value: params.getValue(key),
+                    units: definition.units[key],
+                    steps: (definition.maximum[key] - definition.minimum[key]) / 10,
+                    name: key
+                };
+                spec.push(item);
+            }
+            return spec;
+        },
+        activateMenu: function(event, component) {
+            console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
+            this.currentComponent = component;
             // Activate feat code
-            this.featureRef = feat;
-            this.typeString = feat.getType();
+            this.featureRef = component;
+            this.typeString = component.mint;
             //console.log(feat);
 
-            console.log(event, feat);
+            console.log(event, component);
             this.activeMenu = !this.activeMenu;
             console.log(this.activeMenu);
 
@@ -153,6 +144,12 @@ export default {
             } else {
                 this.marginTop = event.clientY - 20;
             }
+
+            // Compute the from the params and then handle whatever needs to get handeled
+            const spec = this.computeSpec(component.mint, component.params);
+            this.mint = component.mint;
+            console.log(spec);
+            this.spec = spec;
         },
         onSave() {
             const nametext = this.getComponentName();
@@ -171,12 +168,6 @@ export default {
         copyToAllButton() {
             this.activeCopy = !this.activeCopy;
             console.log("Change all the component parameters");
-        },
-        moveButton() {
-            // Registry.viewManager.activateTool("MoveTool");
-            // const component = Registry.currentDevice.getComponentForFeatureID(this.featureRef.getID());
-            // Registry.viewManager.tools.MoveTool.activate(component);
-            EventBus.get().emit(EventBus.MOVE);
         },
         renameButton() {
             this.Rename = !this.Rename;

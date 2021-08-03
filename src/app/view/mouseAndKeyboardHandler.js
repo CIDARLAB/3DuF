@@ -1,5 +1,6 @@
 import paper from "paper";
 import PanTool from "./tools/panTool";
+import EventBus from "@/events/events.ts";
 
 /**
  * Mouse and Keyboard Handler class
@@ -98,6 +99,9 @@ export default class MouseAndKeyboardHandler {
 
                 // Change active tool to select tool
                 reference.resetToDefaultTool();
+
+                // Close all windows/dialogs
+                EventBus.get().emit(EventBus.CLOSE_ALL_WINDOWS);
             }
         });
 

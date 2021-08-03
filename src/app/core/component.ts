@@ -20,7 +20,6 @@ export default class Component {
     protected _params: Params;
     protected _name: string;
     protected _id: string;
-    protected _type: string;
     protected _entity: string;
     protected _featureIDs: Array<string>;
     protected _bounds: paper.Rectangle | null;
@@ -37,11 +36,10 @@ export default class Component {
      * @param {string} mint
      * @param {String} id
      */
-    constructor(type: string, params: Params, name: string, mint: string, id: string = Component.generateID()) {
+    constructor(params: Params, name: string, mint: string, id: string = Component.generateID()) {
         this._params = params;
         this._name = name;
         this._id = id;
-        this._type = type;
         this._entity = mint;
         // This stores the features that are a part of the component
         this._featureIDs = [];
@@ -65,6 +63,17 @@ export default class Component {
                 this.setPort(ports[i].label, ports[i]);
             }
         }
+    }
+
+    /**
+     * Returns the mint type of the component
+     *
+     * @readonly
+     * @type {string}
+     * @memberof Component
+     */
+    get mint(): string {
+        return this._entity;
     }
 
     /**
@@ -241,16 +250,6 @@ export default class Component {
     }
 
     /**
-     * Gets the 3DuF Type of the component, this will soon be depreciated and merged with
-     * the MINT references
-     * @returns {string} Returns the type of component
-     * @memberof Component
-     */
-    get type() {
-        return this._type;
-    }
-
-    /**
      * Returns an Array of size two containing the X and Y coordinates
      * @return {number[]}
      * @memberof Component
@@ -369,7 +368,7 @@ export default class Component {
      * @return {Component}
      * @memberof Component
      */
-    replicate(xpos: number, ypos: number, name: string = ComponentUtils.generateDeviceName(this._type)): Component {
+    replicate(xpos: number, ypos: number, name: string = ComponentUtils.generateDeviceName(this._entity)): Component {
         // TODO: Fix this ridiculous chain of converting params back and forth, there should be an easier way
         // Converting all the params into raw values
         // let paramvalues = {};
@@ -377,16 +376,16 @@ export default class Component {
         //     paramvalues[key] = this.getValue(key);
         // }
 
-        const definition = ComponentAPI.getDefinition(this._type);
+        const definition = ComponentAPI.getDefinitionForMINT(this._entity);
         if (definition === null) {
-            throw new Error("Unable to find definition for component type: " + this._type);
+            throw new Error("Unable to find definition for component type: " + this._entity);
         }
         // Clean Param Data
         const cleanparamdata = this._params.parameters;
         const unique_map = MapUtils.toMap(definition.unique);
         const heritable_map = MapUtils.toMap(definition.heritable);
         const replicaparams = new Params(cleanparamdata, unique_map, heritable_map);
-        const ret = new Component(this._type, replicaparams, name, this._entity);
+        const ret = new Component(replicaparams, name, this._entity);
         console.log("Checking what the new component params are:", ret._params);
         // Generate New features
         for (const i in this._featureIDs) {
@@ -440,7 +439,7 @@ export default class Component {
         const iscustomcompnent = false;
         const name = json.name;
         const id = json.id;
-        let entity = json.entity;
+        const entity = json.entity;
 
         // Idk whether this is correct
         // It was originially this._span = this.span which threw several errors so I patterned in off the above const var
@@ -448,8 +447,6 @@ export default class Component {
         const yspan = json.yspan;
 
         const params = json.params;
-
-        entity = name.split("_")[0]; // '^.*?(?=_)'
 
         console.log("new entity:", entity);
 
@@ -461,7 +458,7 @@ export default class Component {
         if (iscustomcompnent) {
             definition = CustomComponent.defaultParameterDefinitions();
         } else {
-            definition = ComponentAPI.getDefinition(entity);
+            definition = ComponentAPI.getDefinitionForMINT(entity);
         }
 
         if (definition === null) {
@@ -496,11 +493,7 @@ export default class Component {
         const unique_map = MapUtils.toMap(definition.unique);
         const heritable_map = MapUtils.toMap(definition.heritable);
         const paramstoadd = new Params(params, unique_map, heritable_map);
-        const typestring = ComponentAPI.getMINTForType(entity);
-        if (typestring === null) {
-            throw Error("Could not find definition for type: " + entity + " MINT: " + typestring);
-        }
-        const component = new Component(typestring, paramstoadd, name, entity, id);
+        const component = new Component(paramstoadd, name, entity, id);
 
         // Deserialize the component ports
         const portdata = new Map();
@@ -569,7 +562,7 @@ export default class Component {
 
         const cleanparamdata = params;
 
-        const ports = ComponentAPI.getComponentPorts(cleanparamdata, this.type);
+        const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._entity);
 
         for (const i in ports) {
             this.setPort(ports[i].label, ports[i]);

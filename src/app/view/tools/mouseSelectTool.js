@@ -89,7 +89,22 @@ export default class MouseSelectTool extends MouseTool {
             if (target.selected) {
                 const feat = Registry.currentDevice.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
-                EventBus.get().emit(EventBus.DBL_CLICK, event, feat);
+                // Check if the feature is a part of a component
+                let component, connection;
+                if (feat.referenceID === null) {
+                    throw new Error("ReferenceID of feature is null");
+                } else {
+                    component = Registry.currentDevice.getComponentByID(feat.referenceID);
+                    connection = Registry.currentDevice.getConnectionByID(feat.referenceID);
+                    if (component !== null) {
+                        EventBus.get().emit(EventBus.DBL_CLICK_COMPONENT, event, component);
+                    } else if (connection !== null) {
+                        EventBus.get().emit(EventBus.DBL_CLICK_CONNECTION, event, connection);
+                    } else {
+                        EventBus.get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
+                    }
+                }
+
                 // const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
                 // rightclickmenu.show(event, feat);
                 // this.rightClickMenu = rightclickmenu;

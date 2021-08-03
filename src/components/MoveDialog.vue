@@ -1,13 +1,17 @@
 <template>
-    <div class="property-drawer-parent">
-        <v-btn ref="activator" style="width: 210px" :class="buttonClasses" @click="showProperties()">Move</v-btn>
-        <div ref="drawer" class="move-drawer">
-            <v-card v-if="activated">
+    <v-dialog v-model="dialog" content-class="draggable-dialog" hide-overlay persistent no-click-animation width="500">
+        <template v-slot:activator="{ on, attrs }">
+            <v-btn id="context_button_move" color="white indigo--text" depressed v-bind="attrs" v-on="on">
+                <span class="material-icons">open_with</span>
+            </v-btn>
+        </template>
+
+        <v-card>
+            <v-card-title class="text-h5 lighten-2"> Move Component: </v-card-title>
+
+            <v-card-text>
                 <v-row>
                     <v-col>
-                        <v-row>
-                            <v-card-title class="subtitle-1 pb-0">Move Component</v-card-title>
-                        </v-row>
                         <v-row>
                             <v-col id="left-col" cols="3">
                                 <v-row>
@@ -45,19 +49,18 @@
                                 <v-text-field v-model="number" placeholder="0" :step="1" type="number"> </v-text-field>
                             </td>
                         </tr>
-                        <v-row id="actions-row">
-                            <v-card-actions>
-                                <slot name="actions" :callbacks="callbacks">
-                                    <v-btn color="green darken-1" text @click="callbacks.close()"> Cancel </v-btn>
-                                    <v-btn color="green darken-1" text @click="callbacks.close(onSave)"> Save </v-btn>
-                                </slot>
-                            </v-card-actions>
-                        </v-row>
                     </v-col>
                 </v-row>
-            </v-card>
-        </div>
-    </div>
+            </v-card-text>
+            <v-divider></v-divider>
+
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green" class="white--text" @click="callbacks.close(onSave)"> Save </v-btn>
+                <v-btn color="red" class="white--text ml-9" @click="dialog = false"> Cancel </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
@@ -67,9 +70,10 @@ import EventBus from "@/events/events";
 import "@mdi/font/css/materialdesignicons.css";
 
 export default {
-    name: "Move",
+    name: "MoveDialog",
     data() {
         return {
+            dialog: false,
             activated: false,
             callbacks: {}
         };
@@ -85,6 +89,43 @@ export default {
             if (callback) callback();
             this.activated = false;
         });
+
+        (function() {
+            // make vuetify dialogs movable
+            const d = {};
+            document.addEventListener("mousedown", e => {
+                const closestDialog = e.target.closest(".draggable-dialog");
+                if (e.button === 0 && closestDialog != null && e.target.classList.contains("v-card__title")) {
+                    // element which can be used to move element
+                    d.el = closestDialog; // element which should be moved
+                    d.mouseStartX = e.clientX;
+                    d.mouseStartY = e.clientY;
+                    d.elStartX = d.el.getBoundingClientRect().left;
+                    d.elStartY = d.el.getBoundingClientRect().top;
+                    d.el.style.position = "fixed";
+                    d.el.style.margin = 0;
+                    d.oldTransition = d.el.style.transition;
+                    d.el.style.transition = "none";
+                }
+            });
+            document.addEventListener("mousemove", e => {
+                if (d.el === undefined) return;
+                d.el.style.left = Math.min(Math.max(d.elStartX + e.clientX - d.mouseStartX, 0), window.innerWidth - d.el.getBoundingClientRect().width) + "px";
+                d.el.style.top = Math.min(Math.max(d.elStartY + e.clientY - d.mouseStartY, 0), window.innerHeight - d.el.getBoundingClientRect().height) + "px";
+            });
+            document.addEventListener("mouseup", () => {
+                if (d.el === undefined) return;
+                d.el.style.transition = d.oldTransition;
+                d.el = undefined;
+            });
+            setInterval(() => {
+                // prevent out of bounds
+                const dialog = document.querySelector(".draggable-dialog");
+                if (dialog === null) return;
+                dialog.style.left = Math.min(parseInt(dialog.style.left), window.innerWidth - dialog.getBoundingClientRect().width) + "px";
+                dialog.style.top = Math.min(parseInt(dialog.style.top), window.innerHeight - dialog.getBoundingClientRect().height) + "px";
+            }, 100);
+        })();
     },
     methods: {
         showProperties() {
@@ -150,15 +191,11 @@ export default {
     margin-top: 10px;
 }
 
-.property-drawer-parent {
-    overflow: visible;
-    position: relative;
+.draggable-dialog .text-h5 {
+    cursor: grab;
 }
-.move-drawer {
-    position: absolute;
-    float: left;
-    width: 450px;
-    left: 225px;
-    z-index: 100;
+
+.draggable-dialog .text-h5:hover {
+    cursor: grabbing;
 }
 </style>

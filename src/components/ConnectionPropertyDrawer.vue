@@ -85,6 +85,8 @@ import "vue-select/dist/vue-select.css";
 import Vue from "vue";
 import vSelect from "vue-select";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
+import { ComponentAPI } from "@/componentAPI";
+
 Vue.component("v-select", vSelect);
 
 export default {
@@ -96,7 +98,7 @@ export default {
     data() {
         return {
             connectionName: "NewConnection",
-            //spec: ConnectionSpec,
+            spec: this.computedSpec("Connection"),
             component: "Component Name",
             chip1: true,
             chip2: true,
@@ -116,10 +118,35 @@ export default {
         }
     },
     mounted() {
+        // Setup an event for closing all the dialogs
+        const ref = this;
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+            ref.activated = false;
+        });
         EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
         EventBus.get().on(EventBus.RIGHT_CLICK, this.endConnection);
     },
     methods: {
+        computedSpec: function(threeduftype) {
+            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
+            let definition = ComponentAPI.getDefinition(threeduftype);
+            let spec = [];
+            for (let key in definition.heritable) {
+                console.log(definition.units[key]);
+                // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
+                let item = {
+                    mint: key,
+                    min: definition.minimum[key],
+                    max: definition.maximum[key],
+                    value: definition.defaults[key],
+                    units: definition.units[key],
+                    steps: (definition.maximum[key] - definition.minimum[key]) / 10,
+                    name: key
+                };
+                spec.push(item);
+            }
+            return spec;
+        },
         showProperties() {
             this.activated = !this.activated;
             let attachPoint = document.querySelector("[data-app]");
