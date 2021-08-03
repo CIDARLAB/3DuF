@@ -1,26 +1,26 @@
-import Registry from "@/app/core/registry";
-import { ComponentAPI } from "@/componentAPI";
+import Registry from '@/app/core/registry'
+import { ComponentAPI } from '@/componentAPI'
 
 export default class ComponentUtils {
-    constructor() {}
+  constructor () {}
 
-    static getFeatureFromID(featureid) {
-        return Registry.currentDevice.getFeatureByID(featureid);
-    }
+  static getFeatureFromID (featureid) {
+    return Registry.currentDevice.getFeatureByID(featureid)
+  }
 
-    static getRenderedFeature(featureid) {
-        return Registry.viewManager.view.getRenderedFeature(featureid);
-    }
+  static getRenderedFeature (featureid) {
+    return Registry.viewManager.view.getRenderedFeature(featureid)
+  }
 
-    static generateDeviceName(type) {
-        return Registry.currentDevice.generateNewName(type);
-    }
+  static generateDeviceName (type) {
+    return Registry.currentDevice.generateNewName(type)
+  }
 
-    static getDeviceLayers() {
-        return Registry.currentDevice.getLayers();
-    }
+  static getDeviceLayers () {
+    return Registry.currentDevice.getLayers()
+  }
 
-    static getDeviceLayerFromID(featureid) {
-        return Registry.currentDevice.getLayerFromFeatureID(featureid);
-    }
+  static getDeviceLayerFromID (featureid) {
+    return Registry.currentDevice.getLayerFromFeatureID(featureid)
+  }
 }
