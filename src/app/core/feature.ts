@@ -44,6 +44,10 @@ export default class Feature {
         this.layer = null;
     }
 
+    get type(): string {
+        return this._type;
+    }
+
     /**
      * Returns the reference object id
      * @return {String}

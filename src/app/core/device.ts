@@ -39,7 +39,7 @@ export default class Device {
     private __valveMap: Map<string, string>;
     private __valveIs3DMap: Map<string, boolean>;
     private __groups: Array<string>;
-    private __features: Array<Feature>;
+    //private __features: Array<Feature>;
     private __version: number;
 
     /**
@@ -50,7 +50,7 @@ export default class Device {
     constructor(values: { [index: string]: any }, name: string = "New Device") {
         this.__layers = [];
         this.__textLayers = [];
-        this.__features = [];
+        //this.__features = [];
         this.__groups = [];
         this.__params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
         // this.setXSpan(values.width);
@@ -317,17 +317,31 @@ export default class Device {
      * @returns {void}
      */
     removeFeature(feature: Feature): void {
-        this.removeFeatureByID(feature.ID);
-    }
-    /**
-     * Removes feature with the corresponding ID
-     * @param {string} featureID ID of the feature to search
-     * @memberof Device
-     * @returns {void}
-     */
-    removeFeatureByID(featureID: string): void {
-        let layer = this.getLayerFromFeatureID(featureID);
-        layer.removeFeatureByID(featureID);
+        if (feature.type == "Connection") {
+            for (let i = 0; i < this.__connections.length; i++) {
+                let featIDs = this.__connections[i].featureIDs;
+                for (let j = 0; j < featIDs.length; j++) {
+                    if (this.__connections[i].featureIDs[j] == feature.ID) {
+                        this.__connections[i].featureIDs.splice(j, 1);
+                        if (this.__connections[i].featureIDs.length == 0) {
+                            this.__connections.splice(i, 1);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (let i = 0; i < this.__components.length; i++) {
+                let featIDs = this.__components[i].featureIDs;
+                for (let j = 0; j < featIDs.length; j++) {
+                    if (this.__components[i].featureIDs[j] == feature.ID) {
+                        this.__components[i].featureIDs.splice(j, 1);
+                        if (this.__components[i].featureIDs.length == 0) {
+                            this.__components.splice(i, 1);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -781,6 +795,10 @@ export default class Device {
      * @returns {void}
      */
     deleteLayer(index: number): void {
+        let layer = this.__layers[index];
+        for (let feature in layer.features) {
+            this.removeFeature(layer.features[feature]);
+        }
         if (index != -1) {
             this.__layers.splice(index, 1);
         }
@@ -1004,7 +1022,9 @@ export default class Device {
             return new EdgeFeature(fabtype, params, id);
         }
         let featureType = ComponentAPI.getDefinition(typeString);
+        console.log("FeatType: ", featureType);
         if (paramvalues && featureType) {
+            console.log("HERREERRE");
             Feature.checkDefaults(paramvalues, featureType.heritable, ComponentAPI.getDefaultsForType(typeString));
             params = new Params(paramvalues, MapUtils.toMap(featureType.unique), MapUtils.toMap(featureType.heritable));
         } else {

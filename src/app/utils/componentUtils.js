@@ -17,7 +17,7 @@ export default class ComponentUtils {
     }
 
     static getDeviceLayers() {
-        return Registry.currentDevice.getLayers();
+        return Registry.currentDevice.layers;
     }
 
     static getDeviceLayerFromID(featureid) {

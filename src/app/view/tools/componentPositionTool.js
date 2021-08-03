@@ -15,7 +15,7 @@ export default class ComponentPositionTool extends PositionTool {
         });
         this.currentFeatureID = newFeature.ID;
 
-        Registry.currentLayer.addFeature(newFeature);
+        Registry.viewManager.addFeature(newFeature);
 
         featureIDs.push(newFeature.ID);
 
