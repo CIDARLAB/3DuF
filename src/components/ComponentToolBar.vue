@@ -39,24 +39,13 @@ export default {
     components: { ConnectionPropertyDrawer, PropertyDrawer },
     data() {
         return {
-            testData: [this.getEntry("MIXER"), this.getEntry("MIXER3D"), this.getEntry("GRADIENT GENERATOR")],
-            testData2: ["MIXER", "MIXER3D", "GRADIENT GENERATOR"],
-            //[this.computedSpecForMINT("MIXER"), this.computedSpecForMINT("MIXER3D"), this.computedSpecForMINT("GRADIENT GENERATOR")],
             toolTree: {
-                Mix: ["MIXER", "MIXER3D", "GRADIENT GENERATOR"],
+                Mix: ["MIXER", "MIXER3D", "GRADIENT GENERATOR", "CURVED MIXER", "ROTARY MIXER"],
                 Control: ["VALVE3D", "VALVE", "PUMP3D", "PUMP"],
-                Process: [
-                    "LL CHAMBER",
-                    "LONG CELL TRAP",
-                    "SQUARE CELL TRAP",
-                    "REACTION CHAMBER",
-                    "DIAMOND REACTION CHAMBER",
-                    "NOZZLE DROPLET GENERATOR",
-                    "DROPLET CAPACITANCE SENSOR",
-                    "DROPLET SORTER",
-                    "PICOINJECTOR"
-                ],
-                Distribute: ["PORT", "VIA", "YTREE", "TREE", "MUX", "TRANSPOSER"]
+                Storage: ["LONG CELL TRAP", "SQUARE CELL TRAP", "REACTION CHAMBER", "DIAMOND REACTION CHAMBER"],
+                Process: ["LL CHAMBER", "FILTER"],
+                Distribute: ["PORT", "VIA", "YTREE", "TREE", "MUX", "TRANSPOSER", "MUX3D"],
+                Droplet: ["NOZZLE DROPLET GENERATOR", "DROPLET CAPACITANCE SENSOR", "DROPLET MERGER", "PICOINJECTOR", "DROPLET SPLITTER"]
             },
             connectionSpec: this.computedSpec("Connection"),
             channelSpec: this.computedSpec("Channel"),

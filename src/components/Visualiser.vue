@@ -10,7 +10,7 @@
             <div id="renderContainer" />
         </div>
         <ResolutionToolbar />
-        <zoomSlider />
+        <ZoomSlider />
     </div>
 </template>
 

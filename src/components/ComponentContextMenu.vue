@@ -23,17 +23,18 @@
                     <v-btn id="context_button_delete" color="white indigo--text" depressed @click="deleteButton()">
                         <span class="material-icons">delete</span>
                     </v-btn>
-                    <MoveDialog />
+                    <MoveDialog :component="currentComponent" />
                     <v-btn id="context_button_revert" color="white indigo--text" depressed @click="revertToDefaults()">
                         <span class="material-icons">settings_backup_restore</span>
                     </v-btn>
-                    <ChangeAllDialog />
+                    <ChangeAllDialog :component="currentComponent" />
                     <v-btn id="context_button_rename" color="white indigo--text" depressed @click="renameButton()">
                         <span class="material-icons">title</span>
                     </v-btn>
-                    <v-btn id="context_button_arraygen" color="white indigo--text" depressed @click="generateArrayButton()">
+                    <!-- <v-btn id="context_button_arraygen" color="white indigo--text" depressed>
                         <span class="material-icons">view_comfy</span>
-                    </v-btn>
+                    </v-btn> -->
+                    <GenerateArrayDialog :component="currentComponent" />
                 </div>
             </v-row>
             <v-row>
@@ -53,10 +54,11 @@ import MoveDialog from "@/components/MoveDialog.vue";
 import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import { ComponentAPI } from "@/componentAPI";
+import GenerateArrayDialog from "@/components/GenerateArrayDialog.vue";
 
 export default {
     name: "ComponentContextMenu",
-    components: { MoveDialog, ChangeAllDialog, PropertyBlock },
+    components: { MoveDialog, ChangeAllDialog, PropertyBlock, GenerateArrayDialog },
     data() {
         return {
             mint: "",

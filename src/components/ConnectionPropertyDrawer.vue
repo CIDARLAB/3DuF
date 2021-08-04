@@ -13,7 +13,7 @@
                             </v-row>
                             <v-row>
                                 <!-- Connection properties -->
-                                <PropertyBlock title="Connection" />
+                                <PropertyBlock title="Connection" :spec="spec" />
                             </v-row>
                         </v-card-text>
                     </v-col>

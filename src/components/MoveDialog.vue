@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" content-class="draggable-dialog" hide-overlay persistent no-click-animation width="500">
+    <v-dialog v-model="dialog" content-class="draggable-dialog topleft-dialog" hide-overlay persistent no-click-animation width="500">
         <template v-slot:activator="{ on, attrs }">
             <v-btn id="context_button_move" color="white indigo--text" depressed v-bind="attrs" v-on="on">
                 <span class="material-icons">open_with</span>
@@ -15,19 +15,19 @@
                         <v-row>
                             <v-col id="left-col" cols="3">
                                 <v-row>
-                                    <v-card-text>X,Y</v-card-text>
+                                    <v-card-text>{{ topLeft.x }}, {{ topLeft.y }}</v-card-text>
                                 </v-row>
                                 <v-row>
-                                    <v-card-text class="bottom-xy">X,Y</v-card-text>
+                                    <v-card-text class="bottom-xy">{{ bottomLeft.x }}, {{ bottomLeft.y }}</v-card-text>
                                 </v-row>
                             </v-col>
                             <v-col id="box"></v-col>
                             <v-col cols="3">
                                 <v-row>
-                                    <v-card-text>X,Y</v-card-text>
+                                    <v-card-text>{{ topRight.x }}, {{ topRight.y }}</v-card-text>
                                 </v-row>
                                 <v-row>
-                                    <v-card-text class="bottom-xy">X,Y</v-card-text>
+                                    <v-card-text class="bottom-xy">{{ bottomRight.x }}, {{ bottomRight.y }}</v-card-text>
                                 </v-row>
                             </v-col>
                         </v-row>
@@ -38,7 +38,7 @@
                                 <v-card-text>X (mm):</v-card-text>
                             </td>
                             <td width="125px">
-                                <v-text-field v-model="number" placeholder="0" :step="1" type="number"> </v-text-field>
+                                <v-text-field v-model="posX" placeholder="0" :step="1" type="number"> </v-text-field>
                             </td>
                         </tr>
                         <tr>
@@ -46,7 +46,7 @@
                                 <v-card-text>Y (mm):</v-card-text>
                             </td>
                             <td width="125px">
-                                <v-text-field v-model="number" placeholder="0" :step="1" type="number"> </v-text-field>
+                                <v-text-field v-model="posY" placeholder="0" :step="1" type="number"> </v-text-field>
                             </td>
                         </tr>
                     </v-col>
@@ -66,21 +66,62 @@
 <script>
 import Vue from "vue";
 import EventBus from "@/events/events";
+import Component from "@/app/core/component";
 
 import "@mdi/font/css/materialdesignicons.css";
+import Registry from "@/app/core/registry";
 
 export default {
     name: "MoveDialog",
+    props: {
+        component: {
+            type: Component,
+            required: true
+        }
+    },
     data() {
         return {
             dialog: false,
             activated: false,
-            callbacks: {}
+            callbacks: {},
+            number: 0,
+            posX: 0,
+            posY: 0
         };
     },
     computed: {
         buttonClasses: function() {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "ml-4", "mb-2", "btn"];
+        },
+        topLeft: function() {
+            return { x: 0, y: 0 };
+        },
+        topRight: function() {
+            return { x: 0, y: 0 };
+        },
+        bottomLeft: function() {
+            return { x: 0, y: 0 };
+        },
+        bottomRight: function() {
+            return { x: 0, y: 0 };
+        }
+        // posX: function() {
+        //     return this.component.x;
+        // },
+        // posY: function() {
+        //     return this.component.y;
+        // }
+    },
+    watch: {
+        dialog: function(newValue) {
+            if (newValue) {
+                console.log("MoveDialog: Dialog opened");
+                Registry.viewManager.activateTool("MoveTool");
+                Registry.viewManager.tools.MoveTool.activate(this.component);
+            } else {
+                //Run deactivation
+                Registry.viewManager.tools.MoveTool.unactivate();
+            }
         }
     },
     mounted() {
@@ -139,6 +180,9 @@ export default {
             this.setDrawerPosition();
 
             attachPoint.appendChild(this.$refs.drawer);
+
+            Registry.viewManager.activateTool("MoveTool");
+            Registry.viewManager.tools.MoveTool.activate(this.currentComponent);
         },
         handleScroll() {
             this.setDrawerPosition();
@@ -156,6 +200,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.topleft-dialog {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+}
 .subtitle-1 {
     margin-left: 12px;
 }
