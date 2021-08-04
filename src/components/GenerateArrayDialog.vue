@@ -1,32 +1,36 @@
 <template>
-    <v-dialog v-model="dialog" content-class="draggable-dialog" hide-overlay persistent no-click-animation width="500">
+    <v-dialog v-model="dialog" content-class="draggable-dialog topleft-dialog" hide-overlay persistent no-click-animation width="300px">
         <template v-slot:activator="{ on, attrs }">
-            <slot name="activator">
-                <v-btn id="context_button_move" color="white indigo--text" depressed v-bind="attrs" v-on="on">
-                    <span class="material-icons">open_with</span>
-                </v-btn>
-            </slot>
+            <v-btn id="context_button_move" color="white indigo--text" depressed v-bind="attrs" v-on="on">
+                <span class="material-icons">view_comfy</span>
+            </v-btn>
         </template>
+
         <v-card>
-            <v-card-title class="text-h5 lighten-2">{{ title }} </v-card-title>
+            <v-card-title class="text-h5 lighten-2"> Generate Array </v-card-title>
 
             <v-card-text>
-                <slot name="content"> Add something here </slot>
+                <v-row>
+                    Generate:
+                </v-row>
+                <v-row>
+                    <v-text-field v-model="dimx" label="Dim X" type="number" step="1" min="1" required></v-text-field>
+                    <v-text-field v-model="dimy" label="Dim Y" type="number" step="1" min="1" required></v-text-field>
+                </v-row>
+                <v-row>
+                    Spacing:
+                </v-row>
+                <v-row>
+                    <v-text-field v-model="spacingX" label="X Spacing (mm)" type="number" step="1" min="0" required></v-text-field>
+                    <v-text-field v-model="spacingY" label="Y Spacing (mm)" type="number" step="1" min="0" required></v-text-field>
+                </v-row>
             </v-card-text>
+            <v-divider></v-divider>
+
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <slot name="actions">
-                    <v-btn
-                        color="red"
-                        class="white--text ml-9"
-                        @click="
-                            dialog = false;
-                            activated = false;
-                        "
-                    >
-                        Cancel
-                    </v-btn>
-                </slot>
+                <v-btn color="green" class="white--text" @click="onSave"> Save </v-btn>
+                <v-btn color="red" class="white--text ml-9" @click="dialog = false"> Cancel </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -35,35 +39,44 @@
 <script>
 import Vue from "vue";
 import EventBus from "@/events/events";
+import Component from "@/app/core/component";
 
 import "@mdi/font/css/materialdesignicons.css";
+import Registry from "@/app/core/registry";
 
 export default {
-    name: "DraggableDialog",
+    name: "GenerateArrayDialog",
     props: {
-        title: {
-            type: String,
+        component: {
+            type: Component,
             required: true
         }
     },
     data() {
         return {
+            dialog: false,
             activated: false,
             callbacks: {},
-            dialog: false
+            number: 0,
+            dimx: 1,
+            dimy: 1,
+            spacingX: 10,
+            spacingY: 10
         };
     },
-    computed: {
-        buttonClasses: function() {
-            return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "ml-4", "mb-2", "btn"];
+    watch: {
+        dialog: function(newValue) {
+            if (newValue) {
+                Registry.viewManager.activateTool("GenerateArrayTool");
+                Registry.viewManager.tools.GenerateArrayTool.activate(this.component);
+            } else {
+                //Run deactivation
+                Registry.viewManager.tools.MoveTool.unactivate();
+            }
         }
     },
     mounted() {
-        // Setup an event for closing all the dialogs
-        const ref = this;
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
-            ref.dialog = false;
-        });
+        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
         Vue.set(this.callbacks, "close", callback => {
             if (callback) callback();
             this.activated = false;
@@ -107,34 +120,21 @@ export default {
         })();
     },
     methods: {
-        showProperties() {
-            this.activated = !this.activated;
-            let attachPoint = document.querySelector("[data-app]");
-
-            if (!attachPoint) {
-                console.error("Could not find [data-app] element");
-            }
-
-            this.setDrawerPosition();
-
-            attachPoint.appendChild(this.$refs.drawer);
-        },
-        handleScroll() {
-            this.setDrawerPosition();
-        },
-        setDrawerPosition() {
-            if (!this.activated) return;
-            const bounds = this.$refs.activator.$el.getBoundingClientRect();
-            this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
-        },
         onSave() {
-            console.log("Saved data for Move");
+            console.log("Saved data for Generate array");
+            Registry.viewManager.tools.GenerateArrayTool.generateArray(this.dimx, this.dimy, this.spacingX * 1000, this.spacingY * 1000);
+            this.dialog = false;
         }
     }
 };
 </script>
 
 <style lang="scss" scoped>
+.topleft-dialog {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+}
 .subtitle-1 {
     margin-left: 12px;
 }
@@ -168,18 +168,6 @@ export default {
 
 #actions-row {
     margin-top: 10px;
-}
-
-.property-drawer-parent {
-    overflow: visible;
-    position: relative;
-}
-.move-drawer {
-    position: absolute;
-    float: left;
-    width: 450px;
-    left: 225px;
-    z-index: 100;
 }
 
 .draggable-dialog .text-h5 {

@@ -29,7 +29,7 @@ export default class Params {
      * @readonly
      * @memberof Params
      */
-    get parameters() {
+    get parameters(): { [index: string]: Parameter } {
         return this.__parameters;
     }
 
