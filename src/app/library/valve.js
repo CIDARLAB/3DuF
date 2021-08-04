@@ -68,7 +68,7 @@ export default class Valve extends Template {
         };
 
         this.__placementTool = "valveInsertionTool";
-        console.log(this.__placementTool);
+
 
         this.__toolParams = {
             position: "position"
