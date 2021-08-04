@@ -1,8 +1,3 @@
-import StringValue from "./parameters/stringValue";
-import Component from "./component";
-import Connection from "./connection";
-import Feature from "./feature";
-
 export type Point = [number, number];
 
 export type Segment = [Point, Point];
@@ -44,13 +39,11 @@ export type ConnectionInterchangeV1 = {
     id: string;
     name: string;
     entity: string;
-    source: any;
-    sinks: any;
-    paths?: Array<Array<Point>>;
+    source: ConnectionTargetInterchangeV1;
+    sinks: Array<ConnectionTargetInterchangeV1>;
+    paths: Array<ConnectionPathInterchangeV1>;
     params: any;
-    xspan?: number;
-    yspan?: number;
-    layer?: string;
+    layer: string;
 };
 
 export type LayerInterchangeV1 = {
@@ -92,4 +85,11 @@ export type ComponentPortInterchangeV1 = {
 export type ConnectionTargetInterchangeV1 = {
     component: string;
     port: string;
+};
+
+export type ConnectionPathInterchangeV1 = {
+    source: ConnectionTargetInterchangeV1;
+    sink: ConnectionTargetInterchangeV1;
+    waypoints: Array<Point>;
+    features: Array<string>;
 };
