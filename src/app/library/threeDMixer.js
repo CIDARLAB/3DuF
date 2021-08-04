@@ -62,7 +62,7 @@ export default class ThreeDMixer extends Template {
             height: 1200
         };
 
-        this.__placementTool = "componentPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             cursorPosition: "position"

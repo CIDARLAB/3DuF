@@ -252,7 +252,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addFeature(feature, physical = true, index = this.activeRenderLayer, refresh = true) {
+    addFeature(feature, index = this.activeRenderLayer, physical = true, refresh = true) {
         this.renderLayers[index].addFeature(feature, physical);
         if (this.ensureFeatureExists(feature)) {
             this.view.addFeature(feature);
@@ -1569,7 +1569,7 @@ export default class ViewManager {
         if (minttype === null) {
             throw new Error("Could not find tool with the matching string");
         }
-
+        console.log("MintType: ", minttype);
         // Cleanup job when activating new tool
         this.view.clearSelectedItems();
 
@@ -1585,6 +1585,8 @@ export default class ViewManager {
             activeTool = new PositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
         } else if (renderer.placementTool === "multilayerPositionTool") {
             activeTool = new MultilayerPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+        } else if (renderer.placementTool === "valveInsertionTool") {
+            activeTool = new ValveInsertionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
         }
 
         if (activeTool === null) {

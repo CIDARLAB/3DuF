@@ -87,7 +87,7 @@ export default class CapacitanceSensor extends Template {
             electrodeDepth: 1000
         };
 
-        this.__placementTool = "componentPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             cursorPosition: "position"
@@ -122,7 +122,7 @@ export default class CapacitanceSensor extends Template {
             electrodeDepth: "electrodeDepth"
         };
 
-        this.__renderKeys = ["FLOW"];
+        this.__renderKeys = ["FLOW", "INTEGRATE"];
 
         this.__mint = "DROPLET CAPACITANCE SENSOR";
     }
@@ -139,18 +139,13 @@ export default class CapacitanceSensor extends Template {
         return ports;
     }
 
-    render2D(params, key) {
+    __renderFlow(params, key) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
         const color = params.color;
         const inletWidth = params.inletWidth;
         const inletLength = params.inletLength;
-        const electrodeWidth = params.electrodeWidth;
-        const electrodeLength = params.electrodeLength;
-        const electrodeDistance = params.electrodeDistance;
-        const sensorWidth = params.sensorWidth;
-        const sensorLength = params.sensorLength;
         const serp = new paper.CompoundPath();
 
         // inlet
@@ -159,9 +154,26 @@ export default class CapacitanceSensor extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
+        serp.fillColor = color;
+        return serp;
+    }
+
+    __renderIntegrate(params, key) {
+        const rotation = params.rotation;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const inletWidth = params.inletWidth;
+        const electrodeWidth = params.electrodeWidth;
+        const electrodeLength = params.electrodeLength;
+        const electrodeDistance = params.electrodeDistance;
+        const sensorWidth = params.sensorWidth;
+        const sensorLength = params.sensorLength;
+        const serp = new paper.CompoundPath();
+
         // top electrode
-        topLeft = new paper.Point(x - electrodeWidth / 2, y - inletWidth / 2 - electrodeDistance - sensorWidth / 2 - electrodeLength);
-        bottomRight = new paper.Point(x + electrodeWidth / 2, y - inletWidth / 2 - electrodeDistance - sensorWidth / 2);
+        let topLeft = new paper.Point(x - electrodeWidth / 2, y - inletWidth / 2 - electrodeDistance - sensorWidth / 2 - electrodeLength);
+        let bottomRight = new paper.Point(x + electrodeWidth / 2, y - inletWidth / 2 - electrodeDistance - sensorWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
@@ -193,10 +205,23 @@ export default class CapacitanceSensor extends Template {
         return serp;
     }
 
-    render2DTarget(key, params) {
-        const serp = this.render2D(params, key);
+    render2D(params, key = "FLOW") {
+        if (key === "FLOW") {
+            return this.__renderFlow(params);
+        } else if (key === "INTEGRATE") {
+            return this.__renderIntegrate(params);
+        }
+        throw new Error("Unknown render key found in DROPLET CAPACITANCE SENSOR: " + key);
+    }
 
-        serp.fillColor.alpha = 0.5;
-        return serp;
+    render2DTarget(key, params) {
+        const ret = new paper.CompoundPath();
+        const flow = this.render2D(params, "FLOW");
+        const integrate = this.render2D(params, "INTEGRATE");
+        ret.addChild(integrate);
+        ret.addChild(flow);
+        ret.fillColor = params.color;
+        ret.fillColor.alpha = 0.5;
+        return ret;
     }
 }

@@ -78,7 +78,7 @@ export default class Valve3D extends Template {
             gap: "gap"
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "valveInsertionTool";
 
         this.__toolParams = {
             position: "position"
@@ -120,7 +120,7 @@ export default class Valve3D extends Template {
         return valve;
     }
 
-    __drawControll(params) {
+    __drawControl(params) {
         const position = params.position;
         const gap = params.gap;
         const radius = params.valveRadius;
@@ -137,7 +137,7 @@ export default class Valve3D extends Template {
         if (key === "FLOW") {
             return this.__drawFlow(params);
         } else if (key === "CONTROL") {
-            return this.__drawControll(params);
+            return this.__drawControl(params);
         } else if (key === "INVERSE") {
             return this.__drawInverseFlow(params);
         } else {

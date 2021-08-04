@@ -54,13 +54,15 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             };
         }
 
-        const currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
-        const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
+        const currentlevel = Math.floor(Registry.viewManager.renderLayers.indexOf(Registry.currentLayer) / 3);
+        //const flowlayer = currentlevel * 3;
+        const controllayer = currentlevel * 3 + 1;
+        //const intlayer = currentlevel * 3 + 2;
 
         const newFeature = Device.makeFeature(this.typeString, overridedata);
         this.currentFeatureID = newFeature.ID;
 
-        controllayer.addFeature(newFeature);
+        Registry.viewManager.addFeature(newFeature, controllayer);
 
         featureIDs.push(newFeature.ID);
 
@@ -92,13 +94,13 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             };
         }
 
-        const currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
-        const flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
-        const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
+        const currentlevel = Math.floor(Registry.viewManager.renderLayers.indexOf(Registry.currentLayer) / 3);
+        const flowlayer = currentlevel * 3;
+        const controllayer = currentlevel * 3 + 1;
 
         let newFeature = Device.makeFeature(this.typeString, overridedata);
         this.currentFeatureID = newFeature.ID;
-        flowlayer.addFeature(newFeature);
+        Registry.viewManager.addFeature(newFeature, flowlayer);
 
         featureIDs.push(newFeature.ID);
 
@@ -110,7 +112,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         newFeature.setParams(paramstoadd);
 
         this.currentFeatureID = newFeature.ID;
-        controllayer.addFeature(newFeature);
+        Registry.viewManager.addFeature(newFeature, controllayer);
 
         featureIDs.push(newFeature.ID);
 
@@ -155,14 +157,12 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         }
 
         let component;
-        if (this.is3D) {
-            angle += 90;
-            // TODO: Insert the valve features in both flow and control
-            component = this.createNewMultiLayerFeature(point, angle);
-            // TODO: Redraw the connection
-        } else {
-            // TODO: Insert the valve feature in flow
+        // TODO: Enable this.is3D functionality
+        if (this.typeString == "Valve") {
             component = this.createNewFeature(point, angle);
+        } else if (this.typeString == "Valve3D") {
+            angle += 90;
+            component = this.createNewMultiLayerFeature(point, angle);
         }
 
         Registry.currentDevice.insertValve(component, connection, this.is3D);
@@ -177,7 +177,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      */
     forceInsertValve(point) {
         let component;
-        if (this.is3D) {
+        if (this.typeString == "Valve3D") {
             // TODO: Insert the valve features in both flow and control
             component = this.createNewMultiLayerFeature(point);
             // TODO: Redraw the connection

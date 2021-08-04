@@ -1022,7 +1022,6 @@ export default class Device {
             return new EdgeFeature(fabtype, params, id);
         }
         let featureType = ComponentAPI.getDefinition(typeString);
-        console.log("FeatType: ", featureType);
         if (paramvalues && featureType) {
             Feature.checkDefaults(paramvalues, featureType.heritable, ComponentAPI.getDefaultsForType(typeString));
             params = new Params(paramvalues, MapUtils.toMap(featureType.unique), MapUtils.toMap(featureType.heritable));
