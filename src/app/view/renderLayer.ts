@@ -13,12 +13,14 @@ export default class RenderLayer {
     private __type: string;
     name: string;
     protected _physicalLayer: Layer | null;
+    active: boolean;
 
     constructor(name: string = "New Layer", modellayer: Layer | null = null, type: string = "FLOW", group: string = "0") {
         this.__type = type;
         this.features = {};
         this.featureCount = 0;
         this.name = name;
+        this.active = false;
         this._physicalLayer = modellayer;
         if (name == "flow") {
             this.color = "indigo";

@@ -85,7 +85,7 @@ export default class Pump3D extends Template {
             gap: "gap"
         };
 
-        this.__placementTool = "componentPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

@@ -45,7 +45,17 @@ export default {
             toolTree: {
                 Mix: ["MIXER", "MIXER3D", "GRADIENT GENERATOR"],
                 Control: ["VALVE3D", "VALVE", "PUMP3D", "PUMP"],
-                Process: ["LL CHAMBER", "LONG CELL TRAP", "SQUARE CELL TRAP", "REACTION CHAMBER", "DIAMOND REACTION CHAMBER", "NOZZLE DROPLET GENERATOR"],
+                Process: [
+                    "LL CHAMBER",
+                    "LONG CELL TRAP",
+                    "SQUARE CELL TRAP",
+                    "REACTION CHAMBER",
+                    "DIAMOND REACTION CHAMBER",
+                    "NOZZLE DROPLET GENERATOR",
+                    "DROPLET CAPACITANCE SENSOR",
+                    "DROPLET SORTER",
+                    "PICOINJECTOR"
+                ],
                 Distribute: ["PORT", "VIA", "YTREE", "TREE", "MUX", "TRANSPOSER"]
             },
             connectionSpec: this.computedSpec("Connection"),

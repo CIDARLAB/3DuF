@@ -110,7 +110,7 @@ export default class Mux extends Template {
             stageLength: "stageLength"
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

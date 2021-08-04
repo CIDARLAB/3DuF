@@ -89,7 +89,7 @@ export default class Transposer extends Template {
             controlChannelWidth: "controlChannelWidth"
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

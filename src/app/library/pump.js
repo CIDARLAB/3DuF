@@ -81,7 +81,7 @@ export default class Pump extends Template {
             flowChannelWidth: "flowChannelWidth"
         };
 
-        this.__placementTool = "componentPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

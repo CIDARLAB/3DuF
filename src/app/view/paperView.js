@@ -928,8 +928,6 @@ export default class PaperView {
      * @memberof PaperView
      */
     getRenderedFeature(featureID) {
-        console.log("FeatID: ", featureID);
-        console.log("PapFeat: ", this.paperFeatures[featureID]);
         return this.paperFeatures[featureID];
     }
 
