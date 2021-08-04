@@ -9,6 +9,7 @@ import paper from "paper";
 import Params from "../../core/params";
 import Component from "../../core/component";
 import { ComponentAPI } from "@/componentAPI";
+import MapUtils from "../../utils/mapUtils";
 
 export default class PositionTool extends MouseTool {
     constructor(typeString, setString) {
@@ -85,7 +86,7 @@ export default class PositionTool extends MouseTool {
         for (const key in paramdata) {
             cleanparamdata[key] = paramdata[key].value;
         }
-        const params = new Params(cleanparamdata, definition.unique, definition.heritable);
+        const params = new Params(cleanparamdata, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
         const componentid = ComponentAPI.generateID();
         const name = Registry.currentDevice.generateNewName(typeString);
         const newComponent = new Component(params, name, definition.mint, componentid);
