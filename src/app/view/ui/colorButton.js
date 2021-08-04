@@ -1,26 +1,26 @@
-import * as Colors from "../colors";
-const inactiveBackgroundColor = Colors.GREY_200;
-const inactiveTextColor = Colors.BLACK;
+import * as Colors from '../colors'
+const inactiveBackgroundColor = Colors.GREY_200
+const inactiveTextColor = Colors.BLACK
 
 export default class ColorButton {
-    constructor(id) {
-        this.button = document.getElementById(id);
-    }
+  constructor (id) {
+    this.button = document.getElementById(id)
+  }
 
-    setBackgroundColor(color) {
-        this.button.style.background = color;
-    }
+  setBackgroundColor (color) {
+    this.button.style.background = color
+  }
 
-    setTextColor(color) {
-        this.button.style.color = color;
-    }
+  setTextColor (color) {
+    this.button.style.color = color
+  }
 
-    setClick(func) {
-        this.button.onclick = func;
-    }
+  setClick (func) {
+    this.button.onclick = func
+  }
 
-    deactivate(bgColor = inactiveBackgroundColor, setTextColor = inactiveTextColor) {
-        this.setBackgroundColor(bgColor);
-        this.setTextColor(setTextColor);
-    }
+  deactivate (bgColor = inactiveBackgroundColor, setTextColor = inactiveTextColor) {
+    this.setBackgroundColor(bgColor)
+    this.setTextColor(setTextColor)
+  }
 }
