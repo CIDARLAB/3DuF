@@ -8,7 +8,6 @@ import paper from "paper";
 
 export default class ValveInsertionTool extends MultilayerPositionTool {
     constructor(typeString, setString, is3D = false) {
-        console.log("I'm a valve (:");
         super(typeString, setString);
         this.is3D = is3D;
 
