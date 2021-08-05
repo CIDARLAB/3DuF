@@ -90,13 +90,13 @@ export default class GenerateArrayWindow {
             ref.hideWindow();
             // Tell the generateArrayTool to set the position as the x,y pos
             ref.generateArrayToolDelegate.generateArray(ref.__xdim, ref.__ydim, ref.__xspacing, ref.__yspacing);
-            ref.generateArrayToolDelegate.unactivate();
+            ref.generateArrayToolDelegate.deactivate();
         });
 
         this.__cancelButton.addEventListener("click", function(event) {
             console.log("Cancel Button was Pressed");
             ref.hideWindow();
-            ref.generateArrayToolDelegate.unactivate();
+            ref.generateArrayToolDelegate.deactivate();
         });
     }
 

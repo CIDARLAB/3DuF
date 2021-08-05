@@ -163,6 +163,13 @@ export default {
                 this.endConnection();
             }
         },
+        handleScroll() {
+            this.setDrawerPosition();
+        },
+        setDrawerPosition() {
+            if (!this.activated) return;
+            const bounds = this.$refs.activator.$el.getBoundingClientRect();
+        },
         openClose() {
             this.isOpen = !this.isOpen;
         },

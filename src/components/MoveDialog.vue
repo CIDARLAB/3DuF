@@ -120,7 +120,7 @@ export default {
                 Registry.viewManager.tools.MoveTool.activate(this.component);
             } else {
                 //Run deactivation
-                Registry.viewManager.tools.MoveTool.unactivate();
+                Registry.viewManager.tools.MoveTool.deactivate();
             }
         }
     },

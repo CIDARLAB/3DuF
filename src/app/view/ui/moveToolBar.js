@@ -83,14 +83,14 @@ export default class MoveToolBar {
         this.__saveButton.addEventListener("click", function(event) {
             console.log("Save button was pressed");
             ref.hideWindow();
-            ref.moveToolDelegate.unactivate();
+            ref.moveToolDelegate.deactivate();
         });
 
         this.__cancelButton.addEventListener("click", function(event) {
             console.log("Cancel Button was Pressed");
             ref.moveToolDelegate.revertToOriginalPosition();
             ref.hideWindow();
-            ref.moveToolDelegate.unactivate();
+            ref.moveToolDelegate.deactivate();
         });
     }
 

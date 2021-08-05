@@ -42,7 +42,7 @@ export default class GenerateArrayTool extends MouseTool {
         this.__currentComponent = component;
     }
 
-    unactivate() {
+    deactivate() {
         Registry.viewManager.resetToDefaultTool();
     }
 

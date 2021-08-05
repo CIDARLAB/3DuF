@@ -16,7 +16,7 @@
 import EventBus from "@/events/events";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import Registry from "@/app/core/registry";
-
+import { ComponentAPI } from "@/componentAPI";
 export default {
     name: "PropertyDrawer",
     components: { PropertyBlock },
@@ -27,7 +27,10 @@ export default {
         },
         spec: {
             type: Array,
-            required: true
+            required: false,
+            default: function() {
+                return [{ min: 0, max: 110, units: "", value: 0 }];
+            }
         },
         activatedColor: {
             type: String,
@@ -42,7 +45,8 @@ export default {
     },
     data() {
         return {
-            activated: false
+            activated: false,
+            activeTool: null
         };
     },
     computed: {
@@ -71,10 +75,11 @@ export default {
             attachPoint.appendChild(this.$refs.drawer);
 
             if (this.activated) {
-                Registry.viewManager.activateComponentPlacementTool(this.mint);
-                // Registry.viewManager.activateTool("CurvedMixer");
+                this.spec = this.computedSpecForMINT(this.mint);
+                this.activeTool = Registry.viewManager.activateComponentPlacementTool(this.mint, this.spec);
             } else {
                 Registry.viewManager.deactivateComponentPlacementTool();
+                this.activeTool = null;
             }
         },
         handleScroll() {
@@ -86,7 +91,28 @@ export default {
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
         },
         testfunc(value, key) {
-            console.log("testfunc:", value, key);
+            console.log("Updated parameter:", value, key);
+            this.activeTool.updateParameter(key, value);
+        },
+        computedSpecForMINT: function(minttype) {
+            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
+            let definition = ComponentAPI.getDefinitionForMINT(minttype);
+            let spec = [];
+            for (let key in definition.heritable) {
+                console.log(definition.units[key]);
+                // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
+                let item = {
+                    mint: key,
+                    min: definition.minimum[key],
+                    max: definition.maximum[key],
+                    value: definition.defaults[key],
+                    units: definition.units[key],
+                    steps: (definition.maximum[key] - definition.minimum[key]) / 10,
+                    name: key
+                };
+                spec.push(item);
+            }
+            return spec;
         }
     }
 };

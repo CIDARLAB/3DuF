@@ -4,8 +4,8 @@ import Registry from "../../core/registry";
 import Device from "../../core/device";
 
 export default class CellPositionTool extends PositionTool {
-    constructor(typeString, setString) {
-        super(typeString, setString);
+    constructor(viewManagerDelegate, typeString, setString, currentParameters = null) {
+        super(viewManagerDelegate, typeString, setString, currentParameters);
     }
 
     createNewFeature(point) {

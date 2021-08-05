@@ -71,7 +71,7 @@ export default {
                 Registry.viewManager.tools.GenerateArrayTool.activate(this.component);
             } else {
                 //Run deactivation
-                Registry.viewManager.tools.MoveTool.unactivate();
+                Registry.viewManager.tools.MoveTool.deactivate();
             }
         }
     },

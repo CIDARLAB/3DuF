@@ -636,8 +636,9 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    addTarget(featureType, set, position) {
+    addTarget(featureType, set, position, currentParameters) {
         this.removeTarget();
+        this.lastTargetParameters = currentParameters;
         this.lastTargetType = featureType;
         this.lastTargetPosition = position;
         this.lastTargetSet = set;
@@ -665,7 +666,7 @@ export default class PaperView {
                 this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, params);
                 this.uiLayer.addChild(this.currentTarget);
             } else {
-                this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
+                this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition, this.lastTargetParameters);
                 this.uiLayer.addChild(this.currentTarget);
             }
         }

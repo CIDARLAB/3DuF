@@ -4,8 +4,8 @@ import Registry from "../../core/registry";
 import Device from "../../core/device";
 
 export default class ControlCellPositionTool extends PositionTool {
-    constructor(typeString, setString) {
-        super(typeString, setString);
+    constructor(viewManagerDelegate, typeString, setString, currentParameters = null) {
+        super(viewManagerDelegate, typeString, setString, currentParameters);
     }
 
     createNewFeature(point) {
@@ -58,6 +58,6 @@ export default class ControlCellPositionTool extends PositionTool {
 
     showTarget() {
         const target = PositionTool.getTarget(this.lastPoint);
-        Registry.viewManager.updateTarget(this.typeString, this.setString, target);
+        Registry.viewManager.updateTarget(this.typeString, this.setString, target, this.currentParameters);
     }
 }

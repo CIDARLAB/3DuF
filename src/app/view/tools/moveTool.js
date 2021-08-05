@@ -54,7 +54,7 @@ export default class MoveTool extends MouseTool {
     /**
      * Default deactivation method
      */
-    unactivate() {
+    deactivate() {
         Registry.viewManager.resetToDefaultTool();
     }
 

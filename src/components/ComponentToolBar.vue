@@ -21,7 +21,7 @@
                 <span>{{ key }}</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <PropertyDrawer v-for="mint in toolTree[key]" :key="mint" :mint="mint" :spec="computedSpecForMINT(mint)" />
+                <PropertyDrawer v-for="mint in toolTree[key]" :key="mint" :mint="mint" />
             </v-card-text>
             <v-divider />
         </v-card>
@@ -64,26 +64,6 @@ export default {
                 mint: mint,
                 spec: this.computedSpecForMINT(mint)
             };
-        },
-        computedSpecForMINT: function(minttype) {
-            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
-            let definition = ComponentAPI.getDefinitionForMINT(minttype);
-            let spec = [];
-            for (let key in definition.heritable) {
-                console.log(definition.units[key]);
-                // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
-                let item = {
-                    mint: key,
-                    min: definition.minimum[key],
-                    max: definition.maximum[key],
-                    value: definition.defaults[key],
-                    units: definition.units[key],
-                    steps: (definition.maximum[key] - definition.minimum[key]) / 10,
-                    name: key
-                };
-                spec.push(item);
-            }
-            return spec;
         },
         computedSpec: function(threeduftype) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
