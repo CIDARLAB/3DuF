@@ -11,8 +11,9 @@
             <v-switch v-model="switch2" color="#304FFE" @change="clickedSnap">
                 <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
             </v-switch>
-            <veeno ref="slider" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
+            <veeno ref="slider" v-model="sliderValue" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
         </div>
+        <div id="bottom-info-bar">Grid Size: {{ sliderValue }} &mu;m</div>
     </div>
 </template>
 
@@ -33,6 +34,7 @@ export default {
         return {
             activated: false,
             hover: false,
+            labeltext: 1000,
             slider_enabled: true,
             switch2: true,
             sliderOptions: {
@@ -73,6 +75,7 @@ export default {
             }
         },
         updateGrid(event) {
+            console.log("updatedGrid testung");
             let registryref = Registry;
             const { values } = event;
             let value1 = parseInt(values[0], 10);
@@ -80,6 +83,15 @@ export default {
             if (registryref.currentGrid !== null) {
                 registryref.currentGrid.updateGridSpacing(value1);
                 registryref.currentGrid.notifyViewManagerToUpdateView();
+            }
+        },
+        updateResolutionLabelAndSlider(smallResolution) {
+            console.log("updatedlable testung");
+            if (smallResolution !== null) {
+                this.__gridResolution = smallResolution;
+                this.__smallresolutionLabel.innerHTML = smallResolution + " &mu;m";
+
+                this.__gridResolutionSlider.noUiSlider.set(parseInt(smallResolution, 10));
             }
         }
     }
@@ -122,5 +134,11 @@ export default {
 .veeno.noUi-pips.noUi-pips-horizontal {
     padding: 0px;
     left: 10px;
+}
+#bottom-info-bar {
+    z-index: 9;
+    bottom: 2px;
+    right: 50px;
+    position: absolute;
 }
 </style>
