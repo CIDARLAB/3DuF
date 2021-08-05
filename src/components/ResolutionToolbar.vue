@@ -34,7 +34,6 @@ export default {
         return {
             activated: false,
             hover: false,
-            labeltext: 1000,
             slider_enabled: true,
             switch2: true,
             sliderOptions: {
