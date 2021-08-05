@@ -28,9 +28,7 @@ export default {
         ZoomSlider
     },
     data() {
-        return {
-            specs: this.computedSpec("Connection")
-        };
+        return {};
     },
     computed: {},
     mounted() {

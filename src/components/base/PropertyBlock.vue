@@ -11,13 +11,13 @@
             <tbody>
                 <tr v-for="item in spec" :key="item.key">
                     <td width="200px">
-                        <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min"></v-slider>
+                        <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min" @change="paramChanged(item.value, item.name)"></v-slider>
                     </td>
                     <td>
                         <code>{{ item.name }}</code>
                     </td>
                     <td width="125px">
-                        <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units"> </v-text-field>
+                        <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units" @change="paramChanged(item.value, item.name)"> </v-text-field>
                     </td>
                 </tr>
             </tbody>
@@ -30,7 +30,8 @@ export default {
     props: {
         title: {
             type: String,
-            required: true
+            required: true,
+            default: "UnSet"
         },
         spec: {
             type: Array,
@@ -56,6 +57,12 @@ export default {
     },
     data() {
         return {};
+    },
+    methods: {
+        paramChanged(value, paramkey) {
+            console.log("paramChanged", value, paramkey);
+            this.$emit("update", value, paramkey);
+        }
     }
 };
 </script>

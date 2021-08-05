@@ -5,7 +5,7 @@
             <v-card v-if="activated">
                 <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                 <v-card-text>
-                    <PropertyBlock :title="title" :spec="spec" />
+                    <PropertyBlock :title="mint" :spec="spec" @update="testfunc" />
                 </v-card-text>
             </v-card>
         </div>
@@ -84,6 +84,9 @@ export default {
             if (!this.activated) return;
             const bounds = this.$refs.activator.$el.getBoundingClientRect();
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
+        },
+        testfunc(value, key) {
+            console.log("testfunc:", value, key);
         }
     }
 };

@@ -76,7 +76,6 @@ export default {
         }
     },
     mounted() {
-        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
         Vue.set(this.callbacks, "close", callback => {
             if (callback) callback();
             this.activated = false;

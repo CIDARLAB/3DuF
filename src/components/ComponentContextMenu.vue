@@ -49,6 +49,8 @@
 <script>
 import { revertToDefaultParams, generateUpdateFunction } from "@/app/view/ui/parameterMenu";
 import Registry from "@/app/core/registry";
+import Component from "@/app/core/component";
+import Params from "@/app/core/params";
 import EventBus from "@/events/events";
 import MoveDialog from "@/components/MoveDialog.vue";
 import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
@@ -62,7 +64,7 @@ export default {
     data() {
         return {
             mint: "",
-            spec: null,
+            spec: [{ min: 0, max: 110, units: "", value: 0 }],
             activeMenu: false,
             activeChange: false,
             activeMove: false,
@@ -73,7 +75,7 @@ export default {
             typeString: "",
             marginLeft: 500,
             marginTop: 100,
-            currentComponent: null
+            currentComponent: new Component(new Params({}, new Map(), new Map()), "", "")
         };
     },
     mounted() {

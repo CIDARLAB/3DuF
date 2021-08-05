@@ -123,7 +123,6 @@ export default {
         EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
             ref.activated = false;
         });
-        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
         EventBus.get().on(EventBus.RIGHT_CLICK, this.endConnection);
     },
     methods: {
@@ -163,13 +162,6 @@ export default {
             } else {
                 this.endConnection();
             }
-        },
-        handleScroll() {
-            this.setDrawerPosition();
-        },
-        setDrawerPosition() {
-            if (!this.activated) return;
-            const bounds = this.$refs.activator.$el.getBoundingClientRect();
         },
         openClose() {
             this.isOpen = !this.isOpen;
