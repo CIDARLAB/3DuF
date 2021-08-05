@@ -67,7 +67,7 @@ export default class LogicArray extends Template {
             rotation: 360
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

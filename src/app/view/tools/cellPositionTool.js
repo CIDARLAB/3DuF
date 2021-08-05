@@ -43,6 +43,6 @@ export default class CellPositionTool extends PositionTool {
 
     showTarget() {
         const target = PositionTool.getTarget(this.lastPoint);
-        Registry.viewManager.updateTarget(this.typeString, this.setString, target);
+        this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters);
     }
 }

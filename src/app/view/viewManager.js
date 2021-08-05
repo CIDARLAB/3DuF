@@ -685,7 +685,6 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateTarget(featureType, featureSet, position, currentParameters, refresh = true) {
-        console.log(currentParameters);
         this.view.addTarget(featureType, featureSet, position, currentParameters);
         this.view.updateAlignmentMarks();
         this.view.updateRatsNest();
@@ -1584,17 +1583,17 @@ export default class ViewManager {
         if (renderer.placementTool === "componentPositionTool") {
             activeTool = new ComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         } else if (renderer.placementTool === "controlCellPositionTool") {
-            activeTool = new ControlCellPositionTool("ControlCell", "Basic");
+            activeTool = new ControlCellPositionTool("ControlCell", "Basic", currentParameters);
         } else if (renderer.placementTool === "customComponentPositionTool") {
             activeTool = CustomComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic");
         } else if (renderer.placementTool === "positionTool") {
-            activeTool = new PositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic");
+            activeTool = new PositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         } else if (renderer.placementTool === "multilayerPositionTool") {
-            activeTool = new MultilayerPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic");
+            activeTool = new MultilayerPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         } else if (renderer.placementTool === "valveInsertionTool") {
-            activeTool = new ValveInsertionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic");
+            activeTool = new ValveInsertionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         } else if (renderer.placementTool === "CellPositionTool") {
-            activeTool = new CellPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic");
+            activeTool = new CellPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         }
 
         if (activeTool === null) {
@@ -1610,11 +1609,7 @@ export default class ViewManager {
 
     deactivateComponentPlacementTool() {
         console.log("Deactivating Component Placement Tool");
-        let activeTool = this.mouseAndKeyboardHandler.leftMouseTool;
-        activeTool.deactivate();
-        activeTool = this.mouseAndKeyboardHandler.rightMouseTool;
-        activeTool.deactivate();
-        this.mouseAndKeyboardHandler.leftMouseTool = this.tools.MouseSelectTool;
-        this.mouseAndKeyboardHandler.rightMouseTool = this.tools.MouseSelectTool;
+        this.mouseAndKeyboardHandler.leftMouseTool.deactivate();
+        this.mouseAndKeyboardHandler.rightMouseTool.deactivate();
     }
 }

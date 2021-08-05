@@ -146,7 +146,6 @@ export default class CellTrapL extends Template {
         const feedingChannelWidth = params.feedingChannelWidth;
         const chamberSpacing = params.chamberSpacing;
 
-        console.log(rotation, position, chamberLength, numChambers, chamberWidth, feedingChannelWidth, chamberSpacing);
         const color = params.color;
         const x = position[0];
         const y = position[1];

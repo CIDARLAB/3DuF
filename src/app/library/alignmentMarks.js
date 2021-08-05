@@ -42,7 +42,7 @@ export default class AlignmentMarks extends Template {
             height: 1200
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

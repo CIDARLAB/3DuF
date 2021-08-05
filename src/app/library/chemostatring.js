@@ -71,7 +71,7 @@ export default class ChemostatRing extends Template {
             height: 1 * 10000
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             cursorPosition: "position"

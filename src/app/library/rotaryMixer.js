@@ -75,7 +75,7 @@ export default class RotaryMixer extends Template {
             rotation: 360
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

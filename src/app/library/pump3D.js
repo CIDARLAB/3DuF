@@ -163,7 +163,6 @@ export default class Pump3D extends Template {
         ret.addChild(valve);
 
         const bottomcenter = new paper.Point(position[0], position[1] + spacing);
-        console.log(bottomcenter);
         circ = new paper.Path.Circle(bottomcenter, radius);
         // circ.fillColor = color;
         //   if (String(color) === "3F51B5") {
@@ -217,8 +216,6 @@ export default class Pump3D extends Template {
         const rotation = params.rotation;
         const spacing = params.spacing;
 
-        console.log("Spacing:", spacing);
-
         const ret = new paper.CompoundPath();
 
         const center = new paper.Point(position[0], position[1]);
@@ -246,8 +243,6 @@ export default class Pump3D extends Template {
         const color = params.color;
         const rotation = params.rotation;
         const spacing = params.spacing;
-
-        console.log("Spacing:", spacing);
 
         const ret = new paper.CompoundPath();
 

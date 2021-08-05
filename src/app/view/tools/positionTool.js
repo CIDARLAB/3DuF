@@ -105,4 +105,8 @@ export default class PositionTool extends MouseTool {
         this.viewManagerDelegate.currentDevice.addComponent(newComponent);
         return newComponent;
     }
+
+    deactivate() {
+        this.viewManagerDelegate.resetToDefaultTool();
+    }
 }
