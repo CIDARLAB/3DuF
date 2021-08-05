@@ -91,7 +91,7 @@ export default class Gelchannel extends Template {
 
         this.__renderKeys = ["FLOW", "CELL"];
 
-        this.__mint = "LONG CELL TRAP";
+        this.__mint = "GEL CHANNEL";
     }
 
     getPorts(params) {
