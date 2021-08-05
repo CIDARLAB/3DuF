@@ -5,7 +5,7 @@
             <v-card v-if="activated">
                 <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                 <v-card-text>
-                    <PropertyBlock :title="mint" :spec="spec" @update="testfunc" />
+                    <PropertyBlock :title="mint" :spec="spec" @update="updateParameter" />
                 </v-card-text>
             </v-card>
         </div>
@@ -90,8 +90,7 @@ export default {
             const bounds = this.$refs.activator.$el.getBoundingClientRect();
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
         },
-        testfunc(value, key) {
-            console.log("Updated parameter:", value, key);
+        updateParameter(value, key) {
             this.activeTool.updateParameter(key, value);
         },
         computedSpecForMINT: function(minttype) {
@@ -102,7 +101,6 @@ export default {
                 console.log(definition.units[key]);
                 // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
                 let item = {
-                    mint: key,
                     min: definition.minimum[key],
                     max: definition.maximum[key],
                     value: definition.defaults[key],

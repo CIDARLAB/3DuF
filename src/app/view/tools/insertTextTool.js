@@ -63,7 +63,7 @@ export default class InsertTextTool extends MouseTool {
             null
         );
         // this.currentFeatureID = newFeature.ID;
-        Registry.viewManager.addFeature(newFeature);
+        this.viewManagerDelegate.addFeature(newFeature);
         //Registry.viewManager.renderLayers[Registry.viewManager.activeRenderLayer].addFeature(newFeature);
         Registry.viewManager.saveDeviceState();
     }

@@ -10,16 +10,15 @@ export default class CellPositionTool extends PositionTool {
 
     createNewFeature(point) {
         const featureIDs = [];
+        const currentlevel = Math.floor(Registry.viewManager.renderLayers.indexOf(Registry.currentLayer) / 3);
+        const flowlayer = currentlevel * 3;
+        const controllayer = currentlevel * 3 + 1;
+        const cell_layer = currentlevel * 3;
 
-        const currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
-        const flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
-        const cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
-
-        let newFeature = Device.makeFeature(this.typeString, {
-            position: PositionTool.getTarget(point)
-        });
+        const paramvalues = this.getCreationParameters(point);
+        let newFeature = Device.makeFeature(this.typeString, paramvalues);
         this.currentFeatureID = newFeature.ID;
-        flowlayer.addFeature(newFeature);
+        this.viewManagerDelegate.addFeature(newFeature, flowlayer);
 
         featureIDs.push(newFeature.ID);
 
@@ -27,14 +26,11 @@ export default class CellPositionTool extends PositionTool {
 
         const newtypestring = this.typeString + "_cell";
         const paramstoadd = newFeature.getParams();
-        newFeature = Device.makeFeature(newtypestring, {
-            position: PositionTool.getTarget(point)
-        });
+        newFeature = Device.makeFeature(newtypestring, paramvalues);
         newFeature.setParams(paramstoadd);
 
         this.currentFeatureID = newFeature.ID;
-        cell_layer.addFeature(newFeature);
-
+        this.viewManagerDelegate.addFeature(newFeature, cell_layer);
         featureIDs.push(newFeature.ID);
 
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);

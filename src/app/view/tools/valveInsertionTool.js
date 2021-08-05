@@ -7,8 +7,8 @@ import PositionTool from "./positionTool";
 import paper from "paper";
 
 export default class ValveInsertionTool extends MultilayerPositionTool {
-    constructor(typeString, setString, is3D = false) {
-        super(typeString, setString);
+    constructor(viewManagerDelegate, typeString, setString, currentParameters, is3D = false) {
+        super(viewManagerDelegate, typeString, setString, currentParameters);
         this.is3D = is3D;
 
         const ref = this;
@@ -62,7 +62,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         const newFeature = Device.makeFeature(this.typeString, overridedata);
         this.currentFeatureID = newFeature.ID;
 
-        Registry.viewManager.addFeature(newFeature, controllayer);
+        this.viewManagerDelegate.addFeature(newFeature, controllayer);
 
         featureIDs.push(newFeature.ID);
 
@@ -100,7 +100,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
 
         let newFeature = Device.makeFeature(this.typeString, overridedata);
         this.currentFeatureID = newFeature.ID;
-        Registry.viewManager.addFeature(newFeature, flowlayer);
+        this.viewManagerDelegate.addFeature(newFeature, flowlayer);
 
         featureIDs.push(newFeature.ID);
 
@@ -112,7 +112,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         newFeature.setParams(paramstoadd);
 
         this.currentFeatureID = newFeature.ID;
-        Registry.viewManager.addFeature(newFeature, controllayer);
+        this.viewManagerDelegate.addFeature(newFeature, controllayer);
 
         featureIDs.push(newFeature.ID);
 

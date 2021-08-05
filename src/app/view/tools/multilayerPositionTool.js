@@ -16,11 +16,10 @@ export default class MultilayerPositionTool extends PositionTool {
         const intlayer = currentlevel * 3 + 2;
 
         // Set up flow layer component
-        let newFeature = Device.makeFeature(this.typeString, {
-            position: PositionTool.getTarget(point)
-        });
+        const paramvalues = this.getCreationParameters(point);
+        let newFeature = Device.makeFeature(this.typeString, paramvalues);
         this.currentFeatureID = newFeature.ID;
-        Registry.viewManager.addFeature(newFeature, flowlayer);
+        this.viewManagerDelegate.addFeature(newFeature, flowlayer);
 
         featureIDs.push(newFeature.ID);
 
@@ -37,7 +36,7 @@ export default class MultilayerPositionTool extends PositionTool {
             newFeature.setParams(paramstoadd);
 
             this.currentFeatureID = newFeature.ID;
-            Registry.viewManager.addFeature(newFeature, controllayer);
+            this.viewManagerDelegate.addFeature(newFeature, controllayer);
 
             featureIDs.push(newFeature.ID);
         }
@@ -45,13 +44,11 @@ export default class MultilayerPositionTool extends PositionTool {
         // Set up integration layer component
         if (ComponentAPI.library[this.typeString + "_integration"]) {
             newtypestring = this.typeString + "_integration";
-            newFeature = Device.makeFeature(newtypestring, {
-                position: PositionTool.getTarget(point)
-            });
+            newFeature = Device.makeFeature(newtypestring, paramvalues);
             newFeature.setParams(paramstoadd);
 
             this.currentFeatureID = newFeature.ID;
-            Registry.viewManager.addFeature(newFeature, intlayer);
+            this.viewManagerDelegate.addFeature(newFeature, intlayer);
 
             featureIDs.push(newFeature.ID);
         }

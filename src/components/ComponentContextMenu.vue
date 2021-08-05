@@ -39,7 +39,7 @@
             </v-row>
             <v-row>
                 <v-card-text>
-                    <PropertyBlock :title="mint" :spec="spec" />
+                    <PropertyBlock :title="mint" :spec="spec" @update="updateParameter" />
                 </v-card-text>
             </v-row>
         </div>
@@ -87,6 +87,9 @@ export default {
         EventBus.get().on(EventBus.DBL_CLICK_COMPONENT, this.activateMenu);
     },
     methods: {
+        updateParameter(value, key) {
+            this.currentComponent.updateParameter(key, value);
+        },
         computeSpec: function(mint, params) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let spec = [];

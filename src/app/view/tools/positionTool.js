@@ -106,7 +106,19 @@ export default class PositionTool extends MouseTool {
         return newComponent;
     }
 
-    deactivate() {
-        this.viewManagerDelegate.resetToDefaultTool();
+    deactivate() {}
+
+    getCreationParameters(position) {
+        const paramvalues = {
+            position: PositionTool.getTarget(position)
+        };
+        console.log(this.currentParameters);
+        for (const item of this.currentParameters) {
+            console.log(item);
+            const param = item.name;
+            const value = item.value;
+            paramvalues[param] = value;
+        }
+        return paramvalues;
     }
 }

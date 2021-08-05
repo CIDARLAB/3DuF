@@ -1583,7 +1583,7 @@ export default class ViewManager {
         if (renderer.placementTool === "componentPositionTool") {
             activeTool = new ComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         } else if (renderer.placementTool === "controlCellPositionTool") {
-            activeTool = new ControlCellPositionTool("ControlCell", "Basic", currentParameters);
+            activeTool = new ControlCellPositionTool(this, "ControlCell", "Basic", currentParameters);
         } else if (renderer.placementTool === "customComponentPositionTool") {
             activeTool = CustomComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic");
         } else if (renderer.placementTool === "positionTool") {
@@ -1611,5 +1611,6 @@ export default class ViewManager {
         console.log("Deactivating Component Placement Tool");
         this.mouseAndKeyboardHandler.leftMouseTool.deactivate();
         this.mouseAndKeyboardHandler.rightMouseTool.deactivate();
+        this.resetToDefaultTool();
     }
 }
