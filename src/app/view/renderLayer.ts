@@ -234,14 +234,23 @@ export default class RenderLayer {
         return null;
     }
 
-    /**
-     * Loads physical layer from Interchange format
-     * @param {LayerInterchangeV1} json Interchange format file
-     * @memberof RenderLayer
-     */
-    __loadLayerFromInterchange(json: LayerInterchangeV1): void {
-        this.physicalLayer = Layer.fromJSON(json);
-    }
+    // /**
+    //  * Loads physical layer from json format
+    //  * @param {json} json format file
+    //  * @memberof RenderLayer
+    //  */
+    // __loadLayerFromJSON(json: { [index: string]: any }): void {
+    //     this.physicalLayer = Layer.fromJSON(json);
+    // }
+
+    // /**
+    //  * Loads physical layer from Interchange format
+    //  * @param {LayerInterchangeV1} json Interchange format file
+    //  * @memberof RenderLayer
+    //  */
+    // __loadLayerFromInterchange(json: LayerInterchangeV1): void {
+    //     this.physicalLayer = Layer.fromInterchangeV1(json);
+    // }
 
     /**
      * Converts the attributes of the object into Interchange format
@@ -249,13 +258,19 @@ export default class RenderLayer {
      * @memberof Layer
      */
     toInterchangeV1(): RenderLayerInterchangeV1 {
+        let physlayer;
+        if (this.physicalLayer) {
+            physlayer = this.physicalLayer.id;
+        } else {
+            physlayer = null;
+        }
         const output: RenderLayerInterchangeV1 = {
             id: this.__id,
             name: this.name,
             //name: this.name,
             // TODO - Add group and unique name parameters to the system and do type checking
             // against type and not name in the future
-            modellayer: this.__layerToInterchangeV1(),
+            modellayer: physlayer,
             type: this.__type,
             group: "0",
             //params: this.params.toJSON(),
@@ -277,6 +292,7 @@ export default class RenderLayer {
         }
         const newLayer = new RenderLayer(json.name, json.type, json.group);
         newLayer.__loadFeaturesFromJSON(json.features);
+        //if (json.modellayer) newLayer.__loadLayerFromJSON(json.modellayer);
         if (json.color) newLayer.color = json.color;
         return newLayer;
     }
@@ -288,11 +304,12 @@ export default class RenderLayer {
      * @memberof Layer
      */
     static fromInterchangeV1(json: RenderLayerInterchangeV1): RenderLayer {
+        //Effectively defunct, use loadUtils version
         const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
-        if (json.modellayer != null) {
-            newLayer.__loadLayerFromInterchange(json.modellayer);
-        }
+
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
+
+        //if (json.modellayer) newLayer.__loadLayerFromInterchange(json.modellayer);
         if (json.color) newLayer.color = json.color; // TODO: Figure out if this needs to change in the future
         return newLayer;
     }

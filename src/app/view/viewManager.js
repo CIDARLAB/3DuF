@@ -54,6 +54,8 @@ import EventBus from "@/events/events";
 import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
 
+import LoadUtils from "@/app/view/loadUtils";
+
 /**
  * View manager class
  */
@@ -785,6 +787,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     refresh(refresh = true) {
+        console.log("Here");
         this.updateQueue.run();
         // Update the toolbar
         const spacing = Registry.currentGrid.getSpacing();
@@ -856,6 +859,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     loadDeviceFromJSON(json) {
+        console.log("Here");
         let device;
         Registry.viewManager.clear();
         // Check and see the version number if its 0 or none is present,
@@ -869,26 +873,37 @@ export default class ViewManager {
 
             // TODO: Add separate render layers to initializing json
             for (const i in json.layers) {
-                const newRenderLayer = RenderLayer.fromJSON(json.layers[i]);
+                const newRenderLayer = RenderLayer.fromJSON(json.renderLayers[i]);
                 this.renderLayers.push(newRenderLayer);
             }
         } else {
             console.log("Version Number: " + version);
             switch (version) {
                 case 1:
-                    // this.loadCustomComponents(json);
-                    device = Device.fromInterchangeV1(json);
+                    console.log("Hello");
+                    // // this.loadCustomComponents(json);
+                    // device = Device.fromInterchangeV1(json);
+                    // Registry.currentDevice = device;
+                    // this.__currentDevice = device;
+
+                    // // TODO: Add separate render layers to initializing json
+                    // for (const i in json.layers) {
+                    //     const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
+                    //     this.renderLayers.push(newRenderLayer);
+                    // }
+                    let ret = LoadUtils.loadFromScratch(json);
+                    console.log("Ret: ", ret);
+                    device = ret[0];
                     Registry.currentDevice = device;
                     this.__currentDevice = device;
+                    console.log("Device: ", device);
 
-                    // TODO: Add separate render layers to initializing json
-                    for (const i in json.layers) {
-                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.layers[i]);
-                        this.renderLayers.push(newRenderLayer);
-                    }
+                    this.renderLayers = ret[1];
+                    console.log("RenderLayers: ", this.renderLayers);
 
                     break;
                 case 1.1:
+                    console.log("Heyyo");
                     // this.loadCustomComponents(json);
                     device = Device.fromInterchangeV1_1(json);
                     Registry.currentDevice = device;
@@ -896,7 +911,7 @@ export default class ViewManager {
 
                     // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
                     for (const i in json.layers) {
-                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.layers[i]);
+                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
                         this.renderLayers.push(newRenderLayer);
                     }
 
@@ -907,7 +922,7 @@ export default class ViewManager {
         }
         // Common Code for rendering stuff
         // console.log("Feature Layers", Registry.currentDevice.layers);
-        Registry.currentLayer = Registry.currentDevice.layers[0];
+        Registry.currentLayer = this.renderLayers[0];
         Registry.currentTextLayer = Registry.currentDevice.textLayers[0];
 
         this.activeRenderLayer = 0;
@@ -922,7 +937,7 @@ export default class ViewManager {
         this.updateGrid();
         this.updateDevice(Registry.currentDevice);
         this.refresh(true);
-        Registry.currentLayer = Registry.currentDevice.layers[0];
+        Registry.currentLayer = this.renderLayers[0];
         // this.layerToolBar.setActiveLayer("0");
         Registry.viewManager.updateActiveLayer();
     }

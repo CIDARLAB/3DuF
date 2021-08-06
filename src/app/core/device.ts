@@ -487,7 +487,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    __loadFeatureLayersFromInterchangeV1(json: Array<LayerInterchangeV1>): void {
+    __loadLayersFromInterchangeV1(json: Array<LayerInterchangeV1>): void {
         for (let i in json) {
             let newLayer = Layer.fromInterchangeV1(json[i]);
             this.addLayer(newLayer);
@@ -539,8 +539,6 @@ export default class Device {
             layers: this.__layersToInterchangeV1(),
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
-            //TODO: Use this to render the device features
-            features: this.__featureLayersToInterchangeV1(),
             version: 1,
             groups: this.__groupsToJSON()
         };
@@ -558,8 +556,6 @@ export default class Device {
             layers: this.__layersToInterchangeV1(),
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
-            //TODO: Use this to render the device features
-            features: this.__featureLayersToInterchangeV1(),
             version: 1,
             groups: this.__groupsToJSON()
         };
@@ -624,8 +620,8 @@ export default class Device {
         //TODO: Use this to render the device features
 
         //Check if JSON has features else mark
-        if (Object.prototype.hasOwnProperty.call(json, "features")) {
-            newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
+        if (Object.prototype.hasOwnProperty.call(json, "layers")) {
+            newDevice.__loadLayersFromInterchangeV1(json.layers);
         } else {
             //We need to add a default layer
             let newlayer = new Layer({}, "flow");
@@ -716,7 +712,7 @@ export default class Device {
 
         //Check if JSON has features else mark
         if (Object.prototype.hasOwnProperty.call(json, "features")) {
-            newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
+            newDevice.__loadLayersFromInterchangeV1(json.layers);
         } else {
             //We need to add a default layer
             let newlayer = new Layer({}, "flow");
