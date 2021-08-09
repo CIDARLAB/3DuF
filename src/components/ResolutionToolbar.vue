@@ -18,6 +18,12 @@
 </template>
 
 <script>
+// Issues: Beining Aug.5.21
+// Grid Settings hover no show;
+// Grid Settings slider out of range???
+// "console log : Could not set the Zoom, could be in the ZoomSlider.vue??";
+// Grid_size doesn't change with zoom slider,need to figure out how this work.
+
 import veeno from "veeno";
 import "nouislider/distribute/nouislider.min.css";
 import Registry from "../app/core/registry";

@@ -1,7 +1,7 @@
 <template>
     <div ref="slider" class="zoomsliderbase"></div>
 </template>
-å
+
 <script>
 import Registry from "@/app/core/registry";
 import noUiSlider from "nouislider";
