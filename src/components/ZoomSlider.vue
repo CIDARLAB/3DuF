@@ -41,10 +41,10 @@ export default {
         this.$refs.slider.noUiSlider.on("update", function(values, handle, unencoded, tap, positions) {
             if (ref.isUserGeneratedEvent) {
                 console.log("Zoom Value:", values[0]);
-                const num = Registry.currentGrid.__spacing;
-                console.log("Zoom Value testing num", num);
+                const updatedSpacing = Registry.currentGrid.__spacing;
                 // TODO - Map this directly to the zoom functions
-                EventBus.get().emit(EventBus.UPDATE_GRID, num);
+                EventBus.get().emit(EventBus.UPDATE_GRID, updatedSpacing);
+                // EventBus emit updated spacing, ResolutionToolBar.vue listen to this
                 console.log(registryref);
                 try {
                     registryref.viewManager.setZoom(ref.convertLinearToZoomScale(values[0]));
@@ -66,17 +66,10 @@ export default {
             this.$$refs.slider.noUiSlider.set(this.convertZoomtoLinearScale(zoom));
         },
         convertLinearToZoomScale(linvalue) {
-            console.log("convertLinearToZoomScale", Math.pow(10, linvalue));
             return Math.pow(10, linvalue);
         },
         convertZoomtoLinearScale(zoomvalue) {
-            console.log("convertZoomtoLinearScale", Math.log10(zoomvalue));
             return Math.log10(zoomvalue);
-        },
-        created() {
-            console.log("Zoombustesting");
-            const num = Registry.currentGrid.__spacing;
-            EventBus.$emit("GridSizeUpgrade", num);
         }
     }
 };

@@ -13,7 +13,7 @@
             </v-switch>
             <veeno ref="slider" v-model="sliderValue" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
         </div>
-        <div id="bottom-info-bar">Grid Size: {{ sliderValue1 }} &mu;m</div>
+        <div id="bottom-info-bar">Grid Size: {{ updatedsliderValue }} &mu;m</div>
     </div>
 </template>
 
@@ -37,7 +37,7 @@ export default {
     },
 
     props: {
-        sliderValue1: {
+        updatedsliderValue: {
             type: Number,
             default: 1000
         }
@@ -59,7 +59,7 @@ export default {
     created() {
         console.log("bus testing");
         EventBus.get().on(EventBus.UPDATE_GRID, data => {
-            this.sliderValue1 = data;
+            this.updatedsliderValue = data;
         });
     },
     updated() {
@@ -97,17 +97,14 @@ export default {
             const { values } = event;
             let spacingchanges = registryref.currentGrid.__spacing;
             let value1 = parseInt(values[0], 10);
-            console.log("updatedGrid testung", spacingchanges);
+            console.log("updatedGrid testing value1", value1);
             //This ensures that there is something valid present
-            this.sliderValue1 = spacingchanges;
-            console.log("updatedGrid testung2", this.sliderValue1);
             if (registryref.currentGrid !== null) {
                 registryref.currentGrid.updateGridSpacing(value1);
                 registryref.currentGrid.notifyViewManagerToUpdateView();
             }
         },
         updateResolutionLabelAndSlider(smallResolution) {
-            console.log("updatedlable testung");
             if (smallResolution !== null) {
                 this.__gridResolution = smallResolution;
                 this.__smallresolutionLabel.innerHTML = smallResolution + " &mu;m";
