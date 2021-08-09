@@ -7,6 +7,7 @@ import Registry from "@/app/core/registry";
 import noUiSlider from "nouislider";
 import "@/assets/nouislider/nouislider.min.css";
 import EventBus from "@/events/events";
+import Vue from "vue";
 
 export default {
     name: "ZoomSlider",
@@ -40,7 +41,10 @@ export default {
         this.$refs.slider.noUiSlider.on("update", function(values, handle, unencoded, tap, positions) {
             if (ref.isUserGeneratedEvent) {
                 console.log("Zoom Value:", values[0]);
+                const num = Registry.currentGrid.__spacing;
+                console.log("Zoom Value testing num", num);
                 // TODO - Map this directly to the zoom functions
+                EventBus.get().emit(EventBus.UPDATE_GRID, num);
                 console.log(registryref);
                 try {
                     registryref.viewManager.setZoom(ref.convertLinearToZoomScale(values[0]));
@@ -50,7 +54,6 @@ export default {
             }
             ref.isUserGeneratedEvent = true;
         });
-
         EventBus.get().on(EventBus.UPDATE_ZOOM, this.setZoom);
     },
     methods: {
@@ -63,10 +66,17 @@ export default {
             this.$$refs.slider.noUiSlider.set(this.convertZoomtoLinearScale(zoom));
         },
         convertLinearToZoomScale(linvalue) {
+            console.log("convertLinearToZoomScale", Math.pow(10, linvalue));
             return Math.pow(10, linvalue);
         },
         convertZoomtoLinearScale(zoomvalue) {
+            console.log("convertZoomtoLinearScale", Math.log10(zoomvalue));
             return Math.log10(zoomvalue);
+        },
+        created() {
+            console.log("Zoombustesting");
+            const num = Registry.currentGrid.__spacing;
+            EventBus.$emit("GridSizeUpgrade", num);
         }
     }
 };

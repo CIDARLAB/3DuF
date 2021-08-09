@@ -13,7 +13,7 @@
             </v-switch>
             <veeno ref="slider" v-model="sliderValue" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
         </div>
-        <div id="bottom-info-bar">Grid Size: {{ sliderValue }} &mu;m</div>
+        <div id="bottom-info-bar">Grid Size: {{ sliderValue1 }} &mu;m</div>
     </div>
 </template>
 
@@ -28,6 +28,7 @@ import veeno from "veeno";
 import "nouislider/distribute/nouislider.min.css";
 import Registry from "../app/core/registry";
 import wNumb from "wnumb";
+import EventBus from "@/events/events";
 
 export default {
     name: "ResolutionToolbar",
@@ -35,7 +36,12 @@ export default {
         veeno
     },
 
-    props: {},
+    props: {
+        sliderValue1: {
+            type: Number,
+            default: 1000
+        }
+    },
     data() {
         return {
             activated: false,
@@ -49,6 +55,12 @@ export default {
                 range: { min: [1], "10%": [10], "30%": [100], "90%": [1000], max: [5000] }
             }
         };
+    },
+    created() {
+        console.log("bus testing");
+        EventBus.get().on(EventBus.UPDATE_GRID, data => {
+            this.sliderValue1 = data;
+        });
     },
     updated() {
         Registry.currentGrid.enableAdaptiveGrid();
@@ -83,8 +95,12 @@ export default {
             console.log("updatedGrid testung");
             let registryref = Registry;
             const { values } = event;
+            let spacingchanges = registryref.currentGrid.__spacing;
             let value1 = parseInt(values[0], 10);
+            console.log("updatedGrid testung", spacingchanges);
             //This ensures that there is something valid present
+            this.sliderValue1 = spacingchanges;
+            console.log("updatedGrid testung2", this.sliderValue1);
             if (registryref.currentGrid !== null) {
                 registryref.currentGrid.updateGridSpacing(value1);
                 registryref.currentGrid.notifyViewManagerToUpdateView();
