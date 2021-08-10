@@ -100,13 +100,13 @@ const decimalToIndex = function (decimal, indices) {
 /**
  * Converts the decimal to the corresponding layer color
  * @param {number} decimal
- * @param {Object} layerColors
+ * @param {Object} layeredColors
  * @param {Array} orderedKeys
  */
-export function decimalToLayerColor(decimal, layerColors, orderedKeys) {
+export function decimalToLayerColor(decimal, layeredColors, orderedKeys) {
     const index = decimalToIndex(decimal, orderedKeys.length);
     const key = orderedKeys[index];
-    return layerColors["700"];
+    return layeredColors["700"];
 }
 /**
  * Renders all the colors

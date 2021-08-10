@@ -45,10 +45,10 @@ describe("Params", function() {
     });
     describe("#init", function() {
         it("can be initialized with known-good values and types", function() {
-            const params = new Params(values, unique, heritable);
-            params.getValue("flo").should.be.approximately(12.3, 0.0001);
-            params.getValue("str").should.equal("foobar");
-            params
+            const parameters = new Params(values, unique, heritable);
+            parameters.getValue("flo").should.be.approximately(12.3, 0.0001);
+            parameters.getValue("str").should.equal("foobar");
+            parameters
                 .getValue("boo")
                 .getType()
                 .should.equal("Boolean");
@@ -56,18 +56,18 @@ describe("Params", function() {
         it("cannot be initialized if unique values are missing", function() {
             delete values.flo;
             (function() {
-                const params = new Params(values, unique, heritable);
+                const params1 = new Params(values, unique, heritable);
             }.should.throwError());
         });
         it("cannot be initialized if a value is of the wrong type", function() {
             values.flo = [0, 0];
             (function() {
-                const params = new Params(values, unique, heritable);
+                const params2 = new Params(values, unique, heritable);
             }.should.throwError());
             values.flo = 12.3;
             values.boo = 24;
             (function() {
-                const params = new Params(values, unique, heritable);
+                const params3 = new Params(values, unique, heritable);
             }.should.throwError());
         });
     });
@@ -139,22 +139,22 @@ describe("Params", function() {
     describe("#fromJSON", function() {
         it("should convert valid JSON to a Params object of the correct type", function() {
             const json = values; // they happen to be the same structure!
-            const params = Params.fromJSON(json, unique, heritable);
-            params.getValue("boo").should.equal(true);
-            params
+            const params4 = Params.fromJSON(json, unique, heritable);
+            params4.getValue("boo").should.equal(true);
+            params4
                 .getValue("str")
                 .getType()
                 .should.equal("String");
         });
         it("should not allow fromJSON to be called without unique and heritable types", function() {
             (function() {
-                const params = new Params(values, unique);
+                const params5 = new Params(values, unique);
             }.should.throwError());
             (function() {
-                const params = new Params(values, heritable);
+                const params6 = new Params(values, heritable);
             }.should.throwError());
             (function() {
-                const params = new Params(values);
+                const params7 = new Params(values);
             }.should.throwError());
         });
 

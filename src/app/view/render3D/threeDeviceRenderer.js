@@ -290,8 +290,8 @@ export class ThreeDeviceRenderer {
         const holder = this.renderSlideHolder(width, height, slideThickness, borderWidth, interlock);
         assembly.add(holder);
         if (slide) {
-            const slide = this.renderSlide(width, height, slideThickness);
-            assembly.add(slide);
+            const rslide = this.renderSlide(width, height, slideThickness);
+            assembly.add(rslide);
         }
         assembly.position.z -= slideThickness;
         return assembly;

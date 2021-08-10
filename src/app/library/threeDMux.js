@@ -168,9 +168,9 @@ export default class ThreeDMux extends Template {
         const vertical_length = N * 3000;
         const ports = [];
 
-        for (var i = 0; i < N; i++) {
-            const xpos = i * (horizontal_length / (N - 1));
-            ports.push(new ComponentPort(xpos, 0, (i + 1).toString(), "FLOW"));
+        for (var I = 0; I < N; I++) {
+            const xpos = I * (horizontal_length / (N - 1));
+            ports.push(new ComponentPort(xpos, 0, (I + 1).toString(), "FLOW"));
         }
 
         ports.push(new ComponentPort(horizontal_length / 2, vertical_length + N * 1000, (N + 1).toString(), "FLOW"));
@@ -289,15 +289,15 @@ export default class ThreeDMux extends Template {
             ypos += ypos_adjust;
 
             while (count2 < N) {
-                for (var w = 0; w < cur_N / 2; w++) {
-                    const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
+                for (var W = 0; W < cur_N / 2; W++) {
+                    const current_xpos = xpos + bottomlinelength - ((count2 + W) * bottomlinelength) / (N - 1);
 
                     const cutrec = paper.Path.Rectangle({
                         from: new paper.Point(current_xpos - channelWidth / 2, ypos - gap / 2),
                         to: new paper.Point(current_xpos + channelWidth / 2, ypos + gap / 2)
                     });
 
-                    branchArray[N - 1 - w - count2] = branchArray[N - 1 - w - count2].subtract(cutrec);
+                    branchArray[N - 1 - W - count2] = branchArray[N - 1 - W - count2].subtract(cutrec);
                     this.__createthreedmuxValve(threedmux_flow, current_xpos, ypos, gap, radius, rotation, channelWidth);
                 }
                 count2 += increment2 + cur_N / 2;
@@ -306,8 +306,8 @@ export default class ThreeDMux extends Template {
             cur_N = cur_N / 2;
         }
 
-        for (var i = 0; i < N; i++) {
-            threedmux_flow.addChild(branchArray[i]);
+        for (var I = 0; I < N; I++) {
+            threedmux_flow.addChild(branchArray[I]);
             // threedmux_flow.addChild(centerArray[i]);
         }
 
@@ -431,8 +431,8 @@ export default class ThreeDMux extends Template {
             ypos += ypos_adjust;
 
             while (count2 < N) {
-                for (var w = 0; w < cur_N / 2; w++) {
-                    const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
+                for (var W = 0; W < cur_N / 2; W++) {
+                    const current_xpos = xpos + bottomlinelength - ((count2 + W) * bottomlinelength) / (N - 1);
                     const center = new paper.Point(current_xpos, ypos);
                     const circle = new paper.Path.Circle(center, radius);
                     threedmux_control.addChild(circle);

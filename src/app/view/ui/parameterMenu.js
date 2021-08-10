@@ -20,6 +20,7 @@ const createSlider = function (min, max, step, start, id) {
     slider.setAttribute("value", start);
     slider.setAttribute("step", step);
     p.appendChild(slider);
+    var componentHandler = MaterialDesignLite.ComponentHandler;
     componentHandler.upgradeElement(slider, "MaterialSlider");
     div.appendChild(p);
     return div;
@@ -32,6 +33,7 @@ const createButton = function (iconString) {
     icon.className = "material-icons";
     icon.innerHTML = iconString;
     button.appendChild(icon);
+    var componentHandler = MaterialDesignLite.ComponentHandler;
     componentHandler.upgradeElement(button, "MaterialButton");
     return button;
 };
@@ -56,6 +58,7 @@ const createValueField = function (start, id, unittext = "") {
     div.appendChild(span);
     div.appendChild(error);
     div.setAttribute("style", "margin-left: auto; margin-right: auto; display: block;width:65px;padding-top:0px;padding-bottom:5px;");
+    var componentHandler = MaterialDesignLite.ComponentHandler;
     componentHandler.upgradeElement(div, "MaterialTextfield");
     return div;
 };
@@ -77,6 +80,7 @@ const createCheckbox = function (checked, id) {
     if (checked) input.checked = true;
     input.className = "mdl-checkbox__input";
     label.appendChild(input);
+    var componentHandler = MaterialDesignLite.ComponentHandler;
     componentHandler.upgradeElement(label, "MaterialCheckbox");
     div.setAttribute("style", "margin-left: auto; margin-right: auto; display: block;width:12px;position:relative;");
     div.appendChild(label);

@@ -155,10 +155,10 @@ export default class GradientGenerator extends Template {
         xref = -totalstagewidth / 2;
         yref = stagelength * (stagevalue - invalue + 1);
 
-        for (var i = 0; i < outvalue; i++) {
+        for (var j = 0; j < outvalue; j++) {
             // Generate the ports for each of the outputs
-            const x = xref + spacing * i + channelWidth / 2;
-            ports.push(new ComponentPort(x, yref + channelWidth, (invalue + 1 + i).toString(), "FLOW"));
+            const x = xref + spacing * j + channelWidth / 2;
+            ports.push(new ComponentPort(x, yref + channelWidth, (invalue + 1 + j).toString(), "FLOW"));
         }
 
         return ports;
@@ -210,9 +210,9 @@ export default class GradientGenerator extends Template {
              */
 
             // Calculate the total width and start placing mixers
-            const totalstagewidth = (stagevalue - 1) * spacing;
+            const newtotalstagewidth = (stagevalue - 1) * spacing;
 
-            xref = posx - totalstagewidth / 2;
+            xref = posx - newtotalstagewidth / 2;
             yref = posy + stagelength * (stagevalue - invalue);
 
             // Start from the left
