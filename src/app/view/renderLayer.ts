@@ -1,38 +1,42 @@
 import uuid from "node-uuid";
-import EdgeFeature from "./edgeFeature";
-import Feature from "./feature";
-import Params from "./params";
-import Device from "./device";
-import { FeatureInterchangeV0 } from "./init";
-import { LayerInterchangeV1 } from "./init";
+import Feature from "../core/feature";
+import EdgeFeature from "../core/edgeFeature";
 
-/**
- * Layer class
- */
-export default class Layer {
-    params: Params;
-    name: string;
+import { RenderLayerInterchangeV1, FeatureInterchangeV0, LayerInterchangeV1 } from "../core/init";
+import Layer from "../core/layer";
+
+export default class RenderLayer {
     features: { [index: string]: Feature };
     featureCount: number;
-    device: Device | undefined;
+    color: string | undefined;
     private __id: string;
     private __type: string;
-    private group: string;
+    name: string;
+    protected _physicalLayer: Layer | null;
 
-    /**
-     * Default Constructor for the layer
-     * @param {*} values Value of the layer
-     * @param {String} name Name of the layer
-     */
-    constructor(values: { [index: string]: any }, name: string = "New Layer", type: string = "FLOW", group: string = "0") {
-        this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
-        this.name = name;
+    constructor(name: string = "New Layer", modellayer: Layer | null = null, type: string = "FLOW", group: string = "0") {
+        this.__type = type;
         this.features = {};
         this.featureCount = 0;
-        this.device = undefined;
-        this.__id = Layer.generateID();
-        this.__type = type;
-        this.group = group;
+        this.name = name;
+        this._physicalLayer = modellayer;
+        if (name == "flow") {
+            this.color = "indigo";
+        } else if (name == "control") {
+            this.color = "red";
+        } else if (name == "integration") {
+            this.color = "green";
+        } else {
+            this.color = undefined;
+        }
+        this.__id = RenderLayer.generateID();
+    }
+
+    set physicalLayer(layer: Layer | null) {
+        this._physicalLayer = layer;
+    }
+    get physicalLayer(): Layer | null {
+        return this._physicalLayer;
     }
 
     get type(): string {
@@ -57,49 +61,15 @@ export default class Layer {
      * @memberof Layer
      * @returns {void}
      */
-    addFeature(feature: Feature): void {
+    addFeature(feature: Feature, physfeat: boolean = true): void {
         this.__ensureIsAFeature(feature);
         this.features[feature.ID] = feature;
         this.featureCount += 1;
-        //TODO - Verify that this is not a problem anymore
-        feature.layer = this;
-    }
-
-    /**
-     * Returns index of layer
-     * @returns {Number}
-     * @memberof Layer
-     */
-    getIndex(): number {
-        if (this.device) {
-            return this.device.layers.indexOf(this);
-        } else {
-            throw new Error("No device referenced on this layer");
+        if (this.physicalLayer != null && physfeat == true) {
+            this.physicalLayer.addFeature(feature);
+            feature.layer = this.physicalLayer;
         }
     }
-    /*
-    estimateLayerHeight(){
-        let dev = this.device;
-        let flip = this.params.getValue("flip");
-        let offset = this.params.getValue("z_offset");
-        if (dev){
-            let thisIndex = this.getIndex();
-            let targetIndex;
-            if (flip) targetIndex = thisIndex - 1;
-            else targetIndex = thisIndex + 1;
-            if (thisIndex >= 0 || thisIndex <= (dev.layers.length -1)){
-                let targetLayer = dev.layers[targetIndex];
-                return Math.abs(offset - targetLayer.params.getValue("z_offset"));
-            } else {
-                if (thisIndex -1 >= 0){
-                    let targetLayer = dev.layers[thisIndex -1];
-                    return targetLayer.estimateLayerHeight();
-                }
-            }
-        }
-        return 0;
-    }
-*/
 
     /**
      * Checks whether the argument pass is a feature
@@ -134,29 +104,6 @@ export default class Layer {
     }
 
     /**
-     * Returns unique parameters
-     * @returns {Map<string,string>}
-     * @memberof Layer
-     * @returns {void}
-     */
-    static getUniqueParameters(): Map<string, string> {
-        let unique: Map<string, string> = new Map();
-        unique.set("z_offset", "Float");
-        unique.set("flip", "Boolean");
-        return unique;
-    }
-
-    /**
-     * Returns heritable parameters
-     * @returns {Map<string,string>}
-     * @memberof Layer
-     * @returns {void}
-     */
-    static getHeritableParameters(): Map<string, string> {
-        return new Map();
-    }
-
-    /**
      * Returns feature based on it's ID
      * @param {String} featureID
      * @returns {Feature}
@@ -188,6 +135,10 @@ export default class Layer {
         this.__ensureFeatureIDExists(featureID);
         const feature: Feature = this.features[featureID];
         this.featureCount -= 1;
+        let physLayer = this._physicalLayer;
+        if (physLayer != null) {
+            if (physLayer.containsFeatureID(featureID)) physLayer.removeFeatureByID(featureID);
+        }
         delete this.features[featureID];
     }
 
@@ -260,27 +211,34 @@ export default class Layer {
 
     /**
      * Loads features from Interchange format
-     * @param {*} json Interchange format file
-     * @memberof Layer
+     * @param {FeatureInterchangeV0} json Interchange format file
+     * @memberof RenderLayer
      */
-    __loadFeaturesFromInterchangeV1(json: { [index: string]: any }): void {
+    __loadFeaturesFromInterchangeV1(json: Array<FeatureInterchangeV0>): void {
         for (const i in json) {
             this.addFeature(Feature.fromInterchangeV1(json[i]));
         }
     }
 
-    // TODO: Replace Params and remove static method
     /**
-     * Converts the attributes of the object into a JSON format
-     * @returns {JSON} Returns a JSON format with the attributes of the object
-     * @memberof Layer
+     * Converts the model layer into Interchange format
+     * @returns {LayerInterchangeV1 | null} Returns a Interchange format with the attributes of the object
+     * @memberof RenderLayer
      */
-    toJSON(): { [index: string]: any } {
-        const output: { [index: string]: any } = {};
-        output.name = this.name;
-        output.params = this.params.toJSON();
-        output.features = this.__featuresToJSON();
-        return output;
+    __layerToInterchangeV1(): LayerInterchangeV1 | null {
+        if (this._physicalLayer != null) {
+            return this._physicalLayer.toInterchangeV1();
+        }
+        return null;
+    }
+
+    /**
+     * Loads physical layer from Interchange format
+     * @param {LayerInterchangeV1} json Interchange format file
+     * @memberof RenderLayer
+     */
+    __loadLayerFromInterchange(json: LayerInterchangeV1): void {
+        this.physicalLayer = Layer.fromJSON(json);
     }
 
     /**
@@ -288,32 +246,20 @@ export default class Layer {
      * @returns {LayerInterchangeV1} Returns a Interchange format with the attributes of the object
      * @memberof Layer
      */
-    toInterchangeV1(): LayerInterchangeV1 {
-        const output: LayerInterchangeV1 = {
+    toInterchangeV1(): RenderLayerInterchangeV1 {
+        const output: RenderLayerInterchangeV1 = {
             id: this.__id,
             name: this.name,
-            type: this.type,
+            //name: this.name,
             // TODO - Add group and unique name parameters to the system and do type checking
             // against type and not name in the future
+            modellayer: this.__layerToInterchangeV1(),
+            type: this.__type,
             group: "0",
-            params: this.params.toJSON(),
-            features: this.__featuresInterchangeV1()
+            //params: this.params.toJSON(),
+            features: this.__featuresInterchangeV1(),
+            color: this.color
         };
-        return output;
-    }
-
-    /**
-     * Generate the feature layer json that is neccissary for
-     * seriailizing the visual of the 3DuF designs
-     *
-     * @returns {*} json of the features
-     * @memberof Layer
-     */
-    toFeatureLayerJSON(): { [index: string]: any } {
-        const output: { [index: string]: any } = {};
-        output.name = this.name;
-        output.params = this.params.toJSON();
-        output.features = this.__featuresInterchangeV1();
         return output;
     }
 
@@ -323,12 +269,13 @@ export default class Layer {
      * @returns {Layer} Returns a new layer object
      * @memberof Layer
      */
-    static fromJSON(json: { [index: string]: any }): Layer {
+    static fromJSON(json: { [index: string]: any }): RenderLayer {
         if (!Object.prototype.hasOwnProperty.call(json, "features")) {
             throw new Error("JSON layer has no features!");
         }
-        const newLayer = new Layer(json.params, json.name);
+        const newLayer = new RenderLayer(json.name, json.type, json.group);
         newLayer.__loadFeaturesFromJSON(json.features);
+        if (json.color) newLayer.color = json.color;
         return newLayer;
     }
 
@@ -338,9 +285,13 @@ export default class Layer {
      * @returns {Layer} Returns a new layer object
      * @memberof Layer
      */
-    static fromInterchangeV1(json: LayerInterchangeV1): Layer {
-        const newLayer: Layer = new Layer(json.params, json.name, json.type, json.group);
+    static fromInterchangeV1(json: RenderLayerInterchangeV1): RenderLayer {
+        const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
+        if (json.modellayer != null) {
+            newLayer.__loadLayerFromInterchange(json.modellayer);
+        }
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
+        if (json.color) newLayer.color = json.color; // TODO: Figure out if this needs to change in the future
         return newLayer;
     }
 }

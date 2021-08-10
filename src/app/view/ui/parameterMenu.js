@@ -7,7 +7,7 @@ import BooleanValue from "../../core/parameters/booleanValue";
 import StringValue from "../../core/parameters/stringValue";
 import * as FeatureSets from "../../featureSets";
 
-const createSlider = function (min, max, step, start, id) {
+const createSlider = function(min, max, step, start, id) {
     const div = document.createElement("div");
     const p = document.createElement("p");
     p.setAttribute("style", "min-width: 240px");
@@ -26,7 +26,7 @@ const createSlider = function (min, max, step, start, id) {
     return div;
 };
 
-const createButton = function (iconString) {
+const createButton = function(iconString) {
     const button = document.createElement("button");
     button.className = "mdl-button mdl-js-button mdl-button--icon";
     const icon = document.createElement("i");
@@ -38,7 +38,7 @@ const createButton = function (iconString) {
     return button;
 };
 
-const createValueField = function (start, id, unittext = "") {
+const createValueField = function(start, id, unittext = "") {
     const div = document.createElement("div");
     const error = document.createElement("span");
     const span = document.createElement("span");
@@ -63,13 +63,13 @@ const createValueField = function (start, id, unittext = "") {
     return div;
 };
 
-const createTableElement = function (child) {
+const createTableElement = function(child) {
     const td = document.createElement("td");
     td.appendChild(child);
     return td;
 };
 
-const createCheckbox = function (checked, id) {
+const createCheckbox = function(checked, id) {
     const div = document.createElement("div");
     const label = document.createElement("label");
     label.className = "mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect";
@@ -87,7 +87,7 @@ const createCheckbox = function (checked, id) {
     return div;
 };
 
-const createSpan = function (value, id) {
+const createSpan = function(value, id) {
     const div = document.createElement("div");
     const span = document.createElement("span");
     span.innerHTML = value;
@@ -98,7 +98,7 @@ const createSpan = function (value, id) {
     return div;
 };
 
-const createTableRow = function (one, two, three) {
+const createTableRow = function(one, two, three) {
     const tr = document.createElement("tr");
     one.style.borderBottom = "none";
     tr.appendChild(one);
@@ -107,8 +107,8 @@ const createTableRow = function (one, two, three) {
     return tr;
 };
 
-const generateUpdateFunction = function (sourceID, targetID, typeString, setString, paramString) {
-    return function () {
+export const generateUpdateFunction = function(sourceID, targetID, typeString, setString, paramString) {
+    return function() {
         const source = document.getElementById(sourceID);
         const target = document.getElementById(targetID);
         let param;
@@ -142,8 +142,8 @@ var generateUpdateFunctionString = function(sourceID, targetID, typeString, setS
   }
 }
 */
-const generateCheckFunction = function (sourceID, targetID, typeString, setString, paramString) {
-    return function () {
+const generateCheckFunction = function(sourceID, targetID, typeString, setString, paramString) {
+    return function() {
         const source = document.getElementById(sourceID);
         const target = document.getElementById(targetID);
         let param;
@@ -165,8 +165,8 @@ const generateCheckFunction = function (sourceID, targetID, typeString, setStrin
     };
 };
 
-const generateCheckFunctionDir = function (sourceID, targetID, typeString, setString, paramString) {
-    return function () {
+const generateCheckFunctionDir = function(sourceID, targetID, typeString, setString, paramString) {
+    return function() {
         const source = document.getElementById(sourceID);
         const target = document.getElementById(targetID);
         let param;
@@ -188,7 +188,7 @@ const generateCheckFunctionDir = function (sourceID, targetID, typeString, setSt
     };
 };
 
-const createSliderRow = function (featureID, typeString, setString, key) {
+const createSliderRow = function(featureID, typeString, setString, key) {
     const definition = FeatureSets.getDefinition(typeString, setString);
     const min = definition.minimum[key];
     const max = definition.maximum[key];
@@ -228,14 +228,14 @@ var createStringRow = function(featureID, typeString, setString, key) {
 }
 */
 
-const createDefaultsRow = function (featureID, typeString, setString, key) {
+const createDefaultsRow = function(featureID, typeString, setString, key) {
     const title = createSpan(key);
     const buttonID = "defaults_button";
     const spanID = "defaults_span";
     const value = Feature.getDefaultsForType(typeString, setString)[key];
 };
 
-const createCheckboxRow = function (featureID, typeString, setString, key) {
+const createCheckboxRow = function(featureID, typeString, setString, key) {
     const title = createSpan(key);
     const checkID = featureID + "_" + key + "_checkbox";
     const spanID = featureID + "_" + key + "_span";
@@ -253,7 +253,7 @@ const createCheckboxRow = function (featureID, typeString, setString, key) {
     return row;
 };
 
-const createInOutRow = function (featureID, typeString, setString, key) {
+const createInOutRow = function(featureID, typeString, setString, key) {
     const title = createSpan(key);
     const checkID = featureID + "_" + key + "_checkbox";
     const spanID = featureID + "_" + key + "_span";
@@ -271,7 +271,7 @@ const createInOutRow = function (featureID, typeString, setString, key) {
     return row;
 };
 
-const createFeatureTableRows = function (typeString, setString) {
+const createFeatureTableRows = function(typeString, setString) {
     const def = FeatureSets.getDefinition(typeString, setString);
     const heritable = def.heritable;
     const id = "fake_ID";
@@ -291,7 +291,7 @@ const createFeatureTableRows = function (typeString, setString) {
     return rows;
 };
 
-const createFeatureTableHeaders = function (typeString) {
+const createFeatureTableHeaders = function(typeString) {
     const thead = document.createElement("thead");
     const tr = document.createElement("tr");
     thead.appendChild(tr);
@@ -313,7 +313,7 @@ const createFeatureTableHeaders = function (typeString) {
     return thead;
 };
 
-const createFeatureTableBody = function (typeString, setString) {
+const createFeatureTableBody = function(typeString, setString) {
     const body = document.createElement("tbody");
     body.setAttribute("id", "featureTable");
     const rows = createFeatureTableRows(typeString, setString);
@@ -335,7 +335,7 @@ export function createFeatureTable(typeString, setString, position) {
     closeButton.style.right = "0px";
     closeButton.style.top = "0px";
     // table.appendChild(closeButton);
-    closeButton.onclick = function () {
+    closeButton.onclick = function() {
         table.parentElement.removeChild(table);
     };
     HTMLUtils.addClass(table, "hidden-block");
@@ -343,14 +343,14 @@ export function createFeatureTable(typeString, setString, position) {
     return table;
 }
 
-var createCloseButton = function () {
+var createCloseButton = function() {
     const button = createButton("close");
     button.style.color = "#313131";
     return button;
 };
 
 export function generateTableFunction(tableID, typeString, setString, isTranslucent) {
-    return function (event) {
+    return function(event) {
         let table = document.getElementById(tableID);
         if (table) {
             table.parentElement.removeChild(table);

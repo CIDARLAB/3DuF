@@ -4,6 +4,7 @@ import MouseTool from "./mouseTool";
 import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
+import EventBus from "@/events/events";
 
 export default class MouseSelectTool extends MouseTool {
     constructor(paperview) {
@@ -15,23 +16,23 @@ export default class MouseSelectTool extends MouseTool {
         this.currentSelectBox = null;
         this.currentSelection = [];
         const ref = this;
-        this.updateQueue = new SimpleQueue(function () {
+        this.updateQueue = new SimpleQueue(function() {
             ref.dragHandler();
         }, 20);
-        this.down = function (event) {
+        this.down = function(event) {
             Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
             ref.showTarget();
         };
-        this.move = function (event) {
+        this.move = function(event) {
             if (ref.dragging) {
                 ref.lastPoint = MouseTool.getEventPosition(event);
                 ref.updateQueue.run();
             }
             ref.showTarget();
         };
-        this.up = function (event) {
+        this.up = function(event) {
             ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
             ref.showTarget();
@@ -88,9 +89,10 @@ export default class MouseSelectTool extends MouseTool {
             if (target.selected) {
                 const feat = Registry.currentDevice.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
-                const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
-                rightclickmenu.show(event, feat);
-                this.rightClickMenu = rightclickmenu;
+                EventBus.get().emit(EventBus.DBL_CLICK, event, feat);
+                // const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
+                // rightclickmenu.show(event, feat);
+                // this.rightClickMenu = rightclickmenu;
                 // let func = PageSetup.getParamsWindowCallbackFunction(feat.getType(), feat.getSet());
                 // func(event);
             } else {
@@ -193,7 +195,7 @@ export default class MouseSelectTool extends MouseTool {
     __getConnectionWithFeatureID(featureid) {
         // Get component with the features
 
-        const device_connections = Registry.currentDevice.getConnections();
+        const device_connections = Registry.currentDevice.connections;
 
         // Check against every component
         for (const i in device_connections) {

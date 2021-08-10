@@ -33,7 +33,7 @@ export default class SimpleQueue {
     startTimer() {
         const ref = this;
         this.waiting = true;
-        window.setTimeout(function () {
+        window.setTimeout(function() {
             ref.endTimer();
         }, this.timeout);
     }

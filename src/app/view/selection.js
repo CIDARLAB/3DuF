@@ -1,4 +1,6 @@
 import paper from "paper";
+import Registry from "@/app/core/registry";
+
 /**
  * Selection class
  */

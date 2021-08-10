@@ -9,7 +9,6 @@ import DeviceRenderer from "./render2D/deviceRenderer2D";
 // var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
 import PanAndZoom from "./panAndZoom";
 import * as Colors from "./colors";
-import TextFeature from "../core/textFeature";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
 import ComponentPortRenderer2D from "./render2D/componentPortRenderer2D";
@@ -81,7 +80,7 @@ export default class PaperView {
         const output = [];
         const items = paper.project.selectedItems;
         for (let i = 0; i < items.length; i++) {
-            output.push(this.__viewManagerDelegate.currentDevice.getFeatureByID(items[i].featureID));
+            output.push(this.__viewManagerDelegate.getFeatureByID(items[i].featureID));
         }
         return output;
     }
@@ -108,10 +107,11 @@ export default class PaperView {
         const items = paper.project.selectedItems;
         if (items && items.length > 0) {
             for (let i = 0; i < items.length; i++) {
-                this.__viewManagerDelegate.currentDevice.removeFeatureByID(items[i].featureID);
+                this.__viewManagerDelegate.removeFeatureByID(items[i].featureID);
             }
 
             // Delete the selected Components !!!
+            let connection;
             for (const i in this.selectedComponents) {
                 connection = this.__viewManagerDelegate.currentDevice.removeComponent(this.selectedComponents[i]);
                 if (connection) {
@@ -401,7 +401,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     disableContextMenu(func) {
-        this.canvas.oncontextmenu = function (event) {
+        this.canvas.oncontextmenu = function(event) {
             event.preventDefault();
         };
     }
@@ -536,8 +536,8 @@ export default class PaperView {
     comparePaperFeatureHeights(a, b) {
         let bHeight;
         let aHeight;
-        const aFeature = this.__viewManagerDelegate.currentDevice.getFeatureByID(a.featureID);
-        const bFeature = this.__viewManagerDelegate.currentDevice.getFeatureByID(b.featureID);
+        const aFeature = this.__viewManagerDelegate.getFeatureByID(a.featureID);
+        const bFeature = this.__viewManagerDelegate.getFeatureByID(b.featureID);
 
         // TODO: So this needs to be eliminated form the entire sequence
         try {
@@ -602,10 +602,7 @@ export default class PaperView {
         else selected = false;
         this.removeFeature(feature);
         let newPaperFeature;
-        if (feature instanceof TextFeature) {
-            // TODO:Create render textfeature method that doesnt take other params
-            newPaperFeature = FeatureRenderer2D.renderText(feature);
-        } else if (feature instanceof EdgeFeature) {
+        if (feature instanceof EdgeFeature) {
             newPaperFeature = DXFObjectRenderer2D.renderEdgeFeature(feature);
             newPaperFeature.selected = selected;
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
@@ -616,7 +613,7 @@ export default class PaperView {
         }
         newPaperFeature.selected = selected;
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
-        const index = this.__viewManagerDelegate.currentDevice.layers.indexOf(feature.layer);
+        const index = this.__viewManagerDelegate.renderLayers.indexOf(this.__viewManagerDelegate.getRenderLayerByID(feature.ID));
         const layer = this.paperLayers[index];
         this.insertChildByHeight(layer, newPaperFeature);
     }
@@ -793,7 +790,7 @@ export default class PaperView {
     getFeaturesByViewElements(paperFeatures) {
         const output = [];
         for (let i = 0; i < paperFeatures.length; i++) {
-            output.push(this.__viewManagerDelegate.currentDevice.getFeatureByID(paperFeatures[i].featureID));
+            output.push(this.__viewManagerDelegate.getFeatureByID(paperFeatures[i].featureID));
         }
         return output;
     }

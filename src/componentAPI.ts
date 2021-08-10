@@ -1,5 +1,6 @@
 import Device from "./app/core/device";
 
+import Text from "@/app/library/text";
 import Port from "./app/library/port";
 import Anode from "./app/library/anode"; // new from CK
 import Cathode from "./app/library/cathode"; // new from CK
@@ -48,11 +49,15 @@ import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
 import { getComponentPorts, getDefinition, getRender2D, getRender3D, getTool } from "./app/featureSets";
 import Template from "./app/library/template";
+import Params from "./app/core/params";
+import ComponentPort from "./app/core/componentPort";
+import CustomComponent from "./app/core/customComponent";
+import uuid from "node-uuid";
 
 export type LibraryEntryDefinition = {
     unique: { [key: string]: string };
-    heritable: { [key: string]: number };
-    units: { [key: string]: number };
+    heritable: { [key: string]: string };
+    units: { [key: string]: string };
     defaults: { [key: string]: number };
     minimum: { [key: string]: number };
     maximum: { [key: string]: number };
@@ -73,6 +78,7 @@ type LibraryEntry = {
  */
 export class ComponentAPI {
     static library: { [key: string]: LibraryEntry } = {
+        Text: { object: new Text(), key: null },
         Port: { object: new Port(), key: null },
         Anode: { object: new Anode(), key: null }, // ck addition
         Cathode: { object: new Cathode(), key: null }, // ck addition
@@ -143,6 +149,7 @@ export class ComponentAPI {
         LogicArray_cell: { object: new LogicArray(), key: "CELL" }
     };
 
+    static customTypes: Map<string, CustomComponent> = new Map();
     __setString: any;
     __tools: any;
     __render2D: any;
@@ -188,6 +195,14 @@ export class ComponentAPI {
         return null;
     }
 
+    /**
+     * Get the definition of a component given by the corresponding mint type
+     *
+     * @static
+     * @param {string} minttype
+     * @returns {(LibraryEntryDefinition | null)}
+     * @memberof ComponentAPI
+     */
     static getDefinitionForMINT(minttype: string): LibraryEntryDefinition | null {
         const checkmint = minttype;
         let ret: LibraryEntryDefinition | null = null;
@@ -219,7 +234,7 @@ export class ComponentAPI {
     static getDefinition(threeduftype: string): LibraryEntryDefinition | null {
         // If threeduftype is a key present in library, return the definition
         // TODO: Change this to use minttype in the future
-        if (ComponentAPI.library.hasOwnProperty(threeduftype)) {
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftype)) {
             const template = ComponentAPI.library[threeduftype].object;
             const definition = {
                 unique: template.unique,
@@ -233,5 +248,158 @@ export class ComponentAPI {
             return definition;
         }
         return null;
+    }
+
+    /**
+     * Gets the 3duf type for mint type
+     *
+     * @static
+     * @param {string} minttype
+     * @returns {(string | null)}
+     * @memberof ComponentAPI
+     */
+    static getTypeForMINT(minttype: string): string | null {
+        for (const key in ComponentAPI.library) {
+            if (minttype === ComponentAPI.library[key].object.mint) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the mint type for 3duf type
+     *
+     * @static
+     * @param {string} threeduftype
+     * @returns {(string | null)}
+     * @memberof ComponentAPI
+     */
+    static getMINTForType(threeduftype: string): string | null {
+        for (const key in ComponentAPI.library) {
+            if (threeduftype === key) {
+                return ComponentAPI.library[key].object.mint;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the component ports for a given component
+     * @param params
+     * @param minttypestring
+     * @return {void|Array}
+     */
+    static getComponentPorts(params: any, minttypestring: string): Array<ComponentPort> {
+        const threeduftypesting = ComponentAPI.getTypeForMINT(minttypestring);
+        if (threeduftypesting === null) {
+            throw new Error("Component Ports of: " + threeduftypesting + " not found in library");
+        }
+        const definition = ComponentAPI.library[threeduftypesting].object;
+        const ports = definition.getPorts(params);
+        return ports;
+    }
+
+    /**
+     * Checks if the component definition in the library has the Inverse Render generation support
+     * @param typestring
+     * @return {*|boolean}
+     */
+    static hasInverseRenderLayer(typestring: string): boolean {
+        const definition = ComponentAPI.library[typestring].object;
+        // Go through the renderkeys and check if inverse is available
+        const renderkeys = definition.renderKeys;
+        return renderkeys.includes("INVERSE");
+    }
+
+    /**
+     * ?
+     * @param {String} typeString
+     * @param {String} setString
+     * @returns {Template.defaults}
+     * @memberof Feature
+     */
+    static getDefaultsForType(threeduftypeString: string): { [key: string]: number } {
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString].object.defaults;
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
+    }
+
+    /**
+     * Gets the heritable keys for a given component
+     *
+     * @static
+     * @param {string} threeduftypeString
+     * @returns {{ [key: string]: string }}
+     * @memberof ComponentAPI
+     */
+    static getHeritableForType(threeduftypeString: string): { [key: string]: string } {
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString].object.heritable;
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
+    }
+
+    /**
+     * Gets the unique keys for a given component
+     *
+     * @static
+     * @param {string} threeduftypeString
+     * @returns {{ [key: string]: string }}
+     * @memberof ComponentAPI
+     */
+    static getUniqueForType(threeduftypeString: string): { [key: string]: string } {
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString].object.unique;
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
+    }
+
+    /**
+     * Checks if the component definition belongs to a custom component
+     *
+     * @static
+     * @param {string} threeduftypeString
+     * @returns {boolean}
+     * @memberof ComponentAPI
+     */
+    static isCustomType(threeduftypeString: string): boolean {
+        if (threeduftypeString in ComponentAPI.customTypes.keys()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Generates a unique ID
+     *
+     * @static
+     * @returns {string}
+     * @memberof ComponentAPI
+     */
+    static generateID(): string {
+        return uuid.v1();
+    }
+
+    static getRenderer(threeduftypeString: string): Template {
+        //Check if threeduftypestring in library
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString].object;
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
+    }
+
+    static getRendererInfo(threeduftypeString: string): LibraryEntry {
+        //Check if threeduftypestring in library
+        if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
+            return ComponentAPI.library[threeduftypeString];
+        } else {
+            throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
+        }
     }
 }

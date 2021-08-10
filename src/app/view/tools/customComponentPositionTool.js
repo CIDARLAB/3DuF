@@ -4,6 +4,7 @@ import Feature from "../../core/feature";
 import CustomComponent from "../../core/customComponent";
 import Params from "../../core/params";
 import Component from "../../core/component";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class CustomComponentPositionTool extends PositionTool {
     constructor(customcomponent, setString) {
@@ -46,7 +47,7 @@ export default class CustomComponentPositionTool extends PositionTool {
         }
         // console.log(cleanparamdata);
         const params = new Params(cleanparamdata, definition.unique, definition.heritable);
-        const componentid = Feature.generateID();
+        const componentid = ComponentAPI.generateID();
         console.log(this.__customComponent.entity, this.__customComponent.type);
         const name = Registry.currentDevice.generateNewName(this.__customComponent.entity);
         const newComponent = new Component(this.__customComponent.entity, params, name, this.__customComponent.entity, componentid);

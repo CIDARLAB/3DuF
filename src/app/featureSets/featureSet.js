@@ -164,8 +164,8 @@ export default class FeatureSet {
     getFeatureType(typeString) {
         const setString = this.name;
         const defaultName = "New " + setString + "." + typeString;
-        return function (values, name = defaultName) {
-            return Device.makeFeature(typeString, setString, values, name);
+        return function(values, name = defaultName) {
+            return Device.makeFeature(typeString, values, name);
         };
     }
 
@@ -223,22 +223,6 @@ export default class FeatureSet {
      */
     getTool(typeString) {
         return this.__definitions[typeString].tool;
-    }
-
-    /**
-     * Creates a Feature (Outdated, I think)
-     * @param typeString
-     * @param setString
-     * @param values
-     * @param name
-     * @return {*}
-     */
-    makeFeature(typeString, setString, values, name) {
-        throw new Error("MAke featre in feature set is being called");
-        console.log(setString);
-        const set = getSet(setString);
-        const featureType = getFeatureType(typeString);
-        return featureType(values, name);
     }
 
     /**

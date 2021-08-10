@@ -83,10 +83,28 @@ const blue = {
     A700: "#" + "304FFE"
 };
 
+const green = {
+    900: "#" + "006200",
+    800: "#" + "007600",
+    700: "#" + "008900",
+    600: "#" + "009d00",
+    500: "#" + "00b100",
+    400: "#" + "00d800",
+    300: "#" + "00ff00",
+    200: "#" + "3bff3b",
+    100: "#" + "62ff62",
+    50: "#" + "b1ffb1",
+    A100: "#" + "ebffeb",
+    A200: "#" + "9dff9d",
+    A400: "#" + "14ff14",
+    A700: "#" + "00b100"
+};
+
 const layerColors = {
     indigo: indigo,
     red: red,
-    blue: blue
+    blue: blue,
+    green: green
 };
 /**
  * Converts from decimal to index
@@ -94,7 +112,7 @@ const layerColors = {
  * @param {number} indices
  * @returns {number}
  */
-const decimalToIndex = function (decimal, indices) {
+const decimalToIndex = function(decimal, indices) {
     return Math.round((indices - 1) * decimal);
 };
 /**
@@ -146,7 +164,7 @@ export function getLayerColors(layer) {
             return layerColors.indigo;
         } else if (layer.name === "control") {
             return layerColors.red;
-        } else if (layer.name === "cell") {
+        } else if (layer.name === "integration") {
             return layerColors.green;
         }
     }

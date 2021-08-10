@@ -1,6 +1,7 @@
 import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
 import Device from "../core/device";
+import { ComponentAPI } from "@/componentAPI";
 
 /**
  * Lasser Cutting Generator object
@@ -40,7 +41,7 @@ export default class LaserCuttingGenerator {
                 -  Populate with the ports
          */
         // let components = this.__device.components;
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
 
@@ -85,7 +86,7 @@ export default class LaserCuttingGenerator {
         console.log("mfglayers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function (mfglayer, index) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -106,7 +107,7 @@ export default class LaserCuttingGenerator {
                    Step 2.2 - Generate manufacturing layers for each of the depths
 
          */
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
         let isControl = false;
@@ -159,7 +160,7 @@ export default class LaserCuttingGenerator {
 
         console.log("XY Manufacturing Layers:", mfglayers);
         const ref = this;
-        mfglayers.forEach(function (mfglayer, index) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -176,7 +177,7 @@ export default class LaserCuttingGenerator {
         Step 2 - Get all the EDGE features in the drawing
         Step 3 - Generate separate SVGs
          */
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
 
@@ -217,7 +218,7 @@ export default class LaserCuttingGenerator {
         console.log("EDGE Manufacturing Layers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function (mfglayer, index) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -250,7 +251,7 @@ export default class LaserCuttingGenerator {
      */
     generateInverseControlLayers() {
         console.log("Generating inverse layers");
-        const layers = this.__device.getLayers();
+        const layers = this.__device.layers;
 
         const mfglayers = [];
 
@@ -285,7 +286,7 @@ export default class LaserCuttingGenerator {
                         continue;
                     }
 
-                    if (Registry.featureSet.hasInverseRenderLayer(type)) {
+                    if (ComponentAPI.hasInverseRenderLayer(type)) {
                         /*
                         If the type has an inverse layer, then generate the inverse feature render
                          and throw it into the manufacturing layer.
@@ -302,7 +303,7 @@ export default class LaserCuttingGenerator {
         console.log("Inverse Control Manufacturing Layers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function (mfglayer, index) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });

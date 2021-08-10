@@ -25,7 +25,7 @@ export default class LayerToolBar {
 
         const registryref = Registry;
 
-        this.__addNewLevelButton.addEventListener("click", function (event) {
+        this.__addNewLevelButton.addEventListener("click", function(event) {
             // Create new layers in the data model
             registryref.viewManager.createNewLayerBlock();
 
@@ -46,7 +46,7 @@ export default class LayerToolBar {
 
         for (let i = 0; i < flowButtons.length; i++) {
             const flowButton = flowButtons[i];
-            flowButton.onclick = function (event) {
+            flowButton.onclick = function(event) {
                 Registry.currentLayer = Registry.currentDevice.layers[flowButton.dataset.layerindex];
                 ref.setActiveLayer(flowButton.dataset.layerindex);
                 Registry.viewManager.updateActiveLayer();
@@ -55,7 +55,7 @@ export default class LayerToolBar {
 
         for (let i = 0; i < controlButtons.length; i++) {
             const controlButton = controlButtons[i];
-            controlButton.onclick = function (event) {
+            controlButton.onclick = function(event) {
                 Registry.currentLayer = Registry.currentDevice.layers[controlButton.dataset.layerindex];
                 ref.setActiveLayer(controlButton.dataset.layerindex);
                 Registry.viewManager.updateActiveLayer();
@@ -151,7 +151,7 @@ export default class LayerToolBar {
 
         for (let i = 0; i < deleteButtons.length; i++) {
             const deletebutton = deleteButtons[i];
-            deletebutton.addEventListener("click", function (event) {
+            deletebutton.addEventListener("click", function(event) {
                 ref.deleteLevel(parseInt(deletebutton.dataset.levelindex));
             });
         }

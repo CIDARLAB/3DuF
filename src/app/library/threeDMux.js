@@ -156,6 +156,7 @@ export default class ThreeDMux extends Template {
         const outs = params.out;
         let N;
         const channelWidth = params.channelWidth;
+        let rotation = params.rotation;
 
         if (ins < outs) {
             N = outs;
@@ -185,7 +186,7 @@ export default class ThreeDMux extends Template {
 
         let count = N + 2;
 
-        for (var i = 0; i < 2 * valvenum; i++) {
+        for (let i = 0; i < 2 * valvenum; i++) {
             // left side
             if (i % 2 === 0) {
                 indexN /= 2;

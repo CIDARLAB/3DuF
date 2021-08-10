@@ -13,6 +13,10 @@ const PointValue = Parameters.PointValue;
 const Channel = Feature.getFeatureGenerator("Channel", "Basic");
 const CircleValve = Feature.getFeatureGenerator("CircleValve", "Basic");
 
+const it = require("mocha").it;
+const describe = require("mocha").describe;
+const beforeEach = require("mocha").beforeEach;
+
 let dev;
 let lay1;
 let lay2;

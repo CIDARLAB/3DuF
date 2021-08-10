@@ -1,4 +1,4 @@
-import ZoomToolBar from "./ui/zoomToolBar";
+// import ZoomToolBar from "@/components/zoomSlider.vue";
 import BorderSettingsDialog from "./ui/borderSettingDialog";
 import paper from "paper";
 
@@ -20,7 +20,7 @@ import ChangeAllDialog from "./ui/changeAllDialog";
 import LayerToolBar from "./ui/layerToolBar";
 import * as HTMLUtils from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
-import ComponentToolBar from "./ui/componentToolBar";
+import { ComponentToolBar, inactiveBackground, inactiveText, activeText } from "./ui/componentToolBar";
 import DesignHistory from "./designHistory";
 import MoveTool from "./tools/moveTool";
 import ComponentPositionTool from "./tools/componentPositionTool";
@@ -50,6 +50,9 @@ import Layer from "../core/layer";
 import Component from "../core/component";
 import DAMPFabricationDialog from "./ui/dampFabricationDialog";
 import ControlCellPositionTool from "./tools/controlCellPositionTool";
+import EventBus from "@/events/events";
+import { ComponentAPI } from "@/componentAPI";
+import RenderLayer from "@/app/view/renderLayer";
 
 /**
  * View manager class
@@ -63,10 +66,10 @@ export default class ViewManager {
     constructor() {
         this.threeD;
         this.view = new PaperView("c", this);
-
         this.__grid = new AdaptiveGrid(this);
         Registry.currentGrid = this.__grid;
-
+        this.renderLayers = [];
+        this.activeRenderLayer = null;
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         // this.customComponentManager = new CustomComponentManager(this);
@@ -84,11 +87,11 @@ export default class ViewManager {
         // this._introDialog = new IntroDialog();
         // this._dampFabricateDialog = new DAMPFabricationDialog();
         const reference = this;
-        this.updateQueue = new SimpleQueue(function () {
+        this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
         }, 20);
 
-        this.saveQueue = new SimpleQueue(function () {
+        this.saveQueue = new SimpleQueue(function() {
             reference.saveToStorage();
         });
 
@@ -97,7 +100,7 @@ export default class ViewManager {
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
-        this.view.setResizeFunction(function () {
+        this.view.setResizeFunction(function() {
             reference.updateGrid();
             reference.updateAlignmentMarks();
 
@@ -106,7 +109,7 @@ export default class ViewManager {
             reference.updateDevice(Registry.currentDevice);
         });
 
-        const func = function (event) {
+        const func = function(event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
@@ -118,6 +121,13 @@ export default class ViewManager {
         this.minZoom = 0.0001;
         this.maxZoom = 5;
         this.setupTools();
+        const ref = this;
+        EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true) {
+            if (ref.ensureFeatureExists(feature)) {
+                ref.view.updateFeature(feature);
+                ref.refresh(refresh);
+            }
+        });
 
         // TODO: Figure out how remove UpdateQueue as dependency mechanism
         this.__grid.setColor(Colors.BLUE_500);
@@ -242,8 +252,9 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addFeature(feature, refresh = true) {
-        if (this.__isFeatureInCurrentDevice(feature)) {
+    addFeature(feature, physical = true, index = this.activeRenderLayer, refresh = true) {
+        this.renderLayers[index].addFeature(feature, physical);
+        if (this.ensureFeatureExists(feature)) {
             this.view.addFeature(feature);
             this.refresh(refresh);
         }
@@ -257,7 +268,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateFeature(feature, refresh = true) {
-        if (this.__isFeatureInCurrentDevice(feature)) {
+        if (this.ensureFeatureExists(feature)) {
             this.view.updateFeature(feature);
             this.refresh(refresh);
         }
@@ -271,10 +282,29 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     removeFeature(feature, refresh = true) {
-        if (this.__isFeatureInCurrentDevice(feature)) {
+        let layer = this.getRenderLayerByID(feature.ID);
+        if (this.ensureFeatureExists(feature)) {
             this.view.removeFeature(feature);
             this.refresh(refresh);
         }
+        layer.removeFeatureByID(feature.ID);
+    }
+
+    /**
+     * Removes feature from the view
+     * @param {string} feature Feature to remove
+     * @param {boolean} refresh Whether to refresh or not. true by default
+     * @returns {void}
+     * @memberof ViewManager
+     */
+    removeFeatureByID(featureID, refresh = true) {
+        let layer = this.getRenderLayerByID(featureID);
+        let feature = layer.getFeature(featureID);
+        if (this.ensureFeatureExists(feature)) {
+            this.view.removeFeature(feature);
+            this.refresh(refresh);
+        }
+        layer.removeFeatureByID(featureID);
     }
 
     /**
@@ -299,7 +329,13 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     createNewLayerBlock() {
-        const newlayers = Registry.currentDevice.createNewLayerBlock();
+        //Generate model layers
+        let newlayers = [];
+        newlayers[0] = new Layer({ z_offset: 0, flip: false }, "flow");
+        newlayers[1] = new Layer({ z_offset: 0, flip: false }, "control");
+        newlayers[2] = new Layer({ z_offset: 0, flip: false }, "integration");
+        //Add model layers to current device
+        Registry.currentDevice.createNewLayerBlock(newlayers);
 
         // Find all the edge features
         const edgefeatures = [];
@@ -327,6 +363,18 @@ export default class ViewManager {
             const index = this.view.paperLayers.length;
             this.addLayer(layertoadd, index, true);
         }
+
+        // Add new renderLayers
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("flow", newlayers[0]);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("control", newlayers[1]);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("integration", newlayers[2]);
+        for (const i in edgefeatures) {
+            this.renderLayers[this.renderLayers.length - 3].addFeature(edgefeatures[i]);
+            this.renderLayers[this.renderLayers.length - 2].addFeature(edgefeatures[i]);
+            this.renderLayers[this.renderLayers.length - 1].addFeature(edgefeatures[i]);
+        }
+
+        this.setActiveRenderLayer(this.renderLayers.length - 3);
     }
 
     /**
@@ -339,15 +387,39 @@ export default class ViewManager {
     deleteLayerBlock(levelindex) {
         // Delete the levels in the device model
         Registry.currentDevice.deleteLayer(levelindex * 3);
-        Registry.currentDevice.deleteLayer(levelindex * 3 + 1);
-        Registry.currentDevice.deleteLayer(levelindex * 3 + 2);
+        Registry.currentDevice.deleteLayer(levelindex * 3);
+        Registry.currentDevice.deleteLayer(levelindex * 3);
+
+        // Delete levels in render model
+        this.renderLayers.splice(levelindex * 3, 3);
+        if (this.activeRenderLayer > levelindex * 3 + 2) {
+            this.setActiveRenderLayer(this.activeRenderLayer - 3);
+        } else if (this.activeRenderLayer < levelindex * 3) {
+            console.log("No change");
+        } else {
+            if (levelindex == 0) {
+                if (this.renderLayers.length == 0) {
+                    this.setActiveRenderLayer(null);
+                } else {
+                    this.setActiveRenderLayer(0);
+                }
+            } else {
+                this.setActiveRenderLayer((levelindex - 1) * 3);
+            }
+        }
 
         // Delete the levels in the render model
         this.view.removeLayer(levelindex * 3);
-        this.view.removeLayer(levelindex * 3 + 1);
-        this.view.removeLayer(levelindex * 3 + 2);
+        this.view.removeLayer(levelindex * 3);
+        this.view.removeLayer(levelindex * 3);
         this.updateActiveLayer();
         this.refresh();
+    }
+
+    setActiveRenderLayer(index) {
+        this.activeRenderLayer = index;
+        Registry.currentLayer = this.renderLayers[index]; //Registry.currentDevice.layers[index];
+        this.updateActiveLayer();
     }
 
     /**
@@ -442,7 +514,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateActiveLayer(refresh = true) {
-        this.view.setActiveLayer(Registry.currentDevice.layers.indexOf(Registry.currentLayer));
+        this.view.setActiveLayer(this.activeRenderLayer);
         this.refresh(refresh);
     }
 
@@ -757,9 +829,24 @@ export default class ViewManager {
      * @returns {Boolean}
      * @memberof ViewManager
      */
-    __isFeatureInCurrentDevice(feature) {
+    isFeatureInCurrentDevice(feature) {
         if (Registry.currentDevice && this.__isLayerInCurrentDevice(feature.layer)) return true;
         else return false;
+    }
+
+    /**
+     * Checks if feature exists
+     * @param {Feature} feature Feature to check whether in existence
+     * @returns {Boolean}
+     * @memberof ViewManager
+     */
+    ensureFeatureExists(feature) {
+        for (let i = 0; i < this.renderLayers.length; i++) {
+            if (this.renderLayers[i].containsFeature(feature)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -779,6 +866,12 @@ export default class ViewManager {
             device = Device.fromJSON(json);
             Registry.currentDevice = device;
             this.__currentDevice = device;
+
+            // TODO: Add separate render layers to initializing json
+            for (const i in json.layers) {
+                const newRenderLayer = RenderLayer.fromJSON(json.layers[i]);
+                this.renderLayers.push(newRenderLayer);
+            }
         } else {
             console.log("Version Number: " + version);
             switch (version) {
@@ -787,12 +880,26 @@ export default class ViewManager {
                     device = Device.fromInterchangeV1(json);
                     Registry.currentDevice = device;
                     this.__currentDevice = device;
+
+                    // TODO: Add separate render layers to initializing json
+                    for (const i in json.layers) {
+                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.layers[i]);
+                        this.renderLayers.push(newRenderLayer);
+                    }
+
                     break;
                 case 1.1:
                     // this.loadCustomComponents(json);
                     device = Device.fromInterchangeV1_1(json);
                     Registry.currentDevice = device;
                     this.__currentDevice = device;
+
+                    // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
+                    for (const i in json.layers) {
+                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.layers[i]);
+                        this.renderLayers.push(newRenderLayer);
+                    }
+
                     break;
                 default:
                     alert("Version '" + version + "' is not supported by 3DuF !");
@@ -802,6 +909,8 @@ export default class ViewManager {
         // console.log("Feature Layers", Registry.currentDevice.layers);
         Registry.currentLayer = Registry.currentDevice.layers[0];
         Registry.currentTextLayer = Registry.currentDevice.textLayers[0];
+
+        this.activeRenderLayer = 0;
 
         // TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
         Registry.viewManager.addDevice(Registry.currentDevice);
@@ -934,7 +1043,9 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateDefault(typeString, setString, valueString, value) {
-        Registry.featureDefaults[setString][typeString][valueString] = value;
+        // Registry.featureDefaults[setString][typeString][valueString] = value;
+        const defaults = ComponentAPI.getDefaultsForType(typeString);
+        defaults[valueString] = value;
     }
 
     /**
@@ -946,7 +1057,7 @@ export default class ViewManager {
     updateDefaultsFromFeature(feature) {
         const heritable = feature.getHeritableParams();
         for (const key in heritable) {
-            this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
+            this.updateDefault(feature.getType(), null, key, feature.getValue(key));
         }
     }
 
@@ -994,6 +1105,41 @@ export default class ViewManager {
      */
     hitFeature(point) {
         return this.view.hitFeature(point);
+    }
+
+    /**
+     * Checks if the point intersects with any other feature
+     * @param {string} ID of feature object
+     * @return {Feature}
+     * @memberof ViewManager
+     */
+
+    getFeatureByID(featureID) {
+        let layer = this.getRenderLayerByID(featureID);
+        return layer.getFeature(featureID);
+    }
+
+    /**
+     * Checks if the point intersects with any other feature
+     * @param {string} ID of feature object
+     * @return {RenderLayer}
+     * @memberof ViewManager
+     */
+    getRenderLayerByID(featureID) {
+        for (let i = 0; i < this.renderLayers.length; i++) {
+            let layer = this.renderLayers[i];
+            if (layer.containsFeatureID(featureID)) {
+                return layer;
+            }
+        }
+        // Should textlayer logic be here or in device? (Currently in device)
+        // for (let i = 0; i < this.__textLayers.length; i++) {
+        //     let layer = this.__textLayers[i];
+        //     if (layer.containsFeatureID(featureID)) {
+        //         return layer;
+        //     }
+        // }
+        throw new Error("FeatureID " + featureID + " not found in any renderLayer.");
     }
 
     /**
@@ -1089,11 +1235,11 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     setupDragAndDropLoad(selector) {
-        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
+        const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
             const f = files[0];
 
             const reader = new FileReader();
-            reader.onloadend = function (e) {
+            reader.onloadend = function(e) {
                 let result = this.result;
                 // try {
                 result = JSON.parse(result);
@@ -1128,7 +1274,7 @@ export default class ViewManager {
      * @returns {void}
      */
     saveDeviceState() {
-        console.log("Saving to statck");
+        console.log("Saving to stack");
 
         const save = JSON.stringify(Registry.currentDevice.toInterchangeV1());
 
@@ -1328,7 +1474,7 @@ export default class ViewManager {
         params_to_copy.position = [xpos, ypos];
 
         // Get default params and overwrite them with json params, this can account for inconsistencies
-        const newFeature = Device.makeFeature(component.getType(), "Basic", params_to_copy);
+        const newFeature = Device.makeFeature(component.getType(), params_to_copy);
 
         component.addFeatureID(newFeature.ID);
 
@@ -1345,7 +1491,7 @@ export default class ViewManager {
      */
     generateExportJSON() {
         const json = this.currentDevice.toInterchangeV1_1();
-        json.customComponents = this.customComponentManager.toJSON();
+        // json.customComponents = this.customComponentManager.toJSON();
         return json;
     }
 

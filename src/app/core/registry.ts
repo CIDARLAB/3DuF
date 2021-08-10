@@ -27,10 +27,6 @@ class Registry {
     view = null;
     viewManager = null;
     featureSet = null;
-
-    generateID(): string {
-        return uuid.v1();
-    }
 }
 
 const instance = new Registry();

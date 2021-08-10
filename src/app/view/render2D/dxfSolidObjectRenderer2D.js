@@ -417,7 +417,7 @@ function drawEllipse(entity) {
 
 function drawSpline(entity, path) {
     let curve;
-    const points = entity.controlPoints.map(function (vec) {
+    const points = entity.controlPoints.map(function(vec) {
         return new paper.Point(vec.x, vec.y);
     });
     throw "Spline entity is not supported !";

@@ -110,7 +110,7 @@ export default class LogicArray extends Template {
             console.log("cell");
             return this.__drawCell(params);
         }
-        return box;
+        throw new Error("Invalid key passed to LogicArray render2D");
     }
 
     __drawFlow(params) {

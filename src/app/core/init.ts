@@ -18,6 +18,17 @@ export type DeviceInterchangeV1 = {
     version: number;
 };
 
+export type DeviceInterchangeV1_1 = {
+    name: string;
+    params: any;
+    layers: Array<LayerInterchangeV1>;
+    groups: Array<string>;
+    components: Array<ComponentInterchangeV1>;
+    connections: Array<ConnectionInterchangeV1>;
+    features: Array<LayerInterchangeV1>;
+    version: number;
+};
+
 export type ComponentInterchangeV1 = {
     id: string;
     name: string;
@@ -49,15 +60,23 @@ export type LayerInterchangeV1 = {
     group: string;
     type: string;
     features: Array<FeatureInterchangeV0>;
+};
+
+export type RenderLayerInterchangeV1 = {
+    id: string;
+    group: string;
+    features: Array<FeatureInterchangeV0>;
+    modellayer: LayerInterchangeV1 | null;
     color: string | undefined;
+    name: string;
+    type: string;
 };
 
 export type FeatureInterchangeV0 = {
     id: string;
     name: string;
     macro: string;
-    set: any;
-    referenceID: string;
+    referenceID: string | null;
     params: any;
     dxfData: any;
     type: string;

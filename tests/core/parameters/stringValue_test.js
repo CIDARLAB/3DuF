@@ -1,5 +1,7 @@
 const should = require("should");
 const StringValue = require("../../../app/core/parameters").StringValue;
+const it = require("mocha").it;
+const describe = require("mocha").describe;
 
 describe("StringValue", function() {
     it("should allow a value of 'foobar'", function() {

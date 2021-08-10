@@ -7,8 +7,9 @@ import * as FeatureSets from "../../featureSets";
 import Registry from "../../core/registry";
 import { renderEdgeFeature } from "../../view/render2D/dxfObjectRenderer2D";
 import paper from "paper";
+import { ComponentAPI } from "@/componentAPI";
 
-const getLayerColor = function (feature) {
+const getLayerColor = function(feature) {
     const height = feature.getValue("height");
     const layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
@@ -18,7 +19,7 @@ const getLayerColor = function (feature) {
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 };
 
-const getBaseColor = function (feature) {
+const getBaseColor = function(feature) {
     let decimal = 0;
     if (!feature.layer.flip) decimal = 1 - decimal;
     const targetColorSet = Colors.getLayerColors(feature.layer);
@@ -26,14 +27,11 @@ const getBaseColor = function (feature) {
 };
 
 export function getDefaultValueForType(typeString, setString, key) {
-    return Feature.getDefaultsForType(typeString, setString)[key];
+    return ComponentAPI.getDefaultsForType(typeString)[key];
 }
 
 export function getFeatureRenderer(typeString, setString) {
-    if (typeString === "TEXT") {
-        const rendererInfo = renderTextTarget;
-        return rendererInfo;
-    } else if (typeString === "EDGE") {
+    if (typeString === "EDGE") {
         return renderEdge;
     } else {
         const rendererInfo = FeatureSets.getRender2D(typeString, setString);
@@ -71,7 +69,7 @@ export function renderTextTarget(typeString, setString, position) {
     const rendered = new paper.PointText(new paper.Point(position[0], position[1]));
     rendered.justification = "center";
     rendered.fillColor = Colors.DEEP_PURPLE_500;
-    rendered.content = insertTextTool.text;
+    rendered.content = Registry.viewManager.tools.InsertTextTool.text;
     rendered.fontSize = 10000 / 3;
     return rendered;
 }
@@ -103,10 +101,9 @@ export function renderFeature(feature, key = null) {
     let rendered;
     let params;
     const type = feature.getType();
-    const set = feature.getSet();
-    if (type === "TEXT") {
-        return renderText(feature);
-    } else if (set === "Custom") {
+    let set = "Basic";
+    if (ComponentAPI.isCustomType(type)) {
+        set = "Custom";
         rendered = DXFSolidObjectRenderer2D.renderCustomComponentFeature(feature, getBaseColor(feature));
         rendered.featureID = feature.ID;
 
@@ -114,8 +111,8 @@ export function renderFeature(feature, key = null) {
     } else if (type === "EDGE") {
         return renderEdge(feature);
     } else {
-        const rendererinfo = getFeatureRenderer(type, set);
-        const renderer = rendererinfo.object;
+        const rendererinfo = ComponentAPI.getRendererInfo(type);
+        const renderer = ComponentAPI.getRenderer(type);
 
         /*
         If the user does not specify the key, then extract it from the rendering info of the feature.

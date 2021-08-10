@@ -11,6 +11,8 @@ import uuid from "node-uuid";
 import { ConnectionInterchangeV1, ConnectionTargetInterchangeV1 } from "./init";
 import { Segment, Point } from "./init";
 import ConnectionUtils from "../utils/connectionUtils";
+import { ComponentAPI } from "@/componentAPI";
+import MapUtils from "../utils/mapUtils";
 
 /**
  * This class contains the connection abstraction used in the interchange format and the
@@ -40,7 +42,7 @@ export default class Connection {
      * @param {String} mint
      * @param {String} id
      */
-    constructor(type: string, params: Params, name: string, mint: string, id: string = Feature.generateID()) {
+    constructor(type: string, params: Params, name: string, mint: string, id: string = ComponentAPI.generateID()) {
         this._params = params;
         this._name = name;
         this._id = id;
@@ -165,10 +167,10 @@ export default class Connection {
             layer: this._layer.id
         };
 
-        if (this._source != null) {
+        if (this._source !== null) {
             output.source = this._source.toJSON();
         }
-        if (this._sinks != null && this._sinks.length > 0) {
+        if (this._sinks !== null && this._sinks.length > 0) {
             let sinks = [];
             for (let i in this._sinks) {
                 sinks.push(this._sinks[i].toJSON());
@@ -476,7 +478,10 @@ export default class Connection {
         if (ConnectionUtils.hasFeatureSet()) {
             definition = ConnectionUtils.getDefinition("Connection");
         }
-        const paramstoadd = new Params(params, definition.unique, definition.heritable);
+        if (definition === null || definition === undefined) {
+            throw new Error("Could not find the definition for the Connection");
+        }
+        const paramstoadd = new Params(params, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
 
         const connection = new Connection(entity, paramstoadd, name, entity, id);
         if (Object.prototype.hasOwnProperty.call(json, "source")) {
@@ -558,11 +563,11 @@ export default class Connection {
      * @returns {void}
      */
     addConnectionTarget(connectiontarget: ConnectionTarget): void {
-        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget == null || connectiontarget == undefined) {
+        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget === null || connectiontarget == undefined) {
             console.error("Cannot add non-ConnectionTarget object as source or sink");
         }
 
-        if (this._source == null) {
+        if (this._source === null) {
             this._source = connectiontarget;
         } else {
             //TODO: Check for duplicates - does it matter actually ?
@@ -581,7 +586,7 @@ export default class Connection {
         let ret = false;
 
         let source = this._source;
-        if (source != null) {
+        if (source !== null) {
             if (source.component.id == componentid) {
                 //Remove the source object
                 this._source = null;

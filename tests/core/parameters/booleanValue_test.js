@@ -1,5 +1,7 @@
 const should = require("should");
 const BooleanValue = require("../../../app/core/parameters").BooleanValue;
+const it = require("mocha").it;
+const describe = require("mocha").describe;
 
 describe("BooleanValue", function() {
     it("should allow a value of true", function() {
