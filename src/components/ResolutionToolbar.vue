@@ -13,7 +13,7 @@
             </v-switch>
             <veeno ref="slider" v-model="sliderValue" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
         </div>
-        <div id="bottom-info-bar">Grid Size: {{ updatedsliderValue }} &mu;m</div>
+        <div id="bottom-info-bar">Grid Size: {{ sliderValue }} &mu;m</div>
     </div>
 </template>
 
@@ -37,7 +37,7 @@ export default {
     },
 
     props: {
-        updatedsliderValue: {
+        sliderValue: {
             type: Number,
             default: 1000
         }
@@ -59,7 +59,7 @@ export default {
     created() {
         console.log("bus testing");
         EventBus.get().on(EventBus.UPDATE_GRID, data => {
-            this.updatedsliderValue = data;
+            this.sliderValue = data;
         });
     },
     updated() {
