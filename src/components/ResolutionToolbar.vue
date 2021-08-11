@@ -1,8 +1,22 @@
 <template>
     <div>
-        <v-btn id="grid-button" class="pink white--text" fab @click="showProperties()" @mouseenter.native="hover = true" @mouseleave.native="hover = false">
-            <span class="material-icons">grid_on</span>
-        </v-btn>
+        <v-tooltip left>
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    id="grid-button"
+                    v-bind="attrs"
+                    class="pink white--text"
+                    fab
+                    v-on="on"
+                    @click="showProperties()"
+                    @mouseenter.native="hover = true"
+                    @mouseleave.native="hover = false"
+                >
+                    <span class="material-icons">grid_on</span>
+                </v-btn>
+            </template>
+            <span>Grid Settings</span>
+        </v-tooltip>
         <v-btn v-if="hover" id="grid-hover" class="grey white--text" x-small depressed>Grid Settings</v-btn>
         <div v-if="activated" id="resolution-toolbar">
             <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
