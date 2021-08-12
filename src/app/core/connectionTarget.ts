@@ -63,7 +63,7 @@ export default class ConnectionTarget {
      */
     static fromJSON(device: Device, json: ConnectionTargetInterchangeV1): ConnectionTarget {
         const component = device.getComponentByID(json.component);
-        if (component != null) return new ConnectionTarget(component, json.port);
+        if (component !== null) return new ConnectionTarget(component, json.port);
         else throw new Error("Component not found");
     }
 }

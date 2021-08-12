@@ -67,7 +67,7 @@ export default class RenderLayer {
         this.__ensureIsAFeature(feature);
         this.features[feature.ID] = feature;
         this.featureCount += 1;
-        if (this.physicalLayer != null && physfeat == true) {
+        if (this.physicalLayer !== null && physfeat == true) {
             this.physicalLayer.addFeature(feature);
             feature.layer = this.physicalLayer;
         }
@@ -138,7 +138,7 @@ export default class RenderLayer {
         const feature: Feature = this.features[featureID];
         this.featureCount -= 1;
         let physLayer = this._physicalLayer;
-        if (physLayer != null) {
+        if (physLayer !== null) {
             if (physLayer.containsFeatureID(featureID)) physLayer.removeFeatureByID(featureID);
         }
         delete this.features[featureID];
@@ -228,7 +228,7 @@ export default class RenderLayer {
      * @memberof RenderLayer
      */
     __layerToInterchangeV1(): LayerInterchangeV1 | null {
-        if (this._physicalLayer != null) {
+        if (this._physicalLayer !== null) {
             return this._physicalLayer.toInterchangeV1();
         }
         return null;
