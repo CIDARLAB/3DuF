@@ -71,7 +71,7 @@ export default {
         };
     },
     created() {
-        console.log("bus testing");
+        // listen to ZoomSlider and get grid size data and show here as sliderValue
         EventBus.get().on(EventBus.UPDATE_GRID, data => {
             this.sliderValue = data;
         });
@@ -106,12 +106,10 @@ export default {
             }
         },
         updateGrid(event) {
-            console.log("updatedGrid testung");
             let registryref = Registry;
             const { values } = event;
             let spacingchanges = registryref.currentGrid.__spacing;
             let value1 = parseInt(values[0], 10);
-            console.log("updatedGrid testing value1", value1);
             //This ensures that there is something valid present
             if (registryref.currentGrid !== null) {
                 registryref.currentGrid.updateGridSpacing(value1);
