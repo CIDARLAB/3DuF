@@ -1,5 +1,5 @@
 <template>
-    <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, top: marginTop + 'px', left: marginLeft + 'px' }">
+    <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, height: 50, top: marginTop + 'px', left: marginLeft + 'px' }" scrollable>
         <div>
             <thead v-show="Rename">
                 <v-col>
@@ -115,7 +115,7 @@ export default {
             this.activeMenu = !this.activeMenu;
             console.log(this.activeMenu);
 
-            //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
+            console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
 
             /**
             //Margin Left Calculation
@@ -132,12 +132,12 @@ export default {
                 this.marginTop = event.clientY - 20;
             }
             **/
-
+            console.log(window.innerWidth / 2);
             //Margin Left Calculation
-            if (event.clientX + 30 > window.innerWidth) {
-                this.marginLeft = event.clientX - 30;
+            if (event.clientX - 150 > window.innerWidth / 2) {
+                this.marginLeft = event.clientX - 800;
             } else {
-                this.marginLeft = event.clientX + 30;
+                this.marginLeft = event.clientX - 180;
             }
 
             //Margin Right Calculation
