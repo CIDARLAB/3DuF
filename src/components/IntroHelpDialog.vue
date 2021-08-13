@@ -1,7 +1,9 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="600">
         <template v-slot:activator="{ on, attrs }">
-            <a v-bind="attrs" class="popdown mdl-button mdl-js-button mdl-js-ripple-effect" title="About" style="color: hotpink" v-on="on">Getting Started</a>
+            <v-btn v-bind="attrs" text color="pink darken-1" v-on="on">
+                Getting Started
+            </v-btn>
         </template>
         <v-card>
             <v-card-title class="headline"> Getting Started </v-card-title>

@@ -1,22 +1,17 @@
 <template>
     <v-app id="3duf">
-        <LayoutSidebar>
-            <template v-slot:main>
-                <Visualiser />
-            </template>
-        </LayoutSidebar>
+        <LayoutSidebar />
     </v-app>
 </template>
 
 <script>
 import Visualiser from "./components/Visualiser.vue";
-import LayoutSidebar from "./views/layouts/SidebarLayout.vue";
+import LayoutSidebar from "./views/layouts/SplitLayout.vue";
 
 export default {
     name: "App",
     components: {
-        LayoutSidebar,
-        Visualiser
+        LayoutSidebar
     }
 };
 </script>
@@ -33,5 +28,8 @@ export default {
 body {
     overflow: hidden;
     height: 100vh;
+}
+html {
+    overscroll-behavior: none;
 }
 </style>
