@@ -93,10 +93,10 @@ export default class CurvedMixer extends Template {
     }
 
     getPorts(params) {
-        const channelWidth = params.channelWidth;
-        const bendLength = params.bendLength;
-        const bendSpacing = params.bendSpacing;
-        const numberOfBends = params.numberOfBends;
+        const channelWidth = params.channelWidth.value;
+        const bendLength = params.bendLength.value;
+        const bendSpacing = params.bendSpacing.value;
+        const numberOfBends = params.numberOfBends.value;
 
         const ports = [];
 

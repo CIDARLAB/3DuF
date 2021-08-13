@@ -95,7 +95,7 @@ export default class DropletGeneratorT extends Template {
     }
 
     getPorts(params) {
-        const length = params.length;
+        const length = params.length.value;
 
         const ports = [];
 

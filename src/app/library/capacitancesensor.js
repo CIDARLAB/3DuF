@@ -128,7 +128,7 @@ export default class CapacitanceSensor extends Template {
     }
 
     getPorts(params) {
-        const inletLength = params.inletLength;
+        const inletLength = params.inletLength.value;
 
         const ports = [];
 

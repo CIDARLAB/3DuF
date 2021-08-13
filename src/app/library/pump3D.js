@@ -97,8 +97,8 @@ export default class Pump3D extends Template {
     }
 
     getPorts(params) {
-        const radius = params.valveRadius;
-        const spacing = params.spacing;
+        const radius = params.valveRadius.value;
+        const spacing = params.spacing.value;
 
         const ports = [];
 

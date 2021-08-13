@@ -93,11 +93,11 @@ export default class ThreeDMixer extends Template {
     }
 
     getPorts(params) {
-        const channelWidth = params.channelWidth;
-        const bendLength = params.bendLength;
-        const bendSpacing = params.bendSpacing;
-        const rotation = params.rotation;
-        const numberOfBends = params.numberOfBends;
+        const channelWidth = params.channelWidth.value;
+        const bendLength = params.bendLength.value;
+        const bendSpacing = params.bendSpacing.value;
+        const rotation = params.rotation.value;
+        const numberOfBends = params.numberOfBends.value;
 
         const ports = [];
 

@@ -65,7 +65,7 @@ export default class Via extends Template {
     }
 
     getPorts(params) {
-        const radius = params.radius;
+        const radius = params.radius.value;
 
         const ports = [];
 

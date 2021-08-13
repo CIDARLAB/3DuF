@@ -208,17 +208,17 @@ export default class Mux extends Template {
 
     getPorts(params) {
         const ports = [];
-        const cw = params.flowChannelWidth;
-        const spacing = params.spacing;
-        const ins = params.in;
-        const outs = params.out;
+        const cw = params.flowChannelWidth.value;
+        const spacing = params.spacing.value;
+        const ins = params.in.value;
+        const outs = params.out.value;
         let leafs;
         if (ins < outs) {
             leafs = outs;
         } else {
             leafs = ins;
         }
-        const stagelength = params.stageLength;
+        const stagelength = params.stageLength.value;
 
         const levels = Math.ceil(Math.log2(leafs));
         const w = spacing * (leafs / 2 + 1);
@@ -240,7 +240,7 @@ export default class Mux extends Template {
 
         const lcenterx = (lstartx + lendx) / 2;
         const lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
-        const valvewidth = params.width;
+        const valvewidth = params.width.value;
 
         const treeWidth = (leafs - 1) * spacing + leafs * cw + valvewidth;
 

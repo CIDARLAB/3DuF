@@ -96,10 +96,10 @@ export default class Gelchannel extends Template {
 
     getPorts(params) {
         const ports = [];
-        const sideWidth = params.sideWidth;
+        const sideWidth = params.sideWidth.value;
         const numChambers = 2;
-        const length = params.length;
-        const mainWidth = params.mainWidth;
+        const length = params.length.value;
+        const mainWidth = params.mainWidth.value;
 
         ports.push(new ComponentPort(0, sideWidth + mainWidth / 2, "1", "FLOW"));
         ports.push(new ComponentPort((numChambers / 2) * (length + 60) + 60, sideWidth + mainWidth / 2, "2", "FLOW"));

@@ -113,11 +113,11 @@ export default class RotaryMixer extends Template {
     }
 
     getPorts(params) {
-        const radius = params.radius;
-        const valvespacing = params.valveSpacing;
-        const valvelength = params.valveLength;
-        const valvewidth = params.valveWidth;
-        const flowChannelWidth = params.flowChannelWidth; // params["flowChannelWidth"];
+        const radius = params.radius.value;
+        const valvespacing = params.valveSpacing.value;
+        const valvelength = params.valveLength.value;
+        const valvewidth = params.valveWidth.value;
+        const flowChannelWidth = params.flowChannelWidth.value; // params["flowChannelWidth"];
         const channellength = radius + valvelength + 2 * valvespacing + flowChannelWidth; // This needs to be a real expression
 
         const ports = [];
