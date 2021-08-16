@@ -66,9 +66,11 @@ export default {
             this.$$refs.slider.noUiSlider.set(this.convertZoomtoLinearScale(zoom));
         },
         convertLinearToZoomScale(linvalue) {
+            console.log("linvalue", linvalue);
             return Math.pow(10, linvalue);
         },
         convertZoomtoLinearScale(zoomvalue) {
+            console.log("zoomvalue", zoomvalue);
             return Math.log10(zoomvalue);
         }
     }

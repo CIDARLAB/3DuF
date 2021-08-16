@@ -17,7 +17,6 @@
             </template>
             <span>Grid Settings</span>
         </v-tooltip>
-        <v-btn v-if="hover" id="grid-hover" class="grey white--text" x-small depressed>Grid Settings</v-btn>
         <div v-if="activated" id="resolution-toolbar">
             <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
                 <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
@@ -33,10 +32,8 @@
 
 <script>
 // Issues: Beining Aug.5.21
-// Grid Settings hover no show;
-// Grid Settings slider out of range???
-// "console log : Could not set the Zoom, could be in the ZoomSlider.vue??";
-// Grid_size doesn't change with zoom slider,need to figure out how this work.
+// Grid Settings slider out of range
+// "console log : Could not set the Zoom
 
 import veeno from "veeno";
 import "nouislider/distribute/nouislider.min.css";
@@ -109,11 +106,15 @@ export default {
             let registryref = Registry;
             const { values } = event;
             let spacingchanges = registryref.currentGrid.__spacing;
+            console.log("spacingchanges: ", spacingchanges);
             let value1 = parseInt(values[0], 10);
             //This ensures that there is something valid present
+            console.log("value1: ", value1);
             if (registryref.currentGrid !== null) {
                 registryref.currentGrid.updateGridSpacing(value1);
-                registryref.currentGrid.notifyViewManagerToUpdateView();
+                console.log("new spacingchanges: ", registryref.currentGrid.__spacing);
+                // registryref.currentGrid.notifyViewManagerToUpdateView();
+                console.log("2 new spacingchanges: ", registryref.currentGrid.__spacing);
             }
         },
         updateResolutionLabelAndSlider(smallResolution) {
