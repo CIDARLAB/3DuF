@@ -22,7 +22,6 @@ class EventBus extends EventEmitter {
     static RIGHT_CLICK = "right_click";
     static CLOSE_ALL_WINDOWS = "close_all_windows";
     static UPDATE_ZOOM = "update_zoom";
-    static UPDATE_GRID = "update_grid";
 }
 
 export default EventBus;

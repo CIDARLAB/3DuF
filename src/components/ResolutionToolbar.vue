@@ -106,23 +106,11 @@ export default {
             let registryref = Registry;
             const { values } = event;
             let spacingchanges = registryref.currentGrid.__spacing;
-            console.log("spacingchanges: ", spacingchanges);
             let value1 = parseInt(values[0], 10);
             //This ensures that there is something valid present
-            console.log("value1: ", value1);
             if (registryref.currentGrid !== null) {
                 registryref.currentGrid.updateGridSpacing(value1);
-                console.log("new spacingchanges: ", registryref.currentGrid.__spacing);
                 // registryref.currentGrid.notifyViewManagerToUpdateView();
-                console.log("2 new spacingchanges: ", registryref.currentGrid.__spacing);
-            }
-        },
-        updateResolutionLabelAndSlider(smallResolution) {
-            if (smallResolution !== null) {
-                this.__gridResolution = smallResolution;
-                this.__smallresolutionLabel.innerHTML = smallResolution + " &mu;m";
-
-                this.__gridResolutionSlider.noUiSlider.set(parseInt(smallResolution, 10));
             }
         }
     }
