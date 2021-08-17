@@ -137,6 +137,7 @@ export class ComponentAPI {
         ChemostatRing_control: { object: new ChemostatRing(), key: "CONTROL" },
         Incubation: { object: new Incubation(), key: "FLOW" },
         Merger: { object: new Merger(), key: "FLOW" },
+        Merger_integration: { object: new Merger(), key: "INTEGRATE" },
         PicoInjection: { object: new PicoInjection(), key: "FLOW" },
         PicoInjection_integration: { object: new PicoInjection(), key: "INTEGRATE" },
         Sorter: { object: new Sorter(), key: "FLOW" },
@@ -401,6 +402,7 @@ export class ComponentAPI {
         // Go through all the objects in the library and return the one that matches the minttype
         for (const key in ComponentAPI.library) {
             if (ComponentAPI.library[key].object.mint === minttype) {
+                console.log("Renderer: ", ComponentAPI.library[key].object);
                 return ComponentAPI.library[key].object;
             }
         }

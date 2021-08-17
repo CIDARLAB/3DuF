@@ -19,7 +19,7 @@ export default class ComponentPositionTool extends PositionTool {
         featureIDs.push(newFeature.ID);
 
         const params_to_copy = newFeature.getParams();
-
+        console.log("TS: ", super.typeString);
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager.saveDeviceState();
     }

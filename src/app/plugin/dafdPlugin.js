@@ -76,7 +76,8 @@ export default class DAFDPlugin {
         let newChannel = ChannelTool.createChannel(startpoint, endpoint, "RoundedChannel", "Basic");
         channelid = newChannel.getID();
 
-        Registry.currentLayer.addFeature(newChannel);
+        //Registry.currentLayer.addFeature(newChannel);
+        Registry.viewManager.addFeature(newChannel);
 
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
         newChannel.updateParameter("channelWidth", waterInputWidth);
@@ -89,7 +90,8 @@ export default class DAFDPlugin {
         newChannel = ChannelTool.createChannel(startpoint, endpoint, "RoundedChannel", "Basic");
         channelid = newChannel.getID();
 
-        Registry.currentLayer.addFeature(newChannel);
+        //Registry.currentLayer.addFeature(newChannel);
+        Registry.viewManager.addFeature(newChannel);
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
         newChannel.updateParameter("channelWidth", oilInputWidth);
 
@@ -101,7 +103,8 @@ export default class DAFDPlugin {
         newChannel = ChannelTool.createChannel(startpoint, endpoint, "RoundedChannel", "Basic");
         channelid = newChannel.getID();
 
-        Registry.currentLayer.addFeature(newChannel);
+        //Registry.currentLayer.addFeature(newChannel);
+        Registry.viewManager.addFeature(newChannel);
 
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
         newChannel.updateParameter("channelWidth", outputWidth);
@@ -115,7 +118,8 @@ export default class DAFDPlugin {
         newChannel = ChannelTool.createChannel(startpoint, endpoint, "RoundedChannel", "Basic");
         channelid = newChannel.getID();
 
-        Registry.currentLayer.addFeature(newChannel);
+        //Registry.currentLayer.addFeature(newChannel);
+        Registry.viewManager.addFeature(newChannel);
 
         newChannel = Registry.currentDevice.getFeatureByID(channelid);
         newChannel.updateParameter("channelWidth", oilInputWidth);

@@ -11,6 +11,7 @@ import SelectTool from "./tools/selectTool";
 import InsertTextTool from "./tools/insertTextTool";
 import SimpleQueue from "../utils/simpleQueue";
 import MouseSelectTool from "./tools/mouseSelectTool";
+import RenderMouseTool from "./tools/renderMouseTool";
 
 import ResolutionToolBar from "./ui/resolutionToolBar";
 import RightPanel from "./ui/rightPanel";
@@ -25,6 +26,7 @@ import DesignHistory from "./designHistory";
 import MoveTool from "./tools/moveTool";
 import ComponentPositionTool from "./tools/componentPositionTool";
 import MultilayerPositionTool from "./tools/multilayerPositionTool";
+import MultilevelPositionTool from "./tools/multilevelPositionTool";
 import CellPositionTool from "./tools/cellPositionTool";
 import ValveInsertionTool from "./tools/valveInsertionTool";
 import PositionTool from "./tools/positionTool";
@@ -72,6 +74,7 @@ export default class ViewManager {
         Registry.currentGrid = this.__grid;
         this.renderLayers = [];
         this.activeRenderLayer = null;
+        this.nonphysComponents = [];
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         // this.customComponentManager = new CustomComponentManager(this);
@@ -260,6 +263,58 @@ export default class ViewManager {
             this.view.addFeature(feature);
             this.refresh(refresh);
         }
+    }
+
+    /**
+     * Adds a component to the device
+     * @param {Component} component Component to be added to the device
+     * @memberof Device
+     * @returns {void}
+     */
+    addNonphysComponent(component) {
+        if (component instanceof Component) {
+            this.nonphysComponents.push(component);
+        } else {
+            throw new Error("Tried to add a nonphysical component that isn't a component");
+        }
+    }
+
+    /**
+     * Returns component object that is identified by the given key
+     * @param {String} key Key to  the component
+     * @return {Component}
+     * @memberof Device
+     */
+    getComponentByID(key) {
+        for (let i in this.nonphysComponents) {
+            let component = this.nonphysComponents[i];
+            if (component.id === key) {
+                return component;
+            }
+        }
+        return null;
+        //throw new Error("Component with ID " + key + " does not exist");
+    }
+
+    /**
+     * Returns the component identified by the id
+     * @param {string} id ID of the feature to get the component
+     * @return {Component|null}
+     * @memberof Device
+     */
+    getComponentForFeatureID(id) {
+        for (let i in this.nonphysComponents) {
+            let component = this.nonphysComponents[i];
+            //go through each component's features
+            for (let j in component.featureIDs) {
+                let featureid = component.featureIDs[j];
+                if (featureid === id) {
+                    return component;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -787,7 +842,6 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     refresh(refresh = true) {
-        console.log("Here");
         this.updateQueue.run();
         // Update the toolbar
         const spacing = Registry.currentGrid.getSpacing();
@@ -859,7 +913,6 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     loadDeviceFromJSON(json) {
-        console.log("Here");
         let device;
         Registry.viewManager.clear();
         // Check and see the version number if its 0 or none is present,
@@ -880,30 +933,17 @@ export default class ViewManager {
             console.log("Version Number: " + version);
             switch (version) {
                 case 1:
-                    console.log("Hello");
                     // // this.loadCustomComponents(json);
-                    // device = Device.fromInterchangeV1(json);
-                    // Registry.currentDevice = device;
-                    // this.__currentDevice = device;
 
-                    // // TODO: Add separate render layers to initializing json
-                    // for (const i in json.layers) {
-                    //     const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
-                    //     this.renderLayers.push(newRenderLayer);
-                    // }
                     let ret = LoadUtils.loadFromScratch(json);
-                    console.log("Ret: ", ret);
                     device = ret[0];
                     Registry.currentDevice = device;
                     this.__currentDevice = device;
-                    console.log("Device: ", device);
 
                     this.renderLayers = ret[1];
-                    console.log("RenderLayers: ", this.renderLayers);
 
                     break;
                 case 1.1:
-                    console.log("Heyyo");
                     // this.loadCustomComponents(json);
                     device = Device.fromInterchangeV1_1(json);
                     Registry.currentDevice = device;
@@ -1178,7 +1218,6 @@ export default class ViewManager {
         if (this.tools[toolString] === null) {
             throw new Error("Could not find tool with the matching string");
         }
-
         // Cleanup job when activating new tool
         this.view.clearSelectedItems();
 
@@ -1317,7 +1356,8 @@ export default class ViewManager {
      */
     resetToDefaultTool() {
         this.cleanupActiveTools();
-        this.activateTool("MouseSelectTool");
+        //this.activateTool("MouseSelectTool");
+        this.activateTool("RenderMouseTool");
         // this.componentToolBar.setActiveButton("SelectButton");
     }
 
@@ -1377,6 +1417,7 @@ export default class ViewManager {
      */
     setupTools() {
         this.tools.MouseSelectTool = new MouseSelectTool(this.view);
+        this.tools.RenderMouseTool = new RenderMouseTool(this.view);
         this.tools.InsertTextTool = new InsertTextTool();
         this.tools.Chamber = new ComponentPositionTool("Chamber", "Basic");
         this.tools.Valve = new ValveInsertionTool("Valve", "Basic");
@@ -1589,7 +1630,6 @@ export default class ViewManager {
         if (minttype === null) {
             throw new Error("Found null when looking for MINT Type");
         }
-        console.log("MintType: ", minttype);
         // Cleanup job when activating new tool
         this.view.clearSelectedItems();
 
@@ -1609,6 +1649,10 @@ export default class ViewManager {
             activeTool = new ValveInsertionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         } else if (renderer.placementTool === "CellPositionTool") {
             activeTool = new CellPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+        } else if (renderer.placementTool === "multilevelPositionTool") {
+            // TODO: Add pop up window when using the multilevel position tool to get layer indices
+            activeTool = new MultilevelPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+            throw new Error("multilevel position tool ui/input elements not set up");
         }
 
         if (activeTool === null) {

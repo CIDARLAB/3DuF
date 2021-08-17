@@ -62,12 +62,9 @@ export default class Layer {
      * @returns {void}
      */
     addFeature(feature: Feature): void {
-        console.log("Now over heeerre");
         this.__ensureIsAFeature(feature);
-        console.log(this.id);
         this.features[feature.ID] = feature;
         this.featureCount += 1;
-        console.log(this.featureCount);
         //TODO - Verify that this is not a problem anymore
         feature.layer = this;
     }

@@ -31,8 +31,14 @@ export default class LoadUtils {
     static loadFromScratch(json: ScratchInterchangeV1): [Device, Array<RenderLayer>] {
         const newDevice: Device = LoadUtils.loadDeviceFromInterchangeV1(json);
         let newRenderLayers: Array<RenderLayer> = [];
-        for (let i = 0; i < json.renderLayers.length; i++) {
-            newRenderLayers.push(LoadUtils.loadRenderLayerFromInterchangeV1(json.renderLayers[i], newDevice));
+        if (json.renderLayers) {
+            for (let i = 0; i < json.renderLayers.length; i++) {
+                newRenderLayers.push(LoadUtils.loadRenderLayerFromInterchangeV1(json.renderLayers[i], newDevice));
+            }
+        } else {
+            for (let i = 0; i < json.layers.length; i++) {
+                newRenderLayers.push(LoadUtils.loadRenderLayerFromLayerInterchangeV1(json.renderLayers[i], newDevice));
+            }
         }
         return [newDevice, newRenderLayers];
     }
@@ -284,6 +290,27 @@ export default class LoadUtils {
             }
         }
         if (json.color) newLayer.color = json.color; // TODO: Figure out if this needs to change in the future
+        return newLayer;
+    }
+
+    static loadRenderLayerFromLayerInterchangeV1(json: LayerInterchangeV1, device: Device): RenderLayer {
+        const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
+
+        for (const i in json.features) {
+            newLayer.features[json.features[i].id] = LoadUtils.loadFeatureFromInterchangeV1(json.features[i]);
+        }
+
+        for (let i = 0; i < device.layers.length; i++) {
+            if (device.layers[i].id == json.id) newLayer.physicalLayer = device.layers[i];
+        }
+        if (json.name == "flow" || json.name == "cell") {
+            newLayer.color = "indigo";
+        } else if (json.name == "control") {
+            newLayer.color = "red";
+        } else if (json.name == "integration") {
+            newLayer.color = "green";
+        }
+
         return newLayer;
     }
 }

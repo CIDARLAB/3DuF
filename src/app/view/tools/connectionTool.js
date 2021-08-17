@@ -157,7 +157,7 @@ export default class ConnectionTool extends MouseTool {
             } else {
                 const newChannel = this.createChannel(this.startPoint, this.startPoint);
                 this.currentChannelID = newChannel.ID;
-                Registry.currentLayer.addFeature(newChannel);
+                Registry.viewManager.addFeature(newChannel);
             }
         }
     }
@@ -468,6 +468,9 @@ export default class ConnectionTool extends MouseTool {
             console.log("This layer :", layertype);
         } else if (Registry.currentLayer.name === "flow") {
             layertype = "FLOW";
+            console.log("This layer: ", layertype);
+        } else if (Registry.currentLayer.name === "integration") {
+            layertype = "INTEGRATION";
             console.log("This layer: ", layertype);
         }
         const componentports = component.ports;

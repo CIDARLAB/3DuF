@@ -6,7 +6,10 @@ import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
 import EventBus from "@/events/events";
 
-export default class MouseSelectTool extends MouseTool {
+// Mouse tool for use with uF Guide Tool
+// Allows for selection only of nonphysical features
+
+export default class RenderMouseTool extends MouseTool {
     constructor(paperview) {
         super();
         this.paperView = paperview;
@@ -39,25 +42,9 @@ export default class MouseSelectTool extends MouseTool {
         };
     }
 
-    keyHandler(event) {
-        if (event.key === "delete" || event.key === "backspace") {
-            console.log("Removing feature");
-            this.removeFeatures();
-        }
-        if (event.key === "c") {
-            console.log("Detected a ctrlC");
-            console.log(this.currentSelection);
-        }
-    }
+    keyHandler(event) {}
 
-    dragHandler() {
-        if (this.dragStart) {
-            if (this.currentSelectBox) {
-                this.currentSelectBox.remove();
-            }
-            this.currentSelectBox = this.rectSelect(this.dragStart, this.lastPoint);
-        }
-    }
+    dragHandler() {}
 
     showTarget() {
         Registry.viewManager.removeTarget();
@@ -86,34 +73,28 @@ export default class MouseSelectTool extends MouseTool {
         const point = MouseTool.getEventPosition(event);
         const target = this.hitFeature(point);
         if (target) {
-            if (target.selected) {
-                const feat = Registry.viewManager.getFeatureByID(target.featureID);
-                Registry.viewManager.updateDefaultsFromFeature(feat);
-                // Check if the feature is a part of a component
-                let component, connection;
-                if (feat.referenceID === null) {
-                    throw new Error("ReferenceID of feature is null");
-                } else {
-                    component = Registry.currentDevice.getComponentByID(feat.referenceID);
-                    component = Registry.viewManager.getComponentByID(feat.referenceID);
-                    connection = Registry.currentDevice.getConnectionByID(feat.referenceID);
-                    if (component !== null) {
-                        EventBus.get().emit(EventBus.DBL_CLICK_COMPONENT, event, component);
-                    } else if (connection !== null) {
-                        EventBus.get().emit(EventBus.DBL_CLICK_CONNECTION, event, connection);
+            if (Registry.viewManager.getComponentForFeatureID(target.featureID) && Registry.viewManager.getComponentForFeatureID(target.featureID).mint == "TEXT") {
+                if (target.selected) {
+                    const feat = Registry.viewManager.getFeatureByID(target.featureID);
+                    Registry.viewManager.updateDefaultsFromFeature(feat);
+                    // Check if the feature is a part of a component
+                    let component;
+                    if (feat.referenceID === null) {
+                        throw new Error("ReferenceID of feature is null");
                     } else {
-                        EventBus.get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
+                        component = Registry.viewManager.getComponentByID(feat.referenceID);
+                        if (component !== null) {
+                            EventBus.get().emit(EventBus.DBL_CLICK_COMPONENT, event, component);
+                        } else {
+                            EventBus.get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
+                        }
                     }
+                } else {
+                    this.deselectFeatures();
+                    this.selectFeature(target);
                 }
-
-                // const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
-                // rightclickmenu.show(event, feat);
-                // this.rightClickMenu = rightclickmenu;
-                // let func = PageSetup.getParamsWindowCallbackFunction(feat.getType(), feat.getSet());
-                // func(event);
             } else {
                 this.deselectFeatures();
-                this.selectFeature(target);
             }
         } else {
             this.deselectFeatures();
@@ -130,7 +111,7 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     hitFeature(point) {
-        const target = Registry.viewManager.hitFeature(point);
+        const target = Registry.viewManager.view.hitFeature(point, true, true);
         return target;
     }
 

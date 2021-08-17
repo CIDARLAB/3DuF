@@ -4,6 +4,7 @@ import EdgeFeature from "../core/edgeFeature";
 
 import { RenderLayerInterchangeV1, FeatureInterchangeV0, LayerInterchangeV1 } from "../core/init";
 import Layer from "../core/layer";
+import Params from "../core/params";
 
 export default class RenderLayer {
     features: { [index: string]: Feature };
@@ -13,14 +14,15 @@ export default class RenderLayer {
     private __type: string;
     name: string;
     protected _physicalLayer: Layer | null;
-    active: boolean;
+    protected params: Params;
 
     constructor(name: string = "New Layer", modellayer: Layer | null = null, type: string = "FLOW", group: string = "0") {
         this.__type = type;
         this.features = {};
         this.featureCount = 0;
         this.name = name;
-        this.active = false;
+        if (modellayer) this.params = modellayer.params;
+        else this.params = new Params([], Layer.getUniqueParameters(), new Map());
         this._physicalLayer = modellayer;
         if (name == "flow") {
             this.color = "indigo";
@@ -70,6 +72,8 @@ export default class RenderLayer {
         if (this.physicalLayer !== null && physfeat == true) {
             this.physicalLayer.addFeature(feature);
             feature.layer = this.physicalLayer;
+        } else {
+            feature.layer = this;
         }
     }
 

@@ -1,5 +1,7 @@
+import uuid from "node-uuid";
 import EdgeFeature from "../core/edgeFeature";
 import paper from "paper";
+import { ComponentAPI } from "@/componentAPI";
 
 import Registry from "../core/registry";
 import * as FeatureRenderer2D from "./render2D/featureRenderer2D";
@@ -18,6 +20,10 @@ import * as DXFSolidObjectRenderer from "./render2D/dxfSolidObjectRenderer2D";
 import Layer from "../core/layer";
 import Device from "../core/device";
 import Feature from "../core/feature";
+import Params from "../core/params";
+import Component from "../core/component";
+import MapUtils from "../utils/mapUtils";
+import { components } from "@dagrejs/graphlib/lib/alg";
 /**
  * Paper View class
  */
@@ -400,7 +406,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    disableContextMenu(func) {
+    disableContextMenu() {
         this.canvas.oncontextmenu = function(event) {
             event.preventDefault();
         };
@@ -524,6 +530,141 @@ export default class PaperView {
         this.featureLayer.addChild(this.layerMask);
         const activeLayer = this.paperLayers[this.activeLayer];
         activeLayer.bringToFront();
+    }
+
+    /**
+     * Show only the desired features
+     * Chosen features appear
+     * Built for use in uF Guide Tool
+     * @param {Array<paper.CompoundPath>} features Array of features to be displayed
+     * @returns {void}
+     * @memberof PaperView
+     */
+    showChosenFeatures(features) {
+        this.featureLayer.remove();
+        this.featureLayer = new paper.Group();
+        for (let i = 0; i < this.paperLayers.length; i++) {
+            this.featureLayer.addChild(this.paperLayers[i]);
+        }
+        if (this.layerMask) this.layerMask.remove();
+        this.layerMask = DeviceRenderer.renderLayerMask(this.__viewManagerDelegate.currentDevice);
+        this.featureLayer.addChild(this.layerMask);
+        const activeLayer = new paper.Group();
+        for (let i = 0; i < features.length; i++) {
+            activeLayer.addChild(features[i]);
+        }
+        activeLayer.bringToFront();
+
+        let textLayer = this.getNonphysText();
+        textLayer.bringToFront();
+    }
+
+    /**
+     * Display all features in the device
+     * Built for use in uF Guide Tool
+     * @returns {void}
+     * @memberof PaperView
+     */
+    showAllFeatures() {
+        this.featureLayer.remove();
+        this.featureLayer = new paper.Group();
+        if (this.layerMask) this.layerMask.remove();
+        this.layerMask = DeviceRenderer.renderLayerMask(this.__viewManagerDelegate.currentDevice);
+        this.featureLayer.addChild(this.layerMask);
+        for (let i = 0; i < this.paperLayers.length; i++) {
+            this.featureLayer.addChild(this.paperLayers[i]);
+        }
+
+        let textLayer = this.getNonphysText();
+        textLayer.bringToFront();
+    }
+
+    /**
+     * Brings nonphysical text features to the front
+     * Ensures nonphysical text is on top of device features
+     * Built for use in uF Guide Tool
+     * @returns {void}
+     * @memberof PaperView
+     */
+    getNonphysText() {
+        const textLayer = new paper.Group();
+        const nonphysComponents = Registry.viewManager.nonphysComponents;
+        for (let i = 0; i < nonphysComponents.length; i++) {
+            for (let j in this.paperFeatures) {
+                if (nonphysComponents[i].mint == "TEXT" && nonphysComponents[i].featureIDs.includes(this.paperFeatures[j].featureID)) {
+                    textLayer.addChild(this.paperFeatures[j]);
+                }
+            }
+        }
+        return textLayer;
+    }
+
+    /**
+     * Generate nonphysical text
+     * Text color can be set to black, white, red, or blue
+     * Built for use in uF Guide Tool
+     * @param {string} text Text to be displayed
+     * @param {[number,number]} position Coordinates on the canvas grid
+     * @param {number} size Font size
+     * @param {string} color The color of the text
+     * @param {number} layer The layer on which
+     * @returns {void}
+     * @memberof PaperView
+     */
+    generateNonphysText(text, position, size, color, layer = this.activeLayer) {
+        const newFeature = Device.makeFeature(
+            "Text",
+            {
+                position: position,
+                height: 20,
+                text: text,
+                fontSize: size,
+                color: color
+            },
+            "TEXT_" + text,
+            uuid.v1(),
+            "XY",
+            null
+        );
+        this.__viewManagerDelegate.addFeature(newFeature, layer, false);
+        this.addComponent("Text", newFeature.getParams(), [newFeature.ID], false);
+        this.__viewManagerDelegate.saveDeviceState();
+    }
+
+    /**
+     * Creates a new component and adds it to viewManager's nonphysicalComponents or the currentDevice's __components
+     * Note: Takes the feature ids as an array
+     * TODO: Modify this to take the MINT String as another parameter
+     * Built for use in uF Guide Tool
+     * @param typeString Type of the Feature
+     * @param params Map of all the paramters
+     * @param featureIDs [String] Feature id's of all the features that will be a part of this component
+     * @param physical Boolean stating whether feature physical or not
+     */
+    addComponent(typeString, paramdata, featureIDs, physical = false) {
+        const definition = ComponentAPI.getDefinition(typeString);
+        // Clean Param Data
+        const cleanparamdata = {};
+        for (const key in paramdata) {
+            cleanparamdata[key] = paramdata[key].value;
+        }
+        const params = new Params(cleanparamdata, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
+        const componentid = ComponentAPI.generateID();
+        const name = Registry.currentDevice.generateNewName(typeString);
+        const newComponent = new Component(params, name, definition.mint, componentid);
+        let feature;
+
+        for (const i in featureIDs) {
+            newComponent.addFeatureID(featureIDs[i]);
+
+            // Update the component reference
+            feature = this.__viewManagerDelegate.getFeatureByID(featureIDs[i]);
+            feature.referenceID = componentid;
+        }
+
+        if (physical) Registry.currentDevice.addComponent(newComponent);
+        else this.__viewManagerDelegate.addNonphysComponent(newComponent);
+        return newComponent;
     }
 
     /**
@@ -852,7 +993,7 @@ export default class PaperView {
      * @return {boolean} Rendered Feature
      * @memberof PaperView
      */
-    hitFeature(point, onlyHitActiveLayer = true) {
+    hitFeature(point, onlyHitActiveLayer = true, nonphysActiveLayer = false) {
         const hitOptions = {
             fill: true,
             tolerance: 5,
@@ -861,8 +1002,15 @@ export default class PaperView {
 
         let target;
 
-        if (onlyHitActiveLayer && this.activeLayer !== null) {
+        if (onlyHitActiveLayer && this.activeLayer !== null && !nonphysActiveLayer) {
             target = this.paperLayers[this.activeLayer];
+
+            const result = target.hitTest(point, hitOptions);
+            if (result) {
+                return result.item;
+            }
+        } else if (onlyHitActiveLayer && nonphysActiveLayer) {
+            target = this.getNonphysText();
 
             const result = target.hitTest(point, hitOptions);
             if (result) {

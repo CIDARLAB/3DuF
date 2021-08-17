@@ -1,13 +1,14 @@
 import uuid from "node-uuid";
 import { registerSets } from "../featureSets";
 import FeatureSet from "../featureSets/featureSet";
+import RenderLayer from "../view/renderLayer";
 import * as Basic from "@/app/featureSets/basic";
 
 class Registry {
     /*
     Place where we store the data necessary for the text label
     TODO: Change this from this awful hacky implementation
-  */
+    */
     constructor() {
         // registerSets({ Basic: Basic });
     }
@@ -21,7 +22,7 @@ class Registry {
     };
     public currentDevice = null;
     canvasManager = null;
-    currentLayer = null;
+    currentLayer: RenderLayer | null = null;
     currentTextLayer = null;
     currentGrid = null;
     view = null;
