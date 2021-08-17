@@ -15,13 +15,14 @@ export default {
     data() {
         return {
             zoomOptimal: [0.1],
-            isUserGeneratedEvent: false
+            isUserGeneratedEvent: false,
+            currentGridSpacing: 500
         };
     },
     mounted() {
         setTimeout(() => {
             this.zoomOptimal = [Math.log10(Registry.viewManager.view.computeOptimalZoom())];
-            console.log(this.zoomOptimal);
+            console.log("this.zoomOptimal", this.zoomOptimal);
         }, 10);
 
         noUiSlider.create(this.$refs.slider, {
@@ -41,11 +42,13 @@ export default {
         this.$refs.slider.noUiSlider.on("update", function(values, handle, unencoded, tap, positions) {
             if (ref.isUserGeneratedEvent) {
                 console.log("Zoom Value:", values[0]);
-                const updatedSpacing = Registry.currentGrid.__spacing;
-                // TODO - Map this directly to the zoom functions
+                this.currentGridSpacing;
+                let updatedSpacing = Registry.currentGrid.spacing;
+                //let updatedSpacing = ref.getGridSpacing();
+                //created a getter to get current Sapcing from Registry.currentGrid.__spacing
+                // ask krishna why this. doesn't work
                 EventBus.get().emit(EventBus.UPDATE_GRID, updatedSpacing);
                 // EventBus emit updated spacing, ResolutionToolBar.vue listen to this
-                console.log(registryref);
                 try {
                     registryref.viewManager.setZoom(ref.convertLinearToZoomScale(values[0]));
                 } catch (e) {
@@ -55,6 +58,7 @@ export default {
             ref.isUserGeneratedEvent = true;
         });
         EventBus.get().on(EventBus.UPDATE_ZOOM, this.setZoom);
+        //???? where this eventbus go??
     },
     methods: {
         /**
@@ -66,11 +70,12 @@ export default {
             this.$$refs.slider.noUiSlider.set(this.convertZoomtoLinearScale(zoom));
         },
         convertLinearToZoomScale(linvalue) {
-            console.log("linvalue", linvalue);
             return Math.pow(10, linvalue);
         },
+        getGridSpacing() {
+            return Registry.currentGrid.__spacing;
+        },
         convertZoomtoLinearScale(zoomvalue) {
-            console.log("zoomvalue", zoomvalue);
             return Math.log10(zoomvalue);
         }
     }

@@ -47,11 +47,12 @@ export default {
         veeno
     },
 
+    // Beining:I dont know where to set the defalut value for sliderValue
     props: {
-        sliderValue: {
-            type: Number,
-            default: 1000
-        }
+        // sliderValue: {
+        //     type: Number,
+        //     default: 1000
+        // }
     },
     data() {
         return {
@@ -64,7 +65,8 @@ export default {
                 pipsy: { mode: "range", density: 5 },
                 handles: 1000,
                 range: { min: [1], "10%": [10], "30%": [100], "90%": [1000], max: [5000] }
-            }
+            },
+            sliderValue: 1000
         };
     },
     created() {
@@ -105,12 +107,13 @@ export default {
         updateGrid(event) {
             let registryref = Registry;
             const { values } = event;
-            let spacingchanges = registryref.currentGrid.__spacing;
             let value1 = parseInt(values[0], 10);
             //This ensures that there is something valid present
             if (registryref.currentGrid !== null) {
-                registryref.currentGrid.updateGridSpacing(value1);
+                //registryref.currentGrid.updateGridSpacing(value1);
+                registryref.currentGrid.spacing = value1;
                 // registryref.currentGrid.notifyViewManagerToUpdateView();
+                console.log("grid updated", value1);
             }
         }
     }
