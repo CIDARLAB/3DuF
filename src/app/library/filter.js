@@ -1,283 +1,283 @@
-import Template from "./template";
-import paper, { Path } from "paper";
-import ComponentPort from "../core/componentPort";
+import Template from './template'
+import paper, { Path } from 'paper'
+import ComponentPort from '../core/componentPort'
 
 export default class Filter extends Template {
-    constructor() {
-        super();
+  constructor () {
+    super()
+  }
+
+  __setupDefinitions () {
+    this.__unique = {
+      position: 'Point'
     }
 
-    __setupDefinitions() {
-        this.__unique = {
-            position: "Point"
-        };
-
-        this.__heritable = {
-            componentSpacing: "Float",
-            rotation: "Float",
-            height: "Float",
-            pillarDiameter: "Float",
-            filterWidth: "Float",
-            barrierWidth: "Float",
-            filterLength: "Float",
-            filterNumber: "Float",
-            levelNumber: "Float",
-            inletWidth: "Float",
-            inletLength: "Float",
-            outletWidth: "Float",
-            outletLength: "Float"
-        };
-
-        this.__defaults = {
-            componentSpacing: 1000,
-            rotation: 0,
-            height: 250,
-            pillarDiameter: 2 * 1000,
-            filterWidth: 1 * 1000,
-            barrierWidth: 1 * 1000,
-            filterLength: 3 * 1000,
-            filterNumber: 5,
-            levelNumber: 2,
-            inletWidth: 1 * 1000,
-            inletLength: 3 * 1000,
-            outletWidth: 1 * 1000,
-            outletLength: 3 * 1000
-        };
-
-        this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            height: "&mu;m",
-            pillarDiameter: "&mu;m",
-            filterWidth: "&mu;m",
-            barrierWidth: "&mu;m",
-            filterLength: "&mu;m",
-            filterNumber: "",
-            levelNumber: "",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            outletWidth: "&mu;m",
-            outletLength: "&mu;m"
-        };
-
-        this.__minimum = {
-            componentSpacing: 0,
-            rotation: 0,
-            height: 10,
-            pillarDiameter: 1 * 1000,
-            filterWidth: 0.5 * 1000,
-            barrierWidth: 0.5 * 1000,
-            filterLength: 2 * 1000,
-            filterNumber: 2,
-            levelNumber: 1,
-            inletWidth: 0.5 * 1000,
-            inletLength: 1 * 1000,
-            outletWidth: 0.5 * 1000,
-            outletLength: 1 * 1000
-        };
-
-        this.__maximum = {
-            componentSpacing: 10000,
-            rotation: 360,
-            height: 1200,
-            pillarDiameter: 4 * 1000,
-            filterWidth: 4 * 1000,
-            barrierWidth: 6 * 1000,
-            filterLength: 9 * 1000,
-            filterNumber: 5,
-            levelNumber: 10,
-            inletWidth: 4 * 1000,
-            inletLength: 8 * 1000,
-            outletWidth: 4 * 1000,
-            outletLength: 8 * 1000
-        };
-
-        this.__placementTool = "componentPositionTool";
-
-        this.__toolParams = {
-            cursorPosition: "position"
-        };
-
-        this.__featureParams = {
-            componentSpacing: "componentSpacing",
-            position: "position",
-            rotation: "rotation",
-            pillarDiameter: "pillarDiameter",
-            filterWidth: "filterWidth",
-            barrierWidth: "barrierWidth",
-            filterLength: "filterLength",
-            filterNumber: "filterNumber",
-            levelNumber: "levelNumber",
-            inletWidth: "inletWidth",
-            inletLength: "inletLength",
-            outletWidth: "outletWidth",
-            outletLength: "outletLength"
-        };
-
-        this.__targetParams = {
-            componentSpacing: "componentSpacing",
-            rotation: "rotation",
-            pillarDiameter: "pillarDiameter",
-            filterWidth: "filterWidth",
-            barrierWidth: "barrierWidth",
-            filterLength: "filterLength",
-            filterNumber: "filterNumber",
-            levelNumber: "levelNumber",
-            inletWidth: "inletWidth",
-            inletLength: "inletLength",
-            outletWidth: "outletWidth",
-            outletLength: "outletLength"
-        };
-
-        this.__renderKeys = ["FLOW"];
-
-        this.__mint = "FILTER";
+    this.__heritable = {
+      componentSpacing: 'Float',
+      rotation: 'Float',
+      height: 'Float',
+      pillarDiameter: 'Float',
+      filterWidth: 'Float',
+      barrierWidth: 'Float',
+      filterLength: 'Float',
+      filterNumber: 'Float',
+      levelNumber: 'Float',
+      inletWidth: 'Float',
+      inletLength: 'Float',
+      outletWidth: 'Float',
+      outletLength: 'Float'
     }
 
-    getPorts(params) {
-        const inletLength = params.inletLength.value;
-        const filterLength = params.filterLength.value;
-        const outletLength = params.outletLength.value;
-        const levelNumber = params.levelNumber.value;
-        const pillarDiameter = params.pillarDiameter.value;
-
-        const ports = [];
-
-        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
-
-        ports.push(new ComponentPort(inletLength + 5 * pillarDiameter + 1.3 * levelNumber * filterLength + outletLength, 0, "2", "FLOW"));
-
-        return ports;
+    this.__defaults = {
+      componentSpacing: 1000,
+      rotation: 0,
+      height: 250,
+      pillarDiameter: 2 * 1000,
+      filterWidth: 1 * 1000,
+      barrierWidth: 1 * 1000,
+      filterLength: 3 * 1000,
+      filterNumber: 5,
+      levelNumber: 2,
+      inletWidth: 1 * 1000,
+      inletLength: 3 * 1000,
+      outletWidth: 1 * 1000,
+      outletLength: 3 * 1000
     }
 
-    render2D(params, key) {
-        const rotation = params.rotation;
-        const x = params.position[0];
-        const y = params.position[1];
-        const color = params.color;
-        const pillarDiameter = params.pillarDiameter;
-        const filterWidth = params.filterWidth;
-        const barrierWidth = params.barrierWidth;
-        const filterLength = params.filterLength;
-        const filterNumber = params.filterNumber;
-        const levelNumber = params.levelNumber;
-        const inletWidth = params.inletWidth;
-        const inletLength = params.inletLength;
-        const outletWidth = params.outletWidth;
-        const outletLength = params.outletLength;
+    this.__units = {
+      componentSpacing: '&mu;m',
+      rotation: '&deg;',
+      height: '&mu;m',
+      pillarDiameter: '&mu;m',
+      filterWidth: '&mu;m',
+      barrierWidth: '&mu;m',
+      filterLength: '&mu;m',
+      filterNumber: '',
+      levelNumber: '',
+      inletWidth: '&mu;m',
+      inletLength: '&mu;m',
+      outletWidth: '&mu;m',
+      outletLength: '&mu;m'
+    }
 
-        const serp = new paper.CompoundPath();
+    this.__minimum = {
+      componentSpacing: 0,
+      rotation: 0,
+      height: 10,
+      pillarDiameter: 1 * 1000,
+      filterWidth: 0.5 * 1000,
+      barrierWidth: 0.5 * 1000,
+      filterLength: 2 * 1000,
+      filterNumber: 2,
+      levelNumber: 1,
+      inletWidth: 0.5 * 1000,
+      inletLength: 1 * 1000,
+      outletWidth: 0.5 * 1000,
+      outletLength: 1 * 1000
+    }
 
-        const bodyWidth = filterNumber * filterWidth + (filterNumber - 1) * barrierWidth;
+    this.__maximum = {
+      componentSpacing: 10000,
+      rotation: 360,
+      height: 1200,
+      pillarDiameter: 4 * 1000,
+      filterWidth: 4 * 1000,
+      barrierWidth: 6 * 1000,
+      filterLength: 9 * 1000,
+      filterNumber: 5,
+      levelNumber: 10,
+      inletWidth: 4 * 1000,
+      inletLength: 8 * 1000,
+      outletWidth: 4 * 1000,
+      outletLength: 8 * 1000
+    }
 
-        // inlet
-        let topLeft = new paper.Point(x, y - inletWidth / 2);
-        let bottomRight = new paper.Point(x + inletLength, y + inletWidth / 2);
+    this.__placementTool = 'componentPositionTool'
 
-        serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
+    this.__toolParams = {
+      cursorPosition: 'position'
+    }
 
-        // left pillar
-        topLeft = new paper.Point(x + inletLength, y - inletWidth / 2);
-        let topRight = new paper.Point(x + inletLength + 2.5 * pillarDiameter, y - bodyWidth / 2);
-        let bottomLeft = new paper.Point(x + inletLength, y + inletWidth / 2);
-        bottomRight = new paper.Point(x + inletLength + 2.5 * pillarDiameter, y + bodyWidth / 2);
+    this.__featureParams = {
+      componentSpacing: 'componentSpacing',
+      position: 'position',
+      rotation: 'rotation',
+      pillarDiameter: 'pillarDiameter',
+      filterWidth: 'filterWidth',
+      barrierWidth: 'barrierWidth',
+      filterLength: 'filterLength',
+      filterNumber: 'filterNumber',
+      levelNumber: 'levelNumber',
+      inletWidth: 'inletWidth',
+      inletLength: 'inletLength',
+      outletWidth: 'outletWidth',
+      outletLength: 'outletLength'
+    }
 
-        let pillarPath = new paper.Path();
-        pillarPath.add(topLeft);
-        pillarPath.add(topRight);
-        pillarPath.add(bottomRight);
-        pillarPath.add(bottomLeft);
+    this.__targetParams = {
+      componentSpacing: 'componentSpacing',
+      rotation: 'rotation',
+      pillarDiameter: 'pillarDiameter',
+      filterWidth: 'filterWidth',
+      barrierWidth: 'barrierWidth',
+      filterLength: 'filterLength',
+      filterNumber: 'filterNumber',
+      levelNumber: 'levelNumber',
+      inletWidth: 'inletWidth',
+      inletLength: 'inletLength',
+      outletWidth: 'outletWidth',
+      outletLength: 'outletLength'
+    }
 
-        let circ = new paper.Path.Circle(new paper.Point(x + inletLength + 1.5 * pillarDiameter, y), pillarDiameter / 2);
+    this.__renderKeys = ['FLOW']
 
-        pillarPath = pillarPath.subtract(circ);
+    this.__mint = 'FILTER'
+  }
 
-        serp.addChild(pillarPath);
+  getPorts (params) {
+    const inletLength = params.inletLength.value
+    const filterLength = params.filterLength.value
+    const outletLength = params.outletLength.value
+    const levelNumber = params.levelNumber.value
+    const pillarDiameter = params.pillarDiameter.value
 
-        // body tube
-        let startBody = inletLength + 2.5 * pillarDiameter;
-        const extraSpace = 0.3 * filterLength;
+    const ports = []
 
-        for (let i = 0; i < levelNumber; i++) {
-            topLeft = new paper.Point(x + startBody, y - bodyWidth / 2);
-            bottomRight = new paper.Point(x + startBody + filterLength + extraSpace, y + bodyWidth / 2);
+    ports.push(new ComponentPort(0, 0, '1', 'FLOW'))
 
-            let rec = new paper.Path.Rectangle(topLeft, bottomRight);
+    ports.push(new ComponentPort(inletLength + 5 * pillarDiameter + 1.3 * levelNumber * filterLength + outletLength, 0, '2', 'FLOW'))
 
-            if (i % 2 === 0) {
-                const division = (bodyWidth - (filterNumber - 1) * barrierWidth) / filterNumber;
-                let heightAccum = division;
+    return ports
+  }
 
-                for (let j = 0; j < filterNumber - 1; j++) {
-                    topLeft = new paper.Point(x + startBody + extraSpace / 2, y - bodyWidth / 2 + heightAccum);
-                    heightAccum += barrierWidth;
-                    bottomRight = new paper.Point(x + startBody + filterLength, y - bodyWidth / 2 + heightAccum);
+  render2D (params, key) {
+    const rotation = params.rotation
+    const x = params.position[0]
+    const y = params.position[1]
+    const color = params.color
+    const pillarDiameter = params.pillarDiameter
+    const filterWidth = params.filterWidth
+    const barrierWidth = params.barrierWidth
+    const filterLength = params.filterLength
+    const filterNumber = params.filterNumber
+    const levelNumber = params.levelNumber
+    const inletWidth = params.inletWidth
+    const inletLength = params.inletLength
+    const outletWidth = params.outletWidth
+    const outletLength = params.outletLength
 
-                    const cutrec = new paper.Path.Rectangle(topLeft, bottomRight);
+    const serp = new paper.CompoundPath()
 
-                    rec = rec.subtract(cutrec);
+    const bodyWidth = filterNumber * filterWidth + (filterNumber - 1) * barrierWidth
 
-                    heightAccum += division;
-                }
-            } else {
-                const division = (bodyWidth - (filterNumber - 2) * barrierWidth) / (filterNumber - 1);
-                let heightAccum = division;
+    // inlet
+    let topLeft = new paper.Point(x, y - inletWidth / 2)
+    let bottomRight = new paper.Point(x + inletLength, y + inletWidth / 2)
 
-                for (let j = 0; j < filterNumber - 2; j++) {
-                    topLeft = new paper.Point(x + startBody + extraSpace / 2, y - bodyWidth / 2 + heightAccum);
-                    heightAccum += barrierWidth;
-                    bottomRight = new paper.Point(x + startBody + filterLength, y - bodyWidth / 2 + heightAccum);
+    serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight))
 
-                    const cutrec = new paper.Path.Rectangle(topLeft, bottomRight);
+    // left pillar
+    topLeft = new paper.Point(x + inletLength, y - inletWidth / 2)
+    let topRight = new paper.Point(x + inletLength + 2.5 * pillarDiameter, y - bodyWidth / 2)
+    let bottomLeft = new paper.Point(x + inletLength, y + inletWidth / 2)
+    bottomRight = new paper.Point(x + inletLength + 2.5 * pillarDiameter, y + bodyWidth / 2)
 
-                    rec = rec.subtract(cutrec);
+    let pillarPath = new paper.Path()
+    pillarPath.add(topLeft)
+    pillarPath.add(topRight)
+    pillarPath.add(bottomRight)
+    pillarPath.add(bottomLeft)
 
-                    heightAccum += division;
-                }
-            }
+    let circ = new paper.Path.Circle(new paper.Point(x + inletLength + 1.5 * pillarDiameter, y), pillarDiameter / 2)
 
-            serp.addChild(rec);
+    pillarPath = pillarPath.subtract(circ)
 
-            startBody += filterLength + extraSpace;
+    serp.addChild(pillarPath)
+
+    // body tube
+    let startBody = inletLength + 2.5 * pillarDiameter
+    const extraSpace = 0.3 * filterLength
+
+    for (let i = 0; i < levelNumber; i++) {
+      topLeft = new paper.Point(x + startBody, y - bodyWidth / 2)
+      bottomRight = new paper.Point(x + startBody + filterLength + extraSpace, y + bodyWidth / 2)
+
+      let rec = new paper.Path.Rectangle(topLeft, bottomRight)
+
+      if (i % 2 === 0) {
+        const division = (bodyWidth - (filterNumber - 1) * barrierWidth) / filterNumber
+        let heightAccum = division
+
+        for (let j = 0; j < filterNumber - 1; j++) {
+          topLeft = new paper.Point(x + startBody + extraSpace / 2, y - bodyWidth / 2 + heightAccum)
+          heightAccum += barrierWidth
+          bottomRight = new paper.Point(x + startBody + filterLength, y - bodyWidth / 2 + heightAccum)
+
+          const cutrec = new paper.Path.Rectangle(topLeft, bottomRight)
+
+          rec = rec.subtract(cutrec)
+
+          heightAccum += division
         }
+      } else {
+        const division = (bodyWidth - (filterNumber - 2) * barrierWidth) / (filterNumber - 1)
+        let heightAccum = division
 
-        // right pillar
-        topLeft = new paper.Point(x + startBody, y - bodyWidth / 2);
-        topRight = new paper.Point(x + startBody + 2.5 * pillarDiameter, y - outletWidth / 2);
-        bottomRight = new paper.Point(x + startBody + 2.5 * pillarDiameter, y + outletWidth / 2);
-        bottomLeft = new paper.Point(x + startBody, y + bodyWidth / 2);
+        for (let j = 0; j < filterNumber - 2; j++) {
+          topLeft = new paper.Point(x + startBody + extraSpace / 2, y - bodyWidth / 2 + heightAccum)
+          heightAccum += barrierWidth
+          bottomRight = new paper.Point(x + startBody + filterLength, y - bodyWidth / 2 + heightAccum)
 
-        pillarPath = new paper.Path();
+          const cutrec = new paper.Path.Rectangle(topLeft, bottomRight)
 
-        pillarPath.add(topLeft);
-        pillarPath.add(topRight);
-        pillarPath.add(bottomRight);
-        pillarPath.add(bottomLeft);
+          rec = rec.subtract(cutrec)
 
-        startBody += 2.5 * pillarDiameter;
+          heightAccum += division
+        }
+      }
 
-        circ = new paper.Path.Circle(new paper.Point(x + startBody - 1.5 * pillarDiameter, y), pillarDiameter / 2);
+      serp.addChild(rec)
 
-        pillarPath = pillarPath.subtract(circ);
-
-        serp.addChild(pillarPath);
-
-        // outlet
-        topLeft = new paper.Point(x + startBody, y - outletWidth / 2);
-        bottomRight = new paper.Point(x + startBody + outletLength, y + outletWidth / 2);
-
-        serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
-
-        serp.rotate(rotation, new paper.Point(x, y));
-
-        serp.fillColor = color;
-        return serp;
+      startBody += filterLength + extraSpace
     }
 
-    render2DTarget(key, params) {
-        const serp = this.render2D(params, key);
+    // right pillar
+    topLeft = new paper.Point(x + startBody, y - bodyWidth / 2)
+    topRight = new paper.Point(x + startBody + 2.5 * pillarDiameter, y - outletWidth / 2)
+    bottomRight = new paper.Point(x + startBody + 2.5 * pillarDiameter, y + outletWidth / 2)
+    bottomLeft = new paper.Point(x + startBody, y + bodyWidth / 2)
 
-        serp.fillColor.alpha = 0.5;
-        return serp;
-    }
+    pillarPath = new paper.Path()
+
+    pillarPath.add(topLeft)
+    pillarPath.add(topRight)
+    pillarPath.add(bottomRight)
+    pillarPath.add(bottomLeft)
+
+    startBody += 2.5 * pillarDiameter
+
+    circ = new paper.Path.Circle(new paper.Point(x + startBody - 1.5 * pillarDiameter, y), pillarDiameter / 2)
+
+    pillarPath = pillarPath.subtract(circ)
+
+    serp.addChild(pillarPath)
+
+    // outlet
+    topLeft = new paper.Point(x + startBody, y - outletWidth / 2)
+    bottomRight = new paper.Point(x + startBody + outletLength, y + outletWidth / 2)
+
+    serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight))
+
+    serp.rotate(rotation, new paper.Point(x, y))
+
+    serp.fillColor = color
+    return serp
+  }
+
+  render2DTarget (key, params) {
+    const serp = this.render2D(params, key)
+
+    serp.fillColor.alpha = 0.5
+    return serp
+  }
 }
