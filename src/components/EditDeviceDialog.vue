@@ -6,10 +6,10 @@
                 <td>
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <tr>
-                                <v-text-field id="devicename_textinput" class="mdl-textfield__input" type="text" />
-                                <label class="mdl-textfield__label" for="devicename_textinput">Device Name</label>
-                            </tr>
+                            <td>
+                                <v-text-field id="devicename_textinput" class="mdl-textfield__input" type="text" label="Device Name" />
+                                <!-- <label class="mdl-textfield__label" for="devicename_textinput">Device Name</label> -->
+                            </td>
                         </div>
                     </form>
                 </td>
@@ -19,13 +19,13 @@
                 <td>
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <v-text-field id="xspan_textinput" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" />
-                            <label class="mdl-textfield__label" for="xspan_textinput">X-Span (mm)</label>
+                            <v-text-field id="xspan_textinput" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" label="X-Span (mm)" />
+                            <!-- <label class="mdl-textfield__label" for="xspan_textinput">X-Span (mm)</label> -->
                             <!-- <span class="mdl-textfield__error">Input is not a number!</span> -->
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <v-text-field id="yspan_textinput" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" />
-                            <label class="mdl-textfield__label" for="yspan_textinput">Y-Span (mm)</label>
+                            <v-text-field id="yspan_textinput" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" label="Y-Span (mm)" />
+                            <!-- <label class="mdl-textfield__label" for="yspan_textinput">Y-Span (mm)</label> -->
                             <!-- <span class="mdl-textfield__error">Input is not a number!</span> -->
                         </div>
                     </form>
