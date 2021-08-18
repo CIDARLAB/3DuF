@@ -28,7 +28,7 @@ export default {
         spec: {
             type: Array,
             required: false,
-            default: function() {
+            default: function () {
                 return [{ min: 0, max: 110, units: "", value: 0 }];
             }
         },
@@ -50,13 +50,13 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
         }
     },
     mounted() {
         // Setup an event for closing all the dialogs
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function () {
             this.dialog = false;
         });
         EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
@@ -93,7 +93,7 @@ export default {
         updateParameter(value, key) {
             this.activeTool.updateParameter(key, value);
         },
-        computedSpecForMINT: function(minttype) {
+        computedSpecForMINT: function (minttype) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let definition = ComponentAPI.getDefinitionForMINT(minttype);
             let spec = [];

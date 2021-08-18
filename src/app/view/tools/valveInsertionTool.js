@@ -13,7 +13,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
 
         const ref = this;
 
-        this.down = function(event) {
+        this.down = function (event) {
             console.log(event);
             const point = MouseTool.getEventPosition(event);
             const target = PositionTool.getTarget(point);
@@ -55,9 +55,9 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         }
 
         const currentlevel = Math.floor(Registry.viewManager.renderLayers.indexOf(Registry.currentLayer) / 3);
-        //const flowlayer = currentlevel * 3;
+        // const flowlayer = currentlevel * 3;
         const controllayer = currentlevel * 3 + 1;
-        //const intlayer = currentlevel * 3 + 2;
+        // const intlayer = currentlevel * 3 + 2;
 
         const newFeature = Device.makeFeature(this.typeString, overridedata);
         this.currentFeatureID = newFeature.ID;

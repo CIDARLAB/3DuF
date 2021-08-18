@@ -19,20 +19,20 @@ export default class InsertTextTool extends MouseTool {
         this._text = "TESTING-TEXT";
         this.fontSize = 12;
         this.showQueue = new SimpleQueue(
-            function() {
+            function () {
                 ref.showTarget();
             },
             20,
             false
         );
-        this.up = function(event) {
+        this.up = function (event) {
             // do nothing
         };
-        this.move = function(event) {
+        this.move = function (event) {
             ref.lastPoint = MouseTool.getEventPosition(event);
             ref.showQueue.run();
         };
-        this.down = function(event) {
+        this.down = function (event) {
             Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
@@ -48,8 +48,8 @@ export default class InsertTextTool extends MouseTool {
         //     { position: "Point" },
         //     { height: "Float", text: "String" }
         // )
-        let fixedpoint = PositionTool.getTarget(point);
-        let newFeature = Device.makeFeature(
+        const fixedpoint = PositionTool.getTarget(point);
+        const newFeature = Device.makeFeature(
             "Text",
             {
                 position: fixedpoint,
@@ -64,7 +64,7 @@ export default class InsertTextTool extends MouseTool {
         );
         // this.currentFeatureID = newFeature.ID;
         this.viewManagerDelegate.addFeature(newFeature);
-        //Registry.viewManager.renderLayers[Registry.viewManager.activeRenderLayer].addFeature(newFeature);
+        // Registry.viewManager.renderLayers[Registry.viewManager.activeRenderLayer].addFeature(newFeature);
         Registry.viewManager.saveDeviceState();
     }
 
