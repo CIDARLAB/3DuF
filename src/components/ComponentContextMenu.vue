@@ -1,5 +1,5 @@
 <template>
-    <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, height: 50, top: marginTop + 'px', left: marginLeft + 'px' }" scrollable>
+    <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, height: 100, top: marginTop + 'px', left: marginLeft + 'px' }" scrollable>
         <div>
             <thead v-show="Rename">
                 <v-col>
@@ -115,7 +115,7 @@ export default {
             this.activeMenu = !this.activeMenu;
             console.log(this.activeMenu);
 
-            console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
+            //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
 
             /**
             //Margin Left Calculation
@@ -139,12 +139,14 @@ export default {
             } else {
                 this.marginLeft = event.clientX - 180;
             }
-
+            console.log(window.innerHeight / 2);
             //Margin Right Calculation
-            if (event.clientY - 20 > window.innerHeight) {
-                this.marginTop = event.clientY + 20;
+            if (750 > event.clientY && event.clientY > 170) {
+                this.marginTop = 0;
+            } else if (event.clientY + 0 > window.innerHeight / 2) {
+                this.marginTop = event.clientY - 750;
             } else {
-                this.marginTop = event.clientY - 20;
+                this.marginTop = event.clientY + 0;
             }
 
             // Compute the from the params and then handle whatever needs to get handeled
@@ -230,6 +232,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#activateMenu {
+    height: 10px;
+}
 #buttonClass {
     margin-left: 15px;
     margin-top: 15px;
