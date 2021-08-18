@@ -22,22 +22,22 @@
                         <v-card-text>
                             <v-row no-gutters>
                                 <v-col cols="2">Source:</v-col>
-                                <v-col cols="5"
+                                <v-col cols="4"
                                     ><v-chip v-if="chip1" close color="green" text-color="white" closable @click:close="chip1 = false">{{ component }}</v-chip></v-col
                                 >
                             </v-row>
                             <v-row no-gutters>
                                 <v-col cols="2">Sinks:</v-col>
-                                <v-col cols="5"
+                                <v-col cols="4"
                                     ><v-chip v-if="chip2" close color="green" text-color="white" @click:close="chip2 = false">{{ component }}</v-chip></v-col
                                 >
-                                <v-col cols="5"
+                                <v-col cols="4"
                                     ><v-chip v-if="chip3" close color="green" text-color="white" @click:close="chip3 = false">{{ component }}</v-chip></v-col
                                 >
                             </v-row>
                             <v-row no-gutters>
                                 <v-col cols="2"></v-col>
-                                <v-col cols="5"
+                                <v-col cols="4"
                                     ><v-chip v-if="chip4" close color="green" text-color="white" @click:close="chip4 = false">{{ component }}</v-chip></v-col
                                 >
                             </v-row>
@@ -99,7 +99,7 @@ export default {
         return {
             connectionName: "NewConnection",
             spec: this.computedSpec("Connection"),
-            component: "Component Name",
+            component: "Component",
             chip1: true,
             chip2: true,
             chip3: true,
@@ -223,7 +223,7 @@ export default {
 .connection-property-drawer {
     position: absolute;
     float: left;
-    width: 1300px;
+    width: 1200px;
     left: 225px;
     top: 10px;
     z-index: 100;
