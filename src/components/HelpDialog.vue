@@ -1,9 +1,7 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="400">
         <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" text color="pink darken-1" v-on="on">
-                About/Help
-            </v-btn>
+            <v-btn v-bind="attrs" text color="pink darken-1" v-on="on"> About/Help </v-btn>
         </template>
         <v-card>
             <v-card-title class="headline"> 3DuF v1.1 </v-card-title>

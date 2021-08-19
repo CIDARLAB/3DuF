@@ -89,11 +89,11 @@ export default class ViewManager {
         // this._introDialog = new IntroDialog();
         // this._dampFabricateDialog = new DAMPFabricationDialog();
         const reference = this;
-        this.updateQueue = new SimpleQueue(function() {
+        this.updateQueue = new SimpleQueue(function () {
             reference.view.refresh();
         }, 20);
 
-        this.saveQueue = new SimpleQueue(function() {
+        this.saveQueue = new SimpleQueue(function () {
             reference.saveToStorage();
         });
 
@@ -102,7 +102,7 @@ export default class ViewManager {
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
-        this.view.setResizeFunction(function() {
+        this.view.setResizeFunction(function () {
             reference.updateGrid();
             reference.updateAlignmentMarks();
 
@@ -111,7 +111,7 @@ export default class ViewManager {
             reference.updateDevice(Registry.currentDevice);
         });
 
-        const func = function(event) {
+        const func = function (event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
@@ -124,7 +124,7 @@ export default class ViewManager {
         this.maxZoom = 5;
         this.setupTools();
         const ref = this;
-        EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true) {
+        EventBus.get().on(EventBus.UPDATE_RENDERS, function (feature, refresh = true) {
             if (ref.ensureFeatureExists(feature)) {
                 ref.view.updateFeature(feature);
                 ref.refresh(refresh);
@@ -284,7 +284,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     removeFeature(feature, refresh = true) {
-        let layer = this.getRenderLayerByID(feature.ID);
+        const layer = this.getRenderLayerByID(feature.ID);
         if (this.ensureFeatureExists(feature)) {
             this.view.removeFeature(feature);
             this.refresh(refresh);
@@ -300,8 +300,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     removeFeatureByID(featureID, refresh = true) {
-        let layer = this.getRenderLayerByID(featureID);
-        let feature = layer.getFeature(featureID);
+        const layer = this.getRenderLayerByID(featureID);
+        const feature = layer.getFeature(featureID);
         if (this.ensureFeatureExists(feature)) {
             this.view.removeFeature(feature);
             this.refresh(refresh);
@@ -331,12 +331,12 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     createNewLayerBlock() {
-        //Generate model layers
-        let newlayers = [];
+        // Generate model layers
+        const newlayers = [];
         newlayers[0] = new Layer({ z_offset: 0, flip: false }, "flow");
         newlayers[1] = new Layer({ z_offset: 0, flip: false }, "control");
         newlayers[2] = new Layer({ z_offset: 0, flip: false }, "integration");
-        //Add model layers to current device
+        // Add model layers to current device
         Registry.currentDevice.createNewLayerBlock(newlayers);
 
         // Find all the edge features
@@ -420,7 +420,7 @@ export default class ViewManager {
 
     setActiveRenderLayer(index) {
         this.activeRenderLayer = index;
-        Registry.currentLayer = this.renderLayers[index]; //Registry.currentDevice.layers[index];
+        Registry.currentLayer = this.renderLayers[index]; // Registry.currentDevice.layers[index];
         this.updateActiveLayer();
     }
 
@@ -890,7 +890,7 @@ export default class ViewManager {
                     //     const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
                     //     this.renderLayers.push(newRenderLayer);
                     // }
-                    let ret = LoadUtils.loadFromScratch(json);
+                    const ret = LoadUtils.loadFromScratch(json);
                     console.log("Ret: ", ret);
                     device = ret[0];
                     Registry.currentDevice = device;
@@ -1129,7 +1129,7 @@ export default class ViewManager {
      */
 
     getFeatureByID(featureID) {
-        let layer = this.getRenderLayerByID(featureID);
+        const layer = this.getRenderLayerByID(featureID);
         return layer.getFeature(featureID);
     }
 
@@ -1141,7 +1141,7 @@ export default class ViewManager {
      */
     getRenderLayerByID(featureID) {
         for (let i = 0; i < this.renderLayers.length; i++) {
-            let layer = this.renderLayers[i];
+            const layer = this.renderLayers[i];
             if (layer.containsFeatureID(featureID)) {
                 return layer;
             }
@@ -1249,11 +1249,11 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     setupDragAndDropLoad(selector) {
-        const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
             const f = files[0];
 
             const reader = new FileReader();
-            reader.onloadend = function(e) {
+            reader.onloadend = function (e) {
                 let result = this.result;
                 // try {
                 result = JSON.parse(result);

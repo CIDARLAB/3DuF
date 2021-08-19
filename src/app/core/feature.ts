@@ -129,7 +129,7 @@ export default class Feature {
             params: this._params.toJSON(),
             type: this._fabtype,
             referenceID: this._referenceID,
-            dxfData: this._dxfObjects.map(function(dxfObject) {
+            dxfData: this._dxfObjects.map(function (dxfObject) {
                 return dxfObject.toJSON();
             })
         };
@@ -297,7 +297,7 @@ export default class Feature {
             this._name,
             ComponentAPI.generateID(),
             "XY",
-            this._dxfObjects.map(function(dxfObject) {
+            this._dxfObjects.map(function (dxfObject) {
                 return dxfObject.toJSON();
             })
         );

@@ -90,24 +90,24 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "ml-4", "mb-2", "btn"];
         },
-        topLeft: function() {
+        topLeft: function () {
             return { x: 0, y: 0 };
         },
-        topRight: function() {
+        topRight: function () {
             return { x: 0, y: 0 };
         },
-        bottomLeft: function() {
+        bottomLeft: function () {
             return { x: 0, y: 0 };
         },
-        bottomRight: function() {
+        bottomRight: function () {
             return { x: 0, y: 0 };
         }
     },
     watch: {
-        dialog: function(newValue) {
+        dialog: function (newValue) {
             if (newValue) {
                 // Close the move dialog
                 this.$emit("close");
@@ -126,7 +126,7 @@ export default {
             this.activated = false;
         });
 
-        (function() {
+        (function () {
             // make vuetify dialogs movable
             const d = {};
             document.addEventListener("mousedown", e => {

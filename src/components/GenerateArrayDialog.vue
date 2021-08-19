@@ -10,16 +10,12 @@
             <v-card-title class="text-h5 lighten-2"> Generate Array </v-card-title>
 
             <v-card-text>
-                <v-row>
-                    Generate:
-                </v-row>
+                <v-row> Generate: </v-row>
                 <v-row>
                     <v-text-field v-model="dimx" label="Dim X" type="number" step="1" min="1" required></v-text-field>
                     <v-text-field v-model="dimy" label="Dim Y" type="number" step="1" min="1" required></v-text-field>
                 </v-row>
-                <v-row>
-                    Spacing:
-                </v-row>
+                <v-row> Spacing: </v-row>
                 <v-row>
                     <v-text-field v-model="spacingX" label="X Spacing (mm)" type="number" step="1" min="0" required></v-text-field>
                     <v-text-field v-model="spacingY" label="Y Spacing (mm)" type="number" step="1" min="0" required></v-text-field>
@@ -65,7 +61,7 @@ export default {
         };
     },
     watch: {
-        dialog: function(newValue) {
+        dialog: function (newValue) {
             if (newValue) {
                 this.$emit("close");
                 Registry.viewManager.activateTool("GenerateArrayTool");
@@ -82,7 +78,7 @@ export default {
             this.activated = false;
         });
 
-        (function() {
+        (function () {
             // make vuetify dialogs movable
             const d = {};
             document.addEventListener("mousedown", e => {

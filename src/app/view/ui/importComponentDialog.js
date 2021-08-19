@@ -25,7 +25,7 @@ export default class ImportComponentDialog {
         const ref = this;
 
         // Enable dialog show
-        this.__showDialogButton.addEventListener("click", function(event) {
+        this.__showDialogButton.addEventListener("click", function (event) {
             ref.__dialog.showModal();
             paper.projects[1].activate();
             // let test = new paper.Rectangle(new paper.Point(0,0), 500, 500);
@@ -35,7 +35,7 @@ export default class ImportComponentDialog {
         });
 
         // Enable close button
-        this.__dialog.querySelector(".close").addEventListener("click", function() {
+        this.__dialog.querySelector(".close").addEventListener("click", function () {
             ref.__dialog.close();
 
             // Clear the canvas
@@ -45,7 +45,7 @@ export default class ImportComponentDialog {
             paper.projects[0].activate();
         });
 
-        this.__importComponentButton.addEventListener("click", function(event) {
+        this.__importComponentButton.addEventListener("click", function (event) {
             ref.importComponent();
             ref.__dialog.close();
 
@@ -75,11 +75,11 @@ export default class ImportComponentDialog {
      */
     __setupDragAndDropLoad(selector) {
         const ref = this;
-        const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
             const f = files[0];
 
             const reader = new FileReader();
-            reader.onloadend = function(e) {
+            reader.onloadend = function (e) {
                 ref.__loadDXFData(this.result);
             };
             try {
