@@ -1,5 +1,5 @@
 <template>
-    <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, top: marginTop + 'px', left: marginLeft + 'px' }">
+    <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, height: 100, top: marginTop + 'px', left: marginLeft + 'px' }" scrollable>
         <div>
             <thead v-show="Rename">
                 <v-col>
@@ -137,19 +137,21 @@ export default {
                 this.marginTop = event.clientY - 20;
             }
             **/
-
+            console.log(window.innerWidth / 2);
             //Margin Left Calculation
-            if (event.clientX + 30 > window.innerWidth) {
-                this.marginLeft = event.clientX - 30;
+            if (event.clientX - 150 > window.innerWidth / 2) {
+                this.marginLeft = event.clientX - 800;
             } else {
-                this.marginLeft = event.clientX + 30;
+                this.marginLeft = event.clientX - 180;
             }
-
+            console.log(window.innerHeight / 2);
             //Margin Right Calculation
-            if (event.clientY - 20 > window.innerHeight) {
-                this.marginTop = event.clientY + 20;
+            if (750 > event.clientY && event.clientY > 170) {
+                this.marginTop = 0;
+            } else if (event.clientY + 0 > window.innerHeight / 2) {
+                this.marginTop = event.clientY - 750;
             } else {
-                this.marginTop = event.clientY - 20;
+                this.marginTop = event.clientY + 0;
             }
 
             // Compute the from the params and then handle whatever needs to get handeled
@@ -235,6 +237,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#activateMenu {
+    height: 10px;
+}
 #buttonClass {
     margin-left: 15px;
     margin-top: 15px;
