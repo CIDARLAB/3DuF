@@ -56,7 +56,7 @@
 
                 <h5>Designs From Literature</h5>
                 Check the various designs from microfluidic literature recreated in 3DµF can be found
-                <a href="https://cidarlab.github.io/3DuF-Paper-Designs/" target="_blank">here</a>.
+                <a href="https://cidarlab.github.io/3DuF-Paper-Designs/" target="_blank" rel="noopener noreferrer">here</a>.
                 <h5>Usage</h5>
                 <table class="tg">
                     <tr>

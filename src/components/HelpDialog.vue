@@ -10,9 +10,9 @@
             <v-card-text>
                 <img src="img/cidar_logo.png" width="100%" />
                 3DuF is microfluidic design environment developed by
-                <a href="http://cidarlab.org" target="_blank">CIDAR</a>. For any help or queries, please send an email to
+                <a href="http://cidarlab.org" target="_blank" rel="noopener noreferrer">CIDAR</a>. For any help or queries, please send an email to
                 <a href="mailto: 3dufhelp@gmail.com">3dufhelp@gmail.com</a>. Source code, issue tracking and feature requests are available at
-                <a href="https://github.com/CIDARLAB/3DuF/" target="_blank">Github</a>.
+                <a href="https://github.com/CIDARLAB/3DuF/" target="_blank" rel="noopener noreferrer">Github</a>.
                 <hr />
                 Developed by: Aaron Heuckroth, Joshua Lippai and Radhakrishna Sanka.
                 <hr />
