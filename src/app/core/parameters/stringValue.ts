@@ -4,7 +4,7 @@ export default class StringValue extends Parameter {
     static readonly typeString: string = "String";
     static readonly description: string = "StringValue must be a String, such as 'foobar'";
 
-    constructor(value: string | String) {
+    constructor(value: string) {
         super("String", value);
     }
 

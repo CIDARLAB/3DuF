@@ -137,8 +137,8 @@ export function renderFeature(feature, key = null) {
         }
 
         const primParams = {};
-        for (const key in params) {
-            primParams[key] = feature.getValue(params[key]);
+        for (const paramkey in params) {
+            primParams[paramkey] = feature.getValue(params[paramkey]);
         }
         primParams.color = getLayerColor(feature);
         primParams.baseColor = getBaseColor(feature);

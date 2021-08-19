@@ -24,8 +24,8 @@ export function sanitizeJSON(json) {
         const feature_layer = features_layers[i];
         const features = feature_layer.features;
         console.log(features);
-        for (const i in features) {
-            const feature = features[i];
+        for (const j in features) {
+            const feature = features[j];
 
             if (Object.prototype.hasOwnProperty.call(feature, "params")) {
                 const params = feature.params;

@@ -33,9 +33,9 @@ export default class PaperComponentPortView {
         for (const i in components) {
             const component = components[i];
             const renders = ComponentPortRenderer2D.renderComponentPorts(component);
-            for (const i in renders) {
-                this._activeRenders.push(renders[i]);
-                this._paperlayer.addChild(renders[i]);
+            for (const j in renders) {
+                this._activeRenders.push(renders[j]);
+                this._paperlayer.addChild(renders[j]);
             }
         }
     }

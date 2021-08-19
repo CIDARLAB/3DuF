@@ -362,7 +362,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    updateObjectReference(objectID: string | String, featureID: string): void {
+    updateObjectReference(objectID: string, featureID: string): void {
         //Goes through the components to update the reference
         let component: Component;
         let foundflag = false;
@@ -844,7 +844,7 @@ export default class Device {
      * @return {Connection|null}
      * @memberof Device
      */
-    getConnectionForFeatureID(id: string | String): Connection | null {
+    getConnectionForFeatureID(id: string): Connection | null {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
             //go through each component's features
@@ -915,7 +915,7 @@ export default class Device {
      * @return {Component}
      * @memberof Device
      */
-    getComponentByID(key: string | String): Component | null {
+    getComponentByID(key: string): Component | null {
         for (let i in this.__components) {
             let component = this.__components[i];
             if (component.id === key) {
@@ -932,7 +932,7 @@ export default class Device {
      * @return {Connection}
      * @memberof Device
      */
-    getConnectionByID(key: string | String): Connection | null {
+    getConnectionByID(key: string): Connection | null {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
             if (connection.id === key) {
@@ -949,7 +949,7 @@ export default class Device {
      * @return {Component|null}
      * @memberof Device
      */
-    getComponentByName(name: string | String): Component {
+    getComponentByName(name: string): Component {
         let components = this.__components;
         for (let i in components) {
             if (name == components[i].name) {

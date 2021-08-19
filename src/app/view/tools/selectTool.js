@@ -184,8 +184,8 @@ export default class SelectTool extends MouseTool {
                 } else {
                     // Belongs to the component so we basically select all features with this id
                     const featureIDs = component.featureIDs;
-                    for (const i in featureIDs) {
-                        const featureid = featureIDs[i];
+                    for (const j in featureIDs) {
+                        const featureid = featureIDs[j];
                         const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
                         actualfeature.selected = true;
                     }
