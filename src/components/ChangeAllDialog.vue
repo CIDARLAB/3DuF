@@ -64,14 +64,14 @@ export default {
     },
     computed: {
         selectAll: {
-            get: function() {
+            get: function () {
                 return this.components ? this.selected.length == this.components.length : false;
             },
-            set: function(value) {
+            set: function (value) {
                 var selected = [];
 
                 if (value) {
-                    this.components.forEach(function(component) {
+                    this.components.forEach(function (component) {
                         selected.push(component.id);
                     });
                 }
@@ -81,7 +81,7 @@ export default {
         }
     },
     watch: {
-        dialog: function(newValue) {
+        dialog: function (newValue) {
             if (newValue) {
                 // Dialog is activated
                 this.$emit("close");
@@ -96,7 +96,7 @@ export default {
                         }
                     }
                 }
-                this.components = similarComponents.map(function(component) {
+                this.components = similarComponents.map(function (component) {
                     return { id: component.id, name: component.name };
                 });
             } else {
@@ -107,7 +107,7 @@ export default {
     },
     mounted() {
         // Setup an event for closing all the dialogs
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function () {
             this.dialog = false;
         });
         Vue.set(this.callbacks, "close", callback => {

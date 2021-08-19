@@ -76,7 +76,7 @@ export default class CustomComponentToolBar {
 
         const ref = this;
         const registryref = Registry;
-        mainbutton.addEventListener("click", function(e) {
+        mainbutton.addEventListener("click", function (e) {
             // console.log(e);
             // let identifier = e.target.dataset.type;
             // console.log("Main Button was clicked:", identifier);

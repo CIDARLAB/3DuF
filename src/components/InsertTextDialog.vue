@@ -57,7 +57,7 @@ export default {
         layers: []
     }),
     computed: {
-        displayLayers: function() {
+        displayLayers: function () {
             let ret = this.layers.map((layer, index) => {
                 let item = `Layer ${Math.floor(index / 3) + 1} - ${layer.name}`;
                 return item;
