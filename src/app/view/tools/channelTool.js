@@ -18,7 +18,7 @@ export default class ChannelTool extends MouseTool {
         const ref = this;
 
         this.showQueue = new SimpleQueue(
-            function() {
+            function () {
                 ref.showTarget();
             },
             20,
@@ -26,24 +26,24 @@ export default class ChannelTool extends MouseTool {
         );
 
         this.updateQueue = new SimpleQueue(
-            function() {
+            function () {
                 ref.updateChannel();
             },
             20,
             false
         );
 
-        this.down = function(event) {
+        this.down = function (event) {
             Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
             ref.dragging = true;
             ref.initChannel();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             ref.dragging = false;
             ref.finishChannel(MouseTool.getEventPosition(event));
         };
-        this.move = function(event) {
+        this.move = function (event) {
             ref.lastPoint = MouseTool.getEventPosition(event);
             if (ref.dragging) {
                 ref.updateQueue.run();

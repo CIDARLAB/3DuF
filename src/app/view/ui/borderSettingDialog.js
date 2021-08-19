@@ -26,19 +26,19 @@ export default class BorderSettingsDialog {
 
         const ref = this;
 
-        this.__dialog.querySelector(".close").addEventListener("click", function() {
+        this.__dialog.querySelector(".close").addEventListener("click", function () {
             ref.__dialog.close();
         });
 
         const registryref = Registry;
         if (this.__editBorderDialogButton) {
-            this.__editBorderDialogButton.addEventListener("click", function(event) {
+            this.__editBorderDialogButton.addEventListener("click", function (event) {
                 ref.__dialog.showModal();
             });
         }
 
         if (this.__deleteBorderButton) {
-            this.__deleteBorderButton.addEventListener("click", function(event) {
+            this.__deleteBorderButton.addEventListener("click", function (event) {
                 console.log("Generate border clicked");
                 // registryref.viewManager.generateBorder();
                 registryref.viewManager.deleteBorder();
@@ -48,7 +48,7 @@ export default class BorderSettingsDialog {
         }
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             // console.log(reader.result);
             ref.loadDXFText(reader.result);
         };
@@ -56,7 +56,7 @@ export default class BorderSettingsDialog {
         if (this.__dxffileinput) {
             this.__dxffileinput.addEventListener(
                 "change",
-                function() {
+                function () {
                     const file = this.files[0];
                     console.log(file.name);
                     console.log(file.size);
@@ -67,7 +67,7 @@ export default class BorderSettingsDialog {
         }
 
         if (this.__importBorderButton) {
-            this.__importBorderButton.addEventListener("click", function(event) {
+            this.__importBorderButton.addEventListener("click", function (event) {
                 console.log("import button clicked");
                 registryref.viewManager.deleteBorder();
                 registryref.viewManager.importBorder(ref.getDXFObject());
@@ -106,11 +106,11 @@ export default class BorderSettingsDialog {
      */
     __setupDragAndDropLoad(selector) {
         const ref = this;
-        const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
             const f = files[0];
 
             const reader = new FileReader();
-            reader.onloadend = function(e) {
+            reader.onloadend = function (e) {
                 ref.__loadDXFData(this.result);
             };
             try {
