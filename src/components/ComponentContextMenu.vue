@@ -132,16 +132,16 @@ export default {
                 this.marginTop = event.clientY - 20;
             }
             **/
-            console.log(window.innerWidth / 2);
+            //console.log(window.innerWidth / 2);
             //Margin Left Calculation
             if (event.clientX - 150 > window.innerWidth / 2) {
                 this.marginLeft = event.clientX - 800;
             } else {
                 this.marginLeft = event.clientX - 180;
             }
-            console.log(window.innerHeight / 2);
-            //Margin Right Calculation
-            if (750 > event.clientY && event.clientY > 170) {
+            //console.log(window.innerHeight / 2);
+            //Margin Top Calculation
+            if (window.innerHeight / 1.2 >= event.clientY && event.clientY >= window.innerHeight / 6) {
                 this.marginTop = 0;
             } else if (event.clientY + 0 > window.innerHeight / 2) {
                 this.marginTop = event.clientY - 750;
