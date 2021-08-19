@@ -19,29 +19,30 @@
 
                 <table>
                     <tr>
-                        <td>
-                            <iframe
-                                width="355"
-                                height="200"
-                                src="https://www.youtube.com/embed/05nU8eQ73U8"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen
-                            />
-                        </td>
-                        <td>
-                            <iframe
-                                width="355"
-                                height="200"
-                                src="https://www.youtube.com/embed/YOrnnZjma28"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen
-                            />
-                        </td>
+                        <iframe
+                            width="355"
+                            height="200"
+                            src="https://www.youtube.com/embed/05nU8eQ73U8"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                        />
                     </tr>
                     <tr>
                         <td style="text-align: center">Introduction</td>
+                    </tr>
+
+                    <tr>
+                        <iframe
+                            width="355"
+                            height="200"
+                            src="https://www.youtube.com/embed/YOrnnZjma28"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                        />
+                    </tr>
+                    <tr>
                         <td style="text-align: center">Long Tutorial</td>
                     </tr>
                 </table>
@@ -55,7 +56,7 @@
 
                 <h5>Designs From Literature</h5>
                 Check the various designs from microfluidic literature recreated in 3DµF can be found
-                <a href="https://cidarlab.github.io/3DuF-Paper-Designs/" target="_blank">here</a>.
+                <a href="https://cidarlab.github.io/3DuF-Paper-Designs/" target="_blank" rel="noopener noreferrer">here</a>.
                 <h5>Usage</h5>
                 <table class="tg">
                     <tr>
