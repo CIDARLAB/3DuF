@@ -7,7 +7,7 @@
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <td>
-                                <v-text-field id="devicename_textinput" class="mdl-textfield__input" type="text" label="Device Name" />
+                                <v-text-field v-model="deviceName" type="text" label="Device Name" />
                                 <!-- <label class="mdl-textfield__label" for="devicename_textinput">Device Name</label> -->
                             </td>
                         </div>
@@ -19,12 +19,12 @@
                 <td>
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <v-text-field id="xspan_textinput" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" label="X-Span (mm)" />
+                            <v-text-field v-model="xspan" pattern="-?[0-9]*(\.[0-9]+)?" label="X-Span (mm)" />
                             <!-- <label class="mdl-textfield__label" for="xspan_textinput">X-Span (mm)</label> -->
                             <!-- <span class="mdl-textfield__error">Input is not a number!</span> -->
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <v-text-field id="yspan_textinput" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" label="Y-Span (mm)" />
+                            <v-text-field v-model="yspan" pattern="-?[0-9]*(\.[0-9]+)?" label="Y-Span (mm)" />
                             <!-- <label class="mdl-textfield__label" for="yspan_textinput">Y-Span (mm)</label> -->
                             <!-- <span class="mdl-textfield__error">Input is not a number!</span> -->
                         </div>
@@ -41,18 +41,32 @@
 
 <script>
 import Dialog from "@/components/base/Dialog.vue";
+import Registry from "@/app/core/registry";
+
 export default {
     components: {
         Dialog
     },
     data() {
         return {
-            dialog: false
+            dialog: false,
+            deviceName: "",
+            xspan: "",
+            yspan: ""
         };
+    },
+    mounted() {
+        setTimeout(() => {
+            this.deviceName = Registry.currentDevice.name;
+            this.xspan = Registry.currentDevice.getXSpan() / 1000;
+            this.yspan = Registry.currentDevice.getYSpan() / 1000;
+        }, 100);
     },
     methods: {
         onSave() {
-            console.log("Saved data for Edit Device");
+            Registry.currentDevice.name = this.deviceName;
+            Registry.currentDevice.setXSpan(this.xspan * 1000);
+            Registry.currentDevice.setYSpan(this.yspan * 1000);
         }
     }
 };

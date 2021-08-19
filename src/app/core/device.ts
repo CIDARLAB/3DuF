@@ -742,7 +742,7 @@ export default class Device {
      * @returns {void}
      */
     setXSpan(value: number): void {
-        this.__params.updateParameter("width", value);
+        this.__params.updateParameter("x-span", value);
     }
 
     /**
@@ -752,7 +752,7 @@ export default class Device {
      * @returns {void}
      */
     setYSpan(value: number): void {
-        this.__params.updateParameter("length", value);
+        this.__params.updateParameter("y-span", value);
     }
 
     /**
@@ -761,7 +761,7 @@ export default class Device {
      * @memberof Device
      */
     getXSpan(): number {
-        return this.__params.getValue("width");
+        return this.__params.getValue("x-span");
     }
 
     /**
@@ -770,7 +770,7 @@ export default class Device {
      * @memberof Device
      */
     getYSpan(): number {
-        return this.__params.getValue("length");
+        return this.__params.getValue("y-span");
     }
 
     /**

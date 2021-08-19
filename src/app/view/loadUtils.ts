@@ -44,16 +44,16 @@ export default class LoadUtils {
             if (Object.prototype.hasOwnProperty.call(json.params, "width") && Object.prototype.hasOwnProperty.call(json.params, "length")) {
                 newDevice = new Device(
                     {
-                        width: json.params.width,
-                        length: json.params.length
+                        "x-span": json.params.width,
+                        "y-span": json.params.length
                     },
                     json.name
                 );
             } else {
                 newDevice = new Device(
                     {
-                        width: 135000,
-                        length: 85000
+                        "x-span": 135000,
+                        "y-span": 85000
                     },
                     json.name
                 );
