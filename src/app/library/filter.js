@@ -45,19 +45,19 @@ export default class Filter extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            height: "&mu;m",
-            pillarDiameter: "&mu;m",
-            filterWidth: "&mu;m",
-            barrierWidth: "&mu;m",
-            filterLength: "&mu;m",
+            componentSpacing: "μm",
+            rotation: "°",
+            height: "μm",
+            pillarDiameter: "μm",
+            filterWidth: "μm",
+            barrierWidth: "μm",
+            filterLength: "μm",
             filterNumber: "",
             levelNumber: "",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            outletWidth: "&mu;m",
-            outletLength: "&mu;m"
+            inletWidth: "μm",
+            inletLength: "μm",
+            outletWidth: "μm",
+            outletLength: "μm"
         };
 
         this.__minimum = {

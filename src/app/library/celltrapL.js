@@ -35,14 +35,14 @@ export default class CellTrapL extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            chamberLength: "&mu;m",
-            feedingChannelWidth: "&mu;m",
-            rotation: "&deg;",
-            chamberWidth: "&mu;m",
+            componentSpacing: "μm",
+            chamberLength: "μm",
+            feedingChannelWidth: "μm",
+            rotation: "°",
+            chamberWidth: "μm",
             numberOfChambers: "",
-            chamberSpacing: "&mu;m",
-            height: "&mu;m"
+            chamberSpacing: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

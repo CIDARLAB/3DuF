@@ -35,18 +35,18 @@ export default class ChemostatRing extends Template {
         };
 
         this.__units = {
-            bendSpacing: "&mu;m",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
-            componentSpacing: "&mu;m",
-            flowChannelWidth: "&mu;m",
-            controlChannelWidth: "&mu;m",
-            chemostatChannelWidth: "&mu;m",
-            radius: "&mu;m",
-            rotation: "&deg;",
-            volume: "&mu;m3",
-            height: "&mu;m"
+            channelWidth: "μm",
+            bendLength: "μm",
+            componentSpacing: "μm",
+            flowChannelWidth: "μm",
+            controlChannelWidth: "μm",
+            chemostatChannelWidth: "μm",
+            radius: "μm",
+            rotation: "°",
+            volume: "μm3",
+            height: "μm"
         };
 
         this.__minimum = {

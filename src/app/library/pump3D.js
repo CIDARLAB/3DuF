@@ -35,15 +35,15 @@ export default class Pump3D extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            rotation: "&deg;",
-            spacing: "&mu;m",
-            flowChannelWidth: "&mu;m"
+            componentSpacing: "μm",
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            rotation: "°",
+            spacing: "μm",
+            flowChannelWidth: "μm"
         };
 
         this.__minimum = {

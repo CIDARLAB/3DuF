@@ -23,8 +23,8 @@ export default class RoundedChannel extends Template {
         };
 
         this.__units = {
-            channelWidth: "&mu;m",
-            height: "&mu;m"
+            channelWidth: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

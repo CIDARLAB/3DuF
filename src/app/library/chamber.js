@@ -31,12 +31,12 @@ export default class Chamber extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m",
-            cornerRadius: "&mu;m",
-            rotation: "&deg;"
+            componentSpacing: "μm",
+            width: "μm",
+            length: "μm",
+            height: "μm",
+            cornerRadius: "μm",
+            rotation: "°"
         };
 
         this.__minimum = {

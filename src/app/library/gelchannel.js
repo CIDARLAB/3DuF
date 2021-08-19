@@ -33,13 +33,13 @@ export default class Gelchannel extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            sideWidth: "&mu;m",
-            mainWidth: "&mu;m",
-            rotation: "&deg;",
-            length: "&mu;m",
-            height: "&mu;m",
-            sideheight: "&mu;m"
+            componentSpacing: "μm",
+            sideWidth: "μm",
+            mainWidth: "μm",
+            rotation: "°",
+            length: "μm",
+            height: "μm",
+            sideheight: "μm"
         };
 
         this.__minimum = {

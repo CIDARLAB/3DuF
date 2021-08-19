@@ -24,9 +24,9 @@ export default class RectValve extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            portRadius: "&mu;m",
-            height: "&mu;m"
+            componentSpacing: "μm",
+            portRadius: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

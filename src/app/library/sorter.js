@@ -57,25 +57,25 @@ export default class Sorter extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            height: "&mu;m",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
-            outletWidth: "&mu;m",
-            angle: "&deg;",
-            wasteWidth: "&mu;m",
-            outputLength: "&mu;m",
-            keepWidth: "&mu;m",
-            pressureWidth: "&mu;m",
-            pressureSpacing: "&mu;m",
-            numberofDistributors: "&mu;m",
-            channelDepth: "&mu;m",
-            electrodeDepth: "&mu;m",
-            pressureDepth: "&mu;m"
+            componentSpacing: "μm",
+            rotation: "°",
+            height: "μm",
+            inletWidth: "μm",
+            inletLength: "μm",
+            electrodeDistance: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
+            outletWidth: "μm",
+            angle: "°",
+            wasteWidth: "μm",
+            outputLength: "μm",
+            keepWidth: "μm",
+            pressureWidth: "μm",
+            pressureSpacing: "μm",
+            numberofDistributors: "μm",
+            channelDepth: "μm",
+            electrodeDepth: "μm",
+            pressureDepth: "μm"
         };
 
         this.__minimum = {

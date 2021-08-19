@@ -33,13 +33,13 @@ export default class LLChamber extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m",
-            spacing: "&mu;m",
+            componentSpacing: "μm",
+            width: "μm",
+            length: "μm",
+            height: "μm",
+            spacing: "μm",
             numberOfChambers: "10",
-            rotation: "&deg;"
+            rotation: "°"
         };
 
         this.__minimum = {

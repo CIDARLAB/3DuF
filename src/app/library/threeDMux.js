@@ -43,18 +43,18 @@ export default class ThreeDMux extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
+            componentSpacing: "μm",
             in: "",
             out: "",
-            rotation: "&deg;",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            valveSpacing: "&mu;m",
-            channelWidth: "&mu;m",
-            controlChannelWidth: "&mu;m"
+            rotation: "°",
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            valveSpacing: "μm",
+            channelWidth: "μm",
+            controlChannelWidth: "μm"
         };
 
         this.__minimum = {

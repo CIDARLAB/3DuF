@@ -35,14 +35,14 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            oilChannelWidth: "&mu;m",
-            height: "&mu;m",
-            waterChannelWidth: "&mu;m",
-            radius: "&mu;m",
-            length: "&mu;m",
-            rotation: "&deg;",
-            angle: "&deg;"
+            componentSpacing: "μm",
+            oilChannelWidth: "μm",
+            height: "μm",
+            waterChannelWidth: "μm",
+            radius: "μm",
+            length: "μm",
+            rotation: "°",
+            angle: "°"
         };
 
         this.__minimum = {

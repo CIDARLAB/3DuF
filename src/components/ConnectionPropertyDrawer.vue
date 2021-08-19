@@ -3,75 +3,62 @@
         <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">Connection</v-btn>
         <div ref="drawer" class="connection-property-drawer">
             <v-card v-if="activated">
-                <v-row>
-                    <v-col>
-                        <v-card-text>
+                <v-card-text>
+                    <v-row>
+                        <v-col>
+                            <v-card-text>
+                                <v-row>
+                                    <v-card-title class="subtitle-1 pb-0">{{ connectionName }}</v-card-title>
+                                    <v-icon size="20px" class="pencil" @click="startConnection()">mdi-pencil</v-icon>
+                                    <div class="pt-5 pl-16 d-block">{{ current_connection_suggestion }}</div>
+                                </v-row>
+                                <v-row cols="2">
+                                    <!-- Connection properties -->
+                                    <PropertyBlock title="Connection" :spec="spec" />
+                                </v-row>
+                            </v-card-text>
+                        </v-col>
+                        <v-divider vertical inset></v-divider>
+                        <v-col>
+                            <v-card-text>
+                                <v-row no-gutters>
+                                    Source:
+                                    <v-col cols="4"
+                                        ><v-chip v-if="chip1" small close color="green" text-color="white" closable @click:close="chip1 = false">{{ component }}</v-chip></v-col
+                                    >
+                                </v-row>
+                                <v-row no-gutters>
+                                    Sinks:
+                                </v-row>
+                                <v-row no-gutters>
+                                    <v-col cols="4"
+                                        ><v-chip v-if="chip2" small close color="green" text-color="white" @click:close="chip2 = false">{{ component }}</v-chip></v-col
+                                    >
+                                    <v-col cols="5"
+                                        ><v-chip v-if="chip3" small close color="green" text-color="white" @click:close="chip3 = false">{{ component }}</v-chip></v-col
+                                    >
+                                </v-row>
+                                <v-row no-gutters>
+                                    <v-col cols="5"
+                                        ><v-chip v-if="chip4" small close color="green" text-color="white" @click:close="chip4 = false">{{ component }}</v-chip></v-col
+                                    >
+                                </v-row>
+                            </v-card-text>
+                        </v-col>
+                        <v-divider vertical inset></v-divider>
+                        <v-col cols="3">
+                            <v-row no-gutters>
+                                Connection Profile
+                            </v-row>
+                            <v-row no-gutters>
+                                <v-select v-model="selectedProfile" :items="connectionProfiles"></v-select>
+                            </v-row>
                             <v-row>
-                                <v-card-title class="subtitle-1 pb-0">{{ connectionName }}</v-card-title>
-                                <v-icon size="20px" class="pencil" @click="startConnection()">mdi-pencil</v-icon>
-                                <div class="pt-5 pl-16 d-block">{{ current_connection_suggestion }}</div>
+                                <v-img max-height="150" max-width="150" src="@/assets/technology/CHANNEL.png" class="image-placeholder"></v-img>
                             </v-row>
-                            <v-row>
-                                <!-- Connection properties -->
-                                <PropertyBlock title="Connection" :spec="spec" />
-                            </v-row>
-                        </v-card-text>
-                    </v-col>
-                    <v-divider vertical inset></v-divider>
-                    <v-col>
-                        <v-card-text>
-                            <v-row no-gutters>
-                                <v-col cols="2">Source:</v-col>
-                                <v-col cols="4"
-                                    ><v-chip v-if="chip1" close color="green" text-color="white" closable @click:close="chip1 = false">{{ component }}</v-chip></v-col
-                                >
-                            </v-row>
-                            <v-row no-gutters>
-                                <v-col cols="2">Sinks:</v-col>
-                                <v-col cols="4"
-                                    ><v-chip v-if="chip2" close color="green" text-color="white" @click:close="chip2 = false">{{ component }}</v-chip></v-col
-                                >
-                                <v-col cols="4"
-                                    ><v-chip v-if="chip3" close color="green" text-color="white" @click:close="chip3 = false">{{ component }}</v-chip></v-col
-                                >
-                            </v-row>
-                            <v-row no-gutters>
-                                <v-col cols="2"></v-col>
-                                <v-col cols="4"
-                                    ><v-chip v-if="chip4" close color="green" text-color="white" @click:close="chip4 = false">{{ component }}</v-chip></v-col
-                                >
-                            </v-row>
-                        </v-card-text>
-                    </v-col>
-                    <v-divider vertical inset></v-divider>
-                    <v-col cols="3">
-                        <v-row no-gutters>
-                            <v-col cols="4" class="connection-profile">Connection Profile</v-col>
-                            <v-col cols="1"></v-col>
-                            <v-col cols="5">
-                                <v-menu offset-y>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn id="dropdown" color="orange" class="white--text" v-bind="attrs" v-on="on">DROPDOWN</v-btn>
-                                    </template>
-                                    <v-list>
-                                        <v-list-item v-for="(item, index) in items" :key="index">
-                                            <v-list-item-title>{{ item.title }}</v-list-item-title></v-list-item
-                                        >
-                                    </v-list>
-                                </v-menu>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-img
-                                lazy-src="https://picsum.photos/id/11/10/6"
-                                max-height="150"
-                                max-width="150"
-                                src="https://picsum.photos/id/11/500/300"
-                                class="image-placeholder"
-                            ></v-img>
-                        </v-row>
-                    </v-col>
-                </v-row>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
             </v-card>
         </div>
     </div>
@@ -109,7 +96,10 @@ export default {
             isEditing: false,
             items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }],
             connection_suggestions: { state1: "Left Click to Choose a Point", state2: "Right Click to End Connection" },
-            current_connection_suggestion: "Left Click to Choose a Point"
+            current_connection_suggestion: "Left Click to Choose a Point",
+            connectionProfiles: [],
+            selectedProfile: "",
+            previews: { CHANNEL: "@/assets/technology/CHANNEL.png" }
         };
     },
     computed: {
@@ -124,6 +114,9 @@ export default {
             ref.activated = false;
         });
         EventBus.get().on(EventBus.RIGHT_CLICK, this.endConnection);
+        // Load the connection profiles
+        this.connectionProfiles = ComponentAPI.getConnectionTypes();
+        this.selectedProfile = this.connectionProfiles[0];
     },
     methods: {
         computedSpec: function(threeduftype) {
@@ -223,7 +216,7 @@ export default {
 .connection-property-drawer {
     position: absolute;
     float: left;
-    width: 1200px;
+    width: 1000px;
     left: 225px;
     top: 10px;
     z-index: 100;

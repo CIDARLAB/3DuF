@@ -41,17 +41,17 @@ export default class Mux extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            flowChannelWidth: "&mu;m",
-            rotation: "&deg;",
-            spacing: "&mu;m",
+            componentSpacing: "μm",
+            flowChannelWidth: "μm",
+            rotation: "°",
+            spacing: "μm",
             in: "",
             out: "",
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m",
-            stageLength: "&mu;m",
-            controlChannelWidth: "&mu;m"
+            width: "μm",
+            length: "μm",
+            height: "μm",
+            stageLength: "μm",
+            controlChannelWidth: "μm"
         };
 
         this.__minimum = {

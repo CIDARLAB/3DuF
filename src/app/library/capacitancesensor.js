@@ -43,18 +43,18 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            height: "&mu;m",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            sensorWidth: "&mu;m",
-            sensorLength: "&mu;m",
-            channelDepth: "&mu;m",
-            electrodeDepth: "&mu;m"
+            componentSpacing: "μm",
+            rotation: "°",
+            height: "μm",
+            inletWidth: "μm",
+            inletLength: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
+            electrodeDistance: "μm",
+            sensorWidth: "μm",
+            sensorLength: "μm",
+            channelDepth: "μm",
+            electrodeDepth: "μm"
         };
 
         this.__minimum = {

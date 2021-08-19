@@ -28,11 +28,11 @@ export default class Transition extends Template {
         };
 
         this.__units = {
-            cw1: "&mu;m",
-            cw2: "&mu;m",
-            length: "&mu;m",
+            cw1: "μm",
+            cw2: "μm",
+            length: "μm",
             rotation: "&deg",
-            height: "&mu;m"
+            height: "μm"
         };
 
         this.__minimum = {

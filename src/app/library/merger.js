@@ -47,20 +47,20 @@ export default class Merger extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            height: "&mu;m",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            outletWidth: "&mu;m",
-            outletLength: "&mu;m",
-            chamberHeight: "&mu;m",
-            chamberLength: "&mu;m",
-            channelDepth: "&mu;m",
-            electrodeDepth: "&mu;m"
+            componentSpacing: "μm",
+            rotation: "°",
+            height: "μm",
+            inletWidth: "μm",
+            inletLength: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
+            electrodeDistance: "μm",
+            outletWidth: "μm",
+            outletLength: "μm",
+            chamberHeight: "μm",
+            chamberLength: "μm",
+            channelDepth: "μm",
+            electrodeDepth: "μm"
         };
 
         this.__minimum = {

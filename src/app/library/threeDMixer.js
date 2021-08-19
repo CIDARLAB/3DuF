@@ -33,13 +33,13 @@ export default class ThreeDMixer extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            bendSpacing: "&mu;m",
+            componentSpacing: "μm",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
+            channelWidth: "μm",
+            bendLength: "μm",
 
-            height: "&mu;m"
+            height: "μm"
         };
 
         this.__minimum = {

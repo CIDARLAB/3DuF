@@ -9,8 +9,8 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            channelWidth: "&mu;m",
-            height: "&mu;m"
+            channelWidth: "μm",
+            height: "μm"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -37,8 +37,8 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            channelWidth: "&mu;m",
-            height: "&mu;m"
+            channelWidth: "μm",
+            height: "μm"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -63,8 +63,8 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            channelWidth: "&mu;m",
-            height: "&mu;m"
+            channelWidth: "μm",
+            height: "μm"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -91,11 +91,11 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            cw1: "&mu;m",
-            cw2: "&mu;m",
-            length: "&mu;m",
+            cw1: "μm",
+            cw2: "μm",
+            length: "μm",
             orientation: "",
-            height: "&mu;m"
+            height: "μm"
         },
         defaults: {
             cw1: 0.8 * 1000,
@@ -129,11 +129,11 @@ export const basicFeatures = {
             rotation: "Float"
         },
         units: {
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m",
-            cornerRadius: "&mu;m",
-            rotation: "&deg;"
+            width: "μm",
+            length: "μm",
+            height: "μm",
+            cornerRadius: "μm",
+            rotation: "°"
         },
         defaults: {
             width: 5000,
@@ -203,9 +203,9 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            radius1: "&mu;m",
-            radius2: "&mu;m",
-            height: "&mu;m"
+            radius1: "μm",
+            radius2: "μm",
+            height: "μm"
         },
         defaults: {
             radius1: 1.4 * 1000,
@@ -234,10 +234,10 @@ export const basicFeatures = {
             rotation: "Float"
         },
         units: {
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m",
-            rotation: "&deg;"
+            width: "μm",
+            length: "μm",
+            height: "μm",
+            rotation: "°"
         },
         defaults: {
             width: 1.4 * 1000,
@@ -268,9 +268,9 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m"
+            width: "μm",
+            length: "μm",
+            height: "μm"
         },
         defaults: {
             width: 4000,
@@ -298,9 +298,9 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m"
+            width: "μm",
+            length: "μm",
+            height: "μm"
         },
         defaults: {
             width: 4000,
@@ -333,12 +333,12 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            rotation: "&deg;"
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            rotation: "°"
         },
         defaults: {
             orientation: "V",
@@ -377,12 +377,12 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            rotation: "&deg;"
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            rotation: "°"
         },
         defaults: {
             orientation: "V",
@@ -420,11 +420,11 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            valveSpacing: "&mu;m",
-            channelWidth: "&mu;m"
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            valveSpacing: "μm",
+            channelWidth: "μm"
         },
         defaults: {
             orientation: "V",
@@ -463,11 +463,11 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            valveSpacing: "&mu;m",
-            channelWidth: "&mu;m"
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            valveSpacing: "μm",
+            channelWidth: "μm"
         },
         defaults: {
             orientation: "V",
@@ -507,12 +507,12 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            radius: "&mu;m",
-            flowChannelWidth: "&mu;m",
-            valveWidth: "&mu;m",
-            valveLength: "&mu;m",
-            valveSpacing: "&mu;m",
-            height: "&mu;m"
+            radius: "μm",
+            flowChannelWidth: "μm",
+            valveWidth: "μm",
+            valveLength: "μm",
+            valveSpacing: "μm",
+            height: "μm"
         },
         defaults: {
             orientation: "V",
@@ -599,9 +599,9 @@ export const basicFeatures = {
         },
         units: {
             rotation: "&deg",
-            length: "&mu;m",
-            width: "&mu;m",
-            height: "&mu;m"
+            length: "μm",
+            width: "μm",
+            height: "μm"
         },
         defaults: {
             rotation: 0,
@@ -636,11 +636,11 @@ export const basicFeatures = {
         },
         units: {
             rotation: "&deg",
-            length: "&mu;m",
-            width: "&mu;m",
-            height: "&mu;m",
-            spacing: "&mu;m",
-            flowChannelWidth: "&mu;m"
+            length: "μm",
+            width: "μm",
+            height: "μm",
+            spacing: "μm",
+            flowChannelWidth: "μm"
         },
         defaults: {
             rotation: 0,
@@ -682,11 +682,11 @@ export const basicFeatures = {
         },
         units: {
             rotation: "&deg",
-            length: "&mu;m",
-            width: "&mu;m",
-            height: "&mu;m",
-            spacing: "&mu;m",
-            flowChannelWidth: "&mu;m"
+            length: "μm",
+            width: "μm",
+            height: "μm",
+            spacing: "μm",
+            flowChannelWidth: "μm"
         },
         defaults: {
             rotation: 0,
@@ -727,14 +727,14 @@ export const basicFeatures = {
             flowChannelWidth: "Float"
         },
         units: {
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            rotation: "&deg;",
-            spacing: "&mu;m",
-            flowChannelWidth: "&mu;m"
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            rotation: "°",
+            spacing: "μm",
+            flowChannelWidth: "μm"
         },
         defaults: {
             valveRadius: 1.2 * 1000,
@@ -777,14 +777,14 @@ export const basicFeatures = {
             flowChannelWidth: "Float"
         },
         units: {
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            rotation: "&deg;",
-            spacing: "&mu;m",
-            flowChannelWidth: "&mu;m"
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            rotation: "°",
+            spacing: "μm",
+            flowChannelWidth: "μm"
         },
         defaults: {
             valveRadius: 1.2 * 1000,
@@ -824,9 +824,9 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            radius1: "&mu;m",
-            radius2: "&mu;m",
-            height: "&mu;m"
+            radius1: "μm",
+            radius2: "μm",
+            height: "μm"
         },
         defaults: {
             radius1: 0.8 * 1000,
@@ -853,8 +853,8 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            portRadius: "&mu;m",
-            height: "&mu;m"
+            portRadius: "μm",
+            height: "μm"
         },
         defaults: {
             portRadius: 0.7 * 1000,
@@ -885,10 +885,10 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            channelWidth: "&mu;m",
-            length: "&mu;m",
-            width: "&mu;m",
-            height: "&mu;m"
+            channelWidth: "μm",
+            length: "μm",
+            width: "μm",
+            height: "μm"
         },
         defaults: {
             orientation: "V",
@@ -923,12 +923,12 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            bendSpacing: "&mu;m",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
+            channelWidth: "μm",
+            bendLength: "μm",
             orientation: "",
-            height: "&mu;m"
+            height: "μm"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -968,12 +968,12 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            bendSpacing: "&mu;m",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
+            channelWidth: "μm",
+            bendLength: "μm",
             orientation: "",
-            height: "&mu;m"
+            height: "μm"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -1013,12 +1013,12 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            bendSpacing: "&mu;m",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
+            channelWidth: "μm",
+            bendLength: "μm",
             orientation: "",
-            height: "&mu;m"
+            height: "μm"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -1061,16 +1061,16 @@ export const basicFeatures = {
             rotation: "Float"
         },
         units: {
-            bendSpacing: "&mu;m",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
+            channelWidth: "μm",
+            bendLength: "μm",
             orientation: "",
             in: "",
             out: "",
-            spacing: "&mu;m",
-            height: "&mu;m",
-            rotation: "&deg;"
+            spacing: "μm",
+            height: "μm",
+            rotation: "°"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -1124,14 +1124,14 @@ export const basicFeatures = {
             stageLength: "Float"
         },
         units: {
-            flowChannelWidth: "&mu;m",
+            flowChannelWidth: "μm",
             orientation: "",
-            spacing: "&mu;m",
+            spacing: "μm",
             leafs: "",
-            width: "&mu;m",
-            height: "&mu;m",
+            width: "μm",
+            height: "μm",
             direction: "",
-            stageLength: "&mu;m"
+            stageLength: "μm"
         },
         defaults: {
             flowChannelWidth: 0.8 * 1000,
@@ -1175,14 +1175,14 @@ export const basicFeatures = {
             stageLength: "Float"
         },
         units: {
-            flowChannelWidth: "&mu;m",
+            flowChannelWidth: "μm",
             orientation: "",
-            spacing: "&mu;m",
+            spacing: "μm",
             leafs: "",
-            width: "&mu;m",
-            height: "&mu;m",
+            width: "μm",
+            height: "μm",
             direction: "",
-            stageLength: "&mu;m"
+            stageLength: "μm"
         },
         defaults: {
             flowChannelWidth: 0.8 * 1000,
@@ -1228,16 +1228,16 @@ export const basicFeatures = {
             controlChannelWidth: "Float"
         },
         units: {
-            flowChannelWidth: "&mu;m",
+            flowChannelWidth: "μm",
             orientation: "",
-            spacing: "&mu;m",
+            spacing: "μm",
             leafs: "",
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m",
+            width: "μm",
+            length: "μm",
+            height: "μm",
             direction: "",
-            stageLength: "&mu;m",
-            controlChannelWidth: "&mu;m"
+            stageLength: "μm",
+            controlChannelWidth: "μm"
         },
         defaults: {
             flowChannelWidth: 0.8 * 1000,
@@ -1335,13 +1335,13 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            chamberLength: "&mu;m",
-            feedingChannelWidth: "&mu;m",
+            chamberLength: "μm",
+            feedingChannelWidth: "μm",
             orientation: "",
-            chamberWidth: "&mu;m",
+            chamberWidth: "μm",
             numberOfChambers: "",
-            chamberSpacing: "&mu;m",
-            height: "&mu;m"
+            chamberSpacing: "μm",
+            height: "μm"
         },
         defaults: {
             chamberLength: 1.2 * 1000,
@@ -1423,14 +1423,14 @@ export const basicFeatures = {
             rotation: "Float"
         },
         units: {
-            orificeSize: "&mu;m",
-            height: "&mu;m",
-            orificeLength: "&mu;m",
-            oilInputWidth: "&mu;m",
-            waterInputWidth: "&mu;m",
-            outputWidth: "&mu;m",
-            outputLength: "&mu;m",
-            rotation: "&deg;"
+            orificeSize: "μm",
+            height: "μm",
+            orificeLength: "μm",
+            oilInputWidth: "μm",
+            waterInputWidth: "μm",
+            outputWidth: "μm",
+            outputLength: "μm",
+            rotation: "°"
         },
         defaults: {
             orificeSize: 0.2 * 1000,
@@ -1494,17 +1494,17 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            height: "&mu;m",
-            pillarDiameter: "&mu;m",
-            filterWidth: "&mu;m",
-            barrierWidth: "&mu;m",
-            filterLength: "&mu;m",
+            height: "μm",
+            pillarDiameter: "μm",
+            filterWidth: "μm",
+            barrierWidth: "μm",
+            filterLength: "μm",
             filterNumber: "",
             levelNumber: "",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            outletWidth: "&mu;m",
-            outletLength: "&mu;m"
+            inletWidth: "μm",
+            inletLength: "μm",
+            outletWidth: "μm",
+            outletLength: "μm"
         },
         defaults: {
             orientation: "V",
@@ -1563,13 +1563,13 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            chamberLength: "&mu;m",
-            feedingChannelWidth: "&mu;m",
+            chamberLength: "μm",
+            feedingChannelWidth: "μm",
             orientation: "",
-            chamberWidth: "&mu;m",
+            chamberWidth: "μm",
             numberOfChambers: "",
-            chamberSpacing: "&mu;m",
-            height: "&mu;m"
+            chamberSpacing: "μm",
+            height: "μm"
         },
         defaults: {
             chamberLength: 1.2 * 1000,
@@ -1654,13 +1654,13 @@ export const basicFeatures = {
         units: {
             inputNumber: "",
             orientation: "",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            valveSpacing: "&mu;m",
-            channelWidth: "&mu;m"
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            valveSpacing: "μm",
+            channelWidth: "μm"
         },
         defaults: {
             inputNumber: 4,
@@ -1712,13 +1712,13 @@ export const basicFeatures = {
         units: {
             inputNumber: "",
             orientation: "",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            valveSpacing: "&mu;m",
-            channelWidth: "&mu;m"
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            valveSpacing: "μm",
+            channelWidth: "μm"
         },
         defaults: {
             inputNumber: 4,
@@ -1765,12 +1765,12 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            bendSpacing: "&mu;m",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
+            channelWidth: "μm",
+            bendLength: "μm",
             orientation: "",
-            height: "&mu;m"
+            height: "μm"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -1810,12 +1810,12 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            bendSpacing: "&mu;m",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
+            channelWidth: "μm",
+            bendLength: "μm",
             orientation: "",
-            height: "&mu;m"
+            height: "μm"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -1863,18 +1863,18 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            height: "&mu;m",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            outletWidth: "&mu;m",
-            outletLength: "&mu;m",
-            chamberHeight: "&mu;m",
-            chamberLength: "&mu;m",
-            channelDepth: "&mu;m",
-            electrodeDepth: "&mu;m"
+            height: "μm",
+            inletWidth: "μm",
+            inletLength: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
+            electrodeDistance: "μm",
+            outletWidth: "μm",
+            outletLength: "μm",
+            chamberHeight: "μm",
+            chamberLength: "μm",
+            channelDepth: "μm",
+            electrodeDepth: "μm"
         },
         defaults: {
             orientation: "V",
@@ -1940,16 +1940,16 @@ export const basicFeatures = {
             orientation: "String"
         },
         units: {
-            height: "&mu;m",
-            width: "&mu;m",
-            injectorWidth: "&mu;m",
-            injectorLength: "&mu;m",
-            dropletWidth: "&mu;m",
-            nozzleWidth: "&mu;m",
-            nozzleLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
+            height: "μm",
+            width: "μm",
+            injectorWidth: "μm",
+            injectorLength: "μm",
+            dropletWidth: "μm",
+            nozzleWidth: "μm",
+            nozzleLength: "μm",
+            electrodeDistance: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
             orientation: ""
         },
         defaults: {
@@ -2018,23 +2018,23 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            height: "&mu;m",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
-            outletWidth: "&mu;m",
-            angle: "&deg;",
-            wasteWidth: "&mu;m",
-            outputLength: "&mu;m",
-            keepWidth: "&mu;m",
-            pressureWidth: "&mu;m",
-            pressureSpacing: "&mu;m",
-            numberofDistributors: "&mu;m",
-            channelDepth: "&mu;m",
-            electrodeDepth: "&mu;m",
-            pressureDepth: "&mu;m"
+            height: "μm",
+            inletWidth: "μm",
+            inletLength: "μm",
+            electrodeDistance: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
+            outletWidth: "μm",
+            angle: "°",
+            wasteWidth: "μm",
+            outputLength: "μm",
+            keepWidth: "μm",
+            pressureWidth: "μm",
+            pressureSpacing: "μm",
+            numberofDistributors: "μm",
+            channelDepth: "μm",
+            electrodeDepth: "μm",
+            pressureDepth: "μm"
         },
         defaults: {
             orientation: "V",
@@ -2110,12 +2110,12 @@ export const basicFeatures = {
             height: "Float"
         },
         units: {
-            bendSpacing: "&mu;m",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
+            channelWidth: "μm",
+            bendLength: "μm",
             orientation: "",
-            height: "&mu;m"
+            height: "μm"
         },
         defaults: {
             channelWidth: 0.8 * 1000,
@@ -2161,16 +2161,16 @@ export const basicFeatures = {
         },
         units: {
             orientation: "",
-            height: "&mu;m",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            sensorWidth: "&mu;m",
-            sensorLength: "&mu;m",
-            channelDepth: "&mu;m",
-            electrodeDepth: "&mu;m"
+            height: "μm",
+            inletWidth: "μm",
+            inletLength: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
+            electrodeDistance: "μm",
+            sensorWidth: "μm",
+            sensorLength: "μm",
+            channelDepth: "μm",
+            electrodeDepth: "μm"
         },
         defaults: {
             orientation: "V",

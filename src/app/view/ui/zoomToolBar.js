@@ -23,7 +23,7 @@ export default class ZoomToolBar {
                 min: -3.61,
                 max: 0.6545
             },
-            // pips: { mode: 'range', density: 5 , format: wNumb({suffix:"&mu;m"})},
+            // pips: { mode: 'range', density: 5 , format: wNumb({suffix:"μm"})},
             orientation: "vertical",
             direction: "rtl"
         });

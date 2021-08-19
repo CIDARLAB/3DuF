@@ -33,13 +33,13 @@ export default class Valve3D extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            rotation: "&deg;"
+            componentSpacing: "μm",
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            rotation: "°"
         };
 
         this.__minimum = {

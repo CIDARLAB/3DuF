@@ -35,14 +35,14 @@ export default class CellTrapS extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            height: "&mu;m",
-            channelWidth: "&mu;m",
-            channelLength: "&mu;m",
-            chamberWidth: "&mu;m",
-            chamberLength: "&mu;m",
-            chamberHeight: "&mu;m"
+            componentSpacing: "μm",
+            rotation: "°",
+            height: "μm",
+            channelWidth: "μm",
+            channelLength: "μm",
+            chamberWidth: "μm",
+            chamberLength: "μm",
+            chamberHeight: "μm"
         };
 
         this.__minimum = {

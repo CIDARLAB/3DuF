@@ -35,14 +35,14 @@ export default class LogicArray extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            chamberWidth: "&mu;m",
-            chamberLength: "&mu;m",
-            flowChannelWidth: "&mu;m",
-            controlChannelWidth: "&mu;m",
-            portRadius: "&mu;m",
-            height: "&mu;m",
-            rotation: "&deg;"
+            componentSpacing: "μm",
+            chamberWidth: "μm",
+            chamberLength: "μm",
+            flowChannelWidth: "μm",
+            controlChannelWidth: "μm",
+            portRadius: "μm",
+            height: "μm",
+            rotation: "°"
         };
 
         this.__minimum = {

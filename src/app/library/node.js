@@ -23,8 +23,8 @@ export default class Node extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            height: "&mu;m"
+            componentSpacing: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

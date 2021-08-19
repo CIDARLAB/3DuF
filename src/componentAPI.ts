@@ -152,6 +152,10 @@ export class ComponentAPI {
         LogicArray_cell: { object: new LogicArray(), key: "CELL" }
     };
 
+    static connectionLibrary: { [key: string]: LibraryEntry } = {
+        Connection: { object: new Connection(), key: null }
+    };
+
     static customTypes: Map<string, CustomComponent> = new Map();
     __setString: any;
     __tools: any;
@@ -414,5 +418,14 @@ export class ComponentAPI {
         } else {
             throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
         }
+    }
+
+    static getConnectionTypes(): Array<string> {
+        let ret = [];
+        for (const key in ComponentAPI.connectionLibrary) {
+            let entry = ComponentAPI.connectionLibrary[key];
+            ret.push(entry.object.mint);
+        }
+        return ret;
     }
 }

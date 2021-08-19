@@ -33,13 +33,13 @@ export default class DropletMerger extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            inputWidth1: "&mu;m",
-            inputWidth2: "&mu;m",
-            outputWidth: "&mu;m",
-            stabilizationLength: "&mu;m",
-            rotation: "&deg;",
-            height: "&mu;m"
+            componentSpacing: "μm",
+            inputWidth1: "μm",
+            inputWidth2: "μm",
+            outputWidth: "μm",
+            stabilizationLength: "μm",
+            rotation: "°",
+            height: "μm"
         };
 
         this.__minimum = {

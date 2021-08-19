@@ -33,13 +33,13 @@ export default class Pump extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
+            componentSpacing: "μm",
             rotation: "&deg",
-            length: "&mu;m",
-            width: "&mu;m",
-            height: "&mu;m",
-            spacing: "&mu;m",
-            flowChannelWidth: "&mu;m"
+            length: "μm",
+            width: "μm",
+            height: "μm",
+            spacing: "μm",
+            flowChannelWidth: "μm"
         };
 
         this.__minimum = {

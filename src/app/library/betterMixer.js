@@ -33,13 +33,13 @@ export default class BetterMixer extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            bendSpacing: "&mu;m",
+            componentSpacing: "μm",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
-
-            height: "&mu;m"
+            channelWidth: "μm",
+            bendLength: "μm",
+            rotation: "°",
+            height: "μm"
         };
 
         this.__minimum = {

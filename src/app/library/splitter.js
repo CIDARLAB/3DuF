@@ -37,15 +37,15 @@ export default class Splitter extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            height: "&mu;m",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            outletWidth1: "&mu;m",
-            outletLength1: "&mu;m",
-            outletWidth2: "&mu;m",
-            outletLength2: "&mu;m"
+            componentSpacing: "μm",
+            rotation: "°",
+            height: "μm",
+            inletWidth: "μm",
+            inletLength: "μm",
+            outletWidth1: "μm",
+            outletLength1: "μm",
+            outletWidth2: "μm",
+            outletLength2: "μm"
         };
 
         this.__minimum = {

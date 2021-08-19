@@ -139,10 +139,10 @@ export default class CustomComponent extends Template {
                 height: "Float"
             },
             units: {
-                rotation: "&deg",
-                // "length": "&mu;m",
-                // "width": "&mu;m",
-                height: "&mu;m"
+                rotation: "°",
+                // "length": "μm",
+                // "width": "μm",
+                height: "μm"
             },
             defaults: {
                 rotation: 0,

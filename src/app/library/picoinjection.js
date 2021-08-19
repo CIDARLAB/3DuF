@@ -43,18 +43,18 @@ export default class PicoInjection extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            height: "&mu;m",
-            width: "&mu;m",
-            injectorWidth: "&mu;m",
-            injectorLength: "&mu;m",
-            dropletWidth: "&mu;m",
-            nozzleWidth: "&mu;m",
-            nozzleLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
-            rotation: "&deg;"
+            componentSpacing: "μm",
+            height: "μm",
+            width: "μm",
+            injectorWidth: "μm",
+            injectorLength: "μm",
+            dropletWidth: "μm",
+            nozzleWidth: "μm",
+            nozzleLength: "μm",
+            electrodeDistance: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
+            rotation: "°"
         };
 
         this.__minimum = {

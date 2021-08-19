@@ -27,9 +27,9 @@ export default class Connection extends Template {
         };
 
         this.__units = {
-            connectionSpacing: "&mu;m",
-            channelWidth: "&mu;m",
-            height: "&mu;m"
+            connectionSpacing: "μm",
+            channelWidth: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

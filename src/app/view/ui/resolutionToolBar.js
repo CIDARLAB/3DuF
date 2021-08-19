@@ -45,7 +45,7 @@ export default class ResolutionToolBar {
     updateResolutionLabelAndSlider(smallResolution) {
         if (smallResolution !== null) {
             this.__gridResolution = smallResolution;
-            this.__smallresolutionLabel.innerHTML = smallResolution + " &mu;m";
+            this.__smallresolutionLabel.innerHTML = smallResolution + " μm";
 
             this.__gridResolutionSlider.noUiSlider.set(parseInt(smallResolution, 10));
         }
@@ -70,7 +70,7 @@ export default class ResolutionToolBar {
             pips: {
                 mode: "range",
                 density: 5,
-                format: wNumb({ suffix: "&mu;m" })
+                format: wNumb({ suffix: "μm" })
             },
             tooltips: [true]
             // orientation: 'vertical',
@@ -81,7 +81,7 @@ export default class ResolutionToolBar {
         const ref = this;
         const registryref = Registry;
         this.__gridResolutionSlider.noUiSlider.on("update", function(values, handle, unencoded, isTap, positions) {
-            ref.__smallresolutionLabel.innerHTML = values[0] + " &mu;m";
+            ref.__smallresolutionLabel.innerHTML = values[0] + " μm";
         });
 
         this.__gridResolutionSlider.noUiSlider.on("change", function(values, handle, unencoded, isTap, positions) {

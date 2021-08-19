@@ -39,16 +39,16 @@ export default class GradientGenerator extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            bendSpacing: "&mu;m",
+            componentSpacing: "μm",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
+            channelWidth: "μm",
+            bendLength: "μm",
             in: "",
             out: "",
-            spacing: "&mu;m",
-            height: "&mu;m",
-            rotation: "&deg;"
+            spacing: "μm",
+            height: "μm",
+            rotation: "°"
         };
 
         this.__minimum = {
