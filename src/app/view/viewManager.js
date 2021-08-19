@@ -787,7 +787,6 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     refresh(refresh = true) {
-        console.log("Here");
         this.updateQueue.run();
         // Update the toolbar
         const spacing = Registry.currentGrid.getSpacing();

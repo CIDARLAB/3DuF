@@ -23,7 +23,7 @@
                     <v-btn id="context_button_delete" color="white indigo--text" depressed @click="deleteButton()">
                         <span class="material-icons">delete</span>
                     </v-btn>
-                    <MoveDialog :component="currentComponent" />
+                    <MoveDialog :component="currentComponent" @close="activeMenu = false" />
                     <v-btn id="context_button_revert" color="white indigo--text" depressed @click="revertToDefaults()">
                         <span class="material-icons">settings_backup_restore</span>
                     </v-btn>
@@ -231,6 +231,9 @@ export default {
             const sliderID = featureID + "_" + this.featureRef.key + "_slider";
             const fieldID = featureID + "_" + this.featureRef.key + "_value";
             generateUpdateFunction(fieldID, sliderID, this.$refs.typeString, this.$refs.setString, this.featureRef.key);
+        },
+        closeDialog() {
+            this.activeMenu = false;
         }
     }
 };
