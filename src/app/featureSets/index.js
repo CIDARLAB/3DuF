@@ -65,7 +65,7 @@ export function getRender3D(typeString, setString) {
     return set.getRender3D(typeString);
 }
 
-export function getComponentPorts(params, typeString, setString = "Basic") {
-    const set = getSet(setString);
-    return set.getComponentPorts(typeString);
-}
+// export function getComponentPorts(params, typeString, setString = "Basic") {
+//     const set = getSet(setString);
+//     return set.getComponentPorts(typeString);
+// }

@@ -86,9 +86,9 @@ export default class DiamondReactionChamber extends Template {
     }
 
     getPorts(params) {
-        const channelWidth = params.channelWidth.value;
-        const l = params.length.value;
-        const w = params.width.value;
+        const channelWidth = params.channelWidth;
+        const l = params.length;
+        const w = params.width;
 
         const ports = [];
 

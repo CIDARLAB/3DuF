@@ -103,9 +103,9 @@ export default class Transposer extends Template {
     getPorts(params) {
         const ports = [];
 
-        const radius = params.valveRadius.value;
-        const channelWidth = params.flowChannelWidth.value;
-        const valvespacing = params.valveSpacing.value;
+        const radius = params.valveRadius;
+        const channelWidth = params.flowChannelWidth;
+        const valvespacing = params.valveSpacing;
 
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
         ports.push(new ComponentPort(6 * valvespacing + 4 * radius + 3 * channelWidth, 0, "2", "FLOW"));

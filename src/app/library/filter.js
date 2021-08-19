@@ -135,11 +135,11 @@ export default class Filter extends Template {
     }
 
     getPorts(params) {
-        const inletLength = params.inletLength.value;
-        const filterLength = params.filterLength.value;
-        const outletLength = params.outletLength.value;
-        const levelNumber = params.levelNumber.value;
-        const pillarDiameter = params.pillarDiameter.value;
+        const inletLength = params.inletLength;
+        const filterLength = params.filterLength;
+        const outletLength = params.outletLength;
+        const levelNumber = params.levelNumber;
+        const pillarDiameter = params.pillarDiameter;
 
         const ports = [];
 

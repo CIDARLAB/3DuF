@@ -109,12 +109,12 @@ export default class Splitter extends Template {
     }
 
     getPorts(params) {
-        const inletWidth = params.inletWidth.value;
-        const inletLength = params.inletLength.value;
-        const outletWidth1 = params.outletWidth1.value;
-        const outletLength1 = params.outletLength1.value;
-        const outletWidth2 = params.outletWidth2.value;
-        const outletLength2 = params.outletLength2.value;
+        const inletWidth = params.inletWidth;
+        const inletLength = params.inletLength;
+        const outletWidth1 = params.outletWidth1;
+        const outletLength1 = params.outletLength1;
+        const outletWidth2 = params.outletWidth2;
+        const outletLength2 = params.outletLength2;
 
         const ports = [];
 

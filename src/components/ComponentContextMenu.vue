@@ -27,7 +27,7 @@
                     <v-btn id="context_button_revert" color="white indigo--text" depressed @click="revertToDefaults()">
                         <span class="material-icons">settings_backup_restore</span>
                     </v-btn>
-                    <ChangeAllDialog :component="currentComponent" />
+                    <ChangeAllDialog :component="currentComponent" @close="activeMenu = false" />
                     <v-btn id="context_button_showRename" color="white indigo--text" depressed @click="showRename = true">
                         <span class="material-icons">title</span>
                     </v-btn>

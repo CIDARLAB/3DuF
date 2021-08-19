@@ -84,6 +84,7 @@ export default {
         dialog: function(newValue) {
             if (newValue) {
                 // Dialog is activated
+                this.$emit("close");
                 // Load similar components
                 const type = this.component.mint;
                 const allcomponents = Registry.currentDevice.components;
@@ -125,7 +126,8 @@ export default {
 
                 for (let key of paramstochange.heritable) {
                     let value = paramstochange.getValue(key);
-                    componenttochange.params.updateParameter(key, value);
+                    componenttochange.updateParameter(key, value);
+                    //componenttochange.params.updateParameter(key, value);
                 }
             }
             this.dialog = false;

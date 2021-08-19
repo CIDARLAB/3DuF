@@ -102,11 +102,11 @@ export default class CellTrapL extends Template {
     }
 
     getPorts(params) {
-        const chamberLength = params.chamberLength.value;
-        const numChambers = params.numberOfChambers.value;
-        const chamberWidth = params.chamberWidth.value;
-        const feedingChannelWidth = params.feedingChannelWidth.value;
-        const chamberSpacing = params.chamberSpacing.value;
+        const chamberLength = params.chamberLength;
+        const numChambers = params.numberOfChambers;
+        const chamberWidth = params.chamberWidth;
+        const feedingChannelWidth = params.feedingChannelWidth;
+        const chamberSpacing = params.chamberSpacing;
 
         const ports = [];
 

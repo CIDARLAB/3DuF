@@ -86,7 +86,7 @@ export default class Incubation extends Template {
     }
 
     getPorts(params) {
-        const length = params.length.value;
+        const length = params.length;
 
         const ports = [];
 

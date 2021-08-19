@@ -46,7 +46,8 @@ export default {
     data() {
         return {
             activated: false,
-            activeTool: null
+            activeTool: null,
+            title: ""
         };
     },
     computed: {

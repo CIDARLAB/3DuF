@@ -128,13 +128,13 @@ export default class PicoInjection extends Template {
     }
 
     getPorts(params) {
-        const width = params.width.value;
-        const injectorLength = params.injectorLength.value;
-        const dropletWidth = params.dropletWidth.value;
-        const nozzleLength = params.nozzleLength.value;
-        const electrodeDistance = params.electrodeDistance.value;
-        const electrodeWidth = params.electrodeWidth.value;
-        const electrodeLength = params.electrodeLength.value;
+        const width = params.width;
+        const injectorLength = params.injectorLength;
+        const dropletWidth = params.dropletWidth;
+        const nozzleLength = params.nozzleLength;
+        const electrodeDistance = params.electrodeDistance;
+        const electrodeWidth = params.electrodeWidth;
+        const electrodeLength = params.electrodeLength;
 
         const ports = [];
 

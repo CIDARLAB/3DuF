@@ -107,11 +107,11 @@ export default class YTree extends Template {
 
     getPorts(params) {
         const ports = [];
-        const cw = params.flowChannelWidth.value;
-        const spacing = params.spacing.value;
-        const ins = params.in.value;
-        const outs = params.out.value;
-        let rotation = params.rotation.value;
+        const cw = params.flowChannelWidth;
+        const spacing = params.spacing;
+        const ins = params.in;
+        const outs = params.out;
+        let rotation = params.rotation;
         let leafs;
         if (ins < outs) {
             leafs = outs;
@@ -119,7 +119,7 @@ export default class YTree extends Template {
             leafs = ins;
             rotation += 180;
         }
-        const stagelength = params.stageLength.value;
+        const stagelength = params.stageLength;
 
         const levels = Math.ceil(Math.log2(leafs));
         const w = spacing * (leafs / 2 + 1);

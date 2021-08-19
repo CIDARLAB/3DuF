@@ -142,9 +142,9 @@ export default class Merger extends Template {
     }
 
     getPorts(params) {
-        const inletLength = params.inletLength.value;
-        const outletLength = params.outletLength.value;
-        const chamberLength = params.chamberLength.value;
+        const inletLength = params.inletLength;
+        const outletLength = params.outletLength;
+        const chamberLength = params.chamberLength;
 
         const ports = [];
 

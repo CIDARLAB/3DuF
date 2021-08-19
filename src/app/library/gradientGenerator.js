@@ -114,12 +114,12 @@ export default class GradientGenerator extends Template {
     }
 
     getPorts(params) {
-        const bendSpacing = params.bendSpacing.value;
-        const numBends = params.numberOfBends.value;
-        const channelWidth = params.channelWidth.value;
-        const invalue = params.in.value;
-        const outvalue = params.out.value;
-        const spacing = params.spacing.value; // Center to Center
+        const bendSpacing = params.bendSpacing;
+        const numBends = params.numberOfBends;
+        const channelWidth = params.channelWidth;
+        const invalue = params.in;
+        const outvalue = params.out;
+        const spacing = params.spacing; // Center to Center
 
         const ports = [];
 

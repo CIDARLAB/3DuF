@@ -108,17 +108,17 @@ export default class Tree extends Template {
 
     getPorts(params) {
         const ports = [];
-        const cw = params.flowChannelWidth.value;
-        const spacing = params.spacing.value;
-        const ins = params.in.value;
-        const outs = params.out.value;
+        const cw = params.flowChannelWidth;
+        const spacing = params.spacing;
+        const ins = params.in;
+        const outs = params.out;
         let leafs;
         if (ins < outs) {
             leafs = outs;
         } else {
             leafs = ins;
         }
-        const stagelength = params.stageLength.value;
+        const stagelength = params.stageLength;
 
         const levels = Math.ceil(Math.log2(leafs));
         const w = spacing * (leafs / 2 + 1);

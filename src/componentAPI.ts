@@ -47,7 +47,6 @@ import Node from "./app/library/node";
 import DropletGeneratorT from "./app/library/dropletGeneratorT";
 import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
-import { getComponentPorts, getDefinition, getRender2D, getRender3D, getTool } from "./app/featureSets";
 import Template from "./app/library/template";
 import Params from "./app/core/params";
 import ComponentPort from "./app/core/componentPort";
@@ -297,13 +296,18 @@ export class ComponentAPI {
      * @param minttypestring
      * @return {void|Array}
      */
-    static getComponentPorts(params: any, minttypestring: string): Array<ComponentPort> {
+    static getComponentPorts(params: Map<string, any>, minttypestring: string): Array<ComponentPort> {
         const threeduftypesting = ComponentAPI.getTypeForMINT(minttypestring);
         if (threeduftypesting === null) {
             throw new Error("Component Ports of: " + threeduftypesting + " not found in library");
         }
         const definition = ComponentAPI.library[threeduftypesting].object;
-        const ports = definition.getPorts(params);
+        let params_to_pass = Object.fromEntries(params);
+        //{ [key: string]: string } = {};
+        // for (const key in params.keys()) {
+        //     params_to_pass[key] = params.get(key);
+        // }
+        const ports = definition.getPorts(params_to_pass);
         return ports;
     }
 

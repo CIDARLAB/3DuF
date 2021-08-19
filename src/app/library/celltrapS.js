@@ -102,7 +102,7 @@ export default class CellTrapS extends Template {
     }
 
     getPorts(params) {
-        const channelLength = params.channelLength.value;
+        const channelLength = params.channelLength;
 
         const ports = [];
 
