@@ -52,10 +52,10 @@ export default {
         };
     },
     computed: {
-        buttonID: function() {
+        buttonID: function () {
             return this.title.toLowerCase().replace(" ", "_") + "_dialog_button";
         },
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [
                 this.color && this.color.length > 0 ? this.color : "white",
                 this.textColor && this.textColor.length > 0 ? this.textColor : "blue--text",
@@ -68,7 +68,7 @@ export default {
     mounted() {
         // Setup an event for closing all the dialogs
         const ref = this;
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function () {
             ref.dialog = false;
         });
 

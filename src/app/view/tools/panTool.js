@@ -10,18 +10,18 @@ export default class PanTool extends MouseTool {
         this.lastPoint = null;
         this.startCenter = null;
         const ref = this;
-        this.updateQueue = new SimpleQueue(function() {
+        this.updateQueue = new SimpleQueue(function () {
             ref.pan();
         }, 10);
-        this.down = function(event) {
+        this.down = function (event) {
             ref.startPan(MouseTool.getEventPosition(event));
             ref.showTarget();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             ref.endPan(MouseTool.getEventPosition(event));
             ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             ref.moveHandler(MouseTool.getEventPosition(event));
             ref.showTarget();
         };

@@ -19,13 +19,13 @@ export default class MoveTool extends MouseTool {
         // this.updateQueue = new SimpleQueue(function () {
         //     ref.dragHandler();
         // }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             // Registry.viewManager.killParamsWindow();
             ref.mouseDownHandler(event);
             // ref.dragging = true;
             // ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             // if (ref.dragging) {
             //     ref.lastPoint = MouseTool.getEventPosition(event);
             //     ref.updateQueue.run();
@@ -33,7 +33,7 @@ export default class MoveTool extends MouseTool {
             // ref.showTarget();
             ref.dragHandler(event);
         };
-        this.up = function(event) {
+        this.up = function (event) {
             // ref.dragging = false;
             ref.mouseUpHandler(event);
             // ref.showTarget();

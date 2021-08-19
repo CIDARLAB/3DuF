@@ -13,7 +13,7 @@ export default class IntroDialog {
 
         const ref = this;
 
-        this._dialog.querySelector(".close").addEventListener("click", function() {
+        this._dialog.querySelector(".close").addEventListener("click", function () {
             ref._dialog.close();
         });
 
@@ -25,7 +25,7 @@ export default class IntroDialog {
             CookieUtils.setCookie("isfirst", "false");
         }
 
-        this._gettingStartedButton.addEventListener("click", function(e, el) {
+        this._gettingStartedButton.addEventListener("click", function (e, el) {
             ref._dialog.showModal();
         });
     }

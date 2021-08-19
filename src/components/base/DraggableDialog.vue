@@ -54,14 +54,14 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "ml-4", "mb-2", "btn"];
         }
     },
     mounted() {
         // Setup an event for closing all the dialogs
         const ref = this;
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function () {
             ref.dialog = false;
         });
         Vue.set(this.callbacks, "close", callback => {
@@ -69,7 +69,7 @@ export default {
             this.activated = false;
         });
 
-        (function() {
+        (function () {
             // make vuetify dialogs movable
             const d = {};
             document.addEventListener("mousedown", e => {

@@ -17,7 +17,7 @@ export type ScratchInterchangeV1 = {
     version: number;
     //device: DeviceInterchangeV1;
     renderLayers: Array<RenderLayerInterchangeV1>;
-}
+};
 
 export type DeviceInterchangeV1 = {
     name: string;

@@ -113,20 +113,20 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
         }
     },
     mounted() {
         // Setup an event for closing all the dialogs
         const ref = this;
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function () {
             ref.activated = false;
         });
         EventBus.get().on(EventBus.RIGHT_CLICK, this.endConnection);
     },
     methods: {
-        computedSpec: function(threeduftype) {
+        computedSpec: function (threeduftype) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let definition = ComponentAPI.getDefinition(threeduftype);
             let spec = [];
@@ -180,7 +180,7 @@ export default {
             Registry.viewManager.activateTool("Connection", "Connection");
             this.current_connection_suggestion = this.connection_suggestions["state2"];
         },
-        endConnection: function() {
+        endConnection: function () {
             this.current_connection_suggestion = this.connection_suggestions["state1"];
             console.log(this.connection_suggestions["state1"]);
         }

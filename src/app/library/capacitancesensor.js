@@ -149,8 +149,8 @@ export default class CapacitanceSensor extends Template {
         const serp = new paper.CompoundPath();
 
         // inlet
-        let topLeft = new paper.Point(x - inletLength / 2, y - inletWidth / 2);
-        let bottomRight = new paper.Point(x + inletLength / 2, y + inletWidth / 2);
+        const topLeft = new paper.Point(x - inletLength / 2, y - inletWidth / 2);
+        const bottomRight = new paper.Point(x + inletLength / 2, y + inletWidth / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
