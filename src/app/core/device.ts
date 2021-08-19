@@ -2,22 +2,17 @@
 
 import Params from "./params";
 
-import StringValue from "./parameters/stringValue";
 import Feature from "./feature";
 import { DeviceInterchangeV1, DeviceInterchangeV1_1, Point } from "./init";
 import { ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1 } from "./init";
 import { LayerInterchangeV1 } from "./init";
-import { FeatureInterchangeV0 } from "./init";
 
 import Layer from "./layer";
 import Component from "./component";
 import Connection from "./connection";
-import Port from "../library/port";
 import EdgeFeature from "./edgeFeature";
 import DXFObject from "./dxfObject";
-import * as FeatureSets from "../featureSets";
-import Valve from "../library/valve";
 import ComponentPort from "./componentPort";
 import * as IOUtils from "../utils/ioUtils";
 
@@ -288,7 +283,7 @@ export default class Device {
             layer = this.__layers[i];
             features = layer.getAllFeaturesFromLayer();
             for (let ii in features) {
-                let feature = features[i];
+                let feature = features[ii];
                 if (feature.getName() === name) {
                     return feature;
                 }

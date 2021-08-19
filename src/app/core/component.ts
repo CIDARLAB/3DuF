@@ -446,8 +446,8 @@ export default class Component {
 
         // Idk whether this is correct
         // It was originially this._span = this.span which threw several errors so I patterned in off the above const var
-        const xspan = json.xspan;
-        const yspan = json.yspan;
+        const xspan = json["x-span"];
+        const yspan = json["y-span"];
 
         const params = json.params;
 

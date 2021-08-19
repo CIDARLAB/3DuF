@@ -1,5 +1,4 @@
 import Parameter from "../parameter";
-import Registry from "../registry";
 import pointValue from "./pointValue";
 import { Segment } from "@/app/core/init";
 

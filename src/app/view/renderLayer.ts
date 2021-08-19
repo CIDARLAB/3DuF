@@ -135,7 +135,6 @@ export default class RenderLayer {
      */
     removeFeatureByID(featureID: string): void {
         this.__ensureFeatureIDExists(featureID);
-        const feature: Feature = this.features[featureID];
         this.featureCount -= 1;
         let physLayer = this._physicalLayer;
         if (physLayer !== null) {
