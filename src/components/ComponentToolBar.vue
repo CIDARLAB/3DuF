@@ -55,17 +55,17 @@ export default {
         };
     },
     methods: {
-        activateTool: function (tool) {
+        activateTool: function(tool) {
             console.log(tool);
             Registry.viewManager.activateTool(tool);
         },
-        getEntry: function (mint) {
+        getEntry: function(mint) {
             return {
                 mint: mint,
                 spec: this.computedSpecForMINT(mint)
             };
         },
-        computedSpec: function (threeduftype) {
+        computedSpec: function(threeduftype) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let definition = ComponentAPI.getDefinition(threeduftype);
             let spec = [];

@@ -175,21 +175,21 @@ export default class ComponentToolBar {
     __setupEventHandlers() {
         const ref = this;
 
-        this.__channelButton.onclick = function () {
+        this.__channelButton.onclick = function() {
             Registry.viewManager.activateTool("Channel");
 
             ref.setActiveButton("Channel");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__connectionButton.onclick = function () {
+        this.__connectionButton.onclick = function() {
             Registry.viewManager.activateTool("Connection", "Connection");
 
             ref.setActiveButton("Connection");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__selectToolButton.onclick = function () {
+        this.__selectToolButton.onclick = function() {
             Registry.viewManager.activateTool("MouseSelectTool");
             // if (this.activeButton) setButtonColor(this.buttons[this.activeButton], inactiveBackground, inactiveText);
             // ref.activeButton = "SelectButton";
@@ -197,13 +197,13 @@ export default class ComponentToolBar {
             ref.setActiveButton("SelectButton");
         };
 
-        this.__roundedChannelButton.onclick = function () {
+        this.__roundedChannelButton.onclick = function() {
             Registry.viewManager.activateTool("RoundedChannel");
 
             ref.setActiveButton("RoundedChannel");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__transitionButton.onclick = function () {
+        this.__transitionButton.onclick = function() {
             Registry.viewManager.activateTool("Transition");
 
             ref.setActiveButton("Transition");
@@ -215,48 +215,48 @@ export default class ComponentToolBar {
         //     ref.setActiveButton("CircleValve");
         //     ref.__viewManagerDelegate.switchTo2D();
         // };
-        this.__valve3dButton.onclick = function () {
+        this.__valve3dButton.onclick = function() {
             Registry.viewManager.activateTool("Valve3D");
 
             ref.setActiveButton("Valve3D");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__pumpButton.onclick = function () {
+        this.__pumpButton.onclick = function() {
             Registry.viewManager.activateTool("Pump");
 
             ref.setActiveButton("Pump");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__pump3dButton.onclick = function () {
+        this.__pump3dButton.onclick = function() {
             Registry.viewManager.activateTool("Pump3D");
 
             ref.setActiveButton("Pump3D");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__alignmentMarksButton.onclick = function () {
+        this.__alignmentMarksButton.onclick = function() {
             Registry.viewManager.activateTool("AlignmentMarks");
 
             ref.setActiveButton("AlignmentMarks");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__valveButton.onclick = function () {
+        this.__valveButton.onclick = function() {
             Registry.viewManager.activateTool("Valve");
 
             ref.setActiveButton("Valve");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__portButton.onclick = function () {
+        this.__portButton.onclick = function() {
             Registry.viewManager.activateTool("Port");
 
             ref.setActiveButton("Port");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__anodeButton.onclick = function () {
+        this.__anodeButton.onclick = function() {
             // ck
             Registry.viewManager.activateTool("Anode"); // ck
 
@@ -264,7 +264,7 @@ export default class ComponentToolBar {
             ref.__viewManagerDelegate.switchTo2D(); // ck
         }; // ck
 
-        this.__cathodeButton.onclick = function () {
+        this.__cathodeButton.onclick = function() {
             // ck
             Registry.viewManager.activateTool("Cathode"); // ck
 
@@ -272,105 +272,105 @@ export default class ComponentToolBar {
             ref.__viewManagerDelegate.switchTo2D(); // ck
         }; // ck
 
-        this.__viaButton.onclick = function () {
+        this.__viaButton.onclick = function() {
             Registry.viewManager.activateTool("Via");
 
             ref.setActiveButton("Via");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__chamberButton.onclick = function () {
+        this.__chamberButton.onclick = function() {
             Registry.viewManager.activateTool("Chamber");
 
             ref.setActiveButton("Chamber");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__diamondButton.onclick = function () {
+        this.__diamondButton.onclick = function() {
             Registry.viewManager.activateTool("DiamondReactionChamber");
 
             ref.setActiveButton("DiamondReactionChamber");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__bettermixerButton.onclick = function () {
+        this.__bettermixerButton.onclick = function() {
             Registry.viewManager.activateTool("BetterMixer");
 
             ref.setActiveButton("BetterMixer");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__threeDMixerButton.onclick = function () {
+        this.__threeDMixerButton.onclick = function() {
             Registry.viewManager.activateTool("3DMixer");
 
             ref.setActiveButton("3DMixer");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__curvedmixerButton.onclick = function () {
+        this.__curvedmixerButton.onclick = function() {
             Registry.viewManager.activateTool("CurvedMixer");
 
             ref.setActiveButton("CurvedMixer");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__mixerButton.onclick = function () {
+        this.__mixerButton.onclick = function() {
             Registry.viewManager.activateTool("Mixer");
 
             ref.setActiveButton("Mixer");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__gradientGeneratorButton.onclick = function () {
+        this.__gradientGeneratorButton.onclick = function() {
             Registry.viewManager.activateTool("GradientGenerator");
 
             ref.setActiveButton("GradientGenerator");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__thermoCyclerButton.onclick = function () {
+        this.__thermoCyclerButton.onclick = function() {
             Registry.viewManager.activateTool("thermoCycler");
 
             ref.setActiveButton("thermoCycler");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__treeButton.onclick = function () {
+        this.__treeButton.onclick = function() {
             Registry.viewManager.activateTool("Tree");
 
             ref.setActiveButton("Tree");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__ytreeButton.onclick = function () {
+        this.__ytreeButton.onclick = function() {
             Registry.viewManager.activateTool("YTree");
 
             ref.setActiveButton("YTree");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__muxButton.onclick = function () {
+        this.__muxButton.onclick = function() {
             Registry.viewManager.activateTool("Mux");
 
             ref.setActiveButton("Mux");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__transposerButton.onclick = function () {
+        this.__transposerButton.onclick = function() {
             Registry.viewManager.activateTool("Transposer");
 
             ref.setActiveButton("Transposer");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__rotarymixerButton.onclick = function () {
+        this.__rotarymixerButton.onclick = function() {
             Registry.viewManager.activateTool("RotaryMixer");
 
             ref.setActiveButton("RotaryMixer");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__dropletgenButton.onclick = function () {
+        this.__dropletgenButton.onclick = function() {
             Registry.viewManager.activateTool("DropletGen");
 
             ref.setActiveButton("DropletGen");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__celltraplButton.onclick = function () {
+        this.__celltraplButton.onclick = function() {
             Registry.viewManager.activateTool("CellTrapL");
 
             ref.setActiveButton("CellTrapL");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__gelchannelButton.onclick = function () {
+        this.__gelchannelButton.onclick = function() {
             // CK
             Registry.viewManager.activateTool("Gelchannel"); // CK
 
@@ -378,13 +378,13 @@ export default class ComponentToolBar {
             ref.__viewManagerDelegate.switchTo2D(); // CK
         }; // CK
 
-        this.__insertTextButton.onclick = function () {
+        this.__insertTextButton.onclick = function() {
             if (ref.activeButton) setButtonColor(ref.buttons[ref.activeButton], inactiveBackground, inactiveText);
             ref.activeButton = "InsertTextButton";
             setButtonColor(ref.buttons.InsertTextButton, Colors.DEEP_PURPLE_500, activeText);
         };
 
-        this.__llChamberButton.onclick = function () {
+        this.__llChamberButton.onclick = function() {
             Registry.viewManager.activateTool("LLChamber");
 
             ref.setActiveButton("LLChamber");
@@ -392,84 +392,84 @@ export default class ComponentToolBar {
         };
 
         // new
-        this.__dropletgenTButton.onclick = function () {
+        this.__dropletgenTButton.onclick = function() {
             Registry.viewManager.activateTool("DropletGenT");
 
             ref.setActiveButton("DropletGenT");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__dropletgenFlowButton.onclick = function () {
+        this.__dropletgenFlowButton.onclick = function() {
             Registry.viewManager.activateTool("DropletGenFlow");
 
             ref.setActiveButton("DropletGenFlow");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__filterButton.onclick = function () {
+        this.__filterButton.onclick = function() {
             Registry.viewManager.activateTool("Filter");
 
             ref.setActiveButton("Filter");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__celltrapsButton.onclick = function () {
+        this.__celltrapsButton.onclick = function() {
             Registry.viewManager.activateTool("CellTrapS");
 
             ref.setActiveButton("CellTrapS");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__threeDMuxButton.onclick = function () {
+        this.__threeDMuxButton.onclick = function() {
             Registry.viewManager.activateTool("3DMux");
 
             ref.setActiveButton("3DMux");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
-        this.__chemostatRingButton.onclick = function () {
+        this.__chemostatRingButton.onclick = function() {
             Registry.viewManager.activateTool("ChemostatRing");
 
             ref.setActiveButton("ChemostatRing");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__incubationButton.onclick = function () {
+        this.__incubationButton.onclick = function() {
             Registry.viewManager.activateTool("Incubation");
 
             ref.setActiveButton("Incubation");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__mergerButton.onclick = function () {
+        this.__mergerButton.onclick = function() {
             Registry.viewManager.activateTool("Merger");
 
             ref.setActiveButton("Merger");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__picoinjectionButton.onclick = function () {
+        this.__picoinjectionButton.onclick = function() {
             Registry.viewManager.activateTool("PicoInjection");
 
             ref.setActiveButton("PicoInjection");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__sorterButton.onclick = function () {
+        this.__sorterButton.onclick = function() {
             Registry.viewManager.activateTool("Sorter");
 
             ref.setActiveButton("Sorter");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__splitterButton.onclick = function () {
+        this.__splitterButton.onclick = function() {
             Registry.viewManager.activateTool("Splitter");
 
             ref.setActiveButton("Splitter");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__capacitancesensorButton.onclick = function () {
+        this.__capacitancesensorButton.onclick = function() {
             Registry.viewManager.activateTool("CapacitanceSensor");
 
             ref.setActiveButton("CapacitanceSensor");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        this.__logicarrayButton.onclick = function () {
+        this.__logicarrayButton.onclick = function() {
             Registry.viewManager.activateTool("LogicArray");
 
             ref.setActiveButton("LogicArray");
@@ -545,7 +545,7 @@ export default class ComponentToolBar {
 
     static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {
         const makeTable = ParameterMenu.generateTableFunction("parameter_menu", typeString, setString, isTranslucent);
-        return function (event) {
+        return function(event) {
             Registry.viewManager.killParamsWindow();
             makeTable(event);
         };

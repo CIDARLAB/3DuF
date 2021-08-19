@@ -164,7 +164,7 @@ export default class FeatureSet {
     getFeatureType(typeString) {
         const setString = this.name;
         const defaultName = "New " + setString + "." + typeString;
-        return function (values, name = defaultName) {
+        return function(values, name = defaultName) {
             return Device.makeFeature(typeString, values, name);
         };
     }

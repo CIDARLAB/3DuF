@@ -61,7 +61,7 @@ export default {
         };
     },
     watch: {
-        dialog: function (newValue) {
+        dialog: function(newValue) {
             if (newValue) {
                 this.$emit("close");
                 Registry.viewManager.activateTool("GenerateArrayTool");
@@ -78,7 +78,7 @@ export default {
             this.activated = false;
         });
 
-        (function () {
+        (function() {
             // make vuetify dialogs movable
             const d = {};
             document.addEventListener("mousedown", e => {

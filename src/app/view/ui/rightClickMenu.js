@@ -31,23 +31,23 @@ export default class RightClickMenu {
         const ref = this;
 
         // Event handlers
-        this.__revertToDefaultsButton.addEventListener("click", function (event) {
+        this.__revertToDefaultsButton.addEventListener("click", function(event) {
             revertToDefaultParams(ref.__featureTable, ref.__typeString, ref.__setString);
         });
-        this.__deleteButton.addEventListener("click", function (event) {
+        this.__deleteButton.addEventListener("click", function(event) {
             Registry.viewManager.view.deleteSelectedFeatures();
             ref.close();
         });
-        this.__copyButton.addEventListener("click", function (event) {
+        this.__copyButton.addEventListener("click", function(event) {
             Registry.viewManager.initiateCopy();
             ref.close();
         });
-        this.__copyToAllButton.addEventListener("click", function (event) {
+        this.__copyToAllButton.addEventListener("click", function(event) {
             console.log("Change all the component parameters", event);
             Registry.viewManager.changeAllDialog.showDialog();
             ref.close();
         });
-        this.__renameComponentButton.addEventListener("click", function (event) {
+        this.__renameComponentButton.addEventListener("click", function(event) {
             console.log("Show rename button", event);
             if (ref.__renameIsVisible) {
                 // Hide
@@ -60,22 +60,22 @@ export default class RightClickMenu {
             ref.__renameIsVisible = !ref.__renameIsVisible;
         });
 
-        this.__moveButton.addEventListener("click", function (event) {
+        this.__moveButton.addEventListener("click", function(event) {
             ref.__activateMove();
         });
 
-        this.__generateArrayButton.addEventListener("click", function (event) {
+        this.__generateArrayButton.addEventListener("click", function(event) {
             ref.__activateGenerateArray();
         });
 
         // Save Rename
-        this.__renameSaveButton.addEventListener("click", function (event) {
+        this.__renameSaveButton.addEventListener("click", function(event) {
             const nametext = ref.__renameTextInput.value;
             ref.setComponentName(nametext);
         });
 
         /// Cancel Rename
-        this.__renameCancelButton.addEventListener("click", function (event) {
+        this.__renameCancelButton.addEventListener("click", function(event) {
             const nametext = ref.getComponentName();
             document.getElementById("componentname_textinput").value = nametext;
         });

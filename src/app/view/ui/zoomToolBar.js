@@ -31,7 +31,7 @@ export default class ZoomToolBar {
         // Create the onupdate method
         const registryref = Registry;
         const ref = this;
-        this.__zoomSlider.noUiSlider.on("update", function (values, handle, unencoded, tap, positions) {
+        this.__zoomSlider.noUiSlider.on("update", function(values, handle, unencoded, tap, positions) {
             if (ref.__isUserGeneratedEvent) {
                 console.log("Zoom Value:", values[0]);
                 // TODO - Map this directly to the zoom functions

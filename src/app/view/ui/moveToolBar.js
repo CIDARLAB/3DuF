@@ -26,17 +26,17 @@ export default class MoveToolBar {
         const ref = this;
 
         // Text input changes
-        this.__xPosInput.addEventListener("input", function (event) {
+        this.__xPosInput.addEventListener("input", function(event) {
             ref.processNewPosition();
         });
 
-        this.__yPosInput.addEventListener("input", function (event) {
+        this.__yPosInput.addEventListener("input", function(event) {
             ref.processNewPosition();
         });
 
         // Position buttons
         // Decrease x
-        this.__xPosDownButton.addEventListener("click", function (event) {
+        this.__xPosDownButton.addEventListener("click", function(event) {
             let value = ref.__xPosInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -47,7 +47,7 @@ export default class MoveToolBar {
         });
 
         // increase x
-        this.__xPosUpButton.addEventListener("click", function (event) {
+        this.__xPosUpButton.addEventListener("click", function(event) {
             let value = ref.__xPosInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -58,7 +58,7 @@ export default class MoveToolBar {
         });
 
         // increase y
-        this.__yPosUpButton.addEventListener("click", function (event) {
+        this.__yPosUpButton.addEventListener("click", function(event) {
             let value = ref.__yPosInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -69,7 +69,7 @@ export default class MoveToolBar {
         });
 
         // decrease y
-        this.__yPosDownButton.addEventListener("click", function (event) {
+        this.__yPosDownButton.addEventListener("click", function(event) {
             let value = ref.__yPosInput.value;
             value = Number.parseFloat(value);
             if (NumberUtils.isFloatOrInt(value)) {
@@ -80,13 +80,13 @@ export default class MoveToolBar {
         });
 
         // Action button clicks
-        this.__saveButton.addEventListener("click", function (event) {
+        this.__saveButton.addEventListener("click", function(event) {
             console.log("Save button was pressed");
             ref.hideWindow();
             ref.moveToolDelegate.deactivate();
         });
 
-        this.__cancelButton.addEventListener("click", function (event) {
+        this.__cancelButton.addEventListener("click", function(event) {
             console.log("Cancel Button was Pressed");
             ref.moveToolDelegate.revertToOriginalPosition();
             ref.hideWindow();
