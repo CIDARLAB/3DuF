@@ -18,7 +18,7 @@ export default class MouseAndKeyboardHandler {
         this.__middleMouseTool = new PanTool();
 
         // Prevent default keyboard window events
-        window.onkeydown = function(event) {
+        window.onkeydown = function (event) {
             const key = event.keyCode || event.which;
             if (key === 46) {
                 event.preventDefault();
@@ -75,7 +75,7 @@ export default class MouseAndKeyboardHandler {
     __setupDefaultKeyboardShortcuts() {
         const reference = this.viewManagerDelegate;
 
-        window.addEventListener("keydown", function(event) {
+        window.addEventListener("keydown", function (event) {
             const key = event.keyCode || event.which;
 
             // Saving
@@ -105,7 +105,7 @@ export default class MouseAndKeyboardHandler {
             }
         });
 
-        reference.view.setKeyDownFunction(function(event) {
+        reference.view.setKeyDownFunction(function (event) {
             const key = event.keyCode || event.which;
 
             // Delete
@@ -286,7 +286,7 @@ export default class MouseAndKeyboardHandler {
      */
     constructMouseEvent(func1, func2, func3, buttondownCallback) {
         console.log("construct mouse event!");
-        return function(event) {
+        return function (event) {
             let target;
             if (event.buttons) {
                 buttondownCallback(event);

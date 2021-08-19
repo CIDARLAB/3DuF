@@ -14,7 +14,7 @@ export default class EditDeviceDialog {
 
         const ref = this;
 
-        this.saveDeviceSettingsButton.onclick = function() {
+        this.saveDeviceSettingsButton.onclick = function () {
             // Save the name
             const devicename = ref.__deviceNameTextInput.value;
             if (devicename !== "" || devicename !== null) {
@@ -52,12 +52,12 @@ export default class EditDeviceDialog {
 
         this.showModalButton = document.querySelector("#resize_button");
 
-        this.showModalButton.addEventListener("click", function() {
+        this.showModalButton.addEventListener("click", function () {
             ref.__window.showModal();
             ref.setupInitialValues();
         });
 
-        this.__window.querySelector(".close").addEventListener("click", function() {
+        this.__window.querySelector(".close").addEventListener("click", function () {
             ref.__window.close();
         });
     }
