@@ -34,7 +34,7 @@
                     <!-- <v-btn id="context_button_arraygen" color="white indigo--text" depressed>
                         <span class="material-icons">view_comfy</span>
                     </v-btn> -->
-                    <GenerateArrayDialog :component="currentComponent" />
+                    <GenerateArrayDialog :component="currentComponent" @close="activeMenu = false" />
                 </div>
             </v-row>
             <v-row>
@@ -118,7 +118,7 @@ export default {
 
             console.log(event, component);
             this.activeMenu = !this.activeMenu;
-            console.log(this.activeMenu);
+            // console.log(this.activeMenu);
 
             //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
 

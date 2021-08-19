@@ -67,6 +67,7 @@ export default {
     watch: {
         dialog: function(newValue) {
             if (newValue) {
+                this.$emit("close");
                 Registry.viewManager.activateTool("GenerateArrayTool");
                 Registry.viewManager.tools.GenerateArrayTool.activate(this.component);
             } else {
