@@ -27,9 +27,7 @@
                                         ><v-chip v-if="chip1" small close color="green" text-color="white" closable @click:close="chip1 = false">{{ component }}</v-chip></v-col
                                     >
                                 </v-row>
-                                <v-row no-gutters>
-                                    Sinks:
-                                </v-row>
+                                <v-row no-gutters> Sinks: </v-row>
                                 <v-row no-gutters>
                                     <v-col cols="4"
                                         ><v-chip v-if="chip2" small close color="green" text-color="white" @click:close="chip2 = false">{{ component }}</v-chip></v-col
@@ -47,9 +45,7 @@
                         </v-col>
                         <v-divider vertical inset></v-divider>
                         <v-col cols="3">
-                            <v-row no-gutters>
-                                Connection Profile
-                            </v-row>
+                            <v-row no-gutters> Connection Profile </v-row>
                             <v-row no-gutters>
                                 <v-select v-model="selectedProfile" :items="connectionProfiles"></v-select>
                             </v-row>
