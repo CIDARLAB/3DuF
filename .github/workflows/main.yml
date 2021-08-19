@@ -18,10 +18,28 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the repo
       - uses: actions/checkout@v2
       - run : |
                 npm ci
                 npm run vue-lint
+
+  lint-fix:
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo, run the linter
+      - uses: actions/checkout@v2
+      - run : |
+                npm ci
+                npm run vue-lint
+      - name: Commits and pushes
+        uses: devops-infra/action-commit-push@v0.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: Ran linter
+
+        
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
