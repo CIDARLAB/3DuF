@@ -38,7 +38,7 @@ jobs:
         uses: devops-infra/action-commit-push@v0.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          commit_message: Replaced foo with bar
+          commit_message: ran the lint fixer
 
   # This workflow contains a single job called "build"
   build:
