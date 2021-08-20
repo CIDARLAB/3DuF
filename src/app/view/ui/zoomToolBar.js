@@ -1,5 +1,5 @@
 import Registry from "../../core/registry";
-import noUiSlider from "nouislider";
+// import noUiSlider from "nouislider";
 
 export default class ZoomToolBar {
     constructor(zoom_min, zoom_max) {
@@ -9,41 +9,39 @@ export default class ZoomToolBar {
     }
 
     __setupZoomSlider(zoom_min, zoom_max) {
-        if (this.__zoomSlider === null) {
-            throw new Error("Could not find HTML element for the grid resolution slider");
-        }
-
-        // Create the nouislider
-        const zoom_optimal = Math.log10(Registry.viewManager.view.computeOptimalZoom());
-        // Create the noUiSlider
-        noUiSlider.create(this.__zoomSlider, {
-            start: [zoom_optimal],
-            connect: "lower",
-            range: {
-                min: -3.61,
-                max: 0.6545
-            },
-            // pips: { mode: 'range', density: 5 , format: wNumb({suffix:"μm"})},
-            orientation: "vertical",
-            direction: "rtl"
-        });
-
-        // Create the onupdate method
-        const registryref = Registry;
-        const ref = this;
-        this.__zoomSlider.noUiSlider.on("update", function(values, handle, unencoded, tap, positions) {
-            if (ref.__isUserGeneratedEvent) {
-                console.log("Zoom Value:", values[0]);
-                // TODO - Map this directly to the zoom functions
-                console.log(registryref);
-                try {
-                    registryref.viewManager.setZoom(ZoomToolBar.convertLinearToZoomScale(values[0]));
-                } catch (e) {
-                    console.log("Could not set the zoom");
-                }
-            }
-            ref.__isUserGeneratedEvent = true;
-        });
+        // if (this.__zoomSlider === null) {
+        //     throw new Error("Could not find HTML element for the grid resolution slider");
+        // }
+        // // Create the nouislider
+        // const zoom_optimal = Math.log10(Registry.viewManager.view.computeOptimalZoom());
+        // // Create the noUiSlider
+        // noUiSlider.create(this.__zoomSlider, {
+        //     start: [zoom_optimal],
+        //     connect: "lower",
+        //     range: {
+        //         min: -3.61,
+        //         max: 0.6545
+        //     },
+        //     // pips: { mode: 'range', density: 5 , format: wNumb({suffix:"μm"})},
+        //     orientation: "vertical",
+        //     direction: "rtl"
+        // });
+        // // Create the onupdate method
+        // const registryref = Registry;
+        // const ref = this;
+        // this.__zoomSlider.noUiSlider.on("update", function(values, handle, unencoded, tap, positions) {
+        //     if (ref.__isUserGeneratedEvent) {
+        //         console.log("Zoom Value:", values[0]);
+        //         // TODO - Map this directly to the zoom functions
+        //         console.log(registryref);
+        //         try {
+        //             registryref.viewManager.setZoom(ZoomToolBar.convertLinearToZoomScale(values[0]));
+        //         } catch (e) {
+        //             console.log("Could not set the zoom");
+        //         }
+        //     }
+        //     ref.__isUserGeneratedEvent = true;
+        // });
     }
 
     /**

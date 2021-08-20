@@ -92,16 +92,16 @@ export default class AdaptiveGrid {
         // console.log("Zoom: " + paper.view.zoom + " Spacing: " + this.__spacing);
     }
 
-    // updateGridSpacing(value) {
-    //     if (AdaptiveGrid.isValidZoom(value)) {
-    //         console.log("New spacing value:", value);
-    //         this.__spacing = value;
-    //         return true;
-    //     } else {
-    //         console.error("Inavlid Grid Spacing");
-    //         return false;
-    //     }
-    // }
+    updateGridSpacing(value) {
+        if (AdaptiveGrid.isValidZoom(value)) {
+            console.log("New spacing value:", value);
+            this.__spacing = value;
+            return true;
+        } else {
+            console.error("Inavlid Grid Spacing");
+            return false;
+        }
+    }
 
     getThinWidth() {
         return this.thinWidth / paper.view.zoom;
