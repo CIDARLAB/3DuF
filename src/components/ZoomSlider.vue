@@ -42,11 +42,10 @@ export default {
         this.$refs.slider.noUiSlider.on("update", function(values, handle, unencoded, tap, positions) {
             if (ref.isUserGeneratedEvent) {
                 console.log("Zoom Value:", values[0]);
-                this.currentGridSpacing;
-                let updatedSpacing = Registry.currentGrid.spacing;
-                //let updatedSpacing = ref.getGridSpacing();
                 //created a getter to get current Sapcing from Registry.currentGrid.__spacing
-                // ask krishna why this. doesn't work
+                let updatedSpacing = Registry.currentGrid.spacing;
+                console.log("updatedSpacing zoombar:", updatedSpacing);
+                //let updatedSpacing = ref.getGridSpacing();
                 EventBus.get().emit(EventBus.UPDATE_GRID, updatedSpacing);
                 // EventBus emit updated spacing, ResolutionToolBar.vue listen to this
                 try {
@@ -58,7 +57,7 @@ export default {
             ref.isUserGeneratedEvent = true;
         });
         EventBus.get().on(EventBus.UPDATE_ZOOM, this.setZoom);
-        //???? where this eventbus go??
+        //???? Ask Krishna where this eventbus go??
     },
     methods: {
         /**
@@ -72,9 +71,9 @@ export default {
         convertLinearToZoomScale(linvalue) {
             return Math.pow(10, linvalue);
         },
-        getGridSpacing() {
-            return Registry.currentGrid.__spacing;
-        },
+        // getGridSpacing() {
+        //     return Registry.currentGrid.__spacing;
+        // },
         convertZoomtoLinearScale(zoomvalue) {
             return Math.log10(zoomvalue);
         }

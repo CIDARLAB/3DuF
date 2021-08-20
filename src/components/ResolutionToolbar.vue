@@ -24,16 +24,16 @@
             <v-switch v-model="switch2" color="#304FFE" @change="clickedSnap">
                 <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
             </v-switch>
-            <veeno ref="slider" v-model="sliderValue" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
+            <veeno ref="slider" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
         </div>
-        <div id="bottom-info-bar">Grid Size: {{ sliderValue }} &mu;m</div>
+        <div id="bottom-info-bar">Grid Size: {{ gridSizeValue }} &mu;m</div>
     </div>
 </template>
 
 <script>
-// Issues: Beining Aug.5.21
+// Issues: Beining Aug.19.21
 // Grid Settings slider out of range
-// "console log : Could not set the Zoom
+// Questions: how to change it to 10, 100, 1000
 
 import veeno from "veeno";
 import "nouislider/distribute/nouislider.min.css";
@@ -49,7 +49,7 @@ export default {
 
     // Beining:I dont know where to set the defalut value for sliderValue
     props: {
-        // sliderValue: {
+        // gridSizeValue: {
         //     type: Number,
         //     default: 1000
         // }
@@ -60,24 +60,25 @@ export default {
             hover: false,
             slider_enabled: true,
             switch2: true,
+            gridSizeValue: 1000,
             sliderOptions: {
                 connect: [true, false],
                 pipsy: { mode: "range", density: 5 },
                 handles: 1000,
                 range: { min: [1], "10%": [10], "30%": [100], "90%": [1000], max: [5000] }
-            },
-            sliderValue: 1000
+            }
         };
     },
     created() {
         // listen to ZoomSlider and get grid size data and show here as sliderValue
+        // we doesn't need eventbus anymore
         EventBus.get().on(EventBus.UPDATE_GRID, data => {
-            this.sliderValue = data;
+            this.gridSizeValue = data;
         });
     },
-    updated() {
-        Registry.currentGrid.enableAdaptiveGrid();
-    },
+    // updated() {
+    //     Registry.currentGrid.enableAdaptiveGrid();
+    // },
     methods: {
         showProperties() {
             this.activated = !this.activated;
@@ -107,13 +108,12 @@ export default {
         updateGrid(event) {
             let registryref = Registry;
             const { values } = event;
-            let value1 = parseInt(values[0], 10);
-            //This ensures that there is something valid present
+            this.gridSizeValue = parseInt(values[0], 10);
             if (registryref.currentGrid !== null) {
-                //registryref.currentGrid.updateGridSpacing(value1);
-                registryref.currentGrid.spacing = value1;
-                // registryref.currentGrid.notifyViewManagerToUpdateView();
-                console.log("grid updated", value1);
+                registryref.currentGrid.spacing = this.gridSizeValue;
+                //registryref.currentGrid.notifyViewManagerToUpdateView();
+                console.log("grid updated gridSizeValue", this.gridSizeValue);
+                console.log("grid updated registry", registryref.currentGrid.spacing);
             }
         }
     }
