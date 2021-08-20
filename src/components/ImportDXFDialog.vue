@@ -1,19 +1,15 @@
 <template>
     <Dialog title="Import" color="primary" text-color="white--text">
         <template #content>
+            <h4>Drag and Drop the DXF File:</h4>
             <div class="mdl-dialog__content">
-                <canvas id="component_preview_canvas" tabindex="1" width="500" height="400" />
+                <v-card id="drop_box" class="mx-auto" tile outlined width="400" color="grey lighten-2" height="200"> </v-card>
+                <input id="dxf_input" ref="file" type="file" class="upload" />
             </div>
-            <form action="#">
-                <div class="mdl-textfield mdl-js-textfield" width="300px">
-                    <input id="new_component_name" class="mdl-textfield__input" type="text" />
-                    <label class="mdl-textfield__label" for="new_component_name">Name...</label>
-                </div>
-            </form>
         </template>
         <template #actions="{ callbacks }">
-            <v-btn color="green darken-1" text @click="callbacks.close()"> Cancel </v-btn>
-            <v-btn color="green darken-1" text @click="callbacks.close()"> Import </v-btn>
+            <v-btn class="white--text" color="green dark" @click="callbacks.close()"> Import </v-btn>
+            <v-btn class="white--text" color="red dark" @click="callbacks.close()"> Cancel </v-btn>
         </template>
     </Dialog>
 </template>
@@ -36,5 +32,13 @@ export default {
     }
 };
 </script>
-
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+#drop_box {
+    position: relative;
+    top: 10px;
+}
+#dxf_input {
+    position: relative;
+    top: 30px;
+}
+</style>

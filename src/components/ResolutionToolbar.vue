@@ -1,9 +1,22 @@
 <template>
     <div>
-        <v-btn id="grid-button" class="pink white--text" fab @click="showProperties()" @mouseenter.native="hover = true" @mouseleave.native="hover = false">
-            <span class="material-icons">grid_on</span>
-        </v-btn>
-        <v-btn v-if="hover" id="grid-hover" class="grey white--text" x-small depressed>Grid Settings</v-btn>
+        <v-tooltip left>
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    id="grid-button"
+                    v-bind="attrs"
+                    class="pink white--text"
+                    fab
+                    v-on="on"
+                    @click="showProperties()"
+                    @mouseenter.native="hover = true"
+                    @mouseleave.native="hover = false"
+                >
+                    <span class="material-icons">grid_on</span>
+                </v-btn>
+            </template>
+            <span>Grid Settings</span>
+        </v-tooltip>
         <div v-if="activated" id="resolution-toolbar">
             <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
                 <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
@@ -13,14 +26,20 @@
             </v-switch>
             <veeno ref="slider" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
         </div>
+        <div id="bottom-info-bar">Grid Size: {{ gridSizeValue }} &mu;m</div>
     </div>
 </template>
 
 <script>
+// Issues: Beining Aug.19.21
+// Grid Settings slider out of range
+// Questions: how to change it to 10, 100, 1000
+
 import veeno from "veeno";
 import "nouislider/distribute/nouislider.min.css";
 import Registry from "../app/core/registry";
 import wNumb from "wnumb";
+import EventBus from "@/events/events";
 
 export default {
     name: "ResolutionToolbar",
@@ -28,13 +47,20 @@ export default {
         veeno
     },
 
-    props: {},
+    // Beining:I dont know where to set the defalut value for sliderValue
+    props: {
+        // gridSizeValue: {
+        //     type: Number,
+        //     default: 1000
+        // }
+    },
     data() {
         return {
             activated: false,
             hover: false,
             slider_enabled: true,
             switch2: true,
+            gridSizeValue: 1000,
             sliderOptions: {
                 connect: [true, false],
                 pipsy: { mode: "range", density: 5 },
@@ -43,9 +69,16 @@ export default {
             }
         };
     },
-    updated() {
-        Registry.currentGrid.enableAdaptiveGrid();
+    created() {
+        // listen to ZoomSlider and get grid size data and show here as sliderValue
+        // we doesn't need eventbus anymore
+        EventBus.get().on(EventBus.UPDATE_GRID, data => {
+            this.gridSizeValue = data;
+        });
     },
+    // updated() {
+    //     Registry.currentGrid.enableAdaptiveGrid();
+    // },
     methods: {
         showProperties() {
             this.activated = !this.activated;
@@ -75,11 +108,12 @@ export default {
         updateGrid(event) {
             let registryref = Registry;
             const { values } = event;
-            let value1 = parseInt(values[0], 10);
-            //This ensures that there is something valid present
+            this.gridSizeValue = parseInt(values[0], 10);
             if (registryref.currentGrid !== null) {
-                registryref.currentGrid.updateGridSpacing(value1);
-                registryref.currentGrid.notifyViewManagerToUpdateView();
+                registryref.currentGrid.spacing = this.gridSizeValue;
+                //registryref.currentGrid.notifyViewManagerToUpdateView();
+                console.log("grid updated gridSizeValue", this.gridSizeValue);
+                console.log("grid updated registry", registryref.currentGrid.spacing);
             }
         }
     }
@@ -122,5 +156,11 @@ export default {
 .veeno.noUi-pips.noUi-pips-horizontal {
     padding: 0px;
     left: 10px;
+}
+#bottom-info-bar {
+    z-index: 9;
+    bottom: 2px;
+    right: 50px;
+    position: absolute;
 }
 </style>

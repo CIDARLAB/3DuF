@@ -1,12 +1,13 @@
 <template>
     <div ref="slider" class="zoomsliderbase"></div>
 </template>
-å
+
 <script>
 import Registry from "@/app/core/registry";
 import noUiSlider from "nouislider";
 import "@/assets/nouislider/nouislider.min.css";
 import EventBus from "@/events/events";
+import Vue from "vue";
 
 export default {
     name: "ZoomSlider",
@@ -14,13 +15,14 @@ export default {
     data() {
         return {
             zoomOptimal: [0.1],
-            isUserGeneratedEvent: false
+            isUserGeneratedEvent: false,
+            currentGridSpacing: 500
         };
     },
     mounted() {
         setTimeout(() => {
             this.zoomOptimal = [Math.log10(Registry.viewManager.view.computeOptimalZoom())];
-            console.log(this.zoomOptimal);
+            console.log("this.zoomOptimal", this.zoomOptimal);
         }, 10);
 
         noUiSlider.create(this.$refs.slider, {
@@ -40,8 +42,12 @@ export default {
         this.$refs.slider.noUiSlider.on("update", function(values, handle, unencoded, tap, positions) {
             if (ref.isUserGeneratedEvent) {
                 console.log("Zoom Value:", values[0]);
-                // TODO - Map this directly to the zoom functions
-                console.log(registryref);
+                //created a getter to get current Sapcing from Registry.currentGrid.__spacing
+                let updatedSpacing = Registry.currentGrid.spacing;
+                console.log("updatedSpacing zoombar:", updatedSpacing);
+                //let updatedSpacing = ref.getGridSpacing();
+                EventBus.get().emit(EventBus.UPDATE_GRID, updatedSpacing);
+                // EventBus emit updated spacing, ResolutionToolBar.vue listen to this
                 try {
                     registryref.viewManager.setZoom(ref.convertLinearToZoomScale(values[0]));
                 } catch (e) {
@@ -50,8 +56,8 @@ export default {
             }
             ref.isUserGeneratedEvent = true;
         });
-
         EventBus.get().on(EventBus.UPDATE_ZOOM, this.setZoom);
+        //???? Ask Krishna where this eventbus go??
     },
     methods: {
         /**
@@ -65,6 +71,9 @@ export default {
         convertLinearToZoomScale(linvalue) {
             return Math.pow(10, linvalue);
         },
+        // getGridSpacing() {
+        //     return Registry.currentGrid.__spacing;
+        // },
         convertZoomtoLinearScale(zoomvalue) {
             return Math.log10(zoomvalue);
         }
