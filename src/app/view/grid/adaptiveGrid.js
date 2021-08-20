@@ -17,6 +17,16 @@ export default class AdaptiveGrid {
         this.color = color;
     }
 
+    get spacing() {
+        return this.__spacing;
+    }
+
+    set spacing(value) {
+        // You can have validation code here
+        console.log(AdaptiveGrid.isValidZoom(value));
+        this.__spacing = value;
+    }
+
     enableAdaptiveGrid() {
         this.__isAutomaticEnabled = true;
     }

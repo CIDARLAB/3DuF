@@ -283,11 +283,6 @@ export default class PaperView {
     setZoom(zoom) {
         this.zoom = zoom;
         this.updateZoom();
-
-        // Check if the zoom toolbar exists before trying to run it
-        if (this.__viewManagerDelegate.zoomToolBar) {
-            this.__viewManagerDelegate.zoomToolBar.setZoom(zoom);
-        }
     }
 
     /**

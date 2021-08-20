@@ -3,9 +3,9 @@
         <template #content>
             <h4>Drag Drop the DXF Border File:</h4>
             <div class="mdl-dialog__content">
-                <canvas id="border_import_panel" tabindex="1" width="400" height="200" color="gray" @dragover="dragover" @dragleave="dragleave" @drop="drop" />
+                <v-card id="border_import_panel" class="mx-auto" tile outlined width="400" color="grey lighten-2" height="200"> </v-card>
                 <br />
-                <input id="dxf_input" ref="file" type="file" class="upload" @change="addFile()" />
+                <input id="file_input" ref="file" type="file" class="upload" @change="addFile()" />
             </div>
         </template>
         <template v-slot:actions="{ callbacks }">
@@ -104,4 +104,13 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+#border_import_panel {
+    position: relative;
+    top: 10px;
+}
+#file_input {
+    position: relative;
+    top: 30px;
+}
+</style>
