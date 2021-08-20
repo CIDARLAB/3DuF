@@ -17,15 +17,33 @@
             </template>
             <span>Grid Settings</span>
         </v-tooltip>
-        <div v-if="activated" id="resolution-toolbar">
-            <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
-                <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
-            </v-switch>
-            <v-switch v-model="switch2" color="#304FFE" @change="clickedSnap">
-                <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
-            </v-switch>
-            <veeno ref="slider" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
-        </div>
+        <v-card v-show="activated" id="resolution-toolbar">
+            <v-card-text>
+                <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
+                    <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
+                </v-switch>
+                <v-switch v-model="switch2" color="#304FFE" @change="clickedSnap">
+                    <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
+                </v-switch>
+                <veeno
+                    ref="slider"
+                    :pipsy="{
+                        mode: 'range',
+                        density: 5,
+                        format: suffix
+                    }"
+                    :handles="1000"
+                    :range="{
+                        min: [1],
+                        '10%': [10],
+                        '30%': [100],
+                        '90%': [1000],
+                        max: [5000]
+                    }"
+                    :connect="[true, false]"
+                />
+            </v-card-text>
+        </v-card>
         <div id="bottom-info-bar">Grid Size: {{ gridSizeValue }} &mu;m</div>
     </div>
 </template>
@@ -43,38 +61,56 @@ import EventBus from "@/events/events";
 
 export default {
     name: "ResolutionToolbar",
-    components: {
-        veeno
-    },
-
-    // Beining:I dont know where to set the defalut value for sliderValue
-    props: {
-        // gridSizeValue: {
-        //     type: Number,
-        //     default: 1000
-        // }
-    },
+    components: { veeno },
     data() {
         return {
+            suffix: wNumb({ suffix: "μm" }),
             activated: false,
             hover: false,
             slider_enabled: true,
             switch2: true,
-            gridSizeValue: 1000,
-            sliderOptions: {
-                connect: [true, false],
-                pipsy: { mode: "range", density: 5 },
-                handles: 1000,
-                range: { min: [1], "10%": [10], "30%": [100], "90%": [1000], max: [5000] }
-            }
+            gridSizeValue: 1000
+            // sliderOptions: {
+            //     connect: [true, false],
+            //     pipsy: { mode: "range", density: 5 },
+            //     handles: 1000,
+            //     range: { min: [1], "10%": [10], "30%": [100], "90%": [1000], max: [5000] }
+            // }
         };
     },
-    created() {
+    mounted() {
+        console.log("TEST", this.$refs.mapRef);
         // listen to ZoomSlider and get grid size data and show here as sliderValue
         // we doesn't need eventbus anymore
         EventBus.get().on(EventBus.UPDATE_GRID, data => {
             this.gridSizeValue = data;
         });
+
+        // Create the noUiSlider
+        // noUiSlider.create(this.$refs.slider, {
+        //     start: [500],
+        //     connect: "lower",
+        //     range: {
+        //         min: [1, 1],
+        //         "10%": [10, 10],
+        //         "30%": [100, 100],
+        //         "90%": [1000, 1000],
+        //         max: [5000]
+        //     },
+        //     pips: {
+        //         mode: "range",
+        //         density: 5,
+        //         format: wNumb({ suffix: "μm" })
+        //     },
+        //     tooltips: [true]
+        // });
+
+        // Associate an onchange function
+        const ref = this;
+        const registryref = Registry;
+        // this.__gridResolutionSlider.noUiSlider.on("update", function(values, handle, unencoded, isTap, positions) {
+        //     ref.__smallresolutionLabel.innerHTML = values[0] + " μm";
+        // });
     },
     // updated() {
     //     Registry.currentGrid.enableAdaptiveGrid();
