@@ -22,7 +22,8 @@ import {
     FeatureInterchangeV0,
     ComponentInterchangeV1,
     ConnectionInterchangeV1,
-    ComponentPortInterchangeV1
+    ComponentPortInterchangeV1,
+    LogicalLayerType
 } from "@/app/core/init";
 
 export default class LoadUtils {
@@ -37,7 +38,7 @@ export default class LoadUtils {
             }
         } else {
             for (let i = 0; i < json.layers.length; i++) {
-                newRenderLayers.push(LoadUtils.loadRenderLayerFromLayerInterchangeV1(json.renderLayers[i], newDevice));
+                newRenderLayers.push(LoadUtils.generateRenderLayerFromLayerInterchangeV1(json.renderLayers[i], newDevice));
             }
         }
         return [newDevice, newRenderLayers];
@@ -91,11 +92,11 @@ export default class LoadUtils {
             }
         } else {
             //We need to add a default layer
-            let newlayer = new Layer({}, "flow");
+            let newlayer = new Layer({}, "flow", LogicalLayerType.FLOW, "0", newDevice);
             newDevice.addLayer(newlayer);
-            newlayer = new Layer({}, "control");
+            newlayer = new Layer({}, "control", LogicalLayerType.CONTROL, "0", newDevice);
             newDevice.addLayer(newlayer);
-            newlayer = new Layer({}, "integration");
+            newlayer = new Layer({}, "integration", LogicalLayerType.INTEGRATION, "0", newDevice);
             newDevice.addLayer(newlayer);
         }
 
@@ -112,8 +113,29 @@ export default class LoadUtils {
         return newDevice;
     }
 
+    /**
+     * Loads the layer information from the interchange format
+     *
+     * @static
+     * @param {LayerInterchangeV1} json
+     * @param {Device} device
+     * @returns {Layer}
+     * @memberof LoadUtils
+     */
     static loadLayerFromInterchangeV1(json: LayerInterchangeV1, device: Device): Layer {
-        const newLayer: Layer = new Layer(json.params, json.name, json.type, json.group);
+        let layerType = LogicalLayerType.FLOW;
+        if (Object.prototype.hasOwnProperty.call(json, "type")) {
+            if (json.type === "FLOW") {
+                layerType = LogicalLayerType.FLOW;
+            } else if (json.type === "CONTROL") {
+                layerType = LogicalLayerType.CONTROL;
+            } else if (json.type === "INTEGRATION") {
+                layerType = LogicalLayerType.INTEGRATION;
+            } else {
+                throw new Error("Unknown layer type: " + json.type);
+            }
+        }
+        const newLayer: Layer = new Layer(json.params, json.name, layerType, json.group, device);
         for (const i in json.features) {
             newLayer.features[json.features[i].id] = LoadUtils.loadFeatureFromInterchangeV1(json.features[i]);
         }
@@ -122,6 +144,14 @@ export default class LoadUtils {
         return newLayer;
     }
 
+    /**
+     * Loads the features from the interchange format
+     *
+     * @static
+     * @param {FeatureInterchangeV0} json
+     * @returns {Feature}
+     * @memberof LoadUtils
+     */
     static loadFeatureFromInterchangeV1(json: FeatureInterchangeV0): Feature {
         // TODO: This will have to change soon when the thing is updated
         let ret = Device.makeFeature(json.macro, json.params, json.name, json.id, json.type, json.dxfData);
@@ -132,12 +162,24 @@ export default class LoadUtils {
         return ret;
     }
 
+    /**
+     * Loads the connections from the interchange format
+     *
+     * @static
+     * @param {Device} device
+     * @param {ConnectionInterchangeV1} json
+     * @returns {Connection}
+     * @memberof LoadUtils
+     */
     static loadConnectionFromInterchangeV1(device: Device, json: ConnectionInterchangeV1): Connection {
         const name = json.name;
         const id = json.id;
         const entity = json.entity;
         const params = json.params;
-
+        const layer = device.getLayer(json.layer);
+        if (layer === null) {
+            throw new Error("Could not find layer with id: " + json.layer);
+        }
         // Check if the params have the other unique elements necessary otherwise add them as null
         if (!Object.prototype.hasOwnProperty.call(params, "start")) {
             // Setting this value to origin
@@ -176,7 +218,7 @@ export default class LoadUtils {
         }
         const paramstoadd = new Params(params, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
 
-        const connection = new Connection(entity, paramstoadd, name, entity, id);
+        const connection = new Connection(entity, paramstoadd, name, entity, id, layer);
         if (Object.prototype.hasOwnProperty.call(json, "source")) {
             if (json.source !== null && json.source !== undefined) {
                 connection.setSourceFromJSON(device, json.source);
@@ -201,6 +243,14 @@ export default class LoadUtils {
         return connection;
     }
 
+    /**
+     * Loads the components from the interchange format
+     *
+     * @static
+     * @param {ComponentInterchangeV1} json
+     * @returns {Component}
+     * @memberof LoadUtils
+     */
     static loadComponentFromInterchangeV1(json: ComponentInterchangeV1): Component {
         const iscustomcompnent = false;
         const name = json.name;
@@ -273,10 +323,27 @@ export default class LoadUtils {
         return component;
     }
 
+    /**
+     * Loads the component port from the interchange format
+     *
+     * @static
+     * @param {ComponentPortInterchangeV1} json
+     * @returns {ComponentPort}
+     * @memberof LoadUtils
+     */
     static loadComponentPortFromInterchangeV1(json: ComponentPortInterchangeV1): ComponentPort {
         return new ComponentPort(json.x, json.y, json.label, json.layer);
     }
 
+    /**
+     * Loads the renderlayers from the interchange format
+     *
+     * @static
+     * @param {RenderLayerInterchangeV1} json
+     * @param {Device} device
+     * @returns {RenderLayer}
+     * @memberof LoadUtils
+     */
     static loadRenderLayerFromInterchangeV1(json: RenderLayerInterchangeV1, device: Device): RenderLayer {
         const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
 
@@ -293,7 +360,17 @@ export default class LoadUtils {
         return newLayer;
     }
 
-    static loadRenderLayerFromLayerInterchangeV1(json: LayerInterchangeV1, device: Device): RenderLayer {
+    /**
+     * Generates the render layers from the layer information. Typically used to generate all the render layers
+     * for the device.
+     *
+     * @static
+     * @param {LayerInterchangeV1} json
+     * @param {Device} device
+     * @returns {RenderLayer}
+     * @memberof LoadUtils
+     */
+    static generateRenderLayerFromLayerInterchangeV1(json: LayerInterchangeV1, device: Device): RenderLayer {
         const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
 
         for (const i in json.features) {
@@ -303,14 +380,18 @@ export default class LoadUtils {
         for (let i = 0; i < device.layers.length; i++) {
             if (device.layers[i].id == json.id) newLayer.physicalLayer = device.layers[i];
         }
-        if (json.name == "flow" || json.name == "cell") {
-            newLayer.color = "indigo";
-        } else if (json.name == "control") {
-            newLayer.color = "red";
-        } else if (json.name == "integration") {
-            newLayer.color = "green";
-        }
 
+        if (Object.prototype.hasOwnProperty.call(json, "type")) {
+            if (json.type === "FLOW") {
+                newLayer.color = "indigo";
+            } else if (json.type === "CONTROL") {
+                newLayer.color = "red";
+            } else if (json.type === "INTEGRATION") {
+                newLayer.color = "green";
+            } else {
+                throw new Error("Unknown layer type: " + json.type);
+            }
+        }
         return newLayer;
     }
 }

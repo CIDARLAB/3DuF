@@ -4,7 +4,7 @@ import Params from "./params";
 
 import StringValue from "./parameters/stringValue";
 import Feature from "./feature";
-import { DeviceInterchangeV1, DeviceInterchangeV1_1, Point } from "./init";
+import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point } from "./init";
 import { ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1 } from "./init";
 import { LayerInterchangeV1 } from "./init";
@@ -199,6 +199,23 @@ export default class Device {
      */
     updateParameter(key: string, value: any) {
         this.__params.updateParameter(key, value);
+    }
+
+    /**
+     * Returns the layer with the given ID
+     *
+     * @param {string} id
+     * @returns {(Layer | null)}
+     * @memberof Device
+     */
+    getLayer(id: string): Layer | null {
+        for (let i in this.__layers) {
+            let layer = this.__layers[i];
+            if (layer.id == id) {
+                return layer;
+            }
+        }
+        return null;
     }
 
     /**
@@ -469,18 +486,7 @@ export default class Device {
         }
         return output;
     }
-    /**
-     * Loads layers from a JSON format into the device object
-     * @param {JSON} json
-     * @memberof Device
-     * @returns {void}
-     */
-    __loadLayersFromJSON(json: { [index: string]: any }): void {
-        for (let i in json) {
-            let newLayer = Layer.fromJSON(json[i]);
-            this.addLayer(newLayer);
-        }
-    }
+
     /**
      * Loads feature layers from a Interchange format into the device object
      * @param {*} json
@@ -489,7 +495,7 @@ export default class Device {
      */
     __loadLayersFromInterchangeV1(json: Array<LayerInterchangeV1>): void {
         for (let i in json) {
-            let newLayer = Layer.fromInterchangeV1(json[i]);
+            let newLayer = Layer.fromInterchangeV1(json[i], this);
             this.addLayer(newLayer);
         }
     }
@@ -562,26 +568,6 @@ export default class Device {
         return output;
     }
 
-    /**
-     * Creates a new device object from a JSON format
-     * @param {JSON} json
-     * @returns {Device} Returns a device object
-     * @memberof Device
-     */
-    static fromJSON(json: { [index: string]: any }): Device {
-        let newDevice = new Device(
-            {
-                width: json["params"].width,
-                length: json["params"].length
-            },
-            json["name"]
-        );
-        newDevice.setXSpan(json["params"].width);
-        newDevice.setYSpan(json["params"].length);
-        newDevice.__loadLayersFromJSON(json["layers"]);
-        return newDevice;
-    }
-
     static fromInterchangeV1(json: DeviceInterchangeV1): Device {
         let newDevice: Device;
         if (Object.prototype.hasOwnProperty.call(json, "params")) {
@@ -624,9 +610,9 @@ export default class Device {
             newDevice.__loadLayersFromInterchangeV1(json.layers);
         } else {
             //We need to add a default layer
-            let newlayer = new Layer({}, "flow");
+            let newlayer = new Layer({}, "flow", LogicalLayerType.FLOW, "0", newDevice);
             newDevice.addLayer(newlayer);
-            newlayer = new Layer({}, "control");
+            newlayer = new Layer({}, "control", LogicalLayerType.CONTROL, "0", newDevice);
             newDevice.addLayer(newlayer);
         }
 
@@ -715,9 +701,9 @@ export default class Device {
             newDevice.__loadLayersFromInterchangeV1(json.layers);
         } else {
             //We need to add a default layer
-            let newlayer = new Layer({}, "flow");
+            let newlayer = new Layer({}, "flow", LogicalLayerType.FLOW, "0", newDevice);
             newDevice.addLayer(newlayer);
-            newlayer = new Layer({}, "control");
+            newlayer = new Layer({}, "control", LogicalLayerType.CONTROL, "0", newDevice);
             newDevice.addLayer(newlayer);
         }
 

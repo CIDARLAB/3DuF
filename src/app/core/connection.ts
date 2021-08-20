@@ -42,7 +42,7 @@ export default class Connection {
      * @param {String} mint
      * @param {String} id
      */
-    constructor(type: string, params: Params, name: string, mint: string, id: string = ComponentAPI.generateID()) {
+    constructor(type: string, params: Params, name: string, mint: string, id: string = ComponentAPI.generateID(), layer: Layer) {
         this._params = params;
         this._name = name;
         this._id = id;
@@ -58,7 +58,7 @@ export default class Connection {
         this._paths = [];
         this._objects = [];
         this._routed = false;
-        this._layer = new Layer({});
+        this._layer = layer;
     }
 
     get layer(): Layer {
@@ -444,6 +444,10 @@ export default class Connection {
         const id = json.id;
         const entity = json.entity;
         const params = json.params;
+        const layer = device.getLayer(json.layer);
+        if (layer === null) {
+            throw new Error("Could not find layer with id: " + json.layer);
+        }
 
         // Check if the params have the other unique elements necessary otherwise add them as null
         if (!Object.prototype.hasOwnProperty.call(params, "start")) {
@@ -483,7 +487,7 @@ export default class Connection {
         }
         const paramstoadd = new Params(params, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
 
-        const connection = new Connection(entity, paramstoadd, name, entity, id);
+        const connection = new Connection(entity, paramstoadd, name, entity, id, layer);
         if (Object.prototype.hasOwnProperty.call(json, "source")) {
             if (json.source !== null && json.source !== undefined) {
                 connection.setSourceFromJSON(device, json.source);

@@ -17,6 +17,12 @@ export type ScratchInterchangeV1 = {
     version: number;
     //device: DeviceInterchangeV1;
     renderLayers: Array<RenderLayerInterchangeV1>;
+};
+
+export enum LogicalLayerType {
+    FLOW = "FLOW",
+    CONTROL = "CONTROL",
+    INTEGRATION = "INTEGRATION"
 }
 
 export type DeviceInterchangeV1 = {
@@ -56,11 +62,9 @@ export type ConnectionInterchangeV1 = {
     entity: string;
     source: any;
     sinks: any;
-    paths?: Array<Array<Point>>;
+    paths: Array<Array<Point>>;
     params: any;
-    xspan?: number;
-    yspan?: number;
-    layer?: string;
+    layer: string;
 };
 
 export type LayerInterchangeV1 = {

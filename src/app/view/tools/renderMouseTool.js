@@ -55,25 +55,13 @@ export default class RenderMouseTool extends MouseTool {
             this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox);
             this.selectFeatures();
         }
-        this.killSelectBox();
-    }
-
-    removeFeatures() {
-        if (this.currentSelection.length > 0) {
-            for (let i = 0; i < this.currentSelection.length; i++) {
-                const paperFeature = this.currentSelection[i];
-                Registry.currentDevice.removeFeatureByID(paperFeature.featureID);
-            }
-            this.currentSelection = [];
-            Registry.canvasManager.render();
-        }
     }
 
     mouseDownHandler(event) {
         const point = MouseTool.getEventPosition(event);
         const target = this.hitFeature(point);
         if (target) {
-            if (Registry.viewManager.getComponentForFeatureID(target.featureID) && Registry.viewManager.getComponentForFeatureID(target.featureID).mint == "TEXT") {
+            if (Registry.viewManager.getNonphysComponentForFeatureID(target.featureID) && Registry.viewManager.getNonphysComponentForFeatureID(target.featureID).mint == "TEXT") {
                 if (target.selected) {
                     const feat = Registry.viewManager.getFeatureByID(target.featureID);
                     Registry.viewManager.updateDefaultsFromFeature(feat);
@@ -82,7 +70,7 @@ export default class RenderMouseTool extends MouseTool {
                     if (feat.referenceID === null) {
                         throw new Error("ReferenceID of feature is null");
                     } else {
-                        component = Registry.viewManager.getComponentByID(feat.referenceID);
+                        component = Registry.viewManager.getNonphysComponentByID(feat.referenceID);
                         if (component !== null) {
                             EventBus.get().emit(EventBus.DBL_CLICK_COMPONENT, event, component);
                         } else {
@@ -102,14 +90,6 @@ export default class RenderMouseTool extends MouseTool {
         }
     }
 
-    killSelectBox() {
-        if (this.currentSelectBox) {
-            this.currentSelectBox.remove();
-            this.currentSelectBox = null;
-        }
-        this.dragStart = null;
-    }
-
     hitFeature(point) {
         const target = Registry.viewManager.view.hitFeature(point, true, true);
         return target;
@@ -124,8 +104,7 @@ export default class RenderMouseTool extends MouseTool {
 
         // Find the component that owns this feature and then select all of the friends
         const component = this.__getComponentWithFeatureID(paperElement.featureID);
-        const connection = this.__getConnectionWithFeatureID(paperElement.featureID);
-        if (component === null && connection === null) {
+        if (component === null) {
             // Does not belong to a component, hence this returns
             paperElement.selected = true;
         } else if (component !== null) {
@@ -138,15 +117,6 @@ export default class RenderMouseTool extends MouseTool {
             }
 
             Registry.viewManager.view.selectedComponents.push(component);
-        } else if (connection !== null) {
-            const featureIDs = connection.featureIDs;
-            for (const i in featureIDs) {
-                const featureid = featureIDs[i];
-                const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
-                actualfeature.selected = true;
-            }
-
-            Registry.viewManager.view.selectedConnections.push(connection);
         } else {
             throw new Error("Totally got the selection logic wrong, reimplement this");
         }
@@ -163,7 +133,7 @@ export default class RenderMouseTool extends MouseTool {
     __getComponentWithFeatureID(featureid) {
         // Get component with the features
 
-        const device_components = Registry.currentDevice.components;
+        const device_components = Registry.viewManager.nonphysComponents;
 
         // Check against every component
         for (const i in device_components) {
@@ -179,85 +149,5 @@ export default class RenderMouseTool extends MouseTool {
         }
 
         return null;
-    }
-
-    /**
-     * Finds and return the corresponding Connection Object in the Registry's current device associated with
-     * the featureid. Returns null if no connection is found.
-     *
-     * @param featureid
-     * @return {*}
-     * @private
-     */
-    __getConnectionWithFeatureID(featureid) {
-        // Get component with the features
-
-        const device_connections = Registry.currentDevice.connections;
-
-        // Check against every component
-        for (const i in device_connections) {
-            const connection = device_connections[i];
-            // Check against features in the in the component
-            const connection_features = connection.featureIDs;
-            const index = connection_features.indexOf(featureid);
-
-            if (index !== -1) {
-                // Found it !!
-                return connection;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Function that is fired when we drag and select an area on the paperjs canvas
-     */
-    selectFeatures() {
-        if (this.currentSelection) {
-            for (let i = 0; i < this.currentSelection.length; i++) {
-                const paperFeature = this.currentSelection[i];
-
-                // Find the component that owns this feature and then select all of the friends
-                const component = this.__getComponentWithFeatureID(paperFeature.featureID);
-
-                if (component === null) {
-                    // Does not belong to a component hence do the normal stuff
-                    paperFeature.selected = true;
-                } else {
-                    // Belongs to the component so we basically select all features with this id
-                    const featureIDs = component.featureIDs;
-                    for (const i in featureIDs) {
-                        const featureid = featureIDs[i];
-                        const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
-                        actualfeature.selected = true;
-                    }
-
-                    Registry.viewManager.view.selectedComponents.push(component);
-                }
-            }
-        }
-    }
-
-    deselectFeatures() {
-        if (this.rightClickMenu) {
-            this.rightClickMenu.close();
-        }
-        this.paperView.clearSelectedItems();
-        this.currentSelection = [];
-    }
-
-    abort() {
-        this.deselectFeatures();
-        this.killSelectBox();
-    }
-
-    rectSelect(point1, point2) {
-        const rect = new paper.Path.Rectangle(point1, point2);
-        rect.fillColor = new paper.Color(0, 0.3, 1, 0.4);
-        rect.strokeColor = new paper.Color(0, 0, 0);
-        rect.strokeWidth = 2;
-        rect.selected = true;
-        return rect;
     }
 }

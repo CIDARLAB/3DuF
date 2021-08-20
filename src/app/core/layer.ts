@@ -4,7 +4,7 @@ import Feature from "./feature";
 import Params from "./params";
 import Device from "./device";
 import { FeatureInterchangeV0 } from "./init";
-import { LayerInterchangeV1 } from "./init";
+import { LayerInterchangeV1, LogicalLayerType } from "./init";
 
 /**
  * Layer class
@@ -14,7 +14,7 @@ export default class Layer {
     name: string;
     features: { [index: string]: Feature };
     featureCount: number;
-    device: Device | undefined;
+    device: Device;
     private __id: string;
     private __type: string;
     private group: string;
@@ -24,12 +24,12 @@ export default class Layer {
      * @param {*} values Value of the layer
      * @param {String} name Name of the layer
      */
-    constructor(values: { [index: string]: any }, name: string = "New Layer", type: string = "FLOW", group: string = "0") {
+    constructor(values: { [index: string]: any }, name: string = "New Layer", type: LogicalLayerType = LogicalLayerType.FLOW, group: string = "0", device: Device) {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = name;
         this.features = {};
         this.featureCount = 0;
-        this.device = undefined;
+        this.device = device;
         this.__id = Layer.generateID();
         this.__type = type;
         this.group = group;
@@ -180,7 +180,7 @@ export default class Layer {
     removeFeature(feature: Feature): void {
         this.removeFeatureByID(feature.ID);
         console.log("Device: ", this.device);
-        if (this.device !== null) {
+        if (this.device !== null || this.device !== undefined) {
             this.device.removeFeature(feature);
         }
     }
@@ -297,10 +297,21 @@ export default class Layer {
      * @memberof Layer
      */
     toInterchangeV1(): LayerInterchangeV1 {
+        let layerType = "FLOW";
+        if (this.type === LogicalLayerType.FLOW) {
+            layerType = "FLOW";
+        } else if (this.type === LogicalLayerType.CONTROL) {
+            layerType = "CONTROL";
+        } else if (this.type === LogicalLayerType.INTEGRATION) {
+            layerType = "INTEGRATION";
+        } else {
+            throw new Error("Unknown layer type: " + this.type);
+        }
+
         const output: LayerInterchangeV1 = {
             id: this.__id,
             name: this.name,
-            type: this.type,
+            type: layerType,
             // TODO - Add group and unique name parameters to the system and do type checking
             // against type and not name in the future
             group: "0",
@@ -326,28 +337,25 @@ export default class Layer {
     }
 
     /**
-     * Load from a JSON format a new layer object
-     * @param {JSON} json JSON format
-     * @returns {Layer} Returns a new layer object
-     * @memberof Layer
-     */
-    static fromJSON(json: { [index: string]: any }): Layer {
-        if (!Object.prototype.hasOwnProperty.call(json, "features")) {
-            throw new Error("JSON layer has no features!");
-        }
-        const newLayer = new Layer(json.params, json.name);
-        newLayer.__loadFeaturesFromJSON(json.features);
-        return newLayer;
-    }
-
-    /**
      * Load from an Interchange format a new layer object
      * @param {*} json
      * @returns {Layer} Returns a new layer object
      * @memberof Layer
      */
-    static fromInterchangeV1(json: LayerInterchangeV1): Layer {
-        const newLayer: Layer = new Layer(json.params, json.name, json.type, json.group);
+    static fromInterchangeV1(json: LayerInterchangeV1, device: Device): Layer {
+        let layerType = LogicalLayerType.FLOW;
+        if (Object.prototype.hasOwnProperty.call(json, "type")) {
+            if (json.type === "FLOW") {
+                layerType = LogicalLayerType.FLOW;
+            } else if (json.type === "CONTROL") {
+                layerType = LogicalLayerType.CONTROL;
+            } else if (json.type === "INTEGRATION") {
+                layerType = LogicalLayerType.INTEGRATION;
+            } else {
+                throw new Error("Unknown layer type: " + json.type);
+            }
+        }
+        const newLayer: Layer = new Layer(json.params, json.name, layerType, json.group, device);
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
         return newLayer;
     }

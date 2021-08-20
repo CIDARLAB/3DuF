@@ -23,7 +23,6 @@ import Feature from "../core/feature";
 import Params from "../core/params";
 import Component from "../core/component";
 import MapUtils from "../utils/mapUtils";
-import { components } from "@dagrejs/graphlib/lib/alg";
 /**
  * Paper View class
  */
@@ -641,7 +640,7 @@ export default class PaperView {
      * @param featureIDs [String] Feature id's of all the features that will be a part of this component
      * @param physical Boolean stating whether feature physical or not
      */
-    addComponent(typeString, paramdata, featureIDs, physical = false) {
+    addComponent(typeString, paramdata, featureIDs) {
         const definition = ComponentAPI.getDefinition(typeString);
         // Clean Param Data
         const cleanparamdata = {};
@@ -662,8 +661,7 @@ export default class PaperView {
             feature.referenceID = componentid;
         }
 
-        if (physical) Registry.currentDevice.addComponent(newComponent);
-        else this.__viewManagerDelegate.addNonphysComponent(newComponent);
+        Registry.currentDevice.addComponent(newComponent);
         return newComponent;
     }
 

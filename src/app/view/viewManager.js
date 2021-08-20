@@ -74,23 +74,10 @@ export default class ViewManager {
         Registry.currentGrid = this.__grid;
         this.renderLayers = [];
         this.activeRenderLayer = null;
-        this.nonphysComponents = [];
+        this.nonphysComponents = []; //TODO - Keep track of what types of objects fall here UIElements
         this.tools = {};
         this.rightMouseTool = new SelectTool();
-        // this.customComponentManager = new CustomComponentManager(this);
-        // this.rightPanel = new RightPanel(this);
-        // this.changeAllDialog = new ChangeAllDialog();
-        // this.resolutionToolBar = new ResolutionToolBar();
-        // this.borderDialog = new BorderSettingsDialog();
-        // this.layerToolBar = new LayerToolBar();
-        // this.messageBox = document.querySelector(".mdl-js-snackbar");
-        // this.editDeviceDialog = new EditDeviceDialog(this);
-        // this.helpDialog = new HelpDialog();
-        // this.taguchiDesigner = new TaguchiDesigner(this);
-        // this.rightClickMenu = new RightClickMenu();
         this.__currentDevice = null;
-        // this._introDialog = new IntroDialog();
-        // this._dampFabricateDialog = new DAMPFabricationDialog();
         const reference = this;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
@@ -257,8 +244,9 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addFeature(feature, index = this.activeRenderLayer, physical = true, refresh = true) {
-        this.renderLayers[index].addFeature(feature, physical);
+    addFeature(feature, index = this.activeRenderLayer, refresh = true) {
+        let isPhysicalFlag = true;
+        this.renderLayers[index].addFeature(feature, isPhysicalFlag);
         if (this.ensureFeatureExists(feature)) {
             this.view.addFeature(feature);
             this.refresh(refresh);
@@ -285,7 +273,7 @@ export default class ViewManager {
      * @return {Component}
      * @memberof Device
      */
-    getComponentByID(key) {
+    getNonphysComponentByID(key) {
         for (let i in this.nonphysComponents) {
             let component = this.nonphysComponents[i];
             if (component.id === key) {
@@ -302,7 +290,7 @@ export default class ViewManager {
      * @return {Component|null}
      * @memberof Device
      */
-    getComponentForFeatureID(id) {
+    getNonphysComponentForFeatureID(id) {
         for (let i in this.nonphysComponents) {
             let component = this.nonphysComponents[i];
             //go through each component's features
@@ -918,47 +906,27 @@ export default class ViewManager {
         // Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
-        if (version === null || undefined === version) {
-            console.log("Loading Legacy Format...");
-            device = Device.fromJSON(json);
+
+        if (version === null || undefined === version || version == 1 || version == "1") {
+            let ret = LoadUtils.loadFromScratch(json);
+            device = ret[0];
             Registry.currentDevice = device;
             this.__currentDevice = device;
 
-            // TODO: Add separate render layers to initializing json
+            this.renderLayers = ret[1];
+        } else if (version == 1.1 || version == "1.1") {
+            // this.loadCustomComponents(json);
+            device = Device.fromInterchangeV1_1(json);
+            Registry.currentDevice = device;
+            this.__currentDevice = device;
+
+            // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
             for (const i in json.layers) {
-                const newRenderLayer = RenderLayer.fromJSON(json.renderLayers[i]);
+                const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
                 this.renderLayers.push(newRenderLayer);
             }
         } else {
-            console.log("Version Number: " + version);
-            switch (version) {
-                case 1:
-                    // // this.loadCustomComponents(json);
-
-                    let ret = LoadUtils.loadFromScratch(json);
-                    device = ret[0];
-                    Registry.currentDevice = device;
-                    this.__currentDevice = device;
-
-                    this.renderLayers = ret[1];
-
-                    break;
-                case 1.1:
-                    // this.loadCustomComponents(json);
-                    device = Device.fromInterchangeV1_1(json);
-                    Registry.currentDevice = device;
-                    this.__currentDevice = device;
-
-                    // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
-                    for (const i in json.layers) {
-                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
-                        this.renderLayers.push(newRenderLayer);
-                    }
-
-                    break;
-                default:
-                    alert("Version '" + version + "' is not supported by 3DuF !");
-            }
+            alert("Version '" + version + "' is not supported by 3DuF !");
         }
         // Common Code for rendering stuff
         // console.log("Feature Layers", Registry.currentDevice.layers);
@@ -1356,8 +1324,7 @@ export default class ViewManager {
      */
     resetToDefaultTool() {
         this.cleanupActiveTools();
-        //this.activateTool("MouseSelectTool");
-        this.activateTool("RenderMouseTool");
+        this.activateTool("MouseSelectTool");
         // this.componentToolBar.setActiveButton("SelectButton");
     }
 
@@ -1418,7 +1385,7 @@ export default class ViewManager {
     setupTools() {
         this.tools.MouseSelectTool = new MouseSelectTool(this.view);
         this.tools.RenderMouseTool = new RenderMouseTool(this.view);
-        this.tools.InsertTextTool = new InsertTextTool();
+        this.tools.InsertTextTool = new InsertTextTool(this);
         this.tools.Chamber = new ComponentPositionTool("Chamber", "Basic");
         this.tools.Valve = new ValveInsertionTool("Valve", "Basic");
         this.tools.Channel = new ChannelTool("Channel", "Basic");
