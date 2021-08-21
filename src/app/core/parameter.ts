@@ -1,6 +1,3 @@
-import Registry from "./registry";
-import * as NumberUtils from "../utils/numberUtils";
-
 /**
  * Parameter class
  */

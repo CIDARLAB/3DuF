@@ -54,6 +54,8 @@ import EventBus from "@/events/events";
 import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
 
+import LoadUtils from "@/app/view/loadUtils";
+
 /**
  * View manager class
  */
@@ -252,7 +254,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addFeature(feature, physical = true, index = this.activeRenderLayer, refresh = true) {
+    addFeature(feature, index = this.activeRenderLayer, physical = true, refresh = true) {
         this.renderLayers[index].addFeature(feature, physical);
         if (this.ensureFeatureExists(feature)) {
             this.view.addFeature(feature);
@@ -282,7 +284,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     removeFeature(feature, refresh = true) {
-        let layer = this.getRenderLayerByID(feature.ID);
+        const layer = this.getRenderLayerByID(feature.ID);
         if (this.ensureFeatureExists(feature)) {
             this.view.removeFeature(feature);
             this.refresh(refresh);
@@ -298,8 +300,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     removeFeatureByID(featureID, refresh = true) {
-        let layer = this.getRenderLayerByID(featureID);
-        let feature = layer.getFeature(featureID);
+        const layer = this.getRenderLayerByID(featureID);
+        const feature = layer.getFeature(featureID);
         if (this.ensureFeatureExists(feature)) {
             this.view.removeFeature(feature);
             this.refresh(refresh);
@@ -329,12 +331,12 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     createNewLayerBlock() {
-        //Generate model layers
-        let newlayers = [];
+        // Generate model layers
+        const newlayers = [];
         newlayers[0] = new Layer({ z_offset: 0, flip: false }, "flow");
         newlayers[1] = new Layer({ z_offset: 0, flip: false }, "control");
         newlayers[2] = new Layer({ z_offset: 0, flip: false }, "integration");
-        //Add model layers to current device
+        // Add model layers to current device
         Registry.currentDevice.createNewLayerBlock(newlayers);
 
         // Find all the edge features
@@ -418,7 +420,7 @@ export default class ViewManager {
 
     setActiveRenderLayer(index) {
         this.activeRenderLayer = index;
-        Registry.currentLayer = this.renderLayers[index]; //Registry.currentDevice.layers[index];
+        Registry.currentLayer = this.renderLayers[index]; // Registry.currentDevice.layers[index];
         this.updateActiveLayer();
     }
 
@@ -580,7 +582,6 @@ export default class ViewManager {
 
         this.updateDevice(Registry.currentDevice, false);
         this.__updateViewTarget(false);
-        this.zoomToolBar.setZoom(zoom);
         this.refresh(refresh);
     }
 
@@ -684,8 +685,8 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateTarget(featureType, featureSet, position, refresh = true) {
-        this.view.addTarget(featureType, featureSet, position);
+    updateTarget(featureType, featureSet, position, currentParameters, refresh = true) {
+        this.view.addTarget(featureType, featureSet, position, currentParameters);
         this.view.updateAlignmentMarks();
         this.view.updateRatsNest();
         this.refresh(refresh);
@@ -856,6 +857,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     loadDeviceFromJSON(json) {
+        console.log("Here");
         let device;
         Registry.viewManager.clear();
         // Check and see the version number if its 0 or none is present,
@@ -869,26 +871,37 @@ export default class ViewManager {
 
             // TODO: Add separate render layers to initializing json
             for (const i in json.layers) {
-                const newRenderLayer = RenderLayer.fromJSON(json.layers[i]);
+                const newRenderLayer = RenderLayer.fromJSON(json.renderLayers[i]);
                 this.renderLayers.push(newRenderLayer);
             }
         } else {
             console.log("Version Number: " + version);
             switch (version) {
                 case 1:
-                    // this.loadCustomComponents(json);
-                    device = Device.fromInterchangeV1(json);
+                    console.log("Hello");
+                    // // this.loadCustomComponents(json);
+                    // device = Device.fromInterchangeV1(json);
+                    // Registry.currentDevice = device;
+                    // this.__currentDevice = device;
+
+                    // // TODO: Add separate render layers to initializing json
+                    // for (const i in json.layers) {
+                    //     const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
+                    //     this.renderLayers.push(newRenderLayer);
+                    // }
+                    const ret = LoadUtils.loadFromScratch(json);
+                    console.log("Ret: ", ret);
+                    device = ret[0];
                     Registry.currentDevice = device;
                     this.__currentDevice = device;
+                    console.log("Device: ", device);
 
-                    // TODO: Add separate render layers to initializing json
-                    for (const i in json.layers) {
-                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.layers[i]);
-                        this.renderLayers.push(newRenderLayer);
-                    }
+                    this.renderLayers = ret[1];
+                    console.log("RenderLayers: ", this.renderLayers);
 
                     break;
                 case 1.1:
+                    console.log("Heyyo");
                     // this.loadCustomComponents(json);
                     device = Device.fromInterchangeV1_1(json);
                     Registry.currentDevice = device;
@@ -896,7 +909,7 @@ export default class ViewManager {
 
                     // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
                     for (const i in json.layers) {
-                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.layers[i]);
+                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
                         this.renderLayers.push(newRenderLayer);
                     }
 
@@ -907,7 +920,7 @@ export default class ViewManager {
         }
         // Common Code for rendering stuff
         // console.log("Feature Layers", Registry.currentDevice.layers);
-        Registry.currentLayer = Registry.currentDevice.layers[0];
+        Registry.currentLayer = this.renderLayers[0];
         Registry.currentTextLayer = Registry.currentDevice.textLayers[0];
 
         this.activeRenderLayer = 0;
@@ -922,7 +935,7 @@ export default class ViewManager {
         this.updateGrid();
         this.updateDevice(Registry.currentDevice);
         this.refresh(true);
-        Registry.currentLayer = Registry.currentDevice.layers[0];
+        Registry.currentLayer = this.renderLayers[0];
         // this.layerToolBar.setActiveLayer("0");
         Registry.viewManager.updateActiveLayer();
     }
@@ -1115,7 +1128,7 @@ export default class ViewManager {
      */
 
     getFeatureByID(featureID) {
-        let layer = this.getRenderLayerByID(featureID);
+        const layer = this.getRenderLayerByID(featureID);
         return layer.getFeature(featureID);
     }
 
@@ -1127,7 +1140,7 @@ export default class ViewManager {
      */
     getRenderLayerByID(featureID) {
         for (let i = 0; i < this.renderLayers.length; i++) {
-            let layer = this.renderLayers[i];
+            const layer = this.renderLayers[i];
             if (layer.containsFeatureID(featureID)) {
                 return layer;
             }
@@ -1565,38 +1578,52 @@ export default class ViewManager {
         }
     }
 
-    activateComponentPlacementTool(minttype) {
+    /**
+     * Activates the corresponding placement tool for the given type of component and returns the active tool
+     * @param {*} minttype
+     * @returns
+     */
+    activateComponentPlacementTool(minttype, currentParameters) {
         if (minttype === null) {
-            throw new Error("Could not find tool with the matching string");
+            throw new Error("Found null when looking for MINT Type");
         }
-
+        console.log("MintType: ", minttype);
         // Cleanup job when activating new tool
         this.view.clearSelectedItems();
 
         let activeTool = null;
         const renderer = ComponentAPI.getRendererForMINT(minttype);
         if (renderer.placementTool === "componentPositionTool") {
-            activeTool = new ComponentPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+            activeTool = new ComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         } else if (renderer.placementTool === "controlCellPositionTool") {
-            activeTool = new ControlCellPositionTool("ControlCell", "Basic");
+            activeTool = new ControlCellPositionTool(this, "ControlCell", "Basic", currentParameters);
         } else if (renderer.placementTool === "customComponentPositionTool") {
-            activeTool = CustomComponentPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+            activeTool = CustomComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic");
         } else if (renderer.placementTool === "positionTool") {
-            activeTool = new PositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+            activeTool = new PositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         } else if (renderer.placementTool === "multilayerPositionTool") {
-            activeTool = new MultilayerPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+            activeTool = new MultilayerPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+        } else if (renderer.placementTool === "valveInsertionTool") {
+            activeTool = new ValveInsertionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+        } else if (renderer.placementTool === "CellPositionTool") {
+            activeTool = new CellPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         }
 
         if (activeTool === null) {
-            throw new Error("Could not initialize the tool");
+            throw new Error(`Could not initialize the tool ${minttype}`);
         }
 
         this.mouseAndKeyboardHandler.leftMouseTool = activeTool;
         this.mouseAndKeyboardHandler.rightMouseTool = activeTool;
         this.mouseAndKeyboardHandler.updateViewMouseEvents();
+
+        return activeTool;
     }
 
     deactivateComponentPlacementTool() {
         console.log("Deactivating Component Placement Tool");
+        this.mouseAndKeyboardHandler.leftMouseTool.deactivate();
+        this.mouseAndKeyboardHandler.rightMouseTool.deactivate();
+        this.resetToDefaultTool();
     }
 }

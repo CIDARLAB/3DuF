@@ -44,13 +44,19 @@ export function getPrimitive2D(typeString, setString) {
     // return PrimitiveSets2D[setString][typeString]; //Looks like the primitivesets2d are the function pointers
 }
 
-export function renderTarget(typeString, setString, position) {
+export function renderTarget(typeString, setString, position, customParameters = null) {
     const rendererinfo = getFeatureRenderer(typeString, setString);
     const renderer = rendererinfo.object;
     const params = renderer.targetParams;
     const primParams = {};
-    for (const key in params) {
-        primParams[key] = getDefaultValueForType(typeString, setString, params[key]);
+    if (customParameters !== null) {
+        for (const item of customParameters) {
+            primParams[item.name] = item.value;
+        }
+    } else {
+        for (const key in params) {
+            primParams[key] = getDefaultValueForType(typeString, setString, params[key]);
+        }
     }
     primParams.position = position;
     primParams.color = Colors.getDefaultFeatureColor(typeString, setString, Registry.currentLayer);
@@ -131,8 +137,8 @@ export function renderFeature(feature, key = null) {
         }
 
         const primParams = {};
-        for (const key in params) {
-            primParams[key] = feature.getValue(params[key]);
+        for (const paramkey in params) {
+            primParams[paramkey] = feature.getValue(params[paramkey]);
         }
         primParams.color = getLayerColor(feature);
         primParams.baseColor = getBaseColor(feature);

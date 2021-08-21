@@ -28,9 +28,7 @@ export default {
         ZoomSlider
     },
     data() {
-        return {
-            specs: this.computedSpec("Connection")
-        };
+        return {};
     },
     computed: {},
     mounted() {
@@ -62,6 +60,12 @@ export default {
 }
 #c {
     z-index: 1;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    cursor: default;
+    width: 100%;
+    height: 100%;
 }
 #contextMenu {
     position: absolute;

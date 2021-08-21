@@ -40,10 +40,9 @@ export default class GenerateArrayTool extends MouseTool {
         console.log("Activating the tool for a new component", component);
         // Store the component position here
         this.__currentComponent = component;
-        this.__generateArrayWindow.showWindow();
     }
 
-    unactivate() {
+    deactivate() {
         Registry.viewManager.resetToDefaultTool();
     }
 
@@ -51,8 +50,8 @@ export default class GenerateArrayTool extends MouseTool {
         console.log("Generate array:", xdim, ydim, xspacing, yspacing);
         const xposref = this.__currentComponent.getPosition()[0];
         const yposref = this.__currentComponent.getPosition()[1];
-        const name = this.__currentComponent.getName();
-        this.__currentComponent.setName(name + "_1_1");
+        const name = this.__currentComponent.name;
+        this.__currentComponent.name = name + "_1_1";
         const replicas = [];
         // Loop to create the components at the new positions
         for (let y = 0; y < ydim; y++) {

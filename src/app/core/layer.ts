@@ -43,6 +43,10 @@ export default class Layer {
         return this.__id;
     }
 
+    set id(ID: string) {
+        this.__id = ID;
+    }
+
     /**
      * Generates a random id
      * @returns {String} Random ID string
@@ -58,9 +62,12 @@ export default class Layer {
      * @returns {void}
      */
     addFeature(feature: Feature): void {
+        console.log("Now over heeerre");
         this.__ensureIsAFeature(feature);
+        console.log(this.id);
         this.features[feature.ID] = feature;
         this.featureCount += 1;
+        console.log(this.featureCount);
         //TODO - Verify that this is not a problem anymore
         feature.layer = this;
     }
@@ -176,7 +183,7 @@ export default class Layer {
     removeFeature(feature: Feature): void {
         this.removeFeatureByID(feature.ID);
         console.log("Device: ", this.device);
-        if (this.device != null) {
+        if (this.device !== null && this.device !== undefined) {
             this.device.removeFeature(feature);
         }
     }

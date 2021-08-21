@@ -1,5 +1,3 @@
-import Device from "./app/core/device";
-
 import Text from "@/app/library/text";
 import Port from "./app/library/port";
 import Anode from "./app/library/anode"; // new from CK
@@ -47,9 +45,7 @@ import Node from "./app/library/node";
 import DropletGeneratorT from "./app/library/dropletGeneratorT";
 import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
-import { getComponentPorts, getDefinition, getRender2D, getRender3D, getTool } from "./app/featureSets";
 import Template from "./app/library/template";
-import Params from "./app/core/params";
 import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
 import uuid from "node-uuid";
@@ -138,15 +134,22 @@ export class ComponentAPI {
         Incubation: { object: new Incubation(), key: "FLOW" },
         Merger: { object: new Merger(), key: "FLOW" },
         PicoInjection: { object: new PicoInjection(), key: "FLOW" },
+        PicoInjection_integration: { object: new PicoInjection(), key: "INTEGRATE" },
         Sorter: { object: new Sorter(), key: "FLOW" },
+        Sorter_integration: { object: new Sorter(), key: "INTEGRATE" },
         Splitter: { object: new Splitter(), key: "FLOW" },
         CapacitanceSensor: { object: new CapacitanceSensor(), key: "FLOW" },
+        CapacitanceSensor_integration: { object: new CapacitanceSensor(), key: "INTEGRATE" },
         Node: { object: new Node(), key: "FLOW" },
         DropletGenT: { object: new DropletGeneratorT(), key: null },
         DropletGenFlow: { object: new DropletGeneratorFlowFocus(), key: null },
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" }
+    };
+
+    static connectionLibrary: { [key: string]: LibraryEntry } = {
+        Connection: { object: new Connection(), key: null }
     };
 
     static customTypes: Map<string, CustomComponent> = new Map();
@@ -165,16 +168,12 @@ export class ComponentAPI {
      * @memberof ComponentAPI
      */
     static getAllComponents(): Array<Template> {
-        let components: Array<Template> = [];
+        const ret: Array<Template> = [];
         for (const key in ComponentAPI.library) {
             const definition = ComponentAPI.library[key].object;
-            const ret: Array<Template> = [];
-            for (const key in ComponentAPI.library) {
-                const definition = ComponentAPI.library[key].object;
-                ret.push(definition);
-            }
+            ret.push(definition);
         }
-        return components;
+        return ret;
     }
 
     /**
@@ -290,13 +289,14 @@ export class ComponentAPI {
      * @param minttypestring
      * @return {void|Array}
      */
-    static getComponentPorts(params: any, minttypestring: string): Array<ComponentPort> {
+    static getComponentPorts(params: Map<string, any>, minttypestring: string): Array<ComponentPort> {
         const threeduftypesting = ComponentAPI.getTypeForMINT(minttypestring);
         if (threeduftypesting === null) {
             throw new Error("Component Ports of: " + threeduftypesting + " not found in library");
         }
         const definition = ComponentAPI.library[threeduftypesting].object;
-        const ports = definition.getPorts(params);
+        const params_to_pass = Object.fromEntries(params);
+        const ports = definition.getPorts(params_to_pass);
         return ports;
     }
 
@@ -411,5 +411,14 @@ export class ComponentAPI {
         } else {
             throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
         }
+    }
+
+    static getConnectionTypes(): Array<string> {
+        let ret = [];
+        for (const key in ComponentAPI.connectionLibrary) {
+            let entry = ComponentAPI.connectionLibrary[key];
+            ret.push(entry.object.mint);
+        }
+        return ret;
     }
 }

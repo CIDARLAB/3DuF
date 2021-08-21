@@ -28,11 +28,11 @@ export default class thermoCycler extends Template {
             temperature: 0.03 * 1000
         };
         this.__units = {
-            componentSpacing: "&mu;m",
+            componentSpacing: "μm",
             rotation: "&deg",
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m",
+            width: "μm",
+            length: "μm",
+            height: "μm",
             temperature: "°C"
         };
         this.__minimum = {

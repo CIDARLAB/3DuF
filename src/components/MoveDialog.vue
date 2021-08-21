@@ -56,8 +56,8 @@
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="green" class="white--text" @click="callbacks.close(onSave)"> Save </v-btn>
-                <v-btn color="red" class="white--text ml-9" @click="dialog = false"> Cancel </v-btn>
+                <v-btn color="green" class="white--text" @click="dialog = false"> Save </v-btn>
+                <v-btn color="red" class="white--text ml-9" @click="cancelMove"> Cancel </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -76,7 +76,8 @@ export default {
     props: {
         component: {
             type: Component,
-            required: true
+            required: true,
+            default: null
         }
     },
     data() {
@@ -84,7 +85,6 @@ export default {
             dialog: false,
             activated: false,
             callbacks: {},
-            number: 0,
             posX: 0,
             posY: 0
         };
@@ -105,22 +105,17 @@ export default {
         bottomRight: function() {
             return { x: 0, y: 0 };
         }
-        // posX: function() {
-        //     return this.component.x;
-        // },
-        // posY: function() {
-        //     return this.component.y;
-        // }
     },
     watch: {
         dialog: function(newValue) {
             if (newValue) {
-                console.log("MoveDialog: Dialog opened");
+                // Close the move dialog
+                this.$emit("close");
                 Registry.viewManager.activateTool("MoveTool");
-                Registry.viewManager.tools.MoveTool.activate(this.component);
+                Registry.viewManager.tools.MoveTool.activate(this.component, this.toolCallback);
             } else {
                 //Run deactivation
-                Registry.viewManager.tools.MoveTool.unactivate();
+                Registry.viewManager.tools.MoveTool.deactivate();
             }
         }
     },
@@ -136,7 +131,7 @@ export default {
             const d = {};
             document.addEventListener("mousedown", e => {
                 const closestDialog = e.target.closest(".draggable-dialog");
-                if (e.button === 0 && closestDialog != null && e.target.classList.contains("v-card__title")) {
+                if (e.button === 0 && closestDialog !== null && e.target.classList.contains("v-card__title")) {
                     // element which can be used to move element
                     d.el = closestDialog; // element which should be moved
                     d.mouseStartX = e.clientX;
@@ -169,20 +164,13 @@ export default {
         })();
     },
     methods: {
-        showProperties() {
-            this.activated = !this.activated;
-            let attachPoint = document.querySelector("[data-app]");
-
-            if (!attachPoint) {
-                console.error("Could not find [data-app] element");
-            }
-
-            this.setDrawerPosition();
-
-            attachPoint.appendChild(this.$refs.drawer);
-
-            Registry.viewManager.activateTool("MoveTool");
-            Registry.viewManager.tools.MoveTool.activate(this.currentComponent);
+        cancelMove() {
+            Registry.viewManager.tools.MoveTool.revertToOriginalPosition();
+            this.dialog = false;
+        },
+        toolCallback(xpos, ypos) {
+            this.posX = xpos;
+            this.posY = ypos;
         },
         handleScroll() {
             this.setDrawerPosition();

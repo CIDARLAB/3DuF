@@ -5,7 +5,7 @@
             <v-card v-if="activated">
                 <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                 <v-card-text>
-                    <PropertyBlock :title="title" :spec="spec" />
+                    <PropertyBlock :title="mint" :spec="spec" @update="updateParameter" />
                 </v-card-text>
             </v-card>
         </div>
@@ -16,7 +16,7 @@
 import EventBus from "@/events/events";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import Registry from "@/app/core/registry";
-
+import { ComponentAPI } from "@/componentAPI";
 export default {
     name: "PropertyDrawer",
     components: { PropertyBlock },
@@ -27,7 +27,10 @@ export default {
         },
         spec: {
             type: Array,
-            required: true
+            required: false,
+            default: function() {
+                return [{ min: 0, max: 110, units: "", value: 0 }];
+            }
         },
         activatedColor: {
             type: String,
@@ -42,7 +45,9 @@ export default {
     },
     data() {
         return {
-            activated: false
+            activated: false,
+            activeTool: null,
+            title: ""
         };
     },
     computed: {
@@ -71,10 +76,11 @@ export default {
             attachPoint.appendChild(this.$refs.drawer);
 
             if (this.activated) {
-                Registry.viewManager.activateComponentPlacementTool(this.mint);
-                // Registry.viewManager.activateTool("CurvedMixer");
+                this.spec = this.computedSpecForMINT(this.mint);
+                this.activeTool = Registry.viewManager.activateComponentPlacementTool(this.mint, this.spec);
             } else {
                 Registry.viewManager.deactivateComponentPlacementTool();
+                this.activeTool = null;
             }
         },
         handleScroll() {
@@ -84,6 +90,28 @@ export default {
             if (!this.activated) return;
             const bounds = this.$refs.activator.$el.getBoundingClientRect();
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
+        },
+        updateParameter(value, key) {
+            this.activeTool.updateParameter(key, value);
+        },
+        computedSpecForMINT: function(minttype) {
+            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
+            let definition = ComponentAPI.getDefinitionForMINT(minttype);
+            let spec = [];
+            for (let key in definition.heritable) {
+                console.log(definition.units[key]);
+                // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
+                let item = {
+                    min: definition.minimum[key],
+                    max: definition.maximum[key],
+                    value: definition.defaults[key],
+                    units: definition.units[key],
+                    steps: (definition.maximum[key] - definition.minimum[key]) / 10,
+                    name: key
+                };
+                spec.push(item);
+            }
+            return spec;
         }
     }
 };

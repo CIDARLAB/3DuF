@@ -25,9 +25,9 @@ export default class Via extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            radius: "&mu;m",
-            height: "&mu;m"
+            componentSpacing: "μm",
+            radius: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

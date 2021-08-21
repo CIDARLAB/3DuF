@@ -36,14 +36,10 @@
         <template v-slot:actions="{ callbacks }">
             <v-spacer />
             <v-col>
-                <v-btn class="pa-2" color="red darken-1" dark :style="{ right: '75%', transform: 'translateX(-100%)' }" @click="callbacks.close()">
-                    Cancel
-                </v-btn>
+                <v-btn class="pa-2" color="red darken-1" dark :style="{ right: '75%', transform: 'translateX(-100%)' }" @click="callbacks.close()"> Cancel </v-btn>
                 <v-spacer />
             </v-col>
-            <v-btn class="pa-2" color="green darken-1" dark :style="{ right: '30%', transform: 'translateX(-30%)' }" @click="callbacks.close(insertText)">
-                Insert
-            </v-btn>
+            <v-btn class="pa-2" color="green darken-1" dark :style="{ right: '30%', transform: 'translateX(-30%)' }" @click="callbacks.close(insertText)"> Insert </v-btn>
         </template>
     </Dialog>
 </template>

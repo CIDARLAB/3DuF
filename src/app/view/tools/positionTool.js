@@ -9,13 +9,16 @@ import paper from "paper";
 import Params from "../../core/params";
 import Component from "../../core/component";
 import { ComponentAPI } from "@/componentAPI";
+import MapUtils from "../../utils/mapUtils";
 
 export default class PositionTool extends MouseTool {
-    constructor(typeString, setString) {
+    constructor(viewManagerDelegate, typeString, setString, currentParameters = null) {
         super();
+        this.viewManagerDelegate = viewManagerDelegate;
         this.typeString = typeString;
         this.setString = setString;
         this.currentFeatureID = null;
+        this.currentParameters = currentParameters;
         const ref = this;
         this.lastPoint = null;
         this.showQueue = new SimpleQueue(
@@ -33,14 +36,14 @@ export default class PositionTool extends MouseTool {
             ref.showQueue.run();
         };
         this.down = function(event) {
-            Registry.viewManager.killParamsWindow();
+            ref.viewManagerDelegate.killParamsWindow();
             paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));
         };
     }
 
     createNewFeature(point) {
-        const name = Registry.currentDevice.generateNewName(this.typeString);
+        const name = this.viewManagerDelegate.currentDevice.generateNewName(this.typeString);
         const newFeature = Device.makeFeature(
             this.typeString,
             {
@@ -67,7 +70,7 @@ export default class PositionTool extends MouseTool {
      */
     showTarget() {
         const target = PositionTool.getTarget(this.lastPoint);
-        Registry.viewManager.updateTarget(this.typeString, this.setString, target);
+        this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters);
     }
 
     /**
@@ -85,7 +88,7 @@ export default class PositionTool extends MouseTool {
         for (const key in paramdata) {
             cleanparamdata[key] = paramdata[key].value;
         }
-        const params = new Params(cleanparamdata, definition.unique, definition.heritable);
+        const params = new Params(cleanparamdata, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
         const componentid = ComponentAPI.generateID();
         const name = Registry.currentDevice.generateNewName(typeString);
         const newComponent = new Component(params, name, definition.mint, componentid);
@@ -99,7 +102,23 @@ export default class PositionTool extends MouseTool {
             feature.referenceID = componentid;
         }
 
-        Registry.currentDevice.addComponent(newComponent);
+        this.viewManagerDelegate.currentDevice.addComponent(newComponent);
         return newComponent;
+    }
+
+    deactivate() {}
+
+    getCreationParameters(position) {
+        const paramvalues = {
+            position: PositionTool.getTarget(position)
+        };
+        console.log(this.currentParameters);
+        for (const item of this.currentParameters) {
+            console.log(item);
+            const param = item.name;
+            const value = item.value;
+            paramvalues[param] = value;
+        }
+        return paramvalues;
     }
 }

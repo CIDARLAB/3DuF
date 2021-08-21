@@ -34,13 +34,13 @@ export default class DropletGeneratorT extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            oilChannelWidth: "&mu;m",
-            height: "&mu;m",
-            waterChannelWidth: "&mu;m",
-            radius: "&mu;m",
-            rotation: "&deg;",
-            length: "&mu;m"
+            componentSpacing: "μm",
+            oilChannelWidth: "μm",
+            height: "μm",
+            waterChannelWidth: "μm",
+            radius: "μm",
+            rotation: "°",
+            length: "μm"
         };
 
         this.__minimum = {

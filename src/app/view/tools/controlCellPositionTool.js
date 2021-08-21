@@ -4,23 +4,23 @@ import Registry from "../../core/registry";
 import Device from "../../core/device";
 
 export default class ControlCellPositionTool extends PositionTool {
-    constructor(typeString, setString) {
-        super(typeString, setString);
+    constructor(viewManagerDelegate, typeString, setString, currentParameters = null) {
+        super(viewManagerDelegate, typeString, setString, currentParameters);
     }
 
     createNewFeature(point) {
         const featureIDs = [];
 
-        const currentlevel = Math.floor(Registry.currentDevice.layers.indexOf(Registry.currentLayer) / 3);
-        const flowlayer = Registry.currentDevice.layers[currentlevel * 3 + 0];
-        const controllayer = Registry.currentDevice.layers[currentlevel * 3 + 1];
-        const cell_layer = Registry.currentDevice.layers[currentlevel * 3 + 2];
+        const currentlevel = Math.floor(Registry.viewManager.renderLayers.indexOf(Registry.currentLayer) / 3);
+        const flowlayer = currentlevel * 3;
+        const controllayer = currentlevel * 3 + 1;
+        const cell_layer = currentlevel * 3;
 
-        let newFeature = Device.makeFeature(this.typeString, {
-            position: PositionTool.getTarget(point)
-        });
+        const paramvalues = this.getCreationParameters(point);
+        let newFeature = Device.makeFeature(this.typeString, paramvalues);
+
         this.currentFeatureID = newFeature.ID;
-        flowlayer.addFeature(newFeature);
+        this.viewManagerDelegate.addFeature(newFeature, flowlayer);
 
         featureIDs.push(newFeature.ID);
 
@@ -28,9 +28,7 @@ export default class ControlCellPositionTool extends PositionTool {
 
         let newtypestring = this.typeString + "_control";
         let paramstoadd = newFeature.getParams();
-        newFeature = Device.makeFeature(newtypestring, {
-            position: PositionTool.getTarget(point)
-        });
+        newFeature = Device.makeFeature(newtypestring, paramvalues);
         newFeature.setParams(paramstoadd);
 
         this.currentFeatureID = newFeature.ID;
@@ -42,9 +40,7 @@ export default class ControlCellPositionTool extends PositionTool {
 
         newtypestring = this.typeString + "_cell";
         paramstoadd = newFeature.getParams();
-        newFeature = Device.makeFeature(newtypestring, {
-            position: PositionTool.getTarget(point)
-        });
+        newFeature = Device.makeFeature(newtypestring, paramvalues);
         newFeature.setParams(paramstoadd);
 
         this.currentFeatureID = newFeature.ID;
@@ -58,6 +54,6 @@ export default class ControlCellPositionTool extends PositionTool {
 
     showTarget() {
         const target = PositionTool.getTarget(this.lastPoint);
-        Registry.viewManager.updateTarget(this.typeString, this.setString, target);
+        Registry.viewManager.updateTarget(this.typeString, this.setString, target, this.currentParameters);
     }
 }

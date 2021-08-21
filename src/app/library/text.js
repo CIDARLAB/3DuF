@@ -25,8 +25,8 @@ export default class Text extends Template {
 
         this.__units = {
             text: "",
-            fontSize: "&mu;m",
-            height: "&mu;m"
+            fontSize: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

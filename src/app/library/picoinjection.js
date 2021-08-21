@@ -43,18 +43,18 @@ export default class PicoInjection extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            height: "&mu;m",
-            width: "&mu;m",
-            injectorWidth: "&mu;m",
-            injectorLength: "&mu;m",
-            dropletWidth: "&mu;m",
-            nozzleWidth: "&mu;m",
-            nozzleLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
-            rotation: "&deg;"
+            componentSpacing: "μm",
+            height: "μm",
+            width: "μm",
+            injectorWidth: "μm",
+            injectorLength: "μm",
+            dropletWidth: "μm",
+            nozzleWidth: "μm",
+            nozzleLength: "μm",
+            electrodeDistance: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
+            rotation: "°"
         };
 
         this.__minimum = {
@@ -87,7 +87,7 @@ export default class PicoInjection extends Template {
             rotation: 360
         };
 
-        this.__placementTool = "componentPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             cursorPosition: "position"
@@ -122,7 +122,7 @@ export default class PicoInjection extends Template {
             rotation: "rotation"
         };
 
-        this.__renderKeys = ["FLOW"];
+        this.__renderKeys = ["FLOW", "INTEGRATE"];
 
         this.__mint = "PICOINJECTOR";
     }
@@ -148,7 +148,7 @@ export default class PicoInjection extends Template {
         return ports;
     }
 
-    render2D(params, key) {
+    __renderFlow(params, key) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
@@ -159,9 +159,6 @@ export default class PicoInjection extends Template {
         const dropletWidth = params.dropletWidth;
         const nozzleWidth = params.nozzleWidth;
         const nozzleLength = params.nozzleLength;
-        const electrodeDistance = params.electrodeDistance;
-        const electrodeWidth = params.electrodeWidth;
-        const electrodeLength = params.electrodeLength;
         const serp = new paper.CompoundPath();
 
         // droplet channel
@@ -182,9 +179,25 @@ export default class PicoInjection extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
+        serp.rotate(rotation, new paper.Point(x, y));
+
+        serp.fillColor = color;
+        return serp;
+    }
+
+    __renderIntegrate(params, key) {
+        const rotation = params.rotation;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const electrodeDistance = params.electrodeDistance;
+        const electrodeWidth = params.electrodeWidth;
+        const electrodeLength = params.electrodeLength;
+        const serp = new paper.CompoundPath();
+
         // middle electrode
-        topLeft = new paper.Point(x - electrodeWidth / 2, y + electrodeDistance);
-        bottomRight = new paper.Point(x + electrodeWidth / 2, y + electrodeDistance + electrodeLength);
+        let topLeft = new paper.Point(x - electrodeWidth / 2, y + electrodeDistance);
+        let bottomRight = new paper.Point(x + electrodeWidth / 2, y + electrodeDistance + electrodeLength);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
@@ -206,10 +219,30 @@ export default class PicoInjection extends Template {
         return serp;
     }
 
-    render2DTarget(key, params) {
-        const serp = this.render2D(params, key);
+    // render2DTarget(key, params) {
+    //     const serp = this.render2D(params, key);
 
-        serp.fillColor.alpha = 0.5;
-        return serp;
+    //     serp.fillColor.alpha = 0.5;
+    //     return serp;
+    // }
+
+    render2D(params, key = "FLOW") {
+        if (key === "FLOW") {
+            return this.__renderFlow(params);
+        } else if (key === "INTEGRATE") {
+            return this.__renderIntegrate(params);
+        }
+        throw new Error("Unknown render key found in PICOINJECTOR: " + key);
+    }
+
+    render2DTarget(key, params) {
+        const ret = new paper.CompoundPath();
+        const flow = this.render2D(params, "FLOW");
+        const integrate = this.render2D(params, "INTEGRATE");
+        ret.addChild(integrate);
+        ret.addChild(flow);
+        ret.fillColor = params.color;
+        ret.fillColor.alpha = 0.5;
+        return ret;
     }
 }

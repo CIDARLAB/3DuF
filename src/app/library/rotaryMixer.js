@@ -38,15 +38,15 @@ export default class RotaryMixer extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            radius: "&mu;m",
-            flowChannelWidth: "&mu;m",
-            controlChannelWidth: "&mu;m",
-            valveWidth: "&mu;m",
-            valveLength: "&mu;m",
-            valveSpacing: "&mu;m",
-            height: "&mu;m"
+            componentSpacing: "μm",
+            rotation: "°",
+            radius: "μm",
+            flowChannelWidth: "μm",
+            controlChannelWidth: "μm",
+            valveWidth: "μm",
+            valveLength: "μm",
+            valveSpacing: "μm",
+            height: "μm"
         };
 
         this.__minimum = {
@@ -75,7 +75,7 @@ export default class RotaryMixer extends Template {
             rotation: 360
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

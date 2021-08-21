@@ -33,13 +33,13 @@ export default class CurvedMixer extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            bendSpacing: "&mu;m",
+            componentSpacing: "μm",
+            rotation: "°",
+            bendSpacing: "μm",
             numberOfBends: "",
-            channelWidth: "&mu;m",
-            bendLength: "&mu;m",
-            height: "&mu;m"
+            channelWidth: "μm",
+            bendLength: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

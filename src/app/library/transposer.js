@@ -35,14 +35,14 @@ export default class Transposer extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            valveGap: "&mu;m",
-            valveSpacing: "&mu;m",
-            flowChannelWidth: "&mu;m",
-            controlChannelWidth: "&mu;m"
+            componentSpacing: "μm",
+            rotation: "°",
+            valveRadius: "μm",
+            height: "μm",
+            valveGap: "μm",
+            valveSpacing: "μm",
+            flowChannelWidth: "μm",
+            controlChannelWidth: "μm"
         };
 
         this.__minimum = {
@@ -89,7 +89,7 @@ export default class Transposer extends Template {
             controlChannelWidth: "controlChannelWidth"
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

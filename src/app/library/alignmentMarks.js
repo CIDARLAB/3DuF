@@ -25,9 +25,9 @@ export default class AlignmentMarks extends Template {
         };
 
         this.__units = {
-            width: "&mu;m",
-            length: "&mu;m",
-            height: "&mu;m"
+            width: "μm",
+            length: "μm",
+            height: "μm"
         };
 
         this.__minimum = {
@@ -42,7 +42,7 @@ export default class AlignmentMarks extends Template {
             height: 1200
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"

@@ -33,13 +33,13 @@ export default class Pump extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
+            componentSpacing: "μm",
             rotation: "&deg",
-            length: "&mu;m",
-            width: "&mu;m",
-            height: "&mu;m",
-            spacing: "&mu;m",
-            flowChannelWidth: "&mu;m"
+            length: "μm",
+            width: "μm",
+            height: "μm",
+            spacing: "μm",
+            flowChannelWidth: "μm"
         };
 
         this.__minimum = {
@@ -81,7 +81,7 @@ export default class Pump extends Template {
             flowChannelWidth: "flowChannelWidth"
         };
 
-        this.__placementTool = "componentPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"
@@ -98,15 +98,10 @@ export default class Pump extends Template {
         const spacing = params.spacing;
 
         const ports = [];
-
         ports.push(new ComponentPort(0, -l / 2 - spacing, "1", "FLOW"));
-
         ports.push(new ComponentPort(0, l / 2 + spacing, "2", "FLOW"));
-
         ports.push(new ComponentPort(0, -spacing, "3", "CONTROL"));
-
         ports.push(new ComponentPort(0, 0, "4", "CONTROL"));
-
         ports.push(new ComponentPort(0, spacing, "5", "CONTROL"));
 
         return ports;

@@ -1,8 +1,6 @@
 import DXFObject from "./dxfObject";
 import Device from "./device";
 
-import Registry from "./registry";
-import Component from "./component";
 import Params from "./params";
 import Template from "../library/template";
 import Feature from "./feature";
@@ -106,9 +104,6 @@ export default class CustomComponent extends Template {
      * @memberof CustomComponent
      */
     static fromInterchangeV1(json: any) {
-        let set;
-        if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
-        else set = "Basic";
         const dxfdata = [];
         for (const i in json.dxfData) {
             dxfdata.push(new DXFObject(json.dxfData[i]));
@@ -139,10 +134,10 @@ export default class CustomComponent extends Template {
                 height: "Float"
             },
             units: {
-                rotation: "&deg",
-                // "length": "&mu;m",
-                // "width": "&mu;m",
-                height: "&mu;m"
+                rotation: "°",
+                // "length": "μm",
+                // "width": "μm",
+                height: "μm"
             },
             defaults: {
                 rotation: 0,

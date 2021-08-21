@@ -31,12 +31,12 @@ export default class Anode extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            anodeRadius: "&mu;m",
-            pegHeight: "&mu;m",
-            pegWidth: "&mu;m",
-            height: "&mu;m",
-            rotation: "&deg;"
+            componentSpacing: "μm",
+            anodeRadius: "μm",
+            pegHeight: "μm",
+            pegWidth: "μm",
+            height: "μm",
+            rotation: "°"
         };
 
         this.__minimum = {

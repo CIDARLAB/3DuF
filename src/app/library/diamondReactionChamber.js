@@ -31,12 +31,12 @@ export default class DiamondReactionChamber extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            channelWidth: "&mu;m",
-            length: "&mu;m",
-            width: "&mu;m",
-            height: "&mu;m"
+            componentSpacing: "μm",
+            rotation: "°",
+            channelWidth: "μm",
+            length: "μm",
+            width: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

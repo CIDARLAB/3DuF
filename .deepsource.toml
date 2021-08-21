@@ -24,4 +24,4 @@ enabled = true
 
 [[transformers]]
 name = "prettier"
-enabled = false
+enabled = true

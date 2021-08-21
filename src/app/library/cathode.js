@@ -31,12 +31,12 @@ export default class Cahode extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            cathodeRadius: "&mu;m",
-            pegRadius: "&mu;m",
-            pegThickness: "&mu;m",
-            height: "&mu;m",
-            rotation: "&deg;"
+            componentSpacing: "μm",
+            cathodeRadius: "μm",
+            pegRadius: "μm",
+            pegThickness: "μm",
+            height: "μm",
+            rotation: "°"
         };
 
         this.__minimum = {

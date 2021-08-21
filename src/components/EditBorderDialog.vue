@@ -19,10 +19,7 @@
 <script>
 import Dialog from "@/components/base/Dialog.vue";
 import Registry from "../app/core/registry";
-import viewManager from "@/app/view/viewManager";
 import DxfParser from "dxf-parser";
-import DXFObject from "../app/core/dxfObject";
-import HTMLUtils from "@/app/utils/htmlUtils";
 //import paper from "@/"
 
 export default {

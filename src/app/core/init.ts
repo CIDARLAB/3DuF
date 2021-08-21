@@ -1,11 +1,18 @@
-import StringValue from "./parameters/stringValue";
-import Component from "./component";
-import Connection from "./connection";
-import Feature from "./feature";
-
 export type Point = [number, number];
 
 export type Segment = [Point, Point];
+
+export type ScratchInterchangeV1 = {
+    name: string;
+    params: any;
+    layers: Array<LayerInterchangeV1>;
+    groups: Array<string>;
+    components: Array<ComponentInterchangeV1>;
+    connections: Array<ConnectionInterchangeV1>;
+    version: number;
+    //device: DeviceInterchangeV1;
+    renderLayers: Array<RenderLayerInterchangeV1>;
+};
 
 export type DeviceInterchangeV1 = {
     name: string;
@@ -14,7 +21,6 @@ export type DeviceInterchangeV1 = {
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
     connections: Array<ConnectionInterchangeV1>;
-    features: Array<LayerInterchangeV1>;
     version: number;
 };
 
@@ -25,7 +31,6 @@ export type DeviceInterchangeV1_1 = {
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
     connections: Array<ConnectionInterchangeV1>;
-    features: Array<LayerInterchangeV1>;
     version: number;
 };
 
@@ -34,8 +39,8 @@ export type ComponentInterchangeV1 = {
     name: string;
     entity: string;
     params: any;
-    xspan: number;
-    yspan: number;
+    "x-span": number;
+    "y-span": number;
     ports: Array<ComponentPortInterchangeV1>;
     layer: Array<string>;
 };
@@ -66,7 +71,7 @@ export type RenderLayerInterchangeV1 = {
     id: string;
     group: string;
     features: Array<FeatureInterchangeV0>;
-    modellayer: LayerInterchangeV1 | null;
+    modellayer: string | null;
     color: string | undefined;
     name: string;
     type: string;

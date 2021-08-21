@@ -26,10 +26,10 @@ export default class CircleValve extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            radius1: "&mu;m",
-            radius2: "&mu;m",
-            height: "&mu;m"
+            componentSpacing: "μm",
+            radius1: "μm",
+            radius2: "μm",
+            height: "μm"
         };
 
         this.__minimum = {

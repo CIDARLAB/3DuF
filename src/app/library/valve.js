@@ -29,11 +29,11 @@ export default class Valve extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
+            componentSpacing: "μm",
             rotation: "&deg",
-            length: "&mu;m",
-            width: "&mu;m",
-            height: "&mu;m"
+            length: "μm",
+            width: "μm",
+            height: "μm"
         };
 
         this.__minimum = {
@@ -67,7 +67,7 @@ export default class Valve extends Template {
             rotation: "rotation"
         };
 
-        this.__placementTool = "ValveInsertionTool";
+        this.__placementTool = "valveInsertionTool";
 
         this.__toolParams = {
             position: "position"

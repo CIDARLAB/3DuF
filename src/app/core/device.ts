@@ -2,22 +2,17 @@
 
 import Params from "./params";
 
-import StringValue from "./parameters/stringValue";
 import Feature from "./feature";
 import { DeviceInterchangeV1, DeviceInterchangeV1_1, Point } from "./init";
 import { ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1 } from "./init";
 import { LayerInterchangeV1 } from "./init";
-import { FeatureInterchangeV0 } from "./init";
 
 import Layer from "./layer";
 import Component from "./component";
 import Connection from "./connection";
-import Port from "../library/port";
 import EdgeFeature from "./edgeFeature";
 import DXFObject from "./dxfObject";
-import * as FeatureSets from "../featureSets";
-import Valve from "../library/valve";
 import ComponentPort from "./componentPort";
 import * as IOUtils from "../utils/ioUtils";
 
@@ -288,7 +283,7 @@ export default class Device {
             layer = this.__layers[i];
             features = layer.getAllFeaturesFromLayer();
             for (let ii in features) {
-                let feature = features[i];
+                let feature = features[ii];
                 if (feature.getName() === name) {
                     return feature;
                 }
@@ -362,7 +357,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    updateObjectReference(objectID: string | String, featureID: string): void {
+    updateObjectReference(objectID: string, featureID: string): void {
         //Goes through the components to update the reference
         let component: Component;
         let foundflag = false;
@@ -487,7 +482,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    __loadFeatureLayersFromInterchangeV1(json: Array<LayerInterchangeV1>): void {
+    __loadLayersFromInterchangeV1(json: Array<LayerInterchangeV1>): void {
         for (let i in json) {
             let newLayer = Layer.fromInterchangeV1(json[i]);
             this.addLayer(newLayer);
@@ -539,8 +534,6 @@ export default class Device {
             layers: this.__layersToInterchangeV1(),
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
-            //TODO: Use this to render the device features
-            features: this.__featureLayersToInterchangeV1(),
             version: 1,
             groups: this.__groupsToJSON()
         };
@@ -558,8 +551,6 @@ export default class Device {
             layers: this.__layersToInterchangeV1(),
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
-            //TODO: Use this to render the device features
-            features: this.__featureLayersToInterchangeV1(),
             version: 1,
             groups: this.__groupsToJSON()
         };
@@ -624,8 +615,8 @@ export default class Device {
         //TODO: Use this to render the device features
 
         //Check if JSON has features else mark
-        if (Object.prototype.hasOwnProperty.call(json, "features")) {
-            newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
+        if (Object.prototype.hasOwnProperty.call(json, "layers")) {
+            newDevice.__loadLayersFromInterchangeV1(json.layers);
         } else {
             //We need to add a default layer
             let newlayer = new Layer({}, "flow");
@@ -716,7 +707,7 @@ export default class Device {
 
         //Check if JSON has features else mark
         if (Object.prototype.hasOwnProperty.call(json, "features")) {
-            newDevice.__loadFeatureLayersFromInterchangeV1(json.features);
+            newDevice.__loadLayersFromInterchangeV1(json.layers);
         } else {
             //We need to add a default layer
             let newlayer = new Layer({}, "flow");
@@ -746,7 +737,7 @@ export default class Device {
      * @returns {void}
      */
     setXSpan(value: number): void {
-        this.__params.updateParameter("width", value);
+        this.__params.updateParameter("x-span", value);
     }
 
     /**
@@ -756,7 +747,7 @@ export default class Device {
      * @returns {void}
      */
     setYSpan(value: number): void {
-        this.__params.updateParameter("length", value);
+        this.__params.updateParameter("y-span", value);
     }
 
     /**
@@ -765,7 +756,7 @@ export default class Device {
      * @memberof Device
      */
     getXSpan(): number {
-        return this.__params.getValue("width");
+        return this.__params.getValue("x-span");
     }
 
     /**
@@ -774,7 +765,7 @@ export default class Device {
      * @memberof Device
      */
     getYSpan(): number {
-        return this.__params.getValue("length");
+        return this.__params.getValue("y-span");
     }
 
     /**
@@ -848,7 +839,7 @@ export default class Device {
      * @return {Connection|null}
      * @memberof Device
      */
-    getConnectionForFeatureID(id: string | String): Connection | null {
+    getConnectionForFeatureID(id: string): Connection | null {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
             //go through each component's features
@@ -919,7 +910,7 @@ export default class Device {
      * @return {Component}
      * @memberof Device
      */
-    getComponentByID(key: string | String): Component | null {
+    getComponentByID(key: string): Component | null {
         for (let i in this.__components) {
             let component = this.__components[i];
             if (component.id === key) {
@@ -936,7 +927,7 @@ export default class Device {
      * @return {Connection}
      * @memberof Device
      */
-    getConnectionByID(key: string | String): Connection | null {
+    getConnectionByID(key: string): Connection | null {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
             if (connection.id === key) {
@@ -953,7 +944,7 @@ export default class Device {
      * @return {Component|null}
      * @memberof Device
      */
-    getComponentByName(name: string | String): Component {
+    getComponentByName(name: string): Component {
         let components = this.__components;
         for (let i in components) {
             if (name == components[i].name) {
@@ -1022,7 +1013,6 @@ export default class Device {
             return new EdgeFeature(fabtype, params, id);
         }
         let featureType = ComponentAPI.getDefinition(typeString);
-        console.log("FeatType: ", featureType);
         if (paramvalues && featureType) {
             Feature.checkDefaults(paramvalues, featureType.heritable, ComponentAPI.getDefaultsForType(typeString));
             params = new Params(paramvalues, MapUtils.toMap(featureType.unique), MapUtils.toMap(featureType.heritable));

@@ -18,9 +18,9 @@
                     </th>
                     <th class="font-weight-bold pl-15 pt-4 pb-2">Name</th>
                 </tr>
-                <tr v-for="component in components" :key="component.id">
-                    <td class="pl-15 pb-2"><input v-model="selected" type="checkbox" :value="component.id" /></td>
-                    <td class="pl-15 pb-2">{{ component.name }}</td>
+                <tr v-for="comp in components" :key="comp.id">
+                    <td class="pl-15 pb-2"><input v-model="selected" type="checkbox" :value="comp.id" /></td>
+                    <td class="pl-15 pb-2">{{ comp.name }}</td>
                 </tr>
             </table>
 
@@ -28,7 +28,7 @@
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="green" class="white--text" @click="callbacks.close(onSave)"> Change </v-btn>
+                <v-btn color="green" class="white--text" @click="onSave"> Change </v-btn>
                 <v-btn color="red" class="white--text ml-9" @click="dialog = false"> Cancel </v-btn>
             </v-card-actions>
         </v-card>
@@ -39,19 +39,15 @@
 import Vue from "vue";
 import EventBus from "@/events/events";
 import "@mdi/font/css/materialdesignicons.css";
+import Component from "@/app/core/component";
+import Registry from "@/app/core/registry";
 
 export default {
     name: "ChangeAllDialog",
     props: {
-        activatedColor: {
-            type: String,
-            required: false,
-            default: "primary"
-        },
-        activatedTextColor: {
-            type: String,
-            required: false,
-            default: "white--text"
+        component: {
+            type: Component,
+            required: true
         }
     },
     data() {
@@ -67,9 +63,6 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
-            return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "ml-4", "mb-2", "btn"];
-        },
         selectAll: {
             get: function() {
                 return this.components ? this.selected.length == this.components.length : false;
@@ -87,42 +80,56 @@ export default {
             }
         }
     },
+    watch: {
+        dialog: function(newValue) {
+            if (newValue) {
+                // Dialog is activated
+                this.$emit("close");
+                // Load similar components
+                const type = this.component.mint;
+                const allcomponents = Registry.currentDevice.components;
+                const similarComponents = [];
+                for (let i = 0; i < allcomponents.length; i++) {
+                    if (allcomponents[i].mint === type) {
+                        if (this.component.id !== allcomponents[i].id) {
+                            similarComponents.push(allcomponents[i]);
+                        }
+                    }
+                }
+                this.components = similarComponents.map(function(component) {
+                    return { id: component.id, name: component.name };
+                });
+            } else {
+                // Dialog is closed
+                this.components = [];
+            }
+        }
+    },
     mounted() {
         // Setup an event for closing all the dialogs
         EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
             this.dialog = false;
         });
-        EventBus.get().on(EventBus.NAVBAR_SCOLL_EVENT, this.setDrawerPosition);
         Vue.set(this.callbacks, "close", callback => {
             if (callback) callback();
-            this.activated = false;
+            this.dialog = false;
             this.selected = false;
             this.selectAll = false;
         });
     },
     methods: {
-        showProperties() {
-            this.activated = !this.activated;
-            let attachPoint = document.querySelector("[data-app]");
-
-            if (!attachPoint) {
-                console.error("Could not find [data-app] element");
-            }
-
-            this.setDrawerPosition();
-
-            attachPoint.appendChild(this.$refs.drawer);
-        },
-        handleScroll() {
-            this.setDrawerPosition();
-        },
-        setDrawerPosition() {
-            if (!this.activated) return;
-            const bounds = this.$refs.activator.$el.getBoundingClientRect();
-            this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
-        },
         onSave() {
             console.log("Saved data for Change All Components");
+            let paramstochange = this.component.params;
+            for (let i in this.selected) {
+                let componenttochange = Registry.currentDevice.getComponentByID(this.selected[i]);
+
+                for (let key of paramstochange.heritable) {
+                    let value = paramstochange.getValue(key);
+                    componenttochange.updateParameter(key, value);
+                    //componenttochange.params.updateParameter(key, value);
+                }
+            }
             this.dialog = false;
         }
     }

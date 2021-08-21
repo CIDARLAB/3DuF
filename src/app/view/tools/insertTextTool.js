@@ -48,8 +48,8 @@ export default class InsertTextTool extends MouseTool {
         //     { position: "Point" },
         //     { height: "Float", text: "String" }
         // )
-        let fixedpoint = PositionTool.getTarget(point);
-        let newFeature = Device.makeFeature(
+        const fixedpoint = PositionTool.getTarget(point);
+        const newFeature = Device.makeFeature(
             "Text",
             {
                 position: fixedpoint,
@@ -63,8 +63,8 @@ export default class InsertTextTool extends MouseTool {
             null
         );
         // this.currentFeatureID = newFeature.ID;
-        Registry.viewManager.addFeature(newFeature);
-        //Registry.viewManager.renderLayers[Registry.viewManager.activeRenderLayer].addFeature(newFeature);
+        this.viewManagerDelegate.addFeature(newFeature);
+        // Registry.viewManager.renderLayers[Registry.viewManager.activeRenderLayer].addFeature(newFeature);
         Registry.viewManager.saveDeviceState();
     }
 

@@ -13,12 +13,14 @@ export default class RenderLayer {
     private __type: string;
     name: string;
     protected _physicalLayer: Layer | null;
+    active: boolean;
 
     constructor(name: string = "New Layer", modellayer: Layer | null = null, type: string = "FLOW", group: string = "0") {
         this.__type = type;
         this.features = {};
         this.featureCount = 0;
         this.name = name;
+        this.active = false;
         this._physicalLayer = modellayer;
         if (name == "flow") {
             this.color = "indigo";
@@ -65,7 +67,7 @@ export default class RenderLayer {
         this.__ensureIsAFeature(feature);
         this.features[feature.ID] = feature;
         this.featureCount += 1;
-        if (this.physicalLayer != null && physfeat == true) {
+        if (this.physicalLayer !== null && physfeat == true) {
             this.physicalLayer.addFeature(feature);
             feature.layer = this.physicalLayer;
         }
@@ -133,10 +135,9 @@ export default class RenderLayer {
      */
     removeFeatureByID(featureID: string): void {
         this.__ensureFeatureIDExists(featureID);
-        const feature: Feature = this.features[featureID];
         this.featureCount -= 1;
         let physLayer = this._physicalLayer;
-        if (physLayer != null) {
+        if (physLayer !== null) {
             if (physLayer.containsFeatureID(featureID)) physLayer.removeFeatureByID(featureID);
         }
         delete this.features[featureID];
@@ -226,20 +227,29 @@ export default class RenderLayer {
      * @memberof RenderLayer
      */
     __layerToInterchangeV1(): LayerInterchangeV1 | null {
-        if (this._physicalLayer != null) {
+        if (this._physicalLayer !== null) {
             return this._physicalLayer.toInterchangeV1();
         }
         return null;
     }
 
-    /**
-     * Loads physical layer from Interchange format
-     * @param {LayerInterchangeV1} json Interchange format file
-     * @memberof RenderLayer
-     */
-    __loadLayerFromInterchange(json: LayerInterchangeV1): void {
-        this.physicalLayer = Layer.fromJSON(json);
-    }
+    // /**
+    //  * Loads physical layer from json format
+    //  * @param {json} json format file
+    //  * @memberof RenderLayer
+    //  */
+    // __loadLayerFromJSON(json: { [index: string]: any }): void {
+    //     this.physicalLayer = Layer.fromJSON(json);
+    // }
+
+    // /**
+    //  * Loads physical layer from Interchange format
+    //  * @param {LayerInterchangeV1} json Interchange format file
+    //  * @memberof RenderLayer
+    //  */
+    // __loadLayerFromInterchange(json: LayerInterchangeV1): void {
+    //     this.physicalLayer = Layer.fromInterchangeV1(json);
+    // }
 
     /**
      * Converts the attributes of the object into Interchange format
@@ -247,13 +257,19 @@ export default class RenderLayer {
      * @memberof Layer
      */
     toInterchangeV1(): RenderLayerInterchangeV1 {
+        let physlayer;
+        if (this.physicalLayer) {
+            physlayer = this.physicalLayer.id;
+        } else {
+            physlayer = null;
+        }
         const output: RenderLayerInterchangeV1 = {
             id: this.__id,
             name: this.name,
             //name: this.name,
             // TODO - Add group and unique name parameters to the system and do type checking
             // against type and not name in the future
-            modellayer: this.__layerToInterchangeV1(),
+            modellayer: physlayer,
             type: this.__type,
             group: "0",
             //params: this.params.toJSON(),
@@ -275,6 +291,7 @@ export default class RenderLayer {
         }
         const newLayer = new RenderLayer(json.name, json.type, json.group);
         newLayer.__loadFeaturesFromJSON(json.features);
+        //if (json.modellayer) newLayer.__loadLayerFromJSON(json.modellayer);
         if (json.color) newLayer.color = json.color;
         return newLayer;
     }
@@ -286,11 +303,12 @@ export default class RenderLayer {
      * @memberof Layer
      */
     static fromInterchangeV1(json: RenderLayerInterchangeV1): RenderLayer {
+        //Effectively defunct, use loadUtils version
         const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
-        if (json.modellayer != null) {
-            newLayer.__loadLayerFromInterchange(json.modellayer);
-        }
+
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
+
+        //if (json.modellayer) newLayer.__loadLayerFromInterchange(json.modellayer);
         if (json.color) newLayer.color = json.color; // TODO: Figure out if this needs to change in the future
         return newLayer;
     }

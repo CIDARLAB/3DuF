@@ -43,18 +43,18 @@ export default class ThreeDMux extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
+            componentSpacing: "μm",
             in: "",
             out: "",
-            rotation: "&deg;",
-            valveRadius: "&mu;m",
-            height: "&mu;m",
-            gap: "&mu;m",
-            width: "&mu;m",
-            length: "&mu;m",
-            valveSpacing: "&mu;m",
-            channelWidth: "&mu;m",
-            controlChannelWidth: "&mu;m"
+            rotation: "°",
+            valveRadius: "μm",
+            height: "μm",
+            gap: "μm",
+            width: "μm",
+            length: "μm",
+            valveSpacing: "μm",
+            channelWidth: "μm",
+            controlChannelWidth: "μm"
         };
 
         this.__minimum = {
@@ -121,7 +121,7 @@ export default class ThreeDMux extends Template {
             controlChannelWidth: "controlChannelWidth"
         };
 
-        this.__placementTool = "MultilayerPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             position: "position"
@@ -169,7 +169,7 @@ export default class ThreeDMux extends Template {
         const vertical_length = N * 3000;
         const ports = [];
 
-        for (var i = 0; i < N; i++) {
+        for (let i = 0; i < N; i++) {
             const xpos = i * (horizontal_length / (N - 1));
             ports.push(new ComponentPort(xpos, 0, (i + 1).toString(), "FLOW"));
         }
@@ -242,7 +242,7 @@ export default class ThreeDMux extends Template {
         const centerArray = new Array(N);
 
         // create base flow
-        for (var i = 0; i < N; i++) {
+        for (let i = 0; i < N; i++) {
             const xposbranch = i * (bottomlinelength / (N - 1));
 
             const vertlinebottom = new paper.Point(px + xposbranch - channelWidth / 2, py + vertlinelength);
@@ -268,7 +268,7 @@ export default class ThreeDMux extends Template {
             let count1 = 0;
             const increment1 = cur_N / 2;
             while (count1 < N) {
-                for (var w = 0; w < cur_N / 2; w++) {
+                for (let w = 0; w < cur_N / 2; w++) {
                     const current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
 
                     const cutrec = paper.Path.Rectangle({
@@ -415,7 +415,7 @@ export default class ThreeDMux extends Template {
             let count1 = 0;
             const increment1 = cur_N / 2;
             while (count1 < N) {
-                for (var w = 0; w < cur_N / 2; w++) {
+                for (let w = 0; w < cur_N / 2; w++) {
                     const current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
                     const center = new paper.Point(current_xpos, ypos);
                     const circle = new paper.Path.Circle(center, radius);

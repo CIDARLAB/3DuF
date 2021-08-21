@@ -17,24 +17,42 @@
             </template>
             <span>Grid Settings</span>
         </v-tooltip>
-        <div v-if="activated" id="resolution-toolbar">
-            <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
-                <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
-            </v-switch>
-            <v-switch v-model="switch2" color="#304FFE" @change="clickedSnap">
-                <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
-            </v-switch>
-            <veeno ref="slider" :disabled="slider_enabled" v-bind="sliderOptions" @change="updateGrid" />
-        </div>
+        <v-card v-show="activated" id="resolution-toolbar">
+            <v-card-text>
+                <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
+                    <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
+                </v-switch>
+                <v-switch v-model="renderSnap" color="#304FFE" @change="clickedSnap">
+                    <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
+                </v-switch>
+                <veeno
+                    ref="slider"
+                    v-model="gridSizeValue"
+                    :pipsy="{
+                        mode: 'steps',
+                        density: 5,
+                        stepped: true,
+                        format: suffix
+                    }"
+                    :handles="1000"
+                    :range="{
+                        min: [1],
+                        '10%': [10],
+                        '30%': [100],
+                        '90%': [1000],
+                        max: [5000]
+                    }"
+                    :step="100"
+                    :connect="[true, false]"
+                    @update="updateGridSize"
+                />
+            </v-card-text>
+        </v-card>
         <div id="bottom-info-bar">Grid Size: {{ gridSizeValue }} &mu;m</div>
     </div>
 </template>
 
 <script>
-// Issues: Beining Aug.19.21
-// Grid Settings slider out of range
-// Questions: how to change it to 10, 100, 1000
-
 import veeno from "veeno";
 import "nouislider/distribute/nouislider.min.css";
 import Registry from "../app/core/registry";
@@ -43,38 +61,49 @@ import EventBus from "@/events/events";
 
 export default {
     name: "ResolutionToolbar",
-    components: {
-        veeno
-    },
-
-    // Beining:I dont know where to set the defalut value for sliderValue
-    props: {
-        // gridSizeValue: {
-        //     type: Number,
-        //     default: 1000
-        // }
-    },
+    components: { veeno },
     data() {
         return {
+            suffix: wNumb({ suffix: "μm" }),
             activated: false,
             hover: false,
             slider_enabled: true,
-            switch2: true,
-            gridSizeValue: 1000,
-            sliderOptions: {
-                connect: [true, false],
-                pipsy: { mode: "range", density: 5 },
-                handles: 1000,
-                range: { min: [1, 1], "10%": [10, 10], "30%": [100, 100], "90%": [1000, 1000], max: [5000] }
-            }
+            renderSnap: true,
+            gridSizeValue: 1000
         };
     },
-    created() {
+    mounted() {
         // listen to ZoomSlider and get grid size data and show here as sliderValue
         // we doesn't need eventbus anymore
         EventBus.get().on(EventBus.UPDATE_GRID, data => {
             this.gridSizeValue = data;
         });
+
+        // Create the noUiSlider
+        // noUiSlider.create(this.$refs.slider, {
+        //     start: [500],
+        //     connect: "lower",
+        //     range: {
+        //         min: [1, 1],
+        //         "10%": [10, 10],
+        //         "30%": [100, 100],
+        //         "90%": [1000, 1000],
+        //         max: [5000]
+        //     },
+        //     pips: {
+        //         mode: "range",
+        //         density: 5,
+        //         format: wNumb({ suffix: "μm" })
+        //     },
+        //     tooltips: [true]
+        // });
+
+        // Associate an onchange function
+        const ref = this;
+        const registryref = Registry;
+        // this.__gridResolutionSlider.noUiSlider.on("update", function(values, handle, unencoded, isTap, positions) {
+        //     ref.__smallresolutionLabel.innerHTML = values[0] + " μm";
+        // });
     },
     // updated() {
     //     Registry.currentGrid.enableAdaptiveGrid();
@@ -97,7 +126,7 @@ export default {
             }
         },
         clickedSnap() {
-            if (this.switch2) {
+            if (this.renderSnap) {
                 //Enable Snap
                 Registry.viewManager.view.enableSnapRender();
             } else {
@@ -105,15 +134,15 @@ export default {
                 Registry.viewManager.view.disableSnapRender();
             }
         },
-        updateGrid(event) {
-            let registryref = Registry;
+        updateGridSize(event) {
             const { values } = event;
             this.gridSizeValue = parseInt(values[0], 10);
-            if (registryref.currentGrid !== null) {
-                registryref.currentGrid.spacing = this.gridSizeValue;
+            if (Registry.currentGrid !== null) {
+                console.log("updating grid size to " + this.gridSizeValue);
+                Registry.currentGrid.updateGridSpacing(this.gridSizeValue);
                 //registryref.currentGrid.notifyViewManagerToUpdateView();
-                console.log("grid updated gridSizeValue", this.gridSizeValue);
-                console.log("grid updated registry", registryref.currentGrid.spacing);
+                // console.log("grid updated gridSizeValue", this.gridSizeValue);
+                // console.log("grid updated registry", registryref.currentGrid.spacing);
             }
         }
     }

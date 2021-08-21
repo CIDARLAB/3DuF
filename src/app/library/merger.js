@@ -47,20 +47,20 @@ export default class Merger extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            rotation: "&deg;",
-            height: "&mu;m",
-            inletWidth: "&mu;m",
-            inletLength: "&mu;m",
-            electrodeWidth: "&mu;m",
-            electrodeLength: "&mu;m",
-            electrodeDistance: "&mu;m",
-            outletWidth: "&mu;m",
-            outletLength: "&mu;m",
-            chamberHeight: "&mu;m",
-            chamberLength: "&mu;m",
-            channelDepth: "&mu;m",
-            electrodeDepth: "&mu;m"
+            componentSpacing: "μm",
+            rotation: "°",
+            height: "μm",
+            inletWidth: "μm",
+            inletLength: "μm",
+            electrodeWidth: "μm",
+            electrodeLength: "μm",
+            electrodeDistance: "μm",
+            outletWidth: "μm",
+            outletLength: "μm",
+            chamberHeight: "μm",
+            chamberLength: "μm",
+            channelDepth: "μm",
+            electrodeDepth: "μm"
         };
 
         this.__minimum = {
@@ -97,7 +97,7 @@ export default class Merger extends Template {
             electrodeDepth: 1000
         };
 
-        this.__placementTool = "componentPositionTool";
+        this.__placementTool = "multilayerPositionTool";
 
         this.__toolParams = {
             cursorPosition: "position"
@@ -136,7 +136,7 @@ export default class Merger extends Template {
             electrodeDepth: "electrodeDepth"
         };
 
-        this.__renderKeys = ["FLOW"];
+        this.__renderKeys = ["FLOW", "INTEGRATE"];
 
         this.__mint = "DROPLET MERGER";
     }
@@ -155,16 +155,13 @@ export default class Merger extends Template {
         return ports;
     }
 
-    render2D(params, key) {
+    __renderFlow(params, key) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
         const color = params.color;
         const inletWidth = params.inletWidth;
         const inletLength = params.inletLength;
-        const electrodeWidth = params.electrodeWidth;
-        const electrodeLength = params.electrodeLength;
-        const electrodeDistance = params.electrodeDistance;
         const outletWidth = params.outletWidth;
         const outletLength = params.outletLength;
         const chamberHeight = params.chamberHeight;
@@ -192,9 +189,29 @@ export default class Merger extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
+        serp.rotate(rotation, new paper.Point(x, y));
+
+        serp.fillColor = color;
+        return serp;
+    }
+
+    __renderIntegrate(params, key) {
+        const rotation = params.rotation;
+        const x = params.position[0];
+        const y = params.position[1];
+        const color = params.color;
+        const inletLength = params.inletLength;
+        const electrodeWidth = params.electrodeWidth;
+        const electrodeLength = params.electrodeLength;
+        const electrodeDistance = params.electrodeDistance;
+        const channelDepth = params.channelDepth;
+        const electrodeDepth = params.electrodeDepth;
+
+        const serp = new paper.CompoundPath();
+
         // left electrode
-        topLeft = new paper.Point(x + inletLength, y - electrodeLength / 2);
-        bottomRight = new paper.Point(x + inletLength + electrodeWidth, y + electrodeLength / 2);
+        let topLeft = new paper.Point(x + inletLength, y - electrodeLength / 2);
+        let bottomRight = new paper.Point(x + inletLength + electrodeWidth, y + electrodeLength / 2);
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
@@ -210,10 +227,30 @@ export default class Merger extends Template {
         return serp;
     }
 
-    render2DTarget(key, params) {
-        const serp = this.render2D(params, key);
+    // render2DTarget(key, params) {
+    //     const serp = this.render2D(params, key);
 
-        serp.fillColor.alpha = 0.5;
-        return serp;
+    //     serp.fillColor.alpha = 0.5;
+    //     return serp;
+    // }
+
+    render2D(params, key = "FLOW") {
+        if (key === "FLOW") {
+            return this.__renderFlow(params);
+        } else if (key === "INTEGRATE") {
+            return this.__renderIntegrate(params);
+        }
+        throw new Error("Unknown render key found in DROPLET MERGER: " + key);
+    }
+
+    render2DTarget(key, params) {
+        const ret = new paper.CompoundPath();
+        const flow = this.render2D(params, "FLOW");
+        const integrate = this.render2D(params, "INTEGRATE");
+        ret.addChild(integrate);
+        ret.addChild(flow);
+        ret.fillColor = params.color;
+        ret.fillColor.alpha = 0.5;
+        return ret;
     }
 }

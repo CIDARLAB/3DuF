@@ -283,11 +283,6 @@ export default class PaperView {
     setZoom(zoom) {
         this.zoom = zoom;
         this.updateZoom();
-
-        // Check if the zoom toolbar exists before trying to run it
-        if (this.__viewManagerDelegate.zoomToolBar) {
-            this.__viewManagerDelegate.zoomToolBar.setZoom(zoom);
-        }
     }
 
     /**
@@ -636,8 +631,9 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    addTarget(featureType, set, position) {
+    addTarget(featureType, set, position, currentParameters) {
         this.removeTarget();
+        this.lastTargetParameters = currentParameters;
         this.lastTargetType = featureType;
         this.lastTargetPosition = position;
         this.lastTargetSet = set;
@@ -665,7 +661,7 @@ export default class PaperView {
                 this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, params);
                 this.uiLayer.addChild(this.currentTarget);
             } else {
-                this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
+                this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition, this.lastTargetParameters);
                 this.uiLayer.addChild(this.currentTarget);
             }
         }
@@ -928,8 +924,6 @@ export default class PaperView {
      * @memberof PaperView
      */
     getRenderedFeature(featureID) {
-        console.log("FeatID: ", featureID);
-        console.log("PapFeat: ", this.paperFeatures[featureID]);
         return this.paperFeatures[featureID];
     }
 

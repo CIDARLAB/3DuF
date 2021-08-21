@@ -37,15 +37,15 @@ export default class YTree extends Template {
         };
 
         this.__units = {
-            componentSpacing: "&mu;m",
-            flowChannelWidth: "&mu;m",
-            rotation: "&deg;",
-            spacing: "&mu;m",
+            componentSpacing: "μm",
+            flowChannelWidth: "μm",
+            rotation: "°",
+            spacing: "μm",
             in: "",
             out: "",
-            width: "&mu;m",
-            height: "&mu;m",
-            stageLength: "&mu;m"
+            width: "μm",
+            height: "μm",
+            stageLength: "μm"
         };
 
         this.__minimum = {

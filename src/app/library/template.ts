@@ -1,5 +1,12 @@
 import ComponentPort from "../core/componentPort";
 
+export enum PositionToolType {
+    FEATURE_POSITION_TOOL = "positionTool",
+    COMPONENT_POSITION_TOOL = "componentPositionTool",
+    MULTILAYER_POSITION_TOOL = "multilayerPositionTool",
+    VALVE_INSERTION_TOOL = "valveInsertionTool"
+}
+
 export default class Template {
     protected __unique: { [key: string]: string } | null = null;
     protected __heritable: { [key: string]: string } | null = null;
