@@ -65,7 +65,7 @@ export default {
                 connect: [true, false],
                 pipsy: { mode: "range", density: 5 },
                 handles: 1000,
-                range: { min: [1], "10%": [10], "30%": [100], "90%": [1000], max: [5000] }
+                range: { min: [1, 1], "10%": [10, 10], "30%": [100, 100], "90%": [1000, 1000], max: [5000] }
             }
         };
     },
