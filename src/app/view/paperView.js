@@ -396,7 +396,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     disableContextMenu(func) {
-        this.canvas.oncontextmenu = function(event) {
+        this.canvas.oncontextmenu = function (event) {
             event.preventDefault();
         };
     }
