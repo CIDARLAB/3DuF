@@ -23,25 +23,17 @@
                             <v-card-text>
                                 <v-row no-gutters>
                                     Source:
-                                    <v-col cols="4"
-                                        ><v-chip v-if="chip1" small close color="green" text-color="white" closable @click:close="chip1 = false">{{ component }}</v-chip></v-col
-                                    >
+                                    <v-col v-for="source in sources" :key="source.name" cols="4">
+                                        <v-chip v-if="chip1" small close color="green" text-color="white" closable @click:close="chip1 = false">{{ source.name }}</v-chip>
+                                    </v-col>
                                 </v-row>
                                 <v-row no-gutters>
                                     Sinks:
                                 </v-row>
                                 <v-row no-gutters>
-                                    <v-col cols="4"
-                                        ><v-chip v-if="chip2" small close color="green" text-color="white" @click:close="chip2 = false">{{ component }}</v-chip></v-col
-                                    >
-                                    <v-col cols="5"
-                                        ><v-chip v-if="chip3" small close color="green" text-color="white" @click:close="chip3 = false">{{ component }}</v-chip></v-col
-                                    >
-                                </v-row>
-                                <v-row no-gutters>
-                                    <v-col cols="5"
-                                        ><v-chip v-if="chip4" small close color="green" text-color="white" @click:close="chip4 = false">{{ component }}</v-chip></v-col
-                                    >
+                                    <v-col v-for="sink in sinks" :key="sink.name" cols="4">
+                                        <v-chip v-if="chip2" small close color="green" text-color="white" @click:close="chip2 = false">{{ sink.name }}</v-chip>
+                                    </v-col>
                                 </v-row>
                             </v-card-text>
                         </v-col>
@@ -67,6 +59,7 @@
 <script>
 import EventBus from "@/events/events";
 import Registry from "@/app/core/registry";
+import ConnectionTool from "@/app/view/tools/connectionTool.js";
 import "@mdi/font/css/materialdesignicons.css";
 import "vue-select/dist/vue-select.css";
 import Vue from "vue";
@@ -86,11 +79,12 @@ export default {
         return {
             connectionName: "NewConnection",
             spec: this.computedSpec("Connection"),
-            component: "Component",
             chip1: true,
             chip2: true,
-            chip3: true,
-            chip4: true,
+            sources: [ConnectionTool.source],
+            sinks: [ConnectionTool.sinks],
+            // sources: [{ name: "source_1" }, { name: "source_2" }],
+            // sinks: [{ name: "sink_1" }, { name: "sink_2" }],
             activated: false,
             isOpen: false,
             isEditing: false,
