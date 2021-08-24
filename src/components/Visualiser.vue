@@ -33,19 +33,21 @@ export default {
     computed: {},
     mounted() {
         // registerSets({Basic: Basic});
-        let viewManager = new ViewManager();
+        let viewManager = new BareViewManager();
 
         Registry.viewManager = viewManager;
 
-        viewManager.loadDeviceFromJSON(JSON.parse(Examples.UpdatedExample));
+        viewManager.loadDeviceFromJSON(JSON.parse(Examples.example2));
+        console.error(Missing parameter)
+        view.sanitizeJSON(json)
         viewManager.updateGrid();
         Registry.viewManager.updateDevice(viewManager.currentDevice);
+        Registry.viewManager.setupToolBars();
+        Registry.currentDevice.updateView();
 
         window.dev = Registry.currentDevice;
         window.Registry = Registry;
-
         window.view = Registry.viewManager.view;
-        Registry.viewManager.setupToolBars();
         //EventBus.get().on(EventBus.DBL_CLICK, this.placement, this.placement2);
     },
     methods: {}
