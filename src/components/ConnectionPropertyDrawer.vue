@@ -27,9 +27,7 @@
                                         <v-chip v-if="chip1" small close color="green" text-color="white" closable @click:close="chip1 = false">{{ source.name }}</v-chip>
                                     </v-col>
                                 </v-row>
-                                <v-row no-gutters>
-                                    Sinks:
-                                </v-row>
+                                <v-row no-gutters> Sinks: </v-row>
                                 <v-row no-gutters>
                                     <v-col v-for="sink in sinks" :key="sink.name" cols="4">
                                         <v-chip v-if="chip2" small close color="green" text-color="white" @click:close="chip2 = false">{{ sink.name }}</v-chip>
@@ -39,9 +37,7 @@
                         </v-col>
                         <v-divider vertical inset></v-divider>
                         <v-col cols="3">
-                            <v-row no-gutters>
-                                Connection Profile
-                            </v-row>
+                            <v-row no-gutters> Connection Profile </v-row>
                             <v-row no-gutters>
                                 <v-select v-model="selectedProfile" :items="connectionProfiles"></v-select>
                             </v-row>
@@ -93,10 +89,10 @@ export default {
         };
     },
     computed: {
-        buttonClasses: function() {
+        buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
         },
-        sources: function() {
+        sources: function () {
             if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
                 if (Registry.viewManager.tools.Connection.source !== null) {
                     return [Registry.viewManager.tools.Connection.source];
@@ -107,7 +103,7 @@ export default {
                 return [];
             }
         },
-        sinks: function() {
+        sinks: function () {
             if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
                 return Registry.viewManager.tools.Connection.sinks;
             } else {
@@ -118,7 +114,7 @@ export default {
     mounted() {
         // Setup an event for closing all the dialogs
         const ref = this;
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function () {
             ref.activated = false;
         });
         EventBus.get().on(EventBus.RIGHT_CLICK, this.endConnection);
@@ -127,7 +123,7 @@ export default {
         this.selectedProfile = this.connectionProfiles[0];
     },
     methods: {
-        computedSpec: function(threeduftype) {
+        computedSpec: function (threeduftype) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let definition = ComponentAPI.getDefinition(threeduftype);
             let spec = [];
@@ -181,7 +177,7 @@ export default {
             Registry.viewManager.activateTool("Connection", "Connection");
             this.current_connection_suggestion = this.connection_suggestions["state2"];
         },
-        endConnection: function() {
+        endConnection: function () {
             this.current_connection_suggestion = this.connection_suggestions["state1"];
             console.log(this.connection_suggestions["state1"]);
         }
