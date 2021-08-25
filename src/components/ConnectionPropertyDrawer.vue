@@ -92,7 +92,7 @@ export default {
         buttonClasses: function () {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
         },
-        sources: function() {
+        sources: function () {
             if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
                 if (Registry.viewManager.tools.Connection.source !== null) {
                     return [Registry.viewManager.tools.Connection.source];
@@ -103,7 +103,7 @@ export default {
                 return [];
             }
         },
-        sinks: function() {
+        sinks: function () {
             if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
                 return Registry.viewManager.tools.Connection.sinks;
             } else {
