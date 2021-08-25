@@ -152,11 +152,11 @@ export default class ThreeDMux extends Template {
     }
 
     getPorts(params) {
-        const ins = params.in.value;
-        const outs = params.out.value;
+        const ins = params.in;
+        const outs = params.out;
         let N;
-        const channelWidth = params.channelWidth.value;
-        let rotation = params.rotation.value;
+        const channelWidth = params.channelWidth;
+        let rotation = params.rotation;
 
         if (ins < outs) {
             N = outs;

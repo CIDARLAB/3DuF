@@ -226,17 +226,6 @@ export default class FeatureSet {
     }
 
     /**
-     * Returns the component ports for a given component
-     * @param params
-     * @param typestring
-     * @return {void|Array}
-     */
-    getComponentPorts(params, typestring) {
-        const definition = this.__library[typestring].object;
-        return definition.getPorts(params);
-    }
-
-    /**
      * Checks if the component definition in the library has the Inverse Render generation support
      * @param typestring
      * @return {*|boolean}

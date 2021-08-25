@@ -1,9 +1,7 @@
 import paper from "paper";
-import Feature from "./feature";
 import Parameter from "./parameter";
 import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
-import ComponentPort from "./componentPort";
 import Device from "./device";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Layer from "./layer";

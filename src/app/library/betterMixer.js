@@ -47,7 +47,7 @@ export default class BetterMixer extends Template {
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            rotation: 270,
+            rotation: 0,
             bendLength: 10,
             height: 10
         };
@@ -93,11 +93,11 @@ export default class BetterMixer extends Template {
     }
 
     getPorts(params) {
-        const channelWidth = params.channelWidth.value;
-        const bendLength = params.bendLength.value;
-        const bendSpacing = params.bendSpacing.value;
-        const rotation = params.rotation.value;
-        const numberOfBends = params.numberOfBends.value;
+        const channelWidth = params.channelWidth;
+        const bendLength = params.bendLength;
+        const bendSpacing = params.bendSpacing;
+        const rotation = params.rotation;
+        const numberOfBends = params.numberOfBends;
 
         const ports = [];
 

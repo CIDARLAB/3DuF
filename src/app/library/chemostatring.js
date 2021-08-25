@@ -106,12 +106,12 @@ export default class ChemostatRing extends Template {
     }
 
     getPorts(params) {
-        const flowChannelWidth = params.flowChannelWidth.value;
-        const controlChannelWidth = params.controlChannelWidth.value;
-        const chemostatChannelWidth = params.chemostatChannelWidth.value;
-        const volume = params.volume.value;
-        const height = params.height.value;
-        const radius = params.radius.value;
+        const flowChannelWidth = params.flowChannelWidth;
+        const controlChannelWidth = params.controlChannelWidth;
+        const chemostatChannelWidth = params.chemostatChannelWidth;
+        const volume = params.volume;
+        const height = params.height;
+        const radius = params.radius;
 
         const area = volume / height;
         const chemostatLength = area / (4 * chemostatChannelWidth);

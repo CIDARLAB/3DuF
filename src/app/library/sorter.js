@@ -177,12 +177,12 @@ export default class Sorter extends Template {
     }
 
     getPorts(params) {
-        const inletLength = params.inletLength.value;
-        const angle = params.angle.value;
-        const outputLength = params.outputLength.value;
-        const pressureWidth = params.pressureWidth.value;
-        const pressureSpacing = params.pressureSpacing.value;
-        const numberofDistributors = params.numberofDistributors.value;
+        const inletLength = params.inletLength;
+        const angle = params.angle;
+        const outputLength = params.outputLength;
+        const pressureWidth = params.pressureWidth;
+        const pressureSpacing = params.pressureSpacing;
+        const numberofDistributors = params.numberofDistributors;
 
         const outletLen = ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth)) / Math.cos(((angle / 2) * Math.PI) / 180);
 

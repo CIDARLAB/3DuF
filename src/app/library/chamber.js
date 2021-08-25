@@ -89,8 +89,8 @@ export default class Chamber extends Template {
     }
 
     getPorts(params) {
-        const l = params.length.value;
-        const w = params.width.value;
+        const l = params.length;
+        const w = params.width;
 
         const ports = [];
 

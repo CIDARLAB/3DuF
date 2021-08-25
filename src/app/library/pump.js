@@ -93,9 +93,9 @@ export default class Pump extends Template {
     }
 
     getPorts(params) {
-        const l = params.length.value;
-        const w = params.width.value;
-        const spacing = params.spacing.value;
+        const l = params.length;
+        const w = params.width;
+        const spacing = params.spacing;
 
         const ports = [];
         ports.push(new ComponentPort(0, -l / 2 - spacing, "1", "FLOW"));

@@ -94,17 +94,17 @@ export default class LLChamber extends Template {
     }
 
     getPorts(params) {
-        const position = params.position.value;
+        const position = params.position;
         const px = position[0];
         const py = position[1];
-        const l = params.length.value;
-        const w = params.width.value;
-        const rotation = params.rotation.value;
-        const color = params.color.value;
+        const l = params.length;
+        const w = params.width;
+        const rotation = params.rotation;
+        const color = params.color;
         // let radius = params["cornerRadius"];
 
-        const numArray = params.numberOfChambers.value;
-        const spacing = params.spacing.value;
+        const numArray = params.numberOfChambers;
+        const spacing = params.spacing;
 
         const ports = [];
 

@@ -109,12 +109,12 @@ export default class DropletGenerator extends Template {
     }
 
     getPorts(params) {
-        const orificeSize = params.orificeSize.value;
-        const orificeLength = params.orificeLength.value;
-        const oilInputWidth = params.oilInputWidth.value;
-        const waterInputWidth = params.waterInputWidth.value;
-        const outputWidth = params.outputWidth.value;
-        const outputLength = params.outputLength.value;
+        const orificeSize = params.orificeSize;
+        const orificeLength = params.orificeLength;
+        const oilInputWidth = params.oilInputWidth;
+        const waterInputWidth = params.waterInputWidth;
+        const outputWidth = params.outputWidth;
+        const outputLength = params.outputLength;
 
         const ports = [];
 

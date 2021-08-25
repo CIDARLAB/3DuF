@@ -2,22 +2,17 @@
 
 import Params from "./params";
 
-import StringValue from "./parameters/stringValue";
 import Feature from "./feature";
 import { DeviceInterchangeV1, DeviceInterchangeV1_1, Point } from "./init";
 import { ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1 } from "./init";
 import { LayerInterchangeV1 } from "./init";
-import { FeatureInterchangeV0 } from "./init";
 
 import Layer from "./layer";
 import Component from "./component";
 import Connection from "./connection";
-import Port from "../library/port";
 import EdgeFeature from "./edgeFeature";
 import DXFObject from "./dxfObject";
-import * as FeatureSets from "../featureSets";
-import Valve from "../library/valve";
 import ComponentPort from "./componentPort";
 import * as IOUtils from "../utils/ioUtils";
 
@@ -288,7 +283,7 @@ export default class Device {
             layer = this.__layers[i];
             features = layer.getAllFeaturesFromLayer();
             for (let ii in features) {
-                let feature = features[i];
+                let feature = features[ii];
                 if (feature.getName() === name) {
                     return feature;
                 }
@@ -362,7 +357,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    updateObjectReference(objectID: string | String, featureID: string): void {
+    updateObjectReference(objectID: string, featureID: string): void {
         //Goes through the components to update the reference
         let component: Component;
         let foundflag = false;
@@ -844,7 +839,7 @@ export default class Device {
      * @return {Connection|null}
      * @memberof Device
      */
-    getConnectionForFeatureID(id: string | String): Connection | null {
+    getConnectionForFeatureID(id: string): Connection | null {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
             //go through each component's features
@@ -915,7 +910,7 @@ export default class Device {
      * @return {Component}
      * @memberof Device
      */
-    getComponentByID(key: string | String): Component | null {
+    getComponentByID(key: string): Component | null {
         for (let i in this.__components) {
             let component = this.__components[i];
             if (component.id === key) {
@@ -932,7 +927,7 @@ export default class Device {
      * @return {Connection}
      * @memberof Device
      */
-    getConnectionByID(key: string | String): Connection | null {
+    getConnectionByID(key: string): Connection | null {
         for (let i in this.__connections) {
             let connection = this.__connections[i];
             if (connection.id === key) {
@@ -949,7 +944,7 @@ export default class Device {
      * @return {Component|null}
      * @memberof Device
      */
-    getComponentByName(name: string | String): Component {
+    getComponentByName(name: string): Component {
         let components = this.__components;
         for (let i in components) {
             if (name == components[i].name) {

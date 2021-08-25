@@ -582,7 +582,6 @@ export default class ViewManager {
 
         this.updateDevice(Registry.currentDevice, false);
         this.__updateViewTarget(false);
-        this.zoomToolBar.setZoom(zoom);
         this.refresh(refresh);
     }
 

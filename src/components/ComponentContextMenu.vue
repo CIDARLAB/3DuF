@@ -1,14 +1,14 @@
 <template>
     <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, height: 100, top: marginTop + 'px', left: marginLeft + 'px' }" scrollable>
         <div>
-            <thead v-show="Rename">
+            <thead v-show="showRename">
                 <v-col>
-                    <v-row id="rename" align-start>
-                        <v-text-field label="Rename" type="input"> {{ rename }} </v-text-field>
-                        <v-btn id="close" x-small depressed @click="callbacks.close()">
+                    <v-row align-start>
+                        <v-text-field v-model="componentName" label="Name" type="input"> </v-text-field>
+                        <v-btn x-small depressed @click="cancelRename">
                             <span class="material-icons">close</span>
                         </v-btn>
-                        <v-btn id="close" x-small depressed @click="Save">
+                        <v-btn x-small depressed @click="saveName">
                             <span class="material-icons">check</span>
                         </v-btn>
                     </v-row>
@@ -27,8 +27,8 @@
                     <v-btn id="context_button_revert" color="white indigo--text" depressed @click="revertToDefaults()">
                         <span class="material-icons">settings_backup_restore</span>
                     </v-btn>
-                    <ChangeAllDialog :component="currentComponent" />
-                    <v-btn id="context_button_rename" color="white indigo--text" depressed @click="renameButton()">
+                    <ChangeAllDialog :component="currentComponent" @close="activeMenu = false" />
+                    <v-btn id="context_button_showRename" color="white indigo--text" depressed @click="showRename = true">
                         <span class="material-icons">title</span>
                     </v-btn>
                     <!-- <v-btn id="context_button_arraygen" color="white indigo--text" depressed>
@@ -69,8 +69,8 @@ export default {
             activeChange: false,
             activeMove: false,
             activeCopy: false,
-            Rename: false,
-            rename: null,
+            showRename: false,
+            componentName: "",
             featureRef: null,
             typeString: "",
             marginLeft: 500,
@@ -115,6 +115,8 @@ export default {
             this.featureRef = component;
             this.typeString = component.mint;
             //console.log(feat);
+            const tempname = component.name;
+            this.componentName = tempname;
 
             console.log(event, component);
             this.activeMenu = !this.activeMenu;
@@ -137,16 +139,16 @@ export default {
                 this.marginTop = event.clientY - 20;
             }
             **/
-            console.log(window.innerWidth / 2);
+            //console.log(window.innerWidth / 2);
             //Margin Left Calculation
             if (event.clientX - 150 > window.innerWidth / 2) {
                 this.marginLeft = event.clientX - 800;
             } else {
                 this.marginLeft = event.clientX - 180;
             }
-            console.log(window.innerHeight / 2);
-            //Margin Right Calculation
-            if (750 > event.clientY && event.clientY > 170) {
+            //console.log(window.innerHeight / 2);
+            //Margin Top Calculation
+            if (window.innerHeight / 1.2 >= event.clientY && event.clientY >= window.innerHeight / 6) {
                 this.marginTop = 0;
             } else if (event.clientY + 0 > window.innerHeight / 2) {
                 this.marginTop = event.clientY - 750;
@@ -163,7 +165,7 @@ export default {
         onSave() {
             const nametext = this.getComponentName();
             this.$refs.input.value = nametext;
-            console.log("Saved data for Rename");
+            console.log("Saved data for showRename");
         },
         revertToDefaults() {
             revertToDefaultParams(this.$refs.table, this.typestring, this.__setString);
@@ -177,9 +179,6 @@ export default {
         copyToAllButton() {
             this.activeCopy = !this.activeCopy;
             console.log("Change all the component parameters");
-        },
-        renameButton() {
-            this.Rename = !this.Rename;
         },
         generateArrayButton() {
             Registry.viewManager.activateTool("GenerateArrayTool");
@@ -195,30 +194,9 @@ export default {
             const bounds = this.$refs.activator.$el.getBoundingClientRect();
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
         },
-        Save() {
-            const nametext = this.$refs.rename;
-            this.setComponentName(nametext);
-        },
-        setComponentName(nametext) {
-            const id = this.featureRef.getID();
-            // Find component for the feature id
-            const component = Registry.currentDevice.getComponentForFeatureID(id);
-            if (component) {
-                component.setName(nametext);
-                console.log("renamed component", component);
-            } else {
-                throw new Error("Could not find component to rename");
-            }
-        },
-        getComponentName() {
-            const id = this.featureRef.getID();
-            // Find component for the feature id
-            const component = Registry.currentDevice.getComponentForFeatureID(id);
-            if (component) {
-                return component.getName();
-            } else {
-                throw new Error("Could not find component to rename");
-            }
+        saveName() {
+            this.currentComponent.name = this.componentName;
+            this.showRename = false;
         },
         UpdateFeatureSlider() {
             const featureID = this.featureRef.getID();
@@ -234,6 +212,10 @@ export default {
         },
         closeDialog() {
             this.activeMenu = false;
+        },
+        cancelRename() {
+            this.showRename = false;
+            this.componentName = this.currentComponent.name;
         }
     }
 };
@@ -247,7 +229,7 @@ export default {
     margin-left: 15px;
     margin-top: 15px;
 }
-#rename {
+#showRename {
     margin-left: 20px;
 }
 #close {

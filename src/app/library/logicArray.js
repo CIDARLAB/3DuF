@@ -632,13 +632,13 @@ export default class LogicArray extends Template {
 
     getPorts(params) {
         const ports = [];
-        const chamberWidth = params.chamberWidth.value;
-        const flowChannelWidth = params.flowChannelWidth.value;
-        const controlChannelWidth = params.controlChannelWidth.value;
-        const portRadius = params.portRadius.value;
-        const chamberLength = params.chamberLength.value;
-        const rotation = params.rotation.value;
-        const spacing = params.componentSpacing.value;
+        const chamberWidth = params.chamberWidth;
+        const flowChannelWidth = params.flowChannelWidth;
+        const controlChannelWidth = params.controlChannelWidth;
+        const portRadius = params.portRadius;
+        const chamberLength = params.chamberLength;
+        const rotation = params.rotation;
+        const spacing = params.componentSpacing;
 
         const topDistance = 14 * spacing;
         const inWidth = 5 * spacing;

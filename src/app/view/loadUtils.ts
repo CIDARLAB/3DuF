@@ -12,7 +12,6 @@ import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
 
 import ConnectionUtils from "@/app/utils/connectionUtils";
-import ComponentUtils from "@/app/utils/componentUtils";
 
 import {
     ScratchInterchangeV1,
@@ -203,8 +202,8 @@ export default class LoadUtils {
 
         // Idk whether this is correct
         // It was originially this._span = this.span which threw several errors so I patterned in off the above const var
-        const xspan = json.xspan;
-        const yspan = json.yspan;
+        const xspan = json["x-span"];
+        const yspan = json["y-span"];
 
         const params = json.params;
 

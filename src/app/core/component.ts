@@ -55,7 +55,7 @@ export default class Component {
 
         // Create and set the ports here itself
 
-        const cleanparamdata = this._params.parameters;
+        const cleanparamdata = this._params.toMap();
         if (mint !== "" || mint === null) {
             const ports = ComponentAPI.getComponentPorts(cleanparamdata, mint);
             if (ports != undefined && ports.length >= 0 && ports !== null) {
@@ -196,8 +196,8 @@ export default class Component {
             name: this._name,
             entity: this._entity,
             params: this._params.toJSON(),
-            xspan: this._xspan,
-            yspan: this._yspan,
+            "x-span": this._xspan,
+            "y-span": this._yspan,
             ports: portdata,
             layer: this.findLayerReferences()
         };
@@ -446,8 +446,8 @@ export default class Component {
 
         // Idk whether this is correct
         // It was originially this._span = this.span which threw several errors so I patterned in off the above const var
-        const xspan = json.xspan;
-        const yspan = json.yspan;
+        const xspan = json["x-span"];
+        const yspan = json["y-span"];
 
         const params = json.params;
 

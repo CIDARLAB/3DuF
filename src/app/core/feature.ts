@@ -327,9 +327,6 @@ export default class Feature {
      * @memberof Feature
      */
     static fromJSON(json: any) {
-        let set;
-        if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
-        else set = "Basic";
         return Device.makeFeature(json.type, json.params, json.name, json.id, "XY", []);
     }
 
@@ -341,9 +338,6 @@ export default class Feature {
      */
     static fromInterchangeV1(json: any) {
         let ret;
-        let set;
-        if (Object.prototype.hasOwnProperty.call(json, "set")) set = json.set;
-        else set = "Basic";
         // TODO: This will have to change soon when the thing is updated
         ret = Device.makeFeature(json.macro, json.params, json.name, json.id, json.type, json.dxfData);
         if (Object.prototype.hasOwnProperty.call(json, "referenceID")) {
