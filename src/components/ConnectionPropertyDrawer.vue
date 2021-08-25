@@ -81,10 +81,6 @@ export default {
             spec: this.computedSpec("Connection"),
             chip1: true,
             chip2: true,
-            sources: [ConnectionTool.source],
-            sinks: [ConnectionTool.sinks],
-            // sources: [{ name: "source_1" }, { name: "source_2" }],
-            // sinks: [{ name: "sink_1" }, { name: "sink_2" }],
             activated: false,
             isOpen: false,
             isEditing: false,
@@ -99,6 +95,24 @@ export default {
     computed: {
         buttonClasses: function() {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
+        },
+        sources: function() {
+            if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
+                if (Registry.viewManager.tools.Connection.source !== null) {
+                    return [Registry.viewManager.tools.Connection.source];
+                } else {
+                    return [];
+                }
+            } else {
+                return [];
+            }
+        },
+        sinks: function() {
+            if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
+                return Registry.viewManager.tools.Connection.sinks;
+            } else {
+                return [];
+            }
         }
     },
     mounted() {
