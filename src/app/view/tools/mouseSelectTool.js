@@ -95,7 +95,6 @@ export default class MouseSelectTool extends MouseTool {
                     throw new Error("ReferenceID of feature is null");
                 } else {
                     component = Registry.currentDevice.getComponentByID(feat.referenceID);
-                    component = Registry.viewManager.getComponentByID(feat.referenceID);
                     connection = Registry.currentDevice.getConnectionByID(feat.referenceID);
                     if (component !== null) {
                         EventBus.get().emit(EventBus.DBL_CLICK_COMPONENT, event, component);

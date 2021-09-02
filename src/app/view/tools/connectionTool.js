@@ -181,7 +181,8 @@ export default class ConnectionTool extends MouseTool {
             const definition = ComponentAPI.getDefinition("Connection");
             const params = new Params(values, definition.unique, definition.heritable);
             if (this.__currentConnectionObject === null || this.__currentConnectionObject === undefined) {
-                const connection = new Connection("Connection", params, Registry.currentDevice.generateNewName("CHANNEL"), "CHANNEL");
+                if (Registry.currentLayer.physicalLayer == null) throw new Error("Error: Attempting to add connection on non-physical layer");
+                const connection = new Connection("Connection", params, Registry.currentDevice.generateNewName("CHANNEL"), "CHANNEL", Registry.currentLayer.physicalLayer);
                 connection.routed = true;
                 connection.addFeatureID(feat.ID);
                 connection.addWayPoints(this.wayPoints);

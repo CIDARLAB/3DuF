@@ -74,7 +74,7 @@ export default class ViewManager {
         Registry.currentGrid = this.__grid;
         this.renderLayers = [];
         this.activeRenderLayer = null;
-        this.nonphysComponents = []; //TODO - Keep track of what types of objects fall here UIElements
+        this.nonphysElements = []; //TODO - Keep track of what types of objects fall here UIElements
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         this.__currentDevice = null;
@@ -244,8 +244,8 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addFeature(feature, index = this.activeRenderLayer, refresh = true) {
-        let isPhysicalFlag = true;
+    addFeature(feature, index = this.activeRenderLayer, isPhysicalFlag = true, refresh = true) {
+        //let isPhysicalFlag = true;
         this.renderLayers[index].addFeature(feature, isPhysicalFlag);
         if (this.ensureFeatureExists(feature)) {
             this.view.addFeature(feature);
@@ -254,50 +254,18 @@ export default class ViewManager {
     }
 
     /**
-     * Adds a component to the device
-     * @param {Component} component Component to be added to the device
-     * @memberof Device
-     * @returns {void}
-     */
-    addNonphysComponent(component) {
-        if (component instanceof Component) {
-            this.nonphysComponents.push(component);
-        } else {
-            throw new Error("Tried to add a nonphysical component that isn't a component");
-        }
-    }
-
-    /**
-     * Returns component object that is identified by the given key
-     * @param {String} key Key to  the component
-     * @return {Component}
-     * @memberof Device
-     */
-    getNonphysComponentByID(key) {
-        for (let i in this.nonphysComponents) {
-            let component = this.nonphysComponents[i];
-            if (component.id === key) {
-                return component;
-            }
-        }
-        return null;
-        //throw new Error("Component with ID " + key + " does not exist");
-    }
-
-    /**
      * Returns the component identified by the id
      * @param {string} id ID of the feature to get the component
-     * @return {Component|null}
-     * @memberof Device
+     * @return {UIElement|null}
+     * @memberof ViewManager
      */
-    getNonphysComponentForFeatureID(id) {
-        for (let i in this.nonphysComponents) {
-            let component = this.nonphysComponents[i];
+    getNonphysElementFromFeatureID(id) {
+        for (let i in this.nonphysElements) {
+            let element = this.nonphysElements[i];
             //go through each component's features
-            for (let j in component.featureIDs) {
-                let featureid = component.featureIDs[j];
-                if (featureid === id) {
-                    return component;
+            for (let j in element.featureIDs) {
+                if (element.featureIDs[j] === id) {
+                    return element;
                 }
             }
         }
@@ -363,7 +331,7 @@ export default class ViewManager {
     addLayer(layer, index, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
             this.view.addLayer(layer, index, false);
-            this.__addAllLayerFeatures(layer, false);
+            this.__addAllLayerFeatures(layer, index, false);
             this.refresh(refresh);
         }
     }
@@ -500,10 +468,10 @@ export default class ViewManager {
      * @memberof ViewManager
      * @private
      */
-    __addAllLayerFeatures(layer, refresh = true) {
+    __addAllLayerFeatures(layer, index, refresh = true) {
         for (const key in layer.features) {
             const feature = layer.features[key];
-            this.addFeature(feature, false);
+            this.addFeature(feature, index, false);
             this.refresh(refresh);
         }
     }
@@ -907,24 +875,24 @@ export default class ViewManager {
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
 
-        if (version === null || undefined === version || version == 1 || version == "1") {
+        if (version === null || undefined === version || version == 1 || version == 1.1) {
             let ret = LoadUtils.loadFromScratch(json);
             device = ret[0];
             Registry.currentDevice = device;
             this.__currentDevice = device;
 
             this.renderLayers = ret[1];
-        } else if (version == 1.1 || version == "1.1") {
-            // this.loadCustomComponents(json);
-            device = Device.fromInterchangeV1_1(json);
-            Registry.currentDevice = device;
-            this.__currentDevice = device;
+            // } else if (version == 1.1 || version == "1.1") {
+            //     // this.loadCustomComponents(json);
+            //     device = Device.fromInterchangeV1_1(json);
+            //     Registry.currentDevice = device;
+            //     this.__currentDevice = device;
 
-            // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
-            for (const i in json.layers) {
-                const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
-                this.renderLayers.push(newRenderLayer);
-            }
+            //     // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
+            //     for (const i in json.layers) {
+            //         const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
+            //         this.renderLayers.push(newRenderLayer);
+            //     }
         } else {
             alert("Version '" + version + "' is not supported by 3DuF !");
         }
@@ -936,7 +904,7 @@ export default class ViewManager {
         this.activeRenderLayer = 0;
 
         // TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
-        Registry.viewManager.addDevice(Registry.currentDevice);
+        this.addDevice(Registry.currentDevice);
 
         // In case of MINT exported json, generate layouts for rats nests
         this.__initializeRatsNest();
@@ -947,7 +915,7 @@ export default class ViewManager {
         this.refresh(true);
         Registry.currentLayer = this.renderLayers[0];
         // this.layerToolBar.setActiveLayer("0");
-        Registry.viewManager.updateActiveLayer();
+        this.updateActiveLayer();
     }
 
     /**
@@ -1325,6 +1293,7 @@ export default class ViewManager {
     resetToDefaultTool() {
         this.cleanupActiveTools();
         this.activateTool("MouseSelectTool");
+        //this.activateTool("RenderMouseTool");
         // this.componentToolBar.setActiveButton("SelectButton");
     }
 

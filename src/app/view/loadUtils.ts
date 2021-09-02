@@ -30,6 +30,8 @@ export default class LoadUtils {
     constructor() {}
 
     static loadFromScratch(json: ScratchInterchangeV1): [Device, Array<RenderLayer>] {
+        console.log("I made it this far");
+        console.log("RendLay: ", json.renderLayers);
         const newDevice: Device = LoadUtils.loadDeviceFromInterchangeV1(json);
         let newRenderLayers: Array<RenderLayer> = [];
         if (json.renderLayers) {
@@ -38,7 +40,7 @@ export default class LoadUtils {
             }
         } else {
             for (let i = 0; i < json.layers.length; i++) {
-                newRenderLayers.push(LoadUtils.generateRenderLayerFromLayerInterchangeV1(json.renderLayers[i], newDevice));
+                newRenderLayers.push(LoadUtils.generateRenderLayerFromLayerInterchangeV1(json.layers[i], newDevice));
             }
         }
         return [newDevice, newRenderLayers];
@@ -46,7 +48,6 @@ export default class LoadUtils {
 
     static loadDeviceFromInterchangeV1(json: DeviceInterchangeV1): Device {
         let newDevice: Device;
-
         if (Object.prototype.hasOwnProperty.call(json, "params")) {
             if (Object.prototype.hasOwnProperty.call(json.params, "width") && Object.prototype.hasOwnProperty.call(json.params, "length")) {
                 newDevice = new Device(
@@ -75,15 +76,6 @@ export default class LoadUtils {
                 json.name
             );
         }
-        //TODO: Use this to dynamically create enough layers to scroll through
-        //TODO: Use these to generate a rat's nest
-        for (const i in json.components) {
-            LoadUtils.loadComponentFromInterchangeV1(json.components[i]);
-        }
-
-        for (const i in json.connections) {
-            LoadUtils.loadConnectionFromInterchangeV1(newDevice, json.connections[i]);
-        }
 
         //Check if JSON has layers else mark
         if (Object.prototype.hasOwnProperty.call(json, "layers")) {
@@ -98,6 +90,18 @@ export default class LoadUtils {
             newDevice.addLayer(newlayer);
             newlayer = new Layer({}, "integration", LogicalLayerType.INTEGRATION, "0", newDevice);
             newDevice.addLayer(newlayer);
+        }
+
+        //TODO: Use this to dynamically create enough layers to scroll through
+        //TODO: Use these to generate a rat's nest
+        for (const i in json.components) {
+            const newComponent = LoadUtils.loadComponentFromInterchangeV1(json.components[i]);
+            newDevice.addComponent(newComponent);
+        }
+
+        for (const i in json.connections) {
+            const newConnection = LoadUtils.loadConnectionFromInterchangeV1(newDevice, json.connections[i]);
+            newDevice.addConnection(newConnection);
         }
 
         //Updating cross-references
@@ -209,16 +213,14 @@ export default class LoadUtils {
                 ]
             ];
         }
-        let definition;
-        if (ConnectionUtils.hasFeatureSet()) {
-            definition = ConnectionUtils.getDefinition("Connection");
-        }
+        let definition = ConnectionUtils.getDefinition("Connection");
+
         if (definition === null || definition === undefined) {
             throw new Error("Could not find the definition for the Connection");
         }
         const paramstoadd = new Params(params, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
 
-        const connection = new Connection(entity, paramstoadd, name, entity, id, layer);
+        const connection = new Connection(entity, paramstoadd, name, entity, layer, id);
         if (Object.prototype.hasOwnProperty.call(json, "source")) {
             if (json.source !== null && json.source !== undefined) {
                 connection.setSourceFromJSON(device, json.source);
@@ -381,15 +383,15 @@ export default class LoadUtils {
             if (device.layers[i].id == json.id) newLayer.physicalLayer = device.layers[i];
         }
 
-        if (Object.prototype.hasOwnProperty.call(json, "type")) {
-            if (json.type === "FLOW") {
+        if (Object.prototype.hasOwnProperty.call(json, "name")) {
+            if (json.name === "flow") {
                 newLayer.color = "indigo";
-            } else if (json.type === "CONTROL") {
+            } else if (json.name === "control") {
                 newLayer.color = "red";
-            } else if (json.type === "INTEGRATION") {
+            } else if (json.name === "integration") {
                 newLayer.color = "green";
             } else {
-                throw new Error("Unknown layer type: " + json.type);
+                throw new Error("Unknown layer name: " + json.name);
             }
         }
         return newLayer;

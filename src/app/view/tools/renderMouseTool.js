@@ -61,18 +61,18 @@ export default class RenderMouseTool extends MouseTool {
         const point = MouseTool.getEventPosition(event);
         const target = this.hitFeature(point);
         if (target) {
-            if (Registry.viewManager.getNonphysComponentForFeatureID(target.featureID) && Registry.viewManager.getNonphysComponentForFeatureID(target.featureID).mint == "TEXT") {
+            //if (Registry.viewManager.getNonphysComponentForFeatureID(target.featureID) && Registry.viewManager.getNonphysComponentForFeatureID(target.featureID).mint == "TEXT") {
+            const element = Registry.viewManager.getNonphysElementFromFeatureID(target.featureID);
+            if (element && element.type == "Text") {
                 if (target.selected) {
                     const feat = Registry.viewManager.getFeatureByID(target.featureID);
                     Registry.viewManager.updateDefaultsFromFeature(feat);
                     // Check if the feature is a part of a component
-                    let component;
                     if (feat.referenceID === null) {
                         throw new Error("ReferenceID of feature is null");
                     } else {
-                        component = Registry.viewManager.getNonphysComponentByID(feat.referenceID);
-                        if (component !== null) {
-                            EventBus.get().emit(EventBus.DBL_CLICK_COMPONENT, event, component);
+                        if (element !== null) {
+                            EventBus.get().emit(EventBus.DBL_CLICK_ELEMENT, event, element);
                         } else {
                             EventBus.get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
                         }
@@ -86,7 +86,6 @@ export default class RenderMouseTool extends MouseTool {
             }
         } else {
             this.deselectFeatures();
-            this.dragStart = point;
         }
     }
 
@@ -120,6 +119,14 @@ export default class RenderMouseTool extends MouseTool {
         } else {
             throw new Error("Totally got the selection logic wrong, reimplement this");
         }
+    }
+
+    deselectFeatures() {
+        if (this.rightClickMenu) {
+            this.rightClickMenu.close();
+        }
+        this.paperView.clearSelectedItems();
+        this.currentSelection = [];
     }
 
     /**

@@ -42,7 +42,7 @@ export default class Connection {
      * @param {String} mint
      * @param {String} id
      */
-    constructor(type: string, params: Params, name: string, mint: string, id: string = ComponentAPI.generateID(), layer: Layer) {
+    constructor(type: string, params: Params, name: string, mint: string, layer: Layer, id: string = ComponentAPI.generateID()) {
         this._params = params;
         this._name = name;
         this._id = id;
@@ -487,7 +487,7 @@ export default class Connection {
         }
         const paramstoadd = new Params(params, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
 
-        const connection = new Connection(entity, paramstoadd, name, entity, id, layer);
+        const connection = new Connection(entity, paramstoadd, name, entity, layer, id);
         if (Object.prototype.hasOwnProperty.call(json, "source")) {
             if (json.source !== null && json.source !== undefined) {
                 connection.setSourceFromJSON(device, json.source);
@@ -651,7 +651,7 @@ export default class Connection {
     }
 
     /**
-     * ?
+     * Adds a sink to the connection
      * @param {Object} device
      * @param {JSON} json
      * @memberof Connection

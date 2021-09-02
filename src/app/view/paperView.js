@@ -22,6 +22,8 @@ import Device from "../core/device";
 import Feature from "../core/feature";
 import Params from "../core/params";
 import Component from "../core/component";
+import UIElement from "../view/uiElement";
+import TextElement from "../view/textElement";
 import MapUtils from "../utils/mapUtils";
 /**
  * Paper View class
@@ -587,10 +589,10 @@ export default class PaperView {
      */
     getNonphysText() {
         const textLayer = new paper.Group();
-        const nonphysComponents = Registry.viewManager.nonphysComponents;
-        for (let i = 0; i < nonphysComponents.length; i++) {
+        const nonphysElements = Registry.viewManager.nonphysElements;
+        for (let i = 0; i < nonphysElements.length; i++) {
             for (let j in this.paperFeatures) {
-                if (nonphysComponents[i].mint == "TEXT" && nonphysComponents[i].featureIDs.includes(this.paperFeatures[j].featureID)) {
+                if (nonphysElements[i].type == "Text" && nonphysElements[i].featureIDs.includes(this.paperFeatures[j].featureID)) {
                     textLayer.addChild(this.paperFeatures[j]);
                 }
             }
@@ -626,8 +628,40 @@ export default class PaperView {
             null
         );
         this.__viewManagerDelegate.addFeature(newFeature, layer, false);
-        this.addComponent("Text", newFeature.getParams(), [newFeature.ID], false);
+        //this.addComponent("Text", newFeature.getParams(), [newFeature.ID], false);
+        const element = this.addUIElement("Text", newFeature.getParams(), [newFeature.ID]);
+        newFeature.referenceID = element.id;
         this.__viewManagerDelegate.saveDeviceState();
+    }
+
+    /**
+     * Creates a new UIElement and adds it to viewManager's nonphysicalElements array
+     * Note: Takes the feature ids as an array
+     * TODO: Modify this to take the MINT String as another parameter
+     * Built for use in uF Guide Tool
+     * @param typeString Type of the Feature
+     * @param params Map of all the paramters
+     * @param featureIDs [String] Feature id's of all the features that will be a part of this component
+     */
+    addUIElement(typeString, paramdata, featureIDs) {
+        let newElement;
+        if (typeString == "Text") {
+            newElement = new TextElement(typeString, paramdata, featureIDs);
+        } else {
+            newElement = new UIElement();
+            // TODO: implement parameter handling for base UIElement
+        }
+        Registry.viewManager.nonphysElements.push(newElement);
+        return newElement;
+    }
+
+    /**
+     * Inserts paper feature into the UILayer
+     * Built for use in uF Guide Tool
+     * @param newPaperFeature Paper feature to be added to the UI layer
+     */
+    insertUIFeature(newPaperFeature) {
+        this.uiLayer.insertChild(0, newPaperFeature);
     }
 
     /**
@@ -741,6 +775,10 @@ export default class PaperView {
         else selected = false;
         this.removeFeature(feature);
         let newPaperFeature;
+        // if (!Registry.currentDevice.containsFeatureID(feature.ID)) {
+        //     newPaperFeature = FeatureRenderer2D.renderFeature(feature);
+        //     this.insertUIFeature(newPaperFeature);
+        // } else {
         if (feature instanceof EdgeFeature) {
             newPaperFeature = DXFObjectRenderer2D.renderEdgeFeature(feature);
             newPaperFeature.selected = selected;
@@ -755,6 +793,7 @@ export default class PaperView {
         const index = this.__viewManagerDelegate.renderLayers.indexOf(this.__viewManagerDelegate.getRenderLayerByID(feature.ID));
         const layer = this.paperLayers[index];
         this.insertChildByHeight(layer, newPaperFeature);
+        // }
     }
 
     /**
