@@ -327,6 +327,22 @@ export default class Device {
         // TODO: Fix layer system
         DeviceUtils.addLayer(layer, this.__layers.indexOf(layer));
     }
+
+    /**
+     * Add a layer to specific index, and re-sort the layers array
+     * @param {Layer} layer Layer to add
+     * @param {number} index The index into which to add the layer
+     * @memberof Device
+     * @returns {void}
+     */
+    addLayerAtIndex(layer: Layer, index: number): void {
+        layer.device = this;
+        this.__layers.splice(index, 0, layer);
+        //this.sortLayers();
+        // TODO: Fix layer system
+        DeviceUtils.addLayer(layer, this.__layers.indexOf(layer));
+    }
+
     /**
      * Removes feature of the Device
      * @param {Feature} feature Feature to be removed

@@ -46,9 +46,25 @@ export default class LoadUtils {
             newRenderLayers.push(new RenderLayer("integration", newDevice.layers[0], LogicalLayerType.INTEGRATION));
         }
 
+        // Ensures that there are three layers per group
+        let layerGroups: Map<string, number> = new Map();
         for (let i = 0; i < newDevice.layers.length; i++) {
-            //TODO: make it so if there are only two layers in a group, a third integration layer is added
+            if (layerGroups.has(newDevice.layers[i].group)) {
+                const currentVal = layerGroups.get(newDevice.layers[i].group);
+                if (currentVal) layerGroups.set(newDevice.layers[i].group, currentVal + 1);
+            } else {
+                layerGroups.set(newDevice.layers[i].group, 1);
+            }
         }
+        layerGroups.forEach((value, key) => {
+            const keyVal = parseInt(key, 10);
+            if (value == 2) {
+                newDevice.addLayerAtIndex(new Layer({}, "integration", LogicalLayerType.INTEGRATION, key, newDevice), keyVal * 3 + 2);
+                newRenderLayers.splice(keyVal * 3 + 2, 0, new RenderLayer("integration", newDevice.layers[0], LogicalLayerType.INTEGRATION));
+            } else {
+                console.log("Layers are missing from some groups");
+            }
+        });
 
         return [newDevice, newRenderLayers];
     }
@@ -164,7 +180,6 @@ export default class LoadUtils {
      * @memberof LoadUtils
      */
     static loadFeatureFromInterchangeV1(json: FeatureInterchangeV0): Feature {
-        console.log("Made it to here");
         // TODO: This will have to change soon when the thing is updated
         let ret = Device.makeFeature(json.macro, json.params, json.name, json.id, json.type, json.dxfData);
         if (Object.prototype.hasOwnProperty.call(json, "referenceID")) {
