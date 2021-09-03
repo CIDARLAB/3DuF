@@ -17,7 +17,7 @@ export default class Layer {
     device: Device;
     private __id: string;
     private __type: string;
-    private group: string;
+    private __group: string;
 
     /**
      * Default Constructor for the layer
@@ -32,7 +32,7 @@ export default class Layer {
         this.device = device;
         this.__id = Layer.generateID();
         this.__type = type;
-        this.group = group;
+        this.__group = group;
     }
 
     get type(): string {
@@ -45,6 +45,10 @@ export default class Layer {
 
     set id(ID: string) {
         this.__id = ID;
+    }
+
+    get group(): string {
+        return this.__group;
     }
 
     /**
@@ -314,7 +318,7 @@ export default class Layer {
             type: layerType,
             // TODO - Add group and unique name parameters to the system and do type checking
             // against type and not name in the future
-            group: this.group,
+            group: this.__group,
             params: this.params.toJSON(),
             features: this.__featuresInterchangeV1()
         };
