@@ -2,7 +2,7 @@ import uuid from "node-uuid";
 import Feature from "../core/feature";
 import EdgeFeature from "../core/edgeFeature";
 
-import { RenderLayerInterchangeV1, FeatureInterchangeV0, LayerInterchangeV1 } from "../core/init";
+import { RenderLayerInterchangeV1, FeatureInterchangeV0, LayerInterchangeV1, LogicalLayerType } from "../core/init";
 import Layer from "../core/layer";
 import Params from "../core/params";
 
@@ -16,7 +16,7 @@ export default class RenderLayer {
     protected _physicalLayer: Layer | null;
     protected params: Params;
 
-    constructor(name: string = "New Layer", modellayer: Layer | null = null, type: string = "FLOW", group: string = "0") {
+    constructor(name: string = "New Layer", modellayer: Layer | null = null, type: LogicalLayerType = LogicalLayerType.FLOW) {
         this.__type = type;
         this.features = {};
         this.featureCount = 0;
@@ -24,11 +24,11 @@ export default class RenderLayer {
         if (modellayer) this.params = modellayer.params;
         else this.params = new Params([], Layer.getUniqueParameters(), new Map());
         this._physicalLayer = modellayer;
-        if (name == "flow") {
+        if (type == LogicalLayerType.FLOW) {
             this.color = "indigo";
-        } else if (name == "control") {
+        } else if (type == LogicalLayerType.CONTROL) {
             this.color = "red";
-        } else if (name == "integration") {
+        } else if (type == LogicalLayerType.INTEGRATION) {
             this.color = "green";
         } else {
             this.color = undefined;
@@ -276,7 +276,6 @@ export default class RenderLayer {
             // against type and not name in the future
             modellayer: physlayer,
             type: this.__type,
-            group: "0",
             //params: this.params.toJSON(),
             features: this.__featuresInterchangeV1(),
             color: this.color
@@ -291,10 +290,11 @@ export default class RenderLayer {
      * @memberof Layer
      */
     static fromJSON(json: { [index: string]: any }): RenderLayer {
+        //Effectively defunct, use loadUtils version
         if (!Object.prototype.hasOwnProperty.call(json, "features")) {
             throw new Error("JSON layer has no features!");
         }
-        const newLayer = new RenderLayer(json.name, json.type, json.group);
+        const newLayer = new RenderLayer(json.name, null, json.type);
         newLayer.__loadFeaturesFromJSON(json.features);
         //if (json.modellayer) newLayer.__loadLayerFromJSON(json.modellayer);
         if (json.color) newLayer.color = json.color;
@@ -309,7 +309,19 @@ export default class RenderLayer {
      */
     static fromInterchangeV1(json: RenderLayerInterchangeV1): RenderLayer {
         //Effectively defunct, use loadUtils version
-        const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
+        let layerType: LogicalLayerType | undefined;
+        if (Object.prototype.hasOwnProperty.call(json, "type")) {
+            if (json.type === "FLOW") {
+                layerType = LogicalLayerType.FLOW;
+            } else if (json.type === "CONTROL") {
+                layerType = LogicalLayerType.CONTROL;
+            } else if (json.type === "INTEGRATION") {
+                layerType = LogicalLayerType.INTEGRATION;
+            } else {
+                throw new Error("Unknown layer type: " + json.type);
+            }
+        }
+        const newLayer: RenderLayer = new RenderLayer(json.name, null, layerType);
 
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
 

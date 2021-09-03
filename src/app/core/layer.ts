@@ -314,7 +314,7 @@ export default class Layer {
             type: layerType,
             // TODO - Add group and unique name parameters to the system and do type checking
             // against type and not name in the future
-            group: "0",
+            group: this.group,
             params: this.params.toJSON(),
             features: this.__featuresInterchangeV1()
         };

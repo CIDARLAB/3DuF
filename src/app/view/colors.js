@@ -1,6 +1,7 @@
 // import Feature from "../core/feature";
 import * as paper from "paper";
 import Layer from "../core/layer";
+import { LogicalLayerType } from "@/app/core/init";
 
 // Colors taken from: http://www.google.ch/design/spec/style/color.html
 export const RED_500 = "#F44336";
@@ -160,11 +161,11 @@ export function getLayerColors(layer) {
     if (layer.color) {
         return layerColors[layer.color];
     } else {
-        if (layer.name === "flow") {
+        if (layer.type === LogicalLayerType.FLOW) {
             return layerColors.indigo;
-        } else if (layer.name === "control") {
+        } else if (layer.type === LogicalLayerType.CONTROL) {
             return layerColors.red;
-        } else if (layer.name === "integration") {
+        } else if (layer.type === LogicalLayerType.INTEGRATION) {
             return layerColors.green;
         }
     }

@@ -57,6 +57,8 @@ import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
 
 import LoadUtils from "@/app/view/loadUtils";
+import ExportUtils from "@/app/view/exportUtils";
+import { LogicalLayerType } from "@/app/core/init";
 
 /**
  * View manager class
@@ -343,10 +345,13 @@ export default class ViewManager {
      */
     createNewLayerBlock() {
         //Generate model layers
+        let groupNum = Registry.currentDevice.layers.length;
+        if (groupNum != 0) groupNum = groupNum / 3;
+
         let newlayers = [];
-        newlayers[0] = new Layer({ z_offset: 0, flip: false }, "flow");
-        newlayers[1] = new Layer({ z_offset: 0, flip: false }, "control");
-        newlayers[2] = new Layer({ z_offset: 0, flip: false }, "integration");
+        newlayers[0] = new Layer({ z_offset: 0, flip: false }, "flow", LogicalLayerType.FLOW, groupNum.toString());
+        newlayers[1] = new Layer({ z_offset: 0, flip: false }, "control", LogicalLayerType.CONTROL, groupNum.toString());
+        newlayers[2] = new Layer({ z_offset: 0, flip: false }, "integration", LogicalLayerType.INTEGRATION, groupNum.toString());
         //Add model layers to current device
         Registry.currentDevice.createNewLayerBlock(newlayers);
 
@@ -378,9 +383,9 @@ export default class ViewManager {
         }
 
         // Add new renderLayers
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("flow", newlayers[0]);
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("control", newlayers[1]);
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("integration", newlayers[2]);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("flow", newlayers[0], LogicalLayerType.FLOW);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("control", newlayers[1], LogicalLayerType.CONTROL);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("integration", newlayers[2], LogicalLayerType.INTEGRATION);
         for (const i in edgefeatures) {
             this.renderLayers[this.renderLayers.length - 3].addFeature(edgefeatures[i]);
             this.renderLayers[this.renderLayers.length - 2].addFeature(edgefeatures[i]);
@@ -1461,12 +1466,12 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     __generateDefaultPlacementForComponent(component, xpos, ypos) {
-        const params_to_copy = component.getParams().toJSON();
+        const params_to_copy = component.params.toJSON();
 
         params_to_copy.position = [xpos, ypos];
 
         // Get default params and overwrite them with json params, this can account for inconsistencies
-        const newFeature = Device.makeFeature(component.getType(), params_to_copy);
+        const newFeature = Device.makeFeature(component.type, params_to_copy);
 
         component.addFeatureID(newFeature.ID);
 
@@ -1482,7 +1487,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     generateExportJSON() {
-        const json = this.currentDevice.toInterchangeV1_1();
+        const json = ExportUtils.toScratch(this);
+        //const json = this.currentDevice.toInterchangeV1_1();
         // json.customComponents = this.customComponentManager.toJSON();
         return json;
     }

@@ -30,19 +30,26 @@ export default class LoadUtils {
     constructor() {}
 
     static loadFromScratch(json: ScratchInterchangeV1): [Device, Array<RenderLayer>] {
-        console.log("I made it this far");
-        console.log("RendLay: ", json.renderLayers);
         const newDevice: Device = LoadUtils.loadDeviceFromInterchangeV1(json);
         let newRenderLayers: Array<RenderLayer> = [];
         if (json.renderLayers) {
             for (let i = 0; i < json.renderLayers.length; i++) {
                 newRenderLayers.push(LoadUtils.loadRenderLayerFromInterchangeV1(json.renderLayers[i], newDevice));
             }
-        } else {
+        } else if (Object.prototype.hasOwnProperty.call(json, "layers")) {
             for (let i = 0; i < json.layers.length; i++) {
                 newRenderLayers.push(LoadUtils.generateRenderLayerFromLayerInterchangeV1(json.layers[i], newDevice));
             }
+        } else {
+            newRenderLayers.push(new RenderLayer("flow", newDevice.layers[0], LogicalLayerType.FLOW));
+            newRenderLayers.push(new RenderLayer("control", newDevice.layers[1], LogicalLayerType.CONTROL));
+            newRenderLayers.push(new RenderLayer("integration", newDevice.layers[0], LogicalLayerType.INTEGRATION));
         }
+
+        for (let i = 0; i < newDevice.layers.length; i++) {
+            //TODO: make it so if there are only two layers in a group, a third integration layer is added
+        }
+
         return [newDevice, newRenderLayers];
     }
 
@@ -157,6 +164,7 @@ export default class LoadUtils {
      * @memberof LoadUtils
      */
     static loadFeatureFromInterchangeV1(json: FeatureInterchangeV0): Feature {
+        console.log("Made it to here");
         // TODO: This will have to change soon when the thing is updated
         let ret = Device.makeFeature(json.macro, json.params, json.name, json.id, json.type, json.dxfData);
         if (Object.prototype.hasOwnProperty.call(json, "referenceID")) {
@@ -347,7 +355,19 @@ export default class LoadUtils {
      * @memberof LoadUtils
      */
     static loadRenderLayerFromInterchangeV1(json: RenderLayerInterchangeV1, device: Device): RenderLayer {
-        const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
+        let layerType: LogicalLayerType | undefined;
+        if (Object.prototype.hasOwnProperty.call(json, "type")) {
+            if (json.type === "FLOW") {
+                layerType = LogicalLayerType.FLOW;
+            } else if (json.type === "CONTROL") {
+                layerType = LogicalLayerType.CONTROL;
+            } else if (json.type === "INTEGRATION") {
+                layerType = LogicalLayerType.INTEGRATION;
+            } else {
+                throw new Error("Unknown layer type: " + json.type);
+            }
+        }
+        const newLayer: RenderLayer = new RenderLayer(json.name, null, layerType);
 
         for (const i in json.features) {
             newLayer.features[json.features[i].id] = LoadUtils.loadFeatureFromInterchangeV1(json.features[i]);
@@ -373,7 +393,19 @@ export default class LoadUtils {
      * @memberof LoadUtils
      */
     static generateRenderLayerFromLayerInterchangeV1(json: LayerInterchangeV1, device: Device): RenderLayer {
-        const newLayer: RenderLayer = new RenderLayer(json.name, null, json.type, json.group);
+        let layerType: LogicalLayerType | undefined;
+        if (Object.prototype.hasOwnProperty.call(json, "type")) {
+            if (json.type === "FLOW") {
+                layerType = LogicalLayerType.FLOW;
+            } else if (json.type === "CONTROL") {
+                layerType = LogicalLayerType.CONTROL;
+            } else if (json.type === "INTEGRATION") {
+                layerType = LogicalLayerType.INTEGRATION;
+            } else {
+                throw new Error("Unknown layer type: " + json.type);
+            }
+        }
+        const newLayer: RenderLayer = new RenderLayer(json.name, null, layerType);
 
         for (const i in json.features) {
             newLayer.features[json.features[i].id] = LoadUtils.loadFeatureFromInterchangeV1(json.features[i]);
@@ -384,14 +416,14 @@ export default class LoadUtils {
         }
 
         if (Object.prototype.hasOwnProperty.call(json, "name")) {
-            if (json.name === "flow") {
+            if (json.type === "FLOW") {
                 newLayer.color = "indigo";
-            } else if (json.name === "control") {
+            } else if (json.type === "CONTROL") {
                 newLayer.color = "red";
-            } else if (json.name === "integration") {
+            } else if (json.type === "INTEGRATION") {
                 newLayer.color = "green";
             } else {
-                throw new Error("Unknown layer name: " + json.name);
+                throw new Error("Unknown layer type: " + json.type);
             }
         }
         return newLayer;

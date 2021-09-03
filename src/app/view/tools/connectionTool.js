@@ -8,6 +8,7 @@ import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
 import { ComponentAPI } from "@/componentAPI";
 import EventBus from "@/events/events";
+import { LogicalLayerType } from "@/app/core/init";
 
 import Registry from "../../core/registry";
 
@@ -464,16 +465,14 @@ export default class ConnectionTool extends MouseTool {
         const gridsize = Registry.currentGrid.getSpacing();
         console.log("Grid Size: ", gridsize);
 
-        if (Registry.currentLayer.name === "control") {
+        if (Registry.currentLayer.type === LogicalLayerType.CONTROL) {
             layertype = "CONTROL";
-            console.log("This layer :", layertype);
-        } else if (Registry.currentLayer.name === "flow") {
+        } else if (Registry.currentLayer.type === LogicalLayerType.FLOW) {
             layertype = "FLOW";
-            console.log("This layer: ", layertype);
-        } else if (Registry.currentLayer.name === "integration") {
+        } else if (Registry.currentLayer.type === LogicalLayerType.INTEGRATION) {
             layertype = "INTEGRATION";
-            console.log("This layer: ", layertype);
         }
+        console.log("This layer: ", layertype);
         const componentports = component.ports;
         if (layertype === null) {
             console.warn("Could not find the current layer type, searching through all the component ports without filtering");
