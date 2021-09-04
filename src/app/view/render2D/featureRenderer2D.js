@@ -76,7 +76,7 @@ export function renderTextTarget(typeString, setString, position) {
     rendered.justification = "center";
     rendered.fillColor = Colors.DEEP_PURPLE_500;
     rendered.content = Registry.viewManager.tools.InsertTextTool.text;
-    rendered.fontSize = 10000 / 3;
+    rendered.fontSize = 10000;
     return rendered;
 }
 
@@ -90,10 +90,25 @@ export function renderText(feature) {
     const position = feature.getValue("position");
     const rendered = new paper.PointText(new paper.Point(position[0], position[1]));
     rendered.justification = "center";
-    rendered.fillColor = Colors.DEEP_PURPLE_500;
+    if (feature.getParams().color != undefined) {
+        let color = feature.getParams().color.value;
+        if (color == "white" || color == "White" || color == "WHITE") {
+            rendered.fillColor = Colors.WHITE;
+        } else if (color == "black" || color == "Black" || color == "BLACK") {
+            rendered.fillColor = Colors.BLACK;
+        } else if (color == "blue" || color == "Blue" || color == "BLUE") {
+            rendered.fillColor = Colors.BLUE_500;
+        } else if (color == "red" || color == "Red" || color == "RED") {
+            rendered.fillColor = Colors.RED_500;
+        } else {
+            throw new Error("Color choice", color, " not enabled");
+        }
+    } else {
+        rendered.fillColor = getLayerColor(feature);
+    }
     /// rendered.content = feature.getText();
     rendered.content = feature.getValue("text");
-    rendered.fontSize = 10000 / 3;
+    rendered.fontSize = feature.getValue("fontSize");
     rendered.featureID = feature.ID;
     return rendered;
 }
@@ -116,6 +131,8 @@ export function renderFeature(feature, key = null) {
         return rendered;
     } else if (type === "EDGE") {
         return renderEdge(feature);
+    } else if (type === "Text") {
+        return renderText(feature);
     } else {
         const rendererinfo = ComponentAPI.getRendererInfo(type);
         const renderer = ComponentAPI.getRenderer(type);

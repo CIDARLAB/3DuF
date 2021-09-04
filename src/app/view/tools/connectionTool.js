@@ -8,6 +8,7 @@ import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
 import { ComponentAPI } from "@/componentAPI";
 import EventBus from "@/events/events";
+import { LogicalLayerType } from "@/app/core/init";
 
 import Registry from "../../core/registry";
 
@@ -157,7 +158,7 @@ export default class ConnectionTool extends MouseTool {
             } else {
                 const newChannel = this.createChannel(this.startPoint, this.startPoint);
                 this.currentChannelID = newChannel.ID;
-                Registry.currentLayer.addFeature(newChannel);
+                Registry.viewManager.addFeature(newChannel);
             }
         }
     }
@@ -181,7 +182,8 @@ export default class ConnectionTool extends MouseTool {
             const definition = ComponentAPI.getDefinition("Connection");
             const params = new Params(values, definition.unique, definition.heritable);
             if (this.__currentConnectionObject === null || this.__currentConnectionObject === undefined) {
-                const connection = new Connection("Connection", params, Registry.currentDevice.generateNewName("CHANNEL"), "CHANNEL");
+                if (Registry.currentLayer.physicalLayer == null) throw new Error("Error: Attempting to add connection on non-physical layer");
+                const connection = new Connection("Connection", params, Registry.currentDevice.generateNewName("CHANNEL"), "CHANNEL", Registry.currentLayer.physicalLayer);
                 connection.routed = true;
                 connection.addFeatureID(feat.ID);
                 connection.addWayPoints(this.wayPoints);
@@ -463,13 +465,14 @@ export default class ConnectionTool extends MouseTool {
         const gridsize = Registry.currentGrid.getSpacing();
         console.log("Grid Size: ", gridsize);
 
-        if (Registry.currentLayer.name === "control") {
+        if (Registry.currentLayer.type === LogicalLayerType.CONTROL) {
             layertype = "CONTROL";
-            console.log("This layer :", layertype);
-        } else if (Registry.currentLayer.name === "flow") {
+        } else if (Registry.currentLayer.type === LogicalLayerType.FLOW) {
             layertype = "FLOW";
-            console.log("This layer: ", layertype);
+        } else if (Registry.currentLayer.type === LogicalLayerType.INTEGRATION) {
+            layertype = "INTEGRATION";
         }
+        console.log("This layer: ", layertype);
         const componentports = component.ports;
         if (layertype === null) {
             console.warn("Could not find the current layer type, searching through all the component ports without filtering");

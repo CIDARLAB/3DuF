@@ -3,23 +3,22 @@ import { ComponentAPI } from "@/componentAPI";
 import Registry from "../../core/registry";
 import Device from "../../core/device";
 
-export default class MultilayerPositionTool extends PositionTool {
-    constructor(viewManagerDelegate, typeString, setString, currentParameters = null) {
+export default class MultilevelPositionTool extends PositionTool {
+    constructor(viewManagerDelegate, typeString, setString, flowLayer = Registry.currentLayer, controlLayer = null, intLayer = null, currentParameters = null) {
         super(viewManagerDelegate, typeString, setString, currentParameters);
+        this.flowlayer = flowLayer;
+        this.controllayer = controlLayer;
+        this.intlayer = intLayer;
     }
 
     createNewFeature(point) {
         const featureIDs = [];
-        const currentlevel = Math.floor(Registry.viewManager.renderLayers.indexOf(Registry.currentLayer) / 3);
-        const flowlayer = currentlevel * 3;
-        const controllayer = currentlevel * 3 + 1;
-        const intlayer = currentlevel * 3 + 2;
 
         // Set up flow layer component
         const paramvalues = this.getCreationParameters(point);
         let newFeature = Device.makeFeature(this.typeString, paramvalues);
         this.currentFeatureID = newFeature.ID;
-        this.viewManagerDelegate.addFeature(newFeature, flowlayer);
+        this.viewManagerDelegate.addFeature(newFeature, this.flowlayer);
 
         featureIDs.push(newFeature.ID);
 
@@ -29,18 +28,13 @@ export default class MultilayerPositionTool extends PositionTool {
         const paramstoadd = newFeature.getParams();
         // Set up control layer component
         if (ComponentAPI.library[this.typeString + "_control"]) {
-            newtypestring = this.typeString + "_control";
-            newFeature = Device.makeFeature(newtypestring, {
-                position: PositionTool.getTarget(point)
-            });
             newFeature.setParams(paramstoadd);
 
             this.currentFeatureID = newFeature.ID;
-            this.viewManagerDelegate.addFeature(newFeature, controllayer);
+            this.viewManagerDelegate.addFeature(newFeature, this.controllayer);
 
             featureIDs.push(newFeature.ID);
         }
-        console.log(ComponentAPI.library[this.typeString + "_integration"]);
 
         // Set up integration layer component
         if (ComponentAPI.library[this.typeString + "_integration"]) {
@@ -49,7 +43,7 @@ export default class MultilayerPositionTool extends PositionTool {
             newFeature.setParams(paramstoadd);
 
             this.currentFeatureID = newFeature.ID;
-            this.viewManagerDelegate.addFeature(newFeature, intlayer);
+            this.viewManagerDelegate.addFeature(newFeature, this.intlayer);
 
             featureIDs.push(newFeature.ID);
         }

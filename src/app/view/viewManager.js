@@ -11,6 +11,7 @@ import SelectTool from "./tools/selectTool";
 import InsertTextTool from "./tools/insertTextTool";
 import SimpleQueue from "../utils/simpleQueue";
 import MouseSelectTool from "./tools/mouseSelectTool";
+import RenderMouseTool from "./tools/renderMouseTool";
 
 import ResolutionToolBar from "./ui/resolutionToolBar";
 import RightPanel from "./ui/rightPanel";
@@ -25,6 +26,7 @@ import DesignHistory from "./designHistory";
 import MoveTool from "./tools/moveTool";
 import ComponentPositionTool from "./tools/componentPositionTool";
 import MultilayerPositionTool from "./tools/multilayerPositionTool";
+import MultilevelPositionTool from "./tools/multilevelPositionTool";
 import CellPositionTool from "./tools/cellPositionTool";
 import ValveInsertionTool from "./tools/valveInsertionTool";
 import PositionTool from "./tools/positionTool";
@@ -55,6 +57,8 @@ import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
 
 import LoadUtils from "@/app/view/loadUtils";
+import ExportUtils from "@/app/view/exportUtils";
+import { LogicalLayerType } from "@/app/core/init";
 
 /**
  * View manager class
@@ -72,22 +76,10 @@ export default class ViewManager {
         Registry.currentGrid = this.__grid;
         this.renderLayers = [];
         this.activeRenderLayer = null;
+        this.nonphysElements = []; //TODO - Keep track of what types of objects fall here UIElements
         this.tools = {};
         this.rightMouseTool = new SelectTool();
-        // this.customComponentManager = new CustomComponentManager(this);
-        // this.rightPanel = new RightPanel(this);
-        // this.changeAllDialog = new ChangeAllDialog();
-        // this.resolutionToolBar = new ResolutionToolBar();
-        // this.borderDialog = new BorderSettingsDialog();
-        // this.layerToolBar = new LayerToolBar();
-        // this.messageBox = document.querySelector(".mdl-js-snackbar");
-        // this.editDeviceDialog = new EditDeviceDialog(this);
-        // this.helpDialog = new HelpDialog();
-        // this.taguchiDesigner = new TaguchiDesigner(this);
-        // this.rightClickMenu = new RightClickMenu();
         this.__currentDevice = null;
-        // this._introDialog = new IntroDialog();
-        // this._dampFabricateDialog = new DAMPFabricationDialog();
         const reference = this;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
@@ -254,12 +246,33 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addFeature(feature, index = this.activeRenderLayer, physical = true, refresh = true) {
-        this.renderLayers[index].addFeature(feature, physical);
+    addFeature(feature, index = this.activeRenderLayer, isPhysicalFlag = true, refresh = true) {
+        //let isPhysicalFlag = true;
+        this.renderLayers[index].addFeature(feature, isPhysicalFlag);
         if (this.ensureFeatureExists(feature)) {
             this.view.addFeature(feature);
             this.refresh(refresh);
         }
+    }
+
+    /**
+     * Returns the component identified by the id
+     * @param {string} id ID of the feature to get the component
+     * @return {UIElement|null}
+     * @memberof ViewManager
+     */
+    getNonphysElementFromFeatureID(id) {
+        for (let i in this.nonphysElements) {
+            let element = this.nonphysElements[i];
+            //go through each component's features
+            for (let j in element.featureIDs) {
+                if (element.featureIDs[j] === id) {
+                    return element;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -320,7 +333,7 @@ export default class ViewManager {
     addLayer(layer, index, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
             this.view.addLayer(layer, index, false);
-            this.__addAllLayerFeatures(layer, false);
+            this.__addAllLayerFeatures(layer, index, false);
             this.refresh(refresh);
         }
     }
@@ -331,12 +344,15 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     createNewLayerBlock() {
-        // Generate model layers
-        const newlayers = [];
-        newlayers[0] = new Layer({ z_offset: 0, flip: false }, "flow");
-        newlayers[1] = new Layer({ z_offset: 0, flip: false }, "control");
-        newlayers[2] = new Layer({ z_offset: 0, flip: false }, "integration");
-        // Add model layers to current device
+        //Generate model layers
+        let groupNum = Registry.currentDevice.layers.length;
+        if (groupNum != 0) groupNum = groupNum / 3;
+
+        let newlayers = [];
+        newlayers[0] = new Layer({ z_offset: 0, flip: false }, "flow", LogicalLayerType.FLOW, groupNum.toString());
+        newlayers[1] = new Layer({ z_offset: 0, flip: false }, "control", LogicalLayerType.CONTROL, groupNum.toString());
+        newlayers[2] = new Layer({ z_offset: 0, flip: false }, "integration", LogicalLayerType.INTEGRATION, groupNum.toString());
+        //Add model layers to current device
         Registry.currentDevice.createNewLayerBlock(newlayers);
 
         // Find all the edge features
@@ -367,9 +383,9 @@ export default class ViewManager {
         }
 
         // Add new renderLayers
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("flow", newlayers[0]);
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("control", newlayers[1]);
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("integration", newlayers[2]);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("flow", newlayers[0], LogicalLayerType.FLOW);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("control", newlayers[1], LogicalLayerType.CONTROL);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer("integration", newlayers[2], LogicalLayerType.INTEGRATION);
         for (const i in edgefeatures) {
             this.renderLayers[this.renderLayers.length - 3].addFeature(edgefeatures[i]);
             this.renderLayers[this.renderLayers.length - 2].addFeature(edgefeatures[i]);
@@ -457,10 +473,10 @@ export default class ViewManager {
      * @memberof ViewManager
      * @private
      */
-    __addAllLayerFeatures(layer, refresh = true) {
+    __addAllLayerFeatures(layer, index, refresh = true) {
         for (const key in layer.features) {
             const feature = layer.features[key];
-            this.addFeature(feature, false);
+            this.addFeature(feature, index, false);
             this.refresh(refresh);
         }
     }
@@ -857,66 +873,32 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     loadDeviceFromJSON(json) {
-        console.log("Here");
         let device;
         Registry.viewManager.clear();
         // Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
-        if (version === null || undefined === version) {
-            console.log("Loading Legacy Format...");
-            device = Device.fromJSON(json);
+
+        if (version === null || undefined === version || version == 1 || version == 1.1) {
+            let ret = LoadUtils.loadFromScratch(json);
+            device = ret[0];
             Registry.currentDevice = device;
             this.__currentDevice = device;
 
-            // TODO: Add separate render layers to initializing json
-            for (const i in json.layers) {
-                const newRenderLayer = RenderLayer.fromJSON(json.renderLayers[i]);
-                this.renderLayers.push(newRenderLayer);
-            }
+            this.renderLayers = ret[1];
+            // } else if (version == 1.1 || version == "1.1") {
+            //     // this.loadCustomComponents(json);
+            //     device = Device.fromInterchangeV1_1(json);
+            //     Registry.currentDevice = device;
+            //     this.__currentDevice = device;
+
+            //     // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
+            //     for (const i in json.layers) {
+            //         const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
+            //         this.renderLayers.push(newRenderLayer);
+            //     }
         } else {
-            console.log("Version Number: " + version);
-            switch (version) {
-                case 1:
-                    console.log("Hello");
-                    // // this.loadCustomComponents(json);
-                    // device = Device.fromInterchangeV1(json);
-                    // Registry.currentDevice = device;
-                    // this.__currentDevice = device;
-
-                    // // TODO: Add separate render layers to initializing json
-                    // for (const i in json.layers) {
-                    //     const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
-                    //     this.renderLayers.push(newRenderLayer);
-                    // }
-                    const ret = LoadUtils.loadFromScratch(json);
-                    console.log("Ret: ", ret);
-                    device = ret[0];
-                    Registry.currentDevice = device;
-                    this.__currentDevice = device;
-                    console.log("Device: ", device);
-
-                    this.renderLayers = ret[1];
-                    console.log("RenderLayers: ", this.renderLayers);
-
-                    break;
-                case 1.1:
-                    console.log("Heyyo");
-                    // this.loadCustomComponents(json);
-                    device = Device.fromInterchangeV1_1(json);
-                    Registry.currentDevice = device;
-                    this.__currentDevice = device;
-
-                    // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
-                    for (const i in json.layers) {
-                        const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
-                        this.renderLayers.push(newRenderLayer);
-                    }
-
-                    break;
-                default:
-                    alert("Version '" + version + "' is not supported by 3DuF !");
-            }
+            alert("Version '" + version + "' is not supported by 3DuF !");
         }
         // Common Code for rendering stuff
         // console.log("Feature Layers", Registry.currentDevice.layers);
@@ -926,7 +908,7 @@ export default class ViewManager {
         this.activeRenderLayer = 0;
 
         // TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
-        Registry.viewManager.addDevice(Registry.currentDevice);
+        this.addDevice(Registry.currentDevice);
 
         // In case of MINT exported json, generate layouts for rats nests
         this.__initializeRatsNest();
@@ -937,7 +919,7 @@ export default class ViewManager {
         this.refresh(true);
         Registry.currentLayer = this.renderLayers[0];
         // this.layerToolBar.setActiveLayer("0");
-        Registry.viewManager.updateActiveLayer();
+        this.updateActiveLayer();
     }
 
     /**
@@ -1176,7 +1158,6 @@ export default class ViewManager {
         if (this.tools[toolString] === null) {
             throw new Error("Could not find tool with the matching string");
         }
-
         // Cleanup job when activating new tool
         this.view.clearSelectedItems();
 
@@ -1316,6 +1297,7 @@ export default class ViewManager {
     resetToDefaultTool() {
         this.cleanupActiveTools();
         this.activateTool("MouseSelectTool");
+        //this.activateTool("RenderMouseTool");
         // this.componentToolBar.setActiveButton("SelectButton");
     }
 
@@ -1375,7 +1357,8 @@ export default class ViewManager {
      */
     setupTools() {
         this.tools.MouseSelectTool = new MouseSelectTool(this.view);
-        this.tools.InsertTextTool = new InsertTextTool();
+        this.tools.RenderMouseTool = new RenderMouseTool(this.view);
+        this.tools.InsertTextTool = new InsertTextTool(this);
         this.tools.Chamber = new ComponentPositionTool("Chamber", "Basic");
         this.tools.Valve = new ValveInsertionTool("Valve", "Basic");
         this.tools.Channel = new ChannelTool("Channel", "Basic");
@@ -1482,12 +1465,12 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     __generateDefaultPlacementForComponent(component, xpos, ypos) {
-        const params_to_copy = component.getParams().toJSON();
+        const params_to_copy = component.params.toJSON();
 
         params_to_copy.position = [xpos, ypos];
 
         // Get default params and overwrite them with json params, this can account for inconsistencies
-        const newFeature = Device.makeFeature(component.getType(), params_to_copy);
+        const newFeature = Device.makeFeature(component.type, params_to_copy);
 
         component.addFeatureID(newFeature.ID);
 
@@ -1503,7 +1486,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     generateExportJSON() {
-        const json = this.currentDevice.toInterchangeV1_1();
+        const json = ExportUtils.toScratch(this);
+        //const json = this.currentDevice.toInterchangeV1_1();
         // json.customComponents = this.customComponentManager.toJSON();
         return json;
     }
@@ -1587,7 +1571,6 @@ export default class ViewManager {
         if (minttype === null) {
             throw new Error("Found null when looking for MINT Type");
         }
-        console.log("MintType: ", minttype);
         // Cleanup job when activating new tool
         this.view.clearSelectedItems();
 
@@ -1607,6 +1590,10 @@ export default class ViewManager {
             activeTool = new ValveInsertionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
         } else if (renderer.placementTool === "CellPositionTool") {
             activeTool = new CellPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+        } else if (renderer.placementTool === "multilevelPositionTool") {
+            // TODO: Add pop up window when using the multilevel position tool to get layer indices
+            activeTool = new MultilevelPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+            throw new Error("multilevel position tool ui/input elements not set up");
         }
 
         if (activeTool === null) {

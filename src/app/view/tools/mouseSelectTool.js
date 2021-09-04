@@ -87,7 +87,7 @@ export default class MouseSelectTool extends MouseTool {
         const target = this.hitFeature(point);
         if (target) {
             if (target.selected) {
-                const feat = Registry.currentDevice.getFeatureByID(target.featureID);
+                const feat = Registry.viewManager.getFeatureByID(target.featureID);
                 Registry.viewManager.updateDefaultsFromFeature(feat);
                 // Check if the feature is a part of a component
                 let component, connection;

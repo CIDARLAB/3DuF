@@ -258,7 +258,7 @@ export default class MouseAndKeyboardHandler {
      * @param {*} tool3
      */
     constructMouseDownEvent(tool1, tool2, tool3) {
-        console.log(tool1, tool2, tool3);
+        console.log("Tool1: ", tool1, "Tool2: ", tool2, "Tool3: ", tool3);
         if (tool1 === tool3) {
             console.log("Both right and left tool is the same");
             return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown, this.__mouseDownCallback);

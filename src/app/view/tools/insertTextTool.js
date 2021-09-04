@@ -9,7 +9,7 @@ import Params from "../../core/params";
 import { ComponentAPI } from "@/componentAPI";
 
 export default class InsertTextTool extends MouseTool {
-    constructor() {
+    constructor(viewManagerDelegate) {
         super();
         this.typeString = "TEXT";
         this.setString = "Standard";
@@ -18,6 +18,7 @@ export default class InsertTextTool extends MouseTool {
         this.lastPoint = null;
         this._text = "TESTING-TEXT";
         this.fontSize = 12;
+        this.viewManagerDelegate = viewManagerDelegate;
         this.showQueue = new SimpleQueue(
             function() {
                 ref.showTarget();
@@ -35,37 +36,32 @@ export default class InsertTextTool extends MouseTool {
         this.down = function(event) {
             Registry.viewManager.killParamsWindow();
             paper.project.deselectAll();
+            // TODO - Add the ability to insert a non physical text element later on using Liam's Nonphysical compoennt API
             ref.createNewFeature(MouseTool.getEventPosition(event));
         };
     }
 
+    /**
+     * Creates a physical test feature when using the InsertTextTool
+     */
     createNewFeature(point) {
-        // new Params(
-        //     {
-        //         position: PositionTool.getTarget(point),
-        //         height: 200
-        //     },
-        //     { position: "Point" },
-        //     { height: "Float", text: "String" }
-        // )
-        const fixedpoint = PositionTool.getTarget(point);
-        const newFeature = Device.makeFeature(
+        let fixedpoint = PositionTool.getTarget(point);
+        let newFeature = Device.makeFeature(
             "Text",
             {
                 position: fixedpoint,
                 height: 200,
                 text: this._text,
-                fontSize: this.fontSize
+                fontSize: this.fontSize * 10000
             },
             "TEXT_" + this._text,
             ComponentAPI.generateID(),
             "XY",
             null
         );
-        // this.currentFeatureID = newFeature.ID;
-        this.viewManagerDelegate.addFeature(newFeature);
-        // Registry.viewManager.renderLayers[Registry.viewManager.activeRenderLayer].addFeature(newFeature);
-        Registry.viewManager.saveDeviceState();
+        this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.activeRenderLayer);
+        this.viewManagerDelegate.view.addComponent("Text", newFeature.getParams(), [newFeature.ID]);
+        this.viewManagerDelegate.saveDeviceState();
     }
 
     showTarget() {

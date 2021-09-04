@@ -65,7 +65,7 @@ export default class ChannelTool extends MouseTool {
             this.currentTarget.remove();
         }
         if (this.currentChannelID) {
-            Registry.currentLayer.removeFeatureByID(this.currentChannelID);
+            Registry.viewManager.removeFeatureByID(this.currentChannelID);
         }
     }
 
@@ -88,7 +88,7 @@ export default class ChannelTool extends MouseTool {
             } else {
                 const newChannel = ChannelTool.createChannel(this.startPoint, this.startPoint, this.typeString, this.setString);
                 this.currentChannelID = newChannel.getID();
-                Registry.currentLayer.addFeature(newChannel);
+                Registry.viewManager.addFeature(newChannel);
             }
         }
     }
@@ -97,7 +97,7 @@ export default class ChannelTool extends MouseTool {
         const target = ChannelTool.getTarget(point);
         if (this.currentChannelID) {
             if (this.startPoint.x === target[0] && this.startPoint.y === target[1]) {
-                Registry.currentLayer.removeFeatureByID(this.currentChannelID);
+                Registry.viewManager.removeFeatureByID(this.currentChannelID);
             }
         } else {
             this.updateChannel(point);

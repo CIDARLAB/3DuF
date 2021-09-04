@@ -300,7 +300,7 @@ export class ThreeDeviceRenderer {
     renderLayer(json, layerIndex, viewOnly = false) {
         const width = json.params.width;
         const height = json.params.height;
-        const layer = json.layers[layerIndex];
+        const layer = json.renderLayers[layerIndex];
         const renderedFeatures = new THREE.Group();
         const renderedLayer = new THREE.Group();
         if (viewOnly) renderedFeatures.add(this.renderFeatures(layer, layer.params.z_offset));
@@ -322,7 +322,7 @@ export class ThreeDeviceRenderer {
         const width = json.params.width;
         const height = json.params.height;
         const renderedMockup = new THREE.Group();
-        const layers = json.layers;
+        const layers = json.renderLayers;
         for (let i = 0; i < layers.length; i++) {
             const layer = layers[i];
             const renderedLayer = this.renderFeatures(layer, layer.params.z_offset);

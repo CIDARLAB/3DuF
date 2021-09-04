@@ -1,5 +1,7 @@
+import uuid from "node-uuid";
 import EdgeFeature from "../core/edgeFeature";
 import paper from "paper";
+import { ComponentAPI } from "@/componentAPI";
 
 import Registry from "../core/registry";
 import * as FeatureRenderer2D from "./render2D/featureRenderer2D";
@@ -18,6 +20,11 @@ import * as DXFSolidObjectRenderer from "./render2D/dxfSolidObjectRenderer2D";
 import Layer from "../core/layer";
 import Device from "../core/device";
 import Feature from "../core/feature";
+import Params from "../core/params";
+import Component from "../core/component";
+import UIElement from "../view/uiElement";
+import TextElement from "../view/textElement";
+import MapUtils from "../utils/mapUtils";
 /**
  * Paper View class
  */
@@ -395,7 +402,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    disableContextMenu(func) {
+    disableContextMenu() {
         this.canvas.oncontextmenu = function(event) {
             event.preventDefault();
         };
@@ -522,6 +529,172 @@ export default class PaperView {
     }
 
     /**
+     * Show only the desired features
+     * Chosen features appear
+     * Built for use in uF Guide Tool
+     * @param {Array<paper.CompoundPath>} features Array of features to be displayed
+     * @returns {void}
+     * @memberof PaperView
+     */
+    showChosenFeatures(features) {
+        this.featureLayer.remove();
+        this.featureLayer = new paper.Group();
+        for (let i = 0; i < this.paperLayers.length; i++) {
+            this.featureLayer.addChild(this.paperLayers[i]);
+        }
+        if (this.layerMask) this.layerMask.remove();
+        this.layerMask = DeviceRenderer.renderLayerMask(this.__viewManagerDelegate.currentDevice);
+        this.featureLayer.addChild(this.layerMask);
+        const activeLayer = new paper.Group();
+        for (let i = 0; i < features.length; i++) {
+            activeLayer.addChild(features[i]);
+        }
+        activeLayer.bringToFront();
+
+        let textLayer = this.getNonphysText();
+        textLayer.bringToFront();
+    }
+
+    /**
+     * Display all features in the device
+     * Built for use in uF Guide Tool
+     * @returns {void}
+     * @memberof PaperView
+     */
+    showAllFeatures() {
+        this.featureLayer.remove();
+        this.featureLayer = new paper.Group();
+        if (this.layerMask) this.layerMask.remove();
+        this.layerMask = DeviceRenderer.renderLayerMask(this.__viewManagerDelegate.currentDevice);
+        this.featureLayer.addChild(this.layerMask);
+        for (let i = 0; i < this.paperLayers.length; i++) {
+            this.featureLayer.addChild(this.paperLayers[i]);
+        }
+
+        let textLayer = this.getNonphysText();
+        textLayer.bringToFront();
+    }
+
+    /**
+     * Brings nonphysical text features to the front
+     * Ensures nonphysical text is on top of device features
+     * Built for use in uF Guide Tool
+     * @returns {void}
+     * @memberof PaperView
+     */
+    getNonphysText() {
+        const textLayer = new paper.Group();
+        const nonphysElements = Registry.viewManager.nonphysElements;
+        for (let i = 0; i < nonphysElements.length; i++) {
+            for (let j in this.paperFeatures) {
+                if (nonphysElements[i].type == "Text" && nonphysElements[i].featureIDs.includes(this.paperFeatures[j].featureID)) {
+                    textLayer.addChild(this.paperFeatures[j]);
+                }
+            }
+        }
+        return textLayer;
+    }
+
+    /**
+     * Generate nonphysical text
+     * Text color can be set to black, white, red, or blue
+     * Built for use in uF Guide Tool
+     * @param {string} text Text to be displayed
+     * @param {[number,number]} position Coordinates on the canvas grid
+     * @param {number} size Font size
+     * @param {string} color The color of the text
+     * @param {number} layer The layer on which
+     * @returns {void}
+     * @memberof PaperView
+     */
+    generateNonphysText(text, position, size, color, layer = this.activeLayer) {
+        const newFeature = Device.makeFeature(
+            "Text",
+            {
+                position: position,
+                height: 20,
+                text: text,
+                fontSize: size,
+                color: color
+            },
+            "TEXT_" + text,
+            uuid.v1(),
+            "XY",
+            null
+        );
+        this.__viewManagerDelegate.addFeature(newFeature, layer, false);
+        //this.addComponent("Text", newFeature.getParams(), [newFeature.ID], false);
+        const element = this.addUIElement("Text", newFeature.getParams(), [newFeature.ID]);
+        newFeature.referenceID = element.id;
+        this.__viewManagerDelegate.saveDeviceState();
+    }
+
+    /**
+     * Creates a new UIElement and adds it to viewManager's nonphysicalElements array
+     * Note: Takes the feature ids as an array
+     * TODO: Modify this to take the MINT String as another parameter
+     * Built for use in uF Guide Tool
+     * @param typeString Type of the Feature
+     * @param params Map of all the paramters
+     * @param featureIDs [String] Feature id's of all the features that will be a part of this component
+     */
+    addUIElement(typeString, paramdata, featureIDs) {
+        let newElement;
+        if (typeString == "Text") {
+            newElement = new TextElement(typeString, paramdata, featureIDs);
+        } else {
+            newElement = new UIElement();
+            // TODO: implement parameter handling for base UIElement
+        }
+        Registry.viewManager.nonphysElements.push(newElement);
+        return newElement;
+    }
+
+    /**
+     * Inserts paper feature into the UILayer
+     * Built for use in uF Guide Tool
+     * @param newPaperFeature Paper feature to be added to the UI layer
+     */
+    insertUIFeature(newPaperFeature) {
+        this.uiLayer.insertChild(0, newPaperFeature);
+    }
+
+    /**
+     * Creates a new component and adds it to viewManager's nonphysicalComponents or the currentDevice's __components
+     * Note: Takes the feature ids as an array
+     * TODO: Modify this to take the MINT String as another parameter
+     * Built for use in uF Guide Tool
+     * @param typeString Type of the Feature
+     * @param params Map of all the paramters
+     * @param featureIDs [String] Feature id's of all the features that will be a part of this component
+     * @param physical Boolean stating whether feature physical or not
+     */
+    addComponent(typeString, paramdata, featureIDs) {
+        const definition = ComponentAPI.getDefinition(typeString);
+        // Clean Param Data
+        const cleanparamdata = {};
+        for (const key in paramdata) {
+            cleanparamdata[key] = paramdata[key].value;
+        }
+        const params = new Params(cleanparamdata, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
+        const componentid = ComponentAPI.generateID();
+        const name = Registry.currentDevice.generateNewName(typeString);
+        const newComponent = new Component(params, name, definition.mint, componentid);
+        let feature;
+
+        for (const i in featureIDs) {
+            newComponent.addFeatureID(featureIDs[i]);
+
+            // Update the component reference
+            feature = this.__viewManagerDelegate.getFeatureByID(featureIDs[i]);
+            feature.referenceID = componentid;
+        }
+
+        Registry.currentDevice.addComponent(newComponent);
+        return newComponent;
+    }
+
+    /**
      * Compares feature heights of the paper
      * @param {number} a
      * @param {number} b
@@ -597,6 +770,10 @@ export default class PaperView {
         else selected = false;
         this.removeFeature(feature);
         let newPaperFeature;
+        // if (!Registry.currentDevice.containsFeatureID(feature.ID)) {
+        //     newPaperFeature = FeatureRenderer2D.renderFeature(feature);
+        //     this.insertUIFeature(newPaperFeature);
+        // } else {
         if (feature instanceof EdgeFeature) {
             newPaperFeature = DXFObjectRenderer2D.renderEdgeFeature(feature);
             newPaperFeature.selected = selected;
@@ -611,6 +788,7 @@ export default class PaperView {
         const index = this.__viewManagerDelegate.renderLayers.indexOf(this.__viewManagerDelegate.getRenderLayerByID(feature.ID));
         const layer = this.paperLayers[index];
         this.insertChildByHeight(layer, newPaperFeature);
+        // }
     }
 
     /**
@@ -847,7 +1025,7 @@ export default class PaperView {
      * @return {boolean} Rendered Feature
      * @memberof PaperView
      */
-    hitFeature(point, onlyHitActiveLayer = true) {
+    hitFeature(point, onlyHitActiveLayer = true, nonphysActiveLayer = false) {
         const hitOptions = {
             fill: true,
             tolerance: 5,
@@ -856,8 +1034,15 @@ export default class PaperView {
 
         let target;
 
-        if (onlyHitActiveLayer && this.activeLayer !== null) {
+        if (onlyHitActiveLayer && this.activeLayer !== null && !nonphysActiveLayer) {
             target = this.paperLayers[this.activeLayer];
+
+            const result = target.hitTest(point, hitOptions);
+            if (result) {
+                return result.item;
+            }
+        } else if (onlyHitActiveLayer && nonphysActiveLayer) {
+            target = this.getNonphysText();
 
             const result = target.hitTest(point, hitOptions);
             if (result) {
