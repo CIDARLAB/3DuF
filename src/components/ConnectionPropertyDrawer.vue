@@ -1,54 +1,105 @@
 <template>
     <div class="property-drawer-parent">
-        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">Connection</v-btn>
+        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">Connection </v-btn>
         <div ref="drawer" class="connection-property-drawer">
             <v-card v-if="activated">
                 <v-card-text>
-                    <v-row>
-                        <v-col>
-                            <v-card-text>
-                                <v-row>
-                                    <v-card-title class="subtitle-1 pb-0">{{ connectionName }}</v-card-title>
-                                    <v-icon size="20px" class="pencil" @click="startConnection()">mdi-pencil</v-icon>
-                                    <div class="pt-5 pl-16 d-block">{{ current_connection_suggestion }}</div>
-                                </v-row>
-                                <v-row cols="2">
-                                    <!-- Connection properties -->
-                                    <PropertyBlock title="Connection" :spec="spec" />
-                                </v-row>
-                            </v-card-text>
-                        </v-col>
-                        <v-divider vertical inset></v-divider>
-                        <v-col>
-                            <v-card-text>
-                                <v-row no-gutters>
-                                    Source:
-                                    <v-col v-for="source in sources" :key="source.name" cols="4">
-                                        <v-chip v-if="chip1" small close color="green" text-color="white" closable @click:close="chip1 = false">{{ source.name }}</v-chip>
-                                    </v-col>
-                                </v-row>
-                                <v-row no-gutters>
-                                    Sinks:
-                                </v-row>
-                                <v-row no-gutters>
-                                    <v-col v-for="sink in sinks" :key="sink.name" cols="4">
-                                        <v-chip v-if="chip2" small close color="green" text-color="white" @click:close="chip2 = false">{{ sink.name }}</v-chip>
-                                    </v-col>
-                                </v-row>
-                            </v-card-text>
-                        </v-col>
-                        <v-divider vertical inset></v-divider>
-                        <v-col cols="3">
-                            <v-row no-gutters>
-                                Connection Profile
-                            </v-row>
-                            <v-row no-gutters>
-                                <v-select v-model="selectedProfile" :items="connectionProfiles"></v-select>
-                            </v-row>
-                            <v-row>
-                                <v-img max-height="150" max-width="150" src="@/assets/technology/CHANNEL.png" class="image-placeholder"></v-img>
-                            </v-row>
-                        </v-col>
+                    <v-row justify="center">
+                        <v-expansion-panels accordion>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>{{ current_connection_suggestion }}</v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-row>
+                                        <v-col>
+                                            <v-card-text>
+                                                <v-row cols="2">
+                                                    <!-- Connection properties -->
+                                                    <PropertyBlock title="Connection" :spec="spec" @update="updateParameter" />
+                                                </v-row>
+                                            </v-card-text>
+                                        </v-col>
+                                        <v-divider vertical inset></v-divider>
+                                        <v-col>
+                                            <v-card-text>
+                                                <v-row>
+                                                    <v-text-field v-model="connectionName" :disabled="!connectionRenameMode" label="Connection Name" class="special">
+                                                        <template v-slot:append>
+                                                            <v-btn
+                                                                v-if="!connectionRenameMode"
+                                                                :disabled="connectionRenameMode"
+                                                                color="primary"
+                                                                icon
+                                                                x-small
+                                                                depressed
+                                                                tile
+                                                                class="ma-0"
+                                                                @click="connectionRenameMode = true"
+                                                            >
+                                                                <v-icon>mdi-pencil</v-icon>
+                                                            </v-btn>
+                                                            <v-btn
+                                                                v-if="connectionRenameMode"
+                                                                :disabled="!connectionRenameMode"
+                                                                icon
+                                                                x-small
+                                                                depressed
+                                                                tile
+                                                                color="green"
+                                                                class="ma-0"
+                                                                @click="renameConnection"
+                                                            >
+                                                                <v-icon>mdi-check</v-icon>
+                                                            </v-btn>
+                                                            <v-btn
+                                                                v-if="connectionRenameMode"
+                                                                :disabled="!connectionRenameMode"
+                                                                color="red"
+                                                                icon
+                                                                tile
+                                                                x-small
+                                                                depressed
+                                                                class="ma-0"
+                                                                @click="renameConnectionCancel"
+                                                            >
+                                                                <v-icon>mdi-cancel</v-icon>
+                                                            </v-btn>
+                                                        </template>
+                                                    </v-text-field>
+                                                </v-row>
+                                                <v-row no-gutters>
+                                                    Source:
+                                                    <v-col v-for="source in sources" :key="source.name" cols="4">
+                                                        <v-chip v-if="chip1" small close color="green" text-color="white" closable @click:close="chip1 = false">{{
+                                                            source.name
+                                                        }}</v-chip>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row no-gutters>
+                                                    Sinks:
+                                                </v-row>
+                                                <v-row no-gutters>
+                                                    <v-col v-for="sink in sinks" :key="sink.name" cols="4">
+                                                        <v-chip v-if="chip2" small close color="green" text-color="white" @click:close="chip2 = false">{{ sink.name }}</v-chip>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-card-text>
+                                        </v-col>
+                                        <v-divider vertical inset></v-divider>
+                                        <v-col cols="3">
+                                            <v-row no-gutters>
+                                                Connection Profile
+                                            </v-row>
+                                            <v-row no-gutters>
+                                                <v-select v-model="selectedProfile" :items="connectionProfiles"></v-select>
+                                            </v-row>
+                                            <v-row>
+                                                <v-img max-height="150" max-width="150" src="@/assets/technology/CHANNEL.png" class="image-placeholder"></v-img>
+                                            </v-row>
+                                        </v-col>
+                                    </v-row>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                     </v-row>
                 </v-card-text>
             </v-card>
@@ -59,7 +110,6 @@
 <script>
 import EventBus from "@/events/events";
 import Registry from "@/app/core/registry";
-import ConnectionTool from "@/app/view/tools/connectionTool.js";
 import "@mdi/font/css/materialdesignicons.css";
 import "vue-select/dist/vue-select.css";
 import Vue from "vue";
@@ -78,15 +128,15 @@ export default {
     data() {
         return {
             connectionName: "NewConnection",
+            connectionRenameMode: false,
             spec: this.computedSpec("Connection"),
             chip1: true,
             chip2: true,
             activated: false,
             isOpen: false,
             isEditing: false,
-            items: [{ title: "Click Me" }, { title: "Click Me" }, { title: "Click Me" }],
             connection_suggestions: { state1: "Left Click to Choose a Point", state2: "Right Click to End Connection" },
-            current_connection_suggestion: "Left Click to Choose a Point",
+            current_connection_suggestion: this.connection_suggestions.state1,
             connectionProfiles: [],
             selectedProfile: "",
             previews: { CHANNEL: "@/assets/technology/CHANNEL.png" }
@@ -127,6 +177,9 @@ export default {
         this.selectedProfile = this.connectionProfiles[0];
     },
     methods: {
+        updateParameter(value, key) {
+            this.activeTool.updateParameter(key, value);
+        },
         computedSpec: function(threeduftype) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let definition = ComponentAPI.getDefinition(threeduftype);
@@ -184,6 +237,14 @@ export default {
         endConnection: function() {
             this.current_connection_suggestion = this.connection_suggestions["state1"];
             console.log(this.connection_suggestions["state1"]);
+        },
+        renameConnection() {
+            this.connectionRenameMode = false;
+            // TODO: Change the name of the connection in the connection tool
+        },
+        renameConnectionCancel() {
+            this.connectionRenameMode = false;
+            // TODO: Cancel renaming the connection in the connection tool, pull the name and apply it to current name
         }
     }
 };
@@ -263,5 +324,8 @@ export default {
 .image-placeholder {
     margin-left: 35px;
     margin-top: 10px;
+}
+.special.v-text-field.v-input--is-disabled {
+    pointer-events: initial;
 }
 </style>
