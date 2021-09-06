@@ -57,7 +57,7 @@ export default class Component {
 
         const cleanparamdata = this._params.parameters;
         if ((mint !== "" && mint !== "TEXT") || mint === null) {
-            const ports = ComponentAPI.getComponentPorts(cleanparamdata, mint);
+            const ports = ComponentAPI.getComponentPorts(MapUtils.toMap(cleanparamdata), mint);
             if (ports != undefined && ports.length >= 0 && ports !== null) {
                 for (const i in ports) {
                     this.setPort(ports[i].label, ports[i]);

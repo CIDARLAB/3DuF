@@ -285,6 +285,28 @@ export class ComponentAPI {
     }
 
     /**
+     * Gets the library drawing definitions for the component with the given MINT tyep.
+     *
+     * @static
+     * @param {string} minttype
+     * @returns {(Array<string> | null)}
+     * @memberof ComponentAPI
+     */
+    static getRenderTypeKeysForMINT(minttype: string): Array<string> | null {
+        let ret = [];
+        for (const key in ComponentAPI.library) {
+            if (minttype === ComponentAPI.library[key].object.mint) {
+                ret.push(key);
+            }
+        }
+        if (ret.length > 0) {
+            return ret;
+        } else {
+            throw new Error("No render type found for mint type: " + minttype);
+        }
+    }
+
+    /**
      * Returns the component ports for a given component
      * @param params
      * @param minttypestring

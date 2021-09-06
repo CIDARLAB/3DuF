@@ -879,7 +879,7 @@ export default class ViewManager {
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
 
-        if (version === null || undefined === version || version == 1 || version == 1.1) {
+        if (version === null || undefined === version || version == 1 || version == 1.1 || version == 1.2) {
             let ret = LoadUtils.loadFromScratch(json);
             device = ret[0];
             Registry.currentDevice = device;
@@ -1470,11 +1470,13 @@ export default class ViewManager {
         params_to_copy.position = [xpos, ypos];
 
         // Get default params and overwrite them with json params, this can account for inconsistencies
-        const newFeature = Device.makeFeature(component.type, params_to_copy);
-
-        component.addFeatureID(newFeature.ID);
-
-        Registry.currentLayer.addFeature(newFeature);
+        let renderdefkeys = ComponentAPI.getRenderTypeKeysForMINT(component.mint);
+        for (let i = 0; i < renderdefkeys.length; i++) {
+            const key = renderdefkeys[i];
+            const newFeature = Device.makeFeature(key, params_to_copy);
+            component.addFeatureID(newFeature.ID);
+            Registry.currentLayer.addFeature(newFeature);
+        }
 
         // Set the component position
         component.updateComponentPosition([xpos, ypos]);
