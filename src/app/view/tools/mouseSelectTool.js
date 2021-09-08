@@ -7,8 +7,9 @@ import paper from "paper";
 import EventBus from "@/events/events";
 
 export default class MouseSelectTool extends MouseTool {
-    constructor(paperview) {
+    constructor(viewManager, paperview) {
         super();
+        this.viewManagerDelegate = viewManager;
         this.paperView = paperview;
         this.dragging = false;
         this.dragStart = null;
@@ -20,7 +21,7 @@ export default class MouseSelectTool extends MouseTool {
             ref.dragHandler();
         }, 20);
         this.down = function(event) {
-            Registry.viewManager.killParamsWindow();
+            ref.viewManagerDelegate.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
             ref.showTarget();
@@ -60,12 +61,12 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     showTarget() {
-        Registry.viewManager.removeTarget();
+        this.viewManagerDelegate.removeTarget();
     }
 
     mouseUpHandler(point) {
         if (this.currentSelectBox) {
-            this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox);
+            this.currentSelection = this.viewManagerDelegate.hitFeaturesWithViewElement(this.currentSelectBox);
             this.selectFeatures();
         }
         this.killSelectBox();
@@ -87,8 +88,8 @@ export default class MouseSelectTool extends MouseTool {
         const target = this.hitFeature(point);
         if (target) {
             if (target.selected) {
-                const feat = Registry.viewManager.getFeatureByID(target.featureID);
-                Registry.viewManager.updateDefaultsFromFeature(feat);
+                const feat = this.viewManagerDelegate.getFeatureByID(target.featureID);
+                this.viewManagerDelegate.updateDefaultsFromFeature(feat);
                 // Check if the feature is a part of a component
                 let component, connection;
                 if (feat.referenceID === null) {
@@ -105,7 +106,7 @@ export default class MouseSelectTool extends MouseTool {
                     }
                 }
 
-                // const rightclickmenu = Registry.viewManager.rightClickMenu; // new RightClickMenu(feat);
+                // const rightclickmenu = this.viewManagerDelegate.rightClickMenu; // new RightClickMenu(feat);
                 // rightclickmenu.show(event, feat);
                 // this.rightClickMenu = rightclickmenu;
                 // let func = PageSetup.getParamsWindowCallbackFunction(feat.getType(), feat.getSet());
@@ -129,7 +130,7 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     hitFeature(point) {
-        const target = Registry.viewManager.hitFeature(point);
+        const target = this.viewManagerDelegate.hitFeature(point);
         return target;
     }
 
@@ -151,20 +152,20 @@ export default class MouseSelectTool extends MouseTool {
             const featureIDs = component.featureIDs;
             for (const i in featureIDs) {
                 const featureid = featureIDs[i];
-                const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
+                const actualfeature = this.viewManagerDelegate.view.paperFeatures[featureid];
                 actualfeature.selected = true;
             }
 
-            Registry.viewManager.view.selectedComponents.push(component);
+            this.viewManagerDelegate.view.selectedComponents.push(component);
         } else if (connection !== null) {
             const featureIDs = connection.featureIDs;
             for (const i in featureIDs) {
                 const featureid = featureIDs[i];
-                const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
+                const actualfeature = this.viewManagerDelegate.view.paperFeatures[featureid];
                 actualfeature.selected = true;
             }
 
-            Registry.viewManager.view.selectedConnections.push(connection);
+            this.viewManagerDelegate.view.selectedConnections.push(connection);
         } else {
             throw new Error("Totally got the selection logic wrong, reimplement this");
         }
@@ -247,11 +248,11 @@ export default class MouseSelectTool extends MouseTool {
                     const featureIDs = component.featureIDs;
                     for (const j in featureIDs) {
                         const featureid = featureIDs[j];
-                        const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
+                        const actualfeature = this.viewManagerDelegate.view.paperFeatures[featureid];
                         actualfeature.selected = true;
                     }
 
-                    Registry.viewManager.view.selectedComponents.push(component);
+                    this.viewManagerDelegate.view.selectedComponents.push(component);
                 }
             }
         }

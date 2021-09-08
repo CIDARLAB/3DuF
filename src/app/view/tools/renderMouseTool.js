@@ -10,8 +10,9 @@ import EventBus from "@/events/events";
 // Allows for selection only of nonphysical features
 
 export default class RenderMouseTool extends MouseTool {
-    constructor(paperview) {
+    constructor(viewManager, paperview) {
         super();
+        this.viewManagerDelegate = viewManager;
         this.paperView = paperview;
         this.dragging = false;
         this.dragStart = null;
@@ -23,7 +24,7 @@ export default class RenderMouseTool extends MouseTool {
             ref.dragHandler();
         }, 20);
         this.down = function(event) {
-            Registry.viewManager.killParamsWindow();
+            this.viewManagerDelegate.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
             ref.showTarget();
@@ -47,12 +48,12 @@ export default class RenderMouseTool extends MouseTool {
     dragHandler() {}
 
     showTarget() {
-        Registry.viewManager.removeTarget();
+        this.viewManagerDelegate.removeTarget();
     }
 
     mouseUpHandler(point) {
         if (this.currentSelectBox) {
-            this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox);
+            this.currentSelection = this.viewManagerDelegate.hitFeaturesWithViewElement(this.currentSelectBox);
             this.selectFeatures();
         }
     }
@@ -61,12 +62,12 @@ export default class RenderMouseTool extends MouseTool {
         const point = MouseTool.getEventPosition(event);
         const target = this.hitFeature(point);
         if (target) {
-            //if (Registry.viewManager.getNonphysComponentForFeatureID(target.featureID) && Registry.viewManager.getNonphysComponentForFeatureID(target.featureID).mint == "TEXT") {
-            const element = Registry.viewManager.getNonphysElementFromFeatureID(target.featureID);
+            //if (this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID) && this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID).mint == "TEXT") {
+            const element = this.viewManagerDelegate.getNonphysElementFromFeatureID(target.featureID);
             if (element && element.type == "Text") {
                 if (target.selected) {
-                    const feat = Registry.viewManager.getFeatureByID(target.featureID);
-                    Registry.viewManager.updateDefaultsFromFeature(feat);
+                    const feat = this.viewManagerDelegate.getFeatureByID(target.featureID);
+                    this.viewManagerDelegate.updateDefaultsFromFeature(feat);
                     // Check if the feature is a part of a component
                     if (feat.referenceID === null) {
                         throw new Error("ReferenceID of feature is null");
@@ -90,7 +91,7 @@ export default class RenderMouseTool extends MouseTool {
     }
 
     hitFeature(point) {
-        const target = Registry.viewManager.view.hitFeature(point, true, true);
+        const target = this.viewManagerDelegate.view.hitFeature(point, true, true);
         return target;
     }
 
@@ -111,11 +112,11 @@ export default class RenderMouseTool extends MouseTool {
             const featureIDs = component.featureIDs;
             for (const i in featureIDs) {
                 const featureid = featureIDs[i];
-                const actualfeature = Registry.viewManager.view.paperFeatures[featureid];
+                const actualfeature = this.viewManagerDelegate.view.paperFeatures[featureid];
                 actualfeature.selected = true;
             }
 
-            Registry.viewManager.view.selectedComponents.push(component);
+            this.viewManagerDelegate.view.selectedComponents.push(component);
         } else {
             throw new Error("Totally got the selection logic wrong, reimplement this");
         }
@@ -140,7 +141,7 @@ export default class RenderMouseTool extends MouseTool {
     __getComponentWithFeatureID(featureid) {
         // Get component with the features
 
-        const device_components = Registry.viewManager.nonphysComponents;
+        const device_components = this.viewManagerDelegate.nonphysComponents;
 
         // Check against every component
         for (const i in device_components) {

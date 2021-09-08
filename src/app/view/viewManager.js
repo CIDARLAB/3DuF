@@ -173,6 +173,49 @@ export default class ViewManager {
     }
 
     /**
+     * Sets the initial state of the name map
+     * @memberof ViewManager
+     * @returns {void}
+     */
+    setNameMap() {
+        const newMap = new Map();
+        for (let i = 0; i < this.currentDevice.layers.length; i++) {
+            const [nameStr, nameNum] = this.currentDevice.layers[i].name.split("_");
+            if (newMap.has(nameStr)) {
+                if (newMap.get(nameStr) < nameNum) newMap.set(nameStr, parseInt(nameNum));
+            } else {
+                newMap.set(nameStr, parseInt(nameNum));
+            }
+        }
+        for (let i = 0; i < this.currentDevice.connections.length; i++) {
+            const [nameStr, nameNum] = this.currentDevice.connections[i].name.split("_");
+            if (newMap.has(nameStr)) {
+                if (newMap.get(nameStr) < nameNum) newMap.set(nameStr, parseInt(nameNum));
+            } else {
+                newMap.set(nameStr, parseInt(nameNum));
+            }
+        }
+        for (let i = 0; i < this.currentDevice.components.length; i++) {
+            const [nameStr, nameNum] = this.currentDevice.components[i].name.split("_");
+            if (newMap.has(nameStr)) {
+                if (newMap.get(nameStr) < nameNum) newMap.set(nameStr, parseInt(nameNum));
+            } else {
+                newMap.set(nameStr, parseInt(nameNum));
+            }
+        }
+        for (let i = 0; i < this.renderLayers.length; i++) {
+            const [nameStr, nameNum] = this.renderLayers[i].name.split("_");
+            if (newMap.has(nameStr)) {
+                if (newMap.get(nameStr) < nameNum) newMap.set(nameStr, parseInt(nameNum));
+            } else {
+                newMap.set(nameStr, parseInt(nameNum));
+            }
+        }
+
+        this.currentDevice.nameMap = newMap;
+    }
+
+    /**
      * Adds a device to the view manager
      * @param {Device} device Device to be added
      * @param {Boolean} refresh Default true
@@ -349,9 +392,9 @@ export default class ViewManager {
         if (groupNum != 0) groupNum = groupNum / 3;
 
         let newlayers = [];
-        newlayers[0] = new Layer({ z_offset: 0, flip: false }, "flow", LogicalLayerType.FLOW, groupNum.toString());
-        newlayers[1] = new Layer({ z_offset: 0, flip: false }, "control", LogicalLayerType.CONTROL, groupNum.toString());
-        newlayers[2] = new Layer({ z_offset: 0, flip: false }, "integration", LogicalLayerType.INTEGRATION, groupNum.toString());
+        newlayers[0] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerFlow"), LogicalLayerType.FLOW, groupNum.toString());
+        newlayers[1] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerControl"), LogicalLayerType.CONTROL, groupNum.toString());
+        newlayers[2] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, groupNum.toString());
         //Add model layers to current device
         Registry.currentDevice.createNewLayerBlock(newlayers);
 
@@ -383,9 +426,9 @@ export default class ViewManager {
         }
 
         // Add new renderLayers
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("flow", newlayers[0], LogicalLayerType.FLOW);
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("control", newlayers[1], LogicalLayerType.CONTROL);
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("integration", newlayers[2], LogicalLayerType.INTEGRATION);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer(this.currentDevice.generateNewName("RenderLayerFlow"), newlayers[0], LogicalLayerType.FLOW);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer(this.currentDevice.generateNewName("RenderLayerControl"), newlayers[1], LogicalLayerType.CONTROL);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer(this.currentDevice.generateNewName("RenderLayerIntegration"), newlayers[2], LogicalLayerType.INTEGRATION);
         for (const i in edgefeatures) {
             this.renderLayers[this.renderLayers.length - 3].addFeature(edgefeatures[i]);
             this.renderLayers[this.renderLayers.length - 2].addFeature(edgefeatures[i]);
@@ -886,6 +929,8 @@ export default class ViewManager {
             this.__currentDevice = device;
 
             this.renderLayers = ret[1];
+
+            this.setNameMap();
             // } else if (version == 1.1 || version == "1.1") {
             //     // this.loadCustomComponents(json);
             //     device = Device.fromInterchangeV1_1(json);
@@ -1356,8 +1401,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     setupTools() {
-        this.tools.MouseSelectTool = new MouseSelectTool(this.view);
-        this.tools.RenderMouseTool = new RenderMouseTool(this.view);
+        this.tools.MouseSelectTool = new MouseSelectTool(this, this.view);
+        this.tools.RenderMouseTool = new RenderMouseTool(this, this.view);
         this.tools.InsertTextTool = new InsertTextTool(this);
         this.tools.Chamber = new ComponentPositionTool("Chamber", "Basic");
         this.tools.Valve = new ValveInsertionTool("Valve", "Basic");

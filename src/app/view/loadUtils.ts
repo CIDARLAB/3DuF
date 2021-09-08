@@ -40,9 +40,9 @@ export default class LoadUtils {
                 newRenderLayers.push(LoadUtils.generateRenderLayerFromLayerInterchangeV1(json.layers[i], newDevice));
             }
         } else {
-            newRenderLayers.push(new RenderLayer("flow", newDevice.layers[0], LogicalLayerType.FLOW));
-            newRenderLayers.push(new RenderLayer("control", newDevice.layers[1], LogicalLayerType.CONTROL));
-            newRenderLayers.push(new RenderLayer("integration", newDevice.layers[0], LogicalLayerType.INTEGRATION));
+            newRenderLayers.push(new RenderLayer(newDevice.generateNewName("RenderLayerFlow"), newDevice.layers[0], LogicalLayerType.FLOW));
+            newRenderLayers.push(new RenderLayer(newDevice.generateNewName("RenderLayerControl"), newDevice.layers[1], LogicalLayerType.CONTROL));
+            newRenderLayers.push(new RenderLayer(newDevice.generateNewName("RenderLayerIntegration"), newDevice.layers[0], LogicalLayerType.INTEGRATION));
         }
 
         // Ensures that there are three layers per group
@@ -58,8 +58,8 @@ export default class LoadUtils {
         layerGroups.forEach((value, key) => {
             const keyVal = parseInt(key, 10);
             if (value == 2) {
-                newDevice.addLayerAtIndex(new Layer({}, "integration", LogicalLayerType.INTEGRATION, key, newDevice), keyVal * 3 + 2);
-                newRenderLayers.splice(keyVal * 3 + 2, 0, new RenderLayer("integration", newDevice.layers[0], LogicalLayerType.INTEGRATION));
+                newDevice.addLayerAtIndex(new Layer({}, newDevice.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, key, newDevice), keyVal * 3 + 2);
+                newRenderLayers.splice(keyVal * 3 + 2, 0, new RenderLayer(newDevice.generateNewName("RenderLayerIntegration"), newDevice.layers[0], LogicalLayerType.INTEGRATION));
             } else {
                 console.log("Layers are missing from some groups");
             }
@@ -106,11 +106,11 @@ export default class LoadUtils {
             }
         } else {
             //We need to add a default layer
-            let newlayer = new Layer({}, "flow", LogicalLayerType.FLOW, "0", newDevice);
+            let newlayer = new Layer({}, newDevice.generateNewName("LayerFlow"), LogicalLayerType.FLOW, "0", newDevice);
             newDevice.addLayer(newlayer);
-            newlayer = new Layer({}, "control", LogicalLayerType.CONTROL, "0", newDevice);
+            newlayer = new Layer({}, newDevice.generateNewName("LayerControl"), LogicalLayerType.CONTROL, "0", newDevice);
             newDevice.addLayer(newlayer);
-            newlayer = new Layer({}, "integration", LogicalLayerType.INTEGRATION, "0", newDevice);
+            newlayer = new Layer({}, newDevice.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, "0", newDevice);
             newDevice.addLayer(newlayer);
         }
 
@@ -165,6 +165,7 @@ export default class LoadUtils {
         for (const i in json.features) {
             newLayer.features[json.features[i].id] = LoadUtils.loadFeatureFromInterchangeV1(json.features[i]);
         }
+        newLayer.featureCount = json.features.length;
         newLayer.device = device;
         newLayer.id = json.id;
         return newLayer;
@@ -429,7 +430,7 @@ export default class LoadUtils {
             if (device.layers[i].id == json.id) newLayer.physicalLayer = device.layers[i];
         }
 
-        if (Object.prototype.hasOwnProperty.call(json, "name")) {
+        if (Object.prototype.hasOwnProperty.call(json, "type")) {
             if (json.type === "FLOW") {
                 newLayer.color = "indigo";
             } else if (json.type === "CONTROL") {
