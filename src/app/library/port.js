@@ -38,7 +38,7 @@ export default class Port extends Template {
 
         this.__maximum = {
             componentSpacing: 10000,
-            portRadius: 2000,
+            portRadius: 3000,
             height: 1200
         };
 
