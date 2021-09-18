@@ -94,7 +94,7 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    updateParameter(key: string, value: any) {
+    updateParameter(key: string, value: any): void  {
         this._params.updateParameter(key, value);
         EventBus.get().emit(EventBus.UPDATE_RENDERS, this);
     }
@@ -160,7 +160,7 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    setName(name: string) {
+    setName(name: string): void  {
         this._name = name;
     }
 
@@ -170,7 +170,7 @@ export default class Feature {
      * @memberof Feature
      *
      */
-    getName() {
+    getName(): string  {
         return this._name;
     }
 
@@ -179,7 +179,7 @@ export default class Feature {
      * @returns {String} Returns the type of the object
      * @memberof Feature
      */
-    getType() {
+    getType(): string  {
         return this._type;
     }
 
@@ -376,7 +376,7 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    addDXFObject(dxfobject: DXFObject) {
+    addDXFObject(dxfobject: DXFObject): void  {
         this._dxfObjects.push(dxfobject);
     }
 }

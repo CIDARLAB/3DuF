@@ -42,7 +42,7 @@ export default class UIElement {
         else return false;
     }
 
-    draw() {
+    draw(): void  {
         console.log(`Drawing at ${this.__position[0]}, ${this.__position[1]}`);
     }
 }
