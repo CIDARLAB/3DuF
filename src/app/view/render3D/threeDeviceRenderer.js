@@ -28,10 +28,10 @@ const SLIDE_THICKNESS = 1.2;
 export class ThreeDeviceRenderer {
     constructor(renderContainer) {
         this.container = renderContainer;
-        this.camera;
-        this.controls;
-        this.scene;
-        this.renderer;
+        
+        
+        
+        
         this.backgroundColor = Colors.BLUE_50;
         this.mockup = null;
         this.layers = null;

@@ -21,7 +21,7 @@ export default class BareViewManager {
      * Default Constructor for BareViewManager object
      */
     constructor() {
-        this.threeD;
+        
         const element = document.getElementById("c");
         console.log(element, element.width, element.height);
 

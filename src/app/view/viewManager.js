@@ -70,7 +70,7 @@ export default class ViewManager {
      * Default ViewManger Constructor
      */
     constructor() {
-        this.threeD;
+        
         this.view = new PaperView("c", this);
         this.__grid = new AdaptiveGrid(this);
         Registry.currentGrid = this.__grid;
