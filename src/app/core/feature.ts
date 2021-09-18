@@ -94,7 +94,7 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    updateParameter(key: string, value: any): void  {
+    updateParameter(key: string, value: any): void {
         this._params.updateParameter(key, value);
         EventBus.get().emit(EventBus.UPDATE_RENDERS, this);
     }
@@ -129,7 +129,7 @@ export default class Feature {
             params: this._params.toJSON(),
             type: this._fabtype,
             referenceID: this._referenceID,
-            dxfData: this._dxfObjects.map(function(dxfObject) {
+            dxfData: this._dxfObjects.map(function (dxfObject) {
                 return dxfObject.toJSON();
             })
         };
@@ -160,7 +160,7 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    setName(name: string): void  {
+    setName(name: string): void {
         this._name = name;
     }
 
@@ -170,7 +170,7 @@ export default class Feature {
      * @memberof Feature
      *
      */
-    getName(): string  {
+    getName(): string {
         return this._name;
     }
 
@@ -179,7 +179,7 @@ export default class Feature {
      * @returns {String} Returns the type of the object
      * @memberof Feature
      */
-    getType(): string  {
+    getType(): string {
         return this._type;
     }
 
@@ -297,7 +297,7 @@ export default class Feature {
             this._name,
             ComponentAPI.generateID(),
             "XY",
-            this._dxfObjects.map(function(dxfObject) {
+            this._dxfObjects.map(function (dxfObject) {
                 return dxfObject.toJSON();
             })
         );
@@ -376,7 +376,7 @@ export default class Feature {
      * @memberof Feature
      * @returns {void}
      */
-    addDXFObject(dxfobject: DXFObject): void  {
+    addDXFObject(dxfobject: DXFObject): void {
         this._dxfObjects.push(dxfobject);
     }
 }

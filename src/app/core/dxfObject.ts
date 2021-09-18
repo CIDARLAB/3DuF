@@ -21,7 +21,7 @@ export default class DXFObject {
      * @memberof DXFObject
      * @returns {void}
      */
-    setType(type: string): void  {
+    setType(type: string): void {
         this._type = type;
         this._rootObject.type = type;
     }
@@ -51,7 +51,7 @@ export default class DXFObject {
      * @memberof DXFObject
      * @returns {void}
      */
-    addData(key: string, value: any): void  {
+    addData(key: string, value: any): void {
         this._rootObject[key] = value;
     }
 
