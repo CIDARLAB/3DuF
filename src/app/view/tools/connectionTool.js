@@ -11,6 +11,7 @@ import EventBus from "@/events/events";
 import { LogicalLayerType } from "@/app/core/init";
 
 import Registry from "../../core/registry";
+import MapUtils from "../../utils/mapUtils";
 
 export default class ConnectionTool extends MouseTool {
     constructor(typeString, setString) {
@@ -180,7 +181,7 @@ export default class ConnectionTool extends MouseTool {
                 values[key] = rawparams[key].value;
             }
             const definition = ComponentAPI.getDefinition("Connection");
-            const params = new Params(values, definition.unique, definition.heritable);
+            const params = new Params(values, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
             if (this.__currentConnectionObject === null || this.__currentConnectionObject === undefined) {
                 if (Registry.currentLayer.physicalLayer == null) throw new Error("Error: Attempting to add connection on non-physical layer");
                 const connection = new Connection("Connection", params, Registry.currentDevice.generateNewName("CHANNEL"), "CHANNEL", Registry.currentLayer.physicalLayer);

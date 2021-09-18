@@ -40,7 +40,6 @@ export default class MultilayerPositionTool extends PositionTool {
 
             featureIDs.push(newFeature.ID);
         }
-        console.log(ComponentAPI.library[this.typeString + "_integration"]);
 
         // Set up integration layer component
         if (ComponentAPI.library[this.typeString + "_integration"]) {

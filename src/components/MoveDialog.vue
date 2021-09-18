@@ -38,7 +38,7 @@
                                 <v-card-text>X (mm):</v-card-text>
                             </td>
                             <td width="125px">
-                                <v-text-field v-model="posX" placeholder="0" :step="1" type="number"> </v-text-field>
+                                <v-text-field v-model="posX" placeholder="0" :step="1" type="number" @change="updateComponent"> </v-text-field>
                             </td>
                         </tr>
                         <tr>
@@ -46,7 +46,7 @@
                                 <v-card-text>Y (mm):</v-card-text>
                             </td>
                             <td width="125px">
-                                <v-text-field v-model="posY" placeholder="0" :step="1" type="number"> </v-text-field>
+                                <v-text-field v-model="posY" placeholder="0" :step="1" type="number" @change="updateComponent"> </v-text-field>
                             </td>
                         </tr>
                     </v-col>
@@ -182,6 +182,9 @@ export default {
         },
         onSave() {
             console.log("Saved data for Move");
+        },
+        updateComponent() {
+            this.component.updateComponentPosition([parseInt(this.posX), parseInt(this.posY)]);
         }
     }
 };
