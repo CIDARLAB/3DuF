@@ -17,23 +17,23 @@ export default class MouseSelectTool extends MouseTool {
         this.currentSelectBox = null;
         this.currentSelection = [];
         const ref = this;
-        this.updateQueue = new SimpleQueue(function() {
+        this.updateQueue = new SimpleQueue(function () {
             ref.dragHandler();
         }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             ref.viewManagerDelegate.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
             ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             if (ref.dragging) {
                 ref.lastPoint = MouseTool.getEventPosition(event);
                 ref.updateQueue.run();
             }
             ref.showTarget();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
             ref.showTarget();
