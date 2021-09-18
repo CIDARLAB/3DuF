@@ -28,10 +28,7 @@ const SLIDE_THICKNESS = 1.2;
 export class ThreeDeviceRenderer {
     constructor(renderContainer) {
         this.container = renderContainer;
-        
-        
-        
-        
+
         this.backgroundColor = Colors.BLUE_50;
         this.mockup = null;
         this.layers = null;
@@ -52,7 +49,7 @@ export class ThreeDeviceRenderer {
         const reference = this;
         window.addEventListener(
             "resize",
-            function() {
+            function () {
                 reference.onWindowResize();
             },
             false
@@ -96,7 +93,7 @@ export class ThreeDeviceRenderer {
         this.controls = new THREE.OrbitControls(this.camera, this.container);
         this.controls.damping = 0.2;
         const reference = this;
-        this.controls.addEventListener("change", function() {
+        this.controls.addEventListener("change", function () {
             reference.render();
         });
     }

@@ -70,22 +70,21 @@ export default class ViewManager {
      * Default ViewManger Constructor
      */
     constructor() {
-        
         this.view = new PaperView("c", this);
         this.__grid = new AdaptiveGrid(this);
         Registry.currentGrid = this.__grid;
         this.renderLayers = [];
         this.activeRenderLayer = null;
-        this.nonphysElements = []; //TODO - Keep track of what types of objects fall here UIElements
+        this.nonphysElements = []; // TODO - Keep track of what types of objects fall here UIElements
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         this.__currentDevice = null;
         const reference = this;
-        this.updateQueue = new SimpleQueue(function() {
+        this.updateQueue = new SimpleQueue(function () {
             reference.view.refresh();
         }, 20);
 
-        this.saveQueue = new SimpleQueue(function() {
+        this.saveQueue = new SimpleQueue(function () {
             reference.saveToStorage();
         });
 
@@ -94,7 +93,7 @@ export default class ViewManager {
 
         this.mouseAndKeyboardHandler = new MouseAndKeyboardHandler(this);
 
-        this.view.setResizeFunction(function() {
+        this.view.setResizeFunction(function () {
             reference.updateGrid();
             reference.updateAlignmentMarks();
 
@@ -103,7 +102,7 @@ export default class ViewManager {
             reference.updateDevice(Registry.currentDevice);
         });
 
-        const func = function(event) {
+        const func = function (event) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
@@ -116,7 +115,7 @@ export default class ViewManager {
         this.maxZoom = 5;
         this.setupTools();
         const ref = this;
-        EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true) {
+        EventBus.get().on(EventBus.UPDATE_RENDERS, function (feature, refresh = true) {
             if (ref.ensureFeatureExists(feature)) {
                 ref.view.updateFeature(feature);
                 ref.refresh(refresh);
@@ -290,7 +289,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     addFeature(feature, index = this.activeRenderLayer, isPhysicalFlag = true, refresh = true) {
-        //let isPhysicalFlag = true;
+        // let isPhysicalFlag = true;
         this.renderLayers[index].addFeature(feature, isPhysicalFlag);
         if (this.ensureFeatureExists(feature)) {
             this.view.addFeature(feature);
@@ -305,10 +304,10 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     getNonphysElementFromFeatureID(id) {
-        for (let i in this.nonphysElements) {
-            let element = this.nonphysElements[i];
-            //go through each component's features
-            for (let j in element.featureIDs) {
+        for (const i in this.nonphysElements) {
+            const element = this.nonphysElements[i];
+            // go through each component's features
+            for (const j in element.featureIDs) {
                 if (element.featureIDs[j] === id) {
                     return element;
                 }
@@ -387,15 +386,15 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     createNewLayerBlock() {
-        //Generate model layers
+        // Generate model layers
         let groupNum = Registry.currentDevice.layers.length;
         if (groupNum != 0) groupNum = groupNum / 3;
 
-        let newlayers = [];
+        const newlayers = [];
         newlayers[0] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerFlow"), LogicalLayerType.FLOW, groupNum.toString());
         newlayers[1] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerControl"), LogicalLayerType.CONTROL, groupNum.toString());
         newlayers[2] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, groupNum.toString());
-        //Add model layers to current device
+        // Add model layers to current device
         Registry.currentDevice.createNewLayerBlock(newlayers);
 
         // Find all the edge features
@@ -923,7 +922,7 @@ export default class ViewManager {
         const version = json.version;
 
         if (version === null || undefined === version || version == 1 || version == 1.1 || version == 1.2) {
-            let ret = LoadUtils.loadFromScratch(json);
+            const ret = LoadUtils.loadFromScratch(json);
             device = ret[0];
             Registry.currentDevice = device;
             this.__currentDevice = device;
@@ -1274,11 +1273,11 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     setupDragAndDropLoad(selector) {
-        const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
+        const dnd = new HTMLUtils.DnDFileController(selector, function (files) {
             const f = files[0];
 
             const reader = new FileReader();
-            reader.onloadend = function(e) {
+            reader.onloadend = function (e) {
                 let result = this.result;
                 // try {
                 result = JSON.parse(result);
@@ -1342,7 +1341,7 @@ export default class ViewManager {
     resetToDefaultTool() {
         this.cleanupActiveTools();
         this.activateTool("MouseSelectTool");
-        //this.activateTool("RenderMouseTool");
+        // this.activateTool("RenderMouseTool");
         // this.componentToolBar.setActiveButton("SelectButton");
     }
 
@@ -1515,7 +1514,7 @@ export default class ViewManager {
         params_to_copy.position = [xpos, ypos];
 
         // Get default params and overwrite them with json params, this can account for inconsistencies
-        let renderdefkeys = ComponentAPI.getRenderTypeKeysForMINT(component.mint);
+        const renderdefkeys = ComponentAPI.getRenderTypeKeysForMINT(component.mint);
         for (let i = 0; i < renderdefkeys.length; i++) {
             const key = renderdefkeys[i];
             const newFeature = Device.makeFeature(key, params_to_copy);
@@ -1534,7 +1533,7 @@ export default class ViewManager {
      */
     generateExportJSON() {
         const json = ExportUtils.toScratch(this);
-        //const json = this.currentDevice.toInterchangeV1_1();
+        // const json = this.currentDevice.toInterchangeV1_1();
         // json.customComponents = this.customComponentManager.toJSON();
         return json;
     }
