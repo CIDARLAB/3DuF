@@ -23,7 +23,7 @@ export default class RenderMouseTool extends MouseTool {
         this.updateQueue = new SimpleQueue(function () {
             ref.dragHandler();
         }, 20);
-        this.down = function (event) {
+        this.down = function(event) {
             this.viewManagerDelegate.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
@@ -62,7 +62,7 @@ export default class RenderMouseTool extends MouseTool {
         const point = MouseTool.getEventPosition(event);
         const target = this.hitFeature(point);
         if (target) {
-            // if (this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID) && this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID).mint == "TEXT") {
+            //if (this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID) && this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID).mint == "TEXT") {
             const element = this.viewManagerDelegate.getNonphysElementFromFeatureID(target.featureID);
             if (element && element.type == "Text") {
                 if (target.selected) {

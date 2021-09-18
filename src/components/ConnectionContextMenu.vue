@@ -74,7 +74,7 @@ export default {
     mounted() {
         // Setup an event for closing all the dialogs
         const ref = this;
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function () {
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
             ref.activeMenu = false;
         });
         EventBus.get().on(EventBus.DBL_CLICK_CONNECTION, this.activateMenu);
@@ -83,7 +83,7 @@ export default {
         updateParameter(value, key) {
             this.currentConnection.updateParameter(key, value);
         },
-        computeSpec: function (mint, params) {
+        computeSpec: function(mint, params) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let spec = [];
             const definition = ComponentAPI.getDefinitionForMINT(mint);
@@ -102,7 +102,7 @@ export default {
             console.log("Spec: ", spec);
             return spec;
         },
-        activateMenu: function (event, connection) {
+        activateMenu: function(event, connection) {
             console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
             this.currentConnection = connection;
             // Activate feat code
