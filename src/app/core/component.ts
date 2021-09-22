@@ -318,7 +318,7 @@ export default class Component {
      * @return {Params} Returns the params associated with the component
      * @memberof Component
      */
-    get params() {
+    get params(): Params {
         return this._params;
     }
 

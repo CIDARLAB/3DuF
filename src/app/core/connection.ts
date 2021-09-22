@@ -113,6 +113,15 @@ export default class Connection {
     }
 
     /**
+     * Returns the params associated with the connection
+     * @return {Params}
+     * @memberof Connection
+     */
+    get params(): Params {
+        return this._params;
+    }
+
+    /**
      * Generates a random id
      * @returns {string} Random ID string
      * @memberof Connection

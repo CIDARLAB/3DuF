@@ -6,6 +6,9 @@
                 <slot>
                     <ComponentContextMenu id="contextMenu" ref="contextMenu" />
                 </slot>
+                <slot>
+                    <ConnectionContextMenu id="contextMenu" ref="contextMenu" />
+                </slot>
             </div>
             <div id="renderContainer" />
         </div>
@@ -20,11 +23,13 @@ import { Examples } from "@/app/index";
 import ResolutionToolbar from "@/components/ResolutionToolbar";
 import ZoomSlider from "@/components/ZoomSlider";
 import ComponentContextMenu from "@/components/ComponentContextMenu";
+import ConnectionContextMenu from "@/components/ConnectionContextMenu";
 
 export default {
     components: {
         ResolutionToolbar,
         ComponentContextMenu,
+        ConnectionContextMenu,
         ZoomSlider
     },
     data() {

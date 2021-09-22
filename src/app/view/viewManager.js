@@ -71,13 +71,12 @@ export default class ViewManager {
      * Default ViewManger Constructor
      */
     constructor() {
-        this.threeD;
         this.view = new PaperView("c", this);
         this.__grid = new AdaptiveGrid(this);
         Registry.currentGrid = this.__grid;
         this.renderLayers = [];
         this.activeRenderLayer = null;
-        this.nonphysElements = []; //TODO - Keep track of what types of objects fall here UIElements
+        this.nonphysElements = []; // TODO - Keep track of what types of objects fall here UIElements
         this.tools = {};
         this.rightMouseTool = new SelectTool();
         this.__currentDevice = null;
@@ -174,15 +173,46 @@ export default class ViewManager {
     }
 
     /**
-     * Saves the json as a blob (will need to move this aroudn later)
-     *
+     * Sets the initial state of the name map
      * @memberof ViewManager
+     * @returns {void}
      */
-    downloadJSON() {
-        let json = new Blob([JSON.stringify(this.generateExportJSON())], {
-            type: "application/json"
-        });
-        saveAs(json, Registry.currentDevice.name + ".json");
+    setNameMap() {
+        const newMap = new Map();
+        for (let i = 0; i < this.currentDevice.layers.length; i++) {
+            const [nameStr, nameNum] = this.currentDevice.layers[i].name.split("_");
+            if (newMap.has(nameStr)) {
+                if (newMap.get(nameStr) < nameNum) newMap.set(nameStr, parseInt(nameNum));
+            } else {
+                newMap.set(nameStr, parseInt(nameNum));
+            }
+        }
+        for (let i = 0; i < this.currentDevice.connections.length; i++) {
+            const [nameStr, nameNum] = this.currentDevice.connections[i].name.split("_");
+            if (newMap.has(nameStr)) {
+                if (newMap.get(nameStr) < nameNum) newMap.set(nameStr, parseInt(nameNum));
+            } else {
+                newMap.set(nameStr, parseInt(nameNum));
+            }
+        }
+        for (let i = 0; i < this.currentDevice.components.length; i++) {
+            const [nameStr, nameNum] = this.currentDevice.components[i].name.split("_");
+            if (newMap.has(nameStr)) {
+                if (newMap.get(nameStr) < nameNum) newMap.set(nameStr, parseInt(nameNum));
+            } else {
+                newMap.set(nameStr, parseInt(nameNum));
+            }
+        }
+        for (let i = 0; i < this.renderLayers.length; i++) {
+            const [nameStr, nameNum] = this.renderLayers[i].name.split("_");
+            if (newMap.has(nameStr)) {
+                if (newMap.get(nameStr) < nameNum) newMap.set(nameStr, parseInt(nameNum));
+            } else {
+                newMap.set(nameStr, parseInt(nameNum));
+            }
+        }
+
+        this.currentDevice.nameMap = newMap;
     }
 
     /**
@@ -260,7 +290,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     addFeature(feature, index = this.activeRenderLayer, isPhysicalFlag = true, refresh = true) {
-        //let isPhysicalFlag = true;
+        // let isPhysicalFlag = true;
         this.renderLayers[index].addFeature(feature, isPhysicalFlag);
         if (this.ensureFeatureExists(feature)) {
             this.view.addFeature(feature);
@@ -275,10 +305,10 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     getNonphysElementFromFeatureID(id) {
-        for (let i in this.nonphysElements) {
-            let element = this.nonphysElements[i];
-            //go through each component's features
-            for (let j in element.featureIDs) {
+        for (const i in this.nonphysElements) {
+            const element = this.nonphysElements[i];
+            // go through each component's features
+            for (const j in element.featureIDs) {
                 if (element.featureIDs[j] === id) {
                     return element;
                 }
@@ -357,15 +387,15 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     createNewLayerBlock() {
-        //Generate model layers
+        // Generate model layers
         let groupNum = Registry.currentDevice.layers.length;
         if (groupNum != 0) groupNum = groupNum / 3;
 
-        let newlayers = [];
-        newlayers[0] = new Layer({ z_offset: 0, flip: false }, "flow", LogicalLayerType.FLOW, groupNum.toString());
-        newlayers[1] = new Layer({ z_offset: 0, flip: false }, "control", LogicalLayerType.CONTROL, groupNum.toString());
-        newlayers[2] = new Layer({ z_offset: 0, flip: false }, "integration", LogicalLayerType.INTEGRATION, groupNum.toString());
-        //Add model layers to current device
+        const newlayers = [];
+        newlayers[0] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerFlow"), LogicalLayerType.FLOW, groupNum.toString());
+        newlayers[1] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerControl"), LogicalLayerType.CONTROL, groupNum.toString());
+        newlayers[2] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, groupNum.toString());
+        // Add model layers to current device
         Registry.currentDevice.createNewLayerBlock(newlayers);
 
         // Find all the edge features
@@ -396,9 +426,9 @@ export default class ViewManager {
         }
 
         // Add new renderLayers
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("flow", newlayers[0], LogicalLayerType.FLOW);
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("control", newlayers[1], LogicalLayerType.CONTROL);
-        this.renderLayers[this.renderLayers.length] = new RenderLayer("integration", newlayers[2], LogicalLayerType.INTEGRATION);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer(this.currentDevice.generateNewName("RenderLayerFlow"), newlayers[0], LogicalLayerType.FLOW);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer(this.currentDevice.generateNewName("RenderLayerControl"), newlayers[1], LogicalLayerType.CONTROL);
+        this.renderLayers[this.renderLayers.length] = new RenderLayer(this.currentDevice.generateNewName("RenderLayerIntegration"), newlayers[2], LogicalLayerType.INTEGRATION);
         for (const i in edgefeatures) {
             this.renderLayers[this.renderLayers.length - 3].addFeature(edgefeatures[i]);
             this.renderLayers[this.renderLayers.length - 2].addFeature(edgefeatures[i]);
@@ -893,12 +923,14 @@ export default class ViewManager {
         const version = json.version;
 
         if (version === null || undefined === version || version == 1 || version == 1.1 || version == 1.2) {
-            let ret = LoadUtils.loadFromScratch(json);
+            const ret = LoadUtils.loadFromScratch(json);
             device = ret[0];
             Registry.currentDevice = device;
             this.__currentDevice = device;
 
             this.renderLayers = ret[1];
+
+            this.setNameMap();
             // } else if (version == 1.1 || version == "1.1") {
             //     // this.loadCustomComponents(json);
             //     device = Device.fromInterchangeV1_1(json);
@@ -1310,7 +1342,7 @@ export default class ViewManager {
     resetToDefaultTool() {
         this.cleanupActiveTools();
         this.activateTool("MouseSelectTool");
-        //this.activateTool("RenderMouseTool");
+        // this.activateTool("RenderMouseTool");
         // this.componentToolBar.setActiveButton("SelectButton");
     }
 
@@ -1369,8 +1401,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     setupTools() {
-        this.tools.MouseSelectTool = new MouseSelectTool(this.view);
-        this.tools.RenderMouseTool = new RenderMouseTool(this.view);
+        this.tools.MouseSelectTool = new MouseSelectTool(this, this.view);
+        this.tools.RenderMouseTool = new RenderMouseTool(this, this.view);
         this.tools.InsertTextTool = new InsertTextTool(this);
         this.tools.Chamber = new ComponentPositionTool("Chamber", "Basic");
         this.tools.Valve = new ValveInsertionTool("Valve", "Basic");
@@ -1483,7 +1515,7 @@ export default class ViewManager {
         params_to_copy.position = [xpos, ypos];
 
         // Get default params and overwrite them with json params, this can account for inconsistencies
-        let renderdefkeys = ComponentAPI.getRenderTypeKeysForMINT(component.mint);
+        const renderdefkeys = ComponentAPI.getRenderTypeKeysForMINT(component.mint);
         for (let i = 0; i < renderdefkeys.length; i++) {
             const key = renderdefkeys[i];
             const newFeature = Device.makeFeature(key, params_to_copy);
@@ -1502,7 +1534,7 @@ export default class ViewManager {
      */
     generateExportJSON() {
         const json = ExportUtils.toScratch(this);
-        //const json = this.currentDevice.toInterchangeV1_1();
+        // const json = this.currentDevice.toInterchangeV1_1();
         // json.customComponents = this.customComponentManager.toJSON();
         return json;
     }

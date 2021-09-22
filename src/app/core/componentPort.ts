@@ -20,7 +20,6 @@ export default class ComponentPort {
      */
     constructor(x: number, y: number, label: string, layer: Layer) {
         this._id = uuid.v1();
-        console.log("X: ", x, "Y: ", y);
         this._x = x;
         this._y = y;
         this._label = label;

@@ -83,6 +83,15 @@ export default class Device {
     }
 
     /**
+     * Sets the map used for naming objects
+     * @param {Map<string, number>}
+     * @memberof Device
+     */
+    set nameMap(nameMap: Map<string, number>) {
+        this.__nameMap = nameMap;
+    }
+
+    /**
      * Returns the list of layers in the device
      * @return {Array}
      * @memberof Device

@@ -72,6 +72,7 @@ export default class PaperView {
         this.selectedConnections = [];
         this.inactiveAlpha = 0.5;
         this.__viewManagerDelegate = viewmanager;
+        this.featureRegistry = new Map();
 
         this._paperComponentPortView = new PaperComponentPortView(this.componentPortsLayer, viewmanager);
 
@@ -449,6 +450,7 @@ export default class PaperView {
     removeDevice() {
         if (this.paperDevice) this.paperDevice.remove();
         this.paperDevice = null;
+        this.featureRegistry = new Map();
     }
 
     /* Rendering Layers */
@@ -484,6 +486,9 @@ export default class PaperView {
      */
     removeLayer(index) {
         if (index !== -1) {
+            for (let i = 0; i < this.paperLayers[index].children.length; i++) {
+                this.featureRegistry.delete(this.paperLayers[index].children[i].featureID);
+            }
             this.paperLayers.splice(index, 1);
         }
     }
@@ -562,6 +567,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     showAllFeatures() {
+        this.resetFeatureLayers();
         this.featureLayer.remove();
         this.featureLayer = new paper.Group();
         if (this.layerMask) this.layerMask.remove();
@@ -573,6 +579,22 @@ export default class PaperView {
 
         let textLayer = this.getNonphysText();
         textLayer.bringToFront();
+    }
+
+    /**
+     * Return all features to the paper layers defined in featureRegistry
+     * Built for use in uF Guide Tool
+     * @returns {void}
+     * @memberof PaperView
+     */
+    resetFeatureLayers() {
+        for (let i = 0; i < this.paperLayers.length; i++) {
+            this.featureRegistry.forEach((value, key) => {
+                if (this.paperLayers[i].id == value) {
+                    this.paperLayers[i].addChild(this.paperFeatures[key]);
+                }
+            });
+        }
     }
 
     /**
@@ -788,6 +810,7 @@ export default class PaperView {
         const index = this.__viewManagerDelegate.renderLayers.indexOf(this.__viewManagerDelegate.getRenderLayerByID(feature.ID));
         const layer = this.paperLayers[index];
         this.insertChildByHeight(layer, newPaperFeature);
+        this.featureRegistry.set(newPaperFeature.featureID, layer.id);
         // }
     }
 
@@ -857,6 +880,7 @@ export default class PaperView {
             paperFeature.remove();
         }
         this.paperFeatures[feature.ID] = null;
+        this.featureRegistry.delete(feature.ID);
     }
 
     /**
