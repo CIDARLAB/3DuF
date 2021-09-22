@@ -4,6 +4,7 @@ import paper from "paper";
 
 import Registry from "../core/registry";
 import * as Colors from "./colors";
+import { saveAs } from "file-saver";
 
 import Device from "../core/device";
 import ChannelTool from "./tools/channelTool";
@@ -170,6 +171,18 @@ export default class ViewManager {
         // this.zoomToolBar = new ZoomToolBar(0.0001, 5);
         // this.componentToolBar = new ComponentToolBar(this);
         this.resetToDefaultTool();
+    }
+
+    /**
+     * Saves the json as a blob (will need to move this aroudn later)
+     *
+     * @memberof ViewManager
+     */
+    downloadJSON() {
+        let json = new Blob([JSON.stringify(this.generateExportJSON())], {
+            type: "application/json"
+        });
+        saveAs(json, Registry.currentDevice.name + ".json");
     }
 
     /**

@@ -259,7 +259,7 @@ export default class LoadUtils {
         if (Object.prototype.hasOwnProperty.call(json, "paths")) {
             if (json.paths !== null && json.paths !== undefined) {
                 for (const i in json.paths) {
-                    connection.addWayPoints(json.paths[i]);
+                    connection.addWayPoints(json.paths[i].waypoints);
                 }
             }
         }
