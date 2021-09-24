@@ -318,7 +318,10 @@ export class ComponentAPI {
             throw new Error("Component Ports of: " + threeduftypesting + " not found in library");
         }
         const definition = ComponentAPI.library[threeduftypesting].object;
-        const params_to_pass = Object.fromEntries(params);
+        const params_to_pass: { [index: string]: any } = {};
+        params.forEach((value, key) => {
+            params_to_pass[key] = value.value;
+        });
         const ports = definition.getPorts(params_to_pass);
         return ports;
     }

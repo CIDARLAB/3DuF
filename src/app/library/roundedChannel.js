@@ -56,7 +56,7 @@ export default class RoundedChannel extends Template {
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "CHANNEL";
+        this.__mint = "ROUNDED CHANNEL";
     }
 
     render2D(params, key) {

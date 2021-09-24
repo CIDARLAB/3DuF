@@ -67,6 +67,8 @@ export default {
             Registry.currentDevice.name = this.deviceName;
             Registry.currentDevice.setXSpan(this.xspan * 1000);
             Registry.currentDevice.setYSpan(this.yspan * 1000);
+            Registry.viewManager.view.showActiveLayer();
+            Registry.viewManager.updateDevice(Registry.currentDevice, false);
         }
     }
 };

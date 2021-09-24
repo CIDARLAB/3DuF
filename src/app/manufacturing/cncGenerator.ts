@@ -1,18 +1,26 @@
 import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
 import { LogicalLayerType } from "../core/init";
+
 import Device from "../core/device";
+import Layer from "../core/layer";
+import Feature from "../core/feature";
+import viewManager from "../view/viewManager";
 
 /**
  * GNCGenerator class
  */
 export default class CNCGenerator {
+    __device: Device;
+    __viewManagerDelegate: viewManager;
+    __svgData: Map<String, string>;
+
     /**
      * Default Constructor of GNCGenerator object.
      * @param {Device} device Device object
      * @param {*} viewManagerDelegate
      */
-    constructor(device, viewManagerDelegate) {
+    constructor(device: Device, viewManagerDelegate: viewManager) {
         this.__device = device;
         this.__viewManagerDelegate = viewManagerDelegate;
 
@@ -24,7 +32,7 @@ export default class CNCGenerator {
      * @returns {}
      * @memberof CNCGenerator
      */
-    getSVGOutputs() {
+    getSVGOutputs(): Map<String, string> {
         return this.__svgData;
     }
 
@@ -33,7 +41,7 @@ export default class CNCGenerator {
      * @memberof CNCGenerator
      * @returns {void}
      */
-    generatePortLayers() {
+    generatePortLayers(): void {
         /*
         Step 1 - Get all the layers
         Step 2 - Get all the ports in each of the layers
@@ -41,18 +49,18 @@ export default class CNCGenerator {
                 -  Populate with the ports
          */
         // let components = this.__device.components;
-        const layers = this.__device.layers;
+        const layers: Array<Layer> = this.__device.layers;
 
-        const mfglayers = [];
+        const mfglayers: Array<ManufacturingLayer> = [];
 
-        let isControl = false;
-        let isIntegrate = false;
+        let isControl: boolean = false;
+        let isIntegrate: boolean = false;
 
         for (const i in layers) {
-            const layer = layers[i];
-            const ports = [];
+            const layer: Layer = layers[i];
+            const ports: Array<string> = [];
 
-            const features = layer.features;
+            const features: { [index: string]: Feature } = layer.features;
 
             if (layer.type === LogicalLayerType.CONTROL) {
                 isControl = true;
@@ -61,7 +69,7 @@ export default class CNCGenerator {
             }
 
             for (const key in features) {
-                const feature = features[key];
+                const feature: Feature = features[key];
                 // TODO: Include fabtype check also
                 if (feature.getType() === "Port") {
                     ports.push(key);
@@ -72,14 +80,14 @@ export default class CNCGenerator {
                 continue;
             }
 
-            const manufacturinglayer = new ManufacturingLayer("ports_" + layer.name + "_" + i);
+            const manufacturinglayer: ManufacturingLayer = new ManufacturingLayer("ports_" + layer.name + "_" + i);
             // console.log("manufacturing layer :", manufacturinglayer);
 
             for (const fi in ports) {
-                const featurekey = ports[fi];
+                const featurekey: string = ports[fi];
                 // console.log("Key:", featurekey);
                 // console.log("rendered:feature", this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
-                const issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
+                const issuccess: boolean = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
                 if (!issuccess) {
                     console.error("Could not find the feature for the corresponding id: " + featurekey);
                 }
@@ -89,6 +97,7 @@ export default class CNCGenerator {
                 manufacturinglayer.flipX();
                 isControl = false;
             } else if (isIntegrate) {
+                //TODO: manufacturinglayer.flipX(); if on different substrate
                 isIntegrate = false;
             }
 
@@ -98,7 +107,7 @@ export default class CNCGenerator {
         console.log("mfglayers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        mfglayers.forEach(function(mfglayer: ManufacturingLayer, index: number) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -111,7 +120,7 @@ export default class CNCGenerator {
      * @returns {void}
      * @memberof CNCGenerator
      */
-    generateDepthLayers() {
+    generateDepthLayers(): void {
         /*
         Step 1 - Go through each of the layers
         Step 2 - At each layer:
@@ -119,16 +128,16 @@ export default class CNCGenerator {
                    Step 2.2 - Generate manufacturing layers for each of the depths
 
          */
-        const layers = this.__device.layers;
+        const layers: Array<Layer> = this.__device.layers;
 
-        const mfglayers = [];
-        let isControl = false;
-        let isIntegrate = false;
+        const mfglayers: Array<ManufacturingLayer> = [];
+        let isControl: boolean = false;
+        let isIntegrate: boolean = false;
 
         for (const i in layers) {
-            const layer = layers[i];
+            const layer: Layer = layers[i];
 
-            const features = layer.features;
+            const features: { [index: string]: Feature } = layer.features;
 
             if (layer.type === LogicalLayerType.CONTROL) {
                 isControl = true;
@@ -137,15 +146,15 @@ export default class CNCGenerator {
             }
 
             // Create the depthmap for this
-            const featuredepthmap = new DepthFeatureMap(layer.name);
+            const featuredepthmap: DepthFeatureMap = new DepthFeatureMap(layer.name);
 
             for (const key in features) {
-                const feature = features[key];
+                const feature: Feature = features[key];
                 // TODO: Modify the port check
                 if (feature.fabType === "XY" && feature.getType() !== "Port") {
-                    let depth = feature.getValue("height");
-                    if (isIntegrate && feature.getParams().hasOwnProperty("integrate_height")) {
-                        depth = feature.getValue("integrate_height");
+                    let depth: number = feature.getValue("height");
+                    if (isIntegrate && feature.getParams().hasOwnProperty("electrodeDepth")) {
+                        depth = feature.getValue("electrodeDepth");
                     }
                     console.log("Depth of feature: ", key, depth);
                     featuredepthmap.addFeature(depth, key);
@@ -153,12 +162,12 @@ export default class CNCGenerator {
             }
 
             // Generate Manufacturing Layers for each depth
-            let manufacturinglayer;
+            let manufacturinglayer: ManufacturingLayer;
             for (const depth of featuredepthmap.getDepths()) {
                 manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_" + depth);
-                const depthfeatures = featuredepthmap.getFeaturesAtDepth(depth);
+                const depthfeatures: Array<string> = featuredepthmap.getFeaturesAtDepth(depth);
                 for (const j in depthfeatures) {
-                    const featurekey = depthfeatures[j];
+                    const featurekey: string = depthfeatures[j];
 
                     const issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
                     if (!issuccess) {
@@ -181,7 +190,7 @@ export default class CNCGenerator {
 
         console.log("XY Manufacturing Layers:", mfglayers);
         const ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        mfglayers.forEach(function(mfglayer: ManufacturingLayer, index: number) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -192,23 +201,23 @@ export default class CNCGenerator {
      * @returns {void}
      * @memberof CNCGenerator
      */
-    generateEdgeLayers() {
+    generateEdgeLayers(): void {
         /*
         Step 1 - Go through each of the layers
         Step 2 - Get all the EDGE features in the drawing
         Step 3 - Generate separate SVGs
          */
-        const layers = this.__device.layers;
+        const layers: Array<Layer> = this.__device.layers;
 
-        const mfglayers = [];
+        const mfglayers: Array<ManufacturingLayer> = [];
 
-        let manufacturinglayer;
+        let manufacturinglayer: ManufacturingLayer;
 
-        let isControl = false;
-        let isIntegrate = false;
+        let isControl: boolean = false;
+        let isIntegrate: boolean = false;
 
         for (const i in layers) {
-            const layer = layers[i];
+            const layer: Layer = layers[i];
             manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_EDGE");
 
             if (layer.type === LogicalLayerType.CONTROL) {
@@ -217,14 +226,14 @@ export default class CNCGenerator {
                 isIntegrate = true;
             }
 
-            const features = layer.features;
+            const features: { [index: string]: Feature } = layer.features;
 
             for (const key in features) {
-                const feature = features[key];
+                const feature: Feature = features[key];
                 // TODO: Modify the port check
                 if (feature.fabType === "EDGE") {
                     console.log("EDGE Feature: ", key);
-                    const issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
+                    const issuccess: boolean = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
                     if (!issuccess) {
                         console.error("Could not find the feature for the corresponding id: " + key);
                     }
@@ -244,7 +253,7 @@ export default class CNCGenerator {
         console.log("EDGE Manufacturing Layers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function(mfglayer, index) {
+        mfglayers.forEach(function(mfglayer: ManufacturingLayer, index: number) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -256,7 +265,7 @@ export default class CNCGenerator {
      * @returns {void}
      * @memberof CNCGenerator
      */
-    setDevice(currentDevice) {
+    setDevice(currentDevice: Device): void {
         this.__device = currentDevice;
         console.log("Currentdevice:", currentDevice);
     }
@@ -266,7 +275,7 @@ export default class CNCGenerator {
      * @returns {void}
      * @memberof CNCGenerator
      */
-    flushData() {
+    flushData(): void {
         this.__svgData.clear();
     }
 }

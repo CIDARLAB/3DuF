@@ -1129,7 +1129,7 @@ export default class PaperView {
     /**
      * Returns the rendered feature object that is being displayed for the particular feature
      * @param {string} featureID ID of the feature
-     * @return {Object} Returns an object containing the rendered features
+     * @return {paper.CompoundPath | paper.Path | paper.PointText} Returns an object containing the rendered features
      * @memberof PaperView
      */
     getRenderedFeature(featureID) {
