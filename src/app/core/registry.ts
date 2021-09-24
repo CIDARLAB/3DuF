@@ -2,6 +2,7 @@ import uuid from "node-uuid";
 import { registerSets } from "../featureSets";
 import FeatureSet from "../featureSets/featureSet";
 import RenderLayer from "../view/renderLayer";
+import ViewManager from "../view/viewManager";
 import * as Basic from "@/app/featureSets/basic";
 import { ViewManager } from "..";
 
@@ -27,7 +28,7 @@ class Registry {
     currentTextLayer = null;
     currentGrid = null;
     view = null;
-    viewManager: ViewManager | null = null;
+    viewManager: null | ViewManager = null;
     featureSet = null;
 }
 
