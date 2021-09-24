@@ -6,7 +6,7 @@
 
 <script>
 import Visualiser from "./components/Visualiser.vue";
-import LayoutSidebar from "./views/layouts/SplitLayout.vue";
+import LayoutSidebar from "./views/layouts/GuideToolLayout.vue";
 
 export default {
     name: "App",
