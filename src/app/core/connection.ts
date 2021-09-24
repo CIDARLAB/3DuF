@@ -6,7 +6,7 @@ import Device from "./device";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Layer from "./layer";
 import uuid from "node-uuid";
-import { ConnectionInterchangeV1, ConnectionTargetInterchangeV1 } from "./init";
+import { ConnectionInterchangeV1, ConnectionPathInterchangeV1, ConnectionTargetInterchangeV1 } from "./init";
 import { Segment, Point } from "./init";
 import ConnectionUtils from "../utils/connectionUtils";
 import { ComponentAPI } from "@/componentAPI";
@@ -163,13 +163,23 @@ export default class Connection {
      * @memberof Connection
      */
     toInterchangeV1(): ConnectionInterchangeV1 {
+        const outputpaths: Array<ConnectionPathInterchangeV1> = [];
+        for (let i = 0; i < this._paths.length; i++) {
+            const path = this._paths[i];
+            const outputpath: ConnectionPathInterchangeV1 = {
+                source: this._source !== null ? this._source.toJSON() : null,
+                sink: this.sinks.length > i ? this._sinks[i].toJSON() : null,
+                wayPoints: path
+            };
+            outputpaths.push(outputpath);
+        }
         const output: ConnectionInterchangeV1 = {
             id: this._id,
             name: this._name,
             entity: this._entity,
             source: null,
             sinks: null,
-            paths: this._paths,
+            paths: outputpaths,
             params: this._params.toJSON(),
             layer: this._layer.id
         };
@@ -511,7 +521,7 @@ export default class Connection {
         if (Object.prototype.hasOwnProperty.call(json, "paths")) {
             if (json.paths !== null && json.paths !== undefined) {
                 for (const i in json.paths) {
-                    connection.addWayPoints(json.paths[i]);
+                    connection.addWayPoints(json.paths[i].wayPoints);
                 }
             }
         }

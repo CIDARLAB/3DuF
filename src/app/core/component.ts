@@ -199,7 +199,7 @@ export default class Component {
             "x-span": this._xspan,
             "y-span": this._yspan,
             ports: portdata,
-            layer: this.findLayerReferences()
+            layers: this.findLayerReferences()
         };
 
         return output;

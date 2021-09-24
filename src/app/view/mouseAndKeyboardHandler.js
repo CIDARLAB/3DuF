@@ -81,7 +81,7 @@ export default class MouseAndKeyboardHandler {
             // Saving
             if ((event.ctrlKey || event.metaKey) && key === 83) {
                 event.preventDefault();
-                reference.exportPanel.saveJSON();
+                reference.downloadJSON();
             }
 
             if (key === 70) {

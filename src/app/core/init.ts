@@ -48,7 +48,7 @@ export type ComponentInterchangeV1 = {
     "x-span": number;
     "y-span": number;
     ports: Array<ComponentPortInterchangeV1>;
-    layer: Array<string>;
+    layers: Array<string>;
 };
 
 export type ConnectionInterchangeV1 = {
@@ -57,7 +57,7 @@ export type ConnectionInterchangeV1 = {
     entity: string;
     source: any;
     sinks: any;
-    paths: Array<Array<Point>>;
+    paths: Array<ConnectionPathInterchangeV1>;
     params: any;
     layer: string;
 };
@@ -100,4 +100,10 @@ export type ComponentPortInterchangeV1 = {
 export type ConnectionTargetInterchangeV1 = {
     component: string;
     port: string;
+};
+
+export type ConnectionPathInterchangeV1 = {
+    wayPoints: Array<Point>;
+    source: ConnectionTargetInterchangeV1 | null;
+    sink: ConnectionTargetInterchangeV1 | null;
 };
