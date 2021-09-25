@@ -89,7 +89,6 @@ export default class ManufacturingLayer {
 
             this.__paperGroup.scale(-1, 1, center);
         }
-        
     }
 
     /**

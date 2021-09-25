@@ -1274,6 +1274,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     setupDragAndDropLoad(selector) {
+        console.log("Here");
         const dnd = new HTMLUtils.DnDFileController(selector, function(files) {
             const f = files[0];
 
