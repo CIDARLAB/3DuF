@@ -20,6 +20,7 @@ export default class Template {
     protected __targetParams: { [key: string]: string } | null = null;
     protected __mint: string | null = null;
     protected __renderKeys: Array<string> | null = null;
+    protected _previewImage: string = "";
 
     /**
      *Creates an instance of Template.
@@ -29,6 +30,13 @@ export default class Template {
         this.__setupDefinitions();
     }
 
+    /**
+     * Returns the mint definition for the component definition
+     *
+     * @readonly
+     * @type {string}
+     * @memberof Template
+     */
     get mint(): string {
         if (this.__mint === null) {
             throw new Error("User needs to provide unique MINT string for component type");
@@ -58,6 +66,13 @@ export default class Template {
         return this.__targetParams;
     }
 
+    /**
+     * Returns the placement tool for the component/feature
+     *
+     * @readonly
+     * @type {string}
+     * @memberof Template
+     */
     get placementTool(): string {
         if (this.__placementTool === null) {
             throw new Error("placementtool cannot be null instantiate in the __setupDefinitions");
@@ -66,6 +81,13 @@ export default class Template {
         return this.__placementTool;
     }
 
+    /**
+     * Returns the tool params for the component
+     *
+     * @readonly
+     * @type {{ [key: string]: string }}
+     * @memberof Template
+     */
     get toolParams(): { [key: string]: string } {
         if (this.__toolParams === null) {
             throw new Error("toolparams cannot be null instantiate in the __setupDefinitions");
@@ -74,6 +96,13 @@ export default class Template {
         return this.__toolParams;
     }
 
+    /**
+     * Returns the default value for the component params
+     *
+     * @readonly
+     * @type {{ [key: string]: number }}
+     * @memberof Template
+     */
     get defaults(): { [key: string]: number } {
         if (this.__defaults === null) {
             throw new Error("defaults cannot be null instantiate in the __setupDefinitions");
@@ -82,6 +111,13 @@ export default class Template {
         return this.__defaults;
     }
 
+    /**
+     * Returns the min value for the component params
+     *
+     * @readonly
+     * @type {{ [key: string]: number }}
+     * @memberof Template
+     */
     get minimum(): { [key: string]: number } {
         if (this.__minimum === null) {
             throw new Error("minimum cannot be null instantiate in the __setupDefinitions");
@@ -90,6 +126,13 @@ export default class Template {
         return this.__minimum;
     }
 
+    /**
+     * Returns the max value for the component params
+     *
+     * @readonly
+     * @type {{ [key: string]: number }}
+     * @memberof Template
+     */
     get maximum(): { [key: string]: number } {
         if (this.__maximum === null) {
             throw new Error("maximum cannot be null instantiate in the __setupDefinitions");
@@ -98,6 +141,13 @@ export default class Template {
         return this.__maximum;
     }
 
+    /**
+     * Returns the units for the component params
+     *
+     * @readonly
+     * @type {{ [key: string]: string }}
+     * @memberof Template
+     */
     get units(): { [key: string]: string } {
         if (this.__units === null) {
             throw new Error("units cannot be null instantiate in the __setupDefinitions");
@@ -106,6 +156,13 @@ export default class Template {
         return this.__units;
     }
 
+    /**
+     * Returns the unique params for the component definition
+     *
+     * @readonly
+     * @type {{ [key: string]: string }}
+     * @memberof Template
+     */
     get unique(): { [key: string]: string } {
         if (this.__unique === null) {
             throw new Error("unique cannot be null instantiate in the __setupDefinitions");
@@ -114,6 +171,13 @@ export default class Template {
         return this.__unique;
     }
 
+    /**
+     * Returns the heritable properties for the component definition
+     *
+     * @readonly
+     * @type {{ [key: string]: string }}
+     * @memberof Template
+     */
     get heritable(): { [key: string]: string } {
         if (this.__heritable === null) {
             throw new Error("Heritable cannot be null instantiate in the __setupDefinitions");
@@ -121,12 +185,30 @@ export default class Template {
         return this.__heritable;
     }
 
+    /**
+     * Returns the renderkeys for the component definition
+     *
+     * @readonly
+     * @type {Array<string>}
+     * @memberof Template
+     */
     get renderKeys(): Array<string> {
         if (this.__renderKeys === null) {
             throw new Error("renderKeys cannot be null instantiate in the __setupDefinitions");
         }
 
         return this.__renderKeys;
+    }
+
+    /**
+     * Returns the preview link for the component
+     *
+     * @readonly
+     * @type {string}
+     * @memberof Template
+     */
+    get previewImage(): string {
+        return this._previewImage;
     }
 
     __setupDefinitions(): void {
