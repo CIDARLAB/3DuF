@@ -231,7 +231,7 @@ export default class Template {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    render2DTarget(key: string, params: { [key: string]: any }) {
+    render2DTarget(key: string, params: { [key: string]: any }): void {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
@@ -257,7 +257,7 @@ export default class Template {
         return unitedBounds;
     }
 
-    getDimensions(params: { [key: string]: any }) {
+    getDimensions(params: { [key: string]: any }): { xspan: any; yspan: any } {
         params.position = [0, 0];
 
         const unitedBounds = this.getBounds(params);

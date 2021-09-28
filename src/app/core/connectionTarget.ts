@@ -42,7 +42,7 @@ export default class ConnectionTarget {
      * @returns {JSON}
      * @memberof ConnectionTarget
      */
-    toJSON() {
+    toJSON(): { component: string; port: string } {
         // This is for the older design data
         if (this._component instanceof Component) {
             return {
