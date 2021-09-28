@@ -22,20 +22,20 @@ export default class PositionTool extends MouseTool {
         const ref = this;
         this.lastPoint = null;
         this.showQueue = new SimpleQueue(
-            function() {
+            function () {
                 ref.showTarget();
             },
             20,
             false
         );
-        this.up = function(event) {
+        this.up = function (event) {
             // do nothing
         };
-        this.move = function(event) {
+        this.move = function (event) {
             ref.lastPoint = MouseTool.getEventPosition(event);
             ref.showQueue.run();
         };
-        this.down = function(event) {
+        this.down = function (event) {
             ref.viewManagerDelegate.killParamsWindow();
             paper.project.deselectAll();
             ref.createNewFeature(MouseTool.getEventPosition(event));

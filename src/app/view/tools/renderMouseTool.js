@@ -20,23 +20,23 @@ export default class RenderMouseTool extends MouseTool {
         this.currentSelectBox = null;
         this.currentSelection = [];
         const ref = this;
-        this.updateQueue = new SimpleQueue(function() {
+        this.updateQueue = new SimpleQueue(function () {
             ref.dragHandler();
         }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             this.viewManagerDelegate.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
             ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             if (ref.dragging) {
                 ref.lastPoint = MouseTool.getEventPosition(event);
                 ref.updateQueue.run();
             }
             ref.showTarget();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             ref.dragging = false;
             ref.mouseUpHandler(MouseTool.getEventPosition(event));
             ref.showTarget();
@@ -62,7 +62,7 @@ export default class RenderMouseTool extends MouseTool {
         const point = MouseTool.getEventPosition(event);
         const target = this.hitFeature(point);
         if (target) {
-            //if (this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID) && this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID).mint == "TEXT") {
+            // if (this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID) && this.viewManagerDelegate.getNonphysComponentForFeatureID(target.featureID).mint == "TEXT") {
             const element = this.viewManagerDelegate.getNonphysElementFromFeatureID(target.featureID);
             if (element && element.type == "Text") {
                 if (target.selected) {
