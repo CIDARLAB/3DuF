@@ -11,7 +11,7 @@ export default class RenderLayer {
     featureCount: number;
     color: string | undefined;
     private __id: string;
-    private __type: string;
+    private __type: LogicalLayerType;
     name: string;
     protected _physicalLayer: Layer | null;
     protected params: Params;
@@ -36,17 +36,43 @@ export default class RenderLayer {
         this.__id = RenderLayer.generateID();
     }
 
+    /**
+     * Sets the render layer
+     *
+     * @memberof RenderLayer
+     */
     set physicalLayer(layer: Layer | null) {
         this._physicalLayer = layer;
     }
+
+    /**
+     * returns the render layer
+     *
+     * @type {(Layer | null)}
+     * @memberof RenderLayer
+     */
     get physicalLayer(): Layer | null {
         return this._physicalLayer;
     }
 
-    get type(): string {
+    /**
+     * Returns the type of the render layer
+     *
+     * @readonly
+     * @type {string}
+     * @memberof RenderLayer
+     */
+    get type(): LogicalLayerType {
         return this.__type;
     }
 
+    /**
+     * Returns id of the render layer
+     *
+     * @readonly
+     * @type {string}
+     * @memberof RenderLayer
+     */
     get id(): string {
         return this.__id;
     }

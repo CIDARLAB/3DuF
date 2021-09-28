@@ -404,7 +404,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     disableContextMenu() {
-        this.canvas.oncontextmenu = function (event) {
+        this.canvas.oncontextmenu = function(event) {
             event.preventDefault();
         };
     }
@@ -1161,5 +1161,14 @@ export default class PaperView {
      */
     disableSnapRender() {
         this._paperComponentPortView.disable();
+    }
+
+    /**
+     * Returns the paperjs object that is rendering the feature
+     * @param {string} featureID
+     * @returns
+     */
+    getRender(featureID) {
+        return this.paperFeatures[featureID];
     }
 }

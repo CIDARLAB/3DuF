@@ -1,15 +1,21 @@
 import paper from "paper";
-import Registry from "@/app/core/registry";
+import { ViewManager } from "..";
 
 /**
  * Selection class
  */
 export default class Selection {
+    protected __components: Array<string>;
+    protected __connections: Array<string>;
+    protected __otherFeatures: Array<string>;
+    protected __bounds: paper.Rectangle;
+    private viewManagerDelegate: ViewManager;
+
     /**
      * Pass an array of feature IDs that can be used to store the selection
      * @param {Array<string>} items Array of String
      */
-    constructor(items) {
+    constructor(items: Array<string>, viewManager: ViewManager) {
         this.__components = [];
         this.__connections = [];
         this.__otherFeatures = [];
@@ -18,6 +24,7 @@ export default class Selection {
             console.log(items[i]);
         }
         this.__bounds = this.__calculateSelectionBounds();
+        this.viewManagerDelegate = viewManager;
     }
 
     /**
@@ -27,26 +34,26 @@ export default class Selection {
      * @returns {void}
      * @memberof Selection
      */
-    replicate(x, y) {
+    replicate(x: number, y: number): void {
         /*
         1. Get the selection's reference point
         2. Go through each of the items
         3. Clone components/connections/other features
          */
-        const referencepoint = this.__bounds.topleft;
+        const referencepoint = this.__bounds.topLeft;
 
         console.log("reference point:", referencepoint);
 
         for (const i in this.__components) {
-            const render = Registry.currentDevice.getFeatureByID(this.__components[i]);
+            const render = this.viewManagerDelegate.currentDevice.getFeatureByID(this.__components[i]);
         }
 
         for (const i in this.__connections) {
-            const render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+            const render = this.viewManagerDelegate.currentDevice.getFeatureByID(this.__connections[i]);
         }
 
         for (const i in this.__otherFeatures) {
-            const render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+            const render = this.viewManagerDelegate.currentDevice.getFeatureByID(this.__otherFeatures[i]);
         }
     }
 
@@ -55,25 +62,34 @@ export default class Selection {
      * @returns {void}
      * @memberof Selection
      */
-    selectAll() {
+    selectAll(): void {
         for (const i in this.__components) {
-            const component = Registry.currentDevice.getComponentByID(this.__components[i]);
+            const component = this.viewManagerDelegate.currentDevice.getComponentByID(this.__components[i]);
+            if (component === null) {
+                throw new Error("Component not found");
+            }
             for (const j in component.featureIDs) {
-                const render = Registry.currentDevice.getFeatureByID(component.featureIDs[i]);
+                const feature = this.viewManagerDelegate.currentDevice.getFeatureByID(component.featureIDs[i]);
+                const render = this.viewManagerDelegate.view.getRender(feature.ID);
                 render.selected = true;
             }
         }
 
         for (const i in this.__connections) {
-            const connection = Registry.currentDevice.getConnectionByID(this.__connections[i]);
+            const connection = this.viewManagerDelegate.currentDevice.getConnectionByID(this.__connections[i]);
+            if (connection === null) {
+                throw new Error("Connection not found");
+            }
             for (const j in connection.featureIDs) {
-                const render = Registry.currentDevice.getFeatureByID(connection.featureIDs[i]);
+                const feature = this.viewManagerDelegate.currentDevice.getFeatureByID(connection.featureIDs[i]);
+                const render = this.viewManagerDelegate.view.getRender(feature.ID);
                 render.selected = true;
             }
         }
 
         for (const i in this.__otherFeatures) {
-            const render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+            const feature = this.viewManagerDelegate.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+            const render = this.viewManagerDelegate.view.getRender(feature.ID);
             render.selected = true;
         }
     }
@@ -83,7 +99,7 @@ export default class Selection {
      * @returns {Array<number>} Returns an array containing the bounds of the selection
      * @memberof Selection
      */
-    get bounds() {
+    get bounds(): paper.Rectangle {
         return this.__bounds;
     }
 
@@ -92,7 +108,7 @@ export default class Selection {
      * @returns {void}
      * @memberof Selection
      */
-    __calculateSelectionBounds() {
+    __calculateSelectionBounds(): paper.Rectangle {
         let xmin = 0;
         let ymin = 0;
         let xmax = 0;
@@ -100,7 +116,8 @@ export default class Selection {
         let bounds;
 
         for (const i in this.__components) {
-            const render = Registry.currentDevice.getFeatureByID(this.__components[i]);
+            const feature = this.viewManagerDelegate.currentDevice.getFeatureByID(this.__components[i]);
+            const render = this.viewManagerDelegate.view.getRender(feature.ID);
             bounds = render.bounds;
             if (bounds.x < xmin) {
                 xmin = bounds.x;
@@ -117,7 +134,8 @@ export default class Selection {
         }
 
         for (const i in this.__connections) {
-            const render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+            const feature = this.viewManagerDelegate.currentDevice.getFeatureByID(this.__connections[i]);
+            const render = this.viewManagerDelegate.view.getRender(feature.ID);
             bounds = render.bounds;
             if (bounds.x < xmin) {
                 xmin = bounds.x;
@@ -134,7 +152,8 @@ export default class Selection {
         }
 
         for (const i in this.__otherFeatures) {
-            const render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+            const feature = this.viewManagerDelegate.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+            const render = this.viewManagerDelegate.view.getRender(feature.ID);
             bounds = render.bounds;
             if (bounds.x < xmin) {
                 xmin = bounds.x;

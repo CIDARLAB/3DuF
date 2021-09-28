@@ -122,7 +122,7 @@ export default class Component {
      * @return {Array} Returns an array with the features
      * @memberof Component
      */
-    get featureIDs(): Array<String> {
+    get featureIDs(): Array<string> {
         return this._featureIDs;
     }
 
