@@ -20,7 +20,7 @@ export default class MouseSelectTool extends MouseTool {
         this.updateQueue = new SimpleQueue(function () {
             ref.dragHandler();
         }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             ref.viewManagerDelegate.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
