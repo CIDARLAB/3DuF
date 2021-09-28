@@ -143,7 +143,7 @@ export class ThreeDeviceRenderer {
 
     static sanitizeParams(params, height) {
         for (var key in params) {
-            if (key == "start" || key == "end" || key == "position") {
+            if (key === "start" || key === "end" || key === "position") {
                 var pos = params[key];
                 params[key] = [pos[0] / 1000, height - pos[1] / 1000];
             } else {

@@ -13,7 +13,7 @@ export default class Params {
     constructor(values, unique, heritable, rawparameters) {
         this.unique = unique;
         this.heritable = heritable;
-        if (values != null) {
+        if (values !== null) {
             this.parameters = this.__sanitizeValues(values);
         } else {
             let value;
@@ -43,7 +43,7 @@ export default class Params {
     }
     /**
      * Checks if the object has certain parameter.
-     * @param {String} key The key is use to identify the parameter 
+     * @param {String} key The key is use to identify the parameter
      * @memberof Params
      * @returns {void}
      */
@@ -73,7 +73,7 @@ export default class Params {
     /**
      * Checks if param object has unique key.
      * @param {String} key Key to identify the param
-     * @returns {boolean} 
+     * @returns {boolean}
      * @memberof Params
      */
     isUnique(key) {
@@ -90,19 +90,19 @@ export default class Params {
     }
     /**
      * Checks if param has unique key.
-     * @param {Parameters} params Param to check if it is unique 
+     * @param {Parameters} params Param to check if it is unique
      * @returns {boolean}
      * @memberof Params
      */
     hasAllUniques(params) {
-        for (let key in this.unique) if (!params.hasOwnProperty(key)) return false;
+        for (let key in this.unique) if (!Object.prototype.hasOwnProperty.call(params, key)) return false;
         return true;
     }
     /**
      * Returns the expected type for a specific param.
      * @param {String} key Identifier of the param
-     * @param {*} expected 
-     * @param {*} actual 
+     * @param {*} expected
+     * @param {*} actual
      * @memberof Params
      * @returns {void}
      */
@@ -124,7 +124,7 @@ export default class Params {
             if (this.isUnique(key)) {
                 newParams[key] = Parameter.makeParam(this.unique[key], oldParam);
             } else if (this.isHeritable(key)) {
-                if (values[key]) {
+                if (values[key] !== undefined || values[key] !== null) {
                     newParams[key] = Parameter.makeParam(this.heritable[key], oldParam);
                 }
             } else {
@@ -150,11 +150,11 @@ export default class Params {
             if (!(param instanceof Parameter)) {
                 throw new Error(key + " is not a ParameterValue.");
             } else if (this.isUnique(key)) {
-                if (param.type != this.unique[key]) {
+                if (param.type !== this.unique[key]) {
                     this.wrongTypeError(key, this.unique[key], param.type);
                 }
             } else if (this.isHeritable(key)) {
-                if (param.type != this.heritable[key]) {
+                if (param.type !== this.heritable[key]) {
                     this.wrongTypeError(key, this.heritable[key], param.type);
                 }
             } else {
@@ -173,7 +173,7 @@ export default class Params {
     toJSON() {
         let json = {};
         for (let key in this.parameters) {
-            if (this.parameters[key] != undefined) {
+            if (this.parameters[key] !== undefined) {
                 json[key] = this.parameters[key].getValue();
             }
         }
@@ -181,9 +181,9 @@ export default class Params {
     }
     /**
      * Creates new params object from a JSON format.
-     * @param {JSON} json 
-     * @param {*} unique 
-     * @param {*} heritable 
+     * @param {JSON} json
+     * @param {*} unique
+     * @param {*} heritable
      * @returns {Params} Returns a new params object.
      * @memberof Params
      */
@@ -208,7 +208,7 @@ export default class Params {
     toMap() {
         let ret = new Map();
         for (let key in this.parameters) {
-            if (this.parameters[key] != undefined) {
+            if (this.parameters[key] !== undefined) {
                 ret.set(key, this.parameters[key].getValue());
             }
         }

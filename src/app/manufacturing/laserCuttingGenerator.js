@@ -53,12 +53,12 @@ export default class LaserCuttingGenerator {
             for (let key in features) {
                 let feature = features[key];
                 //TODO: Include fabtype check also
-                if (feature.getType() == "Port") {
+                if (feature.getType() === "Port") {
                     ports.push(key);
                 }
             }
 
-            if (ports.length == 0) {
+            if (ports.length === 0) {
                 continue;
             }
 
@@ -116,7 +116,7 @@ export default class LaserCuttingGenerator {
 
             let features = layer.features;
 
-            if (layer.name == "control") {
+            if (layer.name === "control") {
                 isControl = true;
             }
 
@@ -126,7 +126,7 @@ export default class LaserCuttingGenerator {
             for (let key in features) {
                 let feature = features[key];
                 //TODO: Modify the port check
-                if (feature.fabType == "XY" && feature.getType() != "Port") {
+                if (feature.fabType === "XY" && feature.getType() !== "Port") {
                     let depth = feature.getValue("height");
                     console.log("Depth of feature: ", key, depth);
                     featuredepthmap.addFeature(depth, key);
@@ -188,7 +188,7 @@ export default class LaserCuttingGenerator {
             let layer = layers[i];
             manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_EDGE");
 
-            if (layer.name == "control") {
+            if (layer.name === "control") {
                 isControl = true;
             }
 
@@ -197,7 +197,7 @@ export default class LaserCuttingGenerator {
             for (let key in features) {
                 let feature = features[key];
                 //TODO: Modify the port check
-                if (feature.fabType == "EDGE") {
+                if (feature.fabType === "EDGE") {
                     console.log("EDGE Feature: ", key);
                     let issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
                     if (!issuccess) {
@@ -262,7 +262,7 @@ export default class LaserCuttingGenerator {
 
             let features = layer.features;
 
-            if (layer.name == "control") {
+            if (layer.name === "control") {
                 isControl = true;
             }
 

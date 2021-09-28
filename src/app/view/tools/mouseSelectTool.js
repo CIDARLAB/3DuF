@@ -39,11 +39,11 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     keyHandler(event) {
-        if (event.key == "delete" || event.key == "backspace") {
+        if (event.key === "delete" || event.key === "backspace") {
             console.log("Removing feature");
             this.removeFeatures();
         }
-        if (event.key == "c") {
+        if (event.key === "c") {
             console.log("Detected a ctrlC");
             console.log(this.currentSelection);
         }
@@ -126,10 +126,10 @@ export default class MouseSelectTool extends MouseTool {
         //Find the component that owns this feature and then select all of the friends
         let component = this.__getComponentWithFeatureID(paperElement.featureID);
         let connection = this.__getConnectionWithFeatureID(paperElement.featureID);
-        if (component == null && connection == null) {
+        if (component === null && connection === null) {
             //Does not belong to a component, hence this returns
             paperElement.selected = true;
-        } else if (component != null) {
+        } else if (component !== null) {
             //Belongs to the component so we basically select all features with this id
             let featureIDs = component.getFeatureIDs();
             for (let i in featureIDs) {
@@ -139,7 +139,7 @@ export default class MouseSelectTool extends MouseTool {
             }
 
             Registry.viewManager.view.selectedComponents.push(component);
-        } else if (connection != null) {
+        } else if (connection !== null) {
             let featureIDs = connection.getFeatureIDs();
             for (let i in featureIDs) {
                 let featureid = featureIDs[i];
@@ -173,7 +173,7 @@ export default class MouseSelectTool extends MouseTool {
             let componentfeatures = component.getFeatureIDs();
             let index = componentfeatures.indexOf(featureid);
 
-            if (index != -1) {
+            if (index !== -1) {
                 //Found it !!
                 return component;
             }
@@ -202,7 +202,7 @@ export default class MouseSelectTool extends MouseTool {
             let connection_features = connection.getFeatureIDs();
             let index = connection_features.indexOf(featureid);
 
-            if (index != -1) {
+            if (index !== -1) {
                 //Found it !!
                 return connection;
             }
@@ -222,7 +222,7 @@ export default class MouseSelectTool extends MouseTool {
                 //Find the component that owns this feature and then select all of the friends
                 let component = this.__getComponentWithFeatureID(paperFeature.featureID);
 
-                if (component == null) {
+                if (component === null) {
                     //Does not belong to a component hence do the normal stuff
                     paperFeature.selected = true;
                 } else {

@@ -12,6 +12,7 @@ export default class AlignmentMarks extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             width: "Float",
             length: "Float",
             height: "Float"
@@ -64,9 +65,9 @@ export default class AlignmentMarks extends Template {
     }
 
     render2D(params, key) {
-        if (key == "FLOW") {
+        if (key === "FLOW") {
             return this.__drawFlow(params);
-        } else if (key == "CONTROL") {
+        } else if (key === "CONTROL") {
             return this.__drawControl(params);
         }
     }

@@ -14,11 +14,11 @@ import ComponentPort from "./componentPort";
 export default class Connection {
     /**
      * Default Connection Constructor
-     * @param {String} type 
-     * @param {Params} params 
-     * @param {String} name 
-     * @param {String} mint 
-     * @param {String} id 
+     * @param {String} type
+     * @param {Params} params
+     * @param {String} name
+     * @param {String} mint
+     * @param {String} id
      */
     constructor(type, params, name, mint, id = Feature.generateID()) {
         this.__params = params;
@@ -117,6 +117,52 @@ export default class Connection {
     }
 
     /**
+     * Updates the coordinates of the connections and all the other features
+     * @param {Array} center
+     * @memberof Connection
+     * @returns {void}
+     */
+    updateConnectionPosition(changeX, changeY) {
+        // update waypoints values
+        const waypoints = this.__params.parameters.wayPoints;
+        const waypoints_values = [];
+        waypoints.getValue().forEach(value => {
+            waypoints_values.push([value[0] + changeX, value[1] + changeY]);
+        });
+        waypoints.updateValue(waypoints_values);
+        // update segments values
+        const segments = this.__params.parameters.segments;
+        const segments_values = [];
+        segments.getValue().forEach(value => {
+            segments_values.push([
+                [value[0][0] + changeX, value[0][1] + changeY],
+                [value[1][0] + changeX, value[1][1] + changeY]
+            ]);
+        });
+        segments.updateValue(segments_values);
+        // update start value
+        const start = this.__params.parameters.start.getValue();
+        start[0] += changeX;
+        start[1] += changeY;
+        this.__params.updateParameter("start", start);
+        // update end value
+        const end = this.__params.parameters.end.getValue();
+        end[0] += changeX;
+        end[1] += changeY;
+        this.__params.updateParameter("end", end);
+        // update feature values
+        for (const i in this.__features) {
+            const featureidtochange = this.__features[i];
+
+            const feature = Registry.currentDevice.getFeatureByID(featureidtochange);
+            feature.updateParameter("wayPoints", waypoints_values);
+            feature.updateParameter("segments", segments_values);
+            feature.updateParameter("start", start);
+            feature.updateParameter("end", end);
+        }
+    }
+
+    /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
      * @returns {Connection} Object
      * @memberof Connection
@@ -126,13 +172,13 @@ export default class Connection {
         output.id = this.__id;
         output.name = this.__name;
         output.entity = this.__entity;
-        if (this.__source != null) {
+        if (this.__source !== null) {
             output.source = this.__source.toJSON();
         } else {
             output.source = null;
         }
         let sinks = [];
-        if (this.__sinks != null && this.__sinks.length > 0) {
+        if (this.__sinks !== null && this.__sinks.length > 0) {
             for (let i in this.__sinks) {
                 sinks.push(this.__sinks[i].toJSON());
             }
@@ -142,7 +188,30 @@ export default class Connection {
         }
         output.paths = this.__paths;
         output.params = this.__params.toJSON();
+        output.layer = this.__findLayerReference();
         return output;
+    }
+
+    /**
+     *
+     */
+    __findLayerReference() {
+        let layers = Registry.currentDevice.getLayers();
+        let layerrefs;
+        let layer;
+        for (const i in layers) {
+            layer = layers[i];
+            //Check if the connectino is in layer then put it there
+            let feature;
+            for (const key in layer.features) {
+                feature = layer.features[key];
+
+                if (feature.referenceID === this.getID()) {
+                    layerrefs = layer.id;
+                }
+            }
+        }
+        return layerrefs;
     }
 
     /**
@@ -259,7 +328,7 @@ export default class Connection {
             renderedfeature = FeatureRenderer2D.renderFeature(feature);
             console.log("rendered:");
             console.log(renderedfeature);
-            if (bounds == null) {
+            if (bounds === null) {
                 bounds = renderedfeature.bounds;
             } else {
                 bounds = bounds.unite(renderedfeature.bounds);
@@ -330,11 +399,11 @@ export default class Connection {
      * @memberof Connection
      * @returns {boolean}
      */
-    insertFeatureGap(boundingbox) {
-        let foundflag = false;
+    insertFeatureGap(boundingbox, angle = 0) {
         //Convert Rectangle to Path.Rectangle
         console.log(boundingbox, boundingbox.width, boundingbox.height);
         boundingbox = new paper.Path.Rectangle(boundingbox);
+        boundingbox.rotate(angle, boundingbox.center);
         //Check which segment I need to break
         let segments = this.getValue("segments");
         for (let i in segments) {
@@ -351,7 +420,6 @@ export default class Connection {
                     throw new Error("Could not break the segments correctly");
                 }
                 segments.splice(i, 1, newsegs[0], newsegs[1]);
-                foundflag = true;
             } else if (intersections.length === 1) {
                 console.error("Only found 1 intersection point so going to use a different method");
                 console.log("Found Intersection:", intersections);
@@ -369,18 +437,9 @@ export default class Connection {
             }
         }
 
-        //Now that we exit the check for every segment we can verify if this is ok
-        if (!foundflag) {
-            console.error("There's something funky going on with the intersection,no intersections found");
-            console.log("Segments:", segments);
-            // console.log("line:", line);
-            console.log("Bounding Box:", boundingbox);
-            throw new Error("Could not find 2 intersection points, hence aborting the whole thing");
-        }
-        // console.log("raw new segments:", segments);
         this.updateSegments(segments);
 
-        return foundflag;
+        return true;
     }
 
     /**
@@ -405,14 +464,14 @@ export default class Connection {
 
         //Find out if break1 is closer to p1 or p2
         if (p1_break1 + p2_break2 < p2_break1 + p1_break2) {
-            //break1 is closer to p1 and break2 is closer to p2\
+            //break1 is closer to p1 and break2 is closer to p2
             segment1 = [
                 [Math.round(p1.x), Math.round(p1.y)],
                 [Math.round(break1.x), Math.round(break1.y)]
             ];
             segment2 = [
-                [Math.round(p2.x), Math.round(p2.y)],
-                [Math.round(break2.x), Math.round(break2.y)]
+                [Math.round(break2.x), Math.round(break2.y)],
+                [Math.round(p2.x), Math.round(p2.y)]
             ];
         } else {
             //break1 is closer to p2 and break1 is closer to p1
@@ -421,8 +480,8 @@ export default class Connection {
                 [Math.round(break1.x), Math.round(break1.y)]
             ];
             segment2 = [
-                [Math.round(p1.x), Math.round(p1.y)],
-                [Math.round(break2.x), Math.round(break2.y)]
+                [Math.round(break2.x), Math.round(break2.y)],
+                [Math.round(p1.x), Math.round(p1.y)]
             ];
         }
         return [segment1, segment2];
@@ -452,22 +511,22 @@ export default class Connection {
         }
 
         //Check if the params have the other unique elements necessary otherwise add them as null
-        if (!params.hasOwnProperty("start")) {
+        if (!Object.prototype.hasOwnProperty.call(params, "start")) {
             //Setting this value to origin
             params["start"] = [0, 0];
         }
-        if (!params.hasOwnProperty("end")) {
+        if (!Object.prototype.hasOwnProperty.call(params, "end")) {
             //Setting this value to origin
             params["end"] = [0, 0];
         }
-        if (!params.hasOwnProperty("wayPoints")) {
+        if (!Object.prototype.hasOwnProperty.call(params, "wayPoints")) {
             //TODO: setting a single waypoint at origin
             params["wayPoints"] = [
                 [0, 0],
                 [1, 2]
             ];
         }
-        if (!params.hasOwnProperty("segments")) {
+        if (!Object.prototype.hasOwnProperty.call(params, "segments")) {
             //TODO: Setting a default segment from origin to origin
             params["segments"] = [
                 [
@@ -484,21 +543,21 @@ export default class Connection {
         let paramstoadd = new Params(params, definition.unique, definition.heritable);
 
         let connection = new Connection(entity, paramstoadd, name, entity, id);
-        if (json.hasOwnProperty("source")) {
-            if (json.source != null && json.source != undefined) {
+        if (Object.prototype.hasOwnProperty.call(json, "source")) {
+            if (json.source !== null && json.source !== undefined) {
                 connection.setSourceFromJSON(device, json.source);
             }
         }
-        if (json.hasOwnProperty("sinks")) {
-            if (json.sinks != null && json.sinks != undefined) {
+        if (Object.prototype.hasOwnProperty.call(json, "sinks")) {
+            if (json.sinks !== null && json.sinks !== undefined) {
                 for (let i in json.sinks) {
                     let sink = json.sinks[i];
                     connection.addSinkFromJSON(device, sink);
                 }
             }
         }
-        if (json.hasOwnProperty("paths")) {
-            if (json.paths != null && json.paths != undefined) {
+        if (Object.prototype.hasOwnProperty.call(json, "paths")) {
+            if (json.paths !== null && json.paths !== undefined) {
                 for (let i in json.paths) {
                     connection.addWayPoints(json.paths[i]);
                 }
@@ -543,7 +602,7 @@ export default class Connection {
 
     /**
      * Allows the user to add a sink to the connection
-     * @param {string} component 
+     * @param {string} component
      * @param {ComponentPort} port
      * @memberof Connection
      * @returns {void}
@@ -563,11 +622,11 @@ export default class Connection {
      * @returns {void}
      */
     addConnectionTarget(connectiontarget) {
-        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget == null || connectiontarget == undefined) {
+        if (!(connectiontarget instanceof ConnectionTarget) || connectiontarget === null || connectiontarget === undefined) {
             console.error("Cannot add non-ConnectionTarget object as source or sink");
         }
 
-        if (this.__source == null) {
+        if (this.__source === null) {
             this.__source = connectiontarget;
         } else {
             //TODO: Check for duplicates - does it matter actually ?
@@ -580,11 +639,11 @@ export default class Connection {
      * @param {string} componentid Component ID
      * @return {boolean} Returns true if any corresponding connection target is found
      * @memberof Connection
-     * 
+     *
      */
     tryDeleteConnectionTarget(componentid) {
         let ret = false;
-        if (component.getID() == componentid) {
+        if (component.getID() === componentid) {
             //Remove the source object
             this.__source = null;
             ret = true;
@@ -593,7 +652,7 @@ export default class Connection {
         for (let i in this.__sinks) {
             let sink = this.__sinks[i];
 
-            if (sink.component.getID() == componentid) {
+            if (sink.component.getID() === componentid) {
                 this.__sinks.splice(i, 1);
                 ret = true;
             }
@@ -613,7 +672,7 @@ export default class Connection {
     }
     /**
      * Merges connections
-     * @param {Connection} connection 
+     * @param {Connection} connection
      * @memberof Connection
      * @returns {void}
      */
@@ -630,8 +689,8 @@ export default class Connection {
     }
     /**
      * Converts from JSON format to connection object
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */
@@ -641,8 +700,8 @@ export default class Connection {
     }
     /**
      * ?
-     * @param {Object} device 
-     * @param {JSON} json 
+     * @param {Object} device
+     * @param {JSON} json
      * @memberof Connection
      * @returns {void}
      */

@@ -42,7 +42,7 @@ export default class ResolutionToolBar {
      * @param smallResolution
      */
     updateResolutionLabelAndSlider(smallResolution) {
-        if (smallResolution != null) {
+        if (smallResolution !== null) {
             this.__gridResolution = smallResolution;
             this.__smallresolutionLabel.innerHTML = smallResolution + " &mu;m";
 
@@ -52,7 +52,7 @@ export default class ResolutionToolBar {
 
     __setupGridResolutionSlider() {
         //Check if the div element has a different name now
-        if (this.__gridResolutionSlider == null) {
+        if (this.__gridResolutionSlider === null) {
             throw new Error("Could not find HTML element for the grid resolution slider");
         }
         //Create the noUiSlider
@@ -87,7 +87,7 @@ export default class ResolutionToolBar {
             let value = parseInt(values[0], 10);
 
             //This ensures that there is something valid present
-            if (registryref.currentGrid != null) {
+            if (registryref.currentGrid !== null) {
                 registryref.currentGrid.updateGridSpacing(value);
                 registryref.currentGrid.notifyViewManagerToUpdateView();
             }

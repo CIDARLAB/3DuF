@@ -47,7 +47,7 @@ export default class ChangeAllDialog {
         //Find all the similar components
         for (let i in allcomponents) {
             let component = allcomponents[i];
-            if (selectedcomponenttype == component.getType() && selectedcomponent.getID() != component.getID()) {
+            if (selectedcomponenttype === component.getType() && selectedcomponent.getID() !== component.getID()) {
                 this.__componentsToChangeMap.set(component.getID(), true);
                 similarcomponents.push(component);
             }

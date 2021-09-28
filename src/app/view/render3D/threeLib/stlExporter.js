@@ -49,7 +49,7 @@ THREE.STLExporter.prototype = {
 
                             for (var j = 0; j < 3; j++) {
                                 var vertexIndex = indices[j];
-                                if (mesh.geometry.skinIndices.length == 0) {
+                                if (mesh.geometry.skinIndices.length === 0) {
                                     vector.copy(vertices[vertexIndex]).applyMatrix4(matrixWorld);
                                     output += "\t\t\tvertex " + vector.x + " " + vector.y + " " + vector.z + "\n";
                                 } else {

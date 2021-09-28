@@ -54,9 +54,9 @@ export default class DAFDPlugin {
         let dxpos = dropgen.getPosition()[0];
         let xpos = dxpos + oilInputWidth / 2;
         let ypos = port_oil1.getCenterPosition()[1];
-        port_oil1.updateComponetPosition([xpos, ypos]);
+        port_oil1.updateComponentPosition([xpos, ypos]);
         ypos = port_oil2.getCenterPosition()[1];
-        port_oil2.updateComponetPosition([xpos, ypos]);
+        port_oil2.updateComponentPosition([xpos, ypos]);
 
         //Moving teh transistions to align with droplet generators
         ypos = port_oil1.getValue("position")[1];

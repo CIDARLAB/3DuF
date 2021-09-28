@@ -19,7 +19,7 @@ export default class IntroDialog {
 
         let isfirsttime = CookieUtils.getCookie("isfirst");
         console.log("cookie data:", isfirsttime);
-        if (isfirsttime != "true") {
+        if (isfirsttime !== "true") {
             this._dialog.showModal();
         } else {
             CookieUtils.setCookie("isfirst", "false");

@@ -13,6 +13,7 @@ export default class LLChamber extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             width: "Float",
             length: "Float",
             height: "Float",
@@ -22,6 +23,7 @@ export default class LLChamber extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             width: 400,
             length: 5000,
             height: 250,
@@ -31,6 +33,7 @@ export default class LLChamber extends Template {
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             width: "&mu;m",
             length: "&mu;m",
             height: "&mu;m",
@@ -40,6 +43,7 @@ export default class LLChamber extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             width: 5,
             length: 5,
             height: 1,
@@ -49,15 +53,17 @@ export default class LLChamber extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             width: 50000,
             length: 50000,
             height: 50000,
             numberOfChambers: 1000,
             spacing: 50000,
-            rotation: 90
+            rotation: 360
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             width: "width",
             length: "length",
@@ -68,6 +74,7 @@ export default class LLChamber extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             width: "width",
             length: "length",
@@ -210,7 +217,7 @@ export default class LLChamber extends Template {
         return rendered.rotate(rotation, px, py);
     }
 
-    render2D(params, key) {
+    render2D(params, key="FLOW") {
         if (key === "FLOW") {
             return this.__renderFlow(params);
         } else {

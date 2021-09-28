@@ -756,5 +756,344 @@ export const render2D = {
         featurePrimitiveType: "blah",
         targetPrimitiveType: "blah",
         targetPrimitiveSet: "Basic2D"
-    }
+    },
+
+    //new
+    Filter: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            pillarDiameter: "pillarDiameter",
+            filterWidth: "filterWidth",
+            barrierWidth: "barrierWidth",
+            filterLength: "filterLength",
+            filterNumber: "filterNumber",
+            levelNumber: "levelNumber",
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            outletWidth: "outletWidth",
+            outletLength: "outletLength"
+        },
+        targetParams: {
+            orientation: "orientation",
+            pillarDiameter: "pillarDiameter",
+            filterWidth: "filterWidth",
+            barrierWidth: "barrierWidth",
+            filterLength: "filterLength",
+            filterNumber: "filterNumber",
+            levelNumber: "levelNumber",
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            outletWidth: "outletWidth",
+            outletLength: "outletLength"
+        },
+        featurePrimitiveType: "FilterMixer",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "FilterTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    CellTrapS: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberWidth",
+            radius2: "chamberSpacing"
+        },
+        targetParams: {
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing"
+        },
+        featurePrimitiveType: "CellTrapS",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CellTrapSTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    CellTrapS_cell: {
+        featureParams: {
+            position: "position",
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberWidth",
+            radius2: "chamberSpacing"
+        },
+        targetParams: {
+            chamberLength: "chamberLength",
+            feedingChannelWidth: "feedingChannelWidth",
+            orientation: "orientation",
+            chamberWidth: "chamberWidth",
+            numberOfChambers: "numberOfChambers",
+            chamberSpacing: "chamberSpacing",
+            radius1: "chamberSpacing",
+            radius2: "chamberSpacing"
+        },
+        featurePrimitiveType: "CellTrapS_cell",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CellTrapSTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    ThreeDMux: {
+        featureParams: {
+            inputNumber: "inputNumber",
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            width: "width",
+            length: "length",
+            gap: "gap",
+            valveSpacing: "valveSpacing",
+            channelWidth: "channelWidth"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "ThreeDMux",
+        targetPrimitiveType: "ThreeDMuxTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    ThreeDMux_control: {
+        featureParams: {
+            inputNumber: "inputNumber",
+            position: "position",
+            orientation: "orientation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            width: "width",
+            length: "length",
+            gap: "gap",
+            valveSpacing: "valveSpacing",
+            channelWidth: "channelWidth"
+        },
+        targetParams: {
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "ThreeDMux_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    ChemostatRing: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "ChemostatRing",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "ChemostatRingTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Incubation: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "Incubation",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "IncubationTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Merger: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            electrodeDistance: "electrodeDistance",
+            outletWidth: "outletWidth",
+            outletLength: "outletLength",
+            chamberHeight: "chamberHeight",
+            chamberLength: "chamberLength",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth"
+        },
+        targetParams: {
+            orientation: "orientation",
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            electrodeDistance: "electrodeDistance",
+            outletWidth: "outletWidth",
+            outletLength: "outletLength",
+            chamberHeight: "chamberHeight",
+            chamberLength: "chamberLength",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth"
+        },
+        featurePrimitiveType: "Merger",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "MergerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    PicoInjection: {
+        featureParams: {
+            position: "position",
+            width: "width",
+            injectorWidth: "injectorWidth",
+            injectorLength: "injectorLength",
+            dropletWidth: "dropletWidth",
+            nozzleWidth: "nozzleWidth",
+            nozzleLength: "nozzleLength",
+            electrodeDistance: "electrodeDistance",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            orientation: "orientation"
+        },
+        targetParams: {
+            width: "width",
+            injectorWidth: "injectorWidth",
+            injectorLength: "injectorLength",
+            dropletWidth: "dropletWidth",
+            nozzleWidth: "nozzleWidth",
+            nozzleLength: "nozzleLength",
+            electrodeDistance: "electrodeDistance",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            orientation: "orientation"
+        },
+        featurePrimitiveType: "PicoInjection",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "PicoInjectionTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Sorter: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeDistance: "electrodeDistance",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            outletWidth: "outletWidth",
+            angle: "angle",
+            wasteWidth: "wasteWidth",
+            outputLength: "outputLength",
+            keepWidth: "keepWidth",
+            pressureWidth: "pressureWidth",
+            pressureSpacing: "pressureSpacing",
+            numberofDistributors: "numberofDistributors",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth",
+            pressureDepth: "pressureDepth"
+        },
+        targetParams: {
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeDistance: "electrodeDistance",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            outletWidth: "outletWidth",
+            angle: "angle",
+            wasteWidth: "wasteWidth",
+            outputLength: "outputLength",
+            keepWidth: "keepWidth",
+            pressureWidth: "pressureWidth",
+            pressureSpacing: "pressureSpacing",
+            numberofDistributors: "numberofDistributors",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth",
+            pressureDepth: "pressureDepth"
+        },
+        featurePrimitiveType: "Sorter",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "SorterTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    Splitter: {
+        featureParams: {
+            position: "position",
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        targetParams: {
+            channelWidth: "channelWidth",
+            bendSpacing: "bendSpacing",
+            numberOfBends: "numberOfBends",
+            orientation: "orientation",
+            bendLength: "bendLength"
+        },
+        featurePrimitiveType: "Splitter",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "SplitterTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    CapacitanceSensor: {
+        featureParams: {
+            position: "position",
+            orientation: "orientation",
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            electrodeDistance: "electrodeDistance",
+            sensorWidth: "sensorWidth",
+            sensorLength: "sensorLength",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth"
+        },
+        targetParams: {
+            orientation: "orientation",
+            inletWidth: "inletWidth",
+            inletLength: "inletLength",
+            electrodeWidth: "electrodeWidth",
+            electrodeLength: "electrodeLength",
+            electrodeDistance: "electrodeDistance",
+            sensorWidth: "sensorWidth",
+            sensorLength: "sensorLength",
+            channelDepth: "channelDepth",
+            electrodeDepth: "electrodeDepth"
+        },
+        featurePrimitiveType: "CapacitanceSensor",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "CapacitanceSensorTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
 };

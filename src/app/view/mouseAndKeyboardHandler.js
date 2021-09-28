@@ -74,7 +74,7 @@ export default class MouseAndKeyboardHandler {
             let key = event.keyCode || event.which;
 
             //Saving
-            if ((event.ctrlKey || event.metaKey) && key == 83) {
+            if ((event.ctrlKey || event.metaKey) && key === 83) {
                 event.preventDefault();
                 reference.exportPanel.saveJSON();
             }
@@ -100,17 +100,18 @@ export default class MouseAndKeyboardHandler {
             let key = event.keyCode || event.which;
 
             // Delete
-            if (key == 46 || key == 8) {
+            if (key === 46 || key === 8) {
                 reference.saveDeviceState();
                 reference.view.deleteSelectedFeatures();
             }
             // Copy
-            if ((event.ctrlKey || event.metaKey) && key == 67) {
-                // console.log("Ctl c detected");
+
+            if ((event.ctrlKey || event.metaKey) && key === 67) {
+                //console.log("Ctl c detected");
                 reference.initiateCopy();
             }
             // Cut
-            if ((event.ctrlKey || event.metaKey) && key == 88) {
+            if ((event.ctrlKey || event.metaKey) && key === 88) {
                 //console.log("Ctl x detected");
                 let selection = reference.view.getSelectedFeatures();
                 if (selectedFeatures.length > 0) {
@@ -210,6 +211,12 @@ export default class MouseAndKeyboardHandler {
                 reference.view.selectAllActive();
                 return false;
             }
+
+            if ((event.ctrlKey || event.metaKey) && key === 71) {
+                // Center the Design
+                reference.centerAll();
+                return false;
+            }
         });
     }
     /**
@@ -259,7 +266,7 @@ export default class MouseAndKeyboardHandler {
      * @param {*} tool3 
      */
     constructMouseDownEvent(tool1, tool2, tool3) {
-        if (tool1 == tool3) {
+        if (tool1 === tool3) {
             console.log("Both right and left tool is the same");
             return this.constructMouseEvent(tool1.down, tool2.down, tool3.rightdown, this.__mouseDownCallback);
         } else {

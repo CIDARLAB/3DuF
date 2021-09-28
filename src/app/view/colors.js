@@ -142,11 +142,11 @@ export function getLayerColors(layer) {
     if (layer.color) {
         return layerColors[layer.color];
     } else {
-        if (layer.name == "flow") {
+        if (layer.name === "flow") {
             return layerColors["indigo"];
-        } else if (layer.name == "control") {
+        } else if (layer.name === "control") {
             return layerColors["red"];
-        } else if (layer.name == "cell") {
+        } else if (layer.name === "cell") {
             return layerColors["green"];
         }
     }

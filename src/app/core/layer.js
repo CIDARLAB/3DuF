@@ -13,13 +13,32 @@ export default class Layer {
      * @param {*} values Value of the layer
      * @param {String} name Name of the layer
      */
-    constructor(values, name = "New Layer") {
+    constructor(values, name = "New Layer", type = "FLOW", group = "0") {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = String(name);
         this.features = {};
         this.featureCount = 0;
         this.device = undefined;
         this.color = undefined;
+        this.__id = Layer.generateID();
+        this.__type = type;
+        this.group = group;
+    }
+
+    get type() {
+        return this.__type;
+    }
+
+    get id() {
+        return this.__id;
+    }
+
+    /**
+     * Generates a random id
+     * @returns {String} Random ID string
+     */
+    static generateID() {
+        return Registry.generateID();
     }
     /**
      * Adds a feature to the layer
@@ -47,7 +66,7 @@ export default class Layer {
     }
     /**
      * Sets color for the layer
-     * @param {String} layerColor 
+     * @param {String} layerColor
      * @memberof Layer
      * @returns {void}
      */
@@ -85,7 +104,8 @@ export default class Layer {
         }
         return 0;
     }
-*/  
+*/
+
     /**
      * Checks whether the argument pass is a feature
      * @param {Feature} feature Feature object
@@ -116,7 +136,7 @@ export default class Layer {
         if (!this.containsFeatureID(featureID)) throw new Error("Layer does not contain a feature with the specified ID!");
     }
     /**
-     * Returns unique parameters 
+     * Returns unique parameters
      * @returns {Params}
      * @memberof Layer
      * @returns {void}
@@ -138,7 +158,7 @@ export default class Layer {
     }
     /**
      * Returns feature based on it's ID
-     * @param {String} featureID 
+     * @param {String} featureID
      * @returns {Feature}
      * @memberof Layer
      */
@@ -275,12 +295,32 @@ export default class Layer {
      */
     toInterchangeV1() {
         let output = {};
+        output.id = this.__id;
+        output.name = this.name;
+        output.type = this.type;
+        // TODO - Add group and unique name parameters to the system and do type checking
+        // against type and not name in the future
+        output.group = "0";
+        output.params = this.params.toJSON();
+        return output;
+    }
+
+    /**
+     * Generate the feature layer json that is neccissary for
+     * seriailizing the visual of the 3DuF designs
+     *
+     * @returns {*} json of the features
+     * @memberof Layer
+     */
+    toFeatureLayerJSON() {
+        let output = {};
         output.name = this.name;
         output.color = this.color;
         output.params = this.params.toJSON();
         output.features = this.__featuresInterchangeV1();
         return output;
     }
+
     /**
      * Load from a JSON format a new layer object
      * @param {JSON} json JSON format
@@ -288,7 +328,7 @@ export default class Layer {
      * @memberof Layer
      */
     static fromJSON(json) {
-        if (!json.hasOwnProperty("features")) {
+        if (!Object.prototype.hasOwnProperty.call(json, 'features')) {
             throw new Error("JSON layer has no features!");
         }
         let newLayer = new Layer(json.params, json.name);
@@ -298,23 +338,19 @@ export default class Layer {
     }
     /**
      * Load from an Interchange format a new layer object
-     * @param {*} json 
+     * @param {*} json
      * @returns {Layer} Returns a new layer object
      * @memberof Layer
      */
     static fromInterchangeV1(json) {
-        //TODO: Need to be able to through all the features in the layer
-        if (!json.hasOwnProperty("features")) {
-            throw new Error("JSON layer has no features!");
-        }
-        let newLayer = new Layer(json.params, json.name);
+        let newLayer = new Layer(json.params, json.name, json.type, json.group);
         newLayer.__loadFeaturesFromInterchangeV1(json.features);
         if (json.color) newLayer.color = json.color; //TODO: Figure out if this needs to change in the future
         return newLayer;
     }
     /**
      * Render in 2D the features
-     * @param {*} paperScope 
+     * @param {*} paperScope
      * @returns {Feature} Returns the renders
      * @memberof Layer
      */

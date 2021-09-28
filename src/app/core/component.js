@@ -38,6 +38,10 @@ export default class Component {
         this.__ports = new Map();
         this._componentPortTRenders = new Map();
 
+        // TODO - Figure out how to use this for generic components
+        this._xspan = 0;
+        this._yspan = 0;
+
         //Create and set the ports here itself
 
         let cleanparamdata = {};
@@ -46,7 +50,7 @@ export default class Component {
         }
 
         let ports = Registry.featureSet.getComponentPorts(cleanparamdata, this.__type);
-        if (ports != undefined && ports.length >= 0 && ports != null) {
+        if (ports !== undefined && ports.length >= 0 && ports !== null) {
             for (let i in ports) {
                 this.setPort(ports[i].label, ports[i]);
             }
@@ -153,11 +157,11 @@ export default class Component {
         output.entity = this.__entity;
         output.params = this.__params.toJSON();
         let bounds = this.getBoundingRectangle();
-        output.xspan = bounds.width;
-        output.yspan = bounds.height;
+        output["x-span"] = bounds.width;
+        output["y-span"] = bounds.height;
         let portdata = [];
         let map = this.ports;
-        if (map != null) {
+        if (map !== null) {
             for (let key of map.keys()) {
                 let p = map.get(key).toInterchangeV1();
                 portdata.push(p);
@@ -165,7 +169,26 @@ export default class Component {
         }
 
         output.ports = portdata;
+        output.layers = this.__findLayerReferences();
         return output;
+    }
+
+    __findLayerReferences(){
+        let layers = Registry.currentDevice.getLayers();
+        let layerrefs = [];
+        let layer;
+        for(let i in layers){
+            layer = layers[i];
+            //Check if the component is in layer then put it there
+            let feature;
+            for(let key in layer.features){
+                feature = layer.features[key];
+                if(feature.referenceID === this.getID()){
+                    layerrefs.push(layer.id);
+                }
+            }
+        }
+        return layerrefs;
     }
 
     /**
@@ -284,7 +307,7 @@ export default class Component {
             renderedfeature = FeatureRenderer2D.renderFeature(feature);
             console.log("rendered:");
             console.log(renderedfeature);
-            if (bounds == null) {
+            if (bounds === null) {
                 bounds = renderedfeature.bounds;
             } else {
                 bounds = bounds.unite(renderedfeature.bounds);
@@ -308,7 +331,7 @@ export default class Component {
      * @memberof Component
      */
     getBoundingRectangle() {
-        if (this.features.length == 0 || this.features == null || this.features == undefined) {
+        if (this.features.length === 0 || this.features === null || this.features === undefined) {
             console.error("No features associated with the component");
         }
         let bounds = null;
@@ -331,7 +354,7 @@ export default class Component {
      * @memberof Component
      * @returns {void}
      */
-    updateComponetPosition(center) {
+    updateComponentPosition(center) {
         //This was not calling the right method earlier
         this.__params.updateParameter("position", center);
         for (let i in this.__features) {
@@ -381,7 +404,7 @@ export default class Component {
             currentlayer.addFeature(replica);
         }
         console.warn("TODO: Generate renders for the new Features for this new component");
-        ret.updateComponetPosition([xpos, ypos]);
+        ret.updateComponentPosition([xpos, ypos]);
         return ret;
     }
 
@@ -421,6 +444,9 @@ export default class Component {
         let name = json.name;
         let id = json.id;
         let entity = json.entity;
+        this.xspan = this._xspan;
+        this.yspan = this._yspan;
+
         let params = {};
         if (entity === "TEST MINT") {
             console.warn("Found legacy invalid entity string", entity);
@@ -437,6 +463,9 @@ export default class Component {
             definition = CustomComponent.defaultParameterDefinitions();
         } else {
             definition = Registry.featureSet.getDefinition(entity);
+            if(definition === null){
+                throw Error("Could not find definition for type: "+ entity);
+            }
         }
 
         // console.log(definition);
@@ -444,9 +473,9 @@ export default class Component {
         let value;
         for (let key in json.params) {
             // console.log("key:", key, "value:", json.params[key]);
-            if (definition.heritable.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(definition.heritable, key)) {
                 type = definition.heritable[key];
-            } else if (definition.unique.hasOwnProperty(key)) {
+            } else if (Object.prototype.hasOwnProperty.call(definition.unique, key)) {
                 type = definition.unique[key];
             }
             // let paramobject = Parameter.generateComponentParameter(key, json.params[key]);
@@ -461,7 +490,7 @@ export default class Component {
         }
 
         //Do another check and see if position is present or not
-        if (!params.hasOwnProperty("position")) {
+        if (!Object.prototype.hasOwnProperty.call(params, 'position')) {
             params["position"] = [0.0, 0.0];
         }
 

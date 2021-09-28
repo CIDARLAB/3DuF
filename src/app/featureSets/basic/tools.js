@@ -225,5 +225,79 @@ export const tools = {
             position: "position"
         },
         placementTool: "textInsertTool"
-    }
+    },
+
+    //new
+    Filter: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
+    CellTrapS: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "CellPositionTool"
+    },
+    CellTrapS_cell: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "CellPositionTool"
+    },
+    ThreeDMux: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
+    ThreeDMux_control: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    ChemostatRing: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
+    Incubation: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
+    Merger: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
+    PicoInjection: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
+    Sorter: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
+    Splitter: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
+    CapacitanceSensor: {
+        toolParams: {
+            cursorPosition: "position"
+        },
+        placementTool: "componentPositionTool"
+    },
 };

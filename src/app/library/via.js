@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import ComponentPort from "../core/componentPort";
 
 export default class Via extends Template {
     constructor() {
@@ -12,26 +13,31 @@ export default class Via extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             radius: "Float",
             height: "Float"
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             radius: 0.7 * 1000,
             height: 0
         };
 
         this.__units = {
+            componentSpacing: "&mu;m",
             radius: "&mu;m",
             height: "&mu;m"
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             radius: 0.8 * 10,
             height: 0
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             radius: 2000,
             height: 0
         };
@@ -43,17 +49,29 @@ export default class Via extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             radius: "radius"
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             radius: "radius"
         };
 
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "VIA";
+    }
+
+    getPorts(params) {
+        let radius = params["radius"];
+
+        let ports = [];
+
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
+
+        return ports;
     }
 
     render2D(params, key) {
