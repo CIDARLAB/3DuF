@@ -42,7 +42,7 @@ export default {
         };
     },
     computed: {
-        levels: function() {
+        levels: function () {
             let ret = [];
             for (let i in this.layers) {
                 if (i % 3 == 0) {
@@ -54,7 +54,7 @@ export default {
             }
             return ret;
         },
-        selectedLevel: function() {
+        selectedLevel: function () {
             let layer = Registry.viewManager.activeRenderLayer;
             let remain = layer % 3;
             layer = layer - remain;
