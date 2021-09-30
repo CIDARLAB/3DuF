@@ -9,7 +9,7 @@
 
         <v-card-text class="px-1">
             <div v-for="level in levels" :key="level.id" class="my-1 mx-3">
-                <v-btn icon small @click="deleteLevel(level)">
+                <v-btn :disabled="level.id === 0" icon small @click="deleteLevel(level)">
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
 
