@@ -4,7 +4,6 @@ import ComponentPort from "./componentPort";
 
 import * as Registry from "./registry";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
-import Port from "../library/port";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -19,7 +18,7 @@ export default class Component {
      * @param {string} mint
      * @param {String} id
      */
-    constructor(type, params, name, mint, id = Component.generateID()) {
+    constructor(type, params, name, id = Component.generateID()) {
         if (params instanceof Params) {
             this.__params = params;
         } else {
@@ -29,7 +28,7 @@ export default class Component {
         this.__name = name;
         this.__id = id;
         this.__type = type;
-        this.__entity = mint;
+        this.__entity = type;
         //This stores the features that are a part of the component
         this.__features = [];
         //TODO: Need to figure out how to effectively search through these
