@@ -556,7 +556,7 @@ export default class PaperView {
         }
         activeLayer.bringToFront();
 
-        let textLayer = this.getNonphysText();
+        const textLayer = this.getNonphysText();
         textLayer.bringToFront();
     }
 
@@ -577,7 +577,7 @@ export default class PaperView {
             this.featureLayer.addChild(this.paperLayers[i]);
         }
 
-        let textLayer = this.getNonphysText();
+        const textLayer = this.getNonphysText();
         textLayer.bringToFront();
     }
 
@@ -608,7 +608,7 @@ export default class PaperView {
         const textLayer = new paper.Group();
         const nonphysElements = Registry.viewManager.nonphysElements;
         for (let i = 0; i < nonphysElements.length; i++) {
-            for (let j in this.paperFeatures) {
+            for (const j in this.paperFeatures) {
                 if (nonphysElements[i].type == "Text" && nonphysElements[i].featureIDs.includes(this.paperFeatures[j].featureID)) {
                     textLayer.addChild(this.paperFeatures[j]);
                 }
@@ -645,7 +645,7 @@ export default class PaperView {
             null
         );
         this.__viewManagerDelegate.addFeature(newFeature, layer, false);
-        //this.addComponent("Text", newFeature.getParams(), [newFeature.ID], false);
+        // this.addComponent("Text", newFeature.getParams(), [newFeature.ID], false);
         const element = this.addUIElement("Text", newFeature.getParams(), [newFeature.ID]);
         newFeature.referenceID = element.id;
         this.__viewManagerDelegate.saveDeviceState();
@@ -1161,5 +1161,14 @@ export default class PaperView {
      */
     disableSnapRender() {
         this._paperComponentPortView.disable();
+    }
+
+    /**
+     * Returns the paperjs object that is rendering the feature
+     * @param {string} featureID
+     * @returns
+     */
+    getRender(featureID) {
+        return this.paperFeatures[featureID];
     }
 }

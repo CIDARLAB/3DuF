@@ -201,7 +201,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    updateParameter(key: string, value: any) {
+    updateParameter(key: string, value: any): void {
         this.__params.updateParameter(key, value);
     }
 
