@@ -114,10 +114,13 @@ export default {
 
             if (success === 0) throw new Error("Unable to generate any valid SVGs. Do all layers have at least one non-channel item in them?");
             else {
-                let content = zipper.generate({
-                    type: "blob"
-                });
-                saveAs(content, "device_layers.zip");
+                zipper
+                    .generateAsync({
+                        type: "blob"
+                    })
+                    .then(function(content) {
+                        saveAs(content, Registry.currentDevice.name + ".zip");
+                    });
             }
         },
         downloadCNC() {
@@ -134,13 +137,15 @@ export default {
                 zipper.file(key + ".svg", svgOutputs.get(key));
             }
 
-            const content = zipper.generate({
-                type: "blob"
-            });
+            zipper
+                .generateAsync({
+                    type: "blob"
+                })
+                .then(function(content) {
+                    saveAs(content, Registry.currentDevice.name + ".zip");
 
-            saveAs(content, Registry.currentDevice.name + ".zip");
-
-            cncGenerator.flushData();
+                    cncGenerator.flushData();
+                });
         },
         downloadLASER() {
             const laserCuttingGenerator = new LaserCuttingGenerator(Registry.currentDevice, Registry.viewManager);
@@ -157,13 +162,15 @@ export default {
                 zipper.file(key + ".svg", svgOutputs.get(key));
             }
 
-            const content = zipper.generate({
-                type: "blob"
-            });
+            zipper
+                .generateAsync({
+                    type: "blob"
+                })
+                .then(function(content) {
+                    saveAs(content, Registry.currentDevice.name + ".zip");
 
-            saveAs(content, Registry.currentDevice.name + ".zip");
-
-            laserCuttingGenerator.flushData();
+                    laserCuttingGenerator.flushData();
+                });
         },
         downloadMETAFLUIDICS() {
             console.log("coming soon");
