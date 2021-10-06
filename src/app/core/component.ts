@@ -301,7 +301,7 @@ export default class Component {
             // gets teh feature defined by the id
             feature = ComponentUtils.getFeatureFromID(this._featureIDs[i]);
             console.log(feature);
-            renderedfeature = FeatureRenderer2D.renderFeature(feature, undefined);
+            renderedfeature = FeatureRenderer2D.renderFeature(feature, null);
             console.log("rendered:");
             console.log(renderedfeature);
             if (bounds === null) {
@@ -342,7 +342,7 @@ export default class Component {
             }
         }
         if (bounds != null) return bounds;
-        else throw new Error("Cannot have bounds of null");
+        else throw new Error("Component " + this._name + " " + this._id + " cannot have bounds of null");
     }
 
     /**

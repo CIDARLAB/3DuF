@@ -16,7 +16,7 @@ export default class Layer {
     featureCount: number;
     device: Device;
     private __id: string;
-    private __type: string;
+    private __type: LogicalLayerType;
     private __group: string;
 
     /**
@@ -35,7 +35,7 @@ export default class Layer {
         this.__group = group;
     }
 
-    get type(): string {
+    get type(): LogicalLayerType {
         return this.__type;
     }
 
@@ -71,6 +71,7 @@ export default class Layer {
         this.featureCount += 1;
         //TODO - Verify that this is not a problem anymore
         feature.layer = this;
+        //feature.setManuInfo();
     }
 
     /**

@@ -2,6 +2,8 @@ export type Point = [number, number];
 
 export type Segment = [Point, Point];
 
+export type paperObject = paper.CompoundPath | paper.Path | paper.PointText;
+
 export type ScratchInterchangeV1 = {
     name: string;
     params: any;
@@ -10,7 +12,6 @@ export type ScratchInterchangeV1 = {
     components: Array<ComponentInterchangeV1>;
     connections: Array<ConnectionInterchangeV1>;
     version: number;
-    //device: DeviceInterchangeV1;
     renderLayers: Array<RenderLayerInterchangeV1>;
 };
 
