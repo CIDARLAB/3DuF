@@ -12,6 +12,16 @@ export class DeviceState {
         this._ModeDescription = text;
     }
 
+    // Operations on StateList
+    // set components' statelist to current DeviceState
+    set StatList(state_list: Array<ComponentState>){
+        this._StateList = state_list;
+    }
+
+    // return current component state list
+    get StateList() {
+        return this._StateList;
+    }
     // add elements into _StateList
     addElement(NewELement: ComponentState) {
         this._StateList[this._StateList.length] = NewELement;
@@ -29,22 +39,28 @@ export class DeviceState {
         this._StateList[Index] = NewELement;
     }
     
-    // search for a element inside the StateList using the given id.
+    // search for a element inside the StateList using the given component id.
     searchElementById(id: number){
         return this._StateList[id];
     }
 
-    // return current component state list
-    get StateList() {
-        return this._StateList;
-    }
-
+    // Operations on ModeID
     // set Mode ID to current Device state
-
-    get Id() {
+    set ModeId(value:number){
+        this._ModeId = value;
+    }
+    // return Mode ID from current Device state
+    get ModeId() {
         return this._ModeId;
     }
 
+    // Operations on ModeDescription
+    // set Mode description to current Device state
+    set ModeDescription(value: string){
+        this._ModeDescription = value;
+    }
+
+    // return Mode description from current Device state
     get ModeDescription() {
         return this._ModeDescription;
     }

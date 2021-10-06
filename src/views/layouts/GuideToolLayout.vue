@@ -6,6 +6,7 @@
                     <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
                     <v-divider class="mb-1" />
                     <v-divider />
+                    <v-btn elevation="2" v-on:click="buttonClicked" >test</v-btn>
                     <v-divider />
                     <LayerToolbar />
                     <v-divider />
@@ -95,6 +96,9 @@ export default {
     methods: {
         handleScroll() {
             EventBus.get().emit(EventBus.NAVBAR_SCROLL_EVENT);
+        }
+        ,buttonClicked(){
+            console.log("test")
         }
     }
 };
