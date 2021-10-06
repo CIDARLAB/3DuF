@@ -25,6 +25,7 @@ import Component from "../core/component";
 import UIElement from "../view/uiElement";
 import TextElement from "../view/textElement";
 import MapUtils from "../utils/mapUtils";
+import { paperObject } from "../core/init";
 /**
  * Paper View class
  */
@@ -1129,7 +1130,7 @@ export default class PaperView {
     /**
      * Returns the rendered feature object that is being displayed for the particular feature
      * @param {string} featureID ID of the feature
-     * @return {paper.CompoundPath | paper.Path | paper.PointText} Returns an object containing the rendered features
+     * @return {paperObject} Returns an object containing the rendered features
      * @memberof PaperView
      */
     getRenderedFeature(featureID) {
