@@ -13,11 +13,11 @@ import { components_all } from "./step1"
 export class component_status{
 
     protected _id: number;
-    protected _component: Component;
+    protected _component_info: Component;
     protected _status: boolean;
     constructor(id:number, component: Component,  status: boolean){
         this._id = id;
-        this._component = component;
+        this._component_info = component;
         this._status = status;
     }
 
@@ -29,12 +29,12 @@ export class component_status{
         this._id = value;
     }
 
-    get component(){
-        return this._component;
+    get component_info(){
+        return this._component_info;
     }
 
     set component(value: Component){
-        this._component = value;
+        this._component_info = value;
     }
 
     get status(){
@@ -49,9 +49,9 @@ export class component_status{
 // Create the list for one status described above. We can call it constraint list for each mode.
 export class component_status_list_oneMode{
     protected _status_list: Array<component_status>;
-    protected _length: number;
-    constructor(status_list: Array<component_status>, length: number){
-        this._length = length;
+    protected _mode_id: number;
+    constructor(status_list: Array<component_status>, mode_id: number){
+        this._mode_id = mode_id;
         this._status_list = status_list;
     }
 
@@ -66,13 +66,36 @@ export class component_status_list_oneMode{
     }
 
     // modify an element in the list
-    changeElement(newELement: component_status, id: number){
-        
+    editElement(newELement: component_status, id: number){
+
     }
 
+    // return current component status list
+    get status_list(){
+        return this._status_list;
+    }
 }
 
 // Create a class stored all constraint lists mapping to the existing modes. Each existing mode has one constraint list.
 export class component_status_list_allMode{
+    protected _status_list_allMode: Array<component_status_list_oneMode>;
+    protected _mode_id: number;
+    constructor(status_list: Array<component_status_list_oneMode>, mode_id: number){
+        this._mode_id = mode_id;
+        this._status_list_allMode = status_list;
+    }
 
+    // add a list from different mode into _status_list_all
+    addElement(newELement: component_status_list_oneMode){
+    
+    }
+
+    get status_list_allMode(){
+        return this._status_list_allMode;
+    }
+
+    Search_status_list_oneMode(mode_id: number){
+        //return this._status_list_oneMode in the given mode id
+        this._status_list_allMode[mode_id];
+    }
 }
