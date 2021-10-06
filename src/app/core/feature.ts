@@ -9,6 +9,7 @@ import { FeatureInterchangeV0 } from "./init";
 import Parameter from "./parameter";
 import EventBus from "@/events/events";
 import RenderLayer from "../view/renderLayer";
+import { DFMType, ManufacturingInfo } from "../manufacturing/ManufacturingInfo";
 
 /**
  * Feature class
@@ -18,10 +19,11 @@ export default class Feature {
     protected _params: Params;
     protected _name: string;
     protected _id: string;
-    protected _fabtype: string;
+    protected _fabtype: DFMType;
     protected _dxfObjects: Array<DXFObject>;
     protected _referenceID: string | null;
     public layer: RenderLayer | Layer | null;
+    protected _manufacturingInfo: ManufacturingInfo;
 
     /**
      * Feature Object
@@ -32,7 +34,7 @@ export default class Feature {
      * @param {String} id
      * @param {} fabtype
      */
-    constructor(type: string, params: Params, name: string, id: string = ComponentAPI.generateID(), fabtype: string = "XY") {
+    constructor(type: string, params: Params, name: string, id: string = ComponentAPI.generateID(), fabtype: DFMType = DFMType.XY) {
         this._type = type;
         this._params = params;
         this._name = name;
@@ -42,6 +44,14 @@ export default class Feature {
         this._dxfObjects = [];
         this._referenceID = null;
         this.layer = null;
+        const tempRenderName: string = this.deriveRenderName();
+        this._manufacturingInfo = {
+            fabtype: fabtype,
+            layertype: null,
+            rendername: tempRenderName,
+            "z-offset-key": ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName),
+            "substrate-offset": ComponentAPI.library[this.type].object.substrateOffset(tempRenderName)
+        };
     }
 
     get type(): string {
@@ -80,11 +90,28 @@ export default class Feature {
 
     /**
      * Returns a string that describes the fabrication type
-     * @return {string|*}
+     * @return {DFMType|*}
      * @memberof Feature
      */
-    get fabType(): string {
+    get fabType(): DFMType {
         return this._fabtype;
+    }
+
+    /**
+     * Returns the manufacturing information
+     * @return {ManufacturingInfo}
+     * @memberof Feature
+     */
+    get manufacturingInfo(): ManufacturingInfo {
+        this.setManufacturingInfoLayer();
+        return this._manufacturingInfo;
+    }
+
+    // Ensures that all values in manufacturingInfo have been set
+    setManufacturingInfoLayer() {
+        if (this.layer != null) {
+            this._manufacturingInfo.layertype = this.layer.type;
+        }
     }
 
     /**
@@ -129,7 +156,7 @@ export default class Feature {
             params: this._params.toJSON(),
             type: this._fabtype,
             referenceID: this._referenceID,
-            dxfData: this._dxfObjects.map(function (dxfObject) {
+            dxfData: this._dxfObjects.map(function(dxfObject) {
                 return dxfObject.toJSON();
             })
         };
@@ -297,12 +324,34 @@ export default class Feature {
             this._name,
             ComponentAPI.generateID(),
             "XY",
-            this._dxfObjects.map(function (dxfObject) {
+            this._dxfObjects.map(function(dxfObject) {
                 return dxfObject.toJSON();
             })
         );
 
         return ret;
+    }
+
+    /**
+     * Determines the string which should be used for the renderName
+     * @returns Returns the render name
+     * @memberof Feature
+     */
+
+    deriveRenderName(): string {
+        if (this._type.includes("_integration")) {
+            return "INTEGRATION";
+            console.log("INTEGRATION");
+        } else if (this._type.includes("_control")) {
+            console.log("CONTROL");
+            return "CONTROL";
+        } else if (this._type.includes("_cell")) {
+            console.log("CELL");
+            return "CELL";
+        } else {
+            console.log("FLOW");
+            return "FLOW";
+        }
     }
 
     /**
@@ -356,7 +405,7 @@ export default class Feature {
         const definitions = CustomComponent.defaultParameterDefinitions();
         Feature.checkDefaults(paramvalues, definitions.heritable, ComponentAPI.getDefaultsForType(customcomponent.type));
         const params = new Params(paramvalues, MapUtils.toMap(definitions.unique), MapUtils.toMap(definitions.heritable));
-        const ret = new Feature(customcomponent.type, params, name, id, "XY");
+        const ret = new Feature(customcomponent.type, params, name, id, DFMType.XY);
         ret.dxfObjects = customcomponent.dxfData;
         return ret;
     }

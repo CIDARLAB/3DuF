@@ -1,11 +1,13 @@
 import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
+import { ComponentAPI } from "@/componentAPI";
 import { LogicalLayerType } from "../core/init";
 
 import Device from "../core/device";
 import Layer from "../core/layer";
 import Feature from "../core/feature";
 import viewManager from "../view/viewManager";
+import { DFMType } from "./ManufacturingInfo";
 
 /**
  * GNCGenerator class
@@ -50,9 +52,10 @@ export default class CNCGenerator {
          */
         // let components = this.__device.components;
         const layers: Array<Layer> = this.__device.layers;
+        console.log("LAYERS ", layers);
 
         const mfglayers: Array<ManufacturingLayer> = [];
-
+        console.log("MFGLAYERS: ", mfglayers);
         let isControl: boolean = false;
         let isIntegrate: boolean = false;
 
@@ -151,11 +154,8 @@ export default class CNCGenerator {
             for (const key in features) {
                 const feature: Feature = features[key];
                 // TODO: Modify the port check
-                if (feature.fabType === "XY" && feature.getType() !== "Port") {
-                    let depth: number = feature.getValue("height");
-                    if (isIntegrate && feature.getParams().hasOwnProperty("electrodeDepth")) {
-                        depth = feature.getValue("electrodeDepth");
-                    }
+                if (feature.manufacturingInfo.fabtype === DFMType.XY && feature.getType() !== "Port") {
+                    let depth: number = feature.getValue(feature.manufacturingInfo["z-offset-key"]);
                     console.log("Depth of feature: ", key, depth);
                     featuredepthmap.addFeature(depth, key);
                 }
@@ -231,7 +231,7 @@ export default class CNCGenerator {
             for (const key in features) {
                 const feature: Feature = features[key];
                 // TODO: Modify the port check
-                if (feature.fabType === "EDGE") {
+                if (feature.fabType === DFMType.EDGE) {
                     console.log("EDGE Feature: ", key);
                     const issuccess: boolean = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
                     if (!issuccess) {
