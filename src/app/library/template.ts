@@ -1,4 +1,5 @@
 import ComponentPort from "../core/componentPort";
+//import { ManufacturingInfo } from "../manufacturing/manufacturingInfo";
 
 export enum PositionToolType {
     FEATURE_POSITION_TOOL = "positionTool",
@@ -21,6 +22,8 @@ export default class Template {
     protected __mint: string | null = null;
     protected __renderKeys: Array<string> | null = null;
     protected _previewImage: string = "";
+    protected __zOffsetKeys: { [key: string]: string } | null = null;
+    protected __substrateOffset: { [key: string]: string } | null = null;
 
     /**
      *Creates an instance of Template.
@@ -42,6 +45,38 @@ export default class Template {
             throw new Error("User needs to provide unique MINT string for component type");
         }
         return this.__mint;
+    }
+
+    /**
+     * Returns the z-offset-key for the given layer type
+     *
+     * @param {string}
+     * @memberof Template
+     */
+    zOffsetKey(key: string): string {
+        if (this.__zOffsetKeys === null) {
+            throw new Error("zOffsetKey cannot be null instantiate in the __setupDefinitions");
+        } else if (this.__zOffsetKeys.hasOwnProperty(key)) {
+            return this.__zOffsetKeys[key];
+        } else {
+            throw new Error("zOffsetKey does not contain given key");
+        }
+    }
+
+    /**
+     * Returns the z-offset-key for the given layer type
+     *
+     * @param {string}
+     * @memberof Template
+     */
+    substrateOffset(key: string): string {
+        if (this.__substrateOffset === null) {
+            throw new Error("zOffsetKey cannot be null instantiate in the __setupDefinitions");
+        } else if (this.__substrateOffset.hasOwnProperty(key)) {
+            return this.__substrateOffset[key];
+        } else {
+            throw new Error("substrateOffset does not contain given key");
+        }
     }
 
     /**

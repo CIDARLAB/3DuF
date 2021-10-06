@@ -119,6 +119,16 @@ export default class Mux extends Template {
         this.__renderKeys = ["FLOW", "CONTROL"];
 
         this.__mint = "MUX";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            CONTROL: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            CONTROL: "+1"
+        };
     }
 
     __drawFlow(params) {

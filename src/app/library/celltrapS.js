@@ -99,6 +99,16 @@ export default class CellTrapS extends Template {
         this.__renderKeys = ["FLOW", "CELL"];
 
         this.__mint = "SQUARE CELL TRAP";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            CELL: "chamberHeight"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            CELL: "0"
+        };
     }
 
     getPorts(params) {

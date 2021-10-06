@@ -76,6 +76,14 @@ export default class thermoCycler extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "THERMO CYCLER";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     render2D(params, key) {

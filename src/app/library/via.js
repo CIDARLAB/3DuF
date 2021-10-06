@@ -62,6 +62,14 @@ export default class Via extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "VIA";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     getPorts(params) {

@@ -76,6 +76,14 @@ export default class Valve extends Template {
         this.__renderKeys = ["CONTROL"];
 
         this.__mint = "VALVE";
+
+        this.__zOffsetKeys = {
+            CONTROL: "height"
+        };
+
+        this.__substrateOffset = {
+            CONTROL: "+1"
+        };
     }
 
     getPorts(params) {

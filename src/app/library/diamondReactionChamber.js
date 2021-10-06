@@ -83,6 +83,14 @@ export default class DiamondReactionChamber extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "DIAMOND REACTION CHAMBER";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     getPorts(params) {

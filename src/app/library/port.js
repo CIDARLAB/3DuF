@@ -62,6 +62,14 @@ export default class Port extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "PORT";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     render2D(params, key) {

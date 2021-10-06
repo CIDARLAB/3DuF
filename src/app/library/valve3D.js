@@ -89,6 +89,18 @@ export default class Valve3D extends Template {
         this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
 
         this.__mint = "VALVE3D";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            CONTROL: "height",
+            INVERSE: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            CONTROL: "+1",
+            INVERSE: "0"
+        };
     }
 
     getPorts(params) {

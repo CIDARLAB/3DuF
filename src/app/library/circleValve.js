@@ -68,6 +68,14 @@ export default class CircleValve extends Template {
         this.__renderKeys = ["CONTROL"];
 
         this.__mint = "CIRCLE VALVE";
+
+        this.__zOffsetKeys = {
+            CONTROL: "height"
+        };
+
+        this.__substrateOffset = {
+            CONTROL: "+1"
+        };
     }
 
     render2D(params, key) {
