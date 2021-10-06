@@ -17,7 +17,7 @@
         </v-col>
         <v-col>
             <div>
-                <Visualiser />
+                <GuideVisualiser />
             </div>
         </v-col>
     </v-row>
@@ -56,7 +56,7 @@ import InsertTextDialog from "@/components/InsertTextDialog.vue";
 import LayerToolbar from "@/components/LayerToolbar.vue";
 import ComponentToolbar from "@/components/ComponentToolBar.vue";
 import ManufacturingPanel from "@/components/ManufacturingPanel.vue";
-import Visualiser from "@/components/Visualiser.vue";
+import GuideVisualiser from "@/components/guide/GuideVisualiser.vue";
 
 export default {
     components: {
@@ -69,7 +69,7 @@ export default {
         LayerToolbar,
         // ComponentToolbar,
         // ManufacturingPanel,
-        Visualiser
+        GuideVisualiser
     },
     data() {
         return {
