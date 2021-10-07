@@ -6,7 +6,9 @@
                     <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
                     <v-divider class="mb-1" />
                     <v-divider />
-                    <v-btn elevation="2" v-on:click="buttonClicked" >test</v-btn>
+                    <v-btn v-on:click="step2.makeStateMachine()" >test</v-btn>
+                    <input v-model="message" placeholder="edit me">
+                    <p>Message is: {{message}}</p> 
                     <v-divider />
                     <LayerToolbar />
                     <v-divider />
@@ -58,6 +60,7 @@ import LayerToolbar from "@/components/LayerToolbar.vue";
 import ComponentToolbar from "@/components/ComponentToolBar.vue";
 import ManufacturingPanel from "@/components/ManufacturingPanel.vue";
 import GuideVisualiser from "@/components/guide/GuideVisualiser.vue";
+import step2 from "@/guide/step2";
 
 export default {
     components: {
@@ -97,9 +100,10 @@ export default {
         handleScroll() {
             EventBus.get().emit(EventBus.NAVBAR_SCROLL_EVENT);
         }
-        ,buttonClicked(){
+        ,test(){
             console.log("test")
-        }
+        },
+
     }
 };
 </script>

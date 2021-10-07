@@ -45,5 +45,13 @@ export class StateMachine {
         }
     }
 
+    get AmountOfModes(){
+        return this._AmountOfModes;
+    }
+
+    set AmountOfModes(value:number){
+        this._AmountOfModes = value;
+    }
+
 
 }

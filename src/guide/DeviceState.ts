@@ -1,4 +1,5 @@
 import { ComponentState } from "./ComponentState";
+import Component from "@/app/core/component";
 
 // Create the list for one state described above. We can call it constraint list for each mode.
 
@@ -33,10 +34,14 @@ export class DeviceState {
         this._StateList.splice(Id, 1);
     }
 
-    // modify an element in _StateList
-    editElement(NewELement: ComponentState, OldElement: ComponentState) {
-        let Index = this._StateList.indexOf(OldElement);
-        this._StateList[Index] = NewELement;
+    // modify an element's state in _StateList
+    editElementState(ELement: Component, state: boolean) {
+        for (let i:number = 0; i <= this._StateList.length; i++){
+            if (this._StateList[i].ComponentInfo == ELement){
+                this._StateList[i].State = state;
+                break;
+            }
+        }
     }
     
     // search for a element inside the StateList using the given component id.
