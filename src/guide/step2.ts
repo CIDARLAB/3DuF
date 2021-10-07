@@ -65,9 +65,10 @@ export function editDeviceState(ModeID: number, ModeDescription:string):DeviceSt
 
 export function makeStateMachine(){
     //i is the counter to provide Mode ID 
-    let counter: number = 0;
-    let StateMachineInStep2: StateMachine;
-    let CurrentDeviceState: DeviceState = editDeviceState(1, "test")
-    StateMachineInStep2 = new StateMachine([CurrentDeviceState], 1)
-    console.log(StateMachineInStep2);
+    // let counter: number = 0;
+    // let StateMachineInStep2: StateMachine;
+    // let CurrentDeviceState: DeviceState = editDeviceState(1, "test")
+    // StateMachineInStep2 = new StateMachine([CurrentDeviceState], 1)
+    // console.log(StateMachineInStep2);
+    console.log("hello")
 }
