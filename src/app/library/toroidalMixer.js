@@ -131,14 +131,25 @@ export default class ToroidalMixer extends Template {
 
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
-        ports.push(
-            new ComponentPort(
-                0,
-                (numberOfMixers - 1) * diameter - (numberOfMixers - 2) * y_neckComponent + diameter - neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180),
-                "2",
-                "FLOW"
-            )
-        );
+        if (numberOfMixers % 2 == 1) {
+            ports.push(
+                new ComponentPort(
+                    0,
+                    (numberOfMixers - 1) * diameter - (numberOfMixers - 2) * y_neckComponent + diameter - neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180),
+                    "2",
+                    "FLOW"
+                )
+            );
+        } else {
+            ports.push(
+                new ComponentPort(
+                    -1 * neckLength * Math.cos((0.5 * neckAngle * Math.PI) / 180),
+                    (numberOfMixers - 1) * diameter - (numberOfMixers - 2) * y_neckComponent + diameter - neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180),
+                    "2",
+                    "FLOW"
+                )
+            );
+        }
 
         return ports;
     }
