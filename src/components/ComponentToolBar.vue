@@ -40,7 +40,7 @@ export default {
     data() {
         return {
             toolTree: {
-                Mix: ["MIXER", "MIXER3D", "GRADIENT GENERATOR", "CURVED MIXER", "ROTARY MIXER"],
+                Mix: ["MIXER", "MIXER3D", "TOROIDAL MIXER", "GRADIENT GENERATOR", "CURVED MIXER", "ROTARY MIXER"],
                 Control: ["VALVE3D", "VALVE", "PUMP3D", "PUMP"],
                 Storage: ["LONG CELL TRAP", "SQUARE CELL TRAP", "REACTION CHAMBER", "DIAMOND REACTION CHAMBER"],
                 Process: ["LL CHAMBER", "FILTER"],

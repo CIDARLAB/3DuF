@@ -525,6 +525,33 @@ export const render2D = {
         targetPrimitiveType: "MixerTarget",
         targetPrimitiveSet: "Basic2D"
     },
+    ToroidalMixer: {
+        featureParams: {
+            componentSpacing: "componentSpacing",
+            position: "position",
+            channelWidth: "channelWidth",
+            neckAngle: "neckAngle",
+            neckLength: "neckLength",
+            neckWidth: "neckWidth",
+            numberOfMixers: "numberOfMixers",
+            rotation: "rotation",
+            innerDiameter: "innerDiameter"
+        },
+        targetParams: {
+            componentSpacing: "componentSpacing",
+            channelWidth: "channelWidth",
+            neckAngle: "neckAngle",
+            neckLength: "neckLength",
+            neckWidth: "neckWidth",
+            numberOfMixers: "numberOfMixers",
+            rotation: "rotation",
+            innerDiameter: "innerDiameter"
+        },
+        featurePrimitiveType: "ToroidalMixer",
+        featurePrimitiveSet: "Basic2D",
+        targetPrimitiveType: "MixerTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
     GradientGenerator: {
         featureParams: {
             position: "position",
