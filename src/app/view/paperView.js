@@ -404,7 +404,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     disableContextMenu() {
-        this.canvas.oncontextmenu = function(event) {
+        this.canvas.oncontextmenu = function (event) {
             event.preventDefault();
         };
     }
@@ -1081,7 +1081,7 @@ export default class PaperView {
                 }
             }
         }
-        return false;
+        return null;
     }
 
     /**

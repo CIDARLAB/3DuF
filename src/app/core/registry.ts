@@ -3,6 +3,7 @@ import { registerSets } from "../featureSets";
 import FeatureSet from "../featureSets/featureSet";
 import RenderLayer from "../view/renderLayer";
 import * as Basic from "@/app/featureSets/basic";
+import { ViewManager } from "..";
 
 class Registry {
     /*
@@ -26,7 +27,7 @@ class Registry {
     currentTextLayer = null;
     currentGrid = null;
     view = null;
-    viewManager = null;
+    viewManager: ViewManager | null = null;
     featureSet = null;
 }
 
