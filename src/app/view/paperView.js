@@ -1081,7 +1081,7 @@ export default class PaperView {
                 }
             }
         }
-        return false;
+        return null;
     }
 
     /**
