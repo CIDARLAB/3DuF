@@ -28,7 +28,7 @@ export default class MouseTool {
     }
 
     static defaultFunction(value: string) {
-        return function() {
+        return function () {
             console.log("No " + value + " function set.");
         };
     }
