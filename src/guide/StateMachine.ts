@@ -26,7 +26,7 @@ export class StateMachine {
         this._StateListAll[Index] = NewELement;
     }
 
-    set StateListAll(value: Array<DeviceState>){
+    set StateListAll(value: Array<DeviceState>) {
         this._StateListAll = value;
     }
     get StateListAll() {
@@ -35,23 +35,20 @@ export class StateMachine {
 
     //return the element DeviceState using the given mode id
     searchConstraint(ModeId: number) {
-        
         let TargetMode: DeviceState;
-        for (let values of this._StateListAll){
-            if (values.ModeId === ModeId){
+        for (let values of this._StateListAll) {
+            if (values.ModeId === ModeId) {
                 TargetMode = values;
                 return TargetMode;
             }
         }
     }
 
-    get AmountOfModes(){
+    get AmountOfModes() {
         return this._AmountOfModes;
     }
 
-    set AmountOfModes(value:number){
+    set AmountOfModes(value: number) {
         this._AmountOfModes = value;
     }
-
-
 }

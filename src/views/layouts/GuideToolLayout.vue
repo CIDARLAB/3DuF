@@ -6,15 +6,19 @@
                     <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
                     <v-divider class="mb-1" />
                     <v-divider />
-                    <v-btn v-on:click="makeStateMachine()" >test</v-btn>
-                    <input v-model="message" placeholder="edit me">
-                    <p>Message is: {{message}}</p> 
-                    <v-divider />
                     <LayerToolbar />
                     <v-divider />
                     <HelpDialog />
                     <v-divider />
                     <br />
+                    <v-divider />
+                    <v-btn @click="makeStateMachine()">test</v-btn>
+                    <input v-model="message" placeholder="edit me" />
+                    <p>Message is: {{ result1 }}</p>
+                    <br>
+                    <input v-model="message" placeholder="edit me" />
+                    <p>Message is: {{ message }}</p>
+                    <v-btn @click="deleteModeDescription()">delete</v-btn>
                 </div>
             </v-navigation-drawer>
         </v-col>
@@ -60,7 +64,7 @@ import LayerToolbar from "@/components/LayerToolbar.vue";
 import ComponentToolbar from "@/components/ComponentToolBar.vue";
 import ManufacturingPanel from "@/components/ManufacturingPanel.vue";
 import GuideVisualiser from "@/components/guide/GuideVisualiser.vue";
-import {makeStateMachine} from "@/guide/step2";
+import { makeStateMachine } from "@/guide/step2";
 
 export default {
     components: {
@@ -100,10 +104,6 @@ export default {
         handleScroll() {
             EventBus.get().emit(EventBus.NAVBAR_SCROLL_EVENT);
         }
-        ,test(){
-            console.log("test")
-        }
-
     }
 };
 </script>
