@@ -71,7 +71,7 @@ export default class Layer {
         this.featureCount += 1;
         //TODO - Verify that this is not a problem anymore
         feature.layer = this;
-        //feature.setManuInfo();
+        feature.setManufacturingInfoLayer();
     }
 
     /**
