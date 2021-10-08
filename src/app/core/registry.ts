@@ -4,7 +4,6 @@ import FeatureSet from "../featureSets/featureSet";
 import RenderLayer from "../view/renderLayer";
 import ViewManager from "../view/viewManager";
 import * as Basic from "@/app/featureSets/basic";
-import { ViewManager } from "..";
 
 class Registry {
     /*
