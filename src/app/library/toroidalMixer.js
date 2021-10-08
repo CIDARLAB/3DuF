@@ -117,16 +117,28 @@ export default class ToroidalMixer extends Template {
     }
 
     getPorts(params) {
+        const y = params.position[1];
         const channelWidth = params.channelWidth;
         const innerDiameter = params.innerDiameter;
+        const neckLength = params.neckLength;
         const neckAngle = params.neckAngle;
         const numberOfMixers = params.numberOfMixers;
+        const y_center = y + Math.abs((neckLength + channelWidth + 0.5 * innerDiameter) * Math.sin((0.5 * neckAngle * Math.PI) / 180));
+        const diameter = 2 * (y_center - y);
+        const y_neckComponent = neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180);
 
         const ports = [];
 
-        ports.push(new ComponentPort(innerDiameter / 2 + channelWidth, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
-        ports.push(new ComponentPort(innerDiameter / 2 + channelWidth, (2 * numberOfMixers + 1) * channelWidth + 2 * numberOfMixers * neckAngle, "2", "FLOW"));
+        ports.push(
+            new ComponentPort(
+                0,
+                (numberOfMixers - 1) * diameter - (numberOfMixers - 2) * y_neckComponent + diameter - neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180),
+                "2",
+                "FLOW"
+            )
+        );
 
         return ports;
     }
@@ -147,6 +159,7 @@ export default class ToroidalMixer extends Template {
         const y_center = y + Math.abs((neckLength + channelWidth + 0.5 * innerDiameter) * Math.sin((0.5 * neckAngle * Math.PI) / 180));
         const center = new paper.Point(x_center, y_center);
         const diameter = 2 * (y_center - y);
+        const y_neckComponent = neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180);
 
         let mixerUnit;
 
@@ -168,7 +181,6 @@ export default class ToroidalMixer extends Template {
         let x_centerAnalog;
         let y_centerAnalog;
         let centerAnalog;
-        let y_neckComponent = neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180);
         let numRepeats = numMixers - 1;
         for (let i = 1; i <= numRepeats; i++) {
             y_val = y + i * diameter - (i - 1) * y_neckComponent;
