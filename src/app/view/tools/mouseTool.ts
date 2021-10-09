@@ -7,28 +7,28 @@ export interface MouseToolCallback {
 export default class MouseTool {
     constructor() {}
 
-    up(callback: MouseToolCallback): void  {
+    up(callback: MouseToolCallback): void {
         MouseTool.defaultFunction("up");
     }
 
-    down(callback: MouseToolCallback): void  {
+    down(callback: MouseToolCallback): void {
         MouseTool.defaultFunction("down");
     }
 
-    move(callback: MouseToolCallback): void  {
+    move(callback: MouseToolCallback): void {
         MouseTool.defaultFunction("move");
     }
 
-    rightdown(callback: MouseToolCallback): void  {
+    rightdown(callback: MouseToolCallback): void {
         MouseTool.defaultFunction("rightdown");
     }
 
-    cleanup(): void  {
+    cleanup(): void {
         console.log("Default Message: You have to implement the method cleanup!");
     }
 
     static defaultFunction(value: string) {
-        return function (): void  {
+        return function (): void {
             console.log("No " + value + " function set.");
         };
     }
