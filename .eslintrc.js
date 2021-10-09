@@ -12,7 +12,7 @@ module.exports = {
 
     // Position is important, the last rules take precident here. For the least amount of prettier conficts with other eslint plugins.
     // it has to come last
-    extends: ["eslint:recommended", "plugin:vue/recommended", "@vue/typescript", "plugin:prettier-vue/recommended", "prettier/vue"],
+    extends: ["eslint:recommended", "plugin:vue/recommended", "@vue/typescript", "prettier/vue"],
 
     parserOptions: {
         ecmaVersion: 2018,
