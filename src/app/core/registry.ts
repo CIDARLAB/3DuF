@@ -3,7 +3,7 @@ import { registerSets } from "../featureSets";
 import FeatureSet from "../featureSets/featureSet";
 import RenderLayer from "../view/renderLayer";
 import * as Basic from "@/app/featureSets/basic";
-import { ViewManager } from "..";
+import { Device, ViewManager } from "..";
 
 class Registry {
     /*
@@ -21,7 +21,7 @@ class Registry {
     featureDefaults = {
         Basic: new FeatureSet(Basic.definitions, Basic.tools, Basic.render2D, Basic.render3D, "Basic").getDefaults()
     };
-    public currentDevice = null;
+    public currentDevice: Device | null = null;
     canvasManager = null;
     currentLayer: RenderLayer | null = null;
     currentTextLayer = null;

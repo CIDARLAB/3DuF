@@ -22,6 +22,3 @@ enabled = true
 name = "standardjs"
 enabled = true
 
-[[transformers]]
-name = "prettier"
-enabled = true
