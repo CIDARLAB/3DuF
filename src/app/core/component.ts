@@ -396,7 +396,7 @@ export default class Component {
             console.log("test", this.getPosition()[0], this.getPosition()[1], this.getPosition());
             const replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
             replica.referenceID = ret.id;
-            ret.featureIDs.push(replica.id);
+            ret.featureIDs.push(replica.ID);
 
             // TODO: add new feature to the layer in which the current feature is in
             const currentlayer = ComponentUtils.getDeviceLayerFromID(this._featureIDs[i]);
