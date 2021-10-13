@@ -15,7 +15,7 @@ export class DeviceState {
 
     // Operations on StateList
     // set components' statelist to current DeviceState
-    set StatList(state_list: Array<ComponentState>){
+    set StateList(state_list: Array<ComponentState>){
         this._StateList = state_list;
     }
 
@@ -35,7 +35,7 @@ export class DeviceState {
     }
 
     // modify an element's state in _StateList
-    editElementState(ELement: Component, state: boolean) {
+    editElementState(ELement: Component, state: number) {
         for (let i:number = 0; i <= this._StateList.length; i++){
             if (this._StateList[i].ComponentInfo == ELement){
                 this._StateList[i].State = state;

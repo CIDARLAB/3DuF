@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col>
-            <v-navigation-drawer app permanent class="pt-4" color="grey lighten-3">
+            <v-navigation-drawer app permanent class="pt-4" color="grey lighten-3" style="width: 35%;">
                 <div class="d-flex flex-column mx-2">
                     <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
                     <v-divider class="mb-1" />
@@ -10,15 +10,52 @@
                     <v-divider />
                     <HelpDialog />
                     <v-divider />
-                    <br />
-                    <v-divider />
-                    <v-btn @click="makeStateMachine()">test</v-btn>
-                    <input v-model="message" placeholder="edit me" />
-                    <p>Message is: {{ result1 }}</p>
                     <br>
-                    <input v-model="message" placeholder="edit me" />
-                    <p>Message is: {{ message }}</p>
-                    <v-btn @click="deleteModeDescription()">delete</v-btn>
+                    <h4>How many modes do you want?</h4>
+                    <br>
+                    <v-text-field v-model="inputModeNumber" :step="1" type="number" />
+
+                    <!-- <v-text-field
+                        clearable
+                        v-model="inputModeNumber"
+                        name="inputModeNumber"
+                        value=""
+                        hint="Input how many modes do you want."
+                        label="Number of modes"
+                        auto-grow
+                        outlined
+                        rows="1"
+                        row-height="10"
+                    ></v-textarea> -->
+                    <!-- <v-btn @click="submitModeNumber">submit</v-btn> -->
+                    <br>
+                    <template id="DescriptionCollector">
+                        <div class="DescriptionComponent" v-for="index in parseInt(inputModeNumber)" :key="index">
+                            <v-textarea
+                                clearable
+                                name="ModeDescription"
+                                value=""
+                                hint="Input your mode description here."
+                                label="Mode description"
+                                auto-grow
+                                outlined
+                                rows="1"
+                                row-height="10"
+                            ></v-textarea>
+                            <v-row align="center" justify="space-around" style="padding-top: 10px; padding-bottom: 30px;">
+                                <v-btn 
+                                    @click="setRules"
+                                    color="primary"
+                                    dark
+                                    rounded
+                                >set rules for mode {{index}}
+                                    <v-icon right dark>mdi-pencil</v-icon>
+                                </v-btn>
+                            </v-row>
+                        </div>
+                        <v-btn @click="submitModeDescription">save</v-btn>
+                    </template>
+                    <br>
                 </div>
             </v-navigation-drawer>
         </v-col>
@@ -87,7 +124,10 @@ export default {
                 ["cnc", "mdi-toolbox", "CNC (.svg)"],
                 ["laser", "mdi-toolbox", "Laser Cutting (.svg)"],
                 ["metafluidics", "mdi-toolbox", "Publish on Metafluidics"]
-            ]
+            ],
+            inputModeNumber: 0,
+            result1: "",
+            ModeDescriptions: []
         };
     },
     mounted() {
@@ -101,9 +141,27 @@ export default {
         // this.$el.removeEventListener("scroll", this.handleScroll);
     },
     methods: {
-        handleScroll() {
-            EventBus.get().emit(EventBus.NAVBAR_SCROLL_EVENT);
+        submitModeDescription() {
+            console.log(this.inputModeNumber);
+            var amount = parseInt(this.inputModeNumber);
+            this.inputModeNumber = "";
+            for (var i=0; i<=amount; i++){
+                this.addDescription();
+            }
+            // makeStateMachine(this.inputModeNumber);
+            
+        },
+        addDescription() {
+            var NewDescription = document.createElement("v-textarea");
+        },
+        deleteDescription(item) {
+            var i = this.ModeDescriptions.indexOf(item);
+            this.ModeDescriptions.splice(i,1);
+        },
+        editDescription(){
+
         }
+
     }
 };
 </script>

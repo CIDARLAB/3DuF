@@ -4,8 +4,10 @@ import Component from "@/app/core/component";
 export class ComponentState {
     protected _Id: number;
     protected _ComponentInfo: Component;
-    protected _State: boolean;
-    constructor(id: number, component: Component, state: boolean) {
+
+    // state: 0 means false, 1 means true, 2 means no state now
+    protected _State: number;
+    constructor(id: number, component: Component, state: number) {
         this._Id = id;
         this._ComponentInfo = component;
         this._State = state;
@@ -31,7 +33,7 @@ export class ComponentState {
         return this._State;
     }
 
-    set State(value: boolean) {
+    set State(value: number) {
         this._State = value;
     }
 }
