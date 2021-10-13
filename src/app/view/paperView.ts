@@ -892,7 +892,7 @@ export default class PaperView {
             this.insertEdgeFeatures(newPaperFeature);
             return;
         } else {
-            newPaperFeature = FeatureRenderer2D.renderFeature(feature);
+            newPaperFeature = FeatureRenderer2D.renderFeature(feature, null);
         }
         newPaperFeature.selected = selected;
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;

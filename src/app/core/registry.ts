@@ -6,7 +6,6 @@ import ViewManager from "../view/viewManager";
 import AdaptiveGrid from "../view/grid/adaptiveGrid";
 import Device from "./device";
 import * as Basic from "@/app/featureSets/basic";
-import { Device, ViewManager } from "..";
 
 class Registry {
     /*
