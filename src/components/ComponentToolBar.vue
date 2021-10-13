@@ -10,10 +10,10 @@
                 <span>Features</span>
             </v-card-title>
             <v-card-text class="px-1">
-                <PropertyDrawer mint="Channel" :spec="channelSpec" />
-                <PropertyDrawer mint="Rounded Channel" :spec="roundedChannelSpec" />
-                <PropertyDrawer mint="Transition" :spec="transitionSpec" />
-                <PropertyDrawer mint="Alignment Marks" :spec="alignmentMarksSpec" />
+                <PropertyDrawer mint="CHANNEL" :spec="channelSpec" />
+                <PropertyDrawer mint="ROUNDED CHANNEL" :spec="roundedChannelSpec" />
+                <PropertyDrawer mint="TRANSITION" :spec="transitionSpec" />
+                <PropertyDrawer mint="ALIGNMENT MARKS" :spec="alignmentMarksSpec" />
             </v-card-text>
         </v-card>
         <v-card v-for="key in Object.keys(toolTree)" :key="key" elevation="0">

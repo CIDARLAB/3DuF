@@ -125,6 +125,16 @@ export default class PicoInjection extends Template {
         this.__renderKeys = ["FLOW", "INTEGRATE"];
 
         this.__mint = "PICOINJECTOR";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            INTEGRATION: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            INTEGRATION: "0"
+        };
     }
 
     getPorts(params) {

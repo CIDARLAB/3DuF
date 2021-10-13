@@ -28,6 +28,7 @@ import MapUtils from "../utils/mapUtils";
 import Connection from "../core/connection";
 import { ViewManager } from "..";
 import Parameter from "../core/parameter";
+import { paperObject } from "../core/init";
 /**
  * Paper View class
  */
@@ -1218,7 +1219,7 @@ export default class PaperView {
     /**
      * Returns the rendered feature object that is being displayed for the particular feature
      * @param {string} featureID ID of the feature
-     * @return {Object} Returns an object containing the rendered features
+     * @return {paperObject} Returns an object containing the rendered features
      * @memberof PaperView
      */
     getRenderedFeature(featureID: string) {

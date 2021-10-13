@@ -118,7 +118,7 @@ export function renderText(feature) {
  * @param feature
  * @return {*}
  */
-export function renderFeature(feature, key = null) {
+export function renderFeature(feature, key) {
     let rendered;
     let params;
     const type = feature.getType();
@@ -142,8 +142,7 @@ export function renderFeature(feature, key = null) {
         I guess theoretically speaking, one needs to generate a set of invisible feature but for now we are just
         ignoring that.
          */
-
-        if (key === null) {
+        if (!key || key === null) {
             key = rendererinfo.key;
         }
 

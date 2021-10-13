@@ -104,6 +104,14 @@ export default class Tree extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "TREE";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     getPorts(params) {

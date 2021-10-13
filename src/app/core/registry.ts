@@ -2,6 +2,9 @@ import uuid from "node-uuid";
 import { registerSets } from "../featureSets";
 import FeatureSet from "../featureSets/featureSet";
 import RenderLayer from "../view/renderLayer";
+import ViewManager from "../view/viewManager";
+import AdaptiveGrid from "../view/grid/adaptiveGrid";
+import Device from "./device";
 import * as Basic from "@/app/featureSets/basic";
 import { Device, ViewManager } from "..";
 
@@ -25,7 +28,7 @@ class Registry {
     canvasManager = null;
     currentLayer: RenderLayer | null = null;
     currentTextLayer = null;
-    currentGrid = null;
+    currentGrid: AdaptiveGrid | null = null;
     view = null;
     viewManager: ViewManager | null = null;
     featureSet = null;

@@ -111,6 +111,14 @@ export default class GradientGenerator extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "GRADIENT GENERATOR";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     getPorts(params) {

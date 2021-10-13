@@ -101,6 +101,7 @@ export default class RenderLayer {
         } else {
             feature.layer = this;
         }
+        feature.setManufacturingInfoLayer();
     }
 
     /**

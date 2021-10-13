@@ -92,6 +92,16 @@ export default class Gelchannel extends Template {
         this.__renderKeys = ["FLOW", "CELL"];
 
         this.__mint = "GEL CHANNEL";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            CELL: "sideHeight"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            CELL: "0"
+        };
     }
 
     getPorts(params) {

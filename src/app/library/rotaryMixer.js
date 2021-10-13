@@ -110,6 +110,16 @@ export default class RotaryMixer extends Template {
         this.__renderKeys = ["FLOW", "CONTROL"];
 
         this.__mint = "ROTARY MIXER";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            CONTROL: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            CONTROL: "+1"
+        };
     }
 
     getPorts(params) {

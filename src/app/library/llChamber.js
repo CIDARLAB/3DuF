@@ -91,6 +91,16 @@ export default class LLChamber extends Template {
         };
 
         this.__mint = "LL CHAMBER";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            CONTROL: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            CONTROL: "+1"
+        };
     }
 
     getPorts(params) {

@@ -90,6 +90,14 @@ export default class BetterMixer extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "MIXER";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     getPorts(params) {
