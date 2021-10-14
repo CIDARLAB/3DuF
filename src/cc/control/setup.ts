@@ -1,5 +1,5 @@
 import { Device } from "@/app";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import AnalogValve from "../hardware/analogValve";
 import DigitalValve from "../hardware/digitalValve";
 import DispenserPump from "../hardware/dispenserpump";
@@ -10,7 +10,7 @@ export default class Setup {
     private __pumps: Array<DispenserPump>;
     private __peripherals: Array<any>;
     private __hardwareMap: Map<string, any>;
-    private socket;
+    private socket: Socket;
 
     /**
      * The constructor takes a json, then dynamically creates the microfluidic object from that
@@ -27,8 +27,20 @@ export default class Setup {
         // Create a socket server connection
         console.log("Connecting to server...");
         this.socket = io("http://localhost:3000");
+
         this.socket.on("connect", () => {
-            console.log("Connected to:", this.socket.id); // x8WIv7-mJelg7on_ALbx
+            if (this.socket === null) {
+                console.log("Socket is null");
+            } else {
+                console.log("Connected to:", this.socket.id); // x8WIv7-mJelg7on_ALbx
+            }
+        });
+        this.socket.on("disconnect", () => {
+            if (this.socket === null) {
+                console.log("Socket is null");
+            } else {
+                console.log("Disconnected from:", this.socket.id);
+            }
         });
     }
 
