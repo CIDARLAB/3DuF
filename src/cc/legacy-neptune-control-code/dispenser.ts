@@ -1,4 +1,4 @@
-import { deg2rad, PWM2rad, displacement, PWM_MIN, PWM_MAX } from "./utils";
+import { deg2rad, PWM2rad, displacement, PWM_MIN, PWM_MAX } from "../hardware/utils";
 
 export function initializeSetup(r: number, b: number, d: number, a: number) {
     let thetaXArray = []; // create array of angles to be populated in for loop

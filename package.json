@@ -51,6 +51,7 @@
         "npm": "^6.14.15",
         "paper": "^0.12.15",
         "roboto-fontface": "*",
+        "socket.io-client": "^4.3.0",
         "three": "^0.126.1",
         "trackjs": "^3.10.1",
         "veeno": "0.0.4",

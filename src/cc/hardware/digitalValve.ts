@@ -1,29 +1,19 @@
-import DispenserPump from "./dispenserpump";
-
-export default class AnalogValve {
+export default class DigitalValve {
     protected id: number;
     protected _hwshield: number;
-    protected _precision: number;
-    protected _openValue: number;
-    protected _closeValue: number;
     protected _currentState: ValveState;
     protected _deviceindex: number;
-    dispenserPump: DispenserPump;
 
     /**
      * Default constructor for the Pump object
      * @param id
      */
-    constructor(id: number, deviceIndex: number, hwShield: number, precision: number, openValue: number, closeValue: number, dispenserPump: DispenserPump) {
+    constructor(id: number, deviceIndex: number, hwShield: number, precision: number) {
         console.log(id);
         this.id = id;
         this._deviceindex = deviceIndex;
         this._hwshield = hwShield;
-        this._precision = precision;
-        this._openValue = openValue;
-        this._closeValue = closeValue;
         this._currentState = ValveState.CLOSE;
-        this.dispenserPump = dispenserPump;
     }
 
     /**
@@ -49,33 +39,6 @@ export default class AnalogValve {
     get hwShield() {
         return this._hwshield;
     } // set HW_Shield(value) { //     this.__hwshield = value; // }
-
-    /**
-     * Sets the HW Shield value
-     * @param value
-     */ set precision(value: number) {
-        this._precision = value;
-    }
-
-    get precision() {
-        return this._precision;
-    }
-
-    set close(value) {
-        this._closeValue = value;
-    }
-
-    get close() {
-        return this._closeValue;
-    }
-
-    set open(value) {
-        this._openValue = value;
-    }
-
-    get open() {
-        return this._openValue;
-    }
 
     set currentState(value) {
         this._currentState = value;

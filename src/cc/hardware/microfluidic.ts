@@ -3,9 +3,9 @@ import Component from "@/app/core/component";
 
 export default class Microfluidic {
     private _device: Device;
-    private _name: string;
-    private _valves: Array<Component>;
-    private _ports: Array<Component>;
+    private _name: string = "";
+    private _valves: Array<Component> = [];
+    private _ports: Array<Component> = [];
 
     /**
      * Default constructor for the microfluidic. Accepts the microfluidic json.
@@ -14,6 +14,7 @@ export default class Microfluidic {
     constructor(device: Device) {
         console.log("new microfluidic instance");
         this._device = device;
+        this.name = device.name;
         this.__createValves();
     }
 
@@ -59,8 +60,8 @@ export default class Microfluidic {
 
         let componentcollection = this._device.components;
         let connectioncollection = this.device.connections;
-        let valves = [];
-        let ports = [];
+        let valves: Array<Component> = [];
+        let ports: Array<Component> = [];
         //Step 1: Identify the valves
         for (let i in componentcollection) {
             if (componentcollection[i].mint == "VALVE" || componentcollection[i].mint == "VALVE3D") {

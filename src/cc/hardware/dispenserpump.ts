@@ -1,17 +1,17 @@
 export default class DispenserPump {
     private __id: string;
-    private __hwshield: number;
-    private __Precision: number;
-    private __deviceindex: number;
-    private __Current_State: number;
-    private __Min: number;
-    private __Max: number;
+    private __hwshield: number = 1;
+    private __Precision: number = 0.001;
+    private __deviceindex: number = 0;
+    private __Current_State: number = 0;
+    private __Min: number = 0;
+    private __Max: number = 255;
 
     /**
      * Default constructor for the Pump object
      * @param id
      */
-    constructor(id) {
+    constructor(id: string) {
         console.log(id);
         this.__id = id;
     }
