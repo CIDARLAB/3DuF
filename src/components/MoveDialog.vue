@@ -7,7 +7,9 @@
         </template>
 
         <v-card>
-            <v-card-title class="text-h5 lighten-2"> Move Component: </v-card-title>
+            <v-card-title class="text-h5 lighten-2">
+                Move Component:
+            </v-card-title>
 
             <v-card-text>
                 <v-row>
@@ -18,16 +20,16 @@
                                     <v-card-text>{{ topLeft.x }}, {{ topLeft.y }}</v-card-text>
                                 </v-row>
                                 <v-row>
-                                    <v-card-text class="bottom-xy">{{ bottomLeft.x }}, {{ bottomLeft.y }}</v-card-text>
+                                    <v-card-text class="bottom-xy"> {{ bottomLeft.x }}, {{ bottomLeft.y }} </v-card-text>
                                 </v-row>
                             </v-col>
-                            <v-col id="box"></v-col>
+                            <v-col id="box" />
                             <v-col cols="3">
                                 <v-row>
                                     <v-card-text>{{ topRight.x }}, {{ topRight.y }}</v-card-text>
                                 </v-row>
                                 <v-row>
-                                    <v-card-text class="bottom-xy">{{ bottomRight.x }}, {{ bottomRight.y }}</v-card-text>
+                                    <v-card-text class="bottom-xy"> {{ bottomRight.x }}, {{ bottomRight.y }} </v-card-text>
                                 </v-row>
                             </v-col>
                         </v-row>
@@ -38,7 +40,7 @@
                                 <v-card-text>X (mm):</v-card-text>
                             </td>
                             <td width="125px">
-                                <v-text-field v-model="posX" placeholder="0" :step="1" type="number" @change="updateComponent"> </v-text-field>
+                                <v-text-field v-model="posX" placeholder="0" :step="1" type="number" @change="updateComponent" />
                             </td>
                         </tr>
                         <tr>
@@ -46,18 +48,22 @@
                                 <v-card-text>Y (mm):</v-card-text>
                             </td>
                             <td width="125px">
-                                <v-text-field v-model="posY" placeholder="0" :step="1" type="number" @change="updateComponent"> </v-text-field>
+                                <v-text-field v-model="posY" placeholder="0" :step="1" type="number" @change="updateComponent" />
                             </td>
                         </tr>
                     </v-col>
                 </v-row>
             </v-card-text>
-            <v-divider></v-divider>
+            <v-divider />
 
             <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green" class="white--text" @click="dialog = false"> Save </v-btn>
-                <v-btn color="red" class="white--text ml-9" @click="cancelMove"> Cancel </v-btn>
+                <v-spacer />
+                <v-btn color="green" class="white--text" @click="dialog = false">
+                    Save
+                </v-btn>
+                <v-btn color="red" class="white--text ml-9" @click="cancelMove">
+                    Cancel
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

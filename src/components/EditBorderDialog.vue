@@ -3,15 +3,21 @@
         <template #content>
             <h4>Drag Drop the DXF Border File:</h4>
             <div class="mdl-dialog__content">
-                <v-card id="border_import_panel" class="mx-auto" tile outlined width="400" color="grey lighten-2" height="200"> </v-card>
+                <v-card id="border_import_panel" class="mx-auto" tile outlined width="400" color="grey lighten-2" height="200" />
                 <br />
                 <input id="file_input" ref="file" type="file" class="upload" @change="addFile()" />
             </div>
         </template>
         <template v-slot:actions="{ callbacks }">
-            <v-btn dark color="green dark" @click="importBorderButton()"> Import Border </v-btn>
-            <v-btn dark color="red dark" @click="deleteBorderButton()"> Delete Border </v-btn>
-            <v-btn color="white" @click="callbacks.close(onSave)"> Okay </v-btn>
+            <v-btn dark color="green dark" @click="importBorderButton()">
+                Import Border
+            </v-btn>
+            <v-btn dark color="red dark" @click="deleteBorderButton()">
+                Delete Border
+            </v-btn>
+            <v-btn color="white" @click="callbacks.close(onSave)">
+                Okay
+            </v-btn>
         </template>
     </Dialog>
 </template>

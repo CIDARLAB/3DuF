@@ -1,10 +1,14 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="400">
         <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" text color="pink darken-1" v-on="on"> About/Help </v-btn>
+            <v-btn v-bind="attrs" text color="pink darken-1" v-on="on">
+                About/Help
+            </v-btn>
         </template>
         <v-card>
-            <v-card-title class="headline"> 3DuF v1.1 </v-card-title>
+            <v-card-title class="headline">
+                3DuF v1.1
+            </v-card-title>
             <v-card-text>
                 <img src="img/cidar_logo.png" width="100%" />
                 3DuF is microfluidic design environment developed by
@@ -18,7 +22,9 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
-                <v-btn color="green darken-1" text @click="dialog = false"> Close </v-btn>
+                <v-btn color="green darken-1" text @click="dialog = false">
+                    Close
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

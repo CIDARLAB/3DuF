@@ -1,9 +1,13 @@
 <template>
     <div class="property-drawer-parent">
-        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">{{ mint }}</v-btn>
+        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">
+            {{ mint }}
+        </v-btn>
         <div ref="drawer" class="property-drawer">
             <v-card v-if="activated">
-                <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
+                <v-card-title class="subtitle-1 pb-0">
+                    {{ title }}
+                </v-card-title>
                 <v-card-text>
                     <PropertyBlock :title="mint" :spec="spec" @update="updateParameter" />
                 </v-card-text>

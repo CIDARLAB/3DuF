@@ -10,12 +10,16 @@
                 {{ title }}
             </v-card-title>
             <v-card-text>
-                <slot name="content"> Dialog content goes here </slot>
+                <slot name="content">
+                    Dialog content goes here
+                </slot>
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
                 <slot name="actions" :callbacks="callbacks">
-                    <v-btn color="green darken-1" text @click="callbacks.close()"> Close </v-btn>
+                    <v-btn color="green darken-1" text @click="callbacks.close()">
+                        Close
+                    </v-btn>
                 </slot>
             </v-card-actions>
         </v-card>

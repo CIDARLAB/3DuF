@@ -11,13 +11,13 @@
             <tbody>
                 <tr v-for="item in spec" :key="item.key">
                     <td width="200px">
-                        <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min" @change="paramChanged(item.value, item.name)"></v-slider>
+                        <v-slider v-model="item.value" :step="item.step" :max="item.max" :min="item.min" @change="paramChanged(item.value, item.name)" />
                     </td>
                     <td>
                         <code>{{ item.name }}</code>
                     </td>
                     <td width="125px">
-                        <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units" @change="paramChanged(item.value, item.name)"> </v-text-field>
+                        <v-text-field v-model="item.value" :step="item.step" type="number" :suffix="item.units" @change="paramChanged(item.value, item.name)" />
                     </td>
                 </tr>
             </tbody>

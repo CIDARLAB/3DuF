@@ -1,6 +1,8 @@
 <template>
     <div class="property-drawer-parent">
-        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">Connection </v-btn>
+        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">
+            Connection
+        </v-btn>
         <div ref="drawer" class="connection-property-drawer">
             <v-card v-if="activated">
                 <v-card-text>
@@ -18,7 +20,7 @@
                                                 </v-row>
                                             </v-card-text>
                                         </v-col>
-                                        <v-divider vertical inset></v-divider>
+                                        <v-divider vertical inset />
                                         <v-col>
                                             <v-card-text>
                                                 <v-row>
@@ -69,9 +71,9 @@
                                                 <v-row no-gutters>
                                                     Source:
                                                     <v-col v-for="source in sources" :key="source.name" cols="4">
-                                                        <v-chip v-if="chip1" small close color="green" text-color="white" closable @click:close="chip1 = false">{{
-                                                            source.name
-                                                        }}</v-chip>
+                                                        <v-chip v-if="chip1" small close color="green" text-color="white" closable @click:close="chip1 = false">
+                              {{ source.name }}
+                            </v-chip>
                                                     </v-col>
                                                 </v-row>
                                                 <v-row no-gutters>
@@ -79,21 +81,23 @@
                                                 </v-row>
                                                 <v-row no-gutters>
                                                     <v-col v-for="sink in sinks" :key="sink.name" cols="4">
-                                                        <v-chip v-if="chip2" small close color="green" text-color="white" @click:close="chip2 = false">{{ sink.name }}</v-chip>
+                                                        <v-chip v-if="chip2" small close color="green" text-color="white" @click:close="chip2 = false">
+                                                            {{ sink.name }}
+                                                        </v-chip>
                                                     </v-col>
                                                 </v-row>
                                             </v-card-text>
                                         </v-col>
-                                        <v-divider vertical inset></v-divider>
+                                        <v-divider vertical inset />
                                         <v-col cols="3">
                                             <v-row no-gutters>
                                                 Connection Profile
                                             </v-row>
                                             <v-row no-gutters>
-                                                <v-select v-model="selectedProfile" :items="connectionProfiles"></v-select>
+                                                <v-select v-model="selectedProfile" :items="connectionProfiles" />
                                             </v-row>
                                             <v-row>
-                                                <v-img max-height="150" max-width="150" src="@/assets/technology/CHANNEL.png" class="image-placeholder"></v-img>
+                                                <v-img max-height="150" max-width="150" src="@/assets/technology/CHANNEL.png" class="image-placeholder" />
                                             </v-row>
                                         </v-col>
                                     </v-row>

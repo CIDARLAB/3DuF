@@ -1,10 +1,14 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="600">
         <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" text color="pink darken-1" v-on="on"> Getting Started </v-btn>
+            <v-btn v-bind="attrs" text color="pink darken-1" v-on="on">
+                Getting Started
+            </v-btn>
         </template>
         <v-card>
-            <v-card-title class="headline"> Getting Started </v-card-title>
+            <v-card-title class="headline">
+                Getting Started
+            </v-card-title>
             <v-card-text>
                 <h5>Academic Publications:</h5>
                 <p>
@@ -27,7 +31,9 @@
                         />
                     </tr>
                     <tr>
-                        <td style="text-align: center">Introduction</td>
+                        <td style="text-align: center">
+                            Introduction
+                        </td>
                     </tr>
 
                     <tr>
@@ -41,7 +47,9 @@
                         />
                     </tr>
                     <tr>
-                        <td style="text-align: center">Long Tutorial</td>
+                        <td style="text-align: center">
+                            Long Tutorial
+                        </td>
                     </tr>
                 </table>
 
@@ -61,73 +69,97 @@
                         <td class="tg-yw4l">
                             <pre>del</pre>
                         </td>
-                        <td class="tg-yw4l">- Delete Feature</td>
+                        <td class="tg-yw4l">
+                            - Delete Feature
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>F</pre>
                         </td>
-                        <td class="tg-yw4l">- Reset Canvas</td>
+                        <td class="tg-yw4l">
+                            - Reset Canvas
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>Esc</pre>
                         </td>
-                        <td class="tg-yw4l">- Activate Select Tool/ Deselect Selected Components</td>
+                        <td class="tg-yw4l">
+                            - Activate Select Tool/ Deselect Selected Components
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>ctrl+C , ctrl+V</pre>
                         </td>
-                        <td class="tg-yw4l">- Activate Component Copy Mode</td>
+                        <td class="tg-yw4l">
+                            - Activate Component Copy Mode
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>ctrl+Z</pre>
                         </td>
-                        <td class="tg-yw4l">- Undo Last Edit</td>
+                        <td class="tg-yw4l">
+                            - Undo Last Edit
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>ctrl+A</pre>
                         </td>
-                        <td class="tg-yw4l">- Select All</td>
+                        <td class="tg-yw4l">
+                            - Select All
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>ctrl+S</pre>
                         </td>
-                        <td class="tg-yw4l">- Save JSON file</td>
+                        <td class="tg-yw4l">
+                            - Save JSON file
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>left click</pre>
                         </td>
-                        <td class="tg-yw4l">- Place Feature</td>
+                        <td class="tg-yw4l">
+                            - Place Feature
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>right click</pre>
                         </td>
-                        <td class="tg-yw4l">- Select Feature</td>
+                        <td class="tg-yw4l">
+                            - Select Feature
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>mouse scroll</pre>
                         </td>
-                        <td class="tg-yw4l">- Zoom</td>
+                        <td class="tg-yw4l">
+                            - Zoom
+                        </td>
                     </tr>
                     <tr>
                         <td class="tg-yw4l">
                             <pre>arrow keys</pre>
                         </td>
-                        <td class="tg-yw4l">- Pan</td>
+                        <td class="tg-yw4l">
+                            - Pan
+                        </td>
                     </tr>
                 </table>
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
-                <v-btn color="green darken-1" text @click="dialog = false"> Close </v-btn>
+                <v-btn color="green darken-1" text @click="dialog = false">
+                    Close
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
