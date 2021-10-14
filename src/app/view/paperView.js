@@ -405,7 +405,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     disableContextMenu() {
-        this.canvas.oncontextmenu = function (event) {
+        this.canvas.oncontextmenu = function(event) {
             event.preventDefault();
         };
     }
@@ -451,7 +451,8 @@ export default class PaperView {
     removeDevice() {
         if (this.paperDevice) this.paperDevice.remove();
         this.paperDevice = null;
-        this.featureRegistry = new Map();
+        //TODO: Figure out how to handle featureRegistry
+        //this.featureRegistry = new Map();
     }
 
     /* Rendering Layers */
@@ -538,11 +539,12 @@ export default class PaperView {
      * Show only the desired features
      * Chosen features appear
      * Built for use in uF Guide Tool
-     * @param {Array<paper.CompoundPath>} features Array of features to be displayed
+     * @param {Array<paperObject>} features Array of features to be displayed
      * @returns {void}
      * @memberof PaperView
      */
     showChosenFeatures(features) {
+        this.resetFeatureLayers();
         this.featureLayer.remove();
         this.featureLayer = new paper.Group();
         for (let i = 0; i < this.paperLayers.length; i++) {
@@ -556,6 +558,34 @@ export default class PaperView {
             activeLayer.addChild(features[i]);
         }
         activeLayer.bringToFront();
+
+        const textLayer = this.getNonphysText();
+        textLayer.bringToFront();
+    }
+
+    /**
+     * Show all but the desired features
+     * Chosen features behind mask
+     * Built for use in uF Guide Tool
+     * @param {Array<paperObject>} features Array of features to be displayed
+     * @returns {void}
+     * @memberof PaperView
+     */
+    hideChosenFeatures(features) {
+        this.resetFeatureLayers();
+        this.featureLayer.remove();
+        this.featureLayer = new paper.Group();
+        if (this.layerMask) this.layerMask.remove();
+        this.layerMask = DeviceRenderer.renderLayerMask(this.__viewManagerDelegate.currentDevice);
+        this.featureLayer.addChild(this.layerMask);
+        for (let i = 0; i < this.paperLayers.length; i++) {
+            this.featureLayer.addChild(this.paperLayers[i]);
+        }
+        const activeLayer = new paper.Group();
+        for (let i = 0; i < features.length; i++) {
+            activeLayer.addChild(features[i]);
+        }
+        activeLayer.insertAbove(this.gridLayer);
 
         const textLayer = this.getNonphysText();
         textLayer.bringToFront();
