@@ -54,8 +54,16 @@
                             </v-row>
                         </div>
                         <v-btn @click="submitModeDescription">save</v-btn>
+
+                        <div id="OperationInput">
+                            <h4 style="padding-top: 30px;">Which operation mode do you want to choose?</h4>
+                            <v-row align="center" justify="space-around" style="padding-top: 15px; padding-bottom: 30px;">
+                                <v-btn v-for="index in parseInt(inputModeNumber)" :key="index">{{index}}</v-btn>
+                            </v-row>
+                        </div>
                     </template>
                     <br>
+                    
                 </div>
             </v-navigation-drawer>
         </v-col>
@@ -102,6 +110,7 @@ import ComponentToolbar from "@/components/ComponentToolBar.vue";
 import ManufacturingPanel from "@/components/ManufacturingPanel.vue";
 import GuideVisualiser from "@/components/guide/GuideVisualiser.vue";
 import { makeStateMachine } from "@/guide/step2";
+import { Registry } from '@/app';
 
 export default {
     components: {
@@ -160,6 +169,11 @@ export default {
         },
         editDescription(){
 
+        },
+        setRules(){
+            console.log("setRules");
+            console.log(Registry.viewManager.view.paperFeatures);
+            Registry.viewManager.view.showAllFeatures();
         }
 
     }
@@ -173,3 +187,4 @@ export default {
     height: 100vh;
 }
 </style>
+
