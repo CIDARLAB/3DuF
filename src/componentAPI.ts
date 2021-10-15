@@ -45,6 +45,8 @@ import Node from "./app/library/node";
 import DropletGeneratorT from "./app/library/dropletGeneratorT";
 import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
+import ToroidalMixer from "./app/library/toroidalMixer";
+
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
@@ -109,6 +111,7 @@ export class ComponentAPI {
         Pump3D_control: { object: new Pump3D(), key: "CONTROL" },
         RoundedChannel: { object: new RoundedChannel(), key: null },
         thermoCycler: { object: new thermoCycler(), key: "FLOW" },
+        ToroidalMixer: { object: new ToroidalMixer(), key: "FLOW" },
         Transition: { object: new Transition(), key: null },
         Transposer: { object: new Transposer(), key: "FLOW" },
         Transposer_control: { object: new Transposer(), key: "CONTROL" },
