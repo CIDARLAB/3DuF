@@ -178,15 +178,15 @@ export default class ToroidalMixer extends Template {
         let outerCircle = new paper.Path.Circle(center, 0.5 * innerDiameter + channelWidth);
         let innerCircle = new paper.Path.Circle(center, 0.5 * innerDiameter);
         mixerUnit = outerCircle.subtract(innerCircle);
-        serp.addChild(mixerUnit);
         //Initial neck
         let neck = new paper.Path.Rectangle(new paper.Point(x - neckLength - channelWidth, y - 0.5 * neckWidth), new paper.Size(neckLength + channelWidth, neckWidth));
         neck.rotate((-1 * neckAngle) / 2, new paper.Point(x, y));
-        serp.addChild(neck);
+        mixerUnit = mixerUnit.unite(neck);
         //Trailing neck
         neck = new paper.Path.Rectangle(new paper.Point(x - neckLength - channelWidth, y - 0.5 * neckWidth + diameter), new paper.Size(neckLength + channelWidth, neckWidth));
         neck.rotate(neckAngle / 2, new paper.Point(x, y + diameter));
-        serp.addChild(neck);
+        mixerUnit = mixerUnit.unite(neck);
+        serp.addChild(mixerUnit);
 
         let y_val;
         let x_centerAnalog;
@@ -203,18 +203,18 @@ export default class ToroidalMixer extends Template {
                 outerCircle = new paper.Path.Circle(centerAnalog, 0.5 * innerDiameter + channelWidth);
                 innerCircle = new paper.Path.Circle(centerAnalog, 0.5 * innerDiameter);
                 mixerUnit = outerCircle.subtract(innerCircle);
-                serp.addChild(mixerUnit);
                 //Complete inter-ring connection
                 let neck = new paper.Path.Rectangle(new paper.Point(x, y_val - 0.5 * neckWidth), new paper.Size(channelWidth, neckWidth));
                 neck.rotate(neckAngle / 2, new paper.Point(x, y_val));
-                serp.addChild(neck);
+                mixerUnit = mixerUnit.unite(neck);
                 //Add trailing neck
                 neck = new paper.Path.Rectangle(
                     new paper.Point(x - neckLength, y_val - 0.5 * neckWidth + (2 * channelWidth + innerDiameter) * Math.sin((0.5 * neckAngle * Math.PI) / 180)),
                     new paper.Size(neckLength + channelWidth, neckWidth)
                 );
                 neck.rotate((-1 * neckAngle) / 2, new paper.Point(x, y_val + (2 * channelWidth + innerDiameter) * Math.sin((0.5 * neckAngle * Math.PI) / 180)));
-                serp.addChild(neck);
+                mixerUnit = mixerUnit.unite(neck);
+                serp.addChild(mixerUnit);
             } else {
                 y_centerAnalog = y_val + Math.abs((channelWidth + 0.5 * innerDiameter) * Math.sin((0.5 * neckAngle * Math.PI) / 180));
                 centerAnalog = new paper.Point(x_center, y_centerAnalog);
@@ -222,21 +222,21 @@ export default class ToroidalMixer extends Template {
                 outerCircle = new paper.Path.Circle(centerAnalog, 0.5 * innerDiameter + channelWidth);
                 innerCircle = new paper.Path.Circle(centerAnalog, 0.5 * innerDiameter);
                 mixerUnit = outerCircle.subtract(innerCircle);
-                serp.addChild(mixerUnit);
                 //Complete inter-ring connection
                 let neck = new paper.Path.Rectangle(
                     new paper.Point(x - channelWidth - neckLength * Math.cos((0.5 * neckAngle * Math.PI) / 180), y_val - 0.5 * neckWidth),
                     new paper.Size(channelWidth, neckWidth)
                 );
                 neck.rotate((-1 * neckAngle) / 2, new paper.Point(x - neckLength * Math.cos((0.5 * neckAngle * Math.PI) / 180), y_val));
-                serp.addChild(neck);
+                mixerUnit = mixerUnit.unite(neck);
                 //Add trailing neck
                 neck = new paper.Path.Rectangle(
                     new paper.Point(x - neckLength - channelWidth, y_val - 0.5 * neckWidth + diameter - neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180)),
                     new paper.Size(neckLength + channelWidth, neckWidth)
                 );
                 neck.rotate(neckAngle / 2, new paper.Point(x, y_val + diameter - neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180)));
-                serp.addChild(neck);
+                mixerUnit = mixerUnit.unite(neck);
+                serp.addChild(mixerUnit);
             }
         }
 
