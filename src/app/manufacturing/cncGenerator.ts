@@ -1,5 +1,6 @@
 import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
+import SubstrateFeatureMap from "./substrateFeatureMap";
 import { ComponentAPI } from "@/componentAPI";
 import { LogicalLayerType } from "../core/init";
 
@@ -142,50 +143,59 @@ export default class CNCGenerator {
 
             const features: { [index: string]: Feature } = layer.features;
 
-            if (layer.type === LogicalLayerType.CONTROL) {
-                isControl = true;
-            } else if (layer.type === LogicalLayerType.INTEGRATION) {
-                isIntegrate = true;
-            }
+            const featuresubstratemap: SubstrateFeatureMap = new SubstrateFeatureMap(layer.name);
 
-            // Create the depthmap for this
-            const featuredepthmap: DepthFeatureMap = new DepthFeatureMap(layer.name);
-
+            //Generate map of features on each substrate
             for (const key in features) {
                 const feature: Feature = features[key];
                 // TODO: Modify the port check
                 if (feature.manufacturingInfo.fabtype === DFMType.XY && feature.getType() !== "Port") {
-                    let depth: number = feature.getValue(feature.manufacturingInfo["z-offset-key"]);
-                    console.log("Depth of feature: ", key, depth);
-                    featuredepthmap.addFeature(depth, key);
+                    let substrate: string = feature.manufacturingInfo["substrate-offset"];
+                    //let substrate: number = feature.getValue(feature.manufacturingInfo["substrate-offset"]);
+                    console.log("Substrate of feature: ", key, substrate, features[key]);
+                    featuresubstratemap.addFeature(substrate, features[key]);
                 }
             }
 
-            // Generate Manufacturing Layers for each depth
-            let manufacturinglayer: ManufacturingLayer;
-            for (const depth of featuredepthmap.getDepths()) {
-                manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_" + depth);
-                const depthfeatures: Array<string> = featuredepthmap.getFeaturesAtDepth(depth);
-                for (const j in depthfeatures) {
-                    const featurekey: string = depthfeatures[j];
+            // For each substrate offset, produce the depth-based layers
+            const offsets: IterableIterator<string> | undefined = featuresubstratemap.getOffsets();
+            if (offsets == undefined) throw new Error("Offsets not captured for layer " + i);
+            for (const substrate of offsets) {
+                const relevantFeatures: Array<Feature> | undefined = featuresubstratemap.getFeaturesOfOffset(substrate);
+                // Create the depthmap for this
+                const featuredepthmap: DepthFeatureMap = new DepthFeatureMap(layer.name);
 
-                    const issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
-                    if (!issuccess) {
-                        console.error("Could not find the feature for the corresponding id: " + featurekey);
+                for (const key in relevantFeatures) {
+                    const feature: Feature = relevantFeatures[key];
+                    // TODO: Modify the port check
+                    if (feature.manufacturingInfo.fabtype === DFMType.XY && feature.getType() !== "Port") {
+                        let depth: number = feature.getValue(feature.manufacturingInfo["z-offset-key"]);
+                        console.log("Depth of feature: ", feature.ID, depth);
+                        featuredepthmap.addFeature(depth, feature.ID);
                     }
                 }
 
-                if (isControl) {
-                    manufacturinglayer.flipX();
-                } else if (isIntegrate) {
-                    //TODO: manufacturinglayer.flipX(); if same substrate
+                // Generate Manufacturing Layers for each depth
+                let manufacturinglayer: ManufacturingLayer;
+                for (const depth of featuredepthmap.getDepths()) {
+                    manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_" + depth + "_" + substrate);
+                    const depthfeatures: Array<string> | undefined = featuredepthmap.getFeaturesAtDepth(depth);
+                    for (const j in depthfeatures) {
+                        const featurekey: string = depthfeatures[j];
+
+                        const issuccess = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
+                        if (!issuccess) {
+                            console.error("Could not find the feature for the corresponding id: " + featurekey);
+                        }
+                    }
+
+                    if (substrate != "0") {
+                        manufacturinglayer.flipX();
+                    }
+
+                    mfglayers.push(manufacturinglayer);
                 }
-
-                mfglayers.push(manufacturinglayer);
             }
-
-            isControl = false;
-            isIntegrate = false;
         }
 
         console.log("XY Manufacturing Layers:", mfglayers);

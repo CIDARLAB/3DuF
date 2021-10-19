@@ -6,7 +6,11 @@ export default class DepthFeatureMap {
      * Default Constructor for DepthFeatureMap object.
      * @param {string} name
      */
-    constructor(name) {
+
+    private __name: string;
+    private __depthMap: Map<number, Array<string>>;
+
+    constructor(name: string) {
         this.__name = name;
         this.__depthMap = new Map();
     }
@@ -18,11 +22,11 @@ export default class DepthFeatureMap {
      * @memberof DepthFeatureMap
      * @returns {void}
      */
-    addFeature(depth, featureref) {
+    addFeature(depth: number, featureref: string): void {
         if (this.__depthMap.has(depth)) {
             // Get the array stored for the depth
             const features = this.__depthMap.get(depth);
-            features.push(featureref);
+            if (features != undefined) features.push(featureref);
             // this.__depthMap.set(depth, features);
         } else {
             const features = [];
@@ -36,7 +40,7 @@ export default class DepthFeatureMap {
      * @returns {Array<number>} Returns all the depth
      * @memberof DepthFeatureMap
      */
-    getDepths() {
+    getDepths(): IterableIterator<number> {
         return this.__depthMap.keys();
     }
 
@@ -46,7 +50,7 @@ export default class DepthFeatureMap {
      * @returns {Array<features>} Returns the feature of the depth
      * @memberof DepthFeatureMap
      */
-    getFeaturesAtDepth(depth) {
+    getFeaturesAtDepth(depth: number): Array<string> | undefined {
         return this.__depthMap.get(depth);
     }
 }
