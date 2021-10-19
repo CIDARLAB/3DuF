@@ -10,25 +10,20 @@
                     <v-divider />
                     <HelpDialog />
                     <v-divider />
+                    <v-btn @click="step1" color="blue" style="margin-bottom: 10px;">
+                        Check all components in current device
+                    </v-btn>
+                    <div id="FeatureTable">
+                        <v-row align="center" justify="space-around" style="padding-top: 15px; padding-bottom: 30px;">
+                            <v-btn v-for="index in parseInt(TypesAll.length)" :key="index">{{TypesAll[index-1]}}</v-btn>
+                        </v-row>
+                    </div>
                     <br>
                     <h4>How many modes do you want?</h4>
                     <br>
                     <v-text-field v-model="inputModeNumber" :step="1" type="number" />
-
-                    <!-- <v-text-field
-                        clearable
-                        v-model="inputModeNumber"
-                        name="inputModeNumber"
-                        value=""
-                        hint="Input how many modes do you want."
-                        label="Number of modes"
-                        auto-grow
-                        outlined
-                        rows="1"
-                        row-height="10"
-                    ></v-textarea> -->
-                    <!-- <v-btn @click="submitModeNumber">submit</v-btn> -->
                     <br>
+                    
                     <template id="DescriptionCollector">
                         <div class="DescriptionComponent" v-for="index in parseInt(inputModeNumber)" :key="index">
                             <v-textarea
@@ -73,28 +68,6 @@
             </div>
         </v-col>
     </v-row>
-    <!-- <v-navigation-drawer app permanent class="pt-4" color="grey lighten-3">
-            <div class="d-flex flex-column mx-2">
-                <v-img class="mx-auto" src="img/logo.png" alt="3DuF Logo" style="width: 90%" />
-                <v-divider class="mb-1" />
-                <IntroHelpDialog />
-                <HelpDialog />
-                <v-divider />
-                <EditDeviceDialog />
-                <EditBorderDialog />
-                <InsertTextDialog />
-                <ImportDXFDialog />
-                <v-divider />
-                <LayerToolbar />
-                <ComponentToolbar />
-            </div>
-
-            <ManufacturingPanel />
-        </v-navigation-drawer>
-
-        <v-main id="visualizer-slot">
-            <slot name="main" />
-        </v-main> -->
 </template>
 
 <script>
@@ -111,18 +84,12 @@ import ManufacturingPanel from "@/components/ManufacturingPanel.vue";
 import GuideVisualiser from "@/components/guide/GuideVisualiser.vue";
 import { makeStateMachine } from "@/guide/step2";
 import { Registry } from '@/app';
+import {ComponentStorage, FeatureTable} from "@/guide/step1";
 
 export default {
     components: {
         HelpDialog,
-        // IntroHelpDialog,
-        // EditDeviceDialog,
-        // EditBorderDialog,
-        // ImportDXFDialog,
-        // InsertTextDialog,
         LayerToolbar,
-        // ComponentToolbar,
-        // ManufacturingPanel,
         GuideVisualiser
     },
     data() {
@@ -136,7 +103,8 @@ export default {
             ],
             inputModeNumber: 0,
             result1: "",
-            ModeDescriptions: []
+            ModeDescriptions: [],
+            TypesAll: []
         };
     },
     mounted() {
@@ -168,12 +136,18 @@ export default {
             this.ModeDescriptions.splice(i,1);
         },
         editDescription(){
-
+            console.log("edited");
         },
         setRules(){
             console.log("setRules");
             console.log(Registry.viewManager.view.paperFeatures);
             Registry.viewManager.view.showAllFeatures();
+        },
+        step1(){
+            ComponentStorage();
+            console.log(Object.keys(FeatureTable));
+            this.TypesAll = Object.keys(FeatureTable);
+            console.log(this.TypesAll.length)
         }
 
     }
