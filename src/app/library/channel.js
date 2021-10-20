@@ -58,6 +58,14 @@ export default class Channel extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "CHANNEL";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     render2D(params, key) {

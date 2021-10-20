@@ -1017,7 +1017,14 @@ export default class Device {
      * @return {EdgeFeature|Feature}
      * @memberof Device
      */
-    static makeFeature(typeString: string, paramvalues: any, name: string = "New Feature", id: string | undefined = undefined, fabtype: string, dxfdata: Array<JSON>): Feature {
+    static makeFeature(
+        typeString: string,
+        paramvalues: any,
+        name: string = "New Feature",
+        id: string | undefined = undefined,
+        fabtype: string,
+        dxfdata: Array<JSON> | null
+    ): Feature {
         let params: Params = new Params(new Map(), new Map(), new Map());
 
         if (typeString === "EDGE") {
@@ -1034,9 +1041,10 @@ export default class Device {
         }
 
         let feature = new Feature(typeString, params, name, id);
-
-        for (let i in dxfdata) {
-            feature.addDXFObject(DXFObject.fromJSON(dxfdata[i]));
+        if (dxfdata) {
+            for (let i = 0; i < dxfdata.length; i++) {
+                feature.addDXFObject(DXFObject.fromJSON(dxfdata[i]));
+            }
         }
 
         return feature;

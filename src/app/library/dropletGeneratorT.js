@@ -92,6 +92,14 @@ export default class DropletGeneratorT extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "DROPLET GENERATOR T";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     getPorts(params) {

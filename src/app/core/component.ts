@@ -313,7 +313,7 @@ export default class Component {
             // gets teh feature defined by the id
             feature = ComponentUtils.getFeatureFromID(this._featureIDs[i]);
             console.log(feature);
-            renderedfeature = FeatureRenderer2D.renderFeature(feature);
+            renderedfeature = FeatureRenderer2D.renderFeature(feature, null);
             console.log("rendered:");
             console.log(renderedfeature);
             if (bounds === null) {
@@ -353,8 +353,8 @@ export default class Component {
                 bounds = render.bounds;
             }
         }
-
-        return bounds;
+        if (bounds != null) return bounds;
+        else throw new Error("Component " + this._name + " " + this._id + " cannot have bounds of null");
     }
 
     /**
@@ -408,7 +408,7 @@ export default class Component {
             console.log("test", this.getPosition()[0], this.getPosition()[1], this.getPosition());
             const replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
             replica.referenceID = ret.id;
-            ret.featureIDs.push(replica.id);
+            ret.featureIDs.push(replica.ID);
 
             // TODO: add new feature to the layer in which the current feature is in
             const currentlayer = ComponentUtils.getDeviceLayerFromID(this._featureIDs[i]);

@@ -1,4 +1,5 @@
 import { ComponentAPI } from "@/componentAPI";
+import { DFMType } from "../manufacturing/ManufacturingInfo";
 import DXFObject from "./dxfObject";
 
 import Feature from "./feature";
@@ -17,7 +18,7 @@ export default class EdgeFeature extends Feature {
      * @param {String} id
      */
     constructor(edgeObjects: any, params: Params, id = ComponentAPI.generateID()) {
-        super("EDGE", params, id, id, "EDGE");
+        super("EDGE", params, id, id, DFMType.EDGE);
         if (edgeObjects) {
             this._edgeObjects = edgeObjects;
         } else {

@@ -132,6 +132,14 @@ export default class Filter extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "FILTER";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     getPorts(params) {

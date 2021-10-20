@@ -1,6 +1,8 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
+import { LogicalLayerType } from "../core/init";
+import { DFMType } from "../manufacturing/ManufacturingInfo";
 
 export default class Merger extends Template {
     constructor() {
@@ -139,6 +141,16 @@ export default class Merger extends Template {
         this.__renderKeys = ["FLOW", "INTEGRATE"];
 
         this.__mint = "DROPLET MERGER";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            INTEGRATION: "electrodeDepth"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            INTEGRATION: "+1"
+        };
     }
 
     getPorts(params) {

@@ -280,7 +280,7 @@ export default class Connection {
             // gets teh feature defined by the id
             feature = ConnectionUtils.getFeatureFromID(this._featureIDs[i]);
             console.log(feature);
-            renderedfeature = FeatureRenderer2D.renderFeature(feature);
+            renderedfeature = FeatureRenderer2D.renderFeature(feature, null);
             console.log("rendered:");
             console.log(renderedfeature);
             if (bounds === null) {

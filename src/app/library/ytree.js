@@ -103,6 +103,14 @@ export default class YTree extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "YTREE";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     getPorts(params) {

@@ -52,10 +52,12 @@ export default class Valve3D extends Template {
 
         this.__maximum = {
             componentSpacing: 10000,
-            valveRadius: 0.2 * 10000,
+            valveRadius: 0.3 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
-            rotation: 180
+            rotation: 180,
+            width: 3 * 1000,
+            length: 3 * 1000
         };
 
         this.__featureParams = {
@@ -87,6 +89,18 @@ export default class Valve3D extends Template {
         this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
 
         this.__mint = "VALVE3D";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            CONTROL: "height",
+            INVERSE: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            CONTROL: "+1",
+            INVERSE: "0"
+        };
     }
 
     getPorts(params) {

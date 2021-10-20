@@ -98,6 +98,14 @@ export default class DropletGeneratorFlowFocus extends Template {
         this.__renderKeys = ["FLOW"];
 
         this.__mint = "DROPLET GENERATOR FLOW FOCUS";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
     }
 
     getPorts(params) {

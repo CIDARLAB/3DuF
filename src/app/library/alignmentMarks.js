@@ -62,6 +62,16 @@ export default class AlignmentMarks extends Template {
         this.__renderKeys = ["FLOW", "CONTROL"];
 
         this.__mint = "ALIGNMENT MARKS";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            CONTROL: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            CONTROL: "+1"
+        };
     }
 
     render2D(params, key) {

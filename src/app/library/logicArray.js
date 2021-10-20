@@ -99,6 +99,18 @@ export default class LogicArray extends Template {
         this.__renderKeys = ["FLOW", "CONTROL", "CELL"];
 
         this.__mint = "LOGIC ARRAY";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            CONTROL: "height",
+            CELL: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            CONTROL: "+1",
+            CELL: "0"
+        };
     }
 
     render2D(params, key) {

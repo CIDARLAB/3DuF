@@ -125,6 +125,16 @@ export default class CapacitanceSensor extends Template {
         this.__renderKeys = ["FLOW", "INTEGRATE"];
 
         this.__mint = "DROPLET CAPACITANCE SENSOR";
+
+        this.__zOffsetKeys = {
+            FLOW: "height",
+            INTEGRATION: "electrodeDepth"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0",
+            INTEGRATION: "0"
+        };
     }
 
     getPorts(params) {
