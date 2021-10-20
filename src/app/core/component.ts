@@ -11,6 +11,8 @@ import { ConnectionInterchangeV1, Point } from "./init";
 import ComponentUtils from "../utils/componentUtils";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
+import Layer from "./layer";
+import Device from "./device";
 
 /**
  * This class contains the component abstraction used in the interchange format and the
@@ -28,6 +30,15 @@ export default class Component {
     protected _componentPortTRenders: Map<string, Port>;
     protected _xspan: number;
     protected _yspan: number;
+    protected _layers: Array<Layer>;
+    
+    get layers(){
+        return this._layers;
+    }
+
+    set layer(value:Array<Layer>){
+        this._layers = value;
+    }
     /**
      * Default Constructor
      * @param {string} type
@@ -36,11 +47,12 @@ export default class Component {
      * @param {string} mint
      * @param {String} id
      */
-    constructor(params: Params, name: string, mint: string, id: string = Component.generateID()) {
+    constructor(params: Params, name: string, mint: string, layer:Array<Layer>, id: string = Component.generateID()) {
         this._params = params;
         this._name = name;
         this._id = id;
         this._entity = mint;
+        this._layers = layer;
         // This stores the features that are a part of the component
         this._featureIDs = [];
         // TODO: Need to figure out how to effectively search through these
@@ -388,7 +400,7 @@ export default class Component {
         const unique_map = MapUtils.toMap(definition.unique);
         const heritable_map = MapUtils.toMap(definition.heritable);
         const replicaparams = new Params(cleanparamdata, unique_map, heritable_map);
-        const ret = new Component(replicaparams, name, this._entity);
+        const ret = new Component(replicaparams, name, this._entity, this.layer);
         console.log("Checking what the new component params are:", ret._params);
         // Generate New features
         for (const i in this._featureIDs) {
@@ -433,7 +445,7 @@ export default class Component {
      * @returns {*}
      * @memberof component
      */
-    static fromInterchangeV1(json: ComponentInterchangeV1): Component {
+    static fromInterchangeV1(json: ComponentInterchangeV1, device: Device): Component {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";
@@ -448,7 +460,7 @@ export default class Component {
         // It was originially this._span = this.span which threw several errors so I patterned in off the above const var
         const xspan = json["x-span"];
         const yspan = json["y-span"];
-
+        
         const params = json.params;
 
         console.log("new entity:", entity);
@@ -496,7 +508,14 @@ export default class Component {
         const unique_map = MapUtils.toMap(definition.unique);
         const heritable_map = MapUtils.toMap(definition.heritable);
         const paramstoadd = new Params(params, unique_map, heritable_map);
-        const component = new Component(paramstoadd, name, entity, id);
+        let layers: Array<Layer> =[]
+        for(let i in json.layers){
+            let layer = device.getLayer(json.layers[i]);
+            if (layer !== null){
+                layers.push(layer);
+            }
+        }
+        const component = new Component(paramstoadd, name, entity, layers, id);
 
         // Deserialize the component ports
         const portdata = new Map();
