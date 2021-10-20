@@ -15,7 +15,7 @@
                     </v-btn>
                     <div id="FeatureTable">
                         <v-row align="center" justify="space-around" style="padding-top: 15px; padding-bottom: 30px;">
-                            <v-btn v-for="index in parseInt(TypesAll.length)" :key="index">{{TypesAll[index-1]}}</v-btn>
+                            <v-btn v-for="index in parseInt(TypesAll.length)" :key="index" @click="showType(index)">{{TypesAll[index-1]}}</v-btn>
                         </v-row>
                     </div>
                     <br>
@@ -148,8 +148,12 @@ export default {
             console.log(Object.keys(FeatureTable));
             this.TypesAll = Object.keys(FeatureTable);
             console.log(this.TypesAll.length)
+        },
+        showType(index){
+            var TypeName =  this.TypesAll[index-1];
+            console.log(FeatureTable[TypeName]);
+            Registry.viewManager.view.showChosenFeatures(FeatureTable[TypeName]);
         }
-
     }
 };
 </script>

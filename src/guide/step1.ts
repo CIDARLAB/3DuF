@@ -19,7 +19,6 @@ export let components_all: Array<Component>;
 export function ComponentStorage(){
     
     console.log("step1 starts!");
-    
     // check all components inside the current device and store them into components_all
     if (viewManager != null) {
         components_all = viewManager.currentDevice.components;
@@ -38,9 +37,14 @@ export function ComponentStorage(){
             FeatureInfo.push(viewManager.view.paperFeatures[[num]]);
         }
         delete FeatureTable[""];
+        console.log(FeatureInfo);
         console.log(FeatureTable);
         viewManager.view.showChosenFeatures(FeatureInfo);
 
     }
+}
+
+export function showChosenTypes(){
+
 }
 
