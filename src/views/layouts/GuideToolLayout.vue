@@ -10,7 +10,7 @@
                     <v-divider />
                     <HelpDialog />
                     <v-divider />
-                    <v-btn @click="step1" color="blue" style="margin-bottom: 10px;">
+                    <v-btn @click="step1" color="blue" style="margin-bottom: 20px;">
                         Check all components in current device
                     </v-btn>
                     <div id="FeatureTable">
@@ -19,7 +19,7 @@
                         </v-row>
                     </div>
                     <br>
-                    <h4>How many modes do you want?</h4>
+                    <h3>How many modes do you want?</h3>
                     <br>
                     <v-text-field v-model="inputModeNumber" :step="1" type="number" />
                     <br>
@@ -51,7 +51,7 @@
                         <v-btn @click="submitModeDescription">save</v-btn>
 
                         <div id="OperationInput">
-                            <h4 style="padding-top: 30px;">Which operation mode do you want to choose?</h4>
+                            <h3 style="padding-top: 30px;">Which operation mode do you want?</h3>
                             <v-row align="center" justify="space-around" style="padding-top: 15px; padding-bottom: 30px;">
                                 <v-btn v-for="index in parseInt(inputModeNumber)" :key="index">{{index}}</v-btn>
                             </v-row>
@@ -64,7 +64,7 @@
         </v-col>
         <v-col>
             <div>
-                <GuideVisualiser />
+                <GuideVisualiser/>
             </div>
         </v-col>
     </v-row>
