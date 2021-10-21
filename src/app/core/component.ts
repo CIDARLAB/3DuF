@@ -55,9 +55,9 @@ export default class Component {
 
         // Create and set the ports here itself
 
-        const cleanparamdata = this._params.parameters;
+        const cleanparamdata = this._params.toMap();
         if ((mint !== "" && mint !== "TEXT") || mint === null) {
-            const ports = ComponentAPI.getComponentPorts(MapUtils.toMap(cleanparamdata), mint);
+            const ports = ComponentAPI.getComponentPorts(cleanparamdata, mint);
             if (ports != undefined && ports.length >= 0 && ports !== null) {
                 for (const i in ports) {
                     this.setPort(ports[i].label, ports[i]);
@@ -560,11 +560,11 @@ export default class Component {
      */
     updateComponentPorts(): void {
         // updating the Component Ports
-
+        console.log("this.params: ", this.params);
         const params = this.params.toMap();
-
+        console.log("params:", params);
         const cleanparamdata = params;
-
+        console.log("cleanparams: ", cleanparamdata);
         const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._entity);
 
         for (const i in ports) {

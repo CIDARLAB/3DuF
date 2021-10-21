@@ -323,7 +323,7 @@ export class ComponentAPI {
         const definition = ComponentAPI.library[threeduftypesting].object;
         const params_to_pass: { [index: string]: any } = {};
         params.forEach((value, key) => {
-            params_to_pass[key] = value.value;
+            params_to_pass[key] = value;
         });
         const ports = definition.getPorts(params_to_pass);
         return ports;
