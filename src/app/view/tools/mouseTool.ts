@@ -7,19 +7,19 @@ export interface MouseToolCallback {
 export default class MouseTool {
     constructor() {}
 
-    up(callback: MouseToolCallback): void {
+    up(event: MouseEvent): void {
         MouseTool.defaultFunction("up");
     }
 
-    down(callback: MouseToolCallback): void {
+    down(event: MouseEvent): void {
         MouseTool.defaultFunction("down");
     }
 
-    move(callback: MouseToolCallback): void {
+    move(event: MouseEvent): void {
         MouseTool.defaultFunction("move");
     }
 
-    rightdown(callback: MouseToolCallback): void {
+    rightdown(event: MouseEvent): void {
         MouseTool.defaultFunction("rightdown");
     }
 

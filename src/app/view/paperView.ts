@@ -1054,7 +1054,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    moveCenter(delta: number): void {
+    moveCenter(delta: paper.Point): void {
         this.panAndZoom.moveCenter(delta);
     }
 
