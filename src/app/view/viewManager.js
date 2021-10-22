@@ -859,7 +859,8 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     getEventPosition(event) {
-        return this.view.getProjectPosition(event.clientX, event.clientY);
+        let ret = this.view.getProjectPosition(event.clientX, event.clientY);
+        return [ret.x, ret.y];
     }
 
     /**

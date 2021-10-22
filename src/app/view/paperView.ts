@@ -28,7 +28,7 @@ import MapUtils from "../utils/mapUtils";
 import Connection from "../core/connection";
 import { ViewManager } from "..";
 import Parameter from "../core/parameter";
-import { paperObject } from "../core/init";
+import { PaperObject, Point } from "../core/init";
 /**
  * Paper View class
  */
@@ -352,7 +352,7 @@ export default class PaperView {
      * @returns {}
      * @memberof PaperView
      */
-    canvasToProject(x: number, y: number) {
+    canvasToProject(x: number, y: number): paper.Point {
         if (this.canvas === null) {
             throw new Error("Canvas is null");
         }
@@ -1219,7 +1219,7 @@ export default class PaperView {
     /**
      * Returns the rendered feature object that is being displayed for the particular feature
      * @param {string} featureID ID of the feature
-     * @return {paperObject} Returns an object containing the rendered features
+     * @return {PaperObject} Returns an object containing the rendered features
      * @memberof PaperView
      */
     getRenderedFeature(featureID: string) {

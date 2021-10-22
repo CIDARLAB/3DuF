@@ -1,3 +1,5 @@
+import { ViewManager } from "@/app";
+import { Point } from "@/app/core/init";
 import paper from "paper";
 import Registry from "../../core/registry";
 
@@ -5,7 +7,12 @@ export interface MouseToolCallback {
     (event: MouseEvent): void;
 }
 export default class MouseTool {
-    constructor() {}
+
+    protected viewManagerDelegate: ViewManager;
+
+    constructor(viewManager: ViewManager) {
+        this.viewManagerDelegate = viewManager;
+    }
 
     up(event: MouseEvent): void {
         MouseTool.defaultFunction("up");
@@ -33,9 +40,13 @@ export default class MouseTool {
         };
     }
 
-    static getEventPosition(event: MouseEvent) {
+    static getEventPosition(event: MouseEvent): Point {
         if (Registry.viewManager !== null) {
-            return Registry.viewManager.getEventPosition(event);
+            let ret = Registry.viewManager.getEventPosition(event);
+            if(ret === undefined){
+                throw new Error("event position is undefined");
+            }
+            return ret;
         }
     }
 }
