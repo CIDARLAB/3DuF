@@ -188,8 +188,8 @@ export class ComponentAPI {
      */
     static getComponentWithMINT(minttype: string): Template | null {
         const checkmint = minttype;
-        for (const key in this.library) {
-            if (checkmint == this.library[key].object.mint) {
+        for (const key in ComponentAPI.library) {
+            if (checkmint == ComponentAPI.library[key].object.mint) {
                 return ComponentAPI.library[key].object;
             }
         }
@@ -207,16 +207,16 @@ export class ComponentAPI {
     static getDefinitionForMINT(minttype: string): LibraryEntryDefinition | null {
         const checkmint = minttype;
         let ret: LibraryEntryDefinition | null = null;
-        for (const key in this.library) {
-            if (checkmint == this.library[key].object.mint) {
+        for (const key in ComponentAPI.library) {
+            if (checkmint == ComponentAPI.library[key].object.mint) {
                 ret = {
-                    unique: this.library[key].object.unique,
-                    heritable: this.library[key].object.heritable,
-                    units: this.library[key].object.units,
-                    defaults: this.library[key].object.defaults,
-                    minimum: this.library[key].object.minimum,
-                    maximum: this.library[key].object.maximum,
-                    mint: this.library[key].object.mint
+                    unique: ComponentAPI.library[key].object.unique,
+                    heritable: ComponentAPI.library[key].object.heritable,
+                    units: ComponentAPI.library[key].object.units,
+                    defaults: ComponentAPI.library[key].object.defaults,
+                    minimum: ComponentAPI.library[key].object.minimum,
+                    maximum: ComponentAPI.library[key].object.maximum,
+                    mint: ComponentAPI.library[key].object.mint
                 };
             }
         }
@@ -234,7 +234,7 @@ export class ComponentAPI {
      */
     static getDefinition(threeduftype: string): LibraryEntryDefinition | null {
         // If threeduftype is a key present in library, return the definition
-        // TODO: Change this to use minttype in the future
+        // TODO: Change ComponentAPI to use minttype in the future
         if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftype)) {
             const template = ComponentAPI.library[threeduftype].object;
             const definition = {

@@ -1050,7 +1050,7 @@ export default class PaperView {
 
     /**
      * Moves the center by a specific value
-     * @param {number} delta
+     * @param {paper.Point} delta
      * @returns {void}
      * @memberof PaperView
      */
@@ -1065,8 +1065,9 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    adjustZoom(delta: number, point: number[]): void {
-        this.panAndZoom.adjustZoom(delta, point);
+    adjustZoom(delta: number, point: Point): void {
+        let paperpoint = new paper.Point(point[0], point[1]);
+        this.panAndZoom.adjustZoom(delta, paperpoint);
     }
 
     /**

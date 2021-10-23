@@ -42,8 +42,8 @@ import EventBus from "@/events/events";
 import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
 
-import LoadUtils from "@/app/view/loadUtils";
-import ExportUtils from "@/app/view/exportUtils";
+import LoadUtils from "@/app/utils/loadUtils";
+import ExportUtils from "@/app/utils/exportUtils";
 import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point, ScratchInterchangeV1 } from "@/app/core/init";
 import Feature from "../core/feature";
 import connection from "../core/connection";
@@ -803,7 +803,8 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    adjustZoom(delta: number, point: number[], refresh = true) {
+    adjustZoom(delta: number, point: Point, refresh = true) {
+        console.log("Adjusting zoom...", point, delta);
         if(this.currentDevice === null){
             throw new Error("Current device set to null !");
         }
@@ -1165,7 +1166,9 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     revertFieldToDefault(valueString: string, feature: Feature) {
-        feature.updateParameter(valueString, Registry.featureDefaults[feature.getSet()][feature.getType()][valueString]);
+        // feature.updateParameter(valueString, Registry.featureDefaults[feature.getSet()][feature.getType()][valueString]);
+        let defaultvalue = ComponentAPI.getDefaultsForType(feature.getType())[valueString];
+        feature.updateParameter(valueString, defaultvalue);
     }
 
     /**
@@ -1441,7 +1444,6 @@ export default class ViewManager {
     addCustomComponentTool(identifier: string ) {
         const customcomponent = this.customComponentManager.getCustomComponent(identifier);
         this.tools[identifier] = new CustomComponentPositionTool(customcomponent, "Custom");
-        Registry.featureDefaults.Custom[identifier] = CustomComponent.defaultParameterDefinitions().defaults;
     }
 
     /**
@@ -1516,7 +1518,11 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     generateExportJSON() {
-        const json = ExportUtils.toScratch(this);
+        // throw error if the current device is not set
+        if (this.currentDevice === null){
+            throw new Error("No device set in the viewmanager");
+        }
+        const json = ExportUtils.toScratch(this.currentDevice, this.renderLayers);
         // const json = this.currentDevice.toInterchangeV1_1();
         // json.customComponents = this.customComponentManager.toJSON();
         return json;

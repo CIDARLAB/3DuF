@@ -9,7 +9,7 @@ import RenderLayer from "@/app/view/renderLayer";
 import CustomComponent from "@/app/core/customComponent";
 import ComponentPort from "@/app/core/componentPort";
 import { ComponentAPI } from "@/componentAPI";
-import MapUtils from "../utils/mapUtils";
+import MapUtils from "./mapUtils";
 
 import ConnectionUtils from "@/app/utils/connectionUtils";
 
