@@ -65,7 +65,7 @@ export default class PanAndZoom {
 
     /**
      * Calculates the new center position
-     * @param {number} delta Value of adjustment of the zoom value
+     * @param {paper.Point} delta Value of adjustment of the zoom value
      * @returns {Array<number>} Returns and array with X and Y coordinates
      * @memberof PanAndZoom
      */

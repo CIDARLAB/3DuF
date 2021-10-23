@@ -61,9 +61,10 @@ export default class DesignHistory {
      * @memberof DesignHistory
      * @private
      */
-    __cloneObject(obj) {
-        const clone = {};
-        for (const i in obj) {
+    __cloneObject(obj: any) {
+        const clone: { [x: string]: any } = {};
+        let i: keyof typeof obj;  
+        for (i in obj) {
             if (obj[i] !== null && typeof obj[i] === "object") clone[i] = this.__cloneObject(obj[i]);
             else clone[i] = obj[i];
         }

@@ -44,13 +44,12 @@ export default class MouseTool {
         };
     }
 
-    static getEventPosition(event: MouseEvent): Point {
-        if (Registry.viewManager !== null) {
-            let ret = Registry.viewManager.getEventPosition(event);
-            if(ret === undefined){
-                throw new Error("event position is undefined");
-            }
-            return ret;
+    getEventPosition(event: MouseEvent): Point {
+        let ret = this.viewManagerDelegate.getEventPosition(event);
+        if(ret === undefined){
+            throw new Error("event position is undefined");
         }
+        return ret;
     }
+    
 }

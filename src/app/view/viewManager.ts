@@ -111,10 +111,10 @@ export default class ViewManager {
             if(reference.currentDevice === null){
                 throw new Error("View manager has no current device set");
             }
-            reference.updateDeviceRender(reference.currentDevice);
+            reference.updateDeviceRender();
         });
 
-        const func = function (event: { deltaY: any; }) {
+        const func = function (event: WheelEvent) {
             reference.adjustZoom(event.deltaY, reference.getEventPosition(event));
         };
 
@@ -172,18 +172,6 @@ export default class ViewManager {
     }
 
     /**
-     * Initiating the zoom toolbar
-     * @memberof ViewManager
-     * @returns {void}
-     */
-    setupToolBars() {
-        // Initiating the zoom toolbar
-        // this.zoomToolBar = new ZoomToolBar(0.0001, 5);
-        // this.componentToolBar = new ComponentToolBar(this);
-        this.resetToDefaultTool();
-    }
-
-    /**
      * Sets the initial state of the name map
      * @memberof ViewManager
      * @returns {void}
@@ -236,7 +224,8 @@ export default class ViewManager {
      * @memberof ViewManager
      * @returns {void}
      */
-    addDevice(device: Device | null, refresh = true) {
+    addDevice(device: Device, refresh = true) {
+        this.__currentDevice = device;
         this.view.addDevice(device);
         this.__addAllDeviceLayers(device, false);
         this.refresh(refresh);
@@ -291,8 +280,11 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateDeviceRender(device: Device, refresh = true) {
-        this.view.updateDevice(device);
+    updateDeviceRender(refresh = true) {
+        if(this.currentDevice === null){
+            throw new Error("No device set on current device");
+        }
+        this.view.updateDevice(this.currentDevice);
         this.refresh(refresh);
     }
 
@@ -431,7 +423,7 @@ export default class ViewManager {
         // to all other layers
         for (const i in newlayers) {
             for (const j in edgefeatures) {
-                newlayers[i].addFeature(edgefeatures[j], false);
+                newlayers[i].addFeature(edgefeatures[j]);
             }
         }
 
@@ -482,9 +474,9 @@ export default class ViewManager {
         } else if (this.activeRenderLayer < levelindex * 3) {
             console.log("No change");
         } else {
-            if (levelindex == 0) {
-                if (this.renderLayers.length == 0) {
-                    this.setActiveRenderLayer(null);
+            if (levelindex === 0) {
+                if (this.renderLayers.length === 0) {
+                    throw new Error("No render layers remaining, cannt set active render layer");
                 } else {
                     this.setActiveRenderLayer(0);
                 }
@@ -501,7 +493,7 @@ export default class ViewManager {
         this.refresh();
     }
 
-    setActiveRenderLayer(index: number | null) {
+    setActiveRenderLayer(index: number) {
         if (this.activeRenderLayer === null){
             throw new Error("No active render layer set");
         }
@@ -521,7 +513,7 @@ export default class ViewManager {
      */
     removeLayer(layer: Layer, index: number, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
-            this.view.removeLayer(layer, index);
+            this.view.removeLayer(index);
             this.__removeAllLayerFeatures(layer);
             this.refresh(refresh);
         }
@@ -578,20 +570,6 @@ export default class ViewManager {
         for (const key in layer.features) {
             const feature = layer.features[key];
             this.removeFeature(feature, false);
-            this.refresh(refresh);
-        }
-    }
-
-    /**
-     * Updates layer
-     * @param {Layer} layer Selected layer to be updated
-     * @param {boolean} refresh Whether to refresh or not. true by default
-     * @returns {void}
-     * @memberof ViewManager
-     */
-    updateLayer(layer: Layer, refresh = true) {
-        if (this.__isLayerInCurrentDevice(layer)) {
-            this.view.updateLayer(layer);
             this.refresh(refresh);
         }
     }
@@ -677,7 +655,7 @@ export default class ViewManager {
         this.view.updateRatsNest();
         this.view.updateComponentPortsRender();
 
-        this.updateDeviceRender(this.currentDevice, false);
+        this.updateDeviceRender(false);
         this.__updateViewTarget(false);
         this.refresh(refresh);
     }
@@ -717,7 +695,7 @@ export default class ViewManager {
             throw new Error("Current device set to null !");
         }
 
-        const customborderfeature = new EdgeFeature(null, null);
+        const customborderfeature = new EdgeFeature({}, null);
         for (const i in dxfobject.entities) {
             const foo = new DXFObject(dxfobject.entities[i]);
             customborderfeature.addDXFObject(foo);
@@ -772,7 +750,7 @@ export default class ViewManager {
 
         // Delete all the features
         for (const i in edgefeatures) {
-            this.currentDevice.removeFeatureByID(edgefeatures[i].ID);
+            this.currentDevice.removeFeature(edgefeatures[i]);
         }
 
         console.log("Edgefeatures", edgefeatures);
@@ -839,7 +817,7 @@ export default class ViewManager {
             // this.updateAlignmentMarks();
             this.view.updateRatsNest();
             this.view.updateComponentPortsRender();
-            this.updateDeviceRender(this.currentDevice, false);
+            this.updateDeviceRender(false);
             this.__updateViewTarget(false);
         } else {
             // console.log("Too big or too small!");
@@ -864,8 +842,7 @@ export default class ViewManager {
         this.updateGrid(false);
         // this.updateAlighmentMarks();
 
-        this.updateDeviceRender(this.currentDevice, false);
-        this.refresh(refresh);
+        this.updateDeviceRender();
     }
 
     /**
@@ -886,7 +863,7 @@ export default class ViewManager {
         // this.updateAlignmentMarks();
         this.view.updateRatsNest();
         this.view.updateComponentPortsRender();
-        this.updateDeviceRender(this.currentDevice, false);
+        this.updateDeviceRender(false);
         this.refresh(refresh);
     }
 
@@ -988,7 +965,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    loadDeviceFromJSON(json: ScratchInterchangeV1 | DeviceInterchangeV1 | DeviceInterchangeV1_1) {
+    loadDeviceFromJSON(json: ScratchInterchangeV1) {
         let device;
         this.clear();
         // Check and see the version number if its 0 or none is present,
@@ -999,7 +976,7 @@ export default class ViewManager {
             const ret = LoadUtils.loadFromScratch(json);
             device = ret[0];
             Registry.currentDevice = device;
-            this.__currentDevice = device;
+            this.addDevice(device);
 
             this.renderLayers = ret[1];
 
@@ -1015,7 +992,7 @@ export default class ViewManager {
             //         const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
             //         this.renderLayers.push(newRenderLayer);
             //     }
-            this.updateDeviceRender(this.__currentDevice);
+            this.updateDeviceRender();
 
         } else {
             alert("Version '" + version + "' is not supported by 3DuF !");
@@ -1027,9 +1004,6 @@ export default class ViewManager {
         // Registry.currentTextLayer = Registry.currentDevice.textLayers[0];
 
         this.activeRenderLayer = 0;
-
-        // TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
-        this.addDevice(Registry.currentDevice);
 
         // In case of MINT exported json, generate layouts for rats nests
         this.__initializeRatsNest();
@@ -1055,7 +1029,7 @@ export default class ViewManager {
         if (paperElements.length > 0) {
             for (let i = 0; i < paperElements.length; i++) {
                 const paperFeature = paperElements[i];
-                this.currentDevice.removeFeatureByID(paperFeature.featureID);
+                this.currentDevice.removeFeature(paperFeature);
             }
             this.currentSelection = [];
         }
@@ -1235,7 +1209,6 @@ export default class ViewManager {
      * @return {Feature}
      * @memberof ViewManager
      */
-
     getFeatureByID(featureID: string) {
         const layer = this.getRenderLayerByID(featureID);
         return layer.getFeature(featureID);
@@ -1293,38 +1266,6 @@ export default class ViewManager {
         this.mouseAndKeyboardHandler.updateViewMouseEvents();
     }
 
-    // /**
-    //  * Switches to 2D
-    //  * @returns {void}
-    //  * @memberof ViewManager
-    //  */
-    // switchTo2D() {
-    //     if (this.threeD) {
-    //         this.threeD = false;
-    //         const center = this.renderer.getCameraCenterInMicrometers();
-    //         const zoom = this.renderer.getZoom();
-    //         let newCenterX = center[0];
-    //         if (newCenterX < 0) {
-    //             newCenterX = 0;
-    //         } else if (newCenterX > Registry.currentDevice.params.getValue("width")) {
-    //             newCenterX = Registry.currentDevice.params.getValue("width");
-    //         }
-    //         let newCenterY = paper.view.center.y - center[1];
-    //         if (newCenterY < 0) {
-    //             newCenterY = 0;
-    //         } else if (newCenterY > Registry.currentDevice.params.getValue("height")) {
-    //             newCenterY = Registry.currentDevice.params.getValue("height");
-    //         }
-    //         HTMLUtils.setButtonColor(this.__button2D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-    //         HTMLUtils.setButtonColor(this.__button3D, inactiveBackground, inactiveText);
-    //         Registry.viewManager.setCenter(new paper.Point(newCenterX, newCenterY));
-    //         Registry.viewManager.setZoom(zoom);
-    //         HTMLUtils.addClass(this.__renderBlock, "hidden-block");
-    //         HTMLUtils.removeClass(this.__canvasBlock, "hidden-block");
-    //         HTMLUtils.removeClass(this.__renderBlock, "shown-block");
-    //         HTMLUtils.addClass(this.__canvasBlock, "shown-block");
-    //     }
-    // }
     __button2D(__button2D: any, arg1: any, activeText: string) {
         throw new Error("Method not implemented.");
     }
@@ -1337,29 +1278,6 @@ export default class ViewManager {
     __canvasBlock(__canvasBlock: any, arg1: string) {
         throw new Error("Method not implemented.");
     }
-
-    // /**
-    //  * Switches to 3D
-    //  * @returns {void}
-    //  * @memberof ViewManager
-    //  */
-    // switchTo3D() {
-    //     if (!this.threeD) {
-    //         this.threeD = true;
-    //         setButtonColor(this.__button3D, Colors.getDefaultLayerColor(Registry.currentLayer), activeText);
-    //         setButtonColor(this.__button2D, inactiveBackground, inactiveText);
-    //         this.renderer.loadJSON(Registry.currentDevice.toJSON());
-    //         const cameraCenter = this.view.getViewCenterInMillimeters();
-    //         const height = Registry.currentDevice.params.getValue("height") / 1000;
-    //         const pixels = this.view.getDeviceHeightInPixels();
-    //         this.renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
-    //         this.renderer.showMockup();
-    //         HTMLUtils.removeClass(this.__renderBlock, "hidden-block");
-    //         HTMLUtils.addClass(this.__canvasBlock, "hidden-block");
-    //         HTMLUtils.addClass(this.__renderBlock, "shown-block");
-    //         HTMLUtils.removeClass(this.__canvasBlock, "shown-block");
-    //     }
-    // }
 
     /**
      * Loads a device from a JSON format when the user drags and drops it on the grid
@@ -1374,14 +1292,15 @@ export default class ViewManager {
             const reader = new FileReader();
             reader.onloadend = function (e) {
                 let result = this.result;
-                // try {
-                result = JSON.parse(result);
-                Registry.viewManager.loadDeviceFromJSON(result);
-                // Registry.viewManager.switchTo2D();
-                // } catch (error) {
-                //     console.error(error.message);
-                //     alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
-                // }
+
+                // Throw error if viewmanager is not initialized
+                if (Registry.viewManager === null) {
+                    throw new Error("ViewManager not initialized");
+                }
+                if (typeof result === "string") {
+                    let jsonresult = JSON.parse(result);
+                    Registry.viewManager.loadDeviceFromJSON(jsonresult);
+                }
             };
             try {
                 reader.readAsText(f);
@@ -1474,14 +1393,15 @@ export default class ViewManager {
 
         // Get all the valves for a connection
         const valves = this.currentDevice.getValvesForConnection(connection);
-
+        if(valves.length > 0 && valves !== null){
         // Cycle through each of the valves
-        for (const j in valves) {
-            const valve = valves[j];
-            const is3D = this.currentDevice.getIsValve3D(valve);
-            if (is3D) {
-                const boundingbox = valve.getBoundingRectangle();
-                connection.insertFeatureGap(boundingbox);
+            for (const j in valves) {
+                const valve = valves[j];
+                const is3D = this.currentDevice.getIsValve3D(valve);
+                if (is3D) {
+                    const boundingbox = valve.getBoundingRectangle();
+                    connection.insertFeatureGap(boundingbox);
+                }
             }
         }
     }
@@ -1618,10 +1538,10 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    activateDAFDPlugin(params = null) {
+    activateDAFDPlugin(params = {}) {
         this.loadDeviceFromJSON(JSON.parse(Examples.dafdtemplate));
 
-        if (params === null) {
+        if (Object.keys(params).length === 0) {
             params = {
                 orificeSize: 750,
                 orificeLength: 200,
@@ -1634,52 +1554,6 @@ export default class ViewManager {
         }
 
         DAFDPlugin.fixLayout(params);
-    }
-
-
-    /**
-     * Activates the corresponding placement tool for the given type of component and returns the active tool
-     * @param {*} minttype
-     * @returns
-     */
-    activateComponentPlacementTool(minttype: string, currentParameters: Params) {
-        if (minttype === null) {
-            throw new Error("Found null when looking for MINT Type");
-        }
-        // Cleanup job when activating new tool
-        this.view.clearSelectedItems();
-
-        let activeTool = null;
-        const renderer = ComponentAPI.getRendererForMINT(minttype);
-        if (renderer.placementTool === "componentPositionTool") {
-            activeTool = new ComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "controlCellPositionTool") {
-            activeTool = new ControlCellPositionTool(this, "ControlCell", "Basic", currentParameters);
-        } else if (renderer.placementTool === "customComponentPositionTool") {
-            activeTool = new CustomComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic");
-        } else if (renderer.placementTool === "positionTool") {
-            activeTool = new PositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "multilayerPositionTool") {
-            activeTool = new MultilayerPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "valveInsertionTool") {
-            activeTool = new ValveInsertionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "CellPositionTool") {
-            activeTool = new CellPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "multilevelPositionTool") {
-            // TODO: Add pop up window when using the multilevel position tool to get layer indices
-            activeTool = new MultilevelPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-            throw new Error("multilevel position tool ui/input elements not set up");
-        }
-
-        if (activeTool === null) {
-            throw new Error(`Could not initialize the tool ${minttype}`);
-        }
-
-        this.mouseAndKeyboardHandler.leftMouseTool = activeTool;
-        this.mouseAndKeyboardHandler.rightMouseTool = activeTool;
-        this.mouseAndKeyboardHandler.updateViewMouseEvents();
-
-        return activeTool;
     }
 
     deactivateComponentPlacementTool() {
