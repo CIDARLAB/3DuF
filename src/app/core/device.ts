@@ -24,6 +24,9 @@ import MapUtils from "../utils/mapUtils";
  * The Device stores information about a design.
  */
 export default class Device {
+    toJSON(): any {
+        throw new Error("Method not implemented.");
+    }
     private __layers: Array<Layer>;
     private __textLayers: Array<Layer>;
     private __params: Params;
@@ -912,6 +915,9 @@ export default class Device {
      */
     getIsValve3D(valve: Component): boolean | undefined {
         let valveid = valve.id;
+        if (!this.__valveIs3DMap.has(valveid)){
+            throw new Error(`Doesn't contain the 3d valve: ${valveid}`);
+        }
         return this.__valveIs3DMap.get(valveid);
     }
 

@@ -11,8 +11,8 @@ import Registry from "@/app/core/registry";
  */
 export default class MouseAndKeyboardHandler {
     viewManagerDelegate: ViewManager;
-    private __leftMouseTool: any;
-    private __rightMouseTool: null;
+    private __leftMouseTool: MouseTool | null;
+    private __rightMouseTool: MouseTool | null;
     private __middleMouseTool: PanTool;
 
     /**

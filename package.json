@@ -72,6 +72,7 @@
         "@babel/preset-env": "^7.15.0",
         "@mdi/js": "^5.9.55",
         "@types/chai": "^4.2.21",
+        "@types/md5": "^2.3.1",
         "@types/mocha": "^5.2.4",
         "@typescript-eslint/eslint-plugin": "^2.33.0",
         "@typescript-eslint/parser": "^2.33.0",
@@ -95,6 +96,8 @@
         "eslint-plugin-prettier-vue": "^2.1.1",
         "eslint-plugin-vue": "^6.2.2",
         "glob-parent": "^5.1.2",
+        "mem": "^4.0.0",
+        "minimist": "^1.2.3",
         "npm-merge-driver": "^2.3.6",
         "prettier": "^1.19.1",
         "prettier-eslint": "^9.0.2",
@@ -111,9 +114,7 @@
         "webpack-cli": "^3.3.12",
         "webpack-dev-server": "^3.11.2",
         "y18n": "^4.0.1",
-        "yeoman-generator": "^5.4.2",
-        "mem": "^4.0.0",
-        "minimist": "^1.2.3"
+        "yeoman-generator": "^5.4.2"
     },
     "bugs": {
         "url": "https://github.com/CIDARLAB/3DuF/issues"

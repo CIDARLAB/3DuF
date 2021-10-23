@@ -26,7 +26,7 @@ import UIElement from "./uiElement";
 import TextElement from "./textElement";
 import MapUtils from "../utils/mapUtils";
 import Connection from "../core/connection";
-import { ViewManager } from "..";
+import { AdaptiveGrid, ViewManager } from "..";
 import Parameter from "../core/parameter";
 import { PaperObject, Point } from "../core/init";
 /**
@@ -989,7 +989,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateGrid(grid: null): void {
+    updateGrid(grid: AdaptiveGrid): void {
         this.removeGrid();
         const newPaperGrid = GridRenderer.renderGrid(grid);
         this.paperGrid = newPaperGrid;

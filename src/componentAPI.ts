@@ -49,6 +49,7 @@ import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
 import uuid from "node-uuid";
+import { DFMType } from "./app/manufacturing/manufacturingInfo";
 
 export type LibraryEntryDefinition = {
     unique: { [key: string]: string };
@@ -447,5 +448,25 @@ export class ComponentAPI {
             ret.push(entry.object.mint);
         }
         return ret;
+    }
+
+    /**
+     * Returns the fabtype of the technology and renderkey
+     *
+     * @static
+     * @param {string} minttype
+     * @param {string} key
+     * @returns {DFMType}
+     * @memberof ComponentAPI
+     */
+    static getFabType(minttype: string, renderkey:string): DFMType{
+        // Find the definition in the library matching the minttype
+        for (const key in ComponentAPI.connectionLibrary) {
+            if (ComponentAPI.connectionLibrary[key].object.mint === minttype) {
+                return ComponentAPI.connectionLibrary[key].object.getFabType(renderkey);
+            }
+        }
+
+        throw new Error("Connection Type definition: " + minttype + " not found in library");
     }
 }

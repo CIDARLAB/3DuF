@@ -1,11 +1,12 @@
 import md5 from "md5";
-import Device from "../core/device";
 
 const HISTORY_SIZE = 50;
 /**
  * Design History class
  */
 export default class DesignHistory {
+    deviceData: string[];
+    private __mostRecentMD5: string | null;
     /**
      * Default Construcot for the Design History object
      */
@@ -20,7 +21,7 @@ export default class DesignHistory {
      * @returns {void}
      * @memberof DesignHistory
      */
-    pushDesign(devicedata) {
+    pushDesign(devicedata: string) {
         // Calculate md5 hash and see if we want so save this design
         const hash = md5(devicedata);
         if (this.__mostRecentMD5) {

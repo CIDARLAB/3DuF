@@ -34,6 +34,10 @@ export default class MouseTool {
         console.log("Default Message: You have to implement the method cleanup!");
     }
 
+    deactivate(): void{
+        console.log("Default Message: You have to implement the method deactivate!");
+    }
+
     static defaultFunction(value: string) {
         return function(): void {
             console.log("No " + value + " function set.");
