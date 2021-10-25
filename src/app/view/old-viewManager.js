@@ -1609,50 +1609,6 @@ export default class ViewManager {
         }
     }
 
-    /**
-     * Activates the corresponding placement tool for the given type of component and returns the active tool
-     * @param {*} minttype
-     * @returns
-     */
-    activateComponentPlacementTool(minttype, currentParameters) {
-        if (minttype === null) {
-            throw new Error("Found null when looking for MINT Type");
-        }
-        // Cleanup job when activating new tool
-        this.view.clearSelectedItems();
-
-        let activeTool = null;
-        const renderer = ComponentAPI.getRendererForMINT(minttype);
-        if (renderer.placementTool === "componentPositionTool") {
-            activeTool = new ComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "controlCellPositionTool") {
-            activeTool = new ControlCellPositionTool(this, "ControlCell", "Basic", currentParameters);
-        } else if (renderer.placementTool === "customComponentPositionTool") {
-            activeTool = CustomComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic");
-        } else if (renderer.placementTool === "positionTool") {
-            activeTool = new PositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "multilayerPositionTool") {
-            activeTool = new MultilayerPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "valveInsertionTool") {
-            activeTool = new ValveInsertionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "CellPositionTool") {
-            activeTool = new CellPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-        } else if (renderer.placementTool === "multilevelPositionTool") {
-            // TODO: Add pop up window when using the multilevel position tool to get layer indices
-            activeTool = new MultilevelPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
-            throw new Error("multilevel position tool ui/input elements not set up");
-        }
-
-        if (activeTool === null) {
-            throw new Error(`Could not initialize the tool ${minttype}`);
-        }
-
-        this.mouseAndKeyboardHandler.leftMouseTool = activeTool;
-        this.mouseAndKeyboardHandler.rightMouseTool = activeTool;
-        this.mouseAndKeyboardHandler.updateViewMouseEvents();
-
-        return activeTool;
-    }
 
     deactivateComponentPlacementTool() {
         console.log("Deactivating Component Placement Tool");

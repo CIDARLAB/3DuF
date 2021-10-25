@@ -21,5 +21,7 @@
     "cSpell.words": ["registryref"],
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
-    }
+    },
+    "editor.formatOnSave": true,
+    "typescript.format.insertSpaceAfterTypeAssertion": true
 }

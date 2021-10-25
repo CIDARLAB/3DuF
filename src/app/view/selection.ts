@@ -35,6 +35,10 @@ export default class Selection {
      * @memberof Selection
      */
     replicate(x: number, y: number): void {
+        // throw error if current device is not set
+        if (this.viewManagerDelegate.currentDevice === null) {
+            throw new Error("Current device not set");
+        }
         /*
         1. Get the selection's reference point
         2. Go through each of the items
@@ -63,6 +67,10 @@ export default class Selection {
      * @memberof Selection
      */
     selectAll(): void {
+        // throw error if current device is not set
+        if (this.viewManagerDelegate.currentDevice === null) {
+            throw new Error("No device selected");
+        }
         for (const i in this.__components) {
             const component = this.viewManagerDelegate.currentDevice.getComponentByID(this.__components[i]);
             if (component === null) {
@@ -109,6 +117,10 @@ export default class Selection {
      * @memberof Selection
      */
     __calculateSelectionBounds(): paper.Rectangle {
+        // throw error if current device is not set
+        if (this.viewManagerDelegate.currentDevice === null) {
+            throw new Error("Current device not set");
+        }
         let xmin = 0;
         let ymin = 0;
         let xmax = 0;

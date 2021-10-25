@@ -8,7 +8,7 @@ import EventBus from "@/events/events";
 
 export default class MouseSelectTool extends MouseTool {
     constructor(viewManager, paperview) {
-        super();
+        super(viewManager);
         this.viewManagerDelegate = viewManager;
         this.paperView = paperview;
         this.dragging = false;
@@ -28,14 +28,14 @@ export default class MouseSelectTool extends MouseTool {
         };
         this.move = function (event) {
             if (ref.dragging) {
-                ref.lastPoint = MouseTool.getEventPosition(event);
+                ref.lastPoint = ref.getEventPosition(event);
                 ref.updateQueue.run();
             }
             ref.showTarget();
         };
         this.up = function (event) {
             ref.dragging = false;
-            ref.mouseUpHandler(MouseTool.getEventPosition(event));
+            ref.mouseUpHandler(ref.getEventPosition(event));
             ref.showTarget();
         };
     }
@@ -84,7 +84,7 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     mouseDownHandler(event) {
-        const point = MouseTool.getEventPosition(event);
+        const point = this.getEventPosition(event);
         const target = this.hitFeature(point);
         if (target) {
             if (target.selected) {

@@ -24,6 +24,9 @@ import MapUtils from "../utils/mapUtils";
  * The Device stores information about a design.
  */
 export default class Device {
+    toJSON(): any {
+        throw new Error("Method not implemented.");
+    }
     private __layers: Array<Layer>;
     private __textLayers: Array<Layer>;
     private __params: Params;
@@ -891,13 +894,16 @@ export default class Device {
      * @return {Array<values>}
      * @memberof Device
      */
-    getValvesForConnection(connection: Connection): Array<Component | null> {
+    getValvesForConnection(connection: Connection): Array<Component> {
         let connectionid: string = connection.id;
-        let ret: Array<Component | null> = [];
+        let ret: Array<Component> = [];
         for (let [key, value] of this.__valveMap) {
             // let  = pair;
             if (connectionid === value) {
-                ret.push(this.getComponentByID(key));
+                let valve = this.getComponentByID(key);
+                if (valve != null) {
+                    ret.push(valve);
+                }
             }
         }
 
@@ -912,6 +918,9 @@ export default class Device {
      */
     getIsValve3D(valve: Component): boolean | undefined {
         let valveid = valve.id;
+        if (!this.__valveIs3DMap.has(valveid)){
+            throw new Error(`Doesn't contain the 3d valve: ${valveid}`);
+        }
         return this.__valveIs3DMap.get(valveid);
     }
 

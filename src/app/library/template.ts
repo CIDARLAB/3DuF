@@ -1,4 +1,5 @@
 import ComponentPort from "../core/componentPort";
+import { DFMType } from "../manufacturing/manufacturingInfo";
 //import { ManufacturingInfo } from "../manufacturing/manufacturingInfo";
 
 export enum PositionToolType {
@@ -24,6 +25,7 @@ export default class Template {
     protected _previewImage: string = "";
     protected __zOffsetKeys: { [key: string]: string } | null = null;
     protected __substrateOffset: { [key: string]: string } | null = null;
+    protected fabtype: { [key: string]: DFMType } | null = {"FLOW": DFMType.XY, "CONTROL": DFMType.XY};
 
     /**
      *Creates an instance of Template.
@@ -311,5 +313,22 @@ export default class Template {
         const x_new = position[0] - positionUnitedBounds.topLeft.x;
         const y_new = position[1] - positionUnitedBounds.topLeft.y;
         return [x_new, y_new];
+    }
+
+    /**
+     * Returns the fab type of the component
+     *
+     * @param {string} key
+     * @returns {string}
+     * @memberof Template
+     */
+    getFabType(key: string): DFMType {
+        if (this.fabtype === null) {
+            throw new Error("fabType cannot be null instantiate in the __setupDefinitions");
+        } else if(this.fabtype.hasOwnProperty(key)) {
+            return this.fabtype[key];
+        } else {
+            throw new Error("fabType does not have key: " + key);
+        }
     }
 }
