@@ -1,28 +1,29 @@
 import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
+import Device from "../core/device";
+import { ComponentAPI } from "@/componentAPI";
+import { ViewManager } from "..";
 import SubstrateFeatureMap from "./substrateFeatureMap";
 import { LogicalLayerType } from "../core/init";
 
-import Device from "../core/device";
 import Layer from "../core/layer";
 import Feature from "../core/feature";
-import viewManager from "../view/viewManager";
 import { DFMType } from "./ManufacturingInfo";
 
 /**
- * GNCGenerator class
+ * Lasser Cutting Generator object
  */
-export default class CNCGenerator {
-    __device: Device;
-    __viewManagerDelegate: viewManager;
-    __svgData: Map<String, string>;
-
+export default class LaserCuttingGenerator {
     /**
-     * Default Constructor of GNCGenerator object.
+     * Default Constructor for the laser cutting generator object
      * @param {Device} device Device object
      * @param {*} viewManagerDelegate
      */
-    constructor(device: Device, viewManagerDelegate: viewManager) {
+
+    private __device: Device;
+    private __viewManagerDelegate: ViewManager;
+    private __svgData: Map<String, string>;
+    constructor(device: Device, viewManagerDelegate: ViewManager) {
         this.__device = device;
         this.__viewManagerDelegate = viewManagerDelegate;
 
@@ -30,9 +31,9 @@ export default class CNCGenerator {
     }
 
     /**
-     * Gets the SVG output
-     * @returns {}
-     * @memberof CNCGenerator
+     * Gets the SVG data
+     * @returns Returns the SVG data
+     * @memberof LaserCuttingGenerator
      */
     getSVGOutputs(): Map<String, string> {
         return this.__svgData;
@@ -40,7 +41,7 @@ export default class CNCGenerator {
 
     /**
      * Generate the port layers
-     * @memberof CNCGenerator
+     * @memberof LaserCuttingGenerator
      * @returns {void}
      */
     generatePortLayers(): void {
@@ -52,21 +53,14 @@ export default class CNCGenerator {
          */
         // let components = this.__device.components;
         const layers: Array<Layer> = this.__device.layers;
-        console.log("LAYERS ", layers);
 
         const mfglayers: Array<ManufacturingLayer> = [];
-        console.log("MFGLAYERS: ", mfglayers);
-        let isControl: boolean = false;
 
         for (const i in layers) {
             const layer: Layer = layers[i];
             const ports: Array<string> = [];
 
-            const features: { [index: string]: Feature } = layer.features;
-
-            if (layer.type === LogicalLayerType.CONTROL) {
-                isControl = true;
-            }
+            const features = layer.features;
 
             for (const key in features) {
                 const feature: Feature = features[key];
@@ -80,7 +74,7 @@ export default class CNCGenerator {
                 continue;
             }
 
-            const manufacturinglayer: ManufacturingLayer = new ManufacturingLayer("ports_" + layer.name + "_" + i);
+            const manufacturinglayer = new ManufacturingLayer("ports_" + layer.name + "_" + i);
             // console.log("manufacturing layer :", manufacturinglayer);
 
             for (const fi in ports) {
@@ -93,10 +87,9 @@ export default class CNCGenerator {
                 }
             }
 
-            if (isControl) {
-                manufacturinglayer.flipX();
-                isControl = false;
-            }
+            // We flip all the ports for this system
+            // TODO: Future manufacturing user interface will require us to have options for each of the UI elements
+            manufacturinglayer.flipX();
 
             mfglayers.push(manufacturinglayer);
         }
@@ -104,7 +97,7 @@ export default class CNCGenerator {
         console.log("mfglayers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function(mfglayer: ManufacturingLayer, index: number) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -114,8 +107,8 @@ export default class CNCGenerator {
 
     /**
      * Generates separate mfglayers and svgs for each of the depth layers
+     * @memberof LaserCuttingGenerator
      * @returns {void}
-     * @memberof CNCGenerator
      */
     generateDepthLayers(): void {
         /*
@@ -196,7 +189,7 @@ export default class CNCGenerator {
 
         console.log("XY Manufacturing Layers:", mfglayers);
         const ref = this;
-        mfglayers.forEach(function(mfglayer: ManufacturingLayer, index: number) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -204,8 +197,8 @@ export default class CNCGenerator {
 
     /**
      * Generates all the edge cuts
+     * @memberof LaserCuttingGenerator
      * @returns {void}
-     * @memberof CNCGenerator
      */
     generateEdgeLayers(): void {
         /*
@@ -225,7 +218,7 @@ export default class CNCGenerator {
             const layer: Layer = layers[i];
             manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_EDGE");
 
-            if (layer.type === LogicalLayerType.CONTROL) {
+            if (layer.name === "control") {
                 isControl = true;
             }
 
@@ -234,7 +227,7 @@ export default class CNCGenerator {
             for (const key in features) {
                 const feature: Feature = features[key];
                 // TODO: Modify the port check
-                if (feature.fabType === DFMType.EDGE) {
+                if (feature.fabType === "EDGE") {
                     console.log("EDGE Feature: ", key);
                     const issuccess: boolean = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
                     if (!issuccess) {
@@ -254,7 +247,7 @@ export default class CNCGenerator {
         console.log("EDGE Manufacturing Layers:", mfglayers);
 
         const ref = this;
-        mfglayers.forEach(function(mfglayer: ManufacturingLayer, index: number) {
+        mfglayers.forEach(function(mfglayer, index) {
             ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
             mfglayer.flushData();
         });
@@ -263,8 +256,8 @@ export default class CNCGenerator {
     /**
      * Sets the device the CNCGenerator needs to work of
      * @param {Device} currentDevice
+     * @memberof LaserCuttingGenerator
      * @returns {void}
-     * @memberof CNCGenerator
      */
     setDevice(currentDevice: Device): void {
         this.__device = currentDevice;
@@ -273,10 +266,75 @@ export default class CNCGenerator {
 
     /**
      * Flush all the data
+     * @memberof LaserCuttingGenerator
      * @returns {void}
-     * @memberof CNCGenerator
      */
     flushData(): void {
         this.__svgData.clear();
+    }
+
+    /**
+     * Generates all the glue burn off layers necessary for the valves
+     * @memberof LaserCuttingGenerator
+     * @returns {void}
+     */
+    generateInverseControlLayers(): void {
+        console.log("Generating inverse layers");
+        const layers: Array<Layer> = this.__device.layers;
+
+        const mfglayers: Array<ManufacturingLayer> = [];
+
+        let isControl: boolean = false;
+
+        for (const i in layers) {
+            const layer: Layer = layers[i];
+            const negatives = [];
+
+            const features: { [index: string]: Feature } = layer.features;
+
+            if (layer.name === "control") {
+                isControl = true;
+            }
+
+            // Add logic to generate the here to check if its control...
+            if (isControl) {
+                const manufacturinglayer = new ManufacturingLayer("control_negative_" + layer.name + "_" + i);
+
+                // Do the actual feature generation part here
+                for (const key in features) {
+                    const feature: Feature = features[key];
+                    // TODO: Include fabtype check also
+                    const type: string = feature.getType();
+
+                    /*
+                    Check if type has an inverse layer
+                     */
+
+                    // Skip the EDGE features
+                    if (type === "EDGE") {
+                        continue;
+                    }
+
+                    if (ComponentAPI.hasInverseRenderLayer(type)) {
+                        /*
+                        If the type has an inverse layer, then generate the inverse feature render
+                         and throw it into the manufacturing layer.
+                         */
+                        manufacturinglayer.generateFeatureRender(feature, "INVERSE");
+                    }
+                }
+
+                mfglayers.push(manufacturinglayer);
+                isControl = false;
+            }
+        }
+
+        console.log("Inverse Control Manufacturing Layers:", mfglayers);
+
+        const ref = this;
+        mfglayers.forEach(function(mfglayer, index) {
+            ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
+            mfglayer.flushData();
+        });
     }
 }
