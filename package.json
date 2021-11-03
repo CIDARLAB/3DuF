@@ -30,7 +30,7 @@
     "dependencies": {
         "@dagrejs/graphlib": "^2.1.4",
         "@mdi/font": "^5.9.55",
-        "@types/node-uuid": "0.0.28",
+        "@types/node-uuid": "0.0.29",
         "acorn": "^8.4.1",
         "axios": "^0.21.1",
         "core-js": "^3.17.2",

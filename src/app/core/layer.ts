@@ -14,7 +14,7 @@ export default class Layer {
     name: string;
     features: { [index: string]: Feature };
     featureCount: number;
-    device: Device;
+    device?: Device;
     private __id: string;
     private __type: LogicalLayerType;
     private __group: string;
@@ -24,7 +24,7 @@ export default class Layer {
      * @param {*} values Value of the layer
      * @param {String} name Name of the layer
      */
-    constructor(values: { [index: string]: any }, name: string = "New Layer", type: LogicalLayerType = LogicalLayerType.FLOW, group: string = "0", device: Device) {
+    constructor(values: { [index: string]: any }, name: string = "New Layer", type: LogicalLayerType = LogicalLayerType.FLOW, group: string = "0", device?: Device) {
         this.params = new Params(values, Layer.getUniqueParameters(), Layer.getHeritableParameters());
         this.name = name;
         this.features = {};
@@ -186,7 +186,7 @@ export default class Layer {
         this.removeFeatureByID(feature.ID);
         console.log("Device: ", this.device);
         if (this.device !== null || this.device !== undefined) {
-            this.device.removeFeature(feature);
+            this.device?.removeFeature(feature);
         }
     }
 

@@ -1021,8 +1021,8 @@ export default class Device {
         paramvalues: any,
         name: string = "New Feature",
         id: string | undefined = undefined,
-        fabtype: string,
-        dxfdata: Array<JSON> | null
+        fabtype?: string,
+        dxfdata?: Array<JSON> | null
     ): Feature {
         let params: Params = new Params(new Map(), new Map(), new Map());
 

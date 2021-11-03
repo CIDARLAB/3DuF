@@ -9,7 +9,7 @@ import GridRenderer from "./render2D/gridRenderer";
 import DeviceRenderer from "./render2D/deviceRenderer2D";
 // const DeviceRenderer = require("./render2D/deviceRenderer2D");
 // var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
-import PanAndZoom from "./panAndZoom";
+import PanAndZoom from "./panAndZoom.js";
 import * as Colors from "./colors";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
@@ -948,7 +948,7 @@ export default class PaperView {
                 // @ts-ignore
                 const params = Registry.featureDefaults[this.lastTargetSet][this.lastTargetType];
                 params.position = this.lastTargetPosition;
-                params.color = Colors.getDefaultFeatureColor(this.lastTargetType, this.lastTargetSet, Registry.currentLayer);
+                params.color = Colors.getDefaultFeatureColor(this.lastTargetType, this.lastTargetSet, (Registry.currentLayer as unknown) as Layer);
                 this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, params);
                 this.uiLayer.addChild(this.currentTarget);
             } else {
@@ -989,7 +989,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateGrid(grid: null): void {
+    updateGrid(grid: any): void {
         this.removeGrid();
         const newPaperGrid = GridRenderer.renderGrid(grid);
         this.paperGrid = newPaperGrid;
@@ -1054,7 +1054,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    moveCenter(delta: number): void {
+    moveCenter(delta: paper.Point): void {
         this.panAndZoom.moveCenter(delta);
     }
 
@@ -1065,7 +1065,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    adjustZoom(delta: number, point: number[]): void {
+    adjustZoom(delta: number, point: paper.Point): void {
         this.panAndZoom.adjustZoom(delta, point);
     }
 

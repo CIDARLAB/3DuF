@@ -11,9 +11,9 @@ export enum PositionToolType {
 export default class Template {
     protected __unique: { [key: string]: string } | null = null;
     protected __heritable: { [key: string]: string } | null = null;
-    protected __defaults: { [key: string]: number } | null = null;
-    protected __minimum: { [key: string]: number } | null = null;
-    protected __maximum: { [key: string]: number } | null = null;
+    protected __defaults: { [key: string]: number | string } | null = null;
+    protected __minimum: { [key: string]: number | string } | null = null;
+    protected __maximum: { [key: string]: number | string } | null = null;
     protected __units: { [key: string]: string } | null = null;
     protected __placementTool: string | null = null;
     protected __toolParams: { [key: string]: string } | null = null; // { position: "position" };
@@ -138,7 +138,7 @@ export default class Template {
      * @type {{ [key: string]: number }}
      * @memberof Template
      */
-    get defaults(): { [key: string]: number } {
+    get defaults(): { [key: string]: number | string } {
         if (this.__defaults === null) {
             throw new Error("defaults cannot be null instantiate in the __setupDefinitions");
         }
@@ -153,7 +153,7 @@ export default class Template {
      * @type {{ [key: string]: number }}
      * @memberof Template
      */
-    get minimum(): { [key: string]: number } {
+    get minimum(): { [key: string]: number | string } {
         if (this.__minimum === null) {
             throw new Error("minimum cannot be null instantiate in the __setupDefinitions");
         }
@@ -168,7 +168,7 @@ export default class Template {
      * @type {{ [key: string]: number }}
      * @memberof Template
      */
-    get maximum(): { [key: string]: number } {
+    get maximum(): { [key: string]: number | string } {
         if (this.__maximum === null) {
             throw new Error("maximum cannot be null instantiate in the __setupDefinitions");
         }
