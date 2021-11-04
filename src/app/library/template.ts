@@ -59,7 +59,7 @@ export default class Template {
         } else if (this.__zOffsetKeys.hasOwnProperty(key)) {
             return this.__zOffsetKeys[key];
         } else {
-            throw new Error("zOffsetKey does not contain given key");
+            throw new Error("zOffsetKey does not contain key " + key);
         }
     }
 
@@ -71,11 +71,11 @@ export default class Template {
      */
     substrateOffset(key: string): string {
         if (this.__substrateOffset === null) {
-            throw new Error("zOffsetKey cannot be null instantiate in the __setupDefinitions");
+            throw new Error("substrateOffset cannot be null instantiate in the __setupDefinitions");
         } else if (this.__substrateOffset.hasOwnProperty(key)) {
             return this.__substrateOffset[key];
         } else {
-            throw new Error("substrateOffset does not contain given key");
+            throw new Error("substrateOffset does not contain key " + key);
         }
     }
 

@@ -5,11 +5,12 @@ import Layer from "./layer";
 import DXFObject from "./dxfObject";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
-import { FeatureInterchangeV0 } from "./init";
+import { FeatureInterchangeV0, LogicalLayerType } from "./init";
 import Parameter from "./parameter";
 import EventBus from "@/events/events";
 import RenderLayer from "../view/renderLayer";
 import { DFMType, ManufacturingInfo } from "../manufacturing/ManufacturingInfo";
+import FeatureUtils from "@/app/utils/featureUtils";
 
 /**
  * Feature class
@@ -45,12 +46,18 @@ export default class Feature {
         this._referenceID = null;
         this.layer = null;
         const tempRenderName: string = this.deriveRenderName();
+        let modifierName: string;
+        if (this.type == "Port") modifierName = "PORT";
+        else modifierName = "COMPONENT";
         this._manufacturingInfo = {
             fabtype: fabtype,
             layertype: null,
             rendername: tempRenderName,
             "z-offset-key": ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName),
-            "substrate-offset": ComponentAPI.library[this.type].object.substrateOffset(tempRenderName)
+            depth: this.getValue(ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName)),
+            "substrate-offset": ComponentAPI.library[this.type].object.substrateOffset(tempRenderName),
+            substrate: null,
+            modifier: modifierName
         };
     }
 
@@ -107,10 +114,18 @@ export default class Feature {
         return this._manufacturingInfo;
     }
 
-    // Ensures that all values in manufacturingInfo have been set
-    setManufacturingInfoLayer() {
+    /**
+     * Ensures that layer and substrate values in manufacturingInfo have been set
+     * @return {void}
+     * @memberof Feature
+     */
+    setManufacturingInfoLayer(): void {
+        this._manufacturingInfo.depth = this.getValue(ComponentAPI.library[this.type].object.zOffsetKey(this.deriveRenderName()));
         if (this.layer != null) {
             this._manufacturingInfo.layertype = this.layer.type;
+            this._manufacturingInfo.substrate = FeatureUtils.setSubstrate(this, this._manufacturingInfo["substrate-offset"]);
+        } else {
+            throw new Error("Layer not set in feature " + this.ID + " so manufacturingInfo cannot be set");
         }
     }
 
@@ -339,10 +354,11 @@ export default class Feature {
      */
 
     deriveRenderName(): string {
+        console.log(this._type);
         if (this._type.includes("_integration")) {
-            return "INTEGRATION";
             console.log("INTEGRATION");
-        } else if (this._type.includes("_control")) {
+            return "INTEGRATION";
+        } else if (this._type.includes("_control") || this._type == "Valve") {
             console.log("CONTROL");
             return "CONTROL";
         } else if (this._type.includes("_cell")) {
