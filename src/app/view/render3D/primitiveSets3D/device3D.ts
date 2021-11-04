@@ -14,7 +14,7 @@ export function Slide(params: { [k: string]: any }) {
     const thickness = params.thickness;
     const slide = new THREE.BoxGeometry(width, height, thickness);
     const matrix = new THREE.Matrix4();
-    slide.applyMatrix(matrix.makeTranslation(width / 2, height / 2, thickness / 2));
+    slide.applyMatrix4(matrix.makeTranslation(width / 2, height / 2, thickness / 2));
     return slide;
 }
 
@@ -67,6 +67,6 @@ export function DevicePlane(params: { [k: string]: any }) {
     const height = params.height;
     const plane = new THREE.PlaneBufferGeometry(width, height);
     const matrix = new THREE.Matrix4();
-    plane.applyMatrix(matrix.makeTranslation(width / 2, height / 2, 0));
+    plane.applyMatrix4(matrix.makeTranslation(width / 2, height / 2, 0));
     return plane;
 }

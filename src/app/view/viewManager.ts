@@ -81,8 +81,8 @@ export default class ViewManager {
     undoStack;
     pasteboard: any[];
     mouseAndKeyboardHandler;
-    minZoom;
-    maxZoom;
+    minZoom: number;
+    maxZoom: number;
     threeD;
     renderer: any;
 
@@ -709,8 +709,11 @@ export default class ViewManager {
         }
 
         // Adding the feature to all the layers
-        for (const i in Registry.currentDevice?.layers) {
-            const layer = Registry.currentDevice?.layers[i];
+        if(Registry.currentDevice === null) {
+            throw new Error("No device selected");
+        }
+        for (const i in Registry.currentDevice.layers) {
+            const layer = Registry.currentDevice.layers[i];
             layer.addFeature(customborderfeature);
         }
 

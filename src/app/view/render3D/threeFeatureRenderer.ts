@@ -6,19 +6,15 @@ import Feature from "@/app/core/feature";
 const layerMaterials = {
     red: new THREE.MeshLambertMaterial({
         color: 0xf44336,
-        shading: THREE.SmoothShading
     }),
     indigo: new THREE.MeshLambertMaterial({
         color: 0x3f51b5,
-        shading: THREE.SmoothShading
     }),
     purple: new THREE.MeshLambertMaterial({
         color: 0x673ab7,
-        shading: THREE.SmoothShading
     }),
     grey: new THREE.MeshLambertMaterial({
         color: 0x9e9e9e,
-        shading: THREE.SmoothShading
     })
 };
 

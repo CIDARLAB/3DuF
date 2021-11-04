@@ -94,10 +94,11 @@ export default class MouseSelectTool extends MouseTool {
         if (this.currentSelection.length > 0) {
             for (let i = 0; i < this.currentSelection.length; i++) {
                 const paperFeature = this.currentSelection[i];
-                Registry.currentDevice?.removeFeatureByID(paperFeature.featureID);
+                let devicefeature = Registry.currentDevice?.getFeatureByID(paperFeature.featureID);
+                Registry.currentDevice?.removeFeature(devicefeature!);
             }
             this.currentSelection = [];
-            Registry.canvasManager?.render();
+            // Registry.canvasManager?.render();
         }
     }
 

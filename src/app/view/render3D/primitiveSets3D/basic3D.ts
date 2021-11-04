@@ -16,9 +16,9 @@ export function TwoPointRoundedLineFeature(params: { [k: string]: any }, flip: b
     const matrix = new THREE.Matrix4();
 
     if (flip) {
-        box.applyMatrix(matrix.makeTranslation(0, 0, -height));
+        box.applyMatrix4(matrix.makeTranslation(0, 0, -height));
     }
-    box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+    box.applyMatrix4(matrix.makeTranslation(0, 0, z_offset));
     return box;
 }
 
@@ -38,9 +38,9 @@ export function EdgedBoxFeature(params: { [k: string]: any }, flip: boolean, z_o
     });
     const matrix = new THREE.Matrix4();
     if (flip) {
-        box.applyMatrix(matrix.makeTranslation(0, 0, -height));
+        box.applyMatrix4(matrix.makeTranslation(0, 0, -height));
     }
-    box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+    box.applyMatrix4(matrix.makeTranslation(0, 0, z_offset));
     return box;
 }
 
@@ -57,9 +57,9 @@ export function TwoPointRoundedBoxFeature(params: { [k: string]: any }, flip: bo
     });
     const matrix = new THREE.Matrix4();
     if (flip) {
-        box.applyMatrix(matrix.makeTranslation(0, 0, -height));
+        box.applyMatrix4(matrix.makeTranslation(0, 0, -height));
     }
-    box.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+    box.applyMatrix4(matrix.makeTranslation(0, 0, z_offset));
     return box;
 }
 
@@ -70,8 +70,8 @@ export function Cone(params: { [k: string]: any }) {
     const height = params.height;
     const cyl = new THREE.CylinderGeometry(radius2, radius1, height, CONE_SEGMENTS);
     const matrix = new THREE.Matrix4();
-    cyl.applyMatrix(matrix.makeRotationX(Math.PI / 2));
-    cyl.applyMatrix(matrix.makeTranslation(position[0], position[1], height / 2));
+    cyl.applyMatrix4(matrix.makeRotationX(Math.PI / 2));
+    cyl.applyMatrix4(matrix.makeTranslation(position[0], position[1], height / 2));
     return cyl;
 }
 
@@ -88,9 +88,9 @@ export function TwoPointLine(params: { [k: string]: any }) {
     const length = Math.sqrt(dXPow + dYPow);
     const box = new THREE.BoxGeometry(length, width, height);
     const matrix = new THREE.Matrix4();
-    box.applyMatrix(matrix.makeRotationZ(boxAngle));
-    box.applyMatrix(matrix.makeTranslation(start[0], start[1], height / 2));
-    box.applyMatrix(matrix.makeTranslation(dX / 2, dY / 2, 0));
+    box.applyMatrix4(matrix.makeRotationZ(boxAngle));
+    box.applyMatrix4(matrix.makeTranslation(start[0], start[1], height / 2));
+    box.applyMatrix4(matrix.makeTranslation(dX / 2, dY / 2, 0));
     return box;
 }
 
@@ -128,8 +128,8 @@ export function TwoPointRoundedBox(params: { [k: string]: any }) {
 
     const core = new THREE.BoxGeometry(w, h, height);
     const matrix = new THREE.Matrix4();
-    core.applyMatrix(matrix.makeTranslation(w / 2, h / 2, height / 2));
-    core.applyMatrix(matrix.makeTranslation(bottomLeft[0], bottomLeft[1], 0));
+    core.applyMatrix4(matrix.makeTranslation(w / 2, h / 2, height / 2));
+    core.applyMatrix4(matrix.makeTranslation(bottomLeft[0], bottomLeft[1], 0));
     const left = TwoPointRoundedLine({
         start: bottomLeft,
         end: topLeft,

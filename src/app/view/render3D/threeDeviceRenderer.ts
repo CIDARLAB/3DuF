@@ -268,11 +268,13 @@ export class ThreeDeviceRenderer {
             width: width,
             height: height
         };
+        const planeMaterialObject = new THREE.MeshStandardMaterial();
+        const slideMaterialObject = new THREE.MeshStandardMaterial();
         const slideGeometry = Device3D.Slide(slideParams);
         const planeGeometry = Device3D.DevicePlane(planeParams);
         const group = new THREE.Group();
-        const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-        const slideMesh = new THREE.Mesh(slideGeometry, slideMaterial);
+        const planeMesh = new THREE.Mesh(planeGeometry, planeMaterialObject);
+        const slideMesh = new THREE.Mesh(slideGeometry, slideMaterialObject);
         group.add(planeMesh);
         group.add(slideMesh);
         return group;

@@ -6,8 +6,8 @@ import MouseTool, { MouseToolCallback } from "./mouseTool";
 import PositionTool from "./positionTool";
 import paper from "paper";
 import ViewManager from "@/app/view/viewManager";import { paperObject } from "@/app/core/init";
-import Connection from "@/app/library/connection";
-import { Component } from "vue";
+import Connection from "@/app/core/connection";
+import Component from "@/app/core/component";
 
 export default class ValveInsertionTool extends MultilayerPositionTool {
     is3D: boolean;
@@ -171,8 +171,8 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             component = this.createNewMultiLayerFeature(point, angle);
         }
 
-        Registry.currentDevice!.insertValve(component as any, connection as any, this.is3D);
-        Registry.viewManager!.updatesConnectionRender(connection as any);
+        Registry.currentDevice!.insertValve(component, connection as any, this.is3D);
+        Registry.viewManager!.updatesConnectionRender(connection);
         Registry.viewManager!.saveDeviceState();
     }
 

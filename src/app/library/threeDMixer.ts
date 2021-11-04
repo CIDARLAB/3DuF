@@ -138,17 +138,17 @@ export default class ThreeDMixer extends Template {
 
         if (key === "FLOW") {
             // draw first segment
-            serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));
+            serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth)));
             for (let i = 0; i < numBends; i++) {
-                serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
+                serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vRepeat * i, channelWidth, segBend)));
                 // serp.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
-                serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
+                serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend)));
                 if (i === numBends - 1) {
                     // draw half segment to close
-                    serp.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
+                    serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth)));
                 } else {
                     // draw full segment
-                    serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth));
+                    serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth)));
                 }
             }
         } else {
@@ -156,7 +156,7 @@ export default class ThreeDMixer extends Template {
             // serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));
             for (let i = 0; i < numBends; i++) {
                 // serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
-                serp.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
+                serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth)));
                 // serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
                 // if (i === numBends - 1) {//draw half segment to close
                 //     serp.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
