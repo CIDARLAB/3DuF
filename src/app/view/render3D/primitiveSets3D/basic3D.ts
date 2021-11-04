@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import mergeGeometries from "../threeUtils";
+import {mergeGeometries} from "../threeUtils";
 const CONE_SEGMENTS = 16;
 
 export function TwoPointRoundedLineFeature(params: { [k: string]: any }, flip: boolean, z_offset: number) {
@@ -171,10 +171,10 @@ export function ConeFeature(params: { [k: string]: any }, flip: boolean, z_offse
     });
     const matrix = new THREE.Matrix4();
     if (flip) {
-        cone.applyMatrix(matrix.makeRotationX(Math.PI));
-        cone.applyMatrix(matrix.makeTranslation(0, position[1] * 2, 0));
+        cone.applyMatrix4(matrix.makeRotationX(Math.PI));
+        cone.applyMatrix4(matrix.makeTranslation(0, position[1] * 2, 0));
     }
-    cone.applyMatrix(matrix.makeTranslation(0, 0, z_offset));
+    cone.applyMatrix4(matrix.makeTranslation(0, 0, z_offset));
     return cone;
 }
 

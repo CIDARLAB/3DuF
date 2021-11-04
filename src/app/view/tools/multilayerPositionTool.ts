@@ -2,7 +2,7 @@ import PositionTool from "./positionTool";
 import { ComponentAPI } from "@/componentAPI";
 import Registry from "../../core/registry";
 import Device from "../../core/device";
-import { ViewManager } from "@/app";
+import ViewManager from "@/app/view/viewManager";
 
 export default class MultilayerPositionTool extends PositionTool {
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters: { [k: string]: any } | null = null) {

@@ -1,4 +1,5 @@
 import ComponentPort from "../core/componentPort";
+import { paperObject } from "../core/init";
 //import { ManufacturingInfo } from "../manufacturing/manufacturingInfo";
 
 export enum PositionToolType {
@@ -11,9 +12,9 @@ export enum PositionToolType {
 export default class Template {
     protected __unique: { [key: string]: string } | null = null;
     protected __heritable: { [key: string]: string } | null = null;
-    protected __defaults: { [key: string]: number | string } | null = null;
-    protected __minimum: { [key: string]: number | string } | null = null;
-    protected __maximum: { [key: string]: number | string } | null = null;
+    protected __defaults: { [key: string]: number } | null = null;
+    protected __minimum: { [key: string]: number } | null = null;
+    protected __maximum: { [key: string]: number } | null = null;
     protected __units: { [key: string]: string } | null = null;
     protected __placementTool: string | null = null;
     protected __toolParams: { [key: string]: string } | null = null; // { position: "position" };
@@ -138,7 +139,7 @@ export default class Template {
      * @type {{ [key: string]: number }}
      * @memberof Template
      */
-    get defaults(): { [key: string]: number | string } {
+    get defaults(): { [key: string]: number } {
         if (this.__defaults === null) {
             throw new Error("defaults cannot be null instantiate in the __setupDefinitions");
         }
@@ -153,7 +154,7 @@ export default class Template {
      * @type {{ [key: string]: number }}
      * @memberof Template
      */
-    get minimum(): { [key: string]: number | string } {
+    get minimum(): { [key: string]: number } {
         if (this.__minimum === null) {
             throw new Error("minimum cannot be null instantiate in the __setupDefinitions");
         }
@@ -168,7 +169,7 @@ export default class Template {
      * @type {{ [key: string]: number }}
      * @memberof Template
      */
-    get maximum(): { [key: string]: number | string } {
+    get maximum(): { [key: string]: number } {
         if (this.__maximum === null) {
             throw new Error("maximum cannot be null instantiate in the __setupDefinitions");
         }
@@ -262,11 +263,11 @@ export default class Template {
      * compatibility.
      * @param key
      */
-    render2D(params: { [key: string]: any }, key: string): any {
+    render2D(params: { [key: string]: any }, key: string): paperObject {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    render2DTarget(key: string, params: { [key: string]: any }): void {
+    render2DTarget(key: string, params: { [key: string]: any }): paperObject {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 

@@ -537,16 +537,6 @@ export default class PaperView {
         // this.setActiveLayer(index);
     }
 
-    /**
-     * Updates the layers
-     * @param {Layer} layer Layer object
-     * @param {number} index Index of layer to update (Int)
-     * @returns {void}
-     * @memberof PaperView
-     */
-    updateLayer(layer: Layer, index: number): void {
-        // do nothing, for now
-    }
 
     /**
      * Delete the layer from the paperview at the given index.

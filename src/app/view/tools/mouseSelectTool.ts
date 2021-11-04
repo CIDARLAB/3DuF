@@ -5,7 +5,9 @@ import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
 import EventBus from "@/events/events";
-import { PaperView, ViewManager } from "@/app";
+import ViewManager from "@/app/view/viewManager";
+import PaperView from "@/app/view/paperView";
+
 
 export default class MouseSelectTool extends MouseTool {
     viewManagerDelegate: ViewManager;

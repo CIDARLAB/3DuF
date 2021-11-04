@@ -2,8 +2,7 @@ import PositionTool from "./positionTool";
 
 import Registry from "../../core/registry";
 import Device from "../../core/device";
-import { ViewManager } from "@/app";
-
+import ViewManager from "@/app/view/viewManager";
 export default class CellPositionTool extends PositionTool {
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters = null) {
         super(viewManagerDelegate, typeString, setString, currentParameters);

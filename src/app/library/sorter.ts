@@ -222,7 +222,7 @@ export default class Sorter extends Template {
         return ports;
     }
 
-    __renderFlow(params: { [k: string]: any }, key: string) {
+    __renderFlow(params: { [k: string]: any }) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
@@ -307,7 +307,7 @@ export default class Sorter extends Template {
         return serp;
     }
 
-    __renderIntegrate(params: { [k: string]: any }, key: string) {
+    __renderIntegrate(params: { [k: string]: any }) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];

@@ -119,8 +119,9 @@ export default class Valve extends Template {
             fillColor: color,
             strokeWidth: 0
         });
-
-        return (rec.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        rec.rotate(rotation, new paper.Point(px, py));
+        let compoundPath = new paper.CompoundPath(rec);
+        return (compoundPath);
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {

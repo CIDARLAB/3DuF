@@ -36,6 +36,9 @@ export default class CustomComponentPositionTool extends PositionTool {
     }
 
     showTarget() {
+        if(this.lastPoint === null){
+            throw new Error("No last point");
+        }
         const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager?.updateTarget(this.typeString, this.setString, target);
     }

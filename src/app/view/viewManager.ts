@@ -22,7 +22,7 @@ import ChangeAllDialog from "./ui/changeAllDialog";
 import LayerToolBar from "./ui/layerToolBar";
 import * as HTMLUtils from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
-import { ComponentToolBar, inactiveBackground, inactiveText, activeText } from "./ui/componentToolBar";
+import {inactiveBackground, inactiveText, activeText } from "./ui/componentToolBar";
 import DesignHistory from "./designHistory";
 import MoveTool from "./tools/moveTool";
 import ComponentPositionTool from "./tools/componentPositionTool";
@@ -67,6 +67,7 @@ import { LogicalLayerType, ScratchInterchangeV1 } from "@/app/core/init";
 import { MultiplyOperation } from "three";
 import UIElement from "./uiElement";
 import Connection from "../core/connection";
+import Params from "../core/params";
 
 export default class ViewManager {
     view: PaperView;
@@ -294,7 +295,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     removeDevice(device: Device, refresh = true) {
-        this.view.removeDevice(device);
+        this.view.removeDevice();
         this.__removeAllDeviceLayers(device, false);
         this.refresh(refresh);
     }
@@ -404,7 +405,7 @@ export default class ViewManager {
      */
     addLayer(layer: Layer, index: number, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
-            this.view.addLayer(layer, index, false);
+            this.view.addLayer(layer, index);
             this.__addAllLayerFeatures(layer, index, false);
             this.refresh(refresh);
         }
@@ -443,7 +444,7 @@ export default class ViewManager {
         // to all other layers
         for (const i in newlayers) {
             for (const j in edgefeatures) {
-                newlayers[i].addFeature(edgefeatures[j], false);
+                newlayers[i].addFeature(edgefeatures[j]);
             }
         }
 
@@ -490,7 +491,7 @@ export default class ViewManager {
             if (levelindex == 0) {
                 if (this.renderLayers.length == 0) {
                     // The param shouldn't be null
-                    this.setActiveRenderLayer(null);
+                    this.setActiveRenderLayer(levelindex);
                 } else {
                     this.setActiveRenderLayer(0);
                 }
@@ -594,7 +595,6 @@ export default class ViewManager {
     updateLayer(layer: Layer, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
             // Missing param
-            this.view.updateLayer(layer);
             this.refresh(refresh);
         }
     }
@@ -681,7 +681,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     generateBorder() {
-        const borderfeature = new EdgeFeature(null, null);
+        const borderfeature = new EdgeFeature(null, new Params({}, new Map(), new Map()));
 
         // Get the bounds for the border feature and then update the device dimensions
         const xspan = Registry.currentDevice?.getXSpan();
@@ -702,7 +702,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     importBorder(dxfobject: any) {
-        const customborderfeature = new EdgeFeature(null, null);
+        const customborderfeature = new EdgeFeature(null, new Params({}, new Map(), new Map()));
         for (const i in dxfobject.entities) {
             const foo = new DXFObject(dxfobject.entities[i]);
             customborderfeature.addDXFObject(foo);
@@ -741,7 +741,9 @@ export default class ViewManager {
         console.log("All features", features);
 
         const edgefeatures = [];
-
+        if (features === undefined){
+            throw new Error("No features found");
+        }
         for (const i in features) {
             // Check if the feature is EDGE or not
             if (features[i].fabType === "EDGE") {
@@ -1140,7 +1142,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     revertFieldToDefault(valueString: string, feature: Feature) {
-        feature.updateParameter(valueString, (Registry as any).featureDefaults[feature.getSet()][feature.getType()][valueString]);
+        feature.updateParameter(valueString, ComponentAPI.getDefaultsForType(feature.getType())[valueString]);
     }
 
     /**
@@ -1404,6 +1406,9 @@ export default class ViewManager {
         const valves = Registry.currentDevice?.getValvesForConnection(connection);
 
         // Cycle through each of the valves
+        if (valves === undefined || valves === null) {
+            throw new Error("Valves are undefined or null when updating connection: " + connection.id);
+        }
         for (const j in valves) {
             const valve = valves[j];
             const is3D = Registry.currentDevice?.getIsValve3D(valve);
@@ -1435,58 +1440,11 @@ export default class ViewManager {
         this.tools.MouseSelectTool = new MouseSelectTool(this, this.view);
         this.tools.RenderMouseTool = new RenderMouseTool(this, this.view);
         this.tools.InsertTextTool = new InsertTextTool(this);
-        this.tools.Chamber = new ComponentPositionTool("Chamber", "Basic");
-        this.tools.Valve = new ValveInsertionTool("Valve", "Basic");
-        this.tools.Channel = new ChannelTool("Channel", "Basic");
-        this.tools.Connection = new ConnectionTool("Connection", "Basic");
-        this.tools.RoundedChannel = new ChannelTool("RoundedChannel", "Basic");
-        this.tools.Node = new ComponentPositionTool("Node", "Basic");
-        this.tools.CircleValve = new ValveInsertionTool("CircleValve", "Basic");
-        this.tools.RectValve = new ComponentPositionTool("RectValve", "Basic");
-        this.tools.Valve3D = new ValveInsertionTool("Valve3D", "Basic", true);
-        this.tools.Port = new ComponentPositionTool("Port", "Basic");
-        this.tools.Anode = new ComponentPositionTool("Anode", "Basic"); // Ck
-        this.tools.Cathode = new ComponentPositionTool("Cathode", "Basic"); // Ck
-        this.tools.Via = new PositionTool("Via", "Basic");
-        this.tools.DiamondReactionChamber = new ComponentPositionTool("DiamondReactionChamber", "Basic");
-        this.tools.thermoCycler = new ComponentPositionTool("thermoCycler", "Basic");
-        this.tools.BetterMixer = new ComponentPositionTool("BetterMixer", "Basic");
-        this.tools.CurvedMixer = new ComponentPositionTool("CurvedMixer", "Basic");
-        this.tools.Mixer = new ComponentPositionTool("Mixer", "Basic");
-        this.tools.GradientGenerator = new ComponentPositionTool("GradientGenerator", "Basic");
-        this.tools.Tree = new ComponentPositionTool("Tree", "Basic");
-        this.tools.YTree = new ComponentPositionTool("YTree", "Basic");
-        this.tools.Mux = new MultilayerPositionTool("Mux", "Basic");
-        this.tools.Transposer = new MultilayerPositionTool("Transposer", "Basic");
-        this.tools.RotaryMixer = new MultilayerPositionTool("RotaryMixer", "Basic");
-        this.tools.CellTrapL = new CellPositionTool("CellTrapL", "Basic");
-        this.tools.Gelchannel = new CellPositionTool("Gelchannel", "Basic"); // ck
-        this.tools.DropletGen = new ComponentPositionTool("DropletGen", "Basic");
-        this.tools.Transition = new PositionTool("Transition", "Basic");
-        this.tools.AlignmentMarks = new MultilayerPositionTool("AlignmentMarks", "Basic");
-        this.tools.Pump = new MultilayerPositionTool("Pump", "Basic");
-        this.tools.Pump3D = new MultilayerPositionTool("Pump3D", "Basic");
-        this.tools.LLChamber = new MultilayerPositionTool("LLChamber", "Basic");
-        this.tools["3DMixer"] = new MultilayerPositionTool("3DMixer", "Basic");
 
         // All the new tools
         this.tools.MoveTool = new MoveTool();
         this.tools.GenerateArrayTool = new GenerateArrayTool();
 
-        // new
-        this.tools.Filter = new ComponentPositionTool("Filter", "Basic");
-        this.tools.CellTrapS = new CellPositionTool("CellTrapS", "Basic");
-        this.tools["3DMux"] = new MultilayerPositionTool("3DMux", "Basic");
-        this.tools.ChemostatRing = new MultilayerPositionTool("ChemostatRing", "Basic");
-        this.tools.Incubation = new ComponentPositionTool("Incubation", "Basic");
-        this.tools.Merger = new ComponentPositionTool("Merger", "Basic");
-        this.tools.PicoInjection = new ComponentPositionTool("PicoInjection", "Basic");
-        this.tools.Sorter = new ComponentPositionTool("Sorter", "Basic");
-        this.tools.Splitter = new ComponentPositionTool("Splitter", "Basic");
-        this.tools.CapacitanceSensor = new ComponentPositionTool("CapacitanceSensor", "Basic");
-        this.tools.DropletGenT = new ComponentPositionTool("DropletGenT", "Basic");
-        this.tools.DropletGenFlow = new ComponentPositionTool("DropletGenFlow", "Basic");
-        this.tools.LogicArray = new ControlCellPositionTool("LogicArray", "Basic");
     }
 
     /**
@@ -1645,8 +1603,9 @@ export default class ViewManager {
      * @param {*} minttype
      * @returns
      */
-    activateComponentPlacementTool(minttype: any, currentParameters: any) {
-        if (minttype === null) {
+    activateComponentPlacementTool(minttype: string, currentParameters: any) {
+        const threeduftype = ComponentAPI.getTypeForMINT(minttype);
+        if (threeduftype === null) {
             throw new Error("Found null when looking for MINT Type");
         }
         // Cleanup job when activating new tool
@@ -1655,22 +1614,22 @@ export default class ViewManager {
         let activeTool = null;
         const renderer = ComponentAPI.getRendererForMINT(minttype);
         if (renderer.placementTool === "componentPositionTool") {
-            activeTool = new ComponentPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+            activeTool = new ComponentPositionTool(this, threeduftype , "Basic", currentParameters);
         } else if (renderer.placementTool === "controlCellPositionTool") {
             activeTool = new ControlCellPositionTool(this, "ControlCell", "Basic", currentParameters);
         } else if (renderer.placementTool === "customComponentPositionTool") {
-            activeTool = new CustomComponentPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
+            // activeTool = new CustomComponentPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
         } else if (renderer.placementTool === "positionTool") {
-            activeTool = new PositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+            activeTool = new PositionTool(this, threeduftype, "Basic", currentParameters);
         } else if (renderer.placementTool === "multilayerPositionTool") {
-            activeTool = new MultilayerPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+            activeTool = new MultilayerPositionTool(this, threeduftype, "Basic", currentParameters);
         } else if (renderer.placementTool === "valveInsertionTool") {
-            activeTool = new ValveInsertionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+            activeTool = new ValveInsertionTool(this, threeduftype, "Basic", currentParameters);
         } else if (renderer.placementTool === "CellPositionTool") {
-            activeTool = new CellPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+            activeTool = new CellPositionTool(this, threeduftype, "Basic", currentParameters);
         } else if (renderer.placementTool === "multilevelPositionTool") {
             // TODO: Add pop up window when using the multilevel position tool to get layer indices
-            activeTool = new MultilevelPositionTool(this, ComponentAPI.getTypeForMINT(minttype), "Basic", currentParameters);
+            activeTool = new MultilevelPositionTool(this, threeduftype, "Basic", currentParameters);
             throw new Error("multilevel position tool ui/input elements not set up");
         }
 

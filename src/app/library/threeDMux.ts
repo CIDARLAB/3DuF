@@ -150,6 +150,8 @@ export default class ThreeDMux extends Template {
             return this.__drawFlow(params);
         } else if (key === "CONTROL") {
             return this.__drawControl(params);
+        }else{
+            throw new Error("Unknown key threedmux: " + key);
         }
     }
 

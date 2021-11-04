@@ -6,7 +6,6 @@ import { renderFeature } from "./threeFeatureRenderer";
 import * as Colors from "../colors";
 import * as THREE from "three";
 import { Device } from "@/app";
-const getSTLString = STLExporter.getSTLString;
 
 const SLIDE_HOLDER_MATERIAL = new THREE.MeshLambertMaterial({
     color: 0x9e9e9e,
@@ -77,9 +76,9 @@ export class ThreeDeviceRenderer {
         const layer = json.layers[index];
         scene.add(this.renderLayer(json, index, false));
         this.renderer.render(scene, this.camera);
-        const string = getSTLString(scene);
+        const string = STLExporter.getSTLString(scene);
         this.renderer.render(this.scene, this.camera);
-        return getSTLString(scene);
+        return STLExporter.getSTLString(scene);
     }
 
     getLayerSTLStrings(json: { [k: string]: any }) {

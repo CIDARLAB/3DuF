@@ -133,6 +133,8 @@ export default class CellTrapS extends Template {
             return this.__drawFlow(params);
         } else if (key === "CELL") {
             return this.__drawCell(params);
+        }else{
+            throw new Error("Unknown key for celltrapS: " + key);
         }
     }
 

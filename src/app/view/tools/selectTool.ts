@@ -169,7 +169,7 @@ export default class SelectTool extends MouseTool {
 
             if (index !== -1) {
                 // Found it !!
-                console.log("Found Feature: " + featureid + " in component: " + component.getID());
+                console.log("Found Feature: " + featureid + " in component: " + component.id);
                 return component;
             }
         }

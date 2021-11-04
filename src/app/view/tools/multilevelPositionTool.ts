@@ -2,7 +2,7 @@ import PositionTool from "./positionTool";
 import { ComponentAPI } from "@/componentAPI";
 import Registry from "../../core/registry";
 import Device from "../../core/device";
-import { ViewManager } from "@/app";
+import ViewManager from "@/app/view/viewManager";
 import Layer from "@/app/core/layer";
 import RenderLayer from "../renderLayer";
 

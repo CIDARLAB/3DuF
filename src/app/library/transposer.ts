@@ -137,6 +137,9 @@ export default class Transposer extends Template {
         } else if (key === "CONTROL") {
             return this.__drawControl(params);
         }
+
+        throw new Error("Unknown key: " + key);
+
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
@@ -256,7 +259,7 @@ export default class Transposer extends Template {
 
         transposer_flow.fillColor = color;
 
-        transposer_flow.rotate(rotation, px + 3 * valvespacing + 1.5 * channelWidth + 2 * radius, py + channelWidth + 2 * valvespacing + 2 * radius);
+        transposer_flow.rotate(rotation, new paper.Point(px + 3 * valvespacing + 1.5 * channelWidth + 2 * radius, py + channelWidth + 2 * valvespacing + 2 * radius));
 
         return transposer_flow;
     }
@@ -405,7 +408,7 @@ export default class Transposer extends Template {
         const rectangle = new paper.Path.Rectangle(topleftpoint, bottomleftpoint);
         transposer_control.addChild(rectangle);
 
-        transposer_control.rotate(rotation, px + 3 * valvespacing + 1.5 * channelWidth + 2 * radius, py + channelWidth + 2 * valvespacing + 2 * radius);
+        transposer_control.rotate(rotation, new paper.Point(px + 3 * valvespacing + 1.5 * channelWidth + 2 * radius, py + channelWidth + 2 * valvespacing + 2 * radius));
 
         transposer_control.fillColor = color;
         return transposer_control;

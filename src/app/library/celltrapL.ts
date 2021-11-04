@@ -135,9 +135,14 @@ export default class CellTrapL extends Template {
         } else {
             const flow = this.__drawFlow(params);
             const control = this.__drawCell(params);
-            const ret = flow.addChild(control);
+            const ret = new paper.CompoundPath();
+            ret.addChild(flow);
+            ret.addChild(control);
             return ret;
         }
+
+        throw new Error("Unknown key: " + key);
+
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
@@ -196,7 +201,7 @@ export default class CellTrapL extends Template {
 
         for (let i = 0; i < numChambers / 2; i++) {
             const startPoint = new paper.Point(x + i * (chamberWidth + chamberSpacing) + chamberSpacing, y);
-            rec = paper.Path.Rectangle({
+            rec = new paper.Path.Rectangle({
                 size: [chamberWidth, 2 * chamberLength + feedingChannelWidth],
                 point: startPoint,
                 fillColor: color,

@@ -209,6 +209,8 @@ export default class Pump extends Template {
         } else if (key === "CONTROL") {
             return this.__drawControl(params);
         }
+
+        throw new Error("Unknown key: " + key);
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {

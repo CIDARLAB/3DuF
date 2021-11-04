@@ -5,8 +5,7 @@ import Device from "../../core/device";
 import MouseTool, { MouseToolCallback } from "./mouseTool";
 import PositionTool from "./positionTool";
 import paper from "paper";
-import { ViewManager } from "@/app";
-import { paperObject } from "@/app/core/init";
+import ViewManager from "@/app/view/viewManager";import { paperObject } from "@/app/core/init";
 import Connection from "@/app/library/connection";
 import { Component } from "vue";
 

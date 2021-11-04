@@ -12,8 +12,8 @@ import { paperObject } from "@/app/core/init";
 // Allows for selection only of nonphysical features
 
 export default class RenderMouseTool extends MouseTool {
-    viewManagerDelegate;
-    paperView;
+    viewManagerDelegate: ViewManager;
+    paperView: PaperView;
     dragging: boolean;
     dragStart: paper.Point | null;
     lastPoint: paper.Point | number[] | null;

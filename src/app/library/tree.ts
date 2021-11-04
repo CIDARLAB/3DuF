@@ -181,7 +181,7 @@ export default class Tree extends Template {
         // Draw the tree
 
         treepath.fillColor = color;
-        return (treepath.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        return (treepath.rotate(rotation, new paper.Point(px, py)) as unknown) as paper.CompoundPath;
     }
 
     __generateTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false) {

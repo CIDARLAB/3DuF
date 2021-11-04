@@ -178,7 +178,7 @@ export default class BareViewManager {
      * @returns {void}
      */
     removeDevice(device: Device, refresh = true) {
-        this.view.removeDevice(device);
+        this.view.removeDevice();
         this.__removeAllDeviceLayers(device, false);
         this.refresh(refresh);
     }
@@ -247,7 +247,7 @@ export default class BareViewManager {
      */
     addLayer(layer: Layer, index: number, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
-            this.view.addLayer(layer, index, false);
+            this.view.addLayer(layer, index);
             this.__addAllLayerFeatures(layer, false);
             this.refresh(refresh);
         }
@@ -390,7 +390,6 @@ export default class BareViewManager {
      */
     updateLayer(layer: Layer, refresh = true) {
         if (this.__isLayerInCurrentDevice(layer)) {
-            this.view.updateLayer(layer);
             this.refresh(refresh);
         }
     }

@@ -10,7 +10,7 @@ import Params from "../../core/params";
 import Component from "../../core/component";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../../utils/mapUtils";
-import { ViewManager } from "@/app";
+import ViewManager from "@/app/view/viewManager";
 
 export default class PositionTool extends MouseTool {
     viewManagerDelegate: ViewManager;

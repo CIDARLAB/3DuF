@@ -124,6 +124,9 @@ export default class Gelchannel extends Template {
         } else if (key === "CELL") {
             return this.__drawCell(params);
         }
+
+        throw new Error("Unknown key: " + key);
+
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {

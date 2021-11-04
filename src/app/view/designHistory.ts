@@ -23,7 +23,7 @@ export default class DesignHistory {
      * @returns {void}
      * @memberof DesignHistory
      */
-    pushDesign(devicedata: any[]) {
+    pushDesign(devicedata: string) {
         // Calculate md5 hash and see if we want so save this design
         const hash = md5(devicedata);
         if (this.__mostRecentMD5) {
@@ -47,7 +47,7 @@ export default class DesignHistory {
      * @returns {Device}
      * @memberof DesignHistory
      */
-    popDesign(): Device | null {
+    popDesign(): string {
         if (this.deviceData.length > 0) {
             const device = this.deviceData.pop();
             return device;

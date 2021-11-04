@@ -18,25 +18,21 @@ export default class Text extends Template {
         };
 
         this.__defaults = {
-            text: "ADD_TEXT",
             fontSize: 10000 / 3,
             height: 250
         };
 
         this.__units = {
-            text: "",
             fontSize: "μm",
             height: "μm"
         };
 
         this.__minimum = {
-            text: "ADD_TEXT",
             fontSize: 10000 / 3,
             height: 1
         };
 
         this.__maximum = {
-            text: "ADD_TEXT",
             fontSize: 10000 / 3,
             height: 10000
         };
@@ -90,5 +86,6 @@ export default class Text extends Template {
     render2DTarget(key: string, params: { [k: string]: any }) {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
+        return render;
     }
 }

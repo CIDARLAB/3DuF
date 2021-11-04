@@ -259,6 +259,9 @@ export default class ChemostatRing extends Template {
         } else if (key === "CONTROL") {
             return this.__drawControl(params);
         }
+        else{
+            throw new Error("Unknown key for computing chemostat ring: " + key);
+        }
     }
 
     __drawFlow(params: { [k: string]: any }) {

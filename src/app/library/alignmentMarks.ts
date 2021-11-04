@@ -82,12 +82,14 @@ export default class AlignmentMarks extends Template {
         };
     }
 
-    render2D(params: ParamsIF, key: string): paper.CompoundPath | undefined {
+    render2D(params: ParamsIF, key: string) {
         if (key === "FLOW") {
             return this.__drawFlow(params);
         } else if (key === "CONTROL") {
             return this.__drawControl(params);
         }
+
+        throw new Error("Unknown key: " + key);
     }
 
     render2DTarget(key: string, params: ParamsIF): paper.CompoundPath {

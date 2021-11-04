@@ -2,6 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import Layer from "../core/layer";
+import { CompoundPath } from "paper/dist/paper-core";
 
 export default class YTree extends Template {
     constructor() {
@@ -181,7 +182,9 @@ export default class YTree extends Template {
         // Draw the tree
 
         treepath.fillColor = color;
-        return (treepath.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        treepath.rotate(rotation, new paper.Point(px, py));
+        
+        return treepath;
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {

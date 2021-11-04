@@ -1,7 +1,7 @@
 import PositionTool from "./positionTool";
 import Registry from "../../core/registry";
 import Device from "../../core/device";
-import { ViewManager } from "@/app";
+import ViewManager from "@/app/view/viewManager";
 
 export default class ComponentPositionTool extends PositionTool {
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParams: { [k: string]: any }) {

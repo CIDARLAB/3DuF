@@ -134,6 +134,8 @@ export default class Pump3D extends Template {
         } else if (key === "INVERSE") {
             return this.__drawInverse(params);
         }
+        throw new Error("Unknown key: " + key);
+
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
