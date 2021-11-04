@@ -186,8 +186,7 @@ export default class RotaryMixer extends Template {
         const center = new paper.Point(px, py);
         const channellength = radius + valvelength + 2 * valvespacing + flowChannelWidth; // This needs to be a real expression
 
-        /* tslint:disable-next-line */
-        (const .* = new paper.CompoundPath\(""\);)
+        const rotarymixer = new paper.CompoundPath();
 
         const innercirc = new paper.Path.Circle(center, radius);
         const outercirc = new paper.Path.Circle(center, radius + flowChannelWidth);
@@ -250,8 +249,7 @@ export default class RotaryMixer extends Template {
         const px = position[0];
         const py = position[1];
 
-        /* tslint:disable-next-line */
-        (const .* = new paper.CompoundPath\(""\);)
+        const rotarymixer = new paper.CompoundPath();
         let topleft = null;
         const bottomright = null;
 
@@ -301,7 +299,6 @@ export default class RotaryMixer extends Template {
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         rotarymixer.fillColor = color;
-        rotarymixer.rotate(rotation, new paper.Point(px, py));
-        return rotarymixer;
+        return (rotarymixer.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
     }
 }
