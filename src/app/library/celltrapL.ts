@@ -135,7 +135,8 @@ export default class CellTrapL extends Template {
         } else {
             const flow = this.__drawFlow(params);
             const control = this.__drawCell(params);
-            const ret = new paper.CompoundPath();
+            /* tslint:disable-next-line */
+            (const .* = new paper.CompoundPath\(""\);)
             ret.addChild(flow);
             ret.addChild(control);
             return ret;
@@ -164,7 +165,8 @@ export default class CellTrapL extends Template {
         const color = params.color;
         const x = position[0];
         const y = position[1];
-        const chamberList = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
         chamberList.fillColor = color;
         let rec;
         let traps;
@@ -196,7 +198,8 @@ export default class CellTrapL extends Template {
         const color = params.color;
         const x = position[0];
         const y = position[1];
-        const chamberList = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
         let rec;
 
         for (let i = 0; i < numChambers / 2; i++) {

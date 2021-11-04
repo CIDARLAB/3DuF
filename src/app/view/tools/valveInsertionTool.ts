@@ -166,12 +166,14 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         // TODO: Enable this.is3D functionality
         if (this.typeString == "Valve") {
             component = this.createNewFeature(point, angle);
+            Registry.currentDevice!.insertValve(component, connection as any, this.is3D);
+
         } else if (this.typeString == "Valve3D") {
             angle += 90;
             component = this.createNewMultiLayerFeature(point, angle);
-        }
+            Registry.currentDevice!.insertValve(component, connection as any, this.is3D);
 
-        Registry.currentDevice!.insertValve(component, connection as any, this.is3D);
+        }
         Registry.viewManager!.updatesConnectionRender(connection);
         Registry.viewManager!.saveDeviceState();
     }

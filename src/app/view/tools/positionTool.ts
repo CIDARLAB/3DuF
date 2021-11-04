@@ -23,11 +23,11 @@ export default class PositionTool extends MouseTool {
 
     showQueue: SimpleQueue;
 
-    constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters: { [k: string]: any } | null = null) {
+    constructor(viewManagerDelegate: ViewManager, typeString: string, currentParameters: { [k: string]: any } | null = null) {
         super();
         this.viewManagerDelegate = viewManagerDelegate;
         this.typeString = typeString;
-        this.setString = setString;
+        this.setString = "Basic";
         this.currentFeatureID = null;
         this.currentParameters = currentParameters;
         const ref = this;

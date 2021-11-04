@@ -85,7 +85,7 @@ export default class ConnectionTool extends MouseTool {
                 case "TARGET":
                     ref.__STATE = "WAYPOINT";
                     ref.dragging = true;
-                    ref.initChannel(event);
+                    ref.initChannel();
                     // ref.createConnection();
                     break;
             }

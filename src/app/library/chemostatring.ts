@@ -275,7 +275,8 @@ export default class ChemostatRing extends Template {
         const radius = params.radius;
         const rotation = params.rotation;
         const color = params.color;
-        const serp = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
 
         const area = volume / height;
         const chemostatLength = area / (4 * chemostatChannelWidth);
@@ -570,7 +571,8 @@ export default class ChemostatRing extends Template {
         const area = volume / height;
         const chemostatLength = area / (4 * chemostatChannelWidth);
 
-        const control = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
 
         const valvelength = 1.5 * chemostatChannelWidth;
         const valvewidth = 2 * controlChannelWidth;

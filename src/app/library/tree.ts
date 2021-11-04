@@ -174,7 +174,8 @@ export default class Tree extends Template {
 
         // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
-        const treepath = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
 
         this.__generateTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 

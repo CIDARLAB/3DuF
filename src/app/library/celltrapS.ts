@@ -156,7 +156,8 @@ export default class CellTrapS extends Template {
         const channelWidth = params.channelWidth;
         const channelLength = params.channelLength;
 
-        const traps = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
 
         // horizontal channel
         let topLeft = new paper.Point(x - channelLength / 2, y - channelWidth / 2);
@@ -186,7 +187,8 @@ export default class CellTrapS extends Template {
         const chamberWidth = params.chamberWidth;
         const chamberLength = params.chamberLength;
 
-        const chamberList = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
 
         // chamber
         const topLeft = new paper.Point(x - chamberWidth / 2, y - chamberLength / 2);

@@ -99,7 +99,7 @@ export default class ChannelTool extends MouseTool {
                 feat?.updateParameter("end", target);
             } else {
                 const newChannel = ChannelTool.createChannel(this.startPoint, this.startPoint, this.typeString, this.setString);
-                this.currentChannelID = newChannel.getID();
+                this.currentChannelID = newChannel.ID;
                 Registry.viewManager?.addFeature(newChannel);
             }
         }

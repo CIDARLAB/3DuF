@@ -163,7 +163,8 @@ export default class Mux extends Template {
 
         // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
-        const treepath = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
 
         this.__generateMuxTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
@@ -207,7 +208,8 @@ export default class Mux extends Template {
 
         // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
-        const treepath = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
 
         this.__generateMuxControlTwig(treepath, px, py, cw, ctlcw, stagelength, w, 1, levels, valvewidth, valvelength, leftEdge, rightEdge);
 

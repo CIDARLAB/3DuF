@@ -175,7 +175,8 @@ export default class YTree extends Template {
         const w = spacing * (leafs / 2 + 1);
         const l = (levels + 1) * stagelength;
 
-        const treepath = new paper.CompoundPath();
+        /* tslint:disable-next-line */
+        (const .* = new paper.CompoundPath\(""\);)
 
         this.__generateYTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 

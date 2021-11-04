@@ -5,12 +5,13 @@ import CustomComponent from "../../core/customComponent";
 import Params from "../../core/params";
 import Component from "../../core/component";
 import { ComponentAPI } from "@/componentAPI";
+import ViewManager from "../viewManager";
 
 export default class CustomComponentPositionTool extends PositionTool {
     private __customComponent: CustomComponent;
 
-    constructor(customcomponent: CustomComponent, setString: string) {
-        super(customcomponent.type, setString);
+    constructor(viewManagerDelegate: ViewManager, customcomponent: CustomComponent, setString: string) {
+        super(viewManagerDelegate, customcomponent.type);
 
         this.__customComponent = customcomponent;
     }
