@@ -3,7 +3,7 @@ import * as DXFSolidObjectRenderer2D from "./dxfSolidObjectRenderer2D";
 import * as Colors from "../colors";
 import Feature from "../../core/feature";
 
-import * as FeatureSets from "../../featureSets/index.js";
+import * as FeatureSets from "../../featureSets/index";
 import Registry from "../../core/registry";
 import { renderEdgeFeature } from "../../view/render2D/dxfObjectRenderer2D";
 import paper from "paper";
