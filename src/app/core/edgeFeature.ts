@@ -1,5 +1,5 @@
 import { ComponentAPI } from "@/componentAPI";
-import { DFMType } from "@/app/manufacturing/manufacturingInfo";
+import { DFMType } from "@/app/manufacturing/ManufacturingInfo";
 import DXFObject from "./dxfObject";
 
 import Feature from "./feature";

@@ -9,7 +9,7 @@ import { FeatureInterchangeV0 } from "./init";
 import Parameter from "./parameter";
 import EventBus from "@/events/events";
 import RenderLayer from "../view/renderLayer";
-import { DFMType, ManufacturingInfo } from "@/app/manufacturing/manufacturingInfo";
+import { DFMType, ManufacturingInfo } from "@/app/manufacturing/ManufacturingInfo";
 
 /**
  * Feature class

@@ -1,12 +1,12 @@
 import uuid from "node-uuid";
-import { registerSets } from "../featureSets/index.js";
+import { registerSets } from "../featureSets/index";
 import FeatureSet from "../featureSets/featureSet";
 import RenderLayer from "../view/renderLayer";
 import ViewManager from "../view/viewManager";
 import AdaptiveGrid from "../view/grid/adaptiveGrid";
 import Device from "./device";
 import * as Basic from "@/app/featureSets/basic";
-import Layer from "./layer.js";
+import Layer from "./layer";
 
 class Registry {
     /*
