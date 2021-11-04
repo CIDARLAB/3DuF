@@ -148,7 +148,7 @@ export default class Gelchannel extends Template {
         const color = params.color;
         const x = position[0];
         const y = position[1];
-        const chamberList = new paper.CompoundPath();
+        const chamberList = new paper.CompoundPath("");
         chamberList.fillColor = color;
         let traps;
         let channels;
@@ -179,7 +179,7 @@ export default class Gelchannel extends Template {
         const color = params.color;
         const x = position[0];
         const y = position[1];
-        const chamberList = new paper.CompoundPath();
+        const chamberList = new paper.CompoundPath("");
         let rec;
 
         for (let i = 0; i < numChambers / 2; i++) {

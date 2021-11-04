@@ -31,6 +31,7 @@
         "@dagrejs/graphlib": "^2.1.4",
         "@mdi/font": "^5.9.55",
         "@types/file-saver": "^2.0.3",
+        "@types/md5": "^2.3.1",
         "@types/node-uuid": "0.0.29",
         "@types/three": "^0.133.1",
         "acorn": "^8.4.1",

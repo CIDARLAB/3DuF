@@ -139,7 +139,7 @@ export default class Pump3D extends Template {
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
         const control = this.render2D(params, "CONTROL");
         ret.addChild(control as paper.Item);
@@ -154,7 +154,7 @@ export default class Pump3D extends Template {
         let cutout;
         let circ;
         let center;
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
 
         const position = params.position;
         const gap = params.gap;
@@ -231,7 +231,7 @@ export default class Pump3D extends Template {
         const rotation = params.rotation;
         const spacing = params.spacing;
 
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
 
         const center = new paper.Point(position[0], position[1]);
 
@@ -259,7 +259,7 @@ export default class Pump3D extends Template {
         const rotation = params.rotation;
         const spacing = params.spacing;
 
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
 
         const center = new paper.Point(position[0], position[1]);
 

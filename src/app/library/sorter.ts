@@ -237,7 +237,7 @@ export default class Sorter extends Template {
         const pressureWidth = params.pressureWidth;
         const pressureSpacing = params.pressureSpacing;
         const numberofDistributors = params.numberofDistributors;
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // pressure distributors
         for (let i = 0; i < numberofDistributors; i++) {
@@ -316,7 +316,7 @@ export default class Sorter extends Template {
         const electrodeWidth = params.electrodeWidth;
         const electrodeLength = params.electrodeLength;
         const angle = params.angle;
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // middle electrode
         let topLeft = new paper.Point(x - electrodeWidth / 2, y + electrodeDistance);
@@ -362,7 +362,7 @@ export default class Sorter extends Template {
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
         const integrate = this.render2D(params, "INTEGRATE");
         ret.addChild(integrate);

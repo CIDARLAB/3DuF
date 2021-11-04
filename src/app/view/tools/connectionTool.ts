@@ -77,7 +77,7 @@ export default class ConnectionTool extends MouseTool {
                 case "SOURCE":
                     ref.__STATE = "WAYPOINT";
                     ref.dragging = true;
-                    ref.initChannel(event);
+                    ref.initChannel();
                     break;
                 case "WAYPOINT":
                     ref.addWayPoint(event, (event as any).altKey);

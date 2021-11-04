@@ -168,7 +168,7 @@ export default class Merger extends Template {
         return ports;
     }
 
-    __renderFlow(params: { [k: string]: any }, key: string) {
+    __renderFlow(params: { [k: string]: any }) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
@@ -182,7 +182,7 @@ export default class Merger extends Template {
         const channelDepth = params.channelDepth;
         const electrodeDepth = params.electrodeDepth;
 
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // inlet
         let topLeft = new paper.Point(x, y - inletWidth / 2);
@@ -208,7 +208,7 @@ export default class Merger extends Template {
         return serp;
     }
 
-    __renderIntegrate(params: { [k: string]: any }, key: string) {
+    __renderIntegrate(params: { [k: string]: any }) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
@@ -220,7 +220,7 @@ export default class Merger extends Template {
         const channelDepth = params.channelDepth;
         const electrodeDepth = params.electrodeDepth;
 
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // left electrode
         let topLeft = new paper.Point(x + inletLength, y - electrodeLength / 2);
@@ -257,7 +257,7 @@ export default class Merger extends Template {
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
         const integrate = this.render2D(params, "INTEGRATE");
         ret.addChild(integrate);

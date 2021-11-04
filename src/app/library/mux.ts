@@ -163,14 +163,14 @@ export default class Mux extends Template {
 
         // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
-        const treepath = new paper.CompoundPath();
+        const treepath = new paper.CompoundPath("");
 
         this.__generateMuxTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
         // Draw the tree
 
         treepath.fillColor = color;
-        return (treepath.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        return (treepath.rotate(rotation, new paper.Point(px, py)) as unknown) as paper.CompoundPath;
     }
 
     __drawControl(params: { [k: string]: any }) {
@@ -207,14 +207,14 @@ export default class Mux extends Template {
 
         // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
 
-        const treepath = new paper.CompoundPath();
+        const treepath = new paper.CompoundPath("");
 
         this.__generateMuxControlTwig(treepath, px, py, cw, ctlcw, stagelength, w, 1, levels, valvewidth, valvelength, leftEdge, rightEdge);
 
         // Draw the tree
 
         treepath.fillColor = color;
-        return (treepath.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        return (treepath.rotate(rotation, new paper.Point(px, py)) as unknown) as paper.CompoundPath;
     }
 
     getPorts(params: { [k: string]: any }) {

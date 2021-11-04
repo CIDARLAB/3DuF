@@ -102,7 +102,7 @@ export default class Transition extends Template {
 
         trap.closed = true;
         trap.fillColor = color;
-        return (trap.rotate(rotation, position[0], position[1]) as unknown) as paper.Path;
+        return (trap.rotate(rotation, new paper.Point(position[0], position[1])) as unknown) as paper.Path;
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {

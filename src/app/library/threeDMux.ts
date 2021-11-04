@@ -156,7 +156,7 @@ export default class ThreeDMux extends Template {
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
         const control = this.render2D(params, "CONTROL");
         ret.addChild((control as unknown) as paper.CompoundPath);
@@ -229,7 +229,7 @@ export default class ThreeDMux extends Template {
         const color = params.color;
         let rotation = params.rotation;
         const channelWidth = params.channelWidth;
-        const threedmux_flow = new paper.CompoundPath();
+        const threedmux_flow = new paper.CompoundPath("");
 
         const px = position[0];
         const py = position[1];
@@ -373,7 +373,7 @@ export default class ThreeDMux extends Template {
         const color = params.color;
         let rotation = params.rotation;
         const channelWidth = params.controlChannelWidth;
-        const threedmux_control = new paper.CompoundPath();
+        const threedmux_control = new paper.CompoundPath("");
 
         const px = position[0];
         const py = position[1];

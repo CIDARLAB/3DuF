@@ -158,7 +158,7 @@ export default class AlignmentMarks extends Template {
         const length = params.length;
         const color = params.color;
         const here = new paper.Point(position[0], position[1]);
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const topmiddlepoint = new paper.Point(position[0], position[1] - length);
         const middlerightpoint = new paper.Point(position[0] + width, position[1]);
         const middleleftpoint = new paper.Point(position[0] - width, position[1]);

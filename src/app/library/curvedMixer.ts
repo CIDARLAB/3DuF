@@ -131,10 +131,10 @@ export default class CurvedMixer extends Template {
         const vRepeat = 2 * bendSpacing + 2 * channelWidth;
         const vOffset = bendSpacing + channelWidth;
         const hOffset = bendLength / 2 + channelWidth / 2;
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // draw first segment
-        let toprect: paper.Rectangle | paper.PathItem = new paper.Path.Rectangle(x + channelWidth - 1, y, bendLength / 2 + channelWidth / 2 + 1, channelWidth);
+        let toprect: paper.Rectangle | paper.PathItem = new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth - 1, y, bendLength / 2 + channelWidth / 2 + 1, channelWidth));
         (toprect as any).closed = true;
         for (let i = 0; i < numBends; i++) {
             // draw left curved segment
@@ -154,7 +154,7 @@ export default class CurvedMixer extends Template {
             toprect = toprect.unite(leftCurve);
             // serp.addChild(leftCurve);
             // draw horizontal segment
-            let hseg = new paper.Path.Rectangle(x + channelWidth - 1, y + vOffset + vRepeat * i, bendLength + 2, channelWidth);
+            let hseg = new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth - 1, y + vOffset + vRepeat * i, bendLength + 2, channelWidth));
             toprect = toprect.unite(hseg);
             // draw right curved segment
             let rightCurve: paper.Path.Arc | paper.PathItem = new paper.Path.Arc({
@@ -174,11 +174,11 @@ export default class CurvedMixer extends Template {
 
             if (i === numBends - 1) {
                 // draw half segment to close
-                hseg = new paper.Path.Rectangle(x + channelWidth / 2 + bendLength / 2, y + vRepeat * (i + 1), (bendLength + channelWidth) / 2 + 1, channelWidth);
+                hseg = new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth / 2 + bendLength / 2, y + vRepeat * (i + 1), (bendLength + channelWidth) / 2 + 1, channelWidth));
                 toprect = toprect.unite(hseg);
             } else {
                 // draw full segment
-                hseg = new paper.Path.Rectangle(x + channelWidth - 1, y + vRepeat * (i + 1), bendLength + 2, channelWidth);
+                hseg = new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth - 1, y + vRepeat * (i + 1), bendLength + 2, channelWidth));
                 toprect = toprect.unite(hseg);
             }
             toprect = toprect.unite(hseg);

@@ -154,22 +154,24 @@ export default class RotaryMixer extends Template {
         return ports;
     }
 
-    render2D(params: { [k: string]: any }, key?: string) {
+    render2D(params: { [k: string]: any }, key: string) {
         if (key === "FLOW") {
             return this.__renderFlow(params);
         } else if (key === "CONTROL") {
             return this.__renderControl(params);
-        } else {
-            throw new Error("No valid key found");
-        }
+        } 
+        throw new Error("No valid key found");
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const rotarymixer = this.__renderFlow(params);
-        rotarymixer.addChild(this.__renderControl(params));
-        rotarymixer.fillColor!.alpha = 0.5;
+        const rotarymixer_flow = this.__renderFlow(params);
+        const rotarymixer_control = this.__renderControl(params);
+        const ret = new paper.CompoundPath("");
+        ret.addChild(rotarymixer_flow);
+        ret.addChild(rotarymixer_control);
+        ret.fillColor!.alpha = 0.5;
 
-        return rotarymixer;
+        return ret;
     }
 
     __renderFlow(params: { [k: string]: any }) {
@@ -186,7 +188,7 @@ export default class RotaryMixer extends Template {
         const center = new paper.Point(px, py);
         const channellength = radius + valvelength + 2 * valvespacing + flowChannelWidth; // This needs to be a real expression
 
-        const rotarymixer = new paper.CompoundPath();
+        const rotarymixer = new paper.CompoundPath("");
 
         const innercirc = new paper.Path.Circle(center, radius);
         const outercirc = new paper.Path.Circle(center, radius + flowChannelWidth);
@@ -232,8 +234,8 @@ export default class RotaryMixer extends Template {
         rotarymixer.addChild(rectangle2);
 
         rotarymixer.fillColor = color;
-
-        return (rotarymixer.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        rotarymixer.rotate(rotation, new paper.Point(px, py));
+        return rotarymixer;
     }
 
     __renderControl(params: { [k: string]: any }) {
@@ -249,7 +251,7 @@ export default class RotaryMixer extends Template {
         const px = position[0];
         const py = position[1];
 
-        const rotarymixer = new paper.CompoundPath();
+        const rotarymixer = new paper.CompoundPath("");
         let topleft = null;
         const bottomright = null;
 

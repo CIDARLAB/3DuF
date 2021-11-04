@@ -134,7 +134,7 @@ export default class ThreeDMixer extends Template {
         const vRepeat = 2 * bendSpacing + 2 * channelWidth;
         const vOffset = bendSpacing + channelWidth;
         const hOffset = bendLength / 2 + channelWidth / 2;
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         if (key === "FLOW") {
             // draw first segment

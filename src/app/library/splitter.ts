@@ -151,7 +151,7 @@ export default class Splitter extends Template {
         const outletWidth2 = params.outletWidth2;
         const outletLength2 = params.outletLength2;
 
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // inlet
         let topLeft = new paper.Point(x, y - inletWidth / 2);

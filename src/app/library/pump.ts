@@ -135,7 +135,7 @@ export default class Pump extends Template {
         const endX = px + w / 2;
         const endY = py + l / 2;
 
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
 
         const startPoint = new paper.Point(startX, startY);
         const endPoint = new paper.Point(endX, endY);
@@ -148,7 +148,8 @@ export default class Pump extends Template {
         ret.addChild(rec);
 
         ret.fillColor = color;
-        return (ret.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        ret.rotate(rotation, new paper.Point(px, py));
+        return ret;
     }
 
     __drawControl(params: { [k: string]: any }) {
@@ -167,7 +168,7 @@ export default class Pump extends Template {
         const endX = px + w / 2;
         const endY = py + l / 2;
 
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
 
         const startPoint = new paper.Point(startX, startY);
         const endPoint = new paper.Point(endX, endY);
@@ -214,7 +215,7 @@ export default class Pump extends Template {
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
         const control = this.render2D(params, "CONTROL");
         ret.addChild(control as paper.Item);

@@ -159,7 +159,7 @@ export default class PicoInjection extends Template {
         return ports;
     }
 
-    __renderFlow(params: { [k: string]: any }, key: string) {
+    __renderFlow(params: { [k: string]: any }) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
@@ -170,7 +170,7 @@ export default class PicoInjection extends Template {
         const dropletWidth = params.dropletWidth;
         const nozzleWidth = params.nozzleWidth;
         const nozzleLength = params.nozzleLength;
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // droplet channel
         let topLeft = new paper.Point(x - width / 2, y - dropletWidth / 2);
@@ -196,7 +196,7 @@ export default class PicoInjection extends Template {
         return serp;
     }
 
-    __renderIntegrate(params: { [k: string]: any }, key: string) {
+    __renderIntegrate(params: { [k: string]: any }) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
@@ -204,7 +204,7 @@ export default class PicoInjection extends Template {
         const electrodeDistance = params.electrodeDistance;
         const electrodeWidth = params.electrodeWidth;
         const electrodeLength = params.electrodeLength;
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // middle electrode
         let topLeft = new paper.Point(x - electrodeWidth / 2, y + electrodeDistance);
@@ -247,7 +247,7 @@ export default class PicoInjection extends Template {
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
         const integrate = this.render2D(params, "INTEGRATE");
         ret.addChild(integrate);
