@@ -5,7 +5,7 @@ import Registry from "../../core/registry";
 import FloatValue from "../../core/parameters/floatValue";
 import BooleanValue from "../../core/parameters/booleanValue";
 import StringValue from "../../core/parameters/stringValue";
-import * as FeatureSets from "../../featureSets/index.js";
+import * as FeatureSets from "../../featureSets/index";
 
 const createSlider = function(min, max, step, start, id) {
     const div = document.createElement("div");

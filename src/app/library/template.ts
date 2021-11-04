@@ -1,6 +1,5 @@
 import ComponentPort from "../core/componentPort";
-import { paperObject } from "../core/init";
-//import { ManufacturingInfo } from "../manufacturing/manufacturingInfo";
+//import { ManufacturingInfo } from "../manufacturing/ManufacturingInfo";
 
 export enum PositionToolType {
     FEATURE_POSITION_TOOL = "positionTool",

@@ -7,7 +7,7 @@ import Device from "../core/device";
 import Layer from "../core/layer";
 import Feature from "../core/feature";
 import viewManager from "../view/viewManager";
-import { DFMType } from "./manufacturingInfo";
+import { DFMType } from "./ManufacturingInfo";
 
 /**
  * GNCGenerator class

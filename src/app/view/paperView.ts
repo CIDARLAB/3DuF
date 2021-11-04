@@ -9,7 +9,7 @@ import GridRenderer from "./render2D/gridRenderer";
 import DeviceRenderer from "./render2D/deviceRenderer2D";
 // const DeviceRenderer = require("./render2D/deviceRenderer2D");
 // var AlignmentRenderer = require("./render2D/alignmentRenderer2D");
-import PanAndZoom from "./panAndZoom.js";
+import PanAndZoom from "./panAndZoom";
 import * as Colors from "./colors";
 import ManufacturingLayer from "../manufacturing/manufacturingLayer";
 import RatsNestRenderer2D from "./render2D/ratsNestRenderer2D";
