@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType  } from "../core/init";
 
 export default class Chamber extends Template {
     constructor() {
@@ -103,13 +103,13 @@ export default class Chamber extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(0, -l / 2, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, -l / 2, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(w / 2, 0, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(w / 2, 0, "2", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(0, l / 2, "3", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, l / 2, "3", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(-w / 2, 0, "4", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(-w / 2, 0, "4", LogicalLayerType.FLOW));
 
         return ports;
     }
@@ -124,7 +124,7 @@ export default class Chamber extends Template {
         const color = params.color;
         const radius = params.cornerRadius;
 
-        const rendered = new paper.CompoundPath();
+        const rendered = new paper.CompoundPath("");
 
         const rec = new paper.Path.Rectangle({
             point: new paper.Point(px - w / 2, py - l / 2),

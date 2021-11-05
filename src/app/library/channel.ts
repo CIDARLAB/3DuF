@@ -78,14 +78,14 @@ export default class Channel extends Template {
         const startPoint = new paper.Point(start[0], start[1]);
         const endPoint = new paper.Point(end[0], end[1]);
         const vec = endPoint.subtract(startPoint);
-        const rec = paper.Path.Rectangle({
+        const rec = new paper.Path.Rectangle({
             size: [vec.length, width],
             point: start,
             //  radius: width/2,
             fillColor: color,
             strokeWidth: 0
         });
-        rec.translate([0, -width / 2]);
+        rec.translate(new paper.Point(0, -width / 2));
         rec.rotate(vec.angle, start);
         return rec;
     }
@@ -96,10 +96,10 @@ export default class Channel extends Template {
         const x = params.position[0];
         const y = params.position[1];
         const color = params.color;
-        let chair = new paper.Path.Rectangle(x - length / 2, y - thickness / 2, length, thickness);
-        chair = chair.unite(new paper.Path.Rectangle(x - thickness / 2, y - length / 2, thickness, length));
-        chair.fillColor = color;
-        chair.fillColor!.alpha = 0.5;
+        let chair = new paper.Path.Rectangle(new paper.Rectangle(x - length / 2, y - thickness / 2, length, thickness));
+        let chairtarget = chair.unite(new paper.Path.Rectangle(new paper.Rectangle(x - thickness / 2, y - length / 2, thickness, length)));
+        chairtarget.fillColor = color;
+        chairtarget.fillColor!.alpha = 0.5;
         return chair;
     }
 }

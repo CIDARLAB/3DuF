@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper, { CompoundPath } from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class ChemostatRing extends Template {
     constructor() {
@@ -134,122 +134,122 @@ export default class ChemostatRing extends Template {
         const ports = [];
 
         // flow
-        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 2, -chemostatLength / 3, "1", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 5, -chemostatLength / 3 - chemostatLength / 3, "2", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 5, -chemostatLength / 3 - chemostatLength / 3, "3", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 2, -chemostatLength / 3, "4", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 2, -chemostatLength / 3, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 5, -chemostatLength / 3 - chemostatLength / 3, "2", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 5, -chemostatLength / 3 - chemostatLength / 3, "3", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 2, -chemostatLength / 3, "4", LogicalLayerType.FLOW));
         // ports.push(new ComponentPort(chemostatChannelWidth + chemostatLength + 2 * chemostatLength/5, chemostatChannelWidth/2 + 7 * chemostatLength/11, "5", "FLOW"));
 
         // control
         // 1
-        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 5 - controlSpacing - radius, controlendpoint, "5", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 5 - controlSpacing - radius, controlendpoint, "5", LogicalLayerType.CONTROL));
         // 2
-        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 5 + 1.3 * radius, controlendpoint, "6", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 5 + 1.3 * radius, controlendpoint, "6", LogicalLayerType.CONTROL));
         // 3
-        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 5 + 1.7 * radius, controlendpoint, "7", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(-chemostatLength / 3 - chemostatLength / 5 + 1.7 * radius, controlendpoint, "7", LogicalLayerType.CONTROL));
         // 4
-        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 5 - controlSpacing - radius, controlendpoint, "8", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 5 - controlSpacing - radius, controlendpoint, "8", LogicalLayerType.CONTROL));
         // 5
-        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 5 + 1.3 * radius, controlendpoint, "9", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 5 + 1.3 * radius, controlendpoint, "9", LogicalLayerType.CONTROL));
         // 6
-        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 5 + 1.7 * radius, controlendpoint, "10", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(-chemostatLength / 3 + chemostatLength / 5 + 1.7 * radius, controlendpoint, "10", LogicalLayerType.CONTROL));
 
         let originx = chemostatChannelWidth / 2 + (3 * chemostatLength) / 7;
         let originy = chemostatChannelWidth / 2;
 
         // 7
-        ports.push(new ComponentPort(originx - controlSpacing - 0.5 * radius, controlendpoint, "11", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx - controlSpacing - 0.5 * radius, controlendpoint, "11", LogicalLayerType.CONTROL));
         // 8
-        ports.push(new ComponentPort(originx + 1.3 * radius, controlendpoint, "12", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 1.3 * radius, controlendpoint, "12", LogicalLayerType.CONTROL));
         // 9
-        ports.push(new ComponentPort(originx + 1.7 * radius, controlendpoint, "13", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 1.7 * radius, controlendpoint, "13", LogicalLayerType.CONTROL));
 
         originx = (5 * chemostatLength) / 6;
         originy = chemostatChannelWidth / 2;
 
         // 10
-        ports.push(new ComponentPort(originx - controlSpacing - 0.5 * radius, controlendpoint, "14", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx - controlSpacing - 0.5 * radius, controlendpoint, "14", LogicalLayerType.CONTROL));
         // 11
-        ports.push(new ComponentPort(originx + 1.3 * radius, controlendpoint, "15", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 1.3 * radius, controlendpoint, "15", LogicalLayerType.CONTROL));
         // 12
-        ports.push(new ComponentPort(originx + 1.7 * radius, controlendpoint, "16", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 1.7 * radius, controlendpoint, "16", LogicalLayerType.CONTROL));
 
         originx = chemostatChannelWidth / 2;
         originy = chemostatLength / 5;
 
         // 13
-        ports.push(new ComponentPort(controlendpoint, originy - controlSpacing - 0.5 * radius, "17", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(controlendpoint, originy - controlSpacing - 0.5 * radius, "17", LogicalLayerType.CONTROL));
         // 14
-        ports.push(new ComponentPort(controlendpoint, originy + 1.3 * radius, "18", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(controlendpoint, originy + 1.3 * radius, "18", LogicalLayerType.CONTROL));
         // 15
-        ports.push(new ComponentPort(controlendpoint, originy + 1.7 * radius, "19", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(controlendpoint, originy + 1.7 * radius, "19", LogicalLayerType.CONTROL));
 
         originx = chemostatChannelWidth / 2;
         originy = chemostatLength / 5 + chemostatLength / 2;
 
         // 16
-        ports.push(new ComponentPort(controlendpoint, originy - controlSpacing - 0.5 * radius, "20", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(controlendpoint, originy - controlSpacing - 0.5 * radius, "20", LogicalLayerType.CONTROL));
         // 17
-        ports.push(new ComponentPort(controlendpoint, originy + 1.3 * radius, "21", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(controlendpoint, originy + 1.3 * radius, "21", LogicalLayerType.CONTROL));
         // 18
-        ports.push(new ComponentPort(controlendpoint, originy + 1.7 * radius, "22", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(controlendpoint, originy + 1.7 * radius, "22", LogicalLayerType.CONTROL));
 
         originx = chemostatChannelWidth / 2 + chemostatLength;
         originy = chemostatChannelWidth / 2 + (2 * chemostatLength) / 5;
 
         // 19
-        ports.push(new ComponentPort(2 * chemostatLength, originy - controlSpacing - 0.5 * radius, "23", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(2 * chemostatLength, originy - controlSpacing - 0.5 * radius, "23", LogicalLayerType.CONTROL));
         // 20
-        ports.push(new ComponentPort(2 * chemostatLength, originy + 1.3 * radius, "24", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(2 * chemostatLength, originy + 1.3 * radius, "24", LogicalLayerType.CONTROL));
         // 21
-        ports.push(new ComponentPort(2 * chemostatLength, originy + 1.7 * radius, "25", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(2 * chemostatLength, originy + 1.7 * radius, "25", LogicalLayerType.CONTROL));
 
         originx = chemostatChannelWidth / 2 + chemostatLength;
         originy = chemostatChannelWidth / 2 + (4 * chemostatLength) / 5;
 
         // 22
-        ports.push(new ComponentPort(2 * chemostatLength, originy - controlSpacing - 0.5 * radius, "26", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(2 * chemostatLength, originy - controlSpacing - 0.5 * radius, "26", LogicalLayerType.CONTROL));
         // 23
-        ports.push(new ComponentPort(2 * chemostatLength, originy + 1.3 * radius, "27", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(2 * chemostatLength, originy + 1.3 * radius, "27", LogicalLayerType.CONTROL));
         // 24
-        ports.push(new ComponentPort(2 * chemostatLength, originy + 1.7 * radius, "28", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(2 * chemostatLength, originy + 1.7 * radius, "28", LogicalLayerType.CONTROL));
 
         originx = chemostatChannelWidth / 2 + chemostatLength / 4;
         originy = chemostatLength + chemostatChannelWidth / 2;
 
         // 25
-        ports.push(new ComponentPort(originx - 0.3 * controlSpacing, 2 * chemostatLength, "29", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx - 0.3 * controlSpacing, 2 * chemostatLength, "29", LogicalLayerType.CONTROL));
         // 26
-        ports.push(new ComponentPort(originx + 0.5 * controlSpacing, 2 * chemostatLength, "30", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 0.5 * controlSpacing, 2 * chemostatLength, "30", LogicalLayerType.CONTROL));
         // 27
-        ports.push(new ComponentPort(originx + 0.4 * controlSpacing + 0.3 * controlSpacing, 2 * chemostatLength, "31", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 0.4 * controlSpacing + 0.3 * controlSpacing, 2 * chemostatLength, "31", LogicalLayerType.CONTROL));
 
         originx = chemostatChannelWidth / 2 + (3 * chemostatLength) / 7;
         originy = chemostatLength + chemostatChannelWidth / 2;
 
         // 28
-        ports.push(new ComponentPort(originx - 0.3 * controlSpacing, 2 * chemostatLength, "32", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx - 0.3 * controlSpacing, 2 * chemostatLength, "32", LogicalLayerType.CONTROL));
         // 29
-        ports.push(new ComponentPort(originx - 0.5 * controlSpacing, 2 * chemostatLength, "33", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx - 0.5 * controlSpacing, 2 * chemostatLength, "33", LogicalLayerType.CONTROL));
         // 30
-        ports.push(new ComponentPort(originx + 0.3 * controlSpacing, 2 * chemostatLength, "34", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 0.3 * controlSpacing, 2 * chemostatLength, "34", LogicalLayerType.CONTROL));
 
         // 31
-        ports.push(new ComponentPort(originx + 0.55 * controlSpacing, 2 * chemostatLength, "35", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 0.55 * controlSpacing, 2 * chemostatLength, "35", LogicalLayerType.CONTROL));
         // 32
-        ports.push(new ComponentPort(originx + 0.85 * controlSpacing, 2 * chemostatLength, "36", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 0.85 * controlSpacing, 2 * chemostatLength, "36", LogicalLayerType.CONTROL));
         // 33
-        ports.push(new ComponentPort(originx + 1.15 * controlSpacing, 2 * chemostatLength, "37", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 1.15 * controlSpacing, 2 * chemostatLength, "37", LogicalLayerType.CONTROL));
 
         originx = chemostatChannelWidth / 2 + (3 * chemostatLength) / 5;
         originy = chemostatLength + chemostatChannelWidth / 2;
 
         // 34
-        ports.push(new ComponentPort(originx - 0.3 * controlSpacing, 2 * chemostatLength, "38", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx - 0.3 * controlSpacing, 2 * chemostatLength, "38", LogicalLayerType.CONTROL));
         // 35
-        ports.push(new ComponentPort(originx + 0.5 * controlSpacing, 2 * chemostatLength, "49", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 0.5 * controlSpacing, 2 * chemostatLength, "49", LogicalLayerType.CONTROL));
         // 36
-        ports.push(new ComponentPort(originx + 0.4 * controlSpacing + 0.3 * controlSpacing, 2 * chemostatLength, "40", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(originx + 0.4 * controlSpacing + 0.3 * controlSpacing, 2 * chemostatLength, "40", LogicalLayerType.CONTROL));
         return ports;
     }
 

@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class CurvedMixer extends Template {
     constructor() {
@@ -109,9 +109,9 @@ export default class CurvedMixer extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", LogicalLayerType.FLOW));
 
         return ports;
     }

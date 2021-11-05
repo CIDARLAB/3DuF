@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType  } from "../core/init";
 
 export default class DropletGeneratorFlowFocus extends Template {
     constructor() {
@@ -112,7 +112,7 @@ export default class DropletGeneratorFlowFocus extends Template {
     getPorts(params: { [k: string]: any }) {
         const ports = [];
 
-        ports.push(new ComponentPort(0, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
         // Out
         return ports;
@@ -130,7 +130,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         const radius = params.radius;
         const rotation = params.rotation;
 
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
 
         // middle path
         let topLeft = new paper.Point(x - length / 3 - 2 * length, y - waterChannelWidth / 2);

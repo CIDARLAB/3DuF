@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType  } from "../core/init";
 
 export default class CapacitanceSensor extends Template {
     constructor() {
@@ -143,21 +143,21 @@ export default class CapacitanceSensor extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(-inletLength / 2, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(-inletLength / 2, 0, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(inletLength / 2, 0, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(inletLength / 2, 0, "2", LogicalLayerType.FLOW));
 
         return ports;
     }
 
-    __renderFlow(params: { [k: string]: any }, key: string) {
+    __renderFlow(params: { [k: string]: any }) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
         const color = params.color;
         const inletWidth = params.inletWidth;
         const inletLength = params.inletLength;
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // inlet
         const topLeft = new paper.Point(x - inletLength / 2, y - inletWidth / 2);
@@ -169,7 +169,7 @@ export default class CapacitanceSensor extends Template {
         return serp;
     }
 
-    __renderIntegrate(params: { [k: string]: any }, key: string) {
+    __renderIntegrate(params: { [k: string]: any }) {
         const rotation = params.rotation;
         const x = params.position[0];
         const y = params.position[1];
@@ -180,7 +180,7 @@ export default class CapacitanceSensor extends Template {
         const electrodeDistance = params.electrodeDistance;
         const sensorWidth = params.sensorWidth;
         const sensorLength = params.sensorLength;
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         // top electrode
         let topLeft = new paper.Point(x - electrodeWidth / 2, y - inletWidth / 2 - electrodeDistance - sensorWidth / 2 - electrodeLength);
@@ -226,7 +226,7 @@ export default class CapacitanceSensor extends Template {
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
         const integrate = this.render2D(params, "INTEGRATE");
         ret.addChild(integrate);

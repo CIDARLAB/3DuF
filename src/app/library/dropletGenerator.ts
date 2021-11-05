@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType  } from "../core/init";
 
 export default class DropletGenerator extends Template {
     constructor() {
@@ -128,16 +128,16 @@ export default class DropletGenerator extends Template {
         const ports = [];
 
         // Oil Top
-        ports.push(new ComponentPort(oilInputWidth / 2, -waterInputWidth / 2, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(oilInputWidth / 2, -waterInputWidth / 2, "1", LogicalLayerType.FLOW));
 
         // Out
-        ports.push(new ComponentPort(oilInputWidth + orificeLength + outputLength, 0, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(oilInputWidth + orificeLength + outputLength, 0, "2", LogicalLayerType.FLOW));
 
         // Oil Bottom
-        ports.push(new ComponentPort(oilInputWidth / 2, waterInputWidth / 2, "3", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(oilInputWidth / 2, waterInputWidth / 2, "3", LogicalLayerType.FLOW));
 
         // Input
-        ports.push(new ComponentPort(0, 0, "4", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "4", LogicalLayerType.FLOW));
 
         return ports;
     }

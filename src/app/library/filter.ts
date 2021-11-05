@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper, { Path } from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Filter extends Template {
     constructor() {
@@ -152,9 +152,9 @@ export default class Filter extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(0, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(inletLength + 5 * pillarDiameter + 1.3 * levelNumber * filterLength + outletLength, 0, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(inletLength + 5 * pillarDiameter + 1.3 * levelNumber * filterLength + outletLength, 0, "2", LogicalLayerType.FLOW));
 
         return ports;
     }
@@ -175,7 +175,7 @@ export default class Filter extends Template {
         const outletWidth = params.outletWidth;
         const outletLength = params.outletLength;
 
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
 
         const bodyWidth = filterNumber * filterWidth + (filterNumber - 1) * barrierWidth;
 

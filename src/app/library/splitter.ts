@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Splitter extends Template {
     constructor() {
@@ -128,13 +128,13 @@ export default class Splitter extends Template {
         const ports = [];
 
         // inlet
-        ports.push(new ComponentPort(0, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
         // outlet 1
-        ports.push(new ComponentPort(inletLength - outletWidth1 / 2, -inletWidth / 2 - outletLength1, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(inletLength - outletWidth1 / 2, -inletWidth / 2 - outletLength1, "2", LogicalLayerType.FLOW));
 
         // outlet 2
-        ports.push(new ComponentPort(inletLength - outletWidth2 / 2, inletWidth / 2 + outletLength2, "3", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(inletLength - outletWidth2 / 2, inletWidth / 2 + outletLength2, "3", LogicalLayerType.FLOW));
 
         return ports;
     }

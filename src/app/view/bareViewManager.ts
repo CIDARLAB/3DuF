@@ -277,7 +277,7 @@ export default class BareViewManager {
         // to all other layers
         for (const i in newlayers) {
             for (const j in edgefeatures) {
-                newlayers[i].addFeature(edgefeatures[j], false);
+                newlayers[i].addFeature(edgefeatures[j]);
             }
         }
 

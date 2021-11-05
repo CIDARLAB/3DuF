@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class LogicArray extends Template {
     constructor() {
@@ -138,7 +138,7 @@ export default class LogicArray extends Template {
         const chamberLength = params.chamberLength;
         const rotation = params.rotation;
 
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const topDistance = 14 * spacing;
         const inWidth = 5 * spacing;
         const pathLength = 20 * spacing;
@@ -380,14 +380,14 @@ export default class LogicArray extends Template {
         const chamberLength = params.chamberLength;
         const rotation = params.rotation;
 
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const topDistance = 14 * spacing;
         const inWidth = 5 * spacing;
         const pathLength = 20 * spacing;
 
         const extraLength = 2 * spacing;
 
-        const control = new paper.CompoundPath();
+        const control = new paper.CompoundPath("");
 
         // control 24
         let topLeft = new paper.Point(x + inWidth / 3 - controlChannelWidth / 2, y - topDistance - topDistance / 2 - extraLength);
@@ -660,34 +660,34 @@ export default class LogicArray extends Template {
         const extraLength = 2 * spacing;
 
         // flow
-        ports.push(new ComponentPort(0, -topDistance, "1", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(0, 0, "2", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(0, topDistance, "3", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, -topDistance, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(0, 0, "2", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(0, topDistance, "3", LogicalLayerType.FLOW));
 
         // control
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 6 * spacing, "4", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 5 * spacing, "5", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 4 * spacing, "6", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 3 * spacing, "7", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 2 * spacing, "8", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 2 * spacing, "9", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 3 * spacing, "10", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 4 * spacing, "11", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 5 * spacing, "12", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 6 * spacing, "13", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 6 * spacing, "14", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 5 * spacing, "15", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 4 * spacing, "16", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 3 * spacing, "17", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 2 * spacing, "18", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 2 * spacing, "19", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 3 * spacing, "20", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 4 * spacing, "21", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 5 * spacing, "22", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 6 * spacing, "23", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth / 3, -topDistance - topDistance / 2 - extraLength, "24", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort((2 * inWidth) / 3, -topDistance - topDistance / 2 - extraLength, "25", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(inWidth / 3, topDistance + topDistance / 2 + extraLength, "26", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 6 * spacing, "4", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 5 * spacing, "5", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 4 * spacing, "6", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 3 * spacing, "7", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 - 2 * spacing, "8", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 2 * spacing, "9", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 3 * spacing, "10", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 4 * spacing, "11", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 5 * spacing, "12", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, -topDistance / 2 + 6 * spacing, "13", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 6 * spacing, "14", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 5 * spacing, "15", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 4 * spacing, "16", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 3 * spacing, "17", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 - 2 * spacing, "18", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 2 * spacing, "19", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 3 * spacing, "20", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 4 * spacing, "21", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 5 * spacing, "22", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth + pathLength + extraLength, topDistance / 2 + 6 * spacing, "23", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth / 3, -topDistance - topDistance / 2 - extraLength, "24", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort((2 * inWidth) / 3, -topDistance - topDistance / 2 - extraLength, "25", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(inWidth / 3, topDistance + topDistance / 2 + extraLength, "26", LogicalLayerType.CONTROL));
 
         return ports;
     }
@@ -704,14 +704,14 @@ export default class LogicArray extends Template {
         const chamberLength = params.chamberLength;
         const rotation = params.rotation;
 
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const topDistance = 14 * spacing;
         const inWidth = 5 * spacing;
         const pathLength = 20 * spacing;
 
         const extraLength = 2 * spacing;
 
-        const cell = new paper.CompoundPath();
+        const cell = new paper.CompoundPath("");
 
         // top left
         let topLeft = new paper.Point(x + pathLength / 2 - chamberWidth / 2, y - topDistance / 2 - chamberLength / 2 - flowChannelWidth / 2);

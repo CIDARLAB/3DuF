@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class RotaryMixer extends Template {
     constructor() {
@@ -133,22 +133,22 @@ export default class RotaryMixer extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(channellength, -radius - flowChannelWidth / 2, "1", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(-channellength, radius + flowChannelWidth / 2, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(channellength, -radius - flowChannelWidth / 2, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(-channellength, radius + flowChannelWidth / 2, "2", LogicalLayerType.FLOW));
 
         // top right
         ports.push(
-            new ComponentPort(radius + flowChannelWidth + valvespacing + valvelength / 2, -radius - flowChannelWidth / 2 - valvewidth, "3", ("CONTROL" as unknown) as Layer)
+            new ComponentPort(radius + flowChannelWidth + valvespacing + valvelength / 2, -radius - flowChannelWidth / 2 - valvewidth, "3", LogicalLayerType.CONTROL)
         );
         // top bottom
-        ports.push(new ComponentPort(0, -radius - flowChannelWidth / 2 - valvewidth, "4", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, -radius - flowChannelWidth / 2 - valvewidth, "4", LogicalLayerType.CONTROL));
         // middle right
-        ports.push(new ComponentPort(flowChannelWidth / 2 + radius + valvewidth, 0, "5", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(flowChannelWidth / 2 + radius + valvewidth, 0, "5", LogicalLayerType.CONTROL));
         // bottom middle
-        ports.push(new ComponentPort(0, radius + flowChannelWidth / 2 + valvewidth, "6", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, radius + flowChannelWidth / 2 + valvewidth, "6", LogicalLayerType.CONTROL));
         // bottom left
         ports.push(
-            new ComponentPort(-radius - valvespacing - valvelength - flowChannelWidth / 2, radius + flowChannelWidth / 2 + valvewidth, "7", ("CONTROL" as unknown) as Layer)
+            new ComponentPort(-radius - valvespacing - valvelength - flowChannelWidth / 2, radius + flowChannelWidth / 2 + valvewidth, "7", LogicalLayerType.CONTROL)
         );
 
         return ports;

@@ -1,9 +1,8 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { LogicalLayerType } from "../core/init";
 import { DFMType } from "../manufacturing/ManufacturingInfo";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Merger extends Template {
     constructor() {
@@ -161,9 +160,9 @@ export default class Merger extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(0, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(inletLength + chamberLength + outletLength, 0, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(inletLength + chamberLength + outletLength, 0, "2", LogicalLayerType.FLOW));
 
         return ports;
     }

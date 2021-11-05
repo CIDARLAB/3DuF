@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType  } from "../core/init";
 
 export default class Cahode extends Template {
     constructor() {
@@ -98,8 +98,8 @@ export default class Cahode extends Template {
         const outerCircle = new paper.Path.Circle(pos, radius);
         outerCircle.fillColor = color1;
 
-        const peg1 = new paper.Path.Rectangle(position[0] - pegradius / 2, position[1] - pegthickness / 2, pegradius, pegthickness);
-        const peg2 = new paper.Path.Rectangle(position[0] - pegthickness / 2, position[1] - pegradius / 2, pegthickness, pegradius);
+        const peg1 = new paper.Path.Rectangle(new paper.Rectangle(position[0] - pegradius / 2, position[1] - pegthickness / 2, pegradius, pegthickness));
+        const peg2 = new paper.Path.Rectangle(new paper.Rectangle(position[0] - pegthickness / 2, position[1] - pegradius / 2, pegthickness, pegradius));
         const finalCircle = outerCircle.subtract(peg1.unite(peg2));
         finalCircle.fillColor = color1;
         outerCircle.remove();
@@ -117,7 +117,7 @@ export default class Cahode extends Template {
     getPorts(params: { [k: string]: any }) {
         const ports = [];
 
-        ports.push(new ComponentPort(0, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
         return ports;
     }

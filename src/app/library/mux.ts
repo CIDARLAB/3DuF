@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Mux extends Template {
     constructor() {
@@ -237,10 +237,10 @@ export default class Mux extends Template {
         const length = levels * (cw + stagelength) + stagelength;
         const width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
 
-        ports.push(new ComponentPort(0, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
         for (let i = 0; i < leafs; i++) {
-            ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length, (2 + i).toString(), ("FLOW" as unknown) as Layer));
+            ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length, (2 + i).toString(), LogicalLayerType.FLOW));
         }
 
         let count = 2 + leafs;
@@ -267,9 +267,9 @@ export default class Mux extends Template {
         const rcentery = rstarty + (Math.abs(rstarty - rendy) * 3) / 4;
 
         for (let i = 0; i < Math.log2(leafs); i++) {
-            ports.push(new ComponentPort(leftEdge, i * (cw + stagelength) + lcentery, count.toString(), ("CONTROL" as unknown) as Layer));
+            ports.push(new ComponentPort(leftEdge, i * (cw + stagelength) + lcentery, count.toString(), LogicalLayerType.CONTROL));
             count++;
-            ports.push(new ComponentPort(rightEdge, i * (cw + stagelength) + rcentery, count.toString(), ("CONTROL" as unknown) as Layer));
+            ports.push(new ComponentPort(rightEdge, i * (cw + stagelength) + rcentery, count.toString(), LogicalLayerType.CONTROL));
             count++;
         }
 

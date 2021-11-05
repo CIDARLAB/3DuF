@@ -55,8 +55,12 @@ export default class CustomComponentPositionTool extends PositionTool {
         const params = new Params(cleanparamdata, (definition.unique as unknown) as Map<string, string>, (definition.heritable as unknown) as Map<string, string>);
         const componentid = ComponentAPI.generateID();
         console.log(this.__customComponent.entity, this.__customComponent.type);
-        const name = Registry.currentDevice?.generateNewName(this.__customComponent.entity);
-        const newComponent = new Component(this.__customComponent.entity, params, name, this.__customComponent.entity, componentid);
+        // Check if currentDevice is null or not
+        if(Registry.currentDevice === null){
+            throw new Error("No current device");
+        }
+        const name = Registry.currentDevice.generateNewName(this.__customComponent.entity);
+        const newComponent = new Component(params, name, this.__customComponent.entity, componentid);
         let feature;
 
         for (const i in featureIDs) {

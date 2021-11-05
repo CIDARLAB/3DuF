@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper, { CompoundPath } from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class ThreeDMux extends Template {
     constructor() {
@@ -186,10 +186,10 @@ export default class ThreeDMux extends Template {
 
         for (let i = 0; i < N; i++) {
             const xpos = i * (horizontal_length / (N - 1));
-            ports.push(new ComponentPort(xpos, 0, (i + 1).toString(), ("FLOW" as unknown) as Layer));
+            ports.push(new ComponentPort(xpos, 0, (i + 1).toString(), LogicalLayerType.FLOW));
         }
 
-        ports.push(new ComponentPort(horizontal_length / 2, vertical_length + N * 1000, (N + 1).toString(), ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(horizontal_length / 2, vertical_length + N * 1000, (N + 1).toString(), LogicalLayerType.FLOW));
         const bottomlinelength = N * 4000; // modify, so it depends on the input N
         const vertlinelength = N * 3000; // same as above
 
@@ -207,13 +207,13 @@ export default class ThreeDMux extends Template {
                 indexN /= 2;
                 const cur_ind = N - indexN - 1;
                 // let leftsideLeft = new paper.Point(leftInput, vertholder + (i) * vertlinelength/(2*valvenum + 2) - channelWidth/2);
-                ports.push(new ComponentPort(leftInput, vertholder + (i * vertlinelength) / (2 * valvenum + 2), count.toString(), ("CONTROL" as unknown) as Layer));
+                ports.push(new ComponentPort(leftInput, vertholder + (i * vertlinelength) / (2 * valvenum + 2), count.toString(), LogicalLayerType.CONTROL));
                 console.log(count);
                 count++;
             }
             // right side
             else {
-                ports.push(new ComponentPort(rightInput, vertholder + (i * vertlinelength) / (2 * valvenum + 2), count.toString(), ("CONTROL" as unknown) as Layer));
+                ports.push(new ComponentPort(rightInput, vertholder + (i * vertlinelength) / (2 * valvenum + 2), count.toString(), LogicalLayerType.CONTROL));
                 console.log(count);
                 count++;
             }

@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class DropletGeneratorT extends Template {
     constructor() {
@@ -108,7 +108,7 @@ export default class DropletGeneratorT extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(length / 2, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(length / 2, 0, "1", LogicalLayerType.FLOW));
 
         // Out
         return ports;
@@ -125,7 +125,7 @@ export default class DropletGeneratorT extends Template {
         const rotation = params.rotation;
         const length = params.length;
 
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
 
         let topLeft = new paper.Point(x - length / 2, y - oilChannelWidth / 2);
         let bottomRight = new paper.Point(x + length / 2, y + oilChannelWidth / 2);

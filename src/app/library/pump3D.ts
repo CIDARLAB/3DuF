@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Pump3D extends Template {
     constructor() {
@@ -115,14 +115,14 @@ export default class Pump3D extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(0, -spacing - radius, "1", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(0, spacing + radius, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, -spacing - radius, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(0, spacing + radius, "2", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(0, -spacing, "3", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, -spacing, "3", LogicalLayerType.CONTROL));
 
-        ports.push(new ComponentPort(0, 0, "4", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "4", LogicalLayerType.CONTROL));
 
-        ports.push(new ComponentPort(0, spacing, "5", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, spacing, "5", LogicalLayerType.CONTROL));
         return ports;
     }
 

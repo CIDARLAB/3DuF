@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType  } from "../core/init";
 
 export default class Incubation extends Template {
     constructor() {
@@ -99,9 +99,9 @@ export default class Incubation extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(0, -length / 2, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, -length / 2, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(0, length / 2, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, length / 2, "2", LogicalLayerType.FLOW));
 
         return ports;
     }

@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Pump extends Template {
     constructor() {
@@ -109,11 +109,11 @@ export default class Pump extends Template {
         const spacing = params.spacing;
 
         const ports = [];
-        ports.push(new ComponentPort(0, -l / 2 - spacing, "1", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(0, l / 2 + spacing, "2", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(0, -spacing, "3", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(0, 0, "4", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(0, spacing, "5", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, -l / 2 - spacing, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(0, l / 2 + spacing, "2", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(0, -spacing, "3", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(0, 0, "4", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(0, spacing, "5", LogicalLayerType.CONTROL));
 
         return ports;
     }
@@ -201,7 +201,8 @@ export default class Pump extends Template {
         ret.addChild(rec);
 
         ret.fillColor = color;
-        return (ret.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        ret.rotate(rotation, new paper.Point(px, py));
+        return ret;
     }
 
     render2D(params: { [k: string]: any }, key = "FLOW") {

@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Transposer extends Template {
     constructor() {
@@ -120,13 +120,13 @@ export default class Transposer extends Template {
         const channelWidth = params.flowChannelWidth;
         const valvespacing = params.valveSpacing;
 
-        ports.push(new ComponentPort(0, 0, "1", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(6 * valvespacing + 4 * radius + 3 * channelWidth, 0, "2", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(0, 2 * channelWidth + 4 * valvespacing + 2 * 2 * radius, "3", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(6 * valvespacing + 4 * radius + 3 * channelWidth, 2 * channelWidth + 4 * valvespacing + 2 * 2 * radius, "4", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(6 * valvespacing + 4 * radius + 3 * channelWidth, 0, "2", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(0, 2 * channelWidth + 4 * valvespacing + 2 * 2 * radius, "3", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(6 * valvespacing + 4 * radius + 3 * channelWidth, 2 * channelWidth + 4 * valvespacing + 2 * 2 * radius, "4", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(-2 * radius - channelWidth / 2, channelWidth + 2 * valvespacing + 2 * radius, "5", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(5 * valvespacing + 6 * radius + 3 * channelWidth, channelWidth + 2 * valvespacing + 2 * radius, "6", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(-2 * radius - channelWidth / 2, channelWidth + 2 * valvespacing + 2 * radius, "5", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(5 * valvespacing + 6 * radius + 3 * channelWidth, channelWidth + 2 * valvespacing + 2 * radius, "6", LogicalLayerType.CONTROL));
 
         return ports;
     }

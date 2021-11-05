@@ -1,6 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
+import { LogicalLayerType } from "../core/init";
 
 export default class CellTrapL extends Template {
     constructor() {
@@ -120,9 +121,9 @@ export default class CellTrapL extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(0, chamberLength + feedingChannelWidth / 2, "1", "FLOW"));
+        ports.push(new ComponentPort(0, chamberLength + feedingChannelWidth / 2, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort((numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing, chamberLength + feedingChannelWidth / 2, "2", "FLOW"));
+        ports.push(new ComponentPort((numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing, chamberLength + feedingChannelWidth / 2, "2", LogicalLayerType.FLOW));
 
         return ports;
     }

@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Gelchannel extends Template {
     constructor() {
@@ -112,8 +112,8 @@ export default class Gelchannel extends Template {
         const length = params.length;
         const mainWidth = params.mainWidth;
 
-        ports.push(new ComponentPort(0, sideWidth + mainWidth / 2, "1", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort((numChambers / 2) * (length + 60) + 60, sideWidth + mainWidth / 2, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, sideWidth + mainWidth / 2, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort((numChambers / 2) * (length + 60) + 60, sideWidth + mainWidth / 2, "2", LogicalLayerType.FLOW));
 
         return ports;
     }

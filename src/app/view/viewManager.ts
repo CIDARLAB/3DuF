@@ -68,6 +68,7 @@ import { MultiplyOperation } from "three";
 import UIElement from "./uiElement";
 import Connection from "../core/connection";
 import Params from "../core/params";
+import MouseTool from "./tools/mouseTool";
 
 export default class ViewManager {
     view: PaperView;
@@ -75,22 +76,22 @@ export default class ViewManager {
     activeRenderLayer: number | null;
     nonphysElements: UIElement[];
     tools: { [k: string]: any };
-    rightMouseTool;
+    rightMouseTool: MouseTool;
     updateQueue;
     saveQueue;
     undoStack;
     pasteboard: any[];
-    mouseAndKeyboardHandler;
+    mouseAndKeyboardHandler: MouseAndKeyboardHandler;
     minZoom: number;
     maxZoom: number;
-    threeD;
+    threeD: boolean;
     renderer: any;
 
     messageBox?: any;
     customComponentManager?: CustomComponentManager;
     currentSelection?: any;
 
-    private __grid;
+    private __grid: AdaptiveGrid;
     private __currentDevice: Device | null;
     private __button2D?: HTMLButtonElement;
     private __button3D?: HTMLButtonElement;

@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class DropletMerger extends Template {
     constructor() {
@@ -111,7 +111,7 @@ export default class DropletMerger extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", LogicalLayerType.FLOW));
 
         ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", "FLOW"));
 
@@ -133,19 +133,19 @@ export default class DropletMerger extends Template {
         const vRepeat = 2 * bendSpacing + 2 * channelWidth;
         const vOffset = bendSpacing + channelWidth;
         const hOffset = bendLength / 2 + channelWidth / 2;
-        const serp = new paper.CompoundPath();
+        const serp = new paper.CompoundPath("");
         // draw first segment
-        serp.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));
+        serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth)));
         for (let i = 0; i < numBends; i++) {
-            serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
-            serp.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
-            serp.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
+            serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vRepeat * i, channelWidth, segBend)));
+            serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth)));
+            serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend)));
             if (i === numBends - 1) {
                 // draw half segment to close
-                serp.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
+                serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth)));
             } else {
                 // draw full segment
-                serp.addChild(new paper.Path.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth));
+                serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth)));
             }
         }
 

@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Sorter extends Template {
     constructor() {
@@ -199,14 +199,14 @@ export default class Sorter extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(-inletLength, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(-inletLength, 0, "1", LogicalLayerType.FLOW));
 
         ports.push(
             new ComponentPort(
                 outletLen * Math.cos(((angle / 2) * Math.PI) / 180) + outputLength,
                 -((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180),
                 "2",
-                ("FLOW" as unknown) as Layer
+                LogicalLayerType.FLOW
             )
         );
 
@@ -215,7 +215,7 @@ export default class Sorter extends Template {
                 outletLen * Math.cos(((angle / 2) * Math.PI) / 180) + outputLength,
                 ((numberofDistributors + 0.5) * (pressureSpacing + pressureWidth) - pressureWidth / 2) * Math.tan(((angle / 2) * Math.PI) / 180),
                 "3",
-                ("FLOW" as unknown) as Layer
+                LogicalLayerType.FLOW
             )
         );
 

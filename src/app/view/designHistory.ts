@@ -47,7 +47,7 @@ export default class DesignHistory {
      * @returns {Device}
      * @memberof DesignHistory
      */
-    popDesign(): string {
+    popDesign(): string | null {
         if (this.deviceData.length > 0) {
             const device = this.deviceData.pop();
             return device;

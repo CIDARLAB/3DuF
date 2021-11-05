@@ -1,9 +1,6 @@
 import GeometryEdge from "./geometryEdge";
 import graphlib from "@dagrejs/graphlib";
 import paper from "paper";
-import Node from "../library/node";
-import EdgeFeature from "../core/edgeFeature";
-import DXFObject from "../core/dxfObject";
 
 export default class GeometryGraph {
     private __nodes;

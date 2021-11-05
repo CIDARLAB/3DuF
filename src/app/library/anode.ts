@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType  } from "../core/init";
 
 export default class Anode extends Template {
     constructor() {
@@ -98,7 +98,7 @@ export default class Anode extends Template {
         const outerCircle = new paper.Path.Circle(pos, radius);
         outerCircle.fillColor = color1;
 
-        const peg = new paper.Path.Rectangle(position[0] - pegwidth / 2, position[1] - pegheight / 2, pegwidth, pegheight);
+        const peg = new paper.Path.Rectangle(new paper.Rectangle(position[0] - pegwidth / 2, position[1] - pegheight / 2, pegwidth, pegheight));
         const finalCircle = outerCircle.subtract(peg);
         finalCircle.fillColor = color1;
         outerCircle.remove();
@@ -115,7 +115,7 @@ export default class Anode extends Template {
     getPorts(params: any) {
         const ports = [];
 
-        ports.push(new ComponentPort(0, 0, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
         return ports;
     }

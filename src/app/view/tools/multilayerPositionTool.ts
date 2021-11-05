@@ -6,7 +6,7 @@ import ViewManager from "@/app/view/viewManager";
 
 export default class MultilayerPositionTool extends PositionTool {
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters: { [k: string]: any } | null = null) {
-        super(viewManagerDelegate, typeString, setString, currentParameters);
+        super(viewManagerDelegate, typeString, currentParameters);
     }
 
     createNewFeature(point: paper.Point) {

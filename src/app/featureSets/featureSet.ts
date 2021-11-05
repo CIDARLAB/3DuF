@@ -55,12 +55,12 @@ type definitionsType = typeof definitions;
 type toolsType = typeof tools;
 
 export default class FeatureSet {
-    private __definitions;
-    private __setString;
-    private __tools;
-    private __render2D;
-    private __render3D;
-    private __library;
+    private __definitions: any;
+    private __setString: any;
+    private __tools: any;
+    private __render2D: any;
+    private __render3D: any;
+    private __library: any;
 
     name?: string;
     setString?: string;

@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class PicoInjection extends Template {
     constructor() {
@@ -150,11 +150,11 @@ export default class PicoInjection extends Template {
         const ports = [];
 
         // droplet channel
-        ports.push(new ComponentPort(-width / 2, 0, "1", ("FLOW" as unknown) as Layer));
-        ports.push(new ComponentPort(width / 2, 0, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(-width / 2, 0, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(width / 2, 0, "2", LogicalLayerType.FLOW));
 
         // injector
-        ports.push(new ComponentPort(0, -dropletWidth / 2 - nozzleLength - injectorLength, "3", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(0, -dropletWidth / 2 - nozzleLength - injectorLength, "3", LogicalLayerType.FLOW));
 
         return ports;
     }

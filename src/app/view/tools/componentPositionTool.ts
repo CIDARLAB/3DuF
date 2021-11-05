@@ -4,8 +4,8 @@ import Device from "../../core/device";
 import ViewManager from "@/app/view/viewManager";
 
 export default class ComponentPositionTool extends PositionTool {
-    constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParams: { [k: string]: any }) {
-        super(viewManagerDelegate, typeString, setString, currentParams);
+    constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParams: { [k: string]: any } | null = null) {
+        super(viewManagerDelegate, typeString, currentParams);
     }
 
     createNewFeature(point: paper.Point) {

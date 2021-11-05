@@ -1,8 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
-import { paperObject } from "../core/init";
+import { LogicalLayerType  } from "../core/init";
 
 export default class LLChamber extends Template {
     constructor() {
@@ -120,27 +119,27 @@ export default class LLChamber extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(w / 2, -w, "1", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(w / 2, -w, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing - w / 2, -w, "2", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing - w / 2, -w, "2", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(w / 2, l + w, "3", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(w / 2, l + w, "3", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing - w / 2, l + w, "4", ("FLOW" as unknown) as Layer));
+        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing - w / 2, l + w, "4", LogicalLayerType.FLOW));
 
         // //Control Ports - Left
-        ports.push(new ComponentPort(0, 0.2 * l, "10", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0.2 * l, "10", LogicalLayerType.CONTROL));
 
-        ports.push(new ComponentPort(0, 0.5 * l, "9", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0.5 * l, "9", LogicalLayerType.CONTROL));
 
-        ports.push(new ComponentPort(0, 0.8 * l, "8", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0.8 * l, "8", LogicalLayerType.CONTROL));
 
         // Control Ports - Right
-        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing, 0.2 * l, "5", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing, 0.2 * l, "5", LogicalLayerType.CONTROL));
 
-        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing, 0.5 * l, "6", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing, 0.5 * l, "6", LogicalLayerType.CONTROL));
 
-        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing, 0.8 * l, "7", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing, 0.8 * l, "7", LogicalLayerType.CONTROL));
 
         return ports;
     }
@@ -158,7 +157,7 @@ export default class LLChamber extends Template {
         const numArray = params.numberOfChambers;
         const spacing = params.spacing;
 
-        const rendered = new paper.CompoundPath();
+        const rendered = new paper.CompoundPath("");
 
         let rec;
 
@@ -191,7 +190,7 @@ export default class LLChamber extends Template {
     }
 
     __renderControl(params: { [k: string]: any }) {
-        const rendered = new paper.CompoundPath();
+        const rendered = new paper.CompoundPath("");
         const position = params.position;
         const px = position[0];
         const py = position[1];
@@ -239,7 +238,7 @@ export default class LLChamber extends Template {
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const ret = new paper.CompoundPath();
+        const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
         const control = this.render2D(params, "CONTROL");
         ret.addChild(control);

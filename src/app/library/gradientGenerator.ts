@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class GradientGenerator extends Template {
     constructor() {
@@ -152,7 +152,7 @@ export default class GradientGenerator extends Template {
         for (let i = 0; i < invalue; i++) {
             // Generate the ports for each of the inputs
             const x = xref + spacing * i + channelWidth / 2;
-            ports.push(new ComponentPort(x, 0, (i + 1).toString(), ("FLOW" as unknown) as Layer));
+            ports.push(new ComponentPort(x, 0, (i + 1).toString(), LogicalLayerType.FLOW));
         }
 
         stagevalue = outvalue;
@@ -164,7 +164,7 @@ export default class GradientGenerator extends Template {
         for (let i = 0; i < outvalue; i++) {
             // Generate the ports for each of the outputs
             const x = xref + spacing * i + channelWidth / 2;
-            ports.push(new ComponentPort(x, yref + channelWidth, (invalue + 1 + i).toString(), ("FLOW" as unknown) as Layer));
+            ports.push(new ComponentPort(x, yref + channelWidth, (invalue + 1 + i).toString(), LogicalLayerType.FLOW));
         }
 
         return ports;
@@ -185,7 +185,7 @@ export default class GradientGenerator extends Template {
         const posx = position[0];
         const posy = position[1];
         const stagelength = channelWidth * (2 * numBends + 1) + (2 * numBends + 2) * bendSpacing + channelWidth;
-        const gradientgenerator = new paper.CompoundPath();
+        const gradientgenerator = new paper.CompoundPath("");
         // insertMixer(gradientgenerator, bendSpacing, numBends, channelWidth, bendLength, posx, posy, color);
         // Iterate through each of the stages
 
@@ -259,24 +259,24 @@ export default class GradientGenerator extends Template {
 
         x -= hOffset;
         // TopRectangle
-        serpentine.addChild(new paper.Path.Rectangle(x + hOffset, y, channelWidth, 2 * channelWidth + bendSpacing));
+        serpentine.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + hOffset, y, channelWidth, 2 * channelWidth + bendSpacing)));
         y += channelWidth + bendSpacing;
-        serpentine.addChild(new paper.Path.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth));
+        serpentine.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth)));
         for (let i = 0; i < numBends; i++) {
-            serpentine.addChild(new paper.Path.Rectangle(x, y + vRepeat * i, channelWidth, segBend));
-            serpentine.addChild(new paper.Path.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth));
-            serpentine.addChild(new paper.Path.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend));
+            serpentine.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vRepeat * i, channelWidth, segBend)));
+            serpentine.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth)));
+            serpentine.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend)));
             if (i === numBends - 1) {
                 // draw half segment to close
-                serpentine.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth));
+                serpentine.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth)));
             } else {
                 // draw full segment
-                serpentine.addChild(new paper.Path.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth));
+                serpentine.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth)));
             }
         }
 
         // Bottom rectabvke
-        serpentine.addChild(new paper.Path.Rectangle(x + hOffset, y + vRepeat * numBends, channelWidth, 2 * channelWidth + bendSpacing));
+        serpentine.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + hOffset, y + vRepeat * numBends, channelWidth, 2 * channelWidth + bendSpacing)));
 
         return serpentine;
     }

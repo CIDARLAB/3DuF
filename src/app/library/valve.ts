@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType } from "../core/init";
 
 export default class Valve extends Template {
     constructor() {
@@ -93,7 +93,7 @@ export default class Valve extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(0, 0, "1", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.CONTROL));
 
         return ports;
     }

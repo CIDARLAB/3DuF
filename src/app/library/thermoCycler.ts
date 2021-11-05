@@ -1,7 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import Layer from "../core/layer";
+import { LogicalLayerType  } from "../core/init";
 
 export default class thermoCycler extends Template {
     constructor() {
@@ -101,7 +101,7 @@ export default class thermoCycler extends Template {
         const endY = py + l / 2;
         const startPoint = new paper.Point(startX, startY);
         const endPoint = new paper.Point(endX, endY);
-        const rendered = new paper.CompoundPath();
+        const rendered = new paper.CompoundPath("");
         const cirrad = l / 4;
         const centerr = new paper.Point(px - w, py - l);
 
@@ -139,8 +139,8 @@ export default class thermoCycler extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(-w / 2, -l / 6, "1", ("CONTROL" as unknown) as Layer));
-        ports.push(new ComponentPort(-w / 2, l / 6, "2", ("CONTROL" as unknown) as Layer));
+        ports.push(new ComponentPort(-w / 2, -l / 6, "1", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(-w / 2, l / 6, "2", LogicalLayerType.CONTROL));
 
         return ports;
     }

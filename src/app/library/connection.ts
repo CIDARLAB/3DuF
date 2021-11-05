@@ -1,6 +1,5 @@
 import Template from "./template";
 import paper from "paper";
-import { paperObject } from "../core/init";
 
 export default class Connection extends Template {
     constructor() {
@@ -91,7 +90,7 @@ export default class Connection extends Template {
         const wayPoints = params.wayPoints;
         const channelWidth = params.channelWidth;
         const segments = params.segments;
-        const connectionpath = new paper.CompoundPath();
+        const connectionpath = new paper.CompoundPath("");
         let startpoint, endpoint;
 
         let p1, p2;
@@ -123,16 +122,16 @@ export default class Connection extends Template {
         compoundpath.addChild(rec);
     }
 
-    render2DTarget(key, params) {
+    render2DTarget(key: string, params: { [k: string]: any }) {
         const thickness = params.channelWidth / 5;
         const length = params.channelWidth;
         const x = params.position[0];
         const y = params.position[1];
         const color = params.color;
-        let chair = new paper.Path.Rectangle(x - length / 2, y - thickness / 2, length, thickness);
-        chair = chair.unite(new paper.Path.Rectangle(x - thickness / 2, y - length / 2, thickness, length));
-        chair.fillColor = color;
-        chair.fillColor!.alpha = 0.5;
-        return chair;
+        let chair = new paper.Path.Rectangle(new paper.Rectangle(x - length / 2, y - thickness / 2, length, thickness));
+        let chairtarget = chair.unite(new paper.Path.Rectangle(new paper.Rectangle(x - thickness / 2, y - length / 2, thickness, length)));
+        chairtarget.fillColor = color;
+        chairtarget.fillColor!.alpha = 0.5;
+        return chairtarget;
     }
 }

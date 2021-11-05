@@ -71,7 +71,7 @@ export default class InsertTextTool extends MouseTool {
             null
         );
         this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.activeRenderLayer);
-        this.viewManagerDelegate.view.addComponent("Text", newFeature.getParams(), [newFeature.ID]);
+        this.viewManagerDelegate.view.addComponent("Text", newFeature.getParams(), [newFeature.ID], true);
         this.viewManagerDelegate.saveDeviceState();
     }
 
