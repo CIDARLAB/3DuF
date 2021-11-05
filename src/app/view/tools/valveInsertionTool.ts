@@ -5,7 +5,8 @@ import Device from "../../core/device";
 import MouseTool, { MouseToolCallback } from "./mouseTool";
 import PositionTool from "./positionTool";
 import paper from "paper";
-import ViewManager from "@/app/view/viewManager";import { paperObject } from "@/app/core/init";
+import ViewManager from "@/app/view/viewManager";
+import { paperObject } from "@/app/core/init";
 import Connection from "@/app/core/connection";
 import Component from "@/app/core/component";
 
@@ -18,12 +19,12 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
 
         const ref = this;
 
-        this.down = function(event) {
+        this.down = function (event) {
             console.log(event);
-            const point = MouseTool.getEventPosition((event as unknown) as MouseEvent);
+            const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
             const target = PositionTool.getTarget(point!);
             // Check if connection exists at point
-            const connection = ref.checkIfConnectionExistsAt((target as unknown) as paper.Point);
+            const connection = ref.checkIfConnectionExistsAt(target as unknown as paper.Point);
             // if connection exists then place the valve
             if (connection) {
                 ref.insertValve(point!, connection);
@@ -130,7 +131,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * Shows the target
      */
     showTarget() {
-        if(this.lastPoint === null) {
+        if (this.lastPoint === null) {
             return;
         }
         const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
@@ -170,12 +171,10 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         if (this.typeString == "Valve") {
             component = this.createNewFeature(point, angle);
             Registry.currentDevice!.insertValve(component, connection as any, this.is3D);
-
         } else if (this.typeString == "Valve3D") {
             angle += 90;
             component = this.createNewMultiLayerFeature(point, angle);
             Registry.currentDevice!.insertValve(component, connection as any, this.is3D);
-
         }
         Registry.viewManager!.updatesConnectionRender(connection);
         Registry.viewManager!.saveDeviceState();

@@ -8,7 +8,6 @@ import EventBus from "@/events/events";
 import ViewManager from "@/app/view/viewManager";
 import PaperView from "@/app/view/paperView";
 
-
 export default class MouseSelectTool extends MouseTool {
     viewManagerDelegate: ViewManager;
     paperView: PaperView;
@@ -35,25 +34,25 @@ export default class MouseSelectTool extends MouseTool {
         this.currentSelectBox = null;
         this.currentSelection = [];
         const ref = this;
-        this.updateQueue = new SimpleQueue(function() {
+        this.updateQueue = new SimpleQueue(function () {
             ref.dragHandler();
         }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             ref.viewManagerDelegate.killParamsWindow();
             ref.mouseDownHandler(event);
             ref.dragging = true;
             ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             if (ref.dragging) {
-                ref.lastPoint = (MouseTool.getEventPosition((event as unknown) as MouseEvent) as unknown) as number[];
+                ref.lastPoint = MouseTool.getEventPosition(event as unknown as MouseEvent) as unknown as number[];
                 ref.updateQueue.run();
             }
             ref.showTarget();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             ref.dragging = false;
-            ref.mouseUpHandler(MouseTool.getEventPosition((event as unknown) as MouseEvent)!);
+            ref.mouseUpHandler(MouseTool.getEventPosition(event as unknown as MouseEvent)!);
             ref.showTarget();
         };
     }
@@ -103,8 +102,8 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     mouseDownHandler(event: MouseToolCallback) {
-        const point = MouseTool.getEventPosition((event as unknown) as MouseEvent);
-        const target = this.hitFeature((point as unknown) as number[]);
+        const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
+        const target = this.hitFeature(point as unknown as number[]);
         if (target) {
             if (target.selected) {
                 const feat = this.viewManagerDelegate.getFeatureByID(target.featureID);
@@ -117,11 +116,11 @@ export default class MouseSelectTool extends MouseTool {
                     component = Registry.currentDevice?.getComponentByID(feat.referenceID);
                     connection = Registry.currentDevice?.getConnectionByID(feat.referenceID);
                     if (component !== null) {
-                        EventBus.get().emit(EventBus.DBL_CLICK_COMPONENT, event, component);
+                        (EventBus as any).get().emit(EventBus.DBL_CLICK_COMPONENT, event, component);
                     } else if (connection !== null) {
-                        EventBus.get().emit(EventBus.DBL_CLICK_CONNECTION, event, connection);
+                        (EventBus as any).get().emit(EventBus.DBL_CLICK_CONNECTION, event, connection);
                     } else {
-                        EventBus.get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
+                        (EventBus as any).get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
                     }
                 }
 
