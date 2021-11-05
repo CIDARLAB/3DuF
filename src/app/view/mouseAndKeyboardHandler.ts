@@ -25,7 +25,7 @@ export default class MouseAndKeyboardHandler {
         this.__middleMouseTool = new PanTool();
 
         // Prevent default keyboard window events
-        window.onkeydown = function(event) {
+        window.onkeydown = function(event: KeyboardEvent) {
             const key = event.keyCode || event.which;
             if (key === 46) {
                 event.preventDefault();

@@ -52,7 +52,6 @@ import Feature from "../core/feature";
 import Layer from "../core/layer";
 import Component from "../core/component";
 import DAMPFabricationDialog from "./ui/dampFabricationDialog";
-import ControlCellPositionTool from "./tools/controlCellPositionTool";
 import EventBus from "@/events/events";
 import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
@@ -1444,7 +1443,7 @@ export default class ViewManager {
         this.tools.MouseSelectTool = new MouseSelectTool(this, this.view);
         this.tools.RenderMouseTool = new RenderMouseTool(this, this.view);
         this.tools.InsertTextTool = new InsertTextTool(this);
-
+        this.tools.Connection = new ConnectionTool("Connection", "Basic");
         // All the new tools
         this.tools.MoveTool = new MoveTool();
         this.tools.GenerateArrayTool = new GenerateArrayTool();
@@ -1619,8 +1618,6 @@ export default class ViewManager {
         const renderer = ComponentAPI.getRendererForMINT(minttype);
         if (renderer.placementTool === "componentPositionTool") {
             activeTool = new ComponentPositionTool(this, threeduftype , "Basic", currentParameters);
-        } else if (renderer.placementTool === "controlCellPositionTool") {
-            activeTool = new ControlCellPositionTool(this, "ControlCell", "Basic", currentParameters);
         } else if (renderer.placementTool === "customComponentPositionTool") {
             // activeTool = new CustomComponentPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
         } else if (renderer.placementTool === "positionTool") {
@@ -1635,6 +1632,8 @@ export default class ViewManager {
             // TODO: Add pop up window when using the multilevel position tool to get layer indices
             activeTool = new MultilevelPositionTool(this, threeduftype, "Basic", currentParameters);
             throw new Error("multilevel position tool ui/input elements not set up");
+        }else if(renderer.placementTool === "connectionTool"){
+            activeTool = new ConnectionTool(threeduftype, "Basic");
         }
 
         if (activeTool === null) {

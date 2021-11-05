@@ -16,8 +16,8 @@ import MapUtils from "../../utils/mapUtils";
 export default class ConnectionTool extends MouseTool {
     typeString: string;
     setString: string;
-    startPoint: paper.Point | number[] | null;
-    lastPoint: paper.Point | number[] | null;
+    startPoint: number[] | null;
+    lastPoint: number[] | null;
     wayPoints: any[];
     currentChannelID: string | null;
     currentTarget: paper.Point | null;
@@ -55,7 +55,10 @@ export default class ConnectionTool extends MouseTool {
 
         this.showQueue = new SimpleQueue(
             function() {
-                ref.showTarget();
+                if(ref.lastPoint === null) {
+                    return;
+                }
+                ref.showTarget(new paper.Point(ref.lastPoint));
             },
             20,
             false
@@ -112,9 +115,9 @@ export default class ConnectionTool extends MouseTool {
                 }
                 // ref.getNextOrthogonalPoint(lastwaypoint, target);
                 const orthopoint = ref.getNextOrthogonalPoint(lastwaypoint as any[], target);
-                ref.lastPoint = { x: orthopoint[0], y: orthopoint[1] } as paper.Point;
+                ref.lastPoint = [orthopoint[0],orthopoint[1]];
             } else {
-                ref.lastPoint = { x: target[0], y: target[1] } as paper.Point;
+                ref.lastPoint = [target[0], target[1]];
             }
             if (ref.dragging) {
                 // This queue basically does the rendering of the connection feature
@@ -131,14 +134,18 @@ export default class ConnectionTool extends MouseTool {
      * @param point
      */
     showTarget(point: paper.Point) {
-        const target = ConnectionTool.getTarget(this.lastPoint as paper.Point);
+
+        const target = ConnectionTool.getTarget(new paper.Point(point));
         Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
 
     initChannel() {
-        const isPointOnComponent = this.__isPointOnComponent(this.lastPoint as paper.Point);
-        const isPointOnConnection = this.__isPointOnConnection(this.lastPoint as paper.Point);
-        this.startPoint = ConnectionTool.getTarget(this.lastPoint as paper.Point);
+        if (this.lastPoint === null) {
+            throw new Error("No last point to init channel");
+        }
+        const isPointOnComponent = this.__isPointOnComponent(new paper.Point(this.lastPoint));
+        const isPointOnConnection = this.__isPointOnConnection(new paper.Point(this.lastPoint));
+        this.startPoint = ConnectionTool.getTarget(new paper.Point(this.lastPoint));
         this.lastPoint = this.startPoint;
         if (isPointOnComponent) {
             // Modify the waypoint to reflect closest port in the future
@@ -167,13 +174,16 @@ export default class ConnectionTool extends MouseTool {
     updateChannel() {
         if (this.lastPoint && this.startPoint) {
             if (this.currentChannelID) {
-                const target = ConnectionTool.getTarget(this.lastPoint as paper.Point);
+                const target = ConnectionTool.getTarget(new paper.Point(this.lastPoint));
                 const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
                 feat?.updateParameter("end", target);
                 feat?.updateParameter("wayPoints", this.wayPoints);
                 feat?.updateParameter("segments", this.generateSegments());
             } else {
-                const newChannel = this.createChannel(this.startPoint as paper.Point, this.startPoint as paper.Point);
+                if(this.startPoint === null){
+                    throw new Error("No start point to update the channel");
+                }
+                const newChannel = this.createChannel(new paper.Point(this.startPoint), new paper.Point(this.startPoint));
                 this.currentChannelID = newChannel.ID;
                 Registry.viewManager?.addFeature(newChannel);
             }
