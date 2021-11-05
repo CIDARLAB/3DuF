@@ -134,7 +134,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             return;
         }
         const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
-        Registry.viewManager!.updateTarget(this.typeString, this.setString, target);
+        this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, {});
     }
 
     /**
