@@ -20,7 +20,7 @@ export default class MultilevelPositionTool extends PositionTool {
         intLayer = null,
         currentParameters = null
     ) {
-        super(viewManagerDelegate, typeString, setString, currentParameters);
+        super(viewManagerDelegate, typeString, currentParameters);
         this.flowlayer = flowLayer;
         this.controllayer = controlLayer;
         this.intlayer = intLayer;
@@ -70,6 +70,9 @@ export default class MultilevelPositionTool extends PositionTool {
     showTarget() {
         if (this.lastPoint === null){
             return;
+        }
+        if (this.currentParameters === null) {
+            throw new Error("No parameters set");
         }
         const target = PositionTool.getTarget(new paper.Point(this.lastPoint));
         this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters);

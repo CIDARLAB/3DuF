@@ -5,7 +5,7 @@ import Device from "../../core/device";
 import ViewManager from "@/app/view/viewManager";
 export default class CellPositionTool extends PositionTool {
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters = null) {
-        super(viewManagerDelegate, typeString, setString, currentParameters);
+        super(viewManagerDelegate, typeString, currentParameters);
     }
 
     createNewFeature(point: paper.Point) {
@@ -40,6 +40,9 @@ export default class CellPositionTool extends PositionTool {
     showTarget() {
         if(this.lastPoint === null) {
             return;
+        }
+        if (this.currentParameters === null) {
+            throw new Error("No parameters set");
         }
         const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
         this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters);

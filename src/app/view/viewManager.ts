@@ -1477,7 +1477,7 @@ export default class ViewManager {
             const component = components[parseInt(i)];
             const currentposition = component.getPosition();
             // TODO: Refine this logic, it sucks
-            if (currentposition[0] === 0 && currentposition === 0) {
+            if (currentposition[0] === 0 && currentposition[1] === 0) {
                 if (!component.placed) {
                     this.__generateDefaultPlacementForComponent(component, xpos * (parseInt(i) + 1), ypos * (Math.floor(parseInt(i) / 5) + 1));
                 }
@@ -1624,7 +1624,7 @@ export default class ViewManager {
         } else if (renderer.placementTool === "customComponentPositionTool") {
             // activeTool = new CustomComponentPositionTool(ComponentAPI.getTypeForMINT(minttype), "Basic");
         } else if (renderer.placementTool === "positionTool") {
-            activeTool = new PositionTool(this, threeduftype, "Basic", currentParameters);
+            activeTool = new PositionTool(this, threeduftype, currentParameters);
         } else if (renderer.placementTool === "multilayerPositionTool") {
             activeTool = new MultilayerPositionTool(this, threeduftype, "Basic", currentParameters);
         } else if (renderer.placementTool === "valveInsertionTool") {

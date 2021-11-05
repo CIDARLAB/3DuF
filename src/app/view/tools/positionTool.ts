@@ -124,11 +124,15 @@ export default class PositionTool extends MouseTool {
     deactivate() {}
 
     getCreationParameters(position: paper.Point) {
+        if (this.currentParameters === null) {
+            throw new Error("No parameters to create a new feature");
+        }
         const paramvalues = {
             position: PositionTool.getTarget(position)
         };
         console.log(this.currentParameters);
-        for (const item of this.currentParameters) {
+        for (const i in this.currentParameters) {
+            const item = this.currentParameters[i];
             console.log(item);
             const param = item.name;
             const value = item.value;
