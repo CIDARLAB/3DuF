@@ -86,7 +86,7 @@ export default class ChannelTool extends MouseTool {
 
     showTarget(point: paper.Point) {
         const target = ChannelTool.getTarget(this.lastPoint as number[]);
-        Registry.viewManager?.updateTarget(this.typeString, this.setString, target);
+        Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
 
     initChannel() {

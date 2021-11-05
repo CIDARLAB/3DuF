@@ -3,11 +3,11 @@ import graphlib from "@dagrejs/graphlib";
 import paper from "paper";
 
 export default class GeometryGraph {
-    private __nodes;
-    private __nodecount;
-    private __edgecount;
-    private __edgeData;
-    private __networkGraph;
+    private __nodes: any;
+    private __nodecount: number;
+    private __edgecount: number;
+    private __edgeData: Map<string, any>;
+    private __networkGraph: any;
 
     constructor() {
         // TODO: Do all the initializations here

@@ -132,7 +132,7 @@ export default class ConnectionTool extends MouseTool {
      */
     showTarget(point: paper.Point) {
         const target = ConnectionTool.getTarget(this.lastPoint as paper.Point);
-        Registry.viewManager?.updateTarget(this.typeString, this.setString, target);
+        Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
 
     initChannel() {

@@ -301,6 +301,9 @@ export default class Template {
         params.position = [0, 0];
 
         const unitedBounds = this.getBounds(params);
+        if (unitedBounds === null) {
+            throw new Error("No bounds found for component");
+        }  
         const xspan = unitedBounds.width;
         const yspan = unitedBounds.height;
         // console.log("Dimensions:",xspan, yspan);

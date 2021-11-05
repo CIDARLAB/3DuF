@@ -1459,7 +1459,7 @@ export default class ViewManager {
      */
     addCustomComponentTool(identifier: string) {
         const customcomponent = this.customComponentManager?.getCustomComponent(identifier);
-        this.tools[identifier] = new CustomComponentPositionTool(customcomponent, "Custom");
+        this.tools[identifier] = new CustomComponentPositionTool(this, customcomponent, "Custom");
         Registry.featureDefaults.Custom[identifier] = CustomComponent.defaultParameterDefinitions().defaults;
     }
 

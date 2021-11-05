@@ -87,5 +87,6 @@ export default class RectValve extends Template {
     render2DTarget(key: string, params: { [k: string]: any }) {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
+        return render;
     }
 }

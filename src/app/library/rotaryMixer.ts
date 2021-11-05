@@ -301,6 +301,7 @@ export default class RotaryMixer extends Template {
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         rotarymixer.fillColor = color;
-        return (rotarymixer.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        rotarymixer.rotate(rotation, new paper.Point(px, py));
+        return rotarymixer;
     }
 }
