@@ -814,7 +814,7 @@ export default class ViewManager {
         const belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
         const aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
         if (!aboveMax && !belowMin) {
-            this.view.adjustZoom(delta, point);
+            this.view.adjustZoom(delta, new paper.Point(point));
             this.updateGrid(false);
             // this.updateAlignmentMarks();
             this.view.updateRatsNest();

@@ -55,7 +55,10 @@ export default class ControlCellPositionTool extends PositionTool {
     }
 
     showTarget() {
-        const target = PositionTool.getTarget(this.lastPoint);
+        if(this.lastPoint === null) {
+            return;
+        }
+        const target = PositionTool.getTarget(new paper.Point(this.lastPoint));
         Registry.viewManager?.updateTarget(this.typeString, this.setString, target, this.currentParameters);
     }
 }

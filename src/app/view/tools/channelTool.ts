@@ -31,7 +31,10 @@ export default class ChannelTool extends MouseTool {
 
         this.showQueue = new SimpleQueue(
             function() {
-                ref.showTarget();
+                if(ref.lastPoint === null){
+                    return;
+                }
+                ref.showTarget(new paper.Point(ref.lastPoint));
             },
             20,
             false
@@ -112,7 +115,7 @@ export default class ChannelTool extends MouseTool {
                 Registry.viewManager?.removeFeatureByID(this.currentChannelID);
             }
         } else {
-            this.updateChannel(point);
+            this.updateChannel();
         }
         this.currentChannelID = null;
         this.startPoint = null;

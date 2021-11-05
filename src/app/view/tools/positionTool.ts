@@ -43,7 +43,11 @@ export default class PositionTool extends MouseTool {
             // do nothing
         };
         this.move = function(event) {
-            ref.lastPoint = MouseTool.getEventPosition((event as unknown) as MouseEvent) as paper.Point;
+            let point = MouseTool.getEventPosition((event as unknown) as MouseEvent);
+            if(point === null) {
+                return;
+            }
+            ref.lastPoint = [point.x, point.y];
             ref.showQueue.run();
         };
         this.down = function(event) {

@@ -41,7 +41,11 @@ export default class InsertTextTool extends MouseTool {
             // do nothing
         };
         this.move = function(event) {
-            ref.lastPoint = MouseTool.getEventPosition((event as unknown) as MouseEvent) as paper.Point;
+            let point = MouseTool.getEventPosition((event as unknown) as MouseEvent);
+            if(point == null) {
+                return;
+            }
+            ref.lastPoint = [point.x, point.y];
             ref.showQueue.run();
         };
         this.down = function(event) {
@@ -80,7 +84,7 @@ export default class InsertTextTool extends MouseTool {
             return;
         }
         const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
-        // Registry.viewManager?.updateTarget(this.typeString, this.setString, target);
+        Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
 
     get text() {

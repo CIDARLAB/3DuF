@@ -42,6 +42,6 @@ export default class CellPositionTool extends PositionTool {
             return;
         }
         const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
-        // this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters);
+        this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters);
     }
 }

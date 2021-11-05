@@ -40,8 +40,8 @@ export default class CustomComponentPositionTool extends PositionTool {
         if(this.lastPoint === null){
             throw new Error("No last point");
         }
-        const target = PositionTool.getTarget(this.lastPoint);
-        Registry.viewManager?.updateTarget(this.typeString, this.setString, target);
+        const target = PositionTool.getTarget(new paper.Point(this.lastPoint));
+        Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
 
     createNewCustomComponent(paramdata: { [k: string]: any }, featureIDs: string[]) {

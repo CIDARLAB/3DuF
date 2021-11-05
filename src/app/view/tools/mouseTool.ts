@@ -37,5 +37,6 @@ export default class MouseTool {
         if (Registry.viewManager !== null) {
             return Registry.viewManager.getEventPosition(event);
         }
+        return null;
     }
 }
