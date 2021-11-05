@@ -77,9 +77,9 @@ export default class ViewManager {
     nonphysElements: UIElement[];
     tools: { [k: string]: any };
     rightMouseTool: MouseTool;
-    updateQueue;
-    saveQueue;
-    undoStack;
+    updateQueue: any;
+    saveQueue: any;
+    undoStack: any;
     pasteboard: any[];
     mouseAndKeyboardHandler: MouseAndKeyboardHandler;
     minZoom: number;

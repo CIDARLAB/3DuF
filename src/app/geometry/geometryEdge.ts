@@ -1,9 +1,9 @@
 export default class GeometryEdge {
-    private __start;
-    private __end;
-    private __type;
-    private __id;
-    private __dxfData;
+    private __start: any;
+    private __end: any;
+    private __type: any;
+    private __id: any;
+    private __dxfData: any;
 
     constructor(start: any, end: any, type: any, id: any, data: any) {
         this.__start = start;
