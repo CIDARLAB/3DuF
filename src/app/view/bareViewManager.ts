@@ -771,7 +771,7 @@ export default class BareViewManager {
 
             const reader = new FileReader();
             reader.onloadend = function(e) {
-                const result = JSON.parse((this.results as unknown) as string);
+                const result = JSON.parse(this.result as string);
                 Registry.viewManager?.loadDeviceFromJSON(result);
                 Registry.viewManager?.switchTo2D();
             };

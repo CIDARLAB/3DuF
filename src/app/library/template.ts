@@ -279,7 +279,7 @@ export default class Template {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    getBounds(params: { [key: string]: any }) {
+    getBounds(params: { [key: string]: any }): paper.Rectangle | null {
         const renderkeys = this.renderKeys;
         const features = [];
         for (let i = 0; i < renderkeys.length; i++) {
@@ -290,7 +290,11 @@ export default class Template {
         const unitedBounds = features.reduce((bbox, item) => {
             return !bbox ? item.bounds : bbox.unite(item.bounds);
         }, null);
-        return unitedBounds;
+        if (unitedBounds) {
+            return unitedBounds;
+        } else {
+            return null;
+        }
     }
 
     getDimensions(params: { [key: string]: any }): { xspan: any; yspan: any } {
@@ -309,6 +313,9 @@ export default class Template {
         const position = params.position;
         const positionUnitedBounds = this.getBounds(params);
         // console.log(positionUnitedBounds.topLeft, position);
+        if (positionUnitedBounds === null) {
+            throw new Error("unitedBounds is null");
+        }
         const x_new = position[0] - positionUnitedBounds.topLeft.x;
         const y_new = position[1] - positionUnitedBounds.topLeft.y;
         return [x_new, y_new];
