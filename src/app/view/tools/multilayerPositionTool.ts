@@ -3,6 +3,7 @@ import { ComponentAPI } from "@/componentAPI";
 import Registry from "../../core/registry";
 import Device from "../../core/device";
 import ViewManager from "@/app/view/viewManager";
+import paper from "paper";
 
 export default class MultilayerPositionTool extends PositionTool {
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters: { [k: string]: any } | null = null) {
@@ -59,7 +60,7 @@ export default class MultilayerPositionTool extends PositionTool {
     }
 
     showTarget() {
-        if(this.lastPoint === null) {
+        if (this.lastPoint === null) {
             return;
         }
         const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));

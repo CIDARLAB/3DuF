@@ -5,6 +5,7 @@ import Device from "../../core/device";
 import ViewManager from "@/app/view/viewManager";
 import Layer from "@/app/core/layer";
 import RenderLayer from "../renderLayer";
+import paper from "paper";
 
 export default class MultilevelPositionTool extends PositionTool {
     flowlayer: RenderLayer | null;
@@ -68,7 +69,7 @@ export default class MultilevelPositionTool extends PositionTool {
     }
 
     showTarget() {
-        if (this.lastPoint === null){
+        if (this.lastPoint === null) {
             return;
         }
         if (this.currentParameters === null) {

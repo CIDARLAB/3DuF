@@ -33,25 +33,25 @@ export default class RenderMouseTool extends MouseTool {
         this.currentSelectBox = null;
         this.currentSelection = [];
         const ref = this;
-        this.updateQueue = new SimpleQueue(function() {
+        this.updateQueue = new SimpleQueue(function () {
             ref.dragHandler();
         }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             this.viewManagerDelegate.killParamsWindow();
-            ref.mouseDownHandler((event as unknown) as MouseEvent);
+            ref.mouseDownHandler(event as unknown as MouseEvent);
             ref.dragging = true;
             ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             if (ref.dragging) {
-                ref.lastPoint = MouseTool.getEventPosition((event as unknown) as MouseEvent) as paper.Point;
+                ref.lastPoint = MouseTool.getEventPosition(event as unknown as MouseEvent) as paper.Point;
                 ref.updateQueue.run();
             }
             ref.showTarget();
         };
-        this.up = function(event) {
+        this.up = function (event) {
             ref.dragging = false;
-            ref.mouseUpHandler(MouseTool.getEventPosition((event as unknown) as MouseEvent)!);
+            ref.mouseUpHandler(MouseTool.getEventPosition(event as unknown as MouseEvent)!);
             ref.showTarget();
         };
     }
@@ -86,9 +86,9 @@ export default class RenderMouseTool extends MouseTool {
                         throw new Error("ReferenceID of feature is null");
                     } else {
                         if (element !== null) {
-                            EventBus.get().emit(EventBus.DBL_CLICK_ELEMENT, event, element);
+                            (EventBus as any).get().emit(EventBus.DBL_CLICK_ELEMENT, event, element);
                         } else {
-                            EventBus.get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
+                            (EventBus as any).get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
                         }
                     }
                 } else {

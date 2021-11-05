@@ -54,8 +54,8 @@ export default class ConnectionTool extends MouseTool {
         const ref = this;
 
         this.showQueue = new SimpleQueue(
-            function() {
-                if(ref.lastPoint === null) {
+            function () {
+                if (ref.lastPoint === null) {
                     return;
                 }
                 ref.showTarget(new paper.Point(ref.lastPoint));
@@ -65,14 +65,14 @@ export default class ConnectionTool extends MouseTool {
         );
 
         this.updateQueue = new SimpleQueue(
-            function() {
+            function () {
                 ref.updateChannel();
             },
             20,
             false
         );
 
-        this.down = function(event) {
+        this.down = function (event) {
             Registry.viewManager?.killParamsWindow();
             paper.project.deselectAll();
             console.log("Current State:", ref.__STATE);
@@ -83,7 +83,7 @@ export default class ConnectionTool extends MouseTool {
                     ref.initChannel();
                     break;
                 case "WAYPOINT":
-                    ref.addWayPoint(event, (event as any).altKey);
+                    ref.addWayPoint(event as unknown as MouseEvent, (event as any).altKey);
                     break;
                 case "TARGET":
                     ref.__STATE = "WAYPOINT";
@@ -94,18 +94,18 @@ export default class ConnectionTool extends MouseTool {
             }
         };
 
-        this.rightdown = function(event) {
+        this.rightdown = function (event) {
             ref.__STATE = "TARGET";
             ref.dragging = false;
             const end = ref.wayPoints.pop();
             ref.lastPoint = end;
             ref.finishChannel();
-            EventBus.get().emit(EventBus.RIGHT_CLICK);
+            (EventBus as any).get().emit(EventBus.RIGHT_CLICK);
         };
 
-        this.move = function(event) {
+        this.move = function (event) {
             // Check if orthogonal
-            const point = MouseTool.getEventPosition((event as unknown) as MouseEvent);
+            const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
             const target = ConnectionTool.getTarget(point!);
 
             if ((event as any).altKey && ref.__STATE === "WAYPOINT") {
@@ -115,7 +115,7 @@ export default class ConnectionTool extends MouseTool {
                 }
                 // ref.getNextOrthogonalPoint(lastwaypoint, target);
                 const orthopoint = ref.getNextOrthogonalPoint(lastwaypoint as any[], target);
-                ref.lastPoint = [orthopoint[0],orthopoint[1]];
+                ref.lastPoint = [orthopoint[0], orthopoint[1]];
             } else {
                 ref.lastPoint = [target[0], target[1]];
             }
@@ -134,7 +134,6 @@ export default class ConnectionTool extends MouseTool {
      * @param point
      */
     showTarget(point: paper.Point) {
-
         const target = ConnectionTool.getTarget(new paper.Point(point));
         Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
@@ -180,7 +179,7 @@ export default class ConnectionTool extends MouseTool {
                 feat?.updateParameter("wayPoints", this.wayPoints);
                 feat?.updateParameter("segments", this.generateSegments());
             } else {
-                if(this.startPoint === null){
+                if (this.startPoint === null) {
                     throw new Error("No start point to update the channel");
                 }
                 const newChannel = this.createChannel(new paper.Point(this.startPoint), new paper.Point(this.startPoint));
@@ -336,7 +335,7 @@ export default class ConnectionTool extends MouseTool {
      */
     __isPointOnConnection(point: paper.Point) {
         // console.log("Point to check", point);
-        const render = Registry.viewManager?.hitFeature((point as unknown) as number[]);
+        const render = Registry.viewManager?.hitFeature(point as unknown as number[]);
         if (render !== false && render !== null && render !== undefined) {
             let connection;
             const feature = Registry.viewManager?.getFeatureByID(render.featureID);
@@ -363,7 +362,7 @@ export default class ConnectionTool extends MouseTool {
      */
     __isPointOnComponent(point: paper.Point) {
         // console.log("Point to check", point);
-        const render = Registry.viewManager?.hitFeature((point as unknown) as number[]);
+        const render = Registry.viewManager?.hitFeature(point as unknown as number[]);
 
         if (render !== false && render !== null && render !== undefined) {
             let component;
@@ -404,7 +403,7 @@ export default class ConnectionTool extends MouseTool {
 
     // TODO: Re-establish target selection logic from earlier demo
     static getTarget(point: paper.Point) {
-        const target = Registry.viewManager?.snapToGrid((point as unknown) as number[]);
+        const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
         return [(target as any).x, (target as any).y];
     }
 
@@ -439,14 +438,14 @@ export default class ConnectionTool extends MouseTool {
     generateSegments() {
         const waypointscopy = [];
         waypointscopy.push(this.startPoint);
-        this.wayPoints.forEach(function(waypoint) {
+        this.wayPoints.forEach(function (waypoint) {
             waypointscopy.push(waypoint);
         });
         // TODO: Fix this bullshit where teh points are not always arrays
         if (Array.isArray(this.lastPoint)) {
             waypointscopy.push(this.lastPoint);
         } else {
-            waypointscopy.push([this.lastPoint?.x, this.lastPoint?.y]);
+            waypointscopy.push([(this.lastPoint as any).x, (this.lastPoint as any).y]);
         }
         // console.log("waypoints", this.wayPoints, this.startPoint);
         const ret = [];

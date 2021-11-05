@@ -1,5 +1,5 @@
 import MouseTool from "./mouseTool";
-
+import paper from "paper";
 import Registry from "../../core/registry";
 import { Component } from "vue";
 
@@ -28,23 +28,23 @@ export default class MoveTool extends MouseTool {
         // this.updateQueue = new SimpleQueue(function () {
         //     ref.dragHandler();
         // }, 20);
-        this.down = function(event) {
+        this.down = function (event) {
             // Registry.viewManager.killParamsWindow();
-            ref.mouseDownHandler((event as unknown) as MouseEvent);
+            ref.mouseDownHandler(event as unknown as MouseEvent);
             // ref.dragging = true;
             // ref.showTarget();
         };
-        this.move = function(event) {
+        this.move = function (event) {
             // if (ref.dragging) {
             //     ref.lastPoint = MouseTool.getEventPosition(event);
             //     ref.updateQueue.run();
             // }
             // ref.showTarget();
-            ref.dragHandler((event as unknown) as MouseEvent);
+            ref.dragHandler(event as unknown as MouseEvent);
         };
-        this.up = function(event) {
+        this.up = function (event) {
             // ref.dragging = false;
-            ref.mouseUpHandler((event as unknown) as MouseEvent);
+            ref.mouseUpHandler(event as unknown as MouseEvent);
             // ref.showTarget();
         };
     }
@@ -102,7 +102,7 @@ export default class MoveTool extends MouseTool {
     dragHandler(event: MouseEvent) {
         if (this.__dragging) {
             const point = MouseTool.getEventPosition(event);
-            const target = Registry.viewManager?.snapToGrid((point as unknown) as number[]);
+            const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
             // console.log("Point:", point, target, this.__startPoint);
             const delta = {
                 x: (target as any).x - (this.__startPoint as any).y,
@@ -132,7 +132,7 @@ export default class MoveTool extends MouseTool {
     mouseUpHandler(event: MouseEvent) {
         const point = MouseTool.getEventPosition(event);
         // console.log("Point:", point, event);
-        const target = Registry.viewManager?.snapToGrid((point as unknown) as number[]);
+        const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
 
         // console.log("Start:",this.__startPoint, "End:" ,target);
         this.__dragging = false;
@@ -144,7 +144,7 @@ export default class MoveTool extends MouseTool {
      */
     mouseDownHandler(event: MouseEvent) {
         const point = MouseTool.getEventPosition(event);
-        const target = Registry.viewManager?.snapToGrid((point as unknown) as number[]);
+        const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
         this.__startPoint = target;
         this.__dragging = true;
     }

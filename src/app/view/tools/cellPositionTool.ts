@@ -1,5 +1,5 @@
 import PositionTool from "./positionTool";
-
+import paper from "paper";
 import Registry from "../../core/registry";
 import Device from "../../core/device";
 import ViewManager from "@/app/view/viewManager";
@@ -38,7 +38,7 @@ export default class CellPositionTool extends PositionTool {
     }
 
     showTarget() {
-        if(this.lastPoint === null) {
+        if (this.lastPoint === null) {
             return;
         }
         if (this.currentParameters === null) {
