@@ -186,7 +186,8 @@ export default class LLChamber extends Template {
         rendered.addChild(bottomchannel);
 
         rendered.fillColor = color;
-        return (rendered.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        rendered.rotate(rotation, new paper.Point(px, py)); 
+        return rendered;
     }
 
     __renderControl(params: { [k: string]: any }) {

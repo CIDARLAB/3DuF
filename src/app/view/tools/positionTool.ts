@@ -19,7 +19,7 @@ export default class PositionTool extends MouseTool {
     currentFeatureID: string | null;
     currentParameters: { [k: string]: any } | null;
 
-    lastPoint: paper.Point | number[] | null;
+    lastPoint: number[] | null;
 
     showQueue: SimpleQueue;
 

@@ -51,7 +51,7 @@ export default class GeometryGraph {
         // console.log("Edges:", this.__networkGraph.edges());
         // console.log("Nodes:", this.__nodes);
         // console.log("Edge Data:", this.__edgeData);
-        const path = new paper.CompoundPath();
+        const path = new paper.CompoundPath("");
 
         // graphlib.alg.findCycles(this.__networkGraph);
         const graphcomponents = graphlib.alg.components(this.__networkGraph);

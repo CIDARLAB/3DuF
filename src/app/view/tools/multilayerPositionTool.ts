@@ -59,7 +59,10 @@ export default class MultilayerPositionTool extends PositionTool {
     }
 
     showTarget() {
-        const target = PositionTool.getTarget(this.lastPoint as paper.Point);
+        if(this.lastPoint === null) {
+            return;
+        }
+        const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
         this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters!);
     }
 }

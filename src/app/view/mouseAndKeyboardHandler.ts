@@ -176,7 +176,7 @@ export default class MouseAndKeyboardHandler {
                 } else {
                     pan_multiplier = 1;
                 }
-                reference.view.moveCenter((new paper.Point(0, 1000 * pan_multiplier) as unknown) as number);
+                reference.view.moveCenter(new paper.Point(0, 1000 * pan_multiplier));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
             }
@@ -204,7 +204,7 @@ export default class MouseAndKeyboardHandler {
                 } else {
                     pan_multiplier = 1;
                 }
-                reference.view.moveCenter((new paper.Point(0, -1000 * pan_multiplier) as unknown) as number);
+                reference.view.moveCenter(new paper.Point(0, -1000 * pan_multiplier));
                 reference.updateGrid();
                 reference.view.updateAlignmentMarks();
             }

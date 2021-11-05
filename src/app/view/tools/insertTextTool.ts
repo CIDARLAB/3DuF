@@ -13,7 +13,7 @@ export default class InsertTextTool extends MouseTool {
     typeString: string;
     setString: string;
     currentFeatureID: string | null;
-    lastPoint: paper.Point | number[] | null;
+    lastPoint: number[] | null;
 
     private _text: string;
     fontSize: number;
@@ -76,8 +76,11 @@ export default class InsertTextTool extends MouseTool {
     }
 
     showTarget() {
-        const target = PositionTool.getTarget(this.lastPoint);
-        Registry.viewManager?.updateTarget(this.typeString, this.setString, target);
+        if (this.lastPoint === null) {
+            return;
+        }
+        const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
+        // Registry.viewManager?.updateTarget(this.typeString, this.setString, target);
     }
 
     get text() {

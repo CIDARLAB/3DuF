@@ -1041,7 +1041,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     snapToGrid(point: number[]) {
-        if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(point);
+        if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(new paper.Point(point[0], point[1]));
         else return point;
     }
 

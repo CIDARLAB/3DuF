@@ -135,7 +135,8 @@ export default class Chamber extends Template {
         rendered.addChild(rec);
 
         rendered.fillColor = color;
-        return (rendered.rotate(rotation, px, py) as unknown) as paper.CompoundPath;
+        rendered.rotate(rotation, new paper.Point(px, py));
+        return rendered;
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
