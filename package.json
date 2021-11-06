@@ -23,7 +23,8 @@
   },
   "devDependencies": {
     "@types/node-uuid": "0.0.29",
-    "nodemon": "^2.0.14"
+    "nodemon": "^2.0.14",
+    "prettier": "^2.4.1"
   },
   "engines": {
     "node": "14.x"
