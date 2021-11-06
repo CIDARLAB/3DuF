@@ -2,7 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { Path, Point } from "paper/dist/paper-core";
-//import { cosh } from "core-js/core/number";
+import { paperObject } from "../core/init";
 
 export default class ToroidalMixer extends Template {
     constructor() {
@@ -116,18 +116,18 @@ export default class ToroidalMixer extends Template {
         };
     }
 
-    getPorts(params) {
-        const y = params.position[1];
-        const channelWidth = params.channelWidth;
-        const innerDiameter = params.innerDiameter;
-        const neckLength = params.neckLength;
-        const neckAngle = params.neckAngle;
-        const numberOfMixers = params.numberOfMixers;
-        const y_center = y + Math.abs((neckLength + channelWidth + 0.5 * innerDiameter) * Math.sin((0.5 * neckAngle * Math.PI) / 180));
-        const diameter = 2 * (y_center - y);
-        const y_neckComponent = neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180);
+    getPorts(params: { [index: string]: any }) {
+        const y: number = params.position[1];
+        const channelWidth: number = params.channelWidth;
+        const innerDiameter: number = params.innerDiameter;
+        const neckLength: number = params.neckLength;
+        const neckAngle: number = params.neckAngle;
+        const numberOfMixers: number = params.numberOfMixers;
+        const y_center: number = y + Math.abs((neckLength + channelWidth + 0.5 * innerDiameter) * Math.sin((0.5 * neckAngle * Math.PI) / 180));
+        const diameter: number = 2 * (y_center - y);
+        const y_neckComponent: number = neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180);
 
-        const ports = [];
+        const ports: Array<ComponentPort> = [];
 
         ports.push(new ComponentPort(0, 0, "1", "FLOW"));
 
@@ -154,32 +154,32 @@ export default class ToroidalMixer extends Template {
         return ports;
     }
 
-    render2D(params, key) {
-        const channelWidth = params.channelWidth;
-        const innerDiameter = params.innerDiameter;
-        const neckAngle = params.neckAngle;
-        const neckWidth = params.neckWidth;
-        const rotation = params.rotation;
-        const neckLength = params.neckLength;
-        const numMixers = params.numberOfMixers;
-        const x = params.position[0];
-        const y = params.position[1];
-        const color = params.color;
-        const serp = new paper.CompoundPath();
-        const x_center = x - (neckLength + channelWidth + 0.5 * innerDiameter) * Math.cos((0.5 * neckAngle * Math.PI) / 180);
-        const y_center = y + Math.abs((neckLength + channelWidth + 0.5 * innerDiameter) * Math.sin((0.5 * neckAngle * Math.PI) / 180));
-        const center = new paper.Point(x_center, y_center);
-        const diameter = 2 * (y_center - y);
-        const y_neckComponent = neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180);
+    render2D(params: { [index: string]: any }, key: string): paper.CompoundPath {
+        const channelWidth: number = params.channelWidth;
+        const innerDiameter: number = params.innerDiameter;
+        const neckAngle: number = params.neckAngle;
+        const neckWidth: number = params.neckWidth;
+        const rotation: number = params.rotation;
+        const neckLength: number = params.neckLength;
+        const numMixers: number = params.numberOfMixers;
+        const x: number = params.position[0];
+        const y: number = params.position[1];
+        const color: any = params.color;
+        const serp: paper.CompoundPath = new paper.CompoundPath([]);
+        const x_center: number = x - (neckLength + channelWidth + 0.5 * innerDiameter) * Math.cos((0.5 * neckAngle * Math.PI) / 180);
+        const y_center: number = y + Math.abs((neckLength + channelWidth + 0.5 * innerDiameter) * Math.sin((0.5 * neckAngle * Math.PI) / 180));
+        const center: paper.Point = new paper.Point(x_center, y_center);
+        const diameter: number = 2 * (y_center - y);
+        const y_neckComponent: number = neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180);
 
-        let mixerUnit;
+        let mixerUnit: paper.PathItem;
 
         //Initial ring
-        let outerCircle = new paper.Path.Circle(center, 0.5 * innerDiameter + channelWidth);
-        let innerCircle = new paper.Path.Circle(center, 0.5 * innerDiameter);
+        let outerCircle: paper.Path = new paper.Path.Circle(center, 0.5 * innerDiameter + channelWidth);
+        let innerCircle: paper.Path = new paper.Path.Circle(center, 0.5 * innerDiameter);
         mixerUnit = outerCircle.subtract(innerCircle);
         //Initial neck
-        let neck = new paper.Path.Rectangle(new paper.Point(x - neckLength - channelWidth, y - 0.5 * neckWidth), new paper.Size(neckLength + channelWidth, neckWidth));
+        let neck: paper.Path = new paper.Path.Rectangle(new paper.Point(x - neckLength - channelWidth, y - 0.5 * neckWidth), new paper.Size(neckLength + channelWidth, neckWidth));
         neck.rotate((-1 * neckAngle) / 2, new paper.Point(x, y));
         mixerUnit = mixerUnit.unite(neck);
         //Trailing neck
@@ -187,11 +187,11 @@ export default class ToroidalMixer extends Template {
         neck.rotate(neckAngle / 2, new paper.Point(x, y + diameter));
         mixerUnit = mixerUnit.unite(neck);
 
-        let y_val;
-        let x_centerAnalog;
-        let y_centerAnalog;
-        let centerAnalog;
-        let numRepeats = numMixers - 1;
+        let y_val: number;
+        let x_centerAnalog: number;
+        let y_centerAnalog: number;
+        let centerAnalog: paper.Point;
+        let numRepeats: number = numMixers - 1;
         for (let i = 1; i <= numRepeats; i++) {
             y_val = y + i * diameter - (i - 1) * y_neckComponent;
             if (i % 2 == 1) {
@@ -203,7 +203,7 @@ export default class ToroidalMixer extends Template {
                 innerCircle = new paper.Path.Circle(centerAnalog, 0.5 * innerDiameter);
                 mixerUnit = mixerUnit.unite(outerCircle.subtract(innerCircle));
                 //Complete inter-ring connection
-                let neck = new paper.Path.Rectangle(new paper.Point(x, y_val - 0.5 * neckWidth), new paper.Size(channelWidth, neckWidth));
+                neck = new paper.Path.Rectangle(new paper.Point(x, y_val - 0.5 * neckWidth), new paper.Size(channelWidth, neckWidth));
                 neck.rotate(neckAngle / 2, new paper.Point(x, y_val));
                 mixerUnit = mixerUnit.unite(neck);
                 //Add trailing neck
@@ -221,7 +221,7 @@ export default class ToroidalMixer extends Template {
                 innerCircle = new paper.Path.Circle(centerAnalog, 0.5 * innerDiameter);
                 mixerUnit = mixerUnit.unite(outerCircle.subtract(innerCircle));
                 //Complete inter-ring connection
-                let neck = new paper.Path.Rectangle(
+                neck = new paper.Path.Rectangle(
                     new paper.Point(x - channelWidth - neckLength * Math.cos((0.5 * neckAngle * Math.PI) / 180), y_val - 0.5 * neckWidth),
                     new paper.Size(channelWidth, neckWidth)
                 );
@@ -238,12 +238,13 @@ export default class ToroidalMixer extends Template {
         }
         serp.addChild(mixerUnit);
         serp.fillColor = color;
-        return serp.rotate(rotation, x, y);
+        serp.rotate(rotation, new paper.Point(x, y));
+        return serp;
     }
 
-    render2DTarget(key, params) {
+    render2DTarget(key: string, params: { [index: string]: any }): paper.CompoundPath {
         const render = this.render2D(params, key);
-        render.fillColor.alpha = 0.5;
+        if (render.fillColor != null) render.fillColor.alpha = 0.5;
         return render;
     }
 }
