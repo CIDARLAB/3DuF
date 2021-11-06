@@ -20,5 +20,8 @@ export type ManufacturingInfo = {
     layertype: LogicalLayerType | null;
     rendername: string;
     "z-offset-key": string;
+    depth: number;
     "substrate-offset": string;
+    substrate: number | null;
+    modifier: string | null;
 };
