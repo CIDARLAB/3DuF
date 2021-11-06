@@ -1,10 +1,10 @@
 import { LogicalLayerType } from "../core/init";
 
 export enum DFMType {
-    EDGE = "EDGE",
-    XYZ = "XYZ",
-    XY = "XY",
-    Z = "Z"
+  EDGE = "EDGE",
+  XYZ = "XYZ",
+  XY = "XY",
+  Z = "Z",
 }
 
 /**
@@ -16,9 +16,9 @@ export enum DFMType {
  * @param substrate-offset String represented value which represent how this substrate relates to the FLOW substrate
  */
 export type ManufacturingInfo = {
-    fabtype: DFMType;
-    layertype: LogicalLayerType | null;
-    rendername: string;
-    "z-offset-key": string;
-    "substrate-offset": string;
+  fabtype: DFMType;
+  layertype: LogicalLayerType | null;
+  rendername: string;
+  "z-offset-key": string;
+  "substrate-offset": string;
 };

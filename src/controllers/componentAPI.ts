@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
-
+import { Request, Response, NextFunction } from "express";
 
 import Port from "../library/port";
 import BetterMixer from "../library/betterMixer";
@@ -34,7 +33,6 @@ import ThreeDMux from "../library/threeDMux";
 import CapacitanceSensor from "../library/capacitancesensor";
 import Sorter from "../library/sorter";
 import Splitter from "../library/splitter";
-
 
 import paper, { Key } from "paper";
 
@@ -76,7 +74,6 @@ let capsensor = new CapacitanceSensor();
 let sorter = new Sorter();
 let splitter = new Splitter();
 
-
 primitive_map.set(port.mint, port);
 primitive_map.set(better_mixer.mint, better_mixer);
 primitive_map.set(cell_trap_l.mint, cell_trap_l);
@@ -112,98 +109,99 @@ primitive_map.set(sorter.mint, sorter);
 primitive_map.set(splitter.mint, splitter);
 console.log(primitive_map.keys());
 
-
-
 /* GET home page. */
 // router.get('/', function(req, res, next) {
 //   res.render('index', { title: 'World' });
 // });
 
 // router.get('/dimensions', function(req, res, next) {
-const getDimensions = async (req: Request, res: Response, next: NextFunction) => {
+const getDimensions = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let primitive = req.query.mint;
+  let key = primitive;
+  let technology = primitive_map.get(key);
+  if (!primitive_map.has(key)) {
+    res.send("MINT Not found");
+    console.error("Could not find MINT:", key);
+  }
 
-    let primitive = req.query.mint;
-    let key = primitive;
-    let technology = primitive_map.get(key);
-    if (!primitive_map.has(key)) {
-        res.send("MINT Not found")
-        console.error("Could not find MINT:", key);
+  let params_text = req.query.params as string;
+  let params = JSON.parse(params_text);
+  console.log("Params:", params);
+  params["position"] = [0, 0];
+  params["color"] = "#FFF";
+
+  let renderkeys = technology.renderKeys;
+  let features = [];
+  for (let i = 0; i < renderkeys.length; i++) {
+    if (renderkeys[i] == "INVERSE") {
+      continue;
     }
-
-    let params_text = req.query.params as string;
-    let params = JSON.parse(params_text);
-    console.log("Params:", params);
-    params["position"] = [0, 0];
-    params["color"] = "#FFF";
-
-    let renderkeys = technology.renderKeys;
-    let features = [];
-    for (let i = 0; i < renderkeys.length; i++) {
-        if (renderkeys[i] == "INVERSE") {
-            continue;
-        }
-        console.log("Rendering layer: " + renderkeys[i]);
-        let feature = technology.render2D(params, renderkeys[i]);
-        features.push(feature);
-    }
-    let unitedBounds = features.reduce((bbox, item) => {
-        return !bbox ? item.bounds : bbox.unite(item.bounds)
-    }, null)
-    let xspan = unitedBounds.width;
-    let yspan = unitedBounds.height;
-    // console.log("Dimensions:",xspan, yspan);
-    let ret = { "x-span": xspan, "y-span": yspan };
-    console.log("Dimensions:", primitive, ret)
-    res.send(ret);
+    console.log("Rendering layer: " + renderkeys[i]);
+    let feature = technology.render2D(params, renderkeys[i]);
+    features.push(feature);
+  }
+  let unitedBounds = features.reduce((bbox, item) => {
+    return !bbox ? item.bounds : bbox.unite(item.bounds);
+  }, null);
+  let xspan = unitedBounds.width;
+  let yspan = unitedBounds.height;
+  // console.log("Dimensions:",xspan, yspan);
+  let ret = { "x-span": xspan, "y-span": yspan };
+  console.log("Dimensions:", primitive, ret);
+  res.send(ret);
 };
 
 // router.get('/terminals', function(req, res, next) {
-const getTerminals = async (req: Request, res: Response, next: NextFunction) => {
+const getTerminals = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let primitive = req.query.mint;
+  let key = primitive;
+  let technology = primitive_map.get(key);
+  if (!primitive_map.has(key)) {
+    res.send("MINT Not found");
+    console.error("Could not find MINT:", key);
+  }
 
-    let primitive = req.query.mint;
-    let key = primitive;
-    let technology = primitive_map.get(key);
-    if (!primitive_map.has(key)) {
-        res.send("MINT Not found")
-        console.error("Could not find MINT:", key);
-    }
+  let params_text = req.query.params as string;
+  let params = JSON.parse(params_text);
+  console.log("Params:", params);
+  params["position"] = [0, 0];
+  params["color"] = "#FFF";
 
-    let params_text = req.query.params as string;
-    let params = JSON.parse(params_text);
-    console.log("Params:", params);
-    params["position"] = [0, 0];
-    params["color"] = "#FFF";
-
-    // console.log("Dimensions:",xspan, yspan);
-    let ports = technology.getPorts(params);
-    let ret = [];
-    for (let i = 0; i < ports.length; i++) {
-        let port = ports[i];
-        let drawoffsets = technology.getDrawOffset(params);
-        port.x = Math.round(port.x + drawoffsets[0]);
-        port.y = Math.round(port.y + drawoffsets[1]);
-        ret.push(port.toInterchangeV1())
-    }
-    console.log("Terminals:", primitive, ret)
-    res.send(ret);
+  // console.log("Dimensions:",xspan, yspan);
+  let ports = technology.getPorts(params);
+  let ret = [];
+  for (let i = 0; i < ports.length; i++) {
+    let port = ports[i];
+    let drawoffsets = technology.getDrawOffset(params);
+    port.x = Math.round(port.x + drawoffsets[0]);
+    port.y = Math.round(port.y + drawoffsets[1]);
+    ret.push(port.toInterchangeV1());
+  }
+  console.log("Terminals:", primitive, ret);
+  res.send(ret);
 };
-
 
 // router.get('/defaults', function (req, res, next) {
 const getDefaults = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.query, req.query.mint, req.query["mint"])
-    let primitive = req.query.mint;
-    let key = primitive;
-    if (primitive_map.has(key)) {
-        let technology = primitive_map.get(key);
-        console.log("Defaults:", primitive, technology.defaults)
-        res.send(technology.defaults);
-
-    } else {
-        console.error("Could not find mint key: ", key);
-        res.send("Not found")
-    }
+  console.log(req.query, req.query.mint, req.query["mint"]);
+  let primitive = req.query.mint;
+  let key = primitive;
+  if (primitive_map.has(key)) {
+    let technology = primitive_map.get(key);
+    console.log("Defaults:", primitive, technology.defaults);
+    res.send(technology.defaults);
+  } else {
+    console.error("Could not find mint key: ", key);
+    res.send("Not found");
+  }
 };
-
 
 export default { getDimensions, getTerminals, getDefaults };
