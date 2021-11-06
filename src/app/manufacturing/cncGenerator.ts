@@ -1,6 +1,5 @@
 import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
-import SubstrateFeatureMap from "./substrateFeatureMap";
 import { LogicalLayerType } from "../core/init";
 
 import Device from "../core/device";
