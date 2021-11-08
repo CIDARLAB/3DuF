@@ -109,12 +109,6 @@ primitive_map.set(sorter.mint, sorter);
 primitive_map.set(splitter.mint, splitter);
 console.log(primitive_map.keys());
 
-/* GET home page. */
-// router.get('/', function(req, res, next) {
-//   res.render('index', { title: 'World' });
-// });
-
-// router.get('/dimensions', function(req, res, next) {
 const getDimensions = async (
   req: Request,
   res: Response,
@@ -133,6 +127,7 @@ const getDimensions = async (
   console.log("Params:", params);
   params["position"] = [0, 0];
   params["color"] = "#FFF";
+    params["rotation"] = 0;
 
   let renderkeys = technology.renderKeys;
   let features = [];
@@ -155,7 +150,6 @@ const getDimensions = async (
   res.send(ret);
 };
 
-// router.get('/terminals', function(req, res, next) {
 const getTerminals = async (
   req: Request,
   res: Response,
@@ -189,7 +183,6 @@ const getTerminals = async (
   res.send(ret);
 };
 
-// router.get('/defaults', function (req, res, next) {
 const getDefaults = async (req: Request, res: Response, next: NextFunction) => {
   console.log(req.query, req.query.mint, req.query["mint"]);
   let primitive = req.query.mint;
