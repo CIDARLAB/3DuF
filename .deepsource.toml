@@ -18,10 +18,4 @@ enabled = true
   [analyzers.meta]
   plugins = ["vue"]
 
-[[transformers]]
-name = "standardjs"
-enabled = true
 
-[[transformers]]
-name = "prettier"
-enabled = true
