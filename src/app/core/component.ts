@@ -560,11 +560,8 @@ export default class Component {
      */
     updateComponentPorts(): void {
         // updating the Component Ports
-        console.log("this.params: ", this.params);
         const params = this.params.toMap();
-        console.log("params:", params);
         const cleanparamdata = params;
-        console.log("cleanparams: ", cleanparamdata);
         const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._entity);
 
         for (const i in ports) {
