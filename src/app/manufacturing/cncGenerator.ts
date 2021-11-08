@@ -160,10 +160,15 @@ export default class CNCGenerator {
                 }
 
                 if (manufacturingLayerMap.has(manufacturingLayerName)) {
-                    const manufacturingLayer: ManufacturingLayer = manufacturingLayerMap.get(manufacturingLayerName);
-                    const issuccessful: boolean = manufacturingLayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(feature.ID));
-                    if (!issuccessful) console.error("Could not find the feature for the corresponding id: " + feature.ID);
-                    manufacturingLayerMap.set(manufacturingLayerName, manufacturingLayer);
+                    const manufacturingLayer: ManufacturingLayer | undefined = manufacturingLayerMap.get(manufacturingLayerName);
+                    let issuccessful: boolean;
+                    if (manufacturingLayer != undefined) {
+                        issuccessful = manufacturingLayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(feature.ID));
+                        if (!issuccessful) console.error("Could not find the feature for the corresponding id: " + feature.ID);
+                        manufacturingLayerMap.set(manufacturingLayerName, manufacturingLayer);
+                    } else {
+                        throw new Error("manufacturingLayer undefined");
+                    }
                 } else {
                     const odd: number = feature.manufacturingInfo.substrate % 2;
                     let flip: boolean = false;
