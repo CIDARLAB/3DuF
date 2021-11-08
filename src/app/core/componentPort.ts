@@ -1,6 +1,5 @@
 import uuid from "node-uuid";
 import paper from "paper";
-import Layer from "./layer";
 import Component from "./component";
 import { ComponentPortInterchangeV1, Point } from "./init";
 
@@ -9,16 +8,16 @@ export default class ComponentPort {
     protected _x: number;
     protected _y: number;
     protected _label: string;
-    protected _layer: Layer;
+    protected _layer: string;
 
     /**
      * Default constructor for ComponentPorts
      * @param {Number} x X coordinate
      * @param {Number} y Y coordinate
      * @param {String} label Name of the component
-     * @param {Layer} layer
+     * @param {string} layer
      */
-    constructor(x: number, y: number, label: string, layer: Layer) {
+    constructor(x: number, y: number, label: string, layer: string) {
         this._id = uuid.v1();
         this._x = x;
         this._y = y;
@@ -28,7 +27,7 @@ export default class ComponentPort {
 
     /**
      * Gets the layer of the component port
-     * @returns {layer} Returns layer
+     * @returns {string} Returns layer
      * @memberof ComponentPort
      */
     get layer() {
@@ -37,7 +36,7 @@ export default class ComponentPort {
 
     /**
      * Sets the layer
-     * @param {} value Value of the layer
+     * @param {string} value Value of the layer
      * @memberof ComponentPort
      * @returns {void}
      */

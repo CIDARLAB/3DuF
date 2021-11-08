@@ -25,7 +25,7 @@ import Component from "../core/component";
 import UIElement from "../view/uiElement";
 import TextElement from "../view/textElement";
 import MapUtils from "../utils/mapUtils";
-import { paperObject } from "../core/init";
+import { ToolPaperObject } from "../core/init";
 /**
  * Paper View class
  */
@@ -539,7 +539,7 @@ export default class PaperView {
      * Show only the desired features
      * Chosen features appear
      * Built for use in uF Guide Tool
-     * @param {Array<paperObject>} features Array of features to be displayed
+     * @param {Array<ToolPaperObject>} features Array of features to be displayed
      * @returns {void}
      * @memberof PaperView
      */
@@ -567,7 +567,7 @@ export default class PaperView {
      * Show all but the desired features
      * Chosen features behind mask
      * Built for use in uF Guide Tool
-     * @param {Array<paperObject>} features Array of features to be displayed
+     * @param {Array<ToolPaperObject>} features Array of features to be displayed
      * @returns {void}
      * @memberof PaperView
      */
@@ -1160,7 +1160,7 @@ export default class PaperView {
     /**
      * Returns the rendered feature object that is being displayed for the particular feature
      * @param {string} featureID ID of the feature
-     * @return {paperObject} Returns an object containing the rendered features
+     * @return {ToolPaperObject} Returns an object containing the rendered features
      * @memberof PaperView
      */
     getRenderedFeature(featureID) {

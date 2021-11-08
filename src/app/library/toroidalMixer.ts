@@ -2,7 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { Path, Point } from "paper/dist/paper-core";
-import { paperObject } from "../core/init";
+import { ToolPaperObject } from "../core/init";
 
 export default class ToroidalMixer extends Template {
     constructor() {

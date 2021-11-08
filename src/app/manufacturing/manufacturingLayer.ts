@@ -4,13 +4,13 @@ import Registry from "../core/registry";
 import Feature from "../core/feature";
 import Device from "../core/device";
 import { PaperView } from "..";
-import { paperObject } from "../core/init";
+import { ToolPaperObject } from "../core/init";
 
 /**
  * Manufacturing Layer class
  */
 export default class ManufacturingLayer {
-    __features: Array<paperObject>;
+    __features: Array<ToolPaperObject>;
     __name: String;
     __paperGroup: paper.Group;
     __flip: boolean;
@@ -50,11 +50,11 @@ export default class ManufacturingLayer {
      * @memberof ManufacturingLayer
      * @returns {boolean}
      */
-    addFeature(feature: paperObject) {
+    addFeature(feature: ToolPaperObject) {
         if (feature === null || undefined === feature) {
             return false;
         }
-        const copy: paperObject = feature.clone();
+        const copy: ToolPaperObject = feature.clone();
         console.log("Copied feature", copy);
         this.__features.push(copy);
 
@@ -73,7 +73,7 @@ export default class ManufacturingLayer {
     generateFeatureRender(feature: Feature, renderkey: string | null): boolean {
         console.log("Generating Render for invisible feature", feature);
 
-        const render: paperObject = FeatureRenderer2D.renderFeature(feature, renderkey);
+        const render: ToolPaperObject = FeatureRenderer2D.renderFeature(feature, renderkey);
         this.__features.push(render);
 
         this.__paperGroup.addChild(render);
