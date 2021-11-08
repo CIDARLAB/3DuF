@@ -22,20 +22,55 @@ import Device from "../core/device";
 import Feature from "../core/feature";
 import Params from "../core/params";
 import Component from "../core/component";
-import UIElement from "../view/uiElement";
-import TextElement from "../view/textElement";
+import UIElement from "./uiElement";
+import TextElement from "./textElement";
 import MapUtils from "../utils/mapUtils";
 import { ToolPaperObject } from "../core/init";
+import Connection from "../core/connection";
+import { ViewManager } from "..";
+import Parameter from "../core/parameter";
 /**
  * Paper View class
  */
 export default class PaperView {
+    panAndZoom: PanAndZoom;
+    center: paper.Point;
+    zoom: number;
+    canvas: HTMLElement | null;
+    paperFeatures: any;
+    paperLayers: any;
+    paperGrid: paper.Group | null;
+    paperDevice: paper.Group | null;
+    activeLayer: any;
+    gridLayer: paper.Group;
+    deviceLayer: paper.Group;
+    featureLayer: paper.Group;
+    textFeatureLayer: paper.Group;
+    alignmentMarksLayer: paper.Group;
+    uiLayer: paper.Group;
+    ratsNestLayer: paper.Group;
+    componentPortsLayer: paper.Group;
+    currentTarget: any;
+    lastTargetType: string | null;
+    lastTargetPosition: paper.Point | null;
+    lastTargetParameters: any;
+    selectedComponents: Array<Component>;
+    selectedConnections: Array<Connection>;
+    inactiveAlpha: number;
+    private __viewManagerDelegate: any;
+    featureRegistry: Map<string, any>;
+    lastTargetSet: string | null = null;
+    protected _paperComponentPortView: PaperComponentPortView;
+    private __ratsNestRender: paper.Group | null = null;
+    layerMask: any;
+    alignmentMarks: paper.Group | null = null;
+
     /**
      * Requires the canvas ID to setup the entire application.
      * @param {string} canvasID
      * @param {} viewmanager
      */
-    constructor(canvasID, viewmanager) {
+    constructor(canvasID: string, viewmanager: ViewManager) {
         // Setup the Canvas
         paper.setup(canvasID);
 
@@ -89,6 +124,7 @@ export default class PaperView {
         const output = [];
         const items = paper.project.selectedItems;
         for (let i = 0; i < items.length; i++) {
+            // @ts-ignore
             output.push(this.__viewManagerDelegate.getFeatureByID(items[i].featureID));
         }
         return output;
@@ -99,7 +135,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    clearSelectedItems() {
+    clearSelectedItems(): void {
         paper.project.deselectAll();
         this.selectedConnections = [];
         this.selectedComponents = [];
@@ -111,11 +147,12 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    deleteSelectedFeatures() {
+    deleteSelectedFeatures(): void {
         // TODO: Refine how this works with the selection object code later on
         const items = paper.project.selectedItems;
         if (items && items.length > 0) {
             for (let i = 0; i < items.length; i++) {
+                // @ts-ignore
                 this.__viewManagerDelegate.removeFeatureByID(items[i].featureID);
             }
 
@@ -140,7 +177,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    selectAllActive() {
+    selectAllActive(): void {
         const layer = this.paperLayers[this.activeLayer];
         for (const i in layer.children) {
             layer.children[i].selected = true;
@@ -168,7 +205,7 @@ export default class PaperView {
      * @returns Returns an SVG format
      * @memberof PaperView
      */
-    postProcessLayerToSVG(layer) {
+    postProcessLayerToSVG(layer: paper.Item): string {
         // var flip = layer.params["flip"];
         const layerCopy = layer.clone();
         // if (flip === true) {
@@ -199,7 +236,10 @@ export default class PaperView {
      * @returns {number} Returns the width of the canvas
      * @memberof PaperView
      */
-    getCanvasWidth() {
+    getCanvasWidth(): number {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         return this.canvas.clientWidth;
     }
 
@@ -208,7 +248,10 @@ export default class PaperView {
      * @returns {number} Returns the height of the canvas
      * @memberof PaperView
      */
-    getCanvasHeight() {
+    getCanvasHeight(): number {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         return this.canvas.clientHeight;
     }
 
@@ -226,8 +269,8 @@ export default class PaperView {
      * @returns {number}
      * @memberof PaperView
      */
-    getDeviceHeightInPixels() {
-        return this.__viewManagerDelegate.currentDevice.params.getValue("height") * paper.view.zoom;
+    getDeviceHeightInPixels(): number {
+        return this.__viewManagerDelegate.currentDevice.getYSpan() * paper.view.zoom;
     }
 
     /**
@@ -236,13 +279,12 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    clear() {
+    clear(): void {
         this.activeLayer = null;
         this.featureLayer.removeChildren();
-        this.featureLayer.clear();
-        this.deviceLayer.clear();
-        this.gridLayer.clear();
-        this.alignmentMarksLayer.clear();
+        this.deviceLayer.removeChildren();
+        this.gridLayer.removeChildren();
+        this.alignmentMarksLayer.removeChildren();
     }
 
     /**
@@ -260,7 +302,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setCenter(point) {
+    setCenter(point: paper.Point): void {
         this.center = point;
         this.updateCenter();
     }
@@ -270,7 +312,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateCenter() {
+    updateCenter(): void {
         paper.view.center = this.center;
     }
 
@@ -279,7 +321,7 @@ export default class PaperView {
      * @returns {number} Returns zoom value
      * @memberof PaperView
      */
-    getZoom() {
+    getZoom(): number {
         return this.zoom;
     }
 
@@ -289,7 +331,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setZoom(zoom) {
+    setZoom(zoom: number): void {
         this.zoom = zoom;
         this.updateZoom();
     }
@@ -299,7 +341,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateZoom() {
+    updateZoom(): void {
         paper.view.zoom = this.zoom;
     }
 
@@ -310,7 +352,10 @@ export default class PaperView {
      * @returns {}
      * @memberof PaperView
      */
-    canvasToProject(x, y) {
+    canvasToProject(x: number, y: number) {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         const rect = this.canvas.getBoundingClientRect();
         const projX = x - rect.left;
         const projY = y - rect.top;
@@ -324,7 +369,7 @@ export default class PaperView {
      * @returns {}
      * @memberof PaperView
      */
-    getProjectPosition(x, y) {
+    getProjectPosition(x: number, y: number) {
         return this.canvasToProject(x, y);
     }
 
@@ -334,7 +379,10 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setMouseWheelFunction(func) {
+    setMouseWheelFunction(func: { (event: any): void; (event: any): void; (this: HTMLElement, ev: WheelEvent): any }): void {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         this.canvas.addEventListener("wheel", func);
     }
 
@@ -344,7 +392,10 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setMouseDownFunction(func) {
+    setMouseDownFunction(func: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null): void {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         this.canvas.onmousedown = func;
     }
 
@@ -354,7 +405,10 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setMouseUpFunction(func) {
+    setMouseUpFunction(func: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null): void {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         this.canvas.onmouseup = func;
     }
 
@@ -364,7 +418,10 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setMouseMoveFunction(func) {
+    setMouseMoveFunction(func: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null): void {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         this.canvas.onmousemove = func;
     }
 
@@ -374,7 +431,10 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setKeyPressFunction(func) {
+    setKeyPressFunction(func: ((this: GlobalEventHandlers, ev: KeyboardEvent) => any) | null): void {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         this.canvas.onkeypress = func;
     }
 
@@ -384,7 +444,10 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setKeyDownFunction(func) {
+    setKeyDownFunction(func: ((this: GlobalEventHandlers, ev: KeyboardEvent) => any) | null): void {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         this.canvas.onkeydown = func;
     }
 
@@ -394,7 +457,10 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setResizeFunction(func) {
+    setResizeFunction(func: Function | null): void {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         paper.view.onResize = func;
     }
 
@@ -404,7 +470,10 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    disableContextMenu() {
+    disableContextMenu(): void {
+        if (this.canvas === null) {
+            throw new Error("Canvas is null");
+        }
         this.canvas.oncontextmenu = function(event) {
             event.preventDefault();
         };
@@ -415,7 +484,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    refresh() {
+    refresh(): void {
         paper.view.update();
     }
 
@@ -426,7 +495,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    addDevice(device) {
+    addDevice(device: Device): void {
         this.updateDevice(device);
     }
 
@@ -436,8 +505,8 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateDevice(device) {
-        this.removeDevice(device);
+    updateDevice(device: Device): void {
+        this.removeDevice();
         const newPaperDevice = DeviceRenderer.renderDevice(device);
         this.paperDevice = newPaperDevice;
         this.deviceLayer.addChild(newPaperDevice);
@@ -448,7 +517,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    removeDevice() {
+    removeDevice(): void {
         if (this.paperDevice) this.paperDevice.remove();
         this.paperDevice = null;
         //TODO: Figure out how to handle featureRegistry
@@ -463,7 +532,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    addLayer(layer, index) {
+    addLayer(layer: Layer, index: number): void {
         this.paperLayers[index] = new paper.Group();
         this.featureLayer.addChild(this.paperLayers[index]);
         // this.setActiveLayer(index);
@@ -476,7 +545,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateLayer(layer, index) {
+    updateLayer(layer: Layer, index: number): void {
         // do nothing, for now
     }
 
@@ -486,7 +555,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    removeLayer(index) {
+    removeLayer(index: number): void {
         if (index !== -1) {
             for (let i = 0; i < this.paperLayers[index].children.length; i++) {
                 this.featureRegistry.delete(this.paperLayers[index].children[i].featureID);
@@ -502,7 +571,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    addFeature(feature) {
+    addFeature(feature: Feature): void {
         this.updateFeature(feature);
     }
 
@@ -512,7 +581,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setActiveLayer(index) {
+    setActiveLayer(index: number): void {
         this.activeLayer = index;
         if (this.activeLayer !== null && this.activeLayer >= 0) this.showActiveLayer();
     }
@@ -522,7 +591,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    showActiveLayer() {
+    showActiveLayer(): void {
         this.featureLayer.remove();
         this.featureLayer = new paper.Group();
         for (let i = 0; i < this.paperLayers.length; i++) {
@@ -543,7 +612,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    showChosenFeatures(features) {
+    showChosenFeatures(features: Array<ToolPaperObject>): void {
         this.resetFeatureLayers();
         this.featureLayer.remove();
         this.featureLayer = new paper.Group();
@@ -571,7 +640,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    hideChosenFeatures(features) {
+    hideChosenFeatures(features: Array<ToolPaperObject>) {
         this.resetFeatureLayers();
         this.featureLayer.remove();
         this.featureLayer = new paper.Group();
@@ -597,7 +666,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    showAllFeatures() {
+    showAllFeatures(): void {
         this.resetFeatureLayers();
         this.featureLayer.remove();
         this.featureLayer = new paper.Group();
@@ -618,7 +687,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    resetFeatureLayers() {
+    resetFeatureLayers(): void {
         for (let i = 0; i < this.paperLayers.length; i++) {
             this.featureRegistry.forEach((value, key) => {
                 if (this.paperLayers[i].id == value) {
@@ -636,6 +705,9 @@ export default class PaperView {
      * @memberof PaperView
      */
     getNonphysText() {
+        if (Registry.viewManager === undefined || Registry.viewManager === null) {
+            throw new Error("Registry.viewManager is undefined");
+        }
         const textLayer = new paper.Group();
         const nonphysElements = Registry.viewManager.nonphysElements;
         for (let i = 0; i < nonphysElements.length; i++) {
@@ -660,7 +732,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    generateNonphysText(text, position, size, color, layer = this.activeLayer) {
+    generateNonphysText(text: string, position: paper.Point, size: number, color: any, layer = this.activeLayer): void {
         const newFeature = Device.makeFeature(
             "Text",
             {
@@ -691,7 +763,11 @@ export default class PaperView {
      * @param params Map of all the paramters
      * @param featureIDs [String] Feature id's of all the features that will be a part of this component
      */
-    addUIElement(typeString, paramdata, featureIDs) {
+    addUIElement(typeString: string, paramdata: { [index: string]: Parameter }, featureIDs: Array<string>) {
+        if (Registry.viewManager === undefined || Registry.viewManager === null) {
+            console.log("ViewManager is not defined");
+            throw new Error("ViewManager is not defined");
+        }
         let newElement;
         if (typeString == "Text") {
             newElement = new TextElement(typeString, paramdata, featureIDs);
@@ -708,7 +784,7 @@ export default class PaperView {
      * Built for use in uF Guide Tool
      * @param newPaperFeature Paper feature to be added to the UI layer
      */
-    insertUIFeature(newPaperFeature) {
+    insertUIFeature(newPaperFeature: paper.Item): void {
         this.uiLayer.insertChild(0, newPaperFeature);
     }
 
@@ -722,10 +798,21 @@ export default class PaperView {
      * @param featureIDs [String] Feature id's of all the features that will be a part of this component
      * @param physical Boolean stating whether feature physical or not
      */
-    addComponent(typeString, paramdata, featureIDs) {
+    addComponent(typeString: string, paramdata: { [index: string]: Parameter }, featureIDs: Array<string>, physical: boolean) {
+        if (Registry.viewManager === undefined || Registry.viewManager === null) {
+            console.error("ViewManager is not defined");
+            throw new Error("ViewManager is not defined");
+        }
+        if (Registry.currentDevice === undefined || Registry.currentDevice === null) {
+            console.error("Current Device is not defined");
+            throw new Error("Current Device is not defined");
+        }
         const definition = ComponentAPI.getDefinition(typeString);
+        if (definition === undefined || definition === null) {
+            throw new Error("Component definition not found");
+        }
         // Clean Param Data
-        const cleanparamdata = {};
+        const cleanparamdata: { [key: string]: any } = {};
         for (const key in paramdata) {
             cleanparamdata[key] = paramdata[key].value;
         }
@@ -754,7 +841,7 @@ export default class PaperView {
      * @returns {number}
      * @memberof PaperView
      */
-    comparePaperFeatureHeights(a, b) {
+    comparePaperFeatureHeights(a: { featureID: any }, b: { featureID: any }): number {
         let bHeight;
         let aHeight;
         const aFeature = this.__viewManagerDelegate.getFeatureByID(a.featureID);
@@ -782,7 +869,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    insertChildByHeight(group, newChild) {
+    insertChildByHeight(group: { children: string | any[]; insertChild: (arg0: any, arg1: any) => void }, newChild: any): void {
         let index;
         if (group.children.length > 0) {
             index = this.getIndexByHeight(group.children, newChild);
@@ -800,7 +887,7 @@ export default class PaperView {
      * @returns {number} Returns the index of the component
      * @memberof PaperView
      */
-    getIndexByHeight(children, newChild) {
+    getIndexByHeight(children: string | any[], newChild: any): number {
         for (let i = 0; i < children.length; i++) {
             const test = this.comparePaperFeatureHeights(children[i], newChild);
             if (test >= 0) {
@@ -816,7 +903,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateFeature(feature) {
+    updateFeature(feature: Feature): void {
         const existingFeature = this.paperFeatures[feature.ID];
         let selected;
         if (existingFeature) selected = existingFeature.selected;
@@ -830,11 +917,12 @@ export default class PaperView {
         if (feature instanceof EdgeFeature) {
             newPaperFeature = DXFObjectRenderer2D.renderEdgeFeature(feature);
             newPaperFeature.selected = selected;
+            // @ts-ignore
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
             this.insertEdgeFeatures(newPaperFeature);
             return;
         } else {
-            newPaperFeature = FeatureRenderer2D.renderFeature(feature);
+            newPaperFeature = FeatureRenderer2D.renderFeature(feature, null);
         }
         newPaperFeature.selected = selected;
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
@@ -850,7 +938,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    removeTarget() {
+    removeTarget(): void {
         if (this.currentTarget) this.currentTarget.remove();
         this.currentTarget = null;
     }
@@ -863,7 +951,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    addTarget(featureType, set, position, currentParameters) {
+    addTarget(featureType: string | null, set: string, position: paper.Point | null, currentParameters: any): void {
         this.removeTarget();
         this.lastTargetParameters = currentParameters;
         this.lastTargetType = featureType;
@@ -878,7 +966,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateTarget() {
+    updateTarget(): void {
         this.removeTarget();
         if (this.lastTargetType && this.lastTargetPosition) {
             // Checks if the target is a text type target
@@ -887,6 +975,7 @@ export default class PaperView {
                 this.uiLayer.addChild(this.currentTarget);
             } else if (this.lastTargetSet === "Custom") {
                 const customcomponent = this.__viewManagerDelegate.customComponentManager.getCustomComponent(this.lastTargetType);
+                // @ts-ignore
                 const params = Registry.featureDefaults[this.lastTargetSet][this.lastTargetType];
                 params.position = this.lastTargetPosition;
                 params.color = Colors.getDefaultFeatureColor(this.lastTargetType, this.lastTargetSet, Registry.currentLayer);
@@ -905,7 +994,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    removeFeature(feature) {
+    removeFeature(feature: Feature): void {
         const paperFeature = this.paperFeatures[feature.ID];
         if (paperFeature) {
             paperFeature.remove();
@@ -919,7 +1008,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    removeGrid() {
+    removeGrid(): void {
         if (this.paperGrid) this.paperGrid.remove();
         this.paperGrid = null;
     }
@@ -930,7 +1019,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateGrid(grid) {
+    updateGrid(grid: null): void {
         this.removeGrid();
         const newPaperGrid = GridRenderer.renderGrid(grid);
         this.paperGrid = newPaperGrid;
@@ -940,7 +1029,7 @@ export default class PaperView {
     /**
      * Updates alignment marks of the paper
      */
-    updateAlignmentMarks() {
+    updateAlignmentMarks(): void {
         // TODO: Update this for the new visualizations
         // Remove current Alignment Marks:
         // this.removeAlignmentMarks();
@@ -954,9 +1043,9 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    removeAlignmentMarks() {
+    removeAlignmentMarks(): void {
         // Does nothing right now
-        if (this.alignmentMarks) this.alignmentMarks.remove();
+        if (this.alignmentMarks) this.alignmentMarks.removeChildren();
         this.alignmentMarks = null;
     }
 
@@ -965,7 +1054,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateRatsNest() {
+    updateRatsNest(): void {
         this.removeRatsNest();
         const unrouted = this.__viewManagerDelegate.currentDevice.getUnroutedConnections();
 
@@ -980,7 +1069,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    removeRatsNest() {
+    removeRatsNest(): void {
         // First clear out the render objects
         if (this.__ratsNestRender) {
             this.__ratsNestRender.remove();
@@ -995,7 +1084,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    moveCenter(delta) {
+    moveCenter(delta: number): void {
         this.panAndZoom.moveCenter(delta);
     }
 
@@ -1006,7 +1095,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    adjustZoom(delta, point) {
+    adjustZoom(delta: number, point: number[]): void {
         this.panAndZoom.adjustZoom(delta, point);
     }
 
@@ -1016,7 +1105,7 @@ export default class PaperView {
      * @returns {Array} Returns an array with the features
      * @memberof PaperView
      */
-    getFeaturesByViewElements(paperFeatures) {
+    getFeaturesByViewElements(paperFeatures: string | any[]) {
         const output = [];
         for (let i = 0; i < paperFeatures.length; i++) {
             output.push(this.__viewManagerDelegate.getFeatureByID(paperFeatures[i].featureID));
@@ -1029,7 +1118,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    initializeView() {
+    initializeView(): void {
         const center = this.getDeviceCenter();
         const zoom = this.computeOptimalZoom();
         this.setCenter(center);
@@ -1052,7 +1141,7 @@ export default class PaperView {
      * @returns {number} Returns the value of the optima zoom
      * @memberof PaperView
      */
-    computeOptimalZoom() {
+    computeOptimalZoom(): number {
         const borderMargin = 200; // pixels
         const deviceWidth = this.__viewManagerDelegate.currentDevice.getXSpan();
         const deviceHeight = this.__viewManagerDelegate.currentDevice.getYSpan();
@@ -1080,7 +1169,7 @@ export default class PaperView {
      * @return {boolean} Rendered Feature
      * @memberof PaperView
      */
-    hitFeature(point, onlyHitActiveLayer = true, nonphysActiveLayer = false) {
+    hitFeature(point: paper.Point, onlyHitActiveLayer = true, nonphysActiveLayer = false) {
         const hitOptions = {
             fill: true,
             tolerance: 5,
@@ -1122,7 +1211,7 @@ export default class PaperView {
      * @returns {Array} Returns an Array with all the child components which intersects the paper element
      * @memberof PaperView
      */
-    hitFeaturesWithViewElement(paperElement, onlyHitActiveLayer = true) {
+    hitFeaturesWithViewElement(paperElement: any, onlyHitActiveLayer = true) {
         const output = [];
         if (onlyHitActiveLayer && this.activeLayer !== null) {
             const layer = this.paperLayers[this.activeLayer];
@@ -1152,7 +1241,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    insertEdgeFeatures(newPaperFeature) {
+    insertEdgeFeatures(newPaperFeature: paper.CompoundPath): void {
         const layer = this.paperLayers[0];
         layer.insertChild(0, newPaperFeature);
     }
@@ -1163,7 +1252,7 @@ export default class PaperView {
      * @return {ToolPaperObject} Returns an object containing the rendered features
      * @memberof PaperView
      */
-    getRenderedFeature(featureID) {
+    getRenderedFeature(featureID: string) {
         return this.paperFeatures[featureID];
     }
 
@@ -1172,7 +1261,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateComponentPortsRender() {
+    updateComponentPortsRender(): void {
         this._paperComponentPortView.updateRenders();
     }
 
@@ -1181,7 +1270,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    enableSnapRender() {
+    enableSnapRender(): void {
         this._paperComponentPortView.enable();
     }
 
@@ -1190,7 +1279,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    disableSnapRender() {
+    disableSnapRender(): void {
         this._paperComponentPortView.disable();
     }
 
@@ -1199,7 +1288,7 @@ export default class PaperView {
      * @param {string} featureID
      * @returns
      */
-    getRender(featureID) {
+    getRender(featureID: string) {
         return this.paperFeatures[featureID];
     }
 }
