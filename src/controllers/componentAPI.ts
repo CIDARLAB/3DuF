@@ -36,7 +36,7 @@ import Splitter from "../library/splitter";
 
 import paper, { Key } from "paper";
 
-paper.setup(new paper.Size([640, 480]));
+paper.setup(new paper.Size([64000, 48000]));
 
 let primitive_map = new Map();
 
@@ -127,7 +127,7 @@ const getDimensions = async (
   console.log("Params:", params);
   params["position"] = [0, 0];
   params["color"] = "#FFF";
-    params["rotation"] = 0;
+  params["rotation"] = 0;
 
   let renderkeys = technology.renderKeys;
   let features = [];
@@ -144,7 +144,6 @@ const getDimensions = async (
   }, null);
   let xspan = unitedBounds.width;
   let yspan = unitedBounds.height;
-  // console.log("Dimensions:",xspan, yspan);
   let ret = { "x-span": xspan, "y-span": yspan };
   console.log("Dimensions:", primitive, ret);
   res.send(ret);
@@ -171,12 +170,13 @@ const getTerminals = async (
 
   // console.log("Dimensions:",xspan, yspan);
   let ports = technology.getPorts(params);
+  const drawoffsets = technology.getDrawOffset(params);
+
   let ret = [];
   for (let i = 0; i < ports.length; i++) {
     let port = ports[i];
-    let drawoffsets = technology.getDrawOffset(params);
-    port.x = Math.round(port.x + drawoffsets[0]);
-    port.y = Math.round(port.y + drawoffsets[1]);
+    port.x = Math.floor(port.x + drawoffsets[0]);
+    port.y = Math.floor(port.y + drawoffsets[1]);
     ret.push(port.toInterchangeV1());
   }
   console.log("Terminals:", primitive, ret);
