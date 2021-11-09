@@ -50,7 +50,10 @@ export default class DepthFeatureMap {
      * @returns {Array<features>} Returns the feature of the depth
      * @memberof DepthFeatureMap
      */
-    getFeaturesAtDepth(depth: number): Array<string> | undefined {
-        return this.__depthMap.get(depth);
+    getFeaturesAtDepth(depth: number): Array<string> {
+        if (this.__depthMap.has(depth)) {
+            return this.__depthMap.get(depth) as Array<string>;
+        }
+        throw new Error("Could not find features at Depth: " + depth);
     }
 }
