@@ -1,0 +1,21 @@
+version = 1
+
+test_patterns = [
+  "tests/**",
+  "src/test/**"
+]
+
+exclude_patterns = [
+  "lib/**",
+  "orbit_bundle.js",
+  "public/**"
+]
+
+[[analyzers]]
+name = "javascript"
+enabled = true
+
+  [analyzers.meta]
+  plugins = ["vue"]
+
+
