@@ -2,7 +2,9 @@
     <Dialog title="Edit Device">
         <template v-slot:content>
             <tr>
-                <h4 class="text--primary subtitle-1">Rename:</h4>
+                <h4 class="text--primary subtitle-1">
+                    Rename:
+                </h4>
                 <td>
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -15,7 +17,9 @@
                 </td>
             </tr>
             <tr>
-                <h4 class="text--primary subtitle-1">Resize:</h4>
+                <h4 class="text--primary subtitle-1">
+                    Resize:
+                </h4>
                 <td>
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -33,8 +37,12 @@
             </tr>
         </template>
         <template v-slot:actions="{ callbacks }">
-            <v-btn dark color="green dark" elevation="2" @click="callbacks.close(onSave)"> Save </v-btn>
-            <v-btn dark color="red dark" elevation="2" @click="callbacks.close()"> Cancel </v-btn>
+            <v-btn dark color="green dark" elevation="2" @click="callbacks.close(onSave)">
+                Save
+            </v-btn>
+            <v-btn dark color="red dark" elevation="2" @click="callbacks.close()">
+                Cancel
+            </v-btn>
         </template>
     </Dialog>
 </template>

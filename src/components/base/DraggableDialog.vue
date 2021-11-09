@@ -8,13 +8,17 @@
             </slot>
         </template>
         <v-card>
-            <v-card-title class="text-h5 lighten-2">{{ title }} </v-card-title>
+            <v-card-title class="text-h5 lighten-2">
+                {{ title }}
+            </v-card-title>
 
             <v-card-text>
-                <slot name="content"> Add something here </slot>
+                <slot name="content">
+                    Add something here
+                </slot>
             </v-card-text>
             <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer />
                 <slot name="actions">
                     <v-btn
                         color="red"

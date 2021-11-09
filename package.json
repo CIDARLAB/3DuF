@@ -62,6 +62,7 @@
         "vue-select": "^3.13.0",
         "vuetify": "^2.5.8",
         "vuex": "^3.6.2",
+        "webpack-build": "^1.0.1",
         "wnumb": "^1.2.0"
     },
     "devDependencies": {

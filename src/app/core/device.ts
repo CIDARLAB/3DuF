@@ -531,7 +531,8 @@ export default class Device {
         let componenttoadd;
 
         for (let i in components) {
-            componenttoadd = Component.fromInterchangeV1(components[i]);
+            componenttoadd = Component.fromInterchangeV1(components[i],this);
+            console.log(components[i]);
             this.__components.push(componenttoadd);
         }
     }

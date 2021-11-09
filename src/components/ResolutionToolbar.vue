@@ -20,10 +20,14 @@
         <v-card v-show="activated" id="resolution-toolbar">
             <v-card-text>
                 <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
-                    <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
+                    <template v-slot:label class="mdl-switch__label">
+                        Enable Automatic Grid
+                    </template>
                 </v-switch>
                 <v-switch v-model="renderSnap" color="#304FFE" @change="clickedSnap">
-                    <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
+                    <template v-slot:label class="mdl-switch__label">
+                        Render Snap Points
+                    </template>
                 </v-switch>
                 <veeno
                     ref="slider"

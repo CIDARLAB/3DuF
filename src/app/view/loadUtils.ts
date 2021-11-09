@@ -24,6 +24,7 @@ import {
     ComponentPortInterchangeV1,
     LogicalLayerType
 } from "@/app/core/init";
+import device from "@/app/core/device";
 
 export default class LoadUtils {
     constructor() {}
@@ -117,7 +118,7 @@ export default class LoadUtils {
         //TODO: Use this to dynamically create enough layers to scroll through
         //TODO: Use these to generate a rat's nest
         for (const i in json.components) {
-            const newComponent = LoadUtils.loadComponentFromInterchangeV1(json.components[i]);
+            const newComponent = LoadUtils.loadComponentFromInterchangeV1(json.components[i], newDevice);
             newDevice.addComponent(newComponent);
         }
 
@@ -276,7 +277,7 @@ export default class LoadUtils {
      * @returns {Component}
      * @memberof LoadUtils
      */
-    static loadComponentFromInterchangeV1(json: ComponentInterchangeV1): Component {
+    static loadComponentFromInterchangeV1(json: ComponentInterchangeV1, device: Device): Component {
         const iscustomcompnent = false;
         const name = json.name;
         const id = json.id;
@@ -334,7 +335,15 @@ export default class LoadUtils {
         const unique_map = MapUtils.toMap(definition.unique);
         const heritable_map = MapUtils.toMap(definition.heritable);
         const paramstoadd = new Params(params, unique_map, heritable_map);
-        const component = new Component(paramstoadd, name, entity, id);
+        
+        let layers: Array<Layer> =[]
+        for(let i in json.layers){
+            let layer = device.getLayer(json.layers[i]);
+            if (layer !== null){
+                layers.push(layer);
+            }
+        }
+        const component = new Component(paramstoadd, name, entity, layers, id);
 
         // Deserialize the component ports
         const portdata = new Map();

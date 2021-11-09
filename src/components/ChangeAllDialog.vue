@@ -7,29 +7,42 @@
         </template>
 
         <v-card>
-            <v-card-title class="text-h5 lighten-2"> Change All Components: </v-card-title>
+            <v-card-title class="text-h5 lighten-2">
+                Change All Components:
+            </v-card-title>
 
-            <v-card-text> </v-card-text>
+            <v-card-text />
             <table>
                 <tr>
                     <th class="font-weight-bold pl-10 pt-4 pb-2">
                         <input v-model="selectAll" type="checkbox" />
                         <span class="pl-1">Select</span>
                     </th>
-                    <th class="font-weight-bold pl-15 pt-4 pb-2">Name</th>
+                    <th class="font-weight-bold pl-15 pt-4 pb-2">
+                        Name
+                    </th>
                 </tr>
                 <tr v-for="comp in components" :key="comp.id">
-                    <td class="pl-15 pb-2"><input v-model="selected" type="checkbox" :value="comp.id" /></td>
-                    <td class="pl-15 pb-2">{{ comp.name }}</td>
+                    <td class="pl-15 pb-2">
+            <input v-model="selected" type="checkbox" :value="comp.id" >
+          </td>
+
+                    <td class="pl-15 pb-2">
+                        {{ comp.name }}
+                    </td>
                 </tr>
             </table>
 
-            <v-divider></v-divider>
+            <v-divider />
 
             <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green" class="white--text" @click="onSave"> Change </v-btn>
-                <v-btn color="red" class="white--text ml-9" @click="dialog = false"> Cancel </v-btn>
+                <v-spacer />
+                <v-btn color="green" class="white--text" @click="onSave">
+                    Change
+                </v-btn>
+                <v-btn color="red" class="white--text ml-9" @click="dialog = false">
+                    Cancel
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

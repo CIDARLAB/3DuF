@@ -4,7 +4,7 @@
             <thead v-show="showRename">
                 <v-col>
                     <v-row align-start>
-                        <v-text-field v-model="componentName" label="Name" type="input"> </v-text-field>
+                        <v-text-field v-model="componentName" label="Name" type="input" />
                         <v-btn x-small depressed @click="cancelRename">
                             <span class="material-icons">close</span>
                         </v-btn>

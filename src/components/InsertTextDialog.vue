@@ -1,34 +1,51 @@
 <template>
-    <Dialog title="Insert Text"
-        ><v-card-title class="h6">Insert</v-card-title>
+    <Dialog title="Insert Text">
+        <v-card-title class="h6">
+            Insert
+        </v-card-title>
         <template #content>
             <form action="#">
                 <tr>
                     <td>
-                        <v-card-text><p class="text--primary subtitle-1">Text:</p></v-card-text>
+                        <v-card-text>
+              >
+                            <p class="text--primary subtitle-1">
+                                Text:
+                            </p>
+            </v-card-text>
                     </td>
                     <td width="125px">
-                        <v-text-field v-model="text"></v-text-field>
+                        <v-text-field v-model="text" />
                     </td>
                     <td>
-                        <v-card-text><p class="text--primary subtitle-1">Font Size:</p></v-card-text>
+                        <v-card-text>
+                            >
+                            <p class="text--primary subtitle-1">
+                                Font Size:
+                            </p>
+            </v-card-text>
                     </td>
                     <td width="125px">
-                        <v-text-field v-model="fontSize" :step="1" type="number"></v-text-field>
+                        <v-text-field v-model="fontSize" :step="1" type="number" />
                     </td>
                 </tr>
                 <tr>
                     <td width="100px">
-                        <v-card-text></v-card-text>
+                        <v-card-text />
                     </td>
                     <td>
-                        <v-card-text></v-card-text>
+                        <v-card-text />
                     </td>
                     <td>
-                        <v-card-text><p class="text--primary subtitle-1">Select Layer:</p></v-card-text>
+                        <v-card-text>
+                            >
+                            <p class="text--primary subtitle-1">
+                                Select Layer:
+                            </p>
+            </v-card-text>
                     </td>
                     <td>
-                        <v-select :items="displayLayers" label="Dropdown"> </v-select>
+                        <v-select :items="displayLayers" label="Dropdown" />
                     </td>
                 </tr>
             </form>
@@ -36,10 +53,14 @@
         <template v-slot:actions="{ callbacks }">
             <v-spacer />
             <v-col>
-                <v-btn class="pa-2" color="red darken-1" dark :style="{ right: '75%', transform: 'translateX(-100%)' }" @click="callbacks.close()"> Cancel </v-btn>
+                <v-btn class="pa-2" color="red darken-1" dark :style="{ right: '75%', transform: 'translateX(-100%)' }" @click="callbacks.close()">
+                    Cancel
+                </v-btn>
                 <v-spacer />
             </v-col>
-            <v-btn class="pa-2" color="green darken-1" dark :style="{ right: '30%', transform: 'translateX(-30%)' }" @click="callbacks.close(insertText)"> Insert </v-btn>
+            <v-btn class="pa-2" color="green darken-1" dark :style="{ right: '30%', transform: 'translateX(-30%)' }" @click="callbacks.close(insertText)">
+                Insert
+            </v-btn>
         </template>
     </Dialog>
 </template>

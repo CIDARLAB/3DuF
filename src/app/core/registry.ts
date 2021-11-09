@@ -29,7 +29,7 @@ class Registry {
     currentTextLayer = null;
     currentGrid: AdaptiveGrid | null = null;
     view = null;
-    viewManager: ViewManager | null = null;
+    viewManager: null | ViewManager = null;
     featureSet = null;
 }
 

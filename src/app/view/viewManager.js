@@ -391,11 +391,11 @@ export default class ViewManager {
         let groupNum = Registry.currentDevice.layers.length;
         if (groupNum != 0) groupNum = groupNum / 3;
 
-        const newlayers = [];
+        let newlayers = [];
         newlayers[0] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerFlow"), LogicalLayerType.FLOW, groupNum.toString());
         newlayers[1] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerControl"), LogicalLayerType.CONTROL, groupNum.toString());
         newlayers[2] = new Layer({ z_offset: 0, flip: false }, this.currentDevice.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, groupNum.toString());
-        // Add model layers to current device
+        //Add model layers to current device
         Registry.currentDevice.createNewLayerBlock(newlayers);
 
         // Find all the edge features

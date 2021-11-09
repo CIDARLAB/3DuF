@@ -10,9 +10,9 @@ module.exports = {
     SharedArrayBuffer: 'readonly'
   },
 
-  // Position is important, the last rules take precident here. For the least amount of prettier conficts with other eslint plugins.
-  // it has to come last
-  extends: ['eslint:recommended', 'plugin:vue/recommended', '@vue/typescript', 'prettier/vue'],
+    // Position is important, the last rules take precident here. For the least amount of prettier conficts with other eslint plugins.
+    // it has to come last
+    extends: ["eslint:recommended", "plugin:vue/recommended", "@vue/typescript"],
 
   parserOptions: {
     ecmaVersion: 2018,
