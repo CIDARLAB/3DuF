@@ -7,7 +7,7 @@ import Layer from "../core/layer";
 import Feature from "../core/feature";
 import viewManager from "../view/viewManager";
 import paper from "paper";
-import { DFMType } from "./ManufacturingInfo";
+import { DFMType } from "./manufacturingInfo";
 
 /**
  * GNCGenerator class
@@ -44,74 +44,8 @@ export default class CNCGenerator {
      * @returns {void}
      */
     generatePortLayers(): void {
-        /*
-        Step 1 - Get all the layers
-        Step 2 - Get all the ports in each of the layers
-        Step 3 - Create a manufacturing layer
-                -  Populate with the ports
-         */
-        // let components = this.__device.components;
 
-        console.log("Port layers called and not executed");
-        // const layers: Array<Layer> = this.__device.layers;
-        // console.log("LAYERS ", layers);
-
-        // const mfglayers: Array<ManufacturingLayer> = [];
-        // console.log("MFGLAYERS: ", mfglayers);
-        // let isControl: boolean = false;
-
-        // for (const i in layers) {
-        //     const layer: Layer = layers[i];
-        //     const ports: Array<string> = [];
-
-        //     const features: { [index: string]: Feature } = layer.features;
-
-        //     if (layer.type === LogicalLayerType.CONTROL) {
-        //         isControl = true;
-        //     }
-
-        //     for (const key in features) {
-        //         const feature: Feature = features[key];
-        //         // TODO: Include fabtype check also
-        //         if (feature.getType() === "Port") {
-        //             ports.push(key);
-        //         }
-        //     }
-
-        //     if (ports.length === 0) {
-        //         continue;
-        //     }
-
-        //     const manufacturinglayer: ManufacturingLayer = new ManufacturingLayer("PORTS_" + layer.name);
-        //     // console.log("manufacturing layer :", manufacturinglayer);
-
-        //     for (const fi in ports) {
-        //         const featurekey: string = ports[fi];
-        //         // console.log("Key:", featurekey);
-        //         // console.log("rendered:feature", this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
-        //         const issuccess: boolean = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(featurekey));
-        //         if (!issuccess) {
-        //             console.error("Could not find the feature for the corresponding id: " + featurekey);
-        //         }
-        //     }
-
-        //     if (isControl) {
-        //         manufacturinglayer.flipX();
-        //         isControl = false;
-        //     }
-
-        //     mfglayers.push(manufacturinglayer);
-        // }
-
-        // console.log("mfglayers:", mfglayers);
-
-        // const ref = this;
-        // mfglayers.forEach(function(mfglayer: ManufacturingLayer, index: number) {
-        //     ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
-        //     mfglayer.flushData();
-        // });
-
-        // console.log("SVG Outputs:", this.__svgData);
+        console.log("Port layers called and not executed, functionality moved to generateDepthLayers");
     }
 
     /**
@@ -120,13 +54,10 @@ export default class CNCGenerator {
      * @memberof CNCGenerator
      */
     generateDepthLayers(): void {
-        /*
-        Step 1 - Go through each of the layers
-        Step 2 - At each layer:
-                   Step 2.1 - Sort each of the features based on their depths
-                   Step 2.2 - Generate manufacturing layers for each of the depths
+        // Generate a manufacturing layer for each logical layer,
+        // substrate, dpeth combination in device
+        // and output to svg
 
-         */
         const layers: Array<Layer> = this.__device.layers;
 
         const mfglayers: Array<ManufacturingLayer> = [];
@@ -202,11 +133,8 @@ export default class CNCGenerator {
      * @memberof CNCGenerator
      */
     generateEdgeLayers(): void {
-        /*
-        Step 1 - Go through each of the layers
-        Step 2 - Get all the EDGE features in the drawing
-        Step 3 - Generate separate SVGs
-         */
+        // TODO: Replace with something that does not
+        // simply generate a rectangle the dimensions of the device
 
         const topleft = new paper.Point(0, 0);
         const bottomright = new paper.Point(this.__device.getXSpan(), this.__device.getYSpan());
@@ -216,52 +144,6 @@ export default class CNCGenerator {
         const ref = this;
         ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
         mfglayer.flushData();
-
-        // const layers: Array<Layer> = this.__device.layers;
-
-        // const mfglayers: Array<ManufacturingLayer> = [];
-
-        // let manufacturinglayer: ManufacturingLayer;
-
-        // let isControl: boolean = false;
-
-        // for (const i in layers) {
-        //     const layer: Layer = layers[i];
-        //     manufacturinglayer = new ManufacturingLayer("EDGE_" + layer.name);
-
-        //     if (layer.type === LogicalLayerType.CONTROL) {
-        //         isControl = true;
-        //     }
-
-        //     const features: { [index: string]: Feature } = layer.features;
-
-        //     for (const key in features) {
-        //         const feature: Feature = features[key];
-        //         // TODO: Modify the port check
-        //         if (feature.fabType === DFMType.EDGE) {
-        //             console.log("EDGE Feature: ", key);
-        //             const issuccess: boolean = manufacturinglayer.addFeature(this.__viewManagerDelegate.view.getRenderedFeature(key));
-        //             if (!issuccess) {
-        //                 console.error("Could not find the feature for the corresponding id: " + key);
-        //             }
-        //         }
-        //     }
-
-        //     if (isControl) {
-        //         manufacturinglayer.flipX();
-        //         isControl = false;
-        //     }
-
-        //     mfglayers.push(manufacturinglayer);
-        // }
-
-        // console.log("EDGE Manufacturing Layers:", mfglayers);
-
-        // const ref = this;
-        // mfglayers.forEach(function(mfglayer: ManufacturingLayer, index: number) {
-        //     ref.__svgData.set(mfglayer.name, mfglayer.exportToSVG());
-        //     mfglayer.flushData();
-        // });
     }
 
     /**
