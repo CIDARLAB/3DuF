@@ -144,7 +144,7 @@ export default class LaserCuttingGenerator {
             let manufacturinglayer: ManufacturingLayer;
             for (const depth of featuredepthmap.getDepths()) {
                 manufacturinglayer = new ManufacturingLayer(layer.name + "_" + i + "_" + depth);
-                const depthfeatures: Array<string> | undefined = featuredepthmap.getFeaturesAtDepth(depth);
+                const depthfeatures: Array<string> = featuredepthmap.getFeaturesAtDepth(depth);
                 for (const j in depthfeatures) {
                     const featurekey = depthfeatures[j];
 
