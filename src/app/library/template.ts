@@ -1,5 +1,6 @@
 import ComponentPort from "../core/componentPort";
-//import { ManufacturingInfo } from "../manufacturing/manufacturingInfo";
+import { paperObject } from "../core/init";
+//import { ManufacturingInfo } from "../manufacturing/ManufacturingInfo";
 
 export enum PositionToolType {
     FEATURE_POSITION_TOOL = "positionTool",
@@ -262,11 +263,11 @@ export default class Template {
      * compatibility.
      * @param key
      */
-    render2D(params: { [key: string]: any }, key: string): any {
+    render2D(params: { [key: string]: any }, key: string): paperObject {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    render2DTarget(key: string, params: { [key: string]: any }): void {
+    render2DTarget(key: string, params: { [key: string]: any }): paperObject {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
@@ -278,7 +279,7 @@ export default class Template {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    getBounds(params: { [key: string]: any }) {
+    getBounds(params: { [key: string]: any }): paper.Rectangle | null {
         const renderkeys = this.renderKeys;
         const features = [];
         for (let i = 0; i < renderkeys.length; i++) {
@@ -289,13 +290,20 @@ export default class Template {
         const unitedBounds = features.reduce((bbox, item) => {
             return !bbox ? item.bounds : bbox.unite(item.bounds);
         }, null);
-        return unitedBounds;
+        if (unitedBounds) {
+            return unitedBounds;
+        } else {
+            return null;
+        }
     }
 
     getDimensions(params: { [key: string]: any }): { xspan: any; yspan: any } {
         params.position = [0, 0];
 
         const unitedBounds = this.getBounds(params);
+        if (unitedBounds === null) {
+            throw new Error("No bounds found for component");
+        }  
         const xspan = unitedBounds.width;
         const yspan = unitedBounds.height;
         // console.log("Dimensions:",xspan, yspan);
@@ -308,6 +316,9 @@ export default class Template {
         const position = params.position;
         const positionUnitedBounds = this.getBounds(params);
         // console.log(positionUnitedBounds.topLeft, position);
+        if (positionUnitedBounds === null) {
+            throw new Error("unitedBounds is null");
+        }
         const x_new = position[0] - positionUnitedBounds.topLeft.x;
         const y_new = position[1] - positionUnitedBounds.topLeft.y;
         return [x_new, y_new];

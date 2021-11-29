@@ -1,14 +1,14 @@
 import uuid from "node-uuid";
 import paper from "paper";
 import Component from "./component";
-import { ComponentPortInterchangeV1, Point } from "./init";
+import { ComponentPortInterchangeV1, LogicalLayerType, Point } from "./init";
 
 export default class ComponentPort {
     protected _id: string;
     protected _x: number;
     protected _y: number;
     protected _label: string;
-    protected _layer: string;
+    protected _layer: LogicalLayerType;
 
     /**
      * Default constructor for ComponentPorts
@@ -17,7 +17,7 @@ export default class ComponentPort {
      * @param {String} label Name of the component
      * @param {string} layer
      */
-    constructor(x: number, y: number, label: string, layer: string) {
+    constructor(x: number, y: number, label: string, layer: LogicalLayerType) {
         this._id = uuid.v1();
         this._x = x;
         this._y = y;
