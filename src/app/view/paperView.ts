@@ -25,10 +25,10 @@ import Component from "../core/component";
 import UIElement from "./uiElement";
 import TextElement from "./textElement";
 import MapUtils from "../utils/mapUtils";
+import { ToolPaperObject } from "../core/init";
 import Connection from "../core/connection";
 import { ViewManager } from "..";
 import Parameter from "../core/parameter";
-import { paperObject } from "../core/init";
 /**
  * Paper View class
  */
@@ -520,7 +520,8 @@ export default class PaperView {
     removeDevice(): void {
         if (this.paperDevice) this.paperDevice.remove();
         this.paperDevice = null;
-        this.featureRegistry = new Map();
+        //TODO: Figure out how to handle featureRegistry
+        //this.featureRegistry = new Map();
     }
 
     /* Rendering Layers */
@@ -597,11 +598,12 @@ export default class PaperView {
      * Show only the desired features
      * Chosen features appear
      * Built for use in uF Guide Tool
-     * @param {Array<paper.CompoundPath>} features Array of features to be displayed
+     * @param {Array<ToolPaperObject>} features Array of features to be displayed
      * @returns {void}
      * @memberof PaperView
      */
-    showChosenFeatures(features: string | any[]): void {
+    showChosenFeatures(features: Array<ToolPaperObject>): void {
+        this.resetFeatureLayers();
         this.featureLayer.remove();
         this.featureLayer = new paper.Group();
         for (let i = 0; i < this.paperLayers.length; i++) {
@@ -615,6 +617,34 @@ export default class PaperView {
             activeLayer.addChild(features[i]);
         }
         activeLayer.bringToFront();
+
+        const textLayer = this.getNonphysText();
+        textLayer.bringToFront();
+    }
+
+    /**
+     * Show all but the desired features
+     * Chosen features behind mask
+     * Built for use in uF Guide Tool
+     * @param {Array<ToolPaperObject>} features Array of features to be displayed
+     * @returns {void}
+     * @memberof PaperView
+     */
+    hideChosenFeatures(features: Array<ToolPaperObject>) {
+        this.resetFeatureLayers();
+        this.featureLayer.remove();
+        this.featureLayer = new paper.Group();
+        if (this.layerMask) this.layerMask.remove();
+        this.layerMask = DeviceRenderer.renderLayerMask(this.__viewManagerDelegate.currentDevice);
+        this.featureLayer.addChild(this.layerMask);
+        for (let i = 0; i < this.paperLayers.length; i++) {
+            this.featureLayer.addChild(this.paperLayers[i]);
+        }
+        const activeLayer = new paper.Group();
+        for (let i = 0; i < features.length; i++) {
+            activeLayer.addChild(features[i]);
+        }
+        activeLayer.insertAbove(this.gridLayer);
 
         const textLayer = this.getNonphysText();
         textLayer.bringToFront();
@@ -1209,7 +1239,7 @@ export default class PaperView {
     /**
      * Returns the rendered feature object that is being displayed for the particular feature
      * @param {string} featureID ID of the feature
-     * @return {paperObject} Returns an object containing the rendered features
+     * @return {ToolPaperObject} Returns an object containing the rendered features
      * @memberof PaperView
      */
     getRenderedFeature(featureID: string) {

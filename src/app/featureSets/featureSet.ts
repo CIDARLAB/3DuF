@@ -46,6 +46,7 @@ import Node from "../library/node";
 import DropletGeneratorT from "../library/dropletGeneratorT";
 import DropletGeneratorFlowFocus from "../library/dropletGeneratorFlowFocus";
 import LogicArray from "../library/logicArray";
+import ToroidalMixer from "../library/toroidalMixer";
 
 import { definitions, tools, render2D, render3D } from "./basic";
 
@@ -107,6 +108,7 @@ export default class FeatureSet {
             Pump3D_control: { object: new Pump3D(), key: "CONTROL" },
             RoundedChannel: { object: new RoundedChannel(), key: null },
             thermoCycler: { object: new thermoCycler(), key: "FLOW" },
+            ToroidalMixer: { object: new ToroidalMixer(), key: "FLOW" },
             Transition: { object: new Transition(), key: null },
             Transposer: { object: new Transposer(), key: "FLOW" },
             Transposer_control: { object: new Transposer(), key: "CONTROL" },

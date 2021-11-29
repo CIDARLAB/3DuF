@@ -153,6 +153,19 @@ export default class Connection {
      */
     updateParameter(key: string, value: any): void {
         this._params.updateParameter(key, value);
+
+        console.log("Key: ", key, " Val: ", value);
+
+        if (key != "segments") {
+            for (const i in this._featureIDs) {
+                const featureidtochange = this._featureIDs[i];
+
+                // Get the feature id and modify it
+                const feature = ConnectionUtils.getFeatureFromID(featureidtochange);
+                feature.updateParameter(key, value);
+            }
+        }
+
         // this._params[key] = value;
         // this.updateView();
     }

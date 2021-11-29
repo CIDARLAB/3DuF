@@ -25,7 +25,7 @@ export default class DepthFeatureMap {
         if (this.__depthMap.has(depth)) {
             // Get the array stored for the depth
             const features = this.__depthMap.get(depth);
-            features.push(featureref);
+            if (features != undefined) features.push(featureref);
             // this.__depthMap.set(depth, features);
         } else {
             const features = [];
@@ -39,7 +39,7 @@ export default class DepthFeatureMap {
      * @returns {Array<number>} Returns all the depth
      * @memberof DepthFeatureMap
      */
-    getDepths() {
+    getDepths(): IterableIterator<number> {
         return this.__depthMap.keys();
     }
 
@@ -49,7 +49,10 @@ export default class DepthFeatureMap {
      * @returns {Array<features>} Returns the feature of the depth
      * @memberof DepthFeatureMap
      */
-    getFeaturesAtDepth(depth: number) {
-        return this.__depthMap.get(depth);
+    getFeaturesAtDepth(depth: number): Array<string> {
+        if (this.__depthMap.has(depth)) {
+            return this.__depthMap.get(depth) as Array<string>;
+        }
+        throw new Error("Could not find features at Depth: " + depth);
     }
 }

@@ -4,23 +4,26 @@ import Registry from "../core/registry";
 import Feature from "../core/feature";
 import Device from "../core/device";
 import { PaperView } from "..";
+import { ToolPaperObject } from "../core/init";
 
 /**
  * Manufacturing Layer class
  */
 export default class ManufacturingLayer {
-    __features: Array<paper.CompoundPath | paper.Path | paper.PointText>;
+    __features: Array<ToolPaperObject>;
     __name: String;
     __paperGroup: paper.Group;
+    __flip: boolean;
 
     /**
      * Default Constructor for the Manufacturing Layer
      * @param {String} name Name of the field
      */
-    constructor(name: String) {
+    constructor(name: String, flip = false) {
         this.__features = [];
         this.__name = name;
         this.__paperGroup = new paper.Group();
+        this.__flip = flip;
     }
 
     /**
@@ -33,16 +36,25 @@ export default class ManufacturingLayer {
     }
 
     /**
+     * Returns the flip property
+     * @return {boolean} Returns a boolean representing whether the manufacturing layer should be flipped
+     * @memberof ManufacturingLayer
+     */
+    get flip(): boolean {
+        return this.__flip;
+    }
+
+    /**
      * Adds a feature to the manufacturing layer
      * @param {Feature} feature Feature to add to the layer
      * @memberof ManufacturingLayer
      * @returns {boolean}
      */
-    addFeature(feature: paper.CompoundPath | paper.Path | paper.PointText) {
+    addFeature(feature: ToolPaperObject) {
         if (feature === null || undefined === feature) {
             return false;
         }
-        const copy: paper.CompoundPath | paper.Path | paper.PointText = feature.clone();
+        const copy: ToolPaperObject = feature.clone();
         console.log("Copied feature", copy);
         this.__features.push(copy);
 
@@ -61,7 +73,7 @@ export default class ManufacturingLayer {
     generateFeatureRender(feature: Feature, renderkey: string | null): boolean {
         console.log("Generating Render for invisible feature", feature);
 
-        const render: paper.CompoundPath | paper.Path | paper.PointText = FeatureRenderer2D.renderFeature(feature, renderkey);
+        const render: ToolPaperObject = FeatureRenderer2D.renderFeature(feature, renderkey);
         this.__features.push(render);
 
         this.__paperGroup.addChild(render);
