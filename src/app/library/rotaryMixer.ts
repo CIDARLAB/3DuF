@@ -169,6 +169,7 @@ export default class RotaryMixer extends Template {
         const ret = new paper.CompoundPath("");
         ret.addChild(rotarymixer_flow);
         ret.addChild(rotarymixer_control);
+        ret.fillColor = params.color;
         ret.fillColor!.alpha = 0.5;
 
         return ret;

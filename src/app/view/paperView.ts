@@ -52,7 +52,7 @@ export default class PaperView {
     componentPortsLayer: paper.Group;
     currentTarget: any;
     lastTargetType: string | null;
-    lastTargetPosition: paper.Point | null;
+    lastTargetPosition: number[] | null;
     lastTargetParameters: any;
     selectedComponents: Array<Component>;
     selectedConnections: Array<Connection>;
@@ -911,7 +911,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    addTarget(featureType: string | null, set: string, position: paper.Point | null, currentParameters: any): void {
+    addTarget(featureType: string | null, set: string, position: number[] | null, currentParameters: any): void {
         this.removeTarget();
         this.lastTargetParameters = currentParameters;
         this.lastTargetType = featureType;

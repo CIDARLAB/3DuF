@@ -123,7 +123,7 @@ export default class CapacitanceSensor extends Template {
             electrodeDepth: "electrodeDepth"
         };
 
-        this.__renderKeys = ["FLOW", "INTEGRATE"];
+        this.__renderKeys = ["FLOW", "INTEGRATION"];
 
         this.__mint = "DROPLET CAPACITANCE SENSOR";
 
@@ -219,7 +219,7 @@ export default class CapacitanceSensor extends Template {
     render2D(params: { [k: string]: any }, key = "FLOW") {
         if (key === "FLOW") {
             return this.__renderFlow(params);
-        } else if (key === "INTEGRATE") {
+        } else if (key === "INTEGRATION") {
             return this.__renderIntegrate(params);
         }
         throw new Error("Unknown render key found in DROPLET CAPACITANCE SENSOR: " + key);
@@ -228,7 +228,7 @@ export default class CapacitanceSensor extends Template {
     render2DTarget(key: string, params: { [k: string]: any }) {
         const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
-        const integrate = this.render2D(params, "INTEGRATE");
+        const integrate = this.render2D(params, "INTEGRATION");
         ret.addChild(integrate);
         ret.addChild(flow);
         ret.fillColor = params.color;

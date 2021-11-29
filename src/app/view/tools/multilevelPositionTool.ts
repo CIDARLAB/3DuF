@@ -75,7 +75,7 @@ export default class MultilevelPositionTool extends PositionTool {
         if (this.currentParameters === null) {
             throw new Error("No parameters set");
         }
-        const target = PositionTool.getTarget(new paper.Point(this.lastPoint));
+        const target = PositionTool.getTarget(this.lastPoint);
         this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters);
     }
 }

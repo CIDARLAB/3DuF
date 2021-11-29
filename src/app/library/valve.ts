@@ -98,7 +98,7 @@ export default class Valve extends Template {
         return ports;
     }
 
-    render2D(params: { [k: string]: any }, key = "FLOW") {
+    render2D(params: { [k: string]: any }, key = "CONTROL") {
         const position = params.position;
         const px = position[0];
         const py = position[1];
@@ -121,11 +121,13 @@ export default class Valve extends Template {
         });
         rec.rotate(rotation, new paper.Point(px, py));
         let compoundPath = new paper.CompoundPath(rec);
+        compoundPath.fillColor = color;
         return (compoundPath);
     }
 
     render2DTarget(key: string, params: { [k: string]: any }) {
-        const render = this.render2D(params, (key = "FLOW"));
+        const render = this.render2D(params, "CONTROL");
+        render.fillColor = params.color;
         render.fillColor!.alpha = 0.5;
         return render;
     }

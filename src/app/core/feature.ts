@@ -339,19 +339,7 @@ export default class Feature {
      */
 
     deriveRenderName(): string {
-        if (this._type.includes("_integration")) {
-            return "INTEGRATION";
-            console.log("INTEGRATION");
-        } else if (this._type.includes("_control")) {
-            console.log("CONTROL");
-            return "CONTROL";
-        } else if (this._type.includes("_cell")) {
-            console.log("CELL");
-            return "CELL";
-        } else {
-            console.log("FLOW");
-            return "FLOW";
-        }
+        return ComponentAPI.library[this.type].key;
     }
 
     /**

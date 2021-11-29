@@ -62,7 +62,7 @@ export default class PositionTool extends MouseTool {
         const newFeature = Device.makeFeature(
             this.typeString,
             {
-                position: PositionTool.getTarget(point)
+                position: PositionTool.getTarget([point.x, point.y])
             },
             name
         );
@@ -75,8 +75,8 @@ export default class PositionTool extends MouseTool {
      * @param point
      * @return {Point}
      */
-    static getTarget(point: paper.Point) {
-        const target = Registry.viewManager?.snapToGrid((point as unknown) as number[]);
+    static getTarget(point: number[]) {
+        const target = Registry.viewManager?.snapToGrid(point);
         return [(target as any).x, (target as any).y];
     }
 
@@ -84,7 +84,10 @@ export default class PositionTool extends MouseTool {
      * Renders the target
      */
     showTarget() {
-        const target = PositionTool.getTarget((this.lastPoint as unknown) as paper.Point);
+        if (this.lastPoint == null) {
+            return;
+        }
+        const target = PositionTool.getTarget(this.lastPoint);
         this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters!);
     }
 
@@ -128,12 +131,10 @@ export default class PositionTool extends MouseTool {
             throw new Error("No parameters to create a new feature");
         }
         const paramvalues = {
-            position: PositionTool.getTarget(position)
+            position: PositionTool.getTarget([position.x, position.y])
         };
-        console.log(this.currentParameters);
         for (const i in this.currentParameters) {
             const item = this.currentParameters[i];
-            console.log(item);
             const param = item.name;
             const value = item.value;
             (paramvalues as any)[param] = value;

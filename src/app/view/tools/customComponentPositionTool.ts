@@ -22,7 +22,7 @@ export default class CustomComponentPositionTool extends PositionTool {
         // console.log("Custom Component:", this.__customComponent);
 
         const newFeature = Feature.makeCustomComponentFeature(this.__customComponent, this.setString, {
-            position: PositionTool.getTarget(point)
+            position: PositionTool.getTarget([point.x, point.y])
         });
         this.currentFeatureID = newFeature.ID;
 
@@ -41,7 +41,7 @@ export default class CustomComponentPositionTool extends PositionTool {
         if (this.lastPoint === null) {
             throw new Error("No last point");
         }
-        const target = PositionTool.getTarget(new paper.Point(this.lastPoint));
+        const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
 

@@ -44,7 +44,7 @@ export default class CellPositionTool extends PositionTool {
         if (this.currentParameters === null) {
             throw new Error("No parameters set");
         }
-        const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
+        const target = PositionTool.getTarget(this.lastPoint);
         this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters);
     }
 }
