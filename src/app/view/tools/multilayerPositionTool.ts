@@ -33,7 +33,7 @@ export default class MultilayerPositionTool extends PositionTool {
         if (ComponentAPI.library[this.typeString + "_control"]) {
             newtypestring = this.typeString + "_control";
             newFeature = Device.makeFeature(newtypestring, {
-                position: PositionTool.getTarget(point)
+                position: PositionTool.getTarget([point.x, point.y])
             });
             newFeature.setParams(paramstoadd);
 
@@ -63,7 +63,7 @@ export default class MultilayerPositionTool extends PositionTool {
         if (this.lastPoint === null) {
             return;
         }
-        const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
+        const target = PositionTool.getTarget(this.lastPoint);
         this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters!);
     }
 }

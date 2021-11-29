@@ -22,7 +22,8 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         this.down = function (event) {
             console.log(event);
             const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
-            const target = PositionTool.getTarget(point!);
+            if (point == null) return;
+            const target = PositionTool.getTarget([point.x, point.y]);
             // Check if connection exists at point
             const connection = ref.checkIfConnectionExistsAt(target as unknown as paper.Point);
             // if connection exists then place the valve
@@ -51,12 +52,12 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
 
         if (rotation) {
             overridedata = {
-                position: PositionTool.getTarget(point),
+                position: PositionTool.getTarget([point.x, point.y]),
                 rotation: rotation
             };
         } else {
             overridedata = {
-                position: PositionTool.getTarget(point)
+                position: PositionTool.getTarget([point.x, point.y])
             };
         }
 
@@ -91,12 +92,12 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
 
         if (rotation) {
             overridedata = {
-                position: PositionTool.getTarget(point),
+                position: PositionTool.getTarget([point.x, point.y]),
                 rotation: rotation
             };
         } else {
             overridedata = {
-                position: PositionTool.getTarget(point)
+                position: PositionTool.getTarget([point.x, point.y])
             };
         }
 
@@ -134,8 +135,8 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         if (this.lastPoint === null) {
             return;
         }
-        const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
-        this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, {});
+        const target = PositionTool.getTarget(this.lastPoint);
+        this.viewManagerDelegate.updateTarget(this.typeString, this.setString, target, this.currentParameters!);
     }
 
     /**

@@ -60,7 +60,7 @@ export default class InsertTextTool extends MouseTool {
      * Creates a physical test feature when using the InsertTextTool
      */
     createNewFeature(point: paper.Point) {
-        let fixedpoint = PositionTool.getTarget(point);
+        let fixedpoint = PositionTool.getTarget([point.x, point.y]);
         let newFeature = Device.makeFeature(
             "Text",
             {
@@ -83,7 +83,7 @@ export default class InsertTextTool extends MouseTool {
         if (this.lastPoint === null) {
             return;
         }
-        const target = PositionTool.getTarget(new paper.Point(this.lastPoint[0], this.lastPoint[1]));
+        const target = PositionTool.getTarget(this.lastPoint);
         Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
 

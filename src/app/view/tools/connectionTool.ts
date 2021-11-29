@@ -106,7 +106,8 @@ export default class ConnectionTool extends MouseTool {
         this.move = function (event) {
             // Check if orthogonal
             const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
-            const target = ConnectionTool.getTarget(point!);
+            if (point == null) return;
+            const target = ConnectionTool.getTarget([point.x, point.y]);
 
             if ((event as any).altKey && ref.__STATE === "WAYPOINT") {
                 let lastwaypoint = ref.startPoint;
@@ -134,8 +135,8 @@ export default class ConnectionTool extends MouseTool {
      * @param point
      */
     showTarget(point: paper.Point) {
-        const target = ConnectionTool.getTarget(new paper.Point(point));
-        Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
+        const target = ConnectionTool.getTarget([point.x, point.y]);
+        Registry.viewManager?.updateTarget(this.typeString, this.setString, target);
     }
 
     initChannel() {
@@ -144,7 +145,7 @@ export default class ConnectionTool extends MouseTool {
         }
         const isPointOnComponent = this.__isPointOnComponent(new paper.Point(this.lastPoint));
         const isPointOnConnection = this.__isPointOnConnection(new paper.Point(this.lastPoint));
-        this.startPoint = ConnectionTool.getTarget(new paper.Point(this.lastPoint));
+        this.startPoint = ConnectionTool.getTarget(this.lastPoint);
         this.lastPoint = this.startPoint;
         if (isPointOnComponent) {
             // Modify the waypoint to reflect closest port in the future
@@ -173,7 +174,7 @@ export default class ConnectionTool extends MouseTool {
     updateChannel() {
         if (this.lastPoint && this.startPoint) {
             if (this.currentChannelID) {
-                const target = ConnectionTool.getTarget(new paper.Point(this.lastPoint));
+                const target = ConnectionTool.getTarget(this.lastPoint);
                 const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
                 feat?.updateParameter("end", target);
                 feat?.updateParameter("wayPoints", this.wayPoints);
@@ -274,7 +275,8 @@ export default class ConnectionTool extends MouseTool {
         const point = MouseTool.getEventPosition(event);
         const isPointOnComponent = this.__isPointOnComponent(point!);
         const isPointOnConnection = this.__isPointOnConnection(point!);
-        let target = ConnectionTool.getTarget(point!);
+        if (point == null) return;
+        let target = ConnectionTool.getTarget([point.x, point.y]);
         if (isManhatten && target) {
             // TODO: modify the target to find the orthogonal point
             let lastwaypoint = this.startPoint;
@@ -402,8 +404,8 @@ export default class ConnectionTool extends MouseTool {
     }
 
     // TODO: Re-establish target selection logic from earlier demo
-    static getTarget(point: paper.Point) {
-        const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
+    static getTarget(point: number[]) {
+        const target = Registry.viewManager?.snapToGrid(point);
         return [(target as any).x, (target as any).y];
     }
 

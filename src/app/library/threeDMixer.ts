@@ -173,7 +173,7 @@ export default class ThreeDMixer extends Template {
 
     render2DTarget(key: string, params: { [k: string]: any }) {
         const serp = this.render2D(params, key);
-
+        serp.fillColor = params.color;
         serp.fillColor!.alpha = 0.5;
         return serp;
     }

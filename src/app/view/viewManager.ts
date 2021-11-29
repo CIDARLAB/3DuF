@@ -780,8 +780,8 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateTarget(featureType: string, featureSet: string, position: number[], currentParameters: { [k: string]: any }, refresh = true) {
-        this.view.addTarget(featureType, featureSet, (position as unknown) as paper.Point, currentParameters);
+    updateTarget(featureType: string, featureSet: string, position: number[], currentParameters: { [k: string]: any } | null = null, refresh = true) {
+        this.view.addTarget(featureType, featureSet, position, currentParameters);
         this.view.updateAlignmentMarks();
         this.view.updateRatsNest();
         this.refresh(refresh);
