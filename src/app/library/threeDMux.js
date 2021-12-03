@@ -149,6 +149,8 @@ export default class ThreeDMux extends Template {
             return this.__drawFlow(params);
         } else if (key === "CONTROL") {
             return this.__drawControl(params);
+        } else if (key === "INVERSE") {
+            return this.__drawInverse(params);
         }
     }
 
@@ -417,6 +419,81 @@ export default class ThreeDMux extends Template {
                 threedmux_control.addChild(rightcontrol);
             }
         }
+
+        let cur_N = N;
+        const xpos = px;
+        let ypos = py + valveselect;
+
+        for (let j = 0; j < valvenum; j++) {
+            // left side
+            let count1 = 0;
+            const increment1 = cur_N / 2;
+            while (count1 < N) {
+                for (let w = 0; w < cur_N / 2; w++) {
+                    const current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
+                    const center = new paper.Point(current_xpos, ypos);
+                    const circle = new paper.Path.Circle(center, radius);
+                    threedmux_control.addChild(circle);
+                }
+
+                count1 += 2 * increment1;
+            }
+
+            // right side
+            const ypos_adjust = vertlinelength / (2 * valvenum + 2);
+            let count2 = 0;
+            const increment2 = cur_N / 2;
+            ypos += ypos_adjust;
+
+            while (count2 < N) {
+                for (let w = 0; w < cur_N / 2; w++) {
+                    const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
+                    const center = new paper.Point(current_xpos, ypos);
+                    const circle = new paper.Path.Circle(center, radius);
+                    threedmux_control.addChild(circle);
+                }
+                count2 += increment2 + cur_N / 2;
+            }
+            ypos += ypos_adjust;
+            cur_N = cur_N / 2;
+        }
+
+        threedmux_control.fillColor = color;
+        threedmux_control.rotate(rotation, new paper.Point(px, py));
+
+        return threedmux_control;
+    }
+
+    __drawInverse(params) {
+        const position = params.position;
+        const radius = params.valveRadius;
+        const color = params.color;
+        let rotation = params.rotation;
+        const threedmux_control = new paper.CompoundPath();
+
+        const px = position[0];
+        const py = position[1];
+
+        const ins = params.in;
+        const outs = params.out;
+
+        let N;
+        if (ins < outs) {
+            N = outs;
+        } else {
+            N = ins;
+            rotation += 180;
+        }
+
+        const bottomlinelength = N * 4000; // modify, so it depends on the input N
+        const vertlinelength = N * 3000; // same as above
+
+        const leftInput = px - N * 1000;
+        const rightInput = px + bottomlinelength + N * 1000;
+        let indexN = N;
+        const valvenum = Math.log(N) / Math.log(2);
+        const vertholder = vertlinelength / (2 * valvenum);
+        const valveselect = vertlinelength / (2 * valvenum);
 
         let cur_N = N;
         const xpos = px;

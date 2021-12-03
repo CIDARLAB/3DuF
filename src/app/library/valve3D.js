@@ -170,7 +170,7 @@ export default class Valve3D extends Template {
         const gap = params.gap;
         const radius = params.valveRadius;
         const color = params.color;
-        console.log("Coloer:", color);
+        console.log("Color:", color);
         const rotation = params.rotation;
         const center = new paper.Point(position[0], position[1]);
         // let h0p0, h0p1, h0p2, h1p0, h1p1, h1p2;
