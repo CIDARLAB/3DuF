@@ -44,6 +44,9 @@ export default class Selection {
 
         console.log("reference point:", referencepoint);
 
+        if (this.viewManagerDelegate.currentDevice === null) {
+            throw new Error("No device selected");
+        }
         for (const i in this.__components) {
             const render = this.viewManagerDelegate.currentDevice.getFeatureByID(this.__components[i]);
         }
@@ -63,6 +66,10 @@ export default class Selection {
      * @memberof Selection
      */
     selectAll(): void {
+        // Check if currentDevices is null
+        if (this.viewManagerDelegate.currentDevice === null) {
+            throw new Error("No device selected");
+        }
         for (const i in this.__components) {
             const component = this.viewManagerDelegate.currentDevice.getComponentByID(this.__components[i]);
             if (component === null) {
@@ -115,6 +122,9 @@ export default class Selection {
         let ymax = 0;
         let bounds;
 
+        if(this.viewManagerDelegate.currentDevice === null) {
+            throw new Error("No device selected");
+        }
         for (const i in this.__components) {
             const feature = this.viewManagerDelegate.currentDevice.getFeatureByID(this.__components[i]);
             const render = this.viewManagerDelegate.view.getRender(feature.ID);

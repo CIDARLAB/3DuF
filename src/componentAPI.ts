@@ -64,7 +64,7 @@ export type LibraryEntryDefinition = {
 
 type LibraryEntry = {
     object: Template;
-    key: string | null;
+    key: string;
 };
 
 /**
@@ -76,11 +76,11 @@ type LibraryEntry = {
  */
 export class ComponentAPI {
     static library: { [key: string]: LibraryEntry } = {
-        Text: { object: new Text(), key: null },
-        Port: { object: new Port(), key: null },
-        Anode: { object: new Anode(), key: null }, // ck addition
-        Cathode: { object: new Cathode(), key: null }, // ck addition
-        Channel: { object: new Channel(), key: null },
+        Text: { object: new Text(), key: "FLOW" },
+        Port: { object: new Port(), key: "FLOW" },
+        Anode: { object: new Anode(), key: "INTEGRATION" }, // ck addition
+        Cathode: { object: new Cathode(), key: "INTEGRATION" }, // ck addition
+        Channel: { object: new Channel(), key: "FLOW" },
         BetterMixer: { object: new BetterMixer(), key: "FLOW" },
         RotaryMixer: { object: new RotaryMixer(), key: "FLOW" },
         RotaryMixer_control: { object: new RotaryMixer(), key: "CONTROL" },
@@ -93,31 +93,30 @@ export class ComponentAPI {
         CellTrapL_cell: { object: new CellTrapL(), key: "CELL" },
         Gelchannel: { object: new Gelchannel(), key: "FLOW" }, // CK
         Gelchannel_cell: { object: new Gelchannel(), key: "CELL" }, // CK
-        Chamber: { object: new Chamber(), key: null },
-        CurvedMixer: { object: new CurvedMixer(), key: null },
+        Chamber: { object: new Chamber(), key: "FLOW" },
+        CurvedMixer: { object: new CurvedMixer(), key: "FLOW" },
         DiamondReactionChamber: {
             object: new DiamondReactionChamber(),
-            key: null
+            key: "FLOW"
         },
 
-        Connection: { object: new Connection(), key: null },
-        DropletGen: { object: new DropletGenerator(), key: null },
-        GradientGenerator: { object: new GradientGenerator(), key: null },
+        Connection: { object: new Connection(), key: "FLOW" },
+        DropletGen: { object: new DropletGenerator(), key: "FLOW" },
+        GradientGenerator: { object: new GradientGenerator(), key: "FLOW" },
         Mux: { object: new Mux(), key: "FLOW" },
         Mux_control: { object: new Mux(), key: "CONTROL" },
         Pump: { object: new Pump(), key: "FLOW" },
         Pump_control: { object: new Pump(), key: "CONTROL" },
         Pump3D: { object: new Pump3D(), key: "FLOW" },
         Pump3D_control: { object: new Pump3D(), key: "CONTROL" },
-        RoundedChannel: { object: new RoundedChannel(), key: null },
+        RoundedChannel: { object: new RoundedChannel(), key: "FLOW" },
         thermoCycler: { object: new thermoCycler(), key: "FLOW" },
-        ToroidalMixer: { object: new ToroidalMixer(), key: "FLOW" },
-        Transition: { object: new Transition(), key: null },
+        Transition: { object: new Transition(), key: "FLOW" },
         Transposer: { object: new Transposer(), key: "FLOW" },
         Transposer_control: { object: new Transposer(), key: "CONTROL" },
-        Tree: { object: new Tree(), key: null },
-        YTree: { object: new YTree(), key: null },
-        Valve: { object: new Valve(), key: null },
+        Tree: { object: new Tree(), key: "FLOW" },
+        YTree: { object: new YTree(), key: "FLOW" },
+        Valve: { object: new Valve(), key: "CONTROL" },
         Valve3D: { object: new Valve3D(), key: "FLOW" },
         Valve3D_control: { object: new Valve3D(), key: "CONTROL" },
         LLChamber: { object: new LLChamber(), key: "FLOW" },
@@ -136,24 +135,24 @@ export class ComponentAPI {
         ChemostatRing_control: { object: new ChemostatRing(), key: "CONTROL" },
         Incubation: { object: new Incubation(), key: "FLOW" },
         Merger: { object: new Merger(), key: "FLOW" },
-        Merger_integration: { object: new Merger(), key: "INTEGRATE" },
+        Merger_integration: { object: new Merger(), key: "INTEGRATION" },
         PicoInjection: { object: new PicoInjection(), key: "FLOW" },
-        PicoInjection_integration: { object: new PicoInjection(), key: "INTEGRATE" },
+        PicoInjection_integration: { object: new PicoInjection(), key: "INTEGRATION" },
         Sorter: { object: new Sorter(), key: "FLOW" },
-        Sorter_integration: { object: new Sorter(), key: "INTEGRATE" },
+        Sorter_integration: { object: new Sorter(), key: "INTEGRATION" },
         Splitter: { object: new Splitter(), key: "FLOW" },
         CapacitanceSensor: { object: new CapacitanceSensor(), key: "FLOW" },
-        CapacitanceSensor_integration: { object: new CapacitanceSensor(), key: "INTEGRATE" },
+        CapacitanceSensor_integration: { object: new CapacitanceSensor(), key: "INTEGRATION" },
         Node: { object: new Node(), key: "FLOW" },
-        DropletGenT: { object: new DropletGeneratorT(), key: null },
-        DropletGenFlow: { object: new DropletGeneratorFlowFocus(), key: null },
+        DropletGenT: { object: new DropletGeneratorT(), key: "FLOW" },
+        DropletGenFlow: { object: new DropletGeneratorFlowFocus(), key: "FLOW" },
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" }
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {
-        Connection: { object: new Connection(), key: null }
+        Connection: { object: new Connection(), key: "FLOW" }
     };
 
     static customTypes: Map<string, CustomComponent> = new Map();

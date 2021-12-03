@@ -52,7 +52,7 @@ export default class PaperView {
     componentPortsLayer: paper.Group;
     currentTarget: any;
     lastTargetType: string | null;
-    lastTargetPosition: paper.Point | null;
+    lastTargetPosition: number[] | null;
     lastTargetParameters: any;
     selectedComponents: Array<Component>;
     selectedConnections: Array<Connection>;
@@ -538,16 +538,6 @@ export default class PaperView {
         // this.setActiveLayer(index);
     }
 
-    /**
-     * Updates the layers
-     * @param {Layer} layer Layer object
-     * @param {number} index Index of layer to update (Int)
-     * @returns {void}
-     * @memberof PaperView
-     */
-    updateLayer(layer: Layer, index: number): void {
-        // do nothing, for now
-    }
 
     /**
      * Delete the layer from the paperview at the given index.
@@ -951,7 +941,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    addTarget(featureType: string | null, set: string, position: paper.Point | null, currentParameters: any): void {
+    addTarget(featureType: string | null, set: string, position: number[] | null, currentParameters: any): void {
         this.removeTarget();
         this.lastTargetParameters = currentParameters;
         this.lastTargetType = featureType;
@@ -978,7 +968,7 @@ export default class PaperView {
                 // @ts-ignore
                 const params = Registry.featureDefaults[this.lastTargetSet][this.lastTargetType];
                 params.position = this.lastTargetPosition;
-                params.color = Colors.getDefaultFeatureColor(this.lastTargetType, this.lastTargetSet, Registry.currentLayer);
+                params.color = Colors.getDefaultFeatureColor(this.lastTargetType, this.lastTargetSet, (Registry.currentLayer as unknown) as Layer);
                 this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, params);
                 this.uiLayer.addChild(this.currentTarget);
             } else {
@@ -1019,7 +1009,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    updateGrid(grid: null): void {
+    updateGrid(grid: any): void {
         this.removeGrid();
         const newPaperGrid = GridRenderer.renderGrid(grid);
         this.paperGrid = newPaperGrid;
@@ -1084,7 +1074,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    moveCenter(delta: number): void {
+    moveCenter(delta: paper.Point): void {
         this.panAndZoom.moveCenter(delta);
     }
 
@@ -1095,7 +1085,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    adjustZoom(delta: number, point: number[]): void {
+    adjustZoom(delta: number, point: paper.Point): void {
         this.panAndZoom.adjustZoom(delta, point);
     }
 
