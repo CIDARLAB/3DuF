@@ -16,6 +16,9 @@ export default class ExportUtils {
     constructor() {}
 
     static toScratch(viewManagerDelegate: ViewManager): ScratchInterchangeV1 {
+        if(viewManagerDelegate.currentDevice === null) {
+            throw new Error("No device selected");
+        }
         let renderLayers = [];
         if (viewManagerDelegate === null) throw new Error("Registry or viewManager not initialized");
         for (let i = 0; i < viewManagerDelegate.renderLayers.length; i++) {

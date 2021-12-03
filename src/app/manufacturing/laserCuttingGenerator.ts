@@ -2,19 +2,21 @@ import ManufacturingLayer from "./manufacturingLayer";
 import DepthFeatureMap from "./depthFeatureMap";
 import Device from "../core/device";
 import { ComponentAPI } from "@/componentAPI";
-import ViewManager from "../view/viewManager";
 import Layer from "../core/layer";
 import Feature from "../core/feature";
 import { LogicalLayerType } from "../core/init";
 import paper from "paper"
+import { ViewManager } from "..";
 
 /**
  * Lasser Cutting Generator object
  */
 export default class LaserCuttingGenerator {
-    __device: Device;
-    __viewManagerDelegate: ViewManager;
-    __svgData: Map<String, string>;
+    private __device: Device;
+    private __viewManagerDelegate: ViewManager;
+
+    private __svgData: Map<any, any>;
+
     /**
      * Default Constructor for the laser cutting generator object
      * @param {Device} device Device object
@@ -150,7 +152,7 @@ export default class LaserCuttingGenerator {
      * @memberof LaserCuttingGenerator
      * @returns {void}
      */
-    setDevice(currentDevice: Device): void {
+    setDevice(currentDevice: Device) {
         this.__device = currentDevice;
         console.log("Currentdevice:", currentDevice);
     }

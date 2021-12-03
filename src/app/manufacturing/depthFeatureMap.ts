@@ -2,14 +2,13 @@
  * Depth feature map class
  */
 export default class DepthFeatureMap {
+    private __name: string;
+    __depthMap: Map<any, any>;
+
     /**
      * Default Constructor for DepthFeatureMap object.
      * @param {string} name
      */
-
-    private __name: string;
-    private __depthMap: Map<number, Array<string>>;
-
     constructor(name: string) {
         this.__name = name;
         this.__depthMap = new Map();
@@ -22,7 +21,7 @@ export default class DepthFeatureMap {
      * @memberof DepthFeatureMap
      * @returns {void}
      */
-    addFeature(depth: number, featureref: string): void {
+    addFeature(depth: number, featureref: any) {
         if (this.__depthMap.has(depth)) {
             // Get the array stored for the depth
             const features = this.__depthMap.get(depth);

@@ -891,13 +891,16 @@ export default class Device {
      * @return {Array<values>}
      * @memberof Device
      */
-    getValvesForConnection(connection: Connection): Array<Component | null> {
+    getValvesForConnection(connection: Connection): Array<Component> {
         let connectionid: string = connection.id;
-        let ret: Array<Component | null> = [];
+        let ret: Array<Component> = [];
         for (let [key, value] of this.__valveMap) {
             // let  = pair;
             if (connectionid === value) {
-                ret.push(this.getComponentByID(key));
+                let valve = this.getComponentByID(key);
+                if (valve !== null) {
+                    ret.push(valve);
+                }
             }
         }
 
@@ -1021,8 +1024,8 @@ export default class Device {
         paramvalues: any,
         name: string = "New Feature",
         id: string | undefined = undefined,
-        fabtype: string,
-        dxfdata: Array<JSON> | null
+        fabtype?: string,
+        dxfdata?: Array<JSON> | null
     ): Feature {
         let params: Params = new Params(new Map(), new Map(), new Map());
 
