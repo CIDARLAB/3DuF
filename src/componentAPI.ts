@@ -95,6 +95,7 @@ export class ComponentAPI {
         Gelchannel_cell: { object: new Gelchannel(), key: "CELL" }, // CK
         Chamber: { object: new Chamber(), key: "FLOW" },
         CurvedMixer: { object: new CurvedMixer(), key: "FLOW" },
+        ToroidalMixer: { object: new ToroidalMixer(), key: "FLOW"},
         DiamondReactionChamber: {
             object: new DiamondReactionChamber(),
             key: "FLOW"
