@@ -3,7 +3,7 @@
 import Params from "./params";
 
 import Feature from "./feature";
-import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point } from "./init";
+import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point, ValveInterchangeV1 } from "./init";
 import { ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1 } from "./init";
 import { LayerInterchangeV1 } from "./init";
@@ -482,6 +482,21 @@ export default class Device {
         }
         return output;
     }
+
+    __valvesToInterchangeV1(): Array<ValveInterchangeV1> {
+        let output: Array<ValveInterchangeV1> = [];
+        this.__valveMap.forEach((target, valve) => {
+            let value3D = false;
+            if (this.__valveIs3DMap.get(valve)) value3D = true;
+            output.push({
+                valveID: valve,
+                targetID: target,
+                is3d: value3D
+            })
+        });
+        return output;
+    }
+
     /**
      * Converts feature layers to InterchangeV1
      * @return {Array<LayerInterchangeV1>} Returns an array with the feature layers
@@ -565,6 +580,7 @@ export default class Device {
             layers: this.__layersToInterchangeV1(),
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
+            valves: this.__valvesToInterchangeV1(),
             version: 1,
             groups: this.__groupsToJSON()
         };

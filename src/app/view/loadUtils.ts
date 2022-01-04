@@ -126,6 +126,16 @@ export default class LoadUtils {
             newDevice.addConnection(newConnection);
         }
 
+        if (Object.prototype.hasOwnProperty.call(json, "valves")) {
+            const valveMap: Map<string,string> = new Map();
+            const valveis3dmap: Map<string,boolean> = new Map();
+            for (const i in json.valves) {
+                valveMap.set(json.valves[i].valveID,json.valves[i].targetID);
+                valveis3dmap.set(json.valves[i].valveID,json.valves[i].is3d);
+            }
+            newDevice.setValveMap(valveMap,valveis3dmap);
+        }
+
         //Updating cross-references
         let features = newDevice.getAllFeaturesFromDevice();
         let feature;
