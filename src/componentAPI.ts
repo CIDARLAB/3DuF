@@ -443,6 +443,10 @@ export class ComponentAPI {
         }
     }
 
+    static getAllRenderKeys(threeduftypeString: string): Array<string> {
+        return ComponentAPI.library[threeduftypeString].object.renderKeys;
+    }
+
     static getConnectionTypes(): Array<string> {
         let ret = [];
         for (const key in ComponentAPI.connectionLibrary) {

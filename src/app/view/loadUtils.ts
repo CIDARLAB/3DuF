@@ -55,18 +55,60 @@ export default class LoadUtils {
                 layerGroups.set(newDevice.layers[i].group, 1);
             }
         }
+
         layerGroups.forEach((value, key) => {
             const keyVal = parseInt(key, 10);
+
             if (value == 3) {
-                console.log("All layers accounted for");
-            } else if (value == 2) {
-                console.log("Assuming integration layer missing, adding integration layer");
-                newDevice.addLayerAtIndex(new Layer({}, newDevice.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, key, newDevice), keyVal * 3 + 2);
-                newRenderLayers.splice(keyVal * 3 + 2, 0, new RenderLayer(newDevice.generateNewName("RenderLayerIntegration"), newDevice.layers[0], LogicalLayerType.INTEGRATION));
+                console.log("All layers accounted for in group " + key);
             } else {
-                console.log("Layers are missing from some groups");
+                const layerTypes: Array<string> = ["FLOW", "CONTROL", "INTEGRATION"];
+                for (const i in json.layers) {
+                    const index = layerTypes.indexOf(json.layers[i].type);
+                    layerTypes.splice(index, 1);
+                }
+                console.log(layerTypes.length + " layers missing from group " + key + ", these will be generated");
+                for (const j in layerTypes) {
+                    const featuresToAdd = LoadUtils.generateMissingLayerFeaturesV1(json, layerTypes[j], key);
+                    if (layerTypes[j] == "FLOW") {
+                        const newLayer = new Layer({}, newDevice.generateNewName("LayerFlow"), LogicalLayerType.FLOW, key, newDevice);
+                        for (const k in featuresToAdd) {
+                            newLayer.features[featuresToAdd[k].ID] = featuresToAdd[k];
+                        }
+                        newLayer.featureCount = featuresToAdd.length;
+                        newDevice.addLayerAtIndex(newLayer, keyVal * 3);
+                        newRenderLayers.splice(keyVal * 3, 0, new RenderLayer(newDevice.generateNewName("RenderLayerFlow"), newDevice.layers[keyVal * 3], LogicalLayerType.FLOW));
+                    }
+                    else if (layerTypes[j] == "CONTROL") {
+                        const newLayer = new Layer({}, newDevice.generateNewName("LayerControl"), LogicalLayerType.CONTROL, key, newDevice);
+                        for (const k in featuresToAdd) {
+                            newLayer.features[featuresToAdd[k].ID] = featuresToAdd[k];
+                        }
+                        newLayer.featureCount = featuresToAdd.length;
+                        newDevice.addLayerAtIndex(newLayer, keyVal * 3 + 1);
+                        newRenderLayers.splice(keyVal * 3 + 1, 0, new RenderLayer(newDevice.generateNewName("RenderLayerControl"), newDevice.layers[keyVal * 3 + 1], LogicalLayerType.CONTROL));
+                    }
+                    else if (layerTypes[j] == "INTEGRATION") {
+                        const newLayer = new Layer({}, newDevice.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, key, newDevice);
+                        for (const k in featuresToAdd) {
+                            newLayer.features[featuresToAdd[k].ID] = featuresToAdd[k];
+                        }
+                        newLayer.featureCount = featuresToAdd.length;
+                        newDevice.addLayerAtIndex(newLayer, keyVal * 3 + 2);
+                        newRenderLayers.splice(keyVal * 3 + 2, 0, new RenderLayer(newDevice.generateNewName("RenderLayerIntegration"), newDevice.layers[keyVal * 3 + 2], LogicalLayerType.INTEGRATION));
+                    }
+                }
             }
         });
+
+        //Updating cross-references
+        let features = newDevice.getAllFeaturesFromDevice();
+        for (let i in features) {
+            const feature = features[i];
+            if (feature.referenceID !== null) {
+                newDevice.updateObjectReference(feature.referenceID, feature.ID);
+            }
+        }
 
         return [newDevice, newRenderLayers];
     }
@@ -139,16 +181,6 @@ export default class LoadUtils {
             newDevice.setValveMap(valveMap,valveis3dmap);
         }
 
-        //Updating cross-references
-        let features = newDevice.getAllFeaturesFromDevice();
-        let feature;
-        for (let i in features) {
-            feature = features[i];
-            if (feature.referenceID !== null) {
-                newDevice.updateObjectReference(feature.referenceID, feature.ID);
-            }
-        }
-
         return newDevice;
     }
 
@@ -179,95 +211,26 @@ export default class LoadUtils {
         if (jsonlayer.features) {
             for (const i in jsonlayer.features) {
                 newLayer.features[jsonlayer.features[i].id] = LoadUtils.loadFeatureFromInterchangeV1(jsonlayer.features[i]);
-                console.log("NatParams: ", jsonlayer.features[i].params);
             }
             newLayer.featureCount = jsonlayer.features.length;
-            newLayer.device = device;
-            newLayer.id = jsonlayer.id;
         } else {
             //Generate features
-            //Component entity (string; matches with library entry) & layers (Array<string>; old: index?, new: id --> stored as id either way)
-            //Layers type (new & old; FLOW, CONTROL, INTEGRATION) matches with MINT name, not macro/tyestring used by componentapi
-            for (const i in json.components) {
-                for (const j in json.components[i].layers) {
-                    if (jsonlayer.id == json.components[i].layers[j]) {
-                        console.log("type: ", ComponentAPI.getTypeForMINT(json.components[i].entity));
-                        const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
 
-                        //if (typestring != null) console.log("Definition: ", ComponentAPI.getDefinition(typestring));
-                        if (typestring != null) {
-                            let ret: Feature;
-                            if (ComponentAPI.library[typestring].key == jsonlayer.type) {
-                                console.log("Here first");
-                                ret = Device.makeFeature(typestring, json.components[i].params);
-                            } else if (ComponentAPI.getDefinition(typestring + "_" + jsonlayer.type.toLowerCase()) != null) {
-                                console.log("Here");
-                                ret = Device.makeFeature(typestring + "_" + jsonlayer.type.toLowerCase(), json.components[i].params);
-                            } else {
-                                console.log("Assuming default type feature can be placed on current layer");
-                                ret = Device.makeFeature(typestring, json.components[i].params);
-                            }
-                            ret.referenceID = json.components[i].id;
-                            newLayer.features[ret.ID] = ret;
-                            newLayer.featureCount = newLayer.featureCount + 1;
-                        } else {
-                            console.log("Mint " + json.components[i].entity + "not supported");
-                        }                        
-                    }
-                }
+            //Generate feature from components
+            const componentFeats: Array<Feature> = LoadUtils.loadFeaturesFromComponentInterchangeV1(json, jsonlayer);
+            for (const k in componentFeats) {
+                newLayer.features[componentFeats[k].ID] = componentFeats[k];
             }
+            newLayer.featureCount = componentFeats.length;
 
-            for (const i in json.connections) {
-                if (jsonlayer.id == json.connections[i].layer) {
-                    console.log("type: ", ComponentAPI.getTypeForMINT(json.connections[i].entity));
-                    const mint = json.connections[i].entity;
-                    console.log("mint: ", mint);
-                    let typestring: string | null = null;
-                    if (mint) typestring = ComponentAPI.getTypeForMINT(json.connections[i].entity);
-                    if (typestring == null) typestring = "Connection";
-                    console.log("final type: ", typestring);
-
-                    let ret: Feature 
-                    let rawParams = json.connections[i].params
-                    if (rawParams.start) {
-                        ret = Device.makeFeature(typestring, rawParams);
-                        ret.referenceID = json.connections[i].id;
-                        newLayer.features[ret.ID] = ret;
-                        newLayer.featureCount = newLayer.featureCount + 1;  
-                    } else {
-                        console.log("Paths: ", json.connections[i].paths);
-                        console.log("Path: ", json.connections[i].paths[0]);
-                        if (json.connections[i].paths[0]) {
-                            console.log("wayPoints: ", json.connections[i].paths[0].wayPoints);
-                            const wayPoints = json.connections[i].paths[0].wayPoints;
-                            const segments: Array<[[number, number],[number,number]]> = [];
-                            for (let k = 0; k < wayPoints.length - 1; k++) {
-                                segments[k] = [wayPoints[k], wayPoints[k + 1]];
-                            }
-                            const newParams = {
-                                start: ["Point", wayPoints[0][0], wayPoints[0][1]],
-                                end: wayPoints[wayPoints.length - 1],
-                                wayPoints: wayPoints,
-                                segments: segments,
-                                connectionSpacing: rawParams.connectionSpacing,
-                                channelWidth: rawParams.channelWidth,
-                                height: ComponentAPI.getDefaultsForType(typestring).height
-                            };
-                            console.log("newParams: ", newParams);
-                            ret = Device.makeFeature(typestring, newParams);
-                            ret.referenceID = json.connections[i].id;
-                            newLayer.features[ret.ID] = ret;
-                            newLayer.featureCount = newLayer.featureCount + 1;  
-                        } else {
-                            console.log("Connection missing path description");
-                        }
-                    }                          
-                }
+            //Genereate feature from connection
+            const connectionFeats: Array<Feature> = LoadUtils.loadFeaturesFromConnectionInterchangeV1(json, jsonlayer);
+            for (const k in connectionFeats) {
+                newLayer.features[connectionFeats[k].ID] = connectionFeats[k];
             }
-
-            newLayer.device = device;
-            newLayer.id = jsonlayer.id;
+            newLayer.featureCount = newLayer.featureCount + connectionFeats.length;
         }
+        newLayer.id = jsonlayer.id;
         
         return newLayer;
     }
@@ -286,6 +249,161 @@ export default class LoadUtils {
         if (Object.prototype.hasOwnProperty.call(json, "referenceID")) {
             ret.referenceID = json.referenceID;
             // Registry.currentDevice.updateObjectReference(json.id, json.referenceID);
+        }
+        return ret;
+    }
+
+    /**
+     * Loads the features for layers with no feature category from component entries
+     *
+     * @static
+     * @param {DeviceInterchangeV1} json
+     * @param {LayerInterchangeV1} jsonlayer
+     * @returns {Array<Feature>}
+     * @memberof LoadUtils
+     */
+    static loadFeaturesFromComponentInterchangeV1(json: DeviceInterchangeV1, jsonlayer: LayerInterchangeV1): Array<Feature> {
+        const ret: Array<Feature> = [];
+        for (const i in json.components) {
+            const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
+            if (typestring != null) {
+                let feat: Feature;
+                const renderKeys: Array<string> = ComponentAPI.getAllRenderKeys(typestring);
+                let group: string | null = null;
+                for (const j in json.layers) {
+                    if (json.layers[j].id == json.components[i].layers[0]) group = json.layers[j].group;
+                }
+                if (group != null) {
+                    if (renderKeys.length == 1) {
+                        if (json.components[i].layers[0] == jsonlayer.id) {
+                            console.log("Assuming default type feature can be placed on current layer");
+                            feat = Device.makeFeature(typestring, json.components[i].params);
+                            feat.referenceID = json.components[i].id;
+                            ret.push(feat);
+                        }
+                    } else {
+                        for (const j in renderKeys) {
+                            if (renderKeys[j] == jsonlayer.type) {
+                                if (group == jsonlayer.group) {
+                                    if (ComponentAPI.library[typestring].key == jsonlayer.type) {
+                                        feat = Device.makeFeature(typestring, json.components[i].params);
+                                    } else if (ComponentAPI.library[typestring + "_" + jsonlayer.type.toLowerCase()]) {
+                                        feat = Device.makeFeature(typestring + "_" + jsonlayer.type.toLowerCase(), json.components[i].params);
+                                    } else {
+                                        console.log("Assuming default type feature can be placed on current layer");
+                                        feat = Device.makeFeature(typestring, json.components[i].params);
+                                    }
+                                    feat.referenceID = json.components[i].id;
+                                    ret.push(feat);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                console.log("Mint " + json.components[i].entity + "not supported");
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Loads the features for layers with no feature category from connection entries
+     *
+     * @static
+     * @param {DeviceInterchangeV1} json
+     * @param {LayerInterchangeV1} jsonlayer
+     * @returns {Array<Feature>}
+     * @memberof LoadUtils
+     */
+    static loadFeaturesFromConnectionInterchangeV1(json: DeviceInterchangeV1, jsonlayer: LayerInterchangeV1): Array<Feature> {
+        const ret: Array<Feature> = [];
+        for (const i in json.connections) {
+            if (jsonlayer.id == json.connections[i].layer) {
+                const mint = json.connections[i].entity;
+                let typestring: string | null = null;
+                if (mint) typestring = ComponentAPI.getTypeForMINT(json.connections[i].entity);
+                if (typestring == null) typestring = "Connection";
+
+                let feat: Feature 
+                let rawParams = json.connections[i].params
+                if (rawParams.start) {
+                    feat = Device.makeFeature(typestring, rawParams);
+                    feat.referenceID = json.connections[i].id;
+                    ret.push(feat);
+                } else {
+                    if (json.connections[i].paths[0]) {
+                        const wayPoints = json.connections[i].paths[0].wayPoints;
+                        const segments: Array<[[number, number],[number,number]]> = [];
+                        for (let k = 0; k < wayPoints.length - 1; k++) {
+                            segments[k] = [wayPoints[k], wayPoints[k + 1]];
+                        }
+                        const newParams = {
+                            start: ["Point", wayPoints[0][0], wayPoints[0][1]],
+                            end: wayPoints[wayPoints.length - 1],
+                            wayPoints: wayPoints,
+                            segments: segments,
+                            connectionSpacing: rawParams.connectionSpacing,
+                            channelWidth: rawParams.channelWidth,
+                            height: ComponentAPI.getDefaultsForType(typestring).height
+                        };
+                        feat = Device.makeFeature(typestring, newParams);
+                        feat.referenceID = json.connections[i].id;
+                        ret.push(feat);
+                    } else {
+                        console.log("Connection missing path description");
+                    }
+                }                          
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Loads the features from component entries for layers missing from a group
+     * Assumes no connections present on undescribed layers
+     * Purpose is to fill in parts of components added later (e.g., integration layer part of picoinjector)
+     * @static
+     * @param {ScratchInterchangeV1} json
+     * @param {string} type
+     * @param {string} layerGroup
+     * @returns {Array<Feature>}
+     * @memberof LoadUtils
+     */
+    static generateMissingLayerFeaturesV1(json: ScratchInterchangeV1, type: string, layerGroup: string): Array<Feature> {
+        const ret: Array<Feature> = [];
+        for (const i in json.components) {
+            const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
+            if (typestring != null) {
+                if (type == "FLOW") {
+                    const libEntry = ComponentAPI.library[typestring]
+                    if (libEntry != undefined && libEntry.key == "FLOW") {
+                        let componentGroup: string | null = null;
+                        for (const j in json.layers) {
+                            if (json.layers[j].id == json.components[i].layers[0]) componentGroup = json.layers[j].group;
+                        }
+                        if (componentGroup != null && componentGroup == layerGroup) {
+                            const feat: Feature = Device.makeFeature(typestring, json.components[i].params);
+                            feat.referenceID = json.components[i].id;
+                            ret.push(feat);
+                        }
+                    }
+                } else {
+                    if (ComponentAPI.library[typestring + "_" + type.toLowerCase()]) {
+                        let componentGroup: string | null = null;
+                        for (const j in json.layers) {
+                            if (json.layers[j].id == json.components[i].layers[0]) componentGroup = json.layers[j].group;
+                        }
+                        if (componentGroup != null && componentGroup == layerGroup) {
+                            const feat: Feature = Device.makeFeature(typestring + "_" + type.toLowerCase(), json.components[i].params);
+                            feat.referenceID = json.components[i].id;
+                            ret.push(feat);
+                        }
+                    }
+                }
+            } else {
+                console.log("Mint " + json.components[i].entity + "not supported");
+            }
         }
         return ret;
     }
@@ -340,9 +458,7 @@ export default class LoadUtils {
                 ];
             }
         } else {
-            console.log("Here");
             if (json.paths[0]) {
-                console.log("Herere");
                 const wayPoints = json.paths[0].wayPoints;
                 const rawParams = json.params;
                 const segments: Array<[[number, number],[number,number]]> = [];
@@ -359,7 +475,6 @@ export default class LoadUtils {
                     channelWidth: rawParams.channelWidth,
                     height: ComponentAPI.getDefaultsForType(typestring).height
                 };
-                console.log("params");
             } else {
                 console.log("Connection missing path description");
             }
@@ -371,8 +486,6 @@ export default class LoadUtils {
             throw new Error("Could not find the definition for the Connection");
         }
         const paramstoadd = new Params(params, MapUtils.toMap(definition.unique), MapUtils.toMap(definition.heritable));
-        console.log("paramstoadd: ", paramstoadd);
-        console.log("entity: ", entity);
         const connection = new Connection(entity, paramstoadd, name, entity, layer, id);
         if (Object.prototype.hasOwnProperty.call(json, "source")) {
             if (json.source !== null && json.source !== undefined) {
@@ -419,8 +532,6 @@ export default class LoadUtils {
 
         const params = json.params;
 
-        console.log("new entity:", entity);
-
         // TODO - remove this dependency
         // iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);
 
@@ -436,11 +547,9 @@ export default class LoadUtils {
             throw Error("Could not find definition for type: " + entity);
         }
 
-        // console.log(definition);
         let type;
         let value;
         for (const key in json.params) {
-            // console.log("key:", key, "value:", json.params[key]);
             if (Object.prototype.hasOwnProperty.call(definition.heritable, key)) {
                 type = definition.heritable[key];
             } else if (Object.prototype.hasOwnProperty.call(definition.unique, key)) {
