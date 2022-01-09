@@ -157,6 +157,7 @@ export default class Component {
      * @returns {void}
      */
     updateParameter(key: string, value: any): void {
+        if (key == "position") console.error("Use updateComponentPosition instead of updateParameter when changing position");
         this._params.updateParameter(key, value);
 
         for (const i in this._featureIDs) {
@@ -254,10 +255,10 @@ export default class Component {
 
     /**
      * Returns an Array of size two containing the X and Y coordinates
-     * @return {number[]}
+     * @return {Point}
      * @memberof Component
      */
-    getPosition(): number[] {
+    getPosition(): Point {
         return this._params.getValue("position");
     }
 
@@ -335,6 +336,9 @@ export default class Component {
         for (const i in this._featureIDs) {
             const featureid = this._featureIDs[i];
             const render = ComponentUtils.getRenderedFeature(featureid);
+            console.log("feat: ", featureid);
+            console.log("render: ", render);
+            console.log("bounds: ", render.bounds);
             if (bounds && render) {
                 bounds = bounds.unite(render.bounds);
             } else {
@@ -352,8 +356,10 @@ export default class Component {
      * @returns {void}
      */
     updateComponentPosition(center: Point): void {
+        console.log("center: ", center);
         // This was not calling the right method earlier
-        this._params.updateParameter("position", center);
+        const rect = this.getBoundingRectangle();
+        this._params.updateParameter("position", [center[0] - (center[0] - rect.x), center[1] - (center[1] - rect.y)]);
         for (const i in this._featureIDs) {
             const featureidtochange = this._featureIDs[i];
 
@@ -562,6 +568,9 @@ export default class Component {
         // updating the Component Ports
         const params = this.params.toMap();
         const cleanparamdata = params;
+        const rect = this.getBoundingRectangle();
+        const currPos = cleanparamdata.get("position");
+        cleanparamdata.set("position", [currPos[0] + (currPos[0] - rect.x), currPos[1] + (currPos[1] - rect.y)]);
         const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._entity);
 
         for (const i in ports) {

@@ -120,6 +120,8 @@ export default class PositionTool extends MouseTool {
             feature.referenceID = componentid;
         }
 
+        newComponent.updateComponentPosition(cleanparamdata["position"]);
+
         this.viewManagerDelegate.currentDevice!.addComponent(newComponent);
         return newComponent;
     }

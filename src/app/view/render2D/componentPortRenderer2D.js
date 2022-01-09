@@ -32,8 +32,10 @@ export default class ComponentPortRenderer2D {
         const rendersize = ComponentPortRenderer2D.getSizeforZoomLevel();
         const componentports = component.ports;
         const ret = [];
+        const rect = component.getBoundingRectangle();
+        const currPos = component.getValue("position");
         for (const key of componentports.keys()) {
-            const position = component.getValue("position");
+            const position = [currPos[0] - (currPos[0] - rect.x), currPos[1] - (currPos[1] - rect.y)];
             const rotation = component.getRotation();
             const componentport = componentports.get(key);
             const render = ComponentPortRenderer2D.renderComponentPort(componentport, position, rotation, rendersize);
