@@ -34,7 +34,8 @@ export default class ExportUtils {
             groups: device.groups,
             components: device.components,
             connections: device.connections,
-            valves: device.valves,
+            valveMap: device.valveMap,
+            valveTypeMap: device.valveTypeMap,
             version: device.version
         };
 

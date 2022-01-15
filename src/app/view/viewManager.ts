@@ -418,13 +418,18 @@ export default class ViewManager {
      */
     createNewLayerBlock() {
         // Generate model layers
-        let groupNum = Registry.currentDevice!.layers.length;
-        if (groupNum != 0) groupNum = groupNum / 3;
+
+        const preflowname: string | undefined = this.currentDevice?.generateNewName("LayerFlow");
+        const precontrolname: string | undefined = this.currentDevice?.generateNewName("LayerControl");
+        const preintegrationname: string | undefined = this.currentDevice?.generateNewName("LayerIntegration");
+        const flowname: string = (preflowname) ? preflowname: "New Layer";
+        const controlname: string = (precontrolname) ? precontrolname: "New Layer";
+        const integrationname: string = (preintegrationname) ? preintegrationname: "New Layer";
 
         const newlayers = [];
-        newlayers[0] = new Layer({ z_offset: 0, flip: false }, this.currentDevice?.generateNewName("LayerFlow"), LogicalLayerType.FLOW, groupNum.toString());
-        newlayers[1] = new Layer({ z_offset: 0, flip: false }, this.currentDevice?.generateNewName("LayerControl"), LogicalLayerType.CONTROL, groupNum.toString());
-        newlayers[2] = new Layer({ z_offset: 0, flip: false }, this.currentDevice?.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, groupNum.toString());
+        newlayers[0] = new Layer({ z_offset: 0, flip: false }, flowname, LogicalLayerType.FLOW, (parseInt(flowname?.split("_")[1]) - 1).toString());
+        newlayers[1] = new Layer({ z_offset: 0, flip: false }, controlname, LogicalLayerType.CONTROL, (parseInt(controlname?.split("_")[1]) - 1).toString());
+        newlayers[2] = new Layer({ z_offset: 0, flip: false }, integrationname, LogicalLayerType.INTEGRATION, (parseInt(integrationname?.split("_")[1]) - 1).toString());
         // Add model layers to current device
         Registry.currentDevice?.createNewLayerBlock(newlayers);
 

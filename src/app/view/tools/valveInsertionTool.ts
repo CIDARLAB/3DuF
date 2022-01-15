@@ -11,11 +11,9 @@ import Connection from "@/app/core/connection";
 import Component from "@/app/core/component";
 
 export default class ValveInsertionTool extends MultilayerPositionTool {
-    is3D: boolean;
 
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters: { [k: string]: any }, is3D = false) {
         super(viewManagerDelegate, typeString, setString, currentParameters);
-        this.is3D = is3D;
 
         const ref = this;
 
@@ -171,11 +169,11 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         // TODO: Enable this.is3D functionality
         if (this.typeString == "Valve") {
             component = this.createNewFeature(point, angle);
-            Registry.currentDevice!.insertValve(component, connection as any, this.is3D);
+            Registry.currentDevice!.insertValve(component, connection as any, false);
         } else if (this.typeString == "Valve3D") {
             angle += 90;
             component = this.createNewMultiLayerFeature(point, angle);
-            Registry.currentDevice!.insertValve(component, connection as any, this.is3D);
+            Registry.currentDevice!.insertValve(component, connection as any, true);
         }
         Registry.viewManager!.updatesConnectionRender(connection);
         Registry.viewManager!.saveDeviceState();

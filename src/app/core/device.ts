@@ -3,7 +3,7 @@
 import Params from "./params";
 
 import Feature from "./feature";
-import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point, ValveInterchangeV1 } from "./init";
+import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point, ValveMapInterchangeV1, ValveTypeMapInterchangeV1 } from "./init";
 import { ComponentInterchangeV1 } from "./init";
 import { ConnectionInterchangeV1 } from "./init";
 import { LayerInterchangeV1 } from "./init";
@@ -206,6 +206,25 @@ export default class Device {
     }
 
     /**
+     * Updates groups property
+     * @memberof Device
+     * @returns {void}
+     */
+    updateGroups(): void {
+        const groupsCopy: Map<string, boolean> = new Map();
+        for (const i in this.__groups) {
+            groupsCopy.set(this.__groups[i], false);
+        }
+        for (const i in this.layers) {
+            if (!this.__groups.includes(this.layers[i].group)) this.__groups.push(this.layers[i].group);
+            groupsCopy.set(this.layers[i].group, true);
+        }
+        groupsCopy.forEach((value, key) => {
+            if (!value) this.__groups.splice(this.__groups.indexOf(key), 1);
+        });
+    }
+
+    /**
      * Returns the layer with the given ID
      *
      * @param {string} id
@@ -330,6 +349,7 @@ export default class Device {
         //this.sortLayers();
         // TODO: Fix layer system
         DeviceUtils.addLayer(layer, this.__layers.indexOf(layer));
+        this.updateGroups();
     }
 
     /**
@@ -345,6 +365,7 @@ export default class Device {
         //this.sortLayers();
         // TODO: Fix layer system
         DeviceUtils.addLayer(layer, this.__layers.indexOf(layer));
+        this.updateGroups();
     }
 
     /**
@@ -483,16 +504,18 @@ export default class Device {
         return output;
     }
 
-    __valvesToInterchangeV1(): Array<ValveInterchangeV1> {
-        let output: Array<ValveInterchangeV1> = [];
-        this.__valveMap.forEach((target, valve) => {
-            let value3D = false;
-            if (this.__valveIs3DMap.get(valve)) value3D = true;
-            output.push({
-                valveID: valve,
-                targetID: target,
-                is3d: value3D
-            })
+    __valvesToInterchangeV1(): ValveMapInterchangeV1 {
+        let output: ValveMapInterchangeV1 = {};
+        this.__valveMap.forEach((value, key) => {
+            output[key] = value;
+        });
+        return output;
+    }
+
+    __valveTypesToInterchangeV1(): ValveTypeMapInterchangeV1 {
+        let output: ValveTypeMapInterchangeV1 = {};
+        this.__valveIs3DMap.forEach((value, key) => {
+            output[key] = (value) ? "NORMALLY_CLOSED": "NORMALLY_OPENED";
         });
         return output;
     }
@@ -580,7 +603,8 @@ export default class Device {
             layers: this.__layersToInterchangeV1(),
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
-            valves: this.__valvesToInterchangeV1(),
+            valveMap: this.__valvesToInterchangeV1(),
+            valveTypeMap: this.__valveTypesToInterchangeV1(),
             version: 1,
             groups: this.__groupsToJSON()
         };
@@ -804,6 +828,7 @@ export default class Device {
         for (let i in layers) {
             this.addLayer(layers[i]);
         }
+        this.updateGroups();
     }
 
     /**
@@ -820,6 +845,7 @@ export default class Device {
         if (index != -1) {
             this.__layers.splice(index, 1);
         }
+        this.updateGroups();
     }
 
     /**
