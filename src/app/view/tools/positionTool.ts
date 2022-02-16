@@ -11,6 +11,7 @@ import Component from "../../core/component";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../../utils/mapUtils";
 import ViewManager from "@/app/view/viewManager";
+import { paperObject } from "@/app/core/init";
 
 export default class PositionTool extends MouseTool {
     viewManagerDelegate: ViewManager;
@@ -100,12 +101,15 @@ export default class PositionTool extends MouseTool {
      * @param featureIDs [String] Feature id's of all the features that will be a part of this component
      */
     createNewComponent(typeString: string, paramdata: { [k: string]: any }, featureIDs: string[]) {
+        console.log("HHHHHHHHEEEEEEEERRRRRRRREEEEEEEE");
+        console.log("paramdata: ", paramdata);
         const definition = ComponentAPI.getDefinition(typeString);
         // Clean Param Data
         const cleanparamdata: { [k: string]: any } = {};
         for (const key in paramdata) {
             cleanparamdata[key] = paramdata[key].value;
         }
+        cleanparamdata["position"] = [0, 0];
         const params = new Params(cleanparamdata, MapUtils.toMap(definition!.unique), MapUtils.toMap(definition!.heritable));
         const componentid = ComponentAPI.generateID();
         const name = Registry.currentDevice!.generateNewName(typeString);
@@ -120,7 +124,9 @@ export default class PositionTool extends MouseTool {
             feature.referenceID = componentid;
         }
 
-        newComponent.updateComponentPosition(cleanparamdata["position"]);
+        newComponent.setInitialOffset();
+
+        newComponent.updateComponentPosition(paramdata["position"].value);
 
         this.viewManagerDelegate.currentDevice!.addComponent(newComponent);
         return newComponent;

@@ -43,7 +43,7 @@ export default {
                 Mix: ["MIXER", "MIXER3D", "TOROIDAL MIXER", "GRADIENT GENERATOR", "CURVED MIXER", "ROTARY MIXER"],
                 Control: ["VALVE3D", "VALVE", "PUMP3D", "PUMP"],
                 Storage: ["LONG CELL TRAP", "SQUARE CELL TRAP", "REACTION CHAMBER", "DIAMOND REACTION CHAMBER"],
-                Process: ["LL CHAMBER", "FILTER"],
+                Process: ["LL CHAMBER", "FILTER","DOGBONE INSERT"],
                 Distribute: ["PORT", "VIA", "YTREE", "TREE", "MUX", "TRANSPOSER", "MUX3D"],
                 Droplet: ["NOZZLE DROPLET GENERATOR", "DROPLET CAPACITANCE SENSOR", "DROPLET MERGER", "PICOINJECTOR", "DROPLET SPLITTER"]
             },

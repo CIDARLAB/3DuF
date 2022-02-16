@@ -4,7 +4,6 @@ import Registry from "../../core/registry";
 
 export default class ComponentPortRenderer2D {
     static renderComponentPort(componentport, draworigin, rotation, portrendersize = 500) {
-        // console.log("Rendering...", componentport, topleftposition, centerposition,rotation);
         const xpos = draworigin[0];
         const ypos = draworigin[1];
         const point = new paper.Point(xpos + componentport.x, ypos + componentport.y);
@@ -20,7 +19,6 @@ export default class ComponentPortRenderer2D {
 
     static getSizeforZoomLevel() {
         const zoomlevel = paper.view.zoom;
-        // console.log("Zoomlevel:", zoomlevel);
         let ret = 5 / zoomlevel;
         if (ret > 500) {
             ret = 500;
@@ -32,11 +30,13 @@ export default class ComponentPortRenderer2D {
         const rendersize = ComponentPortRenderer2D.getSizeforZoomLevel();
         const componentports = component.ports;
         const ret = [];
-        const rect = component.getBoundingRectangle();
+        const rotation = component.getRotation();
         const currPos = component.getValue("position");
+        const position = [currPos[0] - component.offset[0], currPos[1] - component.offset[1]];
+        console.log("comp pos: ", currPos);
+        console.log("offset: ", component.offset);
+        console.log("position: ", position);
         for (const key of componentports.keys()) {
-            const position = [currPos[0] - (currPos[0] - rect.x), currPos[1] - (currPos[1] - rect.y)];
-            const rotation = component.getRotation();
             const componentport = componentports.get(key);
             const render = ComponentPortRenderer2D.renderComponentPort(componentport, position, rotation, rendersize);
             render.renderid = componentport.id;

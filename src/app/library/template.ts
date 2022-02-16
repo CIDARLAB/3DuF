@@ -1,6 +1,8 @@
 import ComponentPort from "../core/componentPort";
+import paper from "paper"
 import { paperObject } from "../core/init";
 //import { ManufacturingInfo } from "../manufacturing/ManufacturingInfo";
+import { LogicalLayerType  } from "../core/init";
 
 export enum PositionToolType {
     FEATURE_POSITION_TOOL = "positionTool",
@@ -55,9 +57,17 @@ export default class Template {
      * @memberof Template
      */
     zOffsetKey(key: string): string {
+        console.log("This: ", this);
+        console.log("Keys: ", this.__zOffsetKeys);
+        if (this.__zOffsetKeys != null) console.log("FLOW?: ", this.__zOffsetKeys.hasOwnProperty("FLOW"));
+        if (this.__zOffsetKeys != null) console.log("FLOW?: ", this.__zOffsetKeys.hasOwnProperty(key));
+        console.log("key: ", key);
+        console.log("FLOW" == key);
+        //if (this.__zOffsetKeys) throw new Error("The fuck");
         if (this.__zOffsetKeys === null) {
             throw new Error("zOffsetKey cannot be null instantiate in the __setupDefinitions");
         } else if (this.__zOffsetKeys.hasOwnProperty(key)) {
+            console.log("Here");
             return this.__zOffsetKeys[key];
         } else {
             throw new Error("zOffsetKey does not contain key " + key);
@@ -248,10 +258,65 @@ export default class Template {
     }
 
     __setupDefinitions(): void {
+        this.__unique = {
+            position: "Point"
+        };
+
+        this.__heritable = {
+            componentSpacing: "Float",
+            height: "Float"
+        };
+
+        this.__defaults = {
+            componentSpacing: 1000,
+            height: 250
+        };
+
+        this.__units = {
+            componentSpacing: "μm",
+            height: "μm"
+        };
+
+        this.__minimum = {
+            componentSpacing: 0,
+            height: 10
+        };
+
+        this.__maximum = {
+            componentSpacing: 10000,
+            height: 1200
+        };
+
+        this.__featureParams = {
+            componentSpacing: "componentSpacing",
+            position: "position"
+        };
+
+        this.__targetParams = {
+        };
+
+        this.__placementTool = "componentPositionTool";
+
+        this.__toolParams = {
+            position: "position"
+        };
+
+        this.__renderKeys = ["FLOW"];
+
+        this.__mint = "TEMPLATE";
+
+        this.__zOffsetKeys = {
+            FLOW: "height"
+        };
+
+        this.__substrateOffset = {
+            FLOW: "0"
+        };
+
         /*
         Check https://github.com/CIDARLAB/3DuF/wiki/Adding-new-components-v2 for more example data
          */
-        throw new Error("User needs to provide method for component definition, look at examples");
+        //throw new Error("User needs to provide method for component definition, look at examples");
     }
 
     /**
@@ -264,7 +329,14 @@ export default class Template {
      * @param key
      */
     render2D(params: { [key: string]: any }, key: string): paperObject {
-        throw new Error("User needs to provide method for component definition, look at examples");
+        console.error("Default component template being used. User needs to provide method for component definition, look at examples")
+        const x = params.position[0];
+        const y = params.position[1];
+
+        const rect =  new paper.Path.Rectangle(new paper.Point(x - 100, y - 100), new paper.Size(5000, 5000));
+        rect.fillColor = params.color;
+        return rect;
+        //throw new Error("User needs to provide method for component definition, look at examples");
     }
 
     render2DTarget(key: string, params: { [key: string]: any }): paperObject {
@@ -276,7 +348,10 @@ export default class Template {
      * @param params
      */
     getPorts(params: { [key: string]: any }): Array<ComponentPort> {
-        throw new Error("User needs to provide method for component definition, look at examples");
+        console.error("User needs to provide method for component definition, look at examples");
+        const ports = [];
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
+        return ports;
     }
 
     getBounds(params: { [key: string]: any }): paper.Rectangle | null {

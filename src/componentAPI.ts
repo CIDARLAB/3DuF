@@ -46,6 +46,7 @@ import DropletGeneratorT from "./app/library/dropletGeneratorT";
 import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
 import ToroidalMixer from "./app/library/toroidalMixer";
+import DogboneInsert from "./app/library/dogboneInsert";
 
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
@@ -76,6 +77,7 @@ type LibraryEntry = {
  */
 export class ComponentAPI {
     static library: { [key: string]: LibraryEntry } = {
+        Template: { object: new Template(), key: "FLOW" },
         Text: { object: new Text(), key: "FLOW" },
         Port: { object: new Port(), key: "FLOW" },
         Anode: { object: new Anode(), key: "INTEGRATION" }, // ck addition
@@ -127,7 +129,8 @@ export class ComponentAPI {
         Via: { object: new Via(), key: "FLOW" },
 
         // new
-        Filter: { object: new Filter(), key: "Flow" },
+        DogboneInsert: { object: new DogboneInsert(), key: "FLOW" },
+        Filter: { object: new Filter(), key: "FLOW" },
         CellTrapS: { object: new CellTrapS(), key: "FLOW" },
         CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },
         "3DMux": { object: new ThreeDMux(), key: "FLOW" },
@@ -316,11 +319,12 @@ export class ComponentAPI {
      * @return {void|Array}
      */
     static getComponentPorts(params: Map<string, any>, minttypestring: string): Array<ComponentPort> {
-        const threeduftypesting = ComponentAPI.getTypeForMINT(minttypestring);
-        if (threeduftypesting === null) {
-            throw new Error("Component Ports of: " + threeduftypesting + " not found in library");
+        let threeduftypestring = ComponentAPI.getTypeForMINT(minttypestring);
+        if (threeduftypestring === null) {
+            console.error("Component Ports of: " + threeduftypestring + " not found in library. Using default Template");
+            threeduftypestring = "Template";
         }
-        const definition = ComponentAPI.library[threeduftypesting].object;
+        const definition = ComponentAPI.library[threeduftypestring].object;
         const params_to_pass: { [index: string]: any } = {};
         params.forEach((value, key) => {
             params_to_pass[key] = value;

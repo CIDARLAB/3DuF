@@ -24,6 +24,7 @@ import {
     ComponentPortInterchangeV1,
     LogicalLayerType
 } from "@/app/core/init";
+import ComponentPositionTool from "./tools/componentPositionTool";
 
 export default class LoadUtils {
     constructor() {}
@@ -245,6 +246,7 @@ export default class LoadUtils {
      */
     static loadFeatureFromInterchangeV1(json: FeatureInterchangeV0): Feature {
         // TODO: This will have to change soon when the thing is updated
+        console.log("PARAMS: ", json.params);
         let ret = Device.makeFeature(json.macro, json.params, json.name, json.id, json.type, json.dxfData);
         if (Object.prototype.hasOwnProperty.call(json, "referenceID")) {
             ret.referenceID = json.referenceID;
@@ -277,7 +279,11 @@ export default class LoadUtils {
                     if (renderKeys.length == 1) {
                         if (json.components[i].layers[0] == jsonlayer.id) {
                             console.log("Assuming default type feature can be placed on current layer");
-                            feat = Device.makeFeature(typestring, json.components[i].params);
+                            const paramstoadd = json.components[i].params;
+                            if (!Object.prototype.hasOwnProperty.call(json.components[i].params, "position")) {
+                                paramstoadd.position = [0.0, 0.0];
+                            }
+                            feat = Device.makeFeature(typestring, paramstoadd);
                             feat.referenceID = json.components[i].id;
                             ret.push(feat);
                         }
@@ -285,13 +291,17 @@ export default class LoadUtils {
                         for (const j in renderKeys) {
                             if (renderKeys[j] == jsonlayer.type) {
                                 if (group == jsonlayer.group) {
+                                    const paramstoadd = json.components[i].params;
+                                    if (!Object.prototype.hasOwnProperty.call(json.components[i].params, "position")) {
+                                        paramstoadd.position = [0.0, 0.0];
+                                    }
                                     if (ComponentAPI.library[typestring].key == jsonlayer.type) {
-                                        feat = Device.makeFeature(typestring, json.components[i].params);
+                                        feat = Device.makeFeature(typestring, paramstoadd);
                                     } else if (ComponentAPI.library[typestring + "_" + jsonlayer.type.toLowerCase()]) {
-                                        feat = Device.makeFeature(typestring + "_" + jsonlayer.type.toLowerCase(), json.components[i].params);
+                                        feat = Device.makeFeature(typestring + "_" + jsonlayer.type.toLowerCase(), paramstoadd);
                                     } else {
                                         console.log("Assuming default type feature can be placed on current layer");
-                                        feat = Device.makeFeature(typestring, json.components[i].params);
+                                        feat = Device.makeFeature(typestring, paramstoadd);
                                     }
                                     feat.referenceID = json.components[i].id;
                                     ret.push(feat);
@@ -322,7 +332,7 @@ export default class LoadUtils {
             if (jsonlayer.id == json.connections[i].layer) {
                 const mint = json.connections[i].entity;
                 let typestring: string | null = null;
-                if (mint) typestring = ComponentAPI.getTypeForMINT(json.connections[i].entity);
+                if (mint && mint != "CHANNEL") typestring = ComponentAPI.getTypeForMINT(json.connections[i].entity);
                 if (typestring == null) typestring = "Connection";
 
                 let feat: Feature 
@@ -426,36 +436,58 @@ export default class LoadUtils {
         if (layer === null) {
             throw new Error("Could not find layer with id: " + json.layer);
         }
-
         if (entity) {
             // Check if the params have the other unique elements necessary otherwise add them as null
             if (!Object.prototype.hasOwnProperty.call(params, "start")) {
-                // Setting this value to origin
-                params.start = [0, 0];
+                if (json.paths[0]) {
+                    params.start = ["Point", json.paths[0].wayPoints[0][0], json.paths[0].wayPoints[0][1]];
+                } else {
+                    // Setting this value to origin
+                    params.start = [0, 0];
+                }
             }
             if (!Object.prototype.hasOwnProperty.call(params, "end")) {
-                // Setting this value to origin
-                params.end = [0, 0];
+                if (json.paths) {
+                    params.end = json.paths[0].wayPoints[json.paths[0].wayPoints.length - 1];
+                } else {
+                    // Setting this value to origin
+                    params.end = [0, 0];
+                }
             }
             if (!Object.prototype.hasOwnProperty.call(params, "wayPoints")) {
                 // TODO: setting a single waypoint at origin
-                params.wayPoints = [
-                    [0, 0],
-                    [1, 2]
-                ];
+                if (json.paths[0]) {
+                    params.wayPoints = json.paths[0].wayPoints;
+                } else {
+                    params.wayPoints = [
+                        [0, 0],
+                        [1, 2]
+                    ];
+                }
             }
             if (!Object.prototype.hasOwnProperty.call(params, "segments")) {
                 // TODO: Setting a default segment from origin to origin
-                params.segments = [
-                    [
-                        [0, 0],
-                        [0, 0]
-                    ],
-                    [
-                        [0, 0],
-                        [0, 0]
-                    ]
-                ];
+                if (json.paths[0]) {
+                    const segments: Array<[[number, number],[number,number]]> = [];
+                    for (let k = 0; k < json.paths[0].wayPoints.length - 1; k++) {
+                        segments[k] = [json.paths[0].wayPoints[k], json.paths[0].wayPoints[k + 1]];
+                    }
+                    params.segments = segments;
+                } else {
+                    params.segments = [
+                        [
+                            [0, 0],
+                            [0, 0]
+                        ],
+                        [
+                            [0, 0],
+                            [0, 0]
+                        ]
+                    ];
+                }
+            }
+            if (!Object.prototype.hasOwnProperty.call(params, "height")) {
+                params.height = ComponentAPI.getDefaultsForType("Connection").height
             }
         } else {
             if (json.paths[0]) {
@@ -544,6 +576,12 @@ export default class LoadUtils {
         }
 
         if (definition === null) {
+            //Is this the way to do this?
+            definition = ComponentAPI.getDefinition("Template");
+            console.log("Def: ", definition);
+        }
+
+        if (definition == null) {
             throw Error("Could not find definition for type: " + entity);
         }
 
