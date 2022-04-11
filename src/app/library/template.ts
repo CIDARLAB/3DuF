@@ -57,17 +57,10 @@ export default class Template {
      * @memberof Template
      */
     zOffsetKey(key: string): string {
-        console.log("This: ", this);
-        console.log("Keys: ", this.__zOffsetKeys);
-        if (this.__zOffsetKeys != null) console.log("FLOW?: ", this.__zOffsetKeys.hasOwnProperty("FLOW"));
-        if (this.__zOffsetKeys != null) console.log("FLOW?: ", this.__zOffsetKeys.hasOwnProperty(key));
-        console.log("key: ", key);
-        console.log("FLOW" == key);
         //if (this.__zOffsetKeys) throw new Error("The fuck");
         if (this.__zOffsetKeys === null) {
             throw new Error("zOffsetKey cannot be null instantiate in the __setupDefinitions");
         } else if (this.__zOffsetKeys.hasOwnProperty(key)) {
-            console.log("Here");
             return this.__zOffsetKeys[key];
         } else {
             throw new Error("zOffsetKey does not contain key " + key);

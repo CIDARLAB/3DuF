@@ -92,6 +92,7 @@ export default {
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
         },
         updateParameter(value, key) {
+            console.log("activeTool: ", this.activeTool);
             this.activeTool.updateParameter(key, value);
         },
         computedSpecForMINT: function(minttype) {

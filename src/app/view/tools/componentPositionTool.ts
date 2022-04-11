@@ -12,7 +12,6 @@ export default class ComponentPositionTool extends PositionTool {
 
     createNewFeature(point: paper.Point) {
         const featureIDs = [];
-
         const paramvalues = this.getCreationParameters(new paper.Point(0, 0));
         const newFeature = Device.makeFeature(this.typeString, paramvalues);
         this.currentFeatureID = newFeature.ID;
@@ -21,9 +20,10 @@ export default class ComponentPositionTool extends PositionTool {
 
         featureIDs.push(newFeature.ID);
 
+        const params_point = PositionTool.getTarget([point.x, point.y]);
+
         const params_to_copy = newFeature.getParams();
-        params_to_copy["position"] = new Parameter("position", [point.x, point.y]);
-        console.log("params_to_copy: ", params_to_copy);
+        params_to_copy["position"] = new Parameter("position", params_point);
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager?.saveDeviceState();
     }

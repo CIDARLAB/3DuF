@@ -369,7 +369,10 @@ export default class Component {
      * @returns {void}
      */
     updateComponentPosition(center: Point): void {
+        console.error("Here");
         // Update component
+        console.log("OFFSET: ", this._offset);
+        console.log("CENTER: ", center[0]);
         this._params.updateParameter("position", [center[0] + this._offset[0], center[1] + this._offset[1]]);
         // Update features
         for (const i in this._featureIDs) {

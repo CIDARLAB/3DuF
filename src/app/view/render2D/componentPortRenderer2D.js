@@ -32,10 +32,8 @@ export default class ComponentPortRenderer2D {
         const ret = [];
         const rotation = component.getRotation();
         const currPos = component.getValue("position");
+        component.setOffset();
         const position = [currPos[0] - component.offset[0], currPos[1] - component.offset[1]];
-        console.log("comp pos: ", currPos);
-        console.log("offset: ", component.offset);
-        console.log("position: ", position);
         for (const key of componentports.keys()) {
             const componentport = componentports.get(key);
             const render = ComponentPortRenderer2D.renderComponentPort(componentport, position, rotation, rendersize);

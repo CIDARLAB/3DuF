@@ -60,7 +60,7 @@ export default class Device {
         this.__valveMap = new Map();
         this.__valveIs3DMap = new Map();
 
-        this.__version = 1;
+        this.__version = 1.3;
     }
     /**
      * Returns a string with the name of the Device
@@ -581,7 +581,7 @@ export default class Device {
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
             valves: this.__valvesToInterchangeV1(),
-            version: 1,
+            version: 1.3,
             groups: this.__groupsToJSON()
         };
         return output;
@@ -598,7 +598,7 @@ export default class Device {
             layers: this.__layersToInterchangeV1(),
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
-            version: 1,
+            version: 1.3,
             groups: this.__groupsToJSON()
         };
         return output;

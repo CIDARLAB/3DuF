@@ -1,8 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { LogicalLayerType, paperObject  } from "../core/init";
-import { CompoundPath } from "paper/dist/paper-core";
+import { LogicalLayerType } from "../core/init";
 
 export default class DogboneInsert extends Template {
     constructor() {
@@ -117,24 +116,55 @@ export default class DogboneInsert extends Template {
         let insert = new paper.PathItem;
 
         // Produce rectangle
-        const rect = new paper.Path.Rectangle(new paper.Point(px - length / 2, py - width / 2), new paper.Size(length, width));
         const rect2 = new paper.Path.Rectangle(new paper.Point(px - length / 2 + radius, py - width / 2), new paper.Size(length - 2 * radius, width));
+        
         // Add half cricles to ends
-        //let circle: paper.Path= new paper.Path.Circle(new paper.Point(px - length / 2 + radius, py - 2 * radius), radius);
-        //insert = rect.unite(circle);
-        //circle= new paper.Path.Circle(new paper.Point(px - length / 2 + radius, py + 2 * radius), radius);
-        //insert = insert.unite(circle);
-        //circle= new paper.Path.Circle(new paper.Point(px + length / 2 - radius, py - 2 * radius), radius);
-        //insert = insert.unite(circle);
-        //circle= new paper.Path.Circle(new paper.Point(px + length / 2 - radius, py + 2 * radius), radius);
-        //insert = insert.unite(circle);
-
-        // Cut-out half-circles into rectangle
-        let circle = new paper.Path.Circle(new paper.Point(px - length / 2 + radius, py), radius);
-        //insert = rect.exclude(circle, {trace:false});
-        //circle= new paper.Path.Circle(new paper.Point(px + length / 2 - radius, py), radius);
-        insert = rect2.intersect(circle);
-        insert = rect2.exclude(insert);
+        // Left side
+        let curve: paper.Path.Arc | paper.PathItem = new paper.Path.Arc({
+            from: [px - length / 2 + radius, py + width / 2],
+            through: [px - length / 2, py + width / 2 - radius],
+            to: [px - length / 2 + radius, py + radius]
+        });
+        (curve as any).closed = true;
+        insert = rect2.unite(curve);
+        curve = new paper.Path.Arc({
+            from: [px - length / 2 + radius, py - width / 2],
+            through: [px - length / 2, py - width / 2 + radius],
+            to: [px - length / 2 + radius, py - radius]
+        });
+        (curve as any).closed = true;
+        insert = insert.unite(curve);
+        //Right side
+        curve = new paper.Path.Arc({
+            from: [px + length / 2 - radius, py + width / 2],
+            through: [px + length / 2, py + width / 2 - radius],
+            to: [px + length / 2 - radius, py + radius]
+        });
+        (curve as any).closed = true;
+        insert = insert.unite(curve);
+        curve = new paper.Path.Arc({
+            from: [px + length / 2 - radius, py - width / 2],
+            through: [px + length / 2, py - width / 2 + radius],
+            to: [px + length / 2 - radius, py - radius]
+        });
+        (curve as any).closed = true;
+        insert = insert.unite(curve);
+        
+        // Subtract half circles
+        curve = new paper.Path.Arc({
+            from: [px - length / 2 + radius, py + radius],
+            through: [px - length / 2 + 2 * radius, py],
+            to: [px - length / 2 + radius, py - radius]
+        });
+        (curve as any).closed = true;
+        insert = insert.subtract(curve);
+        curve = new paper.Path.Arc({
+            from: [px + length / 2 - radius, py + radius],
+            through: [px + length / 2 - 2 * radius, py],
+            to: [px + length / 2 - radius, py - radius]
+        });
+        (curve as any).closed = true;
+        insert = insert.subtract(curve);
 
         //insert = insert.subtract(rect2);
 

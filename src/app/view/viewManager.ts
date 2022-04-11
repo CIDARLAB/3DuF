@@ -959,7 +959,7 @@ export default class ViewManager {
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
 
-        if (version === null || undefined === version || version == 1 || version == 1.1 || version == 1.2) {
+        if (version === null || undefined === version || version == 1 || version == 1.1 || version == 1.2 || version == 1.3) {
             const ret = LoadUtils.loadFromScratch(json);
             device = ret[0];
             Registry.currentDevice = device;
@@ -1004,15 +1004,20 @@ export default class ViewManager {
         this.updateActiveLayer();
 
 
+        console.log(json.version);
         //If older version fix feature locations
         console.log("Here");
         if (this.__currentDevice != null) {
             console.log("There");
-            for (const i in this.__currentDevice.components) {
-                //[center[0] - (center[0] - rect.x), center[1] - (center[1] - rect.y)]
-                const rect = this.__currentDevice.components[i].getBoundingRectangle();
-                const currPos = this.__currentDevice.components[i].getPosition();
-                this.__currentDevice.components[i].updateComponentPosition([currPos[0] + (currPos[0] - rect.x), currPos[1] + (currPos[1] - rect.y)]);
+            console.log("version: ", json.version);
+            if (json.version < 1.3) {
+                console.log("Where");
+                for (const i in this.__currentDevice.components) {
+                    //[center[0] - (center[0] - rect.x), center[1] - (center[1] - rect.y)]
+                    const rect = this.__currentDevice.components[i].getBoundingRectangle();
+                    const currPos = this.__currentDevice.components[i].getPosition();
+                    this.__currentDevice.components[i].updateComponentPosition([currPos[0] + (currPos[0] - rect.x), currPos[1] + (currPos[1] - rect.y)]);
+                }
             }
         }
     }
