@@ -144,7 +144,8 @@ export default class ComponentPort {
     static calculateAbsolutePosition(componentport: ComponentPort, component: Component): Point {
         const topleftposition = component.getValue("position");
         const point = new paper.Point(topleftposition[0] - component.offset[0] + componentport.x, topleftposition[1] - component.offset[1] + componentport.y);
-        const rotatedpoint = point.rotate(component.getRotation(), topleftposition);
+        const featpoint = new paper.Point(topleftposition[0] - component.offset[0], topleftposition[1] - component.offset[1]);
+        const rotatedpoint = point.rotate(component.getRotation(), featpoint);
         return [rotatedpoint.x, rotatedpoint.y];
     }
 

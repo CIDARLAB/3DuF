@@ -52,7 +52,7 @@ export default class CellTrapL extends Template {
             feedingChannelWidth: 10,
             chamberWidth: 30,
             numberOfChambers: 1,
-            chamberSpacing: 60,
+            chamberSpacing: 30,
             height: 10,
             rotation: 0
         };
@@ -62,7 +62,7 @@ export default class CellTrapL extends Template {
             chamberLength: 6000,
             feedingChannelWidth: 2000,
             chamberWidth: 6000,
-            numberOfChambers: 10,
+            numberOfChambers: 100,
             chamberSpacing: 12 * 1000,
             height: 1200,
             rotation: 360

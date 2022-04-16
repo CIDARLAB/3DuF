@@ -101,8 +101,6 @@ export default class PositionTool extends MouseTool {
      * @param featureIDs [String] Feature id's of all the features that will be a part of this component
      */
     createNewComponent(typeString: string, paramdata: { [k: string]: any }, featureIDs: string[]) {
-        console.log("HHHHHHHHEEEEEEEERRRRRRRREEEEEEEE");
-        console.log("paramdata: ", paramdata);
         const definition = ComponentAPI.getDefinition(typeString);
         // Clean Param Data
         const cleanparamdata: { [k: string]: any } = {};

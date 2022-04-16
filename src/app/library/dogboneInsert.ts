@@ -17,15 +17,17 @@ export default class DogboneInsert extends Template {
             componentSpacing: "Float",
             rotation: "Float",
             length: "Float",
-            width: "Float",
+            innerRadius: "Float",
+            outerRadius: "Float",
             height: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 1000,
             rotation: 0,
-            width: 1200,
-            length: 7480,
+            innerRadius: 400,
+            outerRadius: 800,
+            length: 7200,
             height: 250
         };
 
@@ -33,13 +35,15 @@ export default class DogboneInsert extends Template {
             componentSpacing: "μm",
             rotation: "°",
             length: "μm",
-            width: "μm",
+            innerRadius: "μm",
+            outerRadius: "μm",
             height: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
-            width: 30,
+            innerRadius: 1,
+            outerRadius: 1,
             length: 120,
             height: 10,
             rotation: 0
@@ -47,7 +51,8 @@ export default class DogboneInsert extends Template {
 
         this.__maximum = {
             componentSpacing: 10000,
-            width: 6000,
+            innerRadius: 1000,
+            outerRadius: 1000,
             length: 24 * 1000,
             height: 1200,
             rotation: 360
@@ -58,13 +63,15 @@ export default class DogboneInsert extends Template {
             position: "position",
             rotation: "rotation",
             length: "length",
-            width: "width"
+            innerRadius: "innerRadius",
+            outerRadius: "outerRadius",
         };
 
         this.__targetParams = {
             componentSpacing: "componentSpacing",
             length: "length",
-            width: "width",
+            innerRadius: "innerRadius",
+            outerRadius: "outerRadius",
             rotation: "rotation"
         };
 
@@ -89,13 +96,12 @@ export default class DogboneInsert extends Template {
 
     getPorts(params: { [k: string]: any }) {
         const l = params.length;
-        const w = params.width;
 
         const ports = [];
 
-        ports.push(new ComponentPort(-l / 2 + 1 / 3 * w, 0, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(-l / 2, 0, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(l / 2 - 1 / 3 * w, 0, "2", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(l / 2, 0, "2", LogicalLayerType.FLOW));
 
         return ports;
     }
@@ -105,68 +111,68 @@ export default class DogboneInsert extends Template {
         const px = position[0];
         const py = position[1];
         const length = params.length;
-        const width = params.width;
+        const innerRadius = params.innerRadius;
+        const outerRadius = params.outerRadius;
         const rotation = params.rotation;
         const color = params.color;
 
-        const radius = 1 / 6 * width;
+        const fulllength = length + innerRadius * 2 + outerRadius * 2;
+        const width = innerRadius * 2 + outerRadius * 4;
 
         const serp: paper.CompoundPath = new paper.CompoundPath([]);
 
         let insert = new paper.PathItem;
 
         // Produce rectangle
-        const rect2 = new paper.Path.Rectangle(new paper.Point(px - length / 2 + radius, py - width / 2), new paper.Size(length - 2 * radius, width));
+        const rect2 = new paper.Path.Rectangle(new paper.Point(px - fulllength / 2 + outerRadius, py - width / 2), new paper.Size(fulllength - 2 * outerRadius, width));
         
-        // Add half cricles to ends
+        // Add half circles to ends
         // Left side
         let curve: paper.Path.Arc | paper.PathItem = new paper.Path.Arc({
-            from: [px - length / 2 + radius, py + width / 2],
-            through: [px - length / 2, py + width / 2 - radius],
-            to: [px - length / 2 + radius, py + radius]
+            from: [px - fulllength / 2 + outerRadius, py + width / 2],
+            through: [px - fulllength / 2, py + width / 2 - outerRadius],
+            to: [px - fulllength / 2 + outerRadius, py + innerRadius]
         });
         (curve as any).closed = true;
         insert = rect2.unite(curve);
         curve = new paper.Path.Arc({
-            from: [px - length / 2 + radius, py - width / 2],
-            through: [px - length / 2, py - width / 2 + radius],
-            to: [px - length / 2 + radius, py - radius]
+            from: [px - fulllength / 2 + outerRadius, py - width / 2],
+            through: [px - fulllength / 2, py - width / 2 + outerRadius],
+            to: [px - fulllength / 2 + outerRadius, py - innerRadius]
         });
         (curve as any).closed = true;
         insert = insert.unite(curve);
         //Right side
         curve = new paper.Path.Arc({
-            from: [px + length / 2 - radius, py + width / 2],
-            through: [px + length / 2, py + width / 2 - radius],
-            to: [px + length / 2 - radius, py + radius]
+            from: [px + fulllength / 2 - outerRadius, py + width / 2],
+            through: [px + fulllength / 2, py + width / 2 - outerRadius],
+            to: [px + fulllength / 2 - outerRadius, py + innerRadius]
         });
         (curve as any).closed = true;
         insert = insert.unite(curve);
         curve = new paper.Path.Arc({
-            from: [px + length / 2 - radius, py - width / 2],
-            through: [px + length / 2, py - width / 2 + radius],
-            to: [px + length / 2 - radius, py - radius]
+            from: [px + fulllength / 2 - outerRadius, py - width / 2],
+            through: [px + fulllength / 2, py - width / 2 + outerRadius],
+            to: [px + fulllength / 2 - outerRadius, py - innerRadius]
         });
         (curve as any).closed = true;
         insert = insert.unite(curve);
         
         // Subtract half circles
         curve = new paper.Path.Arc({
-            from: [px - length / 2 + radius, py + radius],
-            through: [px - length / 2 + 2 * radius, py],
-            to: [px - length / 2 + radius, py - radius]
+            from: [px - fulllength / 2 + outerRadius, py + innerRadius],
+            through: [px - fulllength / 2 + innerRadius + outerRadius, py],
+            to: [px - fulllength / 2 + outerRadius, py - innerRadius]
         });
         (curve as any).closed = true;
         insert = insert.subtract(curve);
         curve = new paper.Path.Arc({
-            from: [px + length / 2 - radius, py + radius],
-            through: [px + length / 2 - 2 * radius, py],
-            to: [px + length / 2 - radius, py - radius]
+            from: [px + fulllength / 2 - outerRadius, py + innerRadius],
+            through: [px + fulllength / 2 - innerRadius - outerRadius, py],
+            to: [px + fulllength / 2 - outerRadius, py - innerRadius]
         });
         (curve as any).closed = true;
         insert = insert.subtract(curve);
-
-        //insert = insert.subtract(rect2);
 
         serp.addChild(insert);
         serp.fillColor = color;

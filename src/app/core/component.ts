@@ -171,7 +171,6 @@ export default class Component {
     updateParameter(key: string, value: any): void {
         if (key == "position") console.error("Use updateComponentPosition instead of updateParameter when changing position");
         this._params.updateParameter(key, value);
-
         for (const i in this._featureIDs) {
             const featureidtochange = this._featureIDs[i];
 
@@ -182,8 +181,8 @@ export default class Component {
 
         // Update component position
         const featPos = ComponentUtils.getFeatureFromID(this._featureIDs[0]).getValue("position");
-        console.log("featpos: ", featPos);
-        this.updateComponentPosition(featPos);
+        // Update position (top-left corner)
+        this.setPosition();
         // Update offset
         this.setOffset();
         // Update the ComponentPorts
@@ -369,10 +368,8 @@ export default class Component {
      * @returns {void}
      */
     updateComponentPosition(center: Point): void {
-        console.error("Here");
+        console.log("input position: ", center);
         // Update component
-        console.log("OFFSET: ", this._offset);
-        console.log("CENTER: ", center[0]);
         this._params.updateParameter("position", [center[0] + this._offset[0], center[1] + this._offset[1]]);
         // Update features
         for (const i in this._featureIDs) {
@@ -393,9 +390,13 @@ export default class Component {
     setOffset():void {
         const rect = this.getBoundingRectangle();
         const featPos = ComponentUtils.getFeatureFromID(this._featureIDs[0]).getValue("position")
-        console.log("featPos: ", featPos);
         this._offset = [rect.x - featPos[0], rect.y - featPos[1]];
     }
+
+    setPosition():void {
+        this._params.updateParameter("position", this.getTopLeftPosition());
+    }
+
 
     /**
      * Replicates the component at the given positions
@@ -593,7 +594,6 @@ export default class Component {
         const currPos: [number, number] = cleanparamdata.get("position");
         cleanparamdata.set("position", [currPos[0] - this._offset[0], currPos[1] - this._offset[1]]);
         const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._entity);
-
         for (const i in ports) {
             this.setPort(ports[i].label, ports[i]);
         }
