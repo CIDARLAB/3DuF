@@ -293,11 +293,7 @@ export default class ViewManager {
         let newlayers = Registry.currentDevice.createNewLayerBlock();
         newlayers[0].color = "indigo";
         newlayers[1].color = "red";
-<<<<<<< HEAD
         
-=======
-
->>>>>>> master
         //Find all the edge features
         let edgefeatures = [];
         let devicefeatures = Registry.currentDevice.layers[0].features;
