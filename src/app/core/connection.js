@@ -5,7 +5,6 @@ import Params from "./params";
 import ConnectionTarget from "./connectionTarget";
 
 import * as Registry from "./registry";
-import ComponentPort from "./componentPort";
 
 /**
  * This class contains the connection abstraction used in the interchange format and the

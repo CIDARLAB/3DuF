@@ -293,7 +293,11 @@ export default class ViewManager {
         let newlayers = Registry.currentDevice.createNewLayerBlock();
         newlayers[0].color = "indigo";
         newlayers[1].color = "red";
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> master
         //Find all the edge features
         let edgefeatures = [];
         let devicefeatures = Registry.currentDevice.layers[0].features;
@@ -1114,14 +1118,14 @@ export default class ViewManager {
             let reader = new FileReader();
             reader.onloadend = function(e) {
                 let result = this.result;
-                try {
-                    result = JSON.parse(result);
-                    Registry.viewManager.loadDeviceFromJSON(result);
-                    Registry.viewManager.switchTo2D();
-                } catch (error) {
-                    console.error(error.message);
-                    alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
-                }
+                // try {
+                result = JSON.parse(result);
+                Registry.viewManager.loadDeviceFromJSON(result);
+                Registry.viewManager.switchTo2D();
+                // } catch (error) {
+                //     console.error(error.message);
+                //     alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
+                // }
             };
             try {
                 reader.readAsText(f);
