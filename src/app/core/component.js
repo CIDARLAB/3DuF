@@ -23,6 +23,7 @@ export default class Component {
         console.log("Component Constructor");
         console.log("type: " + type);
         console.log("id: " + id);
+        
         if (params instanceof Params) {
             this.__params = params;
         } else {
