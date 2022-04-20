@@ -18,7 +18,11 @@ export default class Component {
      * @param {string} mint
      * @param {String} id
      */
-    constructor(type, params, name, id = Component.generateID()) {
+    constructor(type, params, name, entity, id = Component.generateID()) {
+        
+        console.log("Component Constructor");
+        console.log("type: " + type);
+        console.log("id: " + id);
         if (params instanceof Params) {
             this.__params = params;
         } else {
@@ -28,7 +32,7 @@ export default class Component {
         this.__name = name;
         this.__id = id;
         this.__type = type;
-        this.__entity = type;
+        this.__entity = entity;
         //This stores the features that are a part of the component
         this.__features = [];
         //TODO: Need to figure out how to effectively search through these
