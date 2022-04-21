@@ -3,7 +3,7 @@ import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType  } from "../core/init";
 
-export default class Chamber extends Template {
+export default class Waste extends Template {
     constructor() {
         super();
     }
@@ -86,7 +86,7 @@ export default class Chamber extends Template {
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "REACTION CHAMBER";
+        this.__mint = "WASTE";
 
         this.__zOffsetKeys = {
             FLOW: "height"
@@ -128,9 +128,10 @@ export default class Chamber extends Template {
 
         const rec = new paper.Path.Rectangle({
             point: new paper.Point(px - w / 2, py - l / 2),
-            size: [w, l],
-            radius: radius
+            size: [w, 2*l],
+            radius: 4*radius
         });
+
 
         rendered.addChild(rec);
 

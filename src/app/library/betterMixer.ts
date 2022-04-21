@@ -55,11 +55,11 @@ export default class BetterMixer extends Template {
 
         this.__maximum = {
             componentSpacing: 10000,
-            channelWidth: 2000,
-            bendSpacing: 6000,
-            numberOfBends: 20,
+            channelWidth: 300,
+            bendSpacing: 500,
+            numberOfBends: 1,
             rotation: 360,
-            bendLength: 12 * 1000,
+            bendLength: 1000,
             height: 1200
         };
 

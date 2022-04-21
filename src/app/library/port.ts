@@ -21,7 +21,7 @@ export default class Port extends Template {
 
         this.__defaults = {
             componentSpacing: 1000,
-            portRadius: 0.7 * 1000,
+            portRadius: 100,
             height: 1.1 * 1000
         };
 
