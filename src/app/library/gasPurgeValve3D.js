@@ -25,11 +25,11 @@ export default class GasPurgeValve3D extends Template {
         this.__defaults = {
             componentSpacing: 1000,
             rotation: 0,
-            valveRadius: 1.2 * 1000,
-            height: 250,
+            valveRadius: 3 * 1000,
+            height: 48,
             gap: 0.6 * 1000,
-            width: 2.4 * 1000,
-            length: 2.4 * 1000
+            width: 6 * 1000,
+            length: 6 * 1000
         };
 
         this.__units = {
@@ -52,7 +52,7 @@ export default class GasPurgeValve3D extends Template {
 
         this.__maximum = {
             componentSpacing: 10000,
-            valveRadius: 0.2 * 10000,
+            valveRadius: 0.4 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
             rotation: 180

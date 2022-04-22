@@ -430,11 +430,11 @@ export const basicFeatures = {
         },
         defaults: {
             orientation: "V",
-            valveRadius: 1.2 * 1000,
-            height: 0.8 * 1000,
+            valveRadius: 3 * 1000,
+            height: 0.048 * 1000,
             gap: 0.6 * 1000,
-            width: 2.4 * 1000,
-            length: 2.4 * 1000,
+            width: 6 * 1000,
+            length: 6 * 1000,
             rotation: 0
         },
         minimum: {
@@ -444,7 +444,7 @@ export const basicFeatures = {
             rotation: 0
         },
         maximum: {
-            valveRadius: 0.2 * 10000,
+            valveRadius: 0.4 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
             rotation: 180
