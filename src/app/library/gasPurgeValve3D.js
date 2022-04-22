@@ -19,6 +19,7 @@ export default class GasPurgeValve3D extends Template {
             height: "Float",
             gap: "Float",
             width: "Float",
+            membraneParameter: "Float",
             length: "Float"
         };
 
@@ -29,6 +30,7 @@ export default class GasPurgeValve3D extends Template {
             height: 48,
             gap: 0.6 * 1000,
             width: 6 * 1000,
+            membraneParameter: 1,
             length: 6 * 1000
         };
 
@@ -39,6 +41,7 @@ export default class GasPurgeValve3D extends Template {
             gap: "&mu;m",
             width: "&mu;m",
             length: "&mu;m",
+            membraneParameter: "thickness value",
             rotation: "&deg;"
         };
 
@@ -47,6 +50,7 @@ export default class GasPurgeValve3D extends Template {
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
             gap: 0.5 * 10,
+            membraneParameter: 0,
             rotation: 0
         };
 
@@ -55,6 +59,7 @@ export default class GasPurgeValve3D extends Template {
             valveRadius: 0.4 * 10000,
             height: 1.2 * 1000,
             gap: 0.1 * 10000,
+            membraneParameter: 10,
             rotation: 180
         };
 

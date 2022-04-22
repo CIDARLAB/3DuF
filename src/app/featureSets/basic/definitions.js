@@ -417,6 +417,7 @@ export const basicFeatures = {
             gap: "Float",
             width: "Float",
             length: "Float",
+            membraneParameter: "Float",
             rotation: "Float"
         },
         units: {
@@ -435,6 +436,7 @@ export const basicFeatures = {
             gap: 0.6 * 1000,
             width: 6 * 1000,
             length: 6 * 1000,
+            membraneParameter: 1,
             rotation: 0
         },
         minimum: {
@@ -461,6 +463,7 @@ export const basicFeatures = {
             gap: "Float",
             width: "Float",
             length: "Float",
+            membraneParameter: "Float",
             rotation: "Float"
         },
         units: {
@@ -470,6 +473,7 @@ export const basicFeatures = {
             gap: "&mu;m",
             width: "&mu;m",
             length: "&mu;m",
+            membraneParameter: "",
             rotation: "&deg;"
         },
         defaults: {
@@ -479,6 +483,7 @@ export const basicFeatures = {
             gap: 0.6 * 1000,
             width: 2.4 * 1000,
             length: 2.4 * 1000,
+            membraneParameter: 1,
             rotation: 0
         },
         minimum: {
