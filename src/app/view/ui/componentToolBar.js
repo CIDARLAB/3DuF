@@ -25,6 +25,7 @@ export default class ComponentToolBar {
         this.__circleValveButton = document.getElementById("circleValve_button");
         this.__valveButton = document.getElementById("valve_button");
         this.__valve3dButton = document.getElementById("valve3d_button");
+        this.__gaspurgevalve3dButton = document.getElementById("gaspurgevalve3d_button");
         this.__pumpButton = document.getElementById("pump_button");
         this.__pump3dButton = document.getElementById("pump3d_button");
         this.__portButton = document.getElementById("port_button");
@@ -129,6 +130,7 @@ export default class ComponentToolBar {
             Cathode: this.__cathodeButton,//ck
             CircleValve: this.__circleValveButton,
             Valve3D: this.__valve3dButton,
+            GasPurgeValve3D: this.__gaspurgevalve3dButton,
             Valve: this.__valveButton,
             Pump3D: this.__pump3dButton,
             Pump: this.__pumpButton,
@@ -221,6 +223,13 @@ export default class ComponentToolBar {
             Registry.viewManager.activateTool("Valve3D");
 
             ref.setActiveButton("Valve3D");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+
+        this.__gaspurgevalve3dButton.onclick = function () {
+            Registry.viewManager.activateTool("GasPurgeValve3D");
+
+            ref.setActiveButton("GasPurgeValve3D");
             ref.__viewManagerDelegate.switchTo2D();
         };
 
@@ -501,6 +510,7 @@ export default class ComponentToolBar {
         this.__roundedChannelParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("RoundedChannel", "Basic");
         // this.__circleValveParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CircleValve", "Basic");
         this.__valve3dParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Valve3D", "Basic");
+        this.__gaspurgevalve3dParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("GasPurgeValve3D", "Basic");
         this.__valveParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Valve", "Basic");
         this.__pump3dParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Pump3D", "Basic");
         this.__pumpParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Pump", "Basic");

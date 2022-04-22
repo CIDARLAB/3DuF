@@ -876,6 +876,7 @@ export default class BareViewManager {
     //     this.tools["CircleValve"] = new ValveInsertionTool("CircleValve", "Basic");
     //     this.tools["RectValve"] = new ComponentPositionTool("RectValve", "Basic");
     //     this.tools["Valve3D"] = new ValveInsertionTool("Valve3D", "Basic", true);
+    //     this.tools["GasPurgeValve3D"] = new ValveInsertionTool("GasPurgeValve3D", "Basic", true);
     //     this.tools["Port"] = new ComponentPositionTool("Port", "Basic");
     //     this.tools["Via"] = new PositionTool("Via", "Basic");
     //     this.tools["DiamondReactionChamber"] = new ComponentPositionTool("DiamondReactionChamber", "Basic");

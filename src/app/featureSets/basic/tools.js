@@ -49,6 +49,12 @@ export const tools = {
         },
         placementTool: "MultilayerPositionTool"
     },
+    GasPurgeValve3D: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "MultilayerPositionTool"
+    },
     Pump3D: {
         toolParams: {
             position: "position"
@@ -74,6 +80,12 @@ export const tools = {
         placementTool: "MultilayerPositionTool"
     },
     Valve3D_control: {
+        toolParams: {
+            position: "position"
+        },
+        placementTool: "MultilayerPositionTool"
+    },
+    GasPurgeValve3D_control: {
         toolParams: {
             position: "position"
         },

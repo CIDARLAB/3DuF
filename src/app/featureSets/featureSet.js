@@ -24,6 +24,7 @@ import Transition from "../library/transition";
 import Transposer from "../library/transposer";
 import Valve from "../library/valve";
 import Valve3D from "../library/valve3D";
+import GasPurgeValve3D from "../library/gasPurgeValve3D";
 import Tree from "../library/tree";
 import YTree from "../library/ytree";
 import LLChamber from "../library/llChamber";
@@ -98,6 +99,8 @@ export default class FeatureSet {
             Valve: { object: new Valve(), key: null },
             Valve3D: { object: new Valve3D(), key: "FLOW" },
             Valve3D_control: { object: new Valve3D(), key: "CONTROL" },
+            GasPurgeValve3D: { object: new GasPurgeValve3D(), key: "FLOW" },
+            GasPurgeValve3D_control: { object: new GasPurgeValve3D(), key: "CONTROL" },
             LLChamber: { object: new LLChamber(), key: "FLOW" },
             LLChamber_control: { object: new LLChamber(), key: "CONTROL" },
             "3DMixer": { object: new ThreeDMixer(), key: "FLOW" },
