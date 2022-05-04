@@ -3,7 +3,7 @@ import MouseTool, { MouseToolCallback } from "./mouseTool";
 import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
-import { paperObject } from "@/app/core/init";
+import { ToolPaperObject } from "@/app/core/init";
 
 export default class SelectTool extends MouseTool {
     dragging: boolean;

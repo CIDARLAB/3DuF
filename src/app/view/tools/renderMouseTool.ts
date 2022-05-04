@@ -6,7 +6,7 @@ import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
 import EventBus from "@/events/events";
 import { PaperView, ViewManager } from "@/app";
-import { paperObject } from "@/app/core/init";
+import { ToolPaperObject } from "@/app/core/init";
 
 // Mouse tool for use with uF Guide Tool
 // Allows for selection only of nonphysical features

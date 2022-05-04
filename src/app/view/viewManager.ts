@@ -1315,10 +1315,10 @@ export default class ViewManager {
 
             const reader = new FileReader();
             reader.onloadend = function(e) {
-                let result = this.result;
+                let result = this.result as string;
                 // try {
-                result = JSON.parse(result as string);
-                Registry.viewManager?.loadDeviceFromJSON((result as unknown) as ScratchInterchangeV1);
+                let jsonresult = JSON.parse(result);
+                Registry.viewManager?.loadDeviceFromJSON((jsonresult as unknown) as ScratchInterchangeV1);
                 Registry.viewManager?.switchTo2D();
                 // } catch (error) {
                 //     console.error(error.message);

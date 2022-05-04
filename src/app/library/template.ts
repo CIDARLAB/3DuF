@@ -1,5 +1,5 @@
 import ComponentPort from "../core/componentPort";
-import { paperObject } from "../core/init";
+import { ToolPaperObject } from "../core/init";
 //import { ManufacturingInfo } from "../manufacturing/ManufacturingInfo";
 
 export enum PositionToolType {
@@ -254,7 +254,7 @@ export default class Template {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    /**
+    /*
      * Replacing /src/app/view/render2D/primitiveSets2D/basic2D
      */
 
@@ -263,11 +263,20 @@ export default class Template {
      * compatibility.
      * @param key
      */
-    render2D(params: { [key: string]: any }, key: string): paperObject {
+    render2D(params: { [key: string]: any }, key: string): ToolPaperObject {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    render2DTarget(key: string, params: { [key: string]: any }): paperObject {
+    
+    /**
+     * Returns the render target for the component
+     *
+     * @param {string} key
+     * @param {{ [key: string]: any }} params
+     * @returns {ToolPaperObject}
+     * @memberof Template
+     */
+    render2DTarget(key: string, params: { [key: string]: any }): ToolPaperObject {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
@@ -279,24 +288,46 @@ export default class Template {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
-    getBounds(params: { [key: string]: any }): paper.Rectangle | null {
+    /**
+     * Returns the bounds for component for given params. This assummes that the mint definiton, 
+     * render2D is implemented for the given defintion.
+     *
+     * @param {{ [key: string]: any }} params
+     * @returns {paper.Rectangle}
+     * @memberof Template
+     */
+    getBounds(params: { [key: string]: any }): paper.Rectangle{
         const renderkeys = this.renderKeys;
-        const features = [];
+        const features: Array<paper.Rectangle> = [];
         for (let i = 0; i < renderkeys.length; i++) {
-            // console.log("Rendering layer: " + renderkeys[i]);
             const feature = this.render2D(params, renderkeys[i]);
-            features.push(feature);
+            if(feature instanceof paper.PointText){
+                continue;
+            }
+            features.push(feature.bounds);
         }
-        const unitedBounds = features.reduce((bbox, item) => {
-            return !bbox ? item.bounds : bbox.unite(item.bounds);
-        }, null);
+
+        const unitedBounds = features.reduce((bbox, item): paper.Rectangle => {
+            if (item === null || item instanceof paper.PointText) {
+                return bbox;
+            }else{
+                return !bbox ? item : bbox.unite(item);
+            }
+        });
         if (unitedBounds) {
             return unitedBounds;
         } else {
-            return null;
+            return new paper.Rectangle(0, 0, 0, 0);
         }
     }
 
+    /**
+     * Returns the dimensions for the component for given params.
+     *
+     * @param {{ [key: string]: any }} params
+     * @returns {{ xspan: any; yspan: any }}
+     * @memberof Template
+     */
     getDimensions(params: { [key: string]: any }): { xspan: any; yspan: any } {
         params.position = [0, 0];
 
@@ -310,6 +341,14 @@ export default class Template {
         return { xspan: xspan, yspan: yspan };
     }
 
+    /**
+     * Returns the drawing offset for the component for given params. This assummes
+     *  that the mint definiton, and the getBounds methd works correctly
+     *
+     * @param {{ [key: string]: any }} params
+     * @returns
+     * @memberof Template
+     */
     getDrawOffset(params: { [key: string]: any }) {
         params.position = [0, 0];
         params.rotation = 0;

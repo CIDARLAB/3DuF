@@ -3,6 +3,8 @@ import DepthFeatureMap from "./depthFeatureMap";
 import Device from "../core/device";
 import { ComponentAPI } from "@/componentAPI";
 import { ViewManager } from "..";
+import Layer from "../core/layer";
+import Feature from "../core/feature";
 
 /**
  * Lasser Cutting Generator object

@@ -1,6 +1,6 @@
 import Template from "./template";
 import paper from "paper";
-import { paperObject } from "../core/init";
+import { ToolPaperObject } from "../core/init";
 
 interface ParamsIF {
     position: number[];

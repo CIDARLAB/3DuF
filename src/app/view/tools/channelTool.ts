@@ -4,7 +4,7 @@ import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import Device from "../../core/device";
 import paper from "paper";
-import { paperObject } from "@/app/core/init";
+import { ToolPaperObject } from "@/app/core/init";
 
 export default class ChannelTool extends MouseTool {
     typeString: string;

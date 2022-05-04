@@ -2,7 +2,8 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { Path, Point } from "paper/dist/paper-core";
-import { ToolPaperObject } from "../core/init";
+// import { LogicalLayerType, ToolPaperObject } from "../core/init";
+import { LogicalLayerType } from "../core/init";
 
 export default class ToroidalMixer extends Template {
     constructor() {
@@ -129,7 +130,7 @@ export default class ToroidalMixer extends Template {
 
         const ports: Array<ComponentPort> = [];
 
-        ports.push(new ComponentPort(0, 0, "1", "FLOW"));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
         if (numberOfMixers % 2 == 1) {
             ports.push(
@@ -137,7 +138,7 @@ export default class ToroidalMixer extends Template {
                     0,
                     (numberOfMixers - 1) * diameter - (numberOfMixers - 2) * y_neckComponent + diameter - neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180),
                     "2",
-                    "FLOW"
+                    LogicalLayerType.FLOW
                 )
             );
         } else {
@@ -146,7 +147,7 @@ export default class ToroidalMixer extends Template {
                     -1 * neckLength * Math.cos((0.5 * neckAngle * Math.PI) / 180),
                     (numberOfMixers - 1) * diameter - (numberOfMixers - 2) * y_neckComponent + diameter - neckLength * Math.sin((0.5 * neckAngle * Math.PI) / 180),
                     "2",
-                    "FLOW"
+                    LogicalLayerType.FLOW
                 )
             );
         }

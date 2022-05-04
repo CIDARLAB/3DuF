@@ -8,7 +8,7 @@ import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
 import { ComponentAPI } from "@/componentAPI";
 import EventBus from "@/events/events";
-import { LogicalLayerType, paperObject } from "@/app/core/init";
+import { LogicalLayerType, ToolPaperObject } from "@/app/core/init";
 
 import Registry from "../../core/registry";
 import MapUtils from "../../utils/mapUtils";

@@ -2,7 +2,7 @@ export type Point = [number, number];
 
 export type Segment = [Point, Point];
 
-export type paperObject = paper.CompoundPath | paper.Path | paper.PointText | paper.PathItem;
+export type ToolPaperObject = paper.CompoundPath | paper.Path | paper.PointText | paper.PathItem;
 
 export type ScratchInterchangeV1 = {
     name: string;
