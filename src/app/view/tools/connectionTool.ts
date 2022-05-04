@@ -13,6 +13,12 @@ import { LogicalLayerType, ToolPaperObject } from "@/app/core/init";
 import Registry from "../../core/registry";
 import MapUtils from "../../utils/mapUtils";
 
+enum ConnectionToolState {
+    SOURCE,
+    TARGET,
+    WAYPOINT
+}
+
 export default class ConnectionTool extends MouseTool {
     typeString: string;
     setString: string;
@@ -540,5 +546,19 @@ export default class ConnectionTool extends MouseTool {
         }
 
         return closest;
+    }
+
+    /**
+     * Updates the parameters of the connection object
+     *
+     * @param {string} parameter
+     * @param {*} value
+     * @memberof ConnectionTool
+     */
+    updateParameter(parameter: string, value: any) {  
+        if(this.currentChannelID !== null){
+            const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
+            feat?.updateParameter(parameter, value);
+        }
     }
 }

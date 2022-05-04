@@ -133,37 +133,23 @@ export default {
             chip1: true,
             chip2: true,
             activated: false,
-            isOpen: false,
             isEditing: false,
-            connection_suggestions: { state1: "Left Click to Choose a Point", state2: "Right Click to End Connection" },
-            current_connection_suggestion: this.connection_suggestions.state1,
+            // connection_suggestions: { state1: "Left Click to Choose a Point", state2: "Right Click to End Connection" },
+            // current_connection_suggestion: this.connection_suggestions.state1,
+            current_connection_suggestion: "test suggestion",
             connectionProfiles: [],
             selectedProfile: "",
-            previews: { CHANNEL: "@/assets/technology/CHANNEL.png" }
+            previews: { CHANNEL: "@/assets/technology/CHANNEL.png" },
+            sources: [],
+            sinks: [],
+            activeTool: null
         };
     },
     computed: {
         buttonClasses: function() {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
-        },
-        sources: function() {
-            if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
-                if (Registry.viewManager.tools.Connection.source !== null) {
-                    return [Registry.viewManager.tools.Connection.source];
-                } else {
-                    return [];
-                }
-            } else {
-                return [];
-            }
-        },
-        sinks: function() {
-            if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
-                return Registry.viewManager.tools.Connection.sinks;
-            } else {
-                return [];
-            }
         }
+
     },
     mounted() {
         // Setup an event for closing all the dialogs
@@ -175,6 +161,7 @@ export default {
         // Load the connection profiles
         this.connectionProfiles = ComponentAPI.getConnectionTypes();
         this.selectedProfile = this.connectionProfiles[0];
+        
     },
     methods: {
         updateParameter(value, key) {
@@ -202,6 +189,7 @@ export default {
         },
         showProperties() {
             this.activated = !this.activated;
+
             let attachPoint = document.querySelector("[data-app]");
 
             if (!attachPoint) {
@@ -209,13 +197,15 @@ export default {
             }
 
             this.setDrawerPosition();
-
+            this.activeTool = "TESTING TOOL";
             attachPoint.appendChild(this.$refs.drawer);
             if (this.activated) {
                 this.startConnection();
+                this.activeTool = Registry.viewManager.tools.Connection;
             } else {
                 this.endConnection();
             }
+
         },
         handleScroll() {
             this.setDrawerPosition();
@@ -224,19 +214,49 @@ export default {
             if (!this.activated) return;
             const bounds = this.$refs.activator.$el.getBoundingClientRect();
         },
-        openClose() {
-            this.isOpen = !this.isOpen;
-        },
+        // openClose() {
+        //     this.isOpen = !this.isOpen;
+            
+        //     console.log("running open/close");
+
+        //     // console.log("Registry:", Registry);
+        //     // console.log("View Manager:", Registry.viewManager);
+        //     // console.log("Connection Tool:", Registry.viewManager.tools);
+        //     // this.activateTool = Registry.viewManager.tools.Connection;
+        //     // console.log("Active Tool:");
+        //     // console.log(this.activateTool);
+
+        //     // this.sources= function() {
+        //     //     if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
+        //     //         if (Registry.viewManager.tools.Connection.source !== null) {
+        //     //             return [Registry.viewManager.tools.Connection.source];
+        //     //         } else {
+        //     //             return [];
+        //     //         }
+        //     //     } else {
+        //     //         return [];
+        //     //     }
+
+        //     // };
+        //     // this.sinks = function() {
+        //     //     if (Registry.viewManager !== undefined || Registry.viewManager !== null) {
+        //     //         return Registry.viewManager.tools.Connection.sinks;
+        //     //     } else {
+        //     //         return [];
+        //     //     }
+        //     // };
+
+        // },
         connectionStatus() {
             this.isEditing = true;
         },
         startConnection() {
             Registry.viewManager.activateTool("Connection", "Connection");
-            this.current_connection_suggestion = this.connection_suggestions["state2"];
+            // this.current_connection_suggestion = this.connection_suggestions["state2"];
         },
         endConnection: function() {
-            this.current_connection_suggestion = this.connection_suggestions["state1"];
-            console.log(this.connection_suggestions["state1"]);
+            // this.current_connection_suggestion = this.connection_suggestions["state1"];
+            // console.log(this.connection_suggestions["state1"]);
         },
         renameConnection() {
             this.connectionRenameMode = false;

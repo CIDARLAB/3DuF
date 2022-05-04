@@ -40,7 +40,7 @@ export default class Connection extends Template {
 
         this.__maximum = {
             connectionSpacing: 10000,
-            channelWidth: 2000,
+            channelWidth: 12000,
             height: 1200
         };
 
