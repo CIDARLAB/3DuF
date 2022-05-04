@@ -179,7 +179,9 @@ export default class Connection {
         let sinks = [];
         if (this.__sinks !== null && this.__sinks.length > 0) {
             for (let i in this.__sinks) {
-                sinks.push(this.__sinks[i].toJSON());
+                if (this.__sinks[i] !== null) {
+                    sinks.push(this.__sinks[i].toJSON());
+                }
             }
             output.sinks = this.__sinks;
         } else {
