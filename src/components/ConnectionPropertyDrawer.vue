@@ -136,18 +136,63 @@ export default {
             isEditing: false,
             // connection_suggestions: { state1: "Left Click to Choose a Point", state2: "Right Click to End Connection" },
             // current_connection_suggestion: this.connection_suggestions.state1,
-            current_connection_suggestion: "test suggestion",
             connectionProfiles: [],
             selectedProfile: "",
             previews: { CHANNEL: "@/assets/technology/CHANNEL.png" },
-            sources: [],
-            sinks: [],
             activeTool: null
         };
     },
     computed: {
         buttonClasses: function() {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
+        },
+
+        sinks: function() {
+            if(this.activeTool === null) {
+                return [];
+            }else{
+                console.log("sinks", this.activeTool.sinks);
+                let ret = [];
+                for(let i = 0; i < this.activeTool.sinks.length; i++){
+                    let sink = this.activeTool.sinks[i];
+                    console.log("sink", sink);
+                    ret.push({"name":"test1"});
+                }
+                return ret;
+                //return [{"name":"test1"}, {"name":"test2"}, {"name":"test3"}];
+
+            }
+        },
+
+        sources: function() {
+            if(this.activeTool === null) {
+                return [];
+            }else{
+            console.log("sources", this.activeTool.sources);
+            let ret = [];
+                let source = this.activeTool.source;
+                console.log("source", source);
+                return [{"name":"test1"}];
+            }
+        },
+
+        current_connection_suggestion: function() {
+            const STATE0 = "Unable to test the connection tool state";
+            const STATE1 = "Left Click to choose a Start Point";
+            const STATE2 = "Left Click to place waypoint, Right Click to end Connection";
+            if (this.activeTool === null){
+                return STATE0;
+            }else{
+                if (this.activeTool.state === "SOURCE"){
+                    return STATE1;
+                }else if(this.activeTool.state === "WAYPOINT"){
+                    return STATE2;
+                }else if(this.activeTool.state === "TARGET"){
+                    return STATE1;
+                }else{
+                    return "Unknown State, suggestion error";
+                }
+            }
         }
 
     },
@@ -197,7 +242,6 @@ export default {
             }
 
             this.setDrawerPosition();
-            this.activeTool = "TESTING TOOL";
             attachPoint.appendChild(this.$refs.drawer);
             if (this.activated) {
                 this.startConnection();

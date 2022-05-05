@@ -13,7 +13,7 @@ import { LogicalLayerType, ToolPaperObject } from "@/app/core/init";
 import Registry from "../../core/registry";
 import MapUtils from "../../utils/mapUtils";
 
-enum ConnectionToolState {
+export enum ConnectionToolState {
     SOURCE,
     TARGET,
     WAYPOINT
@@ -28,13 +28,19 @@ export default class ConnectionTool extends MouseTool {
     currentChannelID: string | null;
     currentTarget: paper.Point | null;
     dragging: boolean;
-    source: any;
-    sinks: any[];
+    source: ConnectionTarget | null;
+    sinks: Array<ConnectionTarget>;
 
     private __currentConnectionObject: Connection | null;
     private __STATE: string;
     showQueue: SimpleQueue;
     updateQueue: SimpleQueue;
+
+    
+    public get state() : string {
+        return this.__STATE;
+    }
+    
 
     constructor(typeString: string, setString: string) {
         super();
@@ -471,7 +477,7 @@ export default class ConnectionTool extends MouseTool {
      * @private
      */
     __addConnectionTargets(connection: Connection) {
-        if (this.source !== null || this.source !== undefined) {
+        if (this.source !== null && this.source !== undefined) {
             connection.addConnectionTarget(this.source);
         }
 
