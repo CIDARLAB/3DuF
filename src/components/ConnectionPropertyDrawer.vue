@@ -116,6 +116,7 @@ import Vue from "vue";
 import vSelect from "vue-select";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import { ComponentAPI } from "@/componentAPI";
+import {ConnectionToolState} from "@/app/view/tools/connectionTool";
 
 Vue.component("v-select", vSelect);
 
@@ -183,11 +184,11 @@ export default {
             if (this.activeTool === null){
                 return STATE0;
             }else{
-                if (this.activeTool.state === "SOURCE"){
+                if (this.activeTool.state === ConnectionToolState.PLACE_FIRST_POINT){
                     return STATE1;
-                }else if(this.activeTool.state === "WAYPOINT"){
+                }else if(this.activeTool.state === ConnectionToolState.PLACE_WAYPOINT){
                     return STATE2;
-                }else if(this.activeTool.state === "TARGET"){
+                }else if(this.activeTool.state === ConnectionToolState.TARGET_PLACED_START_AGAIN){
                     return STATE1;
                 }else{
                     return "Unknown State, suggestion error";

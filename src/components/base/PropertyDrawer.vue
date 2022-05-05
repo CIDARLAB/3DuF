@@ -6,6 +6,7 @@
                 color="blue"
                 right
                 small
+                class="setting-icon-button"
                 @click.stop="showProperties()"
                 >
                     <v-icon>mdi-cog</v-icon>
@@ -146,6 +147,11 @@ export default {
 .property-drawer-parent {
     overflow: visible;
     position: relative;
+}
+
+.setting-icon-button {
+    // margin-right: 0px;
+    transform: translateX(50%);
 }
 
 .btn {

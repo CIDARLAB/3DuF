@@ -14,9 +14,10 @@ import Registry from "../../core/registry";
 import MapUtils from "../../utils/mapUtils";
 
 export enum ConnectionToolState {
-    SOURCE,
-    TARGET,
-    WAYPOINT
+    PLACE_FIRST_POINT,
+    TARGET_PLACED_START_AGAIN,
+    PLACE_WAYPOINT, 
+    INTERSECTION_AWAITING_USER_INPUT
 }
 
 export default class ConnectionTool extends MouseTool {
@@ -32,12 +33,12 @@ export default class ConnectionTool extends MouseTool {
     sinks: Array<ConnectionTarget>;
 
     private __currentConnectionObject: Connection | null;
-    private __STATE: string;
+    private __STATE: ConnectionToolState = ConnectionToolState.PLACE_FIRST_POINT;
     showQueue: SimpleQueue;
     updateQueue: SimpleQueue;
 
     
-    public get state() : string {
+    public get state() : ConnectionToolState {
         return this.__STATE;
     }
     
@@ -62,7 +63,6 @@ export default class ConnectionTool extends MouseTool {
         2. WAYPOINT
         3. TARGET
          */
-        this.__STATE = "SOURCE";
         const ref = this;
 
         this.showQueue = new SimpleQueue(
@@ -89,16 +89,16 @@ export default class ConnectionTool extends MouseTool {
             paper.project.deselectAll();
             console.log("Current State:", ref.__STATE);
             switch (ref.__STATE) {
-                case "SOURCE":
-                    ref.__STATE = "WAYPOINT";
+                case ConnectionToolState.PLACE_FIRST_POINT:
+                    ref.__STATE = ConnectionToolState.PLACE_WAYPOINT;
                     ref.dragging = true;
                     ref.initChannel();
                     break;
-                case "WAYPOINT":
+                case ConnectionToolState.PLACE_WAYPOINT:
                     ref.addWayPoint(event as unknown as MouseEvent, (event as any).altKey);
                     break;
-                case "TARGET":
-                    ref.__STATE = "WAYPOINT";
+                case ConnectionToolState.TARGET_PLACED_START_AGAIN:
+                    ref.__STATE = ConnectionToolState.PLACE_WAYPOINT;
                     ref.dragging = true;
                     ref.initChannel();
                     // ref.createConnection();
@@ -107,7 +107,7 @@ export default class ConnectionTool extends MouseTool {
         };
 
         this.rightdown = function (event) {
-            ref.__STATE = "TARGET";
+            ref.__STATE = ConnectionToolState.TARGET_PLACED_START_AGAIN;
             ref.dragging = false;
             const end = ref.wayPoints.pop();
             ref.lastPoint = end;
@@ -121,7 +121,7 @@ export default class ConnectionTool extends MouseTool {
             if (point == null) return;
             const target = ConnectionTool.getTarget([point.x, point.y]);
 
-            if ((event as any).altKey && ref.__STATE === "WAYPOINT") {
+            if ((event as any).altKey && ref.__STATE === ConnectionToolState.PLACE_WAYPOINT) {
                 let lastwaypoint = ref.startPoint;
                 if (ref.wayPoints.length > 0) {
                     lastwaypoint = ref.wayPoints[ref.wayPoints.length - 1];
@@ -263,15 +263,15 @@ export default class ConnectionTool extends MouseTool {
             TARGET - Set the state to SOURCE and do nothing else
          */
         switch (this.__STATE) {
-            case "SOURCE":
+            case ConnectionToolState.PLACE_FIRST_POINT:
                 console.log("Doing nothing");
                 break;
-            case "WAYPOINT":
-                console.warn("Implement cleanup");
+            case ConnectionToolState.PLACE_WAYPOINT:
+                console.warn("Paused connection placement midway");
 
                 break;
-            case "TARGET":
-                this.__STATE = "SOURCE";
+            case ConnectionToolState.TARGET_PLACED_START_AGAIN:
+                this.__STATE = ConnectionToolState.PLACE_FIRST_POINT;
                 this.dragging = false;
                 break;
         }
@@ -324,7 +324,7 @@ export default class ConnectionTool extends MouseTool {
                 // Add it to the sinks
                 this.sinks.push(connectiontargettoadd);
             }
-            this.__STATE = "TARGET";
+            this.__STATE = ConnectionToolState.TARGET_PLACED_START_AGAIN; // "TARGET";
             this.dragging = false;
             this.finishChannel();
         } else if (isPointOnConnection) {
@@ -334,7 +334,7 @@ export default class ConnectionTool extends MouseTool {
             } else {
                 this.__currentConnectionObject.mergeConnection(isPointOnConnection);
             }
-            this.__STATE = "TARGET";
+            this.__STATE = ConnectionToolState.TARGET_PLACED_START_AGAIN; //"TARGET";
             this.dragging = false;
             this.lastPoint = this.wayPoints.pop();
             this.finishChannel();
