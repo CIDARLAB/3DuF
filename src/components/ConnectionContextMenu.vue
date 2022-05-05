@@ -20,7 +20,6 @@
                     <v-btn id="context_button_delete" color="white indigo--text" depressed @click="deleteButton()">
                         <span class="material-icons">delete</span>
                     </v-btn>
-                    <ChangeAllDialog :component="currentConnection" @close="activeMenu = false" />
                     <v-btn id="context_button_showRename" color="white indigo--text" depressed @click="showRename = true">
                         <span class="material-icons">title</span>
                     </v-btn>
@@ -45,11 +44,8 @@ import Connection from "@/app/core/connection";
 import Layer from "@/app/core/layer";
 import Params from "@/app/core/params";
 import EventBus from "@/events/events";
-import MoveDialog from "@/components/MoveDialog.vue";
-import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import { ComponentAPI } from "@/componentAPI";
-import GenerateArrayDialog from "@/components/GenerateArrayDialog.vue";
 
 export default {
     name: "ConnectionContextMenu",

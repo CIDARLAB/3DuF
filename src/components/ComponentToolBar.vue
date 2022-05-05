@@ -36,6 +36,7 @@ import Registry from "@/app/core/registry";
 import he from "he";
 
 export default {
+    name: "ComponentToolBar",
     components: { ConnectionPropertyDrawer, PropertyDrawer },
     data() {
         return {
