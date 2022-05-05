@@ -1,7 +1,6 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { DFMType } from "../manufacturing/ManufacturingInfo";
 import { LogicalLayerType } from "../core/init";
 
 export default class Merger extends Template {

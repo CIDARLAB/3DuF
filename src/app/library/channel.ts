@@ -33,7 +33,7 @@ export default class Channel extends Template {
         };
 
         this.__maximum = {
-            channelWidth: 2000,
+            channelWidth: 12000,
             height: 1200
         };
 
