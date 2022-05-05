@@ -1,8 +1,19 @@
 <template>
     <div class="property-drawer-parent">
-        <v-btn ref="activator" :class="buttonClasses" @click="showProperties()">{{ mint }}</v-btn>
+        <v-btn  ref="activator" medium :class="buttonClasses" @click="activateTool()">{{ shortenedMINT }}   
+            <v-btn
+                icon
+                color="blue"
+                right
+                small
+                @click.stop="showProperties()"
+                >
+                    <v-icon>mdi-cog</v-icon>
+            </v-btn>
+        </v-btn>
+ 
         <div ref="drawer" class="property-drawer">
-            <v-card v-if="activated">
+            <v-card v-if="showDrawer">
                 <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                 <v-card-text>
                     <PropertyBlock :title="mint" :spec="spec" @update="updateParameter" />
@@ -47,12 +58,17 @@ export default {
         return {
             activated: false,
             activeTool: null,
-            title: ""
+            title: "",
+            showDrawer: false,
         };
     },
     computed: {
         buttonClasses: function() {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
+        },
+
+        shortenedMINT: function() {
+            return this.mint.substring(0, 15);
         }
     },
     mounted() {
@@ -64,7 +80,8 @@ export default {
     },
     methods: {
         showProperties() {
-            this.activated = !this.activated;
+            // this.activated = !this.activated;
+            this.showDrawer = !this.showDrawer;
             let attachPoint = document.querySelector("[data-app]");
 
             if (!attachPoint) {
@@ -75,16 +92,24 @@ export default {
 
             attachPoint.appendChild(this.$refs.drawer);
 
+        },
+        activateTool(){
+            this.activated = !this.activated;
             if (this.activated) {
                 this.spec = this.computedSpecForMINT(this.mint);
                 this.activeTool = Registry.viewManager.activateComponentPlacementTool(this.mint, this.spec);
+                this.showProperties();
             } else {
                 Registry.viewManager.deactivateComponentPlacementTool();
                 this.activeTool = null;
+                this.showDrawer = false;
             }
+
+
         },
         handleScroll() {
             this.setDrawerPosition();
+            
         },
         setDrawerPosition() {
             if (!this.activated) return;
