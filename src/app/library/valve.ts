@@ -24,8 +24,8 @@ export default class Valve extends Template {
         this.__defaults = {
             componentSpacing: 1000,
             rotation: 0,
-            width: 1.23 * 1000,
-            length: 4.92 * 1000,
+            width: 200,
+            length: 200,
             height: 250
         };
 

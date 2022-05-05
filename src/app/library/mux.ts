@@ -29,13 +29,13 @@ export default class Mux extends Template {
 
         this.__defaults = {
             componentSpacing: 1000,
-            flowChannelWidth: 0.8 * 1000,
+            flowChannelWidth: 300,
             rotation: 0,
-            spacing: 4 * 1000,
+            spacing: 500,
             in: 1,
             out: 8,
-            width: 1.6 * 1000,
-            length: 1.6 * 1000,
+            width: 300,
+            length: 1000,
             height: 250,
             stageLength: 4000,
             controlChannelWidth: 0.4 * 1000

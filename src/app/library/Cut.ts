@@ -3,7 +3,7 @@ import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType  } from "../core/init";
 
-export default class Chamber extends Template {
+export default class Cut extends Template {
     constructor() {
         super();
     }
@@ -24,10 +24,10 @@ export default class Chamber extends Template {
 
         this.__defaults = {
             componentSpacing: 1000,
-            width: 500,
-            length: 500,
+            width: 5000,
+            length: 5000,
             height: 250,
-            cornerRadius: 10,
+            cornerRadius: 200,
             rotation: 0
         };
 
@@ -51,10 +51,10 @@ export default class Chamber extends Template {
 
         this.__maximum = {
             componentSpacing: 10000,
-            width: 50000,
-            length: 50000,
+            width: 5,
+            length: 150000,
             height: 50000,
-            cornerRadius: 1000,
+            cornerRadius: 0,
             rotation: 360
         };
 
@@ -86,7 +86,7 @@ export default class Chamber extends Template {
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "REACTION CHAMBER";
+        this.__mint = "CUT";
 
         this.__zOffsetKeys = {
             FLOW: "height"

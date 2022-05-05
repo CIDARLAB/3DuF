@@ -46,11 +46,20 @@ import DropletGeneratorT from "./app/library/dropletGeneratorT";
 import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
 import ToroidalMixer from "./app/library/toroidalMixer";
+import Waste from "./app/library/waste";
+import IDT from "./app/library/IDT";
+import Cut from "./app/library/Cut";
+
 
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
 import uuid from "node-uuid";
+import { CubeTexture } from "three";
+import IDTFLIP from "./app/library/IDTFlip";
+import IDTDOWN from "./app/library/IDTDOWN";
+import IDTUP from "./app/library/IDTUP";
+
 
 export type LibraryEntryDefinition = {
     unique: { [key: string]: string };
@@ -124,6 +133,10 @@ export class ComponentAPI {
         "3DMixer": { object: new ThreeDMixer(), key: "FLOW" },
         "3DMixer_control": { object: new ThreeDMixer(), key: "CONTROL" },
         Via: { object: new Via(), key: "FLOW" },
+        IDT: {object: new IDT(), key: "FLOW"},
+        IDTFlip: {object: new IDTFLIP(), key: "FLOW"},
+        IDTUp: {object: new IDTUP(), key: "FLOW"},
+        IDTDown: {object: new IDTDOWN(), key: "FLOW"},
 
         // new
         Filter: { object: new Filter(), key: "Flow" },
@@ -148,7 +161,11 @@ export class ComponentAPI {
         DropletGenFlow: { object: new DropletGeneratorFlowFocus(), key: "FLOW" },
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
-        LogicArray_cell: { object: new LogicArray(), key: "CELL" }
+        LogicArray_cell: { object: new LogicArray(), key: "CELL" },
+        Waste:{object: new Waste(), key: "FLOW"},
+        Cut:{object: new Cut(), key: "FLOW"},
+
+
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {

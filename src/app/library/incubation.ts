@@ -52,9 +52,9 @@ export default class Incubation extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             rotation: 360,
-            channelWidth: 2000,
-            width: 6000,
-            length: 24 * 1000,
+            channelWidth: 800,
+            width: 1230,
+            length: 4920,
             height: 1200
         };
 
