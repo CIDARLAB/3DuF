@@ -21,7 +21,7 @@
 import { Registry, BareViewManager, ViewManager } from "../app/index";
 import { Examples } from "@/app/index";
 import ResolutionToolbar from "@/components/ResolutionToolbar";
-import ZoomSlider from "@/components/ZoomSlider";
+// import ZoomSlider from "@/components/ZoomSlider";
 import ComponentContextMenu from "@/components/ComponentContextMenu";
 import ConnectionContextMenu from "@/components/ConnectionContextMenu";
 
@@ -30,7 +30,7 @@ export default {
         ResolutionToolbar,
         ComponentContextMenu,
         ConnectionContextMenu,
-        ZoomSlider
+        // ZoomSlider
     },
     data() {
         return {};

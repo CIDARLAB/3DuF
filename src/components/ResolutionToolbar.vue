@@ -25,7 +25,7 @@
                 <v-switch v-model="renderSnap" color="#304FFE" @change="clickedSnap">
                     <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
                 </v-switch>
-                <veeno
+                <!-- <veeno
                     ref="slider"
                     v-model="gridSizeValue"
                     :pipsy="{
@@ -45,7 +45,9 @@
                     :step="100"
                     :connect="[true, false]"
                     @update="updateGridSize"
-                />
+                /> -->
+                <br />
+                <div ref="gridslider" ></div>
             </v-card-text>
         </v-card>
         <div id="bottom-info-bar">Grid Size: {{ gridSizeValue }} &mu;m</div>
@@ -53,15 +55,18 @@
 </template>
 
 <script>
-import veeno from "veeno";
-import "nouislider/distribute/nouislider.min.css";
+// import veeno from "veeno";
+import "@/assets/lib/nouislider/nouislider.min.css";
+import noUiSlider from "@/assets/lib/nouislider/nouislider.js";
 import Registry from "../app/core/registry";
 import wNumb from "wnumb";
 import EventBus from "@/events/events";
 
 export default {
     name: "ResolutionToolbar",
-    components: { veeno },
+    components: { 
+        // veeno 
+    },
     data() {
         return {
             suffix: wNumb({ suffix: "μm" }),
@@ -80,23 +85,23 @@ export default {
         });
 
         // Create the noUiSlider
-        // noUiSlider.create(this.$refs.slider, {
-        //     start: [500],
-        //     connect: "lower",
-        //     range: {
-        //         min: [1, 1],
-        //         "10%": [10, 10],
-        //         "30%": [100, 100],
-        //         "90%": [1000, 1000],
-        //         max: [5000]
-        //     },
-        //     pips: {
-        //         mode: "range",
-        //         density: 5,
-        //         format: wNumb({ suffix: "μm" })
-        //     },
-        //     tooltips: [true]
-        // });
+        noUiSlider.create(this.$refs.gridslider, {
+            start: [500],
+            connect: "lower",
+            range: {
+                min: [1, 1],
+                "10%": [10, 10],
+                "30%": [100, 100],
+                "90%": [1000, 1000],
+                max: [5000]
+            },
+            pips: {
+                mode: "range",
+                density: 5,
+                format: wNumb({ suffix: "μm" })
+            },
+            tooltips: [true]
+        });
 
         // Associate an onchange function
         const ref = this;
@@ -154,7 +159,7 @@ export default {
     align-content: center;
     position: absolute;
     width: 500px;
-    height: 200px;
+    height: 230px;
     top: 10px;
     right: 100px;
     background-color: rgb(250, 250, 250);
