@@ -337,7 +337,6 @@ export default class PaperView {
         this.updateZoom();
 
         //sends out the update zoom event
-        console.log("Zoom Slider TX event:", zoom);
         EventBus.get().emit(EventBus.UPDATE_ZOOM);
     }
 
