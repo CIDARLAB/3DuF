@@ -1,17 +1,6 @@
 <template>
     <!-- <div ref="slider" class="zoomsliderbase"></div> -->
     <div class="zoomsliderbase">
-        <!-- <veeno
-            :set="currentZoom"
-            vertical
-            :handles="30"
-            :range="{
-                min: -3.61,
-                max: 0.6545
-            }"
-            :connect="[false, true]"
-            @update="updateZoom"
-        /> -->
         <div ref="zoomslider" class="zslidermain" height="300px" ></div>
     </div>
 </template>
@@ -22,6 +11,7 @@ import Registry from "@/app/core/registry";
 import "@/assets/lib/nouislider/nouislider.min.css";
 import noUiSlider from "nouislider";
 import wNumb from "wnumb";
+import EventBus from "@/events/events";
 
 export default {
     name: "ZoomSlider",
@@ -46,22 +36,38 @@ export default {
             range: {
                 "min": -3.61,
                 "max": 0.6545
-            }}
-            
+            }},
         );
+        
+        this.$refs.zoomslider.noUiSlider.updateOptions({}, false);
 
+        // Associate an onchange function
+        this.$refs.zoomslider.noUiSlider.on("update", (params) => {
+            this.isUserGeneratedEvent = true;
+            let zoom = parseFloat(params[0]);
+            console.log("scroll bar event zoom:", zoom);
+            this.updateViewManagerZoom(zoom);
+        });
+        let zoomOptimal = 0;
         setTimeout(() => {
-            Math.log10(Registry.viewManager.view.computeOptimalZoom());
-            this.currentZoom = Registry.viewManager.view.zoom;
-            // console.log("currentZoom", this.currentZoom);
+            zoomOptimal = Math.log10(Registry.viewManager.view.computeOptimalZoom());
+            // this.currentZoom = zoomOptimal;
+            console.log("Optimal Zoom:", zoomOptimal);
+            this.$refs.zoomslider.noUiSlider.set(zoomOptimal);
+
             // this.currentZoom = Registry.viewManager.view.getZoom();
         }, 100);
         // Create the onupdate method
         // EventBus.get().on(EventBus.UPDATE_ZOOM, this.setZoom);
+        EventBus.get().on(EventBus.UPDATE_ZOOM, () => {
+            console.log("RX: Update Zoom");
+            // this.viewManagerZoomChanged();
+            let newzoom = this.convertZoomtoLinearScale(Registry.viewManager.view.getZoom());
+            console.log("new zoom:", newzoom);
 
-
-        this.$refs.zoomslider.noUiSlider.set(this.currentZoom);
-        console.log("currentZoom:", this.currentZoom);
+            // this.$refs.zoomslider.noUiSlider.set(zoomOptimal);
+        });
+        // console.log("currentZoom:", this.currentZoom);
 
     },
     methods: {
@@ -70,17 +76,22 @@ export default {
          * @param zoom
          */
         setZoom(zoom) {
-            this.currentZoom = zoom;
+            console.log("Set Zoom Event:", zoom);
+            // this.currentZoom = zoom;
         },
         convertLinearToZoomScale(linvalue) {
             return Math.pow(10, linvalue);
         },
-        updateZoom(params) {
-            console.log("Zoom Value:", parseFloat(params.values[0]));
-            Registry.viewManager.setZoom(this.convertLinearToZoomScale(parseFloat(params.values[0])));
+        updateViewManagerZoom(zoom) {
+            console.log("Zoom Value on slide update:", zoom);
+            Registry.viewManager.setZoom(this.convertLinearToZoomScale(zoom));
         },
         convertZoomtoLinearScale(zoomvalue) {
             return Math.log10(zoomvalue);
+        },
+        viewManagerZoomChanged() {
+            let newzoom = Registry.viewManager.view.getZoom();
+            console.log("Zoom Value on view manager change:", newzoom);
         }
     }
 };

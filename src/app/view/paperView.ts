@@ -29,6 +29,7 @@ import { ToolPaperObject } from "../core/init";
 import Connection from "../core/connection";
 import { ViewManager } from "..";
 import Parameter from "../core/parameter";
+import EventBus from "@/events/events";
 /**
  * Paper View class
  */
@@ -334,6 +335,10 @@ export default class PaperView {
     setZoom(zoom: number): void {
         this.zoom = zoom;
         this.updateZoom();
+
+        //sends out the update zoom event
+        console.log("Zoom Slider TX event:", zoom);
+        EventBus.get().emit(EventBus.UPDATE_ZOOM);
     }
 
     /**
