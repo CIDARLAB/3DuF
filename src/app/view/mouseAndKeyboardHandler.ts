@@ -1,6 +1,6 @@
 import paper from "paper";
 import PanTool from "./tools/panTool";
-import EventBus from "@/events/events.ts";
+import EventBus from "@/events/events";
 import { ViewManager } from "..";
 
 /**
@@ -88,7 +88,7 @@ export default class MouseAndKeyboardHandler {
             // Saving
             if ((event.ctrlKey || event.metaKey) && key === 83) {
                 event.preventDefault();
-                (reference as any).downloadJSON();
+                reference.downloadJSON();
             }
 
             if (key === 70) {

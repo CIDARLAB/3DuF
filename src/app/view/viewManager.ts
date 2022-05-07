@@ -164,7 +164,6 @@ export default class ViewManager {
         // this.__renderBlock = document.getElementById("renderContainer");
         this.setupDragAndDropLoad("#c");
         this.setupDragAndDropLoad("#renderContainer");
-        this.switchTo2D();
     }
 
     /**
@@ -758,7 +757,7 @@ export default class ViewManager {
 
         // Delete all the features
         for (const i in edgefeatures) {
-            (Registry.currentDevice as any).removeFeatureByID(edgefeatures[i].ID);
+            this.removeFeatureByID(edgefeatures[i].ID);
         }
 
         console.log("Edgefeatures", edgefeatures);
@@ -1255,6 +1254,9 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     switchTo2D() {
+        if (Registry.currentDevice === null){
+            throw new Error("No device selected");
+        }
         if (this.threeD) {
             this.threeD = false;
             const center = this.renderer.getCameraCenterInMicrometers();
@@ -1262,14 +1264,14 @@ export default class ViewManager {
             let newCenterX = center[0];
             if (newCenterX < 0) {
                 newCenterX = 0;
-            } else if (newCenterX > (Registry.currentDevice as any).params.getValue("width")) {
-                newCenterX = (Registry.currentDevice as any).params.getValue("width");
+            } else if (newCenterX > Registry.currentDevice.getXSpan()) {
+                newCenterX = Registry.currentDevice.getXSpan();
             }
             let newCenterY = paper.view.center.y - center[1];
             if (newCenterY < 0) {
                 newCenterY = 0;
-            } else if (newCenterY > (Registry.currentDevice as any).params.getValue("height")) {
-                newCenterY = (Registry.currentDevice as any).params.getValue("height");
+            } else if (newCenterY > Registry.currentDevice.getYSpan()) {
+                newCenterY = Registry.currentDevice.getYSpan();
             }
             HTMLUtils.setButtonColor(this.__button2D!, Colors.getDefaultLayerColor((Registry.currentLayer as unknown) as Layer), activeText);
             HTMLUtils.setButtonColor(this.__button3D!, inactiveBackground, inactiveText);
@@ -1321,7 +1323,6 @@ export default class ViewManager {
                 // try {
                 let jsonresult = JSON.parse(result);
                 Registry.viewManager?.loadDeviceFromJSON((jsonresult as unknown) as ScratchInterchangeV1);
-                Registry.viewManager?.switchTo2D();
                 // } catch (error) {
                 //     console.error(error.message);
                 //     alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
@@ -1582,9 +1583,9 @@ export default class ViewManager {
             // Check if render_element is associated with a VALVE/VALVE3D
             const component = this.currentDevice!.getComponentForFeatureID(render_element.featureID);
             if (component !== null) {
-                console.log("Component Type:", (component as any).getType());
+                console.log("Component Type:", component.mint);
                 const type = (component as any).getType();
-                if (type === "Valve3D" || type === "Valve") {
+                if (type === "VALVE3D" || type === "VALVE") {
                     valves.push(component);
                 }
             }
@@ -1595,7 +1596,7 @@ export default class ViewManager {
         // Add to the valvemap
         for (const valve of valves) {
             let valve_type = false;
-            if ((valve as any).getType() === "Valve3D") {
+            if ((valve as any).getType() === "VALVE3D") {
                 valve_type = true;
             }
             console.log("Adding Valve: ", valve);
@@ -1683,6 +1684,16 @@ export default class ViewManager {
     updateGridSpacing(value: number):void {
         this.__grid.updateGridSpacing(value);
         this.updateGrid();
+    }
+
+    downloadJSON() {
+        if(this.currentDevice === null){
+            throw new Error("No device loaded");
+        }
+        let json = new Blob([JSON.stringify(this.generateExportJSON())], {
+            type: "application/json"
+        });
+        saveAs(json, this.currentDevice.name + ".json");
     }
 
 }

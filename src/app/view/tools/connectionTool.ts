@@ -112,7 +112,7 @@ export default class ConnectionTool extends MouseTool {
             const end = ref.wayPoints.pop();
             ref.lastPoint = end;
             ref.finishChannel();
-            (EventBus as any).get().emit(EventBus.RIGHT_CLICK);
+            EventBus.get().emit(EventBus.RIGHT_CLICK);
         };
 
         this.move = function (event) {
