@@ -48,7 +48,10 @@ export default class Valve3D extends Template {
             valveRadius: 0.1 * 100,
             height: 0.1 * 100,
             gap: 0.5 * 10,
-            rotation: 0
+            rotation: 0,
+            width: 10,
+            length: 10
+
         };
 
         this.__maximum = {

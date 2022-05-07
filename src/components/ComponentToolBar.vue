@@ -33,7 +33,6 @@ import { ComponentAPI } from "@/componentAPI.ts";
 import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
 import ConnectionPropertyDrawer from "@/components/ConnectionPropertyDrawer.vue";
 import Registry from "@/app/core/registry";
-import he from "he";
 
 export default {
     name: "ComponentToolBar",
@@ -71,7 +70,6 @@ export default {
             let definition = ComponentAPI.getDefinition(threeduftype);
             let spec = [];
             for (let key in definition.heritable) {
-                console.log(definition.units[key]);
                 // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
                 let item = {
                     mint: key,

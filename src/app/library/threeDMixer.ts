@@ -39,7 +39,7 @@ export default class ThreeDMixer extends Template {
             numberOfBends: "",
             channelWidth: "μm",
             bendLength: "μm",
-
+            rotation: "°",
             height: "μm"
         };
 
