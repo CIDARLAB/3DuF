@@ -17,7 +17,7 @@
             <v-card v-if="showDrawer">
                 <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                 <v-card-text>
-                    <PropertyBlock :title="mint" :spec="spec" @update="updateParameter" />
+                    <PropertyBlock :title="mint" :spec="specClone" @update="updateParameter" />
                 </v-card-text>
             </v-card>
         </div>
@@ -57,6 +57,7 @@ export default {
     },
     data() {
         return {
+            storedSpec:[{ min: 0, max: 110, units: "", value: 0 }],
             activated: false,
             activeTool: null,
             title: "",
@@ -64,6 +65,10 @@ export default {
         };
     },
     computed: {
+        specClone: function(){
+            let cloneSpec = JSON.parse(JSON.stringify(this.storedSpec));
+            return cloneSpec;
+        },
         buttonClasses: function() {
             return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
         },
@@ -97,7 +102,8 @@ export default {
         activateTool(){
             this.activated = !this.activated;
             if (this.activated) {
-                this.spec = this.computedSpecForMINT(this.mint);
+                this.storedSpec = this.spec;
+                this.storedSpec = this.computedSpecForMINT(this.mint);
                 this.activeTool = Registry.viewManager.activateComponentPlacementTool(this.mint, this.spec);
                 this.showProperties();
             } else {
@@ -118,7 +124,8 @@ export default {
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
         },
         updateParameter(value, key) {
-            this.activeTool.updateParameter(key, value);
+            console.log("activeTool", this.activeTool);
+            // this.activeTool.updateParameter(key, value);
         },
         computedSpecForMINT: function(minttype) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
