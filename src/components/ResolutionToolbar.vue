@@ -19,70 +19,55 @@
         </v-tooltip>
         <v-card v-show="activated" id="resolution-toolbar">
             <v-card-text>
-                <v-switch v-model="slider_enabled" color="#304FFE" hide-details @change="clickedGrid">
+                <v-switch v-model="isAdaptiveGridEnabled" color="#304FFE" hide-details @change="clickedGrid">
                     <template v-slot:label class="mdl-switch__label">Enable Automatic Grid</template>
                 </v-switch>
                 <v-switch v-model="renderSnap" color="#304FFE" @change="clickedSnap">
                     <template v-slot:label class="mdl-switch__label">Render Snap Points</template>
                 </v-switch>
-                <!-- <veeno
-                    ref="slider"
-                    v-model="gridSizeValue"
-                    :pipsy="{
-                        mode: 'steps',
-                        density: 5,
-                        stepped: true,
-                        format: suffix
-                    }"
-                    :handles="1000"
-                    :range="{
-                        min: [1],
-                        '10%': [10],
-                        '30%': [100],
-                        '90%': [1000],
-                        max: [5000]
-                    }"
-                    :step="100"
-                    :connect="[true, false]"
-                    @update="updateGridSize"
-                /> -->
                 <br />
-                <div ref="gridslider" ></div>
+                <div ref="gridslider" :disabled="isAdaptiveGridEnabled"></div>
             </v-card-text>
         </v-card>
-        <div id="bottom-info-bar">Grid Size: {{ gridSizeValue }} &mu;m</div>
+        <div id="bottom-info-bar">Grid Size: {{ directGridSpacingRead }} &mu;m</div>
     </div>
 </template>
 
 <script>
-// import veeno from "veeno";
 import "@/assets/lib/nouislider/nouislider.min.css";
 import noUiSlider from "@/assets/lib/nouislider/nouislider.js";
 import Registry from "../app/core/registry";
 import wNumb from "wnumb";
-import EventBus from "@/events/events";
 
 export default {
     name: "ResolutionToolbar",
     components: { 
-        // veeno 
     },
     data() {
         return {
             suffix: wNumb({ suffix: "μm" }),
             activated: false,
             hover: false,
-            slider_enabled: true,
+            isAdaptiveGridEnabled: true,
             renderSnap: true,
-            gridSizeValue: 1000
+            isUserGeneratedEvent: false,
+            ignoreUpdate: false,
+            gridSizeValue: 0,
+
         };
+    },
+    computed: {
+        directGridSpacingRead: function() {
+            if (Registry.viewManager === null) {
+                return 0;
+            }else{
+                return Registry.viewManager.getGridSize();
+            }
+        }
     },
     mounted() {
         // listen to ZoomSlider and get grid size data and show here as sliderValue
         // we doesn't need eventbus anymore
-        EventBus.get().on(EventBus.UPDATE_GRID, data => {
-            this.gridSizeValue = data;
-        });
 
         // Create the noUiSlider
         noUiSlider.create(this.$refs.gridslider, {
@@ -103,6 +88,26 @@ export default {
             tooltips: [true]
         });
 
+        setTimeout(() => {
+            // Associate the DataVariable to the size of the grid
+            this.gridSizeValue = Registry.currentGrid.spacing;
+            // Associate an onchange function
+            this.$refs.gridslider.noUiSlider.on("change", (params) => {
+                let spacing = parseFloat(params[0]);
+                console.log("grid size: " + spacing);
+                // if(!this.ignoreUpdate) {
+                //     Registry.viewManager.updateGridSpacing(spacing);
+                // }
+                Registry.viewManager.updateGridSpacing(spacing);
+            });
+
+            // Get the current grid spacing and set the slider
+            let spacing = Registry.viewManager.getGridSize();
+            console.log("spacing: " + spacing);
+            // this.$refs.gridslider.noUiSlider.set(spacing);
+        }, 100);
+
+
         // Associate an onchange function
         const ref = this;
         const registryref = Registry;
@@ -119,8 +124,8 @@ export default {
             console.log("grid clicked");
         },
         clickedGrid() {
-            console.log(this.slider_enabled);
-            if (this.slider_enabled) {
+            console.log(this.isAdaptiveGridEnabled);
+            if (this.isAdaptiveGridEnabled) {
                 //Enable Adaptive Grid
                 Registry.currentGrid.enableAdaptiveGrid();
                 //this.$ref.slider.setAttribute("disabled", true);
@@ -139,17 +144,17 @@ export default {
                 Registry.viewManager.view.disableSnapRender();
             }
         },
-        updateGridSize(event) {
-            const { values } = event;
-            this.gridSizeValue = parseInt(values[0], 10);
-            if (Registry.currentGrid !== null) {
-                console.log("updating grid size to " + this.gridSizeValue);
-                Registry.currentGrid.updateGridSpacing(this.gridSizeValue);
-                //registryref.currentGrid.notifyViewManagerToUpdateView();
-                // console.log("grid updated gridSizeValue", this.gridSizeValue);
-                // console.log("grid updated registry", registryref.currentGrid.spacing);
-            }
-        }
+        // updateGridSize(event) {
+        //     const { values } = event;
+        //     this.gridSizeValue = parseInt(values[0], 10);
+        //     if (Registry.currentGrid !== null) {
+        //         console.log("updating grid size to " + this.gridSizeValue);
+        //         Registry.currentGrid.updateGridSpacing(this.gridSizeValue);
+        //         //registryref.currentGrid.notifyViewManagerToUpdateView();
+        //         // console.log("grid updated gridSizeValue", this.gridSizeValue);
+        //         // console.log("grid updated registry", registryref.currentGrid.spacing);
+        //     }
+        // }
     }
 };
 </script>

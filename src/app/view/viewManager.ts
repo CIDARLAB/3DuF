@@ -1569,7 +1569,7 @@ export default class ViewManager {
      * This is the method we need to call to fix the valvemaps
      * @memberof ViewManager
      */
-    createValveMapFromSelection() {
+    createValveMapFromSelection():void {
         // TODO: Run through the current selection and generate the valve map for every
         // vavle that is in the Selection
         const selection = this.tools.MouseSelectTool.currentSelection;
@@ -1606,7 +1606,7 @@ export default class ViewManager {
      * @param {*} minttype
      * @returns
      */
-    activateComponentPlacementTool(minttype: string, currentParameters: any) {
+    activateComponentPlacementTool(minttype: string, currentParameters: any): PositionTool | ValveInsertionTool | ConnectionTool {
         const threeduftype = ComponentAPI.getTypeForMINT(minttype);
         if (threeduftype === null) {
             throw new Error("Found null when looking for MINT Type");
@@ -1647,10 +1647,42 @@ export default class ViewManager {
         return activeTool;
     }
 
-    deactivateComponentPlacementTool() {
+    /**
+     * Deactivates the current placement tool
+     *
+     * @memberof ViewManager
+     */
+    deactivateComponentPlacementTool(): void {
         console.log("Deactivating Component Placement Tool");
         this.mouseAndKeyboardHandler.leftMouseTool.deactivate();
         this.mouseAndKeyboardHandler.rightMouseTool.deactivate();
         this.resetToDefaultTool();
     }
+
+    /**
+     * Returns the spacing for the current grid on the device
+     *
+     * @returns
+     * @memberof ViewManager
+     */
+    getGridSize(): number {
+        if (this.__grid === null) {
+            return 0;
+        }
+        console.log("Grid Size:", this.__grid.spacing);
+        return this.__grid.spacing;
+    }
+
+    /**
+     * Updated the grid size for the current view
+     *
+     * @param {number} value
+     * @memberof ViewManager
+     */
+    updateGridSpacing(value: number):void {
+        console.log("Updating Grid Spacing (viewmanager):", value);
+        this.__grid.updateGridSpacing(value);
+        this.__grid.notifyViewManagerToUpdateView();
+    }
+
 }

@@ -43,7 +43,6 @@ export default {
         setTimeout(() => {
             // Associate an onchange function
             this.$refs.zoomslider.noUiSlider.on("update", (params) => {
-                this.isUserGeneratedEvent = true;
                 let zoom = parseFloat(params[0]);
                 if (!this.ignoreUpdate) {
                     this.updateViewManagerZoom(zoom);
