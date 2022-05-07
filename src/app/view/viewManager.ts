@@ -1682,7 +1682,7 @@ export default class ViewManager {
     updateGridSpacing(value: number):void {
         console.log("Updating Grid Spacing (viewmanager):", value);
         this.__grid.updateGridSpacing(value);
-        this.__grid.notifyViewManagerToUpdateView();
+        this.updateGrid();
     }
 
 }

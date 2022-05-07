@@ -95,10 +95,10 @@ export default {
             this.$refs.gridslider.noUiSlider.on("change", (params) => {
                 let spacing = parseFloat(params[0]);
                 console.log("grid size: " + spacing);
-                // if(!this.ignoreUpdate) {
-                //     Registry.viewManager.updateGridSpacing(spacing);
-                // }
-                Registry.viewManager.updateGridSpacing(spacing);
+                if(!this.ignoreUpdate) {
+                    Registry.viewManager.updateGridSpacing(spacing);
+                }
+                // Registry.viewManager.updateGridSpacing(spacing);
             });
 
             // Get the current grid spacing and set the slider
