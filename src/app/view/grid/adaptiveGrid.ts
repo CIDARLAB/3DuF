@@ -30,7 +30,13 @@ export default class AdaptiveGrid {
         this.color = color;
     }
 
-    get spacing() {
+    /**
+     * Returns the current grid spacing
+     *
+     * @type {number}
+     * @memberof AdaptiveGrid
+     */
+    get spacing(): number {
         return this.__spacing;
     }
 

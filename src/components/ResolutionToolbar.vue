@@ -29,7 +29,7 @@
                 <div ref="gridslider" :disabled="isAdaptiveGridEnabled"></div>
             </v-card-text>
         </v-card>
-        <div id="bottom-info-bar">Grid Size: {{ directGridSpacingRead }} &mu;m</div>
+        <div id="bottom-info-bar">Grid Size: {{ gridSizeValue }} &mu;m</div>
     </div>
 </template>
 
@@ -38,6 +38,7 @@ import "@/assets/lib/nouislider/nouislider.min.css";
 import noUiSlider from "@/assets/lib/nouislider/nouislider.js";
 import Registry from "../app/core/registry";
 import wNumb from "wnumb";
+import EventBus from "@/events/events";
 
 export default {
     name: "ResolutionToolbar",
@@ -89,8 +90,7 @@ export default {
         });
 
         setTimeout(() => {
-            // Associate the DataVariable to the size of the grid
-            this.gridSizeValue = Registry.currentGrid.spacing;
+            Registry.currentGrid.spacing;
             // Associate an onchange function
             this.$refs.gridslider.noUiSlider.on("change", (params) => {
                 let spacing = parseFloat(params[0]);
@@ -98,26 +98,27 @@ export default {
                 if(!this.ignoreUpdate) {
                     Registry.viewManager.updateGridSpacing(spacing);
                 }
-                // Registry.viewManager.updateGridSpacing(spacing);
             });
 
             // Get the current grid spacing and set the slider
             let spacing = Registry.viewManager.getGridSize();
-            console.log("spacing: " + spacing);
-            // this.$refs.gridslider.noUiSlider.set(spacing);
+            this.ignoreUpdate = true;
+            this.$refs.gridslider.noUiSlider.set(spacing);
+            this.ignoreUpdate = false;
+            this.gridSizeValue = spacing;
+
+            // Sign up for the eventbus notifications
+            EventBus.get().on(EventBus.UPDATE_GRID_SIZE, () => {
+                let spacing = Registry.viewManager.getGridSize();
+                this.gridSizeValue = spacing;
+                this.ignoreUpdate = true;
+                this.$refs.gridslider.noUiSlider.set(spacing);
+                this.ignoreUpdate = false;
+            });
         }, 100);
 
 
-        // Associate an onchange function
-        const ref = this;
-        const registryref = Registry;
-        // this.__gridResolutionSlider.noUiSlider.on("update", function(values, handle, unencoded, isTap, positions) {
-        //     ref.__smallresolutionLabel.innerHTML = values[0] + " μm";
-        // });
     },
-    // updated() {
-    //     Registry.currentGrid.enableAdaptiveGrid();
-    // },
     methods: {
         showProperties() {
             this.activated = !this.activated;
@@ -143,18 +144,7 @@ export default {
                 //Disable Snap
                 Registry.viewManager.view.disableSnapRender();
             }
-        },
-        // updateGridSize(event) {
-        //     const { values } = event;
-        //     this.gridSizeValue = parseInt(values[0], 10);
-        //     if (Registry.currentGrid !== null) {
-        //         console.log("updating grid size to " + this.gridSizeValue);
-        //         Registry.currentGrid.updateGridSpacing(this.gridSizeValue);
-        //         //registryref.currentGrid.notifyViewManagerToUpdateView();
-        //         // console.log("grid updated gridSizeValue", this.gridSizeValue);
-        //         // console.log("grid updated registry", registryref.currentGrid.spacing);
-        //     }
-        // }
+        }
     }
 };
 </script>

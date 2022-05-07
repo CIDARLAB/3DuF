@@ -633,6 +633,8 @@ export default class ViewManager {
         if (this.__hasCurrentGrid()) {
             this.view.updateGrid(Registry.currentGrid);
             this.refresh(refresh);
+            // Send the EventBus Notification
+            EventBus.get().emit(EventBus.UPDATE_GRID_SIZE);
         }
     }
 
@@ -1669,7 +1671,6 @@ export default class ViewManager {
         if (this.__grid === null) {
             return 0;
         }
-        console.log("Grid Size:", this.__grid.spacing);
         return this.__grid.spacing;
     }
 
@@ -1680,7 +1681,6 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateGridSpacing(value: number):void {
-        console.log("Updating Grid Spacing (viewmanager):", value);
         this.__grid.updateGridSpacing(value);
         this.updateGrid();
     }
