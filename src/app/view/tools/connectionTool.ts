@@ -465,7 +465,7 @@ export default class ConnectionTool extends MouseTool {
      * @private
      */
     __addConnectionTargets(connection: Connection) {
-        if (this.source !== null || this.source !== undefined) {
+        if (this.source !== null && this.source !== undefined) {
             connection.addConnectionTarget(this.source);
         }
 

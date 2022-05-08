@@ -195,7 +195,7 @@ export default class Mux extends Template {
         const px = position[0];
         const py = position[1];
 
-        const treeWidth = (leafs - 1) * spacing + leafs * cw + valvewidth;
+        const treeWidth = (leafs - 1) * spacing + leafs * cw + leafs * valvewidth;
         const leftEdge = px - treeWidth / 2;
         const rightEdge = px + treeWidth / 2;
 

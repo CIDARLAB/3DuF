@@ -10,7 +10,6 @@ export default class CellPositionTool extends PositionTool {
     }
 
     createNewFeature(point: paper.Point) {
-        console.log("POINT: ", point);
         const featureIDs = [];
         const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(Registry.currentLayer!) / 3);
         const flowlayer = currentlevel * 3;
