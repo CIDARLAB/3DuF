@@ -247,8 +247,8 @@ export default class ThreeDMux extends Template {
         const bottomlinelength = N * 4000; // modify, so it depends on the input N
         const vertlinelength = N * 3000; // same as above
 
-        const bottomlineleft = new paper.Point(px, py - channelWidth / 2 + vertlinelength);
-        const bottomlineright = new paper.Point(px + bottomlinelength, py + channelWidth / 2 + vertlinelength);
+        const bottomlineleft = new paper.Point(px - channelWidth / 2, py - channelWidth / 2 + vertlinelength);
+        const bottomlineright = new paper.Point(px + bottomlinelength + channelWidth / 2, py + channelWidth / 2 + vertlinelength);
         const channel = new paper.Path.Rectangle(bottomlineleft, bottomlineright);
 
         threedmux_flow.addChild(channel);
@@ -472,7 +472,7 @@ export default class ThreeDMux extends Template {
         const radius = params.valveRadius;
         const color = params.color;
         let rotation = params.rotation;
-        const threedmux_control = new paper.CompoundPath();
+        const threedmux_control = new paper.CompoundPath("");
 
         const px = position[0];
         const py = position[1];
