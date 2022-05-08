@@ -104,7 +104,7 @@ export default {
             if (this.activated) {
                 this.storedSpec = this.spec;
                 this.storedSpec = this.computedSpecForMINT(this.mint);
-                this.activeTool = Registry.viewManager.activateComponentPlacementTool(this.mint, this.spec);
+                this.activeTool = Registry.viewManager.activateComponentPlacementTool(this.mint, this.storedSpec);
                 this.showProperties();
             } else {
                 Registry.viewManager.deactivateComponentPlacementTool();
@@ -132,8 +132,6 @@ export default {
             let definition = ComponentAPI.getDefinitionForMINT(minttype);
             let spec = [];
             for (let key in definition.heritable) {
-                console.log(definition.units[key]);
-                // const unittext = definition.units[key] !== "" ? he.htmlDecode(definition.units[key]) : "";
                 let item = {
                     min: definition.minimum[key],
                     max: definition.maximum[key],
