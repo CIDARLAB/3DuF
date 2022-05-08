@@ -17,7 +17,7 @@
             <v-card v-if="showDrawer">
                 <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
                 <v-card-text>
-                    <PropertyBlock :title="mint" :spec="specClone" @update="updateParameter" />
+                    <PropertyBlock :title="mint" :spec="storedSpec" @update="updateParameter" />
                 </v-card-text>
             </v-card>
         </div>
@@ -124,7 +124,7 @@ export default {
             this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
         },
         updateParameter(value, key) {
-            console.log("activeTool", this.activeTool);
+            console.log("activeTool", this.activeTool, value, key);
             // this.activeTool.updateParameter(key, value);
         },
         computedSpecForMINT: function(minttype) {
