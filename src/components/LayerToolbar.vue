@@ -13,7 +13,7 @@
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
 
-                <v-btn-toggle :v-model="level.mode" mandatory tile borderless>
+                <v-btn-toggle :v-model="level.mode" tile borderless>
                     <v-btn small :color="getButtonColor(level, 0)" @click="layerModeClicked(level, 0)">
                         <span>Flow</span>
                     </v-btn>
@@ -38,22 +38,24 @@ export default {
             selectedMode: 0,
             disabled: false,
             renderLayers: [],
-            layers: []
+            layers: [],
+            levels: [],
+            toggleMode: [0]
         };
     },
     computed: {
-        levels: function() {
-            let ret = [];
-            for (let i in this.layers) {
-                if (i % 3 == 0) {
-                    ret.push({
-                        id: i / 3,
-                        mode: 0
-                    });
-                }
-            }
-            return ret;
-        },
+        // levels: function() {
+        //     let ret = [];
+        //     for (let i in this.layers) {
+        //         if (i % 3 == 0) {
+        //             ret.push({
+        //                 id: i / 3,
+        //                 mode: 0
+        //             });
+        //         }
+        //     }
+        //     return ret;
+        // },
         selectedLevel: function() {
             let layer = Registry.viewManager.activeRenderLayer;
             let remain = layer % 3;
@@ -61,6 +63,23 @@ export default {
 
             return layer / 3;
         }
+    },
+    watch: {
+        layers: {
+            handler: function(newLayers) {
+                console.log("layers changed", newLayers);
+                let ret = [];
+                for (let i in newLayers) {
+                    if (i % 3 == 0) {
+                        ret.push({
+                            id: i / 3,
+                            mode: 0
+                        });
+                    }
+                }
+                this.levels = ret;
+            },
+        },
     },
     mounted() {
         // Load what layers are there in the device
@@ -74,8 +93,14 @@ export default {
         },
 
         layerModeClicked(level, mode) {
+            for(let i in this.levels) {
+                if (this.levels[i].id == level.id) {
+                    this.levels[i].mode = mode;
+                }else{
+                    this.levels[i].mode = null;
+                }
+            }
             this.levels[level.id].mode = mode;
-            this.selectedLevel = level.id;
             Registry.viewManager.setActiveRenderLayer(level.id * 3 + mode);
         },
 
@@ -103,5 +128,18 @@ export default {
     display: inline-flex;
     justify-content: center;
     align-items: center;
+}
+
+.layerbutton-flow{
+    background-color: blue;
+    color: white;
+}
+
+.layerbutton-control{
+
+}
+
+.layerbutton-integration{
+
 }
 </style>
