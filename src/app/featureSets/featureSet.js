@@ -46,6 +46,7 @@ import Node from "../library/node";
 import DropletGeneratorT from "../library/dropletGeneratorT";
 import DropletGeneratorFlowFocus from "../library/dropletGeneratorFlowFocus";
 import LogicArray from "../library/logicArray";
+import Dilution from "../library/dilution"; 
 
 export default class FeatureSet {
     constructor(definitions, tools, render2D, render3D, setString) {
@@ -123,7 +124,9 @@ export default class FeatureSet {
             DropletGenFlow: { object: new DropletGeneratorFlowFocus(), key: null },
             LogicArray: { object: new LogicArray(), key: "FLOW" },
             LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
-            LogicArray_cell: { object: new LogicArray(), key: "CELL" }
+            LogicArray_cell: { object: new LogicArray(), key: "CELL" },
+            "Dilution": {object: new Dilution(), key: "FLOW"},
+            "Dilution_control": {object: new Dilution(), key: "CONTROL"}
         };
 
         // this.__checkDefinitions();
