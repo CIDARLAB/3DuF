@@ -406,6 +406,99 @@ export const basicFeatures = {
             rotation: 180
         }
     },
+    GasPurgeValve3D: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            orientation: "String",
+            valveRadius: "Float",
+            height: "Float",
+            gap: "Float",
+            width: "Float",
+            length: "Float",
+            membraneParameter: "Float",
+            rotation: "Float"
+        },
+        units: {
+            orientation: "",
+            valveRadius: "&mu;m",
+            height: "&mu;m",
+            gap: "&mu;m",
+            width: "&mu;m",
+            length: "&mu;m",
+            rotation: "&deg;"
+        },
+        defaults: {
+            orientation: "V",
+            valveRadius: 3 * 100,
+            height: 48,
+            gap: 0.6 * 1000,
+            width: 600,
+            length: 600,
+            membraneParameter: 1,
+            rotation: 0
+        },
+        minimum: {
+            valveRadius: 0.1 * 100,
+            height: 0.1 * 100,
+            gap: 0.5 * 10,
+            rotation: 0
+        },
+        maximum: {
+            valveRadius: 0.2 * 10000,
+            height: 1.2 * 1000,
+            gap: 0.1 * 10000,
+            rotation: 180
+        }
+    },
+    GasPurgeValve3D_control: {
+        unique: {
+            position: "Point"
+        },
+        heritable: {
+            orientation: "String",
+            valveRadius: "Float",
+            height: "Float",
+            gap: "Float",
+            width: "Float",
+            length: "Float",
+            membraneParameter: "Float",
+            rotation: "Float"
+        },
+        units: {
+            orientation: "",
+            valveRadius: "&mu;m",
+            height: "&mu;m",
+            gap: "&mu;m",
+            width: "&mu;m",
+            length: "&mu;m",
+            membraneParameter: "",
+            rotation: "&deg;"
+        },
+        defaults: {
+            orientation: "V",
+            valveRadius: 300,
+            height: 48,
+            gap: 0.6 * 1000,
+            width: 600,
+            length: 600,
+            membraneParameter: 1,
+            rotation: 0
+        },
+        minimum: {
+            valveRadius: 0.1 * 100,
+            height: 0.1 * 100,
+            gap: 0.5 * 10,
+            rotation: 0
+        },
+        maximum: {
+            valveRadius: 0.2 * 10000,
+            height: 1.2 * 1000,
+            gap: 0.1 * 10000,
+            rotation: 180
+        }
+    },
     Transposer: {
         unique: {
             position: "Point"

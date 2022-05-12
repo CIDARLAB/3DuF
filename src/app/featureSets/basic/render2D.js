@@ -141,6 +141,45 @@ export const render2D = {
         targetPrimitiveSet: "Basic2D"
     },
 
+    GasPurgeValve3D: {
+        featureParams: {
+            position: "position",
+            rotation: "rotation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            rotation: "rotation",
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GroverValve",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+    GasPurgeValve3D_control: {
+        featureParams: {
+            position: "position",
+            rotation: "rotation",
+            radius1: "valveRadius",
+            radius2: "valveRadius",
+            valveRadius: "valveRadius",
+            gap: "gap"
+        },
+        targetParams: {
+            rotation: "rotation",
+            radius1: "valveRadius",
+            radius2: "valveRadius"
+        },
+        featurePrimitiveSet: "Basic2D",
+        featurePrimitiveType: "GroverValve_control",
+        targetPrimitiveType: "CircleTarget",
+        targetPrimitiveSet: "Basic2D"
+    },
+
     Pump: {
         featureParams: {
             position: "position",

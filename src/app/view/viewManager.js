@@ -1251,6 +1251,7 @@ export default class ViewManager {
         this.tools["CircleValve"] = new ValveInsertionTool("CircleValve", "Basic");
         this.tools["RectValve"] = new ComponentPositionTool("RectValve", "Basic");
         this.tools["Valve3D"] = new ValveInsertionTool("Valve3D", "Basic", true);
+        this.tools["GasPurgeValve3D"] = new ValveInsertionTool("GasPurgeValve3D", "Basic", true);
         this.tools["Port"] = new ComponentPositionTool("Port", "Basic");
         this.tools["Anode"] = new ComponentPositionTool("Anode", "Basic"); //Ck
         this.tools["Cathode"] = new ComponentPositionTool("Cathode", "Basic"); //Ck
@@ -1416,12 +1417,12 @@ export default class ViewManager {
         let connection = null;
         //TODO: run though the items
         for (let render_element of selection) {
-            //Check if render_element is associated with a VALVE/VALVE3D
+            //Check if render_element is associated with a VALVE/VALVE3D/GASPURGEVALVE3D
             let component = this.currentDevice.getComponentForFeatureID(render_element.featureID);
             if (component !== null) {
                 console.log("Component Type:", component.getType());
                 let type = component.getType();
-                if (type === "Valve3D" || type === "Valve") {
+                if (type === "Valve3D" || type === "Valve" || type === "GasPurgeValve3D") {
                     valves.push(component);
                 }
             }
@@ -1433,6 +1434,9 @@ export default class ViewManager {
         for (let valve of valves) {
             let valve_type = false;
             if (valve.getType() === "Valve3D") {
+                valve_type = true;
+            }
+            if (valve.getType() === "GasPurgeValve3D") {
                 valve_type = true;
             }
             console.log("Adding Valve: ", valve);
