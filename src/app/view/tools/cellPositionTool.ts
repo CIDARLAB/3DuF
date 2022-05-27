@@ -3,6 +3,7 @@ import paper from "paper";
 import Registry from "../../core/registry";
 import Device from "../../core/device";
 import ViewManager from "@/app/view/viewManager";
+import Parameter from "../../core/parameter";
 export default class CellPositionTool extends PositionTool {
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters = null) {
         super(viewManagerDelegate, typeString, currentParameters);
@@ -15,7 +16,7 @@ export default class CellPositionTool extends PositionTool {
         const controllayer = currentlevel * 3 + 1;
         const cell_layer = currentlevel * 3;
 
-        const paramvalues = this.getCreationParameters(point);
+        const paramvalues = this.getCreationParameters(new paper.Point(0, 0));
         let newFeature = Device.makeFeature(this.typeString, paramvalues);
         this.currentFeatureID = newFeature.ID;
         this.viewManagerDelegate.addFeature(newFeature, flowlayer);
@@ -24,8 +25,10 @@ export default class CellPositionTool extends PositionTool {
 
         const params_to_copy = newFeature.getParams();
 
+        const params_point = PositionTool.getTarget([point.x, point.y]);
         const newtypestring = this.typeString + "_cell";
         const paramstoadd = newFeature.getParams();
+        paramstoadd["position"] = new Parameter("position", params_point);
         newFeature = Device.makeFeature(newtypestring, paramvalues);
         newFeature.setParams(paramstoadd);
 

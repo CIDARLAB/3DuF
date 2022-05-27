@@ -4,6 +4,7 @@ import Registry from "../../core/registry";
 import Device from "../../core/device";
 import ViewManager from "@/app/view/viewManager";
 import paper from "paper";
+import Parameter from "@/app/core/parameter";
 
 export default class MultilayerPositionTool extends PositionTool {
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters: { [k: string]: any } | null = null) {
@@ -18,24 +19,17 @@ export default class MultilayerPositionTool extends PositionTool {
         const intlayer = currentlevel * 3 + 2;
 
         // Set up flow layer component
-        const paramvalues = this.getCreationParameters(point);
+        const paramvalues = this.getCreationParameters(new paper.Point(0, 0));
         let newFeature = Device.makeFeature(this.typeString, paramvalues);
         this.currentFeatureID = newFeature.ID;
         this.viewManagerDelegate.addFeature(newFeature, flowlayer);
-
+        const params_to_copy = newFeature.getParams();    
         featureIDs.push(newFeature.ID);
 
-        const params_to_copy = newFeature.getParams();
-
         let newtypestring;
-        const paramstoadd = newFeature.getParams();
-        // Set up control layer component
         if (ComponentAPI.library[this.typeString + "_control"]) {
             newtypestring = this.typeString + "_control";
-            newFeature = Device.makeFeature(newtypestring, {
-                position: PositionTool.getTarget([point.x, point.y])
-            });
-            newFeature.setParams(paramstoadd);
+            newFeature = Device.makeFeature(newtypestring, paramvalues);
 
             this.currentFeatureID = newFeature.ID;
             this.viewManagerDelegate.addFeature(newFeature, controllayer);
@@ -47,14 +41,14 @@ export default class MultilayerPositionTool extends PositionTool {
         if (ComponentAPI.library[this.typeString + "_integration"]) {
             newtypestring = this.typeString + "_integration";
             newFeature = Device.makeFeature(newtypestring, paramvalues);
-            newFeature.setParams(paramstoadd);
 
             this.currentFeatureID = newFeature.ID;
             this.viewManagerDelegate.addFeature(newFeature, intlayer);
 
             featureIDs.push(newFeature.ID);
         }
-
+    
+        params_to_copy["position"] = new Parameter("position", [point.x, point.y]);
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager?.saveDeviceState();
     }

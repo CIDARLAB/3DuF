@@ -165,6 +165,8 @@ export default class CapacitanceSensor extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
+        serp.rotate(rotation, new paper.Point(x, y));
+
         serp.fillColor = color;
         return serp;
     }

@@ -11,6 +11,7 @@ import Component from "../../core/component";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../../utils/mapUtils";
 import ViewManager from "@/app/view/viewManager";
+import { paperObject } from "@/app/core/init";
 
 export default class PositionTool extends MouseTool {
     viewManagerDelegate: ViewManager;
@@ -106,6 +107,7 @@ export default class PositionTool extends MouseTool {
         for (const key in paramdata) {
             cleanparamdata[key] = paramdata[key].value;
         }
+        cleanparamdata["position"] = [0, 0];
         const params = new Params(cleanparamdata, MapUtils.toMap(definition!.unique), MapUtils.toMap(definition!.heritable));
         const componentid = ComponentAPI.generateID();
         const name = Registry.currentDevice!.generateNewName(typeString);
@@ -119,6 +121,10 @@ export default class PositionTool extends MouseTool {
             feature = Registry.currentDevice!.getFeatureByID(featureIDs[i]);
             feature.referenceID = componentid;
         }
+
+        newComponent.setInitialOffset();
+
+        newComponent.updateComponentPosition(paramdata["position"].value);
 
         this.viewManagerDelegate.currentDevice!.addComponent(newComponent);
         return newComponent;

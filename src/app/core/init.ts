@@ -11,6 +11,7 @@ export type ScratchInterchangeV1 = {
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
     connections: Array<ConnectionInterchangeV1>;
+    valves: Array<ValveInterchangeV1>;
     version: number;
     renderLayers: Array<RenderLayerInterchangeV1>;
 };
@@ -28,6 +29,7 @@ export type DeviceInterchangeV1 = {
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
     connections: Array<ConnectionInterchangeV1>;
+    valves: Array<ValveInterchangeV1>;
     version: number;
 };
 
@@ -62,6 +64,12 @@ export type ConnectionInterchangeV1 = {
     params: any;
     layer: string;
 };
+
+export type ValveInterchangeV1 = {
+    valveID: string;
+    targetID: string;
+    is3d: boolean;
+}
 
 export type LayerInterchangeV1 = {
     id: string;
