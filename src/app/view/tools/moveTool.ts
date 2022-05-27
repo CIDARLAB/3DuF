@@ -2,6 +2,7 @@ import MouseTool from "./mouseTool";
 import paper from "paper";
 import Registry from "../../core/registry";
 import { Component } from "vue";
+import { paperObject } from "@/app/core/init";
 
 export default class MoveTool extends MouseTool {
     private __startPoint?: paper.Point | number[] | null;
@@ -102,8 +103,8 @@ export default class MoveTool extends MouseTool {
     dragHandler(event: MouseEvent) {
         if (this.__dragging) {
             const point = MouseTool.getEventPosition(event);
-            const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
-            // console.log("Point:", point, target, this.__startPoint);
+            let target: paper.Point | number[] | undefined = [0, 0];
+            if (point != null) target = Registry.viewManager?.snapToGrid([point.x, point.y]);
             const delta = {
                 x: (target as any).x - (this.__startPoint as any).y,
                 y: (target as any).y - (this.__startPoint as any).y

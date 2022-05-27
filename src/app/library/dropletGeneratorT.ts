@@ -147,7 +147,7 @@ export default class DropletGeneratorT extends Template {
 
         // Rotate the geometry
         ret.closed = true;
-        ret.rotate(-rotation, new paper.Point(x, y));
+        ret.rotate(rotation, new paper.Point(x, y));
         ret.fillColor = color;
 
         return ret;

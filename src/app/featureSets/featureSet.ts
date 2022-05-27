@@ -47,8 +47,10 @@ import DropletGeneratorT from "../library/dropletGeneratorT";
 import DropletGeneratorFlowFocus from "../library/dropletGeneratorFlowFocus";
 import LogicArray from "../library/logicArray";
 import ToroidalMixer from "../library/toroidalMixer";
+import DogboneInsert from "../library/dogboneInsert";
 
 import { definitions, tools, render2D, render3D } from "./basic";
+import Template from "../library/template";
 
 type render2DType = typeof render2D;
 type render3DType = typeof render3D;
@@ -74,6 +76,7 @@ export default class FeatureSet {
         this.__render3D = render3D;
         // TODO: Replace this cumbersome mechanism for generating different feature variants, etc.
         this.__library = {
+            Template: { object: new Template(), key: "FLOW" },
             Port: { object: new Port(), key: null },
             Anode: { object: new Anode(), key: null }, // ck addition
             Cathode: { object: new Cathode(), key: null }, // ck addition
@@ -124,7 +127,8 @@ export default class FeatureSet {
             Via: { object: new Via(), key: "FLOW" },
 
             // new
-            Filter: { object: new Filter(), key: "Flow" },
+            DogboneInsert: { object: new DogboneInsert(), key: "FLOW" },
+            Filter: { object: new Filter(), key: "FLOW" },
             CellTrapS: { object: new CellTrapS(), key: "FLOW" },
             CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },
             "3DMux": { object: new ThreeDMux(), key: "FLOW" },

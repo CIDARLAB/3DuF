@@ -27,13 +27,14 @@ export default class ExportUtils {
         const device = viewManagerDelegate.currentDevice.toInterchangeV1();
 
         const newScratch: ScratchInterchangeV1 = {
-            renderLayers: renderLayers,
             name: device.name,
             params: device.params,
+            renderLayers: renderLayers,
             layers: device.layers,
             groups: device.groups,
             components: device.components,
             connections: device.connections,
+            valves: device.valves,
             version: device.version
         };
 

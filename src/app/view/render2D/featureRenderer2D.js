@@ -156,9 +156,18 @@ export function renderFeature(feature, key) {
         for (const paramkey in params) {
             primParams[paramkey] = feature.getValue(params[paramkey]);
         }
+        //primParams["position"] = [0,0];
+        //console.log("Data for rendering:", primParams);
+        //Set the position of the params to 0,0
         primParams.color = getLayerColor(feature);
         primParams.baseColor = getBaseColor(feature);
         rendered = renderer.render2D(primParams, key);
+        // Rendered is going to be at 0,0 with whatever rotation
+        // Now we can get draw offset by looking at the rendered topleft corner
+        // move the feature to user pointed position
+        // save the drawoffsets on the feature object 
+        // later on in the component, calculate position by subtracting draw offset
+        // recalculate draw offset whenever parameter changed
         rendered.featureID = feature.ID;
 
         return rendered;

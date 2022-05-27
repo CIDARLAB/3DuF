@@ -49,6 +49,8 @@ export default class Feature {
         let modifierName: string;
         if (this.type == "Port") modifierName = "PORT";
         else modifierName = "COMPONENT";
+        console.log("rendName: ", tempRenderName);
+        console.log("z-offset-key: ", ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName));
         this._manufacturingInfo = {
             fabtype: fabtype,
             layertype: null,
@@ -354,6 +356,10 @@ export default class Feature {
      */
 
     deriveRenderName(): string {
+        if (!ComponentAPI.library[this.type]) {
+            console.error("Type unrecognized, defaulting to template.");
+            this._type = "Template";
+        }
         return ComponentAPI.library[this.type].key;
     }
 

@@ -3,6 +3,7 @@ import Registry from "../../core/registry";
 import Device from "../../core/device";
 import ViewManager from "@/app/view/viewManager";
 import paper from "paper";
+import Parameter from "@/app/core/parameter";
 
 export default class ComponentPositionTool extends PositionTool {
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParams: { [k: string]: any } | null = null) {
@@ -11,8 +12,7 @@ export default class ComponentPositionTool extends PositionTool {
 
     createNewFeature(point: paper.Point) {
         const featureIDs = [];
-
-        const paramvalues = this.getCreationParameters(point);
+        const paramvalues = this.getCreationParameters(new paper.Point(0, 0));
         const newFeature = Device.makeFeature(this.typeString, paramvalues);
         this.currentFeatureID = newFeature.ID;
 
@@ -20,8 +20,10 @@ export default class ComponentPositionTool extends PositionTool {
 
         featureIDs.push(newFeature.ID);
 
+        const params_point = PositionTool.getTarget([point.x, point.y]);
+
         const params_to_copy = newFeature.getParams();
-        console.log("TS: ", super.typeString);
+        params_to_copy["position"] = new Parameter("position", params_point);
         super.createNewComponent(this.typeString, params_to_copy, featureIDs);
         Registry.viewManager?.saveDeviceState();
     }

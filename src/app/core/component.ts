@@ -28,6 +28,8 @@ export default class Component {
     protected _componentPortTRenders: Map<string, Port>;
     protected _xspan: number;
     protected _yspan: number;
+
+    protected _offset: Point;
     /**
      * Default Constructor
      * @param {string} type
@@ -52,6 +54,7 @@ export default class Component {
         // TODO - Figure out how to use this for generic components
         this._xspan = 0;
         this._yspan = 0;
+        this._offset = [0, 0];
 
         // Create and set the ports here itself
 
@@ -77,6 +80,15 @@ export default class Component {
      */
     get mint(): string {
         return this._entity;
+    }
+
+    /**
+     * Returns the offset value of the component
+     * @type {[number, number]}
+     * @memberof Component
+     */
+    get offset(): [number, number] {
+        return this._offset;
     }
 
     /**
@@ -157,8 +169,8 @@ export default class Component {
      * @returns {void}
      */
     updateParameter(key: string, value: any): void {
+        if (key == "position") console.error("Use updateComponentPosition instead of updateParameter when changing position");
         this._params.updateParameter(key, value);
-
         for (const i in this._featureIDs) {
             const featureidtochange = this._featureIDs[i];
 
@@ -167,6 +179,12 @@ export default class Component {
             feature.updateParameter(key, value);
         }
 
+        // Update component position
+        const featPos = ComponentUtils.getFeatureFromID(this._featureIDs[0]).getValue("position");
+        // Update position (top-left corner)
+        this.setPosition();
+        // Update offset
+        this.setOffset();
         // Update the ComponentPorts
         this.updateComponentPorts();
     }
@@ -254,10 +272,10 @@ export default class Component {
 
     /**
      * Returns an Array of size two containing the X and Y coordinates
-     * @return {number[]}
+     * @return {Point}
      * @memberof Component
      */
-    getPosition(): number[] {
+    getPosition(): Point {
         return this._params.getValue("position");
     }
 
@@ -300,10 +318,7 @@ export default class Component {
         for (const i in this._featureIDs) {
             // gets teh feature defined by the id
             feature = ComponentUtils.getFeatureFromID(this._featureIDs[i]);
-            console.log(feature);
             renderedfeature = FeatureRenderer2D.renderFeature(feature, null);
-            console.log("rendered:");
-            console.log(renderedfeature);
             if (bounds === null) {
                 bounds = renderedfeature.bounds;
             } else {
@@ -346,22 +361,42 @@ export default class Component {
     }
 
     /**
-     * Updates the coordinates of the component and all the other features
+     * Updates the coordinates of the component and all the connected features
+     * based on the position from which the features are drawn
      * @param {Point} center
      * @memberof Component
      * @returns {void}
      */
     updateComponentPosition(center: Point): void {
-        // This was not calling the right method earlier
-        this._params.updateParameter("position", center);
+        console.log("input position: ", center);
+        // Update component
+        this._params.updateParameter("position", [center[0] + this._offset[0], center[1] + this._offset[1]]);
+        // Update features
         for (const i in this._featureIDs) {
             const featureidtochange = this._featureIDs[i];
 
             const feature = ComponentUtils.getFeatureFromID(featureidtochange);
-            // feature.updateParameter('position', center);
             feature.updateParameter("position", center);
         }
+        // Update the ComponentPorts
+        this.updateComponentPorts();
     }
+
+    setInitialOffset(): void {
+        const rect = this.getBoundingRectangle();
+        this._offset = [rect.x, rect.y];
+    }
+
+    setOffset():void {
+        const rect = this.getBoundingRectangle();
+        const featPos = ComponentUtils.getFeatureFromID(this._featureIDs[0]).getValue("position")
+        this._offset = [rect.x - featPos[0], rect.y - featPos[1]];
+    }
+
+    setPosition():void {
+        this._params.updateParameter("position", this.getTopLeftPosition());
+    }
+
 
     /**
      * Replicates the component at the given positions
@@ -393,7 +428,6 @@ export default class Component {
         // Generate New features
         for (const i in this._featureIDs) {
             const feature = ComponentUtils.getFeatureFromID(this._featureIDs[i]);
-            console.log("test", this.getPosition()[0], this.getPosition()[1], this.getPosition());
             const replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
             replica.referenceID = ret.id;
             ret.featureIDs.push(replica.ID);
@@ -451,8 +485,6 @@ export default class Component {
 
         const params = json.params;
 
-        console.log("new entity:", entity);
-
         // TODO - remove this dependency
         // iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);
 
@@ -468,11 +500,9 @@ export default class Component {
             throw Error("Could not find definition for type: " + entity);
         }
 
-        // console.log(definition);
         let type;
         let value;
         for (const key in json.params) {
-            // console.log("key:", key, "value:", json.params[key]);
             if (Object.prototype.hasOwnProperty.call(definition.heritable, key)) {
                 type = definition.heritable[key];
             } else if (Object.prototype.hasOwnProperty.call(definition.unique, key)) {
@@ -560,10 +590,10 @@ export default class Component {
      */
     updateComponentPorts(): void {
         // updating the Component Ports
-        const params = this.params.toMap();
-        const cleanparamdata = params;
+        const cleanparamdata = this.params.toMap();
+        const currPos: [number, number] = cleanparamdata.get("position");
+        cleanparamdata.set("position", [currPos[0] - this._offset[0], currPos[1] - this._offset[1]]);
         const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._entity);
-
         for (const i in ports) {
             this.setPort(ports[i].label, ports[i]);
         }
