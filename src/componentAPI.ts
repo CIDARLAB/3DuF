@@ -153,7 +153,6 @@ export class ComponentAPI {
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" },
-        ToroidalMixer: { object: new ToroidalMixer(), key: "FLOW" },
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {
