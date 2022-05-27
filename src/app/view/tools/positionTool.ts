@@ -11,7 +11,6 @@ import Component from "../../core/component";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../../utils/mapUtils";
 import ViewManager from "@/app/view/viewManager";
-import { paperObject } from "@/app/core/init";
 
 export default class PositionTool extends MouseTool {
     viewManagerDelegate: ViewManager;

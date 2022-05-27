@@ -2,7 +2,7 @@ import Params from "./params";
 import CustomComponent from "./customComponent";
 import ComponentPort from "./componentPort";
 import Feature from "./feature";
-
+import paper from "paper";
 import uuid from "node-uuid";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
@@ -29,7 +29,7 @@ export default class Component {
     protected _xspan: number;
     protected _yspan: number;
 
-    protected _offset: Point;
+    protected _renderOffset: Point;
     /**
      * Default Constructor
      * @param {string} type
@@ -54,7 +54,7 @@ export default class Component {
         // TODO - Figure out how to use this for generic components
         this._xspan = 0;
         this._yspan = 0;
-        this._offset = [0, 0];
+        this._renderOffset = [0, 0];
 
         // Create and set the ports here itself
 
@@ -88,7 +88,7 @@ export default class Component {
      * @memberof Component
      */
     get offset(): [number, number] {
-        return this._offset;
+        return this._renderOffset;
     }
 
     /**
@@ -370,7 +370,7 @@ export default class Component {
     updateComponentPosition(center: Point): void {
         console.log("input position: ", center);
         // Update component
-        this._params.updateParameter("position", [center[0] + this._offset[0], center[1] + this._offset[1]]);
+        this._params.updateParameter("position", [center[0] + this._renderOffset[0], center[1] + this._renderOffset[1]]);
         // Update features
         for (const i in this._featureIDs) {
             const featureidtochange = this._featureIDs[i];
@@ -384,13 +384,13 @@ export default class Component {
 
     setInitialOffset(): void {
         const rect = this.getBoundingRectangle();
-        this._offset = [rect.x, rect.y];
+        this._renderOffset = [rect.x, rect.y];
     }
 
     setOffset():void {
         const rect = this.getBoundingRectangle();
         const featPos = ComponentUtils.getFeatureFromID(this._featureIDs[0]).getValue("position")
-        this._offset = [rect.x - featPos[0], rect.y - featPos[1]];
+        this._renderOffset = [rect.x - featPos[0], rect.y - featPos[1]];
     }
 
     setPosition():void {
@@ -592,7 +592,7 @@ export default class Component {
         // updating the Component Ports
         const cleanparamdata = this.params.toMap();
         const currPos: [number, number] = cleanparamdata.get("position");
-        cleanparamdata.set("position", [currPos[0] - this._offset[0], currPos[1] - this._offset[1]]);
+        cleanparamdata.set("position", [currPos[0] - this._renderOffset[0], currPos[1] - this._renderOffset[1]]);
         const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._entity);
         for (const i in ports) {
             this.setPort(ports[i].label, ports[i]);
