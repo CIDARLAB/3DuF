@@ -1,8 +1,6 @@
 import MouseTool from "./mouseTool";
 import paper from "paper";
 import Registry from "../../core/registry";
-import { Component } from "vue";
-import { paperObject } from "@/app/core/init";
 
 export default class MoveTool extends MouseTool {
     private __startPoint?: paper.Point | number[] | null;
