@@ -35,7 +35,7 @@ module.exports = {
     'no-empty-pattern': 'warn'
   },
 
-  ignorePatterns: ['src/test/**', 'tests/**', '**/examples/**', '**/parameterMenu.js'],
+  ignorePatterns: ['src/test/**', 'tests/**', '**/examples/**', '**/parameterMenu.js', 'src/assets/**'],
 
   overrides: [
     {
