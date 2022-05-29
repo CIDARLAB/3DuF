@@ -1,13 +1,10 @@
 import Params from "./params";
 import CustomComponent from "./customComponent";
 import ComponentPort from "./componentPort";
-import Feature from "./feature";
-import paper from "paper";
 import uuid from "node-uuid";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
-import { ComponentPortInterchangeV1, ComponentInterchangeV1 } from "./init";
-import { ConnectionInterchangeV1, Point } from "./init";
+import { ComponentPortInterchangeV1, ComponentInterchangeV1, Point } from "./init";
 import ComponentUtils from "../utils/componentUtils";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";

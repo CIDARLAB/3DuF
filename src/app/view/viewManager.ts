@@ -1,6 +1,7 @@
 // import ZoomToolBar from "@/components/zoomSlider.vue";
 import BorderSettingsDialog from "./ui/borderSettingDialog";
 import paper from "paper";
+import semver from "semver";
 
 import Registry from "../core/registry";
 import * as Colors from "./colors";
@@ -56,9 +57,9 @@ import EventBus from "@/events/events";
 import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
 
-import LoadUtils from "@/app/view/loadUtils";
-import ExportUtils from "@/app/view/exportUtils";
-import { LogicalLayerType, ScratchInterchangeV1 } from "@/app/core/init";
+import LoadUtils from "@/app/utils/loadUtils";
+import ExportUtils from "@/app/utils/exportUtils";
+import { LogicalLayerType, InterchangeV1_2, ValveType } from "@/app/core/init";
 
 /**
  * View manager class
@@ -953,14 +954,14 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    loadDeviceFromJSON(json: ScratchInterchangeV1) {
+    loadDeviceFromJSON(json: InterchangeV1_2) {
         let device;
         Registry.viewManager?.clear();
         // Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
 
-        if (version === null || undefined === version || version == 1 || version == 1.1 || version == 1.2 || version == 1.3) {
+        if (version === null || undefined === version || version === "1" || version == "1.1" || version == "1.2") {
             const ret = LoadUtils.loadFromScratch(json);
             device = ret[0];
             Registry.currentDevice = device;
@@ -1007,12 +1008,10 @@ export default class ViewManager {
 
         console.log(json.version);
         //If older version fix feature locations
-        console.log("Here");
         if (this.__currentDevice != null) {
             console.log("There");
             console.log("version: ", json.version);
-            if (json.version < 1.3) {
-                console.log("Where");
+            if (semver.lt(json.version, "1.2")) {
                 for (const i in this.__currentDevice.components) {
                     //[center[0] - (center[0] - rect.x), center[1] - (center[1] - rect.y)]
                     const rect = this.__currentDevice.components[i].getBoundingRectangle();
@@ -1341,7 +1340,7 @@ export default class ViewManager {
                 let result = this.result as string;
                 // try {
                 let jsonresult = JSON.parse(result);
-                Registry.viewManager?.loadDeviceFromJSON((jsonresult as unknown) as ScratchInterchangeV1);
+                Registry.viewManager?.loadDeviceFromJSON((jsonresult as unknown) as InterchangeV1_2);
                 // } catch (error) {
                 //     console.error(error.message);
                 //     alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
@@ -1436,7 +1435,7 @@ export default class ViewManager {
         }
         for (const j in valves) {
             const valve = valves[j];
-            const is3D = Registry.currentDevice?.getIsValve3D(valve);
+            const is3D = Registry.currentDevice?.getValveType(valve);
             if (is3D) {
                 const boundingbox = valve.getBoundingRectangle();
                 connection.insertFeatureGap(boundingbox);
@@ -1547,7 +1546,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     generateExportJSON() {
-        const json = ExportUtils.toScratch(this);
+        const json = ExportUtils.toInterchangeV1_2(this);
         // const json = this.currentDevice.toInterchangeV1_1();
         // json.customComponents = this.customComponentManager.toJSON();
         return json;
@@ -1614,9 +1613,9 @@ export default class ViewManager {
 
         // Add to the valvemap
         for (const valve of valves) {
-            let valve_type = false;
+            let valve_type = ValveType.NORMALLY_OPEN;
             if ((valve as any).getType() === "VALVE3D") {
-                valve_type = true;
+                valve_type = ValveType.NORMALLY_CLOSED;
             }
             console.log("Adding Valve: ", valve);
             this.currentDevice!.insertValve(valve, connection!, valve_type);

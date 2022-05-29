@@ -3,7 +3,7 @@ import EdgeFeature from "./edgeFeature";
 import Feature from "./feature";
 import Params from "./params";
 import Device from "./device";
-import { FeatureInterchangeV0 } from "./init";
+import { FeatureInterchangeV1_2 } from "./init";
 import { LayerInterchangeV1, LogicalLayerType } from "./init";
 
 /**
@@ -252,8 +252,8 @@ export default class Layer {
      * @returns {Array} Returns an array with the features in Interchange format
      * @memberof Layer
      */
-    __featuresInterchangeV1(): Array<FeatureInterchangeV0> {
-        const output: Array<FeatureInterchangeV0> = [];
+    __featuresInterchangeV1(): Array<FeatureInterchangeV1_2> {
+        const output: Array<FeatureInterchangeV1_2> = [];
         for (const i in this.features) {
             output.push(this.features[i].toInterchangeV1());
         }

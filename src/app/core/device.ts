@@ -3,9 +3,9 @@
 import Params from "./params";
 
 import Feature from "./feature";
-import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point, ValveInterchangeV1 } from "./init";
+import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point, ValveInterchangeV1_2, ValveType } from "./init";
 import { ComponentInterchangeV1 } from "./init";
-import { ConnectionInterchangeV1 } from "./init";
+import { ConnectionInterchangeV1_2 } from "./init";
 import { LayerInterchangeV1 } from "./init";
 
 import Layer from "./layer";
@@ -32,10 +32,8 @@ export default class Device {
     private __nameMap: Map<string, number>;
     private __connections: Array<Connection>;
     private __valveMap: Map<string, string>;
-    private __valveIs3DMap: Map<string, boolean>;
+    private __valveTypeMap: Map<string, ValveType>;
     private __groups: Array<string>;
-    //private __features: Array<Feature>;
-    private __version: number;
 
     /**
      * Default Constructor
@@ -58,18 +56,20 @@ export default class Device {
 
         //Map to store <componentID, connectionID>
         this.__valveMap = new Map();
-        this.__valveIs3DMap = new Map();
-
-        this.__version = 1.3;
+        this.__valveTypeMap = new Map();
     }
+
     /**
-     * Returns a string with the name of the Device
-     * @returns {string}
+     * Adds a layer to the device
+     *
+     * @param {string} componentid
+     * @param {string} connectionid
+     * @param {ValveType} valvetype
      * @memberof Device
      */
-    setValveMap(valvemap: Map<string, string>, isvalve3Ddata: Map<string, boolean>): void {
-        this.__valveMap = valvemap;
-        this.__valveIs3DMap = isvalve3Ddata;
+    addValve(componentid: string, connectionid: string, valvetype: ValveType): void {
+        this.__valveMap.set(componentid, connectionid);
+        this.__valveTypeMap.set(componentid, valvetype);
     }
 
     /**
@@ -475,23 +475,27 @@ export default class Device {
      * @returns {Array} Returns an array with the connections
      * @memberof Device
      */
-    __connectionToInterchangeV1(): Array<ConnectionInterchangeV1> {
-        let output: Array<ConnectionInterchangeV1> = [];
+    __connectionToInterchangeV1(): Array<ConnectionInterchangeV1_2> {
+        let output: Array<ConnectionInterchangeV1_2> = [];
         for (let i in this.__connections) {
             output.push(this.__connections[i].toInterchangeV1());
         }
         return output;
     }
 
-    __valvesToInterchangeV1(): Array<ValveInterchangeV1> {
-        let output: Array<ValveInterchangeV1> = [];
+    __valvesToInterchangeV1(): Array<ValveInterchangeV1_2> {
+        let output: Array<ValveInterchangeV1_2> = [];
         this.__valveMap.forEach((target, valve) => {
-            let value3D = false;
-            if (this.__valveIs3DMap.get(valve)) value3D = true;
+            let valve_type = this.__valveTypeMap.get(valve)
+            if(valve_type === undefined) {
+                console.error("Valve type not found for valve: " + valve + " , setting default to NORMALLY_OPEN");
+                valve_type = ValveType.NORMALLY_OPEN
+            }
             output.push({
-                valveID: valve,
-                targetID: target,
-                is3d: value3D
+                componentid: valve,
+                connectionid: target,
+                type: valve_type,
+                params: {}
             })
         });
         return output;
@@ -556,7 +560,7 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    __loadConnectionsFromInterchangeV1(connections: Array<ConnectionInterchangeV1>): void {
+    __loadConnectionsFromInterchangeV1(connections: Array<ConnectionInterchangeV1_2>): void {
         let connectiontoload;
         for (let i in connections) {
             connectiontoload = Connection.fromInterchangeV1(this, connections[i]);
@@ -581,7 +585,7 @@ export default class Device {
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
             valves: this.__valvesToInterchangeV1(),
-            version: 1.3,
+            version: "1",
             groups: this.__groupsToJSON()
         };
         return output;
@@ -598,7 +602,7 @@ export default class Device {
             layers: this.__layersToInterchangeV1(),
             components: this.__componentsToInterchangeV1(),
             connections: this.__connectionToInterchangeV1(),
-            version: 1.3,
+            version: "1.1",
             groups: this.__groupsToJSON()
         };
         return output;
@@ -714,20 +718,30 @@ export default class Device {
             valve_type_map = IOUtils.jsonToMap(json.params.valveTypeMap);
 
             console.log(json.params.valveTypeMap, valve_type_map);
-            let valveis3dmap = new Map();
-            for (let [key, value] of valve_type_map) {
-                console.log("Setting type:", key, value);
-                switch (value) {
-                    case "NORMALLY_OPEN":
-                        valveis3dmap.set(key, false);
-                        break;
-                    case "NORMALLY_CLOSED":
-                        valveis3dmap.set(key, true);
-                        break;
+            for (let [componentid, connectionid] of valve_map) {
+                let valve = newDevice.getComponentByID(componentid);
+                if(valve === null) {
+                    console.error("Could not find valve with id:", componentid);
+                    throw new Error("Could not find valve with id: " + componentid);
                 }
+                let connection = newDevice.getConnectionByID(connectionid);
+                if(connection === null) {
+                    console.error("Could not find connection with id:", connectionid);
+                    throw new Error("Could not find connection with id: " + connectionid);
+                }
+                const valve_type_text = valve_type_map.get(componentid);
+                let valve_type = ValveType.NORMALLY_OPEN;
+                if (valve_type_text === "NORMALLY_OPEN") {
+                    valve_type = ValveType.NORMALLY_OPEN;
+                }else if(valve_type_text === "NORMALLY_CLOSED") {
+                    valve_type = ValveType.NORMALLY_CLOSED;
+                } else {
+                    console.warn("Could not find valve type for valve with id:", componentid);
+                    throw new Error("Could not find valve type for valve with id: " + componentid);
+                }
+
+                newDevice.insertValve(valve, connection, valve_type_map.get(componentid));
             }
-            console.log("Imported valvemap", valve_map, valveis3dmap);
-            newDevice.setValveMap(valve_map, valveis3dmap);
         }
 
         //TODO: Use this to render the device features
@@ -888,9 +902,9 @@ export default class Device {
      * @memberof Device
      * @returns {void}
      */
-    insertValve(valve: Component, connection: Connection, is3D: boolean = false): void {
+    insertValve(valve: Component, connection: Connection, valvetype: ValveType = ValveType.NORMALLY_OPEN): void {
         this.__valveMap.set(valve.id, connection.id);
-        this.__valveIs3DMap.set(valve.id, is3D);
+        this.__valveTypeMap.set(valve.id, valvetype);
     }
     /**
      * Returns connections of the device
@@ -929,9 +943,14 @@ export default class Device {
      * @return {any}
      * @memberof Device
      */
-    getIsValve3D(valve: Component): boolean | undefined {
+    getValveType(valve: Component): ValveType {
+
         let valveid = valve.id;
-        return this.__valveIs3DMap.get(valveid);
+        let ret = this.__valveTypeMap.get(valveid);
+        if (ret === undefined) {
+            throw new Error("Valve not found");
+        }
+        return ret;
     }
 
     /**

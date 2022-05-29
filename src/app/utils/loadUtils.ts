@@ -9,28 +9,29 @@ import RenderLayer from "@/app/view/renderLayer";
 import CustomComponent from "@/app/core/customComponent";
 import ComponentPort from "@/app/core/componentPort";
 import { ComponentAPI } from "@/componentAPI";
-import MapUtils from "../utils/mapUtils";
+import MapUtils from "./mapUtils";
 
 import ConnectionUtils from "@/app/utils/connectionUtils";
 
 import {
-    ScratchInterchangeV1,
+    InterchangeV1_2,
     DeviceInterchangeV1,
     LayerInterchangeV1,
-    RenderLayerInterchangeV1,
-    FeatureInterchangeV0,
+    RenderLayerInterchangeV1_2,
+    FeatureInterchangeV1_2,
     ComponentInterchangeV1,
-    ConnectionInterchangeV1,
+    ConnectionInterchangeV1_2,
     ComponentPortInterchangeV1,
-    LogicalLayerType
+    LogicalLayerType,
+    ValveType,
+    DeviceInterchangeV1_1
 } from "@/app/core/init";
-import ComponentPositionTool from "./tools/componentPositionTool";
 
 export default class LoadUtils {
     constructor() {}
 
-    static loadFromScratch(json: ScratchInterchangeV1): [Device, Array<RenderLayer>] {
-        const newDevice: Device = LoadUtils.loadDeviceFromInterchangeV1(json);
+    static loadFromScratch(json: InterchangeV1_2): [Device, Array<RenderLayer>] {
+        const newDevice: Device = LoadUtils.loadDeviceFromInterchangeV1_2(json);
         let newRenderLayers: Array<RenderLayer> = [];
         if (json.renderLayers) {
             for (let i = 0; i < json.renderLayers.length; i++) {
@@ -114,7 +115,7 @@ export default class LoadUtils {
         return [newDevice, newRenderLayers];
     }
 
-    static loadDeviceFromInterchangeV1(json: DeviceInterchangeV1): Device {
+    static loadDeviceFromInterchangeV1_2(json: InterchangeV1_2): Device {
         let newDevice: Device;
         if (Object.prototype.hasOwnProperty.call(json, "params")) {
             if (Object.prototype.hasOwnProperty.call(json.params, "width") && Object.prototype.hasOwnProperty.call(json.params, "length")) {
@@ -173,13 +174,22 @@ export default class LoadUtils {
         }
 
         if (Object.prototype.hasOwnProperty.call(json, "valves")) {
-            const valveMap: Map<string,string> = new Map();
-            const valveis3dmap: Map<string,boolean> = new Map();
             for (const i in json.valves) {
-                valveMap.set(json.valves[i].valveID,json.valves[i].targetID);
-                valveis3dmap.set(json.valves[i].valveID,json.valves[i].is3d);
+                const newValve = json.valves[i];
+                const component = newDevice.getComponentByID(newValve.componentid);
+                const connection = newDevice.getConnectionByID(newValve.connectionid);
+                if (component === null){
+                    console.warn("Could not find component with ID " + newValve.componentid + " for valve " + newValve.componentid);
+                    throw new Error("Could not find component with ID " + newValve.componentid + " for valve " + newValve.componentid);
+                }
+                if (connection === null){
+                    console.warn("Could not find connection with ID " + newValve.connectionid + " for valve " + newValve.componentid);
+                    throw new Error("Could not find connection with ID " + newValve.connectionid + " for valve " + newValve.componentid);
+                }
+                newDevice.insertValve(component, connection, newValve.type);
             }
-            newDevice.setValveMap(valveMap,valveis3dmap);
+        } else {
+            console.warn("Could not find valve map, using default valve map");
         }
 
         return newDevice;
@@ -240,11 +250,11 @@ export default class LoadUtils {
      * Loads the features from the interchange format
      *
      * @static
-     * @param {FeatureInterchangeV0} json
+     * @param {FeatureInterchangeV1_2} json
      * @returns {Feature}
      * @memberof LoadUtils
      */
-    static loadFeatureFromInterchangeV1(json: FeatureInterchangeV0): Feature {
+    static loadFeatureFromInterchangeV1(json: FeatureInterchangeV1_2): Feature {
         // TODO: This will have to change soon when the thing is updated
         console.log("PARAMS: ", json.params);
         let ret = Device.makeFeature(json.macro, json.params, json.name, json.id, json.type, json.dxfData);
@@ -374,13 +384,13 @@ export default class LoadUtils {
      * Assumes no connections present on undescribed layers
      * Purpose is to fill in parts of components added later (e.g., integration layer part of picoinjector)
      * @static
-     * @param {ScratchInterchangeV1} json
+     * @param {InterchangeV1_2} json
      * @param {string} type
      * @param {string} layerGroup
      * @returns {Array<Feature>}
      * @memberof LoadUtils
      */
-    static generateMissingLayerFeaturesV1(json: ScratchInterchangeV1, type: string, layerGroup: string): Array<Feature> {
+    static generateMissingLayerFeaturesV1(json: InterchangeV1_2, type: string, layerGroup: string): Array<Feature> {
         const ret: Array<Feature> = [];
         for (const i in json.components) {
             const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
@@ -423,11 +433,11 @@ export default class LoadUtils {
      *
      * @static
      * @param {Device} device
-     * @param {ConnectionInterchangeV1} json
+     * @param {ConnectionInterchangeV1_2} json
      * @returns {Connection}
      * @memberof LoadUtils
      */
-    static loadConnectionFromInterchangeV1(device: Device, json: ConnectionInterchangeV1): Connection {
+    static loadConnectionFromInterchangeV1(device: Device, json: ConnectionInterchangeV1_2): Connection {
         const name = json.name;
         const id = json.id;
         const entity = json.entity;
@@ -634,19 +644,27 @@ export default class LoadUtils {
      * @memberof LoadUtils
      */
     static loadComponentPortFromInterchangeV1(json: ComponentPortInterchangeV1): ComponentPort {
-        return new ComponentPort(json.x, json.y, json.label, json.layer);
+        let layer_type = LogicalLayerType.FLOW;
+        if (json.layer === "FLOW"){
+            layer_type = LogicalLayerType.FLOW;
+        } else if (json.layer === "CONTROL") {
+            layer_type = LogicalLayerType.CONTROL;
+        } else if (json.layer === "INTEGRATION") {
+            layer_type = LogicalLayerType.INTEGRATION;
+        }
+        return new ComponentPort(json.x, json.y, json.label, layer_type);
     }
 
     /**
      * Loads the renderlayers from the interchange format
      *
      * @static
-     * @param {RenderLayerInterchangeV1} json
+     * @param {RenderLayerInterchangeV1_2} json
      * @param {Device} device
      * @returns {RenderLayer}
      * @memberof LoadUtils
      */
-    static loadRenderLayerFromInterchangeV1(json: RenderLayerInterchangeV1, device: Device): RenderLayer {
+    static loadRenderLayerFromInterchangeV1(json: RenderLayerInterchangeV1_2, device: Device): RenderLayer {
         let layerType: LogicalLayerType | undefined;
         if (Object.prototype.hasOwnProperty.call(json, "type")) {
             if (json.type === "FLOW") {

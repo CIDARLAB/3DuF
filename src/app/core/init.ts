@@ -2,11 +2,13 @@ export type Point = [number, number];
 
 export type Segment = [Point, Point];
 
+export type ParamsInterchangeType = {[key: string]: any};
+
 export type ToolPaperObject = paper.CompoundPath | paper.Path | paper.PointText | paper.PathItem;
 
 export type InterchangeV1_2 = {
     name: string;
-    params: any;
+    params: ParamsInterchangeType;
     layers: Array<LayerInterchangeV1>;
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
@@ -29,7 +31,7 @@ export enum ValveType {
 
 export type DeviceInterchangeV1 = {
     name: string;
-    params: any;
+    params: ParamsInterchangeType;
     layers: Array<LayerInterchangeV1>;
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
@@ -40,7 +42,7 @@ export type DeviceInterchangeV1 = {
 
 export type DeviceInterchangeV1_1 = {
     name: string;
-    params: any;
+    params: ParamsInterchangeType;
     layers: Array<LayerInterchangeV1>;
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
@@ -52,7 +54,7 @@ export type ComponentInterchangeV1 = {
     id: string;
     name: string;
     entity: string;
-    params: any;
+    params: ParamsInterchangeType;
     "x-span": number;
     "y-span": number;
     ports: Array<ComponentPortInterchangeV1>;
@@ -66,7 +68,7 @@ export type ConnectionInterchangeV1_2 = {
     source: ConnectionTargetInterchangeV1;
     sinks: Array<ConnectionTargetInterchangeV1>;
     paths: Array<ConnectionPathInterchangeV1_2>;
-    params: any;
+    params: ParamsInterchangeType;
     layer: string;
 };
 
@@ -74,12 +76,13 @@ export type ValveInterchangeV1_2 = {
     componentid: string;
     connectionid: string;
     type: ValveType;
+    params: ParamsInterchangeType;
 }
 
 export type LayerInterchangeV1 = {
     id: string;
     name: string;
-    params: any;
+    params: ParamsInterchangeType;
     group: string;
     type: string;
     features: Array<FeatureInterchangeV1_2>;
@@ -99,7 +102,7 @@ export type FeatureInterchangeV1_2 = {
     name: string;
     macro: string;
     referenceID: string | null;
-    params: any;
+    params: ParamsInterchangeType;
     dxfData: any;
     type: string;
 };

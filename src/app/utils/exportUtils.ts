@@ -1,7 +1,8 @@
 import ViewManager from "@/app/view/viewManager";
 
 import {
-    ScratchInterchangeV1
+    ConnectionTargetInterchangeV1,
+    InterchangeV1_2
     // DeviceInterchangeV1,
     // LayerInterchangeV1,
     // RenderLayerInterchangeV1,
@@ -11,11 +12,12 @@ import {
     // ComponentPortInterchangeV1,
     // LogicalLayerType
 } from "@/app/core/init";
+import ConnectionTarget from "../core/connectionTarget";
 
 export default class ExportUtils {
-    constructor() {}
 
-    static toScratch(viewManagerDelegate: ViewManager): ScratchInterchangeV1 {
+
+    static toInterchangeV1_2(viewManagerDelegate: ViewManager): InterchangeV1_2 {
         if(viewManagerDelegate.currentDevice === null) {
             throw new Error("No device selected");
         }
@@ -25,8 +27,12 @@ export default class ExportUtils {
             renderLayers.push(viewManagerDelegate.renderLayers[i].toInterchangeV1());
         }
         const device = viewManagerDelegate.currentDevice.toInterchangeV1();
+        
+        const valvemap = {}
+        const valvetypemap = {}
 
-        const newScratch: ScratchInterchangeV1 = {
+
+        const newScratch: InterchangeV1_2 = {
             name: device.name,
             params: device.params,
             renderLayers: renderLayers,
@@ -35,9 +41,26 @@ export default class ExportUtils {
             components: device.components,
             connections: device.connections,
             valves: device.valves,
-            version: device.version
+            version: "1.2"
         };
 
         return newScratch;
     }
+
+    /**
+     * Converts a device to interchange format.
+     *
+     * @static
+     * @param {ConnectionTarget} target
+     * @returns {ConnectionTargetInterchangeV1}
+     * @memberof ExportUtils
+     */
+     static toConnectionTargetInterchangeV1(target: ConnectionTarget): ConnectionTargetInterchangeV1{
+        const ret: ConnectionTargetInterchangeV1 = {
+            component: target.component.id,
+            port: target.portLabel
+        }
+        return ret;
+    }
 }
+

@@ -5,7 +5,7 @@ import Layer from "./layer";
 import DXFObject from "./dxfObject";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
-import { FeatureInterchangeV0, LogicalLayerType } from "./init";
+import { FeatureInterchangeV1_2, LogicalLayerType } from "./init";
 import Parameter from "./parameter";
 import EventBus from "@/events/events";
 import RenderLayer from "../view/renderLayer";
@@ -164,7 +164,7 @@ export default class Feature {
      * @returns {}
      * @memberof Feature
      */
-    toInterchangeV1(): FeatureInterchangeV0 {
+    toInterchangeV1(): FeatureInterchangeV1_2 {
         // TODO: We need to figure out what to do and what the final feature format will be
         const output = {
             id: this._id,
