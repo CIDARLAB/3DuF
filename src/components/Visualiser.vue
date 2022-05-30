@@ -44,7 +44,7 @@ export default {
 
         viewManager.loadDeviceFromJSON(JSON.parse(Examples.UpdatedExample));
         // TODO - Make thi work with the programmatic generation of the device
-        viewManager.createNewDevice("New_Device");
+        // viewManager.createNewDevice("New_Device");
         viewManager.updateGrid();
         viewManager.refresh();
         window.dev = Registry.currentDevice;
