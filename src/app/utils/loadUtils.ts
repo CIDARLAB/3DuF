@@ -278,14 +278,14 @@ export default class LoadUtils {
         const ret: Array<Feature> = [];
         for (const i in json.components) {
             const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
-            if (typestring != null) {
+            if (typestring !== null) {
                 let feat: Feature;
                 const renderKeys: Array<string> = ComponentAPI.getAllRenderKeys(typestring);
                 let group: string | null = null;
                 for (const j in json.layers) {
                     if (json.layers[j].id == json.components[i].layers[0]) group = json.layers[j].group;
                 }
-                if (group != null) {
+                if (group !== null) {
                     if (renderKeys.length == 1) {
                         if (json.components[i].layers[0] == jsonlayer.id) {
                             console.log("Assuming default type feature can be placed on current layer");
@@ -343,7 +343,7 @@ export default class LoadUtils {
                 const mint = json.connections[i].entity;
                 let typestring: string | null = null;
                 if (mint && mint != "CHANNEL") typestring = ComponentAPI.getTypeForMINT(json.connections[i].entity);
-                if (typestring == null) typestring = "Connection";
+                if (typestring === null) typestring = "Connection";
 
                 let feat: Feature; 
                 let rawParams = json.connections[i].params;
@@ -394,7 +394,7 @@ export default class LoadUtils {
         const ret: Array<Feature> = [];
         for (const i in json.components) {
             const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
-            if (typestring != null) {
+            if (typestring !== null) {
                 if (type == "FLOW") {
                     const libEntry = ComponentAPI.library[typestring];
                     if (libEntry != undefined && libEntry.key == "FLOW") {
@@ -402,7 +402,7 @@ export default class LoadUtils {
                         for (const j in json.layers) {
                             if (json.layers[j].id == json.components[i].layers[0]) componentGroup = json.layers[j].group;
                         }
-                        if (componentGroup != null && componentGroup == layerGroup) {
+                        if (componentGroup !== null && componentGroup == layerGroup) {
                             const feat: Feature = Device.makeFeature(typestring, json.components[i].params);
                             feat.referenceID = json.components[i].id;
                             ret.push(feat);
@@ -414,7 +414,7 @@ export default class LoadUtils {
                         for (const j in json.layers) {
                             if (json.layers[j].id == json.components[i].layers[0]) componentGroup = json.layers[j].group;
                         }
-                        if (componentGroup != null && componentGroup == layerGroup) {
+                        if (componentGroup !== null && componentGroup == layerGroup) {
                             const feat: Feature = Device.makeFeature(typestring + "_" + type.toLowerCase(), json.components[i].params);
                             feat.referenceID = json.components[i].id;
                             ret.push(feat);
@@ -591,7 +591,7 @@ export default class LoadUtils {
             console.log("Def: ", definition);
         }
 
-        if (definition == null) {
+        if (definition === null) {
             throw Error("Could not find definition for type: " + entity);
         }
 
