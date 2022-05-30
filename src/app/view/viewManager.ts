@@ -1,7 +1,6 @@
 // import ZoomToolBar from "@/components/zoomSlider.vue";
 import BorderSettingsDialog from "./ui/borderSettingDialog";
 import paper from "paper";
-import semver from "semver";
 
 import Registry from "../core/registry";
 import * as Colors from "./colors";
@@ -70,11 +69,12 @@ import Connection from "../core/connection";
 import Params from "../core/params";
 import MouseTool from "./tools/mouseTool";
 import { Rectangle } from "paper/dist/paper-core";
+import { generateRenderLayers } from "../utils/renderUtils";
 
 export default class ViewManager {
     view: PaperView;
     renderLayers: RenderLayer[];
-    activeRenderLayer: number | null;
+    activeRenderLayer: number | null = null;
     nonphysElements: UIElement[];
     tools: { [k: string]: any };
     rightMouseTool: MouseTool;
@@ -418,8 +418,11 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     createNewLayerBlock() {
+        if(this.__currentDevice === null) {
+            throw new Error("No device set on ViewManager");
+        }
         // Generate model layers
-        let groupNum = Registry.currentDevice!.layers.length;
+        let groupNum = this.__currentDevice.layers.length;
         if (groupNum != 0) groupNum = groupNum / 3;
 
         const newlayers = [];
@@ -427,7 +430,7 @@ export default class ViewManager {
         newlayers[1] = new Layer({ z_offset: 0, flip: false }, this.currentDevice?.generateNewName("LayerControl"), LogicalLayerType.CONTROL, groupNum.toString());
         newlayers[2] = new Layer({ z_offset: 0, flip: false }, this.currentDevice?.generateNewName("LayerIntegration"), LogicalLayerType.INTEGRATION, groupNum.toString());
         // Add model layers to current device
-        Registry.currentDevice?.createNewLayerBlock(newlayers);
+        this.__currentDevice.createNewLayerBlock(newlayers);
 
         // Find all the edge features
         const edgefeatures = [];
@@ -465,7 +468,8 @@ export default class ViewManager {
             this.renderLayers[this.renderLayers.length - 2].addFeature(edgefeatures[i]);
             this.renderLayers[this.renderLayers.length - 1].addFeature(edgefeatures[i]);
         }
-
+        
+        console.log("Active Layer", this.activeRenderLayer);
         this.setActiveRenderLayer(this.renderLayers.length - 3);
     }
 
@@ -607,6 +611,10 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateActiveLayer(refresh = true) {
+        if(this.activeRenderLayer === null){
+            console.warn("Attempting update active layer in view manager with no active layer value");
+            return;
+        }
         this.view.setActiveLayer(this.activeRenderLayer as number);
         this.refresh(refresh);
     }
@@ -987,7 +995,7 @@ export default class ViewManager {
         // Common Code for rendering stuff
         // console.log("Feature Layers", Registry.currentDevice.layers);
         Registry.currentLayer = this.renderLayers[0];
-        Registry.currentTextLayer = Registry.currentDevice!.textLayers[0];
+        // Registry.currentTextLayer = Registry.currentDevice!.textLayers[0];
 
         this.activeRenderLayer = 0;
 
@@ -1011,7 +1019,7 @@ export default class ViewManager {
         if (this.__currentDevice != null) {
             console.log("There");
             console.log("version: ", json.version);
-            if (semver.lt(json.version, "1.2")) {
+            if (json.version == "1" || json.version == "1.1") {
                 for (const i in this.__currentDevice.components) {
                     //[center[0] - (center[0] - rect.x), center[1] - (center[1] - rect.y)]
                     const rect = this.__currentDevice.components[i].getBoundingRectangle();
@@ -1704,6 +1712,11 @@ export default class ViewManager {
         this.updateGrid();
     }
 
+    /**
+     * Starts the download sequence for the current device
+     *
+     * @memberof ViewManager
+     */
     downloadJSON() {
         if(this.currentDevice === null){
             throw new Error("No device loaded");
@@ -1712,6 +1725,36 @@ export default class ViewManager {
             type: "application/json"
         });
         saveAs(json, this.currentDevice.name + ".json");
+    }
+
+    createNewDevice(name: string): void {
+        let device = new Device({"x-span": 135000, "y-span": 85000}, name);
+        console.log("Created new device: ", device.getXSpan(), device.getYSpan());
+        this.clear();
+        this.__currentDevice = device;
+        // TODO -  Clean up lifecyle for active rendered layers
+        this.activeRenderLayer = 0;
+        this.createNewLayerBlock();
+        // TODO - Generate render layers
+        generateRenderLayers(this.__currentDevice);
+        this.setNameMap();
+
+        Registry.currentDevice = device;
+
+        this.activeRenderLayer = 0;
+
+        this.addDevice(device);
+
+        // In case of MINT exported json, generate layouts for rats nests
+        this.__initializeRatsNest();
+
+        this.view.initializeView();
+        this.updateGrid();
+        this.updateDevice(Registry.currentDevice!);
+        this.refresh(true);
+        Registry.currentLayer = this.renderLayers[0];
+        this.updateActiveLayer();
+
     }
 
 }
