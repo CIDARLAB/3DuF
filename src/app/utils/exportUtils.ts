@@ -28,8 +28,8 @@ export default class ExportUtils {
         }
         const device = viewManagerDelegate.currentDevice.toInterchangeV1();
         
-        const valvemap = {}
-        const valvetypemap = {}
+        const valvemap = {};
+        const valvetypemap = {};
 
 
         const newScratch: InterchangeV1_2 = {
@@ -59,7 +59,7 @@ export default class ExportUtils {
         const ret: ConnectionTargetInterchangeV1 = {
             component: target.component.id,
             port: target.portLabel
-        }
+        };
         return ret;
     }
 }

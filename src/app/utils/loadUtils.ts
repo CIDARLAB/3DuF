@@ -345,8 +345,8 @@ export default class LoadUtils {
                 if (mint && mint != "CHANNEL") typestring = ComponentAPI.getTypeForMINT(json.connections[i].entity);
                 if (typestring == null) typestring = "Connection";
 
-                let feat: Feature 
-                let rawParams = json.connections[i].params
+                let feat: Feature; 
+                let rawParams = json.connections[i].params;
                 if (rawParams.start) {
                     feat = Device.makeFeature(typestring, rawParams);
                     feat.referenceID = json.connections[i].id;
@@ -396,7 +396,7 @@ export default class LoadUtils {
             const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
             if (typestring != null) {
                 if (type == "FLOW") {
-                    const libEntry = ComponentAPI.library[typestring]
+                    const libEntry = ComponentAPI.library[typestring];
                     if (libEntry != undefined && libEntry.key == "FLOW") {
                         let componentGroup: string | null = null;
                         for (const j in json.layers) {
@@ -497,7 +497,7 @@ export default class LoadUtils {
                 }
             }
             if (!Object.prototype.hasOwnProperty.call(params, "height")) {
-                params.height = ComponentAPI.getDefaultsForType("Connection").height
+                params.height = ComponentAPI.getDefaultsForType("Connection").height;
             }
         } else {
             if (json.paths[0]) {

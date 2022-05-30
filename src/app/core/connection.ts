@@ -158,8 +158,7 @@ export default class Connection {
         console.log("Key: ", key, " Val: ", value);
 
         if (key != "segments") {
-            for (const i in this._featureIDs) {
-                const featureidtochange = this._featureIDs[i];
+            for (const featureidtochange of this._featureIDs) {
 
                 // Get the feature id and modify it
                 const feature = ConnectionUtils.getFeatureFromID(featureidtochange);
@@ -206,8 +205,8 @@ export default class Connection {
         }
         if (this._sinks !== null && this._sinks.length > 0) {
             let sinks = [];
-            for (let i in this._sinks) {
-                sinks.push(this._sinks[i].toJSON());
+            for (const sink of this._sinks) {
+                sinks.push(sink.toJSON());
             }
             output.sinks = this._sinks.map(sink => {
                 return ExportUtils.toConnectionTargetInterchangeV1(sink);
@@ -295,9 +294,9 @@ export default class Connection {
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
-        for (var i in this._featureIDs) {
+        for (const featureid of this._featureIDs) {
             // gets teh feature defined by the id
-            feature = ConnectionUtils.getFeatureFromID(this._featureIDs[i]);
+            feature = ConnectionUtils.getFeatureFromID(featureid);
             console.log(feature);
             renderedfeature = FeatureRenderer2D.renderFeature(feature, null);
             console.log("rendered:");
@@ -322,8 +321,7 @@ export default class Connection {
         //TODO: Modify all the associated Features
         for (let key in params) {
             let value = params.getValue(key);
-            for (const i in this._featureIDs) {
-                const featureidtochange = this._featureIDs[i];
+            for (const featureidtochange of this._featureIDs) {
 
                 //Get the feature id and modify it
                 let feature = ConnectionUtils.getFeatureFromID(featureidtochange);
@@ -349,8 +347,7 @@ export default class Connection {
      */
     updateSegments(segments: Array<Segment>): void {
         this.updateParameter("segments", new Parameter("SegmentArray", segments));
-        for (let i in this._featureIDs) {
-            let featureidtochange = this._featureIDs[i];
+        for (const featureidtochange of this._featureIDs) {
 
             const feature = ConnectionUtils.getFeatureFromID(featureidtochange);
             // feature.updateParameter('position', center);

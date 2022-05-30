@@ -150,8 +150,7 @@ export default class Device {
         let connectiontorefresh = null;
 
         //Remove component from connections
-        for (let i in this.__connections) {
-            let connection = this.__connections[i];
+        for (const connection of this.__connections) {
             try {
                 trydelete = connection.tryDeleteConnectionTarget(componentid);
                 if (trydelete) {
@@ -403,8 +402,7 @@ export default class Device {
         //Goes through the components to update the reference
         let component: Component;
         let foundflag = false;
-        for (let i in this.__components) {
-            component = this.__components[i];
+        for (const component of this.__components) {
             // console.log(objectID, component.id);
             if (objectID == component.id) {
                 component.addFeatureID(featureID);
@@ -415,8 +413,7 @@ export default class Device {
 
         //Goes through the connection to update the reference
         let connection;
-        for (let i in this.__connections) {
-            connection = this.__connections[i];
+        for (const connection of this.__connections) {
             if (objectID == connection.id) {
                 connection.addFeatureID(featureID);
                 connection.routed = true;
@@ -486,17 +483,17 @@ export default class Device {
     __valvesToInterchangeV1(): Array<ValveInterchangeV1_2> {
         let output: Array<ValveInterchangeV1_2> = [];
         this.__valveMap.forEach((target, valve) => {
-            let valve_type = this.__valveTypeMap.get(valve)
+            let valve_type = this.__valveTypeMap.get(valve);
             if(valve_type === undefined) {
                 console.error("Valve type not found for valve: " + valve + " , setting default to NORMALLY_OPEN");
-                valve_type = ValveType.NORMALLY_OPEN
+                valve_type = ValveType.NORMALLY_OPEN;
             }
             output.push({
                 componentid: valve,
                 connectionid: target,
                 type: valve_type,
                 params: {}
-            })
+            });
         });
         return output;
     }
@@ -995,9 +992,9 @@ export default class Device {
      */
     getComponentByName(name: string): Component {
         let components = this.__components;
-        for (let i in components) {
-            if (name == components[i].name) {
-                return components[i];
+        for (const component of components) {
+            if (name == component.name) {
+                return component;
             }
         }
         throw new Error("Component with name " + name + "does not exist");
@@ -1011,9 +1008,9 @@ export default class Device {
     getUnroutedConnections(): Array<Connection> {
         let ret: Array<Connection> = [];
         let connections = this.__connections;
-        for (let i in connections) {
-            if (!connections[i].routed) {
-                ret.push(connections[i]);
+        for (const connection of connections) {
+            if (!connection.routed) {
+                ret.push(connection);
             }
         }
         return ret;
@@ -1025,10 +1022,8 @@ export default class Device {
      * @returns {Array<number>} Returns array with the absolute positions of the component port
      */
     getPositionOfComponentPort(componentport: ComponentPort): Point | undefined {
-        let component: Component;
         let components: Array<Component> = this.__components;
-        for (let i in components) {
-            component = components[i];
+        for (const component of components) {
             for (const key of component.ports.keys()) {
                 let port: undefined | ComponentPort = component.ports.get(key);
                 if (port != undefined) {
