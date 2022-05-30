@@ -177,7 +177,7 @@ export default class Connection {
      * @memberof Connection
      */
     toInterchangeV1(): ConnectionInterchangeV1_2 {
-        if (this._source == null) {
+        if (this._source === null) {
             throw new Error("Source is null, cannot convert connection to interchange format:" + this._id);
         }
         const outputpaths: Array<ConnectionPathInterchangeV1_2> = [];

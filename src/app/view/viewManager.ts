@@ -962,7 +962,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    loadDeviceFromJSON(json: InterchangeV1_2) {
+    loadDeviceFromJSON(json: InterchangeV1_2): void  {
         let device;
         Registry.viewManager?.clear();
         // Check and see the version number if its 0 or none is present,
