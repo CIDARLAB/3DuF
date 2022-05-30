@@ -387,8 +387,8 @@ export default class Device {
      */
     static getUniqueParameters(): Map<string, string> {
         let unique: Map<string, string> = new Map();
-        unique.set("length", "Float");
-        unique.set("width", "Float");
+        unique.set("x-span", "Float");
+        unique.set("y-span", "Float");
         return unique;
     }
 
