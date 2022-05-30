@@ -5,7 +5,7 @@ import { ComponentAPI } from "@/componentAPI";
 import Layer from "../core/layer";
 import Feature from "../core/feature";
 import { LogicalLayerType } from "../core/init";
-import paper from "paper"
+import paper from "paper";
 import { ViewManager } from "..";
 
 /**

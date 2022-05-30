@@ -2,18 +2,20 @@ export type Point = [number, number];
 
 export type Segment = [Point, Point];
 
+export type ParamsInterchangeType = {[key: string]: any};
+
 export type ToolPaperObject = paper.CompoundPath | paper.Path | paper.PointText | paper.PathItem;
 
-export type ScratchInterchangeV1 = {
+export type InterchangeV1_2 = {
     name: string;
-    params: any;
+    params: ParamsInterchangeType;
     layers: Array<LayerInterchangeV1>;
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
-    connections: Array<ConnectionInterchangeV1>;
-    valves: Array<ValveInterchangeV1>;
-    version: number;
-    renderLayers: Array<RenderLayerInterchangeV1>;
+    connections: Array<ConnectionInterchangeV1_2>;
+    valves: Array<ValveInterchangeV1_2>;
+    version: string;
+    renderLayers: Array<RenderLayerInterchangeV1_2>;
 };
 
 export enum LogicalLayerType {
@@ -22,79 +24,85 @@ export enum LogicalLayerType {
     INTEGRATION = "INTEGRATION"
 }
 
+export enum ValveType {
+    NORMALLY_OPEN = "NORMALLY_OPEN",
+    NORMALLY_CLOSED = "NORMALLY_CLOSED",
+}
+
 export type DeviceInterchangeV1 = {
     name: string;
-    params: any;
+    params: ParamsInterchangeType;
     layers: Array<LayerInterchangeV1>;
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
-    connections: Array<ConnectionInterchangeV1>;
-    valves: Array<ValveInterchangeV1>;
-    version: number;
+    connections: Array<ConnectionInterchangeV1_2>;
+    valves: Array<ValveInterchangeV1_2>;
+    version: string;
 };
 
 export type DeviceInterchangeV1_1 = {
     name: string;
-    params: any;
+    params: ParamsInterchangeType;
     layers: Array<LayerInterchangeV1>;
     groups: Array<string>;
     components: Array<ComponentInterchangeV1>;
-    connections: Array<ConnectionInterchangeV1>;
-    version: number;
+    connections: Array<ConnectionInterchangeV1_2>;
+    version: string;
 };
 
 export type ComponentInterchangeV1 = {
     id: string;
     name: string;
     entity: string;
-    params: any;
+    params: ParamsInterchangeType;
     "x-span": number;
     "y-span": number;
     ports: Array<ComponentPortInterchangeV1>;
     layers: Array<string>;
 };
 
-export type ConnectionInterchangeV1 = {
+export type ConnectionInterchangeV1_2 = {
     id: string;
     name: string;
     entity: string;
-    source: any;
-    sinks: any;
-    paths: Array<ConnectionPathInterchangeV1>;
-    params: any;
+    source: ConnectionTargetInterchangeV1;
+    sinks: Array<ConnectionTargetInterchangeV1>;
+    paths: Array<ConnectionPathInterchangeV1_2>;
+    params: ParamsInterchangeType;
     layer: string;
 };
 
-export type ValveInterchangeV1 = {
-    valveID: string;
-    targetID: string;
-    is3d: boolean;
+export type ValveInterchangeV1_2 = {
+    componentid: string;
+    connectionid: string;
+    type: ValveType;
+    params: ParamsInterchangeType;
 }
 
 export type LayerInterchangeV1 = {
     id: string;
     name: string;
-    params: any;
+    params: ParamsInterchangeType;
     group: string;
     type: string;
-    features: Array<FeatureInterchangeV0>;
+    features: Array<FeatureInterchangeV1_2>;
 };
 
-export type RenderLayerInterchangeV1 = {
+export type RenderLayerInterchangeV1_2 = {
     id: string;
-    features: Array<FeatureInterchangeV0>;
+    features: Array<FeatureInterchangeV1_2>;
     modellayer: string | null;
     color: string | undefined;
     name: string;
     type: string;
 };
 
-export type FeatureInterchangeV0 = {
+export type FeatureInterchangeV1_2 = {
     id: string;
     name: string;
     macro: string;
     referenceID: string | null;
-    params: any;
+    params: ParamsInterchangeType;
     dxfData: any;
     type: string;
 };
@@ -103,7 +111,7 @@ export type ComponentPortInterchangeV1 = {
     x: number;
     y: number;
     label: string;
-    layer: any;
+    layer: string;
 };
 
 export type ConnectionTargetInterchangeV1 = {
@@ -111,7 +119,7 @@ export type ConnectionTargetInterchangeV1 = {
     port: string;
 };
 
-export type ConnectionPathInterchangeV1 = {
+export type ConnectionPathInterchangeV1_2 = {
     wayPoints: Array<Point>;
     source: ConnectionTargetInterchangeV1 | null;
     sink: ConnectionTargetInterchangeV1 | null;

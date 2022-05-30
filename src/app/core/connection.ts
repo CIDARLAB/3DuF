@@ -6,11 +6,12 @@ import Device from "./device";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Layer from "./layer";
 import uuid from "node-uuid";
-import { ConnectionInterchangeV1, ConnectionPathInterchangeV1, ConnectionTargetInterchangeV1 } from "./init";
+import { ConnectionInterchangeV1_2, ConnectionPathInterchangeV1_2, ConnectionTargetInterchangeV1 } from "./init";
 import { Segment, Point } from "./init";
 import ConnectionUtils from "../utils/connectionUtils";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
+import ExportUtils from "../utils/exportUtils";
 
 /**
  * This class contains the connection abstraction used in the interchange format and the
@@ -157,8 +158,7 @@ export default class Connection {
         console.log("Key: ", key, " Val: ", value);
 
         if (key != "segments") {
-            for (const i in this._featureIDs) {
-                const featureidtochange = this._featureIDs[i];
+            for (const featureidtochange of this._featureIDs) {
 
                 // Get the feature id and modify it
                 const feature = ConnectionUtils.getFeatureFromID(featureidtochange);
@@ -172,26 +172,29 @@ export default class Connection {
 
     /**
      * Generates the object that needs to be serialzed into JSON for interchange format V1
-     * @returns {ConnectionInterchangeV1} Object
+     * @returns {ConnectionInterchangeV1_2} Object
      * @memberof Connection
      */
-    toInterchangeV1(): ConnectionInterchangeV1 {
-        const outputpaths: Array<ConnectionPathInterchangeV1> = [];
+    toInterchangeV1(): ConnectionInterchangeV1_2 {
+        if (this._source === null) {
+            throw new Error("Source is null, cannot convert connection to interchange format:" + this._id);
+        }
+        const outputpaths: Array<ConnectionPathInterchangeV1_2> = [];
         for (let i = 0; i < this._paths.length; i++) {
             const path = this._paths[i];
-            const outputpath: ConnectionPathInterchangeV1 = {
+            const outputpath: ConnectionPathInterchangeV1_2 = {
                 source: this._source !== null ? this._source.toJSON() : null,
                 sink: this.sinks.length > i ? this._sinks[i].toJSON() : null,
                 wayPoints: path
             };
             outputpaths.push(outputpath);
         }
-        const output: ConnectionInterchangeV1 = {
+        const output: ConnectionInterchangeV1_2 = {
             id: this._id,
             name: this._name,
             entity: this._entity,
-            source: null,
-            sinks: null,
+            source: this._source.toJSON(),
+            sinks: [],
             paths: outputpaths,
             params: this._params.toJSON(),
             layer: this._layer.id
@@ -202,10 +205,12 @@ export default class Connection {
         }
         if (this._sinks !== null && this._sinks.length > 0) {
             let sinks = [];
-            for (let i in this._sinks) {
-                sinks.push(this._sinks[i].toJSON());
+            for (const sink of this._sinks) {
+                sinks.push(sink.toJSON());
             }
-            output.sinks = this._sinks;
+            output.sinks = this._sinks.map(sink => {
+                return ExportUtils.toConnectionTargetInterchangeV1(sink);
+            });
         }
         return output;
     }
@@ -289,9 +294,9 @@ export default class Connection {
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
-        for (var i in this._featureIDs) {
+        for (const featureid of this._featureIDs) {
             // gets teh feature defined by the id
-            feature = ConnectionUtils.getFeatureFromID(this._featureIDs[i]);
+            feature = ConnectionUtils.getFeatureFromID(featureid);
             console.log(feature);
             renderedfeature = FeatureRenderer2D.renderFeature(feature, null);
             console.log("rendered:");
@@ -316,8 +321,7 @@ export default class Connection {
         //TODO: Modify all the associated Features
         for (let key in params) {
             let value = params.getValue(key);
-            for (const i in this._featureIDs) {
-                const featureidtochange = this._featureIDs[i];
+            for (const featureidtochange of this._featureIDs) {
 
                 //Get the feature id and modify it
                 let feature = ConnectionUtils.getFeatureFromID(featureidtochange);
@@ -343,8 +347,7 @@ export default class Connection {
      */
     updateSegments(segments: Array<Segment>): void {
         this.updateParameter("segments", new Parameter("SegmentArray", segments));
-        for (let i in this._featureIDs) {
-            let featureidtochange = this._featureIDs[i];
+        for (const featureidtochange of this._featureIDs) {
 
             const feature = ConnectionUtils.getFeatureFromID(featureidtochange);
             // feature.updateParameter('position', center);
@@ -462,7 +465,7 @@ export default class Connection {
      * @returns {Connection} Returns a connection object
      * @memberof Connection
      */
-    static fromInterchangeV1(device: Device, json: ConnectionInterchangeV1): Connection {
+    static fromInterchangeV1(device: Device, json: ConnectionInterchangeV1_2): Connection {
         // let set;
         // if (json.hasOwnProperty("set")) set = json.set;
         // else set = "Basic";

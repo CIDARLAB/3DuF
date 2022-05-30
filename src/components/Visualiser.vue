@@ -43,9 +43,10 @@ export default {
         Registry.viewManager = viewManager;
 
         viewManager.loadDeviceFromJSON(JSON.parse(Examples.UpdatedExample));
+        // TODO - Make thi work with the programmatic generation of the device
+        // viewManager.createNewDevice("New_Device");
         viewManager.updateGrid();
-        Registry.viewManager.updateDevice(viewManager.currentDevice);
-
+        viewManager.refresh();
         window.dev = Registry.currentDevice;
         window.Registry = Registry;
 

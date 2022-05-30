@@ -156,6 +156,14 @@ export default class ComponentPort {
      * @memberof ComponentPort
      */
     static fromInterchangeV1(json: ComponentPortInterchangeV1): ComponentPort {
-        return new ComponentPort(json.x, json.y, json.label, json.layer);
+        let layer = LogicalLayerType.FLOW;
+        if(json.layer === "FLOW"){
+            layer = LogicalLayerType.FLOW;
+        } else if (json.layer === "CONTROL"){
+            layer = LogicalLayerType.CONTROL;
+        } else if (json.layer === "INTEGRATION"){
+            layer = LogicalLayerType.INTEGRATION;
+        }
+        return new ComponentPort(json.x, json.y, json.label, layer);
     }
 }

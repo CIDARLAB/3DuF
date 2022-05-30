@@ -322,7 +322,7 @@ export default class Template {
      * @param key
      */
     render2D(params: { [key: string]: any }, key: string): ToolPaperObject {
-        console.error("Default component template being used. User needs to provide method for component definition, look at examples")
+        console.error("Default component template being used. User needs to provide method for component definition, look at examples");
         const x = params.position[0];
         const y = params.position[1];
 

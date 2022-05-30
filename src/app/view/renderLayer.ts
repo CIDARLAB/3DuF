@@ -2,7 +2,7 @@ import uuid from "node-uuid";
 import Feature from "../core/feature";
 import EdgeFeature from "../core/edgeFeature";
 
-import { RenderLayerInterchangeV1, FeatureInterchangeV0, LayerInterchangeV1, LogicalLayerType } from "../core/init";
+import { RenderLayerInterchangeV1_2, FeatureInterchangeV1_2, LayerInterchangeV1, LogicalLayerType } from "../core/init";
 import Layer from "../core/layer";
 import Params from "../core/params";
 
@@ -222,8 +222,8 @@ export default class RenderLayer {
      * @returns {Array} Returns an array with the features in Interchange format
      * @memberof Layer
      */
-    __featuresInterchangeV1(): Array<FeatureInterchangeV0> {
-        const output: Array<FeatureInterchangeV0> = [];
+    __featuresInterchangeV1(): Array<FeatureInterchangeV1_2> {
+        const output: Array<FeatureInterchangeV1_2> = [];
         for (const i in this.features) {
             output.push(this.features[i].toInterchangeV1());
         }
@@ -243,10 +243,10 @@ export default class RenderLayer {
 
     /**
      * Loads features from Interchange format
-     * @param {FeatureInterchangeV0} json Interchange format file
+     * @param {FeatureInterchangeV1_2} json Interchange format file
      * @memberof RenderLayer
      */
-    __loadFeaturesFromInterchangeV1(json: Array<FeatureInterchangeV0>): void {
+    __loadFeaturesFromInterchangeV1(json: Array<FeatureInterchangeV1_2>): void {
         for (const i in json) {
             this.addFeature(Feature.fromInterchangeV1(json[i]));
         }
@@ -287,14 +287,14 @@ export default class RenderLayer {
      * @returns {LayerInterchangeV1} Returns a Interchange format with the attributes of the object
      * @memberof Layer
      */
-    toInterchangeV1(): RenderLayerInterchangeV1 {
+    toInterchangeV1(): RenderLayerInterchangeV1_2 {
         let physlayer;
         if (this.physicalLayer) {
             physlayer = this.physicalLayer.id;
         } else {
             physlayer = null;
         }
-        const output: RenderLayerInterchangeV1 = {
+        const output: RenderLayerInterchangeV1_2 = {
             id: this.__id,
             name: this.name,
             //name: this.name,
@@ -333,7 +333,7 @@ export default class RenderLayer {
      * @returns {Layer} Returns a new layer object
      * @memberof Layer
      */
-    static fromInterchangeV1(json: RenderLayerInterchangeV1): RenderLayer {
+    static fromInterchangeV1(json: RenderLayerInterchangeV1_2): RenderLayer {
         //Effectively defunct, use loadUtils version
         let layerType: LogicalLayerType | undefined;
         if (Object.prototype.hasOwnProperty.call(json, "type")) {

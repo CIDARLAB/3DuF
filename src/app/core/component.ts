@@ -1,13 +1,10 @@
 import Params from "./params";
 import CustomComponent from "./customComponent";
 import ComponentPort from "./componentPort";
-import Feature from "./feature";
-import paper from "paper";
 import uuid from "node-uuid";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
-import { ComponentPortInterchangeV1, ComponentInterchangeV1 } from "./init";
-import { ConnectionInterchangeV1, Point } from "./init";
+import { ComponentPortInterchangeV1, ComponentInterchangeV1, Point } from "./init";
 import ComponentUtils from "../utils/componentUtils";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
@@ -62,8 +59,8 @@ export default class Component {
         if ((mint !== "" && mint !== "TEXT") || mint === null) {
             const ports = ComponentAPI.getComponentPorts(cleanparamdata, mint);
             if (ports != undefined && ports.length >= 0 && ports !== null) {
-                for (const i in ports) {
-                    this.setPort(ports[i].label, ports[i]);
+                for (const port of ports) {
+                    this.setPort(port.label, port);
                 }
             }
         } else {
@@ -171,11 +168,10 @@ export default class Component {
     updateParameter(key: string, value: any): void {
         if (key == "position") console.error("Use updateComponentPosition instead of updateParameter when changing position");
         this._params.updateParameter(key, value);
-        for (const i in this._featureIDs) {
-            const featureidtochange = this._featureIDs[i];
+        for (const featureid of this._featureIDs) {
 
             // Get the feature id and modify it
-            const feature = ComponentUtils.getFeatureFromID(featureidtochange);
+            const feature = ComponentUtils.getFeatureFromID(featureid);
             feature.updateParameter(key, value);
         }
 
@@ -227,8 +223,7 @@ export default class Component {
         const layers = ComponentUtils.getDeviceLayers();
         const layerrefs = [];
         let layer;
-        for (const i in layers) {
-            layer = layers[i];
+        for (const layer of layers) {
             // Check if the component is in layer then put it there
             let feature;
             for (const key in layer.features) {
@@ -315,9 +310,9 @@ export default class Component {
         let bounds = null;
         let feature = null;
         let renderedfeature = null;
-        for (const i in this._featureIDs) {
+        for (const featureid of this._featureIDs) {
             // gets teh feature defined by the id
-            feature = ComponentUtils.getFeatureFromID(this._featureIDs[i]);
+            feature = ComponentUtils.getFeatureFromID(featureid);
             renderedfeature = FeatureRenderer2D.renderFeature(feature, null);
             if (bounds === null) {
                 bounds = renderedfeature.bounds;
@@ -347,8 +342,7 @@ export default class Component {
             console.error("No features associated with the component");
         }
         let bounds = null;
-        for (const i in this._featureIDs) {
-            const featureid = this._featureIDs[i];
+        for (const featureid of this._featureIDs) {
             const render = ComponentUtils.getRenderedFeature(featureid);
             if (bounds && render) {
                 bounds = bounds.unite(render.bounds);
@@ -372,8 +366,7 @@ export default class Component {
         // Update component
         this._params.updateParameter("position", [center[0] + this._renderOffset[0], center[1] + this._renderOffset[1]]);
         // Update features
-        for (const i in this._featureIDs) {
-            const featureidtochange = this._featureIDs[i];
+        for (const featureidtochange of this._featureIDs) {
 
             const feature = ComponentUtils.getFeatureFromID(featureidtochange);
             feature.updateParameter("position", center);
@@ -389,7 +382,7 @@ export default class Component {
 
     setOffset():void {
         const rect = this.getBoundingRectangle();
-        const featPos = ComponentUtils.getFeatureFromID(this._featureIDs[0]).getValue("position")
+        const featPos = ComponentUtils.getFeatureFromID(this._featureIDs[0]).getValue("position");
         this._renderOffset = [rect.x - featPos[0], rect.y - featPos[1]];
     }
 
@@ -426,14 +419,14 @@ export default class Component {
         const ret = new Component(replicaparams, name, this._entity);
         console.log("Checking what the new component params are:", ret._params);
         // Generate New features
-        for (const i in this._featureIDs) {
-            const feature = ComponentUtils.getFeatureFromID(this._featureIDs[i]);
+        for (const featureid of this._featureIDs) {
+            const feature = ComponentUtils.getFeatureFromID(featureid);
             const replica = feature.replicate(this.getPosition()[0], this.getPosition()[1]);
             replica.referenceID = ret.id;
             ret.featureIDs.push(replica.ID);
 
             // TODO: add new feature to the layer in which the current feature is in
-            const currentlayer = ComponentUtils.getDeviceLayerFromID(this._featureIDs[i]);
+            const currentlayer = ComponentUtils.getDeviceLayerFromID(featureid);
             currentlayer.addFeature(replica);
         }
         console.warn("TODO: Generate renders for the new Features for this new component");
@@ -530,8 +523,8 @@ export default class Component {
 
         // Deserialize the component ports
         const portdata = new Map();
-        for (const i in json.ports) {
-            const componentport = ComponentPort.fromInterchangeV1(json.ports[i]);
+        for (const port of json.ports) {
+            const componentport = ComponentPort.fromInterchangeV1(port);
             portdata.set(componentport.label, componentport);
         }
 
@@ -594,8 +587,8 @@ export default class Component {
         const currPos: [number, number] = cleanparamdata.get("position");
         cleanparamdata.set("position", [currPos[0] - this._renderOffset[0], currPos[1] - this._renderOffset[1]]);
         const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._entity);
-        for (const i in ports) {
-            this.setPort(ports[i].label, ports[i]);
+        for (const port of ports) {
+            this.setPort(port.label, port);
         }
     }
 }
