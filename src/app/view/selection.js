@@ -1,4 +1,9 @@
 import paper from "paper";
+import * as Registry from "../core/registry";
+import Feature from "../core/feature";
+import Params from "../core/params";
+import Component from "../core/component";
+
 /**
  * Selection class
  */
@@ -11,13 +16,48 @@ export default class Selection {
         this.__components = [];
         this.__connections = [];
         this.__otherFeatures = [];
-        //Sort out wether each of the items selected belongs to one of the following
-        for (let i in items) {
-            console.log(items[i]);
+        //Sort out where each of the items selected belongs to one of the following
+        for (let i in items) {  // query if its a component, connection or other feature
+            let feature = Registry.currentDevice.getComponentByID(items[i]);
+            if (feature == null) {
+                feature = Registry.currentDevice.getConnectionByID(items[i]);
+                if (feature == null) {
+                    feature = Registry.currentDevice.getFeatureByID(items[i]);
+                    console.log(feature);
+                    console.log(items[i]);
+                    if (feature.__type === "Connection") {
+                        console.log("Connection Feature Selected");
+                        this.__connections.push(items[i]);
+                    } else if (feature.__type === "EDGE") {
+                        // ignore the edge
+                    } else {
+                        console.log("Other Feature Selected");
+                        this.__otherFeatures.push(items[i]);
+                    }
+                } else {
+                    console.log("Connection:",feature);
+                    console.log("Connection Feature Selected");
+                    this.__connections.push(items[i]);
+                }
+            } else {
+                console.log("Component Feature Selected");
+                this.__components.push(items[i]);
+            }
         }
         this.__bounds = this.__calculateSelectionBounds();
+        console.log("bounds: ", this.__bounds);
     }
 
+    getFeatureIDs() {
+        let ret = [];
+        ret = this.__components.concat(this.__connections);
+        ret = ret.concat(this.__otherFeatures);
+        return ret;
+    }
+
+    getReferencePoint() {
+        return this.__bounds;
+    }
     /**
      * Generates a replica
      * @param {number} x X coordinate for here the selection should be replicated
@@ -31,21 +71,68 @@ export default class Selection {
         2. Go through each of the items
         3. Clone components/connections/other features
          */
-        let referencepoint = this.__bounds.topleft;
+        let referencepoint = this.__bounds;
 
         console.log("reference point:", referencepoint);
 
+
         for (let i in this.__components) {
-            let render = Registry.currentDevice.getFeatureByID(this.__components[i]);
+            let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+            let newx = referencepoint.x - render.bounds.x;
+            newx = x + newx;
+            console.log("newx: ", newx);
+            let newy = referencepoint.y - render.bounds.y;
+            newy = y + newy;
+            console.log("newy: ", newy);
+            let newComponent = render.replicate(newx, newy);
+            Registry.currentDevice.addComponent(newComponent);
         }
 
         for (let i in this.__connections) {
-            let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+            // let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+            // let replica = render.replicate(x,y);
+            console.log("implement connections");
         }
 
         for (let i in this.__otherFeatures) {
             let render = Registry.currentDevice.getFeatureByID(this.__otherFeatures[i]);
+            let newx = render.bounds.x -referencepoint.x;
+            newx = x + newx;
+            console.log("newx: ", newx);
+            let newy = render.bounds.y - referencepoint.y;
+            newy = y + newy;
+            console.log("newy: ", newy);
+            let replica = render.replicate(newx,newy);
+            Registry.currentLayer.addFeature(replica);
+
+            // if component do this
+            let featureIDs = [];
+            featureIDs.push(this.__otherFeatures[i]);
+            let typeString = replica.__type;
+            let paramdata = replica.getParams();
+
+            let definition = Registry.featureSet.getDefinition(typeString);
+            let cleanparamdata = {};
+            for (let key in paramdata) {
+                cleanparamdata[key] = paramdata[key].getValue();
+            }
+            let params = new Params(cleanparamdata, definition.unique, definition.heritable);
+            let componentid = Feature.generateID();
+            let name = Registry.currentDevice.generateNewName(typeString);
+            let newComponent = new Component(typeString, params, name, definition.mint, componentid);
+            let feature;
+
+            for (let i in featureIDs) {
+                newComponent.addFeatureID(featureIDs[i]);
+
+                //Update the component reference
+                feature = Registry.currentDevice.getFeatureByID(featureIDs[i]);
+                feature.referenceID = componentid;
+            }
+
+            Registry.currentDevice.addComponent(newComponent);
         }
+
     }
     /**
      * Selects all the components, connections and features
@@ -88,10 +175,10 @@ export default class Selection {
      * @memberof Selection
      */
     __calculateSelectionBounds() {
-        let xmin = 0;
-        let ymin = 0;
-        let xmax = 0;
-        let ymax = 0;
+        let xmin = Number.MAX_SAFE_INTEGER;
+        let ymin = Number.MAX_SAFE_INTEGER;
+        let xmax = Number.MIN_SAFE_INTEGER;
+        let ymax = Number.MIN_SAFE_INTEGER;
         let bounds;
 
         for (let i in this.__components) {
@@ -103,29 +190,29 @@ export default class Selection {
             if (bounds.y < ymin) {
                 ymin = bounds.y;
             }
-            if (bounds.x + bounds.width > xmax) {
-                xmax = bounds.x + bounds.width;
+            if (bounds.x > xmax) {
+                xmax = bounds.x;
             }
-            if (bounds.y + bounds.height > ymax) {
-                ymax = bounds.y + bounds.height;
+            if (bounds.y > ymax) {
+                ymax = bounds.y;
             }
         }
 
         for (let i in this.__connections) {
-            let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
-            bounds = render.bounds;
-            if (bounds.x < xmin) {
-                xmin = bounds.x;
-            }
-            if (bounds.y < ymin) {
-                ymin = bounds.y;
-            }
-            if (bounds.x + bounds.width > xmax) {
-                xmax = bounds.x + bounds.width;
-            }
-            if (bounds.y + bounds.height > ymax) {
-                ymax = bounds.y + bounds.height;
-            }
+            // let render = Registry.currentDevice.getFeatureByID(this.__connections[i]);
+            // bounds = render.bounds;
+            // if (bounds.x < xmin) {
+            //     xmin = bounds.x;
+            // }
+            // if (bounds.y < ymin) {
+            //     ymin = bounds.y;
+            // }
+            // if (bounds.x > xmax) {
+            //     xmax = bounds.x;
+            // }
+            // if (bounds.y > ymax) {
+            //     ymax = bounds.y;
+            // }
         }
 
         for (let i in this.__otherFeatures) {
@@ -137,15 +224,14 @@ export default class Selection {
             if (bounds.y < ymin) {
                 ymin = bounds.y;
             }
-            if (bounds.x + bounds.width > xmax) {
-                xmax = bounds.x + bounds.width;
+            if (bounds.x > xmax) {
+                xmax = bounds.x;
             }
-            if (bounds.y + bounds.height > ymax) {
-                ymax = bounds.y + bounds.height;
+            if (bounds.y > ymax) {
+                ymax = bounds.y;
             }
         }
-
-        let ret = new paper.Rectangle(new paper.Point(xmin, ymin), new paper.Point(xmax, ymax));
+        let ret = new paper.Point((xmin+xmax)/2, (ymin+ymax)/2);
         return ret;
     }
 }

@@ -19,7 +19,7 @@ import * as DXFSolidObjectRenderer from "./render2D/dxfSolidObjectRenderer2D";
 import Layer from "../core/layer";
 import Device from "../core/device";
 import Feature from "../core/feature";
-
+import Selection from "./selection";
 /**
  * Paper View class
  */
@@ -75,16 +75,17 @@ export default class PaperView {
 
     /**
      * Returns a list of selected items on the canvas
-     * @return {Array}
+     * @return {Selection}
      * @memberof PaperView
      */
     getSelectedFeatures() {
         let output = [];
         let items = paper.project.selectedItems;
         for (let i = 0; i < items.length; i++) {
-            output.push(this.__viewManagerDelegate.currentDevice.getFeatureByID(items[i].featureID));
+            output.push(items[i].featureID);
         }
-        return output;
+        let selection = new Selection(output);
+        return selection;
     }
     /**
      * Deselects the items from the canvas
@@ -607,10 +608,34 @@ export default class PaperView {
      */
     addTarget(featureType, set, position) {
         this.removeTarget();
-        this.lastTargetType = featureType;
-        this.lastTargetPosition = position;
-        this.lastTargetSet = set;
-        this.updateTarget();
+        if (featureType === "CopyTool") {  // render the preview of the copied selection
+            let selection = this.__viewManagerDelegate.selection;
+            let referencepoint = selection.getReferencePoint();  // calculate position of where to render target
+            let featureIDs = selection.getFeatureIDs();
+            let [x,y] = position;
+            for (let i=0;i<featureIDs.length;i++) {
+                let render = Registry.currentDevice.getFeatureByID(featureIDs[i]); // which feature
+                let type = render.getType(); // Get the type of each item
+
+                let newx = referencepoint.x - render.bounds.x;
+                newx = x + newx;
+                let newy = referencepoint.y - render.bounds.y;
+                newy = y + newy;
+
+
+                let newPosition = [newx,newy]
+
+                this.lastTargetType = type;
+                this.lastTargetPosition = newPosition;
+                this.lastTargetSet = set;
+                this.updateTarget();
+            } 
+        } else {
+            this.lastTargetType = featureType;
+            this.lastTargetPosition = position;
+            this.lastTargetSet = set;
+            this.updateTarget();
+        }
     }
 
     /**

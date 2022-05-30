@@ -34,11 +34,13 @@ import CustomComponentManager from "./customComponentManager";
 import EditDeviceDialog from "./ui/editDeviceDialog";
 import ManufacturingPanel from "./ui/manufacturingPanel";
 import CustomComponentPositionTool from "./tools/customComponentPositionTool";
+import CopyTool from "./tools/copyTool";
 import CustomComponent from "../core/customComponent";
 import { setButtonColor } from "../utils/htmlUtils";
 import ExportPanel from "./ui/exportPanel";
 import HelpDialog from "./ui/helpDialog";
 import PaperView from "./paperView";
+import Selection from "./selection";
 import AdaptiveGrid from "./grid/adaptiveGrid";
 import TaguchiDesigner from "./ui/taguchiDesigner";
 import RightClickMenu from "./ui/rightClickMenu";
@@ -84,6 +86,7 @@ export default class ViewManager {
         this._introDialog = new IntroDialog();
         this._dampFabricateDialog = new DAMPFabricationDialog();
         let reference = this;
+        this.selection = null;
         this.updateQueue = new SimpleQueue(function() {
             reference.view.refresh();
         }, 20);
@@ -150,10 +153,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     initiateCopy() {
-        let selectedFeatures = this.view.getSelectedFeatures();
-        if (selectedFeatures.length > 0) {
-            this.pasteboard[0] = selectedFeatures[0];
-        }
+        this.selection = this.view.getSelectedFeatures();
     }
     /**
      * Initiating the zoom toolbar
@@ -872,8 +872,13 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    adjustParams(typeString, setString, valueString, value) {
-        let selectedFeatures = this.view.getSelectedFeatures();
+    adjustParams(typeString, setString, valueString, value) { 
+        let selection_ = this.view.getSelectedFeatures();  
+        let featureIDs = selection_.getFeatureIDs();
+        let selectedFeatures = [];
+        for (let i in featureIDs) {
+            selectedFeatures.push(this.__currentDevice.getFeatureByID(featureIDs[i]));
+        }
         if (selectedFeatures.length > 0) {
             let correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
             if (correctType.length > 0) {
@@ -966,7 +971,7 @@ export default class ViewManager {
      */
     updateDefaultsFromFeature(feature) {
         let heritable = feature.getHeritableParams();
-        for (let key in heritable) {
+        for (let key in heritable) { 
             this.updateDefault(feature.getType(), feature.getSet(), key, feature.getValue(key));
         }
     }
@@ -1034,16 +1039,23 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     activateTool(toolString, rightClickToolString = "SelectTool") {
-        if (this.tools[toolString] === null) {
-            throw new Error("Could not find tool with the matching string");
+        if (toolString === "CopyTool") {
+            //Cleanup job when activating new tool
+            this.view.clearSelectedItems();
+
+            this.mouseAndKeyboardHandler.leftMouseTool = new CopyTool(toolString, "Basic", this.selection);
+        } else {
+            if (this.tools[toolString] == null) {
+                throw new Error("Could not find tool with the matching string");
+            }
+                 //Cleanup job when activating new tool
+                this.view.clearSelectedItems();
+    
+                this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
         }
 
-        //Cleanup job when activating new tool
-        this.view.clearSelectedItems();
-
-        this.mouseAndKeyboardHandler.leftMouseTool = this.tools[toolString];
         this.mouseAndKeyboardHandler.rightMouseTool = this.tools[rightClickToolString];
-        this.mouseAndKeyboardHandler.updateViewMouseEvents();
+        this.mouseAndKeyboardHandler.updateViewMouseEvents();        
     }
 
     /**
@@ -1147,7 +1159,7 @@ export default class ViewManager {
      * @returns {void}
      */
     saveDeviceState() {
-        console.log("Saving to statck");
+        console.log("Saving to stack");
 
         let save = JSON.stringify(Registry.currentDevice.toInterchangeV1());
 
