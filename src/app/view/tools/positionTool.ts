@@ -84,7 +84,7 @@ export default class PositionTool extends MouseTool {
      * Renders the target
      */
     showTarget() {
-        if (this.lastPoint == null) {
+        if (this.lastPoint === null) {
             return;
         }
         const target = PositionTool.getTarget(this.lastPoint);

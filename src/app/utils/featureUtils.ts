@@ -13,12 +13,12 @@ export default class FeatureUtils {
     static setSubstrate(feature: Feature, offset: string): number {
         let substrate: number;
         let layer: RenderLayer | Layer | null = feature.layer;
-        if (layer == null) {
+        if (layer === null) {
             throw new Error("Layer never set for feature " + feature.ID);
-        } else if (Registry.currentDevice == null) {
+        } else if (Registry.currentDevice === null) {
             throw new Error("Current device has not been set in registry");
         } else if (layer instanceof RenderLayer) {
-            if (layer.physicalLayer != null) {
+            if (layer.physicalLayer !== null) {
                 layer = layer.physicalLayer;
             } else {
                 throw new Error("Feature " + feature.ID + " must be on physical layer for manufacturing");

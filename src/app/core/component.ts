@@ -350,7 +350,7 @@ export default class Component {
                 bounds = render.bounds;
             }
         }
-        if (bounds != null) return bounds;
+        if (bounds !== null) return bounds;
         else throw new Error("Component " + this._name + " " + this._id + " cannot have bounds of null");
     }
 

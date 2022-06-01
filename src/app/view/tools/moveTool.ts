@@ -102,7 +102,7 @@ export default class MoveTool extends MouseTool {
         if (this.__dragging) {
             const point = MouseTool.getEventPosition(event);
             let target: paper.Point | number[] | undefined = [0, 0];
-            if (point != null) target = Registry.viewManager?.snapToGrid([point.x, point.y]);
+            if (point !== null) target = Registry.viewManager?.snapToGrid([point.x, point.y]);
             const delta = {
                 x: (target as any).x - (this.__startPoint as any).y,
                 y: (target as any).y - (this.__startPoint as any).y

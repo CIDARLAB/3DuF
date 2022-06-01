@@ -1016,7 +1016,7 @@ export default class ViewManager {
 
         console.log(json.version);
         //If older version fix feature locations
-        if (this.__currentDevice != null) {
+        if (this.__currentDevice !== null) {
             console.log("There");
             console.log("version: ", json.version);
             if (json.version == "1" || json.version == "1.1") {

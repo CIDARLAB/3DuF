@@ -118,7 +118,7 @@ export default class ConnectionTool extends MouseTool {
         this.move = function (event) {
             // Check if orthogonal
             const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
-            if (point == null) return;
+            if (point === null) return;
             const target = ConnectionTool.getTarget([point.x, point.y]);
 
             if ((event as any).altKey && ref.__STATE === ConnectionToolState.PLACE_WAYPOINT) {
@@ -287,7 +287,7 @@ export default class ConnectionTool extends MouseTool {
         const point = MouseTool.getEventPosition(event);
         const isPointOnComponent = this.__isPointOnComponent(point!);
         const isPointOnConnection = this.__isPointOnConnection(point!);
-        if (point == null) return;
+        if (point === null) return;
         let target = ConnectionTool.getTarget([point.x, point.y]);
         if (isManhatten && target) {
             // TODO: modify the target to find the orthogonal point

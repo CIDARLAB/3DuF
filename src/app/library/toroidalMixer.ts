@@ -245,7 +245,7 @@ export default class ToroidalMixer extends Template {
 
     render2DTarget(key: string, params: { [index: string]: any }): paper.CompoundPath {
         const render = this.render2D(params, key);
-        if (render.fillColor != null) render.fillColor.alpha = 0.5;
+        if (render.fillColor !== null) render.fillColor.alpha = 0.5;
         return render;
     }
 }
