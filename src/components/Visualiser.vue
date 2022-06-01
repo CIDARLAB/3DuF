@@ -2,7 +2,7 @@
     <div>
         <div id="view-container">
             <div id="canvas_block">
-                <canvas id="c" tabindex="0" resize />
+                <canvas id="c" ref="rendingcanvas" tabindex="0" resize />
                 <slot>
                     <ComponentContextMenu id="contextMenu" ref="contextMenu" />
                 </slot>
@@ -24,6 +24,7 @@ import ResolutionToolbar from "@/components/ResolutionToolbar";
 import ZoomSlider from "@/components/ZoomSlider";
 import ComponentContextMenu from "@/components/ComponentContextMenu";
 import ConnectionContextMenu from "@/components/ConnectionContextMenu";
+import * as HTMLUtils from "@/app/utils/htmlUtils";
 
 export default {
     components: {
@@ -52,9 +53,70 @@ export default {
 
         window.view = Registry.viewManager.view;
         Registry.viewManager.setupToolBars();
+        this.test();
         //EventBus.get().on(EventBus.DBL_CLICK, this.placement, this.placement2);
     },
-    methods: {}
+    methods: {
+        test: function() {
+
+            function setupDnDFileController(el_, onDropCallback) {
+                console.log("Element:",el_);
+                let dragenter = function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    el_.classList.add("dropping");
+                };
+
+                let dragover = function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                };
+
+                let dragleave = function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    // el_.classList.remove('dropping');
+                };
+
+                let drop = function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    el_.classList.remove("dropping");
+
+                    onDropCallback(e.dataTransfer.files, e);
+                };
+
+                el_.addEventListener("dragenter", dragenter, false);
+                el_.addEventListener("dragover", dragover, false);
+                el_.addEventListener("dragleave", dragleave, false);
+                el_.addEventListener("drop", drop, false);
+            }
+
+
+            console.log("test getting the element");
+            setupDnDFileController(this.$refs.rendingcanvas, function(files) {
+            const f = files[0];
+
+            const reader = new FileReader();
+            reader.onloadend = function(e) {
+                let result = this.result;
+                // try {
+                let jsonresult = JSON.parse(result);
+                Registry.viewManager.loadDeviceFromJSON(jsonresult);
+                // } catch (error) {
+                //     console.error(error.message);
+                //     alert("Unable to parse the design file, please ensure that the file is not corrupted:\n" + error.message);
+                // }
+            };
+            try {
+                reader.readAsText(f);
+            } catch (err) {
+                console.log("unable to load JSON: " + f);
+            }
+        });
+        },
+    }
 };
 </script>
 

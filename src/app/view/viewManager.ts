@@ -164,8 +164,8 @@ export default class ViewManager {
         // this.__button2D = document.getElementById("button_2D");
         // this.__canvasBlock = document.getElementById("canvas_block");
         // this.__renderBlock = document.getElementById("renderContainer");
-        this.setupDragAndDropLoad("#c");
-        this.setupDragAndDropLoad("#renderContainer");
+        // this.setupDragAndDropLoad("#c");
+        // this.setupDragAndDropLoad("#renderContainer");
     }
 
     /**
