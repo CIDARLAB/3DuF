@@ -91,7 +91,7 @@ export default class ManufacturingLayer {
         Step 2 - Flip the whole godamn thing
          */
         const currentDevice: Device | null = Registry.currentDevice;
-        if (currentDevice != null) {
+        if (currentDevice !== null) {
             const yspan = currentDevice.getYSpan();
             const xspan = currentDevice.getXSpan();
 
@@ -110,7 +110,7 @@ export default class ManufacturingLayer {
      */
     exportToSVG(): string {
         const currentDevice: Device | null = Registry.currentDevice;
-        if (currentDevice != null) {
+        if (currentDevice !== null) {
             const yspan = currentDevice.getYSpan();
             const xspan = currentDevice.getXSpan();
             let svgtext = this.__paperGroup.exportSVG({ asString: true });

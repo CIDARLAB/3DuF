@@ -42,7 +42,7 @@ export default class InsertTextTool extends MouseTool {
         };
         this.move = function(event) {
             let point = MouseTool.getEventPosition((event as unknown) as MouseEvent);
-            if(point == null) {
+            if(point === null) {
                 return;
             }
             ref.lastPoint = [point.x, point.y];

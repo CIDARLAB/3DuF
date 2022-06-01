@@ -77,7 +77,7 @@ export default class CNCGenerator {
                 const feature: Feature = features[key];
 
                 let manufacturingLayerName: string;
-                if (feature.manufacturingInfo.substrate != null) {
+                if (feature.manufacturingInfo.substrate !== null) {
                     manufacturingLayerName =
                         feature.manufacturingInfo.modifier +
                         "_" +

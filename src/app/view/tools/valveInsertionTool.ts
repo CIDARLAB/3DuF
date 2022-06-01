@@ -22,7 +22,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         this.down = function (event) {
             console.log(event);
             const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
-            if (point == null) return;
+            if (point === null) return;
             const target = PositionTool.getTarget([point.x, point.y]);
             // Check if connection exists at point
             const connection = ref.checkIfConnectionExistsAt(target as unknown as paper.Point);
