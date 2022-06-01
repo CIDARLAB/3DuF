@@ -6,7 +6,7 @@ export default class Connection extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             start: "Point",
             end: "Point",
@@ -108,7 +108,7 @@ export default class Connection extends Template {
         return connectionpath;
     }
 
-    __drawStraightConnection(compoundpath: paper.CompoundPath, startpoint: paper.Point, endpoint: paper.Point, channelWidth: number) {
+    __drawStraightConnection(compoundpath: paper.CompoundPath, startpoint: paper.Point, endpoint: paper.Point, channelWidth: number): void  {
         // edit the points
         const vec = endpoint.subtract(startpoint);
         const rec = new paper.Path.Rectangle({

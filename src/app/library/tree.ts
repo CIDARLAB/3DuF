@@ -8,7 +8,7 @@ export default class Tree extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -144,7 +144,7 @@ export default class Tree extends Template {
         return ports;
     }
 
-    render2D(params: { [k: string]: any }, key: string) {
+    render2D(params: { [k: string]: any }, key: string): CompoundPath  {
         const position = params.position;
         const cw = params.flowChannelWidth;
         const rotation = params.rotation;
@@ -184,7 +184,7 @@ export default class Tree extends Template {
         return (treepath.rotate(rotation, new paper.Point(px, py)) as unknown) as paper.CompoundPath;
     }
 
-    __generateTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false) {
+    __generateTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false): void  {
         // var newspacing = 2 * (spacing + cw);
         const hspacing = newspacing / 2;
         const lex = px - 0.5 * newspacing;
@@ -207,7 +207,7 @@ export default class Tree extends Template {
         }
     }
 
-    __drawtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false) {
+    __drawtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false): CompoundPath  {
         // stem
         let startPoint = new paper.Point(px - cw / 2, py);
         let endPoint = new paper.Point(px + cw / 2, py + stagelength);
@@ -272,7 +272,7 @@ export default class Tree extends Template {
         return treepath;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string, params: { [k: string]: any }): CompoundPath  {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;

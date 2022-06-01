@@ -8,7 +8,7 @@ export default class Transposer extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -264,7 +264,7 @@ export default class Transposer extends Template {
         return transposer_flow;
     }
 
-    __createTransposerValve(compound_path: paper.CompoundPath, xpos: number, ypos: number, valveGap: number, radius: number, orientation: string, channel_width: number) {
+    __createTransposerValve(compound_path: paper.CompoundPath, xpos: number, ypos: number, valveGap: number, radius: number, orientation: string, channel_width: number): void  {
         const center = new paper.Point(xpos, ypos);
 
         // Create the basic circle

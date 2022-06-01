@@ -19,7 +19,7 @@ export default class GeometryGraph {
         this.__networkGraph = new graphlib.Graph({ directed: false });
     }
 
-    addEdge(start: any, end: any, data: any) {
+    addEdge(start: any, end: any, data: any): void  {
         const startnode = this.findNode(start);
         const endnode = this.findNode(end);
 
@@ -69,7 +69,7 @@ export default class GeometryGraph {
         return path;
     }
 
-    drawComponent(component: any[], path: any) {
+    drawComponent(component: any[], path: any): void  {
         /*
         Step 1 - Take the starting node
         Step 2 - start traversing through the component and start making a path with segments
@@ -179,7 +179,7 @@ export default class GeometryGraph {
         return this.__edgeData.get(edgeref);
     }
 
-    static computeDistance(node: any, nodetocheck: any) {
+    static computeDistance(node: any, nodetocheck: any): number  {
         const sqdist = Math.pow(node.x - nodetocheck.x, 2) + Math.pow(node.y - nodetocheck.y, 2);
         // TODO: check if there is a z component
         return Math.sqrt(sqdist);

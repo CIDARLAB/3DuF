@@ -8,7 +8,7 @@ export default class BetterMixer extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -117,7 +117,7 @@ export default class BetterMixer extends Template {
         return ports;
     }
 
-    render2D(params: { [k: string]: any }, key: string) {
+    render2D(params: { [k: string]: any }, key: string): CompoundPath  {
         const channelWidth = params.channelWidth;
         const bendLength = params.bendLength;
         const bendSpacing = params.bendSpacing;
@@ -152,7 +152,7 @@ export default class BetterMixer extends Template {
         return (serp.rotate(rotation, new paper.Point(x, y)) as unknown) as paper.CompoundPath;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string, params: { [k: string]: any }): CompoundPath  {
         const serp = this.render2D(params, key);
 
         serp.fillColor!.alpha = 0.5;
