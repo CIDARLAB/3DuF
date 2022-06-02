@@ -1,15 +1,15 @@
-export function removeClass(el: HTMLElement, className: string) {
+export function removeClass(el: HTMLElement, className: string): void  {
     if (el.classList) el.classList.remove(className);
     else el.className = el.className.replace(new RegExp("(^|\\b)" + className.split(" ").join("|") + "(\\b|$)", "gi"), " ");
 }
 
-export function addClass(el: HTMLElement, className: string) {
+export function addClass(el: HTMLElement, className: string): void  {
     if (el.classList) el.classList.add(className);
     else el.className += " " + className;
 }
 
 // From http://stackoverflow.com/questions/8869403/drag-drop-json-into-chrome
-export function DnDFileController(this: any, selector: string, onDropCallback: (files: FileList, e: unknown) => any) {
+export function DnDFileController(this: any, selector: string, onDropCallback: (files: FileList, e: unknown) => any): void  {
     const el_ = document.querySelector(selector);
     this.dragenter = function(e: DragEvent) {
         e.stopPropagation();
@@ -43,7 +43,7 @@ export function DnDFileController(this: any, selector: string, onDropCallback: (
     el_?.addEventListener("drop", this.drop, false);
 }
 
-export function setButtonColor(button: HTMLButtonElement, color: string, text: string) {
+export function setButtonColor(button: HTMLButtonElement, color: string, text: string): void  {
     button.style.background = color;
     button.style.color = text;
 }

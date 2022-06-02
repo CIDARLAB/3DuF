@@ -39,17 +39,17 @@ export default class GenerateArrayTool extends MouseTool {
         };
     }
 
-    activate(component: Component) {
+    activate(component: Component): void  {
         console.log("Activating the tool for a new component", component);
         // Store the component position here
         this.__currentComponent = component;
     }
 
-    deactivate() {
+    deactivate(): void  {
         Registry.viewManager?.resetToDefaultTool();
     }
 
-    generateArray(xdim: number, ydim: number, xspacing: number, yspacing: number) {
+    generateArray(xdim: number, ydim: number, xspacing: number, yspacing: number): void  {
         console.log("Generate array:", xdim, ydim, xspacing, yspacing);
         const xposref = this.__currentComponent.getPosition()[0];
         const yposref = this.__currentComponent.getPosition()[1];
@@ -78,11 +78,11 @@ export default class GenerateArrayTool extends MouseTool {
         Registry.viewManager?.saveDeviceState();
     }
 
-    revertToOriginalPosition() {
+    revertToOriginalPosition(): void  {
         this.__currentComponent.updateComponentPosition(this.__originalPosition);
     }
 
-    dragHandler() {
+    dragHandler(): void  {
         // if (this.dragStart) {
         //     if (this.currentSelectBox) {
         //         this.currentSelectBox.remove();
@@ -95,7 +95,7 @@ export default class GenerateArrayTool extends MouseTool {
     //     Registry.viewManager.removeTarget();
     // }
 
-    mouseUpHandler(event: MouseToolCallback) {
+    mouseUpHandler(event: MouseToolCallback): void  {
         // if (this.currentSelectBox) {
         //     this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox);
         //     this.selectFeatures();
@@ -104,7 +104,7 @@ export default class GenerateArrayTool extends MouseTool {
         console.log("Up event", event);
     }
 
-    mouseDownHandler(event: MouseToolCallback) {
+    mouseDownHandler(event: MouseToolCallback): void  {
         // let point = MouseTool.getEventPosition(event);
         // let target = this.hitFeature(point);
         // if (target) {

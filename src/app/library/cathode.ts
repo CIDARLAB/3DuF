@@ -8,7 +8,7 @@ export default class Cahode extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -86,7 +86,7 @@ export default class Cahode extends Template {
         this.__mint = "CATHODE";
     }
 
-    render2D(params: { [k: string]: any }, key: string) {
+    render2D(params: { [k: string]: any }, key: string): paper.PathItem  {
         // Regardless of the key...
         const position = params.position;
         const radius = params.cathodeRadius;
@@ -108,7 +108,7 @@ export default class Cahode extends Template {
         return (finalCircle.rotate(rotation, pos) as unknown) as paper.PathItem;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string, params: { [k: string]: any }): paper.PathItem  {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;

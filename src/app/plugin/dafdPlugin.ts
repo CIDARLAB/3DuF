@@ -5,7 +5,7 @@ import ChannelTool from "../view/tools/channelTool";
 import ComponentPort from "../core/componentPort";
 
 export default class DAFDPlugin {
-    static fixLayout(params: { [k: string]: any }) {
+    static fixLayout(params: { [k: string]: any }): void  {
         // Update Params
         let channelid;
         const orificeSize = params.orificeSize;

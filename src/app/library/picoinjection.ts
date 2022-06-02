@@ -8,7 +8,7 @@ export default class PicoInjection extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };

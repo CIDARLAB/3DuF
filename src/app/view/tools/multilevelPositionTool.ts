@@ -27,14 +27,14 @@ export default class MultilevelPositionTool extends PositionTool {
         this.intlayer = intLayer;
     }
 
-    createNewFeature(point: paper.Point) {
+    createNewFeature(point: paper.Point): void  {
         const featureIDs = [];
 
         // Set up flow layer component
         const paramvalues = this.getCreationParameters(point);
         let newFeature = Device.makeFeature(this.typeString, paramvalues);
         this.currentFeatureID = newFeature.ID;
-        if (this.flowlayer != null) this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.flowlayer));
+        if (this.flowlayer !== null) this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.flowlayer));
 
         featureIDs.push(newFeature.ID);
 
@@ -47,7 +47,7 @@ export default class MultilevelPositionTool extends PositionTool {
             newFeature.setParams(paramstoadd);
 
             this.currentFeatureID = newFeature.ID;
-            if (this.controllayer != null) this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.controllayer));
+            if (this.controllayer !== null) this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.controllayer));
 
             featureIDs.push(newFeature.ID);
         }
@@ -59,7 +59,7 @@ export default class MultilevelPositionTool extends PositionTool {
             newFeature.setParams(paramstoadd);
 
             this.currentFeatureID = newFeature.ID;
-            if (this.intlayer != null) this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.intlayer));
+            if (this.intlayer !== null) this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.intlayer));
 
             featureIDs.push(newFeature.ID);
         }
@@ -68,7 +68,7 @@ export default class MultilevelPositionTool extends PositionTool {
         this.viewManagerDelegate.saveDeviceState();
     }
 
-    showTarget() {
+    showTarget(): void  {
         if (this.lastPoint === null) {
             return;
         }

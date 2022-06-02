@@ -293,7 +293,7 @@ export default class PaperView {
      * @returns {Array<number>}
      * @memberof PaperView
      */
-    getCenter() {
+    getCenter(): paper.Point  {
         return this.center;
     }
 
@@ -634,7 +634,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    hideChosenFeatures(features: Array<ToolPaperObject>) {
+    hideChosenFeatures(features: Array<ToolPaperObject>): void  {
         this.resetFeatureLayers();
         this.featureLayer.remove();
         this.featureLayer = new paper.Group();

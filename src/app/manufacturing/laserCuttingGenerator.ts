@@ -77,7 +77,7 @@ export default class LaserCuttingGenerator {
                 const feature: Feature = features[key];
 
                 let manufacturingLayerName: string;
-                if (feature.manufacturingInfo.substrate != null) {
+                if (feature.manufacturingInfo.substrate !== null) {
                     manufacturingLayerName =
                         feature.manufacturingInfo.modifier +
                         "_" +
@@ -152,7 +152,7 @@ export default class LaserCuttingGenerator {
      * @memberof LaserCuttingGenerator
      * @returns {void}
      */
-    setDevice(currentDevice: Device) {
+    setDevice(currentDevice: Device): void  {
         this.__device = currentDevice;
         console.log("Currentdevice:", currentDevice);
     }
@@ -209,7 +209,7 @@ export default class LaserCuttingGenerator {
                         let manufacturingLayerName: string;
                         console.log("TYPE: ",feature.type);
                         console.log("MANINFO: ", feature.manufacturingInfo);
-                        if (feature.manufacturingInfo.substrate != null) {
+                        if (feature.manufacturingInfo.substrate !== null) {
                             manufacturingLayerName =
                                 "INVERSE" +
                                 "_" +

@@ -8,7 +8,7 @@ export default class DogboneInsert extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -106,7 +106,7 @@ export default class DogboneInsert extends Template {
         return ports;
     }
 
-    render2D(params: { [k: string]: any }, key: string) {
+    render2D(params: { [k: string]: any }, key: string): paper.CompoundPath  {
         const position = params.position;
         const px = position[0];
         const py = position[1];
@@ -180,7 +180,7 @@ export default class DogboneInsert extends Template {
         return serp;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string, params: { [k: string]: any }): paper.CompoundPath  {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;

@@ -21,7 +21,7 @@ export default class PanAndZoom {
      * @returns {void}
      * @memberof PanAndZoom
      */
-    stableZoom(zoom: number, position: paper.Point) {
+    stableZoom(zoom: number, position: paper.Point): void  {
         const newZoom = zoom;
         const p = position;
         const c = this.view.getCenter();
@@ -39,7 +39,7 @@ export default class PanAndZoom {
      * @returns {void}
      * @memberof PanAndZoom
      */
-    adjustZoom(delta: number, position: paper.Point) {
+    adjustZoom(delta: number, position: paper.Point): void  {
         this.stableZoom(this.calcZoom(delta), position);
     }
 
@@ -63,7 +63,7 @@ export default class PanAndZoom {
      * @returns {void}
      * @memberof PanAndZoom
      */
-    moveCenter(delta: paper.Point) {
+    moveCenter(delta: paper.Point): void  {
         this.view.setCenter(this.calcCenter(delta));
     }
 

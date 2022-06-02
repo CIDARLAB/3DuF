@@ -57,7 +57,7 @@ export default class PositionTool extends MouseTool {
         };
     }
 
-    createNewFeature(point: paper.Point) {
+    createNewFeature(point: paper.Point): void  {
         const name = this.viewManagerDelegate.currentDevice?.generateNewName(this.typeString);
         const newFeature = Device.makeFeature(
             this.typeString,
@@ -83,8 +83,8 @@ export default class PositionTool extends MouseTool {
     /**
      * Renders the target
      */
-    showTarget() {
-        if (this.lastPoint == null) {
+    showTarget(): void  {
+        if (this.lastPoint === null) {
             return;
         }
         const target = PositionTool.getTarget(this.lastPoint);
@@ -129,7 +129,7 @@ export default class PositionTool extends MouseTool {
         return newComponent;
     }
 
-    deactivate() {}
+    deactivate(): void  {}
 
     getCreationParameters(position: paper.Point) {
         if (this.currentParameters === null) {

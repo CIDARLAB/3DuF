@@ -8,7 +8,7 @@ export default class Anode extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -106,7 +106,7 @@ export default class Anode extends Template {
         return (finalCircle.rotate(rotation, pos) as unknown) as paper.PathItem;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string, params: { [k: string]: any }): paper.PathItem  {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;

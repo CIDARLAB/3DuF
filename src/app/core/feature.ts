@@ -123,7 +123,7 @@ export default class Feature {
      */
     setManufacturingInfoLayer(): void {
         this._manufacturingInfo.depth = this.getValue(ComponentAPI.library[this.type].object.zOffsetKey(this.deriveRenderName()));
-        if (this.layer != null) {
+        if (this.layer !== null) {
             this._manufacturingInfo.layertype = this.layer.type;
             this._manufacturingInfo.substrate = FeatureUtils.setSubstrate(this, this._manufacturingInfo["substrate-offset"]);
         } else {

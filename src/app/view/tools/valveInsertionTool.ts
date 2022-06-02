@@ -22,7 +22,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         this.down = function (event) {
             console.log(event);
             const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
-            if (point == null) return;
+            if (point === null) return;
             const target = PositionTool.getTarget([point.x, point.y]);
             // Check if connection exists at point
             const connection = ref.checkIfConnectionExistsAt(target as unknown as paper.Point);
@@ -131,7 +131,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
     /**
      * Shows the target
      */
-    showTarget() {
+    showTarget(): void  {
         if (this.lastPoint === null) {
             return;
         }
@@ -160,7 +160,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @param point
      * @param connection
      */
-    insertValve(point: paper.Point, connection: Connection) {
+    insertValve(point: paper.Point, connection: Connection): void  {
         let angle = this.__getRotation(point, connection);
         if (angle < 0) {
             angle += 180;
@@ -186,7 +186,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @param point
      * @param connection
      */
-    forceInsertValve(point: paper.Point) {
+    forceInsertValve(point: paper.Point): void  {
         let component;
         if (this.typeString == "Valve3D") {
             // TODO: Insert the valve features in both flow and control
