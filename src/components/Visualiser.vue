@@ -60,7 +60,6 @@ export default {
         test: function() {
 
             function setupDnDFileController(el_, onDropCallback) {
-                console.log("Element:",el_);
                 let dragenter = function(e) {
                     e.stopPropagation();
                     e.preventDefault();

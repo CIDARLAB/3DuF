@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import { revertToDefaultParams, generateUpdateFunction } from "@/app/view/ui/parameterMenu";
 import Registry from "@/app/core/registry";
 import Connection from "@/app/core/connection";
 import Layer from "@/app/core/layer";
@@ -158,8 +157,18 @@ export default {
             console.log("Saved data for showRename");
         },
         revertToDefaults() {
-            revertToDefaultParams(this.$refs.table, this.typestring, this.__setString);
+            this.revertToDefaultParams(this.$refs.table, this.typestring, this.__setString);
         },
+        revertToDefaultParams(table, typeString, setString) {
+            const def = ComponentAPI.getDefinition(typeString);
+            const heritable = def.heritable;
+            const defaults = def.defaults;
+
+            for (const key in heritable) {
+                Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
+            }
+        },
+
         deleteButton() {
             Registry.viewManager.view.deleteSelectedFeatures();
         },
@@ -187,18 +196,6 @@ export default {
         saveName() {
             this.currentConnection.name = this.connectionName;
             this.showRename = false;
-        },
-        UpdateFeatureSlider() {
-            const featureID = this.featureRef.getID();
-            const sliderID = featureID + "_" + this.featureRef.key + "_slider";
-            const fieldID = featureID + "_" + this.featureRef.key + "_value";
-            generateUpdateFunction(sliderID, fieldID, this.$refs.typeString, this.$refs.setString, this.featureRef.key);
-        },
-        UpdateFeatureValue() {
-            const featureID = this.featureRef.getID();
-            const sliderID = featureID + "_" + this.featureRef.key + "_slider";
-            const fieldID = featureID + "_" + this.featureRef.key + "_value";
-            generateUpdateFunction(fieldID, sliderID, this.$refs.typeString, this.$refs.setString, this.featureRef.key);
         },
         closeDialog() {
             this.activeMenu = false;

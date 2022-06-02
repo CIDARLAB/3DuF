@@ -1,4 +1,4 @@
-import RightClickMenu from "../ui/rightClickMenu";
+// import RightClickMenu from "../ui/rightClickMenu";
 import MouseTool from "./mouseTool";
 
 import Registry from "../../core/registry";
@@ -21,7 +21,6 @@ export default class RenderMouseTool extends MouseTool {
     currentSelectBox: paper.Point | number[] | null;
     currentSelection: any[];
     updateQueue: SimpleQueue;
-    rightClickMenu?: RightClickMenu;
 
     constructor(viewManager: ViewManager, paperview: PaperView) {
         super();
@@ -136,9 +135,6 @@ export default class RenderMouseTool extends MouseTool {
     }
 
     deselectFeatures() {
-        if (this.rightClickMenu) {
-            this.rightClickMenu.close();
-        }
         this.paperView.clearSelectedItems();
         this.currentSelection = [];
     }

@@ -1,4 +1,3 @@
-import RightClickMenu from "../ui/rightClickMenu";
 import MouseTool, { MouseToolCallback } from "./mouseTool";
 
 import Registry from "../../core/registry";
@@ -20,7 +19,6 @@ export default class MouseSelectTool extends MouseTool {
     currentSelectBox: any;
 
     currentSelection: any[];
-    rightClickMenu?: RightClickMenu;
 
     updateQueue: SimpleQueue;
 
@@ -277,9 +275,6 @@ export default class MouseSelectTool extends MouseTool {
     }
 
     deselectFeatures() {
-        if (this.rightClickMenu) {
-            this.rightClickMenu.close();
-        }
         this.paperView.clearSelectedItems();
         this.currentSelection = [];
     }
