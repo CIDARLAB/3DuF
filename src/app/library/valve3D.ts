@@ -8,7 +8,7 @@ export default class Valve3D extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -169,7 +169,7 @@ export default class Valve3D extends Template {
         return render;
     }
 
-    __drawInverseFlow(params: { [k: string]: any }) {
+    __drawInverseFlow(params: { [k: string]: any }): paper.PathItem  {
         const position = params.position;
         const gap = params.gap;
         const radius = params.valveRadius;

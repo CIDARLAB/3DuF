@@ -153,7 +153,7 @@ export default class FeatureSet {
         console.warn("Skipping definition check over here ");
     }
 
-    containsDefinition(featureTypeString: string) {
+    containsDefinition(featureTypeString: string): boolean  {
         if (this.__definitions.hasOwnProperty(featureTypeString)) return true;
         else return false;
     }
@@ -163,7 +163,7 @@ export default class FeatureSet {
      * @param minttype
      * @return {string|null}
      */
-    getTypeForMINT(minttype: string) {
+    getTypeForMINT(minttype: string): string | null {
         const checkmint = minttype;
         for (const key in this.__library) {
             if (checkmint === (this.__library as any)[key].object.mint) {
@@ -192,7 +192,7 @@ export default class FeatureSet {
         };
     }
 
-    getSetString() {
+    getSetString(): string | unknown  {
         return this.setString;
     }
 
@@ -260,7 +260,7 @@ export default class FeatureSet {
         return renderkeys.includes("INVERSE");
     }
 
-    __checkDefinitions() {
+    __checkDefinitions(): void  {
         for (const key in this.__definitions) {
             if (!this.__tools.hasOwnProperty(key) || !this.__render2D.hasOwnProperty(key) || !this.__render3D.hasOwnProperty(key)) {
                 throw new Error("Feature set does not contain a renderer or tool definition for: " + key);

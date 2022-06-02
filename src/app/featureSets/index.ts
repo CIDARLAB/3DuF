@@ -16,7 +16,7 @@ const requiredSets = {
 
 // registerSets(requiredSets);
 
-export function registerSets(sets: { [k: string]: any }) {
+export function registerSets(sets: { [k: string]: any }): void  {
     for (const key in sets) {
         const name = key;
         const set = sets[key];

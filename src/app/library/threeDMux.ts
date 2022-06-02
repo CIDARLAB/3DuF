@@ -8,7 +8,7 @@ export default class ThreeDMux extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -336,7 +336,7 @@ export default class ThreeDMux extends Template {
         return threedmux_flow;
     }
 
-    __createthreedmuxValve(compound_path: paper.CompoundPath, xpos: number, ypos: number, gap: number, radius: number, rotation: number, channel_width: number) {
+    __createthreedmuxValve(compound_path: paper.CompoundPath, xpos: number, ypos: number, gap: number, radius: number, rotation: number, channel_width: number): void  {
         const center = new paper.Point(xpos, ypos);
 
         // Create the basic circle

@@ -6,7 +6,7 @@ export default class RoundedChannel extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             start: "Point",
             end: "Point"

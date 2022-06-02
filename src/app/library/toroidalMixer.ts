@@ -10,7 +10,7 @@ export default class ToroidalMixer extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };

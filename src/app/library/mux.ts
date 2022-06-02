@@ -8,7 +8,7 @@ export default class Mux extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -132,7 +132,7 @@ export default class Mux extends Template {
         };
     }
 
-    __drawFlow(params: { [k: string]: any }) {
+    __drawFlow(params: { [k: string]: any }): paper.CompoundPath  {
         const position = params.position;
         const cw = params.flowChannelWidth;
         let rotation = params.rotation;
@@ -173,7 +173,7 @@ export default class Mux extends Template {
         return (treepath.rotate(rotation, new paper.Point(px, py)) as unknown) as paper.CompoundPath;
     }
 
-    __drawControl(params: { [k: string]: any }) {
+    __drawControl(params: { [k: string]: any }): paper.CompoundPath  {
         const position = params.position;
         const cw = params.flowChannelWidth;
         const ctlcw = params.controlChannelWidth;
@@ -276,7 +276,7 @@ export default class Mux extends Template {
         return ports;
     }
 
-    render2D(params: { [k: string]: any }, key: string) {
+    render2D(params: { [k: string]: any }, key: string): paper.CompoundPath  {
         if (key === "FLOW") {
             return this.__drawFlow(params);
         } else if (key === "CONTROL") {
@@ -285,14 +285,14 @@ export default class Mux extends Template {
         throw new Error("Unknown key: " + key);
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string, params: { [k: string]: any }): paper.CompoundPath  {
         const render = this.render2D(params, "FLOW");
         render?.addChild(this.render2D(params, "CONTROL") as paper.Item);
         render!.fillColor!.alpha = 0.5;
         return render;
     }
 
-    __generateMuxTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false) {
+    __generateMuxTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false): void  {
         // var newspacing = 2 * (spacing + cw);
         const hspacing = newspacing / 2;
         const lex = px - 0.5 * newspacing;
@@ -313,7 +313,7 @@ export default class Mux extends Template {
         }
     }
 
-    __drawmuxtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false) {
+    __drawmuxtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false): paper.CompoundPath  {
         // stem
         let startPoint = new paper.Point(px - cw / 2, py);
         let endPoint = new paper.Point(px + cw / 2, py + stagelength);
@@ -393,7 +393,7 @@ export default class Mux extends Template {
         leftEdge: number,
         rightEdge: number,
         islast = false
-    ) {
+    ): void  {
         // var newspacing = 2 * (spacing + cw);
         const hspacing = newspacing / 2;
         const lex = px - 0.5 * newspacing;
@@ -427,7 +427,7 @@ export default class Mux extends Template {
         leftEdge: number,
         rightEdge: number,
         drawleafs = false
-    ) {
+    ): paper.CompoundPath  {
         // stem - don't bother with valves
 
         // Draw 2 valves

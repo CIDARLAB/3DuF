@@ -8,7 +8,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
