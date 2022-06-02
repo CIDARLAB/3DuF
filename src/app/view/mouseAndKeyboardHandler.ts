@@ -311,7 +311,7 @@ export default class MouseAndKeyboardHandler {
         };
     }
 
-    static __eventButtonsToWhich(num: number): number | number | number  {
+    static __eventButtonsToWhich(num: number): number | undefined  {
         if (num === 1) {
             return 1;
         } else if (num === 2) {

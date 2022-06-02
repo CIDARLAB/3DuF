@@ -212,7 +212,7 @@ export default class YTree extends Template {
         }
     }
 
-    __drawYtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false): CompoundPath  {
+    __drawYtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false): paper.CompoundPath  {
         const pivotpoint = new paper.Point(px, py);
 
         // stem

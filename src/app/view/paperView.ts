@@ -293,7 +293,7 @@ export default class PaperView {
      * @returns {Array<number>}
      * @memberof PaperView
      */
-    getCenter(): Point  {
+    getCenter(): paper.Point  {
         return this.center;
     }
 
