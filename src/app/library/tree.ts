@@ -144,7 +144,7 @@ export default class Tree extends Template {
         return ports;
     }
 
-    render2D(params: { [k: string]: any }, key: string): CompoundPath  {
+    render2D(params: { [k: string]: any }, key: string): paper.CompoundPath  {
         const position = params.position;
         const cw = params.flowChannelWidth;
         const rotation = params.rotation;
@@ -207,7 +207,7 @@ export default class Tree extends Template {
         }
     }
 
-    __drawtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false): CompoundPath  {
+    __drawtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false): paper.CompoundPath  {
         // stem
         let startPoint = new paper.Point(px - cw / 2, py);
         let endPoint = new paper.Point(px + cw / 2, py + stagelength);
@@ -272,7 +272,7 @@ export default class Tree extends Template {
         return treepath;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }): CompoundPath  {
+    render2DTarget(key: string, params: { [k: string]: any }): paper.CompoundPath  {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;

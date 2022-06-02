@@ -249,7 +249,7 @@ export default class GradientGenerator extends Template {
         return gradientgenerator;
     }
 
-    __insertMixer(serpentine: paper.Path, bendSpacing: number, numBends: number, channelWidth: number, bendLength: number, x: number, y: number, color: paper.Color): Path  {
+    __insertMixer(serpentine: paper.Path, bendSpacing: number, numBends: number, channelWidth: number, bendLength: number, x: number, y: number, color: paper.Color): paper.Path  {
         const segHalf = bendLength / 2 + channelWidth;
         const segLength = bendLength + 2 * channelWidth;
         const segBend = bendSpacing + 2 * channelWidth;

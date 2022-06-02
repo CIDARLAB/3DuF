@@ -85,7 +85,7 @@ export default class Transition extends Template {
         };
     }
 
-    render2D(params: { [k: string]: any }, key: string): Path  {
+    render2D(params: { [k: string]: any }, key: string): paper.Path  {
         const position = params.position;
         const cw1 = params.cw1;
         const cw2 = params.cw2;
@@ -105,7 +105,7 @@ export default class Transition extends Template {
         return (trap.rotate(rotation, new paper.Point(position[0], position[1])) as unknown) as paper.Path;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }): Path  {
+    render2DTarget(key: string, params: { [k: string]: any }): paper.Path  {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;

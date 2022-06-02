@@ -169,7 +169,7 @@ export default class Valve3D extends Template {
         return render;
     }
 
-    __drawInverseFlow(params: { [k: string]: any }): Circle  {
+    __drawInverseFlow(params: { [k: string]: any }): paper.PathItem  {
         const position = params.position;
         const gap = params.gap;
         const radius = params.valveRadius;

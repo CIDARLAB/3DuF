@@ -163,7 +163,7 @@ export default class FeatureSet {
      * @param minttype
      * @return {string|null}
      */
-    getTypeForMINT(minttype: string): string  {
+    getTypeForMINT(minttype: string): string | null {
         const checkmint = minttype;
         for (const key in this.__library) {
             if (checkmint === (this.__library as any)[key].object.mint) {
@@ -192,7 +192,7 @@ export default class FeatureSet {
         };
     }
 
-    getSetString(): string  {
+    getSetString(): string | unknown  {
         return this.setString;
     }
 
