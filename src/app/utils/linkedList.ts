@@ -15,7 +15,7 @@ export default class LinkedList {
         return this.current?.data;
     }
 
-    removeCurrent() {
+    removeCurrent(): void  {
         const prev = this.current!.prev;
         const next = this.current!.next;
 
@@ -23,7 +23,7 @@ export default class LinkedList {
         next!.prev = prev;
     }
 
-    removeNode(node: { [k: string]: any }) {
+    removeNode(node: { [k: string]: any }): void  {
         const cnode = this.head;
         if (node.id === cnode?.id) {
             // remove the node
@@ -59,7 +59,7 @@ export default class LinkedList {
         return this.count;
     }
 
-    push(data: { [k: string]: any }) {
+    push(data: { [k: string]: any }): void  {
         // Incase its the first one
         if (this.count === 0) {
             const node = new Node(data);

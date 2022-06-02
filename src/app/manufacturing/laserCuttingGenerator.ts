@@ -152,7 +152,7 @@ export default class LaserCuttingGenerator {
      * @memberof LaserCuttingGenerator
      * @returns {void}
      */
-    setDevice(currentDevice: Device) {
+    setDevice(currentDevice: Device): void  {
         this.__device = currentDevice;
         console.log("Currentdevice:", currentDevice);
     }

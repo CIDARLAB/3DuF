@@ -52,7 +52,7 @@ export default class MoveTool extends MouseTool {
      * Default activation method
      * @param component
      */
-    activate(component: any, callback: (...args: any[]) => any) {
+    activate(component: any, callback: (...args: any[]) => any): void  {
         // console.log("Activating the tool for a new component", component);
         // Store the component position here
         this.__currentComponent = component;
@@ -63,7 +63,7 @@ export default class MoveTool extends MouseTool {
     /**
      * Default deactivation method
      */
-    deactivate() {
+    deactivate(): void  {
         Registry.viewManager?.resetToDefaultTool();
     }
 
@@ -72,7 +72,7 @@ export default class MoveTool extends MouseTool {
      * @param xpos
      * @param ypos
      */
-    processUIPosition(xpos: number, ypos: number) {
+    processUIPosition(xpos: number, ypos: number): void  {
         this.__currentComponent.updateComponentPosition([xpos, ypos]);
         this.callback!(xpos, ypos);
     }
@@ -83,14 +83,14 @@ export default class MoveTool extends MouseTool {
      * @param ypos
      * @private
      */
-    __updatePosition(xpos: number, ypos: number) {
+    __updatePosition(xpos: number, ypos: number): void  {
         this.processUIPosition(xpos, ypos);
     }
 
     /**
      * Reverts the position to the original position
      */
-    revertToOriginalPosition() {
+    revertToOriginalPosition(): void  {
         this.__currentComponent.updateComponentPosition(this.__originalPosition);
     }
 
@@ -98,7 +98,7 @@ export default class MoveTool extends MouseTool {
      * Function that handles the dragging of the mouse
      * @param event
      */
-    dragHandler(event: MouseEvent) {
+    dragHandler(event: MouseEvent): void  {
         if (this.__dragging) {
             const point = MouseTool.getEventPosition(event);
             let target: paper.Point | number[] | undefined = [0, 0];
@@ -128,7 +128,7 @@ export default class MoveTool extends MouseTool {
      * Method that handles the mouse up event
      * @param event
      */
-    mouseUpHandler(event: MouseEvent) {
+    mouseUpHandler(event: MouseEvent): void  {
         const point = MouseTool.getEventPosition(event);
         // console.log("Point:", point, event);
         const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
@@ -141,7 +141,7 @@ export default class MoveTool extends MouseTool {
      * Method that handles the movement of the mouse cursor
      * @param event
      */
-    mouseDownHandler(event: MouseEvent) {
+    mouseDownHandler(event: MouseEvent): void  {
         const point = MouseTool.getEventPosition(event);
         const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
         this.__startPoint = target;

@@ -27,7 +27,7 @@ export default class MultilevelPositionTool extends PositionTool {
         this.intlayer = intLayer;
     }
 
-    createNewFeature(point: paper.Point) {
+    createNewFeature(point: paper.Point): void  {
         const featureIDs = [];
 
         // Set up flow layer component
@@ -68,7 +68,7 @@ export default class MultilevelPositionTool extends PositionTool {
         this.viewManagerDelegate.saveDeviceState();
     }
 
-    showTarget() {
+    showTarget(): void  {
         if (this.lastPoint === null) {
             return;
         }

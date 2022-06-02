@@ -74,7 +74,7 @@ export default class ChannelTool extends MouseTool {
         return ret;
     }
 
-    abort() {
+    abort(): void  {
         this.dragging = false;
         if (this.currentTarget) {
             this.currentTarget.remove();
@@ -84,17 +84,17 @@ export default class ChannelTool extends MouseTool {
         }
     }
 
-    showTarget(point: paper.Point) {
+    showTarget(point: paper.Point): void  {
         const target = ChannelTool.getTarget(this.lastPoint as number[]);
         Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
 
-    initChannel() {
+    initChannel(): void  {
         this.startPoint = ChannelTool.getTarget(this.lastPoint as number[]);
         this.lastPoint = this.startPoint;
     }
 
-    updateChannel() {
+    updateChannel(): void  {
         if (this.lastPoint && this.startPoint) {
             if (this.currentChannelID) {
                 const target = ChannelTool.getTarget(this.lastPoint as number[]);
@@ -108,7 +108,7 @@ export default class ChannelTool extends MouseTool {
         }
     }
 
-    finishChannel(point: number[]) {
+    finishChannel(point: number[]): void  {
         const target = ChannelTool.getTarget(point);
         if (this.currentChannelID) {
             if ((this.startPoint as paper.Point).x === target[0] && (this.startPoint as paper.Point).y === target[1]) {

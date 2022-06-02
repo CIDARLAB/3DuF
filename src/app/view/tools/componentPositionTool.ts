@@ -10,7 +10,7 @@ export default class ComponentPositionTool extends PositionTool {
         super(viewManagerDelegate, typeString, currentParams);
     }
 
-    createNewFeature(point: paper.Point) {
+    createNewFeature(point: paper.Point): void  {
         const featureIDs = [];
         const paramvalues = this.getCreationParameters(new paper.Point(0, 0));
         const newFeature = Device.makeFeature(this.typeString, paramvalues);

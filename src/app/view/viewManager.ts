@@ -184,7 +184,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    initiateCopy() {
+    initiateCopy(): void  {
         const selectedFeatures = this.view.getSelectedFeatures();
         if (selectedFeatures.length > 0) {
             this.pasteboard[0] = selectedFeatures[0];
@@ -196,7 +196,7 @@ export default class ViewManager {
      * @memberof ViewManager
      * @returns {void}
      */
-    setupToolBars() {
+    setupToolBars(): void  {
         // Initiating the zoom toolbar
         // this.zoomToolBar = new ZoomToolBar(0.0001, 5);
         // this.componentToolBar = new ComponentToolBar(this);
@@ -208,7 +208,7 @@ export default class ViewManager {
      * @memberof ViewManager
      * @returns {void}
      */
-    setNameMap() {
+    setNameMap(): void  {
         const newMap = new Map();
         for (let i = 0; i < this.currentDevice!.layers.length; i++) {
             const [nameStr, nameNum] = this.currentDevice!.layers[i].name.split("_");
@@ -253,7 +253,7 @@ export default class ViewManager {
      * @memberof ViewManager
      * @returns {void}
      */
-    addDevice(device: Device, refresh = true) {
+    addDevice(device: Device, refresh = true): void  {
         this.view.addDevice(device);
         this.__addAllDeviceLayers(device, false);
         this.refresh(refresh);
@@ -267,7 +267,7 @@ export default class ViewManager {
      * @returns {void}
      * @private
      */
-    __addAllDeviceLayers(device: Device, refresh = true) {
+    __addAllDeviceLayers(device: Device, refresh = true): void  {
         for (let i = 0; i < device.layers.length; i++) {
             const layer = device.layers[i];
             this.addLayer(layer, i, false);
@@ -281,7 +281,7 @@ export default class ViewManager {
      * @memberof ViewManager
      * @returns {void}
      */
-    __removeAllDeviceLayers(device: Device, refresh = true) {
+    __removeAllDeviceLayers(device: Device, refresh = true): void  {
         for (let i = 0; i < device.layers.length; i++) {
             const layer = device.layers[i];
             this.removeLayer(layer, i, false);
@@ -295,7 +295,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    removeDevice(device: Device, refresh = true) {
+    removeDevice(device: Device, refresh = true): void  {
         this.view.removeDevice();
         this.__removeAllDeviceLayers(device, false);
         this.refresh(refresh);
@@ -308,7 +308,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateDevice(device: Device, refresh = true) {
+    updateDevice(device: Device, refresh = true): void  {
         this.view.updateDevice(device);
         this.refresh(refresh);
     }
@@ -320,7 +320,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addFeature(feature: Feature, index = this.activeRenderLayer, isPhysicalFlag = true, refresh = true) {
+    addFeature(feature: Feature, index = this.activeRenderLayer, isPhysicalFlag = true, refresh = true): void  {
         // let isPhysicalFlag = true;
         this.renderLayers[index as number].addFeature(feature, isPhysicalFlag);
         if (this.ensureFeatureExists(feature)) {
@@ -356,7 +356,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateFeature(feature: Feature, refresh = true) {
+    updateFeature(feature: Feature, refresh = true): void  {
         if (this.ensureFeatureExists(feature)) {
             this.view.updateFeature(feature);
             this.refresh(refresh);
@@ -370,7 +370,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    removeFeature(feature: Feature, refresh = true) {
+    removeFeature(feature: Feature, refresh = true): void  {
         const layer = this.getRenderLayerByID(feature.ID);
         if (this.ensureFeatureExists(feature)) {
             this.view.removeFeature(feature);
@@ -386,7 +386,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    removeFeatureByID(featureID: string, refresh = true) {
+    removeFeatureByID(featureID: string, refresh = true): void  {
         const layer = this.getRenderLayerByID(featureID);
         const feature = layer.getFeature(featureID);
         if (this.ensureFeatureExists(feature)) {
@@ -404,7 +404,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addLayer(layer: Layer, index: number, refresh = true) {
+    addLayer(layer: Layer, index: number, refresh = true): void  {
         if (this.__isLayerInCurrentDevice(layer)) {
             this.view.addLayer(layer, index);
             this.__addAllLayerFeatures(layer, index, false);
@@ -417,7 +417,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    createNewLayerBlock() {
+    createNewLayerBlock(): void  {
         if(this.__currentDevice === null) {
             throw new Error("No device set on ViewManager");
         }
@@ -480,7 +480,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    deleteLayerBlock(levelindex: number) {
+    deleteLayerBlock(levelindex: number): void  {
         // Delete the levels in the device model
         Registry.currentDevice?.deleteLayer(levelindex * 3);
         Registry.currentDevice?.deleteLayer(levelindex * 3);
@@ -513,7 +513,7 @@ export default class ViewManager {
         this.refresh();
     }
 
-    setActiveRenderLayer(index: number) {
+    setActiveRenderLayer(index: number): void  {
         this.activeRenderLayer = index;
         Registry.currentLayer = this.renderLayers[index]; // Registry.currentDevice.layers[index];
         this.updateActiveLayer();
@@ -527,7 +527,7 @@ export default class ViewManager {
      * @returns {view}
      * @memberof ViewManager
      */
-    removeLayer(layer: Layer, index: number, refresh = true) {
+    removeLayer(layer: Layer, index: number, refresh = true): void  {
         if (this.__isLayerInCurrentDevice(layer)) {
             this.view.removeLayer(index);
             this.__removeAllLayerFeatures(layer);
@@ -552,7 +552,7 @@ export default class ViewManager {
      * @memberof ViewManager
      * @private
      */
-    __addAllLayerFeatures(layer: Layer, index: number, refresh = true) {
+    __addAllLayerFeatures(layer: Layer, index: number, refresh = true): void  {
         for (const key in layer.features) {
             const feature = layer.features[key];
             this.addFeature(feature, index, false);
@@ -567,7 +567,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    __updateAllLayerFeatures(layer: Layer, refresh = true) {
+    __updateAllLayerFeatures(layer: Layer, refresh = true): void  {
         for (const key in layer.features) {
             const feature = layer.features[key];
             this.updateFeature(feature, false);
@@ -582,7 +582,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    __removeAllLayerFeatures(layer: Layer, refresh = true) {
+    __removeAllLayerFeatures(layer: Layer, refresh = true): void  {
         for (const key in layer.features) {
             const feature = layer.features[key];
             this.removeFeature(feature, false);
@@ -597,7 +597,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateLayer(layer: Layer, refresh = true) {
+    updateLayer(layer: Layer, refresh = true): void  {
         if (this.__isLayerInCurrentDevice(layer)) {
             // Missing param
             this.refresh(refresh);
@@ -610,7 +610,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateActiveLayer(refresh = true) {
+    updateActiveLayer(refresh = true): void  {
         if(this.activeRenderLayer === null){
             console.warn("Attempting update active layer in view manager with no active layer value");
             return;
@@ -625,7 +625,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    removeGrid(refresh = true) {
+    removeGrid(refresh = true): void  {
         if (this.__hasCurrentGrid()) {
             this.view.removeGrid();
             this.refresh(refresh);
@@ -638,7 +638,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateGrid(refresh = true) {
+    updateGrid(refresh = true): void  {
         if (this.__hasCurrentGrid()) {
             this.view.updateGrid(Registry.currentGrid);
             this.refresh(refresh);
@@ -652,7 +652,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateAlignmentMarks() {
+    updateAlignmentMarks(): void  {
         this.view.updateAlignmentMarks();
     }
 
@@ -661,7 +661,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    clear() {
+    clear(): void  {
         this.view.clear();
     }
 
@@ -672,7 +672,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    setZoom(zoom: number, refresh = true) {
+    setZoom(zoom: number, refresh = true): void  {
         if (zoom > this.maxZoom) zoom = this.maxZoom;
         else if (zoom < this.minZoom) zoom = this.minZoom;
         this.view.setZoom(zoom);
@@ -691,7 +691,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    generateBorder() {
+    generateBorder(): void  {
         const borderfeature = new EdgeFeature(null, new Params({}, new Map(), new Map()));
 
         // Get the bounds for the border feature and then update the device dimensions
@@ -712,7 +712,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    importBorder(dxfobject: any) {
+    importBorder(dxfobject: any): void  {
         const customborderfeature = new EdgeFeature(null, new Params({}, new Map(), new Map()));
         for (const i in dxfobject.entities) {
             const foo = new DXFObject(dxfobject.entities[i]);
@@ -743,7 +743,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    deleteBorder() {
+    deleteBorder(): void  {
         /*
         1. Find all the features that are EDGE type
         2. Delete all these features
@@ -778,7 +778,7 @@ export default class ViewManager {
      * @memberof ViewManager
      * @returns {void}
      */
-    removeTarget() {
+    removeTarget(): void  {
         this.view.removeTarget();
     }
 
@@ -791,7 +791,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateTarget(featureType: string, featureSet: string, position: number[], currentParameters: { [k: string]: any } | null = null, refresh = true) {
+    updateTarget(featureType: string, featureSet: string, position: number[], currentParameters: { [k: string]: any } | null = null, refresh = true): void  {
         this.view.addTarget(featureType, featureSet, position, currentParameters);
         this.view.updateAlignmentMarks();
         this.view.updateRatsNest();
@@ -804,7 +804,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    __updateViewTarget(refresh = true) {
+    __updateViewTarget(refresh = true): void  {
         this.view.updateTarget();
         this.updateAlignmentMarks();
         this.view.updateRatsNest();
@@ -820,7 +820,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    adjustZoom(delta: number, point: number[], refresh = true) {
+    adjustZoom(delta: number, point: number[], refresh = true): void  {
         const belowMin = this.view.getZoom() >= this.maxZoom && delta < 0;
         const aboveMax = this.view.getZoom() <= this.minZoom && delta > 0;
         if (!aboveMax && !belowMin) {
@@ -844,7 +844,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    setCenter(center: number[], refresh = true) {
+    setCenter(center: number[], refresh = true): void  {
         this.view.setCenter((center as unknown) as paper.Point);
         this.updateGrid(false);
         // this.updateAlighmentMarks();
@@ -860,7 +860,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    moveCenter(delta: paper.Point, refresh = true) {
+    moveCenter(delta: paper.Point, refresh = true): void  {
         this.view.moveCenter(delta);
         this.updateGrid(false);
         // this.updateAlignmentMarks();
@@ -875,7 +875,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    saveToStorage() {
+    saveToStorage(): void  {
         if (Registry.currentDevice) {
             try {
                 localStorage.setItem("currentDevice", JSON.stringify((Registry.currentDevice as any).toJSON()));
@@ -891,7 +891,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    refresh(refresh = true) {
+    refresh(refresh = true): void  {
         this.updateQueue.run();
         // Update the toolbar
         const spacing = Registry.currentGrid?.getSpacing();
@@ -914,7 +914,7 @@ export default class ViewManager {
      * @returns {Boolean}
      * @memberof ViewManager
      */
-    __hasCurrentGrid() {
+    __hasCurrentGrid(): boolean  {
         if (Registry.currentGrid) return true;
         else return false;
     }
@@ -925,7 +925,7 @@ export default class ViewManager {
      * @returns {Boolean}
      * @memberof ViewManager
      */
-    __isLayerInCurrentDevice(layer: Layer) {
+    __isLayerInCurrentDevice(layer: Layer): boolean  {
         if (Registry.currentDevice && layer.device === Registry.currentDevice) return true;
         else return false;
     }
@@ -936,7 +936,7 @@ export default class ViewManager {
      * @returns {Boolean}
      * @memberof ViewManager
      */
-    isFeatureInCurrentDevice(feature: { [k: string]: any }) {
+    isFeatureInCurrentDevice(feature: { [k: string]: any }): boolean  {
         if (Registry.currentDevice && this.__isLayerInCurrentDevice(feature.layer)) return true;
         else return false;
     }
@@ -947,7 +947,7 @@ export default class ViewManager {
      * @returns {Boolean}
      * @memberof ViewManager
      */
-    ensureFeatureExists(feature: Feature) {
+    ensureFeatureExists(feature: Feature): boolean  {
         for (let i = 0; i < this.renderLayers.length; i++) {
             if (this.renderLayers[i].containsFeature(feature)) {
                 return true;
@@ -1036,7 +1036,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    removeFeaturesByPaperElements(paperElements: any) {
+    removeFeaturesByPaperElements(paperElements: any): void  {
         if (paperElements.length > 0) {
             for (let i = 0; i < paperElements.length; i++) {
                 const paperFeature = paperElements[i];
@@ -1053,7 +1053,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateComponentParameters(componentname: string, params: { [k: string]: any }) {
+    updateComponentParameters(componentname: string, params: { [k: string]: any }): void  {
         const component = this.__currentDevice?.getComponentByName(componentname);
         for (const key in params) {
             component?.updateParameter(key, params[key]);
@@ -1098,7 +1098,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    adjustAllFeatureParams(valueString: string, value: any, features: Feature[]) {
+    adjustAllFeatureParams(valueString: string, value: any, features: Feature[]): void  {
         for (let i = 0; i < features.length; i++) {
             const feature = features[i];
             feature.updateParameter(valueString, value);
@@ -1114,7 +1114,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    adjustParams(typeString: string, setString: string, valueString: string, value: any) {
+    adjustParams(typeString: string, setString: string, valueString: string, value: any): void  {
         const selectedFeatures = this.view.getSelectedFeatures();
         if (selectedFeatures.length > 0) {
             const correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
@@ -1145,7 +1145,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateDefault(typeString: string, setString: string, valueString: string, value: any) {
+    updateDefault(typeString: string, setString: string, valueString: string, value: any): void  {
         // Registry.featureDefaults[setString][typeString][valueString] = value;
         const defaults = ComponentAPI.getDefaultsForType(typeString);
         defaults[valueString] = value;
@@ -1157,7 +1157,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateDefaultsFromFeature(feature: Feature) {
+    updateDefaultsFromFeature(feature: Feature): void  {
         const heritable = feature.getHeritableParams();
         for (const key in heritable) {
             this.updateDefault(feature.getType(), "", key, feature.getValue(key));
@@ -1171,7 +1171,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    revertFieldToDefault(valueString: string, feature: Feature) {
+    revertFieldToDefault(valueString: string, feature: Feature): void  {
         feature.updateParameter(valueString, ComponentAPI.getDefaultsForType(feature.getType())[valueString]);
     }
 
@@ -1181,7 +1181,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    revertFeatureToDefaults(feature: Feature) {
+    revertFeatureToDefaults(feature: Feature): void  {
         const heritable = feature.getHeritableParams();
         for (const key in heritable) {
             this.revertFieldToDefault(key, feature);
@@ -1194,7 +1194,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    revertFeaturesToDefaults(features: Feature[]) {
+    revertFeaturesToDefaults(features: Feature[]): void  {
         for (const feature of features) {
             this.revertFeatureToDefaults(feature);
         }
@@ -1262,7 +1262,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    activateTool(toolString: string, rightClickToolString = "SelectTool") {
+    activateTool(toolString: string, rightClickToolString = "SelectTool"): void  {
         if (this.tools[toolString] === null) {
             throw new Error("Could not find tool with the matching string");
         }
@@ -1279,7 +1279,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    switchTo2D() {
+    switchTo2D(): void  {
         if (Registry.currentDevice === null){
             throw new Error("No device selected");
         }
@@ -1315,7 +1315,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    switchTo3D() {
+    switchTo3D(): void  {
         if (!this.threeD) {
             this.threeD = true;
             setButtonColor(this.__button3D!, Colors.getDefaultLayerColor(Registry.currentLayer as any), activeText);
@@ -1339,7 +1339,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    setupDragAndDropLoad(selector: string) {
+    setupDragAndDropLoad(selector: string): void  {
         const dnd = HTMLUtils.DnDFileController(selector, function(files) {
             const f = files[0];
 
@@ -1367,7 +1367,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    killParamsWindow() {
+    killParamsWindow(): void  {
         const paramsWindow = document.getElementById("parameter_menu");
         if (paramsWindow) paramsWindow.parentElement?.removeChild(paramsWindow);
     }
@@ -1377,7 +1377,7 @@ export default class ViewManager {
      * @memberof ViewManager
      * @returns {void}
      */
-    saveDeviceState() {
+    saveDeviceState(): void  {
         console.log("Saving to stack");
 
         const save = JSON.stringify(Registry.currentDevice?.toInterchangeV1());
@@ -1390,7 +1390,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    undo() {
+    undo(): void  {
         const previousdesign = this.undoStack.popDesign();
         console.log(previousdesign);
         if (previousdesign) {
@@ -1404,7 +1404,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    resetToDefaultTool() {
+    resetToDefaultTool(): void  {
         this.cleanupActiveTools();
         this.activateTool("MouseSelectTool");
         // this.activateTool("RenderMouseTool");
@@ -1416,7 +1416,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    cleanupActiveTools() {
+    cleanupActiveTools(): void  {
         if (this.mouseAndKeyboardHandler.leftMouseTool) {
             this.mouseAndKeyboardHandler.leftMouseTool.cleanup();
         }
@@ -1430,7 +1430,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updatesConnectionRender(connection: Connection) {
+    updatesConnectionRender(connection: Connection): void  {
         // First Redraw all the segements without valves or insertions
         connection.regenerateSegments();
 
@@ -1457,7 +1457,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    showUIMessage(message: string) {
+    showUIMessage(message: string): void  {
         this.messageBox.MaterialSnackbar.showSnackbar({
             message: message
         });
@@ -1468,7 +1468,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    setupTools() {
+    setupTools(): void  {
         this.tools.MouseSelectTool = new MouseSelectTool(this, this.view);
         this.tools.RenderMouseTool = new RenderMouseTool(this, this.view);
         this.tools.InsertTextTool = new InsertTextTool(this);
@@ -1485,7 +1485,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addCustomComponentTool(identifier: string) {
+    addCustomComponentTool(identifier: string): void  {
         const customcomponent = this.customComponentManager?.getCustomComponent(identifier);
         this.tools[identifier] = new CustomComponentPositionTool(this, customcomponent, "Custom");
         Registry.featureDefaults.Custom[identifier] = CustomComponent.defaultParameterDefinitions().defaults;
@@ -1496,7 +1496,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    __initializeRatsNest() {
+    __initializeRatsNest(): void  {
         // Step 1 generate features for all the components with some basic layout
         const components = this.currentDevice?.components;
         const xpos = 10000;
@@ -1530,7 +1530,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    __generateDefaultPlacementForComponent(component: Component, xpos: number, ypos: number) {
+    __generateDefaultPlacementForComponent(component: Component, xpos: number, ypos: number): void  {
         const params_to_copy = component.params.toJSON();
 
         params_to_copy.position = [xpos, ypos];
@@ -1553,7 +1553,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    generateExportJSON() {
+    generateExportJSON(): InterchangeV1_2  {
         const json = ExportUtils.toInterchangeV1_2(this);
         // const json = this.currentDevice.toInterchangeV1_1();
         // json.customComponents = this.customComponentManager.toJSON();
@@ -1564,7 +1564,7 @@ export default class ViewManager {
      * This method attempts to load any custom components that are stored in the custom components property
      * @param json
      */
-    loadCustomComponents(json: { [key: string]: any }) {
+    loadCustomComponents(json: { [key: string]: any }): void  {
         if (Object.prototype.hasOwnProperty.call(json, "customComponents")) {
             this.customComponentManager?.loadFromJSON(json.customComponents);
         }
@@ -1576,7 +1576,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    activateDAFDPlugin(params: any = null) {
+    activateDAFDPlugin(params: any = null): void  {
         this.loadDeviceFromJSON(JSON.parse(Examples.dafdtemplate));
 
         if (params === null) {
@@ -1717,7 +1717,7 @@ export default class ViewManager {
      *
      * @memberof ViewManager
      */
-    downloadJSON() {
+    downloadJSON(): void  {
         if(this.currentDevice === null){
             throw new Error("No device loaded");
         }

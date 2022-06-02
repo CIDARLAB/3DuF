@@ -9,7 +9,7 @@ export default class YTree extends Template {
         super();
     }
 
-    __setupDefinitions() {
+    __setupDefinitions(): void  {
         this.__unique = {
             position: "Point"
         };
@@ -193,7 +193,7 @@ export default class YTree extends Template {
         return render;
     }
 
-    __generateYTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false) {
+    __generateYTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false): void  {
         const hspacing = newspacing / 2;
         const lex = px - 0.5 * newspacing;
         const ley = py + stagelength;
@@ -212,7 +212,7 @@ export default class YTree extends Template {
         }
     }
 
-    __drawYtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false) {
+    __drawYtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false): paper.CompoundPath  {
         const pivotpoint = new paper.Point(px, py);
 
         // stem

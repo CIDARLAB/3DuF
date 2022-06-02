@@ -15,7 +15,7 @@ export default class SimpleQueue {
         this.report = report;
     }
 
-    run() {
+    run(): void  {
         if (this.waiting) {
             this.counter++;
             if (!this.queued) {
@@ -29,7 +29,7 @@ export default class SimpleQueue {
         }
     }
 
-    endTimer() {
+    endTimer(): void  {
         this.waiting = false;
         if (this.queued) {
             this.queued = false;
@@ -37,7 +37,7 @@ export default class SimpleQueue {
         }
     }
 
-    startTimer() {
+    startTimer(): void  {
         const ref = this;
         this.waiting = true;
         window.setTimeout(function() {

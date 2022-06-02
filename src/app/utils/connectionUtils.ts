@@ -4,7 +4,7 @@ import { ComponentAPI } from "@/componentAPI";
 export default class ConnectionUtils {
     constructor() {}
 
-    static hasFeatureSet() {
+    static hasFeatureSet(): boolean  {
         if (Registry.featureSet === null) {
             return false;
         } else {

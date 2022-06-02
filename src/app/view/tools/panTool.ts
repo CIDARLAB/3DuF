@@ -35,12 +35,12 @@ export default class PanTool extends MouseTool {
         };
     }
 
-    startPan(point: paper.Point) {
+    startPan(point: paper.Point): void  {
         this.dragging = true;
         this.startPoint = point;
     }
 
-    moveHandler(point: paper.Point) {
+    moveHandler(point: paper.Point): void  {
         if (this.dragging) {
             this.lastPoint = point;
             this.updateQueue.run();
@@ -48,18 +48,18 @@ export default class PanTool extends MouseTool {
         }
     }
 
-    endPan(point: paper.Point) {
+    endPan(point: paper.Point): void  {
         this.pan();
         this.lastPoint = null;
         this.dragging = false;
         this.startPoint = null;
     }
 
-    showTarget() {
+    showTarget(): void  {
         Registry.viewManager?.removeTarget();
     }
 
-    pan() {
+    pan(): void  {
         if (this.lastPoint) {
             const delta = (this.lastPoint as paper.Point).subtract(this.startPoint as paper.Point);
             Registry.viewManager?.moveCenter([delta.x, delta.y] as unknown as paper.Point);

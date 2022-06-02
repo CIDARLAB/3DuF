@@ -50,7 +50,7 @@ export default class ManufacturingLayer {
      * @memberof ManufacturingLayer
      * @returns {boolean}
      */
-    addFeature(feature: ToolPaperObject) {
+    addFeature(feature: ToolPaperObject): boolean  {
         if (feature === null || undefined === feature) {
             return false;
         }

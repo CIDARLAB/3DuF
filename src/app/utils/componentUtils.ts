@@ -12,7 +12,7 @@ export default class ComponentUtils {
         return Registry.viewManager!.view.getRenderedFeature(featureid);
     }
 
-    static generateDeviceName(type: string) {
+    static generateDeviceName(type: string): string  {
         return Registry.currentDevice!.generateNewName(type);
     }
 

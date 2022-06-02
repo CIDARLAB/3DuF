@@ -53,14 +53,13 @@ export default {
 
         window.view = Registry.viewManager.view;
         Registry.viewManager.setupToolBars();
-        this.test();
+        this.setupDragAndDropOnCanvas();
         //EventBus.get().on(EventBus.DBL_CLICK, this.placement, this.placement2);
     },
     methods: {
-        test: function() {
+        setupDragAndDropOnCanvas: function() {
 
             function setupDnDFileController(el_, onDropCallback) {
-                console.log("Element:",el_);
                 let dragenter = function(e) {
                     e.stopPropagation();
                     e.preventDefault();
@@ -94,7 +93,6 @@ export default {
             }
 
 
-            console.log("test getting the element");
             setupDnDFileController(this.$refs.rendingcanvas, function(files) {
             const f = files[0];
 

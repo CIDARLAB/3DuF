@@ -56,22 +56,22 @@ export default class RenderMouseTool extends MouseTool {
         };
     }
 
-    keyHandler(event: KeyboardEvent) {}
+    keyHandler(event: KeyboardEvent): void  {}
 
-    dragHandler() {}
+    dragHandler(): void  {}
 
-    showTarget() {
+    showTarget(): void  {
         this.viewManagerDelegate.removeTarget();
     }
 
-    mouseUpHandler(point: paper.Point) {
+    mouseUpHandler(point: paper.Point): void  {
         if (this.currentSelectBox) {
             this.currentSelection = this.viewManagerDelegate.hitFeaturesWithViewElement(this.currentSelectBox);
             (this as any).selectFeatures();
         }
     }
 
-    mouseDownHandler(event: MouseEvent) {
+    mouseDownHandler(event: MouseEvent): void  {
         const point = MouseTool.getEventPosition(event);
         const target = this.hitFeature(point!);
         if (target) {
@@ -112,7 +112,7 @@ export default class RenderMouseTool extends MouseTool {
      * Function that is fired when we click to select a single object on the paperjs canvas
      * @param paperElement
      */
-    selectFeature(paperElement: any) {
+    selectFeature(paperElement: any): void  {
         this.currentSelection.push(paperElement);
 
         // Find the component that owns this feature and then select all of the friends
@@ -135,7 +135,7 @@ export default class RenderMouseTool extends MouseTool {
         }
     }
 
-    deselectFeatures() {
+    deselectFeatures(): void  {
         if (this.rightClickMenu) {
             this.rightClickMenu.close();
         }

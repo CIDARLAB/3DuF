@@ -146,12 +146,12 @@ export default class ConnectionTool extends MouseTool {
      * This function renders the cross haired target used to show the mouse position.
      * @param point
      */
-    showTarget(point: paper.Point) {
+    showTarget(point: paper.Point): void  {
         const target = ConnectionTool.getTarget([point.x, point.y]);
         Registry.viewManager?.updateTarget(this.typeString, this.setString, target);
     }
 
-    initChannel() {
+    initChannel(): void  {
         if (this.lastPoint === null) {
             throw new Error("No last point to init channel");
         }
@@ -183,7 +183,7 @@ export default class ConnectionTool extends MouseTool {
         }
     }
 
-    updateChannel() {
+    updateChannel(): void  {
         if (this.lastPoint && this.startPoint) {
             if (this.currentChannelID) {
                 const target = ConnectionTool.getTarget(this.lastPoint);
@@ -205,7 +205,7 @@ export default class ConnectionTool extends MouseTool {
     /**
      * Finishes the creation of the connection object
      */
-    finishChannel() {
+    finishChannel(): void  {
         if (this.currentChannelID) {
             this.wayPoints.push(this.lastPoint);
             const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
@@ -252,7 +252,7 @@ export default class ConnectionTool extends MouseTool {
         Registry.viewManager?.saveDeviceState();
     }
 
-    cleanup() {
+    cleanup(): void  {
         console.log("Running Cleanup for the Connection Tool");
 
         /*
@@ -282,7 +282,7 @@ export default class ConnectionTool extends MouseTool {
      * @param event
      * @param isManhatten
      */
-    addWayPoint(event: MouseEvent, isManhatten: boolean) {
+    addWayPoint(event: MouseEvent, isManhatten: boolean): void  {
         let connectiontargettoadd;
         const point = MouseTool.getEventPosition(event);
         const isPointOnComponent = this.__isPointOnComponent(point!);
@@ -476,7 +476,7 @@ export default class ConnectionTool extends MouseTool {
      * passed as an argument in this method.
      * @private
      */
-    __addConnectionTargets(connection: Connection) {
+    __addConnectionTargets(connection: Connection): void  {
         if (this.source !== null && this.source !== undefined) {
             connection.addConnectionTarget(this.source);
         }
@@ -561,7 +561,7 @@ export default class ConnectionTool extends MouseTool {
      * @param {*} value
      * @memberof ConnectionTool
      */
-    updateParameter(parameter: string, value: any) {  
+    updateParameter(parameter: string, value: any): void  {  
         if(this.currentChannelID !== null){
             const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
             feat?.updateParameter(parameter, value);
