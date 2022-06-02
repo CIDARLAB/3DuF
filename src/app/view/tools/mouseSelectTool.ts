@@ -55,7 +55,7 @@ export default class MouseSelectTool extends MouseTool {
         };
     }
 
-    keyHandler(event: KeyboardEvent) {
+    keyHandler(event: KeyboardEvent): void  {
         if (event.key === "delete" || event.key === "backspace") {
             console.log("Removing feature");
             this.removeFeatures();
@@ -66,7 +66,7 @@ export default class MouseSelectTool extends MouseTool {
         }
     }
 
-    dragHandler() {
+    dragHandler(): void  {
         if (this.dragStart) {
             if (this.currentSelectBox) {
                 this.currentSelectBox.remove();
@@ -75,11 +75,11 @@ export default class MouseSelectTool extends MouseTool {
         }
     }
 
-    showTarget() {
+    showTarget(): void  {
         this.viewManagerDelegate.removeTarget();
     }
 
-    mouseUpHandler(point: paper.Point) {
+    mouseUpHandler(point: paper.Point): void  {
         if (this.currentSelectBox) {
             this.currentSelection = this.viewManagerDelegate.hitFeaturesWithViewElement(this.currentSelectBox);
             this.selectFeatures();
@@ -87,7 +87,7 @@ export default class MouseSelectTool extends MouseTool {
         this.killSelectBox();
     }
 
-    removeFeatures() {
+    removeFeatures(): void  {
         if (this.currentSelection.length > 0) {
             for (let i = 0; i < this.currentSelection.length; i++) {
                 const paperFeature = this.currentSelection[i];
@@ -99,7 +99,7 @@ export default class MouseSelectTool extends MouseTool {
         }
     }
 
-    mouseDownHandler(event: MouseToolCallback) {
+    mouseDownHandler(event: MouseToolCallback): void  {
         const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
         const target = this.hitFeature(point as unknown as number[]);
         if (target) {
@@ -137,7 +137,7 @@ export default class MouseSelectTool extends MouseTool {
         }
     }
 
-    killSelectBox() {
+    killSelectBox(): void  {
         if (this.currentSelectBox) {
             this.currentSelectBox.remove();
             this.currentSelectBox = null;
@@ -154,7 +154,7 @@ export default class MouseSelectTool extends MouseTool {
      * Function that is fired when we click to select a single object on the paperjs canvas
      * @param paperElement
      */
-    selectFeature(paperElement: any) {
+    selectFeature(paperElement: any): void  {
         this.currentSelection.push(paperElement);
 
         // Find the component that owns this feature and then select all of the friends
@@ -248,7 +248,7 @@ export default class MouseSelectTool extends MouseTool {
     /**
      * Function that is fired when we drag and select an area on the paperjs canvas
      */
-    selectFeatures() {
+    selectFeatures(): void  {
         if (this.currentSelection) {
             for (let i = 0; i < this.currentSelection.length; i++) {
                 const paperFeature = this.currentSelection[i];
@@ -274,12 +274,12 @@ export default class MouseSelectTool extends MouseTool {
         }
     }
 
-    deselectFeatures() {
+    deselectFeatures(): void  {
         this.paperView.clearSelectedItems();
         this.currentSelection = [];
     }
 
-    abort() {
+    abort(): void  {
         this.deselectFeatures();
         this.killSelectBox();
     }
