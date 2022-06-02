@@ -222,7 +222,7 @@ export default class MouseAndKeyboardHandler {
      * @returns {void}
      * @memberof MouseAndKeyboardHandler
      */
-    updateViewMouseEvents() {
+    updateViewMouseEvents(): void  {
         this.viewManagerDelegate.view.setMouseDownFunction(this.constructMouseDownEvent(this.__leftMouseTool, this.__middleMouseTool, this.__leftMouseTool));
         this.viewManagerDelegate.view.setMouseUpFunction(this.constructMouseUpEvent(this.__leftMouseTool, this.__middleMouseTool, this.__leftMouseTool));
         this.viewManagerDelegate.view.setMouseMoveFunction(this.constructMouseMoveEvent(this.__leftMouseTool, this.__middleMouseTool, this.__leftMouseTool));
@@ -311,7 +311,7 @@ export default class MouseAndKeyboardHandler {
         };
     }
 
-    static __eventButtonsToWhich(num: number) {
+    static __eventButtonsToWhich(num: number): number | number | number  {
         if (num === 1) {
             return 1;
         } else if (num === 2) {

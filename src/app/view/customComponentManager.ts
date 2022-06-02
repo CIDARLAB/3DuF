@@ -38,7 +38,7 @@ export default class CustomComponentManager {
      * @returns {void}
      * @memberof CustomComponentManager
      */
-    importComponentFromDXF(type: string, dxfdata: any, renderData: any) {
+    importComponentFromDXF(type: string, dxfdata: any, renderData: any): void  {
         // console.log("Yay ! loaded the data", dxfdata);
         // console.log("Render Data", renderData);
         // Create DXF Objects
@@ -55,7 +55,7 @@ export default class CustomComponentManager {
      * @returns {void}
      * @memberof CustomComponentManager
      */
-    __importComponentFromDeserializedJSON(customcomponent: CustomComponent) {
+    __importComponentFromDeserializedJSON(customcomponent: CustomComponent): void  {
         this.__library.set(customcomponent.type, customcomponent);
         this.viewManagerDelegate.addCustomComponentTool(customcomponent.type);
         (this.viewManagerDelegate as any).rightPanel.customComponentToolBar.updateToolBar();
@@ -98,7 +98,7 @@ export default class CustomComponentManager {
      * @memberof CustomComponentManager
      * @returns {void}
      */
-    loadFromJSON(json: { [k: string]: any }) {
+    loadFromJSON(json: { [k: string]: any }): void  {
         for (const key in json) {
             const customcomponent = CustomComponent.fromInterchangeV1(json[key]);
 
@@ -112,7 +112,7 @@ export default class CustomComponentManager {
      * @returns {}
      * @memberof CustomComponentManager
      */
-    hasDefinition(entity: any) {
+    hasDefinition(entity: any): boolean  {
         return this.__library.has(entity);
     }
 }

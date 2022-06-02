@@ -132,7 +132,7 @@ export function decimalToLayerColor(decimal: number, layerColors: { [k: string]:
  * @param {Layer} layer
  * @param {Array} orderedKeys
  */
-export function renderAllColors(layer: Layer, orderedKeys: string[]) {
+export function renderAllColors(layer: Layer, orderedKeys: string[]): void  {
     for (let i = 0; i < orderedKeys.length; i++) {
         new paper.Path.Circle({
             position: new paper.Point(0 + i * 1000, 0),

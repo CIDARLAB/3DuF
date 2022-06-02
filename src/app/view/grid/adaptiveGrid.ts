@@ -46,11 +46,11 @@ export default class AdaptiveGrid {
         this.__spacing = value;
     }
 
-    enableAdaptiveGrid() {
+    enableAdaptiveGrid(): void  {
         this.__isAutomaticEnabled = true;
     }
 
-    disableAdaptiveGrid() {
+    disableAdaptiveGrid(): void  {
         this.__isAutomaticEnabled = false;
     }
 
@@ -60,37 +60,37 @@ export default class AdaptiveGrid {
         return new paper.Point(x, y);
     }
 
-    setOrigin(origin: number[]) {
+    setOrigin(origin: number[]): void  {
         this.origin = new paper.Point(origin[0], origin[1]);
         this.notifyViewManagerToUpdateView();
     }
 
-    setThinWidth(width: number) {
+    setThinWidth(width: number): void  {
         this.thinWidth = width;
         this.notifyViewManagerToUpdateView();
     }
 
-    setThickWidth(width: number) {
+    setThickWidth(width: number): void  {
         this.thickWidth = width;
         this.notifyViewManagerToUpdateView();
     }
 
-    setMinSpacing(pixels: number) {
+    setMinSpacing(pixels: number): void  {
         this.__spacing = pixels;
         this.notifyViewManagerToUpdateView();
     }
 
-    setMaxSpacing(pixels: number) {
+    setMaxSpacing(pixels: number): void  {
         this.maxSpacing = pixels;
         this.notifyViewManagerToUpdateView();
     }
 
-    setColor(color: string) {
+    setColor(color: string): void  {
         this.color = color;
         this.notifyViewManagerToUpdateView();
     }
 
-    getSpacing() {
+    getSpacing(): number  {
         if (this.__isAutomaticEnabled) {
             const zoomlevel = paper.view.zoom;
             if (zoomlevel <= 0.02) {
@@ -111,7 +111,7 @@ export default class AdaptiveGrid {
         // console.log("Zoom: " + paper.view.zoom + " Spacing: " + this.__spacing);
     }
 
-    updateGridSpacing(value: number) {
+    updateGridSpacing(value: number): boolean  {
         if (AdaptiveGrid.isValidZoom(value)) {
             console.log("New spacing value:", value);
             this.__spacing = value;
@@ -122,15 +122,15 @@ export default class AdaptiveGrid {
         }
     }
 
-    getThinWidth() {
+    getThinWidth(): number  {
         return this.thinWidth / paper.view.zoom;
     }
 
-    getThickWidth() {
+    getThickWidth(): number  {
         return this.thickWidth / paper.view.zoom;
     }
 
-    notifyViewManagerToUpdateView() {
+    notifyViewManagerToUpdateView(): void  {
         if (this.__viewManagerDelegate) {
             this.__viewManagerDelegate.updateGrid();
         } else {
@@ -138,7 +138,7 @@ export default class AdaptiveGrid {
         }
     }
 
-    static isValidZoom(value: number) {
+    static isValidZoom(value: number): boolean  {
         // First check if its a valid number
 
         // TODO: figure out if we want to round it off

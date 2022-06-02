@@ -17,7 +17,7 @@ export default class CustomComponentPositionTool extends PositionTool {
         this.__customComponent = customcomponent;
     }
 
-    createNewFeature(point: paper.Point) {
+    createNewFeature(point: paper.Point): void  {
         const featureIDs = [];
         // console.log("Custom Component:", this.__customComponent);
 
@@ -37,7 +37,7 @@ export default class CustomComponentPositionTool extends PositionTool {
         Registry.viewManager?.saveDeviceState();
     }
 
-    showTarget() {
+    showTarget(): void  {
         if (this.lastPoint === null) {
             throw new Error("No last point");
         }

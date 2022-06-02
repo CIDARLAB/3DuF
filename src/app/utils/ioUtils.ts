@@ -37,7 +37,7 @@ function fixDeviceDimensionParams(json: { [k: string]: any }) {
     }
 }
 
-export function sanitizeV1Plus(jsonstr: { [k: string]: any }) {
+export function sanitizeV1Plus(jsonstr: { [k: string]: any }): void  {
     fixDeviceDimensionParams(jsonstr);
     // TODO: add other proceses
 }

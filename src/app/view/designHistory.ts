@@ -23,7 +23,7 @@ export default class DesignHistory {
      * @returns {void}
      * @memberof DesignHistory
      */
-    pushDesign(devicedata: string) {
+    pushDesign(devicedata: string): void  {
         // Calculate md5 hash and see if we want so save this design
         const hash = md5(devicedata);
         if (this.__mostRecentMD5) {

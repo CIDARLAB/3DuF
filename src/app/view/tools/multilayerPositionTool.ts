@@ -11,7 +11,7 @@ export default class MultilayerPositionTool extends PositionTool {
         super(viewManagerDelegate, typeString, currentParameters);
     }
 
-    createNewFeature(point: paper.Point) {
+    createNewFeature(point: paper.Point): void  {
         const featureIDs = [];
         const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(Registry.currentLayer!) / 3);
         const flowlayer = currentlevel * 3;
@@ -53,7 +53,7 @@ export default class MultilayerPositionTool extends PositionTool {
         Registry.viewManager?.saveDeviceState();
     }
 
-    showTarget() {
+    showTarget(): void  {
         if (this.lastPoint === null) {
             return;
         }

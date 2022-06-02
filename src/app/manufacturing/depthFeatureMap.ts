@@ -21,7 +21,7 @@ export default class DepthFeatureMap {
      * @memberof DepthFeatureMap
      * @returns {void}
      */
-    addFeature(depth: number, featureref: any) {
+    addFeature(depth: number, featureref: any): void  {
         if (this.__depthMap.has(depth)) {
             // Get the array stored for the depth
             const features = this.__depthMap.get(depth);

@@ -4,7 +4,7 @@ import Layer from "../core/layer";
 export default class DeviceUtils {
     static __nameMap = new Map();
 
-    static addLayer(layer: Layer, index: number) {
+    static addLayer(layer: Layer, index: number): void  {
         Registry.viewManager!.addLayer(layer, index);
     }
 
@@ -14,7 +14,7 @@ export default class DeviceUtils {
      * @return {string}
      * @memberof Device
      */
-    static generateNewName(type: string) {
+    static generateNewName(type: string): string  {
         let value = DeviceUtils.__nameMap.get(type);
         if (value != undefined) {
             this.__nameMap.set(type, value + 1);
