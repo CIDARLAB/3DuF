@@ -418,6 +418,14 @@ export class ComponentAPI {
         return uuid.v1();
     }
 
+    /**
+     * Returns the component renderer info for the given type
+     *
+     * @static
+     * @param {string} threeduftypeString
+     * @returns {Template}
+     * @memberof ComponentAPI
+     */
     static getRenderer(threeduftypeString: string): Template {
         //Check if threeduftypestring in library
         if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
@@ -427,6 +435,14 @@ export class ComponentAPI {
         }
     }
 
+    /**
+     * Returns the component renderer info for the given type
+     *
+     * @static
+     * @param {string} minttype
+     * @returns {Template}
+     * @memberof ComponentAPI
+     */
     static getRendererForMINT(minttype: string): Template {
         // Go through all the objects in the library and return the one that matches the minttype
         for (const key in ComponentAPI.library) {
@@ -438,6 +454,14 @@ export class ComponentAPI {
         throw new Error("Component Type definition: " + minttype + " not found in library");
     }
 
+    /**
+     * Returns the component definition for the given type
+     *
+     * @static
+     * @param {string} threeduftypeString
+     * @returns {LibraryEntry}
+     * @memberof ComponentAPI
+     */
     static getRendererInfo(threeduftypeString: string): LibraryEntry {
         //Check if threeduftypestring in library
         if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
@@ -447,10 +471,25 @@ export class ComponentAPI {
         }
     }
 
+    /**
+     * Returns the component rendering keys for the given type
+     *
+     * @static
+     * @param {string} threeduftypeString
+     * @returns {Array<string>}
+     * @memberof ComponentAPI
+     */
     static getAllRenderKeys(threeduftypeString: string): Array<string> {
         return ComponentAPI.library[threeduftypeString].object.renderKeys;
     }
 
+    /**
+     * Returns the different types of connection types in the library
+     *
+     * @static
+     * @returns {Array<string>}
+     * @memberof ComponentAPI
+     */
     static getConnectionTypes(): Array<string> {
         let ret = [];
         for (const key in ComponentAPI.connectionLibrary) {

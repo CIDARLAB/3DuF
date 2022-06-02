@@ -511,10 +511,7 @@ export default class Connection {
                 ]
             ];
         }
-        let definition;
-        if (ConnectionUtils.hasFeatureSet()) {
-            definition = ConnectionUtils.getDefinition("Connection");
-        }
+        let definition = ComponentAPI.getDefinition("Connection");
         if (definition === null || definition === undefined) {
             throw new Error("Could not find the definition for the Connection");
         }

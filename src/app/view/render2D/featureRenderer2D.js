@@ -1,9 +1,5 @@
 import * as DXFSolidObjectRenderer2D from "./dxfSolidObjectRenderer2D";
-
 import * as Colors from "../colors";
-import Feature from "../../core/feature";
-
-import * as FeatureSets from "../../featureSets/index";
 import Registry from "../../core/registry";
 import { renderEdgeFeature } from "../../view/render2D/dxfObjectRenderer2D";
 import paper from "paper";
@@ -30,22 +26,8 @@ export function getDefaultValueForType(typeString, setString, key) {
     return ComponentAPI.getDefaultsForType(typeString)[key];
 }
 
-export function getFeatureRenderer(typeString, setString) {
-    if (typeString === "EDGE") {
-        return renderEdge;
-    } else {
-        const rendererInfo = FeatureSets.getRender2D(typeString, setString);
-        return rendererInfo;
-    }
-}
-
-export function getPrimitive2D(typeString, setString) {
-    console.error("What are Primitive sets ?");
-    // return PrimitiveSets2D[setString][typeString]; //Looks like the primitivesets2d are the function pointers
-}
-
 export function renderTarget(typeString, setString, position, customParameters = null) {
-    const rendererinfo = getFeatureRenderer(typeString, setString);
+    const rendererinfo = ComponentAPI.getRendererInfo(typeString);
     const renderer = rendererinfo.object;
     const params = renderer.targetParams;
     const primParams = {};

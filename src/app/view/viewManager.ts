@@ -1,5 +1,4 @@
 // import ZoomToolBar from "@/components/zoomSlider.vue";
-import BorderSettingsDialog from "./ui/borderSettingDialog";
 import paper from "paper";
 
 import Registry from "../core/registry";
@@ -7,22 +6,16 @@ import * as Colors from "./colors";
 import { saveAs } from "file-saver";
 
 import Device from "../core/device";
-import ChannelTool from "./tools/channelTool";
 import SelectTool from "./tools/selectTool";
 import InsertTextTool from "./tools/insertTextTool";
 import SimpleQueue from "../utils/simpleQueue";
 import MouseSelectTool from "./tools/mouseSelectTool";
 import RenderMouseTool from "./tools/renderMouseTool";
 
-import ResolutionToolBar from "./ui/resolutionToolBar";
-import RightPanel from "./ui/rightPanel";
 import DXFObject from "../core/dxfObject";
 import EdgeFeature from "../core/edgeFeature";
-import ChangeAllDialog from "./ui/changeAllDialog";
-import LayerToolBar from "./ui/layerToolBar";
 import * as HTMLUtils from "../utils/htmlUtils";
 import MouseAndKeyboardHandler from "./mouseAndKeyboardHandler";
-import {inactiveBackground, inactiveText, activeText } from "./ui/componentToolBar";
 import DesignHistory from "./designHistory";
 import MoveTool from "./tools/moveTool";
 import ComponentPositionTool from "./tools/componentPositionTool";
@@ -34,24 +27,15 @@ import PositionTool from "./tools/positionTool";
 import ConnectionTool from "./tools/connectionTool";
 import GenerateArrayTool from "./tools/generateArrayTool";
 import CustomComponentManager from "./customComponentManager";
-import EditDeviceDialog from "./ui/editDeviceDialog";
-import ManufacturingPanel from "./ui/manufacturingPanel";
 import CustomComponentPositionTool from "./tools/customComponentPositionTool";
-import CustomComponent from "../core/customComponent";
 import { setButtonColor } from "../utils/htmlUtils";
-import ExportPanel from "./ui/exportPanel";
-import HelpDialog from "./ui/helpDialog";
 import PaperView from "./paperView";
 import AdaptiveGrid from "./grid/adaptiveGrid";
-import TaguchiDesigner from "./ui/taguchiDesigner";
-import RightClickMenu from "./ui/rightClickMenu";
-import IntroDialog from "./ui/introDialog";
 import DAFDPlugin from "../plugin/dafdPlugin";
 import { Examples } from "../index";
 import Feature from "../core/feature";
 import Layer from "../core/layer";
 import Component from "../core/component";
-import DAMPFabricationDialog from "./ui/dampFabricationDialog";
 import EventBus from "@/events/events";
 import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
@@ -68,7 +52,6 @@ import UIElement from "./uiElement";
 import Connection from "../core/connection";
 import Params from "../core/params";
 import MouseTool from "./tools/mouseTool";
-import { Rectangle } from "paper/dist/paper-core";
 import { generateRenderLayers } from "../utils/renderUtils";
 
 export default class ViewManager {
@@ -1299,14 +1282,14 @@ export default class ViewManager {
             } else if (newCenterY > Registry.currentDevice.getYSpan()) {
                 newCenterY = Registry.currentDevice.getYSpan();
             }
-            HTMLUtils.setButtonColor(this.__button2D!, Colors.getDefaultLayerColor((Registry.currentLayer as unknown) as Layer), activeText);
-            HTMLUtils.setButtonColor(this.__button3D!, inactiveBackground, inactiveText);
+            // HTMLUtils.setButtonColor(this.__button2D!, Colors.getDefaultLayerColor((Registry.currentLayer as unknown) as Layer), activeText);
+            // HTMLUtils.setButtonColor(this.__button3D!, inactiveBackground, inactiveText);
             Registry.viewManager!.setCenter((new paper.Point(newCenterX, newCenterY) as unknown) as number[]);
             Registry.viewManager!.setZoom(zoom);
-            HTMLUtils.addClass(this.__renderBlock!, "hidden-block");
-            HTMLUtils.removeClass(this.__canvasBlock!, "hidden-block");
-            HTMLUtils.removeClass(this.__renderBlock!, "shown-block");
-            HTMLUtils.addClass(this.__canvasBlock!, "shown-block");
+            // HTMLUtils.addClass(this.__renderBlock!, "hidden-block");
+            // HTMLUtils.removeClass(this.__canvasBlock!, "hidden-block");
+            // HTMLUtils.removeClass(this.__renderBlock!, "shown-block");
+            // HTMLUtils.addClass(this.__canvasBlock!, "shown-block");
         }
     }
 
@@ -1318,8 +1301,8 @@ export default class ViewManager {
     switchTo3D(): void  {
         if (!this.threeD) {
             this.threeD = true;
-            setButtonColor(this.__button3D!, Colors.getDefaultLayerColor(Registry.currentLayer as any), activeText);
-            setButtonColor(this.__button2D!!, inactiveBackground, inactiveText);
+            // setButtonColor(this.__button3D!, Colors.getDefaultLayerColor(Registry.currentLayer as any), activeText);
+            // setButtonColor(this.__button2D!!, inactiveBackground, inactiveText);
             this.renderer.loadJSON((Registry.currentDevice as any).toJSON());
             const cameraCenter = this.view.getViewCenterInMillimeters();
             const height = (Registry.currentDevice as any).params.getValue("height") / 1000;
@@ -1488,7 +1471,6 @@ export default class ViewManager {
     addCustomComponentTool(identifier: string): void  {
         const customcomponent = this.customComponentManager?.getCustomComponent(identifier);
         this.tools[identifier] = new CustomComponentPositionTool(this, customcomponent, "Custom");
-        Registry.featureDefaults.Custom[identifier] = CustomComponent.defaultParameterDefinitions().defaults;
     }
 
     /**

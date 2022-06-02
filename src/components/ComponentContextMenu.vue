@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import { revertToDefaultParams, generateUpdateFunction } from "@/app/view/ui/parameterMenu";
 import Registry from "@/app/core/registry";
 import Component from "@/app/core/component";
 import Params from "@/app/core/params";
@@ -87,6 +86,16 @@ export default {
         EventBus.get().on(EventBus.DBL_CLICK_COMPONENT, this.activateMenu);
     },
     methods: {
+
+        revertToDefaultParams(table, typeString, setString) {
+            const def = ComponentAPI.getDefinition(typeString);
+            const heritable = def.heritable;
+            const defaults = def.defaults;
+
+            for (const key in heritable) {
+                Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
+            }
+        },
         updateParameter(value, key) {
             this.currentComponent.updateParameter(key, value);
         },
@@ -168,7 +177,7 @@ export default {
             console.log("Saved data for showRename");
         },
         revertToDefaults() {
-            revertToDefaultParams(this.$refs.table, this.typestring, this.__setString);
+            this.revertToDefaultParams(this.$refs.table, this.typestring, this.__setString);
         },
         deleteButton() {
             Registry.viewManager.view.deleteSelectedFeatures();
@@ -197,18 +206,6 @@ export default {
         saveName() {
             this.currentComponent.name = this.componentName;
             this.showRename = false;
-        },
-        UpdateFeatureSlider() {
-            const featureID = this.featureRef.getID();
-            const sliderID = featureID + "_" + this.featureRef.key + "_slider";
-            const fieldID = featureID + "_" + this.featureRef.key + "_value";
-            generateUpdateFunction(sliderID, fieldID, this.$refs.typeString, this.$refs.setString, this.featureRef.key);
-        },
-        UpdateFeatureValue() {
-            const featureID = this.featureRef.getID();
-            const sliderID = featureID + "_" + this.featureRef.key + "_slider";
-            const fieldID = featureID + "_" + this.featureRef.key + "_value";
-            generateUpdateFunction(fieldID, sliderID, this.$refs.typeString, this.$refs.setString, this.featureRef.key);
         },
         closeDialog() {
             this.activeMenu = false;

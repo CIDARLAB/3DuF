@@ -1,11 +1,9 @@
-import ImportComponentDialog from "./ui/importComponentDialog";
 import CustomComponent from "../core/customComponent";
 import Registry from "../core/registry";
 import ViewManager from "./viewManager";
 
 export default class CustomComponentManager {
     viewManagerDelegate: ViewManager;
-    importComponentDialog: ImportComponentDialog;
     private __library: Map<any, any>;
 
     /**
@@ -14,11 +12,9 @@ export default class CustomComponentManager {
      */
     constructor(viewManager: ViewManager) {
         this.viewManagerDelegate = viewManager;
-        this.importComponentDialog = new ImportComponentDialog(this);
         this.__library = new Map();
 
         // set up registry for custom tools
-        Registry.featureDefaults.Custom = {};
     }
 
     /**
