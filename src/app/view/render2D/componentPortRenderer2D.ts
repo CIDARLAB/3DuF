@@ -1,18 +1,21 @@
 import * as Colors from "../colors";
 import paper from "paper";
 import Registry from "../../core/registry";
+import  Component  from "@/app/core/component";
+import ComponentPort from "@/app/core/componentPort";
+import { Point } from "@/app/core/init";
 
 export default class ComponentPortRenderer2D {
-    static renderComponentPort(componentport, draworigin, rotation, portrendersize = 500) {
+    static renderComponentPort(componentport: ComponentPort, draworigin: Point, rotation: number, portrendersize: number = 500) {
         const xpos = draworigin[0];
         const ypos = draworigin[1];
         const point = new paper.Point(xpos + componentport.x, ypos + componentport.y);
 
-        const circle = paper.Path.Circle(point, portrendersize);
+        const circle = new paper.Path.Circle(point, portrendersize);
 
         circle.rotate(rotation, new paper.Point(draworigin[0], draworigin[1]));
 
-        circle.fillColor = Colors.BLACK;
+        circle.fillColor = new paper.Color(Colors.BLACK);
 
         return circle;
     }
@@ -26,18 +29,23 @@ export default class ComponentPortRenderer2D {
         return ret;
     }
 
-    static renderComponentPorts(component) {
+    static renderComponentPorts(component: Component) {
         const rendersize = ComponentPortRenderer2D.getSizeforZoomLevel();
         const componentports = component.ports;
         const ret = [];
         const rotation = component.getRotation();
         const currPos = component.getValue("position");
         component.setOffset();
-        const position = [currPos[0] - component.offset[0], currPos[1] - component.offset[1]];
+        const position: Point = [currPos[0] - component.offset[0], currPos[1] - component.offset[1]];
         for (const key of componentports.keys()) {
             const componentport = componentports.get(key);
+            if (componentport === undefined) {
+                console.error(`component ${component.id} has no port ${key}`);
+                continue;
+            }
             const render = ComponentPortRenderer2D.renderComponentPort(componentport, position, rotation, rendersize);
-            render.renderid = componentport.id;
+            // TODO - Figure out how to fix this or keep track of this
+            // render["renderid"] = componentport.id;
             component.attachComponentPortRender(key, render);
             ret.push(render);
         }
