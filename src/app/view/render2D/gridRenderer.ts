@@ -1,7 +1,9 @@
 import paper from "paper";
+import {SymbolDefinition} from "paper";
+import AdaptiveGrid from "../grid/adaptiveGrid";
 
 export default class GridRenderer {
-    static renderGrid(grid) {
+    static renderGrid(grid: AdaptiveGrid) {
         // con
         const gridGroup = new paper.Group();
         gridGroup.addChild(GridRenderer.makeHorizontalLines(grid));
@@ -9,27 +11,28 @@ export default class GridRenderer {
         return gridGroup;
     }
 
-    static vertLineSymbol(width, color) {
+    static vertLineSymbol(width: number, color: paper.Color) {
         return GridRenderer.lineSymbol(paper.view.bounds.topLeft, paper.view.bounds.bottomLeft, width, color);
     }
 
-    static horizLineSymbol(width, color) {
+    static horizLineSymbol(width: number, color: paper.Color) {
         return GridRenderer.lineSymbol(paper.view.bounds.topLeft, paper.view.bounds.topRight, width, color);
     }
 
-    static lineSymbol(start, end, width, color) {
-        const line = paper.Path.Line({
+    static lineSymbol(start: paper.Point, end: paper.Point, width: number, color: paper.Color) {
+        color.alpha = 0.25;
+        const line = new paper.Path.Line({
             from: start,
             to: end,
             strokeWidth: width,
             strokeColor: color
         });
-        line.strokeColor.alpha = 0.25;
+        // line.strokeColor.alpha = 0.25;
         line.remove();
-        return new paper.Symbol(line);
+        return new paper.SymbolDefinition(line);
     }
 
-    static isThick(val, origin, spacing, thickCount) {
+    static isThick(val: number, origin: number, spacing:number, thickCount:number) {
         const diff = Math.abs(val - origin);
         const remainder = diff % (spacing * thickCount);
         if (remainder < spacing) {
@@ -37,7 +40,7 @@ export default class GridRenderer {
         } else return false;
     }
 
-    static makeVerticalLines(grid) {
+    static makeVerticalLines(grid: AdaptiveGrid) {
         const spacing = grid.getSpacing();
         const sym = GridRenderer.vertLineSymbol(grid.getThinWidth(), grid.color);
         const thickSym = GridRenderer.vertLineSymbol(grid.getThickWidth(), grid.color);
@@ -62,7 +65,7 @@ export default class GridRenderer {
         return group;
     }
 
-    static makeHorizontalLines(grid) {
+    static makeHorizontalLines(grid: AdaptiveGrid) {
         const spacing = grid.getSpacing();
         const sym = GridRenderer.horizLineSymbol(grid.getThinWidth(), grid.color);
         const thickSym = GridRenderer.horizLineSymbol(grid.getThickWidth(), grid.color);

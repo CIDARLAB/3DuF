@@ -14,7 +14,7 @@ export default class AdaptiveGrid {
     minSpacing: number;
     maxSpacing: number;
     thickCount: number;
-    color: string;
+    color: paper.Color;
 
     constructor(viewmanager: ViewManager, minSpacing = 5, maxSpacing = 100, thickCount = 10, origin = [0, 0], thinWidth = 1, thickWidth = 3, color = Colors.BLUE_100) {
         this.__viewManagerDelegate = viewmanager;
@@ -27,7 +27,7 @@ export default class AdaptiveGrid {
         this.thickCount = thickCount;
         this.__spacing = 500;
         this.__isAutomaticEnabled = true;
-        this.color = color;
+        this.color = new paper.Color(color);
     }
 
     /**
@@ -86,7 +86,7 @@ export default class AdaptiveGrid {
     }
 
     setColor(color: string): void  {
-        this.color = color;
+        this.color = new paper.Color(color);
         this.notifyViewManagerToUpdateView();
     }
 
