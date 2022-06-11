@@ -131,7 +131,10 @@ export default class ChannelTool extends MouseTool {
 
     // TODO: Re-establish target selection logic from earlier demo
     static getTarget(point: Point): Point {
-        const target = Registry.viewManager?.snapToGrid(point);
-        return [(target as paper.Point).x, (target as paper.Point).y];
+        if (Registry.viewManager === null){
+            throw new Error("ViewManager not initialized");
+        }
+        const target = Registry.viewManager.snapToGrid(point);
+        return target;
     }
 }

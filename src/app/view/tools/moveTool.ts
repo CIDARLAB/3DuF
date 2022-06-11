@@ -1,6 +1,7 @@
 import MouseTool from "./mouseTool";
 import paper from "paper";
 import Registry from "../../core/registry";
+import { Point } from "@/app/core/init";
 
 export default class MoveTool extends MouseTool {
     private __startPoint?: paper.Point | number[] | null;
@@ -130,8 +131,11 @@ export default class MoveTool extends MouseTool {
      */
     mouseUpHandler(event: MouseEvent): void  {
         const point = MouseTool.getEventPosition(event);
-        // console.log("Point:", point, event);
-        const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
+        if (point === null){
+            throw new Error("Point is null for move tool event handler");
+        }
+        const targettosnap: Point = [point.x, point.y];
+        const target = Registry.viewManager?.snapToGrid(targettosnap);
 
         // console.log("Start:",this.__startPoint, "End:" ,target);
         this.__dragging = false;
@@ -143,7 +147,11 @@ export default class MoveTool extends MouseTool {
      */
     mouseDownHandler(event: MouseEvent): void  {
         const point = MouseTool.getEventPosition(event);
-        const target = Registry.viewManager?.snapToGrid(point as unknown as number[]);
+        if (point === null){
+            throw new Error("Point is null for move tool event handler");
+        }
+        const targettosnap: Point = [point.x, point.y];
+        const target = Registry.viewManager?.snapToGrid(targettosnap);
         this.__startPoint = target;
         this.__dragging = true;
     }

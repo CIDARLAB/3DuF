@@ -146,7 +146,7 @@ export function renderAllColors(layer: { [k: string]: string }, orderedKeys: str
         const color = decimalToLayerColor(i / orderedKeys.length, layer, orderedKeys);
         new paper.Path.Circle({
             position: new paper.Point(0 + i * 1000, 2000),
-            fillColor: (layer as any)[orderedKeys[i]],
+            fillColor: layer[orderedKeys[i]],
             radius: 500
         });
     }
@@ -186,7 +186,7 @@ export function getDefaultFeatureColor(typeString: string, layer: RenderLayer) {
     if (layer) {
         // let height = Feature.getDefaultsForType(typeString, setString)["height"];
         let decimal = 500; // layer.estimateLayerHeight();
-        if (!(layer as any).flip) decimal = 1 - decimal;
+        // if (!(layer as any).flip) decimal = 1 - decimal;
         const colors = getLayerColors(layer.type);
         return decimalToLayerColor(decimal, colors, darkColorKeys);
     } else {

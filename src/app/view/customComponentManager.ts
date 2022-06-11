@@ -42,7 +42,8 @@ export default class CustomComponentManager {
         customcomponent.renderData = renderData;
         this.__library.set(type, customcomponent);
         this.viewManagerDelegate.addCustomComponentTool(type);
-        (this.viewManagerDelegate as any).rightPanel.customComponentToolBar.updateToolBar();
+        // TODO: Update the Vue UI via the component API
+        // (this.viewManagerDelegate as any).rightPanel.customComponentToolBar.updateToolBar();
     }
 
     /**
@@ -54,7 +55,8 @@ export default class CustomComponentManager {
     __importComponentFromDeserializedJSON(customcomponent: CustomComponent): void  {
         this.__library.set(customcomponent.type, customcomponent);
         this.viewManagerDelegate.addCustomComponentTool(customcomponent.type);
-        (this.viewManagerDelegate as any).rightPanel.customComponentToolBar.updateToolBar();
+        // TODO - Update the Vue UI via the component API
+        // (this.viewManagerDelegate as any).rightPanel.customComponentToolBar.updateToolBar();
     }
 
     /**

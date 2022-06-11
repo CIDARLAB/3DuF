@@ -861,9 +861,9 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     saveToStorage(): void  {
-        if (Registry.currentDevice) {
+        if (Registry.viewManager) {
             try {
-                localStorage.setItem("currentDevice", JSON.stringify((Registry.currentDevice as any).toJSON()));
+                localStorage.setItem("currentDevice", JSON.stringify(Registry.viewManager.generateExportJSON()));
             } catch (err) {
                 // can't save, so.. don't?
             }
@@ -1025,7 +1025,7 @@ export default class ViewManager {
         if (paperElements.length > 0) {
             for (let i = 0; i < paperElements.length; i++) {
                 const paperFeature = paperElements[i];
-                (Registry.currentDevice as any).removeFeatureByID(paperFeature.featureID);
+                this.removeFeatureByID(paperFeature.featureID);
             }
             this.currentSelection = [];
         }
@@ -1051,9 +1051,12 @@ export default class ViewManager {
      * @return {void|Array<number>}
      * @memberof ViewManager
      */
-    snapToGrid(point: number[]) {
-        if (Registry.currentGrid) return Registry.currentGrid.getClosestGridPoint(new paper.Point(point[0], point[1]));
-        else return point;
+    snapToGrid(point: Point): Point {
+        if (Registry.currentGrid)
+        { 
+            const closestpt = Registry.currentGrid.getClosestGridPoint(new paper.Point(point[0], point[1]));
+            return [closestpt.x, closestpt.y];
+        } else { return point; }
     }
 
     /**
