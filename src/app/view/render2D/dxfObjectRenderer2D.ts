@@ -51,6 +51,8 @@ export function renderEdgeFeature(feature: edgeFeature) {
 
     // Add the feature id to the rendered object or else the whole things breaks down
     // TODO: Streamline the feature ID insertion for each rendered object business
+    
+    // eslint-disable-next-line
     let modpath = path as any;
     modpath.featureID = feature.ID;
     return modpath as paper.CompoundPath;

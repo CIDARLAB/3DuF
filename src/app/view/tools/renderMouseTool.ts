@@ -66,7 +66,8 @@ export default class RenderMouseTool extends MouseTool {
     mouseUpHandler(point: paper.Point): void  {
         if (this.currentSelectBox) {
             this.currentSelection = this.viewManagerDelegate.hitFeaturesWithViewElement(this.currentSelectBox);
-            (this as any).selectFeatures();
+            // Figure out where this is even used
+            // this.selectFeatures();
         }
     }
 
@@ -85,9 +86,9 @@ export default class RenderMouseTool extends MouseTool {
                         throw new Error("ReferenceID of feature is null");
                     } else {
                         if (element !== null) {
-                            (EventBus as any).get().emit(EventBus.DBL_CLICK_ELEMENT, event, element);
+                            EventBus.get().emit(EventBus.DBL_CLICK_ELEMENT, event, element);
                         } else {
-                            (EventBus as any).get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
+                            EventBus.get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
                         }
                     }
                 } else {

@@ -2,22 +2,27 @@ import MouseTool from "./mouseTool";
 import paper from "paper";
 import Registry from "../../core/registry";
 import { Point } from "@/app/core/init";
+import ViewManager from "../viewManager";
 
 export default class MoveTool extends MouseTool {
-    private __startPoint?: paper.Point | number[] | null;
+    private __startPoint: Point | null;
     private __dragging: boolean;
 
-    private __currentComponent?: any;
-    private __originalPosition?: paper.Point | number[] | null;
+    private __currentComponent: any;
+    private __originalPosition: Point | null = null;
+    private _viewManagerDelegate: ViewManager;
+
     callback: ((...args: any[]) => any) | null;
 
-    constructor() {
+    constructor(viewManagerDelegate: ViewManager) {
         super();
 
         // Use the startpoint to calculate the delta for movement
         this.__startPoint = null;
         this.__dragging = false;
         this.callback = null;
+
+        this._viewManagerDelegate = viewManagerDelegate;
 
         // this.dragging = false;
         // this.dragStart = null;
@@ -65,7 +70,7 @@ export default class MoveTool extends MouseTool {
      * Default deactivation method
      */
     deactivate(): void  {
-        Registry.viewManager?.resetToDefaultTool();
+        this._viewManagerDelegate.resetToDefaultTool();
     }
 
     /**
@@ -100,15 +105,21 @@ export default class MoveTool extends MouseTool {
      * @param event
      */
     dragHandler(event: MouseEvent): void  {
+        if (this._viewManagerDelegate === null) {
+            throw new Error("No view manager set!");
+        }
         if (this.__dragging) {
             const point = MouseTool.getEventPosition(event);
-            let target: paper.Point | number[] | undefined = [0, 0];
-            if (point !== null) target = Registry.viewManager?.snapToGrid([point.x, point.y]);
-            const delta = {
-                x: (target as any).x - (this.__startPoint as any).y,
-                y: (target as any).y - (this.__startPoint as any).y
-            };
-            this.__startPoint = target;
+            let target: paper.Point = new paper.Point(point.x, point.y);
+            if (point !== null && point !== undefined) {
+                let snappoint = this._viewManagerDelegate.snapToGrid([point.x, point.y]);
+                target = new paper.Point(snappoint[0], snappoint[1]);
+            }
+            // const delta = {
+            //     x: (target).x - this.__startPoint[0],
+            //     y: (target).y - this.__startPoint[1]
+            // };
+            this.__startPoint = [target.x, target.y];
             // console.log("delta:", delta);
 
             // let oldposition = this.__currentComponent.getPosition();
@@ -117,7 +128,7 @@ export default class MoveTool extends MouseTool {
             // let newposition = [oldposition[0] + delta.x, oldposition[1] + delta.y];
             // console.log("Newposition:", newposition);
             // this.__currentComponent.updateComponentPosition(newposition);
-            this.__updatePosition((target as any).x, (target as any).y);
+            this.__updatePosition(target.x, target.y);
         }
     }
 
@@ -135,7 +146,7 @@ export default class MoveTool extends MouseTool {
             throw new Error("Point is null for move tool event handler");
         }
         const targettosnap: Point = [point.x, point.y];
-        const target = Registry.viewManager?.snapToGrid(targettosnap);
+        const target = this._viewManagerDelegate.snapToGrid(targettosnap);
 
         // console.log("Start:",this.__startPoint, "End:" ,target);
         this.__dragging = false;
@@ -151,7 +162,7 @@ export default class MoveTool extends MouseTool {
             throw new Error("Point is null for move tool event handler");
         }
         const targettosnap: Point = [point.x, point.y];
-        const target = Registry.viewManager?.snapToGrid(targettosnap);
+        const target = this._viewManagerDelegate.snapToGrid(targettosnap);
         this.__startPoint = target;
         this.__dragging = true;
     }

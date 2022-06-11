@@ -171,11 +171,11 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         // TODO: Enable this.is3D functionality
         if (this.typeString == "Valve") {
             component = this.createNewFeature(point, angle);
-            Registry.currentDevice!.insertValve(component, connection as any, this.valveType);
+            Registry.currentDevice!.insertValve(component, connection, this.valveType);
         } else if (this.typeString == "Valve3D") {
             angle += 90;
             component = this.createNewMultiLayerFeature(point, angle);
-            Registry.currentDevice!.insertValve(component, connection as any, this.valveType);
+            Registry.currentDevice!.insertValve(component, connection, this.valveType);
         }
         Registry.viewManager!.updatesConnectionRender(connection);
         Registry.viewManager!.saveDeviceState();
@@ -212,7 +212,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         let conn_waypoints;
         let lowestdist = 1000000000000000000000;
         let p0: number[], p1: number[], sol: number;
-        const paths = (connection).getPaths();
+        const paths = connection.getPaths();
         const waypoints = [];
         for (const j in paths) {
             conn_waypoints = paths[j];

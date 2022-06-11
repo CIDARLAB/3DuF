@@ -10,7 +10,7 @@ import SelectTool from "./tools/selectTool";
 import InsertTextTool from "./tools/insertTextTool";
 import SimpleQueue from "../utils/simpleQueue";
 import MouseSelectTool from "./tools/mouseSelectTool";
-import RenderMouseTool from "./tools/renderMouseTool";
+// import RenderMouseTool from "./tools/renderMouseTool";
 
 import DXFObject from "../core/dxfObject";
 import EdgeFeature from "../core/edgeFeature";
@@ -1067,11 +1067,11 @@ export default class ViewManager {
      * @returns {Array} Returns array with the features of a specific type
      * @memberof ViewManager
      */
-    getFeaturesOfType(typeString: string, setString: string, features: Feature[]) {
+    getFeaturesOfType(typeString: string, features: Feature[]) {
         const output = [];
         for (let i = 0; i < features.length; i++) {
             const feature = features[i];
-            if (feature.getType() === typeString && (feature as any).getSet() === setString) {
+            if (feature.getType() === typeString) {
                 output.push(feature);
             }
         }
@@ -1102,10 +1102,10 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    adjustParams(typeString: string, setString: string, valueString: string, value: any): void  {
+    adjustParams(typeString: string, valueString: string, value: any): void  {
         const selectedFeatures = this.view.getSelectedFeatures();
         if (selectedFeatures.length > 0) {
-            const correctType = this.getFeaturesOfType(typeString, setString, selectedFeatures);
+            const correctType = this.getFeaturesOfType(typeString, selectedFeatures);
             if (correctType.length > 0) {
                 this.adjustAllFeatureParams(valueString, value, correctType);
             }
@@ -1120,7 +1120,7 @@ export default class ViewManager {
                 this.view.selectedConnections[i].updateParameter(valueString, value);
             }
         } else {
-            this.updateDefault(typeString, setString, valueString, value);
+            this.updateDefault(typeString, valueString, value);
         }
     }
 
@@ -1133,7 +1133,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateDefault(typeString: string, setString: string, valueString: string, value: any): void  {
+    updateDefault(typeString: string, valueString: string, value: any): void  {
         // Registry.featureDefaults[setString][typeString][valueString] = value;
         const defaults = ComponentAPI.getDefaultsForType(typeString);
         defaults[valueString] = value;
@@ -1148,7 +1148,7 @@ export default class ViewManager {
     updateDefaultsFromFeature(feature: Feature): void  {
         const heritable = feature.getHeritableParams();
         for (const key in heritable) {
-            this.updateDefault(feature.getType(), "", key, feature.getValue(key));
+            this.updateDefault(feature.getType(), key, feature.getValue(key));
         }
     }
 
@@ -1458,11 +1458,11 @@ export default class ViewManager {
      */
     setupTools(): void  {
         this.tools.MouseSelectTool = new MouseSelectTool(this, this.view);
-        this.tools.RenderMouseTool = new RenderMouseTool(this, this.view);
+        // this.tools.RenderMouseTool = new RenderMouseTool(this, this.view);
         this.tools.InsertTextTool = new InsertTextTool(this);
         this.tools.Connection = new ConnectionTool("Connection", "Basic");
         // All the new tools
-        this.tools.MoveTool = new MoveTool();
+        this.tools.MoveTool = new MoveTool(this);
         this.tools.GenerateArrayTool = new GenerateArrayTool();
 
     }
@@ -1609,7 +1609,7 @@ export default class ViewManager {
         // Add to the valvemap
         for (const valve of valves) {
             let valve_type = ValveType.NORMALLY_OPEN;
-            if ((valve as any).getType() === "VALVE3D") {
+            if (valve.mint === "VALVE3D") {
                 valve_type = ValveType.NORMALLY_CLOSED;
             }
             console.log("Adding Valve: ", valve);
