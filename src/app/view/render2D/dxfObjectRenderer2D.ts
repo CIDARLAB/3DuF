@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import paper from "paper";
 
-import * as Colors from "../colors";
+import edgeFeature from "@/app/core/edgeFeature";
 
-export function renderFeatureObjects(feature) {
+export function renderFeatureObjects(feature: any) {
     throw new Error("Implement the renderer");
 
     // console.log("rendering the features dxf objects");
@@ -18,8 +18,8 @@ export function renderFeatureObjects(feature) {
  * DXF objects contained in the feature.
  * @param feature
  */
-export function renderEdgeFeature(feature) {
-    const path = new paper.CompoundPath();
+export function renderEdgeFeature(feature: edgeFeature) {
+    const path = new paper.CompoundPath("");
 
     // console.log('rendering the outline dxf objects....', feature.getDXFObjects());
     for (const i in feature.getDXFObjects()) {
@@ -41,7 +41,7 @@ export function renderEdgeFeature(feature) {
         }
     }
     // Set the visual properties for the path
-    path.strokeColor = "#ff7606";
+    path.strokeColor = new paper.Color("#ff7606");
     path.strokeWidth = 200;
     // Since this is an outline we need to do the required transformations to it
     path.scale(1, -1); // The coordinate system is all different for DXF
@@ -51,33 +51,18 @@ export function renderEdgeFeature(feature) {
 
     // Add the feature id to the rendered object or else the whole things breaks down
     // TODO: Streamline the feature ID insertion for each rendered object business
-    path.featureID = feature.ID;
-    return path;
+    let modpath = path as any;
+    modpath.featureID = feature.ID;
+    return modpath as paper.CompoundPath;
 }
 
-function getLayerColor(feature) {
-    const height = feature.getValue("height");
-    const layerHeight = 1; // feature.layer.estimateLayerHeight();
-    let decimal = height / layerHeight;
-    if (decimal > 1) decimal = 1;
-    if (!feature.layer.flip) decimal = 1 - decimal;
-    const targetColorSet = Colors.getLayerColors(feature.layer);
-    return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
-}
-
-function getBaseColor(feature) {
-    let decimal = 0;
-    if (!feature.layer.flip) decimal = 1 - decimal;
-    const targetColorSet = Colors.getLayerColors(feature.layer);
-    return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
-}
 
 /**
  * Generates the paper.js equivalent of the ELLIPSE DXF object
  * @param entity DXF Data
  * @param path Compound Path onto which the drawing will be inserted into
  */
-function drawEllipse(entity, path) {
+function drawEllipse(entity: { center: { x: number; y: number; }; axisRatio: any; majorAxisEndPoint: { x: number; y: number; }; }, path: paper.CompoundPath) {
     /*
     https://www.autodesk.com/techpubs/autocad/acad2000/dxf/ellipse_dxf_06.htm
      */
@@ -103,7 +88,7 @@ function drawEllipse(entity, path) {
     path.addChild(ellipse);
 }
 
-function drawMtext(entity, data) {
+function drawMtext(entity: any, data: any) {
     throw new Error("Not Implemented");
     // const color = getColor(entity, data);
 
@@ -185,7 +170,7 @@ function drawMtext(entity, data) {
     // return text;
 }
 
-function drawSpline(entity, path) {
+function drawSpline(entity: any, path: paper.CompoundPath) {
     throw new Error("Not Implemented");
     // const points = entity.controlPoints.map(function(vec) {
     //     return new paper.Point(vec.x, vec.y);
@@ -213,7 +198,7 @@ function drawSpline(entity, path) {
     // return splineObject;
 }
 
-function drawCircle(entity, path) {
+function drawCircle(entity: { center: { x: number; y: number; }; radius: number; }, path: paper.CompoundPath) {
     const center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
     const circle = new paper.Path.Circle(center, entity.radius * 1000);
     path.addChild(circle);
@@ -224,7 +209,7 @@ function drawCircle(entity, path) {
  * @param entity DXF Data
  * @param path Compound Path onto which the drawing will be inserted into
  */
-function drawLine(entity, path) {
+function drawLine(entity: { vertices: string | any[]; }, path: paper.CompoundPath) {
     let bulge, bugleGeometry;
     let startPoint, endPoint;
 
@@ -254,7 +239,7 @@ function drawLine(entity, path) {
  * @param entity DXF Data
  * @param path Compound Path onto which the drawing will be inserted into
  */
-function drawArc(entity, path) {
+function drawArc(entity: { center: { x: number; y: number; }; radius: number; startAngle: any; endAngle: any; }, path: paper.CompoundPath) {
     /*
     Ok so for this to work in paperjs, we need to have 3 variables
     1. Start
@@ -311,12 +296,12 @@ function drawArc(entity, path) {
     //
     // path.addChild(star);
 
-    const arc = paper.Path.Arc(startpoint, midpoint, endpoint);
+    const arc = new paper.Path.Arc(startpoint, midpoint, endpoint);
 
     path.addChild(arc);
 }
 
-function drawSolid(entity, data) {
+function drawSolid(entity: any, data: any) {
     throw new Error("Not Implemented");
     // let material;
     // let mesh;
@@ -350,7 +335,7 @@ function drawSolid(entity, data) {
     // return new THREE.Mesh(geometry, material);
 }
 
-function drawText(entity, data) {
+function drawText(entity: any, data: any) {
     throw new Error("Not implemented yet");
     // let geometry, material, text;
 

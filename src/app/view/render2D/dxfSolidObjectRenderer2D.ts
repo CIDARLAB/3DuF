@@ -1,23 +1,25 @@
 import paper from "paper";
 import * as THREE from "three";
-import * as Colors from "../colors";
 import LinkedList from "../../utils/linkedList";
 import GeometryGraph from "../../geometry/geometryGraph";
+import Feature from "@/app/core/feature";
+import DXFObject from "@/app/core/dxfObject";
+import CustomComponent from "@/app/core/customComponent";
 
-export function renderCustomComponentFeature(feature, color) {
+export function renderCustomComponentFeature(feature: Feature, color: string) {
     const position = feature.getValue("position");
     const rotation = feature.getValue("rotation");
     const render = renderDXFObjects(feature.dxfObjects);
     render.translate(new paper.Point(position[0], position[1]));
     render.rotate(rotation);
-    render.fillColor = color;
+    render.fillColor = new paper.Color(color);
     return render;
 }
 
-export function renderCustomComponentTarget(customcomponent, params) {
+export function renderCustomComponentTarget(customcomponent: CustomComponent, params: {[key: string]: any}) {
     // console.log("Render Posiition:", position);
     const position = params.position;
-    const color = params.color;
+    const color = new paper.Color(params.color);
     const rotation = params.rotation;
     const p = new paper.Point(position[0], position[1]);
     const render = renderDXFObjects(customcomponent.dxfData);
@@ -29,7 +31,7 @@ export function renderCustomComponentTarget(customcomponent, params) {
     return render;
 }
 
-export function renderFeatureObjects(feature) {
+export function renderFeatureObjects(feature: Feature) {
     console.log("rendering the features dxf objects");
     for (const i in feature.getDXFObjects()) {
         const dxfobject = feature.getDXFObjects()[i];
@@ -44,8 +46,7 @@ export function renderFeatureObjects(feature) {
  * @param bulgevalue
  * @return {paper.Point}
  */
-function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
-    let throughpoint = 0;
+function calculateBulgeThroughPoint(startpoint: paper.Point, endpoint: paper.Point, bulgevalue: number) {
 
     const start = new paper.Point(startpoint.x, startpoint.y);
     const end = new paper.Point(endpoint.x, endpoint.y);
@@ -74,12 +75,12 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
     if (Math.round(chordvector.angle) === 0) {
         // Horizontal
         // console.log("Horizontal Case");
-        throughpoint = new paper.Point(midpoint.x, midpoint.y - p);
+        let throughpoint = new paper.Point(midpoint.x, midpoint.y - p);
         return throughpoint;
     } else if (Math.round(chordvector.angle) === 90) {
         // Vertical
         // console.log("Vertical Case");
-        throughpoint = new paper.Point(midpoint.x + p, midpoint.y);
+        let throughpoint = new paper.Point(midpoint.x + p, midpoint.y);
         return throughpoint;
     } else {
         // All other angles
@@ -89,23 +90,19 @@ function calculateBulgeThroughPoint(startpoint, endpoint, bulgevalue) {
         // midpoint
         const k = -p / Math.sqrt(1 + slope * slope);
 
-        throughpoint = midpoint.add(new paper.Point(k, k * slope));
+        let throughpoint = midpoint.add(new paper.Point(k, k * slope));
+        return throughpoint;
     }
 
-    // let base = startpoint
-
-    // Find the distance on the perpendicular
-
-    return throughpoint;
 }
 
-function isClosedPolyline(dxfobject) {
+function isClosedPolyline(dxfobject: DXFObject) {
     const data = dxfobject.getData();
     // console.log(data, data.shape);
     return data.shape;
 }
 
-function processARC(geometryGraph, data) {
+function processARC(geometryGraph: GeometryGraph, data: {[key: string]: any}) {
     // console.warn("Implement this function !!");
 
     /*
@@ -140,35 +137,37 @@ function processARC(geometryGraph, data) {
     geometryGraph.addEdge(startpoint, endpoint, data);
 }
 
-function processClosedPolyLine(entity) {
+function processClosedPolyLine(entity: any) {
     const polygon = new paper.Path();
-    polygon.origin = "POLYLINE";
+    
     // // create geometry
     for (let i = 0; i < entity.vertices.length; i++) {
         const dxfvertex = entity.vertices[i];
         polygon.add(new paper.Point(dxfvertex.x * 1000, dxfvertex.y * 1000));
     }
     polygon.closed = true;
-
-    return polygon;
+    
+    let modpath = polygon as any;
+    modpath.origin = "POLYLINE";
+    return modpath as paper.PathItem;
 }
 
-function processPolyLine(geometryGraph, data) {
+function processPolyLine(geometryGraph: GeometryGraph, data: any) {
     console.warn("Implement this function !!");
 }
 
-function processSpline(geometryGraph, data) {
+function processSpline(geometryGraph: GeometryGraph, data: any) {
     console.warn("Implement this function !!");
 }
 
-function processLine(geometryGraph, data) {
+function processLine(geometryGraph: GeometryGraph, data: any) {
     const startPoint = data.vertices[0];
     const endPoint = data.vertices[1];
 
     geometryGraph.addEdge(startPoint, endPoint, data);
 }
 
-export function renderDXFObjects(dxfobjectarray) {
+export function renderDXFObjects(dxfobjectarray: Array<DXFObject>) {
     // let path = new paper.CompoundPath();
 
     if (dxfobjectarray === undefined) {
@@ -234,7 +233,7 @@ export function renderDXFObjects(dxfobjectarray) {
     // path.strokeColor = '#000000';
     // path.strokeWidth = 1;
     path.closed = true;
-    path.fillColor = "#ff7606";
+    path.fillColor = new paper.Color("#ff7606");
     path.fillRule = "evenodd";
     const topleft = path.bounds.topLeft;
     path.translate(new paper.Point(-topleft.x, -topleft.y));
@@ -250,8 +249,8 @@ export function renderDXFObjects(dxfobjectarray) {
  * DXF objects contained in the feature.
  * @param feature
  */
-export function renderEdgeFeature(feature) {
-    const path = new paper.CompoundPath();
+export function renderEdgeFeature(feature: Feature) {
+    const path = new paper.CompoundPath("");
 
     // console.log('rendering the outline dxf objects....', feature.getDXFObjects());
     for (const i in feature.getDXFObjects()) {
@@ -263,7 +262,7 @@ export function renderEdgeFeature(feature) {
         } else if (dxfobject.getType() === "LWPOLYLINE" || dxfobject.getType() === "LINE" || dxfobject.getType() === "POLYLINE") {
             path.addChild(drawLine(dxfobject.getData()));
         } else if (dxfobject.getType() === "SPLINE") {
-            path.addChild(drawSpline(dxfobject.getData()));
+            path.addChild(drawSpline(dxfobject.getData(), path));
         } else if (dxfobject.getType() === "ELLIPSE") {
             path.addChild(drawEllipse(dxfobject.getData()));
         } else if (dxfobject.getType() === "CIRCLE") {
@@ -273,7 +272,7 @@ export function renderEdgeFeature(feature) {
         }
     }
     // Set the visual properties for the path
-    path.strokeColor = "#ff7606";
+    path.strokeColor = new paper.Color("#ff7606");
     path.strokeWidth = 200;
     // Since this is an outline we need to do the required transformations to it
     path.scale(1, -1); // The coordinate system is all different for DXF
@@ -283,32 +282,17 @@ export function renderEdgeFeature(feature) {
 
     // Add the feature id to the rendered object or else the whole things breaks down
     // TODO: Streamline the feature ID insertion for each rendered object business
-    path.featureID = feature.ID;
-    return path;
+    let modpath = path as any;
+    modpath.featureID = feature.ID;
+    return modpath as paper.PathItem;
 }
 
-function getLayerColor(feature) {
-    const height = feature.getValue("height");
-    const layerHeight = 1; // feature.layer.estimateLayerHeight();
-    let decimal = height / layerHeight;
-    if (decimal > 1) decimal = 1;
-    if (!feature.layer.flip) decimal = 1 - decimal;
-    const targetColorSet = Colors.getLayerColors(feature.layer);
-    return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
-}
-
-function getBaseColor(feature) {
-    let decimal = 0;
-    if (!feature.layer.flip) decimal = 1 - decimal;
-    const targetColorSet = Colors.getLayerColors(feature.layer);
-    return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
-}
 
 /**
  * Generates the paper.js equivalent of the ELLIPSE DXF object
  * @param entity DXF Data
  */
-function drawEllipse(entity) {
+function drawEllipse(entity: any) {
     /*
     https://www.autodesk.com/techpubs/autocad/acad2000/dxf/ellipse_dxf_06.htm
      */
@@ -415,12 +399,12 @@ function drawEllipse(entity) {
 //     return text;
 // }
 
-function drawSpline(entity, path) {
+function drawSpline(entity: any, path: any): paper.PathItem {
     let curve;
-    const points = entity.controlPoints.map(function(vec) {
-        return new paper.Point(vec.x, vec.y);
-    });
-    throw "Spline entity is not supported !";
+    // const points = entity.controlPoints.map(function(vec) {
+    //     return new paper.Point(vec.x, vec.y);
+    // });
+    throw new Error("Spline entity is not supported !");
     // let color = "black";
     // var interpolatedPoints = [];
     // if (entity.degreeOfSplineCurve === 2 || entity.degreeOfSplineCurve === 3) {
@@ -444,7 +428,7 @@ function drawSpline(entity, path) {
     // return splineObject;
 }
 
-function drawCircle(entity) {
+function drawCircle(entity: any) {
     const center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
     const circle = new paper.Path.Circle(center, entity.radius * 1000);
     return circle;
@@ -454,11 +438,10 @@ function drawCircle(entity) {
  * Generates the paper.js equivalent of the LINE, POLYLINE, LWPOLYLINE DXF object
  * @param entity DXF Data
  */
-function drawLine(entity) {
+function drawLine(entity: any) {
     // Create a path
     const basepath = new paper.Path();
-    basepath.origin = "LINE";
-
+    
     let bulge, bugleGeometry;
     let startPoint, endPoint;
 
@@ -500,14 +483,18 @@ function drawLine(entity) {
             basepath.add(new paper.Point(dxfvertex.x * 1000, dxfvertex.y * 1000));
         }
     }
-    return basepath;
+
+    let modpath = basepath as any;
+    modpath.origin = "LINE";
+
+    return modpath as paper.PathItem;
 }
 
 /**
  * Generates the paper.js equivalent of the ARC DXF object
  * @param entity DXF Data
  */
-function drawArc(entity) {
+function drawArc(entity: any) {
     /*
     Ok so for this to work in paperjs, we need to have 3 variables
     1. Start
@@ -544,10 +531,13 @@ function drawArc(entity) {
 
     const endpoint = new paper.Point(center.x + radius * Math.cos(endAngle), center.y + radius * Math.sin(endAngle));
 
-    const arc = paper.Path.Arc(startpoint, midpoint, endpoint);
+    const arc = new paper.Path.Arc(startpoint, midpoint, endpoint);
 
-    arc.origin = "ARC";
-    return arc;
+    // arc.origin = "ARC";
+    let modpath = arc as any;
+    modpath.origin = "ARC";
+
+    return modpath as paper.PathItem;
 }
 
 // function drawSolid(entity, data) {

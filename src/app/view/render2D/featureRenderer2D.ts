@@ -24,7 +24,7 @@ const getLayerColor = function(feature: Feature) {
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 };
 
-const getBaseColor = function(feature: Feature) {
+const getBaseColor = function(feature: Feature): string {
     let decimal = 0;
     // if (!feature.layer.flip) decimal = 1 - decimal;
     // throw error if the layer in the feature is null
@@ -107,7 +107,7 @@ export function renderText(feature:any) {
             throw new Error("Color choice " + color + " not enabled");
         }
     } else {
-        rendered.fillColor = getLayerColor(feature);
+        rendered.fillColor = new paper.Color(getLayerColor(feature));
     }
     /// rendered.content = feature.getText();
     rendered.content = feature.getValue("text");

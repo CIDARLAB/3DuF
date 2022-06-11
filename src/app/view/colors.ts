@@ -123,7 +123,7 @@ const decimalToIndex = function(decimal: number, indices: number) {
  * @param {Object} layerColors
  * @param {Array} orderedKeys
  */
-export function decimalToLayerColor(decimal: number, layerColors: { [k: string]: any }, orderedKeys: string[]) {
+export function decimalToLayerColor(decimal: number, layerColors: { [k: string]: string }, orderedKeys: string[]): string {
     const index = decimalToIndex(decimal, orderedKeys.length);
     const key = orderedKeys[index];
     return layerColors["700"];
@@ -133,11 +133,11 @@ export function decimalToLayerColor(decimal: number, layerColors: { [k: string]:
  * @param {Layer} layer
  * @param {Array} orderedKeys
  */
-export function renderAllColors(layer: Layer, orderedKeys: string[]): void  {
+export function renderAllColors(layer: { [k: string]: string }, orderedKeys: string[]): void  {
     for (let i = 0; i < orderedKeys.length; i++) {
         new paper.Path.Circle({
             position: new paper.Point(0 + i * 1000, 0),
-            fillColor: (layer as any)[orderedKeys[i]],
+            fillColor: layer[orderedKeys[i]],
             radius: 500
         });
     }
