@@ -146,7 +146,7 @@ export default class CellTrapL extends Template {
 
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
         const traps = this.__drawFlow(params);
         traps.addChild(this.__drawCell(params));
         traps.fillColor!.alpha = 0.5;

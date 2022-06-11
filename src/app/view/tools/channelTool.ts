@@ -4,13 +4,13 @@ import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import Device from "../../core/device";
 import paper from "paper";
-import { ToolPaperObject } from "@/app/core/init";
+import { Point, ToolPaperObject } from "@/app/core/init";
 
 export default class ChannelTool extends MouseTool {
     typeString: string;
     setString: string;
-    startPoint: any[] | paper.Point | null;
-    lastPoint: any[] | paper.Point | null;
+    startPoint: Point | null;
+    lastPoint: Point | null;
     currentChannelID: string | null;
     currentTarget: any;
     dragging: boolean;
@@ -56,10 +56,10 @@ export default class ChannelTool extends MouseTool {
         };
         this.up = function(event) {
             ref.dragging = false;
-            ref.finishChannel((MouseTool.getEventPosition((event as unknown) as MouseEvent) as unknown) as number[]);
+            ref.finishChannel((MouseTool.getEventPosition((event as unknown) as MouseEvent) as unknown) as Point);
         };
         this.move = function(event) {
-            ref.lastPoint = (MouseTool.getEventPosition((event as unknown) as MouseEvent) as unknown) as number[];
+            ref.lastPoint = (MouseTool.getEventPosition((event as unknown) as MouseEvent) as unknown) as Point;
             if (ref.dragging) {
                 ref.updateQueue.run();
             }
@@ -85,19 +85,19 @@ export default class ChannelTool extends MouseTool {
     }
 
     showTarget(point: paper.Point): void  {
-        const target = ChannelTool.getTarget(this.lastPoint as number[]);
+        const target = ChannelTool.getTarget(this.lastPoint!);
         Registry.viewManager?.updateTarget(this.typeString, this.setString, target, {});
     }
 
     initChannel(): void  {
-        this.startPoint = ChannelTool.getTarget(this.lastPoint as number[]);
+        this.startPoint = ChannelTool.getTarget(this.lastPoint!);
         this.lastPoint = this.startPoint;
     }
 
     updateChannel(): void  {
         if (this.lastPoint && this.startPoint) {
             if (this.currentChannelID) {
-                const target = ChannelTool.getTarget(this.lastPoint as number[]);
+                const target = ChannelTool.getTarget(this.lastPoint);
                 const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
                 feat?.updateParameter("end", target);
             } else {
@@ -108,10 +108,10 @@ export default class ChannelTool extends MouseTool {
         }
     }
 
-    finishChannel(point: number[]): void  {
+    finishChannel(point: Point): void  {
         const target = ChannelTool.getTarget(point);
         if (this.currentChannelID) {
-            if ((this.startPoint as paper.Point).x === target[0] && (this.startPoint as paper.Point).y === target[1]) {
+            if (this.startPoint![0] === target[0] && this.startPoint![1] === target[1]) {
                 Registry.viewManager?.removeFeatureByID(this.currentChannelID);
             }
         } else {
@@ -130,7 +130,7 @@ export default class ChannelTool extends MouseTool {
     }
 
     // TODO: Re-establish target selection logic from earlier demo
-    static getTarget(point: number[]) {
+    static getTarget(point: Point): Point {
         const target = Registry.viewManager?.snapToGrid(point);
         return [(target as paper.Point).x, (target as paper.Point).y];
     }

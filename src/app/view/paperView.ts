@@ -25,7 +25,7 @@ import Component from "../core/component";
 import UIElement from "./uiElement";
 import TextElement from "./textElement";
 import MapUtils from "../utils/mapUtils";
-import { ToolPaperObject } from "../core/init";
+import { Point, ToolPaperObject } from "../core/init";
 import Connection from "../core/connection";
 import { ViewManager } from "..";
 import Parameter from "../core/parameter";
@@ -53,7 +53,7 @@ export default class PaperView {
     componentPortsLayer: paper.Group;
     currentTarget: any;
     lastTargetType: string | null;
-    lastTargetPosition: number[] | null;
+    lastTargetPosition: Point | null;
     lastTargetParameters: any;
     selectedComponents: Array<Component>;
     selectedConnections: Array<Connection>;
@@ -945,7 +945,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    addTarget(featureType: string | null, set: string, position: number[] | null, currentParameters: any): void {
+    addTarget(featureType: string | null, set: string, position: Point | null, currentParameters: any): void {
         this.removeTarget();
         this.lastTargetParameters = currentParameters;
         this.lastTargetType = featureType;
@@ -961,22 +961,26 @@ export default class PaperView {
      * @memberof PaperView
      */
     updateTarget(): void {
+        if (Registry.currentLayer === null){
+            console.error("No layer selected");
+            throw new Error("No layer selected");
+        }
         this.removeTarget();
         if (this.lastTargetType && this.lastTargetPosition) {
             // Checks if the target is a text type target
             if (this.lastTargetType === "TEXT") {
-                this.currentTarget = FeatureRenderer2D.renderTextTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition);
+                this.currentTarget = FeatureRenderer2D.renderTextTarget(this.lastTargetType, this.lastTargetPosition);
                 this.uiLayer.addChild(this.currentTarget);
             } else if (this.lastTargetSet === "Custom") {
                 const customcomponent = this.__viewManagerDelegate.customComponentManager.getCustomComponent(this.lastTargetType);
                 // @ts-ignore
                 const params = Registry.featureDefaults[this.lastTargetSet][this.lastTargetType];
                 params.position = this.lastTargetPosition;
-                params.color = Colors.getDefaultFeatureColor(this.lastTargetType, this.lastTargetSet, (Registry.currentLayer as unknown) as Layer);
+                params.color = Colors.getDefaultFeatureColor(this.lastTargetType, Registry.currentLayer);
                 this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, params);
                 this.uiLayer.addChild(this.currentTarget);
             } else {
-                this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetSet, this.lastTargetPosition, this.lastTargetParameters);
+                this.currentTarget = FeatureRenderer2D.renderTarget(this.lastTargetType, this.lastTargetPosition, this.lastTargetParameters);
                 this.uiLayer.addChild(this.currentTarget);
             }
         }

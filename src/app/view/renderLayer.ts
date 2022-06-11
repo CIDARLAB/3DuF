@@ -5,6 +5,7 @@ import EdgeFeature from "../core/edgeFeature";
 import { RenderLayerInterchangeV1_2, FeatureInterchangeV1_2, LayerInterchangeV1, LogicalLayerType } from "../core/init";
 import Layer from "../core/layer";
 import Params from "../core/params";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class RenderLayer {
     features: { [index: string]: Feature };
@@ -33,7 +34,7 @@ export default class RenderLayer {
         } else {
             this.color = undefined;
         }
-        this.__id = RenderLayer.generateID();
+        this.__id = ComponentAPI.generateID();
     }
 
     /**
@@ -75,14 +76,6 @@ export default class RenderLayer {
      */
     get id(): string {
         return this.__id;
-    }
-
-    /**
-     * Generates a random id
-     * @returns {String} Random ID string
-     */
-    static generateID(): string {
-        return uuid.v1();
     }
 
     /**

@@ -1,9 +1,9 @@
 import * as Colors from "../colors";
 import Feature from "../../core/feature";
-import * as FeatureSets from "../../featureSets";
 import paper from "paper";
+import { Point } from "@/app/core/init";
 
-function getLayerColor(feature) {
+function getLayerColor(feature: any) {
     const height = feature.getValue("height");
     const layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
@@ -13,27 +13,18 @@ function getLayerColor(feature) {
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 }
 
-function getBaseColor(feature) {
+function getBaseColor(feature:any) {
     let decimal = 0;
     if (!feature.layer.flip) decimal = 1 - decimal;
     const targetColorSet = Colors.getLayerColors(feature.layer);
     return Colors.decimalToLayerColor(decimal, targetColorSet, Colors.darkColorKeys);
 }
 
-function getDefaultValueForType(typeString, setString, key) {
-    return Feature.getDefaultsForType(typeString, setString)[key];
-}
-
-function getFeatureRenderer(typeString, setString) {
-    const rendererInfo = FeatureSets.getRender2D(typeString, setString);
-    return rendererInfo;
-}
-
-function calculateDistance(pointer_position, feature_position) {
+function calculateDistance(pointer_position: Point, feature_position: paper.Point) {
     return Math.sqrt(Math.pow(pointer_position[0] - feature_position.x, 2) + Math.pow(pointer_position[1] - feature_position.y, 2));
 }
 
-export function renderAlignmentMarks(position, radius, features) {
+export function renderAlignmentMarks(position: Point, radius: number, features: Array<any>) {
     // let renderer = getFeatureRenderer(typeString, setString);
     // let params = renderer.targetParams;
     // let prim = getPrimitive2D(renderer.targetPrimitiveType, renderer.targetPrimitiveSet);
@@ -68,16 +59,16 @@ export function renderAlignmentMarks(position, radius, features) {
             const vstart = new paper.Point(center.x, center.y - radius);
             const vend = new paper.Point(center.x, center.y + radius);
 
-            const hpath = new paper.Path(hstart, hend);
-            const vpath = new paper.Path(vstart, vend);
+            const hpath = new paper.Path([hstart, hend]);
+            const vpath = new paper.Path([vstart, vend]);
 
-            hpath.strokeColor = "#696965";
+            hpath.strokeColor = new paper.Color("#696965");
             hpath.strokeWidth = 500;
             hpath.strokeCap = "round";
 
             hpath.dashArray = [1000, 1200];
 
-            vpath.strokeColor = "#696965";
+            vpath.strokeColor = new paper.Color("#696965");
             vpath.strokeWidth = 500;
             vpath.strokeCap = "round";
 

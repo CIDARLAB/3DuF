@@ -285,7 +285,7 @@ export default class Mux extends Template {
         throw new Error("Unknown key: " + key);
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }): paper.CompoundPath  {
+    render2DTarget(key: string | null, params: { [k: string]: any }): paper.CompoundPath  {
         const render = this.render2D(params, "FLOW");
         render?.addChild(this.render2D(params, "CONTROL") as paper.Item);
         render!.fillColor!.alpha = 0.5;

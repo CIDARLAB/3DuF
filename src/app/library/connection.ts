@@ -122,7 +122,7 @@ export default class Connection extends Template {
         compoundpath.addChild(rec);
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
         const thickness = params.channelWidth / 5;
         const length = params.channelWidth;
         const x = params.position[0];

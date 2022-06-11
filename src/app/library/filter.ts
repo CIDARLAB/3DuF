@@ -283,9 +283,11 @@ export default class Filter extends Template {
         return serp;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
+        if (key === null) {
+            key = this.__renderKeys[0];
+        }
         const serp = this.render2D(params, key);
-
         serp.fillColor!.alpha = 0.5;
         return serp;
     }

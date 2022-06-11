@@ -1160,7 +1160,7 @@ export default class ChemostatRing extends Template {
         return control;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
         const serp = this.__drawFlow(params);
         serp.addChild(this.__drawControl(params));
 

@@ -122,14 +122,6 @@ export default class Connection {
         return this._params;
     }
 
-    /**
-     * Generates a random id
-     * @returns {string} Random ID string
-     * @memberof Connection
-     */
-    static generateID(): string {
-        return uuid.v1();
-    }
 
     /**
      * Sets the bounds i.e. the x,y position and the width and length of the component
