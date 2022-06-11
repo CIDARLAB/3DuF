@@ -25,7 +25,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             if (point === null) return;
             const target = PositionTool.getTarget([point.x, point.y]);
             // Check if connection exists at point
-            const connection = ref.checkIfConnectionExistsAt(target as unknown as paper.Point);
+            const connection = ref.checkIfConnectionExistsAt(new paper.Point(target[0], target[1]));
             // if connection exists then place the valve
             if (connection) {
                 ref.insertValve(point!, connection);
