@@ -88,7 +88,7 @@ export default class RoundedChannel extends Template {
         return rec;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
         const position = params.position;
         const radius = params.diameter;
         const color1 = params.color;

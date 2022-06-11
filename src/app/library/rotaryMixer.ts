@@ -163,7 +163,7 @@ export default class RotaryMixer extends Template {
         throw new Error("No valid key found");
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
         const rotarymixer_flow = this.__renderFlow(params);
         const rotarymixer_control = this.__renderControl(params);
         const ret = new paper.CompoundPath("");

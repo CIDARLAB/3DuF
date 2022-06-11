@@ -92,7 +92,7 @@ export default class AlignmentMarks extends Template {
         throw new Error("Unknown key: " + key);
     }
 
-    render2DTarget(key: string, params: ParamsIF): paper.CompoundPath {
+    render2DTarget(key: string | null, params: ParamsIF): paper.CompoundPath {
         const position = params.position;
         const width = params.width;
         const length = params.length;

@@ -139,7 +139,10 @@ export default class Chamber extends Template {
         return rendered;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
+        if (key === null) {
+            key = this.__renderKeys[0];
+        }
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;

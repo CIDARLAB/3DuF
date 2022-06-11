@@ -2,6 +2,7 @@
 import * as paper from "paper";
 import Layer from "../core/layer";
 import { LogicalLayerType } from "@/app/core/init";
+import RenderLayer from "./renderLayer";
 
 // Colors taken from: http://www.google.ch/design/spec/style/color.html
 export const RED_500 = "#F44336";
@@ -151,23 +152,22 @@ export function renderAllColors(layer: Layer, orderedKeys: string[]): void  {
     }
 }
 /**
- * Gets the color corresponding to the layer
- * @param {Layer} layer
+ * Gets the color corresponding to the layer.
+ * @param {Layer} layerType
  */
-export function getLayerColors(layer: Layer) {
-    if (!layer) {
+export function getLayerColors(layerType: LogicalLayerType) {
+    if (!layerType) {
         throw new Error("Undefined color");
     }
-    if ((layer as any).color) {
-        return (layerColors as any)[(layer as any).color];
+
+    if (layerType == LogicalLayerType.FLOW) {
+        return layerColors.indigo;
+    } else if (layerType == LogicalLayerType.CONTROL) {
+        return layerColors.red;
+    } else if (layerType == LogicalLayerType.INTEGRATION) {
+        return layerColors.green;
     } else {
-        if (layer.type === LogicalLayerType.FLOW) {
-            return layerColors.indigo;
-        } else if (layer.type === LogicalLayerType.CONTROL) {
-            return layerColors.red;
-        } else if (layer.type === LogicalLayerType.INTEGRATION) {
-            return layerColors.green;
-        }
+        throw new Error("Undefined LogicalLayerType");
     }
 }
 /**
@@ -175,16 +175,19 @@ export function getLayerColors(layer: Layer) {
  * @param {Layer} layer
  */
 export function getDefaultLayerColor(layer: Layer) {
-    return getLayerColors(layer)["500"];
+    if (layer === undefined) {
+        throw new Error("Undefined layer object passed");
+    } 
+    return getLayerColors(layer.type)["500"];
 }
 
 // TODO: We need to fix how this works and remove the circular dependency form this chain
-export function getDefaultFeatureColor(typeString: string, setString: string, layer: Layer) {
+export function getDefaultFeatureColor(typeString: string, layer: RenderLayer) {
     if (layer) {
         // let height = Feature.getDefaultsForType(typeString, setString)["height"];
         let decimal = 500; // layer.estimateLayerHeight();
         if (!(layer as any).flip) decimal = 1 - decimal;
-        const colors = getLayerColors(layer);
+        const colors = getLayerColors(layer.type);
         return decimalToLayerColor(decimal, colors, darkColorKeys);
     } else {
         return decimalToLayerColor(0, layerColors.indigo, darkColorKeys);

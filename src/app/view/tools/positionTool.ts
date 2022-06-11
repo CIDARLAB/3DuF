@@ -11,6 +11,7 @@ import Component from "../../core/component";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../../utils/mapUtils";
 import ViewManager from "@/app/view/viewManager";
+import { Point } from "@/app/core/init";
 
 export default class PositionTool extends MouseTool {
     viewManagerDelegate: ViewManager;
@@ -19,7 +20,7 @@ export default class PositionTool extends MouseTool {
     currentFeatureID: string | null;
     currentParameters: { [k: string]: any } | null;
 
-    lastPoint: number[] | null;
+    lastPoint: Point  =  [0, 0];
 
     showQueue: SimpleQueue;
 
@@ -31,7 +32,7 @@ export default class PositionTool extends MouseTool {
         this.currentFeatureID = null;
         this.currentParameters = currentParameters;
         const ref = this;
-        this.lastPoint = null;
+        this.lastPoint = [0, 0];
         this.showQueue = new SimpleQueue(
             function() {
                 ref.showTarget();
@@ -75,7 +76,7 @@ export default class PositionTool extends MouseTool {
      * @param point
      * @return {Point}
      */
-    static getTarget(point: number[]) {
+    static getTarget(point:Point): Point {
         const target = Registry.viewManager?.snapToGrid(point);
         return [(target as any).x, (target as any).y];
     }

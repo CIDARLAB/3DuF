@@ -215,7 +215,7 @@ export default class Pump extends Template {
         throw new Error("Unknown key: " + key);
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
         const ret = new paper.CompoundPath("");
         const flow = this.render2D(params, "FLOW");
         const control = this.render2D(params, "CONTROL");

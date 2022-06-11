@@ -272,7 +272,10 @@ export default class Tree extends Template {
         return treepath;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }): paper.CompoundPath  {
+    render2DTarget(key: string | null, params: { [k: string]: any }): paper.CompoundPath  {
+        if (key === null) {
+            key = this.__renderKeys[0];
+        }
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;

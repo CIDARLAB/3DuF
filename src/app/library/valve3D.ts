@@ -163,7 +163,7 @@ export default class Valve3D extends Template {
         }
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
         const render = this.render2D(params, "FLOW");
         render.fillColor!.alpha = 0.5;
         return render;

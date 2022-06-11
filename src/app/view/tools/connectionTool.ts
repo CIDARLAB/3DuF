@@ -8,7 +8,7 @@ import ConnectionTarget from "../../core/connectionTarget";
 import ComponentPort from "../../core/componentPort";
 import { ComponentAPI } from "@/componentAPI";
 import EventBus from "@/events/events";
-import { LogicalLayerType, ToolPaperObject } from "@/app/core/init";
+import { LogicalLayerType, Point, ToolPaperObject } from "@/app/core/init";
 
 import Registry from "../../core/registry";
 import MapUtils from "../../utils/mapUtils";
@@ -23,8 +23,8 @@ export enum ConnectionToolState {
 export default class ConnectionTool extends MouseTool {
     typeString: string;
     setString: string;
-    startPoint: number[] | null;
-    lastPoint: number[] | null;
+    startPoint: Point | null;
+    lastPoint: Point | null;
     wayPoints: any[];
     currentChannelID: string | null;
     currentTarget: paper.Point | null;
@@ -126,8 +126,12 @@ export default class ConnectionTool extends MouseTool {
                 if (ref.wayPoints.length > 0) {
                     lastwaypoint = ref.wayPoints[ref.wayPoints.length - 1];
                 }
+                // Check if lastwaypoint is null or not
+                if (lastwaypoint === null) {
+                    throw new Error("Last waypoint is null");
+                }
                 // ref.getNextOrthogonalPoint(lastwaypoint, target);
-                const orthopoint = ref.getNextOrthogonalPoint(lastwaypoint as any[], target);
+                const orthopoint = ref.getNextOrthogonalPoint(lastwaypoint, target);
                 ref.lastPoint = [orthopoint[0], orthopoint[1]];
             } else {
                 ref.lastPoint = [target[0], target[1]];
@@ -295,7 +299,11 @@ export default class ConnectionTool extends MouseTool {
             if (this.wayPoints.length > 0) {
                 lastwaypoint = this.wayPoints[this.wayPoints.length - 1];
             }
-            target = this.getNextOrthogonalPoint(lastwaypoint as any[], target);
+            // Check if the lastwaypoint is null or not
+            if (lastwaypoint === null) {
+                throw new Error("Target is null");
+            }
+            target = this.getNextOrthogonalPoint(lastwaypoint, target);
         }
         if (target.length == 2) {
             this.wayPoints.push(target);
@@ -416,7 +424,7 @@ export default class ConnectionTool extends MouseTool {
     }
 
     // TODO: Re-establish target selection logic from earlier demo
-    static getTarget(point: number[]) {
+    static getTarget(point: Point): Point {
         const target = Registry.viewManager?.snapToGrid(point);
         return [(target as any).x, (target as any).y];
     }
@@ -427,13 +435,13 @@ export default class ConnectionTool extends MouseTool {
      * @param target
      * @return {*}
      */
-    getNextOrthogonalPoint(lastwaypoint: any[], target: any[]) {
+    getNextOrthogonalPoint(lastwaypoint: Point, target: Point): Point {
         // Trivial case where target is orthogonal
         if (target[0] === lastwaypoint[0] || target[1] === lastwaypoint[1]) {
             return target;
         }
 
-        const ret = [target[0], target[1]];
+        const ret: Point = [target[0], target[1]];
         // Find out if the delta x or delta y is smaller and then just 0 the that coordinate
         const delta_x = Math.abs(target[0] - lastwaypoint[0]);
         const delta_y = Math.abs(target[1] - lastwaypoint[1]);

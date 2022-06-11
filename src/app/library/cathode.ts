@@ -108,7 +108,10 @@ export default class Cahode extends Template {
         return (finalCircle.rotate(rotation, pos) as unknown) as paper.PathItem;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }): paper.PathItem  {
+    render2DTarget(key: string | null, params: { [k: string]: any }): paper.PathItem  {
+        if (key === null) {
+            key = this.__renderKeys[0];
+        }
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;

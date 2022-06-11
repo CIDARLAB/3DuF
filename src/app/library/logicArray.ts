@@ -739,7 +739,7 @@ export default class LogicArray extends Template {
         return cell;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }) {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
         const render = this.__drawFlow(params);
         render.addChild(this.__drawControl(params));
         render.addChild(this.__drawCell(params));

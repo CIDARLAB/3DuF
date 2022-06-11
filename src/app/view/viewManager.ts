@@ -44,6 +44,8 @@ import LoadUtils from "@/app/utils/loadUtils";
 import ExportUtils from "@/app/utils/exportUtils";
 import { LogicalLayerType, InterchangeV1_2, ValveType } from "@/app/core/init";
 
+import { Point } from "@/app/core/init";
+
 /**
  * View manager class
  */
@@ -774,7 +776,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    updateTarget(featureType: string, featureSet: string, position: number[], currentParameters: { [k: string]: any } | null = null, refresh = true): void  {
+    updateTarget(featureType: string, featureSet: string, position: Point, currentParameters: { [k: string]: any } | null = null, refresh = true): void  {
         this.view.addTarget(featureType, featureSet, position, currentParameters);
         this.view.updateAlignmentMarks();
         this.view.updateRatsNest();

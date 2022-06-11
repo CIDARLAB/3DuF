@@ -8,12 +8,13 @@ import PositionTool from "./positionTool";
 import Params from "../../core/params";
 import { ComponentAPI } from "@/componentAPI";
 import { ViewManager } from "@/app";
+import { Point } from "@/app/core/init";
 
 export default class InsertTextTool extends MouseTool {
     typeString: string;
     setString: string;
     currentFeatureID: string | null;
-    lastPoint: number[] | null;
+    lastPoint: Point | null;
 
     private _text: string;
     fontSize: number;

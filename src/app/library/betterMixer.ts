@@ -152,9 +152,11 @@ export default class BetterMixer extends Template {
         return (serp.rotate(rotation, new paper.Point(x, y)) as unknown) as paper.CompoundPath;
     }
 
-    render2DTarget(key: string, params: { [k: string]: any }): paper.CompoundPath  {
+    render2DTarget(key: string | null, params: { [k: string]: any }): paper.CompoundPath  {
+        if (key === null) {
+            key = this.__renderKeys[0];
+        }
         const serp = this.render2D(params, key);
-
         serp.fillColor!.alpha = 0.5;
         return serp;
     }

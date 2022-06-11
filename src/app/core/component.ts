@@ -35,7 +35,7 @@ export default class Component {
      * @param {string} mint
      * @param {String} id
      */
-    constructor(params: Params, name: string, mint: string, id: string = Component.generateID()) {
+    constructor(params: Params, name: string, mint: string, id: string = ComponentAPI.generateID()) {
         this._params = params;
         this._name = name;
         this._id = id;
@@ -133,15 +133,6 @@ export default class Component {
      */
     get featureIDs(): Array<string> {
         return this._featureIDs;
-    }
-
-    /**
-     * Generates a random id
-     * @returns {String} Random ID string
-     * @memberof component
-     */
-    static generateID(): string {
-        return uuid.v1();
     }
 
     /**

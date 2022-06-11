@@ -5,6 +5,7 @@ import Params from "./params";
 import Device from "./device";
 import { FeatureInterchangeV1_2 } from "./init";
 import { LayerInterchangeV1, LogicalLayerType } from "./init";
+import { ComponentAPI } from "@/componentAPI";
 
 /**
  * Layer class
@@ -16,7 +17,7 @@ export default class Layer {
     featureCount: number;
     device?: Device;
     private __id: string;
-    private __type: LogicalLayerType;
+    private __type: LogicalLayerType = LogicalLayerType.FLOW;
     private __group: string;
 
     /**
@@ -30,7 +31,7 @@ export default class Layer {
         this.features = {};
         this.featureCount = 0;
         this.device = device;
-        this.__id = Layer.generateID();
+        this.__id = ComponentAPI.generateID();
         this.__type = type;
         this.__group = group;
     }
@@ -49,14 +50,6 @@ export default class Layer {
 
     get group(): string {
         return this.__group;
-    }
-
-    /**
-     * Generates a random id
-     * @returns {String} Random ID string
-     */
-    static generateID(): string {
-        return uuid.v1();
     }
 
     /**

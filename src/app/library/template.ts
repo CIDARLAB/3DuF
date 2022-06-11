@@ -23,7 +23,7 @@ export default class Template {
     protected __featureParams: { [key: string]: string } | null = null;
     protected __targetParams: { [key: string]: string } | null = null;
     protected __mint: string | null = null;
-    protected __renderKeys: Array<string> | null = null;
+    protected __renderKeys: Array<string> = ["FLOW"];
     protected _previewImage: string = "";
     protected __zOffsetKeys: { [key: string]: string } | null = null;
     protected __substrateOffset: { [key: string]: string } | null = null;
@@ -340,7 +340,7 @@ export default class Template {
      * @returns {ToolPaperObject}
      * @memberof Template
      */
-    render2DTarget(key: string, params: { [key: string]: any }): ToolPaperObject {
+    render2DTarget(key: string | null, params: { [key: string]: any }): ToolPaperObject {
         throw new Error("User needs to provide method for component definition, look at examples");
     }
 
