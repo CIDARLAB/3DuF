@@ -33,10 +33,10 @@ export default class MouseTool {
         };
     }
 
-    static getEventPosition(event: MouseEvent) {
+    static getEventPosition(event: MouseEvent):paper.Point {
         if (Registry.viewManager !== null) {
             return Registry.viewManager.getEventPosition(event);
         }
-        return null;
+        throw new Error("No view manager set!");
     }
 }
