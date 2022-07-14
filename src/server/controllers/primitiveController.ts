@@ -1,23 +1,19 @@
 import { Request, Response, NextFunction } from "express";
-import {ComponentAPI} from "../../../componentAPI";
-
-
+import { ComponentAPI } from "../../componentAPI";
 
 import paper, { Key } from "paper";
 
 paper.setup(new paper.Size([64000, 48000]));
 
-
-
 const getDimensions = async (req: Request, res: Response, next: NextFunction) => {
     let primitive = req.query.mint;
     let key = primitive as string;
     let technology = ComponentAPI.getComponentWithMINT(key);
-    
+
     if (technology === null) {
         res.send("MINT Not found");
         console.error("Could not find MINT:", key);
-        return res.status(400).send({ message: `MINT Not found - ${key}`});
+        return res.status(400).send({ message: `MINT Not found - ${key}` });
     }
 
     let params_text = req.query.params as string;
@@ -36,11 +32,11 @@ const getTerminals = async (req: Request, res: Response, next: NextFunction) => 
     let primitive = req.query.mint;
     let key = primitive as string;
     let technology = ComponentAPI.getComponentWithMINT(key);
-    
+
     if (technology === null) {
         res.send("MINT Not found");
         console.error("Could not find MINT:", key);
-        return res.status(400).send({ message: `MINT Not found - ${key}`});
+        return res.status(400).send({ message: `MINT Not found - ${key}` });
     }
 
     let params_text = req.query.params as string;
@@ -69,11 +65,11 @@ const getDefaults = async (req: Request, res: Response, next: NextFunction) => {
     let primitive = req.query.mint;
     let key = primitive as string;
     let technology = ComponentAPI.getComponentWithMINT(key);
-    
+
     if (technology === null) {
         res.send("MINT Not found");
         console.error("Could not find MINT:", key);
-        return res.status(400).send({ message: `MINT Not found - ${key}`});
+        return res.status(400).send({ message: `MINT Not found - ${key}` });
     }
     console.log("Defaults:", primitive, technology.defaults);
     return res.send(technology.defaults);

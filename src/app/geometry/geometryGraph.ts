@@ -1,4 +1,6 @@
 import GeometryEdge from "./geometryEdge";
+
+// @ts-ignore
 import graphlib from "@dagrejs/graphlib";
 import paper from "paper";
 

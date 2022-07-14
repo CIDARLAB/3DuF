@@ -1,7 +1,6 @@
 import Params from "./params";
 import CustomComponent from "./customComponent";
 import ComponentPort from "./componentPort";
-import uuid from "node-uuid";
 import * as FeatureRenderer2D from "../view/render2D/featureRenderer2D";
 import Port from "../library/port";
 import { ComponentPortInterchangeV1, ComponentInterchangeV1, Point } from "./init";

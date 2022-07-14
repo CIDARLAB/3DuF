@@ -2,7 +2,7 @@ import MouseTool, { MouseToolCallback } from "./mouseTool";
 
 import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
-import { Component } from "vue";
+import Component from "@/app/core/component";
 
 export default class GenerateArrayTool extends MouseTool {
     private __currentComponent?: any;
