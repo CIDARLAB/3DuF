@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ComponentAPI } from "../../componentAPI";
+import { ComponentAPI } from "../componentAPI";
 
 import paper, { Key } from "paper";
 

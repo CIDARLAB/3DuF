@@ -1,5 +1,5 @@
 import express from "express";
-import controller from "../controllers/primitiveController";
+import controller from "./controller";
 const router = express.Router();
 
 router.get("/", (req, res, next) => {

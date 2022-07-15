@@ -2,7 +2,7 @@
 import http from "http";
 import express, { Express } from "express";
 import morgan from "morgan";
-import routes from "./routes/componentAPI";
+import routes from "./routes";
 
 const router: Express = express();
 
