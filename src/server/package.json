@@ -6,8 +6,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon server.ts",
-        "build": "rm -rf ../../build/ && prettier --write controllers routes server.ts && tsc",
-        "start": "ts-node ../../server-build/src/app/server/server.js"
+        "build-js": "rm -rf ../../build/ && prettier --write controllers routes server.ts && tsc",
+        "start": "ts-node server.ts"
     },
     "keywords": [],
     "author": "",
