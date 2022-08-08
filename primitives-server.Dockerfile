@@ -1,11 +1,12 @@
 FROM node:14 as base
+WORKDIR /src/app/
 
-COPY ./src/server/package*.json ./
+COPY package*.json .
 
-RUN npm i
+RUN npm install
 
 COPY . .
 
-WORKDIR /src/server
+RUN npm run build
 
-# CMD ["npm", "run", "start"]
+CMD ["npm", "run", "serve"]
