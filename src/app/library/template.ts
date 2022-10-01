@@ -396,6 +396,8 @@ export default class Template {
      * @memberof Template
      */
     getDimensions(params: { [key: string]: any }): { xspan: any; yspan: any } {
+        paper.setup(new paper.Size([64000, 48000]));
+
         params.position = [0, 0];
 
         const unitedBounds = this.getBounds(params);

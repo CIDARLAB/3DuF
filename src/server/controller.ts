@@ -25,7 +25,7 @@ const getDimensions = async (req: Request, res: Response, next: NextFunction) =>
 
     let ret = technology.getDimensions(params);
     console.log("Dimensions:", primitive, ret);
-    return res.send(ret);
+    return res.send({"x-span":ret.xspan, "y-span":ret.yspan});
 };
 
 const getTerminals = async (req: Request, res: Response, next: NextFunction) => {
