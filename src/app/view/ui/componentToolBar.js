@@ -64,6 +64,9 @@ export default class ComponentToolBar {
         this.__dropletgenTButton = document.getElementById("dropletgenT_button");
         this.__dropletgenFlowButton = document.getElementById("dropletgenFlow_button");
         this.__logicarrayButton = document.getElementById("logicarray_button");
+        this.__aspiratorButton = document.getElementById("aspirator_button");
+        this.__shakerButton = document.getElementById("shaker_button");
+        this.__magneticblockButton = document.getElementById("magneticblock_button");
 
         //Create all the parameter menu buttons
 
@@ -115,6 +118,9 @@ export default class ComponentToolBar {
         this.__dropletgenTParams = document.getElementById("dropletgenT_params_button");
         this.__dropletgenFlowParams = document.getElementById("dropletgenFlow_params_button");
         this.__logicarrayParams = document.getElementById("logicarray_params_button");
+        this.__aspiratorParams = document.getElementById("aspirator_params_button");
+        this.__shakerParams = document.getElementById("shaker_params_button");
+        this.__magneticblockParams = document.getElementById("magneticblock_params_button");
 
         this.buttons = {
             SelectButton: this.__selectToolButton,
@@ -164,7 +170,10 @@ export default class ComponentToolBar {
             CapacitanceSensor: this.__capacitancesensorButton,
             DropletGenT: this.__dropletgenTButton,
             DropletGenFlow: this.__dropletgenFlowButton,
-            LogicArray: this.__logicarrayButton
+            LogicArray: this.__logicarrayButton,
+            Aspirator: this.__aspiratorButton,
+            Shaker: this.__shakerButton,
+            MagneticBlock: this.__magneticblockButton
         };
             
 
@@ -475,6 +484,24 @@ export default class ComponentToolBar {
             ref.setActiveButton("LogicArray");
             ref.__viewManagerDelegate.switchTo2D();
         };
+        this.__aspiratorButton.onclick = function() {
+            Registry.viewManager.activateTool("Aspirator");
+
+            ref.setActiveButton("Aspirator");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__shakerButton.onclick = function() {
+            Registry.viewManager.activateTool("Shaker");
+
+            ref.setActiveButton("Shaker");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+        this.__magneticblockButton.onclick = function() {
+            Registry.viewManager.activateTool("MagneticBlock");
+
+            ref.setActiveButton("MagneticBlock");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
     }
 
     setActiveButton(feature) {
@@ -541,6 +568,9 @@ export default class ComponentToolBar {
         this.__dropletgenTParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenT", "Basic");
         this.__dropletgenFlowParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("DropletGenFlow", "Basic");
         this.__logicarrayParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("LogicArray", "Basic");
+        this.__aspiratorParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Aspirator", "Basic");
+        this.__shakerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Shaker", "Basic");
+        this.__magneticblockParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("MagneticBlock", "Basic");
     }
 
     static getParamsWindowCallbackFunction(typeString, setString, isTranslucent = false) {
