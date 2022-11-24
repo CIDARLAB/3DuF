@@ -881,6 +881,7 @@ export default class BareViewManager {
     //     this.tools["DiamondReactionChamber"] = new ComponentPositionTool("DiamondReactionChamber", "Basic");
     //     this.tools["BetterMixer"] = new ComponentPositionTool("BetterMixer", "Basic");
     //     this.tools["CurvedMixer"] = new ComponentPositionTool("CurvedMixer", "Basic");
+    //     this.tools["Magnet"] = new ComponentPositionTool("Magnet", "Basic");
     //     this.tools["Mixer"] = new ComponentPositionTool("Mixer", "Basic");
     //     this.tools["GradientGenerator"] = new ComponentPositionTool("GradientGenerator", "Basic");
     //     this.tools["Tree"] = new ComponentPositionTool("Tree", "Basic");
