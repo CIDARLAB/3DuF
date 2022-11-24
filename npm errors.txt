@@ -1,0 +1,78 @@
+AD+bmahabir@DESKTOP-SB69448 MINGW64 ~/Desktop/3DuF (master)
+$ npm install
+
+> node-sass@4.14.1 install C:\Users\bmahabir\Desktop\3DuF\node_modules\node-sass
+> node scripts/install.js
+
+Downloading binary from https://github.com/sass/node-sass/releases/download/v4.14.1/win32-x64-83_binding.node
+Download complete
+Binary saved to C:\Users\bmahabir\Desktop\3DuF\node_modules\node-sass\vendor\win32-x64-83\binding.node
+Caching binary to C:\Users\bmahabir\AppData\Roaming\npm-cache\node-sass\4.14.1\win32-x64-83_binding.node
+
+> node-sass@4.14.1 postinstall C:\Users\bmahabir\Desktop\3DuF\node_modules\node-sass
+> node scripts/build.js
+
+Binary found at C:\Users\bmahabir\Desktop\3DuF\node_modules\node-sass\vendor\win32-x64-83\binding.node
+Testing binary
+Binary is fine
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@2.1.2 (node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@2.1.2: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.11 (node_modules\watchify\node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.11: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.11 (node_modules\chokidar\node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.11: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
+
+added 1232 packages from 1249 contributors and audited 1372 packages in 25.916s
+
+11 packages are looking for funding
+  run `npm fund` for details
+
+found 183 vulnerabilities (99 low, 55 moderate, 29 high)
+  run `npm audit fix` to fix them, or `npm audit` for details
+
+AD+bmahabir@DESKTOP-SB69448 MINGW64 ~/Desktop/3DuF (master)
+$ npm run compile
+
+> ThreeDuF@1.1.0 compile C:\Users\bmahabir\Desktop\3DuF
+> browserify ./src/app/appSetup.js -t babelify --outfile ./3DuFapp.js -d -t [ babelify ]
+
+Browserslist: caniuse-lite is outdated. Please run next command `npm update caniuse-lite browserslist`
+SyntaxError: C:\Users\bmahabir\Desktop\3DuF\src\app\view\ui\componentToolBar.js: Unexpected token, expected "," (170:3)
+
+  168 |             DropletGenFlow: this.__dropletgenFlowButton,
+  169 |             LogicArray: this.__logicarrayButton
+> 170 |                         magnetophoresis: this.__magnetophoresisButton,
+      |                         ^
+  171 |         };
+  172 |
+  173 |  while parsing file: C:\Users\bmahabir\Desktop\3DuF\src\app\view\ui\componentToolBar.js
+    at Parser.raise (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:3939:15)
+    at Parser.unexpected (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:5248:16)
+    at Parser.expect (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:5236:28)
+    at Parser.parseObj (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:6636:14)
+    at Parser.parseExprAtom (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:6294:21)
+    at Parser.parseExprSubscripts (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:5924:21)
+    at Parser.parseMaybeUnary (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:5903:21)
+    at Parser.parseExprOps (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:5812:21)
+    at Parser.parseMaybeConditional (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:5784:21)
+    at Parser.parseMaybeAssign (C:\Users\bmahabir\Desktop\3DuF\node_modules\@babel\parser\lib\index.js:5731:21)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! ThreeDuF@1.1.0 compile: `browserify ./src/app/appSetup.js -t babelify --outfile ./3DuFapp.js -d -t [ babelify ]`
+npm ERR! Exit status 1
+npm ERR!
+npm ERR! Failed at the ThreeDuF@1.1.0 compile script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     C:\Users\bmahabir\AppData\Roaming\npm-cache\_logs\2021-04-23T20_15_42_893Z-debug.log
+
+AD+bmahabir@DESKTOP-SB69448 MINGW64 ~/Desktop/3DuF (master)
+$ npm test
+
+> ThreeDuF@1.1.0 test C:\Users\bmahabir\Desktop\3DuF
+> mocha --recursive --compilers js:babel/register -R spec ./src/test/
+
+'mocha' is not recognized as an internal or external command,
+operable program or batch file.
+npm ERR! Test failed.  See above for more details.
