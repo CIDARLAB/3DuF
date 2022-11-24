@@ -31,7 +31,7 @@ import ThreeDMixer from "../library/threeDMixer";
 import Via from "../library/via";
 
 //new
-
+import Activator from "../library/activator";
 import Filter from "../library/filter";
 import CellTrapS from "../library/celltrapS";
 import ThreeDMux from "../library/threeDMux";
@@ -105,6 +105,10 @@ export default class FeatureSet {
             Via: { object: new Via(), key: "FLOW" },
 
             //new
+
+            Activator: { object: new Activator(), key: "FLOW" },
+            Activator_control: { object: new Activator(), key: "CONTROL" },
+
             Filter: { object: new Filter(), key: "Flow" },
             CellTrapS: { object: new CellTrapS(), key: "FLOW" },
             CellTrapS_cell: { object: new CellTrapS(), key: "CELL" },

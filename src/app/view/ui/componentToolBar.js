@@ -50,7 +50,8 @@ export default class ComponentToolBar {
         this.__llChamberButton = document.getElementById("llchamber_button");
         this.__threeDMixerButton = document.getElementById("3dmixer_button");
 
-        //new 
+        //new
+        this.__activatorButton = document.getElementById("activator_button");
         this.__filterButton = document.getElementById("filter_button");
         this.__celltrapsButton = document.getElementById("celltraps_button");
         this.__threeDMuxButton = document.getElementById("3dmux_button");
@@ -100,8 +101,9 @@ export default class ComponentToolBar {
         this.__threeDMixerParams = document.getElementById("3dmixer_params_button");
 
         this.__insertTextDialog = new InsertTextDialog();
-        
+
         //new
+        this.__activatorParams = document.getElementById("activator_params_button");
         this.__filterParams = document.getElementById("filter_params_button");
         this.__celltrapsParams = document.getElementById("celltraps_params_button");
         this.__threeDMuxParams = document.getElementById("3dmux_params_button");
@@ -152,6 +154,7 @@ export default class ComponentToolBar {
             "3DMixer": this.__threeDMixerButton,
 
             //newly added part
+            Activator: this.__activatorButton,
             Filter: this.__filterButton,
             CellTrapS: this.__celltrapsButton,
             "3DMux": this.__threeDMuxButton,
@@ -166,12 +169,12 @@ export default class ComponentToolBar {
             DropletGenFlow: this.__dropletgenFlowButton,
             LogicArray: this.__logicarrayButton
         };
-            
+
 
         this.__setupEventHandlers();
 
         this.__setupParamButtonEventHandlers();
-        
+
     }
 
     __setupEventHandlers() {
@@ -236,7 +239,7 @@ export default class ComponentToolBar {
             ref.setActiveButton("Pump3D");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        
+
         this.__alignmentMarksButton.onclick = function() {
             Registry.viewManager.activateTool("AlignmentMarks");
 
@@ -257,7 +260,7 @@ export default class ComponentToolBar {
             ref.setActiveButton("Port");
             ref.__viewManagerDelegate.switchTo2D();
         };
-        
+
         this.__anodeButton.onclick = function() {//ck
             Registry.viewManager.activateTool("Anode");//ck
 
@@ -274,7 +277,7 @@ export default class ComponentToolBar {
 
         this.__viaButton.onclick = function() {
             Registry.viewManager.activateTool("Via");
-        
+
             ref.setActiveButton("Via");
             ref.__viewManagerDelegate.switchTo2D();
         };
@@ -392,6 +395,14 @@ export default class ComponentToolBar {
         };
 
         //new
+
+        this.__activatorButton.onclick = function() {
+            Registry.viewManager.activateTool("Activator");
+
+            ref.setActiveButton("Activator");
+            ref.__viewManagerDelegate.switchTo2D();
+        };
+
         this.__dropletgenTButton.onclick = function() {
             Registry.viewManager.activateTool("DropletGenT");
 
@@ -528,6 +539,7 @@ export default class ComponentToolBar {
         this.__threeDMixerParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMixer", "Basic");
 
         //new
+        this.__activatorParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Activator", "Basic");
         this.__filterParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("Filter", "Basic");
         this.__celltrapsParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("CellTrapS", "Basic");
         this.__threeDMuxParams.onclick = ComponentToolBar.getParamsWindowCallbackFunction("3DMux", "Basic");
