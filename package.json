@@ -31,7 +31,7 @@
     "dialog-polyfill": "^0.5.0",
     "dxf-parser": "^0.6.1",
     "exorcist": "^2.0.0",
-    "handsontable": "^6.2.2",
+    "handsontable": "^10.0.0",
     "install": "^0.12.2",
     "jszip": "^2.6.1",
     "md5": "^2.2.1",
