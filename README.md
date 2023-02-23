@@ -67,6 +67,24 @@ After saving a device design to JSON, drag and drop it from your computer onto t
 
 <img src="/doc/mint-primitives.png" width="800" />
 
+
+## Primitives Server
+
+As 3DuF continues to become a core component of the Microfluidics CAD Ecossytem, we have incorporated the ability to generate component dimensions, port locations, default dimensions for all the parametrically generated components supported by 3DuF.
+
+The instructions for starting this server are as follows:
+```
+docker build -f primitives-server.Dockerfile -t primitives-server:latest .
+docker run -p 6060:6060 primitives-server
+```
+
+This will enable the API on port 6060. This can be verified by either going to `http://localhost:6060` or by running the following command:
+
+```
+curl http://localhost:6060
+```
+
+
 ## Attributions
 
 Error Logging and Tracking enabled by [TrackJS](https://trackjs.com/)
