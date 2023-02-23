@@ -11,7 +11,6 @@ const getDimensions = async (req: Request, res: Response, next: NextFunction) =>
     let technology = ComponentAPI.getComponentWithMINT(key);
 
     if (technology === null) {
-        res.send("MINT Not found");
         console.error("Could not find MINT:", key);
         return res.status(400).send({ message: `MINT Not found - ${key}` });
     }
@@ -34,7 +33,6 @@ const getTerminals = async (req: Request, res: Response, next: NextFunction) => 
     let technology = ComponentAPI.getComponentWithMINT(key);
 
     if (technology === null) {
-        res.send("MINT Not found");
         console.error("Could not find MINT:", key);
         return res.status(400).send({ message: `MINT Not found - ${key}` });
     }
@@ -67,7 +65,6 @@ const getDefaults = async (req: Request, res: Response, next: NextFunction) => {
     let technology = ComponentAPI.getComponentWithMINT(key);
 
     if (technology === null) {
-        res.send("MINT Not found");
         console.error("Could not find MINT:", key);
         return res.status(400).send({ message: `MINT Not found - ${key}` });
     }

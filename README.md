@@ -84,6 +84,14 @@ This will enable the API on port 6060. This can be verified by either going to `
 curl http://localhost:6060
 ```
 
+Alternatively you can install the dev version of the library if you want to debug it locally.
+
+```
+npm ci
+cd src/server
+npm ci
+npm run dev
+```
 
 ## Attributions
 
