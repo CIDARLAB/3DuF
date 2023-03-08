@@ -16,7 +16,7 @@ export type InterchangeV1_2 = {
     valves: Array<ValveInterchangeV1_2>;
     version: string;
     renderLayers: Array<RenderLayerInterchangeV1_2>;
-    features: Array<
+    features: Array<GeometryElementInterchangeV1_2>;
 };
 
 export enum LogicalLayerType {
@@ -120,6 +120,7 @@ export type GeometryElementInterchangeV1_2 = {
     macro: string;
     params: ParamsInterchangeType;
     type: string;
+    mgflayerID: string;
 }
 
 export type ComponentPortInterchangeV1 = {

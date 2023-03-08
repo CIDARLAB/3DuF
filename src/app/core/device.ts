@@ -59,6 +59,9 @@ export default class Device {
         //Map to store <componentID, connectionID>
         this.__valveMap = new Map();
         this.__valveTypeMap = new Map();
+
+        // Initilize the Features array that would be used to store the Parchmint Features
+        this.__parchmintFeatures = [];
     }
 
     /**
@@ -100,6 +103,10 @@ export default class Device {
      */
     get layers(): Array<Layer> {
         return this.__layers;
+    }
+
+    get parchmintFeatures(): Array<GeometryElement> {
+        return this.__parchmintFeatures;
     }
 
     /**
