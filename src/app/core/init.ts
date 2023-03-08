@@ -16,6 +16,7 @@ export type InterchangeV1_2 = {
     valves: Array<ValveInterchangeV1_2>;
     version: string;
     renderLayers: Array<RenderLayerInterchangeV1_2>;
+    features: Array<
 };
 
 export enum LogicalLayerType {
@@ -27,6 +28,13 @@ export enum LogicalLayerType {
 export enum ValveType {
     NORMALLY_OPEN = "NORMALLY_OPEN",
     NORMALLY_CLOSED = "NORMALLY_CLOSED",
+}
+
+export enum FeatureTypeMacro{
+    UNION = "UNION",
+    INTERSECTION = "INTERSECTION",
+    DIFFERENCE = "SUBTRACTION",
+    XOR = "XOR",
 }
 
 export type DeviceInterchangeV1 = {
@@ -106,6 +114,13 @@ export type FeatureInterchangeV1_2 = {
     dxfData: any;
     type: string;
 };
+
+export type GeometryElementInterchangeV1_2 = {
+    id: string;
+    macro: string;
+    params: ParamsInterchangeType;
+    type: string;
+}
 
 export type ComponentPortInterchangeV1 = {
     x: number;

@@ -144,7 +144,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @param target
      * @return {*}
      */
-    checkIfConnectionExistsAt(target: paper.Point) {
+    checkIfConnectionExistsAt(target: paper.Point): Connection | null {
         const hit = Registry.viewManager!.view.hitFeature(target, false);
         // TODO: check if the hit feature belongs to a connection
         if (hit) {
@@ -152,7 +152,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             return connection;
         }
 
-        return hit;
+        return null;
     }
 
     /**

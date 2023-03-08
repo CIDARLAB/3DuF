@@ -1,6 +1,7 @@
 /// <reference types="node" />
 
 import Params from "./params";
+import GeometryElement from "./geometryElement";
 
 import Feature from "./feature";
 import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point, ValveInterchangeV1_2, ValveType } from "./init";
@@ -34,6 +35,7 @@ export default class Device {
     private __valveMap: Map<string, string>;
     private __valveTypeMap: Map<string, ValveType>;
     private __groups: Array<string>;
+    private __parchmintFeatures: Array<GeometryElement>;
 
     /**
      * Default Constructor
