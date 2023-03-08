@@ -92,7 +92,7 @@ export default class RenderLayer {
             this.physicalLayer.addFeature(feature);
             feature.layer = this.physicalLayer;
         } else {
-            feature.layer = this;
+            feature.layer = this.physicalLayer;
         }
         feature.setManufacturingInfoLayer();
     }

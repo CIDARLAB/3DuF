@@ -23,7 +23,7 @@ export default class Feature {
     protected _fabtype: DFMType;
     protected _dxfObjects: Array<DXFObject>;
     protected _referenceID: string | null;
-    public layer: RenderLayer | Layer | null;
+    public layer: Layer | null;
     protected _manufacturingInfo: ManufacturingInfo;
 
     /**
@@ -63,6 +63,10 @@ export default class Feature {
         };
     }
 
+    get id(): string {
+        return this._id;
+    }
+    
     get type(): string {
         return this._type;
     }
@@ -175,7 +179,8 @@ export default class Feature {
             referenceID: this._referenceID,
             dxfData: this._dxfObjects.map(function(dxfObject) {
                 return dxfObject.toJSON();
-            })
+            }),
+            layerID: this.layer?.id ?? "",
         };
         return output;
     }

@@ -109,9 +109,10 @@ export type FeatureInterchangeV1_2 = {
     id: string;
     name: string;
     macro: string;
-    referenceID: string | null;
+    layerID: string | null;
+    referenceID: string | null; // Delete this in the future
     params: ParamsInterchangeType;
-    dxfData: any;
+    dxfData: any;  // 3DuF specific data for raw import/export of DXF objects
     type: string;
 };
 
@@ -139,4 +140,5 @@ export type ConnectionPathInterchangeV1_2 = {
     wayPoints: Array<Point>;
     source: ConnectionTargetInterchangeV1 | null;
     sink: ConnectionTargetInterchangeV1 | null;
+    features: Array<string>;
 };
