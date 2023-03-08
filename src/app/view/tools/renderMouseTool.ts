@@ -21,6 +21,12 @@ export default class RenderMouseTool extends MouseTool {
     currentSelection: any[];
     updateQueue: SimpleQueue;
 
+    /**
+     * Creates an instance of RenderMouseTool.
+     * @param {ViewManager} viewManager
+     * @param {PaperView} paperview
+     * @memberof RenderMouseTool
+     */
     constructor(viewManager: ViewManager, paperview: PaperView) {
         super(viewManager);
         this.viewManagerDelegate = viewManager;
@@ -54,14 +60,36 @@ export default class RenderMouseTool extends MouseTool {
         };
     }
 
+    /**
+     * Handles the KeyDown event
+     *
+     * @param {KeyboardEvent} event
+     * @memberof RenderMouseTool
+     */
     keyHandler(event: KeyboardEvent): void  {}
 
+    /**
+     * Handles the drag event
+     *
+     * @memberof RenderMouseTool
+     */
     dragHandler(): void  {}
 
+    /**
+     * Shows the target
+     *
+     * @memberof RenderMouseTool
+     */
     showTarget(): void  {
         this.viewManagerDelegate.removeTarget();
     }
 
+    /**
+     * Handles the mouse up event
+     *
+     * @param {paper.Point} point
+     * @memberof RenderMouseTool
+     */
     mouseUpHandler(point: paper.Point): void  {
         if (this.currentSelectBox) {
             this.currentSelection = this.viewManagerDelegate.hitFeaturesWithViewElement(this.currentSelectBox);
@@ -70,6 +98,12 @@ export default class RenderMouseTool extends MouseTool {
         }
     }
 
+    /**
+     * Handles the mouse down event
+     *
+     * @param {MouseEvent} event
+     * @memberof RenderMouseTool
+     */
     mouseDownHandler(event: MouseEvent): void  {
         const point = MouseTool.getEventPosition(event);
         const target = this.hitFeature(point!);
@@ -102,6 +136,13 @@ export default class RenderMouseTool extends MouseTool {
         }
     }
 
+    /**
+     * Function that is fired when we click to select a single object on the paperjs canvas
+     *
+     * @param {paper.Point} point
+     * @returns
+     * @memberof RenderMouseTool
+     */
     hitFeature(point: paper.Point) {
         const target = this.viewManagerDelegate.view.hitFeature(point, true, true);
         return target;
@@ -134,6 +175,11 @@ export default class RenderMouseTool extends MouseTool {
         }
     }
 
+    /**
+     * Deselects all features
+     *
+     * @memberof RenderMouseTool
+     */
     deselectFeatures(): void  {
         this.paperView.clearSelectedItems();
         this.currentSelection = [];

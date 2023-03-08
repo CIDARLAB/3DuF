@@ -16,6 +16,11 @@ export default class SelectTool extends MouseTool {
 
     updateQueue: SimpleQueue;
 
+    /**
+     * Creates an instance of SelectTool.
+     * @param {ViewManager} viewManagerDelegate
+     * @memberof SelectTool
+     */
     constructor(viewManagerDelegate: ViewManager) {
         super(viewManagerDelegate);
         this.dragging = false;
@@ -105,12 +110,12 @@ export default class SelectTool extends MouseTool {
     }
 
     
-/**
- * Deletes the selected features
- *
- * @memberof SelectTool
- */
-removeFeatures(): void  {
+    /**
+     * Deletes the selected features
+     *
+     * @memberof SelectTool
+     */
+    removeFeatures(): void  {
         if (this.currentSelection.length > 0) {
             for (let i = 0; i < this.currentSelection.length; i++) {
                 const paperFeature = this.currentSelection[i];

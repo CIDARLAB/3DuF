@@ -12,6 +12,14 @@ export default class MultilevelPositionTool extends PositionTool {
     controllayer: RenderLayer | null;
     intlayer: RenderLayer | null;
 
+    /**
+     * Creates an instance of MultilevelPositionTool.
+     * @param {ViewManager} viewManager
+     * @param {string} typeString
+     * @param {string} setString
+     * @param {*} [currentParameters=null]
+     * @memberof MultilevelPositionTool
+     */
     constructor(
         viewManager: ViewManager,
         typeString: string,
@@ -38,6 +46,12 @@ export default class MultilevelPositionTool extends PositionTool {
         this.intlayer = intLayer;
     }
 
+    /**
+     * Create a new feature
+     *
+     * @param {paper.Point} point
+     * @memberof MultilevelPositionTool
+     */
     createNewFeature(point: paper.Point): void  {
         const featureIDs = [];
 
@@ -85,6 +99,12 @@ export default class MultilevelPositionTool extends PositionTool {
         this.viewManagerDelegate.saveDeviceState();
     }
 
+    /**
+     * Show the target of the tool
+     *
+     * @returns {void}
+     * @memberof MultilevelPositionTool
+     */
     showTarget(): void  {
         if (this.lastPoint === null) {
             return;
