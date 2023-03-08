@@ -5,6 +5,7 @@ import SimpleQueue from "../../utils/simpleQueue";
 import Device from "../../core/device";
 import paper from "paper";
 import { Point, ToolPaperObject } from "@/app/core/init";
+import ViewManager from "../viewManager";
 
 export default class ChannelTool extends MouseTool {
     typeString: string;
@@ -18,8 +19,8 @@ export default class ChannelTool extends MouseTool {
     showQueue: SimpleQueue;
     updateQueue: SimpleQueue;
 
-    constructor(typeString: string, setString: string) {
-        super();
+    constructor(viewManager: ViewManager, typeString: string, setString: string) {
+        super(viewManager);
         this.typeString = typeString;
         this.setString = setString;
         this.startPoint = null;
@@ -98,7 +99,7 @@ export default class ChannelTool extends MouseTool {
         if (this.lastPoint && this.startPoint) {
             if (this.currentChannelID) {
                 const target = ChannelTool.getTarget(this.lastPoint);
-                const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
+                const feat = this.viewManagerDelegate.currentLayer.getFeature(this.currentChannelID);
                 feat?.updateParameter("end", target);
             } else {
                 const newChannel = ChannelTool.createChannel(this.startPoint, this.startPoint, this.typeString, this.setString);

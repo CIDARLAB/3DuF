@@ -3,6 +3,7 @@ import MouseTool, { MouseToolCallback } from "./mouseTool";
 import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import Component from "@/app/core/component";
+import ViewManager from "../viewManager";
 
 export default class GenerateArrayTool extends MouseTool {
     private __currentComponent?: any;
@@ -12,8 +13,8 @@ export default class GenerateArrayTool extends MouseTool {
      * Creates an instance of GenerateArrayTool.
      * @memberof GenerateArrayTool
      */
-    constructor() {
-        super();
+    constructor(viewManagerDelegate: ViewManager) {
+        super(viewManagerDelegate);
 
         // this.dragging = false;
         // this.dragStart = null;

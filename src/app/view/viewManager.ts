@@ -59,7 +59,7 @@ import { generateRenderLayers } from "../utils/renderUtils";
 export default class ViewManager {
     view: PaperView;
     renderLayers: RenderLayer[];
-    activeRenderLayer: number | null = null;
+    activeRenderLayerIndex: number;
     nonphysElements: UIElement[];
     tools: { [k: string]: any };
     rightMouseTool: MouseTool;
@@ -84,6 +84,9 @@ export default class ViewManager {
     private __canvasBlock?: HTMLCanvasElement;
     private __renderBlock?: HTMLCanvasElement;
 
+    // TODO : Check if we can remove this tracking
+    currentLayer: RenderLayer;
+
     /**
      * Default ViewManger Constructor
      */
@@ -92,10 +95,9 @@ export default class ViewManager {
         this.__grid = new AdaptiveGrid(this);
         Registry.currentGrid = this.__grid;
         this.renderLayers = [];
-        this.activeRenderLayer = null;
         this.nonphysElements = []; // TODO - Keep track of what types of objects fall here UIElements
         this.tools = {};
-        this.rightMouseTool = new SelectTool();
+        this.rightMouseTool = new SelectTool(this);
         this.__currentDevice = null;
         const reference = this;
         this.updateQueue = new SimpleQueue(function() {
@@ -151,7 +153,11 @@ export default class ViewManager {
         // this.__renderBlock = document.getElementById("renderContainer");
         // this.setupDragAndDropLoad("#c");
         // this.setupDragAndDropLoad("#renderContainer");
+        this.currentLayer = this.renderLayers[0];
+        this.activeRenderLayerIndex = 0;
+
     }
+
 
     /**
      * Returns the current device the ViewManager is displaying. Right now I'm using this to replace the
@@ -305,7 +311,7 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    addFeature(feature: Feature, index = this.activeRenderLayer, isPhysicalFlag = true, refresh = true): void  {
+    addFeature(feature: Feature, index = this.activeRenderLayerIndex, isPhysicalFlag = true, refresh = true): void  {
         // let isPhysicalFlag = true;
         this.renderLayers[index as number].addFeature(feature, isPhysicalFlag);
         if (this.ensureFeatureExists(feature)) {
@@ -454,7 +460,7 @@ export default class ViewManager {
             this.renderLayers[this.renderLayers.length - 1].addFeature(edgefeatures[i]);
         }
         
-        console.log("Active Layer", this.activeRenderLayer);
+        console.log("Active Layer", this.activeRenderLayerIndex);
         this.setActiveRenderLayer(this.renderLayers.length - 3);
     }
 
@@ -473,9 +479,9 @@ export default class ViewManager {
 
         // Delete levels in render model
         this.renderLayers.splice(levelindex * 3, 3);
-        if (this.activeRenderLayer! > levelindex * 3 + 2) {
-            this.setActiveRenderLayer(this.activeRenderLayer! - 3);
-        } else if (this.activeRenderLayer! < levelindex * 3) {
+        if (this.activeRenderLayerIndex! > levelindex * 3 + 2) {
+            this.setActiveRenderLayer(this.activeRenderLayerIndex! - 3);
+        } else if (this.activeRenderLayerIndex! < levelindex * 3) {
             console.log("No change");
         } else {
             if (levelindex == 0) {
@@ -499,8 +505,8 @@ export default class ViewManager {
     }
 
     setActiveRenderLayer(index: number): void  {
-        this.activeRenderLayer = index;
-        Registry.currentLayer = this.renderLayers[index]; // Registry.currentDevice.layers[index];
+        this.activeRenderLayerIndex = index;
+        this.currentLayer = this.renderLayers[index]; // Registry.currentDevice.layers[index];
         this.updateActiveLayer();
     }
 
@@ -596,11 +602,11 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     updateActiveLayer(refresh = true): void  {
-        if(this.activeRenderLayer === null){
+        if(this.activeRenderLayerIndex === null){
             console.warn("Attempting update active layer in view manager with no active layer value");
             return;
         }
-        this.view.setActiveLayer(this.activeRenderLayer as number);
+        this.view.setActiveLayer(this.activeRenderLayerIndex as number);
         this.refresh(refresh);
     }
 
@@ -979,10 +985,10 @@ export default class ViewManager {
         }
         // Common Code for rendering stuff
         // console.log("Feature Layers", Registry.currentDevice.layers);
-        Registry.currentLayer = this.renderLayers[0];
+        this.currentLayer = this.renderLayers[0];
         // Registry.currentTextLayer = Registry.currentDevice!.textLayers[0];
 
-        this.activeRenderLayer = 0;
+        this.activeRenderLayerIndex = 0;
 
         // TODO: Need to replace the need for this function, right now without this, the active layer system gets broken
         this.addDevice(Registry.currentDevice!);
@@ -994,7 +1000,7 @@ export default class ViewManager {
         this.updateGrid();
         this.updateDevice(Registry.currentDevice!);
         this.refresh(true);
-        Registry.currentLayer = this.renderLayers[0];
+        this.currentLayer = this.renderLayers[0];
         // this.layerToolBar.setActiveLayer("0");
         this.updateActiveLayer();
 
@@ -1460,10 +1466,10 @@ export default class ViewManager {
         this.tools.MouseSelectTool = new MouseSelectTool(this, this.view);
         // this.tools.RenderMouseTool = new RenderMouseTool(this, this.view);
         this.tools.InsertTextTool = new InsertTextTool(this);
-        this.tools.Connection = new ConnectionTool("Connection", "Basic");
+        this.tools.Connection = new ConnectionTool(this, "Connection", "Basic");
         // All the new tools
         this.tools.MoveTool = new MoveTool(this);
-        this.tools.GenerateArrayTool = new GenerateArrayTool();
+        this.tools.GenerateArrayTool = new GenerateArrayTool(this);
 
     }
 
@@ -1528,7 +1534,7 @@ export default class ViewManager {
             const key = renderdefkeys![i];
             const newFeature = Device.makeFeature(key, params_to_copy);
             component.addFeatureID(newFeature.ID);
-            Registry.currentLayer?.addFeature(newFeature);
+            this.currentLayer.addFeature(newFeature);
         }
 
         // Set the component position
@@ -1641,7 +1647,7 @@ export default class ViewManager {
         } else if (renderer.placementTool === "multilayerPositionTool") {
             activeTool = new MultilayerPositionTool(this, threeduftype, "Basic", currentParameters);
         } else if (renderer.placementTool === "valveInsertionTool") {
-            activeTool = new ValveInsertionTool(this, threeduftype, "Basic", currentParameters);
+            activeTool = new ValveInsertionTool(this, minttype, "Basic", currentParameters);
         } else if (renderer.placementTool === "CellPositionTool") {
             activeTool = new CellPositionTool(this, threeduftype, "Basic", currentParameters);
         } else if (renderer.placementTool === "multilevelPositionTool") {
@@ -1649,7 +1655,7 @@ export default class ViewManager {
             activeTool = new MultilevelPositionTool(this, threeduftype, "Basic", currentParameters);
             throw new Error("multilevel position tool ui/input elements not set up");
         }else if(renderer.placementTool === "connectionTool"){
-            activeTool = new ConnectionTool(threeduftype, "Basic");
+            activeTool = new ConnectionTool(this, threeduftype, "Basic");
         }
 
         if (activeTool === null) {
@@ -1720,7 +1726,7 @@ export default class ViewManager {
         this.clear();
         this.__currentDevice = device;
         // TODO -  Clean up lifecyle for active rendered layers
-        this.activeRenderLayer = 0;
+        this.activeRenderLayerIndex = 0;
         this.createNewLayerBlock();
         // TODO - Generate render layers
         generateRenderLayers(this.__currentDevice);
@@ -1728,7 +1734,7 @@ export default class ViewManager {
 
         Registry.currentDevice = device;
 
-        this.activeRenderLayer = 0;
+        this.activeRenderLayerIndex = 0;
 
         this.addDevice(device);
 
@@ -1739,9 +1745,25 @@ export default class ViewManager {
         this.updateGrid();
         this.updateDevice(Registry.currentDevice!);
         this.refresh(true);
-        Registry.currentLayer = this.renderLayers[0];
+        this.currentLayer = this.renderLayers[0];
         this.updateActiveLayer();
 
     }
+
+    /**
+     * Ridiculously convoluted method to return the render layers corresponding to the current level
+     * To be used in the case of creating multi-level components
+     * @returns {[any, any, any]}
+     * @memberof ViewManager
+     */
+    getCurrentLevelRenderLayers(): [RenderLayer | null , RenderLayer | null , RenderLayer | null] {
+        // Get the current level
+        const currentLevel = this.activeRenderLayerIndex % 3;
+        let currentFlowLayerIndex = currentLevel * 3 + 0;
+        let currentControlLayerIndex = currentLevel * 3 + 1;
+        let currentIntegrationLayerIndex = currentLevel * 3 + 2;
+        return [this.renderLayers[currentFlowLayerIndex], this.renderLayers[currentControlLayerIndex], this.renderLayers[currentIntegrationLayerIndex]];
+    }
+
 
 }

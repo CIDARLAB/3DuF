@@ -12,7 +12,6 @@ import { ToolPaperObject } from "@/app/core/init";
 // Allows for selection only of nonphysical features
 
 export default class RenderMouseTool extends MouseTool {
-    viewManagerDelegate: ViewManager;
     paperView: PaperView;
     dragging: boolean;
     dragStart: paper.Point | null;
@@ -23,7 +22,7 @@ export default class RenderMouseTool extends MouseTool {
     updateQueue: SimpleQueue;
 
     constructor(viewManager: ViewManager, paperview: PaperView) {
-        super();
+        super(viewManager);
         this.viewManagerDelegate = viewManager;
         this.paperView = paperview;
         this.dragging = false;

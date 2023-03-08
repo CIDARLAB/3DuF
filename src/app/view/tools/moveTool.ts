@@ -15,7 +15,7 @@ export default class MoveTool extends MouseTool {
     callback: ((...args: any[]) => any) | null;
 
     constructor(viewManagerDelegate: ViewManager) {
-        super();
+        super(viewManagerDelegate);
 
         // Use the startpoint to calculate the delta for movement
         this.__startPoint = null;

@@ -13,16 +13,27 @@ export default class MultilevelPositionTool extends PositionTool {
     intlayer: RenderLayer | null;
 
     constructor(
-        viewManagerDelegate: ViewManager,
+        viewManager: ViewManager,
         typeString: string,
         setString: string,
-        flowLayer = Registry.currentLayer,
-        controlLayer = null,
-        intLayer = null,
+        // flowLayer = this.currentLayer,
+        // controlLayer = null,
+        // intLayer = null,
         currentParameters = null
     ) {
-        super(viewManagerDelegate, typeString, currentParameters);
-        this.flowlayer = flowLayer;
+        super(viewManager, typeString, currentParameters);
+        let [flowLayer, controlLayer, intLayer] = this.viewManagerDelegate.getCurrentLevelRenderLayers();
+        if (flowLayer === null) {
+            throw new Error("Flow layer is null");
+        } else {
+            this.flowlayer = flowLayer;
+        }
+        if (controlLayer === null) {
+            throw new Error("Control layer is null");
+        }
+        if (intLayer === null) {
+            throw new Error("Integration layer is null");
+        }
         this.controllayer = controlLayer;
         this.intlayer = intLayer;
     }
@@ -34,7 +45,9 @@ export default class MultilevelPositionTool extends PositionTool {
         const paramvalues = this.getCreationParameters(point);
         let newFeature = Device.makeFeature(this.typeString, paramvalues);
         this.currentFeatureID = newFeature.ID;
-        if (this.flowlayer !== null) this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.flowlayer));
+        if (this.flowlayer !== null) {
+            this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.flowlayer));
+        }
 
         featureIDs.push(newFeature.ID);
 
@@ -47,7 +60,9 @@ export default class MultilevelPositionTool extends PositionTool {
             newFeature.setParams(paramstoadd);
 
             this.currentFeatureID = newFeature.ID;
-            if (this.controllayer !== null) this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.controllayer));
+            if (this.controllayer !== null) {
+                this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.controllayer));
+            }
 
             featureIDs.push(newFeature.ID);
         }
@@ -59,7 +74,9 @@ export default class MultilevelPositionTool extends PositionTool {
             newFeature.setParams(paramstoadd);
 
             this.currentFeatureID = newFeature.ID;
-            if (this.intlayer !== null) this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.intlayer));
+            if (this.intlayer !== null) {
+                this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.renderLayers.indexOf(this.intlayer));
+            }
 
             featureIDs.push(newFeature.ID);
         }

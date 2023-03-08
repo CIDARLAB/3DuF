@@ -4,6 +4,7 @@ import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
 import { ToolPaperObject } from "@/app/core/init";
+import ViewManager from "../viewManager";
 
 export default class SelectTool extends MouseTool {
     dragging: boolean;
@@ -15,8 +16,8 @@ export default class SelectTool extends MouseTool {
 
     updateQueue: SimpleQueue;
 
-    constructor() {
-        super();
+    constructor(viewManagerDelegate: ViewManager) {
+        super(viewManagerDelegate);
         this.dragging = false;
         this.dragStart = null;
         this.lastPoint = null;

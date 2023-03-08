@@ -9,6 +9,7 @@ import ViewManager from "@/app/view/viewManager";
 import Connection from "@/app/core/connection";
 import Component from "@/app/core/component";
 import { ValveType } from "@/app/core/init";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class ValveInsertionTool extends MultilayerPositionTool {
     valveType: ValveType;
@@ -16,14 +17,18 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
     /**
      * Creates an instance of ValveInsertionTool.
      * @param {ViewManager} viewManagerDelegate
-     * @param {string} typeString
+     * @param {string} mintstring
      * @param {string} setString
      * @param {{ [k: string]: any }} currentParameters
      * @param {ValveType} [valveType=ValveType.NORMALLY_OPEN]
      * @memberof ValveInsertionTool
      */
-    constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters: { [k: string]: any }, valveType: ValveType = ValveType.NORMALLY_OPEN) {
-        super(viewManagerDelegate, typeString, setString, currentParameters);
+    constructor(viewManagerDelegate: ViewManager, mintstring: string, setString: string, currentParameters: { [k: string]: any }, valveType: ValveType = ValveType.NORMALLY_OPEN) {
+        const threeduftype = ComponentAPI.getTypeForMINT(mintstring);
+        if (!threeduftype) {
+            throw new Error("Could not find type for MINT type " + mintstring);
+        }
+        super(viewManagerDelegate, threeduftype, setString, currentParameters);
         this.valveType = valveType;
 
         const ref = this;
@@ -55,7 +60,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @param rotation
      * @return {Component}
      */
-    createNewFeature(point: paper.Point, rotation: number | null = null) {
+    createNewFeature(point: paper.Point, rotation: number | null = null): Component {
         const featureIDs = [];
         let overridedata;
 
@@ -70,7 +75,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             };
         }
 
-        const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(Registry.currentLayer!) / 3);
+        const currentlevel = Math.floor(this.viewManagerDelegate!.renderLayers.indexOf(this.viewManagerDelegate.currentLayer) / 3);
         // const flowlayer = currentlevel * 3;
         const controllayer = currentlevel * 3 + 1;
         // const intlayer = currentlevel * 3 + 2;
@@ -95,7 +100,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @param rotation
      * @return {Component}
      */
-    createNewMultiLayerFeature(point: paper.Point, rotation: number | null = null) {
+    createNewMultiLayerFeature(point: paper.Point, rotation: number | null = null): Component {
         const featureIDs = [];
         let overridedata;
 
@@ -110,7 +115,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             };
         }
 
-        const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(Registry.currentLayer!) / 3);
+        const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(this.viewManagerDelegate.currentLayer) / 3);
         const flowlayer = currentlevel * 3;
         const controllayer = currentlevel * 3 + 1;
 
@@ -178,13 +183,13 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         let component: Component;
 
         // TODO: Enable this.is3D functionality
-        if (this.typeString == "Valve") {
+        if (this.valveType === ValveType.NORMALLY_OPEN) {
             component = this.createNewFeature(point, angle);
-            Registry.currentDevice!.insertValve(component, connection, this.valveType);
-        } else if (this.typeString == "Valve3D") {
+            this.viewManagerDelegate.currentDevice!.insertValve(component, connection, this.valveType);
+        } else if (this.valveType === ValveType.NORMALLY_CLOSED) {
             angle += 90;
             component = this.createNewMultiLayerFeature(point, angle);
-            Registry.currentDevice!.insertValve(component, connection, this.valveType);
+            this.viewManagerDelegate.currentDevice!.insertValve(component, connection, this.valveType);
         }
         Registry.viewManager!.updatesConnectionRender(connection);
         Registry.viewManager!.saveDeviceState();

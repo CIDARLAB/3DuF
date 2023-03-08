@@ -13,6 +13,7 @@ import { LogicalLayerType, Point, ToolPaperObject } from "@/app/core/init";
 import Registry from "../../core/registry";
 import MapUtils from "../../utils/mapUtils";
 import PositionTool from "./positionTool";
+import { ViewManager } from "@/app";
 
 export enum ConnectionToolState {
     PLACE_FIRST_POINT,
@@ -44,8 +45,8 @@ export default class ConnectionTool extends MouseTool {
     }
     
 
-    constructor(typeString: string, setString: string) {
-        super();
+    constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string) {
+        super(viewManagerDelegate);
         this.typeString = typeString;
         this.setString = setString;
         this.startPoint = null;
@@ -192,7 +193,7 @@ export default class ConnectionTool extends MouseTool {
         if (this.lastPoint && this.startPoint) {
             if (this.currentChannelID) {
                 const target = PositionTool.getTarget(this.lastPoint);
-                const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
+                const feat = this.viewManagerDelegate.currentLayer?.getFeature(this.currentChannelID);
                 feat?.updateParameter("end", target);
                 feat?.updateParameter("wayPoints", this.wayPoints);
                 feat?.updateParameter("segments", this.generateSegments());
@@ -213,7 +214,7 @@ export default class ConnectionTool extends MouseTool {
     finishChannel(): void  {
         if (this.currentChannelID) {
             this.wayPoints.push(this.lastPoint);
-            const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
+            const feat = this.viewManagerDelegate.currentLayer.getFeature(this.currentChannelID);
             feat?.updateParameter("end", this.lastPoint);
             // feat.updateParameter("wayPoints", this.wayPoints);
             feat?.updateParameter("segments", this.generateSegments());
@@ -226,8 +227,8 @@ export default class ConnectionTool extends MouseTool {
             const definition = ComponentAPI.getDefinition("Connection");
             const params = new Params(values, MapUtils.toMap(definition!.unique), MapUtils.toMap(definition!.heritable));
             if (this.__currentConnectionObject === null || this.__currentConnectionObject === undefined) {
-                if (Registry.currentLayer!.physicalLayer === null) throw new Error("Error: Attempting to add connection on non-physical layer");
-                const connection = new Connection("Connection", params, Registry.currentDevice!.generateNewName("CHANNEL"), "CHANNEL", Registry.currentLayer!.physicalLayer);
+                if (this.viewManagerDelegate.currentLayer.physicalLayer === null) throw new Error("Error: Attempting to add connection on non-physical layer");
+                const connection = new Connection("Connection", params, Registry.currentDevice!.generateNewName("CHANNEL"), "CHANNEL", this.viewManagerDelegate.currentLayer.physicalLayer);
                 connection.routed = true;
                 connection.addFeatureID(feat!.ID);
                 connection.addWayPoints(this.wayPoints);
@@ -511,11 +512,11 @@ export default class ConnectionTool extends MouseTool {
         const gridsize = Registry.currentGrid?.getSpacing();
         console.log("Grid Size: ", gridsize);
 
-        if (Registry.currentLayer?.type === LogicalLayerType.CONTROL) {
+        if (this.viewManagerDelegate.currentLayer.type === LogicalLayerType.CONTROL) {
             layertype = "CONTROL";
-        } else if (Registry.currentLayer?.type === LogicalLayerType.FLOW) {
+        } else if (this.viewManagerDelegate.currentLayer.type === LogicalLayerType.FLOW) {
             layertype = "FLOW";
-        } else if (Registry.currentLayer?.type === LogicalLayerType.INTEGRATION) {
+        } else if (this.viewManagerDelegate.currentLayer.type === LogicalLayerType.INTEGRATION) {
             layertype = "INTEGRATION";
         }
         console.log("This layer: ", layertype);
@@ -569,7 +570,7 @@ export default class ConnectionTool extends MouseTool {
      */
     updateParameter(parameter: string, value: any): void  {  
         if(this.currentChannelID !== null){
-            const feat = Registry.currentLayer?.getFeature(this.currentChannelID);
+            const feat = this.viewManagerDelegate.currentLayer.getFeature(this.currentChannelID);
             feat?.updateParameter(parameter, value);
         }
     }

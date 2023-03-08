@@ -11,7 +11,7 @@ export default class CellPositionTool extends PositionTool {
 
     createNewFeature(point: paper.Point): void  {
         const featureIDs = [];
-        const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(Registry.currentLayer!) / 3);
+        const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(this.viewManagerDelegate.currentLayer) / 3);
         const flowlayer = currentlevel * 3;
         const controllayer = currentlevel * 3 + 1;
         const cell_layer = currentlevel * 3;

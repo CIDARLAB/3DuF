@@ -40,7 +40,7 @@ export function getDefaultValueForType(typeString: string, key: string) {
 }
 
 export function renderTarget(typeString:string, position: Point, customParameters:any = null) {
-    if (Registry.currentLayer === null) {
+    if (Registry.viewManager?.currentLayer === null || Registry.viewManager?.currentLayer === undefined) {
         console.error("No current layer");
         throw new Error("No current layer");
     }
@@ -58,7 +58,7 @@ export function renderTarget(typeString:string, position: Point, customParameter
         }
     }
     primParams["position"] = position;
-    primParams["color"] = new paper.Color(Colors.getDefaultFeatureColor(typeString, Registry.currentLayer));
+    primParams["color"] = new paper.Color(Colors.getDefaultFeatureColor(typeString, Registry.viewManager?.currentLayer));
     const rendered = renderer.render2DTarget(null, primParams);
     return rendered;
 }

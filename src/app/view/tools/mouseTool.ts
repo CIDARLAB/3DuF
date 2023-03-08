@@ -1,16 +1,21 @@
 import paper from "paper";
 import Registry from "../../core/registry";
+import ViewManager from "../viewManager";
 
 export interface MouseToolCallback {
     (event: MouseEvent): void;
 }
 export default class MouseTool {
 
+    viewManagerDelegate: ViewManager;
+    
     /**
      * Creates an instance of MouseTool. This is the base class for all mouse tools.
      * @memberof MouseTool
      */
-    constructor() {}
+    constructor(viewManagerDelegate: ViewManager) {
+        this.viewManagerDelegate = viewManagerDelegate;
+    }
 
     /**
      * This function is called when the mouse is released.
