@@ -13,15 +13,24 @@ import { ValveType } from "@/app/core/init";
 export default class ValveInsertionTool extends MultilayerPositionTool {
     valveType: ValveType;
 
+    /**
+     * Creates an instance of ValveInsertionTool.
+     * @param {ViewManager} viewManagerDelegate
+     * @param {string} typeString
+     * @param {string} setString
+     * @param {{ [k: string]: any }} currentParameters
+     * @param {ValveType} [valveType=ValveType.NORMALLY_OPEN]
+     * @memberof ValveInsertionTool
+     */
     constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters: { [k: string]: any }, valveType: ValveType = ValveType.NORMALLY_OPEN) {
         super(viewManagerDelegate, typeString, setString, currentParameters);
         this.valveType = valveType;
 
         const ref = this;
 
-        this.down = function (event) {
+        this.down = function (event: MouseEvent) {
             console.log(event);
-            const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
+            const point = MouseTool.getEventPosition(event);
             if (point === null) return;
             const target = PositionTool.getTarget([point.x, point.y]);
             // Check if connection exists at point

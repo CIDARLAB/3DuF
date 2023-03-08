@@ -99,7 +99,7 @@ export default class MouseSelectTool extends MouseTool {
         }
     }
 
-    mouseDownHandler(event: MouseToolCallback): void  {
+    mouseDownHandler(event: MouseEvent): void  {
         const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
         const target = this.hitFeature(point as unknown as number[]);
         if (target) {
