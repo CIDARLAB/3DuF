@@ -1,0 +1,38 @@
+import { Registry } from "..";
+import FloatValue from "@/app/core/parameters/floatValue";
+import { ComponentAPI } from "@/componentAPI";
+
+export const generateUpdateFunction = function(sourceID, targetID, typeString, setString, paramString) {
+    return function() {
+        const source = document.getElementById(sourceID);
+        const target = document.getElementById(targetID);
+        let param;
+        if (!source?.value || source?.value === "") {
+            return;
+        }
+        try {
+            param = new FloatValue(parseFloat(source?.value));
+        } catch (err) {
+            console.log("Invalid Float value.");
+            return;
+        }
+        target.value = String(param.getValue());
+        Registry.viewManager?.adjustParams(typeString, setString, paramString, param.getValue());
+    };
+};
+
+export function revertToDefaultParams(typeString:string, setString:string) {
+    const def = ComponentAPI.getDefinition(typeString);
+    if (def === null){
+        throw new Error("No definition found for " + typeString);
+    }
+    const heritable = def.heritable;
+    const defaults = def.defaults;
+
+    for (const key in heritable) {
+        const type = heritable[key];
+
+        Registry.viewManager?.adjustParams(typeString, setString, key, defaults[key]);
+
+    }
+}
