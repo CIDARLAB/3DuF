@@ -54,6 +54,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
+              export NODE_OPTIONS=--openssl-legacy-provider
               npm ci
               npm run vue-build
 
