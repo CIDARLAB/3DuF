@@ -3,7 +3,12 @@ import http from "http";
 import express, { Express } from "express";
 import morgan from "morgan";
 import routes from "./routes";
+import { enablePrimitiveServer } from "@/componentAPI";
 
+// Enables primtiive server for componentAPI and cascades to template.ts
+// TODO - Get rid of this eventually. Its a hacky workarouond paper which
+// is what truly sucks in this universe.
+enablePrimitiveServer();
 const router: Express = express();
 
 /** Logging */

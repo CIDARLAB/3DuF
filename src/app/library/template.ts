@@ -3,7 +3,7 @@ import { ToolPaperObject } from "../core/init";
 import paper from "paper";
 //import { ManufacturingInfo } from "../manufacturing/ManufacturingInfo";
 import { LogicalLayerType  } from "../core/init";
-
+import {PRIMITIVES_SERVER} from "../../componentAPI";
 export enum PositionToolType {
     FEATURE_POSITION_TOOL = "positionTool",
     COMPONENT_POSITION_TOOL = "componentPositionTool",
@@ -396,7 +396,10 @@ export default class Template {
      * @memberof Template
      */
     getDimensions(params: { [key: string]: any }): { xspan: any; yspan: any } {
-        paper.setup(new paper.Size([64000, 48000]));
+        // TODO -  Figure out a workaround for this
+        if (PRIMITIVES_SERVER) {
+            paper.setup(new paper.Size([64000, 48000]));
+        }
 
         params.position = [0, 0];
 

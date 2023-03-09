@@ -53,6 +53,11 @@ import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
 import uuid from "node-uuid";
 
+export var PRIMITIVES_SERVER = false;
+
+export function enablePrimitiveServer() {
+    PRIMITIVES_SERVER = true;
+}
 export type LibraryEntryDefinition = {
     unique: { [key: string]: string };
     heritable: { [key: string]: string };
