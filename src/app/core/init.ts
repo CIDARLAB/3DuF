@@ -30,7 +30,7 @@ export enum ValveType {
     NORMALLY_CLOSED = "NORMALLY_CLOSED",
 }
 
-export enum FeatureTypeMacro{
+export enum GeometricOperationType{
     UNION = "UNION",
     INTERSECTION = "INTERSECTION",
     DIFFERENCE = "SUBTRACTION",
@@ -120,7 +120,7 @@ export type GeometryElementInterchangeV1_2 = {
     id: string;
     macro: string;
     params: ParamsInterchangeType;
-    type: string;
+    geometricOperation: string;
     mgflayerID: string;
 }
 

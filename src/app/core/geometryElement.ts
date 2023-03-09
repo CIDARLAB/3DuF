@@ -1,21 +1,21 @@
 import { ComponentAPI } from "@/componentAPI";
-import { FeatureTypeMacro, GeometryElementInterchangeV1_2 } from "./init";
+import { GeometricOperationType, GeometryElementInterchangeV1_2 } from "./init";
 import Layer from "./layer";
 import Params from "./params";
 
 export default class GeometryElement {
 
     private _id: string;
-    private _type: string;
-    private _macro: FeatureTypeMacro;
+    private _macro: string;
+    private _geometricOperation: GeometricOperationType;
     private _layer: Layer;
 
     private _params: Params;
 
-    constructor(id: string = ComponentAPI.generateID(), type:string, macro: FeatureTypeMacro, layer: Layer, params: { [k: string]: any } = {}) {
+    constructor(id: string = ComponentAPI.generateID(), macro:string, geometricOperation: GeometricOperationType, layer: Layer, params: { [k: string]: any } = {}) {
         this._id = id;
-        this._type = type;
         this._macro = macro;
+        this._geometricOperation = geometricOperation;
         this._layer = layer;
 
         // Initilize the params
@@ -27,11 +27,11 @@ export default class GeometryElement {
     }
 
     get type(): string {
-        return this._type;
+        return this._macro;
     }
 
-    get macro(): FeatureTypeMacro {
-        return this._macro;
+    get geometricOperation(): GeometricOperationType {
+        return this._geometricOperation;
     }
 
     get layer(): Layer {
@@ -47,7 +47,7 @@ export default class GeometryElement {
             id: this._id,
             macro: this._macro,
             params: this._params.toJSON(),
-            type: this._type,
+            geometricOperation: this._geometricOperation,
             mgflayerID: this._layer.id
         };
     }

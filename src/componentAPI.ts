@@ -164,6 +164,12 @@ export class ComponentAPI {
         Connection: { object: new Connection(), key: "FLOW" }
     };
 
+    static featureLibrary: { [key: string]: LibraryEntry } = {
+        // Features
+        NormallyClosedValveModifications: { object: null, key: "FLOW" },
+    }
+
+
     static customTypes: Map<string, CustomComponent> = new Map();
     __setString: any;
     __tools: any;
