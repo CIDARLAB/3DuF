@@ -2,6 +2,7 @@ import MouseTool from "./mouseTool";
 import paper from "paper";
 import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
+import ViewManager from "../viewManager";
 
 export default class PanTool extends MouseTool {
     startPoint: paper.Point | number[] | null;
@@ -12,8 +13,8 @@ export default class PanTool extends MouseTool {
 
     dragging?: boolean;
 
-    constructor() {
-        super();
+    constructor(viewManager: ViewManager) {
+        super(viewManager);
         this.startPoint = null;
         this.lastPoint = null;
         this.startCenter = null;

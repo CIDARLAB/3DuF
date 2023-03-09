@@ -16,6 +16,7 @@ export type InterchangeV1_2 = {
     valves: Array<ValveInterchangeV1_2>;
     version: string;
     renderLayers: Array<RenderLayerInterchangeV1_2>;
+    features: Array<GeometryElementInterchangeV1_2>;
 };
 
 export enum LogicalLayerType {
@@ -27,6 +28,13 @@ export enum LogicalLayerType {
 export enum ValveType {
     NORMALLY_OPEN = "NORMALLY_OPEN",
     NORMALLY_CLOSED = "NORMALLY_CLOSED",
+}
+
+export enum GeometricOperationType{
+    UNION = "UNION",
+    INTERSECTION = "INTERSECTION",
+    DIFFERENCE = "SUBTRACTION",
+    XOR = "XOR",
 }
 
 export type DeviceInterchangeV1 = {
@@ -101,11 +109,20 @@ export type FeatureInterchangeV1_2 = {
     id: string;
     name: string;
     macro: string;
-    referenceID: string | null;
+    layerID: string | null;
+    referenceID: string | null; // Delete this in the future
     params: ParamsInterchangeType;
-    dxfData: any;
+    dxfData: any;  // 3DuF specific data for raw import/export of DXF objects
     type: string;
 };
+
+export type GeometryElementInterchangeV1_2 = {
+    id: string;
+    macro: string;
+    params: ParamsInterchangeType;
+    geometricOperation: string;
+    mgflayerID: string;
+}
 
 export type ComponentPortInterchangeV1 = {
     x: number;
@@ -123,4 +140,5 @@ export type ConnectionPathInterchangeV1_2 = {
     wayPoints: Array<Point>;
     source: ConnectionTargetInterchangeV1 | null;
     sink: ConnectionTargetInterchangeV1 | null;
+    features: Array<string>;
 };

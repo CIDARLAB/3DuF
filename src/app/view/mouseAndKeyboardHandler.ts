@@ -22,7 +22,7 @@ export default class MouseAndKeyboardHandler {
 
         this.__leftMouseTool = null;
         this.__rightMouseTool = null;
-        this.__middleMouseTool = new PanTool();
+        this.__middleMouseTool = new PanTool(viewManagerDelegate);
 
         // Prevent default keyboard window events
         window.onkeydown = function(event: KeyboardEvent) {

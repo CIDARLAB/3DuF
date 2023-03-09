@@ -1,11 +1,12 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { LogicalLayerType } from "../core/init";
+import { LogicalLayerType, ValveType } from "../core/init";
+import ValveTemplate from "./valveTemplate";
 
-export default class Valve extends Template {
-    constructor() {
-        super();
+export default class Valve extends ValveTemplate {
+    constructor(valveType: ValveType) {
+        super(valveType);
     }
 
     __setupDefinitions(): void  {

@@ -25,7 +25,7 @@ export default class PositionTool extends MouseTool {
     showQueue: SimpleQueue;
 
     constructor(viewManagerDelegate: ViewManager, typeString: string, currentParameters: { [k: string]: any } | null = null) {
-        super();
+        super(viewManagerDelegate);
         this.viewManagerDelegate = viewManagerDelegate;
         this.typeString = typeString;
         this.setString = "Basic";
@@ -77,8 +77,16 @@ export default class PositionTool extends MouseTool {
      * @return {Point}
      */
     static getTarget(point:Point): Point {
-        const target = Registry.viewManager?.snapToGrid(point);
-        return [(target as any).x, (target as any).y];
+        if (Registry.viewManager === null) {
+            throw new Error("View Manager is null");
+        }
+        const target = Registry.viewManager.snapToGrid(point);
+        return target;
+    }
+
+    static getMinTarget(point: Point): Point {
+        const target: Point = [Math.round(point[0]), Math.round(point[1])];
+        return target;
     }
 
     /**

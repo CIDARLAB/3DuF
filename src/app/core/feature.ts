@@ -23,7 +23,7 @@ export default class Feature {
     protected _fabtype: DFMType;
     protected _dxfObjects: Array<DXFObject>;
     protected _referenceID: string | null;
-    public layer: RenderLayer | Layer | null;
+    public layer: Layer | null;
     protected _manufacturingInfo: ManufacturingInfo;
 
     /**
@@ -55,14 +55,18 @@ export default class Feature {
             fabtype: fabtype,
             layertype: null,
             rendername: tempRenderName,
-            "z-offset-key": ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName),
+            z_offset_key: ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName),
             depth: this.getValue(ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName)),
-            "substrate-offset": ComponentAPI.library[this.type].object.substrateOffset(tempRenderName),
+            substrate_offset: ComponentAPI.library[this.type].object.substrateOffset(tempRenderName),
             substrate: null,
             modifier: modifierName
         };
     }
 
+    get id(): string {
+        return this._id;
+    }
+    
     get type(): string {
         return this._type;
     }
@@ -125,7 +129,7 @@ export default class Feature {
         this._manufacturingInfo.depth = this.getValue(ComponentAPI.library[this.type].object.zOffsetKey(this.deriveRenderName()));
         if (this.layer !== null) {
             this._manufacturingInfo.layertype = this.layer.type;
-            this._manufacturingInfo.substrate = FeatureUtils.setSubstrate(this, this._manufacturingInfo["substrate-offset"]);
+            this._manufacturingInfo.substrate = FeatureUtils.setSubstrate(this, this._manufacturingInfo.substrate_offset);
         } else {
             throw new Error("Layer not set in feature " + this.ID + " so manufacturingInfo cannot be set");
         }
@@ -175,7 +179,8 @@ export default class Feature {
             referenceID: this._referenceID,
             dxfData: this._dxfObjects.map(function(dxfObject) {
                 return dxfObject.toJSON();
-            })
+            }),
+            layerID: this.layer?.id ?? "",
         };
         return output;
     }

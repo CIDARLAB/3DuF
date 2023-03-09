@@ -550,7 +550,7 @@ export default class Component {
                 return 270;
             }
         } else {
-            console.warn("No rotation was found for component: ", this);
+            console.warn("Returning rotation = 0 since no rotation was found for component: ", this);
             return 0;
         }
     }

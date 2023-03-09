@@ -21,8 +21,8 @@ export default class InsertTextTool extends MouseTool {
     viewManagerDelegate: ViewManager;
     showQueue: SimpleQueue;
 
-    constructor(viewManagerDelegate: ViewManager) {
-        super();
+    constructor(viewManager: ViewManager) {
+        super(viewManager);
         this.typeString = "TEXT";
         this.setString = "Standard";
         this.currentFeatureID = null;
@@ -30,7 +30,7 @@ export default class InsertTextTool extends MouseTool {
         this.lastPoint = null;
         this._text = "TESTING-TEXT";
         this.fontSize = 12;
-        this.viewManagerDelegate = viewManagerDelegate;
+        this.viewManagerDelegate = viewManager;
         this.showQueue = new SimpleQueue(
             function() {
                 ref.showTarget();
@@ -75,7 +75,7 @@ export default class InsertTextTool extends MouseTool {
             "XY",
             null
         );
-        this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.activeRenderLayer);
+        this.viewManagerDelegate.addFeature(newFeature, this.viewManagerDelegate.activeRenderLayerIndex);
         this.viewManagerDelegate.view.addComponent("Text", newFeature.getParams(), [newFeature.ID], true);
         this.viewManagerDelegate.saveDeviceState();
     }

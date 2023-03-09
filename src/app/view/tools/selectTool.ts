@@ -4,6 +4,7 @@ import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import paper from "paper";
 import { ToolPaperObject } from "@/app/core/init";
+import ViewManager from "../viewManager";
 
 export default class SelectTool extends MouseTool {
     dragging: boolean;
@@ -15,8 +16,13 @@ export default class SelectTool extends MouseTool {
 
     updateQueue: SimpleQueue;
 
-    constructor() {
-        super();
+    /**
+     * Creates an instance of SelectTool.
+     * @param {ViewManager} viewManagerDelegate
+     * @memberof SelectTool
+     */
+    constructor(viewManagerDelegate: ViewManager) {
+        super(viewManagerDelegate);
         this.dragging = false;
         this.dragStart = null;
         this.lastPoint = null;
@@ -49,6 +55,12 @@ export default class SelectTool extends MouseTool {
         };
     }
 
+    /**
+     * Handles the KeyDown event
+     *
+     * @param {KeyboardEvent} event
+     * @memberof SelectTool
+     */
     keyHandler(event: KeyboardEvent): void  {
         if (event.key === "delete" || event.key === "backspace") {
             console.log("Removing feature");
@@ -60,6 +72,11 @@ export default class SelectTool extends MouseTool {
         }
     }
 
+    /**
+     * Handles the mouse drag event
+     *
+     * @memberof SelectTool
+     */
     dragHandler(): void  {
         if (this.dragStart) {
             if (this.currentSelectBox) {
@@ -69,10 +86,21 @@ export default class SelectTool extends MouseTool {
         }
     }
 
+    /**
+     * Handles the mouse down event
+     *
+     * @memberof SelectTool
+     */
     showTarget(): void  {
         Registry.viewManager?.removeTarget();
     }
 
+    /**
+     * Handles the mouse up event
+     *
+     * @param {paper.Point} point
+     * @memberof SelectTool
+     */
     mouseUpHandler(point: paper.Point): void  {
         if (this.currentSelectBox) {
             this.currentSelection = Registry.viewManager!.hitFeaturesWithViewElement(this.currentSelectBox);
@@ -81,6 +109,12 @@ export default class SelectTool extends MouseTool {
         this.killSelectBox();
     }
 
+    
+    /**
+     * Deletes the selected features
+     *
+     * @memberof SelectTool
+     */
     removeFeatures(): void  {
         if (this.currentSelection.length > 0) {
             for (let i = 0; i < this.currentSelection.length; i++) {
@@ -93,7 +127,13 @@ export default class SelectTool extends MouseTool {
         }
     }
 
-    mouseDownHandler(event: MouseToolCallback): void  {
+    /**
+     * Handles the mouse down event
+     *
+     * @param {MouseEvent} event
+     * @memberof SelectTool
+     */
+    mouseDownHandler(event: MouseEvent): void  {
         const point = MouseTool.getEventPosition((event as unknown) as MouseEvent);
         const target = this.hitFeature(point!);
         if (target) {
@@ -110,6 +150,11 @@ export default class SelectTool extends MouseTool {
         }
     }
 
+    /**
+     * Removes the selection box
+     *
+     * @memberof SelectTool
+     */
     killSelectBox(): void  {
         if (this.currentSelectBox) {
             this.currentSelectBox.remove();
@@ -118,6 +163,14 @@ export default class SelectTool extends MouseTool {
         this.dragStart = null;
     }
 
+
+    /**
+     * Helper method that tests if a point is within a rectangle
+     *
+     * @param {paper.Point} point
+     * @returns
+     * @memberof SelectTool
+     */
     hitFeature(point: paper.Point) {
         const target = Registry.viewManager!.hitFeature((point as unknown) as number[]);
         return target;
@@ -207,16 +260,34 @@ export default class SelectTool extends MouseTool {
         }
     }
 
+    /**
+     * Deselects all features
+     *
+     * @memberof SelectTool
+     */
     deselectFeatures(): void  {
         paper.project.deselectAll();
         this.currentSelection = [];
     }
 
+    /**
+     * Aborts the current operation
+     *
+     * @memberof SelectTool
+     */
     abort(): void  {
         this.deselectFeatures();
         this.killSelectBox();
     }
 
+    /**
+     * Creates a selection box
+     *
+     * @param {paper.Point} point1
+     * @param {paper.Point} point2
+     * @returns
+     * @memberof SelectTool
+     */
     rectSelect(point1: paper.Point, point2: paper.Point) {
         const rect = new paper.Path.Rectangle(point1, point2);
         rect.fillColor = new paper.Color(0, 0.3, 1, 0.4);

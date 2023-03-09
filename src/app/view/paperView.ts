@@ -961,7 +961,7 @@ export default class PaperView {
      * @memberof PaperView
      */
     updateTarget(): void {
-        if (Registry.currentLayer === null){
+        if (this.__viewManagerDelegate.currentLayer === null){
             console.error("No layer selected");
             throw new Error("No layer selected");
         }
@@ -976,7 +976,7 @@ export default class PaperView {
                 // @ts-ignore
                 const params = Registry.featureDefaults[this.lastTargetSet][this.lastTargetType];
                 params.position = this.lastTargetPosition;
-                params.color = Colors.getDefaultFeatureColor(this.lastTargetType, Registry.currentLayer);
+                params.color = Colors.getDefaultFeatureColor(this.lastTargetType, this.__viewManagerDelegate.currentLayer);
                 this.currentTarget = DXFSolidObjectRenderer.renderCustomComponentTarget(customcomponent, params);
                 this.uiLayer.addChild(this.currentTarget);
             } else {

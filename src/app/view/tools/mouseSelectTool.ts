@@ -8,7 +8,6 @@ import ViewManager from "@/app/view/viewManager";
 import PaperView from "@/app/view/paperView";
 
 export default class MouseSelectTool extends MouseTool {
-    viewManagerDelegate: ViewManager;
     paperView: PaperView;
 
     dragging: boolean;
@@ -23,7 +22,7 @@ export default class MouseSelectTool extends MouseTool {
     updateQueue: SimpleQueue;
 
     constructor(viewManager: ViewManager, paperview: PaperView) {
-        super();
+        super(viewManager);
         this.viewManagerDelegate = viewManager;
         this.paperView = paperview;
         this.dragging = false;
@@ -99,7 +98,7 @@ export default class MouseSelectTool extends MouseTool {
         }
     }
 
-    mouseDownHandler(event: MouseToolCallback): void  {
+    mouseDownHandler(event: MouseEvent): void  {
         const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
         const target = this.hitFeature(point as unknown as number[]);
         if (target) {

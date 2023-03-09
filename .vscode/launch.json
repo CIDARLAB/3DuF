@@ -21,7 +21,16 @@
             "name": "vuejs: firefox",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}/src",
-            "pathMappings": [{ "url": "webpack:///src/", "path": "${webRoot}/" }]
+            "pathMappings": [
+                {
+                    "url": "webpack:///src/services/theme/utils.ts",
+                    "path": "git:/Users/krishna/CIDAR/3duf-vue-port/src/cc/hardware/utils.ts?%7B%22path%22%3A%22%2FUsers%2Fkrishna%2FCIDAR%2F3duf-vue-port%2Fsrc%2Fcc%2Fhardware%2Futils.ts%22%2C%22ref%22%3A%22%22%7D"
+                },
+                {
+                    "url": "webpack:///src/",
+                    "path": "${webRoot}/"
+                }
+            ]
         }
     ]
 }

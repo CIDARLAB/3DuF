@@ -4,7 +4,7 @@ import Registry from "../../core/registry";
 import { renderEdgeFeature } from "./dxfObjectRenderer2D";
 import paper from "paper";
 import { ComponentAPI } from "@/componentAPI";
-import {Point} from "@/app/core/init";
+import {Point, ToolPaperObject} from "@/app/core/init";
 import Feature from "@/app/core/feature";
 
 const getLayerColor = function(feature: Feature) {
@@ -40,7 +40,7 @@ export function getDefaultValueForType(typeString: string, key: string) {
 }
 
 export function renderTarget(typeString:string, position: Point, customParameters:any = null) {
-    if (Registry.currentLayer === null) {
+    if (Registry.viewManager?.currentLayer === null || Registry.viewManager?.currentLayer === undefined) {
         console.error("No current layer");
         throw new Error("No current layer");
     }
@@ -58,7 +58,7 @@ export function renderTarget(typeString:string, position: Point, customParameter
         }
     }
     primParams["position"] = position;
-    primParams["color"] = new paper.Color(Colors.getDefaultFeatureColor(typeString, Registry.currentLayer));
+    primParams["color"] = new paper.Color(Colors.getDefaultFeatureColor(typeString, Registry.viewManager?.currentLayer));
     const rendered = renderer.render2DTarget(null, primParams);
     return rendered;
 }
@@ -132,7 +132,7 @@ export function renderFeature(feature: Feature, key: string | null) {
         rendered = DXFSolidObjectRenderer2D.renderCustomComponentFeature(feature, getBaseColor(feature));
         let modrendered = rendered as any;
         modrendered["featureID"] = feature.ID;
-        return modrendered;
+        return modrendered as ToolPaperObject;
     } else if (type === "EDGE") {
         return renderEdge(feature);
     } else if (type === "Text") {
@@ -177,6 +177,6 @@ export function renderFeature(feature: Feature, key: string | null) {
         let modrendered = rendered as any;
         modrendered["featureID"] = feature.ID;
     
-        return modrendered;
+        return modrendered as ToolPaperObject;
     }
 }

@@ -2,6 +2,7 @@ import ViewManager from "@/app/view/viewManager";
 
 import {
     ConnectionTargetInterchangeV1,
+    GeometryElementInterchangeV1_2,
     InterchangeV1_2
     // DeviceInterchangeV1,
     // LayerInterchangeV1,
@@ -13,10 +14,18 @@ import {
     // LogicalLayerType
 } from "@/app/core/init";
 import ConnectionTarget from "../core/connectionTarget";
+import GeometryElement from "../core/geometryElement";
 
 export default class ExportUtils {
 
-
+    /**
+     * Converts a device to interchange format.
+     *
+     * @static
+     * @param {ViewManager} viewManagerDelegate
+     * @returns {InterchangeV1_2}
+     * @memberof ExportUtils
+     */
     static toInterchangeV1_2(viewManagerDelegate: ViewManager): InterchangeV1_2 {
         if(viewManagerDelegate.currentDevice === null) {
             throw new Error("No device selected");
@@ -41,10 +50,26 @@ export default class ExportUtils {
             components: device.components,
             connections: device.connections,
             valves: device.valves,
+            features: ExportUtils.featuresToInterchangeV1_2(viewManagerDelegate.currentDevice.parchmintFeatures) ,
             version: "1.2"
         };
 
         return newScratch;
+    }
+
+    /**
+     * Converts a list of features to interchange format.
+     * @static
+     * @param {Array<GeometryElement>} featuresGeometries
+     * @returns {Array<GeometryElementInterchangeV1_2>}
+     * @memberof ExportUtils
+     */
+    static featuresToInterchangeV1_2(featuresGeometries: Array<GeometryElement>): Array<GeometryElementInterchangeV1_2> {
+        let features: Array<GeometryElementInterchangeV1_2> = [];
+        featuresGeometries.forEach(feature => {
+            features.push(feature.toInterchageV1_2());
+        });
+        return features;
     }
 
     /**

@@ -1,11 +1,12 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { LogicalLayerType } from "../core/init";
+import { LogicalLayerType, ValveType } from "../core/init";
+import ValveTemplate from "./valveTemplate";
 
-export default class Valve3D extends Template {
-    constructor() {
-        super();
+export default class Valve3D extends ValveTemplate {
+    constructor(valveType: ValveType) {
+        super(valveType);
     }
 
     __setupDefinitions(): void  {
@@ -105,6 +106,11 @@ export default class Valve3D extends Template {
             CONTROL: "+1",
             INVERSE: "0"
         };
+
+        this.__childFeatureMacros = [
+            "VALVE3D GAP",
+            "VALVE3D FLOW",
+        ];
     }
 
     getPorts(params: { [k: string]: any }) {

@@ -3,12 +3,18 @@ import MouseTool, { MouseToolCallback } from "./mouseTool";
 import Registry from "../../core/registry";
 import SimpleQueue from "../../utils/simpleQueue";
 import Component from "@/app/core/component";
+import ViewManager from "../viewManager";
 
 export default class GenerateArrayTool extends MouseTool {
     private __currentComponent?: any;
     private __originalPosition?: any;
-    constructor() {
-        super();
+    
+    /**
+     * Creates an instance of GenerateArrayTool.
+     * @memberof GenerateArrayTool
+     */
+    constructor(viewManagerDelegate: ViewManager) {
+        super(viewManagerDelegate);
 
         // this.dragging = false;
         // this.dragStart = null;
@@ -34,7 +40,7 @@ export default class GenerateArrayTool extends MouseTool {
         };
         this.up = function(event) {
             // ref.dragging = false;
-            ref.mouseUpHandler((MouseTool.getEventPosition((event as unknown) as MouseEvent) as unknown) as MouseToolCallback);
+            ref.mouseUpHandler(event);
             // ref.showTarget();
         };
     }
@@ -95,7 +101,7 @@ export default class GenerateArrayTool extends MouseTool {
     //     Registry.viewManager.removeTarget();
     // }
 
-    mouseUpHandler(event: MouseToolCallback): void  {
+    mouseUpHandler(event: MouseEvent): void  {
         // if (this.currentSelectBox) {
         //     this.currentSelection = Registry.viewManager.hitFeaturesWithViewElement(this.currentSelectBox);
         //     this.selectFeatures();
@@ -104,7 +110,7 @@ export default class GenerateArrayTool extends MouseTool {
         console.log("Up event", event);
     }
 
-    mouseDownHandler(event: MouseToolCallback): void  {
+    mouseDownHandler(event: MouseEvent): void  {
         // let point = MouseTool.getEventPosition(event);
         // let target = this.hitFeature(point);
         // if (target) {

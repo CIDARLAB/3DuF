@@ -20,7 +20,6 @@ class Registry {
 
     public currentDevice: Device | null = null;
     canvasManager = null;
-    currentLayer: RenderLayer | null = null;
     currentTextLayer: Layer | null = null;
     currentGrid: AdaptiveGrid | null = null;
     view = null;

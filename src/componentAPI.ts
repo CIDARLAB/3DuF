@@ -52,6 +52,10 @@ import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
 import uuid from "node-uuid";
+import FeatureTemplate from "./app/library/geometricElements/featureTemplate";
+import NormallyClosedValveCrescents from "./app/library/geometricElements/normallyClosedValveCrecents";
+import NormallyClosedValveModificationsGap from "./app/library/geometricElements/normallyClosedValveGap";
+import { ValveType } from "./app/core/init";
 
 export var PRIMITIVES_SERVER = false;
 
@@ -70,6 +74,11 @@ export type LibraryEntryDefinition = {
 
 type LibraryEntry = {
     object: Template;
+    key: string;
+};
+
+type FeatureLibraryEntry = {
+    object: FeatureTemplate;
     key: string;
 };
 
@@ -124,9 +133,10 @@ export class ComponentAPI {
         Transposer_control: { object: new Transposer(), key: "CONTROL" },
         Tree: { object: new Tree(), key: "FLOW" },
         YTree: { object: new YTree(), key: "FLOW" },
-        Valve: { object: new Valve(), key: "CONTROL" },
-        Valve3D: { object: new Valve3D(), key: "FLOW" },
-        Valve3D_control: { object: new Valve3D(), key: "CONTROL" },
+        Valve: { object: new Valve(ValveType.NORMALLY_OPEN), key: "CONTROL" },
+        // TODO: Get rid of this fully after we move over to the new valve feature system
+        // Valve3D: { object: new Valve3D(ValveType.NORMALLY_CLOSED), key: "FLOW" },
+        Valve3D_control: { object: new Valve3D(ValveType.NORMALLY_CLOSED), key: "CONTROL" },
         LLChamber: { object: new LLChamber(), key: "FLOW" },
         LLChamber_control: { object: new LLChamber(), key: "CONTROL" },
         "3DMixer": { object: new ThreeDMixer(), key: "FLOW" },
@@ -163,6 +173,14 @@ export class ComponentAPI {
     static connectionLibrary: { [key: string]: LibraryEntry } = {
         Connection: { object: new Connection(), key: "FLOW" }
     };
+
+    static featureLibrary: { [key: string]: FeatureLibraryEntry } = {
+        // Features
+        NormallyClosedValveModifications: { object: new NormallyClosedValveCrescents(), key: "FLOW" },
+        NormallyClosedValveModifications_Gap: { object: new NormallyClosedValveModificationsGap(), key: "GAP" },
+
+    }
+
 
     static customTypes: Map<string, CustomComponent> = new Map();
     __setString: any;
@@ -206,6 +224,16 @@ export class ComponentAPI {
         return null;
     }
 
+    static getFeatureWithMINT(minttype: string): FeatureTemplate | null {
+        const checkmint = minttype;
+        for (const key in this.featureLibrary) {
+            if (checkmint == this.featureLibrary[key].object.macro) {
+                return ComponentAPI.featureLibrary[key].object;
+            }
+            
+        }
+        return null;
+    }
     /**
      * Get the definition of a component given by the corresponding mint type
      *

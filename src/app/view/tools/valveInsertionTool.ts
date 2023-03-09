@@ -9,23 +9,37 @@ import ViewManager from "@/app/view/viewManager";
 import Connection from "@/app/core/connection";
 import Component from "@/app/core/component";
 import { ValveType } from "@/app/core/init";
+import { ComponentAPI } from "@/componentAPI";
 
 export default class ValveInsertionTool extends MultilayerPositionTool {
     valveType: ValveType;
 
-    constructor(viewManagerDelegate: ViewManager, typeString: string, setString: string, currentParameters: { [k: string]: any }, valveType: ValveType = ValveType.NORMALLY_OPEN) {
-        super(viewManagerDelegate, typeString, setString, currentParameters);
+    /**
+     * Creates an instance of ValveInsertionTool.
+     * @param {ViewManager} viewManagerDelegate
+     * @param {string} mintstring
+     * @param {string} setString
+     * @param {{ [k: string]: any }} currentParameters
+     * @param {ValveType} [valveType=ValveType.NORMALLY_OPEN]
+     * @memberof ValveInsertionTool
+     */
+    constructor(viewManagerDelegate: ViewManager, mintstring: string, setString: string, currentParameters: { [k: string]: any }, valveType: ValveType = ValveType.NORMALLY_OPEN) {
+        const threeduftype = ComponentAPI.getTypeForMINT(mintstring);
+        if (!threeduftype) {
+            throw new Error("Could not find type for MINT type " + mintstring);
+        }
+        super(viewManagerDelegate, threeduftype, setString, currentParameters);
         this.valveType = valveType;
 
         const ref = this;
 
-        this.down = function (event) {
+        this.down = function (event: MouseEvent) {
             console.log(event);
-            const point = MouseTool.getEventPosition(event as unknown as MouseEvent);
+            const point = MouseTool.getEventPosition(event);
             if (point === null) return;
             const target = PositionTool.getTarget([point.x, point.y]);
             // Check if connection exists at point
-            const connection = ref.checkIfConnectionExistsAt(target as unknown as paper.Point);
+            const connection = ref.checkIfConnectionExistsAt(new paper.Point(target[0], target[1]));
             // if connection exists then place the valve
             if (connection) {
                 ref.insertValve(point!, connection);
@@ -46,7 +60,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @param rotation
      * @return {Component}
      */
-    createNewFeature(point: paper.Point, rotation: number | null = null) {
+    createNewFeature(point: paper.Point, rotation: number | null = null): Component {
         const featureIDs = [];
         let overridedata;
 
@@ -61,7 +75,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             };
         }
 
-        const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(Registry.currentLayer!) / 3);
+        const currentlevel = Math.floor(this.viewManagerDelegate!.renderLayers.indexOf(this.viewManagerDelegate.currentLayer) / 3);
         // const flowlayer = currentlevel * 3;
         const controllayer = currentlevel * 3 + 1;
         // const intlayer = currentlevel * 3 + 2;
@@ -86,7 +100,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @param rotation
      * @return {Component}
      */
-    createNewMultiLayerFeature(point: paper.Point, rotation: number | null = null) {
+    createNewMultiLayerFeature(point: paper.Point, rotation: number | null = null): Component {
         const featureIDs = [];
         let overridedata;
 
@@ -101,7 +115,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             };
         }
 
-        const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(Registry.currentLayer!) / 3);
+        const currentlevel = Math.floor(Registry.viewManager!.renderLayers.indexOf(this.viewManagerDelegate.currentLayer) / 3);
         const flowlayer = currentlevel * 3;
         const controllayer = currentlevel * 3 + 1;
 
@@ -144,7 +158,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
      * @param target
      * @return {*}
      */
-    checkIfConnectionExistsAt(target: paper.Point) {
+    checkIfConnectionExistsAt(target: paper.Point): Connection | null {
         const hit = Registry.viewManager!.view.hitFeature(target, false);
         // TODO: check if the hit feature belongs to a connection
         if (hit) {
@@ -152,7 +166,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             return connection;
         }
 
-        return hit;
+        return null;
     }
 
     /**
@@ -169,15 +183,15 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         let component: Component;
 
         // TODO: Enable this.is3D functionality
-        if (this.typeString == "Valve") {
+        if (this.valveType === ValveType.NORMALLY_OPEN) {
             component = this.createNewFeature(point, angle);
-            Registry.currentDevice!.insertValve(component, connection as any, this.valveType);
-        } else if (this.typeString == "Valve3D") {
+            this.viewManagerDelegate.currentDevice!.insertValve(component, connection, this.valveType);
+        } else if (this.valveType === ValveType.NORMALLY_CLOSED) {
             angle += 90;
             component = this.createNewMultiLayerFeature(point, angle);
-            Registry.currentDevice!.insertValve(component, connection as any, this.valveType);
+            this.viewManagerDelegate.currentDevice!.insertValve(component, connection, this.valveType);
         }
-        Registry.viewManager!.updatesConnectionRender(connection);
+        // Registry.viewManager!.updatesConnectionRender(connection);
         Registry.viewManager!.saveDeviceState();
     }
 
@@ -212,7 +226,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         let conn_waypoints;
         let lowestdist = 1000000000000000000000;
         let p0: number[], p1: number[], sol: number;
-        const paths = (connection).getPaths();
+        const paths = connection.getPaths();
         const waypoints = [];
         for (const j in paths) {
             conn_waypoints = paths[j];

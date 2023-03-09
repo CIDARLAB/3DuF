@@ -1,6 +1,7 @@
 /// <reference types="node" />
 
 import Params from "./params";
+import GeometryElement from "./geometryElement";
 
 import Feature from "./feature";
 import { DeviceInterchangeV1, DeviceInterchangeV1_1, LogicalLayerType, Point, ValveInterchangeV1_2, ValveType } from "./init";
@@ -34,6 +35,7 @@ export default class Device {
     private __valveMap: Map<string, string>;
     private __valveTypeMap: Map<string, ValveType>;
     private __groups: Array<string>;
+    private __parchmintFeatures: Array<GeometryElement>;
 
     /**
      * Default Constructor
@@ -57,6 +59,9 @@ export default class Device {
         //Map to store <componentID, connectionID>
         this.__valveMap = new Map();
         this.__valveTypeMap = new Map();
+
+        // Initilize the Features array that would be used to store the Parchmint Features
+        this.__parchmintFeatures = [];
     }
 
     /**
@@ -98,6 +103,10 @@ export default class Device {
      */
     get layers(): Array<Layer> {
         return this.__layers;
+    }
+
+    get parchmintFeatures(): Array<GeometryElement> {
+        return this.__parchmintFeatures;
     }
 
     /**

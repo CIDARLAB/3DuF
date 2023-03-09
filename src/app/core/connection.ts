@@ -12,6 +12,7 @@ import ConnectionUtils from "../utils/connectionUtils";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
 import ExportUtils from "../utils/exportUtils";
+import Feature from "./feature";
 
 /**
  * This class contains the connection abstraction used in the interchange format and the
@@ -32,6 +33,8 @@ export default class Connection {
     protected _objects: any;
     protected _routed: boolean;
     protected _layer: Layer;
+
+    features: Array<Feature> = [];
 
     /**
      * Default Connection Constructor
@@ -177,7 +180,9 @@ export default class Connection {
             const outputpath: ConnectionPathInterchangeV1_2 = {
                 source: this._source !== null ? this._source.toJSON() : null,
                 sink: this.sinks.length > i ? this._sinks[i].toJSON() : null,
-                wayPoints: path
+                wayPoints: path,
+                // Get the id's of the features
+                features: this.features.map(feature => {return feature.id;})
             };
             outputpaths.push(outputpath);
         }
@@ -683,4 +688,25 @@ export default class Connection {
         let target = ConnectionTarget.fromJSON(device, json);
         this._sinks.push(target);
     }
+
+    /**
+     * Adds a feature to the connection
+     *
+     * @param {Feature} feature
+     * @memberof Connection
+     */
+    addFeature(feature: Feature): void {
+        this.features.push(feature);
+    }
+
+    /**
+     * Removes a feature from the connection
+     *
+     * @param {Feature} feature
+     * @memberof Connection
+     */
+    removeFeature(feature: Feature): void {
+        this.features.splice(this.features.indexOf(feature), 1);
+    }
+
 }
