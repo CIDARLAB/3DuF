@@ -18,6 +18,7 @@ publish.sh
 
 docs/
 build/*
+server-build/
 
 # Folder view configuration files
 .DS_Store

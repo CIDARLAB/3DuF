@@ -1,4 +1,4 @@
-import Text from "@/app/library/text";
+import Text from "./app/library/text";
 import Port from "./app/library/port";
 import Anode from "./app/library/anode"; // new from CK
 import Cathode from "./app/library/cathode"; // new from CK
@@ -53,6 +53,11 @@ import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
 import uuid from "node-uuid";
 
+export var PRIMITIVES_SERVER = false;
+
+export function enablePrimitiveServer() {
+    PRIMITIVES_SERVER = true;
+}
 export type LibraryEntryDefinition = {
     unique: { [key: string]: string };
     heritable: { [key: string]: string };
