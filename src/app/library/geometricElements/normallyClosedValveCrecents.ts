@@ -1,7 +1,7 @@
 import { GeometricOperationType } from "@/app/core/init";
 import FeatureTemplate from "./featureTemplate";
 
-export default class NormallyClosedValveModificationsFlow extends FeatureTemplate {
+export default class NormallyClosedValveCrescents extends FeatureTemplate {
     constructor() {
         super();
     }
@@ -83,8 +83,13 @@ export default class NormallyClosedValveModificationsFlow extends FeatureTemplat
             gap: "gap"
         };
 
+
+        this.__toolParams = {
+            position: "position"
+        };
+
         this._geometricOperation = GeometricOperationType.UNION;
-        
+        // TODO: Setup the manufacuring info for this feature
     }
 
 }

@@ -53,8 +53,9 @@ import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
 import uuid from "node-uuid";
 import FeatureTemplate from "./app/library/geometricElements/featureTemplate";
-import NormallyClosedValveModificationsFlow from "./app/library/geometricElements/normallyClosedValveCrecents";
+import NormallyClosedValveCrescents from "./app/library/geometricElements/normallyClosedValveCrecents";
 import NormallyClosedValveModificationsGap from "./app/library/geometricElements/normallyClosedValveGap";
+import { ValveType } from "./app/core/init";
 
 export var PRIMITIVES_SERVER = false;
 
@@ -132,9 +133,10 @@ export class ComponentAPI {
         Transposer_control: { object: new Transposer(), key: "CONTROL" },
         Tree: { object: new Tree(), key: "FLOW" },
         YTree: { object: new YTree(), key: "FLOW" },
-        Valve: { object: new Valve(), key: "CONTROL" },
-        Valve3D: { object: new Valve3D(), key: "FLOW" },
-        Valve3D_control: { object: new Valve3D(), key: "CONTROL" },
+        Valve: { object: new Valve(ValveType.NORMALLY_OPEN), key: "CONTROL" },
+        // TODO: Get rid of this fully after we move over to the new valve feature system
+        // Valve3D: { object: new Valve3D(ValveType.NORMALLY_CLOSED), key: "FLOW" },
+        Valve3D_control: { object: new Valve3D(ValveType.NORMALLY_CLOSED), key: "CONTROL" },
         LLChamber: { object: new LLChamber(), key: "FLOW" },
         LLChamber_control: { object: new LLChamber(), key: "CONTROL" },
         "3DMixer": { object: new ThreeDMixer(), key: "FLOW" },
@@ -174,7 +176,7 @@ export class ComponentAPI {
 
     static featureLibrary: { [key: string]: FeatureLibraryEntry } = {
         // Features
-        NormallyClosedValveModifications: { object: new NormallyClosedValveModificationsFlow(), key: "FLOW" },
+        NormallyClosedValveModifications: { object: new NormallyClosedValveCrescents(), key: "FLOW" },
         NormallyClosedValveModifications_Gap: { object: new NormallyClosedValveModificationsGap(), key: "GAP" },
 
     }

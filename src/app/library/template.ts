@@ -27,7 +27,7 @@ export default class Template {
     protected _previewImage: string = "";
     protected __zOffsetKeys: { [key: string]: string } | null = null;
     protected __substrateOffset: { [key: string]: string } | null = null;
-    protected __childFeatures: Array<string> = []; // Store all the macro names
+    protected __childFeatureMacros: Array<string> = []; // Store all the macro names
     
     /**
      *Creates an instance of Template.
@@ -249,7 +249,16 @@ export default class Template {
     get previewImage(): string {
         return this._previewImage;
     }
+    get childFeatureMacros(): Array<string> {
+        return this.__childFeatureMacros;
+    }
+    
 
+    /**
+     * Override this method to setup the definitions for the component
+     *
+     * @memberof Template
+     */
     __setupDefinitions(): void {
         this.__unique = {
             position: "Point"

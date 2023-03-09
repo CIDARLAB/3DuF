@@ -84,8 +84,12 @@ export default class NormallyClosedValveModificationsGap extends FeatureTemplate
             gap: "gap"
         };
 
+        this.__toolParams = {
+            position: "position"
+        };
+
         this._geometricOperation = GeometricOperationType.DIFFERENCE;
-        
+        // TODO: Setup the manufacuring info for this feature
     }
 
 }

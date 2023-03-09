@@ -19,6 +19,8 @@ export default class FeatureTemplate {
     protected __toolParams: { [key: string]: string } | null = null; // { position: "position" };
     protected __featureParams: { [key: string]: string } | null = null;
     protected __targetParams: { [key: string]: string } | null = null;
+    protected __zOffsetKeys: { [key: string]: string } | null = null;
+    protected __substrateOffset: { [key: string]: string } | null = null;
 
 
     /**
@@ -38,34 +40,34 @@ export default class FeatureTemplate {
     __checkDefinitions(): void {
         //Check that all the definitions are set
         if (this._macro === null) {
-            throw new Error("Macro not defined");
+            throw new Error("Macro not defined: " + this._macro);
         }
         if (this.__unique === null) {
-            throw new Error("Unique parameters not defined");
+            throw new Error("Unique parameters not defined: " + this._macro);
         }
         if (this.__heritable === null) {
-            throw new Error("Heritable parameters not defined");
+            throw new Error("Heritable parameters not defined: " + this._macro);
         }
         if (this.__defaults === null) {
-            throw new Error("Default parameters not defined");
+            throw new Error("Default parameters not defined: " + this._macro);
         }
         if (this.__minimum === null) {
-            throw new Error("Minimum parameters not defined");
+            throw new Error("Minimum parameters not defined: " + this._macro);
         }
         if (this.__maximum === null) {
-            throw new Error("Maximum parameters not defined");
+            throw new Error("Maximum parameters not defined: " + this._macro);
         }
         if (this.__units === null) {
-            throw new Error("Units not defined");
+            throw new Error("Units not defined: " + this._macro);
         }
         if (this.__toolParams === null) {
-            throw new Error("Tool parameters not defined");
+            throw new Error("Tool parameters not defined: " + this._macro);
         }
         if (this.__featureParams === null) {
-            throw new Error("Feature parameters not defined");
+            throw new Error("Feature parameters not defined: " + this._macro);
         }
         if (this.__targetParams === null) {
-            throw new Error("Target parameters not defined");
+            throw new Error("Target parameters not defined: " + this._macro);
         }
     }
 
@@ -87,6 +89,11 @@ export default class FeatureTemplate {
      */
     get macro(): string {
         return this._macro;
+    }
+
+    render2d(params: { [key: string]: any }): ToolPaperObject {
+        //Throw an error if this function is not implemented
+        throw new Error("Method not implemented.");
     }
 
 }
