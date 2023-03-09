@@ -52,6 +52,9 @@ import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
 import uuid from "node-uuid";
+import FeatureTemplate from "./app/library/geometricElements/featureTemplate";
+import NormallyClosedValveModificationsFlow from "./app/library/geometricElements/normallyClosedValveCrecents";
+import NormallyClosedValveModificationsGap from "./app/library/geometricElements/normallyClosedValveGap";
 
 export var PRIMITIVES_SERVER = false;
 
@@ -70,6 +73,11 @@ export type LibraryEntryDefinition = {
 
 type LibraryEntry = {
     object: Template;
+    key: string;
+};
+
+type FeatureLibraryEntry = {
+    object: FeatureTemplate;
     key: string;
 };
 
@@ -164,9 +172,11 @@ export class ComponentAPI {
         Connection: { object: new Connection(), key: "FLOW" }
     };
 
-    static featureLibrary: { [key: string]: LibraryEntry } = {
+    static featureLibrary: { [key: string]: FeatureLibraryEntry } = {
         // Features
-        NormallyClosedValveModifications: { object: null, key: "FLOW" },
+        NormallyClosedValveModifications: { object: new NormallyClosedValveModificationsFlow(), key: "FLOW" },
+        NormallyClosedValveModifications_Gap: { object: new NormallyClosedValveModificationsGap(), key: "GAP" },
+
     }
 
 
@@ -212,6 +222,16 @@ export class ComponentAPI {
         return null;
     }
 
+    static getFeatureWithMINT(minttype: string): FeatureTemplate | null {
+        const checkmint = minttype;
+        for (const key in this.featureLibrary) {
+            if (checkmint == this.featureLibrary[key].object.macro) {
+                return ComponentAPI.featureLibrary[key].object;
+            }
+            
+        }
+        return null;
+    }
     /**
      * Get the definition of a component given by the corresponding mint type
      *

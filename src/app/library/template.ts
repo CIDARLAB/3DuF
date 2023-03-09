@@ -27,7 +27,8 @@ export default class Template {
     protected _previewImage: string = "";
     protected __zOffsetKeys: { [key: string]: string } | null = null;
     protected __substrateOffset: { [key: string]: string } | null = null;
-
+    protected __childFeatures: Array<string> = []; // Store all the macro names
+    
     /**
      *Creates an instance of Template.
      * @memberof Template
@@ -57,7 +58,6 @@ export default class Template {
      * @memberof Template
      */
     zOffsetKey(key: string): string {
-        //if (this.__zOffsetKeys) throw new Error("The fuck");
         if (this.__zOffsetKeys === null) {
             throw new Error("zOffsetKey cannot be null instantiate in the __setupDefinitions");
         } else if (this.__zOffsetKeys.hasOwnProperty(key)) {
