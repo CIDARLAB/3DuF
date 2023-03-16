@@ -15,7 +15,7 @@ import { DFMType } from "./manufacturingInfo";
 export default class CNCGenerator {
     __device: Device;
     __viewManagerDelegate: viewManager;
-    __svgData: Map<String, string>;
+    __svgData: Map<string, string>;
 
     /**
      * Default Constructor of GNCGenerator object.
@@ -34,7 +34,7 @@ export default class CNCGenerator {
      * @returns {}
      * @memberof CNCGenerator
      */
-    getSVGOutputs(): Map<String, string> {
+    getSVGOutputs(): Map<string, string> {
         return this.__svgData;
     }
 

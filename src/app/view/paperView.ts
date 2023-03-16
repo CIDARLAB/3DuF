@@ -461,7 +461,7 @@ export default class PaperView {
      * @returns {void}
      * @memberof PaperView
      */
-    setResizeFunction(func: Function | null): void {
+    setResizeFunction(func: () => void | null): void {
         if (this.canvas === null) {
             throw new Error("Canvas is null");
         }

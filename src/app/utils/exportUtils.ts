@@ -62,11 +62,12 @@ export class SerializationError {
      * @memberof SerializationError
      */
     toText(): string {
-        let ret = `Error: ${this.message} \n`;
-        ret += `Element: ${this.element} \n`;
+        let ret = `Error: ${this.message}\n`;
+        ret += `Element: ${this.element}\n`;
+        ret += "JSON Data:\n";
         ret += "\`\`\`\n";
-        ret += `JSON Data: ${this.jsonData} \n`;
-        ret += "\`\`\`\n";
+        ret += this.jsonData;
+        ret += "\n\`\`\`\n";
 
         return ret;
     }

@@ -11,7 +11,7 @@ import { ToolPaperObject } from "../core/init";
  */
 export default class ManufacturingLayer {
     __features: Array<ToolPaperObject>;
-    __name: String;
+    __name: string;
     __paperGroup: paper.Group;
     __flip: boolean;
 
@@ -19,7 +19,7 @@ export default class ManufacturingLayer {
      * Default Constructor for the Manufacturing Layer
      * @param {String} name Name of the field
      */
-    constructor(name: String, flip = false) {
+    constructor(name: string, flip = false) {
         this.__features = [];
         this.__name = name;
         this.__paperGroup = new paper.Group();
@@ -31,7 +31,7 @@ export default class ManufacturingLayer {
      * @return {String} Returns the name of the field
      * @memberof ManufacturingLayer
      */
-    get name(): String {
+    get name(): string {
         return this.__name;
     }
 
