@@ -16,6 +16,49 @@ import {
 import ConnectionTarget from "../core/connectionTarget";
 import GeometryElement from "../core/geometryElement";
 
+export class SerializationError {
+    /**
+     * Error message for the user.
+     *
+     * @type {string}
+     * @memberof SerializationError
+     */
+    public message: string;
+
+    /**
+     * The element that caused the error.
+     * TBD on how ot use this in the future.
+     * @type {*}
+     * @memberof SerializationError
+     */
+    public element: any;
+
+    /**
+     * The JSON data that was being processed when the error occurred.
+     *
+     * @type {string}
+     * @memberof SerializationError
+     */
+    public jsonData: string;
+
+    constructor(message: string, element: any, jsonData: any) {
+        this.message = message;
+        this.element = element;
+        this.jsonData = jsonData;
+    }
+
+    toText(): string {
+        let ret = "Error: " + this.message + "\n";
+        ret += "Element: " + this.element + "\n";
+        ret += "\`\`\`\n";
+        ret += "JSON Data: " + this.jsonData + "\n";
+        ret += "\`\`\`\n";
+
+        return ret;
+    }
+}
+
+
 export default class ExportUtils {
 
     /**
@@ -26,7 +69,7 @@ export default class ExportUtils {
      * @returns {InterchangeV1_2}
      * @memberof ExportUtils
      */
-    static toInterchangeV1_2(viewManagerDelegate: ViewManager): InterchangeV1_2 {
+    static toInterchangeV1_2(viewManagerDelegate: ViewManager, errorList:SerializationError[]): InterchangeV1_2 {
         if(viewManagerDelegate.currentDevice === null) {
             throw new Error("No device selected");
         }
@@ -35,7 +78,7 @@ export default class ExportUtils {
         for (let i = 0; i < viewManagerDelegate.renderLayers.length; i++) {
             renderLayers.push(viewManagerDelegate.renderLayers[i].toInterchangeV1());
         }
-        const device = viewManagerDelegate.currentDevice.toInterchangeV1();
+        const device = viewManagerDelegate.currentDevice.toInterchangeV1(errorList);
         
         const valvemap = {};
         const valvetypemap = {};

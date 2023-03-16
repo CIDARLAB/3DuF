@@ -41,7 +41,7 @@ import { ComponentAPI } from "@/componentAPI";
 import RenderLayer from "@/app/view/renderLayer";
 
 import LoadUtils from "@/app/utils/loadUtils";
-import ExportUtils from "@/app/utils/exportUtils";
+import ExportUtils, { SerializationError } from "@/app/utils/exportUtils";
 import { LogicalLayerType, InterchangeV1_2, ValveType } from "@/app/core/init";
 
 import { Point } from "@/app/core/init";
@@ -1374,7 +1374,10 @@ export default class ViewManager {
     saveDeviceState(): void  {
         console.log("Saving to stack");
 
-        const save = JSON.stringify(Registry.currentDevice?.toInterchangeV1());
+        // TODO - Future versions of the software should be using the saving
+        // the device as a set of atomic operations and not as the json data
+        // unless we are using it as a refernce.
+        const save = JSON.stringify(Registry.currentDevice?.toInterchangeV1([]));
 
         this.undoStack.pushDesign(save);
     }
@@ -1546,8 +1549,8 @@ export default class ViewManager {
      * @returns {void}
      * @memberof ViewManager
      */
-    generateExportJSON(): InterchangeV1_2  {
-        const json = ExportUtils.toInterchangeV1_2(this);
+    generateExportJSON(errorList:Array<SerializationError> = []): InterchangeV1_2  {
+        const json = ExportUtils.toInterchangeV1_2(this, errorList);
         // const json = this.currentDevice.toInterchangeV1_1();
         // json.customComponents = this.customComponentManager.toJSON();
         return json;
@@ -1714,10 +1717,23 @@ export default class ViewManager {
         if(this.currentDevice === null){
             throw new Error("No device loaded");
         }
-        let json = new Blob([JSON.stringify(this.generateExportJSON())], {
+        let errorList: Array<SerializationError> = [];
+        let json = new Blob([JSON.stringify(this.generateExportJSON(errorList))], {
             type: "application/json"
         });
         saveAs(json, this.currentDevice.name + ".json");
+
+        if (errorList.length > 0) {
+            // Concatenate all the errors into a single string with newlines and save it as a file
+            let errorString = "";
+            for (const error of errorList) {
+                errorString += error.toText() + "\n\n";
+            }
+            let errorBlob = new Blob([errorString], {
+                type: "text/plain"
+            });
+            saveAs(errorBlob, this.currentDevice.name + "_errors.txt");
+        }
     }
 
     createNewDevice(name: string): void {
