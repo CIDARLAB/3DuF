@@ -480,7 +480,7 @@ export default class Device {
                 console.error(e);
                 errorList.push(new SerializationError(
                     e.message,
-                    "Component " + this.__components[i].name + " could not be converted to InterchangeV1",
+                    `Component ${this.__components[i].id} could not be converted to InterchangeV1`,
                     JSON.stringify(this.__components[i]),
                 ));
             }
@@ -501,7 +501,7 @@ export default class Device {
                 console.error(e);
                 errorList.push(new SerializationError(
                     e.message,
-                    "Connection " + this.__connections[i].name + " could not be converted to InterchangeV1",
+                   `Connection : ${this.__connections[i].id} could not be converted to InterchangeV1`,
                     JSON.stringify(this.__connections[i]),
                 ));
             }
@@ -511,18 +511,27 @@ export default class Device {
 
     __valvesToInterchangeV1(errorList: Array<SerializationError>): Array<ValveInterchangeV1_2> {
         let output: Array<ValveInterchangeV1_2> = [];
-        this.__valveMap.forEach((target, valve) => {
-            let valve_type = this.__valveTypeMap.get(valve);
+        this.__valveMap.forEach((target, valveID) => {
+            let valve_type = this.__valveTypeMap.get(valveID);
             if(valve_type === undefined) {
-                console.error("Valve type not found for valve: " + valve + " , setting default to NORMALLY_OPEN");
+                console.warn("Valve type not found for valve: " + valveID + " , setting default to NORMALLY_OPEN");
                 valve_type = ValveType.NORMALLY_OPEN;
             }
-            output.push({
-                componentid: valve,
-                connectionid: target,
-                type: valve_type,
-                params: {}
-            });
+            try {
+                output.push({
+                    componentid: valveID,
+                    connectionid: target,
+                    type: valve_type,
+                    params: {}
+                });
+            } catch (e) {
+                console.error(e);
+                errorList.push(new SerializationError(
+                    e.message,
+                    `Valve : ${valveID}  could not be converted to InterchangeV1`,
+                    JSON.stringify(valveID),
+                ));
+            }
         });
         return output;
     }
@@ -553,7 +562,7 @@ export default class Device {
                 console.error(e);
                 errorList.push(new SerializationError(
                     e.message,
-                    "Layer " + this.__layers[i].name + " could not be converted to InterchangeV1",
+                    `Layer ${this.__layers[i].id} could not be converted to InterchangeV1`,
                     JSON.stringify(this.__layers[i])
                 ));
             }

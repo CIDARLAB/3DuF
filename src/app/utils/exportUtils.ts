@@ -31,7 +31,7 @@ export class SerializationError {
      * @type {*}
      * @memberof SerializationError
      */
-    public element: any;
+    public element: string;
 
     /**
      * The JSON data that was being processed when the error occurred.
@@ -41,17 +41,31 @@ export class SerializationError {
      */
     public jsonData: string;
 
-    constructor(message: string, element: any, jsonData: any) {
+    /**
+     * Creates an instance of SerializationError.
+     * @param {string} message
+     * @param {string} element
+     * @param {string} jsonData
+     * @memberof SerializationError
+     */
+    constructor(message: string, element: string, jsonData: string) {
         this.message = message;
         this.element = element;
         this.jsonData = jsonData;
     }
 
+    /**
+     * Converts the error to a string.
+     * suitable for display to the user. or in a log file.
+     *
+     * @returns {string}
+     * @memberof SerializationError
+     */
     toText(): string {
-        let ret = "Error: " + this.message + "\n";
-        ret += "Element: " + this.element + "\n";
+        let ret = `Error: ${this.message} \n`;
+        ret += `Element: ${this.element} \n`;
         ret += "\`\`\`\n";
-        ret += "JSON Data: " + this.jsonData + "\n";
+        ret += `JSON Data: ${this.jsonData} \n`;
         ret += "\`\`\`\n";
 
         return ret;

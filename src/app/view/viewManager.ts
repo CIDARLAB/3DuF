@@ -1717,8 +1717,8 @@ export default class ViewManager {
         if(this.currentDevice === null){
             throw new Error("No device loaded");
         }
-        let errorList: Array<SerializationError> = [];
-        let json = new Blob([JSON.stringify(this.generateExportJSON(errorList))], {
+        const errorList: Array<SerializationError> = [];
+        const json = new Blob([JSON.stringify(this.generateExportJSON(errorList))], {
             type: "application/json"
         });
         saveAs(json, this.currentDevice.name + ".json");
@@ -1729,7 +1729,7 @@ export default class ViewManager {
             for (const error of errorList) {
                 errorString += error.toText() + "\n\n";
             }
-            let errorBlob = new Blob([errorString], {
+            const errorBlob = new Blob([errorString], {
                 type: "text/plain"
             });
             saveAs(errorBlob, this.currentDevice.name + "_errors.txt");
