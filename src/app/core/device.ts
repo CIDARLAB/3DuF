@@ -477,6 +477,7 @@ export default class Device {
                 output.push(this.__components[i].toInterchangeV1());
             }
             catch (e) {
+                console.error(e);
                 errorList.push(new SerializationError(
                     e.message,
                     "Component " + this.__components[i].name + " could not be converted to InterchangeV1",
@@ -497,6 +498,7 @@ export default class Device {
             try {
                 output.push(this.__connections[i].toInterchangeV1());
             } catch (e) {
+                console.error(e);
                 errorList.push(new SerializationError(
                     e.message,
                     "Connection " + this.__connections[i].name + " could not be converted to InterchangeV1",
@@ -548,6 +550,7 @@ export default class Device {
             try {
                 output.push(this.__layers[i].toInterchangeV1());
             } catch (e) {
+                console.error(e);
                 errorList.push(new SerializationError(
                     e.message,
                     "Layer " + this.__layers[i].name + " could not be converted to InterchangeV1",
