@@ -88,10 +88,7 @@ export default {
     },
     methods: {
         downloadJSON() {
-            let json = new Blob([JSON.stringify(this.viewManagerRef.generateExportJSON())], {
-                type: "application/json"
-            });
-            saveAs(json, Registry.currentDevice.name + ".json");
+            this.viewManagerRef.downloadJSON();
         },
         downloadSVG() {
             let svgs = this.viewManagerRef.layersToSVGStrings();

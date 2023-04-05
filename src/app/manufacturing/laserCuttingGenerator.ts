@@ -34,7 +34,7 @@ export default class LaserCuttingGenerator {
      * @returns Returns the SVG data
      * @memberof LaserCuttingGenerator
      */
-    getSVGOutputs(): Map<String, string> {
+    getSVGOutputs(): Map<string, string> {
         return this.__svgData;
     }
 

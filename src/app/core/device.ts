@@ -20,6 +20,7 @@ import * as IOUtils from "../utils/ioUtils";
 import DeviceUtils from "@/app/utils/deviceUtils";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
+import { SerializationError } from "../utils/exportUtils";
 
 /**
  * The Device stores information about a design.
@@ -469,10 +470,20 @@ export default class Device {
      * @returns {Array<ComponentInterchangeV1>}
      * @memberof Device
      */
-    __componentsToInterchangeV1(): Array<ComponentInterchangeV1> {
+    __componentsToInterchangeV1(errorList: Array<SerializationError>): Array<ComponentInterchangeV1> {
         let output: Array<ComponentInterchangeV1> = [];
         for (let i in this.__components) {
-            output.push(this.__components[i].toInterchangeV1());
+            try {
+                output.push(this.__components[i].toInterchangeV1());
+            }
+            catch (e) {
+                console.error(e);
+                errorList.push(new SerializationError(
+                    e.message,
+                    `Component ${this.__components[i].id} could not be converted to InterchangeV1`,
+                    JSON.stringify(this.__components[i]),
+                ));
+            }
         }
         return output;
     }
@@ -481,28 +492,46 @@ export default class Device {
      * @returns {Array} Returns an array with the connections
      * @memberof Device
      */
-    __connectionToInterchangeV1(): Array<ConnectionInterchangeV1_2> {
+    __connectionToInterchangeV1(errorList: Array<SerializationError>): Array<ConnectionInterchangeV1_2> {
         let output: Array<ConnectionInterchangeV1_2> = [];
         for (let i in this.__connections) {
-            output.push(this.__connections[i].toInterchangeV1());
+            try {
+                output.push(this.__connections[i].toInterchangeV1());
+            } catch (e) {
+                console.error(e);
+                errorList.push(new SerializationError(
+                    e.message,
+                   `Connection : ${this.__connections[i].id} could not be converted to InterchangeV1`,
+                    JSON.stringify(this.__connections[i]),
+                ));
+            }
         }
         return output;
     }
 
-    __valvesToInterchangeV1(): Array<ValveInterchangeV1_2> {
+    __valvesToInterchangeV1(errorList: Array<SerializationError>): Array<ValveInterchangeV1_2> {
         let output: Array<ValveInterchangeV1_2> = [];
-        this.__valveMap.forEach((target, valve) => {
-            let valve_type = this.__valveTypeMap.get(valve);
+        this.__valveMap.forEach((target, valveID) => {
+            let valve_type = this.__valveTypeMap.get(valveID);
             if(valve_type === undefined) {
-                console.error("Valve type not found for valve: " + valve + " , setting default to NORMALLY_OPEN");
+                console.warn("Valve type not found for valve: " + valveID + " , setting default to NORMALLY_OPEN");
                 valve_type = ValveType.NORMALLY_OPEN;
             }
-            output.push({
-                componentid: valve,
-                connectionid: target,
-                type: valve_type,
-                params: {}
-            });
+            try {
+                output.push({
+                    componentid: valveID,
+                    connectionid: target,
+                    type: valve_type,
+                    params: {}
+                });
+            } catch (e) {
+                console.error(e);
+                errorList.push(new SerializationError(
+                    e.message,
+                    `Valve : ${valveID}  could not be converted to InterchangeV1`,
+                    JSON.stringify(valveID),
+                ));
+            }
         });
         return output;
     }
@@ -524,10 +553,19 @@ export default class Device {
      * @return {Array<LayerInterchangeV1>} Returns an array with the layers
      * @memberof Device
      */
-    __layersToInterchangeV1(): Array<LayerInterchangeV1> {
+    __layersToInterchangeV1(errorList: Array<SerializationError>): Array<LayerInterchangeV1> {
         const output: Array<LayerInterchangeV1> = [];
         for (const i in this.__layers) {
-            output.push(this.__layers[i].toInterchangeV1());
+            try {
+                output.push(this.__layers[i].toInterchangeV1());
+            } catch (e) {
+                console.error(e);
+                errorList.push(new SerializationError(
+                    e.message,
+                    `Layer ${this.__layers[i].id} could not be converted to InterchangeV1`,
+                    JSON.stringify(this.__layers[i])
+                ));
+            }
         }
         return output;
     }
@@ -579,7 +617,7 @@ export default class Device {
      * @returns {Device} Returns an Device object in Interchange V1 format
      * @memberof Device
      */
-    toInterchangeV1(): DeviceInterchangeV1 {
+    toInterchangeV1(errorList: Array<SerializationError>): DeviceInterchangeV1 {
         let output: DeviceInterchangeV1 = {
             name: this.__name,
             params: {
@@ -587,17 +625,17 @@ export default class Device {
                 length: this.getYSpan()
             },
             //TODO: Use this to dynamically create enough layers to scroll through
-            layers: this.__layersToInterchangeV1(),
-            components: this.__componentsToInterchangeV1(),
-            connections: this.__connectionToInterchangeV1(),
-            valves: this.__valvesToInterchangeV1(),
+            layers: this.__layersToInterchangeV1(errorList),
+            components: this.__componentsToInterchangeV1(errorList),
+            connections: this.__connectionToInterchangeV1(errorList),
+            valves: this.__valvesToInterchangeV1(errorList),
             version: "1",
             groups: this.__groupsToJSON()
         };
         return output;
     }
 
-    toInterchangeV1_1(): DeviceInterchangeV1_1 {
+    toInterchangeV1_1(errorList: Array<SerializationError>): DeviceInterchangeV1_1 {
         let output: DeviceInterchangeV1_1 = {
             name: this.__name,
             params: {
@@ -605,9 +643,9 @@ export default class Device {
                 length: this.getYSpan()
             },
             //TODO: Use this to dynamically create enough layers to scroll through
-            layers: this.__layersToInterchangeV1(),
-            components: this.__componentsToInterchangeV1(),
-            connections: this.__connectionToInterchangeV1(),
+            layers: this.__layersToInterchangeV1(errorList),
+            components: this.__componentsToInterchangeV1(errorList),
+            connections: this.__connectionToInterchangeV1(errorList),
             version: "1.1",
             groups: this.__groupsToJSON()
         };
