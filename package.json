@@ -8,7 +8,7 @@
     "browserify": "^16.2.2",
     "eslint": "^6.8.0",
     "jsdoc": "^3.6.7",
-    "node-sass": "^6.0.1",
+    "node-sass": "^9.0.0",
     "prettier": "1.19.1",
     "watchify": "^4.0.0"
   },
@@ -37,7 +37,7 @@
     "md5": "^2.2.1",
     "node-uuid": ">=1.4.3",
     "nouislider": "^11.1.0",
-    "npm": "^7.7.5",
+    "npm": "^9.8.0",
     "paper": "^0.12.3",
     "three": "^0.126.1",
     "trackjs": "^3.1.2",
