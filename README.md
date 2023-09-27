@@ -36,6 +36,12 @@ The design of microfluidic Lab on a Chip (LoC) systems is an onerous task requir
 
 [Instructions for installation, build, and test are in the wiki.](https://github.com/CIDARLAB/3DuF/wiki/Building-and-Testing-3DuF)
 
+For webpack-build run:
+```
+npm ci
+npm run vue-serve
+```
+
 ### Selecting and Configuring Feature Types
 
 Use the buttons in the menu (on the left) to select a feature type to place.
@@ -84,7 +90,7 @@ This will enable the API on port 6060. This can be verified by either going to `
 curl http://localhost:6060
 ```
 
-Alternatively you can install the dev version of the library if you want to debug it locally.
+Alternatively you can install the dev version of the library if you want to debug it locally. (Primitives Server)
 
 ```
 npm ci
