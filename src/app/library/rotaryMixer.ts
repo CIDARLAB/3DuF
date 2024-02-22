@@ -1,7 +1,9 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { LogicalLayerType } from "../core/init";
+import { LogicalLayerType, Point } from "../core/init";
+import FloatValue from "../core/parameters/floatValue";
+import Device from "../core/device";
 
 export default class RotaryMixer extends Template {
     constructor() {
@@ -22,7 +24,9 @@ export default class RotaryMixer extends Template {
             valveWidth: "Float",
             valveLength: "Float",
             valveSpacing: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorX: "Float",
+            mirrorY: "Float"
         };
 
         this.__defaults = {
@@ -35,7 +39,9 @@ export default class RotaryMixer extends Template {
             valveLength: 1 * 1000,
             valveSpacing: 300,
             valveRadius: 1.2 * 1000,
-            height: 250
+            height: 250,
+            mirrorX: 0,
+            mirrorY: 0
         };
 
         this.__units = {
@@ -60,7 +66,9 @@ export default class RotaryMixer extends Template {
             valveSpacing: 0.1 * 300,
             valveRadius: 0.1 * 1.2 * 1000,
             height: 0.1 * 200,
-            rotation: 0
+            rotation: 0,
+            mirrorX: 0,
+            mirrorY: 0
         };
 
         this.__maximum = {
@@ -73,7 +81,9 @@ export default class RotaryMixer extends Template {
             valveSpacing: 10 * 300,
             valveRadius: 10 * 1.2 * 1000,
             height: 10 * 200,
-            rotation: 360
+            rotation: 360,
+            mirrorX: 1,
+            mirrorY: 1
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -92,7 +102,9 @@ export default class RotaryMixer extends Template {
             valveWidth: "valveWidth",
             valveLength: "valveLength",
             valveSpacing: "valveSpacing",
-            height: "height"
+            height: "height",
+            mirrorX: "mirrorX",
+            mirrorY: "mirrorY"
         };
 
         this.__targetParams = {
@@ -105,7 +117,9 @@ export default class RotaryMixer extends Template {
             valveWidth: "valveWidth",
             valveLength: "valveLength",
             valveSpacing: "valveSpacing",
-            height: "height"
+            height: "height",
+            mirrorX: "mirrorX",
+            mirrorY: "mirrorY"
         };
 
         this.__renderKeys = ["FLOW", "CONTROL"];
@@ -124,12 +138,18 @@ export default class RotaryMixer extends Template {
     }
 
     getPorts(params: { [k: string]: any }) {
+        const position = params.position;
         const radius = params.radius;
         const valvespacing = params.valveSpacing;
         const valvelength = params.valveLength;
         const valvewidth = params.valveWidth;
         const flowChannelWidth = params.flowChannelWidth; // params["flowChannelWidth"];
+        const mirrorX = params.mirrorX;
+        const mirrorY = params.mirrorY;
         const channellength = radius + valvelength + 2 * valvespacing + flowChannelWidth; // This needs to be a real expression
+        const px = position[0];
+        const py = position[1];
+        const center = new paper.Point(px, py);
 
         const ports = [];
 
@@ -140,7 +160,7 @@ export default class RotaryMixer extends Template {
         ports.push(
             new ComponentPort(radius + flowChannelWidth + valvespacing + valvelength / 2, -radius - flowChannelWidth / 2 - valvewidth, "3", LogicalLayerType.CONTROL)
         );
-        // top bottom
+        // top middle
         ports.push(new ComponentPort(0, -radius - flowChannelWidth / 2 - valvewidth, "4", LogicalLayerType.CONTROL));
         // middle right
         ports.push(new ComponentPort(flowChannelWidth / 2 + radius + valvewidth, 0, "5", LogicalLayerType.CONTROL));
@@ -151,8 +171,11 @@ export default class RotaryMixer extends Template {
             new ComponentPort(-radius - valvespacing - valvelength - flowChannelWidth / 2, radius + flowChannelWidth / 2 + valvewidth, "7", LogicalLayerType.CONTROL)
         );
 
+        this.mirrorPorts(params,ports)
+
         return ports;
     }
+
 
     render2D(params: { [k: string]: any }, key: string) {
         if (key === "FLOW") {
@@ -188,6 +211,8 @@ export default class RotaryMixer extends Template {
         const py = position[1];
         const center = new paper.Point(px, py);
         const channellength = radius + valvelength + 2 * valvespacing + flowChannelWidth; // This needs to be a real expression
+        const mirrorX = params.mirrorX;
+        const mirrorY = params.mirrorY;
 
         const rotarymixer = new paper.CompoundPath("");
 
@@ -195,6 +220,8 @@ export default class RotaryMixer extends Template {
         const outercirc = new paper.Path.Circle(center, radius + flowChannelWidth);
 
         let rotary = outercirc.subtract(innercirc);
+
+        //removes the rectangles from the rotary(circle) where the valves will be
 
         let topleft = new paper.Point(px - valvelength / 2, py - radius - flowChannelWidth / 2 - valvewidth / 2);
         const topmiddlerectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
@@ -210,14 +237,17 @@ export default class RotaryMixer extends Template {
 
         rotarymixer.addChild(rotary);
 
+        //Render the flow connection leaving the rotary
         const point1 = new paper.Point(px, py - radius - flowChannelWidth);
         const point2 = new paper.Point(px + channellength, py - radius);
         let rectangle: paper.Path.Rectangle | paper.PathItem = new paper.Path.Rectangle(point1, point2);
 
+        //Remove from the connection (rectangle) where the top right valve will be
         topleft = new paper.Point(px + radius + flowChannelWidth + valvespacing, py - radius - flowChannelWidth / 2 - valvewidth / 2);
-        const topleftrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
-        rectangle = rectangle.subtract(topleftrectangle);
+        const toprightrectangle = new paper.Path.Rectangle(topleft, new paper.Size(valvelength, valvewidth));
+        rectangle = rectangle.subtract(toprightrectangle);
 
+        //Remove from the connection (rectangle) where the top middle valve will be
         rectangle = rectangle.subtract(topmiddlerectangle);
 
         rotarymixer.addChild(rectangle);
@@ -232,10 +262,18 @@ export default class RotaryMixer extends Template {
 
         rectangle2 = rectangle2.subtract(bottommiddlerectangle);
 
+        //Rectangle that represents the flow connection entering the mixer
         rotarymixer.addChild(rectangle2);
 
         rotarymixer.fillColor = color;
         rotarymixer.rotate(rotation, new paper.Point(px, py));
+
+        if(mirrorX == 1){
+            rotarymixer.scale(-1,1, new paper.Point(px,py))
+        }
+        if(mirrorY == 1){
+            rotarymixer.scale(1,-1, new paper.Point(px,py))
+        }
         return rotarymixer;
     }
 
@@ -249,6 +287,8 @@ export default class RotaryMixer extends Template {
         const valvewidth = params.valveWidth;
         const flowChannelWidth = params.flowChannelWidth;
         const controlChannelWidth = params.controlChannelWidth; // params["flowChannelWidth"];
+        const mirrorX = params.mirrorX;
+        const mirrorY = params.mirrorY;
         const px = position[0];
         const py = position[1];
 
@@ -303,6 +343,12 @@ export default class RotaryMixer extends Template {
 
         rotarymixer.fillColor = color;
         rotarymixer.rotate(rotation, new paper.Point(px, py));
+        if(mirrorX == 1){
+            rotarymixer.scale(-1,1, new paper.Point(px,py))
+        }
+        if(mirrorY == 1){
+            rotarymixer.scale(1,-1, new paper.Point(px,py))
+        }
         return rotarymixer;
     }
 }

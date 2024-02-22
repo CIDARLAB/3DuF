@@ -332,10 +332,13 @@ export default class Template {
      */
     render2D(params: { [key: string]: any }, key: string): ToolPaperObject {
         console.error("Default component template being used. User needs to provide method for component definition, look at examples");
+
+        const xspan = params.xspan;
+        const yspan = params.yspan;
         const x = params.position[0];
         const y = params.position[1];
 
-        const rect =  new paper.Path.Rectangle(new paper.Point(x - 100, y - 100), new paper.Size(5000, 5000));
+        const rect =  new paper.Path.Rectangle(new paper.Point(x - xspan / 2, y - yspan / 2), new paper.Size(xspan, yspan));
         rect.fillColor = params.color;
         return rect;
     }
@@ -405,7 +408,12 @@ export default class Template {
      * @memberof Template
      */
     getDimensions(params: { [key: string]: any }): { xspan: any; yspan: any } {
+
         // TODO -  Figure out a workaround for this
+
+        // console.log("arsenal");
+        // return {xspan: 1, yspan: 1};
+
         if (PRIMITIVES_SERVER) {
             paper.setup(new paper.Size([64000, 48000]));
         }
@@ -442,5 +450,32 @@ export default class Template {
         const x_new = position[0] - positionUnitedBounds.topLeft.x;
         const y_new = position[1] - positionUnitedBounds.topLeft.y;
         return [x_new, y_new];
+    }
+
+
+    /**
+     * Mirrors the position of ports based on geometric center
+     *  
+     *
+     * 
+     * 
+     * 
+     */
+    mirrorPorts(params: { [key: string]: any }, ports: ComponentPort[]){
+        const offset = this.getDrawOffset(params);
+        const dimensions = this.getDimensions(params);
+        const geoCenter = [-offset[0] + dimensions.xspan / 2, -offset[1] + dimensions.yspan / 2]; //geoCenter is relative to draw center
+        const mirrorX = params.mirrorX;
+        const mirrorY = params.mirrorY;
+
+        for(let i=0;i<ports.length;i++){
+            const displacement = [ports[i].x - geoCenter[0],ports[i].y - geoCenter[1]]
+            if(mirrorX){
+                ports[i].x = geoCenter[0] - displacement[0]
+            }
+            if(mirrorY){
+                ports[i].y = geoCenter[1] - displacement[1]
+            }
+        }
     }
 }

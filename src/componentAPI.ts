@@ -47,6 +47,8 @@ import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
 import ToroidalMixer from "./app/library/toroidalMixer";
 import DogboneInsert from "./app/library/dogboneInsert";
+import BlackBox  from "./app/library/blackBox";
+import Test from "./app/library/test"
 
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
@@ -56,6 +58,7 @@ import FeatureTemplate from "./app/library/geometricElements/featureTemplate";
 import NormallyClosedValveCrescents from "./app/library/geometricElements/normallyClosedValveCrecents";
 import NormallyClosedValveModificationsGap from "./app/library/geometricElements/normallyClosedValveGap";
 import { ValveType } from "./app/core/init";
+import { test } from "mocha";
 
 export var PRIMITIVES_SERVER = false;
 
@@ -168,6 +171,8 @@ export class ComponentAPI {
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" },
+        Black_Box: { object: new BlackBox(), key: "FLOW"},
+        Test: { object: new Test(), key: "FLOW"},
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {
@@ -478,12 +483,14 @@ export class ComponentAPI {
      */
     static getRendererForMINT(minttype: string): Template {
         // Go through all the objects in the library and return the one that matches the minttype
+        console.log("getRendererForMINT")
         for (const key in ComponentAPI.library) {
             if (ComponentAPI.library[key].object.mint === minttype) {
-                console.log("Renderer: ", ComponentAPI.library[key].object);
                 return ComponentAPI.library[key].object;
             }
         }
+        
+        return ComponentAPI.library["BlackBox"].object
         throw new Error("Component Type definition: " + minttype + " not found in library");
     }
 

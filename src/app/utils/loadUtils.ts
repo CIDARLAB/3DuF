@@ -562,10 +562,16 @@ export default class LoadUtils {
      * @memberof LoadUtils
      */
     static loadComponentFromInterchangeV1(json: ComponentInterchangeV1): Component {
-        const iscustomcompnent = false;
+        let iscustomcomponent;
         const name = json.name;
         const id = json.id;
         const entity = json.entity;
+
+        if (ComponentAPI.getComponentWithMINT(entity) === null) {
+            iscustomcomponent = true;
+        } else {
+            iscustomcomponent = false;
+        }
 
         // Idk whether this is correct
         // It was originially this._span = this.span which threw several errors so I patterned in off the above const var
@@ -573,16 +579,20 @@ export default class LoadUtils {
         const yspan = json["y-span"];
 
         const params = json.params;
+        console.log("Params here")
+        console.log(params)
 
         // TODO - remove this dependency
-        // iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);
+        // iscustomcomponent = Registry.viewManager.customComponentManager.hasDefinition(entity);
 
         let definition;
 
-        if (iscustomcompnent) {
+        if (iscustomcomponent) {
+            //Grab the black box definition (Eric) !!!
             definition = CustomComponent.defaultParameterDefinitions();
         } else {
             definition = ComponentAPI.getDefinitionForMINT(entity);
+
         }
 
         if (definition === null) {
@@ -598,6 +608,7 @@ export default class LoadUtils {
         let type;
         let value;
         for (const key in json.params) {
+            //What does this do (Eric)?
             if (Object.prototype.hasOwnProperty.call(definition.heritable, key)) {
                 type = definition.heritable[key];
             } else if (Object.prototype.hasOwnProperty.call(definition.unique, key)) {
@@ -618,11 +629,19 @@ export default class LoadUtils {
         if (!Object.prototype.hasOwnProperty.call(params, "position")) {
             params.position = [0.0, 0.0];
         }
+
+        //What is this doing? (Eric)
         const unique_map = MapUtils.toMap(definition.unique);
         const heritable_map = MapUtils.toMap(definition.heritable);
+        //Assuming I just have to change the params to match the black box params (Eric) !!!
         const paramstoadd = new Params(params, unique_map, heritable_map);
+        //Creates component based off entity (Eric)
+        //Just change the entity to black box if is custom component (Eric) !!!
+        //Also change the paramstoadd to match params of black box (Eric) !!!
         const component = new Component(paramstoadd, name, entity, id);
 
+        //Create a new function to load component ports for black box (Eric) !!!?
+        //How to deal with different numbers of ports and placements between custom components
         // Deserialize the component ports
         const portdata = new Map();
         for (const i in json.ports) {
@@ -631,6 +650,9 @@ export default class LoadUtils {
         }
 
         component.ports = portdata;
+
+        console.log("Component here")
+        console.log(component)
 
         return component;
     }

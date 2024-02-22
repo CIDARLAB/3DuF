@@ -20,7 +20,8 @@ export default class CurvedMixer extends Template {
             channelWidth: "Float",
             bendLength: "Float",
             rotation: "Float",
-            height: "Float"
+            height: "Float",
+            mirror: "Float"
         };
 
         this.__defaults = {
@@ -30,7 +31,8 @@ export default class CurvedMixer extends Template {
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
             bendLength: 2.46 * 1000,
-            height: 250
+            height: 250,
+            mirror: 0
         };
 
         this.__units = {
@@ -50,7 +52,8 @@ export default class CurvedMixer extends Template {
             bendSpacing: 10,
             numberOfBends: 1,
             bendLength: 10,
-            height: 10
+            height: 10,
+            mirror: 0
         };
 
         this.__maximum = {
@@ -60,7 +63,8 @@ export default class CurvedMixer extends Template {
             bendSpacing: 6000,
             numberOfBends: 20,
             bendLength: 12 * 1000,
-            height: 1200
+            height: 1200,
+            mirror: 1
         };
 
         this.__featureParams = {
@@ -152,7 +156,7 @@ export default class CurvedMixer extends Template {
             leftCurveSmall.closed = true;
             leftCurve = leftCurve.subtract(leftCurveSmall);
             toprect = toprect.unite(leftCurve);
-            // serp.addChild(leftCurve);
+            //serp.addChild(leftCurve);
             // draw horizontal segment
             let hseg = new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth - 1, y + vOffset + vRepeat * i, bendLength + 2, channelWidth));
             toprect = toprect.unite(hseg);
@@ -187,6 +191,11 @@ export default class CurvedMixer extends Template {
 
         serp.fillColor = color;
         serp.rotate(rotation, new paper.Point(x, y));
+
+        if(params.mirror == 1){
+            serp.scale(-1,1)
+        }
+
         return serp;
     }
 
@@ -196,6 +205,7 @@ export default class CurvedMixer extends Template {
         }
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
+
         return render;
     }
 }

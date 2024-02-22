@@ -1,3 +1,11 @@
+(function() {
+    var call = Function.prototype.call;
+    Function.prototype.call = function() {
+        console.log(this, arguments);
+        return call.apply(this, arguments);
+    };
+}());
+
 <template>
     <v-app id="3duf">
         <LayoutSidebar />

@@ -182,6 +182,7 @@ export default class Component {
      */
     toInterchangeV1(): ComponentInterchangeV1 {
         const bounds = this.getBoundingRectangle();
+        //this.setBounds(bounds)
 
         const portdata: Array<ComponentPortInterchangeV1> = [];
         const map: Map<string, ComponentPort> = this.ports;
@@ -200,8 +201,8 @@ export default class Component {
             name: this._name,
             entity: this._entity,
             params: this._params.toJSON(),
-            "x-span": this._xspan,
-            "y-span": this._yspan,
+            "x-span": bounds.width,
+            "y-span": bounds.height,
             ports: portdata,
             layers: this.findLayerReferences()
         };
@@ -334,6 +335,9 @@ export default class Component {
         let bounds = null;
         for (const featureid of this._featureIDs) {
             const render = ComponentUtils.getRenderedFeature(featureid);
+            console.log(render);
+            console.log(featureid);
+            console.log(render.bounds);
             if (bounds && render) {
                 bounds = bounds.unite(render.bounds);
             } else {

@@ -20,7 +20,9 @@ export default class LLChamber extends Template {
             height: "Float",
             rotation: "Float",
             spacing: "Float",
-            numberOfChambers: "Integer"
+            numberOfChambers: "Integer",
+            mirrorX: "Float",
+            mirrorY: "Float"
         };
 
         this.__defaults = {
@@ -30,7 +32,9 @@ export default class LLChamber extends Template {
             height: 250,
             spacing: 2000,
             numberOfChambers: 4,
-            rotation: 0
+            rotation: 0,
+            mirrorX: 0,
+            mirrorY: 0
         };
 
         this.__units = {
@@ -50,7 +54,9 @@ export default class LLChamber extends Template {
             height: 1,
             spacing: 1,
             numberOfChambers: 1,
-            rotation: 0
+            rotation: 0,
+            mirrorX: 0,
+            mirrorY: 0
         };
 
         this.__maximum = {
@@ -60,7 +66,9 @@ export default class LLChamber extends Template {
             height: 50000,
             numberOfChambers: 1000,
             spacing: 50000,
-            rotation: 360
+            rotation: 360,
+            mirrorX: 1,
+            mirrorY: 1
         };
 
         this.__featureParams = {
@@ -71,7 +79,9 @@ export default class LLChamber extends Template {
             height: "height",
             numberOfChambers: "numberOfChambers",
             spacing: "spacing",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorX: "mirrorX",
+            mirrorY: "mirrorY"
         };
 
         this.__targetParams = {
@@ -82,7 +92,9 @@ export default class LLChamber extends Template {
             height: "height",
             numberOfChambers: "numberOfChambers",
             spacing: "spacing",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorX: "mirrorX",
+            mirrorY: "mirrorY"
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -112,6 +124,8 @@ export default class LLChamber extends Template {
         const w = params.width;
         const rotation = params.rotation;
         const color = params.color;
+        const mirrorX = params.mirrorX;
+        const mirrorY = params.mirrorY;
         // let radius = params["cornerRadius"];
 
         const numArray = params.numberOfChambers;
@@ -141,6 +155,11 @@ export default class LLChamber extends Template {
 
         ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing, 0.8 * l, "7", LogicalLayerType.CONTROL));
 
+        this.mirrorPorts(params,ports)
+
+        console.log("llchamber offset")
+        console.log(this.getDrawOffset(params))
+
         return ports;
     }
 
@@ -156,6 +175,9 @@ export default class LLChamber extends Template {
 
         const numArray = params.numberOfChambers;
         const spacing = params.spacing;
+
+        const mirrorX = params.mirrorX;
+        const mirrorY = params.mirrorY;
 
         const rendered = new paper.CompoundPath("");
 
@@ -187,6 +209,12 @@ export default class LLChamber extends Template {
 
         rendered.fillColor = color;
         rendered.rotate(rotation, new paper.Point(px, py)); 
+        if(mirrorX == 1){
+            rendered.scale(-1,1)
+        }
+        if(mirrorY == 1){
+            rendered.scale(1,-1)
+        }
         return rendered;
     }
 
@@ -203,6 +231,9 @@ export default class LLChamber extends Template {
 
         const numArray = params.numberOfChambers;
         const spacing = params.spacing;
+
+        const mirrorX = params.mirrorX;
+        const mirrorY = params.mirrorY;
 
         const topchannel = new paper.Path.Rectangle({
             point: new paper.Point(px, py + 0.2 * l - w / 2),
@@ -227,6 +258,12 @@ export default class LLChamber extends Template {
 
         rendered.fillColor = color;
         rendered.rotate(rotation, new paper.Point(px, py));
+        if(mirrorX == 1){
+            rendered.scale(-1,1)
+        }
+        if(mirrorY == 1){
+            rendered.scale(1,-1)
+        }
         return rendered;
     }
 
