@@ -163,8 +163,6 @@ export default class ToroidalMixer extends Template {
                 )
             );
         }
-        this.mirrorPorts(params,ports);
-
         return ports;
     }
 

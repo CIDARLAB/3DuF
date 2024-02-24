@@ -451,33 +451,6 @@ export default class Template {
         return [x_new, y_new];
     }
 
-
-    /**
-     * Mirrors the position of ports based on geometric center
-     *  
-     *
-     * 
-     * 
-     * 
-     */
-    mirrorPorts(params: { [key: string]: any }, ports: ComponentPort[]){
-        // const offset = this.getDrawOffset(params);
-        // const dimensions = this.getDimensions(params);
-        // const geoCenter = [-offset[0] + dimensions.xspan / 2, -offset[1] + dimensions.yspan / 2]; //geoCenter is relative to draw center
-        const mirrorByX = params.mirrorByX;
-        const mirrorByY = params.mirrorByY;
-
-        for(let i=0;i<ports.length;i++){
-            // const displacement = [ports[i].x - geoCenter[0],ports[i].y - geoCenter[1]]
-            if(mirrorByX){
-                ports[i].x = -ports[i].x;
-            }
-            if(mirrorByY){
-                ports[i].y = -ports[i].y;
-            }
-        }
-    }
-
     mirrorRender(params: { [key: string]: any }, render: paper.CompoundPath) {
         const mirrorX = params.mirrorByX;
         const mirrorY = params.mirrorByY;

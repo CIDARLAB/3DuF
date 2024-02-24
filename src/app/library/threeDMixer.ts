@@ -128,8 +128,6 @@ export default class ThreeDMixer extends Template {
 
         ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", LogicalLayerType.FLOW));
 
-        this.mirrorPorts(params,ports);
-
         return ports;
     }
 

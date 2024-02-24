@@ -559,6 +559,34 @@ export default class Component {
         }
     }
 
+        /**
+     * Gets the mirrorByX of the component
+     * @returns {Number} Returns the degree of rotation
+     * @memberof Component
+     */
+        getMirrorByX(): number {
+            if (this._params.hasParam("mirrorByX")) {
+                return this.getValue("mirrorByX");
+            } else {
+                console.warn("Returning mirrorByX = 0 since no rotation was found for component: ", this);
+                return 0;
+            }
+        }
+
+         /**
+     * Gets the mirrorByY of the component
+     * @returns {Number} Returns the degree of rotation
+     * @memberof Component
+     */
+         getMirrorByY(): number {
+            if (this._params.hasParam("mirrorByY")) {
+                return this.getValue("mirrorByY");
+            } else {
+                console.warn("Returning mirrorByY = 0 since no rotation was found for component: ", this);
+                return 0;
+            }
+        }
+
     /**
      *
      * @param {string} label

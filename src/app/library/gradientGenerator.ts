@@ -179,8 +179,6 @@ export default class GradientGenerator extends Template {
             ports.push(new ComponentPort(x, yref + channelWidth, (invalue + 1 + i).toString(), LogicalLayerType.FLOW));
         }
 
-        this.mirrorPorts(params,ports);
-
         return ports;
     }
 

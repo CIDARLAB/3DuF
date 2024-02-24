@@ -133,8 +133,6 @@ export default class Transposer extends Template {
 
         ports.push(new ComponentPort(-2 * radius - channelWidth / 2, channelWidth + 2 * valvespacing + 2 * radius, "5", LogicalLayerType.CONTROL));
         ports.push(new ComponentPort(5 * valvespacing + 6 * radius + 3 * channelWidth, channelWidth + 2 * valvespacing + 2 * radius, "6", LogicalLayerType.CONTROL));
-
-        this.mirrorPorts(params,ports);
         return ports;
     }
 

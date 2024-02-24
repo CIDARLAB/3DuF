@@ -154,10 +154,6 @@ export default class LLChamber extends Template {
 
         ports.push(new ComponentPort(numArray * w + (numArray + 1) * spacing, 0.8 * l, "7", LogicalLayerType.CONTROL));
 
-        this.mirrorPorts(params,ports)
-
-        console.log("llchamber offset")
-        console.log(this.getDrawOffset(params))
 
         return ports;
     }

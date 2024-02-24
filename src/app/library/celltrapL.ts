@@ -137,7 +137,6 @@ export default class CellTrapL extends Template {
 
         ports.push(new ComponentPort((numChambers / 2) * (chamberWidth + chamberSpacing) + chamberSpacing, chamberLength + feedingChannelWidth / 2, "2", LogicalLayerType.FLOW));
 
-        this.mirrorPorts(params,ports)
         return ports;
     }
 

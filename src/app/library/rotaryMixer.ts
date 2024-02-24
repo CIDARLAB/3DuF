@@ -169,7 +169,7 @@ export default class RotaryMixer extends Template {
             new ComponentPort(-radius - valvespacing - valvelength - flowChannelWidth / 2, radius + flowChannelWidth / 2 + valvewidth, "7", LogicalLayerType.CONTROL)
         );
 
-        this.mirrorPorts(params,ports)
+        // this.mirrorPorts(params,ports)
 
         return ports;
     }
