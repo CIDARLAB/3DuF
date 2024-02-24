@@ -1,9 +1,9 @@
 import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
-import { LogicalLayerType  } from "../core/init";
+import { LogicalLayerType } from "../core/init";
 
-export default class BetterMixer extends Template {
+export default class CurvedMixer extends Template {
     constructor() {
         super();
     }
@@ -20,53 +20,55 @@ export default class BetterMixer extends Template {
             channelWidth: "Float",
             bendLength: "Float",
             rotation: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 1000,
+            rotation: 0,
             channelWidth: 0.8 * 1000,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
-            rotation: 0,
             bendLength: 2.46 * 1000,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
             componentSpacing: "μm",
+            rotation: "°",
             bendSpacing: "μm",
             numberOfBends: "",
             channelWidth: "μm",
             bendLength: "μm",
-            rotation: "°",
             height: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
+            rotation: 0,
             channelWidth: 10,
             bendSpacing: 10,
             numberOfBends: 1,
-            rotation: 0,
             bendLength: 10,
-            height: 10
+            height: 10,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
             componentSpacing: 10000,
+            rotation: 360,
             channelWidth: 2000,
             bendSpacing: 6000,
             numberOfBends: 20,
-            rotation: 360,
             bendLength: 12 * 1000,
-            height: 1200
-        };
-
-        this.__placementTool = "componentPositionTool";
-
-        this.__toolParams = {
-            cursorPosition: "position"
+            height: 1200,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -76,7 +78,9 @@ export default class BetterMixer extends Template {
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
-            bendLength: "bendLength"
+            bendLength: "bendLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -85,7 +89,15 @@ export default class BetterMixer extends Template {
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
-            bendLength: "bendLength"
+            bendLength: "bendLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
+        };
+
+        this.__placementTool = "componentPositionTool";
+
+        this.__toolParams = {
+            position: "position"
         };
 
         this.__renderKeys = ["FLOW"];
@@ -107,17 +119,14 @@ export default class BetterMixer extends Template {
         const bendSpacing = params.bendSpacing;
         const rotation = params.rotation;
         const numberOfBends = params.numberOfBends;
-
         const ports = [];
-
         ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", LogicalLayerType.FLOW));
-
         ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", LogicalLayerType.FLOW));
-
+        this.mirrorPorts(params,ports)
         return ports;
     }
 
-    render2D(params: { [k: string]: any }, key: string): paper.CompoundPath  {
+    render2D(params: { [k: string]: any }, key: string) {
         const channelWidth = params.channelWidth;
         const bendLength = params.bendLength;
         const bendSpacing = params.bendSpacing;
@@ -149,15 +158,16 @@ export default class BetterMixer extends Template {
         }
 
         serp.fillColor = color;
+        this.mirrorRender(params,serp);
         return (serp.rotate(rotation, new paper.Point(x, y)) as unknown) as paper.CompoundPath;
     }
 
-    render2DTarget(key: string | null, params: { [k: string]: any }): paper.CompoundPath  {
+    render2DTarget(key: string | null, params: { [k: string]: any }) {
         if (key === null) {
             key = this.__renderKeys[0];
         }
-        const serp = this.render2D(params, key);
-        serp.fillColor!.alpha = 0.5;
-        return serp;
+        const render = this.render2D(params, key);
+        render.fillColor!.alpha = 0.5;
+        return render;
     }
 }

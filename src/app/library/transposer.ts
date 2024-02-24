@@ -21,7 +21,8 @@ export default class Transposer extends Template {
             valveGap: "Float",
             valveSpacing: "Float",
             flowChannelWidth: "Float",
-            controlChannelWidth: "Float"
+            controlChannelWidth: "Float",
+            mirrorX: "Float"
         };
 
         this.__defaults = {
@@ -32,7 +33,8 @@ export default class Transposer extends Template {
             valveGap: 0.6 * 1000,
             valveSpacing: 0.6 * 1000,
             flowChannelWidth: 500,
-            controlChannelWidth: 500
+            controlChannelWidth: 500,
+            mirrorX: 0
         };
 
         this.__units = {
@@ -54,7 +56,8 @@ export default class Transposer extends Template {
             valveSpacing: 0.1 * 1000,
             flowChannelWidth: 0.1,
             controlChannelWidth: 0.1,
-            rotation: 0
+            rotation: 0,
+            mirrorX: 0
         };
 
         this.__maximum = {
@@ -65,7 +68,8 @@ export default class Transposer extends Template {
             valveSpacing: 0.1 * 10000,
             flowChannelWidth: 0.1 * 10000,
             controlChannelWidth: 0.1 * 10000,
-            rotation: 360
+            rotation: 360,
+            mirrorX: 1
         };
 
         this.__featureParams = {
@@ -76,7 +80,8 @@ export default class Transposer extends Template {
             valveGap: "valveGap",
             valveSpacing: "valveSpacing",
             flowChannelWidth: "flowChannelWidth",
-            controlChannelWidth: "controlChannelWidth"
+            controlChannelWidth: "controlChannelWidth",
+            mirrorX: "mirrorX"
         };
 
         this.__targetParams = {
@@ -87,7 +92,8 @@ export default class Transposer extends Template {
             valveGap: "valveGap",
             valveSpacing: "valveSpacing",
             flowChannelWidth: "flowChannelWidth",
-            controlChannelWidth: "controlChannelWidth"
+            controlChannelWidth: "controlChannelWidth",
+            mirrorX: "mirrorX"
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -128,6 +134,7 @@ export default class Transposer extends Template {
         ports.push(new ComponentPort(-2 * radius - channelWidth / 2, channelWidth + 2 * valvespacing + 2 * radius, "5", LogicalLayerType.CONTROL));
         ports.push(new ComponentPort(5 * valvespacing + 6 * radius + 3 * channelWidth, channelWidth + 2 * valvespacing + 2 * radius, "6", LogicalLayerType.CONTROL));
 
+        this.mirrorPorts(params,ports);
         return ports;
     }
 
@@ -165,6 +172,8 @@ export default class Transposer extends Template {
 
         const px = position[0];
         const py = position[1];
+
+        const mirrorX = params.mirrorX;
 
         // Draw top left channel
         let topleftpoint = new paper.Point(px, py - channelWidth / 2);
@@ -261,6 +270,11 @@ export default class Transposer extends Template {
 
         transposer_flow.rotate(rotation, new paper.Point(px + 3 * valvespacing + 1.5 * channelWidth + 2 * radius, py + channelWidth + 2 * valvespacing + 2 * radius));
 
+        if(mirrorX){
+            transposer_flow.scale(-1,1,new paper.Point(px,py));
+        }
+        
+
         return transposer_flow;
     }
 
@@ -315,6 +329,8 @@ export default class Transposer extends Template {
 
         const px = position[0];
         const py = position[1];
+
+        const mirrorX = params.mirrorX;
 
         // Top right valve
         let center = new paper.Point(px + 4 * valvespacing + 2 * channelWidth + 2 * radius + radius, py);
@@ -409,6 +425,10 @@ export default class Transposer extends Template {
         transposer_control.addChild(rectangle);
 
         transposer_control.rotate(rotation, new paper.Point(px + 3 * valvespacing + 1.5 * channelWidth + 2 * radius, py + channelWidth + 2 * valvespacing + 2 * radius));
+
+        if(mirrorX){
+            transposer_control.scale(-1,1,new paper.Point(px,py));
+        }
 
         transposer_control.fillColor = color;
         return transposer_control;

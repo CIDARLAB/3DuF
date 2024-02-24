@@ -21,7 +21,8 @@ export default class CurvedMixer extends Template {
             bendLength: "Float",
             rotation: "Float",
             height: "Float",
-            mirror: "Float"
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -32,7 +33,8 @@ export default class CurvedMixer extends Template {
             numberOfBends: 1,
             bendLength: 2.46 * 1000,
             height: 250,
-            mirror: 0
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -53,7 +55,8 @@ export default class CurvedMixer extends Template {
             numberOfBends: 1,
             bendLength: 10,
             height: 10,
-            mirror: 0
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -64,7 +67,8 @@ export default class CurvedMixer extends Template {
             numberOfBends: 20,
             bendLength: 12 * 1000,
             height: 1200,
-            mirror: 1
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -74,7 +78,9 @@ export default class CurvedMixer extends Template {
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
-            bendLength: "bendLength"
+            bendLength: "bendLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -83,7 +89,9 @@ export default class CurvedMixer extends Template {
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
-            bendLength: "bendLength"
+            bendLength: "bendLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -116,6 +124,8 @@ export default class CurvedMixer extends Template {
         ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", LogicalLayerType.FLOW));
 
         ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", LogicalLayerType.FLOW));
+
+        this.mirrorPorts(params,ports);
 
         return ports;
     }
@@ -192,9 +202,7 @@ export default class CurvedMixer extends Template {
         serp.fillColor = color;
         serp.rotate(rotation, new paper.Point(x, y));
 
-        if(params.mirror == 1){
-            serp.scale(-1,1)
-        }
+        this.mirrorRender(params,serp);
 
         return serp;
     }

@@ -2,6 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType  } from "../core/init";
+import { Point } from "paper/dist/paper-core";
 
 export default class LLChamber extends Template {
     constructor() {
@@ -21,8 +22,8 @@ export default class LLChamber extends Template {
             rotation: "Float",
             spacing: "Float",
             numberOfChambers: "Integer",
-            mirrorX: "Float",
-            mirrorY: "Float"
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -33,8 +34,8 @@ export default class LLChamber extends Template {
             spacing: 2000,
             numberOfChambers: 4,
             rotation: 0,
-            mirrorX: 0,
-            mirrorY: 0
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -55,8 +56,8 @@ export default class LLChamber extends Template {
             spacing: 1,
             numberOfChambers: 1,
             rotation: 0,
-            mirrorX: 0,
-            mirrorY: 0
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -67,8 +68,8 @@ export default class LLChamber extends Template {
             numberOfChambers: 1000,
             spacing: 50000,
             rotation: 360,
-            mirrorX: 1,
-            mirrorY: 1
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -80,8 +81,8 @@ export default class LLChamber extends Template {
             numberOfChambers: "numberOfChambers",
             spacing: "spacing",
             rotation: "rotation",
-            mirrorX: "mirrorX",
-            mirrorY: "mirrorY"
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -93,8 +94,8 @@ export default class LLChamber extends Template {
             numberOfChambers: "numberOfChambers",
             spacing: "spacing",
             rotation: "rotation",
-            mirrorX: "mirrorX",
-            mirrorY: "mirrorY"
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -124,8 +125,6 @@ export default class LLChamber extends Template {
         const w = params.width;
         const rotation = params.rotation;
         const color = params.color;
-        const mirrorX = params.mirrorX;
-        const mirrorY = params.mirrorY;
         // let radius = params["cornerRadius"];
 
         const numArray = params.numberOfChambers;
@@ -176,9 +175,6 @@ export default class LLChamber extends Template {
         const numArray = params.numberOfChambers;
         const spacing = params.spacing;
 
-        const mirrorX = params.mirrorX;
-        const mirrorY = params.mirrorY;
-
         const rendered = new paper.CompoundPath("");
 
         let rec;
@@ -209,12 +205,7 @@ export default class LLChamber extends Template {
 
         rendered.fillColor = color;
         rendered.rotate(rotation, new paper.Point(px, py)); 
-        if(mirrorX == 1){
-            rendered.scale(-1,1)
-        }
-        if(mirrorY == 1){
-            rendered.scale(1,-1)
-        }
+        this.mirrorRender(params,rendered);
         return rendered;
     }
 
@@ -231,9 +222,6 @@ export default class LLChamber extends Template {
 
         const numArray = params.numberOfChambers;
         const spacing = params.spacing;
-
-        const mirrorX = params.mirrorX;
-        const mirrorY = params.mirrorY;
 
         const topchannel = new paper.Path.Rectangle({
             point: new paper.Point(px, py + 0.2 * l - w / 2),
@@ -258,12 +246,7 @@ export default class LLChamber extends Template {
 
         rendered.fillColor = color;
         rendered.rotate(rotation, new paper.Point(px, py));
-        if(mirrorX == 1){
-            rendered.scale(-1,1)
-        }
-        if(mirrorY == 1){
-            rendered.scale(1,-1)
-        }
+        this.mirrorRender(params,rendered);
         return rendered;
     }
 

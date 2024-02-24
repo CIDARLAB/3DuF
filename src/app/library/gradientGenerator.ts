@@ -23,7 +23,9 @@ export default class GradientGenerator extends Template {
             out: "Float",
             spacing: "Float",
             height: "Float",
-            rotation: "Float"
+            rotation: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -36,7 +38,9 @@ export default class GradientGenerator extends Template {
             out: 3,
             spacing: 10000,
             height: 250,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -62,7 +66,9 @@ export default class GradientGenerator extends Template {
             out: 3,
             spacing: 10,
             height: 10,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -75,7 +81,9 @@ export default class GradientGenerator extends Template {
             out: 90,
             spacing: 90000,
             height: 1200,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -88,7 +96,9 @@ export default class GradientGenerator extends Template {
             bendLength: "bendLength",
             in: "in",
             out: "out",
-            spacing: "spacing"
+            spacing: "spacing",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -100,7 +110,9 @@ export default class GradientGenerator extends Template {
             bendLength: "bendLength",
             in: "in",
             out: "out",
-            spacing: "spacing"
+            spacing: "spacing",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -166,6 +178,8 @@ export default class GradientGenerator extends Template {
             const x = xref + spacing * i + channelWidth / 2;
             ports.push(new ComponentPort(x, yref + channelWidth, (invalue + 1 + i).toString(), LogicalLayerType.FLOW));
         }
+
+        this.mirrorPorts(params,ports);
 
         return ports;
     }
@@ -246,6 +260,7 @@ export default class GradientGenerator extends Template {
 
         gradientgenerator.rotate(rotation, new paper.Point(posx, posy));
 
+        this.mirrorRender(params,gradientgenerator);
         return gradientgenerator;
     }
 

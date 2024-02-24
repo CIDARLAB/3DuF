@@ -411,8 +411,7 @@ export default class Template {
 
         // TODO -  Figure out a workaround for this
 
-        // console.log("arsenal");
-        // return {xspan: 1, yspan: 1};
+        
 
         if (PRIMITIVES_SERVER) {
             paper.setup(new paper.Size([64000, 48000]));
@@ -462,20 +461,35 @@ export default class Template {
      * 
      */
     mirrorPorts(params: { [key: string]: any }, ports: ComponentPort[]){
-        const offset = this.getDrawOffset(params);
-        const dimensions = this.getDimensions(params);
-        const geoCenter = [-offset[0] + dimensions.xspan / 2, -offset[1] + dimensions.yspan / 2]; //geoCenter is relative to draw center
-        const mirrorX = params.mirrorX;
-        const mirrorY = params.mirrorY;
+        // const offset = this.getDrawOffset(params);
+        // const dimensions = this.getDimensions(params);
+        // const geoCenter = [-offset[0] + dimensions.xspan / 2, -offset[1] + dimensions.yspan / 2]; //geoCenter is relative to draw center
+        const mirrorByX = params.mirrorByX;
+        const mirrorByY = params.mirrorByY;
 
         for(let i=0;i<ports.length;i++){
-            const displacement = [ports[i].x - geoCenter[0],ports[i].y - geoCenter[1]]
-            if(mirrorX){
-                ports[i].x = geoCenter[0] - displacement[0]
+            // const displacement = [ports[i].x - geoCenter[0],ports[i].y - geoCenter[1]]
+            if(mirrorByX){
+                ports[i].x = -ports[i].x;
             }
-            if(mirrorY){
-                ports[i].y = geoCenter[1] - displacement[1]
+            if(mirrorByY){
+                ports[i].y = -ports[i].y;
             }
+        }
+    }
+
+    mirrorRender(params: { [key: string]: any }, render: paper.CompoundPath) {
+        const mirrorX = params.mirrorByX;
+        const mirrorY = params.mirrorByY;
+        const px = params.position[0];
+        const py = params.position[1];
+        const drawCenter = new paper.Point(px,py);
+
+        if(mirrorX){
+            render.scale(-1,1,drawCenter);
+        }
+        if(mirrorY){
+            render.scale(1,-1,drawCenter);
         }
     }
 }
