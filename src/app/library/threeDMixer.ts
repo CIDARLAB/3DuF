@@ -179,8 +179,7 @@ export default class ThreeDMixer extends Template {
         }
 
         serp.fillColor = color;
-        this.mirrorRender(params,serp);
-        serp.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,serp);
         return serp;
     }
 

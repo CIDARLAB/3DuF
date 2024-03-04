@@ -21,7 +21,9 @@ export default class DropletGeneratorT extends Template {
             radius: "Float",
             // angle: "Float",
             height: "Float",
-            rotation: "Float"
+            rotation: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -31,7 +33,9 @@ export default class DropletGeneratorT extends Template {
             length: 5 * 1000,
             radius: 500,
             height: 250,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -50,7 +54,9 @@ export default class DropletGeneratorT extends Template {
             waterChannelWidth: 1,
             radius: 1,
             rotation: 0,
-            length: 0 * 1000
+            length: 0 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -60,7 +66,9 @@ export default class DropletGeneratorT extends Template {
             height: 1200,
             radius: 2000,
             rotation: 360,
-            length: 8 * 1000
+            length: 8 * 1000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -71,7 +79,9 @@ export default class DropletGeneratorT extends Template {
             height: "height",
             rotation: "rotation",
             radius: "radius",
-            length: "length"
+            length: "length",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -81,7 +91,9 @@ export default class DropletGeneratorT extends Template {
             height: "height",
             rotation: "rotation",
             radius: "radius",
-            length: "length"
+            length: "length",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -145,9 +157,8 @@ export default class DropletGeneratorT extends Template {
 
         ret.addChild(circ);
 
-        // Rotate the geometry
         ret.closed = true;
-        ret.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,ret);
         ret.fillColor = color;
 
         return ret;

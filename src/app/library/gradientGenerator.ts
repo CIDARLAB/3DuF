@@ -254,11 +254,8 @@ export default class GradientGenerator extends Template {
         }
 
         gradientgenerator.fillColor = color;
-        // console.log("testing");
-
-        gradientgenerator.rotate(rotation, new paper.Point(posx, posy));
-
-        this.mirrorRender(params,gradientgenerator);
+        
+        this.transformRender(params,gradientgenerator);
         return gradientgenerator;
     }
 

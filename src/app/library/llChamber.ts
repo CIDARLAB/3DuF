@@ -200,8 +200,7 @@ export default class LLChamber extends Template {
         rendered.addChild(bottomchannel);
 
         rendered.fillColor = color;
-        rendered.rotate(rotation, new paper.Point(px, py)); 
-        this.mirrorRender(params,rendered);
+        this.transformRender(params,rendered);
         return rendered;
     }
 
@@ -241,8 +240,7 @@ export default class LLChamber extends Template {
         rendered.addChild(bottomchannel);
 
         rendered.fillColor = color;
-        rendered.rotate(rotation, new paper.Point(px, py));
-        this.mirrorRender(params,rendered);
+        this.transformRender(params,rendered);
         return rendered;
     }
 

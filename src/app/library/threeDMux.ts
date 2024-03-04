@@ -25,7 +25,9 @@ export default class ThreeDMux extends Template {
             length: "Float",
             valveSpacing: "Float",
             channelWidth: "Float",
-            controlChannelWidth: "Float"
+            controlChannelWidth: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -40,7 +42,9 @@ export default class ThreeDMux extends Template {
             length: 100,
             valveSpacing: 0.6 * 1000,
             channelWidth: 500,
-            controlChannelWidth: 0.6 * 1000
+            controlChannelWidth: 0.6 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -70,7 +74,9 @@ export default class ThreeDMux extends Template {
             length: 100,
             valveSpacing: 0.1 * 1000,
             channelWidth: 25,
-            controlChannelWidth: 10
+            controlChannelWidth: 10,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -85,7 +91,9 @@ export default class ThreeDMux extends Template {
             length: 100,
             valveSpacing: 0.1 * 10000,
             channelWidth: 25e3,
-            controlChannelWidth: 1000
+            controlChannelWidth: 1000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -102,7 +110,9 @@ export default class ThreeDMux extends Template {
             length: "length",
             valveSpacing: "valveSpacing",
             channelWidth: "channelWidth",
-            controlChannelWidth: "controlChannelWidth"
+            controlChannelWidth: "controlChannelWidth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -119,7 +129,9 @@ export default class ThreeDMux extends Template {
             length: "length",
             valveSpacing: "valveSpacing",
             channelWidth: "channelWidth",
-            controlChannelWidth: "controlChannelWidth"
+            controlChannelWidth: "controlChannelWidth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -331,7 +343,7 @@ export default class ThreeDMux extends Template {
 
         threedmux_flow.fillColor = color;
 
-        threedmux_flow.rotate(rotation, new paper.Point(px, py));
+        this.transformRender(params,threedmux_flow);
 
         return threedmux_flow;
     }
@@ -462,7 +474,7 @@ export default class ThreeDMux extends Template {
         }
 
         threedmux_control.fillColor = color;
-        threedmux_control.rotate(rotation, new paper.Point(px, py));
+        this.transformRender(params,threedmux_control);
 
         return threedmux_control;
     }
@@ -537,7 +549,7 @@ export default class ThreeDMux extends Template {
         }
 
         threedmux_control.fillColor = color;
-        threedmux_control.rotate(rotation, new paper.Point(px, py));
+        this.transformRender(params,threedmux_control);
 
         return threedmux_control;
     }

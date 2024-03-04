@@ -19,7 +19,9 @@ export default class DiamondReactionChamber extends Template {
             channelWidth: "Float",
             length: "Float",
             width: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -28,7 +30,9 @@ export default class DiamondReactionChamber extends Template {
             channelWidth: 0.8 * 1000,
             width: 1.23 * 1000,
             length: 4.92 * 1000,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -46,7 +50,9 @@ export default class DiamondReactionChamber extends Template {
             width: 30,
             length: 120,
             height: 10,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -55,7 +61,9 @@ export default class DiamondReactionChamber extends Template {
             width: 6000,
             length: 24 * 1000,
             height: 1200,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -64,7 +72,9 @@ export default class DiamondReactionChamber extends Template {
             rotation: "rotation",
             channelWidth: "channelWidth",
             length: "length",
-            width: "width"
+            width: "width",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -72,7 +82,9 @@ export default class DiamondReactionChamber extends Template {
             channelWidth: "channelWidth",
             length: "length",
             width: "width",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -133,8 +145,8 @@ export default class DiamondReactionChamber extends Template {
         hex.add(new paper.Point(p4));
         hex.add(new paper.Point(p5));
         hex.closed = true;
-        hex.rotate(rotation, new paper.Point(px, py));
         hex.fillColor = color;
+        this.transformRender(params,hex);
         return hex;
     }
 

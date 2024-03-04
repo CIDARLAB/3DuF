@@ -250,8 +250,7 @@ export default class ToroidalMixer extends Template {
         }
         serp.addChild(mixerUnit);
         serp.fillColor = color;
-        serp.rotate(rotation, new paper.Point(x, y));
-        this.mirrorRender(params,serp);
+        this.transformRender(params,serp);
         return serp;
     }
 

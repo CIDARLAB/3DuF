@@ -478,22 +478,20 @@ export default class Template {
         return {x,y};
     }
 
-    mirrorRender(params: { [key: string]: any }, render: paper.CompoundPath) {
+        /**
+     * Applies rotation and mirroring to component
+     * @param {{ [key: string]: any }} params
+     * @param {paper.CompoundPath} render
+     * @returns
+     * @memberof Template
+     */
+    transformRender(params: { [key: string]: any }, render: paper.CompoundPath) {
         const mirrorX = params.mirrorByX;
         const mirrorY = params.mirrorByY;
         const px = params.position[0];
         const py = params.position[1];
         const drawCenter = new paper.Point(px,py);
 
-        // const drawOffset = this.getDrawOffsetMirror(params);
-        // const dimensions = this.getMirrorDimensions(params);
-        // const centerX = drawCenter.x - drawOffset[0] + dimensions.xspan / 2;
-        // const centerY = drawCenter.y - drawOffset[1] + dimensions.yspan / 2;
-
-        // const geoCenter = new paper.Point(centerX,centerY);
-        // console.log("Centers:")
-        // console.log(geoCenter);
-        // console.log(drawCenter);
         const rotation = params.rotation;
         let geoCenter; //geometric center from top left corner
         let drawOffset;
@@ -507,10 +505,6 @@ export default class Template {
             geoCenter.x
             absGeoCenter.x = drawCenter.x - drawOffset[0] + geoCenter.x;
             absGeoCenter.y = drawCenter.y - drawOffset[1] + geoCenter.y;
-
-            // console.log("geoCenter", geoCenter)
-            // console.log("drawCenter", drawCenter)
-            // console.log("drawOffsetCenter", drawOffset)
         }
         if(rotation) render.rotate(rotation, absGeoCenter);
         if(mirrorX) render.scale(-1,1,absGeoCenter);

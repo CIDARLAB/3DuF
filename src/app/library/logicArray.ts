@@ -21,7 +21,9 @@ export default class LogicArray extends Template {
             flowChannelWidth: "Float",
             controlChannelWidth: "Float",
             portRadius: "Float",
-            rotation: "Float"
+            rotation: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -32,7 +34,9 @@ export default class LogicArray extends Template {
             flowChannelWidth: 0.6 * 1000,
             controlChannelWidth: 0.4 * 1000,
             portRadius: 1000,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -54,7 +58,9 @@ export default class LogicArray extends Template {
             flowChannelWidth: 1,
             controlChannelWidth: 1,
             portRadius: 1,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -65,7 +71,9 @@ export default class LogicArray extends Template {
             flowChannelWidth: 10000,
             controlChannelWidth: 10000,
             portRadius: 10000,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -83,7 +91,9 @@ export default class LogicArray extends Template {
             chamberLength: "chamberLength",
             height: "height",
             position: "position",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -94,7 +104,9 @@ export default class LogicArray extends Template {
             portRadius: "portRadius",
             chamberLength: "chamberLength",
             height: "height",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW", "CONTROL", "CELL"];
@@ -364,7 +376,7 @@ export default class LogicArray extends Template {
         ret.addChild(circ);
 
         ret.fillColor = color;
-        ret.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,ret);
         return ret;
     }
 
@@ -638,7 +650,7 @@ export default class LogicArray extends Template {
         control.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         control.fillColor = color;
-        control.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,control);
 
         return control;
     }
@@ -734,8 +746,8 @@ export default class LogicArray extends Template {
         cell.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         cell.fillColor = color;
-        cell.rotate(rotation, new paper.Point(x, y));
 
+        this.transformRender(params,cell);
         return cell;
     }
 

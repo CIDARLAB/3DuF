@@ -198,9 +198,7 @@ export default class CurvedMixer extends Template {
         serp.addChild(toprect);
 
         serp.fillColor = color;
-        serp.rotate(rotation, new paper.Point(x, y));
-
-        this.mirrorRender(params,serp);
+        this.transformRender(params,serp);
 
         return serp;
     }

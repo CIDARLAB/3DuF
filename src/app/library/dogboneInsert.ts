@@ -19,7 +19,9 @@ export default class DogboneInsert extends Template {
             length: "Float",
             innerRadius: "Float",
             outerRadius: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -28,7 +30,9 @@ export default class DogboneInsert extends Template {
             innerRadius: 400,
             outerRadius: 800,
             length: 7200,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -46,7 +50,9 @@ export default class DogboneInsert extends Template {
             outerRadius: 1,
             length: 120,
             height: 10,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -55,7 +61,9 @@ export default class DogboneInsert extends Template {
             outerRadius: 1000,
             length: 24 * 1000,
             height: 1200,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -65,6 +73,8 @@ export default class DogboneInsert extends Template {
             length: "length",
             innerRadius: "innerRadius",
             outerRadius: "outerRadius",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -72,7 +82,9 @@ export default class DogboneInsert extends Template {
             length: "length",
             innerRadius: "innerRadius",
             outerRadius: "outerRadius",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -176,7 +188,7 @@ export default class DogboneInsert extends Template {
 
         serp.addChild(insert);
         serp.fillColor = color;
-        serp.rotate(rotation, new paper.Point(px, py));
+        this.transformRender(params,serp);
         return serp;
     }
 

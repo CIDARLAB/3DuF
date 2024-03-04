@@ -25,7 +25,9 @@ export default class CapacitanceSensor extends Template {
             sensorWidth: "Float",
             sensorLength: "Float",
             channelDepth: "Float",
-            electrodeDepth: "Float"
+            electrodeDepth: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -40,7 +42,9 @@ export default class CapacitanceSensor extends Template {
             sensorWidth: 1 * 1000,
             sensorLength: 3 * 1000,
             channelDepth: 1000,
-            electrodeDepth: 1000
+            electrodeDepth: 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -70,7 +74,9 @@ export default class CapacitanceSensor extends Template {
             sensorWidth: 0.5 * 1000,
             sensorLength: 1.5 * 1000,
             channelDepth: 1000,
-            electrodeDepth: 1000
+            electrodeDepth: 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -85,7 +91,9 @@ export default class CapacitanceSensor extends Template {
             sensorWidth: 1.5 * 1000,
             sensorLength: 4.5 * 1000,
             channelDepth: 1000,
-            electrodeDepth: 1000
+            electrodeDepth: 1000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -106,7 +114,9 @@ export default class CapacitanceSensor extends Template {
             sensorWidth: "sensorWidth",
             sensorLength: "sensorLength",
             channelDepth: "channelDepth",
-            electrodeDepth: "electrodeDepth"
+            electrodeDepth: "electrodeDepth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -120,7 +130,9 @@ export default class CapacitanceSensor extends Template {
             sensorWidth: "sensorWidth",
             sensorLength: "sensorLength",
             channelDepth: "channelDepth",
-            electrodeDepth: "electrodeDepth"
+            electrodeDepth: "electrodeDepth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW", "INTEGRATION"];
@@ -165,9 +177,8 @@ export default class CapacitanceSensor extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        serp.rotate(rotation, new paper.Point(x, y));
-
         serp.fillColor = color;
+        this.transformRender(params,serp);
         return serp;
     }
 
@@ -211,10 +222,8 @@ export default class CapacitanceSensor extends Template {
         });
 
         serp.addChild(elli);
-
-        serp.rotate(rotation, new paper.Point(x, y));
-
         serp.fillColor = color;
+        this.transformRender(params,serp);
         return serp;
     }
 

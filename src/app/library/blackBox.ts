@@ -19,7 +19,9 @@ export default class BlackBox extends Template {
             length: "Float",
             height: "Float",
             cornerRadius: "Float",
-            rotation: "Float"
+            rotation: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -28,7 +30,9 @@ export default class BlackBox extends Template {
             length: 5000,
             height: 250,
             cornerRadius: 200,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -46,7 +50,9 @@ export default class BlackBox extends Template {
             length: 5,
             height: 1,
             cornerRadius: 1,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -55,7 +61,9 @@ export default class BlackBox extends Template {
             length: 50000,
             height: 50000,
             cornerRadius: 1000,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -65,7 +73,9 @@ export default class BlackBox extends Template {
             length: "length",
             height: "height",
             cornerRadius: "cornerRadius",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -75,7 +85,9 @@ export default class BlackBox extends Template {
             length: "length",
             height: "height",
             cornerRadius: "cornerRadius",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -111,9 +123,6 @@ export default class BlackBox extends Template {
 
         ports.push(new ComponentPort(-w / 2, 0, "4", LogicalLayerType.FLOW));
 
-        console.log("bb offset")
-        console.log(this.getDrawOffset(params))
-
         return ports;
     }
 
@@ -142,7 +151,8 @@ export default class BlackBox extends Template {
         rendered.addChild(box);
 
         rendered.fillColor = color;
-        rendered.rotate(rotation, new paper.Point(px, py));
+
+        this.transformRender(params,rendered);
 
         return rendered;
     }

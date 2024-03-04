@@ -20,7 +20,9 @@ export default class Pump3D extends Template {
             gap: "Float",
             rotation: "Float",
             spacing: "Float",
-            flowChannelWidth: "Float"
+            flowChannelWidth: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -32,7 +34,9 @@ export default class Pump3D extends Template {
             length: 2.4 * 1000,
             rotation: 90,
             spacing: 5000,
-            flowChannelWidth: 300
+            flowChannelWidth: 300,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -54,7 +58,9 @@ export default class Pump3D extends Template {
             gap: 0.5 * 10,
             rotation: 0,
             spacing: 10,
-            flowChannelWidth: 1
+            flowChannelWidth: 1,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -64,7 +70,9 @@ export default class Pump3D extends Template {
             gap: 0.1 * 10000,
             rotation: 360,
             spacing: 10000,
-            flowChannelWidth: 10000
+            flowChannelWidth: 10000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -74,7 +82,9 @@ export default class Pump3D extends Template {
             valveRadius: "valveRadius",
             flowChannelWidth: "flowChannelWidth",
             spacing: "spacing",
-            gap: "gap"
+            gap: "gap",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -83,7 +93,9 @@ export default class Pump3D extends Template {
             valveRadius: "valveRadius",
             flowChannelWidth: "flowChannelWidth",
             spacing: "spacing",
-            gap: "gap"
+            gap: "gap",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -217,7 +229,7 @@ export default class Pump3D extends Template {
 
         ret.addChild(topchannel);
 
-        ret.rotate(rotation, center);
+        this.transformRender(params,ret);
         ret.fillColor = color;
 
         return ret;
@@ -246,7 +258,7 @@ export default class Pump3D extends Template {
         circ = new paper.Path.Circle(bottomcenter, radius);
         ret.addChild(circ);
 
-        ret.rotate(rotation, center);
+        this.transformRender(params,ret);
         ret.fillColor = color;
         return ret;
     }
@@ -274,7 +286,7 @@ export default class Pump3D extends Template {
         circ = new paper.Path.Circle(bottomcenter, radius);
         ret.addChild(circ);
 
-        ret.rotate(rotation, center);
+        this.transformRender(params,ret);
         ret.fillColor = color;
         return ret;
     }

@@ -263,7 +263,7 @@ export default class RotaryMixer extends Template {
 
         rotarymixer.fillColor = color;
 
-        this.mirrorRender(params,rotarymixer);
+        this.transformRender(params,rotarymixer);
         return rotarymixer;
     }
 
@@ -333,7 +333,7 @@ export default class RotaryMixer extends Template {
 
         rotarymixer.fillColor = color;
 
-        this.mirrorRender(params,rotarymixer);
+        this.transformRender(params,rotarymixer);
         return rotarymixer;
     }
 }

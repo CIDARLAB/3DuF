@@ -157,8 +157,8 @@ export default class CurvedMixer extends Template {
         }
 
         serp.fillColor = color;
-        this.mirrorRender(params,serp);
-        return (serp.rotate(rotation, new paper.Point(x, y)) as unknown) as paper.CompoundPath;
+        this.transformRender(params,serp);
+        return serp;
     }
 
     render2DTarget(key: string | null, params: { [k: string]: any }) {

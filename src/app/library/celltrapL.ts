@@ -194,8 +194,7 @@ export default class CellTrapL extends Template {
 
         traps = new paper.CompoundPath(chamberList);
         traps.fillColor = color;
-        traps.rotate(rotation, new paper.Point(x, y));
-        this.mirrorRender(params,traps);
+        this.transformRender(params,traps);
         return traps;
     }
 
@@ -225,8 +224,7 @@ export default class CellTrapL extends Template {
         }
 
         chamberList.fillColor = color;
-        chamberList.rotate(rotation, new paper.Point(x, y));
-        this.mirrorRender(params,chamberList);
+        this.transformRender(params,chamberList);
         return chamberList;
     }
 }
