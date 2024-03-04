@@ -567,10 +567,15 @@ export default class LoadUtils {
         const id = json.id;
         const entity = json.entity;
 
+        console.log("Entity here:")
+        console.log(entity);
+
         if (ComponentAPI.getComponentWithMINT(entity) === null) {
             iscustomcomponent = true;
+            console.log("is custom component");
         } else {
             iscustomcomponent = false;
+            console.log("is not custom component");
         }
 
         // Idk whether this is correct
@@ -579,8 +584,6 @@ export default class LoadUtils {
         const yspan = json["y-span"];
 
         const params = json.params;
-        console.log("Params here")
-        console.log(params)
 
         // TODO - remove this dependency
         // iscustomcomponent = Registry.viewManager.customComponentManager.hasDefinition(entity);
@@ -588,7 +591,7 @@ export default class LoadUtils {
         let definition;
 
         if (iscustomcomponent) {
-            //Grab the black box definition (Eric) !!!
+            //Grab the black box definition (Eric)
             definition = CustomComponent.defaultParameterDefinitions();
         } else {
             definition = ComponentAPI.getDefinitionForMINT(entity);
@@ -625,6 +628,17 @@ export default class LoadUtils {
             params[key] = value;
         }
 
+        //Need to do this since component may not have length and width (probably need special name for them)
+        if(!iscustomcomponent){
+            params.blackBoxLength = xspan;
+            params.blackBoxWidth = yspan;
+
+            console.log("Params here:");
+            console.log(params);
+            console.log(xspan);
+            console.log(yspan);
+        }
+
         // Do another check and see if position is present or not
         if (!Object.prototype.hasOwnProperty.call(params, "position")) {
             params.position = [0.0, 0.0];
@@ -640,8 +654,6 @@ export default class LoadUtils {
         //Also change the paramstoadd to match params of black box (Eric) !!!
         const component = new Component(paramstoadd, name, entity, id);
 
-        //Create a new function to load component ports for black box (Eric) !!!?
-        //How to deal with different numbers of ports and placements between custom components
         // Deserialize the component ports
         const portdata = new Map();
         for (const i in json.ports) {

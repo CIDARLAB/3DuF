@@ -169,8 +169,6 @@ export default class RotaryMixer extends Template {
             new ComponentPort(-radius - valvespacing - valvelength - flowChannelWidth / 2, radius + flowChannelWidth / 2 + valvewidth, "7", LogicalLayerType.CONTROL)
         );
 
-        // this.mirrorPorts(params,ports)
-
         return ports;
     }
 
@@ -264,8 +262,8 @@ export default class RotaryMixer extends Template {
         rotarymixer.addChild(rectangle2);
 
         rotarymixer.fillColor = color;
+
         this.mirrorRender(params,rotarymixer);
-        rotarymixer.rotate(rotation, new paper.Point(px, py));
         return rotarymixer;
     }
 
@@ -334,8 +332,8 @@ export default class RotaryMixer extends Template {
         rotarymixer.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
         rotarymixer.fillColor = color;
+
         this.mirrorRender(params,rotarymixer);
-        rotarymixer.rotate(rotation, new paper.Point(px, py));
         return rotarymixer;
     }
 }

@@ -39,8 +39,10 @@ export default class PaperComponentPortView {
                 continue;
             }
             // TODO - Fix this API
-            const render = ComponentPortRenderer2D.renderComponentPort(componentport, [0,0], 0, 0, 0, zfactor);
-            componentportrenders.push(render);
+
+            //Commented out due to additional parameter added to method
+            // const render = ComponentPortRenderer2D.renderComponentPort(componentport, [0,0], 0, 0, 0, zfactor);
+            // componentportrenders.push(render);
         }
     }
 

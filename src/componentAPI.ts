@@ -223,6 +223,8 @@ export class ComponentAPI {
         const checkmint = minttype;
         for (const key in this.library) {
             if (checkmint == this.library[key].object.mint) {
+                console.log("Check");
+                console.log(ComponentAPI.library[key].object);
                 return ComponentAPI.library[key].object;
             }
         }
@@ -469,6 +471,7 @@ export class ComponentAPI {
         if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
             return ComponentAPI.library[threeduftypeString].object;
         } else {
+            //(Eric) return the blackbox object instead
             throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
         }
     }
