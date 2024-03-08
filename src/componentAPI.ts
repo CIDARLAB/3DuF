@@ -93,6 +93,13 @@ type FeatureLibraryEntry = {
  * @class ComponentAPI
  */
 export class ComponentAPI {
+
+    // The blackbox entry
+    static blackboxEntryFlow : LibraryEntry = { object: new BlackBox(), key: "FLOW" };
+    static blackboxEntryControl : LibraryEntry = { object: new BlackBox(), key: "CONTROL" };
+    static blackboxEntryIntegration : LibraryEntry = { object: new BlackBox(), key: "INTEGRATION" };
+    
+    // The library of components
     static library: { [key: string]: LibraryEntry } = {
         Template: { object: new Template(), key: "FLOW" },
         Text: { object: new Text(), key: "FLOW" },
@@ -541,4 +548,32 @@ export class ComponentAPI {
         }
         return ret;
     }
+
+
+     /**
+      * Rertuns the definition of the blackbox entry
+      *
+      * @static
+      * @param {*} entity
+      * @memberof ComponentAPI
+      */
+     static getBlackBoxDefinition(xspan: number, yspan: number, ports: Array<any>): LibraryEntryDefinition {
+        // TODO: Deal with the ports later
+        // Create a fake definition for the blackbox
+
+        // TODO: How to pass xspan, yspan, ports to the blackbox?
+        let definition = ComponentAPI.blackboxEntryFlow.object;
+        let ret = {
+            unique: definition.unique,
+            heritable: definition.heritable,
+            units: definition.units,
+            defaults: definition.defaults,
+            minimum: definition.minimum,
+            maximum: definition.maximum,
+            mint: definition.mint
+        };
+        return ret;
+    } 
 }
+
+

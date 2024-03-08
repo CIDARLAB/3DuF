@@ -380,6 +380,7 @@ export default class Template {
         const features: Array<paper.Rectangle> = [];
         for (let i = 0; i < renderkeys.length; i++) {
             const feature = this.render2D(params, renderkeys[i]);
+            feature.visible = false; //Find workaround for this
             if(feature instanceof paper.PointText){
                 continue;
             }

@@ -35,6 +35,14 @@ export default class ComponentPortRenderer2D {
         return ret;
     }
 
+    /**
+     * Renders all the component ports for a given component
+     *
+     * @static
+     * @param {Component} component
+     * @return {*} 
+     * @memberof ComponentPortRenderer2D
+     */
     static renderComponentPorts(component: Component) {
         const rendersize = ComponentPortRenderer2D.getSizeforZoomLevel();
         const componentports = component.ports;

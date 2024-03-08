@@ -592,7 +592,7 @@ export default class LoadUtils {
 
         if (iscustomcomponent) {
             //Grab the black box definition (Eric)
-            definition = CustomComponent.defaultParameterDefinitions();
+            definition = ComponentAPI.getBlackBoxDefinition(xspan, yspan, []);
         } else {
             definition = ComponentAPI.getDefinitionForMINT(entity);
 
@@ -611,7 +611,7 @@ export default class LoadUtils {
         let type;
         let value;
         for (const key in json.params) {
-            //What does this do (Eric)?
+            // We check if the if the parameter (defined by key) is there inside the definition (heritable or unique)
             if (Object.prototype.hasOwnProperty.call(definition.heritable, key)) {
                 type = definition.heritable[key];
             } else if (Object.prototype.hasOwnProperty.call(definition.unique, key)) {
@@ -644,7 +644,7 @@ export default class LoadUtils {
             params.position = [0.0, 0.0];
         }
 
-        //What is this doing? (Eric)
+        // We need to convert here because one is Map type datastructure and the other is a simple object
         const unique_map = MapUtils.toMap(definition.unique);
         const heritable_map = MapUtils.toMap(definition.heritable);
         //Assuming I just have to change the params to match the black box params (Eric) !!!
