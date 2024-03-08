@@ -19,7 +19,9 @@ export default class Valve extends ValveTemplate {
             rotation: "Float",
             length: "Float",
             width: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -27,7 +29,9 @@ export default class Valve extends ValveTemplate {
             rotation: 0,
             width: 1.23 * 1000,
             length: 4.92 * 1000,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -43,7 +47,9 @@ export default class Valve extends ValveTemplate {
             rotation: 0,
             width: 30,
             length: 120,
-            height: 10
+            height: 10,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -51,7 +57,9 @@ export default class Valve extends ValveTemplate {
             rotation: 180,
             width: 6000,
             length: 24 * 1000,
-            height: 1200
+            height: 1200,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -59,14 +67,18 @@ export default class Valve extends ValveTemplate {
             position: "position",
             length: "length",
             width: "width",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
             componentSpacing: "componentSpacing",
             length: "length",
             width: "width",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "valveInsertionTool";
@@ -120,9 +132,9 @@ export default class Valve extends ValveTemplate {
             fillColor: color,
             strokeWidth: 0
         });
-        rec.rotate(rotation, new paper.Point(px, py));
         let compoundPath = new paper.CompoundPath(rec);
         compoundPath.fillColor = color;
+        this.transformRender(params,compoundPath);
         return (compoundPath);
     }
 

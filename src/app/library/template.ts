@@ -332,10 +332,13 @@ export default class Template {
      */
     render2D(params: { [key: string]: any }, key: string): ToolPaperObject {
         console.error("Default component template being used. User needs to provide method for component definition, look at examples");
+
+        const xspan = params.xspan;
+        const yspan = params.yspan;
         const x = params.position[0];
         const y = params.position[1];
 
-        const rect =  new paper.Path.Rectangle(new paper.Point(x - 100, y - 100), new paper.Size(5000, 5000));
+        const rect =  new paper.Path.Rectangle(new paper.Point(x - xspan / 2, y - yspan / 2), new paper.Size(xspan, yspan));
         rect.fillColor = params.color;
         return rect;
     }
@@ -377,6 +380,7 @@ export default class Template {
         const features: Array<paper.Rectangle> = [];
         for (let i = 0; i < renderkeys.length; i++) {
             const feature = this.render2D(params, renderkeys[i]);
+            feature.visible = false; //Find workaround for this
             if(feature instanceof paper.PointText){
                 continue;
             }
@@ -405,7 +409,11 @@ export default class Template {
      * @memberof Template
      */
     getDimensions(params: { [key: string]: any }): { xspan: any; yspan: any } {
+
         // TODO -  Figure out a workaround for this
+
+        
+
         if (PRIMITIVES_SERVER) {
             paper.setup(new paper.Size([64000, 48000]));
         }
@@ -425,16 +433,20 @@ export default class Template {
     /**
      * Returns the drawing offset for the component for given params. This assummes
      *  that the mint definiton, and the getBounds methd works correctly
-     *
+     *  Note: this changes the actual params object passed (not a copy)
      * @param {{ [key: string]: any }} params
      * @returns
      * @memberof Template
      */
     getDrawOffset(params: { [key: string]: any }) {
-        params.position = [0, 0];
-        params.rotation = 0;
-        const position = params.position;
-        const positionUnitedBounds = this.getBounds(params);
+        let newParams = params;
+        newParams.position = [0, 0];
+        newParams.rotation = 0;
+        newParams.mirrorByX = 0;
+        newParams.mirrorByY = 0;
+
+        const position = newParams.position;
+        const positionUnitedBounds = this.getBounds(newParams);
         // console.log(positionUnitedBounds.topLeft, position);
         if (positionUnitedBounds === null) {
             throw new Error("unitedBounds is null");
@@ -442,5 +454,61 @@ export default class Template {
         const x_new = position[0] - positionUnitedBounds.topLeft.x;
         const y_new = position[1] - positionUnitedBounds.topLeft.y;
         return [x_new, y_new];
+    }
+
+    /**
+     * Returns the displacement from top left corner to geometric center of component
+     * which stays the same regardless of rotation and mirroring (assuming they are about the geometric center)
+     * 
+     * To avoid infinite loops, set rotation and mirror parameters to 0
+     * @param {{ [key: string]: any }} params
+     * @returns
+     * @memberof Template
+     */
+    getCenter(params: { [key: string]: any }): { x: any; y: any } {
+        let newParams = params;
+
+        newParams.rotation = 0;
+        newParams.mirrorByX = 0;
+        newParams.mirrorByY = 0;
+
+        const dimensions = this.getDimensions(newParams);
+        const x = dimensions.xspan / 2;
+        const y = dimensions.yspan / 2;
+
+        return {x,y};
+    }
+
+        /**
+     * Applies rotation and mirroring to component
+     * @param {{ [key: string]: any }} params
+     * @param {paper.CompoundPath} render
+     * @returns
+     * @memberof Template
+     */
+    transformRender(params: { [key: string]: any }, render: paper.CompoundPath) {
+        const mirrorX = params.mirrorByX;
+        const mirrorY = params.mirrorByY;
+        const px = params.position[0];
+        const py = params.position[1];
+        const drawCenter = new paper.Point(px,py);
+
+        const rotation = params.rotation;
+        let geoCenter; //geometric center from top left corner
+        let drawOffset;
+        let absGeoCenter = new paper.Point(0,0);//absolute geometric center on canvas
+
+        if(mirrorX!=0 || mirrorY!=0 || rotation!=0){
+            drawOffset = this.getDrawOffset(params);
+            drawOffset[0];
+            drawCenter.x;
+            geoCenter = this.getCenter(params);
+            geoCenter.x
+            absGeoCenter.x = drawCenter.x - drawOffset[0] + geoCenter.x;
+            absGeoCenter.y = drawCenter.y - drawOffset[1] + geoCenter.y;
+        }
+        if(rotation) render.rotate(rotation, absGeoCenter);
+        if(mirrorX) render.scale(-1,1,absGeoCenter);
+        if(mirrorY) render.scale(1,-1,absGeoCenter);
     }
 }

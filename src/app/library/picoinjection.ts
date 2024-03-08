@@ -25,7 +25,9 @@ export default class PicoInjection extends Template {
             electrodeDistance: "Float",
             electrodeWidth: "Float",
             electrodeLength: "Float",
-            rotation: "Float"
+            rotation: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -40,7 +42,9 @@ export default class PicoInjection extends Template {
             electrodeDistance: 0.8 * 1000,
             electrodeWidth: 0.8 * 1000,
             electrodeLength: 3 * 1000,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -70,7 +74,9 @@ export default class PicoInjection extends Template {
             electrodeDistance: 100,
             electrodeWidth: 100,
             electrodeLength: 1000,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -85,7 +91,9 @@ export default class PicoInjection extends Template {
             electrodeDistance: 2000,
             electrodeWidth: 2000,
             electrodeLength: 5000,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -106,7 +114,9 @@ export default class PicoInjection extends Template {
             electrodeDistance: "electrodeDistance",
             electrodeWidth: "electrodeWidth",
             electrodeLength: "electrodeLength",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -120,7 +130,9 @@ export default class PicoInjection extends Template {
             electrodeDistance: "electrodeDistance",
             electrodeWidth: "electrodeWidth",
             electrodeLength: "electrodeLength",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW", "INTEGRATION"];
@@ -190,8 +202,7 @@ export default class PicoInjection extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        serp.rotate(rotation, new paper.Point(x, y));
-
+        this.transformRender(params,serp);
         serp.fillColor = color;
         return serp;
     }
@@ -224,8 +235,8 @@ export default class PicoInjection extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        serp.rotate(rotation, new paper.Point(x, y));
 
+        this.transformRender(params,serp);
         serp.fillColor = color;
         return serp;
     }

@@ -19,7 +19,9 @@ export default class Incubation extends Template {
             channelWidth: "Float",
             length: "Float",
             width: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -28,7 +30,9 @@ export default class Incubation extends Template {
             channelWidth: 0.8 * 1000,
             width: 1.23 * 1000,
             length: 4.92 * 1000,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -46,7 +50,9 @@ export default class Incubation extends Template {
             channelWidth: 10,
             width: 30,
             length: 120,
-            height: 10
+            height: 10,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -55,7 +61,9 @@ export default class Incubation extends Template {
             channelWidth: 2000,
             width: 6000,
             length: 24 * 1000,
-            height: 1200
+            height: 1200,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -64,7 +72,9 @@ export default class Incubation extends Template {
             rotation: "rotation",
             channelWidth: "channelWidth",
             length: "length",
-            width: "width"
+            width: "width",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -72,7 +82,9 @@ export default class Incubation extends Template {
             channelWidth: "channelWidth",
             length: "length",
             width: "width",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -141,8 +153,7 @@ export default class Incubation extends Template {
         hex.closed = true;
         hex.fillColor = color;
 
-        hex.rotate(rotation, new paper.Point(px, py));
-
+        this.transformRender(params,hex);
         return hex;
     }
 

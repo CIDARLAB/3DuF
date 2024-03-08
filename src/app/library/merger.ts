@@ -27,7 +27,9 @@ export default class Merger extends Template {
             chamberHeight: "Float",
             chamberLength: "Float",
             channelDepth: "Float",
-            electrodeDepth: "Float"
+            electrodeDepth: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -44,7 +46,9 @@ export default class Merger extends Template {
             chamberHeight: 2.7 * 1000,
             chamberLength: 2 * 1000,
             channelDepth: 1000,
-            electrodeDepth: 1000
+            electrodeDepth: 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -78,7 +82,9 @@ export default class Merger extends Template {
             chamberHeight: 1000,
             chamberLength: 1000,
             channelDepth: 1000,
-            electrodeDepth: 1000
+            electrodeDepth: 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -95,7 +101,9 @@ export default class Merger extends Template {
             chamberHeight: 4 * 1000,
             chamberLength: 4 * 1000,
             channelDepth: 1000,
-            electrodeDepth: 1000
+            electrodeDepth: 1000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -118,7 +126,9 @@ export default class Merger extends Template {
             chamberHeight: "chamberHeight",
             chamberLength: "chamberLength",
             channelDepth: "channelDepth",
-            electrodeDepth: "electrodeDepth"
+            electrodeDepth: "electrodeDepth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -134,7 +144,9 @@ export default class Merger extends Template {
             chamberHeight: "chamberHeight",
             chamberLength: "chamberLength",
             channelDepth: "channelDepth",
-            electrodeDepth: "electrodeDepth"
+            electrodeDepth: "electrodeDepth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW", "INTEGRATION"];
@@ -200,8 +212,7 @@ export default class Merger extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        serp.rotate(rotation, new paper.Point(x, y));
-
+        this.transformRender(params,serp);
         serp.fillColor = color;
         return serp;
     }
@@ -232,8 +243,7 @@ export default class Merger extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        serp.rotate(rotation, new paper.Point(x, y));
-
+        this.transformRender(params,serp);
         serp.fillColor = color;
         return serp;
     }

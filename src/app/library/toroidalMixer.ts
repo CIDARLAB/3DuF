@@ -24,7 +24,9 @@ export default class ToroidalMixer extends Template {
             channelWidth: "Float",
             innerDiameter: "Float",
             rotation: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -36,7 +38,9 @@ export default class ToroidalMixer extends Template {
             neckWidth: 800,
             numberOfMixers: 1,
             innerDiameter: 2.46 * 1000,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -60,7 +64,9 @@ export default class ToroidalMixer extends Template {
             neckWidth: 10,
             numberOfMixers: 1,
             innerDiameter: 10,
-            height: 10
+            height: 10,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -72,7 +78,9 @@ export default class ToroidalMixer extends Template {
             neckWidth: 2000,
             numberOfMixers: 20,
             innerDiameter: 12 * 1000,
-            height: 1200
+            height: 1200,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -84,7 +92,9 @@ export default class ToroidalMixer extends Template {
             neckWidth: "neckWidth",
             numberOfMixers: "numberOfMixers",
             rotation: "rotation",
-            innerDiameter: "innerDiameter"
+            innerDiameter: "innerDiameter",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -95,7 +105,9 @@ export default class ToroidalMixer extends Template {
             neckWidth: "neckWidth",
             numberOfMixers: "numberOfMixers",
             rotation: "rotation",
-            innerDiameter: "innerDiameter"
+            innerDiameter: "innerDiameter",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -151,7 +163,6 @@ export default class ToroidalMixer extends Template {
                 )
             );
         }
-
         return ports;
     }
 
@@ -239,7 +250,7 @@ export default class ToroidalMixer extends Template {
         }
         serp.addChild(mixerUnit);
         serp.fillColor = color;
-        serp.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,serp);
         return serp;
     }
 

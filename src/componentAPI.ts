@@ -47,6 +47,8 @@ import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
 import ToroidalMixer from "./app/library/toroidalMixer";
 import DogboneInsert from "./app/library/dogboneInsert";
+import BlackBox  from "./app/library/blackBox";
+import Test from "./app/library/test"
 
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
@@ -56,6 +58,7 @@ import FeatureTemplate from "./app/library/geometricElements/featureTemplate";
 import NormallyClosedValveCrescents from "./app/library/geometricElements/normallyClosedValveCrecents";
 import NormallyClosedValveModificationsGap from "./app/library/geometricElements/normallyClosedValveGap";
 import { ValveType } from "./app/core/init";
+import { test } from "mocha";
 
 export var PRIMITIVES_SERVER = false;
 
@@ -90,6 +93,13 @@ type FeatureLibraryEntry = {
  * @class ComponentAPI
  */
 export class ComponentAPI {
+
+    // The blackbox entry
+    static blackboxEntryFlow : LibraryEntry = { object: new BlackBox(), key: "FLOW" };
+    static blackboxEntryControl : LibraryEntry = { object: new BlackBox(), key: "CONTROL" };
+    static blackboxEntryIntegration : LibraryEntry = { object: new BlackBox(), key: "INTEGRATION" };
+    
+    // The library of components
     static library: { [key: string]: LibraryEntry } = {
         Template: { object: new Template(), key: "FLOW" },
         Text: { object: new Text(), key: "FLOW" },
@@ -168,6 +178,8 @@ export class ComponentAPI {
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" },
+        Black_Box: { object: new BlackBox(), key: "FLOW"},
+        Test: { object: new Test(), key: "FLOW"},
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {
@@ -218,6 +230,8 @@ export class ComponentAPI {
         const checkmint = minttype;
         for (const key in this.library) {
             if (checkmint == this.library[key].object.mint) {
+                console.log("Check");
+                console.log(ComponentAPI.library[key].object);
                 return ComponentAPI.library[key].object;
             }
         }
@@ -464,6 +478,7 @@ export class ComponentAPI {
         if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
             return ComponentAPI.library[threeduftypeString].object;
         } else {
+            //(Eric) return the blackbox object instead
             throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
         }
     }
@@ -478,12 +493,14 @@ export class ComponentAPI {
      */
     static getRendererForMINT(minttype: string): Template {
         // Go through all the objects in the library and return the one that matches the minttype
+        console.log("getRendererForMINT")
         for (const key in ComponentAPI.library) {
             if (ComponentAPI.library[key].object.mint === minttype) {
-                console.log("Renderer: ", ComponentAPI.library[key].object);
                 return ComponentAPI.library[key].object;
             }
         }
+        
+        return ComponentAPI.library["BlackBox"].object
         throw new Error("Component Type definition: " + minttype + " not found in library");
     }
 
@@ -531,4 +548,32 @@ export class ComponentAPI {
         }
         return ret;
     }
+
+
+     /**
+      * Rertuns the definition of the blackbox entry
+      *
+      * @static
+      * @param {*} entity
+      * @memberof ComponentAPI
+      */
+     static getBlackBoxDefinition(xspan: number, yspan: number, ports: Array<any>): LibraryEntryDefinition {
+        // TODO: Deal with the ports later
+        // Create a fake definition for the blackbox
+
+        // TODO: How to pass xspan, yspan, ports to the blackbox?
+        let definition = ComponentAPI.blackboxEntryFlow.object;
+        let ret = {
+            unique: definition.unique,
+            heritable: definition.heritable,
+            units: definition.units,
+            defaults: definition.defaults,
+            minimum: definition.minimum,
+            maximum: definition.maximum,
+            mint: definition.mint
+        };
+        return ret;
+    } 
 }
+
+

@@ -21,7 +21,9 @@ export default class DropletGeneratorFlowFocus extends Template {
             radius: "Float",
             angle: "Float",
             height: "Float",
-            rotation: "Float"
+            rotation: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -32,7 +34,9 @@ export default class DropletGeneratorFlowFocus extends Template {
             radius: 500,
             angle: 45,
             height: 250,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -53,7 +57,9 @@ export default class DropletGeneratorFlowFocus extends Template {
             length: 1,
             radius: 1,
             angle: 1,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -64,7 +70,9 @@ export default class DropletGeneratorFlowFocus extends Template {
             angle: 360,
             height: 1200,
             radius: 2000,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -76,7 +84,9 @@ export default class DropletGeneratorFlowFocus extends Template {
             angle: "angle",
             height: "height",
             rotation: "rotation",
-            radius: "radius"
+            radius: "radius",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -87,7 +97,9 @@ export default class DropletGeneratorFlowFocus extends Template {
             angle: "angle",
             height: "height",
             rotation: "rotation",
-            radius: "radius"
+            radius: "radius",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -192,8 +204,7 @@ export default class DropletGeneratorFlowFocus extends Template {
 
         ret.addChild(circ);
 
-        // Rotate the geometry
-        ret.rotate(rotation, new paper.Point(pos[0], pos[1]));
+        this.transformRender(params,ret);
 
         ret.closed = true;
         ret.fillColor = color;

@@ -18,7 +18,9 @@ export default class thermoCycler extends Template {
             width: "Float",
             length: "Float",
             height: "Float",
-            temperature: "Float"
+            temperature: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
         this.__defaults = {
             componentSpacing: 1000,
@@ -26,7 +28,9 @@ export default class thermoCycler extends Template {
             width: 20 * 1000,
             length: 40 * 1000,
             height: 5 * 1000,
-            temperature: 0.03 * 1000
+            temperature: 0.03 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
         this.__units = {
             componentSpacing: "μm",
@@ -42,7 +46,9 @@ export default class thermoCycler extends Template {
             width: 10 * 1000,
             length: 10 * 1000,
             height: 1.25 * 1000,
-            temperature: 0 * 1000
+            temperature: 0 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
         this.__maximum = {
             componentSpacing: 10000,
@@ -50,7 +56,9 @@ export default class thermoCycler extends Template {
             width: 60 * 1000,
             length: 60 * 1000,
             height: 10 * 1000,
-            temperature: 0.1 * 1000
+            temperature: 0.1 * 1000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
         this.__placementTool = "multilayerPositionTool";
         this.__toolParams = {
@@ -63,7 +71,9 @@ export default class thermoCycler extends Template {
             rotation: "rotation",
             length: "length",
             width: "width",
-            temperature: "temperature"
+            temperature: "temperature",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -71,7 +81,9 @@ export default class thermoCycler extends Template {
             rotation: "rotation",
             length: "length",
             width: "width",
-            temperature: "temperature"
+            temperature: "temperature",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW"];
@@ -124,7 +136,7 @@ export default class thermoCycler extends Template {
         rendered.fillColor = color;
         //    cir.fillColor = 'black';
         //    rec.addChild(cir)
-        rendered.rotate(rotation, new paper.Point(px, py)); 
+        this.transformRender(params,rendered);
         return rendered;
     }
 

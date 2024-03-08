@@ -16,7 +16,9 @@ export default class Transition extends Template {
             cw2: "Float",
             length: "Float",
             rotation: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -24,7 +26,9 @@ export default class Transition extends Template {
             cw2: 0.9 * 1000,
             length: 1.0 * 1000,
             rotation: 0,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -40,7 +44,9 @@ export default class Transition extends Template {
             cw2: 3,
             length: 10,
             height: 10,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -48,7 +54,9 @@ export default class Transition extends Template {
             cw1: 2000,
             cw2: 2000,
             length: 1200,
-            height: 1200
+            height: 1200,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -56,14 +64,18 @@ export default class Transition extends Template {
             cw1: "cw1",
             cw2: "cw2",
             length: "length",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
             cw1: "cw1",
             cw2: "cw2",
             length: "length",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "PositionTool";
@@ -102,7 +114,8 @@ export default class Transition extends Template {
 
         trap.closed = true;
         trap.fillColor = color;
-        return (trap.rotate(rotation, new paper.Point(position[0], position[1])) as unknown) as paper.Path;
+        this.transformRender(params,trap);
+        return trap;
     }
 
     render2DTarget(key: string | null, params: { [k: string]: any }): paper.Path  {

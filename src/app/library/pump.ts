@@ -20,7 +20,9 @@ export default class Pump extends Template {
             width: "Float",
             height: "Float",
             spacing: "Float",
-            flowChannelWidth: "Float"
+            flowChannelWidth: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -30,7 +32,9 @@ export default class Pump extends Template {
             length: 300,
             height: 250,
             spacing: 1000,
-            flowChannelWidth: 300
+            flowChannelWidth: 300,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -50,7 +54,9 @@ export default class Pump extends Template {
             length: 120,
             height: 10,
             spacing: 10,
-            flowChannelWidth: 1
+            flowChannelWidth: 1,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -60,7 +66,9 @@ export default class Pump extends Template {
             length: 24 * 1000,
             height: 1200,
             spacing: 10000,
-            flowChannelWidth: 10000
+            flowChannelWidth: 10000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -70,7 +78,9 @@ export default class Pump extends Template {
             width: "width",
             rotation: "rotation",
             spacing: "spacing",
-            flowChannelWidth: "flowChannelWidth"
+            flowChannelWidth: "flowChannelWidth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -79,7 +89,9 @@ export default class Pump extends Template {
             width: "width",
             rotation: "rotation",
             spacing: "spacing",
-            flowChannelWidth: "flowChannelWidth"
+            flowChannelWidth: "flowChannelWidth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -148,7 +160,7 @@ export default class Pump extends Template {
         ret.addChild(rec);
 
         ret.fillColor = color;
-        ret.rotate(rotation, new paper.Point(px, py));
+        this.transformRender(params,ret);
         return ret;
     }
 
@@ -201,7 +213,7 @@ export default class Pump extends Template {
         ret.addChild(rec);
 
         ret.fillColor = color;
-        ret.rotate(rotation, new paper.Point(px, py));
+        this.transformRender(params,ret);
         return ret;
     }
 

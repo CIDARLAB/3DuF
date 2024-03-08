@@ -24,7 +24,9 @@ export default class Mux extends Template {
             length: "Float",
             height: "Float",
             stageLength: "Float",
-            controlChannelWidth: "Float"
+            controlChannelWidth: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -38,7 +40,9 @@ export default class Mux extends Template {
             length: 1.6 * 1000,
             height: 250,
             stageLength: 4000,
-            controlChannelWidth: 0.4 * 1000
+            controlChannelWidth: 0.4 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -66,7 +70,9 @@ export default class Mux extends Template {
             height: 10,
             stageLength: 100,
             controlChannelWidth: 10,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -80,7 +86,9 @@ export default class Mux extends Template {
             height: 1200,
             stageLength: 6000,
             controlChannelWidth: 2000,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -94,7 +102,9 @@ export default class Mux extends Template {
             length: "length",
             in: "in",
             out: "out",
-            stageLength: "stageLength"
+            stageLength: "stageLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -108,7 +118,9 @@ export default class Mux extends Template {
             length: "length",
             in: "in",
             out: "out",
-            stageLength: "stageLength"
+            stageLength: "stageLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -170,7 +182,8 @@ export default class Mux extends Template {
         // Draw the tree
 
         treepath.fillColor = color;
-        return (treepath.rotate(rotation, new paper.Point(px, py)) as unknown) as paper.CompoundPath;
+        this.transformRender(params,treepath);
+        return treepath;
     }
 
     __drawControl(params: { [k: string]: any }): paper.CompoundPath  {
@@ -214,7 +227,8 @@ export default class Mux extends Template {
         // Draw the tree
 
         treepath.fillColor = color;
-        return (treepath.rotate(rotation, new paper.Point(px, py)) as unknown) as paper.CompoundPath;
+        this.transformRender(params,treepath);
+        return treepath;
     }
 
     getPorts(params: { [k: string]: any }) {

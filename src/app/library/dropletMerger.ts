@@ -20,7 +20,9 @@ export default class DropletMerger extends Template {
             outputWidth: "Float",
             stabilizationLength: "Float",
             rotation: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -30,7 +32,9 @@ export default class DropletMerger extends Template {
             outputWidth: 400,
             stabilizationLength: 5000,
             rotation: 0,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -50,7 +54,9 @@ export default class DropletMerger extends Template {
             outputWidth: 1,
             stabilizationLength: 10,
             rotation: 0,
-            height: 10
+            height: 10,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -60,7 +66,9 @@ export default class DropletMerger extends Template {
             outputWidth: 10000,
             stabilizationLength: 500000,
             rotation: 360,
-            height: 10000
+            height: 10000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "componentPositionTool";
@@ -77,7 +85,9 @@ export default class DropletMerger extends Template {
             outputWidth: "outputWidth",
             stabilizationLength: "stabilizationLength",
             rotation: "rotation;",
-            height: "height"
+            height: "height",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -86,7 +96,9 @@ export default class DropletMerger extends Template {
             inputWidth2: "inputWidth2",
             outputWidth: "outputWidth",
             stabilizationLength: "stabilizationLength",
-            rotation: "rotation;"
+            rotation: "rotation;",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW"];
@@ -150,7 +162,8 @@ export default class DropletMerger extends Template {
         }
 
         serp.fillColor = color;
-        return (serp.rotate(rotation, new paper.Point(x, y)) as unknown) as paper.CompoundPath;
+        this.transformRender(params,serp);
+        return serp;
     }
 
     render2DTarget(key: string | null, params: { [k: string]: any }): paper.CompoundPath  {

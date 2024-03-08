@@ -562,10 +562,21 @@ export default class LoadUtils {
      * @memberof LoadUtils
      */
     static loadComponentFromInterchangeV1(json: ComponentInterchangeV1): Component {
-        const iscustomcompnent = false;
+        let iscustomcomponent;
         const name = json.name;
         const id = json.id;
         const entity = json.entity;
+
+        console.log("Entity here:")
+        console.log(entity);
+
+        if (ComponentAPI.getComponentWithMINT(entity) === null) {
+            iscustomcomponent = true;
+            console.log("is custom component");
+        } else {
+            iscustomcomponent = false;
+            console.log("is not custom component");
+        }
 
         // Idk whether this is correct
         // It was originially this._span = this.span which threw several errors so I patterned in off the above const var
@@ -575,14 +586,16 @@ export default class LoadUtils {
         const params = json.params;
 
         // TODO - remove this dependency
-        // iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);
+        // iscustomcomponent = Registry.viewManager.customComponentManager.hasDefinition(entity);
 
         let definition;
 
-        if (iscustomcompnent) {
-            definition = CustomComponent.defaultParameterDefinitions();
+        if (iscustomcomponent) {
+            //Grab the black box definition (Eric)
+            definition = ComponentAPI.getBlackBoxDefinition(xspan, yspan, []);
         } else {
             definition = ComponentAPI.getDefinitionForMINT(entity);
+
         }
 
         if (definition === null) {
@@ -598,6 +611,7 @@ export default class LoadUtils {
         let type;
         let value;
         for (const key in json.params) {
+            // We check if the if the parameter (defined by key) is there inside the definition (heritable or unique)
             if (Object.prototype.hasOwnProperty.call(definition.heritable, key)) {
                 type = definition.heritable[key];
             } else if (Object.prototype.hasOwnProperty.call(definition.unique, key)) {
@@ -614,13 +628,30 @@ export default class LoadUtils {
             params[key] = value;
         }
 
+        //Need to do this since component may not have length and width (probably need special name for them)
+        if(!iscustomcomponent){
+            params.blackBoxLength = xspan;
+            params.blackBoxWidth = yspan;
+
+            console.log("Params here:");
+            console.log(params);
+            console.log(xspan);
+            console.log(yspan);
+        }
+
         // Do another check and see if position is present or not
         if (!Object.prototype.hasOwnProperty.call(params, "position")) {
             params.position = [0.0, 0.0];
         }
+
+        // We need to convert here because one is Map type datastructure and the other is a simple object
         const unique_map = MapUtils.toMap(definition.unique);
         const heritable_map = MapUtils.toMap(definition.heritable);
+        //Assuming I just have to change the params to match the black box params (Eric) !!!
         const paramstoadd = new Params(params, unique_map, heritable_map);
+        //Creates component based off entity (Eric)
+        //Just change the entity to black box if is custom component (Eric) !!!
+        //Also change the paramstoadd to match params of black box (Eric) !!!
         const component = new Component(paramstoadd, name, entity, id);
 
         // Deserialize the component ports
@@ -631,6 +662,9 @@ export default class LoadUtils {
         }
 
         component.ports = portdata;
+
+        console.log("Component here")
+        console.log(component)
 
         return component;
     }

@@ -19,7 +19,9 @@ export default class Anode extends Template {
             pegHeight: "Float",
             pegWidth: "Float",
             height: "Float",
-            rotation: "Float"
+            rotation: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
