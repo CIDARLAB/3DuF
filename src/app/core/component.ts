@@ -200,8 +200,8 @@ export default class Component {
             name: this._name,
             entity: this._entity,
             params: this._params.toJSON(),
-            "x-span": this._xspan,
-            "y-span": this._yspan,
+            "x-span": bounds.width,
+            "y-span": bounds.height,
             ports: portdata,
             layers: this.findLayerReferences()
         };
