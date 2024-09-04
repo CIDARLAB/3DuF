@@ -156,7 +156,7 @@ class componentAPI {
         return components;
     }
 
-    getComponentwithMint(minttype: string): Template {
+    getComponentwithMint(minttype: string): Template | null {
         const checkmint = minttype;
         for (const key in this.__library) {
             if (checkmint == this.__library[key].object.mint) {

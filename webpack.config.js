@@ -27,7 +27,18 @@ module.exports = {
                         presets: ["@babel/preset-env"]
                     }
                 }
+            },
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: "ts-loader"
             }
         ]
+    },
+    resolve: {
+        extensions: [".ts", ".js"],
+	alias: {
+            '@': path.resolve(__dirname, 'src')
+	}
     }
 };
