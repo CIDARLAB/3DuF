@@ -17,7 +17,6 @@ old/*.scad
 publish.sh
 
 docs/
-build/*
 
 # Folder view configuration files
 .DS_Store
