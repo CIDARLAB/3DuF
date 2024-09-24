@@ -969,10 +969,19 @@ export default class ViewManager {
 
             for(let i=0; i<json.components.length; i++){
                 if(ComponentAPI.getComponentWithMINT(json.components[i].entity) == null){
-                    json.components[i].entity = "BLACK BOX"
-                    json.components[i].params["width"] = json.components[i]["x-span"]
-                    json.components[i].params["length"] = json.components[i]["y-span"]
+                    json.components[i].entity = "BLACK BOX";
                     flag = true;
+                    if (json.components[i]["x-span"] <= 0) {
+                        json.components[i]["x-span"] = 1000;
+                    }
+                    if (json.components[i]["y-span"] <= 0) {
+                        json.components[i]["y-span"] = 1000;
+                    }
+                    
+                    if (!("width" in json.components[i].params) && !("length" in json.components[i].params)) {
+                        json.components[i].params["width"] = json.components[i]["x-span"];
+                        json.components[i].params["length"] = json.components[i]["y-span"];
+                    }
                 }
             }
 
