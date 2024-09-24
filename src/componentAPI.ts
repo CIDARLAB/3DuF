@@ -29,6 +29,7 @@ import LLChamber from "./app/library/llChamber";
 import ThreeDMixer from "./app/library/threeDMixer";
 import Via from "./app/library/via";
 
+
 // new
 
 import Filter from "./app/library/filter";
@@ -47,6 +48,8 @@ import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
 import ToroidalMixer from "./app/library/toroidalMixer";
 import DogboneInsert from "./app/library/dogboneInsert";
+import Well from "./app/library/well";
+import Terrace from "./app/library/terrace";
 
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
@@ -168,6 +171,9 @@ export class ComponentAPI {
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" },
+        Well: { object: new Well(), key: "FLOW"},
+        Terrace: { object: new Terrace(), key: "FLOW"}
+        
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {
