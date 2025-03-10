@@ -22,7 +22,9 @@ export default class Tree extends Template {
             out: "Integer",
             width: "Float",
             height: "Float",
-            stageLength: "Float"
+            stageLength: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -34,7 +36,9 @@ export default class Tree extends Template {
             out: 8,
             width: 2.46 * 1000,
             height: 250,
-            stageLength: 4000
+            stageLength: 4000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -58,7 +62,9 @@ export default class Tree extends Template {
             width: 60,
             height: 10,
             stageLength: 100,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -70,7 +76,9 @@ export default class Tree extends Template {
             width: 12 * 1000,
             height: 1200,
             stageLength: 6000,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -82,7 +90,9 @@ export default class Tree extends Template {
             width: "width",
             in: "in",
             out: "out",
-            stageLength: "stageLength"
+            stageLength: "stageLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -93,7 +103,9 @@ export default class Tree extends Template {
             width: "width",
             in: "in",
             out: "out",
-            stageLength: "stageLength"
+            stageLength: "stageLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";
@@ -181,7 +193,8 @@ export default class Tree extends Template {
         // Draw the tree
 
         treepath.fillColor = color;
-        return (treepath.rotate(rotation, new paper.Point(px, py)) as unknown) as paper.CompoundPath;
+        this.transformRender(params,treepath);
+        return treepath;
     }
 
     __generateTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false): void  {

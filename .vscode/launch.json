@@ -19,7 +19,7 @@
             "type": "firefox",
             "request": "launch",
             "name": "vuejs: firefox",
-            "url": "http://localhost:8080",
+            "url": "http://localhost:8081",
             "webRoot": "${workspaceFolder}/src",
             "tmpDir": "/home/ericx/Desktop/FirefoxTemp",
             "pathMappings": [

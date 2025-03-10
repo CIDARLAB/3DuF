@@ -3,7 +3,7 @@ import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType  } from "../core/init";
 
-export default class DiamondReactionChamber extends Template {
+export default class Test extends Template {
     constructor() {
         super();
     }
@@ -95,7 +95,7 @@ export default class DiamondReactionChamber extends Template {
 
         this.__renderKeys = ["FLOW"];
 
-        this.__mint = "DIAMOND REACTION CHAMBER";
+        this.__mint = "TEST";
 
         this.__zOffsetKeys = {
             FLOW: "height"
@@ -145,8 +145,8 @@ export default class DiamondReactionChamber extends Template {
         hex.add(new paper.Point(p4));
         hex.add(new paper.Point(p5));
         hex.closed = true;
-        hex.fillColor = color;
         this.transformRender(params,hex);
+        hex.fillColor = color;
         return hex;
     }
 

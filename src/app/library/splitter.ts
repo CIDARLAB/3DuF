@@ -22,7 +22,9 @@ export default class Splitter extends Template {
             outletWidth1: "Float",
             outletLength1: "Float",
             outletWidth2: "Float",
-            outletLength2: "Float"
+            outletLength2: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -34,7 +36,9 @@ export default class Splitter extends Template {
             outletWidth1: 1 * 1000,
             outletLength1: 3 * 1000,
             outletWidth2: 2 * 1000,
-            outletLength2: 3 * 1000
+            outletLength2: 3 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -58,7 +62,9 @@ export default class Splitter extends Template {
             outletWidth1: 0.5 * 1000,
             outletLength1: 2 * 1000,
             outletWidth2: 0.5 * 1000,
-            outletLength2: 2 * 1000
+            outletLength2: 2 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -70,7 +76,9 @@ export default class Splitter extends Template {
             outletWidth1: 3 * 1000,
             outletLength1: 5 * 1000,
             outletWidth2: 3 * 1000,
-            outletLength2: 5 * 1000
+            outletLength2: 5 * 1000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "componentPositionTool";
@@ -89,7 +97,9 @@ export default class Splitter extends Template {
             outletWidth1: "outletWidth1",
             outletLength1: "outletLength1",
             outletWidth2: "outletWidth2",
-            outletLength2: "outletLength2"
+            outletLength2: "outletLength2",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -101,7 +111,9 @@ export default class Splitter extends Template {
             outletWidth1: "outletWidth1",
             outletLength1: "outletLength1",
             outletWidth2: "outletWidth2",
-            outletLength2: "outletLength2"
+            outletLength2: "outletLength2",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW"];
@@ -171,7 +183,7 @@ export default class Splitter extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        serp.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,serp);
 
         serp.fillColor = color;
         return serp;

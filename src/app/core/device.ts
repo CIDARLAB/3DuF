@@ -142,6 +142,7 @@ export default class Device {
     addComponent(component: Component): void {
         if (component instanceof Component) {
             this.__components.push(component);
+            console.log("component",component)
         } else {
             throw new Error("Tried to add a component that isn't a component to the device");
         }

@@ -19,7 +19,9 @@ export default class Cahode extends Template {
             pegRadius: "Float",
             pegThickness: "Float",
             height: "Float",
-            rotation: "Float"
+            rotation: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {

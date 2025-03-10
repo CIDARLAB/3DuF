@@ -913,12 +913,14 @@ export default class PaperView {
             newPaperFeature.selected = selected;
             // @ts-ignore
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
+            console.log(newPaperFeature);
             this.insertEdgeFeatures(newPaperFeature);
             return;
         } else {
             newPaperFeature = FeatureRenderer2D.renderFeature(feature, null);
         }
         newPaperFeature.selected = selected;
+        console.log(newPaperFeature);
         this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
         const index = this.__viewManagerDelegate.renderLayers.indexOf(this.__viewManagerDelegate.getRenderLayerByID(feature.ID));
         const layer = this.paperLayers[index];
@@ -1251,6 +1253,8 @@ export default class PaperView {
      * @memberof PaperView
      */
     getRenderedFeature(featureID: string) {
+        console.log("getRenderedFeature");
+        console.log(this.paperFeatures[featureID]);
         return this.paperFeatures[featureID];
     }
 

@@ -6,14 +6,20 @@ import ComponentPort from "@/app/core/componentPort";
 import { Point } from "@/app/core/init";
 
 export default class ComponentPortRenderer2D {
-    static renderComponentPort(componentport: ComponentPort, draworigin: Point, rotation: number, portrendersize: number = 500) {
+    static renderComponentPort(componentport: ComponentPort, draworigin: Point, geoCenter: Point, rotation: number, mirrorByX: number, mirrorByY: number, portrendersize: number = 500) {
         const xpos = draworigin[0];
         const ypos = draworigin[1];
-        const point = new paper.Point(xpos + componentport.x, ypos + componentport.y);
+        let point = new paper.Point(xpos + componentport.x, ypos + componentport.y);
 
         const circle = new paper.Path.Circle(point, portrendersize);
-
-        circle.rotate(rotation, new paper.Point(draworigin[0], draworigin[1]));
+        //Rotate the circle
+        circle.rotate(rotation, new paper.Point(geoCenter[0], geoCenter[1]));
+        point = circle.bounds.center;
+        
+        //Mirror the circle
+        if(mirrorByX) point.x = 2 * geoCenter[0] - circle.position.x;
+        if(mirrorByY) point.y = 2 * geoCenter[1] - circle.position.y;
+        circle.bounds.center = point;
 
         circle.fillColor = new paper.Color(Colors.BLACK);
 
@@ -29,11 +35,22 @@ export default class ComponentPortRenderer2D {
         return ret;
     }
 
+    /**
+     * Renders all the component ports for a given component
+     *
+     * @static
+     * @param {Component} component
+     * @return {*} 
+     * @memberof ComponentPortRenderer2D
+     */
     static renderComponentPorts(component: Component) {
         const rendersize = ComponentPortRenderer2D.getSizeforZoomLevel();
         const componentports = component.ports;
         const ret = [];
         const rotation = component.getRotation();
+        const mirrorByX = component.getMirrorByX();
+        const mirrorByY = component.getMirrorByY();
+        const geoCenter = component.getCenterPosition();
         const currPos = component.getValue("position");
         component.setOffset();
         const position: Point = [currPos[0] - component.offset[0], currPos[1] - component.offset[1]];
@@ -43,7 +60,7 @@ export default class ComponentPortRenderer2D {
                 console.error(`component ${component.id} has no port ${key}`);
                 continue;
             }
-            const render = ComponentPortRenderer2D.renderComponentPort(componentport, position, rotation, rendersize);
+            const render = ComponentPortRenderer2D.renderComponentPort(componentport, position, geoCenter, rotation, mirrorByX, mirrorByY, rendersize);
             // TODO - Figure out how to fix this or keep track of this
             // render["renderid"] = componentport.id;
             component.attachComponentPortRender(key, render);
@@ -51,4 +68,5 @@ export default class ComponentPortRenderer2D {
         }
         return ret;
     }
+
 }

@@ -65,18 +65,22 @@ export default class GenerateArrayTool extends MouseTool {
         // Loop to create the components at the new positions
         for (let y = 0; y < ydim; y++) {
             for (let x = 0; x < xdim; x++) {
+                
                 // Skip the x=0, y=0 because thats the initial one
                 if (x === 0 && y === 0) {
                     continue;
                 }
                 const xpos = xposref + x * xspacing;
                 const ypos = yposref + y * yspacing;
+                console.log("Current Component", this.__currentComponent.name);
+                const replica = this.__currentComponent.replicate(xpos, ypos, name + "_" + String(x + 1) + "_" + String(y + 1))
+                console.log("replica",replica);
                 replicas.push(this.__currentComponent.replicate(xpos, ypos, name + "_" + String(x + 1) + "_" + String(y + 1)));
             }
         }
 
         // Add the replicas to the device
-        console.log(replicas);
+        console.log("replicas",replicas);
         replicas.forEach(function(replica) {
             Registry.currentDevice?.addComponent(replica);
         });

@@ -20,7 +20,9 @@ export default class ThreeDMixer extends Template {
             channelWidth: "Float",
             bendLength: "Float",
             rotation: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -30,7 +32,9 @@ export default class ThreeDMixer extends Template {
             numberOfBends: 1,
             rotation: 0,
             bendLength: 2.46 * 1000,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -50,7 +54,9 @@ export default class ThreeDMixer extends Template {
             numberOfBends: 1,
             rotation: 0,
             bendLength: 10,
-            height: 10
+            height: 10,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -60,7 +66,9 @@ export default class ThreeDMixer extends Template {
             numberOfBends: 20,
             rotation: 360,
             bendLength: 12 * 1000,
-            height: 1200
+            height: 1200,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -76,7 +84,9 @@ export default class ThreeDMixer extends Template {
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
-            bendLength: "bendLength"
+            bendLength: "bendLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -85,7 +95,9 @@ export default class ThreeDMixer extends Template {
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
-            bendLength: "bendLength"
+            bendLength: "bendLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW", "CONTROL"];
@@ -167,7 +179,7 @@ export default class ThreeDMixer extends Template {
         }
 
         serp.fillColor = color;
-        serp.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,serp);
         return serp;
     }
 

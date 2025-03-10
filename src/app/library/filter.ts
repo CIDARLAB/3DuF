@@ -26,7 +26,9 @@ export default class Filter extends Template {
             inletWidth: "Float",
             inletLength: "Float",
             outletWidth: "Float",
-            outletLength: "Float"
+            outletLength: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -42,7 +44,9 @@ export default class Filter extends Template {
             inletWidth: 1 * 1000,
             inletLength: 3 * 1000,
             outletWidth: 1 * 1000,
-            outletLength: 3 * 1000
+            outletLength: 3 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -74,7 +78,9 @@ export default class Filter extends Template {
             inletWidth: 0.5 * 1000,
             inletLength: 1 * 1000,
             outletWidth: 0.5 * 1000,
-            outletLength: 1 * 1000
+            outletLength: 1 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -90,7 +96,9 @@ export default class Filter extends Template {
             inletWidth: 4 * 1000,
             inletLength: 8 * 1000,
             outletWidth: 4 * 1000,
-            outletLength: 8 * 1000
+            outletLength: 8 * 1000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "componentPositionTool";
@@ -112,7 +120,9 @@ export default class Filter extends Template {
             inletWidth: "inletWidth",
             inletLength: "inletLength",
             outletWidth: "outletWidth",
-            outletLength: "outletLength"
+            outletLength: "outletLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -127,7 +137,9 @@ export default class Filter extends Template {
             inletWidth: "inletWidth",
             inletLength: "inletLength",
             outletWidth: "outletWidth",
-            outletLength: "outletLength"
+            outletLength: "outletLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW"];
@@ -277,7 +289,7 @@ export default class Filter extends Template {
 
         serp.addChild(new paper.Path.Rectangle(topLeft, bottomRight));
 
-        serp.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,serp);
 
         serp.fillColor = color;
         return serp;

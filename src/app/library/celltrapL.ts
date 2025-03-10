@@ -21,7 +21,9 @@ export default class CellTrapL extends Template {
             chamberWidth: "Float",
             numberOfChambers: "Float",
             chamberSpacing: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -32,7 +34,9 @@ export default class CellTrapL extends Template {
             chamberWidth: 1.23 * 1000,
             numberOfChambers: 6,
             chamberSpacing: 2.46 * 1000,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -54,7 +58,9 @@ export default class CellTrapL extends Template {
             numberOfChambers: 1,
             chamberSpacing: 30,
             height: 10,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -65,7 +71,9 @@ export default class CellTrapL extends Template {
             numberOfChambers: 100,
             chamberSpacing: 12 * 1000,
             height: 1200,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -77,7 +85,9 @@ export default class CellTrapL extends Template {
             numberOfChambers: "numberOfChambers",
             chamberSpacing: "chamberSpacing",
             feedingChannelWidth: "feedingChannelWidth",
-            height: "height"
+            height: "height",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -88,7 +98,9 @@ export default class CellTrapL extends Template {
             numberOfChambers: "numberOfChambers",
             chamberSpacing: "chamberSpacing",
             feedingChannelWidth: "feedingChannelWidth",
-            height: "height"
+            height: "height",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "CellPositionTool";
@@ -182,7 +194,7 @@ export default class CellTrapL extends Template {
 
         traps = new paper.CompoundPath(chamberList);
         traps.fillColor = color;
-        traps.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,traps);
         return traps;
     }
 
@@ -212,7 +224,7 @@ export default class CellTrapL extends Template {
         }
 
         chamberList.fillColor = color;
-        chamberList.rotate(rotation, new paper.Point(x, y));
+        this.transformRender(params,chamberList);
         return chamberList;
     }
 }
