@@ -363,6 +363,7 @@ export default class Feature {
     deriveRenderName(): string {
         if (!ComponentAPI.library[this.type]) {
             console.error("Type unrecognized, defaulting to template.");
+            this._type = "Template";
         }
         return ComponentAPI.library[this.type].key;
     }
