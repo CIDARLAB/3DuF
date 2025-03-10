@@ -960,7 +960,34 @@ export default class ViewManager {
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
 
+            //Preprocess the json to display black box components
+            //by changing unknown mint entities with black box
+
+            //TODO delete the render layers if exists and we find unknown component
+
+            let flag = false;
+
+            for(let i=0; i<json.components.length; i++){
+                if(ComponentAPI.getComponentWithMINT(json.components[i].entity) == null){
+                    json.components[i].entity = "BLACK BOX";
+                    flag = true;
+                    if (json.components[i]["x-span"] <= 0) {
+                        json.components[i]["x-span"] = 1000;
+                    }
+                    if (json.components[i]["y-span"] <= 0) {
+                        json.components[i]["y-span"] = 1000;
+                    }
+                    
+                    if (!("width" in json.components[i].params) && !("length" in json.components[i].params)) {
+                        json.components[i].params["width"] = json.components[i]["x-span"];
+                        json.components[i].params["length"] = json.components[i]["y-span"];
+                    }
+                }
+            }
+
         if (version === null || undefined === version || version === "1" || version == "1.1" || version == "1.2") {
+            
+
             const ret = LoadUtils.loadFromScratch(json);
             device = ret[0];
             Registry.currentDevice = device;

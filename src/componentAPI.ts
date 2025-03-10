@@ -47,9 +47,7 @@ import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
 import ToroidalMixer from "./app/library/toroidalMixer";
 import DogboneInsert from "./app/library/dogboneInsert";
-import BlackBox  from "./app/library/blackBox";
-import Test from "./app/library/test"
-
+import BlackBox from "./app/library/blackBox";
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
@@ -178,8 +176,7 @@ export class ComponentAPI {
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" },
-        Black_Box: { object: new BlackBox(), key: "FLOW"},
-        Test: { object: new Test(), key: "FLOW"},
+        BlackBox: { object: new BlackBox(), key: "FLOW"}
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {
