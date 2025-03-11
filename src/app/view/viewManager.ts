@@ -960,30 +960,43 @@ export default class ViewManager {
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
 
-            //Preprocess the json to display black box components
-            //by changing unknown mint entities with black box
-
             //TODO delete the render layers if exists and we find unknown component
 
             let flag = false;
 
-            for(let i=0; i<json.components.length; i++){
-                if(ComponentAPI.getComponentWithMINT(json.components[i].entity) == null){
-                    json.components[i].entity = "BLACK BOX";
+            for (const component of json.components) {
+
+                //If component is not in 3duf library, change it to black box
+                if (ComponentAPI.getComponentWithMINT(component.entity) == null) {
+                    component.entity = "BLACK BOX";
                     flag = true;
-                    if (json.components[i]["x-span"] <= 0) {
-                        json.components[i]["x-span"] = 1000;
+            
+                    if (component["x-span"] <= 0) {
+                        component["x-span"] = 1000;
                     }
-                    if (json.components[i]["y-span"] <= 0) {
-                        json.components[i]["y-span"] = 1000;
+                    if (component["y-span"] <= 0) {
+                        component["y-span"] = 1000;
                     }
-                    
-                    if (!("width" in json.components[i].params) && !("length" in json.components[i].params)) {
-                        json.components[i].params["width"] = json.components[i]["x-span"];
-                        json.components[i].params["length"] = json.components[i]["y-span"];
+            
+                    if (!("width" in component.params) && !("length" in component.params)) {
+                        component.params["width"] = component["x-span"];
+                        component.params["length"] = component["y-span"];
                     }
                 }
+
+                const params = JSON.parse(JSON.stringify(component.params));
+                const MintType = String(ComponentAPI.getTypeForMINT(component.entity));
+                const libraryComponent = ComponentAPI.library[MintType]?.object;
+                const drawOffset = libraryComponent.getDrawOffset(params);
+
+                //component.params.position = [params.position[0]+drawOffset[0], params.position[1]+drawOffset[1]]
+
+                for (const port of component.ports){
+                    port.x -= 2*drawOffset[0];
+                    port.y -= 2*drawOffset[1];
+                }
             }
+            
 
         if (version === null || undefined === version || version === "1" || version == "1.1" || version == "1.2") {
             
@@ -1035,7 +1048,6 @@ export default class ViewManager {
         console.log(json.version);
         //If older version fix feature locations
         if (this.__currentDevice !== null) {
-            console.log("There");
             console.log("version: ", json.version);
             if (json.version == "1" || json.version == "1.1") {
                 for (const i in this.__currentDevice.components) {
