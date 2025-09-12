@@ -1,12 +1,20 @@
 import * as Colors from "../colors";
 import paper from "paper";
 import Registry from "../../core/registry";
-import  Component  from "@/app/core/component";
+import Component from "@/app/core/component";
 import ComponentPort from "@/app/core/componentPort";
 import { Point } from "@/app/core/init";
 
 export default class ComponentPortRenderer2D {
-    static renderComponentPort(componentport: ComponentPort, draworigin: Point, geoCenter: Point, rotation: number, mirrorByX: number, mirrorByY: number, portrendersize: number = 500) {
+    static renderComponentPort(
+        componentport: ComponentPort,
+        draworigin: Point,
+        geoCenter: Point,
+        rotation: number,
+        mirrorByX: number,
+        mirrorByY: number,
+        portrendersize: number = 500
+    ) {
         const xpos = draworigin[0];
         const ypos = draworigin[1];
         let point = new paper.Point(xpos + componentport.x, ypos + componentport.y);
@@ -15,10 +23,11 @@ export default class ComponentPortRenderer2D {
         //Rotate the circle
         circle.rotate(rotation, new paper.Point(geoCenter[0], geoCenter[1]));
         point = circle.bounds.center;
-        
+        console.log(point);
+
         //Mirror the circle
-        if(mirrorByX) point.x = 2 * geoCenter[0] - circle.position.x;
-        if(mirrorByY) point.y = 2 * geoCenter[1] - circle.position.y;
+        if (mirrorByX) point.x = 2 * geoCenter[0] - circle.position.x;
+        if (mirrorByY) point.y = 2 * geoCenter[1] - circle.position.y;
         circle.bounds.center = point;
 
         circle.fillColor = new paper.Color(Colors.BLACK);
@@ -40,7 +49,7 @@ export default class ComponentPortRenderer2D {
      *
      * @static
      * @param {Component} component
-     * @return {*} 
+     * @return {*}
      * @memberof ComponentPortRenderer2D
      */
     static renderComponentPorts(component: Component) {
@@ -54,6 +63,10 @@ export default class ComponentPortRenderer2D {
         const currPos = component.getValue("position");
         component.setOffset();
         const position: Point = [currPos[0] - component.offset[0], currPos[1] - component.offset[1]];
+
+        component.setPosition();
+        component.updateComponentPorts();
+
         for (const key of componentports.keys()) {
             const componentport = componentports.get(key);
             if (componentport === undefined) {
@@ -68,5 +81,4 @@ export default class ComponentPortRenderer2D {
         }
         return ret;
     }
-
 }

@@ -675,6 +675,7 @@ export default class ViewManager {
         this.updateDevice(Registry.currentDevice!, false);
         this.__updateViewTarget(false);
         this.refresh(refresh);
+
     }
 
     /**
@@ -960,43 +961,83 @@ export default class ViewManager {
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;
 
-            //TODO delete the render layers if exists and we find unknown component
+        let flag = false;
+        let i = 1;
 
-            let flag = false;
+        json.params[""]
+
+        json.params = {
+            width: json.params["x-span"],
+            length: json.params["y-span"],
+            ...json.params
+        };
+        delete json.params["x-span"];
+        delete json.params["y-span"];
 
             for (const component of json.components) {
+ 
+                const params = component.params;
+                const topLeftPnR = params.position;
 
-                //If component is not in 3duf library, change it to black box
-                if (ComponentAPI.getComponentWithMINT(component.entity) == null) {
-                    component.entity = "BLACK BOX";
-                    flag = true;
-            
-                    if (component["x-span"] <= 0) {
-                        component["x-span"] = 1000;
-                    }
-                    if (component["y-span"] <= 0) {
-                        component["y-span"] = 1000;
-                    }
-            
-                    if (!("width" in component.params) && !("length" in component.params)) {
-                        component.params["width"] = component["x-span"];
-                        component.params["length"] = component["y-span"];
-                    }
-                }
-
-                const params = JSON.parse(JSON.stringify(component.params));
                 const MintType = String(ComponentAPI.getTypeForMINT(component.entity));
                 const libraryComponent = ComponentAPI.library[MintType]?.object;
-                const drawOffset = libraryComponent.getDrawOffset(params);
+                if (!libraryComponent) continue;
 
-                //component.params.position = [params.position[0]+drawOffset[0], params.position[1]+drawOffset[1]]
+                if (MintType === "Node") {
+                    component["x-span"] = 0;
+                    component["y-span"] = 0;
+                    continue
+                }
 
-                for (const port of component.ports){
+                const angleDeg = params.rotation ?? 0;
+                const angleRad = angleDeg * Math.PI / 180;
+
+                let dimsRotated;
+
+                if (angleDeg % 360 === 0 || angleDeg % 360 === 180) {
+                    dimsRotated = [component["x-span"], component["y-span"]];
+                } else if (angleDeg % 360 === 90 || angleDeg % 360 === 270) {
+                    dimsRotated = [component["y-span"], component["x-span"]];
+                } else {
+                    const cosTheta = Math.cos(angleRad);
+                    const sinTheta = Math.sin(angleRad);
+                    dimsRotated = [
+                        Math.abs(component["x-span"] * cosTheta) + Math.abs(component["y-span"] * sinTheta),
+                        Math.abs(component["x-span"] * sinTheta) + Math.abs(component["y-span"] * cosTheta)
+                    ];
+                }
+
+                const rotatedGeomCenter = [
+                    topLeftPnR[0] + dimsRotated[0] / 2,
+                    topLeftPnR[1] + dimsRotated[1] / 2
+                ];
+
+
+                const cleanParamsUnrotated = { ...params, rotation: 0, mirrorByX: 0, mirrorByY: 0 };
+                const drawOffset = libraryComponent.getDrawOffset(cleanParamsUnrotated);
+                const geom = libraryComponent.getCenter(cleanParamsUnrotated);
+
+                const offsetDrawToGeom = [
+                    geom.x - drawOffset[0],
+                    geom.y - drawOffset[1]
+                ];
+
+                component.params.position = [
+                    rotatedGeomCenter[0] - offsetDrawToGeom[0],
+                    rotatedGeomCenter[1] - offsetDrawToGeom[1]
+                ];
+
+                for (const port of component.ports) {
                     port.x -= 2*drawOffset[0];
-                    port.y -= 2*drawOffset[1];
+                    port.y 
+                    -= 2*drawOffset[1];
                 }
             }
-            
+
+            requestAnimationFrame(() => {
+                this.view.updateComponentPortsRender();
+            });
+
 
         if (version === null || undefined === version || version === "1" || version == "1.1" || version == "1.2") {
             
@@ -1009,17 +1050,17 @@ export default class ViewManager {
             this.renderLayers = ret[1];
 
             this.setNameMap();
-            // } else if (version == 1.1 || version == "1.1") {
-            //     // this.loadCustomComponents(json);
-            //     device = Device.fromInterchangeV1_1(json);
-            //     Registry.currentDevice = device;
-            //     this.__currentDevice = device;
+            } else if (version == 1.1 || version == "1.1") {
+                // this.loadCustomComponents(json);
+                device = Device.fromInterchangeV1_1(json);
+                Registry.currentDevice = device;
+                this.__currentDevice = device;
 
-            //     // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
-            //     for (const i in json.layers) {
-            //         const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
-            //         this.renderLayers.push(newRenderLayer);
-            //     }
+                // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
+                for (const i in json.layers) {
+                    const newRenderLayer = RenderLayer.fromInterchangeV1(json.renderLayers[i]);
+                    this.renderLayers.push(newRenderLayer);
+                }
         } else {
             alert("Version '" + version + "' is not supported by 3DuF !");
         }
