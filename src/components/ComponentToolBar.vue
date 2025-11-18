@@ -42,8 +42,8 @@ export default {
             toolTree: {
                 Mix: ["MIXER", "MIXER3D", "TOROIDAL MIXER", "GRADIENT GENERATOR", "CURVED MIXER", "ROTARY MIXER"],
                 Control: ["VALVE3D", "VALVE", "PUMP3D", "PUMP"],
-                Storage: ["BLACK BOX", "LONG CELL TRAP", "SQUARE CELL TRAP", "REACTION CHAMBER", "DIAMOND REACTION CHAMBER"],
-                Process: ["LL CHAMBER", "FILTER","DOGBONE INSERT","LOGIC ARRAY", "DROPLET SORTER"],
+                Storage: ["LONG CELL TRAP", "SQUARE CELL TRAP", "REACTION CHAMBER", "DIAMOND REACTION CHAMBER"],
+                Process: ["LL CHAMBER", "FILTER", "DOGBONE INSERT", "LOGIC ARRAY", "DROPLET SORTER"],
                 Distribute: ["PORT", "VIA", "YTREE", "TREE", "MUX", "TRANSPOSER", "MUX3D"],
                 Droplet: ["NOZZLE DROPLET GENERATOR", "DROPLET CAPACITANCE SENSOR", "DROPLET MERGER", "PICOINJECTOR", "DROPLET SPLITTER", "DROPLET GENERATOR FLOW FOCUS"]
             },
