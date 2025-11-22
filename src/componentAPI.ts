@@ -56,6 +56,7 @@ import FeatureTemplate from "./app/library/geometricElements/featureTemplate";
 import NormallyClosedValveCrescents from "./app/library/geometricElements/normallyClosedValveCrecents";
 import NormallyClosedValveModificationsGap from "./app/library/geometricElements/normallyClosedValveGap";
 import { ValveType } from "./app/core/init";
+import Terrace from "./app/library/terrace";
 import { test } from "mocha";
 
 export var PRIMITIVES_SERVER = false;
@@ -91,12 +92,11 @@ type FeatureLibraryEntry = {
  * @class ComponentAPI
  */
 export class ComponentAPI {
-
     // The blackbox entry
-    static blackboxEntryFlow : LibraryEntry = { object: new BlackBox(), key: "FLOW" };
-    static blackboxEntryControl : LibraryEntry = { object: new BlackBox(), key: "CONTROL" };
-    static blackboxEntryIntegration : LibraryEntry = { object: new BlackBox(), key: "INTEGRATION" };
-    
+    static blackboxEntryFlow: LibraryEntry = { object: new BlackBox(), key: "FLOW" };
+    static blackboxEntryControl: LibraryEntry = { object: new BlackBox(), key: "CONTROL" };
+    static blackboxEntryIntegration: LibraryEntry = { object: new BlackBox(), key: "INTEGRATION" };
+
     // The library of components
     static library: { [key: string]: LibraryEntry } = {
         Template: { object: new Template(), key: "FLOW" },
@@ -119,7 +119,7 @@ export class ComponentAPI {
         Gelchannel_cell: { object: new Gelchannel(), key: "CELL" }, // CK
         Chamber: { object: new Chamber(), key: "FLOW" },
         CurvedMixer: { object: new CurvedMixer(), key: "FLOW" },
-        ToroidalMixer: { object: new ToroidalMixer(), key: "FLOW"},
+        ToroidalMixer: { object: new ToroidalMixer(), key: "FLOW" },
         DiamondReactionChamber: {
             object: new DiamondReactionChamber(),
             key: "FLOW"
@@ -176,7 +176,8 @@ export class ComponentAPI {
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" },
-        BlackBox: { object: new BlackBox(), key: "FLOW"}
+        BlackBox: { object: new BlackBox(), key: "FLOW" },
+        Terrace: { object: new Terrace(), key: "FLOW" }
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {
@@ -186,10 +187,8 @@ export class ComponentAPI {
     static featureLibrary: { [key: string]: FeatureLibraryEntry } = {
         // Features
         NormallyClosedValveModifications: { object: new NormallyClosedValveCrescents(), key: "FLOW" },
-        NormallyClosedValveModifications_Gap: { object: new NormallyClosedValveModificationsGap(), key: "GAP" },
-
-    }
-
+        NormallyClosedValveModifications_Gap: { object: new NormallyClosedValveModificationsGap(), key: "GAP" }
+    };
 
     static customTypes: Map<string, CustomComponent> = new Map();
     __setString: any;
@@ -241,7 +240,6 @@ export class ComponentAPI {
             if (checkmint == this.featureLibrary[key].object.macro) {
                 return ComponentAPI.featureLibrary[key].object;
             }
-            
         }
         return null;
     }
@@ -490,14 +488,14 @@ export class ComponentAPI {
      */
     static getRendererForMINT(minttype: string): Template {
         // Go through all the objects in the library and return the one that matches the minttype
-        console.log("getRendererForMINT")
+        console.log("getRendererForMINT");
         for (const key in ComponentAPI.library) {
             if (ComponentAPI.library[key].object.mint === minttype) {
                 return ComponentAPI.library[key].object;
             }
         }
-        
-        return ComponentAPI.library["BlackBox"].object
+
+        return ComponentAPI.library["BlackBox"].object;
         throw new Error("Component Type definition: " + minttype + " not found in library");
     }
 
@@ -546,15 +544,14 @@ export class ComponentAPI {
         return ret;
     }
 
-
-     /**
-      * Rertuns the definition of the blackbox entry
-      *
-      * @static
-      * @param {*} entity
-      * @memberof ComponentAPI
-      */
-     static getBlackBoxDefinition(xspan: number, yspan: number, ports: Array<any>): LibraryEntryDefinition {
+    /**
+     * Rertuns the definition of the blackbox entry
+     *
+     * @static
+     * @param {*} entity
+     * @memberof ComponentAPI
+     */
+    static getBlackBoxDefinition(xspan: number, yspan: number, ports: Array<any>): LibraryEntryDefinition {
         // TODO: Deal with the ports later
         // Create a fake definition for the blackbox
 
@@ -570,7 +567,5 @@ export class ComponentAPI {
             mint: definition.mint
         };
         return ret;
-    } 
+    }
 }
-
-
