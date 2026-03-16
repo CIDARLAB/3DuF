@@ -126,7 +126,7 @@ export default class Terrace extends Template {
         terrace = terrace.subtract(subtraction_path);
 
         terrace.fillColor = color1;
-        this.transformRender(params, terrace);
+        this.transformRender(params, terrace as paper.CompoundPath);
 
         return terrace;
     }

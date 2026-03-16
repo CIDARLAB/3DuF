@@ -1050,7 +1050,7 @@ export default class ViewManager {
             this.renderLayers = ret[1];
 
             this.setNameMap();
-            } else if (version == 1.1 || version == "1.1") {
+            } else if (version == "1.1") {
                 // this.loadCustomComponents(json);
                 device = Device.fromInterchangeV1_1(json);
                 Registry.currentDevice = device;
