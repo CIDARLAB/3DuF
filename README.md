@@ -18,6 +18,20 @@ The design of microfluidic Lab on a Chip (LoC) systems is an onerous task requir
 
 ## Usage
 
+### Local Development
+
+Prerequisites:
+- Node.js
+- npm
+
+Run the frontend locally:
+```
+npm ci
+npm run vue-serve
+```
+
+Then open the URL printed by Vue CLI (typically `http://localhost:8080`).
+
 ### Design Environment
 
 <img src="/doc/ui.png" width="800" />
