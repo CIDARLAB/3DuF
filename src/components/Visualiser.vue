@@ -54,7 +54,53 @@ export default {
         window.view = Registry.viewManager.view;
         Registry.viewManager.setupToolBars();
         this.setupDragAndDropOnCanvas();
+
+        // Allow Neptune (and other hosts) to programmatically load a design JSON.
+        // Neptune will postMessage: { type: 'loadDeviceFromJSON', json: <object|string> }
+        this._postMessageHandler = (event) => {
+            const data = event && event.data ? event.data : null;
+            if (!data || typeof data !== "object") return;
+
+            if (data.type === "loadDeviceFromJSON") {
+                try {
+                    let json = data.json;
+                    if (typeof json === "string") json = JSON.parse(json);
+                    if (!json) return;
+
+                    if (Registry.viewManager && Registry.viewManager.loadDeviceFromJSON) {
+                        Registry.viewManager.loadDeviceFromJSON(json);
+                        Registry.viewManager.updateGrid();
+                        Registry.viewManager.refresh();
+                    }
+                } catch (err) {
+                    // eslint-disable-next-line no-console
+                    console.error("3DuF: failed to load JSON from postMessage", err);
+                }
+            }
+
+            // Optional helper for clearing the current device
+            if (data.type === "clearDevice") {
+                try {
+                    if (Registry.viewManager && Registry.viewManager.clear) {
+                        Registry.viewManager.clear();
+                        Registry.viewManager.updateGrid();
+                        Registry.viewManager.refresh();
+                    }
+                } catch (err) {
+                    // eslint-disable-next-line no-console
+                    console.error("3DuF: failed to clear device", err);
+                }
+            }
+        };
+        window.addEventListener("message", this._postMessageHandler);
         //EventBus.get().on(EventBus.DBL_CLICK, this.placement, this.placement2);
+    },
+
+    beforeDestroy() {
+        if (this._postMessageHandler) {
+            window.removeEventListener("message", this._postMessageHandler);
+            this._postMessageHandler = null;
+        }
     },
     methods: {
         setupDragAndDropOnCanvas: function() {
