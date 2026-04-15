@@ -12,7 +12,7 @@ The design of microfluidic Lab on a Chip (LoC) systems is an onerous task requir
 
 ## Academic Publications
 
-> Sanka, Radhakrishna, Joshua Lippai, Dinithi Samarasekera, Sarah Nemsick, and Douglas Densmore. “3DμF - Interactive Design Environment for Continuous Flow Microfluidic Devices.” Scientific Reports 9, no. 1 (December 2019).
+> Sanka, Radhakrishna, Joshua Lippai, Dinithi Samarasekera, Sarah Nemsick, and Douglas Densmore. "3DμF - Interactive Design Environment for Continuous Flow Microfluidic Devices." Scientific Reports 9, no. 1 (December 2019).
 
 [https://doi.org/10.1038/s41598-019-45623-z](https://doi.org/10.1038/s41598-019-45623-z)
 
@@ -29,11 +29,27 @@ Run with CLI on the current branch (`webpack-build-2`):
 git clone git@github.com:CIDARLAB/3DuF.git
 cd 3DuF
 git switch webpack-build-2
-npm ci
+```
+
+First run (install dependencies and start dev server):
+```
+npm run start3duf
+```
+
+Later runs (skip reinstall and start directly):
+```
 npm run vue-serve
 ```
 
 Then open the URL printed by Vue CLI (typically `http://localhost:8082`).
+
+Note: when running `npm run vue-serve`, Vue CLI may print:
+`Note that the development build is not optimized. To create a production build, run npm run build.`
+This is expected in development mode.
+
+For production builds in this repository:
+- Use `npm run build` (recommended). This runs the Vue CLI production build.
+- Use `npm run vue-build` if you prefer the explicit Vue CLI command.
 
 ### Design Environment
 
@@ -74,7 +90,7 @@ Left click on any selected feature to bring up a dialog box which will allow you
 
 ### Saving Designs
 
-Under `Save` in the main menu, click a to download the current design in the selected format.
+Under `Save` in the main menu, click to download the current design in the selected format.
 
 ### Loading Designs
 
@@ -87,7 +103,7 @@ After saving a device design to JSON, drag and drop it from your computer onto t
 
 ## Primitives Server
 
-As 3DuF continues to become a core component of the Microfluidics CAD Ecossytem, we have incorporated the ability to generate component dimensions, port locations, default dimensions for all the parametrically generated components supported by 3DuF.
+As 3DuF continues to become a core component of the Microfluidics CAD Ecosystem, we have incorporated the ability to generate component dimensions, port locations, and default dimensions for all parametrically generated components supported by 3DuF.
 
 The instructions for starting this server are as follows:
 ```
@@ -113,6 +129,12 @@ npm run dev
 ## Attributions
 
 Error Logging and Tracking enabled by [TrackJS](https://trackjs.com/)
+
+## Contributors and Maintenance
+
+This branch was maintained and updated with new features in 2026 by Yangruirui (Ron) Zhou and Eric Xie.
+
+Server deployment for this 2026 maintenance/update cycle was completed by Woo Zhong Han.
 
 ## License
 
