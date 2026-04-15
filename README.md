@@ -21,16 +21,19 @@ The design of microfluidic Lab on a Chip (LoC) systems is an onerous task requir
 ### Local Development
 
 Prerequisites:
-- Node.js
+- Node.js 16+
 - npm
 
-Run the frontend locally:
+Run with CLI on the current branch (`webpack-build-2`):
 ```
+git clone git@github.com:CIDARLAB/3DuF.git
+cd 3DuF
+git switch webpack-build-2
 npm ci
 npm run vue-serve
 ```
 
-Then open the URL printed by Vue CLI (typically `http://localhost:8080`).
+Then open the URL printed by Vue CLI (typically `http://localhost:8082`).
 
 ### Design Environment
 
@@ -49,12 +52,6 @@ Then open the URL printed by Vue CLI (typically `http://localhost:8080`).
 ### Installation and Debugging
 
 [Instructions for installation, build, and test are in the wiki.](https://github.com/CIDARLAB/3DuF/wiki/Building-and-Testing-3DuF)
-
-For webpack-build run:
-```
-npm ci
-npm run vue-serve
-```
 
 ### Selecting and Configuring Feature Types
 
