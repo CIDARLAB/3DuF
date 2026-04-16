@@ -31,15 +31,27 @@ cd 3DuF
 git switch webpack-build-2
 ```
 
-First run (install dependencies and start dev server):
-```
-npm run start3duf
-```
+Use the command that matches your situation:
 
-Later runs (skip reinstall and start directly):
-```
-npm run vue-serve
-```
+- First-time setup (or when dependencies are missing):
+  ```
+  npm run start3duf
+  ```
+  This command checks required packages, installs missing dependencies, and starts the dev server.
+  If you prefer a single command workflow, you can always use `npm run start3duf` for both first-time and daily development.
+
+- Daily development (fast start):
+  ```
+  npm run vue-serve
+  ```
+  Use this when dependencies are already installed.
+
+- Clean reinstall from lockfile:
+  ```
+  npm ci
+  npm run vue-serve
+  ```
+  Run `npm ci` directly in the terminal (not inside an `npm run` script).
 
 Then open the URL printed by Vue CLI (typically `http://localhost:8082`).
 

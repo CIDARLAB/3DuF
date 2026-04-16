@@ -20,7 +20,7 @@
         "vue-build": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build",
         "vue-lint": "vue-cli-service lint",
         "vue-serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve",
-        "start3duf": "npm ci && npm run vue-serve",
+        "start3duf": "[ -x node_modules/.bin/vue-cli-service ] && [ -d node_modules/worker-rpc ] || npm install; npm run vue-serve",
         "vue-test:unit": "vue-cli-service test:unit",
         "watch": "webpack --watch",
         "watch_compile": "node_modules/.bin/watchify ./src/app/appSetup.js -t babelify -v --outfile ./3DuFapp.js -d -t [ babelify ]",
