@@ -72,4 +72,22 @@ const getDefaults = async (req: Request, res: Response, next: NextFunction) => {
     return res.send(technology.defaults);
 };
 
-export default { getDimensions, getTerminals, getDefaults };
+const getAllComponents = async (_req: Request, res: Response, _next: NextFunction) => {
+    try {
+        const mintTypes: string[] = [];
+        for (const key in ComponentAPI.library) {
+            if (ComponentAPI.library[key].object.mint) {
+                mintTypes.push(ComponentAPI.library[key].object.mint);
+            }
+        }
+        const uniqueMintTypes = Array.from(new Set(mintTypes));
+        res.send(uniqueMintTypes);
+    } catch (error) {
+        console.error("Error getting all components:", error);
+        res.status(500).send({ message: "Failed to get component list" });
+    }
+};
+
+
+
+export default { getDimensions, getTerminals, getDefaults, getAllComponents };

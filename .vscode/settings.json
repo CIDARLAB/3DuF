@@ -20,7 +20,10 @@
     },
     "cSpell.words": ["registryref"],
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": "explicit"
     },
-    "rpc.enabled": true
+    "rpc.enabled": true,
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    }
 }

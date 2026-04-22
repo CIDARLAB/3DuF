@@ -20,7 +20,9 @@ export default class Gelchannel extends Template {
             rotation: "Float",
             length: "Float",
             height: "Float",
-            sideheight: "Float"
+            sideheight: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -30,7 +32,9 @@ export default class Gelchannel extends Template {
             rotation: 0,
             length: 3000,
             height: 250,
-            sideheight: 50
+            sideheight: 50,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -50,7 +54,9 @@ export default class Gelchannel extends Template {
             length: 1000,
             height: 10,
             sideheight: 10,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -60,7 +66,9 @@ export default class Gelchannel extends Template {
             length: 100 * 1000,
             height: 1200,
             sideheight: 1200,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -71,7 +79,9 @@ export default class Gelchannel extends Template {
             sideWidth: "sideWidth",
             mainWidth: "mainWidth",
             height: "height",
-            sideheight: "sideheight"
+            sideheight: "sideheight",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -81,7 +91,9 @@ export default class Gelchannel extends Template {
             sideWidth: "sideWidth",
             mainWidth: "mainWidth",
             height: "height",
-            sideheight: "sideheight"
+            sideheight: "sideheight",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "CellPositionTool";

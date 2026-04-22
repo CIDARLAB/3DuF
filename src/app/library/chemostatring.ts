@@ -21,7 +21,9 @@ export default class ChemostatRing extends Template {
             radius: "Float",
             rotation: "Float",
             volume: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -32,7 +34,9 @@ export default class ChemostatRing extends Template {
             radius: 400,
             rotation: 0,
             volume: 30000000,
-            height: 20
+            height: 20,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -58,7 +62,9 @@ export default class ChemostatRing extends Template {
             radius: 0.2 * 1000,
             rotation: 0,
             volume: 0.1 * 1000 * 1 * 1000 * 4 * 0.2 * 1000,
-            height: 0.2 * 1000
+            height: 0.2 * 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -69,7 +75,9 @@ export default class ChemostatRing extends Template {
             radius: 10000,
             rotation: 260,
             volume: 0.5 * 10000 * 10 * 1000 * 4 * 1 * 10000,
-            height: 1 * 10000
+            height: 1 * 10000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -87,7 +95,9 @@ export default class ChemostatRing extends Template {
             radius: "radius",
             rotation: "rotation",
             volume: "volume",
-            height: "height"
+            height: "height",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -98,7 +108,9 @@ export default class ChemostatRing extends Template {
             radius: "radius",
             rotation: "rotation",
             volume: "volume",
-            height: "height"
+            height: "height",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW", "CONTROL"];

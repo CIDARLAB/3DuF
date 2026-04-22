@@ -10,5 +10,6 @@ router.get("/", (req, res, next) => {
 router.get("/dimensions", controller.getDimensions);
 router.get("/terminals", controller.getTerminals);
 router.get("/defaults", controller.getDefaults);
+router.get("/components", controller.getAllComponents)
 
 export = router;

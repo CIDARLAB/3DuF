@@ -16,13 +16,17 @@ export default class Via extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             radius: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 1000,
             radius: 0.7 * 1000,
-            height: 0
+            height: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -34,13 +38,17 @@ export default class Via extends Template {
         this.__minimum = {
             componentSpacing: 0,
             radius: 0.8 * 10,
-            height: 0
+            height: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
             componentSpacing: 10000,
             radius: 2000,
-            height: 0
+            height: 0,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "componentPositionTool";
@@ -52,12 +60,16 @@ export default class Via extends Template {
         this.__featureParams = {
             componentSpacing: "componentSpacing",
             position: "position",
-            radius: "radius"
+            radius: "radius",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
             componentSpacing: "componentSpacing",
-            radius: "radius"
+            radius: "radius",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW"];

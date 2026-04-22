@@ -21,7 +21,9 @@ export default class Transposer extends Template {
             valveGap: "Float",
             valveSpacing: "Float",
             flowChannelWidth: "Float",
-            controlChannelWidth: "Float"
+            controlChannelWidth: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -32,7 +34,9 @@ export default class Transposer extends Template {
             valveGap: 0.6 * 1000,
             valveSpacing: 0.6 * 1000,
             flowChannelWidth: 500,
-            controlChannelWidth: 500
+            controlChannelWidth: 500,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -54,7 +58,9 @@ export default class Transposer extends Template {
             valveSpacing: 0.1 * 1000,
             flowChannelWidth: 0.1,
             controlChannelWidth: 0.1,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -65,7 +71,9 @@ export default class Transposer extends Template {
             valveSpacing: 0.1 * 10000,
             flowChannelWidth: 0.1 * 10000,
             controlChannelWidth: 0.1 * 10000,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -76,7 +84,9 @@ export default class Transposer extends Template {
             valveGap: "valveGap",
             valveSpacing: "valveSpacing",
             flowChannelWidth: "flowChannelWidth",
-            controlChannelWidth: "controlChannelWidth"
+            controlChannelWidth: "controlChannelWidth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -87,7 +97,9 @@ export default class Transposer extends Template {
             valveGap: "valveGap",
             valveSpacing: "valveSpacing",
             flowChannelWidth: "flowChannelWidth",
-            controlChannelWidth: "controlChannelWidth"
+            controlChannelWidth: "controlChannelWidth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "multilayerPositionTool";

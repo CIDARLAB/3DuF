@@ -20,7 +20,9 @@ export default class CurvedMixer extends Template {
             channelWidth: "Float",
             bendLength: "Float",
             rotation: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -30,7 +32,9 @@ export default class CurvedMixer extends Template {
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
             bendLength: 2.46 * 1000,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -50,7 +54,9 @@ export default class CurvedMixer extends Template {
             bendSpacing: 10,
             numberOfBends: 1,
             bendLength: 10,
-            height: 10
+            height: 10,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -60,7 +66,9 @@ export default class CurvedMixer extends Template {
             bendSpacing: 6000,
             numberOfBends: 20,
             bendLength: 12 * 1000,
-            height: 1200
+            height: 1200,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -70,7 +78,9 @@ export default class CurvedMixer extends Template {
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
-            bendLength: "bendLength"
+            bendLength: "bendLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -79,7 +89,9 @@ export default class CurvedMixer extends Template {
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
-            bendLength: "bendLength"
+            bendLength: "bendLength",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "componentPositionTool";

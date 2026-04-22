@@ -20,7 +20,9 @@ export default class LLChamber extends Template {
             height: "Float",
             rotation: "Float",
             spacing: "Float",
-            numberOfChambers: "Integer"
+            numberOfChambers: "Integer",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -30,7 +32,9 @@ export default class LLChamber extends Template {
             height: 250,
             spacing: 2000,
             numberOfChambers: 4,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -50,7 +54,9 @@ export default class LLChamber extends Template {
             height: 1,
             spacing: 1,
             numberOfChambers: 1,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -60,7 +66,9 @@ export default class LLChamber extends Template {
             height: 50000,
             numberOfChambers: 1000,
             spacing: 50000,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__featureParams = {
@@ -71,7 +79,9 @@ export default class LLChamber extends Template {
             height: "height",
             numberOfChambers: "numberOfChambers",
             spacing: "spacing",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -82,7 +92,9 @@ export default class LLChamber extends Template {
             height: "height",
             numberOfChambers: "numberOfChambers",
             spacing: "spacing",
-            rotation: "rotation"
+            rotation: "rotation",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__placementTool = "multilayerPositionTool";

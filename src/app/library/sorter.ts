@@ -32,7 +32,9 @@ export default class Sorter extends Template {
             numberofDistributors: "Float",
             channelDepth: "Float",
             electrodeDepth: "Float",
-            pressureDepth: "Float"
+            pressureDepth: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -54,7 +56,9 @@ export default class Sorter extends Template {
             numberofDistributors: 5,
             channelDepth: 1000,
             electrodeDepth: 1000,
-            pressureDepth: 1000
+            pressureDepth: 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -98,7 +102,9 @@ export default class Sorter extends Template {
             numberofDistributors: 1,
             channelDepth: 1000,
             electrodeDepth: 1000,
-            pressureDepth: 1000
+            pressureDepth: 1000,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -120,7 +126,9 @@ export default class Sorter extends Template {
             numberofDistributors: 10,
             channelDepth: 1000,
             electrodeDepth: 1000,
-            pressureDepth: 1000
+            pressureDepth: 1000,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -148,7 +156,9 @@ export default class Sorter extends Template {
             numberofDistributors: "numberofDistributors",
             channelDepth: "channelDepth",
             electrodeDepth: "electrodeDepth",
-            pressureDepth: "pressureDepth"
+            pressureDepth: "pressureDepth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -169,7 +179,9 @@ export default class Sorter extends Template {
             numberofDistributors: "numberofDistributors",
             channelDepth: "channelDepth",
             electrodeDepth: "electrodeDepth",
-            pressureDepth: "pressureDepth"
+            pressureDepth: "pressureDepth",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW", "INTEGRATION"];

@@ -47,6 +47,7 @@ import DropletGeneratorFlowFocus from "./app/library/dropletGeneratorFlowFocus";
 import LogicArray from "./app/library/logicArray";
 import ToroidalMixer from "./app/library/toroidalMixer";
 import DogboneInsert from "./app/library/dogboneInsert";
+import BlackBox from "./app/library/blackBox";
 
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
@@ -81,6 +82,7 @@ export class ComponentAPI {
         Text: { object: new Text(), key: "FLOW" },
         Port: { object: new Port(), key: "FLOW" },
         Anode: { object: new Anode(), key: "INTEGRATION" }, // ck addition
+        BlackBox: { object: new BlackBox(), key: "FLOW"},
         Cathode: { object: new Cathode(), key: "INTEGRATION" }, // ck addition
         Channel: { object: new Channel(), key: "FLOW" },
         BetterMixer: { object: new BetterMixer(), key: "FLOW" },

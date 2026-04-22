@@ -22,7 +22,9 @@ export default class RotaryMixer extends Template {
             valveWidth: "Float",
             valveLength: "Float",
             valveSpacing: "Float",
-            height: "Float"
+            height: "Float",
+            mirrorByX: "Float",
+            mirrorByY: "Float"
         };
 
         this.__defaults = {
@@ -35,7 +37,9 @@ export default class RotaryMixer extends Template {
             valveLength: 1 * 1000,
             valveSpacing: 300,
             valveRadius: 1.2 * 1000,
-            height: 250
+            height: 250,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__units = {
@@ -60,7 +64,9 @@ export default class RotaryMixer extends Template {
             valveSpacing: 0.1 * 300,
             valveRadius: 0.1 * 1.2 * 1000,
             height: 0.1 * 200,
-            rotation: 0
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
         };
 
         this.__maximum = {
@@ -73,7 +79,9 @@ export default class RotaryMixer extends Template {
             valveSpacing: 10 * 300,
             valveRadius: 10 * 1.2 * 1000,
             height: 10 * 200,
-            rotation: 360
+            rotation: 360,
+            mirrorByX: 1,
+            mirrorByY: 1
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -92,7 +100,9 @@ export default class RotaryMixer extends Template {
             valveWidth: "valveWidth",
             valveLength: "valveLength",
             valveSpacing: "valveSpacing",
-            height: "height"
+            height: "height",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__targetParams = {
@@ -105,7 +115,9 @@ export default class RotaryMixer extends Template {
             valveWidth: "valveWidth",
             valveLength: "valveLength",
             valveSpacing: "valveSpacing",
-            height: "height"
+            height: "height",
+            mirrorByX: "mirrorByX",
+            mirrorByY: "mirrorByY"
         };
 
         this.__renderKeys = ["FLOW", "CONTROL"];
