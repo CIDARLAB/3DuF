@@ -22,7 +22,25 @@ class EventBus extends EventEmitter {
     static UPDATE_RENDERS = "update_renders";
     static RIGHT_CLICK = "right_click";
     static CLOSE_ALL_WINDOWS = "close_all_windows";
+    /** Payload: { mint: string | null } — only one sidebar component row may be “active” */
+    static SIDEBAR_COMPONENT_ACTIVATED = "sidebar_component_activated";
+    /**
+     * Payload: { mint: string | null; placementPanelAnchor?: { left: number; top: number } }
+     * — only one settings panel may be open; null = none.
+     * When opening placement defaults from the gear, include placementPanelAnchor (screen coords)
+     * so the floating settings card can anchor beside the sidebar row.
+     */
+    static SIDEBAR_SETTINGS_OPENED = "sidebar_settings_opened";
+    /** Payload: { anchor: { left: number; top: number } } — reposition sidebar-anchored placement settings card on scroll */
+    static SIDEBAR_PLACEMENT_SETTINGS_REPOSITION = "sidebar_placement_settings_reposition";
+    /** Payload: boolean — show or hide the “press Esc to stop connection” banner */
+    static CONNECTION_ESC_HINT = "connection_esc_hint";
+    /** Emitted when the active render layer (FLOW / CTRL / … tab) changes — UI panels can mirror canvas emphasis */
+    static ACTIVE_RENDER_LAYER_CHANGED = "active_render_layer_changed";
     static UPDATE_ZOOM = "update_zoom";
 }
+
+/** Sidebar row id for Connection (distinct from device MINT strings). */
+export const SIDEBAR_CONNECTION_ID = "__SIDEBAR_CONNECTION__";
 
 export default EventBus;

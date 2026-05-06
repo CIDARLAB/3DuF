@@ -1,37 +1,37 @@
 <template>
     <div class="property-drawer-parent">
-        <v-btn  ref="activator" medium :class="buttonClasses" @click="activateTool()">{{ shortenedMINT }}   
+        <div ref="settingsAnchor" class="property-drawer-row">
+            <v-tooltip bottom max-width="300">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn ref="activator" medium :class="buttonClasses" v-bind="attrs" v-on="on" @click="activateTool()">
+                        {{ shortenedMINT }}
+                    </v-btn>
+                </template>
+                <span>{{ mintTooltip }}</span>
+            </v-tooltip>
             <v-btn
                 icon
-                color="blue"
-                right
-                small
-                class="setting-icon-button"
+                medium
+                text
+                :ripple="false"
+                elevation="0"
+                class="settings-gear-btn"
+                :class="{ 'settings-gear-btn--open': isSettingsRowOpen }"
                 @click.stop="showProperties()"
-                >
-                    <v-icon>mdi-cog</v-icon>
+            >
+                <v-icon class="settings-gear-icon">mdi-cog</v-icon>
             </v-btn>
-        </v-btn>
- 
-        <div ref="drawer" class="property-drawer">
-            <v-card v-if="showDrawer">
-                <v-card-title class="subtitle-1 pb-0">{{ title }}</v-card-title>
-                <v-card-text>
-                    <PropertyBlock :title="mint" :spec="storedSpec" @update="updateParameter" />
-                </v-card-text>
-            </v-card>
         </div>
     </div>
 </template>
 
 <script>
 import EventBus from "@/events/events";
-import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import Registry from "@/app/core/registry";
 import { ComponentAPI } from "@/componentAPI";
+import { getMintTooltip } from "@/constants/mintTooltips";
 export default {
     name: "PropertyDrawer",
-    components: { PropertyBlock },
     props: {
         mint: {
             type: String,
@@ -53,91 +53,119 @@ export default {
             type: String,
             required: false,
             default: "white--text"
+        },
+        /** Single source of truth from ComponentToolBar — which row shows the primary (blue) placement button. */
+        activeSidebarMint: {
+            type: String,
+            default: ""
+        },
+        /** Single source of truth — which row has the settings detail panel and grey gear. */
+        activeSettingsMint: {
+            type: String,
+            default: ""
         }
     },
     data() {
         return {
-            storedSpec:[{ min: 0, max: 110, units: "", value: 0 }],
-            activated: false,
-            activeTool: null,
-            title: "",
-            showDrawer: false,
+            storedSpec: [{ min: 0, max: 110, units: "", value: 0 }],
+            activeTool: null
         };
     },
     computed: {
-        specClone: function(){
-            let cloneSpec = JSON.parse(JSON.stringify(this.storedSpec));
-            return cloneSpec;
-        },
         buttonClasses: function() {
-            return [this.activated ? this.activatedColor : "white", this.activated ? this.activatedTextColor : "blue--text", "mx-auto", "my-1", "btn"];
+            return [
+                this.isPlacementRowActive ? this.activatedColor : "white",
+                this.isPlacementRowActive ? this.activatedTextColor : "blue--text",
+                "my-1",
+                "component-tool-btn-main"
+            ];
+        },
+
+        isPlacementRowActive: function() {
+            return this.activeSidebarMint === this.mint;
+        },
+
+        isSettingsRowOpen: function() {
+            return this.activeSettingsMint === this.mint;
         },
 
         shortenedMINT: function() {
             return this.mint.substring(0, 15);
+        },
+
+        mintTooltip: function() {
+            return getMintTooltip(this.mint);
         }
     },
     mounted() {
-        // Setup an event for closing all the dialogs
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
-            this.dialog = false;
-        });
-        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
+        EventBus.get().on(EventBus.NAVBAR_SCROLL_EVENT, this.emitPlacementSettingsRepositionIfOpen);
+    },
+    beforeDestroy() {
+        EventBus.get().off(EventBus.NAVBAR_SCROLL_EVENT, this.emitPlacementSettingsRepositionIfOpen);
     },
     methods: {
-        showProperties() {
-            // this.activated = !this.activated;
-            this.showDrawer = !this.showDrawer;
-            let attachPoint = document.querySelector("[data-app]");
-
-            if (!attachPoint) {
-                console.error("Could not find [data-app] element");
+        getPlacementPanelAnchor() {
+            const row = this.$refs.settingsAnchor;
+            if (!row || typeof row.getBoundingClientRect !== "function") {
+                return { left: 240, top: 120 };
             }
-
-            this.setDrawerPosition();
-
-            attachPoint.appendChild(this.$refs.drawer);
-
+            const rect = row.getBoundingClientRect();
+            return { left: rect.right, top: rect.top };
         },
-        activateTool(){
-            this.activated = !this.activated;
-            if (this.activated) {
-                this.storedSpec = this.spec;
-                this.storedSpec = this.computedSpecForMINT(this.mint);
-                this.activeTool = Registry.viewManager.activateComponentPlacementTool(this.mint, this.storedSpec);
-                this.showProperties();
-            } else {
+        emitPlacementSettingsRepositionIfOpen() {
+            if (!this.isSettingsRowOpen) return;
+            EventBus.get().emit(EventBus.SIDEBAR_PLACEMENT_SETTINGS_REPOSITION, {
+                anchor: this.getPlacementPanelAnchor()
+            });
+        },
+        showProperties() {
+            if (this.isSettingsRowOpen) {
+                EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
+                return;
+            }
+            this.storedSpec = this.spec;
+            this.storedSpec = this.computedSpecForMINT(this.mint);
+            const placementPanelAnchor = this.getPlacementPanelAnchor();
+            EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: this.mint, placementPanelAnchor });
+
+            this.$nextTick(() => {
+                EventBus.get().emit(EventBus.SIDEBAR_COMPONENT_ACTIVATED, { mint: null });
+                Registry.viewManager.deactivateComponentPlacementTool();
+
+                this.$nextTick(() => {
+                    EventBus.get().emit(EventBus.SIDEBAR_COMPONENT_ACTIVATED, { mint: this.mint });
+                    this.activeTool = Registry.viewManager.activateComponentPlacementTool(this.mint, this.storedSpec);
+                });
+            });
+        },
+        enterPlacementMode() {
+            Registry.viewManager.deactivateComponentPlacementTool();
+            EventBus.get().emit(EventBus.SIDEBAR_COMPONENT_ACTIVATED, { mint: this.mint });
+            this.storedSpec = this.spec;
+            this.storedSpec = this.computedSpecForMINT(this.mint);
+            this.activeTool = Registry.viewManager.activateComponentPlacementTool(this.mint, this.storedSpec);
+        },
+        activateTool() {
+            EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
+            if (this.isPlacementRowActive) {
                 Registry.viewManager.deactivateComponentPlacementTool();
                 this.activeTool = null;
-                this.showDrawer = false;
+                EventBus.get().emit(EventBus.SIDEBAR_COMPONENT_ACTIVATED, { mint: null });
+                return;
             }
-
-
-        },
-        handleScroll() {
-            this.setDrawerPosition();
-            
-        },
-        setDrawerPosition() {
-            if (!this.activated) return;
-            const bounds = this.$refs.activator.$el.getBoundingClientRect();
-            this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
-        },
-        updateParameter(value, key) {
-            console.log("activeTool", this.activeTool, value, key);
-            // this.activeTool.updateParameter(key, value);
+            this.enterPlacementMode();
         },
         computedSpecForMINT: function(minttype) {
-            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
-            let definition = ComponentAPI.getDefinitionForMINT(minttype);
-            let spec = [];
-            for (let key in definition.heritable) {
-                let item = {
+            const definition = ComponentAPI.getDefinitionForMINT(minttype);
+            const spec = [];
+            for (const key in definition.heritable) {
+                const item = {
                     min: definition.minimum[key],
                     max: definition.maximum[key],
                     value: definition.defaults[key],
                     units: definition.units[key],
                     steps: (definition.maximum[key] - definition.minimum[key]) / 10,
+                    step: (definition.maximum[key] - definition.minimum[key]) / 10,
                     name: key
                 };
                 spec.push(item);
@@ -154,40 +182,40 @@ export default {
     position: relative;
 }
 
-.setting-icon-button {
-    // margin-right: 0px;
-    transform: translateX(50%);
-}
-
-.btn {
+.property-drawer-row {
+    display: flex;
+    align-items: stretch;
     width: 100%;
+    gap: 6px;
 }
 
-.property-drawer {
-    position: absolute;
-    float: left;
-    width: 500px;
-    left: 225px;
-    z-index: 100;
+.component-tool-btn-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
 
-    ::v-deep .v-messages {
-        display: none;
-    }
+.settings-gear-btn {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    min-width: 40px !important;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background-color: #ffffff !important;
+    border: none !important;
+}
 
-    td {
-        padding: 4px;
-    }
+.settings-gear-btn .settings-gear-icon {
+    color: #757575 !important;
+}
 
-    ::v-deep .v-input__slot {
-        margin: 12px 0;
-    }
+.settings-gear-btn--open {
+    background-color: #757575 !important;
+}
 
-    ::v-deep .v-text-field {
-        padding-top: 0;
-    }
-
-    ::v-deep .v-text-field__details {
-        display: none;
-    }
+.settings-gear-btn--open .settings-gear-icon {
+    color: #ffffff !important;
 }
 </style>

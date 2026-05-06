@@ -35,7 +35,7 @@ export default class Transition extends Template {
             cw1: "μm",
             cw2: "μm",
             length: "μm",
-            rotation: "&deg",
+            rotation: "°",
             height: "μm"
         };
 

@@ -30,7 +30,7 @@
             </v-row>
             <v-row>
                 <v-card-text>
-                    <PropertyBlock :title="mint" :spec="spec" @update="updateParameter" />
+                    <PropertyBlock density="context" :title="mint" :spec="spec" @update="updateParameter" />
                 </v-card-text>
             </v-row>
         </div>

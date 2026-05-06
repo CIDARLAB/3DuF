@@ -1,48 +1,114 @@
 <template>
-    <v-card v-show="activeMenu" ref="RightClickMenu" :style="{ width: 550, height: 100, top: marginTop + 'px', left: marginLeft + 'px' }" scrollable>
-        <div>
-            <thead v-show="showRename">
-                <v-col>
-                    <v-row align-start>
-                        <v-text-field v-model="componentName" label="Name" type="input"> </v-text-field>
-                        <v-btn x-small depressed @click="cancelRename">
-                            <span class="material-icons">close</span>
-                        </v-btn>
-                        <v-btn x-small depressed @click="saveName">
-                            <span class="material-icons">check</span>
-                        </v-btn>
-                    </v-row>
-                </v-col>
-            </thead>
-            <v-row dense>
-                <div id="buttonClass" class="buttonClass">
-                    <!-- Colored icon button -->
-                    <v-btn id="context_button_copy" color="white indigo--text" depressed @click="copyButton()">
-                        <span class="material-icons">file_copy</span>
-                    </v-btn>
-                    <v-btn id="context_button_delete" color="white indigo--text" depressed @click="deleteButton()">
-                        <span class="material-icons">delete</span>
-                    </v-btn>
-                    <MoveDialog :component="currentComponent" @close="activeMenu = false" />
-                    <v-btn id="context_button_revert" color="white indigo--text" depressed @click="revertToDefaults()">
-                        <span class="material-icons">settings_backup_restore</span>
-                    </v-btn>
-                    <ChangeAllDialog :component="currentComponent" @close="activeMenu = false" />
-                    <v-btn id="context_button_showRename" color="white indigo--text" depressed @click="showRename = true">
-                        <span class="material-icons">title</span>
-                    </v-btn>
-                    <!-- <v-btn id="context_button_arraygen" color="white indigo--text" depressed>
-                        <span class="material-icons">view_comfy</span>
-                    </v-btn> -->
-                    <GenerateArrayDialog :component="currentComponent" @close="activeMenu = false" />
-                </div>
-            </v-row>
-            <v-row>
-                <v-card-text>
-                    <PropertyBlock :title="mint" :spec="spec" @update="updateParameter" />
-                </v-card-text>
+    <v-card
+        v-show="activeMenu"
+        ref="RightClickMenu"
+        class="component-context-card settings-panel-card settings-panel-card--chrome"
+        :style="cardPositionStyle"
+        scrollable
+    >
+        <div v-show="showRename" class="component-context-rename px-4 pt-3 pb-0">
+            <v-row align="center" dense no-gutters>
+                <v-text-field
+                    v-model="componentName"
+                    class="mr-2"
+                    dense
+                    hide-details
+                    label="Name"
+                    outlined
+                />
+                <v-btn class="mr-1" icon small @click="cancelRename">
+                    <span class="material-icons">close</span>
+                </v-btn>
+                <v-btn icon small @click="saveName">
+                    <span class="material-icons">check</span>
+                </v-btn>
             </v-row>
         </div>
+
+        <v-btn
+            type="button"
+            fab
+            x-small
+            dark
+            :ripple="false"
+            class="settings-corner-close"
+            aria-label="Close"
+            @click="closeCanvasSettingsCard"
+        >
+            <v-icon size="16" color="white">mdi-close</v-icon>
+        </v-btn>
+        <div class="settings-panel-heading">
+            <span class="settings-panel-heading__title">{{ mint }}</span>
+            <v-spacer />
+            <v-btn
+                small
+                depressed
+                dark
+                color="orange darken-2"
+                class="settings-panel-reset-btn"
+                @click="resetCanvasComponentToFactoryDefaults"
+            >
+                Reset
+            </v-btn>
+        </div>
+
+        <div v-if="!isSidebarPlacementDefaultsPanel" class="context-action-toolbar context-action-toolbar--panel">
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        id="context_button_copy"
+                        class="context-icon-btn"
+                        color="white"
+                        depressed
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="copyButton"
+                    >
+                        <span class="material-icons primary--text">file_copy</span>
+                    </v-btn>
+                </template>
+                <span>Duplicate the selected component (copy / paste flow)</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        id="context_button_delete"
+                        class="context-icon-btn"
+                        color="white"
+                        depressed
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="deleteButton"
+                    >
+                        <span class="material-icons primary--text">delete</span>
+                    </v-btn>
+                </template>
+                <span>Remove this component from the device</span>
+            </v-tooltip>
+            <MoveDialog :component="currentComponent" :dialog-anchor="dialogAnchor" @close="closeContextMenu" />
+            <ChangeAllDialog :component="currentComponent" :dialog-anchor="dialogAnchor" @close="closeContextMenu" />
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        id="context_button_showRename"
+                        class="context-icon-btn"
+                        color="white"
+                        depressed
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="showRename = true"
+                    >
+                        <span class="material-icons primary--text">title</span>
+                    </v-btn>
+                </template>
+                <span>Edit the component display name</span>
+            </v-tooltip>
+            <GenerateArrayDialog :component="currentComponent" :dialog-anchor="dialogAnchor" @close="closeContextMenu" />
+        </div>
+
+        <v-card-text class="settings-panel-body component-context-settings-body">
+            <PropertyBlock density="sidebar" :title="mint" :spec="spec" @update="updateParameter" />
+        </v-card-text>
     </v-card>
 </template>
 
@@ -50,12 +116,14 @@
 import Registry from "@/app/core/registry";
 import Component from "@/app/core/component";
 import Params from "@/app/core/params";
-import EventBus from "@/events/events";
+import EventBus, { SIDEBAR_CONNECTION_ID } from "@/events/events";
 import MoveDialog from "@/components/MoveDialog.vue";
 import ChangeAllDialog from "@/components/ChangeAllDialog.vue";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import { ComponentAPI } from "@/componentAPI";
 import GenerateArrayDialog from "@/components/GenerateArrayDialog.vue";
+import paper from "paper";
+import { getPlacedComponentScreenBottomRight } from "@/utils/contextDialogAnchor";
 
 export default {
     name: "ComponentContextMenu",
@@ -71,36 +139,276 @@ export default {
             showRename: false,
             componentName: "",
             featureRef: null,
-            typeString: "",
             marginLeft: 500,
             marginTop: 100,
-            currentComponent: new Component(new Params({}, new Map(), new Map()), "", "")
+            currentComponent: new Component(new Params({}, new Map(), new Map()), "", ""),
+            dialogAnchor: null,
+            /** Fallback when geometry anchor is unavailable (viewport px). */
+            menuPointerAnchor: null,
+            /** Settings opened from sidebar gear — same floating card as double-click, without canvas action toolbar. */
+            isSidebarPlacementDefaultsPanel: false,
+            /** Last anchor point (viewport px) for the sidebar-anchored placement settings card. */
+            sidebarPlacementAnchor: null
         };
     },
+    computed: {
+        cardPositionStyle() {
+            const w = "min(420px, calc(100vw - 24px))";
+            return {
+                position: "fixed",
+                left: this.marginLeft + "px",
+                top: this.marginTop + "px",
+                zIndex: 200,
+                maxWidth: w,
+                width: w
+            };
+        }
+    },
     mounted() {
-        // Setup an event for closing all the dialogs
-        const ref = this;
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
-            ref.activeMenu = false;
-        });
+        this._onCloseAllWindows = () => {
+            this.dismissCanvasSettingsPopup();
+        };
+        this._onSidebarSettingsOpened = payload => {
+            this.applySidebarSettingsOpenedPayload(payload);
+        };
+        this._onPlacementSettingsReposition = payload => {
+            if (!this.activeMenu || !this.isSidebarPlacementDefaultsPanel) return;
+            const anchor = payload && payload.anchor;
+            if (!anchor) return;
+            this.sidebarPlacementAnchor = anchor;
+            this.$nextTick(() => this.positionMenuForSidebarAnchor(anchor));
+        };
+        this._onSidebarPlacementForClose = payload => {
+            const m = payload && payload.mint;
+            if (m == null || m === "") return;
+            /* Re-activating the same MINT while the sidebar placement panel is open is part of the gear flow — do not close. */
+            if (this.isSidebarPlacementDefaultsPanel && m === this.mint) return;
+            const hadSidebarPanel = this.isSidebarPlacementDefaultsPanel;
+            if (this.activeMenu) {
+                this.dismissCanvasSettingsPopup();
+            }
+            if (hadSidebarPanel) {
+                EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
+            }
+        };
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, this._onCloseAllWindows);
         EventBus.get().on(EventBus.DBL_CLICK_COMPONENT, this.activateMenu);
+        EventBus.get().on(EventBus.SIDEBAR_SETTINGS_OPENED, this._onSidebarSettingsOpened);
+        EventBus.get().on(EventBus.SIDEBAR_PLACEMENT_SETTINGS_REPOSITION, this._onPlacementSettingsReposition);
+        EventBus.get().on(EventBus.SIDEBAR_COMPONENT_ACTIVATED, this._onSidebarPlacementForClose);
+        this._onUpdateZoom = () => {
+            if (!this.activeMenu) return;
+            this.$nextTick(() => {
+                if (this.isSidebarPlacementDefaultsPanel && this.sidebarPlacementAnchor) {
+                    this.positionMenuForSidebarAnchor(this.sidebarPlacementAnchor);
+                } else {
+                    this.positionMenuNearComponent();
+                }
+            });
+        };
+        this._onUpdateRenders = () => {
+            if (!this.activeMenu) return;
+            this.$nextTick(() => {
+                if (this.isSidebarPlacementDefaultsPanel && this.sidebarPlacementAnchor) {
+                    this.positionMenuForSidebarAnchor(this.sidebarPlacementAnchor);
+                } else {
+                    this.positionMenuNearComponent();
+                }
+            });
+        };
+        EventBus.get().on(EventBus.UPDATE_ZOOM, this._onUpdateZoom);
+        EventBus.get().on(EventBus.UPDATE_RENDERS, this._onUpdateRenders);
+    },
+    beforeDestroy() {
+        EventBus.get().off(EventBus.CLOSE_ALL_WINDOWS, this._onCloseAllWindows);
+        EventBus.get().off(EventBus.DBL_CLICK_COMPONENT, this.activateMenu);
+        EventBus.get().off(EventBus.SIDEBAR_SETTINGS_OPENED, this._onSidebarSettingsOpened);
+        EventBus.get().off(EventBus.SIDEBAR_PLACEMENT_SETTINGS_REPOSITION, this._onPlacementSettingsReposition);
+        EventBus.get().off(EventBus.SIDEBAR_COMPONENT_ACTIVATED, this._onSidebarPlacementForClose);
+        EventBus.get().off(EventBus.UPDATE_ZOOM, this._onUpdateZoom);
+        EventBus.get().off(EventBus.UPDATE_RENDERS, this._onUpdateRenders);
     },
     methods: {
+        dismissCanvasSettingsPopup() {
+            this.activeMenu = false;
+            this.showRename = false;
+            this.isSidebarPlacementDefaultsPanel = false;
+            this.sidebarPlacementAnchor = null;
+        },
+        closeSettingsPanel() {
+            EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
+        },
+        closeContextMenu() {
+            this.dismissCanvasSettingsPopup();
+        },
+        _getContextMenuRootEl() {
+            const r = this.$refs.RightClickMenu;
+            if (!r) return null;
+            return r.$el || r;
+        },
+        _applyMenuPositionFromAnchor(anchor) {
+            const menuEl = this._getContextMenuRootEl();
+            if (!menuEl || typeof menuEl.getBoundingClientRect !== "function") return;
+            const rect = menuEl.getBoundingClientRect();
+            const w = rect.width || Math.min(420, window.innerWidth - 24);
+            const pad = 12;
+            const gap = 8;
+            if (!anchor) {
+                this.marginLeft = pad;
+                this.marginTop = pad;
+                return;
+            }
+            let left = anchor.left + gap;
+            const top = Math.max(pad, anchor.top + gap);
+            if (left + w + pad > window.innerWidth) {
+                left = Math.max(pad, window.innerWidth - w - pad);
+            }
+            left = Math.max(pad, left);
+            this.marginLeft = left;
+            this.marginTop = top;
+        },
+        positionMenuForSidebarAnchor(anchor) {
+            const menuEl = this._getContextMenuRootEl();
+            if (!menuEl || typeof menuEl.getBoundingClientRect !== "function") return;
+            const rect = menuEl.getBoundingClientRect();
+            const w = rect.width || Math.min(420, window.innerWidth - 24);
+            const pad = 12;
+            const gap = 8;
+            if (!anchor) {
+                this.marginLeft = pad;
+                this.marginTop = pad;
+                return;
+            }
+            let left = (anchor.left || 0) + gap;
+            const top = Math.max(pad, (anchor.top || 0) + gap);
+            if (left + w + pad > window.innerWidth) {
+                left = Math.max(pad, window.innerWidth - w - pad);
+            }
+            left = Math.max(pad, left);
+            this.marginLeft = left;
+            this.marginTop = top;
+        },
+        libraryDefaultSpecForMint(minttype) {
+            const definition = ComponentAPI.getDefinitionForMINT(minttype);
+            if (!definition) return [];
+            const spec = [];
+            for (const key in definition.heritable) {
+                spec.push({
+                    min: definition.minimum[key],
+                    max: definition.maximum[key],
+                    value: definition.defaults[key],
+                    units: definition.units[key],
+                    steps: (definition.maximum[key] - definition.minimum[key]) / 10,
+                    step: (definition.maximum[key] - definition.minimum[key]) / 10,
+                    name: key
+                });
+            }
+            return spec;
+        },
+        applySidebarSettingsOpenedPayload(payload) {
+            const m = payload && payload.mint;
+            const placementPanelAnchor = payload && payload.placementPanelAnchor;
 
-        revertToDefaultParams(table, typeString, setString) {
-            const def = ComponentAPI.getDefinition(typeString);
-            const heritable = def.heritable;
-            const defaults = def.defaults;
+            if (m == null || m === "") {
+                this.dismissCanvasSettingsPopup();
+                return;
+            }
 
-            for (const key in heritable) {
-                Registry.viewManager.adjustParams(typeString, setString, key, defaults[key]);
+            if (m === SIDEBAR_CONNECTION_ID) {
+                this.dismissCanvasSettingsPopup();
+                return;
+            }
+
+            if (placementPanelAnchor) {
+                this.isSidebarPlacementDefaultsPanel = true;
+                this.sidebarPlacementAnchor = placementPanelAnchor;
+                this.menuPointerAnchor = null;
+                this.mint = m;
+                this.spec = this.libraryDefaultSpecForMint(m);
+                this.activeMenu = true;
+                this.showRename = false;
+                this.dialogAnchor = placementPanelAnchor;
+                this.$nextTick(() => {
+                    this.positionMenuForSidebarAnchor(placementPanelAnchor);
+                    requestAnimationFrame(() => {
+                        this.positionMenuForSidebarAnchor(placementPanelAnchor);
+                    });
+                });
+                return;
+            }
+
+            if (m != null && m !== "") {
+                this.dismissCanvasSettingsPopup();
             }
         },
+        positionMenuNearComponent() {
+            let anchor = getPlacedComponentScreenBottomRight(this.currentComponent);
+            if (!anchor && this.menuPointerAnchor) {
+                anchor = this.menuPointerAnchor;
+            }
+            this.dialogAnchor = anchor;
+            const run = () => this._applyMenuPositionFromAnchor(anchor);
+            this.$nextTick(() => {
+                run();
+                requestAnimationFrame(() => {
+                    run();
+                    requestAnimationFrame(run);
+                });
+            });
+        },
+        revertToDefaultParams() {
+            const snap = ComponentAPI.snapshotFactoryDefaultsForMint(this.currentComponent.mint);
+            if (!snap) return;
+            const def = ComponentAPI.getDefinitionForMINT(this.currentComponent.mint);
+            if (!def) return;
+            for (const key in def.heritable) {
+                if (!Object.prototype.hasOwnProperty.call(snap, key)) continue;
+                this.currentComponent.updateParameter(key, snap[key]);
+            }
+            this.spec = this.computeSpec(this.currentComponent.mint, this.currentComponent.params);
+        },
+        resetSidebarPlacementLibraryDefaults() {
+            const libType = ComponentAPI.getTypeForMINT(this.mint);
+            if (!libType) return;
+            const obj = ComponentAPI.library[libType] && ComponentAPI.library[libType].object;
+            if (!obj || typeof obj.resetToFactoryParameterDefaults !== "function") return;
+            obj.resetToFactoryParameterDefaults();
+            this.spec = this.libraryDefaultSpecForMint(this.mint);
+            const mint = this.mint;
+            Registry.viewManager.activateComponentPlacementTool(mint, this.spec);
+        },
+        resetCanvasComponentToFactoryDefaults() {
+            if (this.isSidebarPlacementDefaultsPanel) {
+                this.resetSidebarPlacementLibraryDefaults();
+                return;
+            }
+            this.revertToDefaultParams();
+        },
+        closeCanvasSettingsCard() {
+            const wasSidebarPlacement = this.isSidebarPlacementDefaultsPanel;
+            this.dismissCanvasSettingsPopup();
+            if (wasSidebarPlacement) {
+                EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
+                return;
+            }
+            EventBus.get().emit(EventBus.SIDEBAR_COMPONENT_ACTIVATED, { mint: null });
+            EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
+        },
         updateParameter(value, key) {
+            if (this.isSidebarPlacementDefaultsPanel) {
+                const typeStr = ComponentAPI.getTypeForMINT(this.mint);
+                if (!typeStr) return;
+                const n = Number(value);
+                Registry.viewManager.adjustParams(typeStr, key, n);
+                const row = this.spec.find(r => r.name === key);
+                if (row) {
+                    this.$set(row, "value", n);
+                }
+                return;
+            }
             this.currentComponent.updateParameter(key, value);
         },
         computeSpec: function(mint, params) {
-            // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
             let spec = [];
             const definition = ComponentAPI.getDefinitionForMINT(mint);
             for (let i in params.heritable) {
@@ -111,6 +419,7 @@ export default {
                     value: params.getValue(key),
                     units: definition.units[key],
                     steps: (definition.maximum[key] - definition.minimum[key]) / 10,
+                    step: (definition.maximum[key] - definition.minimum[key]) / 10,
                     name: key
                 };
                 spec.push(item);
@@ -118,69 +427,49 @@ export default {
             return spec;
         },
         activateMenu: function(event, component) {
-            console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
+            this.isSidebarPlacementDefaultsPanel = false;
+            this.sidebarPlacementAnchor = null;
             this.currentComponent = component;
-            // Activate feat code
             this.featureRef = component;
-            this.typeString = component.mint;
-            //console.log(feat);
-            const tempname = component.name;
-            this.componentName = tempname;
-
-            console.log(event, component);
-            this.activeMenu = !this.activeMenu;
-            // console.log(this.activeMenu);
-
-            //console.log("clienwidth/height", this.$el, this.$el.clientWidth, this.$el.clientHeight);
-
-            /**
-            //Margin Left Calculation
-            if (event.clientX + 30 + this.clientWidth > window.innerWidth) {
-                this.marginLeft = event.clientX - this.clientWidth - 30;
+            this.componentName = component.name;
+            this.activeMenu = true;
+            this.showRename = false;
+            if (event && typeof event.clientX === "number" && typeof event.clientY === "number") {
+                this.menuPointerAnchor = { left: event.clientX, top: event.clientY };
             } else {
-                this.marginLeft = event.clientX + 30;
+                this.menuPointerAnchor = null;
             }
 
-            //Margin Right Calculation
-            if (event.clientY - 20 + this.clientHeight > window.innerHeight) {
-                this.marginTop = event.clientY - this.clientHeight + 20;
-            } else {
-                this.marginTop = event.clientY - 20;
-            }
-            **/
-            //console.log(window.innerWidth / 2);
-            //Margin Left Calculation
-            if (event.clientX - 150 > window.innerWidth / 2) {
-                this.marginLeft = event.clientX - 800;
-            } else {
-                this.marginLeft = event.clientX - 180;
-            }
-            //console.log(window.innerHeight / 2);
-            //Margin Top Calculation
-            if (window.innerHeight / 1.2 >= event.clientY && event.clientY >= window.innerHeight / 6) {
-                this.marginTop = 0;
-            } else if (event.clientY + 0 > window.innerHeight / 2) {
-                this.marginTop = event.clientY - 750;
-            } else {
-                this.marginTop = event.clientY + 0;
-            }
-
-            // Compute the from the params and then handle whatever needs to get handeled
             const spec = this.computeSpec(component.mint, component.params);
             this.mint = component.mint;
-            console.log(spec);
             this.spec = spec;
-        },
-        onSave() {
-            const nametext = this.getComponentName();
-            this.$refs.input.value = nametext;
-            console.log("Saved data for showRename");
-        },
-        revertToDefaults() {
-            this.revertToDefaultParams(this.$refs.table, this.typestring, this.__setString);
+
+            this.$nextTick(() => {
+                this.positionMenuNearComponent();
+            });
         },
         deleteButton() {
-            Registry.viewManager.view.deleteSelectedFeatures();
+            const view = Registry.viewManager.view;
+            const items = paper.project && paper.project.selectedItems;
+            const hasPaper = items && items.length > 0;
+
+            if (hasPaper) {
+                view.deleteSelectedFeatures();
+            } else if (this.currentComponent && this.currentComponent.id) {
+                const fids = this.currentComponent.featureIDs.slice();
+                for (let i = 0; i < fids.length; i++) {
+                    Registry.viewManager.removeFeatureByID(fids[i]);
+                }
+                const conn = Registry.currentDevice.removeComponent(this.currentComponent);
+                if (conn) {
+                    Registry.viewManager.updatesConnectionRender(conn);
+                }
+                view.clearSelectedItems();
+            } else {
+                view.deleteSelectedFeatures();
+            }
+            this.closeSettingsPanel();
+            this.closeContextMenu();
         },
         copyButton() {
             Registry.viewManager.initiateCopy();
@@ -191,10 +480,8 @@ export default {
         },
         generateArrayButton() {
             Registry.viewManager.activateTool("GenerateArrayTool");
-            const component = Registry.currentDevice.getComponentForFeatureID(this.featureRef.getID());
-            Registry.viewManager.tools.GenerateArrayTool.activate(component);
+            Registry.viewManager.tools.GenerateArrayTool.activate(this.currentComponent);
         },
-        // Property Drawer methods
         handleScroll() {
             this.setDrawerPosition();
         },
@@ -219,18 +506,131 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#activateMenu {
-    height: 10px;
+/* Match PropertyDrawer settings panel (same classes + table field spacing) */
+.component-context-card.settings-panel-card {
+    box-sizing: border-box;
+    font-family: Roboto, sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 500;
+    letter-spacing: 0.0892857143em;
+    line-height: 1.375rem;
 }
-#buttonClass {
-    margin-left: 15px;
-    margin-top: 15px;
+
+.settings-panel-card--chrome {
+    position: relative;
+    overflow: visible;
 }
-#showRename {
-    margin-left: 20px;
+
+.settings-corner-close.v-btn {
+    position: absolute;
+    z-index: 4;
+    top: -17px;
+    right: -17px;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    border: 2px solid #fff;
+    background: #e53935 !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.24) !important;
+    box-sizing: border-box;
 }
-#close {
-    margin-top: 20px;
-    margin-left: 5px;
+
+.settings-corner-close.v-btn::before {
+    background: transparent !important;
+    opacity: 0 !important;
+}
+
+.settings-corner-close.v-btn:hover {
+    background: #c62828 !important;
+}
+
+.settings-corner-close.v-btn .v-icon {
+    color: #fff !important;
+}
+
+.settings-panel-heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 14px 12px 4px 12px;
+    min-height: 48px;
+}
+
+.settings-panel-heading__title {
+    font-size: calc(0.875rem + 2pt) !important;
+    line-height: calc(1.375rem + 2pt) !important;
+    word-break: break-word;
+    min-width: 0;
+}
+
+.settings-panel-reset-btn {
+    flex-shrink: 0;
+    font-weight: 600 !important;
+}
+
+.settings-panel-body,
+.component-context-settings-body {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    letter-spacing: inherit !important;
+}
+
+.component-context-card ::v-deep .v-messages {
+    display: none;
+}
+
+.component-context-card td {
+    padding: 4px;
+}
+
+.component-context-card ::v-deep .v-input__slot {
+    margin: 12px 0;
+}
+
+.component-context-card ::v-deep .v-text-field {
+    padding-top: 0;
+}
+
+.component-context-card ::v-deep .v-text-field__details {
+    display: none;
+}
+
+.context-action-toolbar {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px 6px;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.context-action-toolbar--panel {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.component-context-settings-body {
+    padding-top: 8px !important;
+}
+</style>
+
+<style lang="scss">
+.context-icon-btn {
+    min-width: 36px !important;
+    width: 36px;
+    height: 36px !important;
+    padding: 0 !important;
+    flex: 0 0 auto;
+    background-color: #fff !important;
+    border: 1px solid rgba(25, 118, 210, 0.35) !important;
+}
+.context-icon-btn .material-icons {
+    font-size: 20px;
 }
 </style>

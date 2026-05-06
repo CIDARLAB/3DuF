@@ -73,7 +73,9 @@ export default class ManufacturingLayer {
     generateFeatureRender(feature: Feature, renderkey: string | null): boolean {
         console.log("Generating Render for invisible feature", feature);
 
-        const render: ToolPaperObject = FeatureRenderer2D.renderFeature(feature, renderkey);
+        const render: ToolPaperObject = FeatureRenderer2D.renderFeature(feature, renderkey, {
+            neutralValveOpacity: true
+        });
         this.__features.push(render);
 
         this.__paperGroup.addChild(render);

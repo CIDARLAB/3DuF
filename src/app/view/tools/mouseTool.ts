@@ -58,6 +58,14 @@ export default class MouseTool {
     }
 
     /**
+     * Called when leaving this tool (e.g. switching placement / back to select).
+     * Override for cleanup; default is a no-op so MouseSelectTool and others are safe.
+     */
+    deactivate(): void {
+        // no-op
+    }
+
+    /**
      * This fucntion is a convenience function that can be called to clean up the tool.
      *
      * @memberof MouseTool

@@ -13,15 +13,24 @@
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
 
-                <v-btn-toggle :v-model="level.mode" tile borderless>
-                    <v-btn small :color="getButtonColor(level, 0)" @click="layerModeClicked(level, 0)">
-                        <span>Flow</span>
+                <v-btn-toggle tile borderless>
+                    <v-btn
+                        small
+                        depressed
+                        :color="getButtonColor(level, 0)"
+                        :class="getButtonTextClass(level, 0)"
+                        @click="layerModeClicked(level, 0)"
+                    >
+                        <span>FLOW</span>
                     </v-btn>
-                    <v-btn small :color="getButtonColor(level, 1)" @click="layerModeClicked(level, 1)">
-                        <span>Ctrl</span>
-                    </v-btn>
-                    <v-btn small :color="getButtonColor(level, 2)" @click="layerModeClicked(level, 2)">
-                        <span>Int</span>
+                    <v-btn
+                        small
+                        depressed
+                        :color="getButtonColor(level, 1)"
+                        :class="getButtonTextClass(level, 1)"
+                        @click="layerModeClicked(level, 1)"
+                    >
+                        <span>CTRL</span>
                     </v-btn>
                 </v-btn-toggle>
             </div>
@@ -40,7 +49,9 @@ export default {
             renderLayers: [],
             layers: [],
             levels: [],
-            toggleMode: [0]
+            toggleMode: [0],
+            /** Mirrors ViewManager so computed styles stay reactive in Vue. */
+            toolbarActiveLayerIndex: 0
         };
     },
     computed: {
@@ -57,27 +68,16 @@ export default {
         //     return ret;
         // },
         selectedLevel: function() {
-            let layer = Registry.viewManager.activeRenderLayer;
-            let remain = layer % 3;
-            layer = layer - remain;
-
-            return layer / 3;
+            const layer = this.toolbarActiveLayerIndex;
+            const remain = layer % 3;
+            return (layer - remain) / 3;
         }
     },
     watch: {
         layers: {
             handler: function(newLayers) {
                 console.log("layers changed", newLayers);
-                let ret = [];
-                for (let i in newLayers) {
-                    if (i % 3 == 0) {
-                        ret.push({
-                            id: i / 3,
-                            mode: 0
-                        });
-                    }
-                }
-                this.levels = ret;
+                this.rebuildLevelsFromLayers(newLayers);
             },
         },
     },
@@ -85,11 +85,45 @@ export default {
         // Load what layers are there in the device
         setTimeout(() => {
             this.layers = Registry.currentDevice.layers;
+            this.syncToolbarActiveIndex();
+            this.rebuildLevelsFromLayers(this.layers);
         }, 1000);
     },
     methods: {
+        syncToolbarActiveIndex() {
+            let idx = Registry.viewManager.activeRenderLayerIndex;
+            if (idx % 3 === 2) {
+                idx = Math.floor(idx / 3) * 3;
+                Registry.viewManager.setActiveRenderLayer(idx);
+            }
+            this.toolbarActiveLayerIndex = idx;
+        },
+
+        rebuildLevelsFromLayers(newLayers) {
+            this.syncToolbarActiveIndex();
+            const ret = [];
+            const activeIdx = this.toolbarActiveLayerIndex;
+            const activeLevel = Math.floor(activeIdx / 3);
+            let subMode = activeIdx % 3;
+            if (subMode === 2) {
+                subMode = 0;
+            }
+            for (const i in newLayers) {
+                if (i % 3 == 0) {
+                    const id = i / 3;
+                    ret.push({
+                        id,
+                        mode: id === activeLevel ? subMode : null
+                    });
+                }
+            }
+            this.levels = ret;
+        },
+
         addLevel() {
             Registry.viewManager.createNewLayerBlock();
+            this.layers = Registry.currentDevice.layers;
+            this.rebuildLevelsFromLayers(this.layers);
         },
 
         layerModeClicked(level, mode) {
@@ -102,20 +136,42 @@ export default {
             }
             this.levels[level.id].mode = mode;
             Registry.viewManager.setActiveRenderLayer(level.id * 3 + mode);
+            this.toolbarActiveLayerIndex = level.id * 3 + mode;
         },
 
         deleteLevel(level) {
             Registry.viewManager.deleteLayerBlock(level.id);
+            this.layers = Registry.currentDevice.layers;
+            this.rebuildLevelsFromLayers(this.layers);
         },
 
         getButtonColor(level, buttonMode) {
-            if (level.id != this.selectedLevel) return "";
-            if (level.id == this.selectedLevel && level.mode == buttonMode) {
-                if (buttonMode == 0) return "blue white--text";
-                if (buttonMode == 1) return "red white--text";
-                else return "green white--text";
+            const idx = this.toolbarActiveLayerIndex;
+            const levelIdx = Math.floor(idx / 3);
+            let sub = idx % 3;
+            if (sub === 2) {
+                sub = 0;
             }
-            return "";
+            if (level.id !== levelIdx) {
+                return "grey lighten-2";
+            }
+            if (sub === buttonMode) {
+                return buttonMode === 0 ? "blue" : "red";
+            }
+            return "grey lighten-2";
+        },
+
+        getButtonTextClass(level, buttonMode) {
+            const idx = this.toolbarActiveLayerIndex;
+            const levelIdx = Math.floor(idx / 3);
+            let sub = idx % 3;
+            if (sub === 2) {
+                sub = 0;
+            }
+            if (level.id === levelIdx && sub === buttonMode) {
+                return "white--text";
+            }
+            return "grey--text text--darken-2";
         }
     }
 };

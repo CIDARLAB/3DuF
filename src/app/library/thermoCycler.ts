@@ -34,7 +34,7 @@ export default class thermoCycler extends Template {
         };
         this.__units = {
             componentSpacing: "μm",
-            rotation: "&deg",
+            rotation: "°",
             width: "μm",
             length: "μm",
             height: "μm",

@@ -4,8 +4,32 @@ import Registry from "../../core/registry";
 import { renderEdgeFeature } from "./dxfObjectRenderer2D";
 import paper from "paper";
 import { ComponentAPI } from "@/componentAPI";
-import {Point, ToolPaperObject} from "@/app/core/init";
+import { LogicalLayerType, Point, ToolPaperObject } from "@/app/core/init";
 import Feature from "@/app/core/feature";
+
+/** Same apparent translucency as placement preview (render2DTarget alpha 0.5). */
+const VALVE_INACTIVE_LOGICAL_LAYER_ALPHA = 0.5;
+
+export type RenderFeatureOptions = {
+    /** Skip FLOW/CONTROL cross-layer dimming (e.g. manufacturing). Default false. */
+    neutralValveOpacity?: boolean;
+};
+
+function applyValveCrossLayerOpacity(rendered: paper.Item, feature: Feature, options?: RenderFeatureOptions): void {
+    const t = feature.getType();
+    if (t !== "Valve" && t !== "Valve3D_control" && t !== "Valve3D") return;
+    if (options?.neutralValveOpacity) {
+        rendered.opacity = 1;
+        return;
+    }
+    const vm = Registry.viewManager;
+    if (!vm?.currentLayer || !feature.layer) {
+        rendered.opacity = 1;
+        return;
+    }
+    const matchesActiveLogicalLayer = vm.currentLayer.type === feature.layer.type;
+    rendered.opacity = matchesActiveLogicalLayer ? 1 : VALVE_INACTIVE_LOGICAL_LAYER_ALPHA;
+}
 
 const getLayerColor = function(feature: Feature) {
     const height = feature.getValue("height");
@@ -120,9 +144,11 @@ export function renderText(feature:any) {
 /**
  * Returns the paperjs drawing object of the passed feature
  * @param feature
+ * @param key
+ * @param options Optional rendering behavior (valve cross-layer opacity).
  * @return {*}
  */
-export function renderFeature(feature: Feature, key: string | null) {
+export function renderFeature(feature: Feature, key: string | null, options?: RenderFeatureOptions) {
     console.log("RenderFeature beginning", feature);
     // console.log(feature);
     console.log(key);
@@ -156,6 +182,16 @@ export function renderFeature(feature: Feature, key: string | null) {
             key = rendererinfo.key;
         }
 
+        // Flow-layer Valve3D features must match placement preview geometry (FLOW in render2DTarget), not CONTROL.
+        if (
+            type === "Valve3D_control" &&
+            feature.layer &&
+            feature.layer.type === LogicalLayerType.FLOW &&
+            key === "CONTROL"
+        ) {
+            key = "FLOW";
+        }
+
         if (!renderer) {
             console.error("Could not find renderer method for feature:", feature);
         } else {
@@ -180,7 +216,8 @@ export function renderFeature(feature: Feature, key: string | null) {
         // recalculate draw offset whenever parameter changed
         let modrendered = rendered as any;
         modrendered["featureID"] = feature.ID;
-    
+        applyValveCrossLayerOpacity(rendered as paper.Item, feature, options);
+
         return modrendered as ToolPaperObject;
     }
 }

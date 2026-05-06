@@ -1,9 +1,28 @@
 <template>
-    <v-dialog v-model="dialog" content-class="draggable-dialog topleft-dialog" hide-overlay persistent no-click-animation width="300px">
+    <v-dialog
+        v-model="dialog"
+        content-class="draggable-dialog topleft-dialog generate-array-context-dialog"
+        hide-overlay
+        persistent
+        no-click-animation
+        width="300px"
+    >
         <template v-slot:activator="{ on, attrs }">
-            <v-btn id="context_button_move" color="white indigo--text" depressed v-bind="attrs" v-on="on">
-                <span class="material-icons">view_comfy</span>
-            </v-btn>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on: onTip, attrs: attrsTip }">
+                    <v-btn
+                        id="context_button_array"
+                        class="context-icon-btn"
+                        color="white"
+                        depressed
+                        v-bind="{ ...attrs, ...attrsTip }"
+                        v-on="{ ...on, ...onTip }"
+                    >
+                        <span class="material-icons primary--text">view_comfy</span>
+                    </v-btn>
+                </template>
+                <span>Create a grid of copies with spacing you choose (opens array tool)</span>
+            </v-tooltip>
         </template>
 
         <v-card>
@@ -39,6 +58,7 @@ import Component from "@/app/core/component";
 
 import "@mdi/font/css/materialdesignicons.css";
 import Registry from "@/app/core/registry";
+import { applyAnchorToDialogContent, getPlacedComponentScreenBottomRight } from "@/utils/contextDialogAnchor";
 
 export default {
     name: "GenerateArrayDialog",
@@ -46,6 +66,10 @@ export default {
         component: {
             type: Component,
             required: true
+        },
+        dialogAnchor: {
+            type: Object,
+            default: null
         }
     },
     data() {
@@ -63,14 +87,34 @@ export default {
     watch: {
         dialog: function(newValue) {
             if (newValue) {
+                EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
                 this.$emit("close");
                 Registry.viewManager.activateTool("GenerateArrayTool");
                 Registry.viewManager.tools.GenerateArrayTool.activate(this.component);
+                EventBus.get().on(EventBus.UPDATE_RENDERS, this._onArrayCanvasUpdate);
+                EventBus.get().on(EventBus.UPDATE_ZOOM, this._onArrayCanvasUpdate);
+                this.$nextTick(() => {
+                    this.repositionArrayDialog();
+                    this.$nextTick(() => this.repositionArrayDialog());
+                });
             } else {
-                //Run deactivation
-                Registry.viewManager.tools.MoveTool.deactivate();
+                EventBus.get().off(EventBus.UPDATE_RENDERS, this._onArrayCanvasUpdate);
+                EventBus.get().off(EventBus.UPDATE_ZOOM, this._onArrayCanvasUpdate);
+                Registry.viewManager.tools.GenerateArrayTool.deactivate();
+            }
+        },
+        dialogAnchor() {
+            if (this.dialog) {
+                this.$nextTick(() => this.repositionArrayDialog());
             }
         }
+    },
+    created() {
+        this._onArrayCanvasUpdate = () => {
+            if (this.dialog) {
+                this.$nextTick(() => this.repositionArrayDialog());
+            }
+        };
     },
     mounted() {
         Vue.set(this.callbacks, "close", callback => {
@@ -82,7 +126,7 @@ export default {
             // make vuetify dialogs movable
             const d = {};
             document.addEventListener("mousedown", e => {
-                const closestDialog = e.target.closest(".draggable-dialog");
+                const closestDialog = e.target.closest(".generate-array-context-dialog.draggable-dialog");
                 if (e.button === 0 && closestDialog !== null && e.target.classList.contains("v-card__title")) {
                     // element which can be used to move element
                     d.el = closestDialog; // element which should be moved
@@ -107,15 +151,25 @@ export default {
                 d.el = undefined;
             });
             setInterval(() => {
-                // prevent out of bounds
-                const dialog = document.querySelector(".draggable-dialog");
+                const dialog = document.querySelector(".generate-array-context-dialog.draggable-dialog");
                 if (dialog === null) return;
-                dialog.style.left = Math.min(parseInt(dialog.style.left), window.innerWidth - dialog.getBoundingClientRect().width) + "px";
-                dialog.style.top = Math.min(parseInt(dialog.style.top), window.innerHeight - dialog.getBoundingClientRect().height) + "px";
+                const left = parseInt(dialog.style.left, 10);
+                if (!Number.isNaN(left)) {
+                    dialog.style.left =
+                        Math.min(Math.max(left, 0), window.innerWidth - dialog.getBoundingClientRect().width) + "px";
+                }
             }, 100);
         })();
     },
+    beforeDestroy() {
+        EventBus.get().off(EventBus.UPDATE_RENDERS, this._onArrayCanvasUpdate);
+        EventBus.get().off(EventBus.UPDATE_ZOOM, this._onArrayCanvasUpdate);
+    },
     methods: {
+        repositionArrayDialog() {
+            const anchor = getPlacedComponentScreenBottomRight(this.component) || this.dialogAnchor;
+            applyAnchorToDialogContent(anchor, "generate-array-context-dialog");
+        },
         onSave() {
             console.log("Saved data for Generate array");
             Registry.viewManager.tools.GenerateArrayTool.generateArray(this.dimx, this.dimy, this.spacingX * 1000, this.spacingY * 1000);

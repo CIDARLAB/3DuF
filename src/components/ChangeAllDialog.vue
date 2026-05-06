@@ -1,9 +1,21 @@
 <template>
-    <v-dialog v-model="dialog" width="500">
+    <v-dialog v-model="dialog" content-class="change-all-context-dialog" width="500">
         <template v-slot:activator="{ on, attrs }">
-            <v-btn id="context_button_copytoall" color="white indigo--text" depressed v-bind="attrs" v-on="on">
-                <span class="material-icons">select_all</span>
-            </v-btn>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on: onTip, attrs: attrsTip }">
+                    <v-btn
+                        id="context_button_copytoall"
+                        class="context-icon-btn"
+                        color="white"
+                        depressed
+                        v-bind="{ ...attrs, ...attrsTip }"
+                        v-on="{ ...on, ...onTip }"
+                    >
+                        <span class="material-icons primary--text">select_all</span>
+                    </v-btn>
+                </template>
+                <span>Copy this component's parameters to other instances of the same type</span>
+            </v-tooltip>
         </template>
 
         <v-card>
@@ -41,6 +53,7 @@ import EventBus from "@/events/events";
 import "@mdi/font/css/materialdesignicons.css";
 import Component from "@/app/core/component";
 import Registry from "@/app/core/registry";
+import { applyAnchorToDialogContent, getPlacedComponentScreenBottomRight } from "@/utils/contextDialogAnchor";
 
 export default {
     name: "ChangeAllDialog",
@@ -48,6 +61,10 @@ export default {
         component: {
             type: Component,
             required: true
+        },
+        dialogAnchor: {
+            type: Object,
+            default: null
         }
     },
     data() {
@@ -83,6 +100,7 @@ export default {
     watch: {
         dialog: function(newValue) {
             if (newValue) {
+                EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
                 // Dialog is activated
                 this.$emit("close");
                 // Load similar components
@@ -99,25 +117,56 @@ export default {
                 this.components = similarComponents.map(function(component) {
                     return { id: component.id, name: component.name };
                 });
+                EventBus.get().on(EventBus.UPDATE_RENDERS, this._onChangeAllCanvasUpdate);
+                EventBus.get().on(EventBus.UPDATE_ZOOM, this._onChangeAllCanvasUpdate);
+                this.$nextTick(() => {
+                    this.repositionChangeAllDialog();
+                    this.$nextTick(() => this.repositionChangeAllDialog());
+                });
             } else {
+                EventBus.get().off(EventBus.UPDATE_RENDERS, this._onChangeAllCanvasUpdate);
+                EventBus.get().off(EventBus.UPDATE_ZOOM, this._onChangeAllCanvasUpdate);
                 // Dialog is closed
                 this.components = [];
             }
+        },
+        dialogAnchor() {
+            if (this.dialog) {
+                this.$nextTick(() => this.repositionChangeAllDialog());
+            }
         }
+    },
+    created() {
+        this._onChangeAllCanvasUpdate = () => {
+            if (this.dialog) {
+                this.$nextTick(() => this.repositionChangeAllDialog());
+            }
+        };
     },
     mounted() {
         // Setup an event for closing all the dialogs
-        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, function() {
+        this._closeAllHandler = () => {
             this.dialog = false;
-        });
+        };
+        EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, this._closeAllHandler);
         Vue.set(this.callbacks, "close", callback => {
             if (callback) callback();
             this.dialog = false;
-            this.selected = false;
-            this.selectAll = false;
+            this.selected = [];
         });
     },
+    beforeDestroy() {
+        if (this._closeAllHandler) {
+            EventBus.get().off(EventBus.CLOSE_ALL_WINDOWS, this._closeAllHandler);
+        }
+        EventBus.get().off(EventBus.UPDATE_RENDERS, this._onChangeAllCanvasUpdate);
+        EventBus.get().off(EventBus.UPDATE_ZOOM, this._onChangeAllCanvasUpdate);
+    },
     methods: {
+        repositionChangeAllDialog() {
+            const anchor = getPlacedComponentScreenBottomRight(this.component) || this.dialogAnchor;
+            applyAnchorToDialogContent(anchor, "change-all-context-dialog");
+        },
         onSave() {
             console.log("Saved data for Change All Components");
             let paramstochange = this.component.params;

@@ -3,6 +3,7 @@ import paper from "paper";
 import Registry from "../../core/registry";
 import { Point } from "@/app/core/init";
 import ViewManager from "../viewManager";
+import EventBus from "@/events/events";
 
 export default class MoveTool extends MouseTool {
     private __startPoint: Point | null;
@@ -10,6 +11,7 @@ export default class MoveTool extends MouseTool {
 
     private __currentComponent: any;
     private __originalPosition: Point | null = null;
+    private __emittedCloseUiOnMove: boolean;
     private _viewManagerDelegate: ViewManager;
 
     callback: ((...args: any[]) => any) | null;
@@ -21,6 +23,7 @@ export default class MoveTool extends MouseTool {
         this.__startPoint = null;
         this.__dragging = false;
         this.callback = null;
+        this.__emittedCloseUiOnMove = false;
 
         this._viewManagerDelegate = viewManagerDelegate;
 
@@ -62,7 +65,9 @@ export default class MoveTool extends MouseTool {
         // console.log("Activating the tool for a new component", component);
         // Store the component position here
         this.__currentComponent = component;
-        this.__originalPosition = component.getPosition();
+        this.__emittedCloseUiOnMove = false;
+        const c = component.getCenterPosition();
+        this.__originalPosition = [Math.round(Number(c[0])), Math.round(Number(c[1]))];
         this.callback = callback;
     }
 
@@ -79,8 +84,14 @@ export default class MoveTool extends MouseTool {
      * @param ypos
      */
     processUIPosition(xpos: number, ypos: number): void  {
-        this.__currentComponent.updateComponentPosition([xpos, ypos]);
-        this.callback!(xpos, ypos);
+        const x = Math.round(Number(xpos));
+        const y = Math.round(Number(ypos));
+        if (!this.__emittedCloseUiOnMove) {
+            EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
+            this.__emittedCloseUiOnMove = true;
+        }
+        this.__currentComponent.updateComponentPosition([x, y]);
+        this.callback!(x, y);
     }
 
     /**
@@ -113,7 +124,7 @@ export default class MoveTool extends MouseTool {
             let target: paper.Point = new paper.Point(point.x, point.y);
             if (point !== null && point !== undefined) {
                 let snappoint = this._viewManagerDelegate.snapToGrid([point.x, point.y]);
-                target = new paper.Point(snappoint[0], snappoint[1]);
+                target = new paper.Point(Math.round(snappoint[0]), Math.round(snappoint[1]));
             }
             // const delta = {
             //     x: (target).x - this.__startPoint[0],
@@ -163,7 +174,7 @@ export default class MoveTool extends MouseTool {
         }
         const targettosnap: Point = [point.x, point.y];
         const target = this._viewManagerDelegate.snapToGrid(targettosnap);
-        this.__startPoint = target;
+        this.__startPoint = [Math.round(target[0]), Math.round(target[1])];
         this.__dragging = true;
     }
 }

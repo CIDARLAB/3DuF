@@ -25,6 +25,8 @@ export enum ConnectionToolState {
 export default class ConnectionTool extends MouseTool {
     typeString: string;
     setString: string;
+    /** Heritable Connection parameter: 0 = square ends / CHANNEL, 1 = rounded stadium / ROUNDED CHANNEL */
+    crossSection: number;
     startPoint: Point | null;
     lastPoint: Point | null;
     wayPoints: any[];
@@ -58,6 +60,7 @@ export default class ConnectionTool extends MouseTool {
         this.source = null;
         this.sinks = [];
         this.__currentConnectionObject = null;
+        this.crossSection = 0;
 
         /*
         States:
@@ -95,6 +98,7 @@ export default class ConnectionTool extends MouseTool {
                     ref.__STATE = ConnectionToolState.PLACE_WAYPOINT;
                     ref.dragging = true;
                     ref.initChannel();
+                    EventBus.get().emit(EventBus.CONNECTION_ESC_HINT, true);
                     break;
                 case ConnectionToolState.PLACE_WAYPOINT:
                     ref.addWayPoint(event as unknown as MouseEvent, (event as any).altKey);
@@ -262,25 +266,36 @@ export default class ConnectionTool extends MouseTool {
         console.log("Running Cleanup for the Connection Tool");
 
         /*
-        Step 1 - Check the state
-        Step 2 - based on the state do the following
-            SOURCE - Do nothing, everything is good
-            WAYPOINT - 1) Reset the state to __source 2) cleanup features 3) TBA
-            TARGET - Set the state to SOURCE and do nothing else
+         * Leaving the connection tool (e.g. sidebar deselect): keep any channel geometry already on the canvas
+         * (finished segments and in-progress drafts). Clear only in-memory routing state so the next activation
+         * starts from PLACE_FIRST_POINT and the user must pick a new start for another path.
          */
         switch (this.__STATE) {
             case ConnectionToolState.PLACE_FIRST_POINT:
-                console.log("Doing nothing");
                 break;
             case ConnectionToolState.PLACE_WAYPOINT:
-                console.warn("Paused connection placement midway");
-
+                // Drop edit handle to the in-progress feature but do NOT remove it from the layer — keeps preview polyline.
+                this.dragging = false;
+                this.currentChannelID = null;
+                this.wayPoints = [];
+                this.startPoint = null;
+                this.lastPoint = [0, 0];
+                this.source = null;
+                this.sinks = [];
+                this.__currentConnectionObject = null;
+                this.__STATE = ConnectionToolState.PLACE_FIRST_POINT;
                 break;
             case ConnectionToolState.TARGET_PLACED_START_AGAIN:
                 this.__STATE = ConnectionToolState.PLACE_FIRST_POINT;
                 this.dragging = false;
                 break;
+            default:
+                this.__STATE = ConnectionToolState.PLACE_FIRST_POINT;
+                this.dragging = false;
+                break;
         }
+        EventBus.get().emit(EventBus.CONNECTION_ESC_HINT, false);
+        Registry.viewManager?.removeTarget();
     }
 
     /**
@@ -424,7 +439,8 @@ export default class ConnectionTool extends MouseTool {
             start: start,
             end: end,
             wayPoints: this.wayPoints,
-            segments: this.generateSegments()
+            segments: this.generateSegments(),
+            crossSection: this.crossSection
         });
     }
 
@@ -569,6 +585,9 @@ export default class ConnectionTool extends MouseTool {
      * @memberof ConnectionTool
      */
     updateParameter(parameter: string, value: any): void  {  
+        if (parameter === "crossSection") {
+            this.crossSection = Number(value);
+        }
         if(this.currentChannelID !== null){
             const feat = this.viewManagerDelegate.currentLayer.getFeature(this.currentChannelID);
             feat?.updateParameter(parameter, value);

@@ -255,6 +255,14 @@ export default class Template {
     
 
     /**
+     * Restore factory defaults on this template singleton (re-runs subclass {@link __setupDefinitions}).
+     * Used when resetting sidebar placement defaults after the user has changed mutable `defaults`.
+     */
+    resetToFactoryParameterDefaults(): void {
+        this.__setupDefinitions();
+    }
+
+    /**
      * Override this method to setup the definitions for the component
      *
      * @memberof Template

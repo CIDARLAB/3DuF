@@ -142,9 +142,10 @@ export class ComponentAPI {
         Tree: { object: new Tree(), key: "FLOW" },
         YTree: { object: new YTree(), key: "FLOW" },
         Valve: { object: new Valve(ValveType.NORMALLY_OPEN), key: "CONTROL" },
-        // TODO: Get rid of this fully after we move over to the new valve feature system
-        // Valve3D: { object: new Valve3D(ValveType.NORMALLY_CLOSED), key: "FLOW" },
+        /** Primary VALVE3D entry — must stay before duplicate mint key `Valve3D` so getTypeForMINT → Valve3D_control (NO valve on control, etc.). */
         Valve3D_control: { object: new Valve3D(ValveType.NORMALLY_CLOSED), key: "CONTROL" },
+        /** Flow-layer NC valve geometry (same mint as Valve3D_control); used only for multilayer flow features. */
+        Valve3D: { object: new Valve3D(ValveType.NORMALLY_CLOSED), key: "FLOW" },
         LLChamber: { object: new LLChamber(), key: "FLOW" },
         LLChamber_control: { object: new LLChamber(), key: "CONTROL" },
         "3DMixer": { object: new ThreeDMixer(), key: "FLOW" },
@@ -181,7 +182,8 @@ export class ComponentAPI {
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {
-        Connection: { object: new Connection(), key: "FLOW" }
+        Connection: { object: new Connection(), key: "FLOW" },
+        RoundedChannelConnection: { object: new RoundedChannel(), key: "FLOW" }
     };
 
     static featureLibrary: { [key: string]: FeatureLibraryEntry } = {
@@ -313,6 +315,21 @@ export class ComponentAPI {
             }
         }
         return null;
+    }
+
+    /**
+     * Factory-default heritable values for a MINT (from a fresh template instance).
+     * Does not mutate the library singleton; use for resetting a placed component’s params.
+     */
+    static snapshotFactoryDefaultsForMint(minttype: string): { [key: string]: number } | null {
+        const typeKey = ComponentAPI.getTypeForMINT(minttype);
+        if (!typeKey || !Object.prototype.hasOwnProperty.call(ComponentAPI.library, typeKey)) {
+            return null;
+        }
+        const entry = ComponentAPI.library[typeKey];
+        const Ctor = entry.object.constructor as new () => Template;
+        const fresh = new Ctor();
+        return { ...fresh.defaults };
     }
 
     /**
@@ -487,11 +504,14 @@ export class ComponentAPI {
      * @memberof ComponentAPI
      */
     static getRendererForMINT(minttype: string): Template {
-        // Go through all the objects in the library and return the one that matches the minttype
-        console.log("getRendererForMINT");
         for (const key in ComponentAPI.library) {
             if (ComponentAPI.library[key].object.mint === minttype) {
                 return ComponentAPI.library[key].object;
+            }
+        }
+        for (const key in ComponentAPI.connectionLibrary) {
+            if (ComponentAPI.connectionLibrary[key].object.mint === minttype) {
+                return ComponentAPI.connectionLibrary[key].object;
             }
         }
 

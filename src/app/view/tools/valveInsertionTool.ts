@@ -119,7 +119,8 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         const flowlayer = currentlevel * 3;
         const controllayer = currentlevel * 3 + 1;
 
-        let newFeature = Device.makeFeature(this.typeString, overridedata);
+        // Flow layer uses explicit FLOW library type so rendering/colors match fluid preview (not Valve3D_control on flow).
+        let newFeature = Device.makeFeature("Valve3D", overridedata);
         this.currentFeatureID = newFeature.ID;
         this.viewManagerDelegate.addFeature(newFeature, flowlayer);
 

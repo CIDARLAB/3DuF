@@ -36,7 +36,7 @@ export default class Valve extends ValveTemplate {
 
         this.__units = {
             componentSpacing: "μm",
-            rotation: "&deg",
+            rotation: "°",
             length: "μm",
             width: "μm",
             height: "μm"

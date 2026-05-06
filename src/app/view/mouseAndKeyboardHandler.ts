@@ -1,6 +1,7 @@
 import paper from "paper";
 import PanTool from "./tools/panTool";
 import EventBus from "@/events/events";
+import { exitCanvasSettingsLikeEscape } from "@/utils/exitCanvasUi";
 import { ViewManager } from "..";
 
 /**
@@ -101,14 +102,7 @@ export default class MouseAndKeyboardHandler {
 
             // Escape key
             if (key === 27) {
-                // Deselect all
-                paper.project.deselectAll();
-
-                // Change active tool to select tool
-                reference.resetToDefaultTool();
-
-                // Close all windows/dialogs
-                EventBus.get().emit(EventBus.CLOSE_ALL_WINDOWS);
+                exitCanvasSettingsLikeEscape();
             }
         });
 

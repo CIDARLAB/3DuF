@@ -38,6 +38,26 @@
                     </v-list-item-content>
                 </v-list-item>
 
+                <v-list-item @click="downloadSTL">
+                    <v-list-item-icon>
+                        <v-icon>mdi-cube-scan</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>3D mesh (.stl)</v-list-item-title>
+                        <v-list-item-subtitle class="text-wrap">Connection routes as extruded solids (μm→mm)</v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item @click="downloadGCode">
+                    <v-list-item-icon>
+                        <v-icon>mdi-axis-arrow</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>CNC / router (.gcode)</v-list-item-title>
+                        <v-list-item-subtitle class="text-wrap">Connection centerline toolpath (Grbl-style)</v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item @click="downloadMETAFLUIDICS">
                     <v-list-item-icon>
                         <v-icon>mdi-chip</v-icon>
@@ -65,6 +85,7 @@ import ManufacturingLayer from "@/app/manufacturing/manufacturingLayer";
 import JSZip from "jszip";
 import CNCGenerator from "@/app/manufacturing/cncGenerator";
 import LaserCuttingGenerator from "@/app/manufacturing/laserCuttingGenerator";
+import { generateConnectionSTLASCII, generateConnectionProfileGCode } from "@/app/manufacturing/additiveManufacturingExport";
 
 export default {
     name: "ManufacturingPanel",
@@ -143,6 +164,16 @@ export default {
 
                     cncGenerator.flushData();
                 });
+        },
+        downloadSTL() {
+            const text = generateConnectionSTLASCII(Registry.currentDevice);
+            const blob = new Blob([text], { type: "model/stl" });
+            saveAs(blob, Registry.currentDevice.name + "_connections.stl");
+        },
+        downloadGCode() {
+            const text = generateConnectionProfileGCode(Registry.currentDevice);
+            const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+            saveAs(blob, Registry.currentDevice.name + "_connections.gcode");
         },
         downloadLASER() {
             const laserCuttingGenerator = new LaserCuttingGenerator(Registry.currentDevice, Registry.viewManager);

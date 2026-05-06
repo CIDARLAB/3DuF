@@ -508,6 +508,25 @@ export default class ViewManager {
         this.activeRenderLayerIndex = index;
         this.currentLayer = this.renderLayers[index]; // Registry.currentDevice.layers[index];
         this.updateActiveLayer();
+        this.refreshValveCrossLayerOpacity();
+        EventBus.get().emit(EventBus.ACTIVE_RENDER_LAYER_CHANGED);
+    }
+
+    /**
+     * Re-render valve features so FLOW vs CONTROL opacity matches the active logical layer tab.
+     */
+    private refreshValveCrossLayerOpacity(): void {
+        const device = this.currentDevice;
+        if (!device) return;
+        let updated = false;
+        for (const f of device.getAllFeaturesFromDevice()) {
+            const t = f.getType();
+            if (t !== "Valve" && t !== "Valve3D_control" && t !== "Valve3D") continue;
+            if (!this.ensureFeatureExists(f)) continue;
+            this.view.updateFeature(f);
+            updated = true;
+        }
+        if (updated) this.refresh(false);
     }
 
     /**
@@ -964,7 +983,7 @@ export default class ViewManager {
         let flag = false;
         let i = 1;
 
-        json.params[""]
+        json.params[""];
 
         json.params = {
             width: json.params["x-span"],
@@ -986,7 +1005,7 @@ export default class ViewManager {
                 if (MintType === "Node") {
                     component["x-span"] = 0;
                     component["y-span"] = 0;
-                    continue
+                    continue;
                 }
 
                 const angleDeg = params.rotation ?? 0;
@@ -1719,6 +1738,11 @@ export default class ViewManager {
         // Cleanup job when activating new tool
         this.view.clearSelectedItems();
 
+        const prevLeft = this.mouseAndKeyboardHandler.leftMouseTool;
+        if (prevLeft instanceof ConnectionTool) {
+            EventBus.get().emit(EventBus.CONNECTION_ESC_HINT, false);
+        }
+
         let activeTool = null;
         const renderer = ComponentAPI.getRendererForMINT(minttype);
         if (renderer.placementTool === "componentPositionTool") {
@@ -1759,8 +1783,14 @@ export default class ViewManager {
      */
     deactivateComponentPlacementTool(): void {
         console.log("Deactivating Component Placement Tool");
-        this.mouseAndKeyboardHandler.leftMouseTool.deactivate();
-        this.mouseAndKeyboardHandler.rightMouseTool.deactivate();
+        const left = this.mouseAndKeyboardHandler.leftMouseTool;
+        const right = this.mouseAndKeyboardHandler.rightMouseTool;
+        if (left != null) {
+            left.deactivate();
+        }
+        if (right != null && right !== left) {
+            right.deactivate();
+        }
         this.resetToDefaultTool();
     }
 

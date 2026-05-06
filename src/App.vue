@@ -8,6 +8,7 @@
 
 <template>
     <v-app id="3duf">
+        <ConnectionEscHintBanner />
         <LayoutSidebar />
     </v-app>
 </template>
@@ -15,11 +16,13 @@
 <script>
 import Visualiser from "./components/Visualiser.vue";
 import LayoutSidebar from "./views/layouts/SplitLayout.vue";
+import ConnectionEscHintBanner from "./components/ConnectionEscHintBanner.vue";
 
 export default {
     name: "App",
     components: {
-        LayoutSidebar
+        LayoutSidebar,
+        ConnectionEscHintBanner
     }
 };
 </script>

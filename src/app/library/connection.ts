@@ -17,31 +17,37 @@ export default class Connection extends Template {
         this.__heritable = {
             connectionSpacing: "Float",
             channelWidth: "Float",
-            height: "Float"
+            height: "Float",
+            /** 0 = rectangular (square) channel profile with flat ends; 1 = rounded profile (stadium outline, circular cross-section). */
+            crossSection: "Float"
         };
 
         this.__defaults = {
             connectionSpacing: 1600,
             channelWidth: 0.8 * 1000,
-            height: 250
+            height: 250,
+            crossSection: 0
         };
 
         this.__units = {
             connectionSpacing: "μm",
             channelWidth: "μm",
-            height: "μm"
+            height: "μm",
+            crossSection: ""
         };
 
         this.__minimum = {
             connectionSpacing: 0,
             channelWidth: 3,
-            height: 10
+            height: 10,
+            crossSection: 0
         };
 
         this.__maximum = {
             connectionSpacing: 10000,
             channelWidth: 12000,
-            height: 1200
+            height: 1200,
+            crossSection: 1
         };
 
         this.__featureParams = {
@@ -51,7 +57,8 @@ export default class Connection extends Template {
             wayPoints: "wayPoints",
             channelWidth: "channelWidth",
             segments: "segments",
-            height: "height"
+            height: "height",
+            crossSection: "crossSection"
         };
 
         this.__targetParams = {
@@ -59,7 +66,8 @@ export default class Connection extends Template {
             wayPoints: "wayPoints",
             channelWidth: "channelWidth",
             segments: "segments",
-            height: "height"
+            height: "height",
+            crossSection: "crossSection"
         };
 
         this.__placementTool = "ConnectionTool";
@@ -95,27 +103,42 @@ export default class Connection extends Template {
 
         let p1, p2;
 
+        const crossSection = params.crossSection !== undefined && params.crossSection !== null ? Number(params.crossSection) : 0;
+        const roundedProfile = crossSection >= 0.5;
+
         for (const i in segments) {
             const segment = segments[i];
             p1 = segment[0];
             p2 = segment[1];
             startpoint = new paper.Point(p1[0], p1[1]);
             endpoint = new paper.Point(p2[0], p2[1]);
-            this.__drawStraightConnection(connectionpath, startpoint, endpoint, channelWidth);
+            this.__drawStraightConnection(connectionpath, startpoint, endpoint, channelWidth, roundedProfile);
         }
 
         connectionpath.fillColor = color;
         return connectionpath;
     }
 
-    __drawStraightConnection(compoundpath: paper.CompoundPath, startpoint: paper.Point, endpoint: paper.Point, channelWidth: number): void  {
-        // edit the points
+    __drawStraightConnection(
+        compoundpath: paper.CompoundPath,
+        startpoint: paper.Point,
+        endpoint: paper.Point,
+        channelWidth: number,
+        roundedProfile: boolean
+    ): void  {
         const vec = endpoint.subtract(startpoint);
-        const rec = new paper.Path.Rectangle({
+        const rectOpts: {
+            point: paper.Point;
+            size: [number, number];
+            radius?: number;
+        } = {
             point: startpoint,
-            radius: channelWidth / 2,
             size: [vec.length + channelWidth, channelWidth]
-        });
+        };
+        if (roundedProfile) {
+            rectOpts.radius = channelWidth / 2;
+        }
+        const rec = new paper.Path.Rectangle(rectOpts);
         rec.translate(([-channelWidth / 2, -channelWidth / 2] as unknown) as paper.Point);
         rec.rotate(vec.angle, startpoint);
 
