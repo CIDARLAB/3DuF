@@ -358,21 +358,32 @@ export default class Connection {
      * @memberof Connection
      * @returns {boolean}
      */
-    insertFeatureGap(boundingbox: any): boolean {
+    insertFeatureGap(gapGeometry: paper.Rectangle | paper.PathItem): boolean {
         let foundflag = false;
-        // Convert Rectangle to Path.Rectangle
-        console.log(boundingbox, boundingbox.width, boundingbox.height);
-        boundingbox = new paper.Path.Rectangle(boundingbox);
+        let gapPath: paper.PathItem;
+        let removeGapPath = false;
+        if (gapGeometry instanceof paper.Rectangle) {
+            gapPath = new paper.Path.Rectangle(gapGeometry);
+            removeGapPath = true;
+        } else {
+            gapPath = gapGeometry;
+        }
         // Check which segment I need to break
         const segments = this.getValue("segments");
         for (const i in segments) {
             const segment = segments[i];
             const line = new paper.Path.Line(new paper.Point(segment[0]), new paper.Point(segment[1]));
-            const intersections = line.getIntersections(boundingbox);
+            const intersections = line.getIntersections(gapPath);
             // console.log("Intersections found", intersections);
-            if (intersections.length === 2) {
-                const break1 = intersections[0].point;
-                const break2 = intersections[1].point;
+            if (intersections.length >= 2) {
+                const sortedIntersections = intersections
+                    .map(intersection => intersection.point)
+                    .sort((a, b) => {
+                        const startPoint = line.firstSegment.point;
+                        return startPoint.getDistance(a) - startPoint.getDistance(b);
+                    });
+                const break1 = sortedIntersections[0];
+                const break2 = sortedIntersections[sortedIntersections.length - 1];
                 const newsegs = this.breakSegment(segment, break1, break2);
                 console.log("breaking:", segment, newsegs);
                 if (newsegs.length !== 2) {
@@ -386,15 +397,16 @@ export default class Connection {
 
                 console.log("Segments:", segments);
                 console.log("line:", line);
-                console.log("Bounding Box:", boundingbox);
+                console.log("Gap geometry:", gapPath);
             } else {
                 console.error("No intersections found so going to use a different method");
                 console.log("Found Intersection:", intersections);
 
                 console.log("Segments:", segments);
                 console.log("line:", line);
-                console.log("Bounding Box:", boundingbox);
+                console.log("Gap geometry:", gapPath);
             }
+            line.remove();
         }
 
         // Now that we exit the check for every segment we can verify if this is ok
@@ -402,11 +414,17 @@ export default class Connection {
             console.error("There's something funky going on with the intersection,no intersections found");
             console.log("Segments:", segments);
             // console.log("line:", line);
-            console.log("Bounding Box:", boundingbox);
+            console.log("Gap geometry:", gapPath);
+            if (removeGapPath) {
+                gapPath.remove();
+            }
             throw new Error("Could not find 2 intersection points, hence aborting the whole thing");
         }
         // console.log("raw new segments:", segments);
         this.updateSegments(segments);
+        if (removeGapPath) {
+            gapPath.remove();
+        }
 
         return foundflag;
     }

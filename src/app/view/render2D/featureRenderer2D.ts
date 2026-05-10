@@ -83,7 +83,20 @@ export function renderTarget(typeString:string, position: Point, customParameter
     }
     primParams["position"] = position;
     primParams["color"] = new paper.Color(Colors.getDefaultFeatureColor(typeString, Registry.viewManager?.currentLayer));
-    const rendered = renderer.render2DTarget(null, primParams);
+    // Pick the geometry key by the active logical layer (e.g. Valve3D shows the FLOW crescents
+    // on the FLOW layer and the full CONTROL circle on the CONTROL layer). Renderers that ignore
+    // the key (most non-valve components) are unaffected.
+    let targetKey: string | null = null;
+    try {
+        const activeLayerType: string = Registry.viewManager.currentLayer.type;
+        const supportedKeys = renderer.renderKeys;
+        if (supportedKeys && supportedKeys.includes(activeLayerType)) {
+            targetKey = activeLayerType;
+        }
+    } catch {
+        targetKey = null;
+    }
+    const rendered = renderer.render2DTarget(targetKey, primParams);
     return rendered;
 }
 

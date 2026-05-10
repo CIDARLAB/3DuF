@@ -170,7 +170,11 @@ export default class Valve3D extends ValveTemplate {
     }
 
     render2DTarget(key: string | null, params: { [k: string]: any }) {
-        const render = this.render2D(params, "FLOW");
+        // Preview shape follows the active layer:
+        // - CONTROL layer → full red circle (control membrane)
+        // - FLOW layer (or any other) → two crescents with a gap (flow geometry)
+        const renderKey = key === "CONTROL" ? "CONTROL" : "FLOW";
+        const render = this.render2D(params, renderKey);
         render.fillColor!.alpha = 0.5;
         return render;
     }

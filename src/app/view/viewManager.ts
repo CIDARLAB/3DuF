@@ -1521,6 +1521,33 @@ export default class ViewManager {
         }
     }
 
+    private getValveFlowGapPath(valve: Component): paper.Path.Rectangle | null {
+        if (!this.currentDevice) {
+            return null;
+        }
+        for (const featureID of valve.featureIDs) {
+            const feature = this.currentDevice.getFeatureByID(featureID);
+            if (
+                feature.layer &&
+                feature.layer.type === LogicalLayerType.FLOW &&
+                (feature.getType() === "Valve3D" || feature.getType() === "Valve3D_control")
+            ) {
+                const position = feature.getValue("position");
+                const radius = feature.getValue("valveRadius");
+                const gap = feature.getValue("gap");
+                const rotation = feature.getValue("rotation");
+                const center = new paper.Point(position[0], position[1]);
+                const gapPath = new paper.Path.Rectangle({
+                    from: new paper.Point(position[0] - radius, position[1] - gap / 2),
+                    to: new paper.Point(position[0] + radius, position[1] + gap / 2)
+                });
+                gapPath.rotate(rotation, center);
+                return gapPath;
+            }
+        }
+        return null;
+    }
+
     /**
      * Updates the renders for all the connection in the blah
      * @returns {void}
@@ -1541,8 +1568,14 @@ export default class ViewManager {
             const valve = valves[j];
             const is3D = Registry.currentDevice?.getValveType(valve);
             if (is3D) {
-                const boundingbox = valve.getBoundingRectangle();
-                connection.insertFeatureGap(boundingbox);
+                const flowGapPath = this.getValveFlowGapPath(valve);
+                if (flowGapPath) {
+                    connection.insertFeatureGap(flowGapPath);
+                    flowGapPath.remove();
+                } else {
+                    const boundingbox = valve.getBoundingRectangle();
+                    connection.insertFeatureGap(boundingbox);
+                }
             }
         }
     }

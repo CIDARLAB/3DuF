@@ -55,7 +55,8 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
     }
 
     /**
-     * Places the component (single layer)
+     * Places the component (single layer for plain VALVE; for VALVE3D also drops a matching FLOW
+     * feature so the placed valve renders the same blue-crescent geometry as the placement preview).
      * @param point
      * @param rotation
      * @return {Component}
@@ -76,18 +77,27 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
         }
 
         const currentlevel = Math.floor(this.viewManagerDelegate!.renderLayers.indexOf(this.viewManagerDelegate.currentLayer) / 3);
-        // const flowlayer = currentlevel * 3;
+        const flowlayer = currentlevel * 3;
         const controllayer = currentlevel * 3 + 1;
         // const intlayer = currentlevel * 3 + 2;
 
-        const newFeature = Device.makeFeature(this.typeString, overridedata);
-        this.currentFeatureID = newFeature.ID;
+        const controlFeature = Device.makeFeature(this.typeString, overridedata);
+        this.currentFeatureID = controlFeature.ID;
 
-        this.viewManagerDelegate.addFeature(newFeature, controllayer);
+        this.viewManagerDelegate.addFeature(controlFeature, controllayer);
 
-        featureIDs.push(newFeature.ID);
+        featureIDs.push(controlFeature.ID);
 
-        const params_to_copy = newFeature.getParams();
+        const params_to_copy = controlFeature.getParams();
+
+        // For VALVE3D the placement preview (render2DTarget) shows the FLOW geometry (two blue
+        // crescents with a gap). To keep that geometry visible after placement, also add a FLOW
+        // layer feature using the explicit flow-library type.
+        if (ComponentAPI.library[this.typeString]?.object.mint === "VALVE3D" && ComponentAPI.library.Valve3D) {
+            const flowFeature = Device.makeFeature("Valve3D", overridedata);
+            this.viewManagerDelegate.addFeature(flowFeature, flowlayer);
+            featureIDs.push(flowFeature.ID);
+        }
 
         const component = super.createNewComponent(this.typeString, params_to_copy, featureIDs);
 
@@ -192,7 +202,14 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             component = this.createNewMultiLayerFeature(point, angle);
             this.viewManagerDelegate.currentDevice!.insertValve(component, connection, this.valveType);
         }
-        // Registry.viewManager!.updatesConnectionRender(connection);
+        // Cut the channel where the valve sits so the FLOW geometry (two crescents with a gap)
+        // remains visible — without this break the connection still fills the gap and the valve
+        // looks like a solid filled circle on the FLOW layer.
+        try {
+            Registry.viewManager!.updatesConnectionRender(connection);
+        } catch (err) {
+            console.warn("Could not break connection at valve placement:", err);
+        }
         Registry.viewManager!.saveDeviceState();
     }
 

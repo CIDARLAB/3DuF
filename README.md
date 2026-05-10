@@ -152,7 +152,7 @@ Server deployment for this 2026 maintenance/update cycle was completed by Woo Zh
 
 BSD 2-Clause License
 
-Copyright (c) 2019, CIDAR LAB
+Copyright (c) 2026, CIDAR LAB
 All rights reserved.
 
 See [LICENSE](/LICENSE) for more information.
