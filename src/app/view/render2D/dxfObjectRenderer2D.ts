@@ -36,6 +36,8 @@ export function renderEdgeFeature(feature: edgeFeature) {
             drawEllipse(dxfobject.getData(), path);
         } else if (dxfobject.getType() === "CIRCLE") {
             drawCircle(dxfobject.getData(), path);
+        } else if (dxfobject.getType() === "POINT") {
+            drawPoint(dxfobject.getData(), path);
         } else {
             console.error("Unsupported DXF Entity Type for Outline Generation : " + dxfobject.getType());
         }
@@ -204,6 +206,13 @@ function drawCircle(entity: { center: { x: number; y: number; }; radius: number;
     const center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
     const circle = new paper.Path.Circle(center, entity.radius * 1000);
     path.addChild(circle);
+}
+
+function drawPoint(entity: { position: { x: number; y: number; }; }, path: paper.CompoundPath) {
+    const pointRadius = 100;
+    const center = new paper.Point(entity.position.x * 1000, entity.position.y * 1000);
+    const dot = new paper.Path.Circle(center, pointRadius);
+    path.addChild(dot);
 }
 
 /**

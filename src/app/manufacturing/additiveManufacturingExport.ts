@@ -6,8 +6,32 @@ import { LogicalLayerType } from "../core/init";
 
 const UM_TO_MM = 0.001;
 
+function isFiniteNumber(value: unknown): value is number {
+    return typeof value === "number" && Number.isFinite(value);
+}
+
+function cleanSignedZero(value: number, decimals: number): string {
+    const rounded = value.toFixed(decimals);
+    return rounded === "-0." + "0".repeat(decimals) ? "0." + "0".repeat(decimals) : rounded;
+}
+
+function formatStlFloat(value: number): string {
+    // Keep ASCII STL numbers parser-friendly (no NaN/Infinity/scientific notation).
+    return cleanSignedZero(value, 6);
+}
+
 /** Matches Paper.js Path.Rectangle(stadium) used by Connection / RoundedChannel render2D. */
 function buildSegmentExtrusion(axUm: number, ayUm: number, bxUm: number, byUm: number, channelWidthUm: number, rounded: boolean): THREE.BufferGeometry {
+    if (
+        !isFiniteNumber(axUm) ||
+        !isFiniteNumber(ayUm) ||
+        !isFiniteNumber(bxUm) ||
+        !isFiniteNumber(byUm) ||
+        !isFiniteNumber(channelWidthUm) ||
+        channelWidthUm <= 0
+    ) {
+        return new THREE.BufferGeometry();
+    }
     const dx = bxUm - axUm;
     const dy = byUm - ayUm;
     const spineLen = Math.sqrt(dx * dx + dy * dy);
@@ -63,6 +87,13 @@ function scaleGeometryDepth(geometry: THREE.BufferGeometry, depthMm: number): vo
 }
 
 function appendFacet(lines: string[], a: THREE.Vector3, b: THREE.Vector3, c: THREE.Vector3): void {
+    if (
+        !Number.isFinite(a.x) || !Number.isFinite(a.y) || !Number.isFinite(a.z) ||
+        !Number.isFinite(b.x) || !Number.isFinite(b.y) || !Number.isFinite(b.z) ||
+        !Number.isFinite(c.x) || !Number.isFinite(c.y) || !Number.isFinite(c.z)
+    ) {
+        return;
+    }
     const e1 = new THREE.Vector3().subVectors(b, a);
     const e2 = new THREE.Vector3().subVectors(c, a);
     const n = new THREE.Vector3().crossVectors(e1, e2);
@@ -70,11 +101,14 @@ function appendFacet(lines: string[], a: THREE.Vector3, b: THREE.Vector3, c: THR
         return;
     }
     n.normalize();
-    lines.push(`facet normal ${n.x} ${n.y} ${n.z}`);
+    if (!Number.isFinite(n.x) || !Number.isFinite(n.y) || !Number.isFinite(n.z)) {
+        return;
+    }
+    lines.push(`facet normal ${formatStlFloat(n.x)} ${formatStlFloat(n.y)} ${formatStlFloat(n.z)}`);
     lines.push("  outer loop");
-    lines.push(`    vertex ${a.x} ${a.y} ${a.z}`);
-    lines.push(`    vertex ${b.x} ${b.y} ${b.z}`);
-    lines.push(`    vertex ${c.x} ${c.y} ${c.z}`);
+    lines.push(`    vertex ${formatStlFloat(a.x)} ${formatStlFloat(a.y)} ${formatStlFloat(a.z)}`);
+    lines.push(`    vertex ${formatStlFloat(b.x)} ${formatStlFloat(b.y)} ${formatStlFloat(b.z)}`);
+    lines.push(`    vertex ${formatStlFloat(c.x)} ${formatStlFloat(c.y)} ${formatStlFloat(c.z)}`);
     lines.push("  endloop");
     lines.push("endfacet");
 }
@@ -98,7 +132,7 @@ export function bufferGeometryToSTLASCII(geometry: THREE.BufferGeometry): string
         appendFacet(lines, v1, v2, v3);
     }
     lines.push("endsolid 3duf_export");
-    return lines.join("\n");
+    return lines.join("\n") + "\n";
 }
 
 function collectConnectionGeometries(device: Device): THREE.BufferGeometry[] {
@@ -119,6 +153,9 @@ function collectConnectionGeometries(device: Device): THREE.BufferGeometry[] {
             const channelWidth = feature.getValue("channelWidth") as number;
             const height = feature.getValue("height") as number;
             const crossSection = Number(feature.getValue("crossSection"));
+            if (!isFiniteNumber(channelWidth) || !isFiniteNumber(height) || channelWidth <= 0 || height <= 0) {
+                continue;
+            }
             const rounded = crossSection >= 0.5;
             const depthMm = height * UM_TO_MM;
             if (!segments || !Array.isArray(segments)) {
@@ -131,6 +168,13 @@ function collectConnectionGeometries(device: Device): THREE.BufferGeometry[] {
                 }
                 const p1 = seg[0];
                 const p2 = seg[1];
+                if (
+                    !Array.isArray(p1) || !Array.isArray(p2) ||
+                    !isFiniteNumber(p1[0]) || !isFiniteNumber(p1[1]) ||
+                    !isFiniteNumber(p2[0]) || !isFiniteNumber(p2[1])
+                ) {
+                    continue;
+                }
                 const g = buildSegmentExtrusion(p1[0], p1[1], p2[0], p2[1], channelWidth, rounded);
                 if (g.attributes.position && (g.attributes.position as THREE.BufferAttribute).count > 0) {
                     scaleGeometryDepth(g, depthMm);
@@ -186,13 +230,15 @@ function mergeGeometriesNonIndexed(geometries: THREE.BufferGeometry[]): THREE.Bu
 
 /** Linear centerline moves along each segment (Grbl-friendly). Matches spine routing; use STL for full envelope. */
 export function generateConnectionProfileGCode(device: Device, feedMmMin = 600, safeZMm = 1): string {
+    const feed = isFiniteNumber(feedMmMin) && feedMmMin > 0 ? feedMmMin : 600;
+    const safeZ = isFiniteNumber(safeZMm) && safeZMm >= 0 ? safeZMm : 1;
     const lines: string[] = [
-        "; 3DuF connection centerline toolpath — XY in mm, Z negative = cut depth (μm-based)",
-        "; For pocket outlines matching square vs rounded channels, use Vector Art (.svg) or STL export.",
+        "; 3DuF connection centerline toolpath",
+        "; XY in mm, Z negative is cut depth converted from um",
         "G21 ; millimeters",
         "G90 ; absolute positioning",
         "G17 ; XY plane",
-        `G0 F${feedMmMin}`,
+        `G0 F${feed}`,
         ""
     ];
 
@@ -209,12 +255,15 @@ export function generateConnectionProfileGCode(device: Device, feedMmMin = 600, 
             }
             const segments = feature.getValue("segments") as Array<[[number, number], [number, number]]>;
             const height = feature.getValue("height") as number;
+            if (!isFiniteNumber(height) || height <= 0) {
+                continue;
+            }
             const depthMm = height * UM_TO_MM;
             if (!segments || !Array.isArray(segments)) {
                 continue;
             }
             lines.push(`; feature ${feature.ID}`);
-            lines.push(`G0 Z${safeZMm.toFixed(3)}`);
+            lines.push(`G0 Z${cleanSignedZero(safeZ, 3)}`);
             for (let s = 0; s < segments.length; s++) {
                 const seg = segments[s];
                 if (!seg || seg.length < 2) {
@@ -222,14 +271,21 @@ export function generateConnectionProfileGCode(device: Device, feedMmMin = 600, 
                 }
                 const p1 = seg[0];
                 const p2 = seg[1];
+                if (
+                    !Array.isArray(p1) || !Array.isArray(p2) ||
+                    !isFiniteNumber(p1[0]) || !isFiniteNumber(p1[1]) ||
+                    !isFiniteNumber(p2[0]) || !isFiniteNumber(p2[1])
+                ) {
+                    continue;
+                }
                 const x1 = p1[0] * UM_TO_MM;
                 const y1 = -p1[1] * UM_TO_MM;
                 const x2 = p2[0] * UM_TO_MM;
                 const y2 = -p2[1] * UM_TO_MM;
-                lines.push(`G0 X${x1.toFixed(4)} Y${y1.toFixed(4)}`);
-                lines.push(`G1 Z${(-depthMm).toFixed(4)} F${feedMmMin}`);
-                lines.push(`G1 X${x2.toFixed(4)} Y${y2.toFixed(4)} F${feedMmMin}`);
-                lines.push(`G0 Z${safeZMm.toFixed(3)}`);
+                lines.push(`G0 X${cleanSignedZero(x1, 4)} Y${cleanSignedZero(y1, 4)}`);
+                lines.push(`G1 Z${cleanSignedZero(-depthMm, 4)} F${feed}`);
+                lines.push(`G1 X${cleanSignedZero(x2, 4)} Y${cleanSignedZero(y2, 4)} F${feed}`);
+                lines.push(`G0 Z${cleanSignedZero(safeZ, 3)}`);
             }
             lines.push("");
         }
@@ -238,5 +294,5 @@ export function generateConnectionProfileGCode(device: Device, feedMmMin = 600, 
     lines.push("G0 Z5");
     lines.push("M5");
     lines.push("M30");
-    return lines.join("\n");
+    return lines.join("\n") + "\n";
 }

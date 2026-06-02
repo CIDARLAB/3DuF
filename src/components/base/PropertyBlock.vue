@@ -32,7 +32,7 @@
                     <td class="value-col">
                         <v-text-field
                             v-model="item.value"
-                            :step="item.step"
+                            step="any"
                             type="number"
                             :suffix="item.units"
                             dense

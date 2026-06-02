@@ -7,7 +7,7 @@
                         <v-icon>mdi-code-json</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>3DuF File (.json)</v-list-item-title>
+                        <v-list-item-title class="wrap-title">3DuF File (.json)</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -16,7 +16,7 @@
                         <v-icon>mdi-vector-line</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>Vector Art (.svg)</v-list-item-title>
+                        <v-list-item-title class="wrap-title">Vector Art (.svg)</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -25,7 +25,7 @@
                         <v-icon>mdi-file</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>CNC (.svg)</v-list-item-title>
+                        <v-list-item-title class="wrap-title">CNC (.svg)</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -34,7 +34,7 @@
                         <v-icon>mdi-laser-pointer</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>Laser Cutting (.svg)</v-list-item-title>
+                        <v-list-item-title class="wrap-title">Laser Cutting (.svg)</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -43,7 +43,7 @@
                         <v-icon>mdi-cube-scan</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>3D mesh (.stl)</v-list-item-title>
+                        <v-list-item-title class="wrap-title">3D mesh (.stl)</v-list-item-title>
                         <v-list-item-subtitle class="text-wrap">Connection routes as extruded solids (μm→mm)</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
@@ -53,19 +53,11 @@
                         <v-icon>mdi-axis-arrow</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>CNC / router (.gcode)</v-list-item-title>
+                        <v-list-item-title class="wrap-title">CNC / router (.gcode)</v-list-item-title>
                         <v-list-item-subtitle class="text-wrap">Connection centerline toolpath (Grbl-style)</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item @click="downloadMETAFLUIDICS">
-                    <v-list-item-icon>
-                        <v-icon>mdi-chip</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Publish on Metafluidics</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
             </v-list-item-group>
         </v-list>
     </div>
@@ -75,6 +67,31 @@
 #visualizer-slot {
     width: 100%;
     min-height: 100vh;
+}
+
+.wrap-title {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    overflow-wrap: anywhere;
+    line-height: 1.25rem;
+}
+
+.text-wrap {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    overflow-wrap: anywhere;
+    line-height: 1.15rem;
+}
+
+.v-list-item {
+    min-height: 56px;
+    align-items: flex-start;
+}
+
+.v-list-item__content {
+    overflow: visible;
 }
 </style>
 
@@ -92,13 +109,6 @@ export default {
     components: {},
     data() {
         return {
-            buttons: [
-                ["json", "mdi-devices", "3DuF File (.json)"],
-                ["svg", "mdi-border-all", "Vector Art (.svg)"],
-                ["cnc", "mdi-toolbox", "CNC (.svg)"],
-                ["laser", "mdi-toolbox", "Laser Cutting (.svg)"],
-                ["metafluidics", "mdi-toolbox", "Publish on Metafluidics"]
-            ],
             viewManagerRef: null
         };
     },
@@ -167,12 +177,12 @@ export default {
         },
         downloadSTL() {
             const text = generateConnectionSTLASCII(Registry.currentDevice);
-            const blob = new Blob([text], { type: "model/stl" });
+            const blob = new Blob([text], { type: "application/sla;charset=utf-8" });
             saveAs(blob, Registry.currentDevice.name + "_connections.stl");
         },
         downloadGCode() {
             const text = generateConnectionProfileGCode(Registry.currentDevice);
-            const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+            const blob = new Blob([text], { type: "text/x-gcode;charset=utf-8" });
             saveAs(blob, Registry.currentDevice.name + "_connections.gcode");
         },
         downloadLASER() {
@@ -199,9 +209,6 @@ export default {
 
                     laserCuttingGenerator.flushData();
                 });
-        },
-        downloadMETAFLUIDICS() {
-            console.log("coming soon");
         }
     }
 };

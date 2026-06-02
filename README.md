@@ -108,6 +108,10 @@ Under `Save` in the main menu, click to download the current design in the selec
 
 After saving a device design to JSON, drag and drop it from your computer onto the device canvas to load it.
 
+For DXF workflows:
+- Use `Edit Border` to import a DXF border/outline into the current design canvas.
+- The main design interchange format for full-device load/save remains 3DuF JSON.
+
 ## Component Library
 
 <img src="/doc/mint-primitives.png" width="800" />

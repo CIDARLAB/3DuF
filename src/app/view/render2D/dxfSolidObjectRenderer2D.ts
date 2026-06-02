@@ -201,6 +201,8 @@ export function renderDXFObjects(dxfobjectarray: Array<DXFObject>) {
             closedshapes.push(drawEllipse(dxfobject.getData()));
         } else if (dxfobject.getType() === "CIRCLE") {
             closedshapes.push(drawCircle(dxfobject.getData()));
+        } else if (dxfobject.getType() === "POINT") {
+            closedshapes.push(drawPoint(dxfobject.getData()));
         } else if (dxfobject.getType() === "SPLINE") {
             alert("The current version of the DXF Parser does not support SPLINE objects. Support will be added in future versions");
             throw new Error("Unsupported DXF render object - SPLINE");
@@ -267,6 +269,8 @@ export function renderEdgeFeature(feature: Feature) {
             path.addChild(drawEllipse(dxfobject.getData()));
         } else if (dxfobject.getType() === "CIRCLE") {
             path.addChild(drawCircle(dxfobject.getData()));
+        } else if (dxfobject.getType() === "POINT") {
+            path.addChild(drawPoint(dxfobject.getData()));
         } else {
             console.error("Unsupported DXF Entity Type for Outline Generation : " + dxfobject.getType());
         }
@@ -432,6 +436,13 @@ function drawCircle(entity: any) {
     const center = new paper.Point(entity.center.x * 1000, entity.center.y * 1000);
     const circle = new paper.Path.Circle(center, entity.radius * 1000);
     return circle;
+}
+
+function drawPoint(entity: any) {
+    const pointRadius = 100;
+    const center = new paper.Point(entity.position.x * 1000, entity.position.y * 1000);
+    const dot = new paper.Path.Circle(center, pointRadius);
+    return dot;
 }
 
 /**

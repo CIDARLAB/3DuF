@@ -84,8 +84,7 @@ export default {
                 ["json", "mdi-devices", "3DuF File (.json)"],
                 ["svg", "mdi-border-all", "Vector Art (.svg)"],
                 ["cnc", "mdi-toolbox", "CNC (.svg)"],
-                ["laser", "mdi-toolbox", "Laser Cutting (.svg)"],
-                ["metafluidics", "mdi-toolbox", "Publish on Metafluidics"]
+                ["laser", "mdi-toolbox", "Laser Cutting (.svg)"]
             ]
         };
     },

@@ -44,6 +44,17 @@
                 small
                 depressed
                 dark
+                color="primary"
+                class="settings-panel-apply-btn"
+                :disabled="!hasPendingPlacementSpecChanges"
+                @click="applySidebarPlacementChanges"
+            >
+                Apply
+            </v-btn>
+            <v-btn
+                small
+                depressed
+                dark
                 color="orange darken-2"
                 class="settings-panel-reset-btn"
                 @click="resetCanvasComponentToFactoryDefaults"
@@ -148,10 +159,18 @@ export default {
             /** Settings opened from sidebar gear — same floating card as double-click, without canvas action toolbar. */
             isSidebarPlacementDefaultsPanel: false,
             /** Last anchor point (viewport px) for the sidebar-anchored placement settings card. */
-            sidebarPlacementAnchor: null
+            sidebarPlacementAnchor: null,
+            /** Last applied parameter values for sidebar placement defaults panel. */
+            appliedSidebarSpecSnapshot: {}
         };
     },
     computed: {
+        hasPendingPlacementSpecChanges() {
+            if (!this.isSidebarPlacementDefaultsPanel) return false;
+            const pending = this.specToValueSnapshot(this.spec);
+            const applied = this.appliedSidebarSpecSnapshot || {};
+            return JSON.stringify(pending) !== JSON.stringify(applied);
+        },
         cardPositionStyle() {
             const w = "min(420px, calc(100vw - 24px))";
             return {
@@ -234,6 +253,7 @@ export default {
             this.showRename = false;
             this.isSidebarPlacementDefaultsPanel = false;
             this.sidebarPlacementAnchor = null;
+            this.appliedSidebarSpecSnapshot = {};
         },
         closeSettingsPanel() {
             EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
@@ -305,6 +325,44 @@ export default {
             }
             return spec;
         },
+        specToValueSnapshot(rows) {
+            const snapshot = {};
+            if (!Array.isArray(rows)) return snapshot;
+            for (const row of rows) {
+                if (!row || !row.name) continue;
+                snapshot[row.name] = Number(row.value);
+            }
+            return snapshot;
+        },
+        cloneSpecRows(rows) {
+            if (!Array.isArray(rows)) return [];
+            return rows.map(row => ({ ...row }));
+        },
+        syncPlacementToolAndTarget(typeStr, specRows) {
+            const appliedRows = this.cloneSpecRows(specRows);
+            const activeTool = Registry.viewManager?.mouseAndKeyboardHandler?.leftMouseTool;
+            if (activeTool && Object.prototype.hasOwnProperty.call(activeTool, "currentParameters")) {
+                activeTool.currentParameters = appliedRows;
+            }
+            const view = Registry.viewManager?.view;
+            if (view && view.lastTargetPosition) {
+                Registry.viewManager.updateTarget(typeStr, "Basic", view.lastTargetPosition, appliedRows);
+            }
+        },
+        applySidebarPlacementChanges() {
+            if (!this.isSidebarPlacementDefaultsPanel) return;
+            const typeStr = ComponentAPI.getTypeForMINT(this.mint);
+            if (!typeStr) return;
+            for (const row of this.spec) {
+                if (!row || !row.name) continue;
+                const n = Number(row.value);
+                if (Number.isNaN(n)) continue;
+                Registry.viewManager.adjustParams(typeStr, row.name, n);
+                this.$set(row, "value", n);
+            }
+            this.appliedSidebarSpecSnapshot = this.specToValueSnapshot(this.spec);
+            this.syncPlacementToolAndTarget(typeStr, this.spec);
+        },
         applySidebarSettingsOpenedPayload(payload) {
             const m = payload && payload.mint;
             const placementPanelAnchor = payload && payload.placementPanelAnchor;
@@ -325,6 +383,7 @@ export default {
                 this.menuPointerAnchor = null;
                 this.mint = m;
                 this.spec = this.libraryDefaultSpecForMint(m);
+                this.appliedSidebarSpecSnapshot = this.specToValueSnapshot(this.spec);
                 this.activeMenu = true;
                 this.showRename = false;
                 this.dialogAnchor = placementPanelAnchor;
@@ -374,8 +433,8 @@ export default {
             if (!obj || typeof obj.resetToFactoryParameterDefaults !== "function") return;
             obj.resetToFactoryParameterDefaults();
             this.spec = this.libraryDefaultSpecForMint(this.mint);
-            const mint = this.mint;
-            Registry.viewManager.activateComponentPlacementTool(mint, this.spec);
+            this.appliedSidebarSpecSnapshot = this.specToValueSnapshot(this.spec);
+            this.syncPlacementToolAndTarget(libType, this.spec);
         },
         resetCanvasComponentToFactoryDefaults() {
             if (this.isSidebarPlacementDefaultsPanel) {
@@ -396,10 +455,8 @@ export default {
         },
         updateParameter(value, key) {
             if (this.isSidebarPlacementDefaultsPanel) {
-                const typeStr = ComponentAPI.getTypeForMINT(this.mint);
-                if (!typeStr) return;
                 const n = Number(value);
-                Registry.viewManager.adjustParams(typeStr, key, n);
+                if (Number.isNaN(n)) return;
                 const row = this.spec.find(r => r.name === key);
                 if (row) {
                     this.$set(row, "value", n);

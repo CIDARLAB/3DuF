@@ -7,17 +7,51 @@ import { ComponentAPI } from "@/componentAPI";
 import { LogicalLayerType, Point, ToolPaperObject } from "@/app/core/init";
 import Feature from "@/app/core/feature";
 
-/** Same apparent translucency as placement preview (render2DTarget alpha 0.5). */
+/**
+ * When there is no matching valve geometry on the active logical layer (e.g. legacy/single-layer
+ * valve JSONs that only contain CONTROL features), keep the inactive-layer valve visible but dim.
+ */
 const VALVE_INACTIVE_LOGICAL_LAYER_ALPHA = 0.5;
 
+const VALVE_RENDER_TYPES = new Set(["Valve", "Valve3D_control", "Valve3D"]);
+
+function hasValveCounterpartOnLayer(feature: Feature, logicalLayerType: LogicalLayerType): boolean {
+    const referenceID = feature.referenceID;
+    const device = Registry.currentDevice;
+    if (!referenceID || !device) {
+        return false;
+    }
+    const component = device.getComponentByID(referenceID);
+    if (!component) {
+        return false;
+    }
+    for (const featureID of component.featureIDs) {
+        try {
+            const sibling = device.getFeatureByID(featureID);
+            if (!sibling.layer) {
+                continue;
+            }
+            if (!VALVE_RENDER_TYPES.has(sibling.getType())) {
+                continue;
+            }
+            if (sibling.layer.type === logicalLayerType) {
+                return true;
+            }
+        } catch {
+            continue;
+        }
+    }
+    return false;
+}
+
 export type RenderFeatureOptions = {
-    /** Skip FLOW/CONTROL cross-layer dimming (e.g. manufacturing). Default false. */
+    /** Skip FLOW/CONTROL cross-layer hiding (e.g. manufacturing). Default false. */
     neutralValveOpacity?: boolean;
 };
 
 function applyValveCrossLayerOpacity(rendered: paper.Item, feature: Feature, options?: RenderFeatureOptions): void {
     const t = feature.getType();
-    if (t !== "Valve" && t !== "Valve3D_control" && t !== "Valve3D") return;
+    if (!VALVE_RENDER_TYPES.has(t)) return;
     if (options?.neutralValveOpacity) {
         rendered.opacity = 1;
         return;
@@ -28,7 +62,12 @@ function applyValveCrossLayerOpacity(rendered: paper.Item, feature: Feature, opt
         return;
     }
     const matchesActiveLogicalLayer = vm.currentLayer.type === feature.layer.type;
-    rendered.opacity = matchesActiveLogicalLayer ? 1 : VALVE_INACTIVE_LOGICAL_LAYER_ALPHA;
+    if (matchesActiveLogicalLayer) {
+        rendered.opacity = 1;
+        return;
+    }
+    const hasCounterpartOnActiveLayer = hasValveCounterpartOnLayer(feature, vm.currentLayer.type as LogicalLayerType);
+    rendered.opacity = hasCounterpartOnActiveLayer ? 0 : VALVE_INACTIVE_LOGICAL_LAYER_ALPHA;
 }
 
 const getLayerColor = function(feature: Feature) {
