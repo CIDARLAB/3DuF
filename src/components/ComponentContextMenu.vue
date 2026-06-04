@@ -46,8 +46,8 @@
                 dark
                 color="primary"
                 class="settings-panel-apply-btn"
-                :disabled="!hasPendingPlacementSpecChanges"
-                @click="applySidebarPlacementChanges"
+                :disabled="!hasPendingSpecChanges"
+                @click="applySettingsChanges"
             >
                 Apply
             </v-btn>
@@ -161,7 +161,9 @@ export default {
             /** Last anchor point (viewport px) for the sidebar-anchored placement settings card. */
             sidebarPlacementAnchor: null,
             /** Last applied parameter values for sidebar placement defaults panel. */
-            appliedSidebarSpecSnapshot: {}
+            appliedSidebarSpecSnapshot: {},
+            /** Last applied parameter values for canvas component settings popup. */
+            appliedCanvasSpecSnapshot: {}
         };
     },
     computed: {
@@ -170,6 +172,17 @@ export default {
             const pending = this.specToValueSnapshot(this.spec);
             const applied = this.appliedSidebarSpecSnapshot || {};
             return JSON.stringify(pending) !== JSON.stringify(applied);
+        },
+        hasPendingCanvasSpecChanges() {
+            if (this.isSidebarPlacementDefaultsPanel) return false;
+            const pending = this.specToValueSnapshot(this.spec);
+            const applied = this.appliedCanvasSpecSnapshot || {};
+            return JSON.stringify(pending) !== JSON.stringify(applied);
+        },
+        hasPendingSpecChanges() {
+            return this.isSidebarPlacementDefaultsPanel
+                ? this.hasPendingPlacementSpecChanges
+                : this.hasPendingCanvasSpecChanges;
         },
         cardPositionStyle() {
             const w = "min(420px, calc(100vw - 24px))";
@@ -254,6 +267,7 @@ export default {
             this.isSidebarPlacementDefaultsPanel = false;
             this.sidebarPlacementAnchor = null;
             this.appliedSidebarSpecSnapshot = {};
+            this.appliedCanvasSpecSnapshot = {};
         },
         closeSettingsPanel() {
             EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
@@ -363,6 +377,29 @@ export default {
             this.appliedSidebarSpecSnapshot = this.specToValueSnapshot(this.spec);
             this.syncPlacementToolAndTarget(typeStr, this.spec);
         },
+        applyCanvasComponentChanges() {
+            if (this.isSidebarPlacementDefaultsPanel) return;
+            if (!this.currentComponent) return;
+            const typeStr = ComponentAPI.getTypeForMINT(this.currentComponent.mint);
+            for (const row of this.spec) {
+                if (!row || !row.name) continue;
+                const n = Number(row.value);
+                const nextValue = Number.isNaN(n) ? row.value : n;
+                this.currentComponent.updateParameter(row.name, nextValue);
+                if (typeStr) {
+                    Registry.viewManager.updateDefault(typeStr, row.name, nextValue);
+                }
+                this.$set(row, "value", nextValue);
+            }
+            this.appliedCanvasSpecSnapshot = this.specToValueSnapshot(this.spec);
+        },
+        applySettingsChanges() {
+            if (this.isSidebarPlacementDefaultsPanel) {
+                this.applySidebarPlacementChanges();
+                return;
+            }
+            this.applyCanvasComponentChanges();
+        },
         applySidebarSettingsOpenedPayload(payload) {
             const m = payload && payload.mint;
             const placementPanelAnchor = payload && payload.placementPanelAnchor;
@@ -415,17 +452,6 @@ export default {
                 });
             });
         },
-        revertToDefaultParams() {
-            const snap = ComponentAPI.snapshotFactoryDefaultsForMint(this.currentComponent.mint);
-            if (!snap) return;
-            const def = ComponentAPI.getDefinitionForMINT(this.currentComponent.mint);
-            if (!def) return;
-            for (const key in def.heritable) {
-                if (!Object.prototype.hasOwnProperty.call(snap, key)) continue;
-                this.currentComponent.updateParameter(key, snap[key]);
-            }
-            this.spec = this.computeSpec(this.currentComponent.mint, this.currentComponent.params);
-        },
         resetSidebarPlacementLibraryDefaults() {
             const libType = ComponentAPI.getTypeForMINT(this.mint);
             if (!libType) return;
@@ -441,7 +467,23 @@ export default {
                 this.resetSidebarPlacementLibraryDefaults();
                 return;
             }
-            this.revertToDefaultParams();
+            if (!this.currentComponent || !this.currentComponent.mint) return;
+            const typeStr = ComponentAPI.getTypeForMINT(this.currentComponent.mint);
+            if (!typeStr) return;
+            const obj = ComponentAPI.library[typeStr] && ComponentAPI.library[typeStr].object;
+            if (obj && typeof obj.resetToFactoryParameterDefaults === "function") {
+                obj.resetToFactoryParameterDefaults();
+            }
+            const snap = ComponentAPI.snapshotFactoryDefaultsForMint(this.currentComponent.mint);
+            if (!snap) return;
+            for (const key in snap) {
+                if (!Object.prototype.hasOwnProperty.call(snap, key)) continue;
+                const value = Number(snap[key]);
+                this.currentComponent.updateParameter(key, value);
+                Registry.viewManager.updateDefault(typeStr, key, value);
+            }
+            this.spec = this.computeSpec(this.currentComponent.mint, this.currentComponent.params);
+            this.appliedCanvasSpecSnapshot = this.specToValueSnapshot(this.spec);
         },
         closeCanvasSettingsCard() {
             const wasSidebarPlacement = this.isSidebarPlacementDefaultsPanel;
@@ -454,16 +496,11 @@ export default {
             EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
         },
         updateParameter(value, key) {
-            if (this.isSidebarPlacementDefaultsPanel) {
-                const n = Number(value);
-                if (Number.isNaN(n)) return;
-                const row = this.spec.find(r => r.name === key);
-                if (row) {
-                    this.$set(row, "value", n);
-                }
-                return;
-            }
-            this.currentComponent.updateParameter(key, value);
+            const n = Number(value);
+            const nextValue = Number.isNaN(n) ? value : n;
+            const row = this.spec.find(r => r.name === key);
+            if (!row) return;
+            this.$set(row, "value", nextValue);
         },
         computeSpec: function(mint, params) {
             let spec = [];
@@ -500,6 +537,7 @@ export default {
             const spec = this.computeSpec(component.mint, component.params);
             this.mint = component.mint;
             this.spec = spec;
+            this.appliedCanvasSpecSnapshot = this.specToValueSnapshot(spec);
 
             this.$nextTick(() => {
                 this.positionMenuNearComponent();
