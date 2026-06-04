@@ -200,6 +200,10 @@ export default {
         this._onCloseAllWindows = () => {
             this.dismissCanvasSettingsPopup();
         };
+        this._onConnectionSettingsOpened = () => {
+            if (!this.activeMenu) return;
+            this.dismissCanvasSettingsPopup();
+        };
         this._onSidebarSettingsOpened = payload => {
             this.applySidebarSettingsOpenedPayload(payload);
         };
@@ -225,6 +229,7 @@ export default {
         };
         EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, this._onCloseAllWindows);
         EventBus.get().on(EventBus.DBL_CLICK_COMPONENT, this.activateMenu);
+        EventBus.get().on(EventBus.DBL_CLICK_CONNECTION, this._onConnectionSettingsOpened);
         EventBus.get().on(EventBus.SIDEBAR_SETTINGS_OPENED, this._onSidebarSettingsOpened);
         EventBus.get().on(EventBus.SIDEBAR_PLACEMENT_SETTINGS_REPOSITION, this._onPlacementSettingsReposition);
         EventBus.get().on(EventBus.SIDEBAR_COMPONENT_ACTIVATED, this._onSidebarPlacementForClose);
@@ -254,6 +259,7 @@ export default {
     beforeDestroy() {
         EventBus.get().off(EventBus.CLOSE_ALL_WINDOWS, this._onCloseAllWindows);
         EventBus.get().off(EventBus.DBL_CLICK_COMPONENT, this.activateMenu);
+        EventBus.get().off(EventBus.DBL_CLICK_CONNECTION, this._onConnectionSettingsOpened);
         EventBus.get().off(EventBus.SIDEBAR_SETTINGS_OPENED, this._onSidebarSettingsOpened);
         EventBus.get().off(EventBus.SIDEBAR_PLACEMENT_SETTINGS_REPOSITION, this._onPlacementSettingsReposition);
         EventBus.get().off(EventBus.SIDEBAR_COMPONENT_ACTIVATED, this._onSidebarPlacementForClose);

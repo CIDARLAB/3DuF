@@ -29,7 +29,11 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
             throw new Error("Could not find type for MINT type " + mintstring);
         }
         super(viewManagerDelegate, threeduftype, setString, currentParameters);
-        this.valveType = valveType;
+        // Keep VALVE3D placement semantics aligned with legacy behavior:
+        // the NC valve gap should be perpendicular to the hosting connection.
+        this.valveType = mintstring.toUpperCase() === "VALVE3D"
+            ? ValveType.NORMALLY_CLOSED
+            : valveType;
 
         const ref = this;
 
