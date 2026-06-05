@@ -37,7 +37,7 @@
         >
             <v-icon size="16" color="white">mdi-close</v-icon>
         </v-btn>
-        <div class="settings-panel-heading">
+        <div class="settings-panel-heading" @mousedown="startMenuDrag">
             <span class="settings-panel-heading__title">{{ mint }}</span>
             <v-spacer />
             <v-btn
@@ -163,7 +163,13 @@ export default {
             /** Last applied parameter values for sidebar placement defaults panel. */
             appliedSidebarSpecSnapshot: {},
             /** Last applied parameter values for canvas component settings popup. */
-            appliedCanvasSpecSnapshot: {}
+            appliedCanvasSpecSnapshot: {},
+            /** Whether the settings card was manually dragged by user. */
+            isManualMenuPosition: false,
+            /** Active drag state for the floating settings card. */
+            isDraggingMenu: false,
+            dragStartPointer: null,
+            dragStartMenuPosition: null
         };
     },
     computed: {
@@ -209,6 +215,7 @@ export default {
         };
         this._onPlacementSettingsReposition = payload => {
             if (!this.activeMenu || !this.isSidebarPlacementDefaultsPanel) return;
+            if (this.isManualMenuPosition) return;
             const anchor = payload && payload.anchor;
             if (!anchor) return;
             this.sidebarPlacementAnchor = anchor;
@@ -236,6 +243,7 @@ export default {
         this._onUpdateZoom = () => {
             if (!this.activeMenu) return;
             this.$nextTick(() => {
+                if (this.isManualMenuPosition) return;
                 if (this.isSidebarPlacementDefaultsPanel && this.sidebarPlacementAnchor) {
                     this.positionMenuForSidebarAnchor(this.sidebarPlacementAnchor);
                 } else {
@@ -246,6 +254,7 @@ export default {
         this._onUpdateRenders = () => {
             if (!this.activeMenu) return;
             this.$nextTick(() => {
+                if (this.isManualMenuPosition) return;
                 if (this.isSidebarPlacementDefaultsPanel && this.sidebarPlacementAnchor) {
                     this.positionMenuForSidebarAnchor(this.sidebarPlacementAnchor);
                 } else {
@@ -265,15 +274,58 @@ export default {
         EventBus.get().off(EventBus.SIDEBAR_COMPONENT_ACTIVATED, this._onSidebarPlacementForClose);
         EventBus.get().off(EventBus.UPDATE_ZOOM, this._onUpdateZoom);
         EventBus.get().off(EventBus.UPDATE_RENDERS, this._onUpdateRenders);
+        this.stopMenuDrag();
     },
     methods: {
+        startMenuDrag(event) {
+            if (!event || event.button !== 0) return;
+            const target = event.target;
+            if (!target || typeof target.closest !== "function") return;
+            // Keep toolbar buttons and inputs clickable without starting drag.
+            if (target.closest(".v-btn, button, input, textarea, select, .v-input, .v-slider")) {
+                return;
+            }
+            this.isDraggingMenu = true;
+            this.isManualMenuPosition = true;
+            this.dragStartPointer = { x: event.clientX, y: event.clientY };
+            this.dragStartMenuPosition = { left: this.marginLeft, top: this.marginTop };
+            window.addEventListener("mousemove", this.onMenuDragMove);
+            window.addEventListener("mouseup", this.stopMenuDrag);
+            event.preventDefault();
+        },
+        onMenuDragMove(event) {
+            if (!this.isDraggingMenu || !this.dragStartPointer || !this.dragStartMenuPosition) return;
+            const menuEl = this._getContextMenuRootEl();
+            const rect = menuEl && typeof menuEl.getBoundingClientRect === "function" ? menuEl.getBoundingClientRect() : null;
+            const width = rect ? rect.width : Math.min(420, window.innerWidth - 24);
+            const height = rect ? rect.height : 320;
+            const pad = 12;
+            const deltaX = event.clientX - this.dragStartPointer.x;
+            const deltaY = event.clientY - this.dragStartPointer.y;
+            const rawLeft = this.dragStartMenuPosition.left + deltaX;
+            const rawTop = this.dragStartMenuPosition.top + deltaY;
+            const maxLeft = Math.max(pad, window.innerWidth - width - pad);
+            const maxTop = Math.max(pad, window.innerHeight - height - pad);
+            this.marginLeft = Math.max(pad, Math.min(rawLeft, maxLeft));
+            this.marginTop = Math.max(pad, Math.min(rawTop, maxTop));
+        },
+        stopMenuDrag() {
+            if (!this.isDraggingMenu) return;
+            this.isDraggingMenu = false;
+            this.dragStartPointer = null;
+            this.dragStartMenuPosition = null;
+            window.removeEventListener("mousemove", this.onMenuDragMove);
+            window.removeEventListener("mouseup", this.stopMenuDrag);
+        },
         dismissCanvasSettingsPopup() {
+            this.stopMenuDrag();
             this.activeMenu = false;
             this.showRename = false;
             this.isSidebarPlacementDefaultsPanel = false;
             this.sidebarPlacementAnchor = null;
             this.appliedSidebarSpecSnapshot = {};
             this.appliedCanvasSpecSnapshot = {};
+            this.isManualMenuPosition = false;
         },
         closeSettingsPanel() {
             EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
@@ -429,6 +481,7 @@ export default {
                 this.appliedSidebarSpecSnapshot = this.specToValueSnapshot(this.spec);
                 this.activeMenu = true;
                 this.showRename = false;
+                this.isManualMenuPosition = false;
                 this.dialogAnchor = placementPanelAnchor;
                 this.$nextTick(() => {
                     this.positionMenuForSidebarAnchor(placementPanelAnchor);
@@ -539,6 +592,7 @@ export default {
             } else {
                 this.menuPointerAnchor = null;
             }
+            this.isManualMenuPosition = false;
 
             const spec = this.computeSpec(component.mint, component.params);
             this.mint = component.mint;
@@ -658,6 +712,8 @@ export default {
     gap: 8px;
     padding: 14px 12px 4px 12px;
     min-height: 48px;
+    cursor: move;
+    user-select: none;
 }
 
 .settings-panel-heading__title {
