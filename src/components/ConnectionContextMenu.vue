@@ -104,11 +104,12 @@
             <v-select
                 v-model="selectedProfile"
                 :items="connectionProfiles"
-                class="mb-3"
+                class="mb-3 connection-profile-select"
                 dense
                 hide-details
                 label="Channel profile"
                 outlined
+                :menu-props="{ contentClass: 'connection-context-profile-menu' }"
             ></v-select>
             <PropertyBlock density="sidebar" :title="mint" :spec="spec" @update="updateParameter" />
         </v-card-text>
@@ -142,6 +143,10 @@ function specItemFromDef(def, name, valueOverride) {
 function toFiniteNumberOrFallback(value, fallback) {
     const n = Number(value);
     return Number.isFinite(n) ? n : fallback;
+}
+
+function normalizeProfileLabel(value) {
+    return String(value || "").trim().toUpperCase();
 }
 
 export default {
@@ -290,10 +295,24 @@ export default {
             this.isManualMenuPosition = false;
         },
         profileMintToCrossSection(mint) {
-            return mint === "ROUNDED CHANNEL" ? 1 : 0;
+            const label = normalizeProfileLabel(mint);
+            return label.includes("ROUND") ? 1 : 0;
         },
         crossSectionToProfileMint(crossSection) {
-            return Number(crossSection) >= 0.5 ? "ROUNDED CHANNEL" : "CHANNEL";
+            const wantRounded = Number(crossSection) >= 0.5;
+            return this.resolveProfileMintByCrossSection(wantRounded);
+        },
+        resolveProfileMintByCrossSection(wantRounded) {
+            const items = Array.isArray(this.connectionProfiles) ? this.connectionProfiles : [];
+            if (items.length === 0) {
+                return wantRounded ? "ROUNDED CHANNEL" : "CHANNEL";
+            }
+            const roundedItem = items.find(item => normalizeProfileLabel(item).includes("ROUND"));
+            const channelItem = items.find(item => !normalizeProfileLabel(item).includes("ROUND"));
+            if (wantRounded) {
+                return roundedItem || channelItem || items[0];
+            }
+            return channelItem || roundedItem || items[0];
         },
         getConnectionDefinition() {
             return ComponentAPI.getDefinition("Connection") || ComponentAPI.getDefinitionForMINT("CHANNEL");
@@ -301,8 +320,27 @@ export default {
         initSnapshotFromConnection() {
             if (!this.currentConnection) return;
             const params = this.currentConnection.params;
+            const featureValues = {};
+            const firstFeatureID =
+                Array.isArray(this.currentConnection.featureIDs) && this.currentConnection.featureIDs.length > 0
+                    ? this.currentConnection.featureIDs[0]
+                    : null;
+            if (firstFeatureID && Registry.currentDevice) {
+                try {
+                    const feature = Registry.currentDevice.getFeatureByID(firstFeatureID);
+                    featureValues.connectionSpacing = feature.getValue("connectionSpacing");
+                    featureValues.channelWidth = feature.getValue("channelWidth");
+                    featureValues.height = feature.getValue("height");
+                    featureValues.crossSection = feature.getValue("crossSection");
+                } catch {
+                    // Fallback to connection params below.
+                }
+            }
             const toNumber = (key, fallback) => {
                 try {
+                    if (Object.prototype.hasOwnProperty.call(featureValues, key)) {
+                        return toFiniteNumberOrFallback(featureValues[key], fallback);
+                    }
                     return toFiniteNumberOrFallback(params.getValue(key), fallback);
                 } catch {
                     return fallback;
@@ -315,7 +353,11 @@ export default {
             };
             let crossSection = 0;
             try {
-                crossSection = params.getValue("crossSection");
+                if (Object.prototype.hasOwnProperty.call(featureValues, "crossSection")) {
+                    crossSection = featureValues.crossSection;
+                } else {
+                    crossSection = params.getValue("crossSection");
+                }
             } catch {
                 crossSection = 0;
             }
@@ -327,7 +369,7 @@ export default {
                 this.spec = [];
                 return;
             }
-            if (this.selectedProfile === "ROUNDED CHANNEL") {
+            if (this.profileMintToCrossSection(this.selectedProfile) >= 0.5) {
                 const radius = this.snapshot.channelWidth / 2;
                 this.spec = [
                     specItemFromDef(def, "connectionSpacing", this.snapshot.connectionSpacing),
@@ -481,11 +523,12 @@ export default {
             for (const featureID of this.currentConnection.featureIDs) {
                 try {
                     const feature = Registry.currentDevice.getFeatureByID(featureID);
-                    EventBus.get().emit(EventBus.UPDATE_RENDERS, feature, true);
+                    Registry.viewManager.updateFeature(feature, false);
                 } catch (err) {
                     console.warn("Could not refresh connection feature after apply:", featureID, err);
                 }
             }
+            Registry.viewManager.refresh(true);
         },
         closeCanvasSettingsCard() {
             this.dismissCanvasSettingsPopup();
@@ -542,7 +585,7 @@ export default {
         },
         onSelectedProfileChanged(newVal, oldVal) {
             if (newVal === oldVal) return;
-            if (oldVal === "CHANNEL" && newVal === "ROUNDED CHANNEL") {
+            if (this.profileMintToCrossSection(oldVal) < 0.5 && this.profileMintToCrossSection(newVal) >= 0.5) {
                 this.snapshot.height = this.snapshot.channelWidth;
             }
             this.rebuildSettingsSpec();
@@ -676,6 +719,21 @@ export default {
     font-weight: inherit !important;
     letter-spacing: inherit !important;
 }
+
+.connection-context-card ::v-deep .v-select .v-input__slot,
+.connection-context-card ::v-deep .v-select input {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    letter-spacing: inherit !important;
+}
+
+.connection-context-card ::v-deep .v-list-item__title {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    letter-spacing: inherit !important;
+}
 </style>
 
 <style lang="scss">
@@ -690,5 +748,14 @@ export default {
 }
 .context-icon-btn .material-icons {
     font-size: 20px;
+}
+
+.connection-context-profile-menu .v-list-item__title,
+.connection-context-profile-menu .v-list-item,
+.connection-context-profile-menu .v-list-item__content {
+    font-family: Roboto, sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.0892857143em !important;
 }
 </style>
