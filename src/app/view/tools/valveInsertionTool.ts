@@ -142,7 +142,7 @@ export default class ValveInsertionTool extends MultilayerPositionTool {
 
         const params_to_copy = newFeature.getParams();
 
-        const newtypestring = this.typeString + "_control";
+        const newtypestring = this.typeString === "Valve3D" ? "Valve3D_control" : this.typeString;
         const paramstoadd = newFeature.getParams();
         newFeature = Device.makeFeature(newtypestring, overridedata);
         newFeature.setParams(paramstoadd);

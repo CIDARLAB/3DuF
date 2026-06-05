@@ -55,6 +55,10 @@ import Connection from "../core/connection";
 import Params from "../core/params";
 import MouseTool from "./tools/mouseTool";
 import { generateRenderLayers } from "../utils/renderUtils";
+import MapUtils from "../utils/mapUtils";
+
+const VALVE_RENDER_TYPES = new Set(["Valve", "Valve3D", "Valve3D_control"]);
+const VALVE_BREAK_RELEVANT_PARAMS = new Set(["position", "rotation", "gap", "valveRadius", "width", "length"]);
 
 export default class ViewManager {
     view: PaperView;
@@ -135,9 +139,10 @@ export default class ViewManager {
         this.maxZoom = 5;
         this.setupTools();
         const ref = this;
-        EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true) {
+        EventBus.get().on(EventBus.UPDATE_RENDERS, function(feature, refresh = true, updatedKey: string | null = null) {
             if (ref.ensureFeatureExists(feature)) {
                 ref.view.updateFeature(feature);
+                ref.syncConnectionBreaksForFeatureUpdate(feature, updatedKey);
                 ref.refresh(refresh);
             }
         });
@@ -1134,11 +1139,9 @@ export default class ViewManager {
             return;
         }
         this.ensureValveFlowFeatures();
+        this.ensureValveControlFeatures();
+        this.ensureValveComponentsFromLooseFeatures();
         for (const connection of device.connections) {
-            const valves = device.getValvesForConnection(connection);
-            if (!valves || valves.length === 0) {
-                continue;
-            }
             try {
                 this.updatesConnectionRender(connection);
             } catch (err) {
@@ -1208,6 +1211,209 @@ export default class ViewManager {
             if (targetIndex >= 0) {
                 this.addFeature(flowFeature, targetIndex, true, false);
                 component.addFeatureID(flowFeature.ID);
+            }
+        }
+    }
+
+    /**
+     * Ensure every FLOW-side Valve3D has a matching CONTROL-side Valve3D_control so the full red
+     * circular control geometry is visible when switching to CONTROL layers (including legacy files
+     * that only contain standalone FLOW valve features).
+     */
+    private ensureValveControlFeatures(): void {
+        const device = this.currentDevice;
+        if (!device) {
+            return;
+        }
+
+        for (const flowLayer of device.layers) {
+            if (flowLayer.type !== LogicalLayerType.FLOW) {
+                continue;
+            }
+            const controlLayer = device.layers.find(
+                layer => layer.type === LogicalLayerType.CONTROL && layer.group === flowLayer.group
+            );
+            if (!controlLayer) {
+                continue;
+            }
+            const targetControlRenderLayer = this.renderLayers.find(
+                layer =>
+                    layer.type === LogicalLayerType.CONTROL &&
+                    layer.physicalLayer !== null &&
+                    layer.physicalLayer.id === controlLayer.id
+            );
+            if (!targetControlRenderLayer) {
+                continue;
+            }
+
+            const flowFeatures = flowLayer.getAllFeaturesFromLayer();
+            for (const featureID in flowFeatures) {
+                const feature = flowFeatures[featureID];
+                if (feature.getType() !== "Valve3D") {
+                    continue;
+                }
+
+                const position = feature.getValue("position");
+                const rotation = Number(feature.getValue("rotation"));
+                const referenceID = feature.referenceID;
+
+                const alreadyHasControlCounterpart = Object.values(controlLayer.getAllFeaturesFromLayer()).some(ctrlFeature => {
+                    if (ctrlFeature.getType() !== "Valve3D_control") {
+                        return false;
+                    }
+                    if (referenceID && ctrlFeature.referenceID === referenceID) {
+                        return true;
+                    }
+                    const ctrlPos = ctrlFeature.getValue("position");
+                    const ctrlRot = Number(ctrlFeature.getValue("rotation"));
+                    return (
+                        ctrlPos &&
+                        ctrlPos[0] === position[0] &&
+                        ctrlPos[1] === position[1] &&
+                        ctrlRot === rotation
+                    );
+                });
+
+                if (alreadyHasControlCounterpart) {
+                    continue;
+                }
+
+                const params = {
+                    position: feature.getValue("position"),
+                    rotation: feature.getValue("rotation"),
+                    componentSpacing: feature.getValue("componentSpacing"),
+                    valveRadius: feature.getValue("valveRadius"),
+                    height: feature.getValue("height"),
+                    gap: feature.getValue("gap"),
+                    width: feature.getValue("width"),
+                    length: feature.getValue("length")
+                };
+                const controlFeature = Device.makeFeature("Valve3D_control", params);
+                controlFeature.referenceID = referenceID;
+                const targetIndex = this.renderLayers.indexOf(targetControlRenderLayer);
+                if (targetIndex >= 0) {
+                    this.addFeature(controlFeature, targetIndex, true, false);
+                    if (referenceID) {
+                        const component = device.getComponentByID(referenceID);
+                        if (component) {
+                            component.addFeatureID(controlFeature.ID);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private findNearestConnectionForValvePoint(position: Point, group: string): Connection | null {
+        if (!this.currentDevice) {
+            return null;
+        }
+        const target = new paper.Point(position[0], position[1]);
+        let best: Connection | null = null;
+        let bestDist = Number.POSITIVE_INFINITY;
+        for (const connection of this.currentDevice.connections) {
+            if (!connection.layer || connection.layer.group !== group) {
+                continue;
+            }
+            const segments = connection.getValue("segments");
+            if (!Array.isArray(segments)) {
+                continue;
+            }
+            for (const segment of segments) {
+                const line = new paper.Path.Line(
+                    new paper.Point(segment[0][0], segment[0][1]),
+                    new paper.Point(segment[1][0], segment[1][1])
+                );
+                const nearest = line.getNearestPoint(target);
+                const dist = nearest.getDistance(target);
+                line.remove();
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    best = connection;
+                }
+            }
+        }
+        return best;
+    }
+
+    /**
+     * Normalize legacy standalone Valve3D features (referenceID=null) into real component objects
+     * so selection/double-click/settings behavior matches regular components.
+     */
+    private ensureValveComponentsFromLooseFeatures(): void {
+        const device = this.currentDevice;
+        if (!device) {
+            return;
+        }
+        for (const flowLayer of device.layers) {
+            if (flowLayer.type !== LogicalLayerType.FLOW) {
+                continue;
+            }
+            const controlLayer = device.layers.find(
+                layer => layer.type === LogicalLayerType.CONTROL && layer.group === flowLayer.group
+            );
+            const flowFeatures = flowLayer.getAllFeaturesFromLayer();
+            for (const featureID in flowFeatures) {
+                const flowFeature = flowFeatures[featureID];
+                if (flowFeature.getType() !== "Valve3D" || flowFeature.referenceID !== null) {
+                    continue;
+                }
+
+                const flowPos = flowFeature.getValue("position");
+                const flowRot = Number(flowFeature.getValue("rotation"));
+                let controlFeature: Feature | null = null;
+                if (controlLayer) {
+                    for (const ctrlID in controlLayer.getAllFeaturesFromLayer()) {
+                        const candidate = controlLayer.getAllFeaturesFromLayer()[ctrlID];
+                        if (candidate.getType() !== "Valve3D_control" || candidate.referenceID !== null) {
+                            continue;
+                        }
+                        const ctrlPos = candidate.getValue("position");
+                        const ctrlRot = Number(candidate.getValue("rotation"));
+                        if (
+                            ctrlPos &&
+                            ctrlPos[0] === flowPos[0] &&
+                            ctrlPos[1] === flowPos[1] &&
+                            ctrlRot === flowRot
+                        ) {
+                            controlFeature = candidate;
+                            break;
+                        }
+                    }
+                }
+
+                const definition = ComponentAPI.getDefinition("Valve3D_control") || ComponentAPI.getDefinition("Valve3D");
+                if (!definition) {
+                    continue;
+                }
+                const cleanParamData: { [k: string]: any } = {};
+                const params = flowFeature.getParams();
+                for (const key in params) {
+                    cleanParamData[key] = params[key].value;
+                }
+                cleanParamData.position = [0, 0];
+                const componentParams = new Params(
+                    cleanParamData,
+                    MapUtils.toMap(definition.unique),
+                    MapUtils.toMap(definition.heritable)
+                );
+                const componentID = ComponentAPI.generateID();
+                const valveComponent = new Component(componentParams, device.generateNewName("Valve3D"), definition.mint, componentID);
+
+                valveComponent.addFeatureID(flowFeature.ID);
+                flowFeature.referenceID = componentID;
+                if (controlFeature) {
+                    valveComponent.addFeatureID(controlFeature.ID);
+                    controlFeature.referenceID = componentID;
+                }
+                valveComponent.setInitialOffset();
+                valveComponent.updateComponentPosition(flowPos);
+                device.addComponent(valveComponent);
+
+                const targetConnection = this.findNearestConnectionForValvePoint(flowPos, flowLayer.group);
+                if (targetConnection) {
+                    device.insertValve(valveComponent, targetConnection, ValveType.NORMALLY_CLOSED);
+                }
             }
         }
     }
@@ -1655,6 +1861,234 @@ export default class ViewManager {
         return null;
     }
 
+    private getValveFlowGapInfo(valve: Component): { center: paper.Point; rotation: number; gap: number } | null {
+        if (!this.currentDevice) {
+            return null;
+        }
+        for (const featureID of valve.featureIDs) {
+            const feature = this.currentDevice.getFeatureByID(featureID);
+            if (
+                feature.layer &&
+                feature.layer.type === LogicalLayerType.FLOW &&
+                (feature.getType() === "Valve3D" || feature.getType() === "Valve3D_control")
+            ) {
+                const position = feature.getValue("position");
+                const rotation = Number(feature.getValue("rotation"));
+                const gap = Number(feature.getValue("gap"));
+                if (!position || !Number.isFinite(rotation) || !Number.isFinite(gap) || gap <= 0) {
+                    return null;
+                }
+                return {
+                    center: new paper.Point(position[0], position[1]),
+                    rotation,
+                    gap
+                };
+            }
+        }
+        return null;
+    }
+
+    private insertGapByProjectionInfo(
+        connection: Connection,
+        gapInfo: { center: paper.Point; rotation: number; gap: number }
+    ): boolean {
+        const segments = connection.getValue("segments");
+        if (!Array.isArray(segments) || segments.length === 0) {
+            return false;
+        }
+
+        const theta = (gapInfo.rotation * Math.PI) / 180;
+        // Valve gap strip is perpendicular to channel axis; channel axis follows this vector.
+        const axis = new paper.Point(Math.sin(theta), Math.cos(theta));
+        let channelWidth = 0;
+        try {
+            const cw = Number(connection.getValue("channelWidth"));
+            if (Number.isFinite(cw) && cw > 0) {
+                channelWidth = cw;
+            }
+        } catch {
+            channelWidth = 0;
+        }
+        const halfGapAlongAxis = gapInfo.gap / 2 + channelWidth / 2;
+
+        let bestIndex = -1;
+        let bestDistance = Number.POSITIVE_INFINITY;
+        let bestStart = new paper.Point(0, 0);
+        let bestEnd = new paper.Point(0, 0);
+        let bestProjection = new paper.Point(0, 0);
+
+        for (let i = 0; i < segments.length; i++) {
+            const segment = segments[i];
+            const start = new paper.Point(segment[0][0], segment[0][1]);
+            const end = new paper.Point(segment[1][0], segment[1][1]);
+            const v = end.subtract(start);
+            const len2 = v.dot(v);
+            if (len2 === 0) {
+                continue;
+            }
+            let t = gapInfo.center.subtract(start).dot(v) / len2;
+            t = Math.max(0, Math.min(1, t));
+            const projection = start.add(v.multiply(t));
+            const dist = projection.getDistance(gapInfo.center);
+            if (dist < bestDistance) {
+                bestDistance = dist;
+                bestIndex = i;
+                bestStart = start;
+                bestEnd = end;
+                bestProjection = projection;
+            }
+        }
+
+        if (bestIndex < 0) {
+            return false;
+        }
+
+        const candidateA = bestProjection.subtract(axis.multiply(halfGapAlongAxis));
+        const candidateB = bestProjection.add(axis.multiply(halfGapAlongAxis));
+        const segmentVector = bestEnd.subtract(bestStart);
+        const segmentLen2 = segmentVector.dot(segmentVector);
+        if (segmentLen2 === 0) {
+            return false;
+        }
+
+        const projectToSegment = (p: paper.Point): paper.Point => {
+            let t = p.subtract(bestStart).dot(segmentVector) / segmentLen2;
+            t = Math.max(0, Math.min(1, t));
+            return bestStart.add(segmentVector.multiply(t));
+        };
+
+        const break1 = projectToSegment(candidateA);
+        const break2 = projectToSegment(candidateB);
+
+        const startToBreak1 = bestStart.getDistance(break1);
+        const endToBreak2 = bestEnd.getDistance(break2);
+        const startToBreak2 = bestStart.getDistance(break2);
+        const endToBreak1 = bestEnd.getDistance(break1);
+
+        let nearStart = break1;
+        let nearEnd = break2;
+        if (startToBreak1 + endToBreak2 > startToBreak2 + endToBreak1) {
+            nearStart = break2;
+            nearEnd = break1;
+        }
+
+        const roundedStart = [Math.round(bestStart.x), Math.round(bestStart.y)] as [number, number];
+        const roundedEnd = [Math.round(bestEnd.x), Math.round(bestEnd.y)] as [number, number];
+        const roundedBreakStart = [Math.round(nearStart.x), Math.round(nearStart.y)] as [number, number];
+        const roundedBreakEnd = [Math.round(nearEnd.x), Math.round(nearEnd.y)] as [number, number];
+
+        if (
+            (roundedStart[0] === roundedBreakStart[0] && roundedStart[1] === roundedBreakStart[1]) ||
+            (roundedEnd[0] === roundedBreakEnd[0] && roundedEnd[1] === roundedBreakEnd[1])
+        ) {
+            return false;
+        }
+
+        const segment1 = [roundedStart, roundedBreakStart];
+        const segment2 = [roundedEnd, roundedBreakEnd];
+        const updatedSegments = segments.slice();
+        updatedSegments.splice(bestIndex, 1, segment1, segment2);
+        connection.updateSegments(updatedSegments);
+        return true;
+    }
+
+    private insertValveGapByProjection(connection: Connection, valve: Component): boolean {
+        const gapInfo = this.getValveFlowGapInfo(valve);
+        if (!gapInfo) {
+            return false;
+        }
+        return this.insertGapByProjectionInfo(connection, gapInfo);
+    }
+
+    private getUnmappedFlowValveFeaturesForConnection(connection: Connection): Feature[] {
+        const candidates: Feature[] = [];
+        if (!connection.layer) {
+            return candidates;
+        }
+        const layerFeatures = connection.layer.getAllFeaturesFromLayer();
+        for (const featureID in layerFeatures) {
+            const feature = layerFeatures[featureID];
+            if (feature.referenceID !== null) {
+                continue;
+            }
+            if (feature.getType() !== "Valve3D" && feature.getType() !== "Valve3D_control") {
+                continue;
+            }
+            candidates.push(feature);
+        }
+        return candidates;
+    }
+
+    private getGapInfoFromValveFeature(feature: Feature): { center: paper.Point; rotation: number; gap: number } | null {
+        const position = feature.getValue("position");
+        const rotation = Number(feature.getValue("rotation"));
+        const gap = Number(feature.getValue("gap"));
+        if (!position || !Number.isFinite(rotation) || !Number.isFinite(gap) || gap <= 0) {
+            return null;
+        }
+        return {
+            center: new paper.Point(position[0], position[1]),
+            rotation,
+            gap
+        };
+    }
+
+    private findMappedConnectionForValve(valve: Component): Connection | null {
+        if (!this.currentDevice) {
+            return null;
+        }
+        for (const connection of this.currentDevice.connections) {
+            const mappedValves = this.currentDevice.getValvesForConnection(connection);
+            if (mappedValves.some(mappedValve => mappedValve.id === valve.id)) {
+                return connection;
+            }
+        }
+        return null;
+    }
+
+    private syncConnectionBreaksForFeatureUpdate(feature: Feature, updatedKey: string | null): void {
+        if (!this.currentDevice) {
+            return;
+        }
+
+        if (
+            VALVE_RENDER_TYPES.has(feature.getType()) &&
+            feature.referenceID &&
+            (updatedKey === null || VALVE_BREAK_RELEVANT_PARAMS.has(updatedKey))
+        ) {
+            const valve = this.currentDevice.getComponentByID(feature.referenceID);
+            if (!valve) {
+                return;
+            }
+            const mappedConnection = this.findMappedConnectionForValve(valve);
+            if (!mappedConnection) {
+                return;
+            }
+            try {
+                this.updatesConnectionRender(mappedConnection);
+            } catch (err) {
+                console.warn("Could not sync valve connection break after parameter update:", err);
+            }
+            return;
+        }
+
+        if (feature.getType() === "Connection" && updatedKey === "channelWidth") {
+            const connection = this.currentDevice.getConnectionForFeatureID(feature.ID);
+            if (!connection) {
+                return;
+            }
+            const valves = this.currentDevice.getValvesForConnection(connection);
+            if (!valves || valves.length === 0) {
+                return;
+            }
+            try {
+                this.updatesConnectionRender(connection);
+            } catch (err) {
+                console.warn("Could not sync valve connection break after channel width update:", err);
+            }
+        }
+    }
+
     /**
      * Updates the renders for all the connection in the blah
      * @returns {void}
@@ -1688,9 +2122,56 @@ export default class ViewManager {
                     }
                 }
                 if (!gapInserted) {
-                    const boundingbox = valve.getBoundingRectangle();
-                    connection.insertFeatureGap(boundingbox);
+                    try {
+                        const boundingbox = valve.getBoundingRectangle();
+                        gapInserted = connection.insertFeatureGap(boundingbox);
+                    } catch (err) {
+                        console.warn("Bounding-box gap insertion failed, trying projection fallback:", err);
+                        gapInserted = false;
+                    }
                 }
+                if (!gapInserted) {
+                    this.insertValveGapByProjection(connection, valve);
+                }
+            }
+        }
+
+        // Backward-compatible fallback: some files (or buggy placement paths) have standalone
+        // Valve3D features without component/referenceID/valveMap entries. Still break channel.
+        const unmappedValveFeatures = this.getUnmappedFlowValveFeaturesForConnection(connection);
+        for (const valveFeature of unmappedValveFeatures) {
+            const gapInfo = this.getGapInfoFromValveFeature(valveFeature);
+            if (!gapInfo) {
+                continue;
+            }
+            const center = gapInfo.center;
+            let axialPadding = 0;
+            try {
+                const channelWidth = Number(connection.getValue("channelWidth"));
+                if (Number.isFinite(channelWidth) && channelWidth > 0) {
+                    axialPadding = channelWidth / 2;
+                }
+            } catch {
+                axialPadding = 0;
+            }
+            const radius = Number(valveFeature.getValue("valveRadius"));
+            let gapInserted = false;
+            if (Number.isFinite(radius) && radius > 0) {
+                const gapPath = new paper.Path.Rectangle({
+                    from: new paper.Point(center.x - radius - axialPadding, center.y - gapInfo.gap / 2),
+                    to: new paper.Point(center.x + radius + axialPadding, center.y + gapInfo.gap / 2)
+                });
+                gapPath.rotate(gapInfo.rotation, center);
+                try {
+                    gapInserted = connection.insertFeatureGap(gapPath);
+                } catch {
+                    gapInserted = false;
+                } finally {
+                    gapPath.remove();
+                }
+            }
+            if (!gapInserted) {
+                this.insertGapByProjectionInfo(connection, gapInfo);
             }
         }
     }

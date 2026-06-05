@@ -108,7 +108,12 @@ export default class MouseSelectTool extends MouseTool {
                 // Check if the feature is a part of a component
                 let component, connection;
                 if (feat.referenceID === null) {
-                    throw new Error("ReferenceID of feature is null");
+                    component = Registry.currentDevice?.getComponentForFeatureID(feat.ID);
+                    if (component !== null && component !== undefined) {
+                        (EventBus as any).get().emit(EventBus.DBL_CLICK_COMPONENT, event, component);
+                    } else {
+                        (EventBus as any).get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
+                    }
                 } else {
                     component = Registry.currentDevice?.getComponentByID(feat.referenceID);
                     connection = Registry.currentDevice?.getConnectionByID(feat.referenceID);

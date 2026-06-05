@@ -144,7 +144,7 @@ export default class Feature {
      */
     updateParameter(key: string, value: any): void {
         this._params.updateParameter(key, value);
-        EventBus.get().emit(EventBus.UPDATE_RENDERS, this);
+        EventBus.get().emit(EventBus.UPDATE_RENDERS, this, true, key);
     }
 
     /**

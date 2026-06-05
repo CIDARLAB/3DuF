@@ -14,6 +14,77 @@ import Feature from "@/app/core/feature";
 const VALVE_INACTIVE_LOGICAL_LAYER_ALPHA = 0.5;
 
 const VALVE_RENDER_TYPES = new Set(["Valve", "Valve3D_control", "Valve3D"]);
+const FLOW_VALVE_RENDER_TYPES = new Set(["Valve3D_control", "Valve3D"]);
+
+function applyValveFlowCutToConnectionRender(rendered: paper.Item, feature: Feature): paper.Item {
+    if (!feature.layer || feature.layer.type !== LogicalLayerType.FLOW) {
+        return rendered;
+    }
+    if (feature.getType() !== "Connection") {
+        return rendered;
+    }
+
+    const layerFeatures = feature.layer.getAllFeaturesFromLayer();
+    let current = rendered;
+    let channelWidth = 0;
+    try {
+        const cw = Number(feature.getValue("channelWidth"));
+        if (Number.isFinite(cw) && cw > 0) {
+            channelWidth = cw;
+        }
+    } catch {
+        channelWidth = 0;
+    }
+    const axialPadding = channelWidth / 2;
+
+    for (const featureID in layerFeatures) {
+        const candidate = layerFeatures[featureID];
+        if (!FLOW_VALVE_RENDER_TYPES.has(candidate.getType())) {
+            continue;
+        }
+        if (!candidate.layer || candidate.layer.type !== LogicalLayerType.FLOW) {
+            continue;
+        }
+
+        let position;
+        let radius;
+        let gap;
+        let rotation;
+        try {
+            position = candidate.getValue("position");
+            radius = Number(candidate.getValue("valveRadius"));
+            gap = Number(candidate.getValue("gap"));
+            rotation = Number(candidate.getValue("rotation"));
+        } catch {
+            continue;
+        }
+
+        if (
+            !position ||
+            !Number.isFinite(radius) ||
+            radius <= 0 ||
+            !Number.isFinite(gap) ||
+            gap <= 0 ||
+            !Number.isFinite(rotation)
+        ) {
+            continue;
+        }
+
+        const center = new paper.Point(position[0], position[1]);
+        const gapPath = new paper.Path.Rectangle({
+            from: new paper.Point(position[0] - radius - axialPadding, position[1] - gap / 2),
+            to: new paper.Point(position[0] + radius + axialPadding, position[1] + gap / 2)
+        });
+        gapPath.rotate(rotation, center);
+
+        const cut = (current as paper.PathItem).subtract(gapPath) as paper.Item;
+        current.remove();
+        gapPath.remove();
+        current = cut;
+    }
+
+    return current;
+}
 
 function hasValveCounterpartOnLayer(feature: Feature, logicalLayerType: LogicalLayerType): boolean {
     const referenceID = feature.referenceID;
@@ -66,8 +137,9 @@ function applyValveCrossLayerOpacity(rendered: paper.Item, feature: Feature, opt
         rendered.opacity = 1;
         return;
     }
-    const hasCounterpartOnActiveLayer = hasValveCounterpartOnLayer(feature, vm.currentLayer.type as LogicalLayerType);
-    rendered.opacity = hasCounterpartOnActiveLayer ? 0 : VALVE_INACTIVE_LOGICAL_LAYER_ALPHA;
+    // Keep inactive-layer valve visibility consistent with other components:
+    // show a dimmed ghost instead of fully hiding it when a counterpart exists.
+    rendered.opacity = VALVE_INACTIVE_LOGICAL_LAYER_ALPHA;
 }
 
 const getLayerColor = function(feature: Feature) {
@@ -260,6 +332,7 @@ export function renderFeature(feature: Feature, key: string | null, options?: Re
         primParams.color = getLayerColor(feature);
         primParams.baseColor = getBaseColor(feature);
         rendered = renderer.render2D(primParams, key);
+        rendered = applyValveFlowCutToConnectionRender(rendered as paper.Item, feature);
         // Rendered is going to be at 0,0 with whatever rotation
         // Now we can get draw offset by looking at the rendered topleft corner
         // move the feature to user pointed position

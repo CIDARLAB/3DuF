@@ -53,6 +53,11 @@ export default class ComponentPortRenderer2D {
      * @memberof ComponentPortRenderer2D
      */
     static renderComponentPorts(component: Component) {
+        // Keep valve center ports for connection snapping/guidance logic, but do not draw
+        // the visual port marker dot on canvas.
+        if (component.mint === "VALVE" || component.mint === "VALVE3D") {
+            return [];
+        }
         const rendersize = ComponentPortRenderer2D.getSizeforZoomLevel();
         const componentports = component.ports;
         const ret = [];

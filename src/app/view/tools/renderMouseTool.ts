@@ -116,7 +116,7 @@ export default class RenderMouseTool extends MouseTool {
                     this.viewManagerDelegate.updateDefaultsFromFeature(feat);
                     // Check if the feature is a part of a component
                     if (feat.referenceID === null) {
-                        throw new Error("ReferenceID of feature is null");
+                        EventBus.get().emit(EventBus.DBL_CLICK_FEATURE, event, feat);
                     } else {
                         if (element !== null) {
                             EventBus.get().emit(EventBus.DBL_CLICK_ELEMENT, event, element);
