@@ -20,6 +20,7 @@
                 </span>
             </v-tooltip>
             <v-btn
+                ref="settingsActivator"
                 icon
                 medium
                 text
@@ -31,8 +32,8 @@
                 <v-icon class="settings-gear-icon">mdi-cog</v-icon>
             </v-btn>
         </div>
-        <div ref="drawer" class="connection-property-drawer">
-            <v-card v-if="isSettingsRowOpen" class="settings-panel-card settings-panel-card--chrome">
+        <div ref="drawer" class="connection-property-drawer" :style="drawerPositionStyle">
+            <v-card v-if="isSettingsRowOpen" class="settings-panel-card settings-panel-card--chrome" @mousedown="startDrawerDrag">
                 <v-btn
                     type="button"
                     fab
@@ -226,7 +227,13 @@ export default {
                 height: 250
             },
             /** Bumps computed props that read Registry view layer (non-reactive). */
-            layerSyncTick: 0
+            layerSyncTick: 0,
+            drawerLeft: 225,
+            drawerTop: 10,
+            isManualDrawerPosition: false,
+            isDraggingDrawer: false,
+            drawerDragStartPointer: null,
+            drawerDragStartPosition: null
         };
     },
     computed: {
@@ -353,6 +360,12 @@ export default {
                     return "Unknown State, suggestion error";
                 }
             }
+        },
+        drawerPositionStyle() {
+            return {
+                left: this.drawerLeft + "px",
+                top: this.drawerTop + "px"
+            };
         }
     },
     watch: {
@@ -365,6 +378,7 @@ export default {
         },
         isSettingsRowOpen(isOpen) {
             if (isOpen) {
+                this.isManualDrawerPosition = false;
                 this.initSnapshotFromSpec();
                 this.rebuildSettingsSpec();
                 this.layerSyncTick += 1;
@@ -390,8 +404,54 @@ export default {
         EventBus.get().off(EventBus.RIGHT_CLICK, this.endConnection);
         EventBus.get().off(EventBus.NAVBAR_SCROLL_EVENT, this.setDrawerPosition);
         EventBus.get().off(EventBus.ACTIVE_RENDER_LAYER_CHANGED, this.onActiveRenderLayerChanged);
+        this.stopDrawerDrag();
     },
     methods: {
+        startDrawerDrag(event) {
+            if (!event || event.button !== 0 || !this.isSettingsRowOpen) return;
+            const target = event.target;
+            if (!target || typeof target.closest !== "function") return;
+            if (
+                target.closest(
+                    ".v-btn, button, input, textarea, select, .v-input, .v-slider, .property-block-scroll-shell--limited"
+                )
+            ) {
+                return;
+            }
+            this.isDraggingDrawer = true;
+            this.isManualDrawerPosition = true;
+            this.drawerDragStartPointer = { x: event.clientX, y: event.clientY };
+            this.drawerDragStartPosition = { left: this.drawerLeft, top: this.drawerTop };
+            window.addEventListener("mousemove", this.onDrawerDragMove);
+            window.addEventListener("mouseup", this.stopDrawerDrag);
+            event.stopPropagation();
+            event.preventDefault();
+        },
+        onDrawerDragMove(event) {
+            if (!this.isDraggingDrawer || !this.drawerDragStartPointer || !this.drawerDragStartPosition) return;
+            const drawerEl = this.$refs.drawer;
+            const rect = drawerEl && typeof drawerEl.getBoundingClientRect === "function" ? drawerEl.getBoundingClientRect() : null;
+            const width = rect ? rect.width : 720;
+            const height = rect ? rect.height : 360;
+            const pad = 12;
+            const deltaX = event.clientX - this.drawerDragStartPointer.x;
+            const deltaY = event.clientY - this.drawerDragStartPointer.y;
+            const rawLeft = this.drawerDragStartPosition.left + deltaX;
+            const rawTop = this.drawerDragStartPosition.top + deltaY;
+            const maxLeft = Math.max(pad, window.innerWidth - width - pad);
+            const maxTop = Math.max(pad, window.innerHeight - height - pad);
+            this.drawerLeft = Math.max(pad, Math.min(rawLeft, maxLeft));
+            this.drawerTop = Math.max(pad, Math.min(rawTop, maxTop));
+            event.preventDefault();
+        },
+        stopDrawerDrag() {
+            if (!this.isDraggingDrawer) return;
+            this.isDraggingDrawer = false;
+            this.drawerDragStartPointer = null;
+            this.drawerDragStartPosition = null;
+            window.removeEventListener("mousemove", this.onDrawerDragMove);
+            window.removeEventListener("mouseup", this.stopDrawerDrag);
+        },
         profileMintToCrossSection(mint) {
             return mint === "ROUNDED CHANNEL" ? 1 : 0;
         },
@@ -548,8 +608,23 @@ export default {
         setDrawerPosition() {
             if (!this.isSettingsRowOpen) return;
             if (!this.$refs.activator || !this.$refs.drawer) return;
-            const bounds = this.$refs.activator.$el.getBoundingClientRect();
-            this.$refs.drawer.style.top = bounds.bottom - bounds.height + "px";
+            if (this.isManualDrawerPosition) return;
+            const anchorBtn = this.$refs.settingsActivator || this.$refs.activator;
+            const bounds = anchorBtn.$el.getBoundingClientRect();
+            const drawerEl = this.$refs.drawer;
+            const rect =
+                drawerEl && typeof drawerEl.getBoundingClientRect === "function"
+                    ? drawerEl.getBoundingClientRect()
+                    : null;
+            const width = rect ? rect.width : 720;
+            const pad = 12;
+            const gap = 8;
+            let left = bounds.right + gap;
+            if (left + width + pad > window.innerWidth) {
+                left = Math.max(pad, window.innerWidth - width - pad);
+            }
+            this.drawerLeft = Math.max(pad, left);
+            this.drawerTop = Math.max(pad, bounds.top);
         },
         closeConnectionSettingsPanel() {
             EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });
@@ -682,6 +757,8 @@ export default {
     gap: 8px;
     padding: 14px 12px 4px 12px;
     min-height: 48px;
+    cursor: move;
+    user-select: none;
 }
 
 .settings-panel-heading__title {

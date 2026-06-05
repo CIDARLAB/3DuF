@@ -5,6 +5,7 @@
         class="connection-context-card settings-panel-card settings-panel-card--chrome"
         :style="cardPositionStyle"
         scrollable
+        @mousedown="startMenuDrag"
     >
         <div v-show="showRename" class="connection-context-rename px-4 pt-3 pb-0">
             <v-row align="center" dense no-gutters>
@@ -100,6 +101,15 @@
         </div>
 
         <v-card-text class="settings-panel-body connection-context-settings-body">
+            <v-select
+                v-model="selectedProfile"
+                :items="connectionProfiles"
+                class="mb-3"
+                dense
+                hide-details
+                label="Channel profile"
+                outlined
+            ></v-select>
             <PropertyBlock density="sidebar" :title="mint" :spec="spec" @update="updateParameter" />
         </v-card-text>
     </v-card>
@@ -115,6 +125,24 @@ import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import { ComponentAPI } from "@/componentAPI";
 import paper from "paper";
 import { getPlacedComponentScreenBottomRight } from "@/utils/contextDialogAnchor";
+
+function specItemFromDef(def, name, valueOverride) {
+    const v = valueOverride !== undefined ? valueOverride : def.defaults[name];
+    return {
+        name,
+        min: def.minimum[name],
+        max: def.maximum[name],
+        value: v,
+        units: def.units[name],
+        steps: (def.maximum[name] - def.minimum[name]) / 10,
+        step: (def.maximum[name] - def.minimum[name]) / 10
+    };
+}
+
+function toFiniteNumberOrFallback(value, fallback) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+}
 
 export default {
     name: "ConnectionContextMenu",
@@ -134,7 +162,18 @@ export default {
             marginTop: 100,
             currentConnection: new Connection("", new Params({}, new Map(), new Map()), "", "", new Layer({}, Registry.currentDevice)),
             menuPointerAnchor: null,
-            appliedSpecSnapshot: {}
+            appliedSpecSnapshot: {},
+            connectionProfiles: [],
+            selectedProfile: "CHANNEL",
+            snapshot: {
+                connectionSpacing: 1600,
+                channelWidth: 800,
+                height: 250
+            },
+            isManualMenuPosition: false,
+            isDraggingMenu: false,
+            dragStartPointer: null,
+            dragStartMenuPosition: null
         };
     },
     computed: {
@@ -165,17 +204,27 @@ export default {
         };
         this._onUpdateZoom = () => {
             if (!this.activeMenu) return;
+            if (this.isManualMenuPosition) return;
             this.$nextTick(() => this.positionMenuNearConnection());
         };
         this._onUpdateRenders = () => {
             if (!this.activeMenu) return;
+            if (this.isManualMenuPosition) return;
             this.$nextTick(() => this.positionMenuNearConnection());
+        };
+        this._onSidebarPlacementActivated = payload => {
+            const mint = payload && payload.mint;
+            if (mint == null || mint === "") return;
+            if (!this.activeMenu) return;
+            this.dismissCanvasSettingsPopup();
         };
         EventBus.get().on(EventBus.CLOSE_ALL_WINDOWS, this._onCloseAllWindows);
         EventBus.get().on(EventBus.DBL_CLICK_CONNECTION, this.activateMenu);
         EventBus.get().on(EventBus.DBL_CLICK_COMPONENT, this._onComponentSettingsOpened);
         EventBus.get().on(EventBus.UPDATE_ZOOM, this._onUpdateZoom);
         EventBus.get().on(EventBus.UPDATE_RENDERS, this._onUpdateRenders);
+        EventBus.get().on(EventBus.SIDEBAR_COMPONENT_ACTIVATED, this._onSidebarPlacementActivated);
+        this.connectionProfiles = ComponentAPI.getConnectionTypes();
     },
     beforeDestroy() {
         EventBus.get().off(EventBus.CLOSE_ALL_WINDOWS, this._onCloseAllWindows);
@@ -183,13 +232,133 @@ export default {
         EventBus.get().off(EventBus.DBL_CLICK_COMPONENT, this._onComponentSettingsOpened);
         EventBus.get().off(EventBus.UPDATE_ZOOM, this._onUpdateZoom);
         EventBus.get().off(EventBus.UPDATE_RENDERS, this._onUpdateRenders);
+        EventBus.get().off(EventBus.SIDEBAR_COMPONENT_ACTIVATED, this._onSidebarPlacementActivated);
+        this.stopMenuDrag();
     },
     methods: {
+        startMenuDrag(event) {
+            if (!event || event.button !== 0) return;
+            const target = event.target;
+            if (!target || typeof target.closest !== "function") return;
+            if (
+                target.closest(
+                    ".v-btn, button, input, textarea, select, .v-input, .v-slider, .property-block-scroll-shell--limited"
+                )
+            ) {
+                return;
+            }
+            this.isDraggingMenu = true;
+            this.isManualMenuPosition = true;
+            this.dragStartPointer = { x: event.clientX, y: event.clientY };
+            this.dragStartMenuPosition = { left: this.marginLeft, top: this.marginTop };
+            window.addEventListener("mousemove", this.onMenuDragMove);
+            window.addEventListener("mouseup", this.stopMenuDrag);
+            event.stopPropagation();
+            event.preventDefault();
+        },
+        onMenuDragMove(event) {
+            if (!this.isDraggingMenu || !this.dragStartPointer || !this.dragStartMenuPosition) return;
+            const menuEl = this._getContextMenuRootEl();
+            const rect = menuEl && typeof menuEl.getBoundingClientRect === "function" ? menuEl.getBoundingClientRect() : null;
+            const width = rect ? rect.width : Math.min(420, window.innerWidth - 24);
+            const height = rect ? rect.height : 320;
+            const pad = 12;
+            const deltaX = event.clientX - this.dragStartPointer.x;
+            const deltaY = event.clientY - this.dragStartPointer.y;
+            const rawLeft = this.dragStartMenuPosition.left + deltaX;
+            const rawTop = this.dragStartMenuPosition.top + deltaY;
+            const maxLeft = Math.max(pad, window.innerWidth - width - pad);
+            const maxTop = Math.max(pad, window.innerHeight - height - pad);
+            this.marginLeft = Math.max(pad, Math.min(rawLeft, maxLeft));
+            this.marginTop = Math.max(pad, Math.min(rawTop, maxTop));
+            event.preventDefault();
+        },
+        stopMenuDrag() {
+            if (!this.isDraggingMenu) return;
+            this.isDraggingMenu = false;
+            this.dragStartPointer = null;
+            this.dragStartMenuPosition = null;
+            window.removeEventListener("mousemove", this.onMenuDragMove);
+            window.removeEventListener("mouseup", this.stopMenuDrag);
+        },
         dismissCanvasSettingsPopup() {
+            this.stopMenuDrag();
             this.activeMenu = false;
             this.showRename = false;
             this.appliedSpecSnapshot = {};
             this.menuPointerAnchor = null;
+            this.isManualMenuPosition = false;
+        },
+        profileMintToCrossSection(mint) {
+            return mint === "ROUNDED CHANNEL" ? 1 : 0;
+        },
+        crossSectionToProfileMint(crossSection) {
+            return Number(crossSection) >= 0.5 ? "ROUNDED CHANNEL" : "CHANNEL";
+        },
+        getConnectionDefinition() {
+            return ComponentAPI.getDefinition("Connection") || ComponentAPI.getDefinitionForMINT("CHANNEL");
+        },
+        initSnapshotFromConnection() {
+            if (!this.currentConnection) return;
+            const params = this.currentConnection.params;
+            const toNumber = (key, fallback) => {
+                try {
+                    return toFiniteNumberOrFallback(params.getValue(key), fallback);
+                } catch {
+                    return fallback;
+                }
+            };
+            this.snapshot = {
+                connectionSpacing: toNumber("connectionSpacing", 1600),
+                channelWidth: toNumber("channelWidth", 800),
+                height: toNumber("height", 250)
+            };
+            let crossSection = 0;
+            try {
+                crossSection = params.getValue("crossSection");
+            } catch {
+                crossSection = 0;
+            }
+            this.selectedProfile = this.crossSectionToProfileMint(crossSection);
+        },
+        rebuildSettingsSpec() {
+            const def = this.getConnectionDefinition();
+            if (!def) {
+                this.spec = [];
+                return;
+            }
+            if (this.selectedProfile === "ROUNDED CHANNEL") {
+                const radius = this.snapshot.channelWidth / 2;
+                this.spec = [
+                    specItemFromDef(def, "connectionSpacing", this.snapshot.connectionSpacing),
+                    {
+                        name: "channelRadius",
+                        min: def.minimum.channelWidth / 2,
+                        max: def.maximum.channelWidth / 2,
+                        value: radius,
+                        units: def.units.channelWidth,
+                        steps: (def.maximum.channelWidth / 2 - def.minimum.channelWidth / 2) / 10,
+                        step: (def.maximum.channelWidth / 2 - def.minimum.channelWidth / 2) / 10
+                    }
+                ];
+                return;
+            }
+            this.spec = [
+                specItemFromDef(def, "connectionSpacing", this.snapshot.connectionSpacing),
+                specItemFromDef(def, "channelWidth", this.snapshot.channelWidth),
+                specItemFromDef(def, "height", this.snapshot.height)
+            ];
+        },
+        syncSpecItemToSnapshot(name, value) {
+            const n = Number(value);
+            if (!Number.isFinite(n)) return;
+            if (name === "connectionSpacing") this.snapshot.connectionSpacing = n;
+            else if (name === "channelWidth") this.snapshot.channelWidth = n;
+            else if (name === "height") this.snapshot.height = n;
+            else if (name === "channelRadius") {
+                this.snapshot.channelWidth = n * 2;
+                this.snapshot.height = n * 2;
+            }
         },
         _getContextMenuRootEl() {
             const r = this.$refs.RightClickMenu;
@@ -248,11 +417,14 @@ export default {
             if (!this.currentConnection) return;
             for (const row of this.spec) {
                 if (!row || !row.name) continue;
-                const n = Number(row.value);
-                const nextValue = Number.isNaN(n) ? row.value : n;
-                this.currentConnection.updateParameter(row.name, nextValue);
-                this.$set(row, "value", nextValue);
+                this.syncSpecItemToSnapshot(row.name, row.value);
             }
+            this.currentConnection.updateParameter("connectionSpacing", this.snapshot.connectionSpacing);
+            this.currentConnection.updateParameter("channelWidth", this.snapshot.channelWidth);
+            this.currentConnection.updateParameter("height", this.snapshot.height);
+            this.currentConnection.updateParameter("crossSection", this.profileMintToCrossSection(this.selectedProfile));
+            this.refreshConnectionRender();
+            this.rebuildSettingsSpec();
             this.appliedSpecSnapshot = this.specToValueSnapshot(this.spec);
         },
         applySettingsChanges() {
@@ -264,6 +436,7 @@ export default {
             const row = this.spec.find(r => r.name === key);
             if (!row) return;
             this.$set(row, "value", nextValue);
+            this.syncSpecItemToSnapshot(key, nextValue);
         },
         computeSpec: function (mint, params) {
             // Get the corresponding the definitions object from the componentAPI, convert to a spec object and return
@@ -293,8 +466,26 @@ export default {
                 const value = Number(snap[key]);
                 this.currentConnection.updateParameter(key, value);
             }
-            this.spec = this.computeSpec("CHANNEL", this.currentConnection.params);
+            this.refreshConnectionRender();
+            this.initSnapshotFromConnection();
+            this.rebuildSettingsSpec();
             this.appliedSpecSnapshot = this.specToValueSnapshot(this.spec);
+        },
+        refreshConnectionRender() {
+            if (!this.currentConnection || !Registry.viewManager || !Registry.currentDevice) return;
+            try {
+                Registry.viewManager.updatesConnectionRender(this.currentConnection);
+            } catch (err) {
+                console.warn("Could not recompute connection render after applying settings:", err);
+            }
+            for (const featureID of this.currentConnection.featureIDs) {
+                try {
+                    const feature = Registry.currentDevice.getFeatureByID(featureID);
+                    EventBus.get().emit(EventBus.UPDATE_RENDERS, feature, true);
+                } catch (err) {
+                    console.warn("Could not refresh connection feature after apply:", featureID, err);
+                }
+            }
         },
         closeCanvasSettingsCard() {
             this.dismissCanvasSettingsPopup();
@@ -313,10 +504,15 @@ export default {
             } else {
                 this.menuPointerAnchor = null;
             }
+            this.isManualMenuPosition = false;
 
-            const spec = this.computeSpec("CHANNEL", connection.params);
-            this.spec = spec;
-            this.appliedSpecSnapshot = this.specToValueSnapshot(spec);
+            this.initSnapshotFromConnection();
+            this.rebuildSettingsSpec();
+            if (!Array.isArray(this.spec) || this.spec.length === 0) {
+                // Fallback for legacy / malformed cases: still show current connection params in canvas popup.
+                this.spec = this.computeSpec("CHANNEL", connection.params);
+            }
+            this.appliedSpecSnapshot = this.specToValueSnapshot(this.spec);
             this.$nextTick(() => {
                 this.positionMenuNearConnection();
             });
@@ -343,7 +539,17 @@ export default {
         cancelRename() {
             this.showRename = false;
             this.connectionName = this.currentConnection.name;
+        },
+        onSelectedProfileChanged(newVal, oldVal) {
+            if (newVal === oldVal) return;
+            if (oldVal === "CHANNEL" && newVal === "ROUNDED CHANNEL") {
+                this.snapshot.height = this.snapshot.channelWidth;
+            }
+            this.rebuildSettingsSpec();
         }
+    },
+    watch: {
+        selectedProfile: "onSelectedProfileChanged"
     }
 };
 </script>
@@ -399,6 +605,8 @@ export default {
     gap: 8px;
     padding: 14px 12px 4px 12px;
     min-height: 48px;
+    cursor: move;
+    user-select: none;
 }
 
 .settings-panel-heading__title {
@@ -459,6 +667,14 @@ export default {
 
 .connection-context-settings-body {
     padding-top: 8px !important;
+}
+
+.connection-context-card ::v-deep .v-select .v-label,
+.connection-context-card ::v-deep .v-select .v-select__selection {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    letter-spacing: inherit !important;
 }
 </style>
 

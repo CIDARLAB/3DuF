@@ -1,56 +1,59 @@
 <template>
-    <v-simple-table dense fixed-header :class="tableClass">
-        <template>
-            <thead>
-                <tr>
-                    <th class="param-col">Parameter</th>
-                    <th class="value-col">Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="item in displaySpec" :key="item.name">
-                    <td class="param-col">
-                        <div class="d-flex align-center flex-nowrap param-name-with-help">
-                            <code class="param-name-code">{{ item.name }}</code>
-                            <v-tooltip bottom max-width="320">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon
-                                        small
-                                        dense
-                                        class="param-help-icon ml-1"
-                                        color="grey darken-1"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    >
-                                        mdi-help-circle-outline
-                                    </v-icon>
-                                </template>
-                                <span>{{ parameterHelp(item.name) }}</span>
-                            </v-tooltip>
-                        </div>
-                    </td>
-                    <td class="value-col">
-                        <v-text-field
-                            v-model="item.value"
-                            step="any"
-                            type="number"
-                            :suffix="item.units"
-                            dense
-                            hide-details
-                            outlined
-                            @change="paramChanged(item.value, item.name)"
-                        />
-                    </td>
-                </tr>
-            </tbody>
-        </template>
-    </v-simple-table>
+    <div class="property-block-scroll-shell" :class="{ 'property-block-scroll-shell--limited': shouldLimitScroll }">
+        <v-simple-table dense fixed-header :class="tableClass">
+            <template>
+                <thead>
+                    <tr>
+                        <th class="param-col">Parameter</th>
+                        <th class="value-col">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in displaySpec" :key="item.name">
+                        <td class="param-col">
+                            <div class="d-flex align-center flex-nowrap param-name-with-help">
+                                <code class="param-name-code">{{ item.name }}</code>
+                                <v-tooltip bottom max-width="320">
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-icon
+                                            small
+                                            dense
+                                            class="param-help-icon ml-1"
+                                            color="grey darken-1"
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        >
+                                            mdi-help-circle-outline
+                                        </v-icon>
+                                    </template>
+                                    <span>{{ parameterHelp(item.name) }}</span>
+                                </v-tooltip>
+                            </div>
+                        </td>
+                        <td class="value-col">
+                            <v-text-field
+                                v-model="item.value"
+                                step="any"
+                                type="number"
+                                :suffix="item.units"
+                                dense
+                                hide-details
+                                outlined
+                                @change="paramChanged(item.value, item.name)"
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </template>
+        </v-simple-table>
+    </div>
 </template>
 <script>
 import { getParameterTooltip } from "@/constants/parameterTooltips";
 
 /** Hidden in settings UI only; placement / engine may still use defaults or other paths. */
 const HIDDEN_SETTING_KEYS = new Set(["connectionSpacing", "componentSpacing"]);
+const MAX_VISIBLE_PARAMS_WITHOUT_SCROLL = 5;
 
 export default {
     name: "PropertyBlock",
@@ -97,6 +100,9 @@ export default {
         },
         displaySpec() {
             return this.spec.filter(row => row && row.name && !HIDDEN_SETTING_KEYS.has(row.name));
+        },
+        shouldLimitScroll() {
+            return this.displaySpec.length > MAX_VISIBLE_PARAMS_WITHOUT_SCROLL;
         }
     },
     methods: {
@@ -112,6 +118,16 @@ export default {
 </script>
 
 <style scoped>
+.property-block-scroll-shell {
+    width: 100%;
+    overflow: visible;
+}
+
+.property-block-scroll-shell--limited {
+    max-height: 304px;
+    overflow-y: auto;
+}
+
 /* Match sidebar main v-btn (Vuetify default): Roboto, 14px, medium weight, MD letter-spacing */
 .property-block-settings {
     font-family: Roboto, sans-serif !important;

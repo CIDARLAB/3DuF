@@ -5,6 +5,7 @@
         class="component-context-card settings-panel-card settings-panel-card--chrome"
         :style="cardPositionStyle"
         scrollable
+        @mousedown="startMenuDrag"
     >
         <div v-show="showRename" class="component-context-rename px-4 pt-3 pb-0">
             <v-row align="center" dense no-gutters>
@@ -37,7 +38,7 @@
         >
             <v-icon size="16" color="white">mdi-close</v-icon>
         </v-btn>
-        <div class="settings-panel-heading" @mousedown="startMenuDrag">
+        <div class="settings-panel-heading">
             <span class="settings-panel-heading__title">{{ mint }}</span>
             <v-spacer />
             <v-btn
@@ -282,7 +283,11 @@ export default {
             const target = event.target;
             if (!target || typeof target.closest !== "function") return;
             // Keep toolbar buttons and inputs clickable without starting drag.
-            if (target.closest(".v-btn, button, input, textarea, select, .v-input, .v-slider")) {
+            if (
+                target.closest(
+                    ".v-btn, button, input, textarea, select, .v-input, .v-slider, .property-block-scroll-shell--limited"
+                )
+            ) {
                 return;
             }
             this.isDraggingMenu = true;
@@ -291,6 +296,7 @@ export default {
             this.dragStartMenuPosition = { left: this.marginLeft, top: this.marginTop };
             window.addEventListener("mousemove", this.onMenuDragMove);
             window.addEventListener("mouseup", this.stopMenuDrag);
+            event.stopPropagation();
             event.preventDefault();
         },
         onMenuDragMove(event) {
@@ -308,6 +314,7 @@ export default {
             const maxTop = Math.max(pad, window.innerHeight - height - pad);
             this.marginLeft = Math.max(pad, Math.min(rawLeft, maxLeft));
             this.marginTop = Math.max(pad, Math.min(rawTop, maxTop));
+            event.preventDefault();
         },
         stopMenuDrag() {
             if (!this.isDraggingMenu) return;
