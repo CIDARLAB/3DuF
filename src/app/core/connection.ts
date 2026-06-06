@@ -154,10 +154,13 @@ export default class Connection {
 
         if (key != "segments") {
             for (const featureidtochange of this._featureIDs) {
-
-                // Get the feature id and modify it
+                // Get the feature and update only if that parameter exists on the feature.
+                // Some legacy files can contain connection features with older template keys.
                 const feature = ConnectionUtils.getFeatureFromID(featureidtochange);
-                feature.updateParameter(key, value);
+                const params = feature.getParams();
+                if (Object.prototype.hasOwnProperty.call(params, key)) {
+                    feature.updateParameter(key, value);
+                }
             }
         }
 

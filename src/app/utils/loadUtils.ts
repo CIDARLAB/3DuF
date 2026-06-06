@@ -340,14 +340,16 @@ export default class LoadUtils {
         const ret: Array<Feature> = [];
         for (const i in json.connections) {
             if (jsonlayer.id == json.connections[i].layer) {
-                const mint = json.connections[i].entity;
-                let typestring: string | null = null;
-                if (mint && mint != "CHANNEL") typestring = ComponentAPI.getTypeForMINT(json.connections[i].entity);
-                if (typestring === null) typestring = "Connection";
+                const mint = String(json.connections[i].entity || "CHANNEL");
+                const inferredCrossSection = mint.toUpperCase().includes("ROUND") ? 1 : 0;
+                const typestring = "Connection";
 
                 let feat: Feature; 
                 let rawParams = json.connections[i].params;
                 if (rawParams.start) {
+                    if (!Object.prototype.hasOwnProperty.call(rawParams, "crossSection")) {
+                        rawParams.crossSection = inferredCrossSection;
+                    }
                     feat = Device.makeFeature(typestring, rawParams);
                     feat.referenceID = json.connections[i].id;
                     ret.push(feat);
@@ -365,7 +367,10 @@ export default class LoadUtils {
                             segments: segments,
                             connectionSpacing: rawParams.connectionSpacing,
                             channelWidth: rawParams.channelWidth,
-                            height: ComponentAPI.getDefaultsForType(typestring).height
+                            height: ComponentAPI.getDefaultsForType(typestring).height,
+                            crossSection: Object.prototype.hasOwnProperty.call(rawParams, "crossSection")
+                                ? rawParams.crossSection
+                                : inferredCrossSection
                         };
                         feat = Device.makeFeature(typestring, newParams);
                         feat.referenceID = json.connections[i].id;
@@ -441,6 +446,8 @@ export default class LoadUtils {
         const name = json.name;
         const id = json.id;
         const entity = json.entity;
+        const entityLabel = String(entity || "CHANNEL");
+        const inferredCrossSection = entityLabel.toUpperCase().includes("ROUND") ? 1 : 0;
         let params = json.params;
         const layer = device.getLayer(json.layer);
         if (layer === null) {
@@ -499,6 +506,9 @@ export default class LoadUtils {
             if (!Object.prototype.hasOwnProperty.call(params, "height")) {
                 params.height = ComponentAPI.getDefaultsForType("Connection").height;
             }
+            if (!Object.prototype.hasOwnProperty.call(params, "crossSection")) {
+                params.crossSection = inferredCrossSection;
+            }
         } else {
             if (json.paths[0]) {
                 const wayPoints = json.paths[0].wayPoints;
@@ -515,7 +525,8 @@ export default class LoadUtils {
                     segments: segments,
                     connectionSpacing: rawParams.connectionSpacing,
                     channelWidth: rawParams.channelWidth,
-                    height: ComponentAPI.getDefaultsForType(typestring).height
+                    height: ComponentAPI.getDefaultsForType(typestring).height,
+                    crossSection: inferredCrossSection
                 };
             } else {
                 console.log("Connection missing path description");

@@ -127,21 +127,33 @@ export default class Connection extends Template {
         roundedProfile: boolean
     ): void  {
         const vec = endpoint.subtract(startpoint);
-        const rectOpts: {
-            point: paper.Point;
-            size: [number, number];
-            radius?: number;
-        } = {
-            point: startpoint,
-            size: [vec.length + channelWidth, channelWidth]
-        };
-        if (roundedProfile) {
-            rectOpts.radius = channelWidth / 2;
-        }
-        const rec = new paper.Path.Rectangle(rectOpts);
-        rec.translate(([-channelWidth / 2, -channelWidth / 2] as unknown) as paper.Point);
-        rec.rotate(vec.angle, startpoint);
+        const radius = channelWidth / 2;
+        const length = vec.length;
 
+        // Rounded profile is rendered as a center rectangle that ends exactly on
+        // the connection endpoints, plus circular end caps with radius=channelRadius.
+        if (roundedProfile) {
+            if (length > 0) {
+                const rec = new paper.Path.Rectangle({
+                    point: startpoint,
+                    size: [length, channelWidth]
+                });
+                rec.translate(([0, -radius] as unknown) as paper.Point);
+                rec.rotate(vec.angle, startpoint);
+                compoundpath.addChild(rec);
+            }
+            compoundpath.addChild(new paper.Path.Circle(startpoint, radius));
+            compoundpath.addChild(new paper.Path.Circle(endpoint, radius));
+            return;
+        }
+
+        const rec = new paper.Path.Rectangle({
+            point: startpoint,
+            size: [length, channelWidth]
+        });
+        // Keep square profile centered around the centerline with no axial extension.
+        rec.translate(([0, -radius] as unknown) as paper.Point);
+        rec.rotate(vec.angle, startpoint);
         compoundpath.addChild(rec);
     }
 

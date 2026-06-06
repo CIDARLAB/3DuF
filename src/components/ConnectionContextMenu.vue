@@ -43,12 +43,12 @@
             <span class="settings-panel-heading__title">{{ mint }}</span>
             <v-spacer />
             <v-btn
+                v-if="hasPendingSpecChanges"
                 small
                 depressed
                 dark
                 color="primary"
                 class="settings-panel-apply-btn"
-                :disabled="!hasPendingSpecChanges"
                 @click="applySettingsChanges"
             >
                 Apply
@@ -167,7 +167,7 @@ export default {
             marginTop: 100,
             currentConnection: new Connection("", new Params({}, new Map(), new Map()), "", "", new Layer({}, Registry.currentDevice)),
             menuPointerAnchor: null,
-            appliedSpecSnapshot: {},
+            appliedSettingsSnapshot: null,
             connectionProfiles: [],
             selectedProfile: "CHANNEL",
             snapshot: {
@@ -194,8 +194,8 @@ export default {
             };
         },
         hasPendingSpecChanges() {
-            const pending = this.specToValueSnapshot(this.spec);
-            const applied = this.appliedSpecSnapshot || {};
+            const pending = this.buildAppliedSettingsSnapshot();
+            const applied = this.appliedSettingsSnapshot || null;
             return JSON.stringify(pending) !== JSON.stringify(applied);
         }
     },
@@ -290,7 +290,7 @@ export default {
             this.stopMenuDrag();
             this.activeMenu = false;
             this.showRename = false;
-            this.appliedSpecSnapshot = {};
+            this.appliedSettingsSnapshot = null;
             this.menuPointerAnchor = null;
             this.isManualMenuPosition = false;
         },
@@ -455,6 +455,12 @@ export default {
             if (!Array.isArray(rows)) return [];
             return rows.map(row => ({ ...row }));
         },
+        buildAppliedSettingsSnapshot() {
+            return {
+                profile: normalizeProfileLabel(this.selectedProfile),
+                values: this.specToValueSnapshot(this.spec)
+            };
+        },
         applyConnectionChanges() {
             if (!this.currentConnection) return;
             for (const row of this.spec) {
@@ -467,7 +473,7 @@ export default {
             this.currentConnection.updateParameter("crossSection", this.profileMintToCrossSection(this.selectedProfile));
             this.refreshConnectionRender();
             this.rebuildSettingsSpec();
-            this.appliedSpecSnapshot = this.specToValueSnapshot(this.spec);
+            this.appliedSettingsSnapshot = this.buildAppliedSettingsSnapshot();
         },
         applySettingsChanges() {
             this.applyConnectionChanges();
@@ -511,7 +517,7 @@ export default {
             this.refreshConnectionRender();
             this.initSnapshotFromConnection();
             this.rebuildSettingsSpec();
-            this.appliedSpecSnapshot = this.specToValueSnapshot(this.spec);
+            this.appliedSettingsSnapshot = this.buildAppliedSettingsSnapshot();
         },
         refreshConnectionRender() {
             if (!this.currentConnection || !Registry.viewManager || !Registry.currentDevice) return;
@@ -555,7 +561,7 @@ export default {
                 // Fallback for legacy / malformed cases: still show current connection params in canvas popup.
                 this.spec = this.computeSpec("CHANNEL", connection.params);
             }
-            this.appliedSpecSnapshot = this.specToValueSnapshot(this.spec);
+            this.appliedSettingsSnapshot = this.buildAppliedSettingsSnapshot();
             this.$nextTick(() => {
                 this.positionMenuNearConnection();
             });
