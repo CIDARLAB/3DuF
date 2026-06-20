@@ -1,10 +1,10 @@
 <template>
     <Dialog title="Import">
         <template #content>
-            <h4>Drag and Drop the DXF File:</h4>
+            <h4>Upload a local JSON or DXF file:</h4>
             <div class="mdl-dialog__content">
                 <v-card
-                    id="drop_box"
+                    id="drop_box_import"
                     class="mx-auto d-flex align-center justify-center text-body-2"
                     tile
                     outlined
@@ -14,16 +14,24 @@
                     @dragover.prevent
                     @drop.prevent="onDrop"
                 >
-                    Drop a .dxf file here
+                    Drop a .json or .dxf file here
                 </v-card>
-                <input id="dxf_input" ref="file" type="file" class="upload" accept=".dxf" @change="onFileChange" />
-                <div v-if="selectedFileName" class="mt-2 text-caption">
-                    Selected: {{ selectedFileName }}
+                <input
+                    id="import_input"
+                    ref="file"
+                    type="file"
+                    class="hidden-import-input"
+                    accept=".json,.dxf,application/json"
+                    @change="onFileChange"
+                />
+                <div class="import-file-picker mt-3">
+                    <v-btn small class="mr-2" @click="selectFile"> Choose File </v-btn>
+                    <span class="text-caption">{{ selectedFileName || "No file chosen" }}</span>
                 </div>
             </div>
         </template>
         <template #actions="{ callbacks }">
-            <v-btn class="white--text" color="green dark" @click="callbacks.close(importDXF)"> Import </v-btn>
+            <v-btn class="white--text" color="green dark" @click="importSelectedFile(callbacks)"> Confirm </v-btn>
             <v-btn class="white--text" color="red dark" @click="callbacks.close()"> Cancel </v-btn>
         </template>
     </Dialog>
@@ -40,13 +48,15 @@ export default {
     },
     data() {
         return {
-            dialog: false,
             selectedFile: null,
             selectedFileName: "",
             parsedDXF: null
         };
     },
     methods: {
+        selectFile() {
+            if (this.$refs.file) this.$refs.file.click();
+        },
         onDrop(event) {
             const files = event?.dataTransfer?.files;
             if (!files || files.length === 0) return;
@@ -57,10 +67,69 @@ export default {
             if (!file) return;
             this.consumeFile(file);
         },
+        getFileExtension(fileName) {
+            const segments = String(fileName || "").toLowerCase().split(".");
+            return segments.length > 1 ? segments.pop() : "";
+        },
         consumeFile(file) {
+            const fileName = String(file?.name || "");
+            const ext = this.getFileExtension(fileName);
+            if (ext !== "json" && ext !== "dxf") {
+                this.selectedFile = null;
+                this.selectedFileName = "";
+                if (this.$refs.file) this.$refs.file.value = "";
+                alert("Only .json and .dxf files are supported.");
+                return;
+            }
             this.selectedFile = file;
-            this.selectedFileName = file.name || "";
+            this.selectedFileName = fileName;
             this.parsedDXF = null;
+        },
+        readSelectedFileText() {
+            if (!this.selectedFile) {
+                throw new Error("No file selected.");
+            }
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(String(reader.result || ""));
+                reader.onerror = () => reject(new Error("Failed to read file."));
+                reader.readAsText(this.selectedFile);
+            });
+        },
+        parseJsonFor3DuF(rawInput) {
+            if (rawInput != null && typeof rawInput === "object") return rawInput;
+            if (typeof rawInput !== "string") {
+                throw new Error("File content is not a JSON string.");
+            }
+
+            const text = rawInput.trim();
+            if (!text) throw new Error("JSON file is empty.");
+            if (text.toLowerCase().startsWith("<!doctype html") || text.toLowerCase().startsWith("<html")) {
+                throw new Error("Received HTML instead of JSON.");
+            }
+            if (text === "[object Object]") {
+                throw new Error("JSON content is corrupted as [object Object].");
+            }
+
+            let parsed;
+            try {
+                parsed = JSON.parse(text);
+            } catch (_) {
+                throw new Error("Invalid JSON format.");
+            }
+
+            if (typeof parsed === "string") {
+                try {
+                    parsed = JSON.parse(parsed);
+                } catch (_) {
+                    throw new Error("JSON payload is double-encoded but invalid.");
+                }
+            }
+
+            if (!parsed || typeof parsed !== "object") {
+                throw new Error("Parsed JSON must be an object.");
+            }
+            return parsed;
         },
         parseSelectedDXF() {
             if (!this.selectedFile) {
@@ -82,45 +151,77 @@ export default {
                 reader.readAsText(this.selectedFile);
             });
         },
-        async importDXF() {
-            try {
-                if (Registry.viewManager == null) {
-                    throw new Error("3DuF view manager is not ready.");
-                }
-                if (Registry.currentDevice == null) {
-                    throw new Error("No active device loaded.");
-                }
+        importSelectedFile(callbacks) {
+            const ext = this.getFileExtension(this.selectedFileName);
+            if (!this.selectedFile || !ext) {
+                alert("Please choose a .json or .dxf file first.");
+                return;
+            }
 
-                this.parsedDXF = await this.parseSelectedDXF();
+            let importTask;
+            if (ext === "dxf") {
+                importTask = this.importDXF();
+            } else if (ext === "json") {
+                importTask = this.importJSON();
+            } else {
+                importTask = Promise.reject(new Error("Unsupported file type."));
+            }
 
-                // Step 1: parse DXF entities and inject them as renderable edge geometry.
+            importTask
+                .then(() => {
+                    if (callbacks && callbacks.close) callbacks.close();
+                })
+                .catch((err) => {
+                    const message = err && err.message ? err.message : String(err);
+                    alert("Import failed: " + message);
+                });
+        },
+        importDXF() {
+            if (Registry.viewManager == null) {
+                throw new Error("3DuF view manager is not ready.");
+            }
+            if (Registry.currentDevice == null) {
+                throw new Error("No active device loaded.");
+            }
+
+            return this.parseSelectedDXF().then((parsedDXF) => {
+                this.parsedDXF = parsedDXF;
                 Registry.viewManager.deleteBorder();
                 Registry.viewManager.importBorder(this.parsedDXF);
-
-                // Step 2: normalize through 3DuF JSON interchange so the loaded state is
-                // exactly what Neptune/3DuF consume downstream.
                 const normalizedJson = Registry.viewManager.generateExportJSON();
                 Registry.viewManager.loadDeviceFromJSON(normalizedJson);
                 Registry.viewManager.updateGrid();
                 Registry.viewManager.refresh();
-            } catch (err) {
-                const message = err && err.message ? err.message : String(err);
-                alert("DXF import failed: " + message);
-            }
+            });
         },
-        onSave() {
-            console.log("Saved data for Edit Device");
+        importJSON() {
+            if (Registry.viewManager == null || !Registry.viewManager.loadDeviceFromJSON) {
+                throw new Error("3DuF view manager is not ready.");
+            }
+
+            return this.readSelectedFileText().then((fileText) => {
+                const parsedJson = this.parseJsonFor3DuF(fileText);
+                Registry.viewManager.loadDeviceFromJSON(parsedJson);
+                Registry.viewManager.updateGrid();
+                Registry.viewManager.refresh();
+            });
         }
     }
 };
 </script>
 <style lang="scss" scoped>
-#drop_box {
+#drop_box_import {
     position: relative;
     top: 10px;
 }
-#dxf_input {
-    position: relative;
-    top: 30px;
+#import_input {
+    display: none;
+}
+.import-file-picker {
+    display: flex;
+    align-items: center;
+}
+.hidden-import-input {
+    display: none;
 }
 </style>
