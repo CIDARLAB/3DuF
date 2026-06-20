@@ -11,6 +11,7 @@
                 <EditBorderDialog />
                 <InsertTextDialog />
                 <ImportDXFDialog />
+                <ImportJSONDialog />
                 <v-divider />
                 <LayerToolbar />
                 <ComponentToolbar />
@@ -39,6 +40,7 @@ import IntroHelpDialog from "@/components/IntroHelpDialog.vue";
 import EditDeviceDialog from "@/components/EditDeviceDialog.vue";
 import EditBorderDialog from "@/components/EditBorderDialog.vue";
 import ImportDXFDialog from "@/components/ImportDXFDialog.vue";
+import ImportJSONDialog from "@/components/ImportJSONDialog.vue";
 import InsertTextDialog from "@/components/InsertTextDialog.vue";
 import LayerToolbar from "@/components/LayerToolbar.vue";
 import ComponentToolbar from "@/components/ComponentToolBar.vue";
@@ -50,6 +52,7 @@ export default {
         EditDeviceDialog,
         EditBorderDialog,
         ImportDXFDialog,
+        ImportJSONDialog,
         InsertTextDialog,
         LayerToolbar,
         ComponentToolbar,

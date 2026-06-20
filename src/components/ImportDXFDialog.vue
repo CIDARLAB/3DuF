@@ -1,5 +1,5 @@
 <template>
-    <Dialog title="Import" color="primary" text-color="white--text">
+    <Dialog title="Import">
         <template #content>
             <h4>Drag and Drop the DXF File:</h4>
             <div class="mdl-dialog__content">
