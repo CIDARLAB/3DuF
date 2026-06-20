@@ -24,7 +24,7 @@
                     accept=".json,.dxf,application/json"
                     @change="onFileChange"
                 />
-                <div class="import-file-picker mt-3">
+                <div class="import-file-picker">
                     <v-btn small class="mr-2" @click="selectFile"> Choose File </v-btn>
                     <span class="text-caption">{{ selectedFileName || "No file chosen" }}</span>
                 </div>
@@ -220,6 +220,7 @@ export default {
 .import-file-picker {
     display: flex;
     align-items: center;
+    margin-top: 24px;
 }
 .hidden-import-input {
     display: none;
