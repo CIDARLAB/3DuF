@@ -1,0 +1,4 @@
+[submodule "3DuF-Paper-Designs"]
+	path = 3DuF-Paper-Designs
+	url = https://github.com/CIDARLAB/3DuF-Paper-Designs.git
+	branch = 3DuF-literature-referral

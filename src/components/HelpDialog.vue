@@ -102,7 +102,9 @@ export default {
                     changes: [
                         "Expanded DXF import coverage and updated 2D DXF object/solid rendering.",
                         "Improved feature rendering and view-management flow for clearer on-canvas results.",
-                        "Updated additive manufacturing export and manufacturing panel behavior for newer workflows."
+                        "Updated additive manufacturing export and manufacturing panel behavior for newer workflows.",
+                        "Introduced versioned tutorial content with clearer typography and current-version labeling.",
+                        "Added version-specific guidance updates (including V1.2 GUI/workflow notes and V1.3 literature references)."
                     ]
                 }
             ]
