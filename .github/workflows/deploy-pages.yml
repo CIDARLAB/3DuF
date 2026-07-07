@@ -1,11 +1,12 @@
 name: Deploy to GitHub Pages (3duf.org)
 
 # Builds the Vue app and publishes dist/ to the gh-pages branch,
-# which serves the live site at 3duf.org. Triggered when the
-# production branch updates (auto-synced from Neptune_Render).
+# which serves the live site at 3duf.org. Triggers on Neptune_Render
+# pushes directly (a bot-synced push to production would not trigger
+# Actions). production stays a synced mirror via sync-production.yml.
 on:
   push:
-    branches: [production]
+    branches: [Neptune_Render]
   workflow_dispatch:
 
 permissions:
