@@ -1,0 +1,27 @@
+name: Sync production with Neptune_Render
+
+# Keeps the production branch in lockstep with Neptune_Render (the dev
+# branch). Push to Neptune_Render and production follows automatically,
+# which triggers the Pages deploy to 3duf.org.
+on:
+  push:
+    branches:
+      - Neptune_Render
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-production:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Neptune_Render
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync production branch to Neptune_Render
+        run: |
+          git checkout -B production origin/Neptune_Render
+          git push origin production --force-with-lease

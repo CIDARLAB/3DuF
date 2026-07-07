@@ -1,0 +1,42 @@
+name: Deploy to GitHub Pages (3duf.org)
+
+# Builds the Vue app and publishes dist/ to the gh-pages branch,
+# which serves the live site at 3duf.org. Triggered when the
+# production branch updates (auto-synced from Neptune_Render).
+on:
+  push:
+    branches: [production]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+      - name: Build
+        run: NODE_OPTIONS=--openssl-legacy-provider npm run vue-build
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          cname: 3duf.org
