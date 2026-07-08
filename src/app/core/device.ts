@@ -619,12 +619,17 @@ export default class Device {
      * @memberof Device
      */
     toInterchangeV1(errorList: Array<SerializationError>): DeviceInterchangeV1 {
+        const params: { [key: string]: any } = {
+            width: this.getXSpan(),
+            length: this.getYSpan()
+        };
+        const dxfImport = this.getOptionalParam("dxfImport");
+        if (dxfImport) {
+            params.dxfImport = dxfImport;
+        }
         let output: DeviceInterchangeV1 = {
             name: this.__name,
-            params: {
-                width: this.getXSpan(),
-                length: this.getYSpan()
-            },
+            params,
             //TODO: Use this to dynamically create enough layers to scroll through
             layers: this.__layersToInterchangeV1(errorList),
             components: this.__componentsToInterchangeV1(errorList),
@@ -852,6 +857,16 @@ export default class Device {
      */
     getYSpan(): number {
         return this.__params.getValue("y-span");
+    }
+
+    /**
+     * Returns an optional device parameter when present (e.g. dxfImport metadata).
+     */
+    getOptionalParam(key: string): any {
+        if (Object.prototype.hasOwnProperty.call(this.__params.parameters, key)) {
+            return this.__params.getValue(key);
+        }
+        return null;
     }
 
     /**
@@ -1108,8 +1123,16 @@ export default class Device {
         let params: Params = new Params(new Map(), new Map(), new Map());
 
         if (typeString === "EDGE") {
-            //TODO: Put in params initialization
-            return new EdgeFeature(fabtype, params, id);
+            const edge = new EdgeFeature(null, params, id);
+            if (dxfdata) {
+                for (let i = 0; i < dxfdata.length; i++) {
+                    const entry = dxfdata[i];
+                    if (entry) {
+                        edge.addDXFObject(DXFObject.fromJSON(entry));
+                    }
+                }
+            }
+            return edge;
         }
         let featureType = ComponentAPI.getDefinition(typeString);
         if (paramvalues && featureType) {

@@ -7,7 +7,17 @@
                         <v-icon>mdi-code-json</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title class="wrap-title">3DuF File (.json)</v-list-item-title>
+                        <v-list-item-title class="wrap-title">3DuF design (.json)</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item @click="downloadDXF">
+                    <v-list-item-icon>
+                        <v-icon>mdi-file-cad</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title class="wrap-title">CAD sketch (.dxf)</v-list-item-title>
+                        <v-list-item-subtitle class="text-wrap">2D geometry for Fusion 360 / CAM (mm)</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -16,35 +26,7 @@
                         <v-icon>mdi-vector-line</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title class="wrap-title">Vector Art (.svg)</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item @click="downloadCNC">
-                    <v-list-item-icon>
-                        <v-icon>mdi-file</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title class="wrap-title">CNC (.svg)</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item @click="downloadLASER">
-                    <v-list-item-icon>
-                        <v-icon>mdi-laser-pointer</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title class="wrap-title">Laser Cutting (.svg)</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item @click="downloadSTL">
-                    <v-list-item-icon>
-                        <v-icon>mdi-cube-scan</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title class="wrap-title">3D mesh (.stl)</v-list-item-title>
-                        <v-list-item-subtitle class="text-wrap">Connection routes as extruded solids (μm→mm)</v-list-item-subtitle>
+                        <v-list-item-title class="wrap-title">Vector art (.svg)</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -54,10 +36,9 @@
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title class="wrap-title">CNC / router (.gcode)</v-list-item-title>
-                        <v-list-item-subtitle class="text-wrap">Connection centerline toolpath (Grbl-style)</v-list-item-subtitle>
+                        <v-list-item-subtitle class="text-wrap">Fusion-style contour toolpath</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
-
             </v-list-item-group>
         </v-list>
     </div>
@@ -99,10 +80,13 @@
 import Registry from "@/app/core/registry";
 import { saveAs } from "file-saver";
 import ManufacturingLayer from "@/app/manufacturing/manufacturingLayer";
-import JSZip from "jszip";
-import CNCGenerator from "@/app/manufacturing/cncGenerator";
-import LaserCuttingGenerator from "@/app/manufacturing/laserCuttingGenerator";
-import { generateConnectionSTLASCII, generateConnectionProfileGCode } from "@/app/manufacturing/additiveManufacturingExport";
+import { generateConnectionProfileGCode } from "@/app/manufacturing/additiveManufacturingExport";
+import { generateDeviceDxf } from "@/app/manufacturing/dxfExport";
+import {
+    generateDxfFusionGCode,
+    generateDxfSVG,
+    getDxfModelForDevice
+} from "@/app/manufacturing/dxfManufacturingExport";
 
 export default {
     name: "ManufacturingPanel",
@@ -121,94 +105,43 @@ export default {
         downloadJSON() {
             this.viewManagerRef.downloadJSON();
         },
+        downloadDXF() {
+            const text = generateDeviceDxf(Registry.currentDevice);
+            const blob = new Blob([text], { type: "application/dxf;charset=utf-8" });
+            saveAs(blob, Registry.currentDevice.name + ".dxf");
+        },
         downloadSVG() {
-            let svgs = this.viewManagerRef.layersToSVGStrings();
-            for (let i = 0; i < svgs.length; i++) {
-                svgs[i] =
-                    ManufacturingLayer.generateSVGTextPrepend(Registry.currentDevice.getXSpan(), Registry.currentDevice.getYSpan()) +
-                    svgs[i] +
-                    ManufacturingLayer.generateSVGTextAppend();
+            const dxfSvg = generateDxfSVG(Registry.currentDevice);
+            if (dxfSvg) {
+                const blob = new Blob([dxfSvg], { type: "image/svg+xml;charset=utf-8" });
+                saveAs(blob, Registry.currentDevice.name + ".svg");
+                return;
             }
-            //let svg = paper.project.exportSVG({asString: true});
-            let blobs = [];
-            let success = 0;
-            let zipper = new JSZip();
+
+            const svgs = this.viewManagerRef.layersToSVGStrings();
+            const width = Registry.currentDevice.getXSpan();
+            const height = Registry.currentDevice.getYSpan();
+            const prepend = ManufacturingLayer.generateSVGTextPrepend(width, height);
+            const append = ManufacturingLayer.generateSVGTextAppend();
+
             for (let i = 0; i < svgs.length; i++) {
-                if (svgs[i].slice(0, 4) === "<svg") {
-                    zipper.file("Device_layer_" + i + ".svg", svgs[i]);
-                    success++;
+                if (svgs[i] && svgs[i].slice(0, 4) === "<svg") {
+                    const svgContent = prepend + svgs[i] + append;
+                    const blob = new Blob([svgContent], { type: "image/svg+xml;charset=utf-8" });
+                    saveAs(blob, Registry.currentDevice.name + ".svg");
+                    return;
                 }
             }
 
-            if (success === 0) throw new Error("Unable to generate any valid SVGs. Do all layers have at least one non-channel item in them?");
-            else {
-                zipper
-                    .generateAsync({
-                        type: "blob"
-                    })
-                    .then(function(content) {
-                        saveAs(content, Registry.currentDevice.name + ".zip");
-                    });
-            }
-        },
-        downloadCNC() {
-            const cncGenerator = new CNCGenerator(Registry.currentDevice, Registry.viewManager);
-            cncGenerator.setDevice(Registry.currentDevice);
-            cncGenerator.generatePortLayers();
-            cncGenerator.generateDepthLayers();
-            cncGenerator.generateEdgeLayers();
-
-            const zipper = new JSZip();
-
-            let svgOutputs = cncGenerator.getSVGOutputs();
-            for (const key of svgOutputs.keys()) {
-                zipper.file(key + ".svg", svgOutputs.get(key));
-            }
-
-            zipper
-                .generateAsync({
-                    type: "blob"
-                })
-                .then(function(content) {
-                    saveAs(content, Registry.currentDevice.name + ".zip");
-
-                    cncGenerator.flushData();
-                });
-        },
-        downloadSTL() {
-            const text = generateConnectionSTLASCII(Registry.currentDevice);
-            const blob = new Blob([text], { type: "application/sla;charset=utf-8" });
-            saveAs(blob, Registry.currentDevice.name + "_connections.stl");
+            throw new Error("Unable to generate SVG. Does the design have at least one visible feature?");
         },
         downloadGCode() {
-            const text = generateConnectionProfileGCode(Registry.currentDevice);
+            const hasDxf = getDxfModelForDevice(Registry.currentDevice) !== null;
+            const text = hasDxf
+                ? generateDxfFusionGCode(Registry.currentDevice)
+                : generateConnectionProfileGCode(Registry.currentDevice);
             const blob = new Blob([text], { type: "text/x-gcode;charset=utf-8" });
-            saveAs(blob, Registry.currentDevice.name + "_connections.gcode");
-        },
-        downloadLASER() {
-            const laserCuttingGenerator = new LaserCuttingGenerator(Registry.currentDevice, Registry.viewManager);
-            laserCuttingGenerator.setDevice(Registry.currentDevice);
-            laserCuttingGenerator.generatePortLayers();
-            laserCuttingGenerator.generateDepthLayers();
-            laserCuttingGenerator.generateEdgeLayers();
-            laserCuttingGenerator.generateInverseControlLayers();
-
-            const zipper = new JSZip();
-
-            let svgOutputs = laserCuttingGenerator.getSVGOutputs();
-            for (const key of svgOutputs.keys()) {
-                zipper.file(key + ".svg", svgOutputs.get(key));
-            }
-
-            zipper
-                .generateAsync({
-                    type: "blob"
-                })
-                .then(function(content) {
-                    saveAs(content, Registry.currentDevice.name + ".zip");
-
-                    laserCuttingGenerator.flushData();
-                });
+            saveAs(blob, Registry.currentDevice.name + ".gcode");
         }
     }
 };

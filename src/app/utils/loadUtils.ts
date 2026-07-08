@@ -118,23 +118,18 @@ export default class LoadUtils {
     static loadDeviceFromInterchangeV1_2(json: InterchangeV1_2): Device {
         let newDevice: Device;
         if (Object.prototype.hasOwnProperty.call(json, "params")) {
+            const deviceValues: { [key: string]: any } = {};
             if (Object.prototype.hasOwnProperty.call(json.params, "width") && Object.prototype.hasOwnProperty.call(json.params, "length")) {
-                newDevice = new Device(
-                    {
-                        "x-span": json.params.width,
-                        "y-span": json.params.length
-                    },
-                    json.name
-                );
+                deviceValues["x-span"] = json.params.width;
+                deviceValues["y-span"] = json.params.length;
             } else {
-                newDevice = new Device(
-                    {
-                        "x-span": 135000,
-                        "y-span": 85000
-                    },
-                    json.name
-                );
+                deviceValues["x-span"] = 135000;
+                deviceValues["y-span"] = 85000;
             }
+            if (Object.prototype.hasOwnProperty.call(json.params, "dxfImport")) {
+                deviceValues.dxfImport = json.params.dxfImport;
+            }
+            newDevice = new Device(deviceValues, json.name);
         } else {
             console.warn("Could not find device params, using some default values for device size");
             newDevice = new Device(

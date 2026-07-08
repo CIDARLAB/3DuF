@@ -2,6 +2,80 @@ import * as THREE from "three";
 import paper from "paper";
 
 import edgeFeature from "@/app/core/edgeFeature";
+import Feature from "@/app/core/feature";
+
+function drawStraightChannelSegment(
+    compoundpath: paper.CompoundPath,
+    startpoint: paper.Point,
+    endpoint: paper.Point,
+    channelWidth: number,
+    roundedProfile: boolean
+): void {
+    const vec = endpoint.subtract(startpoint);
+    const radius = channelWidth / 2;
+    const length = vec.length;
+
+    if (roundedProfile) {
+        if (length > 0) {
+            const rec = new paper.Path.Rectangle({
+                point: startpoint,
+                size: [length, channelWidth]
+            });
+            rec.translate(([0, -radius] as unknown) as paper.Point);
+            rec.rotate(vec.angle, startpoint);
+            compoundpath.addChild(rec);
+        }
+        compoundpath.addChild(new paper.Path.Circle(startpoint, radius));
+        compoundpath.addChild(new paper.Path.Circle(endpoint, radius));
+        return;
+    }
+
+    const rec = new paper.Path.Rectangle({
+        point: startpoint,
+        size: [length, channelWidth]
+    });
+    rec.translate(([0, -radius] as unknown) as paper.Point);
+    rec.rotate(vec.angle, startpoint);
+    compoundpath.addChild(rec);
+}
+
+/**
+ * Renders imported DXF channel centerlines as solid FLOW-layer channels (same profile as Connection).
+ */
+export function renderDxfSketchChannel(
+    feature: Feature,
+    channelWidth: number,
+    roundedProfile: boolean,
+    fillColor: string
+): paper.CompoundPath {
+    const compoundpath = new paper.CompoundPath("");
+
+    for (const dxfobject of feature.getDXFObjects()) {
+        if (dxfobject.getType() === "LINE") {
+            const data = dxfobject.getData();
+            if (!data.vertices || data.vertices.length < 2) continue;
+            const startpoint = new paper.Point(data.vertices[0].x * 1000, data.vertices[0].y * 1000);
+            const endpoint = new paper.Point(data.vertices[1].x * 1000, data.vertices[1].y * 1000);
+            drawStraightChannelSegment(compoundpath, startpoint, endpoint, channelWidth, roundedProfile);
+        } else if (dxfobject.getType() === "CIRCLE") {
+            const data = dxfobject.getData();
+            if (!data.center || data.radius == null) continue;
+            const center = new paper.Point(data.center.x * 1000, data.center.y * 1000);
+            compoundpath.addChild(new paper.Path.Circle(center, data.radius * 1000));
+        }
+    }
+
+    compoundpath.scale(1, -1);
+    const topleft = compoundpath.bounds.topLeft;
+    compoundpath.translate(new paper.Point(-topleft.x, -topleft.y));
+    compoundpath.fillColor = new paper.Color(fillColor);
+    compoundpath.strokeColor = null;
+    compoundpath.opacity = 1;
+
+    const modpath = compoundpath as any;
+    modpath.featureID = feature.ID;
+    return compoundpath;
+}
 
 export function renderFeatureObjects(feature: any) {
     throw new Error("Implement the renderer");
@@ -18,7 +92,7 @@ export function renderFeatureObjects(feature: any) {
  * DXF objects contained in the feature.
  * @param feature
  */
-export function renderEdgeFeature(feature: edgeFeature) {
+export function renderEdgeFeature(feature: Feature | edgeFeature) {
     const path = new paper.CompoundPath("");
 
     // console.log('rendering the outline dxf objects....', feature.getDXFObjects());

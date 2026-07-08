@@ -228,7 +228,7 @@ function mergeGeometriesNonIndexed(geometries: THREE.BufferGeometry[]): THREE.Bu
     return merged;
 }
 
-/** Linear centerline moves along each segment (Grbl-friendly). Matches spine routing; use STL for full envelope. */
+/** Linear centerline moves along each segment (Grbl-friendly). Matches spine routing. */
 export function generateConnectionProfileGCode(device: Device, feedMmMin = 600, safeZMm = 1): string {
     const feed = isFiniteNumber(feedMmMin) && feedMmMin > 0 ? feedMmMin : 600;
     const safeZ = isFiniteNumber(safeZMm) && safeZMm >= 0 ? safeZMm : 1;

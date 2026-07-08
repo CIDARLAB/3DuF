@@ -107,9 +107,11 @@ export default class GeometryGraph {
 
             // Get the edge
             const edge = this.__getEdge(noderef, nextnoderef);
+            if (!edge) {
+                childpath.add(new paper.Point(node.x, node.y));
+                continue;
+            }
 
-            // console.log("Edge:", edge);
-            // console.log("Edge Type:", edge.type);
             switch (edge.type) {
                 case "LINE":
                     childpath.add(new paper.Point(node.x, node.y));

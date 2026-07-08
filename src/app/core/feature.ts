@@ -45,19 +45,28 @@ export default class Feature {
         this._dxfObjects = [];
         this._referenceID = null;
         this.layer = null;
+        const libEntry = ComponentAPI.library[this.type];
         const tempRenderName: string = this.deriveRenderName();
         let modifierName: string;
         if (this.type == "Port") modifierName = "PORT";
         else modifierName = "COMPONENT";
         console.log("rendName: ", tempRenderName);
-        console.log("z-offset-key: ", ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName));
+        const zOffsetKeyName = libEntry ? libEntry.object.zOffsetKey(tempRenderName) : "height";
+        let depthValue = 0;
+        if (libEntry) {
+            try {
+                depthValue = this.getValue(zOffsetKeyName);
+            } catch {
+                depthValue = 0;
+            }
+        }
         this._manufacturingInfo = {
             fabtype: fabtype,
             layertype: null,
             rendername: tempRenderName,
-            z_offset_key: ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName),
-            depth: this.getValue(ComponentAPI.library[this.type].object.zOffsetKey(tempRenderName)),
-            substrate_offset: ComponentAPI.library[this.type].object.substrateOffset(tempRenderName),
+            z_offset_key: zOffsetKeyName,
+            depth: depthValue,
+            substrate_offset: libEntry ? libEntry.object.substrateOffset(tempRenderName) : "0",
             substrate: null,
             modifier: modifierName
         };
@@ -126,7 +135,11 @@ export default class Feature {
      * @memberof Feature
      */
     setManufacturingInfoLayer(): void {
-        this._manufacturingInfo.depth = this.getValue(ComponentAPI.library[this.type].object.zOffsetKey(this.deriveRenderName()));
+        const libEntry = ComponentAPI.library[this.type];
+        if (!libEntry) {
+            return;
+        }
+        this._manufacturingInfo.depth = this.getValue(libEntry.object.zOffsetKey(this.deriveRenderName()));
         if (this.layer !== null) {
             this._manufacturingInfo.layertype = this.layer.type;
             this._manufacturingInfo.substrate = FeatureUtils.setSubstrate(this, this._manufacturingInfo.substrate_offset);
@@ -361,10 +374,12 @@ export default class Feature {
      */
 
     deriveRenderName(): string {
-        if (!ComponentAPI.library[this.type]) {
-            console.error("Type unrecognized, defaulting to template.");
+        const entry = ComponentAPI.library[this.type];
+        if (!entry) {
+            console.error("Type unrecognized, defaulting render key to FLOW:", this.type);
+            return "FLOW";
         }
-        return ComponentAPI.library[this.type].key;
+        return entry.key;
     }
 
     /**

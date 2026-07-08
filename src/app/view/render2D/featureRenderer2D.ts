@@ -232,8 +232,7 @@ export function renderTextTarget(typeString: string, position: Point) {
 }
 
 export function renderEdge(feature:any) {
-    // TODO: Just call the DXF renderer (outline) for this
-    renderEdgeFeature(feature);
+    return renderEdgeFeature(feature);
 }
 
 export function renderText(feature:any) {
@@ -289,6 +288,13 @@ export function renderFeature(feature: Feature, key: string | null, options?: Re
         return modrendered as ToolPaperObject;
     } else if (type === "EDGE") {
         return renderEdge(feature);
+    } else if (type === "DxfSketch") {
+        // Legacy DXF imports stored raw sketch geometry here; rendering is handled
+        // by Connection + Port features. Keep an invisible placeholder for old files.
+        const placeholder = new paper.CompoundPath("");
+        const modrendered = placeholder as any;
+        modrendered.featureID = feature.ID;
+        return modrendered as ToolPaperObject;
     } else if (type === "Text") {
         return renderText(feature);
     } else {

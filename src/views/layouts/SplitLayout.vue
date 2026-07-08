@@ -75,14 +75,7 @@ export default {
         Visualiser
     },
     data() {
-        return {
-            buttons: [
-                ["json", "mdi-devices", "3DuF File (.json)"],
-                ["svg", "mdi-border-all", "Vector Art (.svg)"],
-                ["cnc", "mdi-toolbox", "CNC (.svg)"],
-                ["laser", "mdi-toolbox", "Laser Cutting (.svg)"]
-            ]
-        };
+        return {};
     },
     mounted() {
         const scrollElement = document.querySelector(".v-navigation-drawer__content");

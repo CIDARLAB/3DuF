@@ -1,7 +1,7 @@
 <template>
-    <Dialog title="Import">
+    <Dialog title="Import (.json / .dxf)">
         <template #content>
-            <h4>Upload a local JSON or DXF file:</h4>
+            <h4>Supported input formats: JSON and DXF only</h4>
             <div class="mdl-dialog__content">
                 <v-card
                     id="drop_box_import"
@@ -41,6 +41,7 @@
 import Dialog from "@/components/base/Dialog.vue";
 import Registry from "@/app/core/registry";
 import DxfParser from "dxf-parser";
+import { buildDeviceJsonFromDxf } from "@/app/import/dxfDeviceImport";
 
 export default {
     components: {
@@ -180,16 +181,11 @@ export default {
             if (Registry.viewManager == null) {
                 throw new Error("3DuF view manager is not ready.");
             }
-            if (Registry.currentDevice == null) {
-                throw new Error("No active device loaded.");
-            }
 
             return this.parseSelectedDXF().then((parsedDXF) => {
                 this.parsedDXF = parsedDXF;
-                Registry.viewManager.deleteBorder();
-                Registry.viewManager.importBorder(this.parsedDXF);
-                const normalizedJson = Registry.viewManager.generateExportJSON();
-                Registry.viewManager.loadDeviceFromJSON(normalizedJson);
+                const deviceJson = buildDeviceJsonFromDxf(parsedDXF, this.selectedFileName);
+                Registry.viewManager.loadDeviceFromJSON(deviceJson);
                 Registry.viewManager.updateGrid();
                 Registry.viewManager.refresh();
             });

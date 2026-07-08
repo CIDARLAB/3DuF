@@ -57,6 +57,7 @@ import NormallyClosedValveCrescents from "./app/library/geometricElements/normal
 import NormallyClosedValveModificationsGap from "./app/library/geometricElements/normallyClosedValveGap";
 import { ValveType } from "./app/core/init";
 import Terrace from "./app/library/terrace";
+import DxfSketch from "./app/library/dxfSketch";
 import { test } from "mocha";
 
 export var PRIMITIVES_SERVER = false;
@@ -101,6 +102,7 @@ export class ComponentAPI {
     static library: { [key: string]: LibraryEntry } = {
         Template: { object: new Template(), key: "FLOW" },
         Text: { object: new Text(), key: "FLOW" },
+        DxfSketch: { object: new DxfSketch(), key: "FLOW" },
         Port: { object: new Port(), key: "FLOW" },
         Anode: { object: new Anode(), key: "INTEGRATION" }, // ck addition
         Cathode: { object: new Cathode(), key: "INTEGRATION" }, // ck addition
