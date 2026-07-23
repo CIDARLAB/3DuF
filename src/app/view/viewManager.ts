@@ -998,6 +998,10 @@ export default class ViewManager {
         delete json.params["x-span"];
         delete json.params["y-span"];
 
+        if (!Array.isArray(json.components)) {
+            json.components = [];
+        }
+
             for (const component of json.components) {
  
                 const params = component.params;

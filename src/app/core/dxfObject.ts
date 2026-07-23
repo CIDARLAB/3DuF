@@ -71,6 +71,14 @@ export default class DXFObject {
      * @memberof DXFObject
      */
     static fromJSON(json: JSON): DXFObject {
+        const raw: any = json;
+        if (raw && typeof raw === "object" && Object.prototype.hasOwnProperty.call(raw, "__rootObject")) {
+            const root = raw.__rootObject || {};
+            return new DXFObject({
+                ...root,
+                type: raw.__type || root.type
+            });
+        }
         return new DXFObject(json);
     }
 }

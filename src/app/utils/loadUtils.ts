@@ -12,6 +12,7 @@ import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "./mapUtils";
 
 import ConnectionUtils from "@/app/utils/connectionUtils";
+import { normalizeLegacyDeviceJson } from "@/app/utils/legacyJsonUtils";
 
 import {
     InterchangeV1_2,
@@ -30,7 +31,21 @@ import {
 export default class LoadUtils {
     constructor() {}
 
+    /**
+     * True when a layer JSON already stores concrete features to load.
+     * Empty `{}` / `[]` are treated as absent so multilayer geometry can be
+     * regenerated from components (e.g. green INTEGRATION electrodes).
+     */
+    static layerHasStoredFeatures(jsonlayer: LayerInterchangeV1): boolean {
+        const features = jsonlayer.features as unknown;
+        if (features == null) return false;
+        if (Array.isArray(features)) return features.length > 0;
+        if (typeof features === "object") return Object.keys(features as object).length > 0;
+        return false;
+    }
+
     static loadFromScratch(json: InterchangeV1_2): [Device, Array<RenderLayer>] {
+        normalizeLegacyDeviceJson(json);
         const newDevice: Device = LoadUtils.loadDeviceFromInterchangeV1_2(json);
         let newRenderLayers: Array<RenderLayer> = [];
         if (json.renderLayers) {
@@ -214,11 +229,14 @@ export default class LoadUtils {
         }
         const newLayer: Layer = new Layer(jsonlayer.params, jsonlayer.name, layerType, jsonlayer.group, device);
 
-        if (jsonlayer.features) {
+        const hasStoredFeatures = LoadUtils.layerHasStoredFeatures(jsonlayer);
+        if (hasStoredFeatures) {
             for (const i in jsonlayer.features) {
                 newLayer.features[jsonlayer.features[i].id] = LoadUtils.loadFeatureFromInterchangeV1(jsonlayer.features[i]);
             }
-            newLayer.featureCount = jsonlayer.features.length;
+            newLayer.featureCount = Array.isArray(jsonlayer.features)
+                ? jsonlayer.features.length
+                : Object.keys(jsonlayer.features as object).length;
         } else {
             //Generate features
 
@@ -444,7 +462,15 @@ export default class LoadUtils {
         const entityLabel = String(entity || "CHANNEL");
         const inferredCrossSection = entityLabel.toUpperCase().includes("ROUND") ? 1 : 0;
         let params = json.params;
-        const layer = device.getLayer(json.layer);
+        let layer = json.layer ? device.getLayer(json.layer) : null;
+        if (layer === null) {
+            for (let i = 0; i < device.layers.length; i++) {
+                if (device.layers[i].type === LogicalLayerType.FLOW) {
+                    layer = device.layers[i];
+                    break;
+                }
+            }
+        }
         if (layer === null) {
             throw new Error("Could not find layer with id: " + json.layer);
         }

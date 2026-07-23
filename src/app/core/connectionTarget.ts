@@ -62,7 +62,17 @@ export default class ConnectionTarget {
      * @memberof ConnectionTarget
      */
     static fromJSON(device: Device, json: ConnectionTargetInterchangeV1): ConnectionTarget {
-        const component = device.getComponentByID(json.component);
+        let componentId: string | null = null;
+        const rawComponent: any = json.component;
+        if (typeof rawComponent === "string") {
+            componentId = rawComponent;
+        } else if (rawComponent && typeof rawComponent === "object") {
+            componentId = rawComponent.__id || rawComponent.id || null;
+        }
+        if (componentId === null) {
+            throw new Error("Component not found");
+        }
+        const component = device.getComponentByID(componentId);
         if (component !== null) return new ConnectionTarget(component, json.port);
         else throw new Error("Component not found");
     }

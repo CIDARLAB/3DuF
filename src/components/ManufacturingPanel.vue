@@ -17,7 +17,7 @@
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title class="wrap-title">CAD sketch (.dxf)</v-list-item-title>
-                        <v-list-item-subtitle class="text-wrap">2D geometry for Fusion 360 / CAM (mm)</v-list-item-subtitle>
+                        <v-list-item-subtitle class="text-wrap">2D geometry for Fusion 360 / CAM (mm); multilayer → zip</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -36,7 +36,7 @@
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title class="wrap-title">CNC / router (.gcode)</v-list-item-title>
-                        <v-list-item-subtitle class="text-wrap">Fusion-style contour toolpath</v-list-item-subtitle>
+                        <v-list-item-subtitle class="text-wrap">Fusion-style contour toolpath (single-layer only)</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
             </v-list-item-group>
@@ -79,14 +79,18 @@
 <script>
 import Registry from "@/app/core/registry";
 import { saveAs } from "file-saver";
+import JSZip from "jszip";
 import ManufacturingLayer from "@/app/manufacturing/manufacturingLayer";
 import { generateConnectionProfileGCode } from "@/app/manufacturing/additiveManufacturingExport";
-import { generateDeviceDxf } from "@/app/manufacturing/dxfExport";
+import { generateDeviceDxfFiles, isMultilayerBiochip } from "@/app/manufacturing/dxfExport";
 import {
     generateDxfFusionGCode,
     generateDxfSVG,
     getDxfModelForDevice
 } from "@/app/manufacturing/dxfManufacturingExport";
+
+const MULTILAYER_GCODE_MESSAGE =
+    "Multilayer biochips do not provide GCode export. Please export each layer as DXF (or SVG) instead.";
 
 export default {
     name: "ManufacturingPanel",
@@ -105,10 +109,20 @@ export default {
         downloadJSON() {
             this.viewManagerRef.downloadJSON();
         },
-        downloadDXF() {
-            const text = generateDeviceDxf(Registry.currentDevice);
-            const blob = new Blob([text], { type: "application/dxf;charset=utf-8" });
-            saveAs(blob, Registry.currentDevice.name + ".dxf");
+        async downloadDXF() {
+            const device = Registry.currentDevice;
+            const files = generateDeviceDxfFiles(device);
+            if (files.length === 1) {
+                const blob = new Blob([files[0].content], { type: "application/dxf;charset=utf-8" });
+                saveAs(blob, files[0].filename);
+                return;
+            }
+            const zip = new JSZip();
+            for (const file of files) {
+                zip.file(file.filename, file.content);
+            }
+            const blob = await zip.generateAsync({ type: "blob" });
+            saveAs(blob, device.name + "_dxf.zip");
         },
         downloadSVG() {
             const dxfSvg = generateDxfSVG(Registry.currentDevice);
@@ -136,6 +150,10 @@ export default {
             throw new Error("Unable to generate SVG. Does the design have at least one visible feature?");
         },
         downloadGCode() {
+            if (isMultilayerBiochip(Registry.currentDevice)) {
+                alert(MULTILAYER_GCODE_MESSAGE);
+                return;
+            }
             const hasDxf = getDxfModelForDevice(Registry.currentDevice) !== null;
             const text = hasDxf
                 ? generateDxfFusionGCode(Registry.currentDevice)
