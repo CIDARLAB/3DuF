@@ -1,30 +1,23 @@
 <template>
     <div>
-        <v-divider />
-        <v-card elevation="0">
-            <v-card-title class="py-2">
-                <span>Export</span>
-            </v-card-title>
-            <v-card-text class="px-1">
-                <div v-for="item in exportItems" :key="item.id" class="export-btn-wrap">
-                    <v-tooltip bottom max-width="280">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                block
-                                class="white blue--text mb-2 feature-button button-row export-btn"
-                                v-bind="attrs"
-                                v-on="on"
-                                @click.stop="item.handler()"
-                            >
-                                <v-icon left small>{{ item.icon }}</v-icon>
-                                {{ item.label }}
-                            </v-btn>
-                        </template>
-                        <span>{{ item.tooltip }}</span>
-                    </v-tooltip>
-                </div>
-            </v-card-text>
-        </v-card>
+        <v-divider class="mb-1" />
+        <div class="export-section-label px-1 mb-1">Export</div>
+        <div v-for="item in exportItems" :key="item.id">
+            <v-tooltip bottom max-width="280">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        class="white blue--text mb-2 feature-button button-row"
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="runExport(item.id)"
+                    >
+                        <v-icon left small>{{ item.icon }}</v-icon>
+                        {{ item.label }}
+                    </v-btn>
+                </template>
+                <span>{{ item.tooltip }}</span>
+            </v-tooltip>
+        </div>
     </div>
 </template>
 
@@ -32,10 +25,14 @@
 .feature-button.button-row {
     text-transform: none;
     letter-spacing: normal;
+    width: 100%;
 }
 
-.export-btn-wrap {
-    width: 100%;
+.export-section-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.6);
+    text-align: left;
 }
 </style>
 
@@ -65,37 +62,39 @@ export default {
                     label: "JSON · 3DuF",
                     icon: "mdi-code-json",
                     tooltip:
-                        "3DuF default design format (.json). Best for saving, reopening, and sharing designs in 3DuF.",
-                    handler: this.downloadJSON
+                        "3DuF default design format (.json). Save, reopen, and share designs in 3DuF — the primary format for this tool."
                 },
                 {
                     id: "dxf",
                     label: "DXF",
                     icon: "mdi-file-cad",
                     tooltip:
-                        "CAD sketch (.dxf). Use in AutoCAD, Fusion 360, and other CAD tools. Multilayer designs download as a zip.",
-                    handler: this.downloadDXF
+                        "CAD sketch (.dxf). Open in AutoCAD, Fusion 360, and other CAD / CAM tools. Multilayer designs download as a zip."
                 },
                 {
                     id: "svg",
                     label: "SVG",
                     icon: "mdi-vector-line",
                     tooltip:
-                        "Vector art (.svg). Use for illustrations, documentation, laser cutting prep, and web graphics.",
-                    handler: this.downloadSVG
+                        "Vector graphics (.svg). Use for documentation, illustrations, laser cutting prep, and web graphics."
                 },
                 {
                     id: "gcode",
                     label: "GCode",
                     icon: "mdi-axis-arrow",
                     tooltip:
-                        "CNC / router (.gcode). Use for milling or routing flow-layer geometries. Not available for multilayer biochips.",
-                    handler: this.downloadGCode
+                        "CNC / router (.gcode). Use for milling or routing flow-layer geometry. Not available for multilayer biochips."
                 }
             ];
         }
     },
     methods: {
+        runExport(id) {
+            if (id === "json") this.downloadJSON();
+            else if (id === "dxf") this.downloadDXF();
+            else if (id === "svg") this.downloadSVG();
+            else if (id === "gcode") this.downloadGCode();
+        },
         requireDevice() {
             const device = Registry.currentDevice;
             if (!device) {
@@ -114,13 +113,14 @@ export default {
             const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType });
             saveAs(blob, filename);
         },
-        async downloadZip(files, zipName) {
+        downloadZip(files, zipName) {
             const zip = new JSZip();
             for (const file of files) {
                 zip.file(file.filename, file.content);
             }
-            const blob = await zip.generateAsync({ type: "blob" });
-            saveAs(blob, zipName);
+            return zip.generateAsync({ type: "blob" }).then(blob => {
+                saveAs(blob, zipName);
+            });
         },
         reportExportError(format, err) {
             console.error(`[Export ${format}]`, err);
@@ -134,7 +134,7 @@ export default {
                 this.reportExportError("JSON", err);
             }
         },
-        async downloadDXF() {
+        downloadDXF() {
             try {
                 const device = this.requireDevice();
                 const files = generateDeviceDxfFiles(device);
@@ -145,7 +145,9 @@ export default {
                     this.downloadBlob(files[0].content, files[0].filename, "application/dxf;charset=utf-8");
                     return;
                 }
-                await this.downloadZip(files, `${device.name || "device"}_dxf.zip`);
+                this.downloadZip(files, `${device.name || "device"}_dxf.zip`).catch(err => {
+                    this.reportExportError("DXF", err);
+                });
             } catch (err) {
                 this.reportExportError("DXF", err);
             }
@@ -179,7 +181,7 @@ export default {
                 this.reportExportError("SVG", err);
             }
         },
-        async downloadGCode() {
+        downloadGCode() {
             try {
                 const device = this.requireDevice();
                 if (isMultilayerBiochip(device)) {
@@ -209,8 +211,13 @@ export default {
                 for (const file of files) {
                     folder.file(file.filename, file.content);
                 }
-                const blob = await zip.generateAsync({ type: "blob" });
-                saveAs(blob, `${device.name || "device"}_gcode.zip`);
+                zip.generateAsync({ type: "blob" })
+                    .then(blob => {
+                        saveAs(blob, `${device.name || "device"}_gcode.zip`);
+                    })
+                    .catch(err => {
+                        this.reportExportError("GCode", err);
+                    });
             } catch (err) {
                 this.reportExportError("GCode", err);
             }

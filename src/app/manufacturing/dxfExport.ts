@@ -366,8 +366,8 @@ export function isMultilayerBiochip(device: Device): boolean {
 }
 
 /**
- * Export FLOW/CONTROL layers as separate DXF files regenerated from the
- * current canvas features (not the original uploaded DXF payload).
+ * Export FLOW/CONTROL layers as separate DXF files from the current canvas
+ * features (not the original uploaded DXF payload).
  * Multilayer devices get one file per layer with suffixes _flowN / _ctrlN.
  */
 export function generateDeviceDxfFiles(device: Device): DxfExportFile[] {
