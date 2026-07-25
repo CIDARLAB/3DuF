@@ -94,14 +94,17 @@ export default class ExportUtils {
             renderLayers.push(viewManagerDelegate.renderLayers[i].toInterchangeV1());
         }
         const device = viewManagerDelegate.currentDevice.toInterchangeV1(errorList);
-        
-        const valvemap = {};
-        const valvetypemap = {};
 
+        // Drop stale DXF import payload so downloaded JSON reflects the current canvas
+        // (ports/channels/features after edits), not the originally uploaded DXF entities.
+        const exportParams = { ...(device.params || {}) };
+        if (Object.prototype.hasOwnProperty.call(exportParams, "dxfImport")) {
+            delete exportParams.dxfImport;
+        }
 
         const newScratch: InterchangeV1_2 = {
             name: device.name,
-            params: device.params,
+            params: exportParams,
             renderLayers: renderLayers,
             layers: device.layers,
             groups: device.groups,

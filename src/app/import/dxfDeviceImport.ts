@@ -7,6 +7,7 @@ import {
     DxfCircleSeg,
     DxfLineSeg,
     DxfPoint3,
+    detectChannelWidth,
     dxfPointToDeviceUm,
     getMergedChannelSketch,
     mmToUm,
@@ -18,6 +19,26 @@ import {
 const CHANNEL_WIDTH_UM = 1000;
 const CHANNEL_HEIGHT_UM = 2000;
 const PORT_HEIGHT_UM = 2000;
+
+function estimateChannelWidthUm(model: DxfDeviceModel): number {
+    const sketch = getMergedChannelSketch(model);
+    if (!sketch.lines.length) {
+        return CHANNEL_WIDTH_UM;
+    }
+    let sum = 0;
+    let count = 0;
+    for (const line of sketch.lines) {
+        const widthMm = detectChannelWidth(sketch.lines, line);
+        if (widthMm > 0.2 && widthMm < 20) {
+            sum += widthMm;
+            count += 1;
+        }
+    }
+    if (count === 0) {
+        return CHANNEL_WIDTH_UM;
+    }
+    return Math.max(100, Math.round(mmToUm(sum / count)));
+}
 
 function generateId(): string {
     return ComponentAPI.generateID();
@@ -224,6 +245,7 @@ function entitiesToDxfData(entities: any[]): any[] {
 export function buildDeviceJsonFromDxf(parsed: any, fileName = "DXF Import"): InterchangeV1_2 {
     const model = parseDxfDocument(parsed, fileName.replace(/\.dxf$/i, ""));
     const channelSketch = getMergedChannelSketch(model);
+    const channelWidthUm = estimateChannelWidthUm(model);
     const widthUm = mmToUm(model.bounds.maxX - model.bounds.minX);
     const lengthUm = mmToUm(model.bounds.maxY - model.bounds.minY);
 
@@ -328,8 +350,8 @@ export function buildDeviceJsonFromDxf(parsed: any, fileName = "DXF Import"): In
                 wayPoints: item.wayPoints,
                 segments: item.segments,
                 crossSection: 1,
-                connectionSpacing: CHANNEL_WIDTH_UM + 600,
-                channelWidth: CHANNEL_WIDTH_UM,
+                connectionSpacing: channelWidthUm + 600,
+                channelWidth: channelWidthUm,
                 height: CHANNEL_HEIGHT_UM
             },
             layer: flowLayerId
@@ -345,8 +367,8 @@ export function buildDeviceJsonFromDxf(parsed: any, fileName = "DXF Import"): In
                 wayPoints: item.wayPoints,
                 segments: item.segments,
                 crossSection: 1,
-                connectionSpacing: CHANNEL_WIDTH_UM + 600,
-                channelWidth: CHANNEL_WIDTH_UM,
+                connectionSpacing: channelWidthUm + 600,
+                channelWidth: channelWidthUm,
                 height: CHANNEL_HEIGHT_UM
             },
             type: "XY",

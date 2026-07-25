@@ -4,6 +4,7 @@ import Layer from "../core/layer";
 import DXFObject from "../core/dxfObject";
 import { LogicalLayerType } from "../core/init";
 import { getDxfModelFromDevice } from "../import/dxfDeviceImport";
+import { betterMixerCenterlineSegments } from "./flowGCodeExport";
 
 const UM_TO_MM = 0.001;
 
@@ -133,19 +134,57 @@ function readCircleRadiusUm(feature: Feature): number | null {
     return null;
 }
 
-function exportFeatureEntities(feature: Feature, layerName: string, deviceHeightUm: number): string {
+function isStructuredDesignFeature(type: string): boolean {
+    return (
+        type === "Port" ||
+        type === "Connection" ||
+        type === "BetterMixer" ||
+        type === "Mixer" ||
+        type === "CurvedMixer" ||
+        type === "Valve3D" ||
+        type === "Valve3D_control" ||
+        type === "CircleValve" ||
+        type === "Valve"
+    );
+}
+
+function layerHasStructuredFeatures(layer: Layer): boolean {
+    for (const key in layer.features) {
+        if (isStructuredDesignFeature(layer.features[key].getType())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function exportFeatureEntities(
+    feature: Feature,
+    layerName: string,
+    deviceHeightUm: number,
+    includeRawDxfObjects: boolean
+): string {
     const type = feature.getType();
     let entities = "";
 
+    // After DXF import + canvas edits, Port/Connection/etc. are the live geometry.
+    // Skip stale EDGE/DxfSketch payloads when structured features exist.
     if (type === "EDGE" || type === "DxfSketch") {
+        if (!includeRawDxfObjects) {
+            return entities;
+        }
         for (const dxfObj of feature.dxfObjects) {
             entities += writeEntity(dxfObjectToEntity(dxfObj), layerName);
         }
         return entities;
     }
 
-    if (type === "Port" || type === "Valve3D" || type === "Valve3D_control" || type === "CircleValve") {
-        const position = feature.getValue("position") as [number, number];
+    if (type === "Port" || type === "Valve3D" || type === "Valve3D_control" || type === "CircleValve" || type === "Valve") {
+        let position: [number, number] | null = null;
+        try {
+            position = feature.getValue("position") as [number, number];
+        } catch (_err) {
+            return entities;
+        }
         const radiusUm = readCircleRadiusUm(feature);
         if (!Array.isArray(position) || radiusUm == null) {
             return entities;
@@ -164,8 +203,18 @@ function exportFeatureEntities(feature: Feature, layerName: string, deviceHeight
     }
 
     if (type === "Connection") {
-        const segments = feature.getValue("segments") as Array<[[number, number], [number, number]]>;
-        const heightUm = Number(feature.getValue("height"));
+        let segments: Array<[[number, number], [number, number]]> | null = null;
+        let heightUm = NaN;
+        try {
+            segments = feature.getValue("segments") as Array<[[number, number], [number, number]]>;
+        } catch (_err) {
+            return entities;
+        }
+        try {
+            heightUm = Number(feature.getValue("height"));
+        } catch (_err) {
+            heightUm = 250;
+        }
         const z = Number.isFinite(heightUm) ? heightUm * UM_TO_MM : 0.25;
         if (!segments || !Array.isArray(segments)) {
             return entities;
@@ -189,6 +238,46 @@ function exportFeatureEntities(feature: Feature, layerName: string, deviceHeight
                 layerName + "_channels"
             );
         }
+        return entities;
+    }
+
+    if (type === "BetterMixer" || type === "Mixer" || type === "CurvedMixer") {
+        try {
+            const position = feature.getValue("position") as [number, number];
+            const channelWidth = Number(feature.getValue("channelWidth"));
+            const bendLength = Number(feature.getValue("bendLength"));
+            const bendSpacing = Number(feature.getValue("bendSpacing"));
+            const numberOfBends = Number(feature.getValue("numberOfBends"));
+            const heightUm = Number(feature.getValue("height"));
+            const z = Number.isFinite(heightUm) ? heightUm * UM_TO_MM : 0.25;
+            if (!Array.isArray(position) || !Number.isFinite(channelWidth)) {
+                return entities;
+            }
+            const segments = betterMixerCenterlineSegments({
+                position,
+                channelWidth,
+                bendLength: Number.isFinite(bendLength) ? bendLength : 2460,
+                bendSpacing: Number.isFinite(bendSpacing) ? bendSpacing : 1230,
+                numberOfBends: Number.isFinite(numberOfBends) ? numberOfBends : 1
+            });
+            for (const seg of segments) {
+                const a = canvasUmToDxfMm(seg[0][0], seg[0][1], deviceHeightUm);
+                const b = canvasUmToDxfMm(seg[1][0], seg[1][1], deviceHeightUm);
+                if (Math.hypot(a.x - b.x, a.y - b.y) < 1e-9) continue;
+                entities += writeLine(
+                    {
+                        type: "LINE",
+                        vertices: [
+                            { x: a.x, y: a.y, z },
+                            { x: b.x, y: b.y, z }
+                        ]
+                    },
+                    layerName + "_mixer"
+                );
+            }
+        } catch (_err) {
+            // Missing params — skip.
+        }
     }
 
     return entities;
@@ -197,10 +286,16 @@ function exportFeatureEntities(feature: Feature, layerName: string, deviceHeight
 function exportLayerEntities(device: Device, layer: Layer): string {
     const deviceHeightUm = device.getYSpan();
     const layerName = layer.name || layer.type || "LAYER";
+    const includeRawDxfObjects = !layerHasStructuredFeatures(layer);
     let entities = "";
     const features = layer.features;
     for (const key in features) {
-        entities += exportFeatureEntities(features[key], layerName, deviceHeightUm);
+        try {
+            entities += exportFeatureEntities(features[key], layerName, deviceHeightUm, includeRawDxfObjects);
+        } catch (err) {
+            // Skip a single bad feature instead of aborting the whole download.
+            console.warn("[DXF export] Skipping feature", key, err);
+        }
     }
     if (!entities) {
         entities = emptyPlaceholderEntities(device);
@@ -228,39 +323,75 @@ function layerSuffix(layer: Layer, flowIndex: number, controlIndex: number): str
 }
 
 /**
- * True when the device has more than one FLOW/CONTROL manufacturing layer
- * (typical multilayer biochip with fluid + control).
+ * True when the device has control-layer manufacturing content
+ * (features on CONTROL, valves, or CONTROL-placed components).
+ * Empty CONTROL tabs on flow-only designs do NOT count.
  */
 export function isMultilayerBiochip(device: Device): boolean {
     if (!device || !Array.isArray(device.layers)) {
         return false;
     }
-    let count = 0;
     for (const layer of device.layers) {
-        if (layer.type === LogicalLayerType.FLOW || layer.type === LogicalLayerType.CONTROL) {
-            count += 1;
-            if (count > 1) {
+        if (layer.type !== LogicalLayerType.CONTROL) {
+            continue;
+        }
+        if (Object.keys(layer.features || {}).length > 0) {
+            return true;
+        }
+    }
+    try {
+        const valves = (device as any).valves;
+        if (Array.isArray(valves) && valves.length > 0) {
+            return true;
+        }
+    } catch (_err) {
+        // optional
+    }
+    for (const component of device.components || []) {
+        const layers = (component as any).layers;
+        if (!Array.isArray(layers) || !layers.length) continue;
+        for (const layerRef of layers) {
+            const id = typeof layerRef === "string" ? layerRef : layerRef?.id;
+            const layer = device.layers.find(l => l.id === id);
+            if (layer && layer.type === LogicalLayerType.CONTROL) {
                 return true;
             }
+        }
+        const mint = String((component as any).mint || (component as any).entity || "").toUpperCase();
+        if (mint.includes("VALVE")) {
+            return true;
         }
     }
     return false;
 }
 
 /**
- * Export FLOW/CONTROL layers as separate DXF files.
+ * Export FLOW/CONTROL layers as separate DXF files regenerated from the
+ * current canvas features (not the original uploaded DXF payload).
  * Multilayer devices get one file per layer with suffixes _flowN / _ctrlN.
- * Single-layer and DXF-imported designs return one .dxf file.
  */
 export function generateDeviceDxfFiles(device: Device): DxfExportFile[] {
-    const fromImport = exportFromStoredDxfImport(device);
-    if (fromImport) {
-        return [{ filename: `${device.name}.dxf`, content: fromImport }];
+    if (!device) {
+        throw new Error("No device loaded");
     }
+    if (!Array.isArray(device.layers)) {
+        throw new Error("Device has no layers to export");
+    }
+    // Prefer layers that actually have geometry. Empty CONTROL tabs on
+    // flow-only designs should not force a zip of blank files.
+    let exportLayers = device.layers.filter(layer => {
+        if (layer.type !== LogicalLayerType.FLOW && layer.type !== LogicalLayerType.CONTROL) {
+            return false;
+        }
+        return Object.keys(layer.features || {}).length > 0;
+    });
 
-    const exportLayers = device.layers.filter(
-        layer => layer.type === LogicalLayerType.FLOW || layer.type === LogicalLayerType.CONTROL
-    );
+    // If every FLOW/CONTROL layer is empty, still emit one placeholder DXF.
+    if (exportLayers.length === 0) {
+        exportLayers = device.layers
+            .filter(layer => layer.type === LogicalLayerType.FLOW || layer.type === LogicalLayerType.CONTROL)
+            .slice(0, 1);
+    }
 
     if (exportLayers.length === 0) {
         return [

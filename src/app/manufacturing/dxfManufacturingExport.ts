@@ -1,7 +1,7 @@
 import Device from "../core/device";
 import { getMergedChannelSketch, isBorderLineInSketch } from "../import/dxfDeviceModel";
 import { getDxfModelFromDevice } from "../import/dxfDeviceImport";
-import { generateConnectionProfileGCode } from "./additiveManufacturingExport";
+import { generateFlowFusionGCode } from "./flowGCodeExport";
 
 function cleanNum(value: number, decimals = 3): string {
     const rounded = value.toFixed(decimals);
@@ -20,11 +20,11 @@ function circleToGcodePoints(cx: number, cy: number, radius: number, segments = 
 export function generateDxfFusionGCode(device: Device, toolDiameterMm = 0.125): string {
     const model = getDxfModelFromDevice(device);
     if (!model) {
-        return generateConnectionProfileGCode(device);
+        return generateFlowFusionGCode(device);
     }
 
     const programName = (device.name || "3DUF_EXPORT").toUpperCase().replace(/[^A-Z0-9_]/g, "_");
-    const zCut = -Math.min(toolDiameterMm, 0.2);
+    const zCut = -Math.min(toolDiameterMm, Math.max(model.channelHeight || 0.2, 0.1));
     const channelSketch = getMergedChannelSketch(model);
     const lines: string[] = [
         `(${programName})`,
