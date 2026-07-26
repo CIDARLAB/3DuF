@@ -188,14 +188,17 @@ export default {
                     showUsage: false,
                     showDesignsFromLiterature: false,
                     guiDifferences: [
-                        "Added blackbox rendering for unsupported/unknown components so incomplete imports are visible on canvas.",
-                        "Extended feature settings with mirrorByX and mirrorByY geometric reflection controls across component editors.",
-                        "Improved renderer behavior so mirrored and transformed features are displayed more consistently in 2D views."
+                        "Added blackbox rendering for unsupported/unknown components so incomplete imports stay visible on canvas; blackbox was cleaned out of the normal Features sidebar.",
+                        "Added the terrace primitive alongside existing library components.",
+                        "Extended feature settings with mirrorByX / mirrorByY reflection controls, including rotation and mirroring about geoCenter.",
+                        "Improved renderer behavior so mirrored/transformed features and ports load more consistently from JSON in 2D views."
                     ],
                     workflowImprovements: [
-                        "Unknown components now remain editable as placeholders instead of silently disappearing from visual output.",
-                        "Reflection options reduce manual redraw work when creating symmetric layouts.",
-                        "Primitive server device rendering corrections make final layout checks and export preparation more reliable."
+                        "Unknown components remain editable as placeholders instead of silently disappearing from visual output.",
+                        "Reflection and geoCenter transforms reduce manual redraw work when creating symmetric layouts.",
+                        "Primitive-server device rendering corrections make final layout checks and export preparation more reliable.",
+                        "Neptune can open a design in 3DuF with one click via the JSON postMessage bridge.",
+                        "A local-development CLI helps verify the 3DuF frontend when running on localhost."
                     ],
                     introductionVideoUrl: "https://www.youtube.com/embed/05nU8eQ73U8",
                     longTutorialVideoUrl: "https://www.youtube.com/embed/YOrnnZjma28"

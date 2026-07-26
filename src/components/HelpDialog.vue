@@ -88,9 +88,13 @@ export default {
                     branch: "webpack-build-2",
                     branchUrl: "https://github.com/CIDARLAB/3DuF/tree/webpack-build-2",
                     changes: [
-                        "Added blackbox rendering for unknown components.",
-                        "Added multiple geometric reflection parameters across components (mirrorByX and mirrorByY), with coordinated renderer updates.",
-                        "Corrected primitive server device rendering behavior."
+                        "Added blackbox rendering for unknown/unsupported components, with sidebar cleanup so blackbox is no longer listed as a normal feature tool.",
+                        "Added terrace as a new primitive component.",
+                        "Added geometric reflection controls (mirrorByX / mirrorByY) across components, with rotation and mirroring about geoCenter.",
+                        "Fixed port rendering when loading designs from JSON.",
+                        "Corrected primitive-server device rendering behavior.",
+                        "Enabled Neptune ↔ 3DuF JSON bridge (postMessage load of designs from Neptune).",
+                        "Added a local-development CLI workflow for checking the 3DuF frontend on localhost."
                     ]
                 },
                 {
@@ -100,11 +104,14 @@ export default {
                     branch: "Neptune_Render",
                     branchUrl: "https://github.com/CIDARLAB/3DuF/tree/Neptune_Render",
                     changes: [
-                        "Expanded DXF import coverage and updated 2D DXF object/solid rendering.",
-                        "Improved feature rendering and view-management flow for clearer on-canvas results.",
-                        "Updated additive manufacturing export and manufacturing panel behavior for newer workflows.",
-                        "Introduced versioned tutorial content with clearer typography and current-version labeling.",
-                        "Added version-specific guidance updates (including V1.2 GUI/workflow notes and V1.3 literature references)."
+                        "Unified JSON and DXF import into a single Import dialog (drop zone + file picker, Confirm/Cancel), replacing separate sidebar import entries.",
+                        "Expanded the DXF pipeline: multilayer designs export as a DXF zip, round-trip import/export is hardened, and device border / channel wall widths export correctly.",
+                        "Reworked the manufacturing Export panel for JSON · 3DuF, DXF, SVG, and flow-feature GCode (multilayer biochips use per-layer DXF/SVG instead of GCode).",
+                        "Added connection cross-section controls (square vs rounded stadium ends) with reliable canvas Apply and rounded endcap geometry.",
+                        "Made the floating settings panel draggable, with Apply / Reset that target the clicked component or connection.",
+                        "Improved Valve3D placement and layer-aware rendering (CONTROL full circle vs FLOW crescents) plus precise flow-gap connection breaks.",
+                        "Added legacy / paper-design JSON normalization so literature designs load into the current interchange format, with a Tutorial link to 3DuF-Paper-Designs.",
+                        "Versioned About/Help and Tutorial dialogs (v1.1–v1.3) with current-version labeling."
                     ]
                 }
             ]
