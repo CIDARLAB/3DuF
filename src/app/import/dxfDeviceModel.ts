@@ -108,6 +108,24 @@ function isAxisAlignedRect(sketch: DxfSketch, tol = 0.5): boolean {
     return xs.size === 2 && ys.size === 2;
 }
 
+function sketchRectAreaMm2(sketch: DxfSketch): number {
+    const xs = sketch.lines.flatMap((l) => [l.a.x, l.b.x]);
+    const ys = sketch.lines.flatMap((l) => [l.a.y, l.b.y]);
+    if (!xs.length || !ys.length) return 0;
+    return Math.max(0, Math.max(...xs) - Math.min(...xs)) * Math.max(0, Math.max(...ys) - Math.min(...ys));
+}
+
+/**
+ * Prefer an explicit *_border layer; otherwise the largest axis-aligned rectangle.
+ * Prevents a thin channel rectangle from stealing the device outline on re-import.
+ */
+function pickDeviceBorderSketch(candidates: DxfSketch[]): DxfSketch | null {
+    if (candidates.length === 0) return null;
+    const named = candidates.filter((s) => /border/i.test(s.name));
+    const pool = named.length > 0 ? named : candidates;
+    return pool.reduce((best, sketch) => (sketchRectAreaMm2(sketch) > sketchRectAreaMm2(best) ? sketch : best));
+}
+
 function computeBoundsFromSketches(sketches: DxfSketch[]): DxfDeviceModel["bounds"] {
     const bounds = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity };
     for (const sketch of sketches) {
@@ -243,10 +261,21 @@ export function parseDxfDocument(parsed: any, sourceName = "imported"): DxfDevic
     const minSketchZ = sketches.length > 0 ? Math.min(...sketches.map((s) => s.z)) : 0;
     let borderSketch: DxfSketch | null = null;
     const channelSketches: DxfSketch[] = [];
+    const borderCandidates: DxfSketch[] = [];
     for (const sketch of sketches) {
         if (sketch.z <= minSketchZ + 0.01 && isAxisAlignedRect(sketch)) {
-            borderSketch = sketch;
+            borderCandidates.push(sketch);
         } else if (sketch.lines.length > 0 || sketch.circles.length > 0) {
+            channelSketches.push(sketch);
+        }
+    }
+    borderSketch = pickDeviceBorderSketch(borderCandidates);
+    // Non-selected rectangles (e.g. closed pockets) still count as channel geometry.
+    for (const sketch of borderCandidates) {
+        if (borderSketch && sketch.name === borderSketch.name) {
+            continue;
+        }
+        if (sketch.lines.length > 0 || sketch.circles.length > 0) {
             channelSketches.push(sketch);
         }
     }

@@ -119,6 +119,42 @@ function emptyPlaceholderEntities(device: Device): string {
     );
 }
 
+/**
+ * Emit a device-outline rectangle from device spans (canvas µm → DXF mm).
+ * Always use params spans rather than re-emitting imported EDGE geometry, which
+ * may still be in original DXF coordinates and would misalign with ports/channels.
+ */
+function exportDeviceBorderEntities(device: Device, layerName: string): string {
+    const widthUm = device.getXSpan();
+    const heightUm = device.getYSpan();
+    if (!Number.isFinite(widthUm) || !Number.isFinite(heightUm) || widthUm <= 0 || heightUm <= 0) {
+        return "";
+    }
+    const corners: Array<[number, number]> = [
+        [0, 0],
+        [widthUm, 0],
+        [widthUm, heightUm],
+        [0, heightUm],
+        [0, 0]
+    ];
+    let out = "";
+    for (let i = 0; i < corners.length - 1; i++) {
+        const a = canvasUmToDxfMm(corners[i][0], corners[i][1], heightUm);
+        const b = canvasUmToDxfMm(corners[i + 1][0], corners[i + 1][1], heightUm);
+        out += writeLine(
+            {
+                type: "LINE",
+                vertices: [
+                    { x: a.x, y: a.y, z: 0 },
+                    { x: b.x, y: b.y, z: 0 }
+                ]
+            },
+            layerName + "_border"
+        );
+    }
+    return out;
+}
+
 function readCircleRadiusUm(feature: Feature): number | null {
     const candidates = ["portRadius", "valveRadius", "radius1", "radius"];
     for (const key of candidates) {
@@ -134,10 +170,98 @@ function readCircleRadiusUm(feature: Feature): number | null {
     return null;
 }
 
+function tryGetNumber(feature: Feature, key: string): number | null {
+    try {
+        const value = Number(feature.getValue(key));
+        return Number.isFinite(value) ? value : null;
+    } catch (_err) {
+        return null;
+    }
+}
+
+/** Normalize [x,y] or ["Point", x, y] canvas coordinates. */
+function asUmPoint(value: unknown): [number, number] | null {
+    if (!Array.isArray(value) || value.length < 2) {
+        return null;
+    }
+    if (value.length >= 3 && value[0] === "Point") {
+        const x = Number(value[1]);
+        const y = Number(value[2]);
+        return Number.isFinite(x) && Number.isFinite(y) ? [x, y] : null;
+    }
+    const x = Number(value[0]);
+    const y = Number(value[1]);
+    return Number.isFinite(x) && Number.isFinite(y) ? [x, y] : null;
+}
+
+/**
+ * Export one channel segment as two parallel wall lines spaced by channelWidth.
+ * Matches typical manufacturing DXF (and the original inlet-channel-outlet sketch):
+ * width is the gap between walls — not a closed rectangle that import can mistake for the device border.
+ */
+function exportChannelSegmentOutline(
+    p1: [number, number],
+    p2: [number, number],
+    channelWidthUm: number,
+    deviceHeightUm: number,
+    layer: string,
+    z: number
+): string {
+    if (!(channelWidthUm > 0)) {
+        return "";
+    }
+    const dx = p2[0] - p1[0];
+    const dy = p2[1] - p1[1];
+    const len = Math.hypot(dx, dy);
+    if (len < 1e-9) {
+        return "";
+    }
+    const ux = dx / len;
+    const uy = dy / len;
+    const px = -uy;
+    const py = ux;
+    const half = channelWidthUm / 2;
+    const wallA1: [number, number] = [p1[0] - px * half, p1[1] - py * half];
+    const wallA2: [number, number] = [p2[0] - px * half, p2[1] - py * half];
+    const wallB1: [number, number] = [p1[0] + px * half, p1[1] + py * half];
+    const wallB2: [number, number] = [p2[0] + px * half, p2[1] + py * half];
+
+    const a1 = canvasUmToDxfMm(wallA1[0], wallA1[1], deviceHeightUm);
+    const a2 = canvasUmToDxfMm(wallA2[0], wallA2[1], deviceHeightUm);
+    const b1 = canvasUmToDxfMm(wallB1[0], wallB1[1], deviceHeightUm);
+    const b2 = canvasUmToDxfMm(wallB2[0], wallB2[1], deviceHeightUm);
+
+    let out = "";
+    out += writeLine(
+        {
+            type: "LINE",
+            vertices: [
+                { x: a1.x, y: a1.y, z },
+                { x: a2.x, y: a2.y, z }
+            ]
+        },
+        layer
+    );
+    out += writeLine(
+        {
+            type: "LINE",
+            vertices: [
+                { x: b1.x, y: b1.y, z },
+                { x: b2.x, y: b2.y, z }
+            ]
+        },
+        layer
+    );
+    return out;
+}
+
 function isStructuredDesignFeature(type: string): boolean {
     return (
         type === "Port" ||
         type === "Connection" ||
+        type === "Channel" ||
+        type === "RoundedChannel" ||
+        type === "RoundedChannelConnection" ||
         type === "BetterMixer" ||
         type === "Mixer" ||
         type === "CurvedMixer" ||
@@ -166,9 +290,13 @@ function exportFeatureEntities(
     const type = feature.getType();
     let entities = "";
 
-    // After DXF import + canvas edits, Port/Connection/etc. are the live geometry.
-    // Skip stale EDGE/DxfSketch payloads when structured features exist.
-    if (type === "EDGE" || type === "DxfSketch") {
+    // Device outline is always synthesized from getXSpan()/getYSpan() below.
+    // Skip EDGE (imported coords may not match canvas-space features) and skip
+    // stale DxfSketch payloads when structured features exist.
+    if (type === "EDGE") {
+        return entities;
+    }
+    if (type === "DxfSketch") {
         if (!includeRawDxfObjects) {
             return entities;
         }
@@ -202,41 +330,55 @@ function exportFeatureEntities(
         return entities;
     }
 
-    if (type === "Connection") {
-        let segments: Array<[[number, number], [number, number]]> | null = null;
-        let heightUm = NaN;
-        try {
-            segments = feature.getValue("segments") as Array<[[number, number], [number, number]]>;
-        } catch (_err) {
+    if (type === "Connection" || type === "Channel" || type === "RoundedChannel" || type === "RoundedChannelConnection") {
+        const channelWidthUm = tryGetNumber(feature, "channelWidth");
+        if (channelWidthUm == null || !(channelWidthUm > 0)) {
             return entities;
         }
-        try {
-            heightUm = Number(feature.getValue("height"));
-        } catch (_err) {
-            heightUm = 250;
+        const z = 0;
+        const channelLayer = layerName + "_channels";
+
+        let segments: Array<[[number, number], [number, number]]> = [];
+        if (type === "Connection" || type === "RoundedChannelConnection") {
+            try {
+                const raw = feature.getValue("segments") as Array<[[number, number], [number, number]]>;
+                if (Array.isArray(raw)) {
+                    segments = raw;
+                }
+            } catch (_err) {
+                // Fall through to start/end if segments are missing.
+            }
+            if (!segments.length) {
+                try {
+                    const start = asUmPoint(feature.getValue("start"));
+                    const end = asUmPoint(feature.getValue("end"));
+                    if (start && end) {
+                        segments = [[start, end]];
+                    }
+                } catch (_err) {
+                    return entities;
+                }
+            }
+        } else {
+            let start: [number, number] | null = null;
+            let end: [number, number] | null = null;
+            try {
+                start = asUmPoint(feature.getValue("start"));
+                end = asUmPoint(feature.getValue("end"));
+            } catch (_err) {
+                return entities;
+            }
+            if (start && end) {
+                segments = [[start, end]];
+            }
         }
-        const z = Number.isFinite(heightUm) ? heightUm * UM_TO_MM : 0.25;
-        if (!segments || !Array.isArray(segments)) {
-            return entities;
-        }
+
         for (const seg of segments) {
             if (!seg || seg.length < 2) continue;
-            const p1 = seg[0];
-            const p2 = seg[1];
-            if (!Array.isArray(p1) || !Array.isArray(p2)) continue;
-            const a = canvasUmToDxfMm(p1[0], p1[1], deviceHeightUm);
-            const b = canvasUmToDxfMm(p2[0], p2[1], deviceHeightUm);
-            if (Math.hypot(a.x - b.x, a.y - b.y) < 1e-9) continue;
-            entities += writeLine(
-                {
-                    type: "LINE",
-                    vertices: [
-                        { x: a.x, y: a.y, z },
-                        { x: b.x, y: b.y, z }
-                    ]
-                },
-                layerName + "_channels"
-            );
+            const p1 = asUmPoint(seg[0]);
+            const p2 = asUmPoint(seg[1]);
+            if (!p1 || !p2) continue;
+            entities += exportChannelSegmentOutline(p1, p2, channelWidthUm, deviceHeightUm, channelLayer, z);
         }
         return entities;
     }
@@ -248,9 +390,7 @@ function exportFeatureEntities(
             const bendLength = Number(feature.getValue("bendLength"));
             const bendSpacing = Number(feature.getValue("bendSpacing"));
             const numberOfBends = Number(feature.getValue("numberOfBends"));
-            const heightUm = Number(feature.getValue("height"));
-            const z = Number.isFinite(heightUm) ? heightUm * UM_TO_MM : 0.25;
-            if (!Array.isArray(position) || !Number.isFinite(channelWidth)) {
+            if (!Array.isArray(position) || !Number.isFinite(channelWidth) || !(channelWidth > 0)) {
                 return entities;
             }
             const segments = betterMixerCenterlineSegments({
@@ -261,18 +401,13 @@ function exportFeatureEntities(
                 numberOfBends: Number.isFinite(numberOfBends) ? numberOfBends : 1
             });
             for (const seg of segments) {
-                const a = canvasUmToDxfMm(seg[0][0], seg[0][1], deviceHeightUm);
-                const b = canvasUmToDxfMm(seg[1][0], seg[1][1], deviceHeightUm);
-                if (Math.hypot(a.x - b.x, a.y - b.y) < 1e-9) continue;
-                entities += writeLine(
-                    {
-                        type: "LINE",
-                        vertices: [
-                            { x: a.x, y: a.y, z },
-                            { x: b.x, y: b.y, z }
-                        ]
-                    },
-                    layerName + "_mixer"
+                entities += exportChannelSegmentOutline(
+                    seg[0],
+                    seg[1],
+                    channelWidth,
+                    deviceHeightUm,
+                    layerName + "_mixer",
+                    0
                 );
             }
         } catch (_err) {
@@ -297,6 +432,9 @@ function exportLayerEntities(device: Device, layer: Layer): string {
             console.warn("[DXF export] Skipping feature", key, err);
         }
     }
+    // Always write the device border from current spans so CAD extents match the
+    // canvas device size (JSON params.width/length), even when EDGE is skipped.
+    entities += exportDeviceBorderEntities(device, layerName);
     if (!entities) {
         entities = emptyPlaceholderEntities(device);
     }

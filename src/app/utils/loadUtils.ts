@@ -476,17 +476,18 @@ export default class LoadUtils {
         }
         if (entity) {
             // Check if the params have the other unique elements necessary otherwise add them as null
+            const firstPath = Array.isArray(json.paths) ? json.paths[0] : undefined;
             if (!Object.prototype.hasOwnProperty.call(params, "start")) {
-                if (json.paths[0]) {
-                    params.start = ["Point", json.paths[0].wayPoints[0][0], json.paths[0].wayPoints[0][1]];
+                if (firstPath?.wayPoints?.[0]) {
+                    params.start = ["Point", firstPath.wayPoints[0][0], firstPath.wayPoints[0][1]];
                 } else {
                     // Setting this value to origin
                     params.start = [0, 0];
                 }
             }
             if (!Object.prototype.hasOwnProperty.call(params, "end")) {
-                if (json.paths) {
-                    params.end = json.paths[0].wayPoints[json.paths[0].wayPoints.length - 1];
+                if (firstPath?.wayPoints?.length) {
+                    params.end = firstPath.wayPoints[firstPath.wayPoints.length - 1];
                 } else {
                     // Setting this value to origin
                     params.end = [0, 0];
@@ -494,8 +495,8 @@ export default class LoadUtils {
             }
             if (!Object.prototype.hasOwnProperty.call(params, "wayPoints")) {
                 // TODO: setting a single waypoint at origin
-                if (json.paths[0]) {
-                    params.wayPoints = json.paths[0].wayPoints;
+                if (firstPath?.wayPoints) {
+                    params.wayPoints = firstPath.wayPoints;
                 } else {
                     params.wayPoints = [
                         [0, 0],
@@ -505,10 +506,10 @@ export default class LoadUtils {
             }
             if (!Object.prototype.hasOwnProperty.call(params, "segments")) {
                 // TODO: Setting a default segment from origin to origin
-                if (json.paths[0]) {
+                if (firstPath?.wayPoints?.length) {
                     const segments: Array<[[number, number],[number,number]]> = [];
-                    for (let k = 0; k < json.paths[0].wayPoints.length - 1; k++) {
-                        segments[k] = [json.paths[0].wayPoints[k], json.paths[0].wayPoints[k + 1]];
+                    for (let k = 0; k < firstPath.wayPoints.length - 1; k++) {
+                        segments[k] = [firstPath.wayPoints[k], firstPath.wayPoints[k + 1]];
                     }
                     params.segments = segments;
                 } else {
@@ -531,7 +532,7 @@ export default class LoadUtils {
                 params.crossSection = inferredCrossSection;
             }
         } else {
-            if (json.paths[0]) {
+            if (json.paths?.[0]) {
                 const wayPoints = json.paths[0].wayPoints;
                 const rawParams = json.params;
                 const segments: Array<[[number, number],[number,number]]> = [];
