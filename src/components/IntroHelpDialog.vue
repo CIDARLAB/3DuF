@@ -46,7 +46,7 @@
                 </div>
 
                 <div v-if="selectedVersion.guiDifferences && selectedVersion.guiDifferences.length">
-                    <div class="section-title">GUI Differences vs V1.1</div>
+                    <div class="section-title">GUI Differences vs V1.0</div>
                     <ul>
                         <li v-for="(item, idx) in selectedVersion.guiDifferences" :key="`gui-${selectedVersion.label}-${idx}`">
                             {{ item }}
@@ -170,7 +170,7 @@ export default {
             page: 1,
             versions: [
                 {
-                    label: "V1.1",
+                    label: "V1.0",
                     developers: "Aaron Heuckroth, Joshua Lippai and Radhakrishna Sanka",
                     publicationTitle:
                         "Sanka, Radhakrishna, Joshua Lippai, Dinithi Samarasekera, Sarah Nemsick, and Douglas Densmore. “3DμF - Interactive Design Environment for Continuous Flow Microfluidic Devices.” Scientific Reports 9, no. 1 (December 2019).",
@@ -182,7 +182,7 @@ export default {
                     longTutorialVideoUrl: "https://www.youtube.com/embed/YOrnnZjma28"
                 },
                 {
-                    label: "V1.2",
+                    label: "V1.1",
                     developers: "Yangruirui Zhou, Eric Xie and Radhakrishna Sanka",
                     showVideos: false,
                     showUsage: false,
@@ -204,12 +204,12 @@ export default {
                     longTutorialVideoUrl: "https://www.youtube.com/embed/YOrnnZjma28"
                 },
                 {
-                    label: "V1.3",
+                    label: "V1.2",
                     developers: "Yangruirui Zhou",
                     showVideos: true,
                     showUsage: true,
                     showDesignsFromLiterature: true,
-                    // Placeholder: v1.3 videos are not ready yet, so reuse existing tutorials.
+                    // Placeholder: v1.2 videos are not ready yet, so reuse existing tutorials.
                     introductionVideoUrl: "https://www.youtube.com/embed/05nU8eQ73U8",
                     longTutorialVideoUrl: "https://www.youtube.com/embed/YOrnnZjma28"
                 }

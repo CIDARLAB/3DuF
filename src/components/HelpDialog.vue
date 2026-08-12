@@ -72,7 +72,7 @@ export default {
             page: 1,
             versions: [
                 {
-                    label: "v1.1",
+                    label: "v1.0",
                     previousVersion: null,
                     developers: "Aaron Heuckroth, Joshua Lippai and Radhakrishna Sanka",
                     branch: "main",
@@ -82,8 +82,8 @@ export default {
                     changes: []
                 },
                 {
-                    label: "v1.2",
-                    previousVersion: "v1.1",
+                    label: "v1.1",
+                    previousVersion: "v1.0",
                     developers: "Yangruirui Zhou, Eric Xie and Radhakrishna Sanka",
                     branch: "webpack-build-2",
                     branchUrl: "https://github.com/CIDARLAB/3DuF/tree/webpack-build-2",
@@ -98,8 +98,8 @@ export default {
                     ]
                 },
                 {
-                    label: "v1.3",
-                    previousVersion: "v1.2",
+                    label: "v1.2",
+                    previousVersion: "v1.1",
                     developers: "Yangruirui Zhou",
                     branch: "Neptune_Render",
                     branchUrl: "https://github.com/CIDARLAB/3DuF/tree/Neptune_Render",
@@ -111,7 +111,7 @@ export default {
                         "Made the floating settings panel draggable, with Apply / Reset that target the clicked component or connection.",
                         "Improved Valve3D placement and layer-aware rendering (CONTROL full circle vs FLOW crescents) plus precise flow-gap connection breaks.",
                         "Added legacy / paper-design JSON normalization so literature designs load into the current interchange format, with a Tutorial link to 3DuF-Paper-Designs.",
-                        "Versioned About/Help and Tutorial dialogs (v1.1–v1.3) with current-version labeling."
+                        "Versioned About/Help and Tutorial dialogs (v1.0–v1.2) with current-version labeling."
                     ]
                 }
             ]
