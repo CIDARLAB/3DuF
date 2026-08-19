@@ -24,6 +24,15 @@ export type DxfExportFile = {
     content: string;
 };
 
+export type DxfExportOptions = {
+    /** Cover-layer export: Port circles only (plus the device border). */
+    portsOnly?: boolean;
+};
+
+function withPortsFilename(filename: string): string {
+    return filename.replace(/(\.[^.]+)$/, "_ports$1");
+}
+
 function dxfPair(code: number, value: string | number): string {
     return `${code}\n${value}\n`;
 }
@@ -120,16 +129,61 @@ function emptyPlaceholderEntities(device: Device): string {
 }
 
 /**
- * Emit a device-outline rectangle from device spans (canvas µm → DXF mm).
- * Always use params spans rather than re-emitting imported EDGE geometry, which
- * may still be in original DXF coordinates and would misalign with ports/channels.
+ * Deepest component/feature height on the device (µm). Used to size the exported
+ * substrate box as max(height) + 1 mm for CAD (Fusion 360) replacement workflows.
  */
-function exportDeviceBorderEntities(device: Device, layerName: string): string {
-    const widthUm = device.getXSpan();
-    const heightUm = device.getYSpan();
-    if (!Number.isFinite(widthUm) || !Number.isFinite(heightUm) || widthUm <= 0 || heightUm <= 0) {
-        return "";
+export function computeMaxComponentDepthUm(device: Device): number {
+    let maxUm = 0;
+    const consider = (raw: unknown) => {
+        const n = Number(raw);
+        if (Number.isFinite(n) && n > maxUm) maxUm = n;
+    };
+
+    try {
+        for (const component of device.components || []) {
+            try {
+                if (typeof (component as any).getValue === "function") {
+                    consider((component as any).getValue("height"));
+                }
+            } catch (_err) {
+                // Param may be absent for this component type.
+            }
+        }
+    } catch (_err) {
+        // optional
     }
+
+    for (const layer of device.layers || []) {
+        const features = layer.features || {};
+        for (const key in features) {
+            const feature = features[key];
+            if (!feature) continue;
+            const t = String((feature as any).getType?.() || (feature as any).type || "");
+            if (t === "EDGE" || t === "DxfSketch") continue;
+            const h = tryGetNumber(feature as Feature, "height");
+            if (h != null) consider(h);
+            try {
+                const info = (feature as any).manufacturingInfo;
+                if (info && info.depth != null) consider(info.depth);
+            } catch (_err) {
+                // optional
+            }
+        }
+    }
+    return maxUm;
+}
+
+/** Substrate / enclosure depth in DXF mm: deepest component + 1 mm margin. */
+export function computeSubstrateDepthMm(device: Device): number {
+    return computeMaxComponentDepthUm(device) * UM_TO_MM + 1;
+}
+
+function exportRectAtZ(
+    widthUm: number,
+    heightUm: number,
+    zMm: number,
+    layerName: string
+): string {
     const corners: Array<[number, number]> = [
         [0, 0],
         [widthUm, 0],
@@ -145,11 +199,50 @@ function exportDeviceBorderEntities(device: Device, layerName: string): string {
             {
                 type: "LINE",
                 vertices: [
-                    { x: a.x, y: a.y, z: 0 },
-                    { x: b.x, y: b.y, z: 0 }
+                    { x: a.x, y: a.y, z: zMm },
+                    { x: b.x, y: b.y, z: zMm }
                 ]
             },
-            layerName + "_border"
+            layerName
+        );
+    }
+    return out;
+}
+
+/**
+ * Emit a device-outline box from device spans (canvas µm → DXF mm).
+ * XY footprint at z=0 plus top face at substrate depth = max(component height)+1mm,
+ * with vertical edges — a rectangular enclosure for CAD detailing.
+ */
+function exportDeviceBorderEntities(device: Device, layerName: string): string {
+    const widthUm = device.getXSpan();
+    const heightUm = device.getYSpan();
+    if (!Number.isFinite(widthUm) || !Number.isFinite(heightUm) || widthUm <= 0 || heightUm <= 0) {
+        return "";
+    }
+    const depthMm = computeSubstrateDepthMm(device);
+    const borderLayer = layerName + "_border";
+    let out = exportRectAtZ(widthUm, heightUm, 0, borderLayer);
+    out += exportRectAtZ(widthUm, heightUm, depthMm, borderLayer);
+
+    // Vertical edges of the enclosure box
+    const cornersUm: Array<[number, number]> = [
+        [0, 0],
+        [widthUm, 0],
+        [widthUm, heightUm],
+        [0, heightUm]
+    ];
+    for (const [xUm, yUm] of cornersUm) {
+        const p = canvasUmToDxfMm(xUm, yUm, heightUm);
+        out += writeLine(
+            {
+                type: "LINE",
+                vertices: [
+                    { x: p.x, y: p.y, z: 0 },
+                    { x: p.x, y: p.y, z: depthMm }
+                ]
+            },
+            borderLayer
         );
     }
     return out;
@@ -418,15 +511,19 @@ function exportFeatureEntities(
     return entities;
 }
 
-function exportLayerEntities(device: Device, layer: Layer): string {
+function exportLayerEntities(device: Device, layer: Layer, portsOnly = false): string {
     const deviceHeightUm = device.getYSpan();
     const layerName = layer.name || layer.type || "LAYER";
-    const includeRawDxfObjects = !layerHasStructuredFeatures(layer);
+    const includeRawDxfObjects = !portsOnly && !layerHasStructuredFeatures(layer);
     let entities = "";
     const features = layer.features;
     for (const key in features) {
         try {
-            entities += exportFeatureEntities(features[key], layerName, deviceHeightUm, includeRawDxfObjects);
+            const feature = features[key];
+            if (portsOnly && feature.getType() !== "Port") {
+                continue;
+            }
+            entities += exportFeatureEntities(feature, layerName, deviceHeightUm, includeRawDxfObjects);
         } catch (err) {
             // Skip a single bad feature instead of aborting the whole download.
             console.warn("[DXF export] Skipping feature", key, err);
@@ -508,17 +605,26 @@ export function isMultilayerBiochip(device: Device): boolean {
  * features (not the original uploaded DXF payload).
  * Multilayer devices get one file per layer with suffixes _flowN / _ctrlN.
  */
-export function generateDeviceDxfFiles(device: Device): DxfExportFile[] {
+export function generateDeviceDxfFiles(device: Device, options: DxfExportOptions = {}): DxfExportFile[] {
     if (!device) {
         throw new Error("No device loaded");
     }
     if (!Array.isArray(device.layers)) {
         throw new Error("Device has no layers to export");
     }
+    const portsOnly = Boolean(options.portsOnly);
     // Prefer layers that actually have geometry. Empty CONTROL tabs on
     // flow-only designs should not force a zip of blank files.
     let exportLayers = device.layers.filter(layer => {
         if (layer.type !== LogicalLayerType.FLOW && layer.type !== LogicalLayerType.CONTROL) {
+            return false;
+        }
+        if (portsOnly) {
+            for (const key in layer.features || {}) {
+                if (layer.features[key].getType() === "Port") {
+                    return true;
+                }
+            }
             return false;
         }
         return Object.keys(layer.features || {}).length > 0;
@@ -532,19 +638,21 @@ export function generateDeviceDxfFiles(device: Device): DxfExportFile[] {
     }
 
     if (exportLayers.length === 0) {
+        const filename = `${device.name}.dxf`;
         return [
             {
-                filename: `${device.name}.dxf`,
+                filename: portsOnly ? withPortsFilename(filename) : filename,
                 content: wrapEntities(emptyPlaceholderEntities(device))
             }
         ];
     }
 
     if (exportLayers.length === 1) {
+        const filename = `${device.name}.dxf`;
         return [
             {
-                filename: `${device.name}.dxf`,
-                content: wrapEntities(exportLayerEntities(device, exportLayers[0]))
+                filename: portsOnly ? withPortsFilename(filename) : filename,
+                content: wrapEntities(exportLayerEntities(device, exportLayers[0], portsOnly))
             }
         ];
     }
@@ -559,9 +667,10 @@ export function generateDeviceDxfFiles(device: Device): DxfExportFile[] {
             controlIndex += 1;
         }
         const suffix = layerSuffix(layer, flowIndex, controlIndex);
+        const filename = `${device.name}${suffix}.dxf`;
         files.push({
-            filename: `${device.name}${suffix}.dxf`,
-            content: wrapEntities(exportLayerEntities(device, layer))
+            filename: portsOnly ? withPortsFilename(filename) : filename,
+            content: wrapEntities(exportLayerEntities(device, layer, portsOnly))
         });
     }
     return files;

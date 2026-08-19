@@ -209,6 +209,16 @@ export default {
                     showVideos: true,
                     showUsage: true,
                     showDesignsFromLiterature: true,
+                    guiDifferences: [
+                        "Added an All/Ports toggle above Export (same interaction pattern as FLOW/CTRL). Ports shows only flow (blue) and control (red) port circles; All restores the full layout.",
+                        "Neptune LFR DIYCOMPONENT parts now render as built-in black-box placeholders instead of disappearing when the custom library entry is missing.",
+                        "Square-profile channels fill the outer corner at 90° turns, so compiled CHANNEL JSON no longer shows a gap at the joint."
+                    ],
+                    workflowImprovements: [
+                        "Use Ports view when preparing a cover layer: even droplet devices need a closed second layer so fluid can flow inside channels instead of open grooves.",
+                        "For cover-layer fabrication, JSON, DXF, SVG, and GCode downloads include a ports-only file in the same format as the full design.",
+                        "Newly placed ports default to a 1 mm radius so cover-layer holes match typical fabrication sizes."
+                    ],
                     // Placeholder: v1.2 videos are not ready yet, so reuse existing tutorials.
                     introductionVideoUrl: "https://www.youtube.com/embed/05nU8eQ73U8",
                     longTutorialVideoUrl: "https://www.youtube.com/embed/YOrnnZjma28"

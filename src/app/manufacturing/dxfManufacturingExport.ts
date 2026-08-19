@@ -1,7 +1,7 @@
 import Device from "../core/device";
 import { getMergedChannelSketch, isBorderLineInSketch } from "../import/dxfDeviceModel";
 import { getDxfModelFromDevice } from "../import/dxfDeviceImport";
-import { generateFlowFusionGCode } from "./flowGCodeExport";
+import { generateFlowFusionGCode, generateFlowGCodeFiles } from "./flowGCodeExport";
 
 function cleanNum(value: number, decimals = 3): string {
     const rounded = value.toFixed(decimals);
@@ -17,13 +17,23 @@ function circleToGcodePoints(cx: number, cy: number, radius: number, segments = 
     return points;
 }
 
-export function generateDxfFusionGCode(device: Device, toolDiameterMm = 0.125): string {
+export function generateDxfFusionGCode(
+    device: Device,
+    toolDiameterMm = 0.125,
+    options: { portsOnly?: boolean } = {}
+): string {
     const model = getDxfModelFromDevice(device);
     if (!model) {
+        if (options.portsOnly) {
+            const files = generateFlowGCodeFiles(device, { portsOnly: true });
+            return (files[0] && files[0].content) || "";
+        }
         return generateFlowFusionGCode(device);
     }
 
-    const programName = (device.name || "3DUF_EXPORT").toUpperCase().replace(/[^A-Z0-9_]/g, "_");
+    const portsOnly = Boolean(options.portsOnly);
+    const programName = (device.name || "3DUF_EXPORT").toUpperCase().replace(/[^A-Z0-9_]/g, "_") +
+        (portsOnly ? "_PORTS" : "");
     const zCut = -Math.min(toolDiameterMm, Math.max(model.channelHeight || 0.2, 0.1));
     const channelSketch = getMergedChannelSketch(model);
     const lines: string[] = [
@@ -43,13 +53,15 @@ export function generateDxfFusionGCode(device: Device, toolDiameterMm = 0.125): 
     ];
 
     const contours: Array<Array<{ x: number; y: number }>> = [];
-    const channelLines = channelSketch.lines.filter((line) => !isBorderLineInSketch(line, channelSketch));
-    for (const line of channelLines) {
-        contours.push([
-            { x: line.a.x, y: line.a.y },
-            { x: line.b.x, y: line.b.y },
-            { x: line.a.x, y: line.a.y }
-        ]);
+    if (!portsOnly) {
+        const channelLines = channelSketch.lines.filter((line) => !isBorderLineInSketch(line, channelSketch));
+        for (const line of channelLines) {
+            contours.push([
+                { x: line.a.x, y: line.a.y },
+                { x: line.b.x, y: line.b.y },
+                { x: line.a.x, y: line.a.y }
+            ]);
+        }
     }
     for (const circle of channelSketch.circles) {
         contours.push(circleToGcodePoints(circle.center.x, circle.center.y, circle.radius));
@@ -75,20 +87,23 @@ export function generateDxfFusionGCode(device: Device, toolDiameterMm = 0.125): 
     return lines.join("\r\n") + "\r\n";
 }
 
-export function generateDxfSVG(device: Device): string {
+export function generateDxfSVG(device: Device, options: { portsOnly?: boolean } = {}): string {
     const model = getDxfModelFromDevice(device);
     if (!model) {
         return "";
     }
+    const portsOnly = Boolean(options.portsOnly);
     const { minX, minY, maxX, maxY } = model.bounds;
     const width = maxX - minX;
     const height = maxY - minY;
     const paths: string[] = [];
     for (const sketch of model.sketches) {
-        for (const line of sketch.lines) {
-            paths.push(
-                `<path data-z="${line.a.z}" data-depth="${model.channelHeight}" d="M ${line.a.x} ${line.a.y} L ${line.b.x} ${line.b.y}" fill="none" stroke="#1565c0" stroke-width="0.15"/>`
-            );
+        if (!portsOnly) {
+            for (const line of sketch.lines) {
+                paths.push(
+                    `<path data-z="${line.a.z}" data-depth="${model.channelHeight}" d="M ${line.a.x} ${line.a.y} L ${line.b.x} ${line.b.y}" fill="none" stroke="#1565c0" stroke-width="0.15"/>`
+                );
+            }
         }
         for (const circle of sketch.circles) {
             paths.push(

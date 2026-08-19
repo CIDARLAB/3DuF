@@ -24,11 +24,11 @@ Prerequisites:
 - Node.js 16+
 - npm
 
-Run with CLI on the current branch (`webpack-build-2`):
+Run with CLI on the current branch (`Neptune_Render`):
 ```
 git clone git@github.com:CIDARLAB/3DuF.git
 cd 3DuF
-git switch webpack-build-2
+git switch Neptune_Render
 ```
 
 Use the command that matches your situation:
@@ -100,17 +100,35 @@ If a layer has been selected, only features on that layer can be selected this w
 
 Left click on any selected feature to bring up a dialog box which will allow you to edit its parameters. If more than one feature is selected, parameters will be inherited by all currently selected features of the same type as the one you clicked.
 
-### Saving Designs
+### Cover Layer (All / Ports)
 
-Under `Save` in the main menu, click to download the current design in the selected format.
+Fabricated chips need a closed cover so fluid can flow inside channels instead of open grooves. Above the Export buttons, use the **ALL / PORTS** toggle (same interaction pattern as FLOW / CTRL):
+
+- **PORTS** keeps only the current flow (blue) and control (red) port circles and hides every other component and connection, so you can preview the cover layer.
+- **ALL** restores the full design.
+
+### Saving and Exporting Designs
+
+Use the sidebar **Export** section (not a separate Save menu) to download the current design:
+
+- **JSON · 3DuF** — default interchange format. Reopen and share designs in 3DuF.
+- **DXF** — CAD sketch for AutoCAD, Fusion 360, and other CAD / CAM tools. Multilayer biochips export one DXF per layer.
+- **SVG** — vector graphics for documentation, illustrations, and laser-cutting prep.
+- **GCode** — CNC / router programs for flow-layer geometry. Not available for multilayer biochips (export each layer as DXF or SVG instead).
+
+Each format downloads as a zip that includes the full design and a matching **ports-only** file for cover-layer fabrication.
+
+You can also save JSON with `ctrl+S`.
 
 ### Loading Designs
 
-After saving a device design to JSON, drag and drop it from your computer onto the device canvas to load it.
+Use **Import** (drop zone or file picker, then Confirm) to load a 3DuF JSON or DXF file. You can also drag and drop a saved JSON onto the device canvas.
 
 For DXF workflows:
 - Use `Edit Border` to import a DXF border/outline into the current design canvas.
 - The main design interchange format for full-device load/save remains 3DuF JSON.
+
+Neptune LFR user-designed parts (`DIYCOMPONENT`) load as built-in black-box placeholders, so they remain visible without a custom library entry.
 
 ## Component Library
 

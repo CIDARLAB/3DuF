@@ -19,7 +19,7 @@ export default class RectValve extends Template {
 
         this.__defaults = {
             componentSpacing: 1000,
-            portRadius: 0.7 * 1000,
+            portRadius: 1000,
             height: 250
         };
 

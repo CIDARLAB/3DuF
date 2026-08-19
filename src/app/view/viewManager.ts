@@ -43,6 +43,8 @@ import RenderLayer from "@/app/view/renderLayer";
 import LoadUtils from "@/app/utils/loadUtils";
 import ExportUtils, { SerializationError } from "@/app/utils/exportUtils";
 import { LogicalLayerType, InterchangeV1_2, ValveType } from "@/app/core/init";
+import { stripToFlowControlPorts } from "@/app/utils/portsOnlyUtils";
+import JSZip from "jszip";
 
 import { Point } from "@/app/core/init";
 
@@ -87,6 +89,9 @@ export default class ViewManager {
     private __button3D?: HTMLButtonElement;
     private __canvasBlock?: HTMLCanvasElement;
     private __renderBlock?: HTMLCanvasElement;
+
+    /** Cover-layer preview: canvas shows only FLOW/CONTROL port circles. */
+    portsOnlyView = false;
 
     // TODO : Check if we can remove this tracking
     currentLayer: RenderLayer;
@@ -515,6 +520,24 @@ export default class ViewManager {
         this.updateActiveLayer();
         this.refreshValveCrossLayerOpacity();
         EventBus.get().emit(EventBus.ACTIVE_RENDER_LAYER_CHANGED);
+        if (this.portsOnlyView) {
+            this.view.applyPortsOnlyVisibility(true);
+        }
+    }
+
+    /**
+     * Toggle the cover-layer preview: only FLOW (blue) and CONTROL (red) ports.
+     */
+    setPortsOnlyView(enabled: boolean): void {
+        this.portsOnlyView = Boolean(enabled);
+        this.view.applyPortsOnlyVisibility(this.portsOnlyView);
+        this.refresh(true);
+        EventBus.get().emit(EventBus.PORTS_ONLY_VIEW_CHANGED, this.portsOnlyView);
+    }
+
+    private resetPortsOnlyView(): void {
+        this.portsOnlyView = false;
+        EventBus.get().emit(EventBus.PORTS_ONLY_VIEW_CHANGED, false);
     }
 
     /**
@@ -557,6 +580,10 @@ export default class ViewManager {
      */
     layersToSVGStrings() {
         return this.view.layersToSVGStrings();
+    }
+
+    exportSVGString(portsOnly = false): string | null {
+        return this.view.captureSVGString(portsOnly);
     }
 
     /**
@@ -980,6 +1007,7 @@ export default class ViewManager {
      */
     loadDeviceFromJSON(json: InterchangeV1_2): void  {
         let device;
+        this.resetPortsOnlyView();
         Registry.viewManager?.clear();
         // Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
@@ -2461,10 +2489,20 @@ export default class ViewManager {
             throw new Error("No device loaded");
         }
         const errorList: Array<SerializationError> = [];
-        const json = new Blob([JSON.stringify(this.generateExportJSON(errorList))], {
-            type: "application/json"
+        const fullJson = this.generateExportJSON(errorList);
+        const name = this.currentDevice.name || "device";
+        const fullText = JSON.stringify(fullJson);
+        const portsJson = stripToFlowControlPorts(fullJson);
+        const zip = new JSZip();
+        zip.file(`${name}.json`, fullText);
+        zip.file(`${name}_ports.json`, JSON.stringify(portsJson));
+        zip.generateAsync({ type: "blob" }).then(blob => {
+            saveAs(blob, `${name}_json.zip`);
+        }).catch(err => {
+            console.error("[Export JSON]", err);
+            const message = err && err.message ? err.message : String(err);
+            alert(`Unable to export JSON: ${message}`);
         });
-        saveAs(json, this.currentDevice.name + ".json");
 
         if (errorList.length > 0) {
             // Concatenate all the errors into a single string with newlines and save it as a file
@@ -2484,6 +2522,7 @@ export default class ViewManager {
         console.log("Created new device: ", device.getXSpan(), device.getYSpan());
         this.clear();
         this.__currentDevice = device;
+        this.resetPortsOnlyView();
         // TODO -  Clean up lifecyle for active rendered layers
         this.activeRenderLayerIndex = 0;
         this.createNewLayerBlock();

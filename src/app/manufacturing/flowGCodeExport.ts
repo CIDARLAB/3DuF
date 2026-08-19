@@ -194,6 +194,63 @@ export function betterMixerCenterlineSegments(params: {
     return segs;
 }
 
+function collectPortFeatures(
+    device: Device
+): Array<{ xUm: number; yUm: number; radiusUm: number; heightUm: number }> {
+    const ports: Array<{ xUm: number; yUm: number; radiusUm: number; heightUm: number }> = [];
+    for (const layer of device.layers) {
+        if (layer.type !== LogicalLayerType.FLOW && layer.type !== LogicalLayerType.CONTROL) {
+            continue;
+        }
+        for (const key in layer.features) {
+            const feature = layer.features[key];
+            if (feature.getType() !== "Port") {
+                continue;
+            }
+            try {
+                const position = feature.getValue("position") as [number, number];
+                const radiusUm = tryGetNumber(feature, "portRadius");
+                const heightUm = tryGetNumber(feature, "height") ?? 1100;
+                if (Array.isArray(position) && radiusUm != null && radiusUm > 0) {
+                    ports.push({ xUm: position[0], yUm: position[1], radiusUm, heightUm });
+                }
+            } catch (_err) {
+                // Skip a port with missing geometry.
+            }
+        }
+    }
+    return ports;
+}
+
+function buildPortOnlyFiles(device: Device): GCodeExportFile[] {
+    const ports = collectPortFeatures(device);
+    const deviceHeightUm = device.getYSpan();
+    const files: GCodeExportFile[] = [];
+    if (ports.length) {
+        const maxRadius = Math.max(...ports.map(p => p.radiusUm));
+        const tool = pickPortToolLabel(maxRadius);
+        files.push({
+            filename: `${tool.label}_ports.gcode`,
+            content: buildPortProgram(deviceHeightUm, ports, tool, false)
+        });
+        files.push({
+            filename: `${tool.label}_MEASURE_ports.gcode`,
+            content: buildPortProgram(deviceHeightUm, ports, tool, true)
+        });
+    }
+    if (!files.length) {
+        files.push({
+            filename: `${device.name || "device"}_ports_empty.gcode`,
+            content:
+                fusionHeader("EMPTY_PORTS", 0.125, -0.01).join("\r\n") +
+                "\r\n" +
+                fusionFooter().join("\r\n") +
+                "\r\n"
+        });
+    }
+    return files;
+}
+
 function collectFlowFeatures(device: Device): {
     channels: Array<{ segments: SegUm[]; heightUm: number; channelWidthUm: number; label: string }>;
     ports: Array<{ xUm: number; yUm: number; radiusUm: number; heightUm: number }>;
@@ -321,7 +378,15 @@ function buildPortProgram(
  * Multiple files cover channel/mixer milling and port milling at tool sizes
  * matched to feature dimensions (plus shallow measure passes).
  */
-export function generateFlowGCodeFiles(device: Device): GCodeExportFile[] {
+export type GCodeExportOptions = {
+    /** Cover-layer export: mill only FLOW/CONTROL port holes. */
+    portsOnly?: boolean;
+};
+
+export function generateFlowGCodeFiles(device: Device, options: GCodeExportOptions = {}): GCodeExportFile[] {
+    if (options.portsOnly) {
+        return buildPortOnlyFiles(device);
+    }
     const { channels, ports } = collectFlowFeatures(device);
     const deviceHeightUm = device.getYSpan();
     const files: GCodeExportFile[] = [];

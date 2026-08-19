@@ -30,6 +30,7 @@ import Connection from "../core/connection";
 import { ViewManager } from "..";
 import Parameter from "../core/parameter";
 import EventBus from "@/events/events";
+import { isFlowOrControlPortFeature } from "../utils/portsOnlyUtils";
 /**
  * Paper View class
  */
@@ -596,6 +597,112 @@ export default class PaperView {
         this.featureLayer.addChild(this.layerMask);
         const activeLayer = this.paperLayers[this.activeLayer];
         activeLayer.bringToFront();
+        if (this.__viewManagerDelegate && this.__viewManagerDelegate.portsOnlyView) {
+            this.applyPortsOnlyVisibility(true);
+        }
+    }
+
+    /**
+     * Cover-layer preview: keep only FLOW (blue) and CONTROL (red) port circles.
+     * Does not mutate the device — hidden items can be restored by toggling off.
+     */
+    applyPortsOnlyVisibility(enabled: boolean, options: { update?: boolean } = {}): void {
+        for (const id in this.paperFeatures) {
+            const paperItem = this.paperFeatures[id];
+            if (!paperItem) {
+                continue;
+            }
+            let feature = null;
+            try {
+                feature = this.__viewManagerDelegate.getFeatureByID(id);
+            } catch {
+                feature = null;
+            }
+            paperItem.visible = !enabled || isFlowOrControlPortFeature(feature);
+            if (enabled && paperItem.visible) {
+                paperItem.bringToFront();
+            }
+        }
+        this.componentPortsLayer.visible = !enabled;
+        this.ratsNestLayer.visible = !enabled;
+        this.alignmentMarksLayer.visible = !enabled;
+        this.textFeatureLayer.visible = !enabled;
+        this.uiLayer.visible = !enabled;
+        if (this.layerMask) {
+            this.layerMask.visible = !enabled;
+        }
+        if (options.update !== false && paper.view) {
+            paper.view.update();
+        }
+    }
+
+    /**
+     * SVG of the current feature layers, optionally with only FLOW/CONTROL ports visible.
+     * Restores the previous cover-layer preview without flashing the canvas.
+     */
+    captureSVGString(portsOnly: boolean): string | null {
+        const previous = Boolean(this.__viewManagerDelegate && this.__viewManagerDelegate.portsOnlyView);
+        if (!portsOnly) {
+            this.applyPortsOnlyVisibility(false, { update: false });
+            try {
+                return this.firstSvgString(this.layersToSVGStrings());
+            } finally {
+                this.applyPortsOnlyVisibility(previous, { update: false });
+            }
+        }
+
+        const group = new paper.Group();
+        if (this.paperDevice) {
+            group.addChild(this.paperDevice.clone());
+        }
+        for (const id in this.paperFeatures) {
+            const paperItem = this.paperFeatures[id];
+            if (!paperItem) {
+                continue;
+            }
+            let feature = null;
+            try {
+                feature = this.__viewManagerDelegate.getFeatureByID(id);
+            } catch {
+                feature = null;
+            }
+            if (!isFlowOrControlPortFeature(feature)) {
+                continue;
+            }
+            const clone = paperItem.clone();
+            clone.visible = true;
+            group.addChild(clone);
+        }
+        if (!group.children.length) {
+            group.remove();
+            return null;
+        }
+        try {
+            if (this.__viewManagerDelegate.currentDevice) {
+                const deviceWidth = this.__viewManagerDelegate.currentDevice.getXSpan();
+                const deviceHeight = this.__viewManagerDelegate.currentDevice.getYSpan();
+                group.bounds.topLeft = new paper.Point(0, 0);
+                group.bounds.bottomRight = new paper.Point(deviceWidth, deviceHeight);
+                const svg = group.exportSVG({ asString: true }) as string;
+                const widthInMillimeters = deviceWidth / 1000;
+                const heightInMilliMeters = deviceHeight / 1000;
+                const prepend = ManufacturingLayer.generateSVGTextPrepend(widthInMillimeters, heightInMilliMeters);
+                const append = ManufacturingLayer.generateSVGTextAppend();
+                return prepend + svg + append;
+            }
+            return group.exportSVG({ asString: true }) as string;
+        } finally {
+            group.remove();
+        }
+    }
+
+    private firstSvgString(svgs: string[]): string | null {
+        for (let i = 0; i < svgs.length; i++) {
+            if (svgs[i] && typeof svgs[i] === "string" && svgs[i].indexOf("<svg") !== -1) {
+                return svgs[i];
+            }
+        }
+        return null;
     }
 
     /**
@@ -915,6 +1022,9 @@ export default class PaperView {
             this.paperFeatures[newPaperFeature.featureID] = newPaperFeature;
             console.log(newPaperFeature);
             this.insertEdgeFeatures(newPaperFeature);
+            if (this.__viewManagerDelegate && this.__viewManagerDelegate.portsOnlyView) {
+                newPaperFeature.visible = false;
+            }
             return;
         } else {
             newPaperFeature = FeatureRenderer2D.renderFeature(feature, null);
@@ -926,6 +1036,9 @@ export default class PaperView {
         const layer = this.paperLayers[index];
         this.insertChildByHeight(layer, newPaperFeature);
         this.featureRegistry.set(newPaperFeature.featureID, layer.id);
+        if (this.__viewManagerDelegate && this.__viewManagerDelegate.portsOnlyView) {
+            newPaperFeature.visible = isFlowOrControlPortFeature(feature);
+        }
         // }
     }
 

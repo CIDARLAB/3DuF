@@ -37,6 +37,8 @@ class EventBus extends EventEmitter {
     static CONNECTION_ESC_HINT = "connection_esc_hint";
     /** Emitted when the active render layer (FLOW / CTRL / … tab) changes — UI panels can mirror canvas emphasis */
     static ACTIVE_RENDER_LAYER_CHANGED = "active_render_layer_changed";
+    /** Payload: boolean — canvas shows only FLOW/CONTROL ports (cover-layer view) */
+    static PORTS_ONLY_VIEW_CHANGED = "ports_only_view_changed";
     static UPDATE_ZOOM = "update_zoom";
 }
 

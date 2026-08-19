@@ -48,6 +48,7 @@ import LogicArray from "./app/library/logicArray";
 import ToroidalMixer from "./app/library/toroidalMixer";
 import DogboneInsert from "./app/library/dogboneInsert";
 import BlackBox from "./app/library/blackBox";
+import DIYComponent from "./app/library/diyComponent";
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
 import CustomComponent from "./app/core/customComponent";
@@ -180,6 +181,7 @@ export class ComponentAPI {
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" },
         BlackBox: { object: new BlackBox(), key: "FLOW" },
+        DIYCOMPONENT: { object: new DIYComponent(), key: "FLOW" },
         Terrace: { object: new Terrace(), key: "FLOW" }
     };
 
