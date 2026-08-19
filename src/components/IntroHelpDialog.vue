@@ -46,7 +46,7 @@
                 </div>
 
                 <div v-if="selectedVersion.guiDifferences && selectedVersion.guiDifferences.length">
-                    <div class="section-title">GUI Differences vs V1.0</div>
+                    <div class="section-title">GUI Differences vs {{ selectedVersion.previousVersion }}</div>
                     <ul>
                         <li v-for="(item, idx) in selectedVersion.guiDifferences" :key="`gui-${selectedVersion.label}-${idx}`">
                             {{ item }}
@@ -171,6 +171,7 @@ export default {
             versions: [
                 {
                     label: "V1.0",
+                    previousVersion: null,
                     developers: "Aaron Heuckroth, Joshua Lippai and Radhakrishna Sanka",
                     publicationTitle:
                         "Sanka, Radhakrishna, Joshua Lippai, Dinithi Samarasekera, Sarah Nemsick, and Douglas Densmore. “3DμF - Interactive Design Environment for Continuous Flow Microfluidic Devices.” Scientific Reports 9, no. 1 (December 2019).",
@@ -183,6 +184,7 @@ export default {
                 },
                 {
                     label: "V1.1",
+                    previousVersion: "V1.0",
                     developers: "Yangruirui Zhou, Eric Xie and Radhakrishna Sanka",
                     showVideos: false,
                     showUsage: false,
@@ -205,6 +207,7 @@ export default {
                 },
                 {
                     label: "V1.2",
+                    previousVersion: "V1.1",
                     developers: "Yangruirui Zhou",
                     showVideos: true,
                     showUsage: true,
