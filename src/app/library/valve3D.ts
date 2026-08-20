@@ -25,13 +25,14 @@ export default class Valve3D extends ValveTemplate {
         };
 
         this.__defaults = {
+            // NeptuneGUI library example: Data/3DuF_component/default/JSON/valve3D.json
             componentSpacing: 1000,
             rotation: 0,
-            valveRadius: 1.2 * 1000,
+            valveRadius: 1200,
             height: 250,
-            gap: 0.6 * 1000,
-            width: 2.4 * 1000,
-            length: 2.4 * 1000
+            gap: 600,
+            width: 2400,
+            length: 2400
         };
 
         this.__units = {

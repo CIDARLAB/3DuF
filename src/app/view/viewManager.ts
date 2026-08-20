@@ -1851,6 +1851,49 @@ export default class ViewManager {
         }
     }
 
+    /**
+     * VALVE3D features draw at the glyph center. ParchMint components store
+     * the AABB top-left; if a feature was loaded without converting, recover
+     * the center from the component port / size.
+     */
+    private valveGlyphCenter(valve: Component, feature: Feature): paper.Point {
+        const position = feature.getValue("position");
+        const featurePoint = new paper.Point(Number(position[0]), Number(position[1]));
+        let topLeft: number[] | null = null;
+        try {
+            topLeft = valve.getValue("position");
+        } catch {
+            topLeft = null;
+        }
+        if (
+            !topLeft ||
+            Math.abs(featurePoint.x - Number(topLeft[0])) >= 1 ||
+            Math.abs(featurePoint.y - Number(topLeft[1])) >= 1
+        ) {
+            return featurePoint;
+        }
+        const ports = valve.ports;
+        if (ports && ports.size) {
+            const first = ports.values().next().value as { x?: number; y?: number } | undefined;
+            if (first && first.x != null && first.y != null) {
+                return new paper.Point(featurePoint.x + Number(first.x), featurePoint.y + Number(first.y));
+            }
+        }
+        let width = 0;
+        let length = 0;
+        try {
+            width = Number(valve.getValue("width"));
+            length = Number(valve.getValue("length"));
+        } catch {
+            width = 0;
+            length = 0;
+        }
+        if (width > 0 && length > 0) {
+            return new paper.Point(featurePoint.x + width / 2, featurePoint.y + length / 2);
+        }
+        return featurePoint;
+    }
+
     private getValveFlowGapPath(valve: Component, connection?: Connection): paper.Path.Rectangle | null {
         if (!this.currentDevice) {
             return null;
@@ -1862,7 +1905,6 @@ export default class ViewManager {
                 feature.layer.type === LogicalLayerType.FLOW &&
                 (feature.getType() === "Valve3D" || feature.getType() === "Valve3D_control")
             ) {
-                const position = feature.getValue("position");
                 const radius = feature.getValue("valveRadius");
                 const gap = feature.getValue("gap");
                 const rotation = feature.getValue("rotation");
@@ -1881,10 +1923,10 @@ export default class ViewManager {
                         axialPadding = 0;
                     }
                 }
-                const center = new paper.Point(position[0], position[1]);
+                const center = this.valveGlyphCenter(valve, feature);
                 const gapPath = new paper.Path.Rectangle({
-                    from: new paper.Point(position[0] - radius - axialPadding, position[1] - gap / 2),
-                    to: new paper.Point(position[0] + radius + axialPadding, position[1] + gap / 2)
+                    from: new paper.Point(center.x - radius - axialPadding, center.y - gap / 2),
+                    to: new paper.Point(center.x + radius + axialPadding, center.y + gap / 2)
                 });
                 gapPath.rotate(rotation, center);
                 return gapPath;
@@ -1904,14 +1946,13 @@ export default class ViewManager {
                 feature.layer.type === LogicalLayerType.FLOW &&
                 (feature.getType() === "Valve3D" || feature.getType() === "Valve3D_control")
             ) {
-                const position = feature.getValue("position");
                 const rotation = Number(feature.getValue("rotation"));
                 const gap = Number(feature.getValue("gap"));
-                if (!position || !Number.isFinite(rotation) || !Number.isFinite(gap) || gap <= 0) {
+                if (!Number.isFinite(rotation) || !Number.isFinite(gap) || gap <= 0) {
                     return null;
                 }
                 return {
-                    center: new paper.Point(position[0], position[1]),
+                    center: this.valveGlyphCenter(valve, feature),
                     rotation,
                     gap
                 };

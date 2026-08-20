@@ -115,12 +115,14 @@ export default class Connection extends Template {
             this.__drawStraightConnection(connectionpath, startpoint, endpoint, channelWidth, roundedProfile);
         }
 
-        // Square segments are rectangles that stop on the centerline, so a 90°
-        // turn leaves a channelWidth/2 gap on the outer corner. Fill those
-        // joints so already-compiled CHANNEL JSON still looks connected.
-        if (!roundedProfile) {
-            this.__fillSquareChannelCorners(connectionpath, segments, channelWidth);
-        }
+        // Square segments stop on the centerline, so a 90° turn leaves a
+        // channelWidth/2 hole on the outer corner. Rounded stadiums add a
+        // circle at every endpoint; CompoundPath defaults to even-odd, so
+        // two coincident joint circles cancel and reopen that same hole.
+        // Fill every orthogonal joint and keep a nonzero winding so the
+        // outermost mux bend stays connected.
+        this.__fillSquareChannelCorners(connectionpath, segments, channelWidth);
+        connectionpath.fillRule = "nonzero";
 
         connectionpath.fillColor = color;
         return connectionpath;
