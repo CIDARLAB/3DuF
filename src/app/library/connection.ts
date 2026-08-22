@@ -99,6 +99,9 @@ export default class Connection extends Template {
         const channelWidth = params.channelWidth;
         const segments = params.segments;
         const connectionpath = new paper.CompoundPath("");
+        // Set winding before adding children. Default even-odd punches a hole
+        // wherever two rounded end-caps meet (mux 90° corners, shared trunks).
+        connectionpath.fillRule = "nonzero";
         let startpoint, endpoint;
 
         let p1, p2;
@@ -106,13 +109,35 @@ export default class Connection extends Template {
         const crossSection = params.crossSection !== undefined && params.crossSection !== null ? Number(params.crossSection) : 0;
         const roundedProfile = crossSection >= 0.5;
 
+        if (!Array.isArray(segments) || segments.length === 0) {
+            console.warn("[3DuF] Connection render skipped: missing segments", params);
+            connectionpath.fillColor = color;
+            return connectionpath;
+        }
+
+        const capAt = this.__roundedCapLookup(segments, wayPoints);
+
         for (const i in segments) {
             const segment = segments[i];
+            if (!segment || segment.length < 2 || !segment[0] || !segment[1]) {
+                console.warn("[3DuF] Connection render skipped a malformed segment", segment);
+                continue;
+            }
             p1 = segment[0];
             p2 = segment[1];
             startpoint = new paper.Point(p1[0], p1[1]);
             endpoint = new paper.Point(p2[0], p2[1]);
-            this.__drawStraightConnection(connectionpath, startpoint, endpoint, channelWidth, roundedProfile);
+            const startKey = this.__pointKey(p1);
+            const endKey = this.__pointKey(p2);
+            this.__drawStraightConnection(
+                connectionpath,
+                startpoint,
+                endpoint,
+                channelWidth,
+                roundedProfile,
+                capAt.has(startKey),
+                capAt.has(endKey)
+            );
         }
 
         // Square segments stop on the centerline, so a 90° turn leaves a
@@ -123,9 +148,52 @@ export default class Connection extends Template {
         // outermost mux bend stays connected.
         this.__fillSquareChannelCorners(connectionpath, segments, channelWidth);
         connectionpath.fillRule = "nonzero";
-
         connectionpath.fillColor = color;
         return connectionpath;
+    }
+
+    __pointKey(p: [number, number] | number[]): string {
+        return `${Math.round(Number(p[0]))},${Math.round(Number(p[1]))}`;
+    }
+
+    /**
+     * Round caps belong at true terminals and at touching corners. Valve-gap
+     * ends are extra vertices that do not match the original wayPoints and do
+     * not coincide with another segment — those stay square so the FLOW
+     * channel is interrupted at the valve gap instead of the stadium caps
+     * filling it.
+     */
+    __roundedCapLookup(
+        segments: Array<[[number, number], [number, number]]>,
+        wayPoints: Array<[number, number]> | undefined
+    ): Set<string> {
+        const capAt = new Set<string>();
+        if (Array.isArray(wayPoints)) {
+            for (const wp of wayPoints) {
+                if (wp && wp.length >= 2) {
+                    capAt.add(this.__pointKey(wp));
+                }
+            }
+        }
+        const counts = new Map<string, number>();
+        for (const segment of segments) {
+            if (!segment || segment.length < 2) {
+                continue;
+            }
+            for (const pt of [segment[0], segment[1]]) {
+                if (!pt || pt.length < 2) {
+                    continue;
+                }
+                const key = this.__pointKey(pt);
+                counts.set(key, (counts.get(key) || 0) + 1);
+            }
+        }
+        counts.forEach((count, key) => {
+            if (count > 1) {
+                capAt.add(key);
+            }
+        });
+        return capAt;
     }
 
     __fillSquareChannelCorners(
@@ -177,14 +245,17 @@ export default class Connection extends Template {
         startpoint: paper.Point,
         endpoint: paper.Point,
         channelWidth: number,
-        roundedProfile: boolean
+        roundedProfile: boolean,
+        capStart = true,
+        capEnd = true
     ): void  {
         const vec = endpoint.subtract(startpoint);
         const radius = channelWidth / 2;
         const length = vec.length;
 
-        // Rounded profile is rendered as a center rectangle that ends exactly on
-        // the connection endpoints, plus circular end caps with radius=channelRadius.
+        // Rounded profile is a center rectangle that ends on the connection
+        // endpoints, plus circular caps at terminals / corners. Valve-gap ends
+        // stay square so the FLOW channel is broken at the valve, not filled.
         if (roundedProfile) {
             if (length > 0) {
                 const rec = new paper.Path.Rectangle({
@@ -195,8 +266,12 @@ export default class Connection extends Template {
                 rec.rotate(vec.angle, startpoint);
                 compoundpath.addChild(rec);
             }
-            compoundpath.addChild(new paper.Path.Circle(startpoint, radius));
-            compoundpath.addChild(new paper.Path.Circle(endpoint, radius));
+            if (capStart) {
+                compoundpath.addChild(new paper.Path.Circle(startpoint, radius));
+            }
+            if (capEnd) {
+                compoundpath.addChild(new paper.Path.Circle(endpoint, radius));
+            }
             return;
         }
 
@@ -204,7 +279,6 @@ export default class Connection extends Template {
             point: startpoint,
             size: [length, channelWidth]
         });
-        // Keep square profile centered around the centerline with no axial extension.
         rec.translate(([0, -radius] as unknown) as paper.Point);
         rec.rotate(vec.angle, startpoint);
         compoundpath.addChild(rec);

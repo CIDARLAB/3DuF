@@ -32,10 +32,17 @@ export default class LoadUtils {
     constructor() {}
 
     /**
-     * ParchMint component ``position`` is the top-left of the AABB. 3DuF
-     * PORT / VALVE3D features draw ``position`` as the glyph center. Convert
-     * when regenerating features from components so the valve sits on the
-     * flow channel and ports connect at their terminal.
+     * 3DuF PORT / VALVE3D / VALVE glyphs draw ``position`` as the center
+     * (``getPorts`` is ``(0, 0)``). Native 3DuF JSON already stores that center
+     * and usually has an empty ``ports`` array.
+     *
+     * Neptune ParchMint also stores PORT/VALVE3D ``position`` as the routing
+     * terminal (connection wayPoints equal ``position``). The ``ports[0]``
+     * entry is the AABB half-span (1000, 1000) / (1200, 1200) and must NOT be
+     * added again — that used to shift every port and valve off its channel,
+     * so mux inlets looked disconnected from the outlet.
+     *
+     * MIXER and other AABB-origin types fall through unchanged.
      */
     static featurePositionFromParchmint(componentJson: ComponentInterchangeV1): number[] {
         const params = componentJson.params || {};
@@ -47,16 +54,22 @@ export default class LoadUtils {
             return pos;
         }
         const ports = componentJson.ports || [];
-        if (ports.length && ports[0] && ports[0].x != null && ports[0].y != null) {
-            return [pos[0] + Number(ports[0].x), pos[1] + Number(ports[0].y)];
+        if (!ports.length || ports[0] == null || ports[0].x == null || ports[0].y == null) {
+            return pos;
         }
-        const radius = params.portRadius != null ? 2 * Number(params.portRadius) : 0;
-        const w = Number(componentJson["x-span"] ?? params.width ?? radius);
+        const px = Number(ports[0].x);
+        const py = Number(ports[0].y);
+        if (!Number.isFinite(px) || !Number.isFinite(py) || (px === 0 && py === 0)) {
+            return pos;
+        }
+        const w = Number(componentJson["x-span"] ?? params.width ?? (params.portRadius != null ? 2 * Number(params.portRadius) : 0));
         const h = Number(componentJson["y-span"] ?? params.length ?? w);
-        if (w > 0 && h > 0) {
-            return [pos[0] + w / 2, pos[1] + h / 2];
+        // Standard PORT/VALVE3D: ports[0] is the AABB center. Position is already
+        // the glyph/connection center (Neptune PR and 3DuF native).
+        if (w > 0 && h > 0 && Math.abs(px - w / 2) < 1 && Math.abs(py - h / 2) < 1) {
+            return pos;
         }
-        return pos;
+        return [pos[0] + px, pos[1] + py];
     }
 
     /**
@@ -393,47 +406,60 @@ export default class LoadUtils {
      */
     static loadFeaturesFromConnectionInterchangeV1(json: DeviceInterchangeV1, jsonlayer: LayerInterchangeV1): Array<Feature> {
         const ret: Array<Feature> = [];
+        const typestring = "Connection";
+        const defaultHeight = ComponentAPI.getDefaultsForType(typestring).height;
         for (const i in json.connections) {
-            if (jsonlayer.id == json.connections[i].layer) {
-                const mint = String(json.connections[i].entity || "CHANNEL");
-                const inferredCrossSection = mint.toUpperCase().includes("ROUND") ? 1 : 0;
-                const typestring = "Connection";
-
-                let feat: Feature; 
-                let rawParams = json.connections[i].params;
-                if (rawParams.start) {
-                    if (!Object.prototype.hasOwnProperty.call(rawParams, "crossSection")) {
-                        rawParams.crossSection = inferredCrossSection;
-                    }
-                    feat = Device.makeFeature(typestring, rawParams);
-                    feat.referenceID = json.connections[i].id;
-                    ret.push(feat);
-                } else {
-                    if (json.connections[i].paths[0]) {
-                        const wayPoints = json.connections[i].paths[0].wayPoints;
-                        const segments: Array<[[number, number],[number,number]]> = [];
-                        for (let k = 0; k < wayPoints.length - 1; k++) {
-                            segments[k] = [wayPoints[k], wayPoints[k + 1]];
-                        }
-                        const newParams = {
-                            start: ["Point", wayPoints[0][0], wayPoints[0][1]],
-                            end: wayPoints[wayPoints.length - 1],
-                            wayPoints: wayPoints,
-                            segments: segments,
-                            connectionSpacing: rawParams.connectionSpacing,
-                            channelWidth: rawParams.channelWidth,
-                            height: ComponentAPI.getDefaultsForType(typestring).height,
-                            crossSection: Object.prototype.hasOwnProperty.call(rawParams, "crossSection")
-                                ? rawParams.crossSection
-                                : inferredCrossSection
-                        };
-                        feat = Device.makeFeature(typestring, newParams);
-                        feat.referenceID = json.connections[i].id;
-                        ret.push(feat);
-                    } else {
-                        console.log("Connection missing path description");
-                    }
-                }                          
+            const connectionJson = json.connections[i];
+            if (jsonlayer.id != connectionJson.layer) {
+                continue;
+            }
+            const mint = String(connectionJson.entity || "CHANNEL");
+            const inferredCrossSection = mint.toUpperCase().includes("ROUND") ? 1 : 0;
+            const rawParams = connectionJson.params || {};
+            const wayPointsFromPath = connectionJson.paths?.[0]?.wayPoints;
+            const wayPoints = Array.isArray(wayPointsFromPath) && wayPointsFromPath.length >= 2
+                ? wayPointsFromPath
+                : Array.isArray(rawParams.wayPoints) && rawParams.wayPoints.length >= 2
+                    ? rawParams.wayPoints
+                    : null;
+            if (!wayPoints) {
+                console.warn("[3DuF] Connection missing path / wayPoints, skip render:", connectionJson.id || connectionJson.name);
+                continue;
+            }
+            const segments: Array<[[number, number], [number, number]]> = [];
+            for (let k = 0; k < wayPoints.length - 1; k++) {
+                const a = wayPoints[k];
+                const b = wayPoints[k + 1];
+                if (!a || !b || a.length < 2 || b.length < 2) {
+                    console.warn("[3DuF] Connection has a malformed waypoint, skip segment:", connectionJson.id, k);
+                    continue;
+                }
+                segments.push([a, b]);
+            }
+            if (!segments.length) {
+                console.warn("[3DuF] Connection produced zero segments, skip render:", connectionJson.id || connectionJson.name);
+                continue;
+            }
+            const startPt = wayPoints[0];
+            const endPt = wayPoints[wayPoints.length - 1];
+            const newParams = {
+                start: [startPt[0], startPt[1]],
+                end: [endPt[0], endPt[1]],
+                wayPoints: wayPoints,
+                segments: segments,
+                connectionSpacing: rawParams.connectionSpacing,
+                channelWidth: rawParams.channelWidth,
+                height: Object.prototype.hasOwnProperty.call(rawParams, "height") ? rawParams.height : defaultHeight,
+                crossSection: Object.prototype.hasOwnProperty.call(rawParams, "crossSection")
+                    ? rawParams.crossSection
+                    : inferredCrossSection
+            };
+            try {
+                const feat = Device.makeFeature(typestring, newParams);
+                feat.referenceID = connectionJson.id;
+                ret.push(feat);
+            } catch (err) {
+                console.error("[3DuF] Failed to create Connection feature:", connectionJson.id || connectionJson.name, err);
             }
         }
         return ret;

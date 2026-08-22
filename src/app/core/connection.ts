@@ -9,6 +9,7 @@ import uuid from "node-uuid";
 import { ConnectionInterchangeV1_2, ConnectionPathInterchangeV1_2, ConnectionTargetInterchangeV1 } from "./init";
 import { Segment, Point } from "./init";
 import ConnectionUtils from "../utils/connectionUtils";
+import { clipSegmentsByValveGaps, ValveGapRect } from "../utils/valveChannelClip";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
 import ExportUtils from "../utils/exportUtils";
@@ -430,6 +431,23 @@ export default class Connection {
         }
 
         return foundflag;
+    }
+
+    /**
+     * Split connection centerlines at VALVE3D FLOW gaps without paper.js
+     * boolean / intersection tests (those fail or get skipped on import).
+     */
+    insertValveGapsGeometric(gaps: ValveGapRect[]): boolean {
+        if (!Array.isArray(gaps) || gaps.length === 0) {
+            return false;
+        }
+        const segments = this.getValue("segments");
+        if (!Array.isArray(segments) || segments.length === 0) {
+            return false;
+        }
+        const clipped = clipSegmentsByValveGaps(segments, gaps);
+        this.updateSegments(clipped);
+        return clipped.length !== segments.length;
     }
 
     /**

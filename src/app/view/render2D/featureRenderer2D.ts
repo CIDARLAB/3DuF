@@ -4,8 +4,9 @@ import Registry from "../../core/registry";
 import { renderEdgeFeature } from "./dxfObjectRenderer2D";
 import paper from "paper";
 import { ComponentAPI } from "@/componentAPI";
-import { LogicalLayerType, Point, ToolPaperObject } from "@/app/core/init";
+import { LogicalLayerType, Point, Segment, ToolPaperObject } from "@/app/core/init";
 import Feature from "@/app/core/feature";
+import { clipSegmentsByValveGaps, ValveGapRect, valveGapRectFromValues } from "@/app/utils/valveChannelClip";
 
 /**
  * When there is no matching valve geometry on the active logical layer (e.g. legacy/single-layer
@@ -16,74 +17,94 @@ const VALVE_INACTIVE_LOGICAL_LAYER_ALPHA = 0.5;
 const VALVE_RENDER_TYPES = new Set(["Valve", "Valve3D_control", "Valve3D"]);
 const FLOW_VALVE_RENDER_TYPES = new Set(["Valve3D_control", "Valve3D"]);
 
-function applyValveFlowCutToConnectionRender(rendered: paper.Item, feature: Feature): paper.Item {
+function valveGapsForConnectionFeature(feature: Feature): ValveGapRect[] {
+    const device = Registry.currentDevice;
+    const connectionId = feature.referenceID;
+    if (!device || !connectionId) {
+        return [];
+    }
+    let connection = null;
+    try {
+        connection = device.getConnectionByID(connectionId);
+    } catch {
+        connection = null;
+    }
+    if (!connection) {
+        return [];
+    }
+    const gaps: ValveGapRect[] = [];
+    const seen = new Set<string>();
+    const addGap = (rect: ValveGapRect | null) => {
+        if (!rect) {
+            return;
+        }
+        const key = `${rect.cx},${rect.cy},${rect.radius},${rect.gap},${rect.rotation}`;
+        if (seen.has(key)) {
+            return;
+        }
+        seen.add(key);
+        gaps.push(rect);
+    };
+    const valves = device.getValvesForConnection(connection);
+    for (const valve of valves) {
+        let addedFromFeature = false;
+        for (const featureID of valve.featureIDs) {
+            try {
+                const sibling = device.getFeatureByID(featureID);
+                if (!FLOW_VALVE_RENDER_TYPES.has(sibling.getType())) {
+                    continue;
+                }
+                addGap(
+                    valveGapRectFromValues(
+                        sibling.getValue("position"),
+                        sibling.getValue("valveRadius"),
+                        sibling.getValue("gap"),
+                        sibling.getValue("rotation")
+                    )
+                );
+                addedFromFeature = true;
+            } catch {
+                continue;
+            }
+        }
+        if (!addedFromFeature) {
+            try {
+                addGap(
+                    valveGapRectFromValues(
+                        valve.getValue("position"),
+                        valve.getValue("valveRadius"),
+                        valve.getValue("gap"),
+                        valve.getValue("rotation")
+                    )
+                );
+            } catch {
+                continue;
+            }
+        }
+    }
+    return gaps;
+}
+
+/**
+ * Clip FLOW connection centerlines against each mapped VALVE3D gap *before*
+ * drawing. Paper.js boolean subtract either emptied mux arms or, when skipped
+ * to keep port stubs, left a rounded channel running through the valve.
+ */
+function clipConnectionSegmentsForValveGaps(feature: Feature, segments: Segment[]): Segment[] {
     if (!feature.layer || feature.layer.type !== LogicalLayerType.FLOW) {
-        return rendered;
+        return segments;
     }
     if (feature.getType() !== "Connection") {
-        return rendered;
+        return segments;
     }
-
-    const layerFeatures = feature.layer.getAllFeaturesFromLayer();
-    let current = rendered;
-    let channelWidth = 0;
-    try {
-        const cw = Number(feature.getValue("channelWidth"));
-        if (Number.isFinite(cw) && cw > 0) {
-            channelWidth = cw;
-        }
-    } catch {
-        channelWidth = 0;
+    if (!Array.isArray(segments) || segments.length === 0) {
+        return segments;
     }
-    const axialPadding = channelWidth / 2;
-
-    for (const featureID in layerFeatures) {
-        const candidate = layerFeatures[featureID];
-        if (!FLOW_VALVE_RENDER_TYPES.has(candidate.getType())) {
-            continue;
-        }
-        if (!candidate.layer || candidate.layer.type !== LogicalLayerType.FLOW) {
-            continue;
-        }
-
-        let position;
-        let radius;
-        let gap;
-        let rotation;
-        try {
-            position = candidate.getValue("position");
-            radius = Number(candidate.getValue("valveRadius"));
-            gap = Number(candidate.getValue("gap"));
-            rotation = Number(candidate.getValue("rotation"));
-        } catch {
-            continue;
-        }
-
-        if (
-            !position ||
-            !Number.isFinite(radius) ||
-            radius <= 0 ||
-            !Number.isFinite(gap) ||
-            gap <= 0 ||
-            !Number.isFinite(rotation)
-        ) {
-            continue;
-        }
-
-        const center = new paper.Point(position[0], position[1]);
-        const gapPath = new paper.Path.Rectangle({
-            from: new paper.Point(position[0] - radius - axialPadding, position[1] - gap / 2),
-            to: new paper.Point(position[0] + radius + axialPadding, position[1] + gap / 2)
-        });
-        gapPath.rotate(rotation, center);
-
-        const cut = (current as paper.PathItem).subtract(gapPath) as paper.Item;
-        current.remove();
-        gapPath.remove();
-        current = cut;
+    const gaps = valveGapsForConnectionFeature(feature);
+    if (gaps.length === 0) {
+        return segments;
     }
-
-    return current;
+    return clipSegmentsByValveGaps(segments, gaps);
 }
 
 function hasValveCounterpartOnLayer(feature: Feature, logicalLayerType: LogicalLayerType): boolean {
@@ -332,13 +353,15 @@ export function renderFeature(feature: Feature, key: string | null, options?: Re
         for (const paramkey in params) {
             primParams[paramkey] = feature.getValue(params[paramkey]);
         }
+        if (feature.getType() === "Connection" && Array.isArray(primParams.segments)) {
+            primParams.segments = clipConnectionSegmentsForValveGaps(feature, primParams.segments);
+        }
         //primParams["position"] = [0,0];
         //console.log("Data for rendering:", primParams);
         //Set the position of the params to 0,0
         primParams.color = getLayerColor(feature);
         primParams.baseColor = getBaseColor(feature);
         rendered = renderer.render2D(primParams, key);
-        rendered = applyValveFlowCutToConnectionRender(rendered as paper.Item, feature);
         // Rendered is going to be at 0,0 with whatever rotation
         // Now we can get draw offset by looking at the rendered topleft corner
         // move the feature to user pointed position

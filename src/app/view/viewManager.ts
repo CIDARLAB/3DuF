@@ -44,6 +44,7 @@ import LoadUtils from "@/app/utils/loadUtils";
 import ExportUtils, { SerializationError } from "@/app/utils/exportUtils";
 import { LogicalLayerType, InterchangeV1_2, ValveType } from "@/app/core/init";
 import { stripToFlowControlPorts } from "@/app/utils/portsOnlyUtils";
+import { ValveGapRect, valveGapRectFromValues } from "@/app/utils/valveChannelClip";
 import JSZip from "jszip";
 
 import { Point } from "@/app/core/init";
@@ -1137,6 +1138,8 @@ export default class ViewManager {
         // render the same valve gap geometry as interactive placement.
         this.reapplyValveConnectionBreaks();
 
+        this.logImportedDeviceDiagnostics(json);
+
         this.view.initializeView();
         this.updateGrid();
         this.updateDevice(Registry.currentDevice!);
@@ -1180,6 +1183,117 @@ export default class ViewManager {
                 console.warn("Could not re-apply valve gap for connection during JSON load:", connection.id, err);
             }
         }
+    }
+
+    /**
+     * Dump a compact load report so mux / valve / missing-channel bugs show up
+     * in the browser console (copy from DevTools → Console).
+     */
+    private logImportedDeviceDiagnostics(json: { name?: string; components?: any[]; connections?: any[] }): void {
+        const device = this.currentDevice;
+        const prefix = "[3DuF import]";
+        if (!device) {
+            console.error(prefix, "no device after load");
+            return;
+        }
+        const connections = device.connections || [];
+        const components = device.components || [];
+        const unrouted = connections.filter(c => !c.routed).map(c => c.id || c.name);
+        const byEntity: { [k: string]: number } = {};
+        for (const c of components) {
+            const ent = String(c.mint || "UNKNOWN");
+            byEntity[ent] = (byEntity[ent] || 0) + 1;
+        }
+        const missingFeatures: string[] = [];
+        const connectionSummary = connections.map(conn => {
+            let start: unknown = null;
+            let end: unknown = null;
+            let nseg = 0;
+            try {
+                const wps = conn.getValue("wayPoints");
+                if (Array.isArray(wps) && wps.length) {
+                    start = wps[0];
+                    end = wps[wps.length - 1];
+                }
+            } catch {
+                /* wayPoints missing */
+            }
+            try {
+                const segs = conn.getValue("segments");
+                nseg = Array.isArray(segs) ? segs.length : 0;
+            } catch {
+                nseg = 0;
+            }
+            const nfeat = conn.featureIDs ? conn.featureIDs.length : 0;
+            if (nfeat === 0 || nseg === 0) {
+                missingFeatures.push(String(conn.id || conn.name));
+            }
+            const src = conn.source ? conn.source.component?.id || conn.source.component?.name : null;
+            const sinks = (conn.sinks || []).map(s => s.component?.id || s.component?.name);
+            return {
+                id: conn.id,
+                name: conn.name,
+                layer: conn.layer?.id,
+                routed: conn.routed,
+                features: nfeat,
+                segments: nseg,
+                start,
+                end,
+                source: src,
+                sinks
+            };
+        });
+        console.groupCollapsed(`${prefix} ${json.name || device.name}`);
+        console.log("components by entity", byEntity);
+        console.log("connections", connectionSummary);
+        if (unrouted.length) {
+            console.warn(prefix, "unrouted connections (will show as rats-nest, not a solid pipe):", unrouted);
+        }
+        if (missingFeatures.length) {
+            console.error(prefix, "connections with no feature or no segments (pipe will not render):", missingFeatures);
+        }
+        for (const c of components) {
+            const ent = String(c.mint || "").toUpperCase();
+            if (ent !== "PORT" && ent !== "VALVE3D") {
+                continue;
+            }
+            let pos: number[] | null = null;
+            try {
+                pos = c.getValue("position");
+            } catch {
+                pos = null;
+            }
+            const hits: string[] = [];
+            if (pos && pos.length >= 2) {
+                for (const conn of connections) {
+                    let wps: number[][] = [];
+                    try {
+                        wps = conn.getValue("wayPoints") || [];
+                    } catch {
+                        wps = [];
+                    }
+                    for (const wp of wps) {
+                        if (
+                            Array.isArray(wp) &&
+                            Math.abs(Number(wp[0]) - Number(pos[0])) < 1 &&
+                            Math.abs(Number(wp[1]) - Number(pos[1])) < 1
+                        ) {
+                            hits.push(String(conn.id || conn.name));
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!hits.length && ent === "PORT") {
+                console.warn(
+                    prefix,
+                    "PORT position does not sit on any connection waypoint (looks disconnected):",
+                    c.id || c.name,
+                    pos
+                );
+            }
+        }
+        console.groupEnd();
     }
 
     /**
@@ -1852,46 +1966,50 @@ export default class ViewManager {
     }
 
     /**
-     * VALVE3D features draw at the glyph center. ParchMint components store
-     * the AABB top-left; if a feature was loaded without converting, recover
-     * the center from the component port / size.
+     * VALVE3D features draw at the glyph center. Feature ``position`` is that
+     * center (Neptune PR and 3DuF native). Do not add ports[0] / half-span —
+     * that double-shifts the gap off the host channel.
      */
-    private valveGlyphCenter(valve: Component, feature: Feature): paper.Point {
+    private valveGlyphCenter(_valve: Component, feature: Feature): paper.Point {
         const position = feature.getValue("position");
-        const featurePoint = new paper.Point(Number(position[0]), Number(position[1]));
-        let topLeft: number[] | null = null;
-        try {
-            topLeft = valve.getValue("position");
-        } catch {
-            topLeft = null;
+        return new paper.Point(Number(position[0]), Number(position[1]));
+    }
+
+    private getValveFlowClipRect(valve: Component): ValveGapRect | null {
+        if (!this.currentDevice) {
+            return null;
         }
-        if (
-            !topLeft ||
-            Math.abs(featurePoint.x - Number(topLeft[0])) >= 1 ||
-            Math.abs(featurePoint.y - Number(topLeft[1])) >= 1
-        ) {
-            return featurePoint;
-        }
-        const ports = valve.ports;
-        if (ports && ports.size) {
-            const first = ports.values().next().value as { x?: number; y?: number } | undefined;
-            if (first && first.x != null && first.y != null) {
-                return new paper.Point(featurePoint.x + Number(first.x), featurePoint.y + Number(first.y));
+        for (const featureID of valve.featureIDs) {
+            let feature: Feature;
+            try {
+                feature = this.currentDevice.getFeatureByID(featureID);
+            } catch {
+                continue;
+            }
+            if (
+                feature.layer &&
+                feature.layer.type === LogicalLayerType.FLOW &&
+                (feature.getType() === "Valve3D" || feature.getType() === "Valve3D_control")
+            ) {
+                const center = this.valveGlyphCenter(valve, feature);
+                return valveGapRectFromValues(
+                    [center.x, center.y],
+                    feature.getValue("valveRadius"),
+                    feature.getValue("gap"),
+                    feature.getValue("rotation")
+                );
             }
         }
-        let width = 0;
-        let length = 0;
         try {
-            width = Number(valve.getValue("width"));
-            length = Number(valve.getValue("length"));
+            return valveGapRectFromValues(
+                valve.getValue("position"),
+                valve.getValue("valveRadius"),
+                valve.getValue("gap"),
+                valve.getValue("rotation")
+            );
         } catch {
-            width = 0;
-            length = 0;
+            return null;
         }
-        if (width > 0 && length > 0) {
-            return new paper.Point(featurePoint.x + width / 2, featurePoint.y + length / 2);
-        }
-        return featurePoint;
     }
 
     private getValveFlowGapPath(valve: Component, connection?: Connection): paper.Path.Rectangle | null {
@@ -1924,9 +2042,12 @@ export default class ViewManager {
                     }
                 }
                 const center = this.valveGlyphCenter(valve, feature);
+                // rotation 0: valve crescent gap is horizontal, flow is vertical.
+                // Pad along Y (channel axis) by channelWidth/2 so rounded end-caps
+                // do not fill the 600µm valve gap. Perpendicular span is valveRadius.
                 const gapPath = new paper.Path.Rectangle({
-                    from: new paper.Point(center.x - radius - axialPadding, center.y - gap / 2),
-                    to: new paper.Point(center.x + radius + axialPadding, center.y + gap / 2)
+                    from: new paper.Point(center.x - radius, center.y - gap / 2 - axialPadding),
+                    to: new paper.Point(center.x + radius, center.y + gap / 2 + axialPadding)
                 });
                 gapPath.rotate(rotation, center);
                 return gapPath;
@@ -2178,34 +2299,12 @@ export default class ViewManager {
         if (valves === undefined || valves === null) {
             throw new Error("Valves are undefined or null when updating connection: " + connection.id);
         }
+        const gaps: ValveGapRect[] = [];
         for (const j in valves) {
             const valve = valves[j];
-            const is3D = Registry.currentDevice?.getValveType(valve);
-            if (is3D) {
-                const flowGapPath = this.getValveFlowGapPath(valve, connection);
-                let gapInserted = false;
-                if (flowGapPath) {
-                    try {
-                        gapInserted = connection.insertFeatureGap(flowGapPath);
-                    } catch (err) {
-                        console.warn("Flow gap insertion failed, falling back to bounding box gap:", err);
-                        gapInserted = false;
-                    } finally {
-                        flowGapPath.remove();
-                    }
-                }
-                if (!gapInserted) {
-                    try {
-                        const boundingbox = valve.getBoundingRectangle();
-                        gapInserted = connection.insertFeatureGap(boundingbox);
-                    } catch (err) {
-                        console.warn("Bounding-box gap insertion failed, trying projection fallback:", err);
-                        gapInserted = false;
-                    }
-                }
-                if (!gapInserted) {
-                    this.insertValveGapByProjection(connection, valve);
-                }
+            const rect = this.getValveFlowClipRect(valve);
+            if (rect) {
+                gaps.push(rect);
             }
         }
 
@@ -2213,39 +2312,19 @@ export default class ViewManager {
         // Valve3D features without component/referenceID/valveMap entries. Still break channel.
         const unmappedValveFeatures = this.getUnmappedFlowValveFeaturesForConnection(connection);
         for (const valveFeature of unmappedValveFeatures) {
-            const gapInfo = this.getGapInfoFromValveFeature(valveFeature);
-            if (!gapInfo) {
-                continue;
+            const rect = valveGapRectFromValues(
+                valveFeature.getValue("position"),
+                valveFeature.getValue("valveRadius"),
+                valveFeature.getValue("gap"),
+                valveFeature.getValue("rotation")
+            );
+            if (rect) {
+                gaps.push(rect);
             }
-            const center = gapInfo.center;
-            let axialPadding = 0;
-            try {
-                const channelWidth = Number(connection.getValue("channelWidth"));
-                if (Number.isFinite(channelWidth) && channelWidth > 0) {
-                    axialPadding = channelWidth / 2;
-                }
-            } catch {
-                axialPadding = 0;
-            }
-            const radius = Number(valveFeature.getValue("valveRadius"));
-            let gapInserted = false;
-            if (Number.isFinite(radius) && radius > 0) {
-                const gapPath = new paper.Path.Rectangle({
-                    from: new paper.Point(center.x - radius - axialPadding, center.y - gapInfo.gap / 2),
-                    to: new paper.Point(center.x + radius + axialPadding, center.y + gapInfo.gap / 2)
-                });
-                gapPath.rotate(gapInfo.rotation, center);
-                try {
-                    gapInserted = connection.insertFeatureGap(gapPath);
-                } catch {
-                    gapInserted = false;
-                } finally {
-                    gapPath.remove();
-                }
-            }
-            if (!gapInserted) {
-                this.insertGapByProjectionInfo(connection, gapInfo);
-            }
+        }
+
+        if (gaps.length > 0) {
+            connection.insertValveGapsGeometric(gaps);
         }
     }
 
