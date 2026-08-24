@@ -426,9 +426,9 @@ export default class Template {
             paper.setup(new paper.Size([64000, 48000]));
         }
 
-        params.position = [0, 0];
+        const queryParams = { ...params, position: [0, 0] };
 
-        const unitedBounds = this.getBounds(params);
+        const unitedBounds = this.getBounds(queryParams);
         if (unitedBounds === null) {
             throw new Error("No bounds found for component");
         }  
@@ -447,11 +447,13 @@ export default class Template {
      * @memberof Template
      */
     getDrawOffset(params: { [key: string]: any }) {
-        let newParams = params;
-        newParams.position = [0, 0];
-        newParams.rotation = 0;
-        newParams.mirrorByX = 0;
-        newParams.mirrorByY = 0;
+        const newParams = {
+            ...params,
+            position: [0, 0],
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
+        };
 
         const position = newParams.position;
         const positionUnitedBounds = this.getBounds(newParams);
@@ -474,17 +476,36 @@ export default class Template {
      * @memberof Template
      */
     getCenter(params: { [key: string]: any }): { x: any; y: any } {
-        let newParams = params;
-
-        newParams.rotation = 0;
-        newParams.mirrorByX = 0;
-        newParams.mirrorByY = 0;
+        const newParams = {
+            ...params,
+            rotation: 0,
+            mirrorByX: 0,
+            mirrorByY: 0
+        };
 
         const dimensions = this.getDimensions(newParams);
         const x = dimensions.xspan / 2;
         const y = dimensions.yspan / 2;
 
         return {x,y};
+    }
+
+    /**
+     * Convert a rotation-center ``position`` to the library draw origin that
+     * ``render2D`` expects. Stored JSON / placement coordinates are the
+     * geometric center (stable under rotation); primitives still draw from
+     * their historical origin (center, left-middle, top-left, …).
+     */
+    drawOriginFromCenter(params: { [key: string]: any }): [number, number] {
+        const center = params.position;
+        const cx = Number(Array.isArray(center) ? center[0] : 0);
+        const cy = Number(Array.isArray(center) ? center[1] : 0);
+        const drawOffset = this.getDrawOffset(params);
+        const localCenter = this.getCenter(params);
+        return [
+            cx - (Number(localCenter.x) - Number(drawOffset[0])),
+            cy - (Number(localCenter.y) - Number(drawOffset[1]))
+        ];
     }
 
         /**

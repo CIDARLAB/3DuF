@@ -170,8 +170,7 @@ export default class ConnectionTool extends MouseTool {
         this.startPoint = PositionTool.getTarget(this.lastPoint);
         this.lastPoint = this.startPoint;
         if (isPointOnComponent) {
-            // Modify the waypoint to reflect closest port in the future
-            const componentport = this.__getClosestComponentPort(isPointOnComponent, this.startPoint);
+            const componentport = this.__getClosestComponentPort(isPointOnComponent, this.startPoint, this.startPoint);
             if (componentport !== null) {
                 const location = ComponentPort.calculateAbsolutePosition(componentport, isPointOnComponent);
                 this.source = new ConnectionTarget(isPointOnComponent, componentport.label);
@@ -310,6 +309,7 @@ export default class ConnectionTool extends MouseTool {
         const isPointOnConnection = this.__isPointOnConnection(point!);
         if (point === null) return;
         let target = PositionTool.getTarget([point.x, point.y]);
+        const clickTarget = target;
         if (isManhatten && target) {
             // TODO: modify the target to find the orthogonal point
             let lastwaypoint = this.startPoint;
@@ -322,16 +322,17 @@ export default class ConnectionTool extends MouseTool {
             }
             target = this.getNextOrthogonalPoint(lastwaypoint, target);
         }
+        const approachPoint =
+            this.wayPoints.length > 0 ? this.wayPoints[this.wayPoints.length - 1] : this.startPoint;
         if (target.length == 2) {
             this.wayPoints.push(target);
         }
 
         if (isPointOnComponent) {
-            // Modify the waypoint to reflect closest port in the future
-            if (this.startPoint === null) {
+            if (this.startPoint === null || approachPoint === null) {
                 throw new Error("No start point to update the channel");
             }
-            const componentport = this.__getClosestComponentPort(isPointOnComponent, this.startPoint, target);
+            const componentport = this.__getClosestComponentPort(isPointOnComponent, approachPoint, clickTarget);
             if (componentport !== null) {
                 const location = ComponentPort.calculateAbsolutePosition(componentport, isPointOnComponent);
                 connectiontargettoadd = new ConnectionTarget(isPointOnComponent, componentport.label);
@@ -511,70 +512,135 @@ export default class ConnectionTool extends MouseTool {
     }
 
     /**
-     * Returns the closest component port to the given point
-     * @param component
-     * @param startPoint
-     * @param targetPoint This is null in case of the initialzing case
-     * @return {ComponentPort}
-     * @private
+     * Snap to a component port using the same rule for every primitive:
+     * a channel approaching from the left docks at the left-facing port, from the
+     * right at the right-facing port, and so on. Clicking the body (often the
+     * center) must not fall back to insertion order — that always picked the
+     * top port on a chamber.
+     *
+     * If the click is uniquely close to one port, that click wins; otherwise the
+     * port that faces `approachPoint` (incoming waypoint, or the click when
+     * starting) is used.
      */
-    __getClosestComponentPort(component: any, startPoint: Point, targetPoint: Point | null = null) {
-        // console.log("Location of startpoint: ",startPoint);
-        // Find out if this is on control or flow for now
-        // TODO:Change this implementation, currently layer does not have a type setting that maps 1-1 to the componentport layer location
-        let closest;
-        let layertype = null;
-        let dist;
-        const gridsize = Registry.currentGrid?.getSpacing();
-        console.log("Grid Size: ", gridsize);
-
-        if (this.viewManagerDelegate.currentLayer.type === LogicalLayerType.CONTROL) {
-            layertype = "CONTROL";
-        } else if (this.viewManagerDelegate.currentLayer.type === LogicalLayerType.FLOW) {
-            layertype = "FLOW";
-        } else if (this.viewManagerDelegate.currentLayer.type === LogicalLayerType.INTEGRATION) {
-            layertype = "INTEGRATION";
+    __getClosestComponentPort(component: any, approachPoint: Point, clickPoint: Point | null = null) {
+        const located = this.__locatedPortsOnCurrentLayer(component);
+        if (located.length === 0) {
+            return null;
         }
-        console.log("This layer: ", layertype);
-        const componentports = component.ports;
+
+        if (clickPoint !== null) {
+            const aimed = this.__uniquelyClosestPort(located, clickPoint, component);
+            if (aimed !== null) {
+                return aimed;
+            }
+        }
+
+        return this.__portFacingPoint(component, located, approachPoint);
+    }
+
+    private __currentConnectionLayer(): string | null {
+        if (this.viewManagerDelegate.currentLayer.type === LogicalLayerType.CONTROL) {
+            return "CONTROL";
+        }
+        if (this.viewManagerDelegate.currentLayer.type === LogicalLayerType.FLOW) {
+            return "FLOW";
+        }
+        if (this.viewManagerDelegate.currentLayer.type === LogicalLayerType.INTEGRATION) {
+            return "INTEGRATION";
+        }
+        return null;
+    }
+
+    private __locatedPortsOnCurrentLayer(component: any): Array<{ port: any; loc: Point }> {
+        const layertype = this.__currentConnectionLayer();
         if (layertype === null) {
             console.warn("Could not find the current layer type, searching through all the component ports without filtering");
         }
-
-        // TODO: Check if the targetPoint and the component port are closer than grid size, if they are just make the connection
-        if (targetPoint !== null) {
-            for (const key of componentports.keys()) {
-                const componentport = componentports.get(key);
-                if (componentport.layer !== layertype) {
-                    continue;
-                }
-                const location = ComponentPort.calculateAbsolutePosition(componentport, component);
-                const calc = Math.abs(targetPoint[0] - location[0]) + Math.abs(targetPoint[1] - location[1]);
-                // let gridsize = 1000; //TODO:Calculate from grid size
-                // Check if anything is really really close (use current grid size for now) to the port.
-                if (calc <= 3 * gridsize!) {
-                    // If the distance is really small then yes fix return it
-                    return componentport;
-                }
-            }
-        }
-
-        dist = 1000000000000000;
-        closest = null;
-        for (const key of componentports.keys()) {
-            const componentport = componentports.get(key);
-            if (componentport.layer !== layertype) {
+        const located: Array<{ port: any; loc: Point }> = [];
+        for (const key of component.ports.keys()) {
+            const port = component.ports.get(key);
+            if (layertype !== null && port.layer !== layertype) {
                 continue;
             }
-            const location = ComponentPort.calculateAbsolutePosition(componentport, component);
-            const calc = Math.abs(startPoint[0] - location[0]) + Math.abs(startPoint[1] - location[1]);
-            if (calc < dist) {
-                dist = calc;
-                closest = componentport;
+            located.push({
+                port,
+                loc: ComponentPort.calculateAbsolutePosition(port, component)
+            });
+        }
+        return located;
+    }
+
+    private __componentSpan(component: any): number {
+        try {
+            const bounds = component.getBoundingRectangle();
+            return Math.max(bounds.width, bounds.height, 1);
+        } catch {
+            return 1000;
+        }
+    }
+
+    /**
+     * Honor a click only when it is clearly nearer one port than the next.
+     * A click on the body/center is a near-tie and must not pick the top port.
+     */
+    private __uniquelyClosestPort(
+        located: Array<{ port: any; loc: Point }>,
+        clickPoint: Point,
+        component: any
+    ) {
+        if (located.length === 1) {
+            return located[0].port;
+        }
+        const ranked = [...located].sort(
+            (a, b) => this.__euclidean(clickPoint, a.loc) - this.__euclidean(clickPoint, b.loc)
+        );
+        const uniqueMargin = Math.max(this.__componentSpan(component) * 0.15, 1);
+        if (this.__euclidean(clickPoint, ranked[1].loc) - this.__euclidean(clickPoint, ranked[0].loc) > uniqueMargin) {
+            return ranked[0].port;
+        }
+        return null;
+    }
+
+    /**
+     * Port whose direction from the component center best matches the direction
+     * from the center to `referencePoint` (incoming channel or start click).
+     */
+    private __portFacingPoint(
+        component: any,
+        located: Array<{ port: any; loc: Point }>,
+        referencePoint: Point
+    ) {
+        let center: Point;
+        try {
+            center = component.getCenterPosition();
+        } catch {
+            center = referencePoint;
+        }
+        const vx = referencePoint[0] - center[0];
+        const vy = referencePoint[1] - center[1];
+        const vlen = Math.hypot(vx, vy);
+
+        let best = located[0];
+        let bestScore = Number.NEGATIVE_INFINITY;
+        let bestDist = Number.POSITIVE_INFINITY;
+        for (const item of located) {
+            const dist = this.__euclidean(referencePoint, item.loc);
+            const px = item.loc[0] - center[0];
+            const py = item.loc[1] - center[1];
+            const plen = Math.hypot(px, py);
+            const score =
+                vlen < 1e-6 || plen < 1e-6 ? -dist : (px * vx + py * vy) / (plen * vlen);
+            if (score > bestScore + 1e-9 || (Math.abs(score - bestScore) <= 1e-9 && dist < bestDist)) {
+                bestScore = score;
+                bestDist = dist;
+                best = item;
             }
         }
+        return best.port;
+    }
 
-        return closest;
+    private __euclidean(a: Point, b: Point): number {
+        return Math.hypot(a[0] - b[0], a[1] - b[1]);
     }
 
     /**

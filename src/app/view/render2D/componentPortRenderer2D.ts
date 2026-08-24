@@ -65,11 +65,8 @@ export default class ComponentPortRenderer2D {
         const mirrorByX = component.getMirrorByX();
         const mirrorByY = component.getMirrorByY();
         const geoCenter = component.getCenterPosition();
-        const currPos = component.getValue("position");
-        component.setOffset();
-        const position: Point = [currPos[0] - component.offset[0], currPos[1] - component.offset[1]];
+        const position: Point = component.getDrawOrigin();
 
-        component.setPosition();
         component.updateComponentPorts();
 
         for (const key of componentports.keys()) {

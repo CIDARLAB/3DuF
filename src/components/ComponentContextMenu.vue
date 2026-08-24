@@ -119,7 +119,13 @@
         </div>
 
         <v-card-text class="settings-panel-body component-context-settings-body">
-            <PropertyBlock density="sidebar" :title="mint" :spec="spec" @update="updateParameter" />
+            <PropertyBlock
+                density="sidebar"
+                :title="mint"
+                :entity-id="canvasEntityId"
+                :spec="spec"
+                @update="updateParameter"
+            />
         </v-card-text>
     </v-card>
 </template>
@@ -190,6 +196,12 @@ export default {
             return this.isSidebarPlacementDefaultsPanel
                 ? this.hasPendingPlacementSpecChanges
                 : this.hasPendingCanvasSpecChanges;
+        },
+        canvasEntityId() {
+            if (this.isSidebarPlacementDefaultsPanel) return "";
+            const component = this.currentComponent;
+            if (!component) return "";
+            return component.id || component.name || "";
         },
         cardPositionStyle() {
             const w = "min(420px, calc(100vw - 24px))";

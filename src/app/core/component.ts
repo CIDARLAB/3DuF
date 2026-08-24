@@ -349,23 +349,17 @@ export default class Component {
     }
 
     /**
-     * Updates the coordinates of the component and all the connected features
-     * based on the position from which the features are drawn
-     * @param {Point} center
-     * @memberof Component
-     * @returns {void}
+     * Store ``center`` as the rotation / geometric center on the component
+     * and every owned feature. ``render2D`` converts this to the library
+     * draw origin at draw time.
      */
     updateComponentPosition(center: Point): void {
-        console.log("input position: ", center);
-        // Update component
-        this._params.updateParameter("position", [center[0] + this._renderOffset[0], center[1] + this._renderOffset[1]]);
-        // Update features
+        const desired: Point = [Number(center[0]), Number(center[1])];
+        this._params.updateParameter("position", desired);
         for (const featureidtochange of this._featureIDs) {
-
             const feature = ComponentUtils.getFeatureFromID(featureidtochange);
-            feature.updateParameter("position", center);
+            feature.updateParameter("position", desired);
         }
-        // Update the ComponentPorts
         this.updateComponentPorts();
     }
 
@@ -381,7 +375,7 @@ export default class Component {
     }
 
     setPosition():void {
-        this._params.updateParameter("position", this.getTopLeftPosition());
+        this._params.updateParameter("position", this.getCenterPosition());
     }
 
 
@@ -429,13 +423,22 @@ export default class Component {
     }
 
     /**
-     * Returns the center position of the component as a 2D vector
-     * @return {Array}
-     * @memberof Component
+     * Library draw origin derived from the stored rotation center.
+     */
+    getDrawOrigin(): Point {
+        try {
+            const renderer = ComponentAPI.getRendererForMINT(this._entity);
+            return renderer.drawOriginFromCenter({ ...this._params.toJSON(), position: this.getPosition() });
+        } catch {
+            return this.getPosition();
+        }
+    }
+
+    /**
+     * Stored JSON / UI coordinate: rotation / geometric center.
      */
     getCenterPosition(): Point {
-        const bounds = this.getBoundingRectangle();
-        return [bounds.center.x, bounds.center.y];
+        return this.getPosition();
     }
 
     /**

@@ -1031,63 +1031,14 @@ export default class ViewManager {
             json.components = [];
         }
 
+            // JSON params.position is the rotation / geometric center for every
+            // primitive (PR export and 3DuF hand placement). render2D converts
+            // that center to the library draw origin at draw time.
             for (const component of json.components) {
- 
-                const params = component.params;
-                const topLeftPnR = params.position;
-
                 const MintType = String(ComponentAPI.getTypeForMINT(component.entity));
-                const libraryComponent = ComponentAPI.library[MintType]?.object;
-                if (!libraryComponent) continue;
-
                 if (MintType === "Node") {
                     component["x-span"] = 0;
                     component["y-span"] = 0;
-                    continue;
-                }
-
-                const angleDeg = params.rotation ?? 0;
-                const angleRad = angleDeg * Math.PI / 180;
-
-                let dimsRotated;
-
-                if (angleDeg % 360 === 0 || angleDeg % 360 === 180) {
-                    dimsRotated = [component["x-span"], component["y-span"]];
-                } else if (angleDeg % 360 === 90 || angleDeg % 360 === 270) {
-                    dimsRotated = [component["y-span"], component["x-span"]];
-                } else {
-                    const cosTheta = Math.cos(angleRad);
-                    const sinTheta = Math.sin(angleRad);
-                    dimsRotated = [
-                        Math.abs(component["x-span"] * cosTheta) + Math.abs(component["y-span"] * sinTheta),
-                        Math.abs(component["x-span"] * sinTheta) + Math.abs(component["y-span"] * cosTheta)
-                    ];
-                }
-
-                const rotatedGeomCenter = [
-                    topLeftPnR[0] + dimsRotated[0] / 2,
-                    topLeftPnR[1] + dimsRotated[1] / 2
-                ];
-
-
-                const cleanParamsUnrotated = { ...params, rotation: 0, mirrorByX: 0, mirrorByY: 0 };
-                const drawOffset = libraryComponent.getDrawOffset(cleanParamsUnrotated);
-                const geom = libraryComponent.getCenter(cleanParamsUnrotated);
-
-                const offsetDrawToGeom = [
-                    geom.x - drawOffset[0],
-                    geom.y - drawOffset[1]
-                ];
-
-                component.params.position = [
-                    rotatedGeomCenter[0] - offsetDrawToGeom[0],
-                    rotatedGeomCenter[1] - offsetDrawToGeom[1]
-                ];
-
-                for (const port of component.ports) {
-                    port.x -= 2*drawOffset[0];
-                    port.y 
-                    -= 2*drawOffset[1];
                 }
             }
 

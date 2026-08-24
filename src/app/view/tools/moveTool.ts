@@ -8,6 +8,7 @@ import EventBus from "@/events/events";
 export default class MoveTool extends MouseTool {
     private __startPoint: Point | null;
     private __dragging: boolean;
+    private __dragOriginCenter: Point | null = null;
 
     private __currentComponent: any;
     private __originalPosition: Point | null = null;
@@ -68,6 +69,7 @@ export default class MoveTool extends MouseTool {
         this.__emittedCloseUiOnMove = false;
         const c = component.getCenterPosition();
         this.__originalPosition = [Math.round(Number(c[0])), Math.round(Number(c[1]))];
+        this.__dragOriginCenter = this.__originalPosition;
         this.callback = callback;
     }
 
@@ -121,25 +123,16 @@ export default class MoveTool extends MouseTool {
         }
         if (this.__dragging) {
             const point = MouseTool.getEventPosition(event);
-            let target: paper.Point = new paper.Point(point.x, point.y);
-            if (point !== null && point !== undefined) {
-                let snappoint = this._viewManagerDelegate.snapToGrid([point.x, point.y]);
-                target = new paper.Point(Math.round(snappoint[0]), Math.round(snappoint[1]));
+            if (point === null || point === undefined || this.__startPoint === null || this.__dragOriginCenter === null) {
+                return;
             }
-            // const delta = {
-            //     x: (target).x - this.__startPoint[0],
-            //     y: (target).y - this.__startPoint[1]
-            // };
-            this.__startPoint = [target.x, target.y];
-            // console.log("delta:", delta);
-
-            // let oldposition = this.__currentComponent.getPosition();
-            // // console.log("oldposition:", oldposition);
-            //
-            // let newposition = [oldposition[0] + delta.x, oldposition[1] + delta.y];
-            // console.log("Newposition:", newposition);
-            // this.__currentComponent.updateComponentPosition(newposition);
-            this.__updatePosition(target.x, target.y);
+            const snappoint = this._viewManagerDelegate.snapToGrid([point.x, point.y]);
+            const target: Point = [Math.round(snappoint[0]), Math.round(snappoint[1])];
+            const newCenter: Point = [
+                this.__dragOriginCenter[0] + (target[0] - this.__startPoint[0]),
+                this.__dragOriginCenter[1] + (target[1] - this.__startPoint[1])
+            ];
+            this.__updatePosition(newCenter[0], newCenter[1]);
         }
     }
 
@@ -175,6 +168,8 @@ export default class MoveTool extends MouseTool {
         const targettosnap: Point = [point.x, point.y];
         const target = this._viewManagerDelegate.snapToGrid(targettosnap);
         this.__startPoint = [Math.round(target[0]), Math.round(target[1])];
+        const c = this.__currentComponent.getCenterPosition();
+        this.__dragOriginCenter = [Math.round(Number(c[0])), Math.round(Number(c[1]))];
         this.__dragging = true;
     }
 }

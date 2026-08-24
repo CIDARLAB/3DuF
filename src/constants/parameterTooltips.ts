@@ -59,7 +59,8 @@ const COMMON: Record<string, string> = {
     xspan: "Horizontal span of the device or bounding region.",
     yspan: "Vertical span of the device or bounding region.",
     borderWidth: "Width of the device border outline.",
-    borderColor: "Color key or index used for the device border."
+    borderColor: "Color key or index used for the device border.",
+    ID: "Netlist identifier from the imported JSON (component or connection id). Use this to find the same object in the Parchmint file."
 };
 
 const BY_FEATURE: Record<string, Record<string, string>> = {

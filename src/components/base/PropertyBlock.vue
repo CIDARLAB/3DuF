@@ -9,6 +9,31 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <tr v-if="entityId">
+                        <td class="param-col">
+                            <div class="d-flex align-center flex-nowrap param-name-with-help">
+                                <code class="param-name-code">ID</code>
+                                <v-tooltip bottom max-width="320">
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-icon
+                                            small
+                                            dense
+                                            class="param-help-icon ml-1"
+                                            color="grey darken-1"
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        >
+                                            mdi-help-circle-outline
+                                        </v-icon>
+                                    </template>
+                                    <span>{{ parameterHelp("ID") }}</span>
+                                </v-tooltip>
+                            </div>
+                        </td>
+                        <td class="value-col">
+                            <code class="param-id-value">{{ entityId }}</code>
+                        </td>
+                    </tr>
                     <tr v-for="item in displaySpec" :key="item.name">
                         <td class="param-col">
                             <div class="d-flex align-center flex-nowrap param-name-with-help">
@@ -68,6 +93,10 @@ export default {
             type: String,
             default: "default",
             validator: v => ["default", "context", "sidebar"].indexOf(v) !== -1
+        },
+        entityId: {
+            type: String,
+            default: ""
         },
         spec: {
             type: Array,
@@ -181,6 +210,18 @@ export default {
     letter-spacing: inherit;
     background: transparent;
     color: inherit;
+}
+
+.param-id-value {
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 600;
+    letter-spacing: inherit;
+    background: transparent;
+    color: inherit;
+    word-break: break-all;
+    user-select: all;
 }
 
 .param-name-with-help,

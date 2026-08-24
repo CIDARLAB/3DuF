@@ -32,44 +32,14 @@ export default class LoadUtils {
     constructor() {}
 
     /**
-     * 3DuF PORT / VALVE3D / VALVE glyphs draw ``position`` as the center
-     * (``getPorts`` is ``(0, 0)``). Native 3DuF JSON already stores that center
-     * and usually has an empty ``ports`` array.
-     *
-     * Neptune ParchMint also stores PORT/VALVE3D ``position`` as the routing
-     * terminal (connection wayPoints equal ``position``). The ``ports[0]``
-     * entry is the AABB half-span (1000, 1000) / (1200, 1200) and must NOT be
-     * added again — that used to shift every port and valve off its channel,
-     * so mux inlets looked disconnected from the outlet.
-     *
-     * MIXER and other AABB-origin types fall through unchanged.
+     * Feature ``position`` is the rotation / geometric center for every
+     * primitive (PR export and 3DuF hand placement). Do not add ports[0]
+     * (AABB half-span) — that double-shifts glyphs off their channels.
      */
     static featurePositionFromParchmint(componentJson: ComponentInterchangeV1): number[] {
         const params = componentJson.params || {};
         const raw = params.position;
-        const pos = Array.isArray(raw) && raw.length >= 2 ? [Number(raw[0]), Number(raw[1])] : [0, 0];
-        const entity = String(componentJson.entity || "").toUpperCase().replace(/_/g, " ");
-        const centerOrigin = entity === "PORT" || entity === "VALVE3D" || entity === "VALVE" || entity === "CIRCLE VALVE";
-        if (!centerOrigin) {
-            return pos;
-        }
-        const ports = componentJson.ports || [];
-        if (!ports.length || ports[0] == null || ports[0].x == null || ports[0].y == null) {
-            return pos;
-        }
-        const px = Number(ports[0].x);
-        const py = Number(ports[0].y);
-        if (!Number.isFinite(px) || !Number.isFinite(py) || (px === 0 && py === 0)) {
-            return pos;
-        }
-        const w = Number(componentJson["x-span"] ?? params.width ?? (params.portRadius != null ? 2 * Number(params.portRadius) : 0));
-        const h = Number(componentJson["y-span"] ?? params.length ?? w);
-        // Standard PORT/VALVE3D: ports[0] is the AABB center. Position is already
-        // the glyph/connection center (Neptune PR and 3DuF native).
-        if (w > 0 && h > 0 && Math.abs(px - w / 2) < 1 && Math.abs(py - h / 2) < 1) {
-            return pos;
-        }
-        return [pos[0] + px, pos[1] + py];
+        return Array.isArray(raw) && raw.length >= 2 ? [Number(raw[0]), Number(raw[1])] : [0, 0];
     }
 
     /**

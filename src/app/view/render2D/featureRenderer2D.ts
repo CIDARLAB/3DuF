@@ -16,6 +16,14 @@ const VALVE_INACTIVE_LOGICAL_LAYER_ALPHA = 0.5;
 
 const VALVE_RENDER_TYPES = new Set(["Valve", "Valve3D_control", "Valve3D"]);
 const FLOW_VALVE_RENDER_TYPES = new Set(["Valve3D_control", "Valve3D"]);
+const DRAW_ORIGIN_TYPES = new Set(["Connection", "Channel", "RoundedChannel", "Text", "EDGE", "DxfSketch"]);
+
+function applyCenterToDrawOrigin(renderer: { drawOriginFromCenter?: (params: { [k: string]: any }) => number[] }, primParams: { [k: string]: any }): void {
+    if (!primParams.position || typeof renderer.drawOriginFromCenter !== "function") {
+        return;
+    }
+    primParams.position = renderer.drawOriginFromCenter(primParams);
+}
 
 function valveGapsForConnectionFeature(feature: Feature): ValveGapRect[] {
     const device = Registry.currentDevice;
@@ -214,6 +222,9 @@ export function renderTarget(typeString:string, position: Point, customParameter
         }
     }
     primParams["position"] = position;
+    if (!DRAW_ORIGIN_TYPES.has(typeString)) {
+        applyCenterToDrawOrigin(renderer, primParams);
+    }
     primParams["color"] = new paper.Color(Colors.getDefaultFeatureColor(typeString, Registry.viewManager?.currentLayer));
     // Pick the geometry key by the active logical layer (e.g. Valve3D shows the FLOW crescents
     // on the FLOW layer and the full CONTROL circle on the CONTROL layer). Renderers that ignore
@@ -361,6 +372,9 @@ export function renderFeature(feature: Feature, key: string | null, options?: Re
         //Set the position of the params to 0,0
         primParams.color = getLayerColor(feature);
         primParams.baseColor = getBaseColor(feature);
+        if (!DRAW_ORIGIN_TYPES.has(type) && renderer) {
+            applyCenterToDrawOrigin(renderer, primParams);
+        }
         rendered = renderer.render2D(primParams, key);
         // Rendered is going to be at 0,0 with whatever rotation
         // Now we can get draw offset by looking at the rendered topleft corner

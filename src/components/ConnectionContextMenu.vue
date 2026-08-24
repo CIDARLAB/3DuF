@@ -111,7 +111,13 @@
                 outlined
                 :menu-props="{ contentClass: 'connection-context-profile-menu' }"
             ></v-select>
-            <PropertyBlock density="sidebar" :title="mint" :spec="spec" @update="updateParameter" />
+            <PropertyBlock
+                density="sidebar"
+                :title="mint"
+                :entity-id="canvasEntityId"
+                :spec="spec"
+                @update="updateParameter"
+            />
         </v-card-text>
     </v-card>
 </template>
@@ -197,6 +203,11 @@ export default {
             const pending = this.buildAppliedSettingsSnapshot();
             const applied = this.appliedSettingsSnapshot || null;
             return JSON.stringify(pending) !== JSON.stringify(applied);
+        },
+        canvasEntityId() {
+            const connection = this.currentConnection;
+            if (!connection) return "";
+            return connection.id || connection.name || "";
         }
     },
     mounted() {

@@ -135,18 +135,42 @@ export default class ComponentPort {
     }
 
     /**
-     * Returns the absolute postition of the component
+     * Returns the absolute position of a component port.
+     * Must match {@link ComponentPortRenderer2D}: draw-origin + local offset,
+     * then rotate and mirror about the geometric center.
      * @param {Object} componentport Component port object
      * @param {Object} component Component object
      * @returns {Array} Returns an array which contains the X absolute coordinate and the y absolute coordinate
      * @memberof ComponentPort
      */
     static calculateAbsolutePosition(componentport: ComponentPort, component: Component): Point {
-        const topleftposition = component.getValue("position");
-        const point = new paper.Point(topleftposition[0] - component.offset[0] + componentport.x, topleftposition[1] - component.offset[1] + componentport.y);
-        const featpoint = new paper.Point(topleftposition[0] - component.offset[0], topleftposition[1] - component.offset[1]);
-        const rotatedpoint = point.rotate(component.getRotation(), featpoint);
-        return [rotatedpoint.x, rotatedpoint.y];
+        const drawOrigin = component.getDrawOrigin();
+        const drawX = drawOrigin[0];
+        const drawY = drawOrigin[1];
+        let point = new paper.Point(drawX + componentport.x, drawY + componentport.y);
+
+        let geoCenter: paper.Point;
+        try {
+            const center = component.getCenterPosition();
+            geoCenter = new paper.Point(center[0], center[1]);
+        } catch {
+            geoCenter = new paper.Point(drawX, drawY);
+        }
+
+        const rotation = component.getRotation();
+        if (rotation) {
+            point = point.rotate(rotation, geoCenter);
+        }
+
+        let x = point.x;
+        let y = point.y;
+        if (component.getMirrorByX()) {
+            x = 2 * geoCenter.x - x;
+        }
+        if (component.getMirrorByY()) {
+            y = 2 * geoCenter.y - y;
+        }
+        return [x, y];
     }
 
     /**
