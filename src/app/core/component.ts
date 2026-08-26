@@ -518,14 +518,21 @@ export default class Component {
         const paramstoadd = new Params(params, unique_map, heritable_map);
         const component = new Component(paramstoadd, name, entity, id);
 
-        // Deserialize the component ports
-        const portdata = new Map();
-        for (const port of json.ports) {
-            const componentport = ComponentPort.fromInterchangeV1(port);
-            portdata.set(componentport.label, componentport);
+        // The constructor already installed library getPorts(), which are
+        // draw-origin relative. Parchmint / TREE-PLACE JSON ports are often
+        // AABB-min-corner relative. After rotation-center storage, overwriting
+        // with those JSON ports puts handles and connection terminals on the
+        // wrong side of center-origin primitives (PORT, VIA, chamber, DIY).
+        // Keep the library ports whenever they exist; fall back to JSON only
+        // for custom entities that have no library definition.
+        if (component.ports.size === 0 && Array.isArray(json.ports)) {
+            const portdata = new Map();
+            for (const port of json.ports) {
+                const componentport = ComponentPort.fromInterchangeV1(port);
+                portdata.set(componentport.label, componentport);
+            }
+            component.ports = portdata;
         }
-
-        component.ports = portdata;
 
         return component;
     }

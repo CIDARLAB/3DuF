@@ -174,6 +174,31 @@ export default class ComponentPort {
     }
 
     /**
+     * Pull a port waypoint into the component body so a square channel, which
+     * stops on the centerline, overlaps the primitive instead of sharing a
+     * zero-width edge (hairline gap at mixer / chamber openings).
+     */
+    static insetTowardCenter(portAbs: Point, component: Component, overlap: number): Point {
+        let cx = portAbs[0];
+        let cy = portAbs[1];
+        try {
+            const center = component.getCenterPosition();
+            cx = center[0];
+            cy = center[1];
+        } catch {
+            // keep port as the reference if the component has no center
+        }
+        const dx = cx - portAbs[0];
+        const dy = cy - portAbs[1];
+        const length = Math.hypot(dx, dy);
+        if (length < 1e-6) {
+            return [portAbs[0], portAbs[1]];
+        }
+        const step = Math.min(Math.abs(overlap), length * 0.25) / length;
+        return [portAbs[0] + dx * step, portAbs[1] + dy * step];
+    }
+
+    /**
      * Creates a new Component Port from an Interchange V1 format
      * @param {} json
      * @returns {ComponentPort} Returns a component port object

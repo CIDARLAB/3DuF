@@ -14,6 +14,7 @@ import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
 import ExportUtils from "../utils/exportUtils";
 import Feature from "./feature";
+import ComponentPort from "./componentPort";
 
 /**
  * This class contains the connection abstraction used in the interchange format and the
@@ -684,6 +685,65 @@ export default class Connection {
      */
     addWayPoints(wayPoints: Array<Point>): void {
         this._paths.push(wayPoints);
+    }
+
+    /**
+     * After JSON load, rewrite terminal waypoints onto library port positions
+     * (inset into the body) so channels meet the primitive that source/sink
+     * name, even when Parchmint ports were AABB-relative.
+     */
+    snapImportedTerminals(): boolean {
+        if (this._source === null && this._sinks.length === 0) {
+            return false;
+        }
+        let width = 800;
+        try {
+            width = Number(this.getValue("channelWidth") || 800);
+        } catch {
+            width = 800;
+        }
+        const overlap = Math.max(width / 2, 16);
+        const snapEnd = (target: ConnectionTarget | null | undefined, fallback: Point): Point => {
+            if (!target) {
+                return fallback;
+            }
+            const port = target.component.ports.get(String(target.portLabel));
+            if (!port) {
+                return fallback;
+            }
+            const abs = ComponentPort.calculateAbsolutePosition(port, target.component);
+            return ComponentPort.insetTowardCenter(abs, target.component, overlap);
+        };
+        if (this._paths.length === 0) {
+            try {
+                const wp = this.getValue("wayPoints");
+                if (Array.isArray(wp) && wp.length >= 2) {
+                    this._paths.push(wp.map((p: Point) => [p[0], p[1]] as Point));
+                }
+            } catch {
+                // no stored waypoints
+            }
+        }
+        let changed = false;
+        for (const path of this._paths) {
+            if (!path || path.length < 2) {
+                continue;
+            }
+            path[0] = snapEnd(this._source, path[0]);
+            path[path.length - 1] = snapEnd(this._sinks[0], path[path.length - 1]);
+            changed = true;
+        }
+        if (!changed) {
+            return false;
+        }
+        this.regenerateSegments();
+        const first = this._paths[0];
+        if (first && first.length >= 2) {
+            this.updateParameter("wayPoints", first);
+            this.updateParameter("start", first[0]);
+            this.updateParameter("end", first[first.length - 1]);
+        }
+        return true;
     }
 
     /**

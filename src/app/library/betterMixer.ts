@@ -120,8 +120,11 @@ export default class CurvedMixer extends Template {
         const rotation = params.rotation;
         const numberOfBends = params.numberOfBends;
         const ports = [];
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", LogicalLayerType.FLOW));
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", LogicalLayerType.FLOW));
+        const openingY2 = (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing;
+        // Sit on the midline of the first / last segment so a square channel
+        // ending at the port overlaps the mixer body (no hairline edge gap).
+        ports.push(new ComponentPort(bendLength / 2 + channelWidth, channelWidth / 2, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(bendLength / 2 + channelWidth, openingY2 - channelWidth / 2, "2", LogicalLayerType.FLOW));
         return ports;
     }
 

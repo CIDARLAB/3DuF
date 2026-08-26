@@ -172,7 +172,7 @@ export default class ConnectionTool extends MouseTool {
         if (isPointOnComponent) {
             const componentport = this.__getClosestComponentPort(isPointOnComponent, this.startPoint, this.startPoint);
             if (componentport !== null) {
-                const location = ComponentPort.calculateAbsolutePosition(componentport, isPointOnComponent);
+                const location = this.__portTerminal(isPointOnComponent, componentport);
                 this.source = new ConnectionTarget(isPointOnComponent, componentport.label);
                 this.startPoint = location;
                 this.lastPoint = this.startPoint;
@@ -334,7 +334,7 @@ export default class ConnectionTool extends MouseTool {
             }
             const componentport = this.__getClosestComponentPort(isPointOnComponent, approachPoint, clickTarget);
             if (componentport !== null) {
-                const location = ComponentPort.calculateAbsolutePosition(componentport, isPointOnComponent);
+                const location = this.__portTerminal(isPointOnComponent, componentport);
                 connectiontargettoadd = new ConnectionTarget(isPointOnComponent, componentport.label);
                 this.wayPoints.pop();
                 this.lastPoint = location;
@@ -641,6 +641,22 @@ export default class ConnectionTool extends MouseTool {
 
     private __euclidean(a: Point, b: Point): number {
         return Math.hypot(a[0] - b[0], a[1] - b[1]);
+    }
+
+    /**
+     * Channel endpoint on a component port: the absolute port, then inset
+     * into the body by half the channel width so square channels overlap
+     * the opening instead of sharing a zero-width edge.
+     */
+    private __portTerminal(component: any, componentport: any): Point {
+        const abs = ComponentPort.calculateAbsolutePosition(componentport, component);
+        return ComponentPort.insetTowardCenter(abs, component, this.__channelOverlap());
+    }
+
+    private __channelOverlap(): number {
+        const defaults = ComponentAPI.getDefaultsForType(this.typeString) || {};
+        const width = Number(defaults.channelWidth ?? 800);
+        return Math.max(width / 2, 16);
     }
 
     /**

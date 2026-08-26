@@ -1085,6 +1085,10 @@ export default class ViewManager {
         // In case of MINT exported json, generate layouts for rats nests
         this.__initializeRatsNest();
 
+        // Bind imported channel ends to library ports (rotation-center frame)
+        // so TREE-PLACE / Parchmint connections meet the drawn primitives.
+        this.snapImportedConnectionTerminals();
+
         // Re-apply valve-induced connection breaks after JSON load so imported designs
         // render the same valve gap geometry as interactive placement.
         this.reapplyValveConnectionBreaks();
@@ -1111,6 +1115,24 @@ export default class ViewManager {
                     const currPos = this.__currentDevice.components[i].getPosition();
                     this.__currentDevice.components[i].updateComponentPosition([currPos[0] + (currPos[0] - rect.x), currPos[1] + (currPos[1] - rect.y)]);
                 }
+            }
+        }
+    }
+
+    /**
+     * Pull imported connection terminals onto library port positions so the
+     * drawn channel meets the primitive after rotation-center load.
+     */
+    private snapImportedConnectionTerminals(): void {
+        const device = this.currentDevice;
+        if (!device) {
+            return;
+        }
+        for (const connection of device.connections) {
+            try {
+                connection.snapImportedTerminals();
+            } catch (err) {
+                console.warn("Could not snap connection terminals during JSON load:", connection.id, err);
             }
         }
     }
