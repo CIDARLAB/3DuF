@@ -428,6 +428,9 @@ export default class Component {
     getDrawOrigin(): Point {
         try {
             const renderer = ComponentAPI.getRendererForMINT(this._entity);
+            if (typeof renderer.drawsAtPositionCenter === "function" && renderer.drawsAtPositionCenter()) {
+                return this.getPosition();
+            }
             return renderer.drawOriginFromCenter({ ...this._params.toJSON(), position: this.getPosition() });
         } catch {
             return this.getPosition();

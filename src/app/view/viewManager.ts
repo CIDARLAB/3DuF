@@ -1085,9 +1085,10 @@ export default class ViewManager {
         // In case of MINT exported json, generate layouts for rats nests
         this.__initializeRatsNest();
 
-        // Bind imported channel ends to library ports (rotation-center frame)
-        // so TREE-PLACE / Parchmint connections meet the drawn primitives.
-        this.snapImportedConnectionTerminals();
+        // Do not rewrite imported waypoints onto library ports. TREE-PLACE
+        // wayPoints are already absolute; snapping them to getPorts() (often
+        // a different local frame than the Parchmint AABB ports) pulled
+        // channels off mixers / valves / mux arms.
 
         // Re-apply valve-induced connection breaks after JSON load so imported designs
         // render the same valve gap geometry as interactive placement.

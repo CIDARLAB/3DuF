@@ -73,6 +73,10 @@ export default class Via extends Template {
         };
     }
 
+    drawsAtPositionCenter(): boolean {
+        return true;
+    }
+
     getPorts(params: { [k: string]: any }) {
         const radius = params.radius;
 

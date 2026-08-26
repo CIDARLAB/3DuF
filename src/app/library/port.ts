@@ -93,6 +93,10 @@ export default class Port extends Template {
         return render;
     }
 
+    drawsAtPositionCenter(): boolean {
+        return true;
+    }
+
     getPorts(params: { [k: string]: any }) {
         const radius = params.portRadius;
 

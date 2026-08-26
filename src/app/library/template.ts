@@ -491,6 +491,16 @@ export default class Template {
     }
 
     /**
+     * True when ``render2D`` already treats ``params.position`` as the
+     * geometric / rotation center (circle or centered rectangle). Those
+     * glyphs must not go through {@link drawOriginFromCenter} or they shift
+     * off their channels and look undersized.
+     */
+    drawsAtPositionCenter(): boolean {
+        return false;
+    }
+
+    /**
      * Convert a rotation-center ``position`` to the library draw origin that
      * ``render2D`` expects. Stored JSON / placement coordinates are the
      * geometric center (stable under rotation); primitives still draw from

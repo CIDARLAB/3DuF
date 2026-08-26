@@ -18,8 +18,11 @@ const VALVE_RENDER_TYPES = new Set(["Valve", "Valve3D_control", "Valve3D"]);
 const FLOW_VALVE_RENDER_TYPES = new Set(["Valve3D_control", "Valve3D"]);
 const DRAW_ORIGIN_TYPES = new Set(["Connection", "Channel", "RoundedChannel", "Text", "EDGE", "DxfSketch"]);
 
-function applyCenterToDrawOrigin(renderer: { drawOriginFromCenter?: (params: { [k: string]: any }) => number[] }, primParams: { [k: string]: any }): void {
+function applyCenterToDrawOrigin(renderer: { drawOriginFromCenter?: (params: { [k: string]: any }) => number[]; drawsAtPositionCenter?: () => boolean }, primParams: { [k: string]: any }): void {
     if (!primParams.position || typeof renderer.drawOriginFromCenter !== "function") {
+        return;
+    }
+    if (typeof renderer.drawsAtPositionCenter === "function" && renderer.drawsAtPositionCenter()) {
         return;
     }
     primParams.position = renderer.drawOriginFromCenter(primParams);

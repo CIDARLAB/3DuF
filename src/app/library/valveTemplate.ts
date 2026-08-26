@@ -9,6 +9,10 @@ export default class ValveTemplate extends Template{
         this._valveType = valveType;
     }
 
+    drawsAtPositionCenter(): boolean {
+        return true;
+    }
+
     get valveType(): ValveType {
         return this._valveType;
     }
