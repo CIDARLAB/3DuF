@@ -15,6 +15,7 @@ import MapUtils from "../utils/mapUtils";
 import ExportUtils from "../utils/exportUtils";
 import Feature from "./feature";
 import ComponentPort from "./componentPort";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "../library/channelWidths";
 
 /**
  * This class contains the connection abstraction used in the interchange format and the
@@ -696,11 +697,11 @@ export default class Connection {
         if (this._source === null && this._sinks.length === 0) {
             return false;
         }
-        let width = 800;
+        let width = DEFAULT_CHANNEL_WIDTH_UM;
         try {
-            width = Number(this.getValue("channelWidth") || 800);
+            width = Number(this.getValue("channelWidth") || DEFAULT_CHANNEL_WIDTH_UM);
         } catch {
-            width = 800;
+            width = DEFAULT_CHANNEL_WIDTH_UM;
         }
         const overlap = Math.max(width / 2, 16);
         const snapEnd = (target: ConnectionTarget | null | undefined, fallback: Point): Point => {

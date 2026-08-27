@@ -363,6 +363,17 @@ export default class Component {
         this.updateComponentPorts();
     }
 
+    /**
+     * Copy a linked feature's position onto this component without moving the
+     * glyph. Older Parchmint JSON keeps ``component.params.position`` at the
+     * AABB min-corner while the feature is at the draw / geometric origin;
+     * port-handle dots then float beside PORT / MUX / TREE / etc.
+     */
+    adoptFeaturePosition(position: Point): void {
+        this._params.updateParameter("position", [Number(position[0]), Number(position[1])]);
+        this.updateComponentPorts();
+    }
+
     setInitialOffset(): void {
         const rect = this.getBoundingRectangle();
         this._renderOffset = [rect.x, rect.y];

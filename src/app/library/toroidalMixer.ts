@@ -4,6 +4,7 @@ import ComponentPort from "../core/componentPort";
 import { Path, Point } from "paper/dist/paper-core";
 // import { LogicalLayerType, ToolPaperObject } from "../core/init";
 import { LogicalLayerType } from "../core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class ToroidalMixer extends Template {
     constructor() {
@@ -32,7 +33,7 @@ export default class ToroidalMixer extends Template {
         this.__defaults = {
             componentSpacing: 1000,
             rotation: 0,
-            channelWidth: 0.8 * 1000,
+            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             neckAngle: 120,
             neckLength: 1000,
             neckWidth: 800,

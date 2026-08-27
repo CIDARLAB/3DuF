@@ -6,6 +6,7 @@ import Device from "../../core/device";
 import paper from "paper";
 import { Point, ToolPaperObject } from "@/app/core/init";
 import ViewManager from "../viewManager";
+import { channelWidthForLayer } from "../../library/channelWidths";
 
 export default class ChannelTool extends MouseTool {
     typeString: string;
@@ -126,7 +127,8 @@ export default class ChannelTool extends MouseTool {
     static createChannel(start: any, end: any, typestring: string | null = null, setstring: string | null = null) {
         return Device.makeFeature(typestring!, {
             start: start,
-            end: end
+            end: end,
+            channelWidth: channelWidthForLayer(Registry.viewManager?.currentLayer?.type)
         });
     }
 

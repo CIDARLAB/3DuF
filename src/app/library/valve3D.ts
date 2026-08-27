@@ -30,6 +30,7 @@ export default class Valve3D extends ValveTemplate {
             rotation: 0,
             valveRadius: 1200,
             height: 250,
+            // CONTROL channelWidth defaults to this so the pipe matches the slit.
             gap: 600,
             width: 2400,
             length: 2400

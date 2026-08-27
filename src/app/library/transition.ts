@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class Transition extends Template {
     constructor() {
@@ -22,7 +23,7 @@ export default class Transition extends Template {
         };
 
         this.__defaults = {
-            cw1: 0.8 * 1000,
+            cw1: DEFAULT_CHANNEL_WIDTH_UM,
             cw2: 0.9 * 1000,
             length: 1.0 * 1000,
             rotation: 0,

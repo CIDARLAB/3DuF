@@ -417,7 +417,9 @@ export class ComponentAPI {
      */
     static getDefaultsForType(threeduftypeString: string): { [key: string]: number } {
         if (Object.prototype.hasOwnProperty.call(ComponentAPI.library, threeduftypeString)) {
-            return ComponentAPI.library[threeduftypeString].object.defaults;
+            // Copy so callers cannot mutate Template.__defaults. Same numbers as
+            // primitives server GET /defaults (technology.defaults).
+            return { ...ComponentAPI.library[threeduftypeString].object.defaults };
         } else {
             throw new Error("Component Type definition: " + threeduftypeString + " not found in library");
         }

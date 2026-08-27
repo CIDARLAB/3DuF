@@ -2,6 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class GradientGenerator extends Template {
     constructor() {
@@ -30,7 +31,7 @@ export default class GradientGenerator extends Template {
 
         this.__defaults = {
             componentSpacing: 1000,
-            channelWidth: 0.8 * 1000,
+            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
             bendLength: 2.46 * 1000,

@@ -3,6 +3,7 @@ import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
 import { CompoundPath } from "paper/dist/paper-core";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class YTree extends Template {
     constructor() {
@@ -30,7 +31,7 @@ export default class YTree extends Template {
 
         this.__defaults = {
             componentSpacing: 1000,
-            flowChannelWidth: 0.8 * 1000,
+            flowChannelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             rotation: 0,
             spacing: 4 * 1000,
             in: 1,

@@ -1054,6 +1054,7 @@ export default class ViewManager {
             device = ret[0];
             Registry.currentDevice = device;
             this.__currentDevice = device;
+            device.syncComponentPositionsToFeatures();
 
             this.renderLayers = ret[1];
 
@@ -1063,6 +1064,7 @@ export default class ViewManager {
                 device = Device.fromInterchangeV1_1(json);
                 Registry.currentDevice = device;
                 this.__currentDevice = device;
+                device.syncComponentPositionsToFeatures();
 
                 // TODO: Add separate render layers to initializing json, make fromInterchangeV1_1???
                 for (const i in json.layers) {

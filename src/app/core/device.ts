@@ -196,6 +196,33 @@ export default class Device {
     }
 
     /**
+     * After JSON load, pull each component onto its linked feature position so
+     * port-handle dots sit on the glyph instead of the Parchmint AABB corner.
+     */
+    syncComponentPositionsToFeatures(): void {
+        for (const component of this.__components) {
+            const ids = component.featureIDs;
+            if (!ids || ids.length === 0) {
+                continue;
+            }
+            try {
+                const feature = this.getFeatureByID(ids[0]);
+                const featPos = feature.getValue("position");
+                if (!Array.isArray(featPos) || featPos.length < 2) {
+                    continue;
+                }
+                const curr = component.getPosition();
+                if (Number(curr[0]) === Number(featPos[0]) && Number(curr[1]) === Number(featPos[1])) {
+                    continue;
+                }
+                component.adoptFeaturePosition([Number(featPos[0]), Number(featPos[1])]);
+            } catch (err) {
+                console.warn("Could not sync component position to feature:", component.id, err);
+            }
+        }
+    }
+
+    /**
      * Sets the name of the device
      * @param {string} name Name of the device
      * @memberof Device
@@ -717,6 +744,7 @@ export default class Device {
             }
         }
 
+        newDevice.syncComponentPositionsToFeatures();
         return newDevice;
     }
 
@@ -818,6 +846,7 @@ export default class Device {
             }
         }
 
+        newDevice.syncComponentPositionsToFeatures();
         return newDevice;
     }
 

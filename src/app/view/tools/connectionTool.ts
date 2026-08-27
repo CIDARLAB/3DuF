@@ -13,6 +13,7 @@ import { LogicalLayerType, Point, ToolPaperObject } from "@/app/core/init";
 import Registry from "../../core/registry";
 import MapUtils from "../../utils/mapUtils";
 import PositionTool from "./positionTool";
+import { channelWidthForLayer, DEFAULT_CHANNEL_WIDTH_UM } from "../../library/channelWidths";
 import { ViewManager } from "@/app";
 
 export enum ConnectionToolState {
@@ -441,7 +442,8 @@ export default class ConnectionTool extends MouseTool {
             end: end,
             wayPoints: this.wayPoints,
             segments: this.generateSegments(),
-            crossSection: this.crossSection
+            crossSection: this.crossSection,
+            channelWidth: channelWidthForLayer(this.viewManagerDelegate.currentLayer?.type)
         });
     }
 
@@ -655,7 +657,7 @@ export default class ConnectionTool extends MouseTool {
 
     private __channelOverlap(): number {
         const defaults = ComponentAPI.getDefaultsForType(this.typeString) || {};
-        const width = Number(defaults.channelWidth ?? 800);
+        const width = Number(defaults.channelWidth ?? DEFAULT_CHANNEL_WIDTH_UM);
         return Math.max(width / 2, 16);
     }
 

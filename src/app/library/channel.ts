@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class Channel extends Template {
     constructor() {
@@ -13,7 +14,7 @@ export default class Channel extends Template {
         };
 
         this.__defaults = {
-            channelWidth: 0.8 * 1000,
+            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             height: 250
         };
 

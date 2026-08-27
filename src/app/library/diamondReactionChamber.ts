@@ -2,6 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType  } from "../core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class DiamondReactionChamber extends Template {
     constructor() {
@@ -27,7 +28,7 @@ export default class DiamondReactionChamber extends Template {
         this.__defaults = {
             componentSpacing: 1000,
             rotation: 0,
-            channelWidth: 0.8 * 1000,
+            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             width: 1.23 * 1000,
             length: 4.92 * 1000,
             height: 250,

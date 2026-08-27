@@ -2,6 +2,7 @@ import Device from "../core/device";
 import Feature from "../core/feature";
 import Layer from "../core/layer";
 import { LogicalLayerType } from "../core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "../library/channelWidths";
 
 const UM_TO_MM = 0.001;
 
@@ -273,13 +274,13 @@ function collectFlowFeatures(device: Device): {
             } else if (type === "Connection") {
                 const segments = feature.getValue("segments") as SegUm[];
                 const heightUm = tryGetNumber(feature, "height") ?? 250;
-                const channelWidthUm = tryGetNumber(feature, "channelWidth") ?? 800;
+                const channelWidthUm = tryGetNumber(feature, "channelWidth") ?? DEFAULT_CHANNEL_WIDTH_UM;
                 if (Array.isArray(segments) && segments.length) {
                     channels.push({ segments, heightUm, channelWidthUm, label: "channel" });
                 }
             } else if (type === "BetterMixer" || type === "Mixer" || type === "CurvedMixer") {
                 const position = feature.getValue("position") as [number, number];
-                const channelWidth = tryGetNumber(feature, "channelWidth") ?? 800;
+                const channelWidth = tryGetNumber(feature, "channelWidth") ?? DEFAULT_CHANNEL_WIDTH_UM;
                 const bendLength = tryGetNumber(feature, "bendLength") ?? 2460;
                 const bendSpacing = tryGetNumber(feature, "bendSpacing") ?? 1230;
                 const numberOfBends = tryGetNumber(feature, "numberOfBends") ?? 1;

@@ -2,6 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class Mux extends Template {
     constructor() {
@@ -31,7 +32,7 @@ export default class Mux extends Template {
 
         this.__defaults = {
             componentSpacing: 1000,
-            flowChannelWidth: 0.8 * 1000,
+            flowChannelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             rotation: 0,
             spacing: 4 * 1000,
             in: 1,
@@ -40,7 +41,7 @@ export default class Mux extends Template {
             length: 1.6 * 1000,
             height: 250,
             stageLength: 4000,
-            controlChannelWidth: 0.4 * 1000,
+            controlChannelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -267,7 +268,9 @@ export default class Mux extends Template {
         const lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
         const valvewidth = params.width;
 
-        const treeWidth = (leafs - 1) * spacing + leafs * cw + valvewidth;
+        // Must match __drawControl: each leaf contributes a valve width, otherwise
+        // the control-port handles sit on the bus instead of at the channel ends.
+        const treeWidth = (leafs - 1) * spacing + leafs * cw + leafs * valvewidth;
 
         const leftEdge = -treeWidth / 2;
         const rightEdge = treeWidth / 2;
