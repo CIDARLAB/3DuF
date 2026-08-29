@@ -27,24 +27,28 @@ export default class AlignmentMarks extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 1000,
             width: 4000,
             length: 4000,
             height: 250
         };
 
         this.__units = {
+            componentSpacing: "μm",
             width: "μm",
             length: "μm",
             height: "μm"
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             width: 10,
             length: 10,
             height: 10
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             width: 200000,
             length: 200000,
             height: 1200

@@ -1,5 +1,6 @@
 {
   "ALIGNMENT MARKS": {
+    "componentSpacing": 1000,
     "width": 4000,
     "length": 4000,
     "height": 250
@@ -259,7 +260,7 @@
   },
   "PORT": {
     "componentSpacing": 1000,
-    "portRadius": 700,
+    "portRadius": 1000,
     "height": 1100
   },
   "PUMP": {

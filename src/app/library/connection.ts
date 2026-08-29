@@ -104,8 +104,55 @@ export default class Connection extends Template {
             this.__drawStraightConnection(connectionpath, startpoint, endpoint, channelWidth);
         }
 
+        this.__fillSquareChannelCorners(connectionpath, segments, channelWidth);
+        connectionpath.fillRule = "nonzero";
+
         connectionpath.fillColor = color;
         return connectionpath;
+    }
+
+    __fillSquareChannelCorners(
+        compoundpath: paper.CompoundPath,
+        segments: Array<[[number, number], [number, number]]>,
+        channelWidth: number
+    ): void {
+        if (!Array.isArray(segments) || segments.length < 2 || !channelWidth) {
+            return;
+        }
+        const radius = channelWidth / 2;
+        const nonzero: Array<[[number, number], [number, number]]> = [];
+        for (const segment of segments) {
+            if (!segment || segment.length < 2) {
+                continue;
+            }
+            const a = segment[0];
+            const b = segment[1];
+            if (!a || !b || a.length < 2 || b.length < 2) {
+                continue;
+            }
+            if (a[0] === b[0] && a[1] === b[1]) {
+                continue;
+            }
+            nonzero.push(segment);
+        }
+        for (let i = 1; i < nonzero.length; i++) {
+            const prev = nonzero[i - 1];
+            const next = nonzero[i];
+            const d0x = Math.sign(prev[1][0] - prev[0][0]);
+            const d0y = Math.sign(prev[1][1] - prev[0][1]);
+            const d1x = Math.sign(next[1][0] - next[0][0]);
+            const d1y = Math.sign(next[1][1] - next[0][1]);
+            if (d0x === d1x && d0y === d1y) {
+                continue;
+            }
+            const joint = next[0];
+            compoundpath.addChild(
+                new paper.Path.Rectangle({
+                    point: [joint[0] - radius, joint[1] - radius],
+                    size: [channelWidth, channelWidth]
+                })
+            );
+        }
     }
 
     __drawStraightConnection(compoundpath: paper.CompoundPath, startpoint: paper.Point, endpoint: paper.Point, channelWidth: number): void  {

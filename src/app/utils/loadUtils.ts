@@ -30,6 +30,32 @@ import {
 export default class LoadUtils {
     constructor() {}
 
+    /**
+     * ParchMint component ``position`` is the top-left of the AABB. PORT /
+     * VALVE3D features draw ``position`` as the glyph center.
+     */
+    static featurePositionFromParchmint(componentJson: ComponentInterchangeV1): number[] {
+        const params = componentJson.params || {};
+        const raw = params.position;
+        const pos = Array.isArray(raw) && raw.length >= 2 ? [Number(raw[0]), Number(raw[1])] : [0, 0];
+        const entity = String(componentJson.entity || "").toUpperCase().replace(/_/g, " ");
+        const centerOrigin = entity === "PORT" || entity === "VALVE3D" || entity === "VALVE" || entity === "CIRCLE VALVE";
+        if (!centerOrigin) {
+            return pos;
+        }
+        const ports = componentJson.ports || [];
+        if (ports.length && ports[0] && ports[0].x != null && ports[0].y != null) {
+            return [pos[0] + Number(ports[0].x), pos[1] + Number(ports[0].y)];
+        }
+        const radius = params.portRadius != null ? 2 * Number(params.portRadius) : 0;
+        const w = Number(componentJson["x-span"] ?? params.width ?? radius);
+        const h = Number(componentJson["y-span"] ?? params.length ?? w);
+        if (w > 0 && h > 0) {
+            return [pos[0] + w / 2, pos[1] + h / 2];
+        }
+        return pos;
+    }
+
     static loadFromScratch(json: InterchangeV1_2): [Device, Array<RenderLayer>] {
         const newDevice: Device = LoadUtils.loadDeviceFromInterchangeV1_2(json);
         let newRenderLayers: Array<RenderLayer> = [];
@@ -277,6 +303,21 @@ export default class LoadUtils {
     static loadFeaturesFromComponentInterchangeV1(json: DeviceInterchangeV1, jsonlayer: LayerInterchangeV1): Array<Feature> {
         const ret: Array<Feature> = [];
         for (const i in json.components) {
+            const entityMint = String(json.components[i].entity || "").toUpperCase();
+            if (entityMint === "VALVE3D") {
+                const paramstoadd = { ...(json.components[i].params || {}) };
+                paramstoadd.position = LoadUtils.featurePositionFromParchmint(json.components[i]);
+                if (jsonlayer.type === "FLOW") {
+                    const feat = Device.makeFeature("Valve3D", paramstoadd);
+                    feat.referenceID = json.components[i].id;
+                    ret.push(feat);
+                } else if (jsonlayer.type === "CONTROL") {
+                    const feat = Device.makeFeature("Valve3D_control", paramstoadd);
+                    feat.referenceID = json.components[i].id;
+                    ret.push(feat);
+                }
+                continue;
+            }
             const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
             if (typestring !== null) {
                 let feat: Feature;
@@ -289,10 +330,8 @@ export default class LoadUtils {
                     if (renderKeys.length == 1) {
                         if (json.components[i].layers[0] == jsonlayer.id) {
                             console.log("Assuming default type feature can be placed on current layer");
-                            const paramstoadd = json.components[i].params;
-                            if (!Object.prototype.hasOwnProperty.call(json.components[i].params, "position")) {
-                                paramstoadd.position = [0.0, 0.0];
-                            }
+                            const paramstoadd = { ...(json.components[i].params || {}) };
+                            paramstoadd.position = LoadUtils.featurePositionFromParchmint(json.components[i]);
                             feat = Device.makeFeature(typestring, paramstoadd);
                             feat.referenceID = json.components[i].id;
                             ret.push(feat);
@@ -301,10 +340,8 @@ export default class LoadUtils {
                         for (const j in renderKeys) {
                             if (renderKeys[j] == jsonlayer.type) {
                                 if (group == jsonlayer.group) {
-                                    const paramstoadd = json.components[i].params;
-                                    if (!Object.prototype.hasOwnProperty.call(json.components[i].params, "position")) {
-                                        paramstoadd.position = [0.0, 0.0];
-                                    }
+                                    const paramstoadd = { ...(json.components[i].params || {}) };
+                                    paramstoadd.position = LoadUtils.featurePositionFromParchmint(json.components[i]);
                                     if (ComponentAPI.library[typestring].key == jsonlayer.type) {
                                         feat = Device.makeFeature(typestring, paramstoadd);
                                     } else if (ComponentAPI.library[typestring + "_" + jsonlayer.type.toLowerCase()]) {

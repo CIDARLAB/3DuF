@@ -108,7 +108,8 @@ export default class Transposer extends Template {
             position: "position"
         };
 
-        this.__renderKeys = ["FLOW", "CONTROL", "INVERSE"];
+        // Omit INVERSE: render2D has no INVERSE branch; getBounds would throw and exit the process.
+        this.__renderKeys = ["FLOW", "CONTROL"];
 
         this.__mint = "TRANSPOSER";
 
