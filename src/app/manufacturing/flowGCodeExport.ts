@@ -2,7 +2,7 @@ import Device from "../core/device";
 import Feature from "../core/feature";
 import Layer from "../core/layer";
 import { LogicalLayerType } from "../core/init";
-import { DEFAULT_CHANNEL_WIDTH_UM } from "../library/channelWidths";
+import { DEFAULT_CHANNEL_WIDTH_UM, mixerEndLayout } from "../library/channelWidths";
 
 const UM_TO_MM = 0.001;
 
@@ -143,24 +143,25 @@ export function betterMixerCenterlineSegments(params: {
     bendLength: number;
     bendSpacing: number;
     numberOfBends: number;
+    edgeBend1?: number;
+    edgeBend2?: number;
 }): SegUm[] {
     const cw = params.channelWidth;
     const bl = params.bendLength;
     const bs = params.bendSpacing;
     const n = Math.max(1, Math.round(params.numberOfBends));
     const [x, y] = params.position;
-    const segHalf = bl / 2 + cw;
+    const layout = mixerEndLayout(params);
     const segLength = bl + 2 * cw;
     const segBend = bs + 2 * cw;
     const vRepeat = 2 * bs + 2 * cw;
     const vOffset = bs + cw;
-    const hOffset = bl / 2 + cw / 2;
     const segs: SegUm[] = [];
 
     const y0 = y + cw / 2;
     segs.push([
         [x, y0],
-        [x + segHalf + cw / 2, y0]
+        [x + layout.firstWidth, y0]
     ]);
 
     for (let i = 0; i < n; i++) {
@@ -183,7 +184,7 @@ export function betterMixerCenterlineSegments(params: {
         if (i === n - 1) {
             segs.push([
                 [xr, yf],
-                [x + hOffset, yf]
+                [x + layout.lastStart, yf]
             ]);
         } else {
             segs.push([
@@ -285,6 +286,8 @@ function collectFlowFeatures(device: Device): {
                 const bendSpacing = tryGetNumber(feature, "bendSpacing") ?? 1230;
                 const numberOfBends = tryGetNumber(feature, "numberOfBends") ?? 1;
                 const heightUm = tryGetNumber(feature, "height") ?? 250;
+                const edgeBend1 = tryGetNumber(feature, "edgeBend1") ?? undefined;
+                const edgeBend2 = tryGetNumber(feature, "edgeBend2") ?? undefined;
                 if (Array.isArray(position)) {
                     channels.push({
                         segments: betterMixerCenterlineSegments({
@@ -292,7 +295,9 @@ function collectFlowFeatures(device: Device): {
                             channelWidth,
                             bendLength,
                             bendSpacing,
-                            numberOfBends
+                            numberOfBends,
+                            edgeBend1,
+                            edgeBend2
                         }),
                         heightUm,
                         channelWidthUm: channelWidth,

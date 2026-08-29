@@ -583,12 +583,24 @@ export default {
         computeSpec: function(mint, params) {
             let spec = [];
             const definition = ComponentAPI.getDefinitionForMINT(mint);
+            if (!definition || !params) return spec;
             for (let i in params.heritable) {
                 let key = params.heritable[i];
+                let value;
+                if (typeof params.hasParam === "function" && params.hasParam(key)) {
+                    value = params.getValue(key);
+                } else if (definition.defaults && definition.defaults[key] !== undefined) {
+                    value = definition.defaults[key];
+                    if (typeof params.updateParameter === "function") {
+                        params.updateParameter(key, value);
+                    }
+                } else {
+                    continue;
+                }
                 let item = {
                     min: definition.minimum[key],
                     max: definition.maximum[key],
-                    value: params.getValue(key),
+                    value: value,
                     units: definition.units[key],
                     steps: (definition.maximum[key] - definition.minimum[key]) / 10,
                     step: (definition.maximum[key] - definition.minimum[key]) / 10,

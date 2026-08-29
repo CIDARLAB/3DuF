@@ -60,6 +60,7 @@ import { ValveType } from "./app/core/init";
 import Terrace from "./app/library/terrace";
 import DxfSketch from "./app/library/dxfSketch";
 import { test } from "mocha";
+import { seedMixerEdgeBends } from "./app/library/channelWidths";
 
 export var PRIMITIVES_SERVER = false;
 
@@ -334,6 +335,24 @@ export class ComponentAPI {
         const Ctor = entry.object.constructor as new () => Template;
         const fresh = new Ctor();
         return { ...fresh.defaults };
+    }
+
+    /**
+     * Copy library defaults into missing heritable keys so older JSON still
+     * shows the full parameter table after new fields are added.
+     */
+    static fillMissingHeritableDefaults(params: { [key: string]: any } | null | undefined, minttype: string): { [key: string]: any } {
+        const out = params && typeof params === "object" ? params : {};
+        const definition = ComponentAPI.getDefinitionForMINT(minttype);
+        if (!definition) return out;
+        const defaults = definition.defaults || {};
+        seedMixerEdgeBends(out);
+        for (const key in definition.heritable) {
+            if (out[key] === undefined || out[key] === null) {
+                out[key] = defaults[key];
+            }
+        }
+        return out;
     }
 
     /**

@@ -1106,6 +1106,10 @@ export default class ViewManager {
         // this.layerToolBar.setActiveLayer("0");
         this.updateActiveLayer();
 
+        if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+            window.dispatchEvent(new CustomEvent("threeduf-device-loaded"));
+        }
+
 
         console.log(json.version);
         //If older version fix feature locations

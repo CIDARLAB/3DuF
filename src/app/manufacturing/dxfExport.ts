@@ -483,6 +483,16 @@ function exportFeatureEntities(
             const bendLength = Number(feature.getValue("bendLength"));
             const bendSpacing = Number(feature.getValue("bendSpacing"));
             const numberOfBends = Number(feature.getValue("numberOfBends"));
+            let edgeBend1: number | undefined;
+            let edgeBend2: number | undefined;
+            try {
+                const e1 = Number(feature.getValue("edgeBend1"));
+                const e2 = Number(feature.getValue("edgeBend2"));
+                if (Number.isFinite(e1)) edgeBend1 = e1;
+                if (Number.isFinite(e2)) edgeBend2 = e2;
+            } catch (_edgeErr) {
+                // Older mixer JSON omits end-bend lengths.
+            }
             if (!Array.isArray(position) || !Number.isFinite(channelWidth) || !(channelWidth > 0)) {
                 return entities;
             }
@@ -491,7 +501,9 @@ function exportFeatureEntities(
                 channelWidth,
                 bendLength: Number.isFinite(bendLength) ? bendLength : 2460,
                 bendSpacing: Number.isFinite(bendSpacing) ? bendSpacing : 1230,
-                numberOfBends: Number.isFinite(numberOfBends) ? numberOfBends : 1
+                numberOfBends: Number.isFinite(numberOfBends) ? numberOfBends : 1,
+                edgeBend1,
+                edgeBend2
             });
             for (const seg of segments) {
                 entities += exportChannelSegmentOutline(

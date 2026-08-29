@@ -44,7 +44,7 @@ export default class Params {
         if (this.__parameters.hasOwnProperty(key)) {
             this.__parameters[key].updateValue(value);
         } else {
-            throw new Error(key + "parameter does not exist in Params object");
+            this.__parameters[key] = new Parameter(typeof value, value);
         }
     }
     /**

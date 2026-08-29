@@ -487,7 +487,7 @@ export default class Component {
         const xspan = json["x-span"];
         const yspan = json["y-span"];
 
-        const params = json.params;
+        const params = ComponentAPI.fillMissingHeritableDefaults(json.params, entity);
 
         // TODO - remove this dependency
         // iscustomcompnent = Registry.viewManager.customComponentManager.hasDefinition(entity);

@@ -2,9 +2,9 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
-import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
+import { DEFAULT_CHANNEL_WIDTH_UM, mixerEndLayout } from "./channelWidths";
 
-export default class CurvedMixer extends Template {
+export default class BetterMixer extends Template {
     constructor() {
         super();
     }
@@ -19,6 +19,8 @@ export default class CurvedMixer extends Template {
             bendSpacing: "Float",
             numberOfBends: "Float",
             channelWidth: "Float",
+            edgeBend1: "Float",
+            edgeBend2: "Float",
             bendLength: "Float",
             rotation: "Float",
             height: "Float",
@@ -30,6 +32,8 @@ export default class CurvedMixer extends Template {
             componentSpacing: 1000,
             rotation: 0,
             channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
+            edgeBend1: DEFAULT_CHANNEL_WIDTH_UM / 2,
+            edgeBend2: DEFAULT_CHANNEL_WIDTH_UM / 2,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
             bendLength: 2.46 * 1000,
@@ -44,6 +48,8 @@ export default class CurvedMixer extends Template {
             bendSpacing: "μm",
             numberOfBends: "",
             channelWidth: "μm",
+            edgeBend1: "μm",
+            edgeBend2: "μm",
             bendLength: "μm",
             height: "μm"
         };
@@ -52,6 +58,8 @@ export default class CurvedMixer extends Template {
             componentSpacing: 0,
             rotation: 0,
             channelWidth: 10,
+            edgeBend1: 0,
+            edgeBend2: 0,
             bendSpacing: 10,
             numberOfBends: 1,
             bendLength: 10,
@@ -64,6 +72,8 @@ export default class CurvedMixer extends Template {
             componentSpacing: 10000,
             rotation: 360,
             channelWidth: 2000,
+            edgeBend1: 12000,
+            edgeBend2: 12000,
             bendSpacing: 6000,
             numberOfBends: 20,
             bendLength: 12 * 1000,
@@ -76,6 +86,8 @@ export default class CurvedMixer extends Template {
             componentSpacing: "componentSpacing",
             position: "position",
             channelWidth: "channelWidth",
+            edgeBend1: "edgeBend1",
+            edgeBend2: "edgeBend2",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
@@ -87,6 +99,8 @@ export default class CurvedMixer extends Template {
         this.__targetParams = {
             componentSpacing: "componentSpacing",
             channelWidth: "channelWidth",
+            edgeBend1: "edgeBend1",
+            edgeBend2: "edgeBend2",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
@@ -115,16 +129,10 @@ export default class CurvedMixer extends Template {
     }
 
     getPorts(params: { [k: string]: any }) {
-        const channelWidth = params.channelWidth;
-        const bendLength = params.bendLength;
-        const bendSpacing = params.bendSpacing;
-        const rotation = params.rotation;
-        const numberOfBends = params.numberOfBends;
+        const layout = mixerEndLayout(params);
         const ports = [];
-        const openingY2 = (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing;
-        // AABB-edge terminals, matching TREE-PLACE / Parchmint mixer ports.
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", LogicalLayerType.FLOW));
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, openingY2, "2", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(layout.port1x, 0, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(layout.port2x, layout.openingY2, "2", LogicalLayerType.FLOW));
         return ports;
     }
 
@@ -137,24 +145,20 @@ export default class CurvedMixer extends Template {
         const x = params.position[0];
         const y = params.position[1];
         const color = params.color;
-        const segHalf = bendLength / 2 + channelWidth;
+        const layout = mixerEndLayout(params);
         const segLength = bendLength + 2 * channelWidth;
         const segBend = bendSpacing + 2 * channelWidth;
         const vRepeat = 2 * bendSpacing + 2 * channelWidth;
         const vOffset = bendSpacing + channelWidth;
-        const hOffset = bendLength / 2 + channelWidth / 2;
         const serp = new paper.CompoundPath("");
-        // draw first segment
-        serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y, segHalf + channelWidth / 2, channelWidth)));
+        serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y, layout.firstWidth, channelWidth)));
         for (let i = 0; i < numBends; i++) {
             serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vRepeat * i, channelWidth, segBend)));
             serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vOffset + vRepeat * i, segLength, channelWidth)));
             serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth + bendLength, y + vOffset + vRepeat * i, channelWidth, segBend)));
             if (i === numBends - 1) {
-                // draw half segment to close
-                serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + hOffset, y + vRepeat * (i + 1), segHalf, channelWidth)));
+                serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x + layout.lastStart, y + vRepeat * (i + 1), layout.lastWidth, channelWidth)));
             } else {
-                // draw full segment
                 serp.addChild(new paper.Path.Rectangle(new paper.Rectangle(x, y + vRepeat * (i + 1), segLength, channelWidth)));
             }
         }

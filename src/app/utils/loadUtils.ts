@@ -57,6 +57,7 @@ export default class LoadUtils {
 
     static loadFromScratch(json: InterchangeV1_2): [Device, Array<RenderLayer>] {
         normalizeLegacyDeviceJson(json);
+        LoadUtils.normalizeParchmintLayerGroups(json);
         const newDevice: Device = LoadUtils.loadDeviceFromInterchangeV1_2(json);
         let newRenderLayers: Array<RenderLayer> = [];
         if (json.renderLayers) {
@@ -92,8 +93,9 @@ export default class LoadUtils {
             } else {
                 const layerTypes: Array<string> = ["FLOW", "CONTROL", "INTEGRATION"];
                 for (const i in json.layers) {
+                    if (String(json.layers[i].group) !== String(key)) continue;
                     const index = layerTypes.indexOf(json.layers[i].type);
-                    layerTypes.splice(index, 1);
+                    if (index >= 0) layerTypes.splice(index, 1);
                 }
                 console.log(layerTypes.length + " layers missing from group " + key + ", these will be generated");
                 for (const j in layerTypes) {
@@ -139,6 +141,39 @@ export default class LoadUtils {
         }
 
         return [newDevice, newRenderLayers];
+    }
+
+    /**
+     * Parchmint JSON uses ``layer`` (FLOW vs CONTROL) and ``group``.
+     * 3DuF ``group`` is the physical **level**; FLOW and CONTROL are two
+     * **layers on the same level**. Exporters that stamp CONTROL as group 1
+     * would otherwise open as a second level in the sidebar.
+     */
+    static normalizeParchmintLayerGroups(json: InterchangeV1_2): void {
+        if (!json || !Array.isArray(json.layers) || json.layers.length === 0) {
+            return;
+        }
+        const flowLayers = json.layers.filter(layer => String(layer.type || "").toUpperCase() === "FLOW");
+        if (flowLayers.length <= 1) {
+            json.layers.forEach(layer => {
+                layer.group = "0";
+            });
+            return;
+        }
+        const flowGroups = flowLayers.map((layer, index) => String(layer.group != null ? layer.group : index));
+        json.layers.forEach(layer => {
+            const type = String(layer.type || "").toUpperCase();
+            if (type === "FLOW") {
+                layer.group = String(layer.group != null ? layer.group : "0");
+                return;
+            }
+            const raw = String(layer.group != null ? layer.group : "");
+            if (flowGroups.indexOf(raw) >= 0) {
+                layer.group = raw;
+                return;
+            }
+            layer.group = flowGroups[0] || "0";
+        });
     }
 
     static loadDeviceFromInterchangeV1_2(json: InterchangeV1_2): Device {
@@ -238,7 +273,7 @@ export default class LoadUtils {
                 throw new Error("Unknown layer type: " + jsonlayer.type);
             }
         }
-        const newLayer: Layer = new Layer(jsonlayer.params, jsonlayer.name, layerType, jsonlayer.group, device);
+        const newLayer: Layer = new Layer(jsonlayer.params, jsonlayer.name, layerType, String(jsonlayer.group != null ? jsonlayer.group : "0"), device);
 
         const hasStoredFeatures = LoadUtils.layerHasStoredFeatures(jsonlayer);
         if (hasStoredFeatures) {
@@ -654,7 +689,7 @@ export default class LoadUtils {
         const xspan = json["x-span"];
         const yspan = json["y-span"];
 
-        const params = json.params;
+        const params = ComponentAPI.fillMissingHeritableDefaults(json.params, entity);
 
         // TODO - remove this dependency
         // iscustomcomponent = Registry.viewManager.customComponentManager.hasDefinition(entity);

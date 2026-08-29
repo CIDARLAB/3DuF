@@ -82,12 +82,19 @@ export default {
         },
     },
     mounted() {
-        // Load what layers are there in the device
-        setTimeout(() => {
+        this._onDeviceLoaded = () => {
+            if (!Registry.currentDevice) return;
             this.layers = Registry.currentDevice.layers;
             this.syncToolbarActiveIndex();
             this.rebuildLevelsFromLayers(this.layers);
-        }, 1000);
+        };
+        window.addEventListener("threeduf-device-loaded", this._onDeviceLoaded);
+        setTimeout(this._onDeviceLoaded, 1000);
+    },
+    beforeDestroy() {
+        if (this._onDeviceLoaded) {
+            window.removeEventListener("threeduf-device-loaded", this._onDeviceLoaded);
+        }
     },
     methods: {
         syncToolbarActiveIndex() {
@@ -101,23 +108,29 @@ export default {
 
         rebuildLevelsFromLayers(newLayers) {
             this.syncToolbarActiveIndex();
-            const ret = [];
+            const list = Array.isArray(newLayers) ? newLayers : [];
+            const seen = [];
+            const seenSet = new Set();
+            list.forEach((layer) => {
+                const g = String(layer && layer.group != null ? layer.group : "0");
+                if (seenSet.has(g)) return;
+                seenSet.add(g);
+                seen.push(g);
+            });
+            seen.sort((a, b) => Number(a) - Number(b));
             const activeIdx = this.toolbarActiveLayerIndex;
             const activeLevel = Math.floor(activeIdx / 3);
             let subMode = activeIdx % 3;
             if (subMode === 2) {
                 subMode = 0;
             }
-            for (const i in newLayers) {
-                if (i % 3 == 0) {
-                    const id = i / 3;
-                    ret.push({
-                        id,
-                        mode: id === activeLevel ? subMode : null
-                    });
-                }
-            }
-            this.levels = ret;
+            this.levels = seen.map((g) => {
+                const id = Number(g);
+                return {
+                    id: Number.isFinite(id) ? id : 0,
+                    mode: id === activeLevel ? subMode : null
+                };
+            });
         },
 
         addLevel() {

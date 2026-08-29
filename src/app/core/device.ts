@@ -21,6 +21,7 @@ import DeviceUtils from "@/app/utils/deviceUtils";
 import { ComponentAPI } from "@/componentAPI";
 import MapUtils from "../utils/mapUtils";
 import { SerializationError } from "../utils/exportUtils";
+import { seedMixerEdgeBends } from "../library/channelWidths";
 
 /**
  * The Device stores information about a design.
@@ -1165,6 +1166,9 @@ export default class Device {
         }
         let featureType = ComponentAPI.getDefinition(typeString);
         if (paramvalues && featureType) {
+            if (typeString === "BetterMixer" || typeString === "CurvedMixer" || typeString === "3DMixer") {
+                seedMixerEdgeBends(paramvalues);
+            }
             Feature.checkDefaults(paramvalues, featureType.heritable, ComponentAPI.getDefaultsForType(typeString));
             params = new Params(paramvalues, MapUtils.toMap(featureType.unique), MapUtils.toMap(featureType.heritable));
         } else {
