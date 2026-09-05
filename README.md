@@ -100,6 +100,14 @@ If a layer has been selected, only features on that layer can be selected this w
 
 Left click on any selected feature to bring up a dialog box which will allow you to edit its parameters. If more than one feature is selected, parameters will be inherited by all currently selected features of the same type as the one you clicked.
 
+Canvas settings panels also show the imported **netlist ID** for the selected component or connection, so you can match objects back to a Parchmint / Neptune JSON file.
+
+Default sizes used when placing new features:
+- Port radius: **1 mm**
+- Channel / connection / valve-gap width: **600 µm**
+
+Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer end of that incomplete bend). Set each value to half the connecting channel width so the mixer end and the pipe share the same width.
+
 ### Cover Layer (All / Ports)
 
 Fabricated chips need a closed cover so fluid can flow inside channels instead of open grooves. Above the Export buttons, use the **ALL / PORTS** toggle (same interaction pattern as FLOW / CTRL):
@@ -128,7 +136,12 @@ For DXF workflows:
 - Use `Edit Border` to import a DXF border/outline into the current design canvas.
 - The main design interchange format for full-device load/save remains 3DuF JSON.
 
-Neptune LFR user-designed parts (`DIYCOMPONENT`) load as built-in black-box placeholders, so they remain visible without a custom library entry.
+Neptune / Parchmint interoperability notes:
+- Neptune LFR user-designed parts (`DIYCOMPONENT`) load as built-in black-box placeholders, so they remain visible without a custom library entry.
+- Component `position` is stored as the geometric / rotation center. PORT, VIA, and VALVE glyphs draw at that center.
+- FLOW and CONTROL layers from Parchmint open on the **same physical level** in the layer toolbar (not as separate levels).
+- Older JSON is filled with missing library defaults so newly added parameters still appear in settings.
+- Broken valve maps are skipped instead of aborting the whole load; failed Neptune `postMessage` loads show an alert with the error.
 
 ## Component Library
 

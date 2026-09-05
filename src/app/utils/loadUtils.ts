@@ -236,11 +236,11 @@ export default class LoadUtils {
                 const connection = newDevice.getConnectionByID(newValve.connectionid);
                 if (component === null){
                     console.warn("Could not find component with ID " + newValve.componentid + " for valve " + newValve.componentid);
-                    throw new Error("Could not find component with ID " + newValve.componentid + " for valve " + newValve.componentid);
+                    continue;
                 }
                 if (connection === null){
                     console.warn("Could not find connection with ID " + newValve.connectionid + " for valve " + newValve.componentid);
-                    throw new Error("Could not find connection with ID " + newValve.connectionid + " for valve " + newValve.componentid);
+                    continue;
                 }
                 newDevice.insertValve(component, connection, newValve.type);
             }

@@ -1017,11 +1017,13 @@ export default class ViewManager {
         let flag = false;
         let i = 1;
 
-        json.params[""];
+        if (!json.params || typeof json.params !== "object") {
+            json.params = { width: 135000, length: 85000 };
+        }
 
         json.params = {
-            width: json.params["x-span"],
-            length: json.params["y-span"],
+            width: json.params["x-span"] != null ? json.params["x-span"] : json.params.width,
+            length: json.params["y-span"] != null ? json.params["y-span"] : json.params.length,
             ...json.params
         };
         delete json.params["x-span"];

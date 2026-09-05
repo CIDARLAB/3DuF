@@ -75,6 +75,8 @@ export default {
                 } catch (err) {
                     // eslint-disable-next-line no-console
                     console.error("3DuF: failed to load JSON from postMessage", err);
+                    const message = err && err.message ? err.message : String(err);
+                    alert("3DuF could not load the JSON: " + message);
                 }
             }
 
