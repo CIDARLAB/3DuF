@@ -95,6 +95,19 @@ export default {
             }
         };
         window.addEventListener("message", this._postMessageHandler);
+        // Tell Neptune (or any opener) the bridge is live so it can post JSON
+        // immediately instead of racing SPA mount with fixed timeouts.
+        try {
+            const readyMsg = { type: "threeduf-ready" };
+            if (window.opener && !window.opener.closed) {
+                window.opener.postMessage(readyMsg, "*");
+            }
+            // Also announce to any listener on this page (devtools / tests).
+            window.postMessage(readyMsg, window.location.origin);
+        } catch (err) {
+            // eslint-disable-next-line no-console
+            console.warn("3DuF: failed to announce threeduf-ready", err);
+        }
         //EventBus.get().on(EventBus.DBL_CLICK, this.placement, this.placement2);
     },
 

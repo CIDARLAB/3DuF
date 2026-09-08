@@ -1021,10 +1021,13 @@ export default class ViewManager {
             json.params = { width: 135000, length: 85000 };
         }
 
+        const spanWidth = json.params["x-span"] != null ? json.params["x-span"] : json.params.width;
+        const spanLength = json.params["y-span"] != null ? json.params["y-span"] : json.params.length;
+        // Prefer Parchmint x-span/y-span after merge so stale width/length cannot win.
         json.params = {
-            width: json.params["x-span"] != null ? json.params["x-span"] : json.params.width,
-            length: json.params["y-span"] != null ? json.params["y-span"] : json.params.length,
-            ...json.params
+            ...json.params,
+            width: spanWidth != null ? spanWidth : 135000,
+            length: spanLength != null ? spanLength : 85000,
         };
         delete json.params["x-span"];
         delete json.params["y-span"];
