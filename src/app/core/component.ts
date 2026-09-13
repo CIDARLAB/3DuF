@@ -480,7 +480,7 @@ export default class Component {
         const iscustomcompnent = false;
         const name = json.name;
         const id = json.id;
-        const entity = json.entity;
+        const entity = ComponentAPI.normalizeMint(json.entity, json.params);
 
         // Idk whether this is correct
         // It was originially this._span = this.span which threw several errors so I patterned in off the above const var

@@ -103,11 +103,13 @@ export default class Valve extends ValveTemplate {
     getPorts(params: { [k: string]: any }) {
         const l = params.length;
         const w = params.width;
-
         const ports = [];
-
-        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.CONTROL));
-
+        // Center-relative cardinals (1=top, 2=right, 3=bottom, 4=left).
+        // Super_Mux MINT uses v17 4 / v25 3 as approach sides.
+        ports.push(new ComponentPort(0, -l / 2, "1", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(w / 2, 0, "2", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(0, l / 2, "3", LogicalLayerType.CONTROL));
+        ports.push(new ComponentPort(-w / 2, 0, "4", LogicalLayerType.CONTROL));
         return ports;
     }
 

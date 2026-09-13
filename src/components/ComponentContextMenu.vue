@@ -5,7 +5,6 @@
         class="component-context-card settings-panel-card settings-panel-card--chrome"
         :style="cardPositionStyle"
         scrollable
-        @mousedown="startMenuDrag"
     >
         <div v-show="showRename" class="component-context-rename px-4 pt-3 pb-0">
             <v-row align="center" dense no-gutters>
@@ -38,7 +37,7 @@
         >
             <v-icon size="16" color="white">mdi-close</v-icon>
         </v-btn>
-        <div class="settings-panel-heading">
+        <div class="settings-panel-heading" @mousedown="startMenuDrag" @contextmenu.prevent>
             <span class="settings-panel-heading__title">{{ mint }}</span>
             <v-spacer />
             <v-btn
@@ -291,10 +290,11 @@ export default {
     },
     methods: {
         startMenuDrag(event) {
-            if (!event || event.button !== 0) return;
+            // Drag only from the component-type heading (left or right button).
+            if (!event || (event.button !== 0 && event.button !== 2)) return;
             const target = event.target;
             if (!target || typeof target.closest !== "function") return;
-            // Keep toolbar buttons and inputs clickable without starting drag.
+            if (!target.closest(".settings-panel-heading")) return;
             if (
                 target.closest(
                     ".v-btn, button, input, textarea, select, .v-input, .v-slider, .property-block-scroll-shell--limited"
@@ -765,6 +765,8 @@ export default {
     font-size: inherit !important;
     font-weight: inherit !important;
     letter-spacing: inherit !important;
+    user-select: text;
+    cursor: text;
 }
 
 .component-context-card ::v-deep .v-messages {

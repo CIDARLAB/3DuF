@@ -37,6 +37,7 @@ import ThreeDMux from "./app/library/threeDMux";
 import ChemostatRing from "./app/library/chemostatring";
 import Incubation from "./app/library/incubation";
 import Merger from "./app/library/merger";
+import DropletMergerJunction from "./app/library/dropletMergerJunction";
 import PicoInjection from "./app/library/picoinjection";
 import Sorter from "./app/library/sorter";
 import CapacitanceSensor from "./app/library/capacitancesensor";
@@ -168,6 +169,7 @@ export class ComponentAPI {
         Incubation: { object: new Incubation(), key: "FLOW" },
         Merger: { object: new Merger(), key: "FLOW" },
         Merger_integration: { object: new Merger(), key: "INTEGRATION" },
+        DropletMergerJunction: { object: new DropletMergerJunction(), key: "FLOW" },
         PicoInjection: { object: new PicoInjection(), key: "FLOW" },
         PicoInjection_integration: { object: new PicoInjection(), key: "INTEGRATION" },
         Sorter: { object: new Sorter(), key: "FLOW" },
@@ -229,8 +231,42 @@ export class ComponentAPI {
      * @returns {(Template | null)}
      * @memberof ComponentAPI
      */
-    static getComponentWithMINT(minttype: string): Template | null {
-        const checkmint = minttype;
+    /**
+     * Map legacy / alternate MINT spellings onto library mint strings.
+     * ``CELL TRAP`` / ``CELL TRAPPER`` become LONG when chamber-row params
+     * are present (Super_Mux banks), otherwise SQUARE CELL TRAP.
+     */
+    static normalizeMint(minttype: string, params?: { [k: string]: any } | null): string {
+        const key = String(minttype || "")
+            .trim()
+            .toUpperCase()
+            .replace(/_/g, " ")
+            .replace(/\s+/g, " ");
+        const aliases: { [k: string]: string } = {
+            "IN MUX": "MUX",
+            "OUT MUX": "MUX",
+            "INPUT MUX": "MUX",
+            "OUTPUT MUX": "MUX",
+            "HORIZONTAL MUX": "MUX",
+            "VERTICAL MUX": "MUX",
+            "LONG CELL TRAPPER": "LONG CELL TRAP"
+        };
+        if (key === "CELL TRAP" || key === "CELL TRAPPER") {
+            if (
+                params &&
+                (params.numberOfChambers != null ||
+                    params.feedingChannelWidth != null ||
+                    params.chamberSpacing != null)
+            ) {
+                return "LONG CELL TRAP";
+            }
+            return "SQUARE CELL TRAP";
+        }
+        return aliases[key] || key;
+    }
+
+    static getComponentWithMINT(minttype: string, params?: { [k: string]: any } | null): Template | null {
+        const checkmint = ComponentAPI.normalizeMint(minttype, params);
         for (const key in this.library) {
             if (checkmint == this.library[key].object.mint) {
                 console.log("Check");
@@ -258,8 +294,8 @@ export class ComponentAPI {
      * @returns {(LibraryEntryDefinition | null)}
      * @memberof ComponentAPI
      */
-    static getDefinitionForMINT(minttype: string): LibraryEntryDefinition | null {
-        const checkmint = minttype;
+    static getDefinitionForMINT(minttype: string, params?: { [k: string]: any } | null): LibraryEntryDefinition | null {
+        const checkmint = ComponentAPI.normalizeMint(minttype, params);
         let ret: LibraryEntryDefinition | null = null;
         for (const key in this.library) {
             if (checkmint == this.library[key].object.mint) {
@@ -313,9 +349,10 @@ export class ComponentAPI {
      * @returns {(string | null)}
      * @memberof ComponentAPI
      */
-    static getTypeForMINT(minttype: string): string | null {
+    static getTypeForMINT(minttype: string, params?: { [k: string]: any } | null): string | null {
+        const checkmint = ComponentAPI.normalizeMint(minttype, params);
         for (const key in ComponentAPI.library) {
-            if (minttype === ComponentAPI.library[key].object.mint) {
+            if (checkmint === ComponentAPI.library[key].object.mint) {
                 return key;
             }
         }
@@ -380,10 +417,11 @@ export class ComponentAPI {
      * @returns {(Array<string> | null)}
      * @memberof ComponentAPI
      */
-    static getRenderTypeKeysForMINT(minttype: string): Array<string> | null {
+    static getRenderTypeKeysForMINT(minttype: string, params?: { [k: string]: any } | null): Array<string> | null {
+        const checkmint = ComponentAPI.normalizeMint(minttype, params);
         let ret = [];
         for (const key in ComponentAPI.library) {
-            if (minttype === ComponentAPI.library[key].object.mint) {
+            if (checkmint === ComponentAPI.library[key].object.mint) {
                 ret.push(key);
             }
         }
@@ -528,14 +566,15 @@ export class ComponentAPI {
      * @returns {Template}
      * @memberof ComponentAPI
      */
-    static getRendererForMINT(minttype: string): Template {
+    static getRendererForMINT(minttype: string, params?: { [k: string]: any } | null): Template {
+        const checkmint = ComponentAPI.normalizeMint(minttype, params);
         for (const key in ComponentAPI.library) {
-            if (ComponentAPI.library[key].object.mint === minttype) {
+            if (ComponentAPI.library[key].object.mint === checkmint) {
                 return ComponentAPI.library[key].object;
             }
         }
         for (const key in ComponentAPI.connectionLibrary) {
-            if (ComponentAPI.connectionLibrary[key].object.mint === minttype) {
+            if (ComponentAPI.connectionLibrary[key].object.mint === checkmint) {
                 return ComponentAPI.connectionLibrary[key].object;
             }
         }

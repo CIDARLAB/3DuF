@@ -1043,7 +1043,7 @@ export default class ViewManager {
             // primitive (PR export and 3DuF hand placement). render2D converts
             // that center to the library draw origin at draw time.
             for (const component of json.components) {
-                const MintType = String(ComponentAPI.getTypeForMINT(component.entity));
+                const MintType = String(ComponentAPI.getTypeForMINT(component.entity, component.params));
                 if (MintType === "Node") {
                     component["x-span"] = 0;
                     component["y-span"] = 0;
@@ -2400,7 +2400,8 @@ export default class ViewManager {
         params_to_copy.position = [xpos, ypos];
 
         // Get default params and overwrite them with json params, this can account for inconsistencies
-        const renderdefkeys = ComponentAPI.getRenderTypeKeysForMINT(component.mint);
+        const paramsJson = typeof component.params?.toJSON === "function" ? component.params.toJSON() : undefined;
+        const renderdefkeys = ComponentAPI.getRenderTypeKeysForMINT(component.mint, paramsJson);
         for (let i = 0; i < renderdefkeys?.length!; i++) {
             const key = renderdefkeys![i];
             const newFeature = Device.makeFeature(key, params_to_copy);

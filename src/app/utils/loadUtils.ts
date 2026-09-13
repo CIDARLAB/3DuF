@@ -354,7 +354,7 @@ export default class LoadUtils {
                 }
                 continue;
             }
-            const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
+            const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity, json.components[i].params);
             if (typestring !== null) {
                 let feat: Feature;
                 const renderKeys: Array<string> = ComponentAPI.getAllRenderKeys(typestring);
@@ -484,7 +484,7 @@ export default class LoadUtils {
     static generateMissingLayerFeaturesV1(json: InterchangeV1_2, type: string, layerGroup: string): Array<Feature> {
         const ret: Array<Feature> = [];
         for (const i in json.components) {
-            const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity);
+            const typestring = ComponentAPI.getTypeForMINT(json.components[i].entity, json.components[i].params);
             if (typestring !== null) {
                 if (type == "FLOW") {
                     const libEntry = ComponentAPI.library[typestring];
@@ -671,12 +671,12 @@ export default class LoadUtils {
         let iscustomcomponent;
         const name = json.name;
         const id = json.id;
-        const entity = json.entity;
+        const entity = ComponentAPI.normalizeMint(json.entity, json.params);
 
         console.log("Entity here:")
         console.log(entity);
 
-        if (ComponentAPI.getComponentWithMINT(entity) === null) {
+        if (ComponentAPI.getComponentWithMINT(entity, json.params) === null) {
             iscustomcomponent = true;
             console.log("is custom component");
         } else {

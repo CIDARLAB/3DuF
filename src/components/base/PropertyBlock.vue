@@ -31,7 +31,14 @@
                             </div>
                         </td>
                         <td class="value-col">
-                            <code class="param-id-value">{{ entityId }}</code>
+                            <v-text-field
+                                :value="entityId"
+                                class="param-id-field"
+                                dense
+                                hide-details
+                                outlined
+                                readonly
+                            />
                         </td>
                     </tr>
                     <tr v-for="item in displaySpec" :key="item.name">
@@ -77,7 +84,7 @@
 import { getParameterTooltip } from "@/constants/parameterTooltips";
 
 /** Hidden in settings UI only; placement / engine may still use defaults or other paths. */
-const HIDDEN_SETTING_KEYS = new Set(["connectionSpacing", "componentSpacing"]);
+const HIDDEN_SETTING_KEYS = new Set(["connectionSpacing", "componentSpacing", "ID"]);
 const MAX_VISIBLE_PARAMS_WITHOUT_SCROLL = 5;
 
 export default {
@@ -203,24 +210,29 @@ export default {
     padding: 4px 0 !important;
 }
 
-.param-name-code {
+.property-block-settings ::v-deep code.param-name-code {
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
     letter-spacing: inherit;
-    background: transparent;
+    padding: 0;
+    background: transparent !important;
+    background-color: transparent !important;
     color: inherit;
 }
 
-.param-id-value {
-    display: block;
-    font-family: inherit;
-    font-size: inherit;
+.param-id-field {
+    width: 100%;
+}
+
+.param-id-field ::v-deep .v-input__slot {
+    background-color: transparent !important;
+}
+
+.param-id-field ::v-deep input {
+    color: #1976d2 !important;
     font-weight: 600;
-    letter-spacing: inherit;
-    background: transparent;
-    color: inherit;
-    word-break: break-all;
+    cursor: text;
     user-select: all;
 }
 

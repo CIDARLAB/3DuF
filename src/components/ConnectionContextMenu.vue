@@ -5,7 +5,6 @@
         class="connection-context-card settings-panel-card settings-panel-card--chrome"
         :style="cardPositionStyle"
         scrollable
-        @mousedown="startMenuDrag"
     >
         <div v-show="showRename" class="connection-context-rename px-4 pt-3 pb-0">
             <v-row align="center" dense no-gutters>
@@ -39,7 +38,7 @@
             <v-icon size="16" color="white">mdi-close</v-icon>
         </v-btn>
 
-        <div class="settings-panel-heading">
+        <div class="settings-panel-heading" @mousedown="startMenuDrag" @contextmenu.prevent>
             <span class="settings-panel-heading__title">{{ mint }}</span>
             <v-spacer />
             <v-btn
@@ -253,9 +252,10 @@ export default {
     },
     methods: {
         startMenuDrag(event) {
-            if (!event || event.button !== 0) return;
+            if (!event || (event.button !== 0 && event.button !== 2)) return;
             const target = event.target;
             if (!target || typeof target.closest !== "function") return;
+            if (!target.closest(".settings-panel-heading")) return;
             if (
                 target.closest(
                     ".v-btn, button, input, textarea, select, .v-input, .v-slider, .property-block-scroll-shell--limited"
@@ -699,6 +699,8 @@ export default {
     font-size: inherit !important;
     font-weight: inherit !important;
     letter-spacing: inherit !important;
+    user-select: text;
+    cursor: text;
 }
 
 .connection-context-card ::v-deep .v-messages {
