@@ -94,11 +94,14 @@ export default class Port extends Template {
     }
 
     getPorts(params: { [k: string]: any }) {
-        const radius = params.portRadius;
+        const radius = Number(params.portRadius) || 1000;
 
         const ports = [];
-
-        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
+        // MINT pad sides: 1=top, 2=right, 3=bottom, 4=left (same as NODE).
+        ports.push(new ComponentPort(0, -radius, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(radius, 0, "2", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(0, radius, "3", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(-radius, 0, "4", LogicalLayerType.FLOW));
 
         return ports;
     }

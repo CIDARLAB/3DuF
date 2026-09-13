@@ -19,7 +19,7 @@ export default class RoundedChannel extends Template {
 
         this.__defaults = {
             channelWidth: 0.8 * 1000,
-            height: 250
+            height: 600
         };
 
         this.__units = {

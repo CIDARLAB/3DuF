@@ -75,7 +75,7 @@
   "CHANNEL": {
     "connectionSpacing": 1600,
     "channelWidth": 800,
-    "height": 250
+    "height": 600
   },
   "CHEMOSTAT RING": {
     "componentSpacing": 1000,

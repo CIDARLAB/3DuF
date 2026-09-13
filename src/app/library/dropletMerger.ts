@@ -115,17 +115,14 @@ export default class DropletMerger extends Template {
     }
 
     getPorts(params: { [k: string]: any }) {
-        const channelWidth = params.channelWidth;
-        const bendLength = params.bendLength;
-        const bendSpacing = params.bendSpacing;
-        const rotation = params.rotation;
-        const numberOfBends = params.numberOfBends;
+        const inputWidth1 = Number(params.inputWidth1) || 400;
+        const outputWidth = Number(params.outputWidth) || inputWidth1;
+        const stabilizationLength = Number(params.stabilizationLength) || 5000;
 
         const ports = [];
-
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", LogicalLayerType.FLOW));
-
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", LogicalLayerType.FLOW));
+        const half = Math.max(inputWidth1, outputWidth) / 2;
+        ports.push(new ComponentPort(0, half, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(stabilizationLength, half, "2", LogicalLayerType.FLOW));
 
         return ports;
     }

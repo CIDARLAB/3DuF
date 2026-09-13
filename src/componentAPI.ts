@@ -48,6 +48,7 @@ import LogicArray from "./app/library/logicArray";
 import ToroidalMixer from "./app/library/toroidalMixer";
 import DogboneInsert from "./app/library/dogboneInsert";
 import BlackBox from "./app/library/blackBox";
+import DropletMergerJunction from "./app/library/dropletMergerJunction";
 
 import Template from "./app/library/template";
 import ComponentPort from "./app/core/componentPort";
@@ -155,6 +156,7 @@ export class ComponentAPI {
         LogicArray: { object: new LogicArray(), key: "FLOW" },
         LogicArray_control: { object: new LogicArray(), key: "CONTROL" },
         LogicArray_cell: { object: new LogicArray(), key: "CELL" },
+        DropletMergerJunction: { object: new DropletMergerJunction(), key: "FLOW" },
     };
 
     static connectionLibrary: { [key: string]: LibraryEntry } = {
@@ -193,8 +195,37 @@ export class ComponentAPI {
      * @returns {(Template | null)}
      * @memberof ComponentAPI
      */
-    static getComponentWithMINT(minttype: string): Template | null {
-        const checkmint = minttype;
+    static normalizeMint(minttype: string, params?: { [k: string]: any } | null): string {
+        const key = String(minttype || "")
+            .trim()
+            .toUpperCase()
+            .replace(/_/g, " ")
+            .replace(/\s+/g, " ");
+        const aliases: { [k: string]: string } = {
+            "IN MUX": "MUX",
+            "OUT MUX": "MUX",
+            "INPUT MUX": "MUX",
+            "OUTPUT MUX": "MUX",
+            "HORIZONTAL MUX": "MUX",
+            "VERTICAL MUX": "MUX",
+            "LONG CELL TRAPPER": "LONG CELL TRAP"
+        };
+        if (key === "CELL TRAP" || key === "CELL TRAPPER") {
+            if (
+                params &&
+                (params.numberOfChambers != null ||
+                    params.feedingChannelWidth != null ||
+                    params.chamberSpacing != null)
+            ) {
+                return "LONG CELL TRAP";
+            }
+            return "SQUARE CELL TRAP";
+        }
+        return aliases[key] || key;
+    }
+
+    static getComponentWithMINT(minttype: string, params?: { [k: string]: any } | null): Template | null {
+        const checkmint = ComponentAPI.normalizeMint(minttype, params);
         for (const key in this.library) {
             if (checkmint == this.library[key].object.mint) {
                 return ComponentAPI.library[key].object;

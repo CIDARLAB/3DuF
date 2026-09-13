@@ -8,19 +8,19 @@ paper.setup(new paper.Size([64000, 48000]));
 const getDimensions = async (req: Request, res: Response, next: NextFunction) => {
     let primitive = req.query.mint;
     let key = primitive as string;
-    let technology = ComponentAPI.getComponentWithMINT(key);
-
-    if (technology === null) {
-        console.error("Could not find MINT:", key);
-        return res.status(400).send({ message: `MINT Not found - ${key}` });
-    }
-
     let params_text = req.query.params as string;
     let params = JSON.parse(params_text);
     console.log("Params:", params);
     params["position"] = [0, 0];
     params["color"] = "#FFF";
     params["rotation"] = 0;
+
+    let technology = ComponentAPI.getComponentWithMINT(key, params);
+
+    if (technology === null) {
+        console.error("Could not find MINT:", key);
+        return res.status(400).send({ message: `MINT Not found - ${key}` });
+    }
 
     let ret = technology.getDimensions(params);
     console.log("Dimensions:", primitive, ret);
@@ -30,18 +30,18 @@ const getDimensions = async (req: Request, res: Response, next: NextFunction) =>
 const getTerminals = async (req: Request, res: Response, next: NextFunction) => {
     let primitive = req.query.mint;
     let key = primitive as string;
-    let technology = ComponentAPI.getComponentWithMINT(key);
-
-    if (technology === null) {
-        console.error("Could not find MINT:", key);
-        return res.status(400).send({ message: `MINT Not found - ${key}` });
-    }
-
     let params_text = req.query.params as string;
     let params = JSON.parse(params_text);
     console.log("Params:", params);
     params["position"] = [0, 0];
     params["color"] = "#FFF";
+
+    let technology = ComponentAPI.getComponentWithMINT(key, params);
+
+    if (technology === null) {
+        console.error("Could not find MINT:", key);
+        return res.status(400).send({ message: `MINT Not found - ${key}` });
+    }
 
     // console.log("Dimensions:",xspan, yspan);
     let ports = technology.getPorts(params);
