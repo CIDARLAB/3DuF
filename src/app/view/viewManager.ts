@@ -1010,6 +1010,9 @@ export default class ViewManager {
         let device;
         this.resetPortsOnlyView();
         Registry.viewManager?.clear();
+        this.renderLayers = [];
+        this.activeRenderLayerIndex = 0;
+        this.__currentDevice = null;
         // Check and see the version number if its 0 or none is present,
         // its going the be the legacy format, else it'll be a new format
         const version = json.version;

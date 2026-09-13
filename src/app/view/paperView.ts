@@ -287,6 +287,21 @@ export default class PaperView {
         this.deviceLayer.removeChildren();
         this.gridLayer.removeChildren();
         this.alignmentMarksLayer.removeChildren();
+        if (this.textFeatureLayer) this.textFeatureLayer.removeChildren();
+        if (this.uiLayer) this.uiLayer.removeChildren();
+        if (this.ratsNestLayer) this.ratsNestLayer.removeChildren();
+        if (this.componentPortsLayer) this.componentPortsLayer.removeChildren();
+        this.paperLayers = [];
+        this.paperFeatures = {};
+        this.featureRegistry = new Map();
+        this.paperDevice = null;
+        this.paperGrid = null;
+        this.currentTarget = null;
+        this.selectedComponents = [];
+        this.selectedConnections = [];
+        this.__ratsNestRender = null;
+        this.layerMask = null;
+        this.alignmentMarks = null;
     }
 
     /**
@@ -971,8 +986,9 @@ export default class PaperView {
      * @memberof PaperView
      */
     insertChildByHeight(group: { children: string | any[]; insertChild: (arg0: any, arg1: any) => void }, newChild: any): void {
+        if (!group || !newChild) return;
         let index;
-        if (group.children.length > 0) {
+        if (group.children && group.children.length > 0) {
             index = this.getIndexByHeight(group.children, newChild);
         } else {
             index = 0;

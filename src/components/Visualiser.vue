@@ -68,9 +68,18 @@ export default {
                     if (!json) return;
 
                     if (Registry.viewManager && Registry.viewManager.loadDeviceFromJSON) {
-                        Registry.viewManager.loadDeviceFromJSON(json);
+                        const payload = JSON.parse(JSON.stringify(json));
+                        Registry.viewManager.loadDeviceFromJSON(payload);
                         Registry.viewManager.updateGrid();
                         Registry.viewManager.refresh();
+                        try {
+                            if (window.opener && !window.opener.closed) {
+                                window.opener.postMessage({ type: "threeduf-device-loaded" }, "*");
+                            }
+                        } catch (ackErr) {
+                            // eslint-disable-next-line no-console
+                            console.warn("3DuF: failed to ack device load", ackErr);
+                        }
                     }
                 } catch (err) {
                     // eslint-disable-next-line no-console
