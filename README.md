@@ -32,7 +32,7 @@ Summary of the 2026 maintenance work on this branch:
 - Default sizes: port radius **1 mm**; channel / connection / valve-gap width **600 µm**.
 - Mixer serpentine ends expose **edgeBend1** / **edgeBend2** so each incomplete end can match the connecting channel width.
 - Square channel joints fill 90° corners; VALVE3D FLOW gaps are clipped geometrically on import.
-- PORT and VALVE library ports use center-relative cardinals (1–4) for MINT / Fluigi connectivity.
+- PORT draws a single connection handle at the geometric center (like VIA). VALVE library ports use center-relative cardinals (1–4) for MINT / Fluigi connectivity.
 - New droplet primitive: **DROPLET MERGER JUNCTION** (3-port T-junction).
 
 ### Neptune / Parchmint interoperability
@@ -169,7 +169,7 @@ For DXF workflows:
 Neptune / Parchmint interoperability notes:
 - Neptune LFR user-designed parts (`DIYCOMPONENT`) load as built-in black-box placeholders, so they remain visible without a custom library entry.
 - Component `position` is stored as the geometric / rotation center. PORT, VIA, and VALVE glyphs draw at that center.
-- PORT and VALVE expose four center-relative cardinal ports (1 top, 2 right, 3 bottom, 4 left) for channel attachment.
+- PORT exposes one center connection handle. VALVE still has four center-relative cardinals (1 top, 2 right, 3 bottom, 4 left) for channel attachment.
 - MINT entity aliases such as `IN MUX` / `OUT MUX` and `CELL TRAP` / `CELL TRAPPER` are normalized on load.
 - FLOW and CONTROL layers from Parchmint open on the **same physical level** in the layer toolbar (not as separate levels).
 - Older JSON is filled with missing library defaults so newly added parameters still appear in settings.

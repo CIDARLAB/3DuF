@@ -98,13 +98,9 @@ export default class Port extends Template {
     }
 
     getPorts(params: { [k: string]: any }) {
-        const radius = params.portRadius;
         const ports = [];
-        // Center-relative; matches MINT NODE/PORT sides and fluigi compile.
-        ports.push(new ComponentPort(0, -radius, "1", LogicalLayerType.FLOW));
-        ports.push(new ComponentPort(radius, 0, "2", LogicalLayerType.FLOW));
-        ports.push(new ComponentPort(0, radius, "3", LogicalLayerType.FLOW));
-        ports.push(new ComponentPort(-radius, 0, "4", LogicalLayerType.FLOW));
+        // Geometric center; MINT pad sides 1–4 are compiled in fluigi, not drawn here.
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
         return ports;
     }
 }
