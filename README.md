@@ -34,6 +34,7 @@ Summary of the 2026 maintenance work on this branch:
 - Square channel joints fill 90° corners; VALVE3D FLOW gaps are clipped geometrically on import.
 - PORT draws a single connection handle at the geometric center (like VIA). VALVE library ports use center-relative cardinals (1–4) for MINT / Fluigi connectivity.
 - NODE is a zero-radius junction: its center terminal is used for snapping only and does **not** draw a grey port marker on Y-junctions.
+- MUX tree width is controlled by **leafPitch** (center-to-center pitch of adjacent leaf channels). Valve pads use **width** across the flow channel and **length** along it; older JSON that still stores `spacing` continues to load.
 - New droplet primitive: **DROPLET MERGER JUNCTION** (3-port T-junction).
 
 ### Neptune / Parchmint interoperability
@@ -46,6 +47,7 @@ Summary of the 2026 maintenance work on this branch:
 ### UI
 - Settings panels show a selectable netlist **ID** for matching objects back to Parchmint / Neptune JSON.
 - Floating settings panels drag from the heading bar only so parameter text stays selectable.
+- Parameter units (µm, °, …) render beside the value field instead of as a crowded text-field suffix.
 
 ## Usage
 

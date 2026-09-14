@@ -23,6 +23,7 @@ const COMMON: Record<string, string> = {
     radius: "Corner or fillet radius for rounded geometry.",
     diameter: "Diameter of circular ports, chambers, or pillars.",
     spacing: "Uniform spacing between repeated elements in an array.",
+    leafPitch: "Center-to-center pitch of adjacent MUX leaf channels. This sets the tree width.",
     valveRadius: "Radius of the circular valve membrane or actuation region.",
     flowChannelWidth: "Width of the primary fluidic channel on the flow layer.",
     controlChannelWidth: "Width of the pneumatic control channel on the control layer.",
@@ -75,6 +76,11 @@ const BY_FEATURE: Record<string, Record<string, string>> = {
     "ALIGNMENT MARKS": {
         width: "Width of the alignment mark pattern.",
         height: "Height of the alignment mark pattern."
+    },
+    MUX: {
+        leafPitch: "Distance between adjacent MUX leaf ports. Edit this to widen or tighten the tree.",
+        width: "Horizontal valve pad width across each vertical flow channel.",
+        length: "Valve pad thickness along the vertical flow channel."
     }
 };
 

@@ -63,16 +63,18 @@
                             </div>
                         </td>
                         <td class="value-col">
-                            <v-text-field
-                                v-model="item.value"
-                                step="any"
-                                type="number"
-                                :suffix="item.units"
-                                dense
-                                hide-details
-                                outlined
-                                @change="paramChanged(item.value, item.name)"
-                            />
+                            <div class="value-with-unit">
+                                <v-text-field
+                                    v-model="item.value"
+                                    step="any"
+                                    type="number"
+                                    dense
+                                    hide-details
+                                    outlined
+                                    @change="paramChanged(item.value, item.name)"
+                                />
+                                <span v-if="item.units" class="param-unit">{{ item.units }}</span>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -255,9 +257,25 @@ export default {
     letter-spacing: inherit !important;
 }
 
-.property-block-settings ::v-deep .v-text-field__suffix {
-    font-family: inherit !important;
-    font-size: inherit !important;
+.value-with-unit {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.value-with-unit .v-text-field {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.param-unit {
+    flex: 0 0 auto;
+    color: #616161;
+    font-size: 0.75rem;
+    line-height: 1;
+    white-space: nowrap;
+    min-width: 1.25em;
 }
 
 .property-block-settings ::v-deep th,
