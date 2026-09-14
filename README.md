@@ -141,6 +141,8 @@ Default sizes used when placing new features:
 
 Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer end of that incomplete bend). Set each value to half the connecting channel width so the mixer end and the pipe share the same width.
 
+MUX trees expose **leafPitch** (adjacent leaf center-to-center pitch). Valve pad **width** is across the vertical flow channel; **length** is thickness along it.
+
 ### Cover Layer (All / Ports)
 
 Fabricated chips need a closed cover so fluid can flow inside channels instead of open grooves. Above the Export buttons, use the **ALL / PORTS** toggle (same interaction pattern as FLOW / CTRL):
