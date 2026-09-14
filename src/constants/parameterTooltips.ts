@@ -53,6 +53,8 @@ const COMMON: Record<string, string> = {
     gradientSpacing: "Spacing between parallel branches in a gradient generator.",
     numberOfSteps: "Number of dilution or mixing steps in a gradient network.",
     valveWidth: "Width of a rectangular valve pad or seat in the layout plane.",
+    valveWidthX: "Left-right size of the MUX valve pad.",
+    valveWidthY: "Up-down size of the MUX valve pad.",
     valveLength: "Length of the valve channel segment.",
     pumpRadius: "Radius of the pump chamber or rotor feature.",
     pumpSpacing: "Spacing between pump stages or chambers.",
@@ -79,9 +81,11 @@ const BY_FEATURE: Record<string, Record<string, string>> = {
     },
     MUX: {
         leafPitch: "Distance between adjacent MUX leaf ports. Edit this to widen or tighten the tree.",
-        valveWidth: "Horizontal valve pad width across each vertical flow channel. Increase this to make the control valves wider.",
-        width: "Horizontal valve pad width across each vertical flow channel (legacy name for valveWidth).",
-        length: "Valve pad thickness along the vertical flow channel."
+        valveWidthX: "Left-right size of each control valve pad. Increase this to stretch the valve horizontally.",
+        valveWidthY: "Up-down size of each control valve pad. Increase this to stretch the valve vertically.",
+        valveWidth: "Legacy single valve width; use valveWidthX.",
+        width: "Legacy left-right valve size; use valveWidthX.",
+        length: "Legacy up-down valve size; use valveWidthY."
     }
 };
 

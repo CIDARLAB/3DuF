@@ -34,7 +34,7 @@ Summary of the 2026 maintenance work on this branch:
 - Square channel joints fill 90° corners; VALVE3D FLOW gaps are clipped geometrically on import.
 - PORT draws a single connection handle at the geometric center (like VIA). VALVE library ports use center-relative cardinals (1–4) for MINT / Fluigi connectivity.
 - NODE is a zero-radius junction: its center terminal is used for snapping only and does **not** draw a grey port marker on Y-junctions.
-- MUX tree width is controlled by **leafPitch** (center-to-center pitch of adjacent leaf channels). Valve pads use **width** across the flow channel and **length** along it; older JSON that still stores `spacing` continues to load.
+- MUX tree width is controlled by **leafPitch** (center-to-center pitch of adjacent leaf channels). Control valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down); older JSON that still stores `spacing`, `width`, `length`, or `valveWidth` continues to load.
 - New droplet primitive: **DROPLET MERGER JUNCTION** (3-port T-junction).
 
 ### Neptune / Parchmint interoperability
@@ -141,7 +141,7 @@ Default sizes used when placing new features:
 
 Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer end of that incomplete bend). Set each value to half the connecting channel width so the mixer end and the pipe share the same width.
 
-MUX trees expose **leafPitch** (adjacent leaf center-to-center pitch). Valve pad **width** is across the vertical flow channel; **length** is thickness along it.
+MUX trees expose **leafPitch** (adjacent leaf center-to-center pitch). Valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `spacing`, `width`, `length`, and `valveWidth` are still accepted.
 
 ### Cover Layer (All / Ports)
 
