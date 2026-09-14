@@ -55,7 +55,9 @@ export default class ComponentPortRenderer2D {
     static renderComponentPorts(component: Component) {
         // Keep valve center ports for connection snapping/guidance logic, but do not draw
         // the visual port marker dot on canvas.
-        if (component.mint === "VALVE" || component.mint === "VALVE3D") {
+        // NODE is a zero-radius junction; its JSON/library terminals are
+        // snapping aids only and must not draw as grey dots on Y-junctions.
+        if (component.mint === "VALVE" || component.mint === "VALVE3D" || component.mint === "NODE") {
             return [];
         }
         const rendersize = ComponentPortRenderer2D.getSizeforZoomLevel();

@@ -65,9 +65,13 @@ export default class Node extends Template {
         };
     }
 
+    drawsAtPositionCenter(): boolean {
+        return true;
+    }
+
     getPorts(params: { [k: string]: any }) {
         const ports = [];
-
+        // Geometric center; MINT sides 1–4 are compiled in fluigi, not drawn here.
         ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
         return ports;
