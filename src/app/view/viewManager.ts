@@ -42,6 +42,12 @@ import RenderLayer from "@/app/view/renderLayer";
 
 import LoadUtils from "@/app/utils/loadUtils";
 import ExportUtils, { SerializationError } from "@/app/utils/exportUtils";
+import {
+    cloneImportedDeviceJson,
+    findImportedComponentById as lookupImportedComponent,
+    findImportedConnectionById as lookupImportedConnection,
+    resolveResetParams
+} from "@/app/utils/importedReset";
 import { LogicalLayerType, InterchangeV1_2, ValveType } from "@/app/core/init";
 import { stripToFlowControlPorts } from "@/app/utils/portsOnlyUtils";
 import { ValveGapRect, valveGapRectFromValues } from "@/app/utils/valveChannelClip";
@@ -93,6 +99,9 @@ export default class ViewManager {
 
     /** Cover-layer preview: canvas shows only FLOW/CONTROL port circles. */
     portsOnlyView = false;
+
+    /** Deep clone of the last loaded device JSON, used to Reset placed objects to upload values. */
+    importedSourceJson: InterchangeV1_2 | null = null;
 
     // TODO : Check if we can remove this tracking
     currentLayer: RenderLayer;
@@ -1007,6 +1016,7 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     loadDeviceFromJSON(json: InterchangeV1_2): void  {
+        this.importedSourceJson = cloneImportedDeviceJson(json);
         let device;
         this.resetPortsOnlyView();
         Registry.viewManager?.clear();
@@ -2626,7 +2636,28 @@ export default class ViewManager {
         }
     }
 
+    findImportedComponentById(id: string) {
+        return lookupImportedComponent(this.importedSourceJson, id);
+    }
+
+    findImportedConnectionById(id: string) {
+        return lookupImportedConnection(this.importedSourceJson, id);
+    }
+
+    resolveComponentResetParams(component: Component | null | undefined): { [key: string]: number } | null {
+        if (!component) return null;
+        const source = this.findImportedComponentById(component.id);
+        return resolveResetParams(component.mint, source && source.params, !!source);
+    }
+
+    resolveConnectionResetParams(connection: Connection | null | undefined): { [key: string]: number } | null {
+        if (!connection) return null;
+        const source = this.findImportedConnectionById(connection.id);
+        return resolveResetParams("CHANNEL", source && source.params, !!source);
+    }
+
     createNewDevice(name: string): void {
+        this.importedSourceJson = null;
         let device = new Device({"x-span": 135000, "y-span": 85000}, name);
         console.log("Created new device: ", device.getXSpan(), device.getYSpan());
         this.clear();

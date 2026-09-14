@@ -48,6 +48,7 @@ Summary of the 2026 maintenance work on this branch:
 - Settings panels show a selectable netlist **ID** for matching objects back to Parchmint / Neptune JSON.
 - Floating settings panels drag from the heading bar only so parameter text stays selectable.
 - Parameter units (µm, °, …) render beside the value field instead of as a crowded text-field suffix.
+- **Reset** on an imported component or connection restores that object's uploaded JSON parameters (not factory defaults). Hand-placed objects still reset to library defaults. Position / path geometry is left unchanged.
 
 ## Usage
 
@@ -142,6 +143,8 @@ Default sizes used when placing new features:
 Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer end of that incomplete bend). Set each value to half the connecting channel width so the mixer end and the pipe share the same width.
 
 MUX trees expose **leafPitch** (adjacent leaf center-to-center pitch). Valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `spacing`, `width`, `length`, and `valveWidth` are still accepted.
+
+**Reset** in the floating settings panel restores parameters from the last imported JSON for that netlist ID when the design was loaded from file / Neptune. Otherwise it restores library factory defaults. Layout anchors (position, channel path) are not rewritten.
 
 ### Cover Layer (All / Ports)
 

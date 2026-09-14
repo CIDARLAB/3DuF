@@ -530,11 +530,19 @@ export default {
         },
         resetCanvasConnectionToFactoryDefaults() {
             if (!this.currentConnection) return;
-            const snap = ComponentAPI.snapshotFactoryDefaultsForMint("CHANNEL");
+            const vm = Registry.viewManager;
+            const source = vm && typeof vm.findImportedConnectionById === "function"
+                ? vm.findImportedConnectionById(this.currentConnection.id)
+                : null;
+            const snap = source && vm && typeof vm.resolveConnectionResetParams === "function"
+                ? vm.resolveConnectionResetParams(this.currentConnection)
+                : ComponentAPI.snapshotFactoryDefaultsForMint("CHANNEL");
             if (!snap) return;
             for (const key in snap) {
                 if (!Object.prototype.hasOwnProperty.call(snap, key)) continue;
+                if (key === "position" || key === "start" || key === "end" || key === "wayPoints" || key === "segments") continue;
                 const value = Number(snap[key]);
+                if (!Number.isFinite(value)) continue;
                 this.currentConnection.updateParameter(key, value);
             }
             this.refreshConnectionRender();

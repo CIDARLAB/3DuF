@@ -548,20 +548,36 @@ export default {
             if (!this.currentComponent || !this.currentComponent.mint) return;
             const typeStr = ComponentAPI.getTypeForMINT(this.currentComponent.mint);
             if (!typeStr) return;
-            const obj = ComponentAPI.library[typeStr] && ComponentAPI.library[typeStr].object;
-            if (obj && typeof obj.resetToFactoryParameterDefaults === "function") {
-                obj.resetToFactoryParameterDefaults();
+            const vm = Registry.viewManager;
+            const source = vm && typeof vm.findImportedComponentById === "function"
+                ? vm.findImportedComponentById(this.currentComponent.id)
+                : null;
+            let snap = null;
+            if (source) {
+                snap = vm.resolveComponentResetParams(this.currentComponent);
+            } else {
+                const obj = ComponentAPI.library[typeStr] && ComponentAPI.library[typeStr].object;
+                if (obj && typeof obj.resetToFactoryParameterDefaults === "function") {
+                    obj.resetToFactoryParameterDefaults();
+                }
+                snap = ComponentAPI.snapshotFactoryDefaultsForMint(this.currentComponent.mint);
             }
-            const snap = ComponentAPI.snapshotFactoryDefaultsForMint(this.currentComponent.mint);
             if (!snap) return;
             for (const key in snap) {
                 if (!Object.prototype.hasOwnProperty.call(snap, key)) continue;
+                if (key === "position") continue;
                 const value = Number(snap[key]);
+                if (!Number.isFinite(value)) continue;
                 this.currentComponent.updateParameter(key, value);
-                Registry.viewManager.updateDefault(typeStr, key, value);
+                if (!source) {
+                    Registry.viewManager.updateDefault(typeStr, key, value);
+                }
             }
             this.spec = this.computeSpec(this.currentComponent.mint, this.currentComponent.params);
             this.appliedCanvasSpecSnapshot = this.specToValueSnapshot(this.spec);
+            if (Registry.viewManager && typeof Registry.viewManager.refresh === "function") {
+                Registry.viewManager.refresh(true);
+            }
         },
         closeCanvasSettingsCard() {
             const wasSidebarPlacement = this.isSidebarPlacementDefaultsPanel;
