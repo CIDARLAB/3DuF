@@ -17,7 +17,7 @@ export default class Mux extends Template {
             componentSpacing: "Float",
             flowChannelWidth: "Float",
             rotation: "Float",
-            spacing: "Float",
+            leafPitch: "Float",
             in: "Integer",
             out: "Integer",
             width: "Float",
@@ -33,11 +33,11 @@ export default class Mux extends Template {
             componentSpacing: 1000,
             flowChannelWidth: 0.8 * 1000,
             rotation: 0,
-            spacing: 4 * 1000,
+            leafPitch: 4000,
             in: 1,
             out: 8,
-            width: 1.6 * 1000,
-            length: 1.6 * 1000,
+            width: 1800,
+            length: 500,
             height: 250,
             stageLength: 4000,
             controlChannelWidth: 0.4 * 1000,
@@ -49,7 +49,7 @@ export default class Mux extends Template {
             componentSpacing: "μm",
             flowChannelWidth: "μm",
             rotation: "°",
-            spacing: "μm",
+            leafPitch: "μm",
             in: "",
             out: "",
             width: "μm",
@@ -62,7 +62,7 @@ export default class Mux extends Template {
         this.__minimum = {
             componentSpacing: 0,
             flowChannelWidth: 10,
-            spacing: 30,
+            leafPitch: 100,
             in: 1,
             out: 2,
             width: 60,
@@ -78,9 +78,9 @@ export default class Mux extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             flowChannelWidth: 2000,
-            spacing: 12000,
+            leafPitch: 20000,
             in: 1,
-            out: 128,
+            out: 1024,
             width: 12 * 1000,
             length: 12 * 1000,
             height: 1200,
@@ -97,7 +97,7 @@ export default class Mux extends Template {
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
             rotation: "rotation",
-            spacing: "spacing",
+            leafPitch: "leafPitch",
             width: "width",
             length: "length",
             in: "in",
@@ -113,7 +113,7 @@ export default class Mux extends Template {
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
             rotation: "rotation",
-            spacing: "spacing",
+            leafPitch: "leafPitch",
             width: "width",
             length: "length",
             in: "in",
@@ -148,7 +148,6 @@ export default class Mux extends Template {
         const position = params.position;
         const cw = params.flowChannelWidth;
         let rotation = params.rotation;
-        const spacing = params.spacing;
         const ins = params.in;
         const outs = params.out;
         let leafs;
@@ -170,7 +169,7 @@ export default class Mux extends Template {
         } else {
             isodd = true;
         }
-        const w = spacing * (leafs / 2 + 1);
+        const w = this.__muxFanWidth(params, leafs, levels);
         const l = (levels + 1) * stagelength;
 
         // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
@@ -190,7 +189,6 @@ export default class Mux extends Template {
         const cw = params.flowChannelWidth;
         const ctlcw = params.controlChannelWidth;
         let rotation = params.rotation;
-        const spacing = params.spacing;
         const ins = params.in;
         const outs = params.out;
         let leafs;
@@ -207,14 +205,14 @@ export default class Mux extends Template {
         const px = position[0];
         const py = position[1];
 
-        const treeWidth = (leafs - 1) * spacing + leafs * cw + leafs * valvewidth;
+        const levels = Math.ceil(Math.log2(leafs));
+        const w = this.__muxFanWidth(params, leafs, levels);
+        const pitch = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
+        const treeWidth = this.__muxTreeWidth(pitch, leafs, cw, valvewidth);
         const leftEdge = px - treeWidth / 2;
         const rightEdge = px + treeWidth / 2;
 
-        const levels = Math.ceil(Math.log2(leafs));
-
         const isodd = !(leafs % 2);
-        const w = spacing * (leafs / 2 + 1);
         const l = (levels + 1) * stagelength;
 
         // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
@@ -232,7 +230,6 @@ export default class Mux extends Template {
     getPorts(params: { [k: string]: any }) {
         const ports = [];
         const cw = params.flowChannelWidth;
-        const spacing = params.spacing;
         const ins = params.in;
         const outs = params.out;
         let leafs;
@@ -244,7 +241,7 @@ export default class Mux extends Template {
         const stagelength = params.stageLength;
 
         const levels = Math.ceil(Math.log2(leafs));
-        const w = spacing * (leafs / 2 + 1);
+        const w = this.__muxFanWidth(params, leafs, levels);
 
         const length = levels * (cw + stagelength) + stagelength;
         const width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
@@ -256,27 +253,18 @@ export default class Mux extends Template {
         }
 
         let count = 2 + leafs;
-        const lstartx = -0.5 * (cw + spacing);
-        const lendx = lstartx + cw;
         const lstarty = stagelength + cw;
-        const lendy = lstarty + stagelength;
-
-        const lcenterx = (lstartx + lendx) / 2;
-        const lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
+        const valveAlong = this.__muxValveAlong(stagelength, cw, params.length);
+        const offsets = this.__muxValveCenterOffsets(stagelength, valveAlong);
+        const lcentery = lstarty + offsets.left;
         const valvewidth = params.width;
-
-        const treeWidth = (leafs - 1) * spacing + leafs * cw + valvewidth;
+        const treeWidth = this.__muxTreeWidth(width, leafs, cw, valvewidth);
 
         const leftEdge = -treeWidth / 2;
         const rightEdge = treeWidth / 2;
 
-        const rstartx = 0.5 * (spacing - cw);
-        const rendx = rstartx + cw;
         const rstarty = stagelength + cw;
-        const rendy = rstarty + stagelength;
-
-        const rcenterx = (rstartx + rendx) / 2;
-        const rcentery = rstarty + (Math.abs(rstarty - rendy) * 3) / 4;
+        const rcentery = rstarty + offsets.right;
 
         for (let i = 0; i < Math.log2(leafs); i++) {
             ports.push(new ComponentPort(leftEdge, i * (cw + stagelength) + lcentery, count.toString(), LogicalLayerType.CONTROL));
@@ -323,6 +311,43 @@ export default class Mux extends Template {
             this.__generateMuxTwig(treepath, lex, ley, cw, stagelength, hspacing, level + 1, maxlevel);
             this.__generateMuxTwig(treepath, rex, rey, cw, stagelength, hspacing, level + 1, maxlevel);
         }
+    }
+
+    __muxFanWidth(params: { [k: string]: any }, leafs: number, levels: number): number {
+        const leafPitch = Number(params.leafPitch || 0);
+        if (leafPitch > 0) {
+            return leafPitch * Math.pow(2, Math.max(levels - 1, 0));
+        }
+        const spacing = Number(params.spacing || 0);
+        if (spacing > 0) {
+            return spacing * (leafs / 2 + 1);
+        }
+        return 4000 * Math.pow(2, Math.max(levels - 1, 0));
+    }
+
+    __muxTreeWidth(pitch: number, leafs: number, cw: number, valvewidth: number): number {
+        return (leafs - 1) * pitch + valvewidth + 2 * cw;
+    }
+
+    __muxValveAlong(stagelength: number, cw: number, valvelength: number): number {
+        const cap = Math.max(Math.min(stagelength * 0.25, stagelength - 2 * Math.max(cw, 0)), Math.max(cw, 1));
+        const wanted = valvelength > 0 ? valvelength : cap;
+        return Math.min(wanted, cap);
+    }
+
+    __muxValveAcross(valvewidth: number, twigSpacing: number, cw: number): number {
+        const wanted = valvewidth > 0 ? valvewidth : cw * 2.8;
+        const cap = twigSpacing > 0 ? twigSpacing * 0.7 : wanted;
+        return Math.min(wanted, Math.max(cw * 1.2, cap));
+    }
+
+    __muxValveCenterOffsets(stagelength: number, along: number): { left: number; right: number } {
+        const slack = Math.max(stagelength - along, 0);
+        const half = along / 2;
+        return {
+            left: half + slack * 0.4,
+            right: half + slack * 0.6
+        };
     }
 
     __drawmuxtwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, spacing: number, drawleafs = false): paper.CompoundPath  {
@@ -450,7 +475,10 @@ export default class Mux extends Template {
         const lendy = lstarty + stagelength;
 
         const lcenterx = (lstartx + lendx) / 2;
-        const lcentery = lstarty + Math.abs(lstarty - lendy) / 4;
+        const thick = this.__muxValveAlong(stagelength, cw, valvelength);
+        const across = this.__muxValveAcross(valvewidth, spacing, cw);
+        const offsets = this.__muxValveCenterOffsets(stagelength, thick);
+        const lcentery = lstarty + offsets.left;
 
         // //right leaf
         const rstartx = px + 0.5 * (spacing - cw);
@@ -459,10 +487,10 @@ export default class Mux extends Template {
         const rendy = rstarty + stagelength;
 
         const rcenterx = (rstartx + rendx) / 2;
-        const rcentery = rstarty + (Math.abs(rstarty - rendy) * 3) / 4;
+        const rcentery = rstarty + offsets.right;
 
-        let startPoint = new paper.Point(lcenterx - valvewidth / 2, lcentery - valvelength / 2);
-        let endPoint = new paper.Point(lcenterx + valvewidth / 2, lcentery + valvewidth / 2);
+        let startPoint = new paper.Point(lcenterx - across / 2, lcentery - thick / 2);
+        let endPoint = new paper.Point(lcenterx + across / 2, lcentery + thick / 2);
         let rec = new paper.Path.Rectangle({
             from: startPoint,
             to: endPoint,
@@ -482,8 +510,8 @@ export default class Mux extends Template {
         });
         treepath.addChild(leftChannel);
 
-        startPoint = new paper.Point(rcenterx - valvewidth / 2, rcentery - valvelength / 2);
-        endPoint = new paper.Point(rcenterx + valvewidth / 2, rcentery + valvewidth / 2);
+        startPoint = new paper.Point(rcenterx - across / 2, rcentery - thick / 2);
+        endPoint = new paper.Point(rcenterx + across / 2, rcentery + thick / 2);
         rec = new paper.Path.Rectangle({
             from: startPoint,
             to: endPoint,
