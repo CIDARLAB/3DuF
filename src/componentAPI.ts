@@ -242,8 +242,8 @@ export class ComponentAPI {
      * @returns {(LibraryEntryDefinition | null)}
      * @memberof ComponentAPI
      */
-    static getDefinitionForMINT(minttype: string): LibraryEntryDefinition | null {
-        const checkmint = minttype;
+    static getDefinitionForMINT(minttype: string, params?: { [k: string]: any } | null): LibraryEntryDefinition | null {
+        const checkmint = ComponentAPI.normalizeMint(minttype, params);
         let ret: LibraryEntryDefinition | null = null;
         for (const key in this.library) {
             if (checkmint == this.library[key].object.mint) {
