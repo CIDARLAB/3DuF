@@ -52,7 +52,7 @@ const COMMON: Record<string, string> = {
     chemostatChannelWidth: "Channel width inside the chemostat ring.",
     gradientSpacing: "Spacing between parallel branches in a gradient generator.",
     numberOfSteps: "Number of dilution or mixing steps in a gradient network.",
-    valveWidth: "Width of a rectangular valve seat or channel under the membrane.",
+    valveWidth: "Width of a rectangular valve pad or seat in the layout plane.",
     valveLength: "Length of the valve channel segment.",
     pumpRadius: "Radius of the pump chamber or rotor feature.",
     pumpSpacing: "Spacing between pump stages or chambers.",
@@ -79,7 +79,8 @@ const BY_FEATURE: Record<string, Record<string, string>> = {
     },
     MUX: {
         leafPitch: "Distance between adjacent MUX leaf ports. Edit this to widen or tighten the tree.",
-        width: "Horizontal valve pad width across each vertical flow channel.",
+        valveWidth: "Horizontal valve pad width across each vertical flow channel. Increase this to make the control valves wider.",
+        width: "Horizontal valve pad width across each vertical flow channel (legacy name for valveWidth).",
         length: "Valve pad thickness along the vertical flow channel."
     }
 };
