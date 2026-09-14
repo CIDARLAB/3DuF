@@ -20,7 +20,7 @@ export default class Mux extends Template {
             leafPitch: "Float",
             in: "Integer",
             out: "Integer",
-            width: "Float",
+            valveWidth: "Float",
             length: "Float",
             height: "Float",
             stageLength: "Float",
@@ -36,7 +36,7 @@ export default class Mux extends Template {
             leafPitch: 4000,
             in: 1,
             out: 8,
-            width: 1800,
+            valveWidth: 1800,
             length: 500,
             height: 250,
             stageLength: 4000,
@@ -52,7 +52,7 @@ export default class Mux extends Template {
             leafPitch: "μm",
             in: "",
             out: "",
-            width: "μm",
+            valveWidth: "μm",
             length: "μm",
             height: "μm",
             stageLength: "μm",
@@ -65,7 +65,7 @@ export default class Mux extends Template {
             leafPitch: 100,
             in: 1,
             out: 2,
-            width: 60,
+            valveWidth: 60,
             length: 60,
             height: 10,
             stageLength: 100,
@@ -81,7 +81,7 @@ export default class Mux extends Template {
             leafPitch: 20000,
             in: 1,
             out: 1024,
-            width: 12 * 1000,
+            valveWidth: 12 * 1000,
             length: 12 * 1000,
             height: 1200,
             stageLength: 6000,
@@ -98,7 +98,7 @@ export default class Mux extends Template {
             controlChannelWidth: "controlChannelWidth",
             rotation: "rotation",
             leafPitch: "leafPitch",
-            width: "width",
+            valveWidth: "valveWidth",
             length: "length",
             in: "in",
             out: "out",
@@ -114,7 +114,7 @@ export default class Mux extends Template {
             controlChannelWidth: "controlChannelWidth",
             rotation: "rotation",
             leafPitch: "leafPitch",
-            width: "width",
+            valveWidth: "valveWidth",
             length: "length",
             in: "in",
             out: "out",
@@ -201,7 +201,7 @@ export default class Mux extends Template {
         const color = params.color;
         const stagelength = params.stageLength;
         const valvelength = params.length;
-        const valvewidth = params.width;
+        const valvewidth = this.__muxValveWidth(params);
         const px = position[0];
         const py = position[1];
 
@@ -257,7 +257,7 @@ export default class Mux extends Template {
         const valveAlong = this.__muxValveAlong(stagelength, cw, params.length);
         const offsets = this.__muxValveCenterOffsets(stagelength, valveAlong);
         const lcentery = lstarty + offsets.left;
-        const valvewidth = params.width;
+        const valvewidth = this.__muxValveWidth(params);
         const treeWidth = this.__muxTreeWidth(width, leafs, cw, valvewidth);
 
         const leftEdge = -treeWidth / 2;
@@ -311,6 +311,18 @@ export default class Mux extends Template {
             this.__generateMuxTwig(treepath, lex, ley, cw, stagelength, hspacing, level + 1, maxlevel);
             this.__generateMuxTwig(treepath, rex, rey, cw, stagelength, hspacing, level + 1, maxlevel);
         }
+    }
+
+    __muxValveWidth(params: { [k: string]: any }): number {
+        const named = Number(params.valveWidth);
+        if (Number.isFinite(named) && named > 0) {
+            return named;
+        }
+        const legacy = Number(params.width);
+        if (Number.isFinite(legacy) && legacy > 0) {
+            return legacy;
+        }
+        return 1800;
     }
 
     __muxFanWidth(params: { [k: string]: any }, leafs: number, levels: number): number {
