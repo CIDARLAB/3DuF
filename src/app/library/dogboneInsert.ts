@@ -25,7 +25,7 @@ export default class DogboneInsert extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             innerRadius: 400,
             outerRadius: 800,

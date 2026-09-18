@@ -31,7 +31,7 @@ export default class CapacitanceSensor extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             height: 250,
             inletWidth: 1 * 1000,

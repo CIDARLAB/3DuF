@@ -26,7 +26,7 @@ export default class Gelchannel extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             sideWidth: 200,
             mainWidth: 500,
             rotation: 0,

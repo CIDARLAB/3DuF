@@ -23,7 +23,7 @@ export default class thermoCycler extends Template {
             mirrorByY: "Float"
         };
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             width: 20 * 1000,
             length: 40 * 1000,

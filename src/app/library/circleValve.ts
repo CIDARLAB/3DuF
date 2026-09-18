@@ -19,7 +19,7 @@ export default class CircleValve extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             radius1: 1.4 * 1000,
             radius2: 1.2 * 1000,
             height: 250

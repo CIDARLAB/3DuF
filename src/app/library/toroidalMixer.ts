@@ -30,7 +30,7 @@ export default class ToroidalMixer extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             channelWidth: 0.8 * 1000,
             neckAngle: 120,

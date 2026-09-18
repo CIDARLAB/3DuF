@@ -26,7 +26,7 @@ export default class LLChamber extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             width: 400,
             length: 5000,
             height: 250,

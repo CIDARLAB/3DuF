@@ -261,7 +261,7 @@ export default class Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000, // keepout halo; Neptune P&R COMPONENT_RISK_AREA
+            componentSpacing: 2000, // keepout halo written as JSON componentSpacing
             height: 250
         };
 

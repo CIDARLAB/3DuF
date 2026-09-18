@@ -27,7 +27,7 @@ export default class Transposer extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             valveRadius: 1.2 * 1000,
             height: 250,

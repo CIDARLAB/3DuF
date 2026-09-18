@@ -23,7 +23,7 @@ export default class Cahode extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             cathodeRadius: 0.9 * 1000,
             pegRadius: 0.7 * 1000,
             pegThickness: 0.3 * 1000,

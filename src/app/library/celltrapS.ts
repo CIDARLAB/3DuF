@@ -27,7 +27,7 @@ export default class CellTrapS extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             height: 250,
             channelWidth: 1 * 1000,

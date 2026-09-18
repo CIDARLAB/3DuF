@@ -72,19 +72,16 @@ After saving a device design to JSON, drag and drop it from your computer onto t
 
 As 3DuF continues to become a core component of the Microfluidics CAD Ecossytem, we have incorporated the ability to generate component dimensions, port locations, default dimensions for all the parametrically generated components supported by 3DuF.
 
-The instructions for starting this server are as follows:
+### Running the server
+
+Docker (recommended):
+
 ```
 docker build -f primitives-server.Dockerfile -t primitives-server:latest .
 docker run -p 6060:6060 primitives-server
 ```
 
-This will enable the API on port 6060. This can be verified by either going to `http://localhost:6060` or by running the following command:
-
-```
-curl http://localhost:6060
-```
-
-Alternatively you can install the dev version of the library if you want to debug it locally.
+Local development:
 
 ```
 npm ci
@@ -92,6 +89,36 @@ cd src/server
 npm ci
 npm run dev
 ```
+
+The API listens on port 6060. Verify it is up by visiting `http://localhost:6060` or:
+
+```
+curl http://localhost:6060
+```
+
+### API endpoints
+
+| Method | Path          | Query parameters                             | Description                                                              |
+| ------ | ------------- | -------------------------------------------- | ------------------------------------------------------------------------ |
+| GET    | `/`           | —                                            | Welcome message.                                                         |
+| GET    | `/components` | —                                            | List all MINT types the server can render.                               |
+| GET    | `/defaults`   | `mint`                                       | Default parameter values for a MINT primitive.                           |
+| GET    | `/dimensions` | `mint`, `params` (URL-encoded JSON)          | `{ "x-span", "y-span" }` for the primitive rendered with `params`.       |
+| GET    | `/terminals`  | `mint`, `params` (URL-encoded JSON)          | ParchMint-style port list for the primitive rendered with `params`.      |
+
+Example:
+
+```
+curl 'http://localhost:6060/components'
+curl 'http://localhost:6060/defaults?mint=MUX'
+curl --get 'http://localhost:6060/dimensions' \
+  --data-urlencode 'mint=MUX' \
+  --data-urlencode 'params={"in":1,"out":8,"flowChannelWidth":600}'
+```
+
+MINT identifiers are matched case-insensitively and tolerate underscores / extra whitespace. Common aliases (`IN MUX`, `OUTPUT MUX`, `HORIZONTAL MUX`, `LONG CELL TRAPPER`, ...) are folded onto their canonical name. A bare `CELL TRAP` is disambiguated to `SQUARE CELL TRAP` or `LONG CELL TRAP` based on the supplied `params`.
+
+See [`src/server/README.md`](src/server/README.md) for the full component-library notes (renamed parameters, mirror parameters, `component_defaults.json` regeneration, backward compatibility, etc.).
 
 ## Attributions
 

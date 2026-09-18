@@ -25,7 +25,7 @@ export default class Valve3D extends Template {
 
         this.__defaults = {
             // NeptuneGUI library example: Data/3DuF_component/default/JSON/valve3D.json
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             valveRadius: 1200,
             height: 250,

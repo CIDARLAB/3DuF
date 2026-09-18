@@ -22,7 +22,7 @@ export default class Via extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             radius: 0.7 * 1000,
             height: 0,
             mirrorByX: 0,
