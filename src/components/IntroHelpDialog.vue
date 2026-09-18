@@ -234,4 +234,70 @@ export default {
                     ],
                     // Placeholder: v1.2 videos are not ready yet, so reuse existing tutorials.
                     introductionVideoUrl: "https://www.youtube.com/embed/05nU8eQ73U8",
-                    longTutorialVideoUrl: "https://www.youtube.com/embed/YOr
+                    longTutorialVideoUrl: "https://www.youtube.com/embed/YOrnnZjma28"
+                }
+            ]
+        };
+    },
+    created() {
+        this.page = this.versions.length;
+    },
+    computed: {
+        selectedVersion() {
+            return this.versions[this.page - 1] || this.versions[0];
+        },
+        currentVersionLabel() {
+            const currentVersion = this.versions[this.versions.length - 1];
+            return currentVersion ? currentVersion.label : "";
+        },
+        pageTitle() {
+            const suffix = this.selectedVersion.label === this.currentVersionLabel ? " (Current Version)" : "";
+            return `Tutorial ${this.selectedVersion.label}${suffix}`;
+        }
+    }
+};
+</script>
+
+<style lang="scss" scoped>
+.tutorial-font {
+    font-family: "Roboto", sans-serif !important;
+}
+
+.dialog-title {
+    font-size: 28px !important;
+    font-weight: 700;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 12px 0 6px;
+}
+
+.subsection-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 10px 0 6px;
+}
+
+.body-text,
+ul li,
+.tg td {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.video-label {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.video-block {
+    margin-bottom: 14px;
+}
+
+.contact-line {
+    margin-top: 20px;
+}
+</style>
