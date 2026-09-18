@@ -22,7 +22,7 @@ export default class Terrace extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             insideRadius: 0.7 * 1000,
             outsideRadius: 1 * 1000,
             length: 4.0 * 1000,

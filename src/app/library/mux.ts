@@ -15,61 +15,61 @@ export default class Mux extends Template {
         };
 
         this.__heritable = {
-            componentSpacing: "Float",
-            flowChannelWidth: "Float",
-            rotation: "Float",
-            leafPitch: "Float",
             in: "Integer",
             out: "Integer",
+            flowChannelWidth: "Float",
+            controlChannelWidth: "Float",
+            leafSpace: "Float",
+            stageSpace: "Float",
             valveWidthX: "Float",
             valveWidthY: "Float",
             height: "Float",
-            stageLength: "Float",
-            controlChannelWidth: "Float",
+            rotation: "Float",
             mirrorByX: "Float",
-            mirrorByY: "Float"
+            mirrorByY: "Float",
+            componentSpacing: "Float"
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
-            flowChannelWidth: DEFAULT_CHANNEL_WIDTH_UM,
-            rotation: 0,
-            leafPitch: 4000,
             in: 1,
             out: 8,
-            valveWidthX: 1800,
-            valveWidthY: 500,
-            height: 250,
-            stageLength: 4000,
+            flowChannelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             controlChannelWidth: DEFAULT_CHANNEL_WIDTH_UM,
+            leafSpace: 4000,
+            stageSpace: 4000,
+            valveWidthX: 1800,
+            valveWidthY: 1000,
+            height: 250,
+            rotation: 0,
             mirrorByX: 0,
-            mirrorByY: 0
+            mirrorByY: 0,
+            componentSpacing: 2000
         };
 
         this.__units = {
-            componentSpacing: "μm",
-            flowChannelWidth: "μm",
-            rotation: "°",
-            leafPitch: "μm",
             in: "",
             out: "",
+            flowChannelWidth: "μm",
+            controlChannelWidth: "μm",
+            leafSpace: "μm",
+            stageSpace: "μm",
             valveWidthX: "μm",
             valveWidthY: "μm",
             height: "μm",
-            stageLength: "μm",
-            controlChannelWidth: "μm"
+            rotation: "°",
+            componentSpacing: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             flowChannelWidth: 10,
-            leafPitch: 100,
+            leafSpace: 100,
             in: 1,
             out: 2,
             valveWidthX: 60,
             valveWidthY: 60,
             height: 10,
-            stageLength: 100,
+            stageSpace: 100,
             controlChannelWidth: 10,
             rotation: 0,
             mirrorByX: 0,
@@ -79,13 +79,13 @@ export default class Mux extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             flowChannelWidth: 2000,
-            leafPitch: 20000,
+            leafSpace: 20000,
             in: 1,
             out: 1024,
             valveWidthX: 12 * 1000,
             valveWidthY: 12 * 1000,
             height: 1200,
-            stageLength: 6000,
+            stageSpace: 20000,
             controlChannelWidth: 2000,
             rotation: 360,
             mirrorByX: 1,
@@ -98,12 +98,12 @@ export default class Mux extends Template {
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
             rotation: "rotation",
-            leafPitch: "leafPitch",
+            leafSpace: "leafSpace",
             valveWidthX: "valveWidthX",
             valveWidthY: "valveWidthY",
             in: "in",
             out: "out",
-            stageLength: "stageLength",
+            stageSpace: "stageSpace",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -114,12 +114,12 @@ export default class Mux extends Template {
             flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
             rotation: "rotation",
-            leafPitch: "leafPitch",
+            leafSpace: "leafSpace",
             valveWidthX: "valveWidthX",
             valveWidthY: "valveWidthY",
             in: "in",
             out: "out",
-            stageLength: "stageLength",
+            stageSpace: "stageSpace",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -159,7 +159,7 @@ export default class Mux extends Template {
             rotation += 180;
         }
         const color = params.color;
-        const stagelength = params.stageLength;
+        const stagelength = this.__muxStageSpace(params);
         const px = position[0];
         const py = position[1];
 
@@ -201,7 +201,7 @@ export default class Mux extends Template {
             rotation += 180;
         }
         const color = params.color;
-        const stagelength = params.stageLength;
+        const stagelength = this.__muxStageSpace(params);
         const valvelength = this.__muxValveWidthY(params);
         const valvewidth = this.__muxValveWidthX(params);
         const px = position[0];
@@ -241,7 +241,7 @@ export default class Mux extends Template {
         } else {
             leafs = ins;
         }
-        const stagelength = params.stageLength;
+        const stagelength = this.__muxStageSpace(params);
 
         const levels = Math.ceil(Math.log2(leafs));
         const w = this.__muxFanWidth(params, leafs, levels);
@@ -341,13 +341,37 @@ export default class Mux extends Template {
         if (Number.isFinite(legacy) && legacy > 0) {
             return legacy;
         }
-        return 500;
+        return 1000;
+    }
+
+    __muxLeafSpace(params: { [k: string]: any }): number {
+        const named = Number(params.leafSpace);
+        if (Number.isFinite(named) && named > 0) {
+            return named;
+        }
+        const legacy = Number(params.leafPitch);
+        if (Number.isFinite(legacy) && legacy > 0) {
+            return legacy;
+        }
+        return 0;
+    }
+
+    __muxStageSpace(params: { [k: string]: any }): number {
+        const named = Number(params.stageSpace);
+        if (Number.isFinite(named) && named > 0) {
+            return named;
+        }
+        const legacy = Number(params.stageLength);
+        if (Number.isFinite(legacy) && legacy > 0) {
+            return legacy;
+        }
+        return 4000;
     }
 
     __muxFanWidth(params: { [k: string]: any }, leafs: number, levels: number): number {
-        const leafPitch = Number(params.leafPitch || 0);
-        if (leafPitch > 0) {
-            return leafPitch * Math.pow(2, Math.max(levels - 1, 0));
+        const leafSpace = this.__muxLeafSpace(params);
+        if (leafSpace > 0) {
+            return leafSpace * Math.pow(2, Math.max(levels - 1, 0));
         }
         const spacing = Number(params.spacing || 0);
         if (spacing > 0) {
@@ -364,7 +388,7 @@ export default class Mux extends Template {
     __muxValveAlong(stagelength: number, cw: number, valvelength: number): number {
         // Honor valveWidthY; only keep the pad inside the vertical stage.
         const fit = Math.max(stagelength - 2 * Math.max(cw, 0), Math.max(cw, 1));
-        const wanted = valvelength > 0 ? valvelength : 500;
+        const wanted = valvelength > 0 ? valvelength : 1000;
         return Math.min(wanted, fit);
     }
 
@@ -374,12 +398,13 @@ export default class Mux extends Template {
     }
 
     __muxValveCenterOffsets(stagelength: number, along: number): { left: number; right: number } {
-        // Left/right buses stay on different y, but both sit in the middle of the run.
+        // Spread left/right control buses across the stage without growing
+        // stageSpace. Same-stage center gap is 0.4*slack (0.3 / 0.7 of slack).
         const slack = Math.max(stagelength - along, 0);
         const half = along / 2;
         return {
-            left: half + slack * 0.4,
-            right: half + slack * 0.6
+            left: half + slack * 0.3,
+            right: half + slack * 0.7
         };
     }
 

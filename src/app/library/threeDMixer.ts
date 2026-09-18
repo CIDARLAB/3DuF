@@ -29,7 +29,7 @@ export default class ThreeDMixer extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             edgeBend1: DEFAULT_CHANNEL_WIDTH_UM / 2,
             edgeBend2: DEFAULT_CHANNEL_WIDTH_UM / 2,

@@ -83,7 +83,7 @@
                                 class="mb-3"
                                 dense
                                 hide-details
-                                label="Channel profile"
+                                label="Channel type"
                                 outlined
                             ></v-select>
                             <div class="cross-section-frame">
@@ -181,6 +181,7 @@ import "@mdi/font/css/materialdesignicons.css";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import { ComponentAPI } from "@/componentAPI";
 import { ConnectionToolState } from "@/app/view/tools/connectionTool";
+import { sortParamSpec } from "@/constants/parameterDisplayOrder";
 
 /** Same inactive emphasis as valve/canvas (featureRenderer2D). */
 const INACTIVE_LOGICAL_LAYER_ALPHA = 0.5;
@@ -558,7 +559,7 @@ export default {
                 };
                 spec.push(item);
             }
-            return spec;
+            return sortParamSpec(spec);
         },
         toggleConnectionTool() {
             EventBus.get().emit(EventBus.SIDEBAR_SETTINGS_OPENED, { mint: null });

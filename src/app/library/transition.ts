@@ -13,6 +13,7 @@ export default class Transition extends Template {
         };
 
         this.__heritable = {
+            componentSpacing: "Float",
             cw1: "Float",
             cw2: "Float",
             length: "Float",
@@ -23,6 +24,7 @@ export default class Transition extends Template {
         };
 
         this.__defaults = {
+            componentSpacing: 2000,
             cw1: DEFAULT_CHANNEL_WIDTH_UM,
             cw2: 0.9 * 1000,
             length: 1.0 * 1000,
@@ -33,6 +35,7 @@ export default class Transition extends Template {
         };
 
         this.__units = {
+            componentSpacing: "μm",
             cw1: "μm",
             cw2: "μm",
             length: "μm",
@@ -41,6 +44,7 @@ export default class Transition extends Template {
         };
 
         this.__minimum = {
+            componentSpacing: 0,
             cw1: 3,
             cw2: 3,
             length: 10,
@@ -51,6 +55,7 @@ export default class Transition extends Template {
         };
 
         this.__maximum = {
+            componentSpacing: 10000,
             rotation: 180,
             cw1: 2000,
             cw2: 2000,
@@ -61,6 +66,7 @@ export default class Transition extends Template {
         };
 
         this.__featureParams = {
+            componentSpacing: "componentSpacing",
             position: "position",
             cw1: "cw1",
             cw2: "cw2",
@@ -71,6 +77,7 @@ export default class Transition extends Template {
         };
 
         this.__targetParams = {
+            componentSpacing: "componentSpacing",
             cw1: "cw1",
             cw2: "cw2",
             length: "length",

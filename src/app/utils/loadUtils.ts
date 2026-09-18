@@ -176,17 +176,30 @@ export default class LoadUtils {
         });
     }
 
+    static deviceSpanFromParams(params: { [key: string]: any } | undefined | null): { "x-span": number; "y-span": number } {
+        const src = params && typeof params === "object" ? params : {};
+        const pick = (...keys: string[]): number | null => {
+            for (const key of keys) {
+                if (!Object.prototype.hasOwnProperty.call(src, key) || src[key] == null || src[key] === "") {
+                    continue;
+                }
+                const n = Number(src[key]);
+                if (Number.isFinite(n) && n > 0) {
+                    return n;
+                }
+            }
+            return null;
+        };
+        return {
+            "x-span": pick("x-span", "width", "xspan") ?? 135000,
+            "y-span": pick("y-span", "length", "yspan") ?? 85000
+        };
+    }
+
     static loadDeviceFromInterchangeV1_2(json: InterchangeV1_2): Device {
         let newDevice: Device;
         if (Object.prototype.hasOwnProperty.call(json, "params")) {
-            const deviceValues: { [key: string]: any } = {};
-            if (Object.prototype.hasOwnProperty.call(json.params, "width") && Object.prototype.hasOwnProperty.call(json.params, "length")) {
-                deviceValues["x-span"] = json.params.width;
-                deviceValues["y-span"] = json.params.length;
-            } else {
-                deviceValues["x-span"] = 135000;
-                deviceValues["y-span"] = 85000;
-            }
+            const deviceValues: { [key: string]: any } = LoadUtils.deviceSpanFromParams(json.params);
             if (Object.prototype.hasOwnProperty.call(json.params, "dxfImport")) {
                 deviceValues.dxfImport = json.params.dxfImport;
             }
@@ -195,8 +208,8 @@ export default class LoadUtils {
             console.warn("Could not find device params, using some default values for device size");
             newDevice = new Device(
                 {
-                    width: 135000,
-                    length: 85000
+                    "x-span": 135000,
+                    "y-span": 85000
                 },
                 json.name
             );

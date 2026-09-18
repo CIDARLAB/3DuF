@@ -29,7 +29,7 @@ export default class DropletMergerJunction extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             channelWidth: 400,
             outputWidth: 400,
             stabilizationLength: 1200,

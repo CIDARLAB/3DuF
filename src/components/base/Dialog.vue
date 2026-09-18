@@ -78,6 +78,13 @@ export default {
             if (callback) callback();
             this.dialog = false;
         });
+    },
+    watch: {
+        dialog(val) {
+            if (val) {
+                this.$emit("opened");
+            }
+        }
     }
 };
 </script>

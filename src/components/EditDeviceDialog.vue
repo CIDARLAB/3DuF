@@ -1,5 +1,5 @@
 <template>
-    <Dialog title="Edit Device">
+    <Dialog title="Edit Device" @opened="syncFromDevice">
         <template v-slot:content>
             <tr>
                 <h4 class="text--primary subtitle-1">Rename:</h4>
@@ -56,13 +56,28 @@ export default {
         };
     },
     mounted() {
-        setTimeout(() => {
-            this.deviceName = Registry.currentDevice.name;
-            this.xspan = Registry.currentDevice.getXSpan() / 1000;
-            this.yspan = Registry.currentDevice.getYSpan() / 1000;
-        }, 100);
+        this.syncFromDevice();
+        if (typeof window !== "undefined" && typeof window.addEventListener === "function") {
+            window.addEventListener("threeduf-device-loaded", this.syncFromDevice);
+        }
+    },
+    beforeDestroy() {
+        if (typeof window !== "undefined" && typeof window.removeEventListener === "function") {
+            window.removeEventListener("threeduf-device-loaded", this.syncFromDevice);
+        }
     },
     methods: {
+        syncFromDevice() {
+            const device = Registry.currentDevice;
+            if (!device) {
+                return;
+            }
+            this.deviceName = device.name || "";
+            const x = Number(device.getXSpan());
+            const y = Number(device.getYSpan());
+            this.xspan = Number.isFinite(x) ? x / 1000 : "";
+            this.yspan = Number.isFinite(y) ? y / 1000 : "";
+        },
         onSave() {
             Registry.currentDevice.name = this.deviceName;
             Registry.currentDevice.setXSpan(this.xspan * 1000);

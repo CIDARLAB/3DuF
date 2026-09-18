@@ -298,7 +298,7 @@ export function buildDeviceJsonFromDxf(parsed: any, fileName = "DXF Import"): In
                 position: topLeftUm,
                 portRadius: portRadiusUm,
                 height: PORT_HEIGHT_UM,
-                componentSpacing: 1000
+                componentSpacing: 2000
             },
             "x-span": portRadiusUm * 2,
             "y-span": portRadiusUm * 2,
@@ -314,7 +314,7 @@ export function buildDeviceJsonFromDxf(parsed: any, fileName = "DXF Import"): In
                 position: centerUm,
                 portRadius: portRadiusUm,
                 height: PORT_HEIGHT_UM,
-                componentSpacing: 1000
+                componentSpacing: 2000
             },
             type: "XY",
             referenceID: componentId,

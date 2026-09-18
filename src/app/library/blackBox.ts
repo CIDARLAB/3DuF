@@ -25,7 +25,7 @@ export default class BlackBox extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             width: 5000,
             length: 5000,
             height: 250,

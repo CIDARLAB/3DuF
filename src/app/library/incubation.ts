@@ -26,7 +26,7 @@ export default class Incubation extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             width: 1.23 * 1000,

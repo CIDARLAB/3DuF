@@ -19,26 +19,26 @@ export default class YTree extends Template {
             componentSpacing: "Float",
             flowChannelWidth: "Float",
             rotation: "Float",
-            spacing: "Float",
+            leafSpace: "Float",
             in: "Integer",
             out: "Integer",
             width: "Float",
             height: "Float",
-            stageLength: "Float",
+            stageSpace: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             flowChannelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             rotation: 0,
-            spacing: 4 * 1000,
+            leafSpace: 4 * 1000,
             in: 1,
             out: 8,
             width: 2.46 * 1000,
             height: 250,
-            stageLength: 4000,
+            stageSpace: 4000,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -47,23 +47,23 @@ export default class YTree extends Template {
             componentSpacing: "μm",
             flowChannelWidth: "μm",
             rotation: "°",
-            spacing: "μm",
+            leafSpace: "μm",
             in: "",
             out: "",
             width: "μm",
             height: "μm",
-            stageLength: "μm"
+            stageSpace: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             flowChannelWidth: 10,
-            spacing: 30,
+            leafSpace: 30,
             in: 1,
             out: 2,
             width: 60,
             height: 10,
-            stageLength: 100,
+            stageSpace: 100,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -72,12 +72,12 @@ export default class YTree extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             flowChannelWidth: 2000,
-            spacing: 12000,
+            leafSpace: 12000,
             in: 1,
             out: 128,
             width: 12 * 1000,
             height: 1200,
-            stageLength: 6000,
+            stageSpace: 6000,
             rotation: 360,
             mirrorByX: 1,
             mirrorByY: 1
@@ -88,11 +88,11 @@ export default class YTree extends Template {
             position: "position",
             flowChannelWidth: "flowChannelWidth",
             rotation: "rotation",
-            spacing: "spacing",
+            leafSpace: "leafSpace",
             width: "width",
             in: "in",
             out: "out",
-            stageLength: "stageLength",
+            stageSpace: "stageSpace",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -101,10 +101,10 @@ export default class YTree extends Template {
             componentSpacing: "componentSpacing",
             flowChannelWidth: "flowChannelWidth",
             rotation: "rotation",
-            spacing: "spacing",
+            leafSpace: "leafSpace",
             in: "in",
             out: "out",
-            stageLength: "stageLength",
+            stageSpace: "stageSpace",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -128,10 +128,34 @@ export default class YTree extends Template {
         };
     }
 
+    __treeLeafSpace(params: { [k: string]: any }): number {
+        const named = Number(params.leafSpace);
+        if (Number.isFinite(named) && named > 0) {
+            return named;
+        }
+        const legacy = Number(params.spacing);
+        if (Number.isFinite(legacy) && legacy > 0) {
+            return legacy;
+        }
+        return 4000;
+    }
+
+    __treeStageSpace(params: { [k: string]: any }): number {
+        const named = Number(params.stageSpace);
+        if (Number.isFinite(named) && named > 0) {
+            return named;
+        }
+        const legacy = Number(params.stageLength);
+        if (Number.isFinite(legacy) && legacy > 0) {
+            return legacy;
+        }
+        return 4000;
+    }
+
     getPorts(params: { [k: string]: any }) {
         const ports = [];
         const cw = params.flowChannelWidth;
-        const spacing = params.spacing;
+        const spacing = this.__treeLeafSpace(params);
         const ins = params.in;
         const outs = params.out;
         let rotation = params.rotation;
@@ -142,7 +166,7 @@ export default class YTree extends Template {
             leafs = ins;
             rotation += 180;
         }
-        const stagelength = params.stageLength;
+        const stagelength = this.__treeStageSpace(params);
 
         const levels = Math.ceil(Math.log2(leafs));
         const w = spacing * (leafs / 2 + 1);
@@ -163,7 +187,7 @@ export default class YTree extends Template {
         const position = params.position;
         const cw = params.flowChannelWidth;
         let rotation = params.rotation;
-        const spacing = params.spacing;
+        const spacing = this.__treeLeafSpace(params);
         const ins = params.in;
         const outs = params.out;
         let leafs;
@@ -174,7 +198,7 @@ export default class YTree extends Template {
             rotation += 180;
         }
         const color = params.color;
-        const stagelength = params.stageLength;
+        const stagelength = this.__treeStageSpace(params);
         const px = position[0];
         const py = position[1];
 

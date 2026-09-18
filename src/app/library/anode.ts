@@ -25,7 +25,7 @@ export default class Anode extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             anodeRadius: 0.9 * 1000,
             pegHeight: 0.2 * 1000,
             pegWidth: 0.7 * 1000,

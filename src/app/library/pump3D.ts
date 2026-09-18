@@ -26,7 +26,7 @@ export default class Pump3D extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             valveRadius: 1.2 * 1000,
             height: 250,
             gap: 0.6 * 1000,

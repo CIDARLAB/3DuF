@@ -84,9 +84,10 @@
 </template>
 <script>
 import { getParameterTooltip } from "@/constants/parameterTooltips";
+import { sortParamSpec } from "@/constants/parameterDisplayOrder";
 
 /** Hidden in settings UI only; placement / engine may still use defaults or other paths. */
-const HIDDEN_SETTING_KEYS = new Set(["connectionSpacing", "componentSpacing", "ID"]);
+const HIDDEN_SETTING_KEYS = new Set(["connectionSpacing", "ID"]);
 const MAX_VISIBLE_PARAMS_WITHOUT_SCROLL = 5;
 
 export default {
@@ -137,7 +138,7 @@ export default {
             return ["table", "property-block-settings", `property-block--${this.density}`];
         },
         displaySpec() {
-            return this.spec.filter(row => row && row.name && !HIDDEN_SETTING_KEYS.has(row.name));
+            return sortParamSpec(this.spec.filter(row => row && row.name && !HIDDEN_SETTING_KEYS.has(row.name)));
         },
         shouldLimitScroll() {
             return this.displaySpec.length > MAX_VISIBLE_PARAMS_WITHOUT_SCROLL;

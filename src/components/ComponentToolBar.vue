@@ -43,6 +43,7 @@ import PropertyDrawer from "@/components/base/PropertyDrawer.vue";
 import ConnectionPropertyDrawer from "@/components/ConnectionPropertyDrawer.vue";
 import Registry from "@/app/core/registry";
 import EventBus from "@/events/events";
+import { sortParamSpec } from "@/constants/parameterDisplayOrder";
 
 export default {
     name: "ComponentToolBar",
@@ -98,6 +99,9 @@ export default {
                 spec: this.computedSpecForMINT(mint)
             };
         },
+        computedSpecForMINT: function(mint) {
+            return this.computedSpec(mint);
+        },
         computedSpec: function(threeduftype) {
             let definition = ComponentAPI.getDefinition(threeduftype);
             let spec = [];
@@ -114,7 +118,7 @@ export default {
                 };
                 spec.push(item);
             }
-            return spec;
+            return sortParamSpec(spec);
         }
     }
 };

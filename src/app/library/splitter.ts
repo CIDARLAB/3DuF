@@ -28,7 +28,7 @@ export default class Splitter extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             height: 250,
             inletWidth: 2 * 1000,

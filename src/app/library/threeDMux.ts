@@ -31,7 +31,7 @@ export default class ThreeDMux extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             in: 1,
             out: 8,
             rotation: 0,

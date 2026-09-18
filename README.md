@@ -29,12 +29,12 @@ Summary of the 2026 maintenance work on this branch:
 
 ### Layout and geometry
 - Component `position` is the geometric / rotation center; PORT, VIA, NODE, and VALVE draw at that center.
-- Default sizes: port radius **1 mm**; channel / connection / valve-gap width **600 µm**.
+- Default sizes: port radius **1 mm**; channel / connection / valve-gap width **600 µm**; component keepout **componentSpacing** default **2000 µm** (editable in settings).
 - Mixer serpentine ends expose **edgeBend1** / **edgeBend2** so each incomplete end can match the connecting channel width.
 - Square channel joints fill 90° corners; VALVE3D FLOW gaps are clipped geometrically on import.
 - PORT draws a single connection handle at the geometric center (like VIA). VALVE library ports use center-relative cardinals (1–4) for MINT / Fluigi connectivity.
 - NODE is a zero-radius junction: its center terminal is used for snapping only and does **not** draw a grey port marker on Y-junctions.
-- MUX tree width is controlled by **leafPitch** (center-to-center pitch of adjacent leaf channels). Control valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down); older JSON that still stores `spacing`, `width`, `length`, or `valveWidth` continues to load.
+- MUX / TREE / YTREE leaf spacing is **leafSpace**; along-tree stage spacing is **stageSpace**. MUX control valve pads use **valveWidthX** / **valveWidthY**. Older JSON keys (`leafPitch`, `stageLength`, `spacing`, `width`, `length`, `valveWidth`) still load.
 - New droplet primitive: **DROPLET MERGER JUNCTION** (3-port T-junction).
 
 ### Neptune / Parchmint interoperability
@@ -42,12 +42,16 @@ Summary of the 2026 maintenance work on this branch:
 - MINT aliases normalize on load (for example `IN MUX` → `MUX`, `CELL TRAP` → long or square cell trap from params).
 - FLOW and CONTROL from Parchmint open on the **same physical level**.
 - Older JSON is filled with missing library defaults; broken valve maps are skipped instead of aborting load.
+- Device size accepts `x-span`/`y-span`, `width`/`length`, or `xspan`/`yspan` aliases when loading.
 - Neptune bridge: announce `threeduf-ready`, prefer Parchmint device spans, clear canvas fully on reload, and ack with `threeduf-device-loaded`.
 
 ### UI
 - Settings panels show a selectable netlist **ID** for matching objects back to Parchmint / Neptune JSON.
+- Parameter tables sort related keys together (I/O → channel widths → leaf/stage spacing → valve pads → mirrors); keepout keys stay near the bottom.
 - Floating settings panels drag from the heading bar only so parameter text stays selectable.
 - Parameter units (µm, °, …) render beside the value field instead of as a crowded text-field suffix.
+- Connection sidebar label is **Channel type** (square vs rounded); JSON still stores `crossSection`.
+- **Edit Device** refreshes name and spans when opened and after a design load.
 - **Reset** on an imported component or connection restores that object's uploaded JSON parameters (not factory defaults). Hand-placed objects still reset to library defaults. Position / path geometry is left unchanged.
 
 ## Usage
@@ -139,12 +143,15 @@ Canvas settings panels also show the imported **netlist ID** for the selected co
 Default sizes used when placing new features:
 - Port radius: **1 mm**
 - Channel / connection / valve-gap width: **600 µm**
+- Component keepout (**componentSpacing**): **2000 µm**
 
 Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer end of that incomplete bend). Set each value to half the connecting channel width so the mixer end and the pipe share the same width.
 
-MUX trees expose **leafPitch** (adjacent leaf center-to-center pitch). Valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `spacing`, `width`, `length`, and `valveWidth` are still accepted.
+MUX / TREE / YTREE expose **leafSpace** (adjacent leaf spacing) and **stageSpace** (along-tree stage spacing). MUX valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `leafPitch`, `stageLength`, `spacing`, `width`, `length`, and `valveWidth` are still accepted.
 
 **Reset** in the floating settings panel restores parameters from the last imported JSON for that netlist ID when the design was loaded from file / Neptune. Otherwise it restores library factory defaults. Layout anchors (position, channel path) are not rewritten.
+
+**Edit Device** reads the current device name and spans whenever the dialog opens (and after a Neptune / Import load), so the fields stay in sync with the canvas.
 
 ### Cover Layer (All / Ports)
 

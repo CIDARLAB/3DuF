@@ -27,7 +27,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             oilChannelWidth: 0.4 * 1000,
             waterChannelWidth: 0.2 * 1000,
             length: 3 * 1000,

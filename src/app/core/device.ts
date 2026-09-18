@@ -49,7 +49,16 @@ export default class Device {
         this.__textLayers = [];
         //this.__features = [];
         this.__groups = [];
-        this.__params = new Params(values, Device.getUniqueParameters(), Device.getHeritableParameters());
+        const mapped: { [index: string]: any } = values && typeof values === "object" ? { ...values } : {};
+        const spanX = mapped["x-span"] != null ? mapped["x-span"] : mapped.width != null ? mapped.width : mapped.xspan;
+        const spanY = mapped["y-span"] != null ? mapped["y-span"] : mapped.length != null ? mapped.length : mapped.yspan;
+        if (spanX != null) {
+            mapped["x-span"] = spanX;
+        }
+        if (spanY != null) {
+            mapped["y-span"] = spanY;
+        }
+        this.__params = new Params(mapped, Device.getUniqueParameters(), Device.getHeritableParameters());
         // this.setXSpan(values.width);
         // this.setYSpan(values.length);
 

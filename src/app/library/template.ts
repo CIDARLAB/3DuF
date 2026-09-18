@@ -278,7 +278,7 @@ export default class Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             height: 250
         };
 

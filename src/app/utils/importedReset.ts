@@ -80,6 +80,18 @@ function overlayNumericParams(
         }
     }
     const mintNorm = String(mint || "").toUpperCase();
+    if (mintNorm === "MUX" || mintNorm === "TREE" || mintNorm === "YTREE") {
+        if (src.leafSpace == null) {
+            const leaf = Number(
+                src.leafPitch != null ? src.leafPitch : src.spacing
+            );
+            if (Number.isFinite(leaf) && leaf > 0) out.leafSpace = leaf;
+        }
+        if (src.stageSpace == null) {
+            const stage = Number(src.stageLength);
+            if (Number.isFinite(stage) && stage > 0) out.stageSpace = stage;
+        }
+    }
     if (mintNorm === "MUX") {
         if (src.valveWidthX == null) {
             const x = Number(src.valveWidth != null ? src.valveWidth : src.width);

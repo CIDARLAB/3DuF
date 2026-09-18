@@ -27,7 +27,7 @@ export default class ChemostatRing extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             flowChannelWidth: 100,
             controlChannelWidth: 50,
             chemostatChannelWidth: 100,

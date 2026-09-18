@@ -5,10 +5,11 @@
 
 const COMMON: Record<string, string> = {
     crossSection:
-        "Channel profile for Connection routes: 0 = rectangular cross-section with square (flat) ends in the layout view; 1 = rounded profile with semicircular ends (stadium outline), consistent with a circular channel cross-section.",
+        "Channel type for Connection routes: 0 = rectangular cross-section with square (flat) ends in the layout view; 1 = rounded type with semicircular ends (stadium outline), consistent with a circular channel cross-section. JSON keeps this key; MINT writes RoundedChannel=True/False.",
     channelWidth: "In-plane width of the microfluidic channel (perpendicular to flow in the top view).",
     height: "Vertical depth (z-span) of the feature on the active layer, used for 3D export and layer offsets.",
     connectionSpacing: "Minimum spacing kept between separate connection routes when autorouting or editing.",
+    componentSpacing: "Keepout halo around the component body (µm). Place-and-route keeps other components and channel bodies outside this band. Users and DIY components may override the default.",
     channelRadius: "Radius of a circular channel cross-section; the tool keeps width and depth consistent with this radius.",
     bendSpacing: "Distance between consecutive bends in a serpentine or curved path.",
     numberOfBends: "Count of 180° bends in the mixer or channel path.",
@@ -17,13 +18,16 @@ const COMMON: Record<string, string> = {
     edgeBend2: "Distance from mixer port 2 to the outer end of that incomplete bend. Ports stay on the rotation-center axis. Set this to half the connecting channel width so the mixer end and the pipe have the same width (no extra lip).",
     rotation: "Rotation angle of the placed feature in the layout plane.",
     position: "Placement anchor position of the component or feature.",
-    length: "Overall length along the dominant axis of the geometry.",
+    length: "Overall length along the dominant axis. On a MUX this is the valve pad (use valveWidthY). On CHANNEL this is a minimum route length. On old 3DuF device JSON, length was canvas height (now y-span).",
     width: "Overall width of the geometry in the layout plane.",
     depth: "Depth or thickness of the structure where applicable.",
     radius: "Corner or fillet radius for rounded geometry.",
     diameter: "Diameter of circular ports, chambers, or pillars.",
-    spacing: "Uniform spacing between repeated elements in an array.",
-    leafPitch: "Center-to-center pitch of adjacent MUX leaf channels. This sets the tree width.",
+    spacing: "BANK instance spacing, or a pump/chamber pitch. MUX/TREE/YTREE use leafSpace.",
+    leafPitch: "Legacy MUX leaf spacing; use leafSpace.",
+    leafSpace: "Leaf spacing of MUX, TREE, and YTREE. This sets how far apart adjacent leaves sit. Independent of BANK spacing.",
+    stageLength: "Legacy along-tree stage spacing; use stageSpace.",
+    stageSpace: "Along-tree spacing of successive MUX/TREE/YTREE flow stages.",
     valveRadius: "Radius of the circular valve membrane or actuation region.",
     flowChannelWidth: "Width of the primary fluidic channel on the flow layer.",
     controlChannelWidth: "Width of the pneumatic control channel on the control layer.",
@@ -73,19 +77,22 @@ const BY_FEATURE: Record<string, Record<string, string>> = {
         connectionSpacing: "Minimum clearance enforced between separate connection paths on the canvas.",
         channelWidth: "Drawn width of the routed connection segment in the plane of the flow layer.",
         height: "Extruded depth used when exporting or stacking this connection geometry.",
-        channelRadius: "For a round cross-section profile, half of the effective channel width; width and depth follow this radius."
+        channelRadius: "For a rounded channel type, half of the effective channel width; width and depth follow this radius."
     },
     "ALIGNMENT MARKS": {
         width: "Width of the alignment mark pattern.",
         height: "Height of the alignment mark pattern."
     },
     MUX: {
-        leafPitch: "Distance between adjacent MUX leaf ports. Edit this to widen or tighten the tree.",
+        leafPitch: "Legacy MUX leaf spacing; use leafSpace.",
+        leafSpace: "Distance between adjacent MUX leaf ports. Edit this to widen or tighten the tree.",
         valveWidthX: "Left-right size of each control valve pad. Increase this to stretch the valve horizontally.",
         valveWidthY: "Up-down size of each control valve pad. Increase this to stretch the valve vertically.",
         valveWidth: "Legacy single valve width; use valveWidthX.",
         width: "Legacy left-right valve size; use valveWidthX.",
-        length: "Legacy up-down valve size; use valveWidthY."
+        length: "Legacy up-down valve size; use valveWidthY.",
+        stageLength: "Legacy MUX/TREE stage spacing; use stageSpace.",
+        stageSpace: "Along-tree spacing of successive flow stages."
     }
 };
 

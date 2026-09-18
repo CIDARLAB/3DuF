@@ -28,7 +28,7 @@ export default class DropletGenerator extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             orificeSize: 0.2 * 1000,
             orificeLength: 0.4 * 1000,
             oilInputWidth: 0.8 * 1000,

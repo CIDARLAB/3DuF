@@ -27,7 +27,7 @@ export default class LogicArray extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             height: 1.1 * 1000,
             chamberWidth: 1.5 * 1000,
             chamberLength: 1.5 * 1000,

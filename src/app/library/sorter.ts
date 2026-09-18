@@ -36,7 +36,7 @@ export default class Sorter extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             rotation: 0,
             height: 250,
             inletWidth: 0.8 * 1000,

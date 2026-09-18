@@ -119,6 +119,10 @@ export default {
                         "Filled missing heritable defaults when loading older JSON so new parameters still appear in the settings table.",
                         "Hardened Neptune / JSON load: skip broken valve maps, tolerate missing device params, and surface a clear alert when postMessage load fails.",
                         "Made the floating settings panel draggable, with Apply / Reset that target the clicked component or connection.",
+                        "Reset on imported objects restores uploaded JSON parameters (by netlist ID); hand-placed objects still use library defaults.",
+                        "Renamed MUX/TREE/YTREE spacing to leafSpace and stageSpace, with valveWidthX/valveWidthY for MUX pads; legacy spacing/leafPitch/stageLength/width/length still load.",
+                        "Default componentSpacing keepout is 2000 µm and is editable in settings; parameter tables sort related keys together.",
+                        "Edit Device syncs name/spans on open and after design load; connection UI labels Channel type for square vs rounded profiles.",
                         "Improved Valve3D placement and layer-aware rendering (CONTROL full circle vs FLOW crescents) plus precise flow-gap connection breaks.",
                         "Added legacy / paper-design JSON normalization so literature designs load into the current interchange format, with a Tutorial link to 3DuF-Paper-Designs.",
                         "Versioned About/Help and Tutorial dialogs (v1.0–v1.2) with current-version labeling."

@@ -30,6 +30,7 @@ import EventBus from "@/events/events";
 import Registry from "@/app/core/registry";
 import { ComponentAPI } from "@/componentAPI";
 import { getMintTooltip } from "@/constants/mintTooltips";
+import { sortParamSpec } from "@/constants/parameterDisplayOrder";
 export default {
     name: "PropertyDrawer",
     props: {
@@ -170,7 +171,7 @@ export default {
                 };
                 spec.push(item);
             }
-            return spec;
+            return sortParamSpec(spec);
         }
     }
 };

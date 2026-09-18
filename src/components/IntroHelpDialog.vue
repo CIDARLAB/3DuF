@@ -218,82 +218,20 @@ export default {
                         "Square-profile channels fill the outer corner at 90° turns, so compiled CHANNEL JSON no longer shows a gap at the joint.",
                         "Component and connection settings show the netlist ID from the imported JSON for cross-checking with Parchmint / Neptune.",
                         "Mixer settings include edgeBend1 / edgeBend2 so each incomplete end bend can be matched to the connecting channel width.",
+                        "MUX / TREE / YTREE settings use leafSpace and stageSpace; MUX valve pads use valveWidthX / valveWidthY.",
+                        "Parameter tables sort related keys together, and componentSpacing keepout is visible with a 2000 µm default.",
+                        "Connection sidebar labels Channel type (square vs rounded); Edit Device refreshes spans when opened after a load.",
                         "Parchmint FLOW and CONTROL layers open on the same physical level in the layer toolbar instead of as separate levels."
                     ],
                     workflowImprovements: [
                         "Use Ports view when preparing a cover layer: even droplet devices need a closed second layer so fluid can flow inside channels instead of open grooves.",
                         "For cover-layer fabrication, JSON, DXF, SVG, and GCode downloads include a ports-only file in the same format as the full design.",
-                        "Newly placed ports default to a 1 mm radius; channels and valve gaps default to 600 µm so FLOW pipes and VALVE3D slits match.",
+                        "Newly placed ports default to a 1 mm radius; channels and valve gaps default to 600 µm so FLOW pipes and VALVE3D slots match.",
                         "Set each mixer edgeBend to half the connecting channel width so the mixer end and the pipe share the same width (no extra lip).",
                         "VALVE3D flow gaps are clipped geometrically on import so the host channel stays interrupted at the valve slit.",
+                        "Reset on an imported object restores its uploaded JSON parameters; hand-placed objects still reset to library defaults.",
                         "Older JSON is filled with missing library defaults so new parameters still appear after you reopen a design."
                     ],
                     // Placeholder: v1.2 videos are not ready yet, so reuse existing tutorials.
                     introductionVideoUrl: "https://www.youtube.com/embed/05nU8eQ73U8",
-                    longTutorialVideoUrl: "https://www.youtube.com/embed/YOrnnZjma28"
-                }
-            ]
-        };
-    },
-    created() {
-        this.page = this.versions.length;
-    },
-    computed: {
-        selectedVersion() {
-            return this.versions[this.page - 1] || this.versions[0];
-        },
-        currentVersionLabel() {
-            const currentVersion = this.versions[this.versions.length - 1];
-            return currentVersion ? currentVersion.label : "";
-        },
-        pageTitle() {
-            const suffix = this.selectedVersion.label === this.currentVersionLabel ? " (Current Version)" : "";
-            return `Tutorial ${this.selectedVersion.label}${suffix}`;
-        }
-    }
-};
-</script>
-
-<style lang="scss" scoped>
-.tutorial-font {
-    font-family: "Roboto", sans-serif !important;
-}
-
-.dialog-title {
-    font-size: 28px !important;
-    font-weight: 700;
-}
-
-.section-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 12px 0 6px;
-}
-
-.subsection-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 10px 0 6px;
-}
-
-.body-text,
-ul li,
-.tg td {
-    font-size: 16px;
-    line-height: 1.6;
-}
-
-.video-label {
-    font-size: 18px;
-    font-weight: 500;
-    margin-bottom: 6px;
-}
-
-.video-block {
-    margin-bottom: 14px;
-}
-
-.contact-line {
-    margin-top: 20px;
-}
-</style>
+                    longTutorialVideoUrl: "https://www.youtube.com/embed/YOr

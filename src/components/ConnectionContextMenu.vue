@@ -106,7 +106,7 @@
                 class="mb-3 connection-profile-select"
                 dense
                 hide-details
-                label="Channel profile"
+                label="Channel type"
                 outlined
                 :menu-props="{ contentClass: 'connection-context-profile-menu' }"
             ></v-select>

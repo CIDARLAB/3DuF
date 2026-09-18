@@ -26,7 +26,7 @@ export default class DropletMerger extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             inputWidth1: 400,
             inputWidth2: 400,
             outputWidth: 400,

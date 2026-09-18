@@ -27,7 +27,7 @@ export default class CellTrapL extends Template {
         };
 
         this.__defaults = {
-            componentSpacing: 1000,
+            componentSpacing: 2000,
             chamberLength: 1.2 * 1000,
             feedingChannelWidth: 0.41 * 1000,
             rotation: 270,
