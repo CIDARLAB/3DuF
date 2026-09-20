@@ -15,11 +15,11 @@
   },
   "MIXER": {
     "componentSpacing": 2000,
-    "channelWidth": 800,
-    "bendSpacing": 1230,
+    "channelWidth": 600,
+    "bendSpacing": 1400,
     "numberOfBends": 1,
     "rotation": 0,
-    "bendLength": 2460,
+    "bendLength": 2000,
     "height": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
@@ -118,10 +118,10 @@
   "CURVED MIXER": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "channelWidth": 800,
-    "bendSpacing": 1230,
+    "channelWidth": 600,
+    "bendSpacing": 1400,
     "numberOfBends": 1,
-    "bendLength": 2460,
+    "bendLength": 2000,
     "height": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
@@ -426,11 +426,11 @@
   },
   "MIXER3D": {
     "componentSpacing": 2000,
-    "channelWidth": 800,
-    "bendSpacing": 1230,
+    "channelWidth": 600,
+    "bendSpacing": 1400,
     "numberOfBends": 1,
     "rotation": 0,
-    "bendLength": 2460,
+    "bendLength": 2000,
     "height": 250,
     "mirrorByX": 0,
     "mirrorByY": 0

@@ -27,11 +27,11 @@ export default class ThreeDMixer extends Template {
 
         this.__defaults = {
             componentSpacing: 2000,
-            channelWidth: 0.8 * 1000,
-            bendSpacing: 1.23 * 1000,
+            channelWidth: 600,
+            bendSpacing: 1400,
             numberOfBends: 1,
             rotation: 0,
-            bendLength: 2.46 * 1000,
+            bendLength: 2000,
             height: 250,
             mirrorByX: 0,
             mirrorByY: 0
@@ -124,9 +124,19 @@ export default class ThreeDMixer extends Template {
 
         const ports = [];
 
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, 0, "1", LogicalLayerType.FLOW));
-
-        ports.push(new ComponentPort(bendLength / 2 + channelWidth, (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing, "2", LogicalLayerType.FLOW));
+        const openingY2 =
+            (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing;
+        ports.push(
+            new ComponentPort(bendLength / 2 + channelWidth, channelWidth / 2, "1", LogicalLayerType.FLOW)
+        );
+        ports.push(
+            new ComponentPort(
+                bendLength / 2 + channelWidth,
+                openingY2 - channelWidth / 2,
+                "2",
+                LogicalLayerType.FLOW
+            )
+        );
 
         return ports;
     }

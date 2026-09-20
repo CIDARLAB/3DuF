@@ -60,6 +60,7 @@ whitespace, and applies these aliases before lookup:
 - **Mirror parameters.** Most primitives expose `mirrorByX` and `mirrorByY` (0 or 1) to flip the rendered glyph along either axis.
 - **`componentSpacing`** defaults to `2000` μm across most primitives (was `1000`).
 - **Channel height.** `CHANNEL` / `ROUNDED CHANNEL` default `height` bumped from `250` to `600` μm.
+- **Mixer defaults & ports.** `MIXER` (BetterMixer), `CURVED MIXER`, and `MIXER3D` now default to `channelWidth = 600`, `bendSpacing = 1400`, `bendLength = 2000` μm, and their two terminals sit on the channel centerline (offset by `channelWidth / 2` from the outer edge of the first / last opening) so downstream routers can dock connections without an extra half-width offset.
 - **Parameter renames (with legacy fallback).** Old device files still load.
   - `Tree`, `YTree`: `spacing` → `leafSpace`, `stageLength` → `stageSpace`.
   - `Mux`: `leafPitch` → `leafSpace`, `stageLength` → `stageSpace`, `valveWidth` + `length` → `valveWidthX` + `valveWidthY`.
