@@ -2,7 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
-import { DEFAULT_CHANNEL_WIDTH_UM, mixerEndLayout } from "./channelWidths";
+import { DEFAULT_MIXER_BEND_LENGTH_UM, DEFAULT_MIXER_BEND_SPACING_UM, DEFAULT_MIXER_CHANNEL_WIDTH_UM, mixerEndLayout } from "./channelWidths";
 
 export default class BetterMixer extends Template {
     constructor() {
@@ -31,12 +31,12 @@ export default class BetterMixer extends Template {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
-            edgeBend1: DEFAULT_CHANNEL_WIDTH_UM / 2,
-            edgeBend2: DEFAULT_CHANNEL_WIDTH_UM / 2,
-            bendSpacing: 1.23 * 1000,
+            channelWidth: DEFAULT_MIXER_CHANNEL_WIDTH_UM,
+            edgeBend1: DEFAULT_MIXER_CHANNEL_WIDTH_UM / 2,
+            edgeBend2: DEFAULT_MIXER_CHANNEL_WIDTH_UM / 2,
+            bendSpacing: DEFAULT_MIXER_BEND_SPACING_UM,
             numberOfBends: 1,
-            bendLength: 2.46 * 1000,
+            bendLength: DEFAULT_MIXER_BEND_LENGTH_UM,
             height: 250,
             mirrorByX: 0,
             mirrorByY: 0
@@ -131,8 +131,8 @@ export default class BetterMixer extends Template {
     getPorts(params: { [k: string]: any }) {
         const layout = mixerEndLayout(params);
         const ports = [];
-        ports.push(new ComponentPort(layout.port1x, 0, "1", LogicalLayerType.FLOW));
-        ports.push(new ComponentPort(layout.port2x, layout.openingY2, "2", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(layout.port1x, layout.port1y, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(layout.port2x, layout.port2y, "2", LogicalLayerType.FLOW));
         return ports;
     }
 

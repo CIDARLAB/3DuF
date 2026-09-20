@@ -217,7 +217,7 @@ export default {
                         "Neptune LFR DIYCOMPONENT parts now render as built-in black-box placeholders instead of disappearing when the custom library entry is missing.",
                         "Square-profile channels fill the outer corner at 90° turns, so compiled CHANNEL JSON no longer shows a gap at the joint.",
                         "Component and connection settings show the netlist ID from the imported JSON for cross-checking with Parchmint / Neptune.",
-                        "Mixer settings include edgeBend1 / edgeBend2 so each incomplete end bend can be matched to the connecting channel width.",
+                        "Mixer settings include edgeBend1 / edgeBend2; ports sit on the end-pipe centerline. Default bendSpacing is 1400 µm and bendLength is 2000 µm.",
                         "MUX / TREE / YTREE settings use leafSpace and stageSpace; MUX valve pads use valveWidthX / valveWidthY.",
                         "Parameter tables sort related keys together, and componentSpacing keepout is visible with a 2000 µm default.",
                         "Connection sidebar labels Channel type (square vs rounded); Edit Device refreshes spans when opened after a load.",
@@ -227,7 +227,7 @@ export default {
                         "Use Ports view when preparing a cover layer: even droplet devices need a closed second layer so fluid can flow inside channels instead of open grooves.",
                         "For cover-layer fabrication, JSON, DXF, SVG, and GCode downloads include a ports-only file in the same format as the full design.",
                         "Newly placed ports default to a 1 mm radius; channels and valve gaps default to 600 µm so FLOW pipes and VALVE3D slots match.",
-                        "Set each mixer edgeBend to half the connecting channel width so the mixer end and the pipe share the same width (no extra lip).",
+                        "Set each mixer edgeBend to half the connecting channel width so the mixer end and the pipe share the same width (no extra lip). Ports attach on the incomplete end-cap centerline, not the outer AABB edge.",
                         "VALVE3D flow gaps are clipped geometrically on import so the host channel stays interrupted at the valve slit.",
                         "Reset on an imported object restores its uploaded JSON parameters; hand-placed objects still reset to library defaults.",
                         "Older JSON is filled with missing library defaults so new parameters still appear after you reopen a design."

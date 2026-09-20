@@ -6,6 +6,9 @@ import { LogicalLayerType } from "../core/init";
  * uses Template.__defaults; the primitives server returns the same object.
  */
 export const DEFAULT_CHANNEL_WIDTH_UM = 600;
+export const DEFAULT_MIXER_CHANNEL_WIDTH_UM = DEFAULT_CHANNEL_WIDTH_UM;
+export const DEFAULT_MIXER_BEND_SPACING_UM = 1400;
+export const DEFAULT_MIXER_BEND_LENGTH_UM = 2000;
 export const DEFAULT_VALVE_GAP_UM = DEFAULT_CHANNEL_WIDTH_UM;
 export const DEFAULT_FLOW_CHANNEL_WIDTH_UM = DEFAULT_CHANNEL_WIDTH_UM;
 export const DEFAULT_CONTROL_CHANNEL_WIDTH_UM = DEFAULT_CHANNEL_WIDTH_UM;
@@ -36,21 +39,23 @@ export function mixerEdgeBend(params: { [k: string]: any }, which: 1 | 2): numbe
 
 /**
  * Unrotated mixer layout. Both ports sit on the geometric / rotation-center
- * axis (local x = channelWidth + bendLength/2). After rotation that is the
- * same x as the center at 0°/180°, and the same y at 90°/270°.
+ * axis (local x = channelWidth + bendLength/2) and on the *centerline* of
+ * the incomplete end-cap pipes (not the outer AABB edge). After rotation
+ * that is the same x as the center at 0°/180°, and the same y at 90°/270°.
  * edgeBend1/2 are port-to-outer-edge distances; set each to half the
  * connecting channel width so the mixer end matches that pipe.
  */
 export function mixerEndLayout(params: { [k: string]: any }) {
-    const channelWidth = Number(params && params.channelWidth) || DEFAULT_CHANNEL_WIDTH_UM;
-    const bendLength = Number(params && params.bendLength) || 2 * DEFAULT_CHANNEL_WIDTH_UM;
-    const bendSpacing = Number(params && params.bendSpacing) || 0;
+    const channelWidth = Number(params && params.channelWidth) || DEFAULT_MIXER_CHANNEL_WIDTH_UM;
+    const bendLength = Number(params && params.bendLength) || DEFAULT_MIXER_BEND_LENGTH_UM;
+    const bendSpacing = Number(params && params.bendSpacing) || DEFAULT_MIXER_BEND_SPACING_UM;
     const numberOfBends = Number(params && params.numberOfBends) || 1;
     const e1 = mixerEdgeBend(params, 1);
     const e2 = mixerEdgeBend(params, 2);
     const portX = channelWidth + bendLength / 2;
     const lastEnd = bendLength + 1.5 * channelWidth;
     const lastStart = portX - e2;
+    const openingY2 = (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing;
     return {
         channelWidth,
         bendLength,
@@ -59,11 +64,13 @@ export function mixerEndLayout(params: { [k: string]: any }) {
         portX,
         port1x: portX,
         port2x: portX,
+        port1y: channelWidth / 2,
+        port2y: openingY2 - channelWidth / 2,
         firstWidth: portX + e1,
         lastStart,
         lastWidth: lastEnd - lastStart,
         lastEnd,
-        openingY2: (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing
+        openingY2
     };
 }
 

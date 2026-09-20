@@ -30,7 +30,7 @@ Summary of the 2026 maintenance work on this branch:
 ### Layout and geometry
 - Component `position` is the geometric / rotation center; PORT, VIA, NODE, and VALVE draw at that center.
 - Default sizes: port radius **1 mm**; channel / connection / valve-gap width **600 µm**; component keepout **componentSpacing** default **2000 µm** (editable in settings).
-- Mixer serpentine ends expose **edgeBend1** / **edgeBend2** so each incomplete end can match the connecting channel width.
+- Mixer serpentine ends expose **edgeBend1** / **edgeBend2** so each incomplete end can match the connecting channel width. Ports sit on the end-pipe centerline (not the outer AABB edge). Default mixer **bendSpacing** is **1400 µm** and **bendLength** is **2000 µm**.
 - Square channel joints fill 90° corners; VALVE3D FLOW gaps are clipped geometrically on import.
 - PORT draws a single connection handle at the geometric center (like VIA). VALVE library ports use center-relative cardinals (1–4) for MINT / Fluigi connectivity.
 - NODE is a zero-radius junction: its center terminal is used for snapping only and does **not** draw a grey port marker on Y-junctions.
@@ -145,7 +145,7 @@ Default sizes used when placing new features:
 - Channel / connection / valve-gap width: **600 µm**
 - Component keepout (**componentSpacing**): **2000 µm**
 
-Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer end of that incomplete bend). Set each value to half the connecting channel width so the mixer end and the pipe share the same width.
+Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer end of that incomplete bend). Ports attach on the end-pipe centerline. Set each edgeBend to half the connecting channel width so the mixer end and the pipe share the same width. Defaults: **bendSpacing** 1400 µm, **bendLength** 2000 µm.
 
 MUX / TREE / YTREE expose **leafSpace** (adjacent leaf spacing) and **stageSpace** (along-tree stage spacing). MUX valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `leafPitch`, `stageLength`, `spacing`, `width`, `length`, and `valveWidth` are still accepted.
 
