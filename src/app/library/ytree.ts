@@ -153,7 +153,6 @@ export default class YTree extends Template {
 
     getPorts(params: { [k: string]: any }) {
         const ports = [];
-        const cw = params.flowChannelWidth;
         const spacing = this.__treeLeafSpace(params);
         const ins = params.in;
         const outs = params.out;
@@ -173,10 +172,11 @@ export default class YTree extends Template {
         const length = levels * stagelength;
         const width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
 
-        ports.push(new ComponentPort(0, -cw / 2, "1", LogicalLayerType.FLOW));
+        // Stadium-cap centers so RoundedChannel ends overlap the port circle.
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
         for (let i = 0; i < leafs; i++) {
-            ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length + cw / 2, (2 + i).toString(), LogicalLayerType.FLOW));
+            ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length, (2 + i).toString(), LogicalLayerType.FLOW));
         }
 
         return ports;

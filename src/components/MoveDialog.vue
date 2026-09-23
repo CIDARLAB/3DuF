@@ -35,18 +35,18 @@
                     <v-col id="right-col">
                         <tr>
                             <td>
-                                <v-card-text>X (mm):</v-card-text>
+                                <v-card-text>X:</v-card-text>
                             </td>
                             <td width="125px">
-                                <v-text-field v-model="posX" placeholder="0" :step="1" type="number" @change="updateComponent"> </v-text-field>
+                                <v-text-field v-model="posX" label="X" suffix="µm" placeholder="0" :step="1" type="number" @change="updateComponent"> </v-text-field>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <v-card-text>Y (mm):</v-card-text>
+                                <v-card-text>Y:</v-card-text>
                             </td>
                             <td width="125px">
-                                <v-text-field v-model="posY" placeholder="0" :step="1" type="number" @change="updateComponent"> </v-text-field>
+                                <v-text-field v-model="posY" label="Y" suffix="µm" placeholder="0" :step="1" type="number" @change="updateComponent"> </v-text-field>
                             </td>
                         </tr>
                     </v-col>

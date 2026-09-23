@@ -55,6 +55,8 @@ If a layer has been selected, only features on that layer can be selected this w
 
 Left click on any selected feature to bring up a dialog box which will allow you to edit its parameters. If more than one feature is selected, parameters will be inherited by all currently selected features of the same type as the one you clicked.
 
+Position and spacing fields in the Move dialog are entered in **µm** (micrometers), matching the rest of the 3DuF coordinate system.
+
 ### Saving Designs
 
 Under `Save` in the main menu, click a to download the current design in the selected format.
