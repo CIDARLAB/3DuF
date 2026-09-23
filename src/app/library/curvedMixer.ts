@@ -192,9 +192,10 @@ export default class CurvedMixer extends Template {
             toprect = toprect.unite(rightCurve);
 
             if (i === numBends - 1) {
-                // draw incomplete end-bend to close (outer end is port - edgeBend2)
-                const curvedLastWidth = channelWidth + bendLength + 1 - layout.lastStart;
-                hseg = new paper.Path.Rectangle(new paper.Rectangle(x + layout.lastStart, y + vRepeat * (i + 1), curvedLastWidth, channelWidth));
+                // incomplete end-bend: tip opens −X past the port by edgeBend2
+                hseg = new paper.Path.Rectangle(
+                    new paper.Rectangle(x + layout.lastStart, y + vRepeat * (i + 1), layout.lastWidth, channelWidth)
+                );
                 toprect = toprect.unite(hseg);
             } else {
                 // draw full segment

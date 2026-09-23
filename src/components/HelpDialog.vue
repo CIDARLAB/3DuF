@@ -113,7 +113,7 @@ export default {
                         "Updated the default port radius to 1 mm and unified the default channel / valve-gap width to 600 µm across library components.",
                         "Stored component position as the geometric / rotation center; circular glyphs (PORT, VIA, VALVE) draw at that center without a second offset.",
                         "Settings panels show the imported netlist ID so components and connections can be matched back to Parchmint / Neptune JSON.",
-                        "Mixer serpentine ends expose edgeBend1 / edgeBend2; ports sit at the incomplete-end tip-square center. Narrower channels hinge to the outer lip so the tip is not left open. Default bendSpacing is 1400 µm and bendLength is 2000 µm.",
+                        "Mixer serpentine ends expose edgeBend1 / edgeBend2; ports sit at the incomplete-end tip-square center. Connecting channels (rounded or square, any width) terminate on that same center. Default bendSpacing is 1400 µm and bendLength is 2000 µm.",
                         "YTREE trunk/leaf ports sit at RoundedChannel stadium-cap centers so rounded connections fully cover the openings.",
                         "Clipped VALVE3D FLOW gaps geometrically (without paper.js boolean failures) so imported valves interrupt the host channel correctly; CONTROL routes are not split by FLOW valve rectangles.",
                         "Normalized Parchmint layer groups so FLOW and CONTROL stay on the same physical level instead of opening as separate levels.",

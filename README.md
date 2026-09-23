@@ -30,8 +30,8 @@ Summary of the 2026 maintenance work on this branch:
 ### Layout and geometry
 - Component `position` is the geometric / rotation center; PORT, VIA, NODE, and VALVE draw at that center.
 - Default sizes: port radius **1 mm**; channel / connection / valve-gap width **600 µm**; component keepout **componentSpacing** default **2000 µm** (editable in settings).
-- Mixer serpentine ends expose **edgeBend1** / **edgeBend2**. Ports sit at the center of each incomplete-end tip square. A channel at least as wide as that square covers the tip when centered on the port; a narrower channel hinges through to the outer lip so the tip is not left open. Defaults: **bendSpacing** **1400 µm**, **bendLength** **2000 µm**.
-- Square channel joints fill 90° corners; VALVE3D FLOW gaps are clipped geometrically on import. CONTROL routes are not split by FLOW valve rectangles.
+- Mixer serpentine ends expose **edgeBend1** / **edgeBend2** as independent outward tip stubs past each port (they do not move the ports or accumulate onto each other). Ports sit at the incomplete-end tip-square center on the serpentine spine. Connecting channels (rounded tip-circle or square tip-square, any width) terminate on that same center. Defaults: **bendSpacing** **1400 µm**, **bendLength** **2000 µm**.
+- Square channel joints fill 90° corners; square connections also draw tip-square end-caps at true terminals (same center rule as rounded tip-circles). VALVE3D FLOW gaps are clipped geometrically on import. CONTROL routes are not split by FLOW valve rectangles.
 - PORT draws a single connection handle at the geometric center (like VIA). VALVE library ports use center-relative cardinals (1–4) for MINT / Fluigi connectivity.
 - NODE is a zero-radius junction: its center terminal is used for snapping only and does **not** draw a grey port marker on Y-junctions.
 - MUX / TREE / YTREE leaf spacing is **leafSpace**; along-tree stage spacing is **stageSpace**. MUX control valve pads use **valveWidthX** / **valveWidthY**. Older JSON keys (`leafPitch`, `stageLength`, `spacing`, `width`, `length`, `valveWidth`) still load.
@@ -149,7 +149,7 @@ Default sizes used when placing new features:
 - Channel / connection / valve-gap width: **600 µm**
 - Component keepout (**componentSpacing**): **2000 µm**
 
-Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer tip of that incomplete end). Ports sit at the tip-square center. A connecting channel at least as wide as the mixer `channelWidth` covers the tip when centered on the port; a narrower channel reaches the outer lip so the tip is not left open. Defaults: **bendSpacing** 1400 µm, **bendLength** 2000 µm.
+Mixer serpentine ends expose **edgeBend1** / **edgeBend2** — the outward tip stub past each port (independent of each other; they never move the port). Ports sit at the tip-square center on the serpentine spine. A connecting channel terminates on that center (and on its own tip-circle / tip-square center) whether it is wider or narrower than the mixer. Defaults: **bendSpacing** 1400 µm, **bendLength** 2000 µm.
 
 MUX / TREE / YTREE expose **leafSpace** (adjacent leaf spacing) and **stageSpace** (along-tree stage spacing). MUX valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `leafPitch`, `stageLength`, `spacing`, `width`, `length`, and `valveWidth` are still accepted. YTREE ports sit at RoundedChannel stadium-cap centers.
 

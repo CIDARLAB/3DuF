@@ -38,13 +38,19 @@ export function mixerEdgeBend(params: { [k: string]: any }, which: 1 | 2): numbe
 }
 
 /**
- * Unrotated mixer layout. Both ports sit on the geometric / rotation-center
- * axis (local x = channelWidth + bendLength/2) and at the *center of the
- * incomplete-end tip square* (outer tip inward by channelWidth/2 — the three
- * edges at the open end of the end-cap pipe). After rotation that is the same
- * x as the center at 0°/180°, and the same y at 90°/270°. edgeBend1/2 are
- * port-to-outer-edge distances; default each to half this mixer's
- * channelWidth so the tip square has side channelWidth.
+ * Unrotated mixer layout.
+ *
+ * The serpentine spine (and both ports) sit at
+ * ``portX = channelWidth + bendLength/2``, which is also half of the true
+ * drawn width ``bendLength + 2·channelWidth``. After centering, that is the
+ * same world X as ``params.position`` at rot 0/180 (same world Y at 90/270).
+ *
+ * Along the serpentine axis, each port is the end-pipe midline
+ * (``channelWidth / 2`` from the outer tip) — independent of edgeBend.
+ *
+ * ``edgeBend1`` / ``edgeBend2`` are only the outward stub past each port
+ * along the incomplete bend (+X for port 1, −X for port 2). They never
+ * move the port and never accumulate onto each other.
  */
 export function mixerEndLayout(params: { [k: string]: any }) {
     const channelWidth = Number(params && params.channelWidth) || DEFAULT_MIXER_CHANNEL_WIDTH_UM;
@@ -53,8 +59,13 @@ export function mixerEndLayout(params: { [k: string]: any }) {
     const numberOfBends = Number(params && params.numberOfBends) || 1;
     const e1 = mixerEdgeBend(params, 1);
     const e2 = mixerEdgeBend(params, 2);
+    // Matches the mid-horizontal ``segLength`` in betterMixer / threeDMixer.
+    const drawnWidth = bendLength + 2 * channelWidth;
+    // Serpentine spine = geometric center of the drawn envelope.
     const portX = channelWidth + bendLength / 2;
-    const lastEnd = bendLength + 1.5 * channelWidth;
+    // Bend1 tip opens +X past the port; bend2 tip opens −X past the port.
+    // Body side of bend2 continues to the right edge of the envelope.
+    const lastEnd = drawnWidth;
     const lastStart = portX - e2;
     const openingY2 = (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing;
     return {
@@ -71,7 +82,8 @@ export function mixerEndLayout(params: { [k: string]: any }) {
         lastStart,
         lastWidth: lastEnd - lastStart,
         lastEnd,
-        openingY2
+        openingY2,
+        drawnWidth
     };
 }
 

@@ -116,6 +116,11 @@ export default class Connection extends Template {
         }
 
         const capAt = this.__roundedCapLookup(segments, wayPoints);
+        const terminalCaps = new Set<string>();
+        if (Array.isArray(wayPoints) && wayPoints.length >= 2) {
+            terminalCaps.add(this.__pointKey(wayPoints[0]));
+            terminalCaps.add(this.__pointKey(wayPoints[wayPoints.length - 1]));
+        }
 
         for (const i in segments) {
             const segment = segments[i];
@@ -129,14 +134,18 @@ export default class Connection extends Template {
             endpoint = new paper.Point(p2[0], p2[1]);
             const startKey = this.__pointKey(p1);
             const endKey = this.__pointKey(p2);
+            // Rounded: stadium caps at terminals and corners. Square: tip-square
+            // end-caps only at the true connection terminals (tip-square center).
+            const startCap = roundedProfile ? capAt.has(startKey) : terminalCaps.has(startKey);
+            const endCap = roundedProfile ? capAt.has(endKey) : terminalCaps.has(endKey);
             this.__drawStraightConnection(
                 connectionpath,
                 startpoint,
                 endpoint,
                 channelWidth,
                 roundedProfile,
-                capAt.has(startKey),
-                capAt.has(endKey)
+                startCap,
+                endCap
             );
         }
 
@@ -282,6 +291,24 @@ export default class Connection extends Template {
         rec.translate(([0, -radius] as unknown) as paper.Point);
         rec.rotate(vec.angle, startpoint);
         compoundpath.addChild(rec);
+        // Square tip: cw×cw end-cap centered on the terminal (same rule as
+        // rounded tip-circle centers). Port / waypoint = tip-square center.
+        if (capStart) {
+            compoundpath.addChild(
+                new paper.Path.Rectangle({
+                    point: [startpoint.x - radius, startpoint.y - radius],
+                    size: [channelWidth, channelWidth]
+                })
+            );
+        }
+        if (capEnd) {
+            compoundpath.addChild(
+                new paper.Path.Rectangle({
+                    point: [endpoint.x - radius, endpoint.y - radius],
+                    size: [channelWidth, channelWidth]
+                })
+            );
+        }
     }
 
     render2DTarget(key: string | null, params: { [k: string]: any }) {
