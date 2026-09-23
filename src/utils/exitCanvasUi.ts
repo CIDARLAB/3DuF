@@ -7,7 +7,21 @@ export function exitCanvasSettingsLikeEscape(): void {
     paper.project.deselectAll();
     const vm = Registry.viewManager;
     if (vm) {
-        vm.resetToDefaultTool();
+        // Prefer deactivate so placement tools removeTarget / clear lastTarget*
+        // before select mode; otherwise wheel zoom resurrects the ghost.
+        try {
+            vm.deactivateComponentPlacementTool();
+        } catch {
+            vm.resetToDefaultTool();
+        }
+        try {
+            if (vm.tools && vm.tools.MoveTool) {
+                vm.tools.MoveTool.deactivate();
+            }
+        } catch {
+            /* MoveTool may be unset during early init */
+        }
+        vm.removeTarget();
         vm.view.clearSelectedItems();
     }
     EventBus.get().emit(EventBus.SIDEBAR_COMPONENT_ACTIVATED, { mint: null });

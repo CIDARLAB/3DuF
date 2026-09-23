@@ -2,6 +2,7 @@ import uuid from "node-uuid";
 import paper from "paper";
 import Component from "./component";
 import { ComponentPortInterchangeV1, LogicalLayerType, Point } from "./init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "../library/channelWidths";
 
 export default class ComponentPort {
     protected _id: string;
@@ -196,6 +197,47 @@ export default class ComponentPort {
         }
         const step = Math.min(Math.abs(overlap), length * 0.25) / length;
         return [portAbs[0] + dx * step, portAbs[1] + dy * step];
+    }
+
+    /**
+     * MIXER tip-square hinge for a channel of ``channelWidth``.
+     *
+     * The library port sits at the center of the incomplete-end tip square
+     * (outer tip inward by mixer ``channelWidth`` / 2). A channel that is at
+     * least as wide as that square covers it when centered on the port. A
+     * narrower channel must reach the outer lip of the square (through the
+     * center) so the tip is not left open.
+     */
+    static mixerTerminalHinge(portAbs: Point, component: Component, channelWidth: number): Point {
+        let mixerCw = DEFAULT_CHANNEL_WIDTH_UM;
+        try {
+            const raw = Number(component.getValue("channelWidth"));
+            if (Number.isFinite(raw) && raw > 0) {
+                mixerCw = raw;
+            }
+        } catch {
+            mixerCw = DEFAULT_CHANNEL_WIDTH_UM;
+        }
+        if (Number(channelWidth) + 1e-6 >= mixerCw) {
+            return [portAbs[0], portAbs[1]];
+        }
+        let cx = portAbs[0];
+        let cy = portAbs[1];
+        try {
+            const center = component.getCenterPosition();
+            cx = center[0];
+            cy = center[1];
+        } catch {
+            return [portAbs[0], portAbs[1]];
+        }
+        const dx = portAbs[0] - cx;
+        const dy = portAbs[1] - cy;
+        const length = Math.hypot(dx, dy);
+        if (length < 1e-6) {
+            return [portAbs[0], portAbs[1]];
+        }
+        const half = mixerCw / 2;
+        return [portAbs[0] + (dx / length) * half, portAbs[1] + (dy / length) * half];
     }
 
     /**

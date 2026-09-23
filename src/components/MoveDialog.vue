@@ -30,12 +30,11 @@
 
             <v-card-text>
                 <v-row align="center">
-                    <v-col cols="12" sm="4">
-                        <v-card-text class="pa-0">X (mm)</v-card-text>
-                    </v-col>
-                    <v-col cols="12" sm="8">
+                    <v-col cols="12">
                         <v-text-field
                             v-model="posX"
+                            label="X"
+                            suffix="µm"
                             dense
                             hide-details
                             outlined
@@ -47,12 +46,11 @@
                     </v-col>
                 </v-row>
                 <v-row align="center">
-                    <v-col cols="12" sm="4">
-                        <v-card-text class="pa-0">Y (mm)</v-card-text>
-                    </v-col>
-                    <v-col cols="12" sm="8">
+                    <v-col cols="12">
                         <v-text-field
                             v-model="posY"
+                            label="Y"
+                            suffix="µm"
                             dense
                             hide-details
                             outlined

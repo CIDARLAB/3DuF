@@ -652,6 +652,10 @@ export default class ConnectionTool extends MouseTool {
      */
     private __portTerminal(component: any, componentport: any): Point {
         const abs = ComponentPort.calculateAbsolutePosition(componentport, component);
+        const entity = String(component?.mint || component?._entity || "").toUpperCase();
+        if (entity === "MIXER" || entity === "CURVED MIXER" || entity === "MIXER3D") {
+            return ComponentPort.mixerTerminalHinge(abs, component, this.__channelOverlap() * 2);
+        }
         return ComponentPort.insetTowardCenter(abs, component, this.__channelOverlap());
     }
 

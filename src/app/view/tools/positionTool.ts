@@ -138,7 +138,13 @@ export default class PositionTool extends MouseTool {
         return newComponent;
     }
 
-    deactivate(): void  {}
+    deactivate(): void  {
+        this.viewManagerDelegate.removeTarget();
+    }
+
+    cleanup(): void  {
+        this.viewManagerDelegate.removeTarget();
+    }
 
     getCreationParameters(position: paper.Point) {
         if (this.currentParameters === null) {

@@ -1059,13 +1059,28 @@ export default class PaperView {
     }
 
     /**
-     * Removes the target that is being rendered
+     * Removes the target that is being rendered (visual only).
+     * Leaves lastTarget* so zoom / refresh can redraw an active placement ghost.
      * @returns {void}
      * @memberof PaperView
      */
     removeTarget(): void {
         if (this.currentTarget) this.currentTarget.remove();
         this.currentTarget = null;
+    }
+
+    /**
+     * Removes the placement ghost and forgets lastTarget* so wheel/zoom
+     * cannot resurrect it after Escape or leaving placement mode.
+     * @returns {void}
+     * @memberof PaperView
+     */
+    clearTargetState(): void {
+        this.removeTarget();
+        this.lastTargetType = null;
+        this.lastTargetPosition = null;
+        this.lastTargetParameters = null;
+        this.lastTargetSet = null;
     }
 
     /**

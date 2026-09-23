@@ -39,11 +39,12 @@ export function mixerEdgeBend(params: { [k: string]: any }, which: 1 | 2): numbe
 
 /**
  * Unrotated mixer layout. Both ports sit on the geometric / rotation-center
- * axis (local x = channelWidth + bendLength/2) and on the *centerline* of
- * the incomplete end-cap pipes (not the outer AABB edge). After rotation
- * that is the same x as the center at 0°/180°, and the same y at 90°/270°.
- * edgeBend1/2 are port-to-outer-edge distances; set each to half the
- * connecting channel width so the mixer end matches that pipe.
+ * axis (local x = channelWidth + bendLength/2) and at the *center of the
+ * incomplete-end tip square* (outer tip inward by channelWidth/2 — the three
+ * edges at the open end of the end-cap pipe). After rotation that is the same
+ * x as the center at 0°/180°, and the same y at 90°/270°. edgeBend1/2 are
+ * port-to-outer-edge distances; default each to half this mixer's
+ * channelWidth so the tip square has side channelWidth.
  */
 export function mixerEndLayout(params: { [k: string]: any }) {
     const channelWidth = Number(params && params.channelWidth) || DEFAULT_MIXER_CHANNEL_WIDTH_UM;

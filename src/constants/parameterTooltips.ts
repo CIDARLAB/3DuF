@@ -5,7 +5,7 @@
 
 const COMMON: Record<string, string> = {
     crossSection:
-        "Channel type for Connection routes: 0 = rectangular cross-section with square (flat) ends in the layout view; 1 = rounded type with semicircular ends (stadium outline), consistent with a circular channel cross-section. JSON keeps this key; MINT writes RoundedChannel=True/False.",
+        "Channel type for Connection routes: 0 = rectangular cross-section with square (flat) ends in the layout view; 1 = rounded type with semicircular ends (stadium outline), consistent with a circular channel cross-section. JSON keeps this key; MINT writes RoundedChannel=1/0.",
     channelWidth: "In-plane width of the microfluidic channel (perpendicular to flow in the top view).",
     height: "Vertical depth (z-span) of the feature on the active layer, used for 3D export and layer offsets.",
     connectionSpacing: "Minimum spacing kept between separate connection routes when autorouting or editing.",

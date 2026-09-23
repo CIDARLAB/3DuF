@@ -30,11 +30,12 @@ Summary of the 2026 maintenance work on this branch:
 ### Layout and geometry
 - Component `position` is the geometric / rotation center; PORT, VIA, NODE, and VALVE draw at that center.
 - Default sizes: port radius **1 mm**; channel / connection / valve-gap width **600 µm**; component keepout **componentSpacing** default **2000 µm** (editable in settings).
-- Mixer serpentine ends expose **edgeBend1** / **edgeBend2** so each incomplete end can match the connecting channel width. Ports sit on the end-pipe centerline (not the outer AABB edge). Default mixer **bendSpacing** is **1400 µm** and **bendLength** is **2000 µm**.
-- Square channel joints fill 90° corners; VALVE3D FLOW gaps are clipped geometrically on import.
+- Mixer serpentine ends expose **edgeBend1** / **edgeBend2**. Ports sit at the center of each incomplete-end tip square. A channel at least as wide as that square covers the tip when centered on the port; a narrower channel hinges through to the outer lip so the tip is not left open. Defaults: **bendSpacing** **1400 µm**, **bendLength** **2000 µm**.
+- Square channel joints fill 90° corners; VALVE3D FLOW gaps are clipped geometrically on import. CONTROL routes are not split by FLOW valve rectangles.
 - PORT draws a single connection handle at the geometric center (like VIA). VALVE library ports use center-relative cardinals (1–4) for MINT / Fluigi connectivity.
 - NODE is a zero-radius junction: its center terminal is used for snapping only and does **not** draw a grey port marker on Y-junctions.
 - MUX / TREE / YTREE leaf spacing is **leafSpace**; along-tree stage spacing is **stageSpace**. MUX control valve pads use **valveWidthX** / **valveWidthY**. Older JSON keys (`leafPitch`, `stageLength`, `spacing`, `width`, `length`, `valveWidth`) still load.
+- YTREE trunk and leaf ports sit at RoundedChannel stadium-cap centers so a rounded connection fully overlaps the opening instead of only kissing the rim.
 - New droplet primitive: **DROPLET MERGER JUNCTION** (3-port T-junction).
 
 ### Neptune / Parchmint interoperability
@@ -43,6 +44,8 @@ Summary of the 2026 maintenance work on this branch:
 - FLOW and CONTROL from Parchmint open on the **same physical level**.
 - Older JSON is filled with missing library defaults; broken valve maps are skipped instead of aborting load.
 - Device size accepts `x-span`/`y-span`, `width`/`length`, or `xspan`/`yspan` aliases when loading.
+- Connection width accepts either `channelWidth` or legacy `width` on import.
+- Import / Neptune load clears placement ghosts, move tool, and selection (same as Escape) so zoom cannot resurrect a stale semi-transparent component.
 - Neptune bridge: announce `threeduf-ready`, prefer Parchmint device spans, clear canvas fully on reload, and ack with `threeduf-device-loaded`.
 
 ### UI
@@ -50,7 +53,8 @@ Summary of the 2026 maintenance work on this branch:
 - Parameter tables sort related keys together (I/O → channel widths → leaf/stage spacing → valve pads → mirrors); keepout keys stay near the bottom.
 - Floating settings panels drag from the heading bar only so parameter text stays selectable.
 - Parameter units (µm, °, …) render beside the value field instead of as a crowded text-field suffix.
-- Connection sidebar label is **Channel type** (square vs rounded); JSON still stores `crossSection`.
+- Connection sidebar label is **Channel type** (square vs rounded); JSON still stores `crossSection` (MINT `RoundedChannel` is 1/0).
+- **Move** / Specify Position dialogs use **µm** for X and Y (canvas units), not mm.
 - **Edit Device** refreshes name and spans when opened and after a design load.
 - **Reset** on an imported component or connection restores that object's uploaded JSON parameters (not factory defaults). Hand-placed objects still reset to library defaults. Position / path geometry is left unchanged.
 
@@ -145,9 +149,11 @@ Default sizes used when placing new features:
 - Channel / connection / valve-gap width: **600 µm**
 - Component keepout (**componentSpacing**): **2000 µm**
 
-Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer end of that incomplete bend). Ports attach on the end-pipe centerline. Set each edgeBend to half the connecting channel width so the mixer end and the pipe share the same width. Defaults: **bendSpacing** 1400 µm, **bendLength** 2000 µm.
+Mixer serpentine ends expose **edgeBend1** / **edgeBend2** (distance from each port to the outer tip of that incomplete end). Ports sit at the tip-square center. A connecting channel at least as wide as the mixer `channelWidth` covers the tip when centered on the port; a narrower channel reaches the outer lip so the tip is not left open. Defaults: **bendSpacing** 1400 µm, **bendLength** 2000 µm.
 
-MUX / TREE / YTREE expose **leafSpace** (adjacent leaf spacing) and **stageSpace** (along-tree stage spacing). MUX valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `leafPitch`, `stageLength`, `spacing`, `width`, `length`, and `valveWidth` are still accepted.
+MUX / TREE / YTREE expose **leafSpace** (adjacent leaf spacing) and **stageSpace** (along-tree stage spacing). MUX valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `leafPitch`, `stageLength`, `spacing`, `width`, `length`, and `valveWidth` are still accepted. YTREE ports sit at RoundedChannel stadium-cap centers.
+
+**Move** / Specify Position uses **µm** for X and Y.
 
 **Reset** in the floating settings panel restores parameters from the last imported JSON for that netlist ID when the design was loaded from file / Neptune. Otherwise it restores library factory defaults. Layout anchors (position, channel path) are not rewritten.
 

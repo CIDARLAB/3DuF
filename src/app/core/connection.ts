@@ -701,7 +701,11 @@ export default class Connection {
         try {
             width = Number(this.getValue("channelWidth") || DEFAULT_CHANNEL_WIDTH_UM);
         } catch {
-            width = DEFAULT_CHANNEL_WIDTH_UM;
+            try {
+                width = Number(this.getValue("width") || DEFAULT_CHANNEL_WIDTH_UM);
+            } catch {
+                width = DEFAULT_CHANNEL_WIDTH_UM;
+            }
         }
         const overlap = Math.max(width / 2, 16);
         const snapEnd = (target: ConnectionTarget | null | undefined, fallback: Point): Point => {
@@ -713,6 +717,14 @@ export default class Connection {
                 return fallback;
             }
             const abs = ComponentPort.calculateAbsolutePosition(port, target.component);
+            const entity = String(
+                (target.component as any).mint ||
+                    (target.component as any)._entity ||
+                    ""
+            ).toUpperCase();
+            if (entity === "MIXER" || entity === "CURVED MIXER" || entity === "MIXER3D") {
+                return ComponentPort.mixerTerminalHinge(abs, target.component, width);
+            }
             return ComponentPort.insetTowardCenter(abs, target.component, overlap);
         };
         if (this._paths.length === 0) {

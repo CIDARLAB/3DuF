@@ -154,30 +154,29 @@ export default class YTree extends Template {
 
     getPorts(params: { [k: string]: any }) {
         const ports = [];
-        const cw = params.flowChannelWidth;
         const spacing = this.__treeLeafSpace(params);
         const ins = params.in;
         const outs = params.out;
-        let rotation = params.rotation;
         let leafs;
         if (ins < outs) {
             leafs = outs;
         } else {
             leafs = ins;
-            rotation += 180;
         }
         const stagelength = this.__treeStageSpace(params);
 
         const levels = Math.ceil(Math.log2(leafs));
         const w = spacing * (leafs / 2 + 1);
 
-        const length = levels * stagelength;
-        const width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
+        // Stadium-cap *centers* (not the outer rim). A RoundedChannel that
+        // ends here fully overlaps the port circle instead of only kissing
+        // the edge. Trunk pivot is the stem-cap center; leaves are the
+        // last-level Y-twig pivots.
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
-        ports.push(new ComponentPort(0, -cw / 2, "1", LogicalLayerType.FLOW));
-
-        for (let i = 0; i < leafs; i++) {
-            ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length + cw / 2, (2 + i).toString(), LogicalLayerType.FLOW));
+        const tips = this.__ytreeLeafTips(0, 0, stagelength, w, 1, levels);
+        for (let i = 0; i < tips.length; i++) {
+            ports.push(new ComponentPort(tips[i][0], tips[i][1], (2 + i).toString(), LogicalLayerType.FLOW));
         }
 
         return ports;
@@ -231,6 +230,25 @@ export default class YTree extends Template {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;
+    }
+
+    __ytreeLeafTips(px: number, py: number, stagelength: number, newspacing: number, level: number, maxlevel: number): number[][] {
+        const hspacing = newspacing / 2;
+        const lex = px - 0.5 * newspacing;
+        const ley = py + stagelength;
+        const rex = px + 0.5 * newspacing;
+        const rey = py + stagelength;
+        if (level === maxlevel) {
+            const half = 0.5 * newspacing;
+            // Right leaf first so port 2 matches the previous T-tree order.
+            return [
+                [px + half, py + stagelength],
+                [px - half, py + stagelength]
+            ];
+        }
+        return this.__ytreeLeafTips(rex, rey, stagelength, hspacing, level + 1, maxlevel).concat(
+            this.__ytreeLeafTips(lex, ley, stagelength, hspacing, level + 1, maxlevel)
+        );
     }
 
     __generateYTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false): void  {

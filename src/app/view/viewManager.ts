@@ -38,6 +38,7 @@ import Layer from "../core/layer";
 import Component from "../core/component";
 import EventBus from "@/events/events";
 import { ComponentAPI } from "@/componentAPI";
+import { exitCanvasSettingsLikeEscape } from "@/utils/exitCanvasUi";
 import RenderLayer from "@/app/view/renderLayer";
 
 import LoadUtils from "@/app/utils/loadUtils";
@@ -827,12 +828,13 @@ export default class ViewManager {
     }
 
     /**
-     * Removes the target view
+     * Removes the placement ghost and clears lastTarget* so zoom cannot
+     * redraw a stale semi-transparent component after leaving placement.
      * @memberof ViewManager
      * @returns {void}
      */
     removeTarget(): void  {
-        this.view.removeTarget();
+        this.view.clearTargetState();
     }
 
     /**
@@ -1016,6 +1018,31 @@ export default class ViewManager {
      * @memberof ViewManager
      */
     loadDeviceFromJSON(json: InterchangeV1_2): void  {
+        // Uploading a design is a canvas refresh: same as Escape (exit
+        // placement/move ghosts, selection, and dialogs) so wheel/zoom
+        // cannot resurrect the last component.
+        try {
+            exitCanvasSettingsLikeEscape();
+        } catch {
+            try {
+                this.deactivateComponentPlacementTool();
+            } catch {
+                this.resetToDefaultTool();
+            }
+            try {
+                if (this.tools && this.tools.MoveTool) {
+                    this.tools.MoveTool.deactivate();
+                }
+            } catch {
+                /* MoveTool may be unset during early init */
+            }
+            this.removeTarget();
+            try {
+                this.view.clearSelectedItems();
+            } catch {
+                /* view may not be ready */
+            }
+        }
         this.importedSourceJson = cloneImportedDeviceJson(json);
         let device;
         this.resetPortsOnlyView();
@@ -1457,6 +1484,9 @@ export default class ViewManager {
         let bestDist = Number.POSITIVE_INFINITY;
         for (const connection of this.currentDevice.connections) {
             if (!connection.layer || connection.layer.group !== group) {
+                continue;
+            }
+            if (connection.layer.type === LogicalLayerType.CONTROL) {
                 continue;
             }
             const segments = connection.getValue("segments");
@@ -2289,6 +2319,12 @@ export default class ViewManager {
     updatesConnectionRender(connection: Connection): void  {
         // First Redraw all the segements without valves or insertions
         connection.regenerateSegments();
+
+        // CONTROL stubs end at the valve / pump pad. Gapping them at the
+        // FLOW valve rectangle splits one LFR-width line into two Features.
+        if (connection.layer && connection.layer.type === LogicalLayerType.CONTROL) {
+            return;
+        }
 
         // Get all the valves for a connection
         const valves = Registry.currentDevice?.getValvesForConnection(connection);

@@ -27,6 +27,16 @@ import {
     ValveType,
     DeviceInterchangeV1_1
 } from "@/app/core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "@/app/library/channelWidths";
+
+function connectionChannelWidth(rawParams: { [key: string]: any } | undefined): number {
+    const raw = rawParams && (rawParams.channelWidth != null ? rawParams.channelWidth : rawParams.width);
+    const width = Number(raw);
+    if (Number.isFinite(width) && width > 0) {
+        return width;
+    }
+    return DEFAULT_CHANNEL_WIDTH_UM;
+}
 
 export default class LoadUtils {
     constructor() {}
@@ -466,7 +476,8 @@ export default class LoadUtils {
                 wayPoints: wayPoints,
                 segments: segments,
                 connectionSpacing: rawParams.connectionSpacing,
-                channelWidth: rawParams.channelWidth,
+                channelWidth: connectionChannelWidth(rawParams),
+                width: connectionChannelWidth(rawParams),
                 height: Object.prototype.hasOwnProperty.call(rawParams, "height") ? rawParams.height : defaultHeight,
                 crossSection: Object.prototype.hasOwnProperty.call(rawParams, "crossSection")
                     ? rawParams.crossSection
@@ -632,7 +643,8 @@ export default class LoadUtils {
                     wayPoints: wayPoints,
                     segments: segments,
                     connectionSpacing: rawParams.connectionSpacing,
-                    channelWidth: rawParams.channelWidth,
+                    channelWidth: connectionChannelWidth(rawParams),
+                    width: connectionChannelWidth(rawParams),
                     height: ComponentAPI.getDefaultsForType(typestring).height,
                     crossSection: inferredCrossSection
                 };

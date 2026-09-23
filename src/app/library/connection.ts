@@ -95,9 +95,8 @@ export default class Connection extends Template {
         const start = params.start;
         const end = params.end;
         const color = params.color;
-        const width = params.width;
         const wayPoints = params.wayPoints;
-        const channelWidth = params.channelWidth;
+        const channelWidth = Number(params.channelWidth || params.width) || DEFAULT_CHANNEL_WIDTH_UM;
         const segments = params.segments;
         const connectionpath = new paper.CompoundPath("");
         // Set winding before adding children. Default even-odd punches a hole
