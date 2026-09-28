@@ -167,7 +167,7 @@ export default {
     },
     methods: {
         repositionArrayDialog() {
-            const anchor = getPlacedComponentScreenBottomRight(this.component) || this.dialogAnchor;
+            const anchor = this.dialogAnchor || getPlacedComponentScreenBottomRight(this.component);
             applyAnchorToDialogContent(anchor, "generate-array-context-dialog");
         },
         onSave() {

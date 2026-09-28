@@ -164,7 +164,7 @@ export default {
     },
     methods: {
         repositionChangeAllDialog() {
-            const anchor = getPlacedComponentScreenBottomRight(this.component) || this.dialogAnchor;
+            const anchor = this.dialogAnchor || getPlacedComponentScreenBottomRight(this.component);
             applyAnchorToDialogContent(anchor, "change-all-context-dialog");
         },
         onSave() {

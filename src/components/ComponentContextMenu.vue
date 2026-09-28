@@ -140,7 +140,7 @@ import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import { ComponentAPI } from "@/componentAPI";
 import GenerateArrayDialog from "@/components/GenerateArrayDialog.vue";
 import paper from "paper";
-import { getPlacedComponentScreenBottomRight } from "@/utils/contextDialogAnchor";
+import { getFixedTopRightNearGridButton, getPlacedComponentScreenBottomRight } from "@/utils/contextDialogAnchor";
 
 export default {
     name: "ComponentContextMenu",
@@ -160,7 +160,7 @@ export default {
             marginTop: 100,
             currentComponent: new Component(new Params({}, new Map(), new Map()), "", ""),
             dialogAnchor: null,
-            /** Fallback when geometry anchor is unavailable (viewport px). */
+            /** Mouse click position (viewport px); primary anchor for the canvas settings popup. */
             menuPointerAnchor: null,
             /** Settings opened from sidebar gear — same floating card as double-click, without canvas action toolbar. */
             isSidebarPlacementDefaultsPanel: false,
@@ -357,27 +357,6 @@ export default {
             if (!r) return null;
             return r.$el || r;
         },
-        _applyMenuPositionFromAnchor(anchor) {
-            const menuEl = this._getContextMenuRootEl();
-            if (!menuEl || typeof menuEl.getBoundingClientRect !== "function") return;
-            const rect = menuEl.getBoundingClientRect();
-            const w = rect.width || Math.min(420, window.innerWidth - 24);
-            const pad = 12;
-            const gap = 8;
-            if (!anchor) {
-                this.marginLeft = pad;
-                this.marginTop = pad;
-                return;
-            }
-            let left = anchor.left + gap;
-            const top = Math.max(pad, anchor.top + gap);
-            if (left + w + pad > window.innerWidth) {
-                left = Math.max(pad, window.innerWidth - w - pad);
-            }
-            left = Math.max(pad, left);
-            this.marginLeft = left;
-            this.marginTop = top;
-        },
         positionMenuForSidebarAnchor(anchor) {
             const menuEl = this._getContextMenuRootEl();
             if (!menuEl || typeof menuEl.getBoundingClientRect !== "function") return;
@@ -516,12 +495,22 @@ export default {
             }
         },
         positionMenuNearComponent() {
-            let anchor = getPlacedComponentScreenBottomRight(this.currentComponent);
-            if (!anchor && this.menuPointerAnchor) {
-                anchor = this.menuPointerAnchor;
+            // Child dialogs (Move / ChangeAll / GenerateArray) still use pointer or component BR.
+            let anchor = this.menuPointerAnchor;
+            if (!anchor) {
+                anchor = getPlacedComponentScreenBottomRight(this.currentComponent);
             }
             this.dialogAnchor = anchor;
-            const run = () => this._applyMenuPositionFromAnchor(anchor);
+            // Main settings card: fixed top-right, left of Grid Settings by one button diameter.
+            const run = () => {
+                const menuEl = this._getContextMenuRootEl();
+                if (!menuEl || typeof menuEl.getBoundingClientRect !== "function") return;
+                const rect = menuEl.getBoundingClientRect();
+                const w = rect.width || Math.min(420, window.innerWidth - 24);
+                const pos = getFixedTopRightNearGridButton(w);
+                this.marginLeft = pos.left;
+                this.marginTop = pos.top;
+            };
             this.$nextTick(() => {
                 run();
                 requestAnimationFrame(() => {

@@ -175,7 +175,7 @@ export default {
     },
     methods: {
         repositionMoveDialog() {
-            const anchor = getPlacedComponentScreenBottomRight(this.component) || this.dialogAnchor;
+            const anchor = this.dialogAnchor || getPlacedComponentScreenBottomRight(this.component);
             applyAnchorToDialogContent(anchor, "move-component-context-dialog");
         },
         syncPositionFieldsFromComponent() {

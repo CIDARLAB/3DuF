@@ -130,7 +130,7 @@ import EventBus from "@/events/events";
 import PropertyBlock from "@/components/base/PropertyBlock.vue";
 import { ComponentAPI } from "@/componentAPI";
 import paper from "paper";
-import { getPlacedComponentScreenBottomRight } from "@/utils/contextDialogAnchor";
+import { getFixedTopRightNearGridButton } from "@/utils/contextDialogAnchor";
 
 function specItemFromDef(def, name, valueOverride) {
     const v = valueOverride !== undefined ? valueOverride : def.defaults[name];
@@ -418,33 +418,16 @@ export default {
             if (!r) return null;
             return r.$el || r;
         },
-        _applyMenuPositionFromAnchor(anchor) {
-            const menuEl = this._getContextMenuRootEl();
-            if (!menuEl || typeof menuEl.getBoundingClientRect !== "function") return;
-            const rect = menuEl.getBoundingClientRect();
-            const w = rect.width || Math.min(420, window.innerWidth - 24);
-            const pad = 12;
-            const gap = 8;
-            if (!anchor) {
-                this.marginLeft = pad;
-                this.marginTop = pad;
-                return;
-            }
-            let left = anchor.left + gap;
-            const top = Math.max(pad, anchor.top + gap);
-            if (left + w + pad > window.innerWidth) {
-                left = Math.max(pad, window.innerWidth - w - pad);
-            }
-            left = Math.max(pad, left);
-            this.marginLeft = left;
-            this.marginTop = top;
-        },
         positionMenuNearConnection() {
-            let anchor = getPlacedComponentScreenBottomRight(this.currentConnection);
-            if (!anchor && this.menuPointerAnchor) {
-                anchor = this.menuPointerAnchor;
-            }
-            const run = () => this._applyMenuPositionFromAnchor(anchor);
+            const run = () => {
+                const menuEl = this._getContextMenuRootEl();
+                if (!menuEl || typeof menuEl.getBoundingClientRect !== "function") return;
+                const rect = menuEl.getBoundingClientRect();
+                const w = rect.width || Math.min(420, window.innerWidth - 24);
+                const pos = getFixedTopRightNearGridButton(w);
+                this.marginLeft = pos.left;
+                this.marginTop = pos.top;
+            };
             this.$nextTick(() => {
                 run();
                 requestAnimationFrame(() => {

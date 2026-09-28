@@ -54,6 +54,38 @@ export function getPlacedComponentScreenBottomRight(component: any): { left: num
 }
 
 /**
+ * Fixed top-right placement for canvas settings popups (component + channel):
+ * sit left of `#grid-button`, with the gap between the popup’s right edge and the
+ * button’s left edge equal to the button’s diameter. Align with the button, then
+ * nudge down so the close control clears the top chrome.
+ */
+export function getFixedTopRightNearGridButton(menuWidth: number, pad = 12): { left: number; top: number } {
+    const fallbackDiameter = 56;
+    const fallbackTop = 10;
+    const fallbackRight = 10;
+    const extraTopNudge = 10;
+    const btn = document.getElementById("grid-button") as HTMLElement | null;
+    let buttonLeft: number;
+    let diameter: number;
+    let top: number;
+    if (btn) {
+        const br = btn.getBoundingClientRect();
+        diameter = Math.max(br.width, br.height) || fallbackDiameter;
+        buttonLeft = br.left;
+        top = Math.max(pad, br.top) + extraTopNudge;
+    } else {
+        diameter = fallbackDiameter;
+        buttonLeft = window.innerWidth - fallbackRight - fallbackDiameter;
+        top = Math.max(pad, fallbackTop) + extraTopNudge;
+    }
+    // Popup right edge is one button-diameter left of the Grid Settings button.
+    const right = buttonLeft - diameter;
+    let left = right - menuWidth;
+    left = Math.max(pad, left);
+    return { left, top };
+}
+
+/**
  * Position a Vuetify dialog content root (content-class) just below-right of anchor.
  * Only clamps horizontally so the dialog stays on-screen; vertical stays below anchor (may extend past viewport bottom).
  */
