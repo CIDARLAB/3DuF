@@ -16,7 +16,7 @@ export default class CapacitanceSensor extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             inletWidth: "Float",
             inletLength: "Float",
             electrodeWidth: "Float",
@@ -24,7 +24,6 @@ export default class CapacitanceSensor extends Template {
             electrodeDistance: "Float",
             sensorWidth: "Float",
             sensorLength: "Float",
-            channelDepth: "Float",
             electrodeDepth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -33,7 +32,7 @@ export default class CapacitanceSensor extends Template {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            height: 250,
+            depth: 250,
             inletWidth: 1 * 1000,
             inletLength: 10 * 1000,
             electrodeWidth: 1.5 * 1000,
@@ -41,7 +40,6 @@ export default class CapacitanceSensor extends Template {
             electrodeDistance: 2 * 1000,
             sensorWidth: 1 * 1000,
             sensorLength: 3 * 1000,
-            channelDepth: 1000,
             electrodeDepth: 1000,
             mirrorByX: 0,
             mirrorByY: 0
@@ -50,7 +48,7 @@ export default class CapacitanceSensor extends Template {
         this.__units = {
             componentSpacing: "μm",
             rotation: "°",
-            height: "μm",
+            depth: "μm",
             inletWidth: "μm",
             inletLength: "μm",
             electrodeWidth: "μm",
@@ -58,14 +56,13 @@ export default class CapacitanceSensor extends Template {
             electrodeDistance: "μm",
             sensorWidth: "μm",
             sensorLength: "μm",
-            channelDepth: "μm",
             electrodeDepth: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             rotation: 0,
-            height: 10,
+            depth: 10,
             inletWidth: 0.5 * 1000,
             inletLength: 5 * 1000,
             electrodeWidth: 1 * 1000,
@@ -73,7 +70,6 @@ export default class CapacitanceSensor extends Template {
             electrodeDistance: 1 * 1000,
             sensorWidth: 0.5 * 1000,
             sensorLength: 1.5 * 1000,
-            channelDepth: 1000,
             electrodeDepth: 1000,
             mirrorByX: 0,
             mirrorByY: 0
@@ -82,7 +78,7 @@ export default class CapacitanceSensor extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             rotation: 360,
-            height: 1200,
+            depth: 1200,
             inletWidth: 2 * 1000,
             inletLength: 15 * 1000,
             electrodeWidth: 3 * 1000,
@@ -90,7 +86,6 @@ export default class CapacitanceSensor extends Template {
             electrodeDistance: 3 * 1000,
             sensorWidth: 1.5 * 1000,
             sensorLength: 4.5 * 1000,
-            channelDepth: 1000,
             electrodeDepth: 1000,
             mirrorByX: 1,
             mirrorByY: 1
@@ -113,7 +108,6 @@ export default class CapacitanceSensor extends Template {
             electrodeDistance: "electrodeDistance",
             sensorWidth: "sensorWidth",
             sensorLength: "sensorLength",
-            channelDepth: "channelDepth",
             electrodeDepth: "electrodeDepth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
@@ -129,7 +123,6 @@ export default class CapacitanceSensor extends Template {
             electrodeDistance: "electrodeDistance",
             sensorWidth: "sensorWidth",
             sensorLength: "sensorLength",
-            channelDepth: "channelDepth",
             electrodeDepth: "electrodeDepth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
@@ -140,7 +133,7 @@ export default class CapacitanceSensor extends Template {
         this.__mint = "DROPLET CAPACITANCE SENSOR";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
+            FLOW: "depth",
             INTEGRATION: "electrodeDepth"
         };
 

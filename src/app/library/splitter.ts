@@ -16,7 +16,7 @@ export default class Splitter extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             inletWidth: "Float",
             inletLength: "Float",
             outletWidth1: "Float",
@@ -30,7 +30,7 @@ export default class Splitter extends Template {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            height: 250,
+            depth: 250,
             inletWidth: 2 * 1000,
             inletLength: 6 * 1000,
             outletWidth1: 1 * 1000,
@@ -44,7 +44,7 @@ export default class Splitter extends Template {
         this.__units = {
             componentSpacing: "μm",
             rotation: "°",
-            height: "μm",
+            depth: "μm",
             inletWidth: "μm",
             inletLength: "μm",
             outletWidth1: "μm",
@@ -56,7 +56,7 @@ export default class Splitter extends Template {
         this.__minimum = {
             componentSpacing: 0,
             rotation: 0,
-            height: 10,
+            depth: 10,
             inletWidth: 1 * 1000,
             inletLength: 3 * 1000,
             outletWidth1: 0.5 * 1000,
@@ -70,7 +70,7 @@ export default class Splitter extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             rotation: 360,
-            height: 1200,
+            depth: 1200,
             inletWidth: 3 * 1000,
             inletLength: 8 * 1000,
             outletWidth1: 3 * 1000,
@@ -91,7 +91,7 @@ export default class Splitter extends Template {
             componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
-            height: "height",
+            depth: "depth",
             inletWidth: "inletWidth",
             inletLength: "inletLength",
             outletWidth1: "outletWidth1",
@@ -105,7 +105,7 @@ export default class Splitter extends Template {
         this.__targetParams = {
             componentSpacing: "componentSpacing",
             rotation: "rotation",
-            height: "height",
+            depth: "depth",
             inletWidth: "inletWidth",
             inletLength: "inletLength",
             outletWidth1: "outletWidth1",
@@ -121,7 +121,7 @@ export default class Splitter extends Template {
         this.__mint = "DROPLET SPLITTER";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

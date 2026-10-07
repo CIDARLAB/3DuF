@@ -2,6 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType  } from "../core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class Incubation extends Template {
     constructor() {
@@ -19,7 +20,7 @@ export default class Incubation extends Template {
             channelWidth: "Float",
             length: "Float",
             width: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -27,10 +28,10 @@ export default class Incubation extends Template {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            channelWidth: 0.8 * 1000,
+            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             width: 1.23 * 1000,
             length: 4.92 * 1000,
-            height: 250,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -41,7 +42,7 @@ export default class Incubation extends Template {
             channelWidth: "μm",
             length: "μm",
             width: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -50,7 +51,7 @@ export default class Incubation extends Template {
             channelWidth: 10,
             width: 30,
             length: 120,
-            height: 10,
+            depth: 10,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -61,7 +62,7 @@ export default class Incubation extends Template {
             channelWidth: 2000,
             width: 6000,
             length: 24 * 1000,
-            height: 1200,
+            depth: 1200,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -98,7 +99,7 @@ export default class Incubation extends Template {
         this.__mint = "INCUBATION";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

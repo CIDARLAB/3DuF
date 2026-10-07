@@ -14,7 +14,7 @@ export default class DAFDPlugin {
         const waterInputWidth = params.waterInputWidth;
         const outputWidth = params.outputWidth;
         const outputLength = params.outputLength;
-        const height = params.height;
+        const height = params.depth;
 
         // Load up all the components and change their positions based on the component dimensions
         const dropgen = Registry.currentDevice?.getComponentByName("DropletGen_1");
@@ -35,7 +35,7 @@ export default class DAFDPlugin {
         dropgen?.updateParameter("waterInputWidth", waterInputWidth);
         dropgen?.updateParameter("outputWidth", outputWidth);
         dropgen?.updateParameter("outputLength", outputLength);
-        dropgen?.updateParameter("height", height);
+        dropgen?.updateParameter("depth", height);
 
         // Update the transitions
         transition_out?.updateParameter("cw2", outputWidth);

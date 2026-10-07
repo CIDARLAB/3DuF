@@ -2,6 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class GradientGenerator extends Template {
     constructor() {
@@ -22,7 +23,7 @@ export default class GradientGenerator extends Template {
             in: "Float",
             out: "Float",
             spacing: "Float",
-            height: "Float",
+            depth: "Float",
             rotation: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -30,14 +31,14 @@ export default class GradientGenerator extends Template {
 
         this.__defaults = {
             componentSpacing: 2000,
-            channelWidth: 0.8 * 1000,
+            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             bendSpacing: 1.23 * 1000,
             numberOfBends: 1,
             bendLength: 2.46 * 1000,
             in: 1,
             out: 3,
             spacing: 10000,
-            height: 250,
+            depth: 250,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -52,7 +53,7 @@ export default class GradientGenerator extends Template {
             in: "",
             out: "",
             spacing: "μm",
-            height: "μm",
+            depth: "μm",
             rotation: "°"
         };
 
@@ -65,7 +66,7 @@ export default class GradientGenerator extends Template {
             in: 1,
             out: 3,
             spacing: 10,
-            height: 10,
+            depth: 10,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -80,7 +81,7 @@ export default class GradientGenerator extends Template {
             in: 30,
             out: 90,
             spacing: 90000,
-            height: 1200,
+            depth: 1200,
             rotation: 360,
             mirrorByX: 1,
             mirrorByY: 1
@@ -126,7 +127,7 @@ export default class GradientGenerator extends Template {
         this.__mint = "GRADIENT GENERATOR";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

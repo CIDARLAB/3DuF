@@ -23,35 +23,35 @@ export default class AlignmentMarks extends Template {
             componentSpacing: "Float",
             width: "Float",
             length: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 2000,
             width: 4000,
             length: 4000,
-            height: 250
+            depth: 250
         };
 
         this.__units = {
             componentSpacing: "μm",
             width: "μm",
             length: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             width: 10,
             length: 10,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
             componentSpacing: 10000,
             width: 200000,
             length: 200000,
-            height: 1200
+            depth: 1200
         };
 
         this.__placementTool = "multilayerPositionTool";
@@ -76,8 +76,8 @@ export default class AlignmentMarks extends Template {
         this.__mint = "ALIGNMENT MARKS";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height"
+            FLOW: "depth",
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

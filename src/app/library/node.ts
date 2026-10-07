@@ -24,32 +24,32 @@ export default class Node extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             radius: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 2000,
             // Tiny vs channelWidth (~100–600): junction marker only.
             radius: 10,
-            height: 100
+            depth: 100
         };
 
         this.__units = {
             componentSpacing: "μm",
             radius: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             radius: 1,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
             componentSpacing: 10000,
             radius: 2000,
-            height: 1000
+            depth: 1000
         };
 
         this.__placementTool = "componentPositionTool";
@@ -74,7 +74,7 @@ export default class Node extends Template {
         this.__mint = "NODE";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

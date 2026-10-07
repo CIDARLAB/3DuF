@@ -257,27 +257,27 @@ export default class Template {
 
         this.__heritable = {
             componentSpacing: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 2000, // keepout halo written as JSON componentSpacing
-            height: 250
+            depth: 250
         };
 
         this.__units = {
             componentSpacing: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
             componentSpacing: 10000,
-            height: 1200
+            depth: 1200
         };
 
         this.__featureParams = {
@@ -299,7 +299,7 @@ export default class Template {
         this.__mint = "TEMPLATE";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

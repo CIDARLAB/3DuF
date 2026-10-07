@@ -1307,7 +1307,7 @@ export default class ViewManager {
             // setButtonColor(this.__button2D!!, inactiveBackground, inactiveText);
             this.renderer.loadJSON((Registry.currentDevice as any).toJSON());
             const cameraCenter = this.view.getViewCenterInMillimeters();
-            const height = (Registry.currentDevice as any).params.getValue("height") / 1000;
+            const height = (Registry.currentDevice as any).params.getValue("depth") / 1000;
             const pixels = this.view.getDeviceHeightInPixels();
             this.renderer.setupCamera(cameraCenter[0], cameraCenter[1], height, pixels, paper.view.zoom);
             this.renderer.showMockup();

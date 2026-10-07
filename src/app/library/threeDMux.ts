@@ -14,86 +14,81 @@ export default class ThreeDMux extends Template {
         };
 
         this.__heritable = {
-            componentSpacing: "Float",
             in: "Integer",
             out: "Integer",
-            rotation: "Float",
-            valveRadius: "Float",
-            height: "Float",
-            gap: "Float",
-            width: "Float",
-            length: "Float",
-            valveSpacing: "Float",
-            channelWidth: "Float",
+            flowChannelWidth: "Float",
             controlChannelWidth: "Float",
+            leafSpace: "Float",
+            outletLength: "Float",
+            valveRadius: "Float",
+            valveGap: "Float",
+            depth: "Float",
+            rotation: "Float",
             mirrorByX: "Float",
-            mirrorByY: "Float"
+            mirrorByY: "Float",
+            componentSpacing: "Float"
         };
 
         this.__defaults = {
-            componentSpacing: 2000,
             in: 1,
             out: 8,
-            rotation: 0,
+            flowChannelWidth: 500,
+            controlChannelWidth: 600,
+            leafSpace: 4000,
+            outletLength: 24000,
             valveRadius: 1.2 * 1000,
-            height: 0.8 * 1000,
-            gap: 0.6 * 1000,
-            width: 100,
-            length: 100,
-            valveSpacing: 0.6 * 1000,
-            channelWidth: 500,
-            controlChannelWidth: 0.6 * 1000,
+            valveGap: 0.6 * 1000,
+            depth: 0.8 * 1000,
+            rotation: 0,
             mirrorByX: 0,
-            mirrorByY: 0
+            mirrorByY: 0,
+            componentSpacing: 2000
         };
 
         this.__units = {
-            componentSpacing: "μm",
             in: "",
             out: "",
-            rotation: "°",
+            flowChannelWidth: "μm",
+            controlChannelWidth: "μm",
+            leafSpace: "μm",
+            outletLength: "μm",
             valveRadius: "μm",
-            height: "μm",
-            gap: "μm",
-            width: "μm",
-            length: "μm",
-            valveSpacing: "μm",
-            channelWidth: "μm",
-            controlChannelWidth: "μm"
+            valveGap: "μm",
+            depth: "μm",
+            rotation: "°",
+            componentSpacing: "μm"
         };
 
         this.__minimum = {
-            componentSpacing: 0,
             in: 1,
             out: 2,
-            rotation: 0,
-            valveRadius: 0.1 * 100,
-            height: 0.1 * 100,
-            gap: 0.5 * 10,
-            width: 100,
-            length: 100,
-            valveSpacing: 0.1 * 1000,
-            channelWidth: 25,
+            flowChannelWidth: 25,
             controlChannelWidth: 10,
+            leafSpace: 100,
+            outletLength: 1000,
+            valveRadius: 0.1 * 100,
+            valveGap: 0.5 * 10,
+            depth: 0.1 * 100,
+            rotation: 0,
             mirrorByX: 0,
-            mirrorByY: 0
+            mirrorByY: 0,
+            componentSpacing: 0
         };
 
         this.__maximum = {
-            componentSpacing: 10000,
             in: 1,
             out: 128,
-            rotation: 360,
-            valveRadius: 0.2 * 10000,
-            height: 1.2 * 1000,
-            gap: 0.1 * 10000,
-            width: 100,
-            length: 100,
-            valveSpacing: 0.1 * 10000,
-            channelWidth: 25e3,
+            flowChannelWidth: 25e3,
             controlChannelWidth: 1000,
+            leafSpace: 20000,
+            outletLength: 200000,
+            valveRadius: 0.2 * 10000,
+            valveGap: 0.1 * 10000,
+            depth: 1.2 * 1000,
+            rotation: 360,
             mirrorByX: 1,
-            mirrorByY: 1
+            mirrorByY: 1,
+            componentSpacing: 10000
         };
 
         this.__featureParams = {
@@ -105,11 +100,10 @@ export default class ThreeDMux extends Template {
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
-            gap: "gap",
-            width: "width",
-            length: "length",
-            valveSpacing: "valveSpacing",
-            channelWidth: "channelWidth",
+            valveGap: "valveGap",
+            leafSpace: "leafSpace",
+            outletLength: "outletLength",
+            flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
@@ -124,11 +118,10 @@ export default class ThreeDMux extends Template {
             radius1: "valveRadius",
             radius2: "valveRadius",
             valveRadius: "valveRadius",
-            gap: "gap",
-            width: "width",
-            length: "length",
-            valveSpacing: "valveSpacing",
-            channelWidth: "channelWidth",
+            valveGap: "valveGap",
+            leafSpace: "leafSpace",
+            outletLength: "outletLength",
+            flowChannelWidth: "flowChannelWidth",
             controlChannelWidth: "controlChannelWidth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
@@ -145,9 +138,9 @@ export default class ThreeDMux extends Template {
         this.__mint = "MUX3D";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height",
-            INVERSE: "height"
+            FLOW: "depth",
+            CONTROL: "depth",
+            INVERSE: "depth"
         };
 
         this.__substrateOffset = {
@@ -155,6 +148,77 @@ export default class ThreeDMux extends Template {
             CONTROL: "+1",
             INVERSE: "0"
         };
+    }
+
+
+    __mux3dFlowChannelWidth(params: { [k: string]: any }): number {
+        const named = Number(params.flowChannelWidth);
+        if (Number.isFinite(named) && named > 0) {
+            return named;
+        }
+        const legacy = Number(params.channelWidth);
+        if (Number.isFinite(legacy) && legacy > 0) {
+            return legacy;
+        }
+        return 500;
+    }
+
+    __mux3dValveGap(params: { [k: string]: any }): number {
+        const named = Number(params.valveGap);
+        if (Number.isFinite(named) && named > 0) {
+            return named;
+        }
+        const legacy = Number(params.gap);
+        if (Number.isFinite(legacy) && legacy > 0) {
+            return legacy;
+        }
+        return 600;
+    }
+
+    __mux3dLeafSpace(params: { [k: string]: any }): number {
+        const named = Number(params.leafSpace);
+        if (Number.isFinite(named) && named > 0) {
+            return named;
+        }
+        return 4000;
+    }
+
+    __mux3dOutletLength(params: { [k: string]: any }, N: number): number {
+        const named = Number(params.outletLength);
+        if (Number.isFinite(named) && named > 0) {
+            return named;
+        }
+        // Legacy: stageSpace was a per-leaf vertical pitch (vert = N * stageSpace).
+        const legacy = Number(params.stageSpace);
+        if (Number.isFinite(legacy) && legacy > 0) {
+            return N * legacy;
+        }
+        return 24000;
+    }
+
+    __mux3dExtents(params: { [k: string]: any }, N: number): { bottomlinelength: number; vertlinelength: number } {
+        return {
+            bottomlinelength: N * this.__mux3dLeafSpace(params),
+            vertlinelength: this.__mux3dOutletLength(params, N)
+        };
+    }
+
+    /**
+     * Per mux-bit stage along each outlet channel: left/right valve centers at
+     * 0.3 / 0.7 of the stage (same ratio as MUX __muxValveCenterOffsets).
+     */
+    __mux3dValveRowYs(py: number, outletLength: number, valvenum: number): { left: number; right: number }[] {
+        const stages = Math.max(valvenum, 1);
+        const stageLen = outletLength / stages;
+        const rows: { left: number; right: number }[] = [];
+        for (let j = 0; j < stages; j++) {
+            const base = py + j * stageLen;
+            rows.push({
+                left: base + stageLen * 0.3,
+                right: base + stageLen * 0.7
+            });
+        }
+        return rows;
     }
 
     render2D(params: { [k: string]: any }, key: string) {
@@ -184,7 +248,6 @@ export default class ThreeDMux extends Template {
         const ins = params.in;
         const outs = params.out;
         let N;
-        const channelWidth = params.channelWidth;
         let rotation = params.rotation;
 
         if (ins < outs) {
@@ -194,8 +257,7 @@ export default class ThreeDMux extends Template {
             rotation += 180;
         }
 
-        const horizontal_length = N * 4000;
-        const vertical_length = N * 3000;
+        const { bottomlinelength: horizontal_length, vertlinelength: vertical_length } = this.__mux3dExtents(params, N);
         const ports = [];
 
         for (let i = 0; i < N; i++) {
@@ -204,33 +266,23 @@ export default class ThreeDMux extends Template {
         }
 
         ports.push(new ComponentPort(horizontal_length / 2, vertical_length + N * 1000, (N + 1).toString(), LogicalLayerType.FLOW));
-        const bottomlinelength = N * 4000; // modify, so it depends on the input N
-        const vertlinelength = N * 3000; // same as above
+        const bottomlinelength = horizontal_length;
+        const vertlinelength = vertical_length;
 
         const leftInput = -N * 1000;
         const rightInput = bottomlinelength + N * 1000;
         let indexN = N;
         const valvenum = Math.log(N) / Math.log(2);
-        const vertholder = vertlinelength / (2 * valvenum);
+        const valveRows = this.__mux3dValveRowYs(0, vertlinelength, valvenum);
 
         let count = N + 2;
 
-        for (let i = 0; i < 2 * valvenum; i++) {
-            // left side
-            if (i % 2 === 0) {
-                indexN /= 2;
-                const cur_ind = N - indexN - 1;
-                // let leftsideLeft = new paper.Point(leftInput, vertholder + (i) * vertlinelength/(2*valvenum + 2) - channelWidth/2);
-                ports.push(new ComponentPort(leftInput, vertholder + (i * vertlinelength) / (2 * valvenum + 2), count.toString(), LogicalLayerType.CONTROL));
-                console.log(count);
-                count++;
-            }
-            // right side
-            else {
-                ports.push(new ComponentPort(rightInput, vertholder + (i * vertlinelength) / (2 * valvenum + 2), count.toString(), LogicalLayerType.CONTROL));
-                console.log(count);
-                count++;
-            }
+        for (let j = 0; j < valvenum; j++) {
+            indexN /= 2;
+            ports.push(new ComponentPort(leftInput, valveRows[j].left, count.toString(), LogicalLayerType.CONTROL));
+            count++;
+            ports.push(new ComponentPort(rightInput, valveRows[j].right, count.toString(), LogicalLayerType.CONTROL));
+            count++;
         }
 
         return ports;
@@ -238,11 +290,11 @@ export default class ThreeDMux extends Template {
 
     __drawFlow(params: { [k: string]: any }) {
         const position = params.position;
-        const gap = params.gap;
+        const gap = this.__mux3dValveGap(params);
         const radius = params.valveRadius;
         const color = params.color;
         let rotation = params.rotation;
-        const channelWidth = params.channelWidth;
+        const channelWidth = this.__mux3dFlowChannelWidth(params);
         const threedmux_flow = new paper.CompoundPath("");
 
         const px = position[0];
@@ -256,8 +308,7 @@ export default class ThreeDMux extends Template {
             N = ins;
             rotation += 180;
         }
-        const bottomlinelength = N * 4000; // modify, so it depends on the input N
-        const vertlinelength = N * 3000; // same as above
+        const { bottomlinelength, vertlinelength } = this.__mux3dExtents(params, N);
 
         const bottomlineleft = new paper.Point(px - channelWidth / 2, py - channelWidth / 2 + vertlinelength);
         const bottomlineright = new paper.Point(px + bottomlinelength + channelWidth / 2, py + channelWidth / 2 + vertlinelength);
@@ -266,9 +317,8 @@ export default class ThreeDMux extends Template {
         threedmux_flow.addChild(channel);
 
         const valvenum = Math.log(N) / Math.log(2);
-        const valveselect = vertlinelength / (2 * valvenum);
+        const valveRows = this.__mux3dValveRowYs(py, vertlinelength, valvenum);
         const branchArray = new Array(N);
-        const centerArray = new Array(N);
 
         // create base flow
         for (let i = 0; i < N; i++) {
@@ -287,12 +337,14 @@ export default class ThreeDMux extends Template {
 
         threedmux_flow.addChild(portRec);
 
-        // add valves and remove parts of channels
+        // add valves and remove parts of channels (0.3 / 0.7 within each stage)
         let cur_N = N;
         const xpos = px;
-        let ypos = py + valveselect;
 
         for (let j = 0; j < valvenum; j++) {
+            const leftY = valveRows[j].left;
+            const rightY = valveRows[j].right;
+
             // left side
             let count1 = 0;
             const increment1 = cur_N / 2;
@@ -301,38 +353,35 @@ export default class ThreeDMux extends Template {
                     const current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
 
                     const cutrec = new paper.Path.Rectangle({
-                        from: new paper.Point(current_xpos - channelWidth / 2, ypos - gap / 2),
-                        to: new paper.Point(current_xpos + channelWidth / 2, ypos + gap / 2)
+                        from: new paper.Point(current_xpos - channelWidth / 2, leftY - gap / 2),
+                        to: new paper.Point(current_xpos + channelWidth / 2, leftY + gap / 2)
                     });
 
-                    this.__createthreedmuxValve(threedmux_flow, current_xpos, ypos, gap, radius, rotation, channelWidth);
-                    branchArray[count1 + w] = branchArray[count1 + w].subtract(cutrec); // remove a portion from the selected channel
+                    this.__createthreedmuxValve(threedmux_flow, current_xpos, leftY, gap, radius, rotation, channelWidth);
+                    branchArray[count1 + w] = branchArray[count1 + w].subtract(cutrec);
                 }
 
                 count1 += 2 * increment1;
             }
 
             // right side
-            const ypos_adjust = vertlinelength / (2 * valvenum + 2);
             let count2 = 0;
             const increment2 = cur_N / 2;
-            ypos += ypos_adjust;
 
             while (count2 < N) {
                 for (let w = 0; w < cur_N / 2; w++) {
                     const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
 
                     const cutrec = new paper.Path.Rectangle({
-                        from: new paper.Point(current_xpos - channelWidth / 2, ypos - gap / 2),
-                        to: new paper.Point(current_xpos + channelWidth / 2, ypos + gap / 2)
+                        from: new paper.Point(current_xpos - channelWidth / 2, rightY - gap / 2),
+                        to: new paper.Point(current_xpos + channelWidth / 2, rightY + gap / 2)
                     });
 
                     branchArray[N - 1 - w - count2] = branchArray[N - 1 - w - count2].subtract(cutrec);
-                    this.__createthreedmuxValve(threedmux_flow, current_xpos, ypos, gap, radius, rotation, channelWidth);
+                    this.__createthreedmuxValve(threedmux_flow, current_xpos, rightY, gap, radius, rotation, channelWidth);
                 }
                 count2 += increment2 + cur_N / 2;
             }
-            ypos += ypos_adjust;
             cur_N = cur_N / 2;
         }
 
@@ -403,73 +452,56 @@ export default class ThreeDMux extends Template {
             rotation += 180;
         }
 
-        const bottomlinelength = N * 4000; // modify, so it depends on the input N
-        const vertlinelength = N * 3000; // same as above
+        const { bottomlinelength, vertlinelength } = this.__mux3dExtents(params, N);
 
         const leftInput = px - N * 1000;
         const rightInput = px + bottomlinelength + N * 1000;
         let indexN = N;
         const valvenum = Math.log(N) / Math.log(2);
-        const vertholder = vertlinelength / (2 * valvenum);
-        const valveselect = vertlinelength / (2 * valvenum);
+        const valveRows = this.__mux3dValveRowYs(py, vertlinelength, valvenum);
 
-        for (let i = 0; i < 2 * valvenum; i++) {
-            // left side
-            if (i % 2 === 0) {
-                indexN /= 2;
-                const cur_ind = N - indexN - 1;
-                const leftsideLeft = new paper.Point(leftInput, py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) - channelWidth / 2);
-                const leftsideRight = new paper.Point(px + cur_ind * (bottomlinelength / (N - 1)), py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) + channelWidth / 2);
-                const leftcontrol = new paper.Path.Rectangle(leftsideLeft, leftsideRight);
+        for (let j = 0; j < valvenum; j++) {
+            indexN /= 2;
+            const cur_ind_left = N - indexN - 1;
+            const leftY = valveRows[j].left;
+            const rightY = valveRows[j].right;
 
-                threedmux_control.addChild(leftcontrol);
-            }
-            // right side
-            else {
-                const cur_ind = indexN;
-                const rightsideLeft = new paper.Point(px + cur_ind * (bottomlinelength / (N - 1)), py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) - channelWidth / 2);
-                const rightsideRight = new paper.Point(rightInput, py + vertholder + (i * vertlinelength) / (2 * valvenum + 2) + channelWidth / 2);
-                const rightcontrol = new paper.Path.Rectangle(rightsideLeft, rightsideRight);
+            const leftsideLeft = new paper.Point(leftInput, leftY - channelWidth / 2);
+            const leftsideRight = new paper.Point(px + cur_ind_left * (bottomlinelength / (N - 1)), leftY + channelWidth / 2);
+            threedmux_control.addChild(new paper.Path.Rectangle(leftsideLeft, leftsideRight));
 
-                threedmux_control.addChild(rightcontrol);
-            }
+            const cur_ind_right = indexN;
+            const rightsideLeft = new paper.Point(px + cur_ind_right * (bottomlinelength / (N - 1)), rightY - channelWidth / 2);
+            const rightsideRight = new paper.Point(rightInput, rightY + channelWidth / 2);
+            threedmux_control.addChild(new paper.Path.Rectangle(rightsideLeft, rightsideRight));
         }
 
         let cur_N = N;
         const xpos = px;
-        let ypos = py + valveselect;
 
         for (let j = 0; j < valvenum; j++) {
-            // left side
+            const leftY = valveRows[j].left;
+            const rightY = valveRows[j].right;
+
             let count1 = 0;
             const increment1 = cur_N / 2;
             while (count1 < N) {
                 for (let w = 0; w < cur_N / 2; w++) {
                     const current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
-                    const center = new paper.Point(current_xpos, ypos);
-                    const circle = new paper.Path.Circle(center, radius);
-                    threedmux_control.addChild(circle);
+                    threedmux_control.addChild(new paper.Path.Circle(new paper.Point(current_xpos, leftY), radius));
                 }
-
                 count1 += 2 * increment1;
             }
 
-            // right side
-            const ypos_adjust = vertlinelength / (2 * valvenum + 2);
             let count2 = 0;
             const increment2 = cur_N / 2;
-            ypos += ypos_adjust;
-
             while (count2 < N) {
                 for (let w = 0; w < cur_N / 2; w++) {
                     const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
-                    const center = new paper.Point(current_xpos, ypos);
-                    const circle = new paper.Path.Circle(center, radius);
-                    threedmux_control.addChild(circle);
+                    threedmux_control.addChild(new paper.Path.Circle(new paper.Point(current_xpos, rightY), radius));
                 }
                 count2 += increment2 + cur_N / 2;
             }
-            ypos += ypos_adjust;
             cur_N = cur_N / 2;
         }
 
@@ -500,51 +532,37 @@ export default class ThreeDMux extends Template {
             rotation += 180;
         }
 
-        const bottomlinelength = N * 4000; // modify, so it depends on the input N
-        const vertlinelength = N * 3000; // same as above
+        const { bottomlinelength, vertlinelength } = this.__mux3dExtents(params, N);
 
-        const leftInput = px - N * 1000;
-        const rightInput = px + bottomlinelength + N * 1000;
-        let indexN = N;
         const valvenum = Math.log(N) / Math.log(2);
-        const vertholder = vertlinelength / (2 * valvenum);
-        const valveselect = vertlinelength / (2 * valvenum);
+        const valveRows = this.__mux3dValveRowYs(py, vertlinelength, valvenum);
 
         let cur_N = N;
         const xpos = px;
-        let ypos = py + valveselect;
 
         for (let j = 0; j < valvenum; j++) {
-            // left side
+            const leftY = valveRows[j].left;
+            const rightY = valveRows[j].right;
+
             let count1 = 0;
             const increment1 = cur_N / 2;
             while (count1 < N) {
                 for (let w = 0; w < cur_N / 2; w++) {
                     const current_xpos = xpos + ((count1 + w) * bottomlinelength) / (N - 1);
-                    const center = new paper.Point(current_xpos, ypos);
-                    const circle = new paper.Path.Circle(center, radius);
-                    threedmux_control.addChild(circle);
+                    threedmux_control.addChild(new paper.Path.Circle(new paper.Point(current_xpos, leftY), radius));
                 }
-
                 count1 += 2 * increment1;
             }
 
-            // right side
-            const ypos_adjust = vertlinelength / (2 * valvenum + 2);
             let count2 = 0;
             const increment2 = cur_N / 2;
-            ypos += ypos_adjust;
-
             while (count2 < N) {
                 for (let w = 0; w < cur_N / 2; w++) {
                     const current_xpos = xpos + bottomlinelength - ((count2 + w) * bottomlinelength) / (N - 1);
-                    const center = new paper.Point(current_xpos, ypos);
-                    const circle = new paper.Path.Circle(center, radius);
-                    threedmux_control.addChild(circle);
+                    threedmux_control.addChild(new paper.Path.Circle(new paper.Point(current_xpos, rightY), radius));
                 }
                 count2 += increment2 + cur_N / 2;
             }
-            ypos += ypos_adjust;
             cur_N = cur_N / 2;
         }
 

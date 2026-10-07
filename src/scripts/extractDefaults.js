@@ -13,6 +13,39 @@ const libraryDir = path.resolve(__dirname, "../app/library");
 const outputFile = path.resolve(__dirname, "component_defaults.json");
 
 /**
+ * Load named numeric constants from channelWidths.ts so DEFAULT_* refs in
+ * __defaults evaluate the same as at runtime.
+ */
+function loadChannelWidthConstants() {
+    const src = fs.readFileSync(path.join(libraryDir, "channelWidths.ts"), "utf8");
+    const consts = {};
+    const re = /export const (\w+)\s*=\s*([^;]+);/g;
+    // Two passes so aliases like DEFAULT_MIXER_CHANNEL_WIDTH_UM = DEFAULT_CHANNEL_WIDTH_UM resolve.
+    for (let pass = 0; pass < 2; pass++) {
+        re.lastIndex = 0;
+        let m;
+        while ((m = re.exec(src)) !== null) {
+            const name = m[1];
+            let expr = m[2].trim();
+            for (const [k, v] of Object.entries(consts)) {
+                expr = expr.replace(new RegExp(`\\b${k}\\b`, "g"), String(v));
+            }
+            if (/^[\d\s+\-*/.()]+$/.test(expr)) {
+                try {
+                    const val = Function('"use strict"; return (' + expr + ")")();
+                    if (typeof val === "number" && isFinite(val)) {
+                        consts[name] = val;
+                    }
+                } catch (_) {}
+            }
+        }
+    }
+    return consts;
+}
+
+const CHANNEL_WIDTH_CONSTS = loadChannelWidthConstants();
+
+/**
  * Extracts the body of `this.__<fieldName> = { ... }` from source text.
  */
 function extractBlock(source, fieldName) {
@@ -47,7 +80,10 @@ function parseNumericPairs(block) {
     let m;
     while ((m = lineRe.exec(block)) !== null) {
         const key = m[1];
-        const rawVal = m[2].trim();
+        let rawVal = m[2].trim();
+        for (const [k, v] of Object.entries(CHANNEL_WIDTH_CONSTS)) {
+            rawVal = rawVal.replace(new RegExp(`\\b${k}\\b`, "g"), String(v));
+        }
         try {
             // Only allow numeric literals, whitespace, and arithmetic operators
             if (/^[\d\s+\-*/.()]+$/.test(rawVal)) {
@@ -94,6 +130,7 @@ for (const file of files) {
 fs.writeFileSync(outputFile, JSON.stringify(output, null, 2), "utf8");
 
 console.log(`Wrote ${Object.keys(output).length} components to:\n  ${outputFile}`);
+console.log("Resolved channel width consts:", CHANNEL_WIDTH_CONSTS);
 if (skipped.length) {
     console.log(`Skipped (no mint or no defaults): ${skipped.join(", ")}`);
 }

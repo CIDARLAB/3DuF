@@ -4,6 +4,7 @@ import ComponentPort from "../core/componentPort";
 import { Path, Point } from "paper/dist/paper-core";
 // import { LogicalLayerType, ToolPaperObject } from "../core/init";
 import { LogicalLayerType } from "../core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class ToroidalMixer extends Template {
     constructor() {
@@ -24,7 +25,7 @@ export default class ToroidalMixer extends Template {
             channelWidth: "Float",
             innerDiameter: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -32,13 +33,13 @@ export default class ToroidalMixer extends Template {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            channelWidth: 0.8 * 1000,
+            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             neckAngle: 120,
             neckLength: 1000,
             neckWidth: 800,
             numberOfMixers: 1,
             innerDiameter: 2.46 * 1000,
-            height: 250,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -52,7 +53,7 @@ export default class ToroidalMixer extends Template {
             numberOfMixers: "",
             channelWidth: "μm",
             innerDiameter: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -64,7 +65,7 @@ export default class ToroidalMixer extends Template {
             neckWidth: 10,
             numberOfMixers: 1,
             innerDiameter: 10,
-            height: 10,
+            depth: 10,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -78,7 +79,7 @@ export default class ToroidalMixer extends Template {
             neckWidth: 2000,
             numberOfMixers: 20,
             innerDiameter: 12 * 1000,
-            height: 1200,
+            depth: 1200,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -121,7 +122,7 @@ export default class ToroidalMixer extends Template {
         this.__mint = "TOROIDAL MIXER";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

@@ -402,7 +402,7 @@ export default class LoadUtils {
                             segments: segments,
                             connectionSpacing: rawParams.connectionSpacing,
                             channelWidth: rawParams.channelWidth,
-                            height: ComponentAPI.getDefaultsForType(typestring).height
+                            depth: (ComponentAPI.getDefaultsForType(typestring).depth ?? ComponentAPI.getDefaultsForType(typestring).height)
                         };
                         feat = Device.makeFeature(typestring, newParams);
                         feat.referenceID = json.connections[i].id;
@@ -533,8 +533,15 @@ export default class LoadUtils {
                     ];
                 }
             }
-            if (!Object.prototype.hasOwnProperty.call(params, "height")) {
-                params.height = ComponentAPI.getDefaultsForType("Connection").height;
+            if (Object.prototype.hasOwnProperty.call(params, "height") && !Object.prototype.hasOwnProperty.call(params, "depth")) {
+                params.depth = params.height;
+                delete params.height;
+            } else if (Object.prototype.hasOwnProperty.call(params, "height")) {
+                delete params.height;
+            }
+            if (!Object.prototype.hasOwnProperty.call(params, "depth")) {
+                const connDefaults = ComponentAPI.getDefaultsForType("Connection");
+                params.depth = connDefaults.depth ?? connDefaults.height;
             }
         } else {
             if (json.paths[0]) {
@@ -552,7 +559,7 @@ export default class LoadUtils {
                     segments: segments,
                     connectionSpacing: rawParams.connectionSpacing,
                     channelWidth: rawParams.channelWidth,
-                    height: ComponentAPI.getDefaultsForType(typestring).height
+                    depth: (ComponentAPI.getDefaultsForType(typestring).depth ?? ComponentAPI.getDefaultsForType(typestring).height)
                 };
             } else {
                 console.log("Connection missing path description");

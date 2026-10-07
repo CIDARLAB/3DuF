@@ -17,7 +17,7 @@ export default class BlackBox extends Template {
             componentSpacing: "Float",
             width: "Float",
             length: "Float",
-            height: "Float",
+            depth: "Float",
             cornerRadius: "Float",
             rotation: "Float",
             mirrorByX: "Float",
@@ -28,7 +28,7 @@ export default class BlackBox extends Template {
             componentSpacing: 2000,
             width: 5000,
             length: 5000,
-            height: 250,
+            depth: 250,
             cornerRadius: 200,
             rotation: 0,
             mirrorByX: 0,
@@ -39,7 +39,7 @@ export default class BlackBox extends Template {
             componentSpacing: "μm",
             width: "μm",
             length: "μm",
-            height: "μm",
+            depth: "μm",
             cornerRadius: "μm",
             rotation: "°"
         };
@@ -48,7 +48,7 @@ export default class BlackBox extends Template {
             componentSpacing: 0,
             width: 5,
             length: 5,
-            height: 1,
+            depth: 1,
             cornerRadius: 1,
             rotation: 0,
             mirrorByX: 0,
@@ -59,7 +59,7 @@ export default class BlackBox extends Template {
             componentSpacing: 10000,
             width: 50000,
             length: 50000,
-            height: 50000,
+            depth: 50000,
             cornerRadius: 1000,
             rotation: 360,
             mirrorByX: 1,
@@ -71,7 +71,7 @@ export default class BlackBox extends Template {
             position: "position",
             width: "width",
             length: "length",
-            height: "height",
+            depth: "depth",
             cornerRadius: "cornerRadius",
             rotation: "rotation",
             mirrorByX: "mirrorByX",
@@ -83,7 +83,7 @@ export default class BlackBox extends Template {
             position: "position",
             width: "width",
             length: "length",
-            height: "height",
+            depth: "depth",
             cornerRadius: "cornerRadius",
             rotation: "rotation",
             mirrorByX: "mirrorByX",
@@ -101,7 +101,7 @@ export default class BlackBox extends Template {
         this.__mint = "BLACK BOX";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

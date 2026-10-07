@@ -120,7 +120,9 @@ curl --get 'http://localhost:6060/dimensions' \
 
 MINT identifiers are matched case-insensitively and tolerate underscores / extra whitespace. Common aliases (`IN MUX`, `OUTPUT MUX`, `HORIZONTAL MUX`, `LONG CELL TRAPPER`, ...) are folded onto their canonical name. A bare `CELL TRAP` is disambiguated to `SQUARE CELL TRAP` or `LONG CELL TRAP` based on the supplied `params`.
 
-See [`src/server/README.md`](src/server/README.md) for the full component-library notes (renamed parameters, mirror parameters, `component_defaults.json` regeneration, backward compatibility, etc.).
+**Breaking parameter rename:** feature Z-thickness is now `depth` (was `height`). `/defaults` and library JSON use `depth`. Connection loaders still accept legacy `height` and rewrite it to `depth`. Shared channel / mixer defaults live in `src/app/library/channelWidths.ts` (`DEFAULT_CHANNEL_WIDTH_UM = 600`).
+
+See [`src/server/README.md`](src/server/README.md) for the full component-library notes (renamed parameters, mixer `edgeBend*`, MUX3D layout params, `component_defaults.json` regeneration, etc.).
 
 ## Attributions
 

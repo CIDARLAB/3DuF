@@ -2,6 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class Tree extends Template {
     constructor() {
@@ -20,8 +21,7 @@ export default class Tree extends Template {
             leafSpace: "Float",
             in: "Integer",
             out: "Integer",
-            width: "Float",
-            height: "Float",
+            depth: "Float",
             stageSpace: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -29,13 +29,12 @@ export default class Tree extends Template {
 
         this.__defaults = {
             componentSpacing: 2000,
-            flowChannelWidth: 0.8 * 1000,
+            flowChannelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             rotation: 0,
             leafSpace: 4 * 1000,
             in: 1,
             out: 8,
-            width: 2.46 * 1000,
-            height: 250,
+            depth: 250,
             stageSpace: 4000,
             mirrorByX: 0,
             mirrorByY: 0
@@ -48,8 +47,7 @@ export default class Tree extends Template {
             leafSpace: "μm",
             in: "",
             out: "",
-            width: "μm",
-            height: "μm",
+            depth: "μm",
             stageSpace: "μm"
         };
 
@@ -59,8 +57,7 @@ export default class Tree extends Template {
             leafSpace: 30,
             in: 1,
             out: 2,
-            width: 60,
-            height: 10,
+            depth: 10,
             stageSpace: 100,
             rotation: 0,
             mirrorByX: 0,
@@ -73,8 +70,7 @@ export default class Tree extends Template {
             leafSpace: 12000,
             in: 1,
             out: 128,
-            width: 12 * 1000,
-            height: 1200,
+            depth: 1200,
             stageSpace: 6000,
             rotation: 360,
             mirrorByX: 1,
@@ -87,7 +83,6 @@ export default class Tree extends Template {
             flowChannelWidth: "flowChannelWidth",
             rotation: "rotation",
             leafSpace: "leafSpace",
-            width: "width",
             in: "in",
             out: "out",
             stageSpace: "stageSpace",
@@ -100,7 +95,6 @@ export default class Tree extends Template {
             flowChannelWidth: "flowChannelWidth",
             rotation: "rotation",
             leafSpace: "leafSpace",
-            width: "width",
             in: "in",
             out: "out",
             stageSpace: "stageSpace",
@@ -119,7 +113,7 @@ export default class Tree extends Template {
         this.__mint = "TREE";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

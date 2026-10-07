@@ -18,15 +18,15 @@ export default class Valve extends Template {
             rotation: "Float",
             length: "Float",
             width: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            width: 1.23 * 1000,
-            length: 4.92 * 1000,
-            height: 250
+            width: 2000,
+            length: 1000,
+            depth: 250
         };
 
         this.__units = {
@@ -34,7 +34,7 @@ export default class Valve extends Template {
             rotation: "&deg",
             length: "μm",
             width: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -42,7 +42,7 @@ export default class Valve extends Template {
             rotation: 0,
             width: 30,
             length: 120,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
@@ -50,7 +50,7 @@ export default class Valve extends Template {
             rotation: 180,
             width: 6000,
             length: 24 * 1000,
-            height: 1200
+            depth: 1200
         };
 
         this.__featureParams = {
@@ -79,7 +79,7 @@ export default class Valve extends Template {
         this.__mint = "VALVE";
 
         this.__zOffsetKeys = {
-            CONTROL: "height"
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

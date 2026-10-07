@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class RoundedChannel extends Template {
     constructor() {
@@ -14,27 +15,27 @@ export default class RoundedChannel extends Template {
 
         this.__heritable = {
             channelWidth: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
-            channelWidth: 0.8 * 1000,
-            height: 600
+            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
+            depth: 600
         };
 
         this.__units = {
             channelWidth: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             channelWidth: 3,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
             channelWidth: 2000,
-            height: 1200
+            depth: 1200
         };
 
         this.__featureParams = {
@@ -59,7 +60,7 @@ export default class RoundedChannel extends Template {
         this.__mint = "ROUNDED CHANNEL";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

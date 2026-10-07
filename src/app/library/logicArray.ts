@@ -16,7 +16,7 @@ export default class LogicArray extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             chamberWidth: "Float",
-            height: "Float",
+            depth: "Float",
             chamberLength: "Float",
             flowChannelWidth: "Float",
             controlChannelWidth: "Float",
@@ -28,7 +28,7 @@ export default class LogicArray extends Template {
 
         this.__defaults = {
             componentSpacing: 2000,
-            height: 1.1 * 1000,
+            depth: 1.1 * 1000,
             chamberWidth: 1.5 * 1000,
             chamberLength: 1.5 * 1000,
             flowChannelWidth: 0.6 * 1000,
@@ -46,13 +46,13 @@ export default class LogicArray extends Template {
             flowChannelWidth: "μm",
             controlChannelWidth: "μm",
             portRadius: "μm",
-            height: "μm",
+            depth: "μm",
             rotation: "°"
         };
 
         this.__minimum = {
             componentSpacing: 0,
-            height: 1,
+            depth: 1,
             chamberWidth: 1,
             chamberLength: 1,
             flowChannelWidth: 1,
@@ -65,7 +65,7 @@ export default class LogicArray extends Template {
 
         this.__maximum = {
             componentSpacing: 10000,
-            height: 1.1 * 10000,
+            depth: 1.1 * 10000,
             chamberWidth: 10000,
             chamberLength: 10000,
             flowChannelWidth: 10000,
@@ -89,7 +89,7 @@ export default class LogicArray extends Template {
             controlChannelWidth: "controlChannelWidth",
             portRadius: "portRadius",
             chamberLength: "chamberLength",
-            height: "height",
+            depth: "depth",
             position: "position",
             rotation: "rotation",
             mirrorByX: "mirrorByX",
@@ -103,7 +103,7 @@ export default class LogicArray extends Template {
             controlChannelWidth: "controlChannelWidth",
             portRadius: "portRadius",
             chamberLength: "chamberLength",
-            height: "height",
+            depth: "depth",
             rotation: "rotation",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
@@ -114,9 +114,9 @@ export default class LogicArray extends Template {
         this.__mint = "LOGIC ARRAY";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height",
-            CELL: "height"
+            FLOW: "depth",
+            CONTROL: "depth",
+            CELL: "depth"
         };
 
         this.__substrateOffset = {

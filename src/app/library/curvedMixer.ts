@@ -2,6 +2,7 @@ import Template from "./template";
 import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
+import { DEFAULT_MIXER_BEND_LENGTH_UM, DEFAULT_MIXER_BEND_SPACING_UM, DEFAULT_MIXER_CHANNEL_WIDTH_UM, mixerEndLayout } from "./channelWidths";
 
 export default class CurvedMixer extends Template {
     constructor() {
@@ -18,9 +19,11 @@ export default class CurvedMixer extends Template {
             bendSpacing: "Float",
             numberOfBends: "Float",
             channelWidth: "Float",
+            edgeBend1: "Float",
+            edgeBend2: "Float",
             bendLength: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -28,11 +31,13 @@ export default class CurvedMixer extends Template {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            channelWidth: 600,
-            bendSpacing: 1400,
+            channelWidth: DEFAULT_MIXER_CHANNEL_WIDTH_UM,
+            edgeBend1: DEFAULT_MIXER_CHANNEL_WIDTH_UM / 2,
+            edgeBend2: DEFAULT_MIXER_CHANNEL_WIDTH_UM / 2,
+            bendSpacing: DEFAULT_MIXER_BEND_SPACING_UM,
             numberOfBends: 1,
-            bendLength: 2000,
-            height: 250,
+            bendLength: DEFAULT_MIXER_BEND_LENGTH_UM,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -43,18 +48,22 @@ export default class CurvedMixer extends Template {
             bendSpacing: "μm",
             numberOfBends: "",
             channelWidth: "μm",
+            edgeBend1: "μm",
+            edgeBend2: "μm",
             bendLength: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             rotation: 0,
             channelWidth: 10,
+            edgeBend1: 0,
+            edgeBend2: 0,
             bendSpacing: 10,
             numberOfBends: 1,
             bendLength: 10,
-            height: 10,
+            depth: 10,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -63,10 +72,12 @@ export default class CurvedMixer extends Template {
             componentSpacing: 10000,
             rotation: 360,
             channelWidth: 2000,
+            edgeBend1: 12000,
+            edgeBend2: 12000,
             bendSpacing: 6000,
             numberOfBends: 20,
             bendLength: 12 * 1000,
-            height: 1200,
+            depth: 1200,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -75,6 +86,8 @@ export default class CurvedMixer extends Template {
             componentSpacing: "componentSpacing",
             position: "position",
             channelWidth: "channelWidth",
+            edgeBend1: "edgeBend1",
+            edgeBend2: "edgeBend2",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
@@ -86,6 +99,8 @@ export default class CurvedMixer extends Template {
         this.__targetParams = {
             componentSpacing: "componentSpacing",
             channelWidth: "channelWidth",
+            edgeBend1: "edgeBend1",
+            edgeBend2: "edgeBend2",
             bendSpacing: "bendSpacing",
             numberOfBends: "numberOfBends",
             rotation: "rotation",
@@ -105,7 +120,7 @@ export default class CurvedMixer extends Template {
         this.__mint = "CURVED MIXER";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {
@@ -114,27 +129,10 @@ export default class CurvedMixer extends Template {
     }
 
     getPorts(params: { [k: string]: any }) {
-        const channelWidth = params.channelWidth;
-        const bendLength = params.bendLength;
-        const bendSpacing = params.bendSpacing;
-        const numberOfBends = params.numberOfBends;
-
+        const layout = mixerEndLayout(params);
         const ports = [];
-
-        const openingY2 =
-            (2 * numberOfBends + 1) * channelWidth + 2 * numberOfBends * bendSpacing;
-        ports.push(
-            new ComponentPort(bendLength / 2 + channelWidth, channelWidth / 2, "1", LogicalLayerType.FLOW)
-        );
-        ports.push(
-            new ComponentPort(
-                bendLength / 2 + channelWidth,
-                openingY2 - channelWidth / 2,
-                "2",
-                LogicalLayerType.FLOW
-            )
-        );
-
+        ports.push(new ComponentPort(layout.port1x, layout.port1y, "1", LogicalLayerType.FLOW));
+        ports.push(new ComponentPort(layout.port2x, layout.port2y, "2", LogicalLayerType.FLOW));
         return ports;
     }
 
@@ -147,16 +145,15 @@ export default class CurvedMixer extends Template {
         const x = params.position[0];
         const y = params.position[1];
         const color = params.color;
-        const segHalf = bendLength / 2 + channelWidth;
-        const segLength = bendLength + 2 * channelWidth;
-        const segBend = bendSpacing + 2 * channelWidth;
+        const layout = mixerEndLayout(params);
         const vRepeat = 2 * bendSpacing + 2 * channelWidth;
         const vOffset = bendSpacing + channelWidth;
-        const hOffset = bendLength / 2 + channelWidth / 2;
         const serp = new paper.CompoundPath("");
 
-        // draw first segment
-        let toprect: paper.Rectangle | paper.PathItem = new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth - 1, y, bendLength / 2 + channelWidth / 2 + 1, channelWidth));
+        // draw first segment (port-centered; outer end is port + edgeBend1)
+        let toprect: paper.Rectangle | paper.PathItem = new paper.Path.Rectangle(
+            new paper.Rectangle(x + channelWidth - 1, y, layout.firstWidth - (channelWidth - 1), channelWidth)
+        );
         (toprect as any).closed = true;
         for (let i = 0; i < numBends; i++) {
             // draw left curved segment
@@ -174,7 +171,6 @@ export default class CurvedMixer extends Template {
             leftCurveSmall.closed = true;
             leftCurve = leftCurve.subtract(leftCurveSmall);
             toprect = toprect.unite(leftCurve);
-            // serp.addChild(leftCurve);
             // draw horizontal segment
             let hseg = new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth - 1, y + vOffset + vRepeat * i, bendLength + 2, channelWidth));
             toprect = toprect.unite(hseg);
@@ -195,8 +191,10 @@ export default class CurvedMixer extends Template {
             toprect = toprect.unite(rightCurve);
 
             if (i === numBends - 1) {
-                // draw half segment to close
-                hseg = new paper.Path.Rectangle(new paper.Rectangle(x + channelWidth / 2 + bendLength / 2, y + vRepeat * (i + 1), (bendLength + channelWidth) / 2 + 1, channelWidth));
+                // incomplete end-bend: tip opens −X past the port by edgeBend2
+                hseg = new paper.Path.Rectangle(
+                    new paper.Rectangle(x + layout.lastStart, y + vRepeat * (i + 1), layout.lastWidth, channelWidth)
+                );
                 toprect = toprect.unite(hseg);
             } else {
                 // draw full segment

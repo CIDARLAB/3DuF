@@ -17,7 +17,7 @@ export default class LLChamber extends Template {
             componentSpacing: "Float",
             width: "Float",
             length: "Float",
-            height: "Float",
+            depth: "Float",
             rotation: "Float",
             spacing: "Float",
             numberOfChambers: "Integer",
@@ -29,7 +29,7 @@ export default class LLChamber extends Template {
             componentSpacing: 2000,
             width: 400,
             length: 5000,
-            height: 250,
+            depth: 250,
             spacing: 2000,
             numberOfChambers: 4,
             rotation: 0,
@@ -41,7 +41,7 @@ export default class LLChamber extends Template {
             componentSpacing: "μm",
             width: "μm",
             length: "μm",
-            height: "μm",
+            depth: "μm",
             spacing: "μm",
             numberOfChambers: "10",
             rotation: "°"
@@ -51,7 +51,7 @@ export default class LLChamber extends Template {
             componentSpacing: 0,
             width: 5,
             length: 5,
-            height: 1,
+            depth: 1,
             spacing: 1,
             numberOfChambers: 1,
             rotation: 0,
@@ -63,7 +63,7 @@ export default class LLChamber extends Template {
             componentSpacing: 10000,
             width: 50000,
             length: 50000,
-            height: 50000,
+            depth: 50000,
             numberOfChambers: 1000,
             spacing: 50000,
             rotation: 360,
@@ -76,7 +76,7 @@ export default class LLChamber extends Template {
             position: "position",
             width: "width",
             length: "length",
-            height: "height",
+            depth: "depth",
             numberOfChambers: "numberOfChambers",
             spacing: "spacing",
             rotation: "rotation",
@@ -89,7 +89,7 @@ export default class LLChamber extends Template {
             position: "position",
             width: "width",
             length: "length",
-            height: "height",
+            depth: "depth",
             numberOfChambers: "numberOfChambers",
             spacing: "spacing",
             rotation: "rotation",
@@ -106,8 +106,8 @@ export default class LLChamber extends Template {
         this.__mint = "LL CHAMBER";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height"
+            FLOW: "depth",
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

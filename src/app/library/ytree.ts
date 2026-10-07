@@ -3,6 +3,7 @@ import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
 import { CompoundPath } from "paper/dist/paper-core";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class YTree extends Template {
     constructor() {
@@ -21,8 +22,7 @@ export default class YTree extends Template {
             leafSpace: "Float",
             in: "Integer",
             out: "Integer",
-            width: "Float",
-            height: "Float",
+            depth: "Float",
             stageSpace: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -30,13 +30,12 @@ export default class YTree extends Template {
 
         this.__defaults = {
             componentSpacing: 2000,
-            flowChannelWidth: 0.8 * 1000,
+            flowChannelWidth: DEFAULT_CHANNEL_WIDTH_UM,
             rotation: 0,
             leafSpace: 4 * 1000,
             in: 1,
             out: 8,
-            width: 2.46 * 1000,
-            height: 250,
+            depth: 250,
             stageSpace: 4000,
             mirrorByX: 0,
             mirrorByY: 0
@@ -49,8 +48,7 @@ export default class YTree extends Template {
             leafSpace: "μm",
             in: "",
             out: "",
-            width: "μm",
-            height: "μm",
+            depth: "μm",
             stageSpace: "μm"
         };
 
@@ -60,8 +58,7 @@ export default class YTree extends Template {
             leafSpace: 30,
             in: 1,
             out: 2,
-            width: 60,
-            height: 10,
+            depth: 10,
             stageSpace: 100,
             rotation: 0,
             mirrorByX: 0,
@@ -74,8 +71,7 @@ export default class YTree extends Template {
             leafSpace: 12000,
             in: 1,
             out: 128,
-            width: 12 * 1000,
-            height: 1200,
+            depth: 1200,
             stageSpace: 6000,
             rotation: 360,
             mirrorByX: 1,
@@ -88,7 +84,6 @@ export default class YTree extends Template {
             flowChannelWidth: "flowChannelWidth",
             rotation: "rotation",
             leafSpace: "leafSpace",
-            width: "width",
             in: "in",
             out: "out",
             stageSpace: "stageSpace",
@@ -119,7 +114,7 @@ export default class YTree extends Template {
         this.__mint = "YTREE";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {
@@ -156,27 +151,26 @@ export default class YTree extends Template {
         const spacing = this.__treeLeafSpace(params);
         const ins = params.in;
         const outs = params.out;
-        let rotation = params.rotation;
         let leafs;
         if (ins < outs) {
             leafs = outs;
         } else {
             leafs = ins;
-            rotation += 180;
         }
         const stagelength = this.__treeStageSpace(params);
 
         const levels = Math.ceil(Math.log2(leafs));
         const w = spacing * (leafs / 2 + 1);
 
-        const length = levels * stagelength;
-        const width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
-
-        // Stadium-cap centers so RoundedChannel ends overlap the port circle.
+        // Stadium-cap *centers* (not the outer rim). A RoundedChannel that
+        // ends here fully overlaps the port circle instead of only kissing
+        // the edge. Trunk pivot is the stem-cap center; leaves are the
+        // last-level Y-twig pivots.
         ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
-        for (let i = 0; i < leafs; i++) {
-            ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length, (2 + i).toString(), LogicalLayerType.FLOW));
+        const tips = this.__ytreeLeafTips(0, 0, stagelength, w, 1, levels);
+        for (let i = 0; i < tips.length; i++) {
+            ports.push(new ComponentPort(tips[i][0], tips[i][1], (2 + i).toString(), LogicalLayerType.FLOW));
         }
 
         return ports;
@@ -230,6 +224,25 @@ export default class YTree extends Template {
         const render = this.render2D(params, key);
         render.fillColor!.alpha = 0.5;
         return render;
+    }
+
+    __ytreeLeafTips(px: number, py: number, stagelength: number, newspacing: number, level: number, maxlevel: number): number[][] {
+        const hspacing = newspacing / 2;
+        const lex = px - 0.5 * newspacing;
+        const ley = py + stagelength;
+        const rex = px + 0.5 * newspacing;
+        const rey = py + stagelength;
+        if (level === maxlevel) {
+            const half = 0.5 * newspacing;
+            // Right leaf first so port 2 matches the previous T-tree order.
+            return [
+                [px + half, py + stagelength],
+                [px - half, py + stagelength]
+            ];
+        }
+        return this.__ytreeLeafTips(rex, rey, stagelength, hspacing, level + 1, maxlevel).concat(
+            this.__ytreeLeafTips(lex, ley, stagelength, hspacing, level + 1, maxlevel)
+        );
     }
 
     __generateYTwig(treepath: paper.CompoundPath, px: number, py: number, cw: number, stagelength: number, newspacing: number, level: number, maxlevel: number, islast = false): void  {

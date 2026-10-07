@@ -1,5 +1,6 @@
 import Template from "./template";
 import paper from "paper";
+import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
 
 export default class Connection extends Template {
     constructor() {
@@ -17,31 +18,31 @@ export default class Connection extends Template {
         this.__heritable = {
             connectionSpacing: "Float",
             channelWidth: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
             connectionSpacing: 1600,
-            channelWidth: 0.8 * 1000,
-            height: 600
+            channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
+            depth: 600
         };
 
         this.__units = {
             connectionSpacing: "μm",
             channelWidth: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             connectionSpacing: 0,
             channelWidth: 3,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
             connectionSpacing: 10000,
             channelWidth: 12000,
-            height: 1200
+            depth: 1200
         };
 
         this.__featureParams = {
@@ -51,7 +52,7 @@ export default class Connection extends Template {
             wayPoints: "wayPoints",
             channelWidth: "channelWidth",
             segments: "segments",
-            height: "height"
+            depth: "depth"
         };
 
         this.__targetParams = {
@@ -59,7 +60,7 @@ export default class Connection extends Template {
             wayPoints: "wayPoints",
             channelWidth: "channelWidth",
             segments: "segments",
-            height: "height"
+            depth: "depth"
         };
 
         this.__placementTool = "ConnectionTool";
@@ -74,7 +75,7 @@ export default class Connection extends Template {
         this.__mint = "CHANNEL";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

@@ -17,10 +17,8 @@ export default class Valve3D extends Template {
             componentSpacing: "Float",
             rotation: "Float",
             valveRadius: "Float",
-            height: "Float",
-            gap: "Float",
-            width: "Float",
-            length: "Float"
+            depth: "Float",
+            gap: "Float"
         };
 
         this.__defaults = {
@@ -28,41 +26,32 @@ export default class Valve3D extends Template {
             componentSpacing: 2000,
             rotation: 0,
             valveRadius: 1200,
-            height: 250,
-            gap: 600,
-            width: 2400,
-            length: 2400
+            depth: 250,
+            gap: 600
         };
 
         this.__units = {
             componentSpacing: "μm",
             valveRadius: "μm",
-            height: "μm",
+            depth: "μm",
             gap: "μm",
-            width: "μm",
-            length: "μm",
             rotation: "°"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             valveRadius: 0.1 * 100,
-            height: 0.1 * 100,
+            depth: 0.1 * 100,
             gap: 0.5 * 10,
-            rotation: 0,
-            width: 10,
-            length: 10
-
+            rotation: 0
         };
 
         this.__maximum = {
             componentSpacing: 10000,
             valveRadius: 0.3 * 10000,
-            height: 1.2 * 1000,
+            depth: 1.2 * 1000,
             gap: 0.1 * 10000,
-            rotation: 180,
-            width: 3 * 1000,
-            length: 3 * 1000
+            rotation: 180
         };
 
         this.__featureParams = {
@@ -96,9 +85,9 @@ export default class Valve3D extends Template {
         this.__mint = "VALVE3D";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height",
-            INVERSE: "height"
+            FLOW: "depth",
+            CONTROL: "depth",
+            INVERSE: "depth"
         };
 
         this.__substrateOffset = {

@@ -19,7 +19,7 @@ export default class Gelchannel extends Template {
             mainWidth: "Float",
             rotation: "Float",
             length: "Float",
-            height: "Float",
+            depth: "Float",
             sideheight: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -31,7 +31,7 @@ export default class Gelchannel extends Template {
             mainWidth: 500,
             rotation: 0,
             length: 3000,
-            height: 250,
+            depth: 250,
             sideheight: 50,
             mirrorByX: 0,
             mirrorByY: 0
@@ -43,7 +43,7 @@ export default class Gelchannel extends Template {
             mainWidth: "μm",
             rotation: "°",
             length: "μm",
-            height: "μm",
+            depth: "μm",
             sideheight: "μm"
         };
 
@@ -52,7 +52,7 @@ export default class Gelchannel extends Template {
             sideWidth: 20,
             mainWidth: 10,
             length: 1000,
-            height: 10,
+            depth: 10,
             sideheight: 10,
             rotation: 0,
             mirrorByX: 0,
@@ -64,7 +64,7 @@ export default class Gelchannel extends Template {
             sideWidth: 500,
             mainWidth: 500,
             length: 100 * 1000,
-            height: 1200,
+            depth: 1200,
             sideheight: 1200,
             rotation: 360,
             mirrorByX: 1,
@@ -78,7 +78,7 @@ export default class Gelchannel extends Template {
             length: "length",
             sideWidth: "sideWidth",
             mainWidth: "mainWidth",
-            height: "height",
+            depth: "depth",
             sideheight: "sideheight",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
@@ -90,7 +90,7 @@ export default class Gelchannel extends Template {
             length: "length",
             sideWidth: "sideWidth",
             mainWidth: "mainWidth",
-            height: "height",
+            depth: "depth",
             sideheight: "sideheight",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
@@ -107,7 +107,7 @@ export default class Gelchannel extends Template {
         this.__mint = "GEL CHANNEL";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
+            FLOW: "depth",
             CELL: "sideHeight"
         };
 

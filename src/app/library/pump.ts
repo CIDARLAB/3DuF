@@ -18,7 +18,7 @@ export default class Pump extends Template {
             rotation: "Float",
             length: "Float",
             width: "Float",
-            height: "Float",
+            depth: "Float",
             spacing: "Float",
             flowChannelWidth: "Float",
             mirrorByX: "Float",
@@ -30,7 +30,7 @@ export default class Pump extends Template {
             rotation: 0,
             width: 600,
             length: 300,
-            height: 250,
+            depth: 250,
             spacing: 1000,
             flowChannelWidth: 300,
             mirrorByX: 0,
@@ -42,7 +42,7 @@ export default class Pump extends Template {
             rotation: "&deg",
             length: "μm",
             width: "μm",
-            height: "μm",
+            depth: "μm",
             spacing: "μm",
             flowChannelWidth: "μm"
         };
@@ -52,7 +52,7 @@ export default class Pump extends Template {
             rotation: 0,
             width: 30,
             length: 120,
-            height: 10,
+            depth: 10,
             spacing: 10,
             flowChannelWidth: 1,
             mirrorByX: 0,
@@ -64,7 +64,7 @@ export default class Pump extends Template {
             rotation: 360,
             width: 6000,
             length: 24 * 1000,
-            height: 1200,
+            depth: 1200,
             spacing: 10000,
             flowChannelWidth: 10000,
             mirrorByX: 1,
@@ -105,8 +105,8 @@ export default class Pump extends Template {
         this.__mint = "PUMP";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height"
+            FLOW: "depth",
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

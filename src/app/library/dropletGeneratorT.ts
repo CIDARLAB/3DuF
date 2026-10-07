@@ -20,7 +20,7 @@ export default class DropletGeneratorT extends Template {
             length: "Float",
             radius: "Float",
             // angle: "Float",
-            height: "Float",
+            depth: "Float",
             rotation: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -32,7 +32,7 @@ export default class DropletGeneratorT extends Template {
             waterChannelWidth: 0.3 * 1000,
             length: 5 * 1000,
             radius: 500,
-            height: 250,
+            depth: 250,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -41,7 +41,7 @@ export default class DropletGeneratorT extends Template {
         this.__units = {
             componentSpacing: "μm",
             oilChannelWidth: "μm",
-            height: "μm",
+            depth: "μm",
             waterChannelWidth: "μm",
             radius: "μm",
             rotation: "°",
@@ -63,7 +63,7 @@ export default class DropletGeneratorT extends Template {
             componentSpacing: 10000,
             oilChannelWidth: 2000,
             waterChannelWidth: 2000,
-            height: 1200,
+            depth: 1200,
             radius: 2000,
             rotation: 360,
             length: 8 * 1000,
@@ -76,7 +76,7 @@ export default class DropletGeneratorT extends Template {
             position: "position",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
-            height: "height",
+            depth: "depth",
             rotation: "rotation",
             radius: "radius",
             length: "length",
@@ -88,7 +88,7 @@ export default class DropletGeneratorT extends Template {
             componentSpacing: "componentSpacing",
             oilChannelWidth: "oilChannelWidth",
             waterChannelWidth: "waterChannelWidth",
-            height: "height",
+            depth: "depth",
             rotation: "rotation",
             radius: "radius",
             length: "length",
@@ -107,7 +107,7 @@ export default class DropletGeneratorT extends Template {
         this.__mint = "DROPLET GENERATOR T";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

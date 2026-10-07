@@ -20,7 +20,7 @@ export default class DropletGeneratorFlowFocus extends Template {
             length: "Float",
             radius: "Float",
             angle: "Float",
-            height: "Float",
+            depth: "Float",
             rotation: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -33,7 +33,7 @@ export default class DropletGeneratorFlowFocus extends Template {
             length: 3 * 1000,
             radius: 500,
             angle: 45,
-            height: 250,
+            depth: 250,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -42,7 +42,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         this.__units = {
             componentSpacing: "μm",
             oilChannelWidth: "μm",
-            height: "μm",
+            depth: "μm",
             waterChannelWidth: "μm",
             radius: "μm",
             length: "μm",
@@ -68,7 +68,7 @@ export default class DropletGeneratorFlowFocus extends Template {
             waterChannelWidth: 2000,
             length: 20000,
             angle: 360,
-            height: 1200,
+            depth: 1200,
             radius: 2000,
             rotation: 360,
             mirrorByX: 1,
@@ -82,7 +82,7 @@ export default class DropletGeneratorFlowFocus extends Template {
             waterChannelWidth: "waterChannelWidth",
             length: "length",
             angle: "angle",
-            height: "height",
+            depth: "depth",
             rotation: "rotation",
             radius: "radius",
             mirrorByX: "mirrorByX",
@@ -95,7 +95,7 @@ export default class DropletGeneratorFlowFocus extends Template {
             waterChannelWidth: "waterChannelWidth",
             length: "length",
             angle: "angle",
-            height: "height",
+            depth: "depth",
             rotation: "rotation",
             radius: "radius",
             mirrorByX: "mirrorByX",
@@ -113,7 +113,7 @@ export default class DropletGeneratorFlowFocus extends Template {
         this.__mint = "DROPLET GENERATOR FLOW FOCUS";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

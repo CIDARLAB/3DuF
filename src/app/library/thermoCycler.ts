@@ -17,7 +17,7 @@ export default class thermoCycler extends Template {
             rotation: "Float",
             width: "Float",
             length: "Float",
-            height: "Float",
+            depth: "Float",
             temperature: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -27,7 +27,7 @@ export default class thermoCycler extends Template {
             rotation: 0,
             width: 20 * 1000,
             length: 40 * 1000,
-            height: 5 * 1000,
+            depth: 5 * 1000,
             temperature: 0.03 * 1000,
             mirrorByX: 0,
             mirrorByY: 0
@@ -37,7 +37,7 @@ export default class thermoCycler extends Template {
             rotation: "&deg",
             width: "μm",
             length: "μm",
-            height: "μm",
+            depth: "μm",
             temperature: "°C"
         };
         this.__minimum = {
@@ -45,7 +45,7 @@ export default class thermoCycler extends Template {
             rotation: 0,
             width: 10 * 1000,
             length: 10 * 1000,
-            height: 1.25 * 1000,
+            depth: 1.25 * 1000,
             temperature: 0 * 1000,
             mirrorByX: 0,
             mirrorByY: 0
@@ -55,7 +55,7 @@ export default class thermoCycler extends Template {
             rotation: 90,
             width: 60 * 1000,
             length: 60 * 1000,
-            height: 10 * 1000,
+            depth: 10 * 1000,
             temperature: 0.1 * 1000,
             mirrorByX: 1,
             mirrorByY: 1
@@ -91,7 +91,7 @@ export default class thermoCycler extends Template {
         this.__mint = "THERMO CYCLER";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

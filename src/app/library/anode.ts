@@ -18,7 +18,7 @@ export default class Anode extends Template {
             anodeRadius: "Float",
             pegHeight: "Float",
             pegWidth: "Float",
-            height: "Float",
+            depth: "Float",
             rotation: "Float"
         };
 
@@ -27,7 +27,7 @@ export default class Anode extends Template {
             anodeRadius: 0.9 * 1000,
             pegHeight: 0.2 * 1000,
             pegWidth: 0.7 * 1000,
-            height: 1.1 * 1000,
+            depth: 1.1 * 1000,
             rotation: 0
         };
 
@@ -36,7 +36,7 @@ export default class Anode extends Template {
             anodeRadius: "μm",
             pegHeight: "μm",
             pegWidth: "μm",
-            height: "μm",
+            depth: "μm",
             rotation: "°"
         };
 
@@ -45,7 +45,7 @@ export default class Anode extends Template {
             anodeRadius: 0.4 * 10,
             pegHeight: 0.1 * 1000,
             pegWidth: 0.1 * 1000,
-            height: 10,
+            depth: 10,
             rotation: 0
         };
 
@@ -54,7 +54,7 @@ export default class Anode extends Template {
             anodeRadius: 2000,
             pegHeight: 2 * 1000,
             pegWidth: 2 * 1000,
-            height: 1200,
+            depth: 1200,
             rotation: 90
         };
 

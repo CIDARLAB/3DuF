@@ -20,7 +20,7 @@ export default class DropletMerger extends Template {
             outputWidth: "Float",
             stabilizationLength: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -32,7 +32,7 @@ export default class DropletMerger extends Template {
             outputWidth: 400,
             stabilizationLength: 5000,
             rotation: 0,
-            height: 250,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -44,7 +44,7 @@ export default class DropletMerger extends Template {
             outputWidth: "μm",
             stabilizationLength: "μm",
             rotation: "°",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -54,7 +54,7 @@ export default class DropletMerger extends Template {
             outputWidth: 1,
             stabilizationLength: 10,
             rotation: 0,
-            height: 10,
+            depth: 10,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -66,7 +66,7 @@ export default class DropletMerger extends Template {
             outputWidth: 10000,
             stabilizationLength: 500000,
             rotation: 360,
-            height: 10000,
+            depth: 10000,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -85,7 +85,7 @@ export default class DropletMerger extends Template {
             outputWidth: "outputWidth",
             stabilizationLength: "stabilizationLength",
             rotation: "rotation;",
-            height: "height",
+            depth: "depth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -106,7 +106,7 @@ export default class DropletMerger extends Template {
         this.__mint = "DROPLET MERGER";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

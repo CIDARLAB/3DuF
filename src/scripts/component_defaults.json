@@ -3,24 +3,26 @@
     "componentSpacing": 2000,
     "width": 4000,
     "length": 4000,
-    "height": 250
+    "depth": 250
   },
   "ANODE": {
     "componentSpacing": 2000,
     "anodeRadius": 900,
     "pegHeight": 200,
     "pegWidth": 700,
-    "height": 1100,
+    "depth": 1100,
     "rotation": 0
   },
   "MIXER": {
     "componentSpacing": 2000,
+    "rotation": 0,
     "channelWidth": 600,
+    "edgeBend1": 300,
+    "edgeBend2": 300,
     "bendSpacing": 1400,
     "numberOfBends": 1,
-    "rotation": 0,
     "bendLength": 2000,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
@@ -28,7 +30,7 @@
     "componentSpacing": 2000,
     "width": 5000,
     "length": 5000,
-    "height": 250,
+    "depth": 250,
     "cornerRadius": 200,
     "rotation": 0,
     "mirrorByX": 0,
@@ -37,7 +39,7 @@
   "DROPLET CAPACITANCE SENSOR": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "height": 250,
+    "depth": 250,
     "inletWidth": 1000,
     "inletLength": 10000,
     "electrodeWidth": 1500,
@@ -45,7 +47,6 @@
     "electrodeDistance": 2000,
     "sensorWidth": 1000,
     "sensorLength": 3000,
-    "channelDepth": 1000,
     "electrodeDepth": 1000,
     "mirrorByX": 0,
     "mirrorByY": 0
@@ -55,7 +56,7 @@
     "cathodeRadius": 900,
     "pegRadius": 700,
     "pegThickness": 300,
-    "height": 1100,
+    "depth": 1100,
     "rotation": 0
   },
   "LONG CELL TRAP": {
@@ -66,14 +67,14 @@
     "chamberWidth": 1230,
     "numberOfChambers": 6,
     "chamberSpacing": 2460,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
   "SQUARE CELL TRAP": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "height": 250,
+    "depth": 250,
     "channelWidth": 1000,
     "channelLength": 4000,
     "chamberWidth": 2500,
@@ -86,7 +87,7 @@
     "componentSpacing": 2000,
     "width": 5000,
     "length": 5000,
-    "height": 250,
+    "depth": 250,
     "cornerRadius": 200,
     "rotation": 0,
     "mirrorByX": 0,
@@ -94,8 +95,8 @@
   },
   "CHANNEL": {
     "connectionSpacing": 1600,
-    "channelWidth": 800,
-    "height": 600
+    "channelWidth": 600,
+    "depth": 600
   },
   "CHEMOSTAT RING": {
     "componentSpacing": 2000,
@@ -105,7 +106,7 @@
     "radius": 400,
     "rotation": 0,
     "volume": 30000000,
-    "height": 20,
+    "depth": 20,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
@@ -113,26 +114,28 @@
     "componentSpacing": 2000,
     "radius1": 1400,
     "radius2": 1200,
-    "height": 250
+    "depth": 250
   },
   "CURVED MIXER": {
     "componentSpacing": 2000,
     "rotation": 0,
     "channelWidth": 600,
+    "edgeBend1": 300,
+    "edgeBend2": 300,
     "bendSpacing": 1400,
     "numberOfBends": 1,
     "bendLength": 2000,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
   "DIAMOND REACTION CHAMBER": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "channelWidth": 800,
+    "channelWidth": 600,
     "width": 1230,
     "length": 4920,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
@@ -142,7 +145,7 @@
     "innerRadius": 400,
     "outerRadius": 800,
     "length": 7200,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
@@ -154,7 +157,7 @@
     "waterInputWidth": 600,
     "outputWidth": 600,
     "outputLength": 600,
-    "height": 250,
+    "depth": 250,
     "rotation": 0,
     "mirrorByX": 0,
     "mirrorByY": 0
@@ -166,7 +169,7 @@
     "length": 3000,
     "radius": 500,
     "angle": 45,
-    "height": 250,
+    "depth": 250,
     "rotation": 0,
     "mirrorByX": 0,
     "mirrorByY": 0
@@ -177,7 +180,7 @@
     "waterChannelWidth": 300,
     "length": 5000,
     "radius": 500,
-    "height": 250,
+    "depth": 250,
     "rotation": 0,
     "mirrorByX": 0,
     "mirrorByY": 0
@@ -185,7 +188,7 @@
   "DROPLET MERGER": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "height": 250,
+    "depth": 250,
     "inletWidth": 2000,
     "inletLength": 4000,
     "electrodeWidth": 1000,
@@ -206,14 +209,14 @@
     "outputWidth": 400,
     "stabilizationLength": 1200,
     "rotation": 0,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
   "FILTER": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "height": 250,
+    "depth": 250,
     "pillarDiameter": 2000,
     "filterWidth": 1000,
     "barrierWidth": 1000,
@@ -233,21 +236,21 @@
     "mainWidth": 500,
     "rotation": 0,
     "length": 3000,
-    "height": 250,
+    "depth": 250,
     "sideheight": 50,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
   "GRADIENT GENERATOR": {
     "componentSpacing": 2000,
-    "channelWidth": 800,
+    "channelWidth": 600,
     "bendSpacing": 1230,
     "numberOfBends": 1,
     "bendLength": 2460,
     "in": 1,
     "out": 3,
     "spacing": 10000,
-    "height": 250,
+    "depth": 250,
     "rotation": 0,
     "mirrorByX": 0,
     "mirrorByY": 0
@@ -255,10 +258,10 @@
   "INCUBATION": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "channelWidth": 800,
+    "channelWidth": 600,
     "width": 1230,
     "length": 4920,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
@@ -266,7 +269,7 @@
     "componentSpacing": 2000,
     "width": 400,
     "length": 5000,
-    "height": 250,
+    "depth": 250,
     "spacing": 2000,
     "numberOfChambers": 4,
     "rotation": 0,
@@ -275,7 +278,7 @@
   },
   "LOGIC ARRAY": {
     "componentSpacing": 2000,
-    "height": 1100,
+    "depth": 1100,
     "chamberWidth": 1500,
     "chamberLength": 1500,
     "flowChannelWidth": 600,
@@ -294,7 +297,7 @@
     "stageSpace": 4000,
     "valveWidthX": 1800,
     "valveWidthY": 1000,
-    "height": 250,
+    "depth": 250,
     "rotation": 0,
     "mirrorByX": 0,
     "mirrorByY": 0,
@@ -302,11 +305,12 @@
   },
   "NODE": {
     "componentSpacing": 2000,
-    "height": 100
+    "radius": 10,
+    "depth": 100
   },
   "PICOINJECTOR": {
     "componentSpacing": 2000,
-    "height": 250,
+    "depth": 250,
     "width": 10000,
     "injectorWidth": 2000,
     "injectorLength": 3000,
@@ -323,14 +327,14 @@
   "PORT": {
     "componentSpacing": 2000,
     "portRadius": 1000,
-    "height": 1100
+    "depth": 1100
   },
   "PUMP": {
     "componentSpacing": 2000,
     "rotation": 0,
     "width": 600,
     "length": 300,
-    "height": 250,
+    "depth": 250,
     "spacing": 1000,
     "flowChannelWidth": 300,
     "mirrorByX": 0,
@@ -339,10 +343,8 @@
   "PUMP3D": {
     "componentSpacing": 2000,
     "valveRadius": 1200,
-    "height": 250,
+    "depth": 250,
     "gap": 600,
-    "width": 2400,
-    "length": 2400,
     "rotation": 90,
     "spacing": 5000,
     "flowChannelWidth": 300,
@@ -352,9 +354,9 @@
   "VALVE": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "width": 1230,
-    "length": 4920,
-    "height": 250
+    "width": 2000,
+    "length": 1000,
+    "depth": 250
   },
   "ROTARY MIXER": {
     "componentSpacing": 2000,
@@ -366,18 +368,18 @@
     "valveLength": 1000,
     "valveSpacing": 300,
     "valveRadius": 1200,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
   "ROUNDED CHANNEL": {
-    "channelWidth": 800,
-    "height": 600
+    "channelWidth": 600,
+    "depth": 600
   },
   "DROPLET SORTER": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "height": 250,
+    "depth": 250,
     "inletWidth": 800,
     "inletLength": 4000,
     "electrodeDistance": 1000,
@@ -391,16 +393,14 @@
     "pressureWidth": 400,
     "pressureSpacing": 1500,
     "numberofDistributors": 5,
-    "channelDepth": 1000,
     "electrodeDepth": 1000,
-    "pressureDepth": 1000,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
   "DROPLET SPLITTER": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "height": 250,
+    "depth": 250,
     "inletWidth": 2000,
     "inletLength": 6000,
     "outletWidth1": 1000,
@@ -412,14 +412,14 @@
   },
   "TEXT": {
     "fontSize": 3333.3333333333335,
-    "height": 250
+    "depth": 250
   },
   "THERMO CYCLER": {
     "componentSpacing": 2000,
     "rotation": 0,
     "width": 20000,
     "length": 40000,
-    "height": 5000,
+    "depth": 5000,
     "temperature": 30,
     "mirrorByX": 0,
     "mirrorByY": 0
@@ -427,50 +427,51 @@
   "MIXER3D": {
     "componentSpacing": 2000,
     "channelWidth": 600,
+    "edgeBend1": 300,
+    "edgeBend2": 300,
     "bendSpacing": 1400,
     "numberOfBends": 1,
     "rotation": 0,
     "bendLength": 2000,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
   "MUX3D": {
-    "componentSpacing": 2000,
     "in": 1,
     "out": 8,
-    "rotation": 0,
-    "valveRadius": 1200,
-    "height": 800,
-    "gap": 600,
-    "width": 100,
-    "length": 100,
-    "valveSpacing": 600,
-    "channelWidth": 500,
+    "flowChannelWidth": 500,
     "controlChannelWidth": 600,
+    "leafSpace": 4000,
+    "outletLength": 24000,
+    "valveRadius": 1200,
+    "valveGap": 600,
+    "depth": 800,
+    "rotation": 0,
     "mirrorByX": 0,
-    "mirrorByY": 0
+    "mirrorByY": 0,
+    "componentSpacing": 2000
   },
   "TOROIDAL MIXER": {
     "componentSpacing": 2000,
     "rotation": 0,
-    "channelWidth": 800,
+    "channelWidth": 600,
     "neckAngle": 120,
     "neckLength": 1000,
     "neckWidth": 800,
     "numberOfMixers": 1,
     "innerDiameter": 2460,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
   "TRANSITION": {
     "componentSpacing": 2000,
-    "cw1": 800,
+    "cw1": 600,
     "cw2": 900,
     "length": 1000,
     "rotation": 0,
-    "height": 250,
+    "depth": 250,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
@@ -478,7 +479,7 @@
     "componentSpacing": 2000,
     "rotation": 0,
     "valveRadius": 1200,
-    "height": 250,
+    "depth": 250,
     "valveGap": 600,
     "valveSpacing": 600,
     "flowChannelWidth": 500,
@@ -488,13 +489,12 @@
   },
   "TREE": {
     "componentSpacing": 2000,
-    "flowChannelWidth": 800,
+    "flowChannelWidth": 600,
     "rotation": 0,
     "leafSpace": 4000,
     "in": 1,
     "out": 8,
-    "width": 2460,
-    "height": 250,
+    "depth": 250,
     "stageSpace": 4000,
     "mirrorByX": 0,
     "mirrorByY": 0
@@ -503,27 +503,24 @@
     "componentSpacing": 2000,
     "rotation": 0,
     "valveRadius": 1200,
-    "height": 250,
-    "gap": 600,
-    "width": 2400,
-    "length": 2400
+    "depth": 250,
+    "gap": 600
   },
   "VIA": {
     "componentSpacing": 2000,
     "radius": 700,
-    "height": 0,
+    "depth": 0,
     "mirrorByX": 0,
     "mirrorByY": 0
   },
   "YTREE": {
     "componentSpacing": 2000,
-    "flowChannelWidth": 800,
+    "flowChannelWidth": 600,
     "rotation": 0,
     "leafSpace": 4000,
     "in": 1,
     "out": 8,
-    "width": 2460,
-    "height": 250,
+    "depth": 250,
     "stageSpace": 4000,
     "mirrorByX": 0,
     "mirrorByY": 0
