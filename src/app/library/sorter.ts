@@ -16,7 +16,7 @@ export default class Sorter extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             inletWidth: "Float",
             inletLength: "Float",
             electrodeDistance: "Float",
@@ -30,15 +30,13 @@ export default class Sorter extends Template {
             pressureWidth: "Float",
             pressureSpacing: "Float",
             numberofDistributors: "Float",
-            channelDepth: "Float",
             electrodeDepth: "Float",
-            pressureDepth: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            height: 250,
+            depth: 250,
             inletWidth: 0.8 * 1000,
             inletLength: 4 * 1000,
             electrodeDistance: 1 * 1000,
@@ -52,9 +50,7 @@ export default class Sorter extends Template {
             pressureWidth: 0.4 * 1000,
             pressureSpacing: 1.5 * 1000,
             numberofDistributors: 5,
-            channelDepth: 1000,
             electrodeDepth: 1000,
-            pressureDepth: 1000,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -62,7 +58,7 @@ export default class Sorter extends Template {
         this.__units = {
             componentSpacing: "μm",
             rotation: "°",
-            height: "μm",
+            depth: "μm",
             inletWidth: "μm",
             inletLength: "μm",
             electrodeDistance: "μm",
@@ -76,15 +72,13 @@ export default class Sorter extends Template {
             pressureWidth: "μm",
             pressureSpacing: "μm",
             numberofDistributors: "μm",
-            channelDepth: "μm",
             electrodeDepth: "μm",
-            pressureDepth: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             rotation: 0,
-            height: 10,
+            depth: 10,
             inletWidth: 0.5 * 1000,
             inletLength: 2 * 1000,
             electrodeDistance: 0.5 * 1000,
@@ -98,9 +92,7 @@ export default class Sorter extends Template {
             pressureWidth: 0.2 * 1000,
             pressureSpacing: 0.5 * 1000,
             numberofDistributors: 1,
-            channelDepth: 1000,
             electrodeDepth: 1000,
-            pressureDepth: 1000,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -108,7 +100,7 @@ export default class Sorter extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             rotation: 360,
-            height: 1200,
+            depth: 1200,
             inletWidth: 2 * 1000,
             inletLength: 6 * 1000,
             electrodeDistance: 1.5 * 1000,
@@ -122,9 +114,7 @@ export default class Sorter extends Template {
             pressureWidth: 1 * 1000,
             pressureSpacing: 2 * 1000,
             numberofDistributors: 10,
-            channelDepth: 1000,
             electrodeDepth: 1000,
-            pressureDepth: 1000,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -152,9 +142,7 @@ export default class Sorter extends Template {
             pressureWidth: "pressureWidth",
             pressureSpacing: "pressureSpacing",
             numberofDistributors: "numberofDistributors",
-            channelDepth: "channelDepth",
             electrodeDepth: "electrodeDepth",
-            pressureDepth: "pressureDepth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -175,9 +163,7 @@ export default class Sorter extends Template {
             pressureWidth: "pressureWidth",
             pressureSpacing: "pressureSpacing",
             numberofDistributors: "numberofDistributors",
-            channelDepth: "channelDepth",
             electrodeDepth: "electrodeDepth",
-            pressureDepth: "pressureDepth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -187,7 +173,7 @@ export default class Sorter extends Template {
         this.__mint = "DROPLET SORTER";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
+            FLOW: "depth",
             INTEGRATION: "electrodeDepth"
         };
 

@@ -633,6 +633,9 @@ export default class Component {
         const currPos: [number, number] = cleanparamdata.get("position");
         cleanparamdata.set("position", [currPos[0] - this._renderOffset[0], currPos[1] - this._renderOffset[1]]);
         const ports = ComponentAPI.getComponentPorts(cleanparamdata, this._entity);
+        // Replace the whole map so shrinking in/out (e.g. MUX3D 8→4) drops orphan labels.
+        this._ports.clear();
+        this._componentPortTRenders.clear();
         for (const port of ports) {
             this.setPort(port.label, port);
         }

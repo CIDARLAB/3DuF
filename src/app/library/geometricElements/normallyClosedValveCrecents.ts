@@ -17,7 +17,7 @@ export default class NormallyClosedValveCrescents extends FeatureTemplate {
             componentSpacing: "Float",
             rotation: "Float",
             valveRadius: "Float",
-            height: "Float",
+            depth: "Float",
             gap: "Float",
             width: "Float",
             length: "Float"
@@ -27,7 +27,7 @@ export default class NormallyClosedValveCrescents extends FeatureTemplate {
             componentSpacing: 2000,
             rotation: 0,
             valveRadius: 1.2 * 1000,
-            height: 250,
+            depth: 250,
             gap: 0.6 * 1000,
             width: 2.4 * 1000,
             length: 2.4 * 1000
@@ -36,7 +36,7 @@ export default class NormallyClosedValveCrescents extends FeatureTemplate {
         this.__units = {
             componentSpacing: "μm",
             valveRadius: "μm",
-            height: "μm",
+            depth: "μm",
             gap: "μm",
             width: "μm",
             length: "μm",
@@ -46,7 +46,7 @@ export default class NormallyClosedValveCrescents extends FeatureTemplate {
         this.__minimum = {
             componentSpacing: 0,
             valveRadius: 0.1 * 100,
-            height: 0.1 * 100,
+            depth: 0.1 * 100,
             gap: 0.5 * 10,
             rotation: 0,
             width: 10,
@@ -56,7 +56,7 @@ export default class NormallyClosedValveCrescents extends FeatureTemplate {
         this.__maximum = {
             componentSpacing: 10000,
             valveRadius: 0.3 * 10000,
-            height: 1.2 * 1000,
+            depth: 1.2 * 1000,
             gap: 0.1 * 10000,
             rotation: 180,
             width: 3 * 1000,

@@ -18,7 +18,7 @@ export default class Terrace extends Template {
             insideRadius: "Float",
             outsideRadius: "Float",
             length: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
@@ -26,14 +26,14 @@ export default class Terrace extends Template {
             insideRadius: 0.7 * 1000,
             outsideRadius: 1 * 1000,
             length: 4.0 * 1000,
-            height: 1.1 * 1000
+            depth: 1.1 * 1000
         };
 
         this.__units = {
             componentSpacing: "μm",
             insideRadius: "μm",
             outsideRadius: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -41,7 +41,7 @@ export default class Terrace extends Template {
             insideRadius: 0.5 * 10,
             outsideRadius: 0.8 * 10,
             length: 1.0 * 10,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
@@ -49,7 +49,7 @@ export default class Terrace extends Template {
             insideRadius: 5000,
             outsideRadius: 5000,
             length: 20000,
-            height: 1200
+            depth: 1200
         };
 
         this.__placementTool = "componentPositionTool";
@@ -78,7 +78,7 @@ export default class Terrace extends Template {
         this.__mint = "TERRACE";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

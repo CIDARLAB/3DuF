@@ -23,7 +23,7 @@ export default class Mux extends Template {
             stageSpace: "Float",
             valveWidthX: "Float",
             valveWidthY: "Float",
-            height: "Float",
+            depth: "Float",
             rotation: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float",
@@ -39,7 +39,7 @@ export default class Mux extends Template {
             stageSpace: 4000,
             valveWidthX: 1800,
             valveWidthY: 1000,
-            height: 250,
+            depth: 250,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0,
@@ -55,7 +55,7 @@ export default class Mux extends Template {
             stageSpace: "μm",
             valveWidthX: "μm",
             valveWidthY: "μm",
-            height: "μm",
+            depth: "μm",
             rotation: "°",
             componentSpacing: "μm"
         };
@@ -68,7 +68,7 @@ export default class Mux extends Template {
             out: 2,
             valveWidthX: 60,
             valveWidthY: 60,
-            height: 10,
+            depth: 10,
             stageSpace: 100,
             controlChannelWidth: 10,
             rotation: 0,
@@ -84,7 +84,7 @@ export default class Mux extends Template {
             out: 1024,
             valveWidthX: 12 * 1000,
             valveWidthY: 12 * 1000,
-            height: 1200,
+            depth: 1200,
             stageSpace: 20000,
             controlChannelWidth: 2000,
             rotation: 360,
@@ -135,8 +135,8 @@ export default class Mux extends Template {
         this.__mint = "MUX";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height"
+            FLOW: "depth",
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

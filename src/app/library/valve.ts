@@ -19,7 +19,7 @@ export default class Valve extends ValveTemplate {
             rotation: "Float",
             length: "Float",
             width: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -27,9 +27,9 @@ export default class Valve extends ValveTemplate {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            width: 1.23 * 1000,
-            length: 4.92 * 1000,
-            height: 250,
+            width: 2000,
+            length: 1000,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -39,7 +39,7 @@ export default class Valve extends ValveTemplate {
             rotation: "°",
             length: "μm",
             width: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -47,7 +47,7 @@ export default class Valve extends ValveTemplate {
             rotation: 0,
             width: 30,
             length: 120,
-            height: 10,
+            depth: 10,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -57,7 +57,7 @@ export default class Valve extends ValveTemplate {
             rotation: 180,
             width: 6000,
             length: 24 * 1000,
-            height: 1200,
+            depth: 1200,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -92,7 +92,7 @@ export default class Valve extends ValveTemplate {
         this.__mint = "VALVE";
 
         this.__zOffsetKeys = {
-            CONTROL: "height"
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

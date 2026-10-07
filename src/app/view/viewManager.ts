@@ -1371,7 +1371,7 @@ export default class ViewManager {
                 rotation: sourceFeature.getValue("rotation"),
                 componentSpacing: sourceFeature.getValue("componentSpacing"),
                 valveRadius: sourceFeature.getValue("valveRadius"),
-                height: sourceFeature.getValue("height"),
+                depth: sourceFeature.getValue("depth"),
                 gap: sourceFeature.getValue("gap"),
                 width: sourceFeature.getValue("width"),
                 length: sourceFeature.getValue("length")
@@ -1454,7 +1454,7 @@ export default class ViewManager {
                     rotation: feature.getValue("rotation"),
                     componentSpacing: feature.getValue("componentSpacing"),
                     valveRadius: feature.getValue("valveRadius"),
-                    height: feature.getValue("height"),
+                    depth: feature.getValue("depth"),
                     gap: feature.getValue("gap"),
                     width: feature.getValue("width"),
                     length: feature.getValue("length")

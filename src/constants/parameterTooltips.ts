@@ -7,10 +7,11 @@ const COMMON: Record<string, string> = {
     crossSection:
         "Channel type for Connection routes: 0 = rectangular cross-section with square (flat) ends in the layout view; 1 = rounded type with semicircular ends (stadium outline), consistent with a circular channel cross-section. JSON keeps this key; MINT writes RoundedChannel=1/0.",
     channelWidth: "In-plane width of the microfluidic channel (perpendicular to flow in the top view).",
-    height: "Vertical depth (z-span) of the feature on the active layer, used for 3D export and layer offsets.",
+    depth: "Etch / extrusion depth (z) for this feature on its layer. One depth per component/layer. For region-specific z, export DXF and refine in Fusion 360.",
+    height: "Legacy alias for depth (etch / extrusion z). Prefer depth.",
     connectionSpacing: "Minimum spacing kept between separate connection routes when autorouting or editing.",
     componentSpacing: "Keepout halo around the component body (µm). Place-and-route keeps other components and channel bodies outside this band. Users and DIY components may override the default.",
-    channelRadius: "Radius of a circular channel cross-section; the tool keeps width and depth consistent with this radius.",
+    channelRadius: "Radius of a circular channel cross-section; the tool keeps width and etch depth consistent with this radius.",
     bendSpacing: "Distance between consecutive bends in a serpentine or curved path.",
     numberOfBends: "Count of 180° bends in the mixer or channel path.",
     bendLength: "Straight segment length used for each full mixer bend.",
@@ -20,7 +21,6 @@ const COMMON: Record<string, string> = {
     position: "Placement anchor position of the component or feature.",
     length: "Overall length along the dominant axis. On a MUX this is the valve pad (use valveWidthY). On CHANNEL this is a minimum route length. On old 3DuF device JSON, length was canvas height (now y-span).",
     width: "Overall width of the geometry in the layout plane.",
-    depth: "Depth or thickness of the structure where applicable.",
     radius: "Corner or fillet radius for rounded geometry.",
     diameter: "Diameter of circular ports, chambers, or pillars.",
     spacing: "BANK instance spacing, or a pump/chamber pitch. MUX/TREE/YTREE use leafSpace.",
@@ -29,12 +29,14 @@ const COMMON: Record<string, string> = {
     stageLength: "Legacy along-tree stage spacing; use stageSpace.",
     stageSpace: "Along-tree spacing of successive MUX/TREE/YTREE flow stages.",
     valveRadius: "Radius of the circular valve membrane or actuation region.",
+    gap: "Flow-gap slit through a VALVE3D membrane (perpendicular to the host channel).",
+    valveGap: "Flow-gap slit through each MUX3D / TRANSPOSER valve membrane.",
     flowChannelWidth: "Width of the primary fluidic channel on the flow layer.",
     controlChannelWidth: "Width of the pneumatic control channel on the control layer.",
     chamberLength: "Length of the reaction or trapping chamber.",
     chamberWidth: "Width of the reaction or trapping chamber.",
     inletLength: "Length of the inlet channel segment before the main body.",
-    outletLength: "Length of the outlet channel segment after the main body.",
+    outletLength: "Length of an outlet channel. On MUX3D this is the full vertical length of each straight leaf/outlet channel.",
     portRadius: "Radius of a circular port opening.",
     numberOfCells: "Number of trapping cells or chambers in the array.",
     cellWidth: "Width of a single cell trap or compartment.",
@@ -76,12 +78,13 @@ const BY_FEATURE: Record<string, Record<string, string>> = {
     Connection: {
         connectionSpacing: "Minimum clearance enforced between separate connection paths on the canvas.",
         channelWidth: "Drawn width of the routed connection segment in the plane of the flow layer.",
-        height: "Extruded depth used when exporting or stacking this connection geometry.",
-        channelRadius: "For a rounded channel type, half of the effective channel width; width and depth follow this radius."
+        depth: "Etch / extrusion depth for this connection on its layer. One depth per feature; refine local z in Fusion 360 after DXF export if needed.",
+        height: "Legacy alias for depth on connections.",
+        channelRadius: "For a rounded channel type, half of the effective channel width; width and etch depth follow this radius."
     },
     "ALIGNMENT MARKS": {
         width: "Width of the alignment mark pattern.",
-        height: "Height of the alignment mark pattern."
+        depth: "Etch / extrusion depth of the alignment mark pattern."
     },
     MUX: {
         leafPitch: "Legacy MUX leaf spacing; use leafSpace.",
@@ -93,6 +96,17 @@ const BY_FEATURE: Record<string, Record<string, string>> = {
         length: "Legacy up-down valve size; use valveWidthY.",
         stageLength: "Legacy MUX/TREE stage spacing; use stageSpace.",
         stageSpace: "Along-tree spacing of successive flow stages."
+    },
+    MUX3D: {
+        leafSpace: "Horizontal pitch between adjacent MUX3D leaf/outlet channels.",
+        outletLength: "Full vertical length of each straight MUX3D outlet channel. Valves on the same channel use the MUX 0.3/0.7 stage split.",
+        stageSpace: "Legacy vertical pitch (outletLength ≈ N × stageSpace). Prefer outletLength.",
+        flowChannelWidth: "Width of the MUX3D flow-layer channels.",
+        controlChannelWidth: "Width of the MUX3D control-layer buses.",
+        valveGap: "Flow slit through each 3D valve membrane on the flow layer.",
+        gap: "Legacy alias for valveGap.",
+        channelWidth: "Legacy alias for flowChannelWidth.",
+        valveRadius: "Radius of each 3D valve membrane."
     }
 };
 

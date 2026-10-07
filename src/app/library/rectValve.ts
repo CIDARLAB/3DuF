@@ -14,31 +14,31 @@ export default class RectValve extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             portRadius: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 2000,
             portRadius: 1000,
-            height: 250
+            depth: 250
         };
 
         this.__units = {
             componentSpacing: "μm",
             portRadius: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             portRadius: 0.8 * 10,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
             componentSpacing: 10000,
             portRadius: 2000,
-            height: 1200
+            depth: 1200
         };
 
         this.__placementTool = "componentPositionTool";
@@ -52,8 +52,8 @@ export default class RectValve extends Template {
         this.__mint = "VALVE";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height"
+            FLOW: "depth",
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

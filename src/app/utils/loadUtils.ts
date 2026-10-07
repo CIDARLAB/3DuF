@@ -435,7 +435,8 @@ export default class LoadUtils {
     static loadFeaturesFromConnectionInterchangeV1(json: DeviceInterchangeV1, jsonlayer: LayerInterchangeV1): Array<Feature> {
         const ret: Array<Feature> = [];
         const typestring = "Connection";
-        const defaultHeight = ComponentAPI.getDefaultsForType(typestring).height;
+        const defaults = ComponentAPI.getDefaultsForType(typestring);
+        const defaultDepth = defaults.depth ?? defaults.height;
         for (const i in json.connections) {
             const connectionJson = json.connections[i];
             if (jsonlayer.id != connectionJson.layer) {
@@ -478,7 +479,11 @@ export default class LoadUtils {
                 connectionSpacing: rawParams.connectionSpacing,
                 channelWidth: connectionChannelWidth(rawParams),
                 width: connectionChannelWidth(rawParams),
-                height: Object.prototype.hasOwnProperty.call(rawParams, "height") ? rawParams.height : defaultHeight,
+                depth: Object.prototype.hasOwnProperty.call(rawParams, "depth")
+                    ? rawParams.depth
+                    : Object.prototype.hasOwnProperty.call(rawParams, "height")
+                        ? rawParams.height
+                        : defaultDepth,
                 crossSection: Object.prototype.hasOwnProperty.call(rawParams, "crossSection")
                     ? rawParams.crossSection
                     : inferredCrossSection
@@ -622,8 +627,13 @@ export default class LoadUtils {
                     ];
                 }
             }
-            if (!Object.prototype.hasOwnProperty.call(params, "height")) {
-                params.height = ComponentAPI.getDefaultsForType("Connection").height;
+            if (Object.prototype.hasOwnProperty.call(params, "height") && !Object.prototype.hasOwnProperty.call(params, "depth")) {
+                params.depth = params.height;
+                delete params.height;
+            }
+            if (!Object.prototype.hasOwnProperty.call(params, "depth")) {
+                const connDefaults = ComponentAPI.getDefaultsForType("Connection");
+                params.depth = connDefaults.depth ?? connDefaults.height;
             }
             if (!Object.prototype.hasOwnProperty.call(params, "crossSection")) {
                 params.crossSection = inferredCrossSection;
@@ -645,7 +655,10 @@ export default class LoadUtils {
                     connectionSpacing: rawParams.connectionSpacing,
                     channelWidth: connectionChannelWidth(rawParams),
                     width: connectionChannelWidth(rawParams),
-                    height: ComponentAPI.getDefaultsForType(typestring).height,
+                    depth: (() => {
+                        const d = ComponentAPI.getDefaultsForType(typestring);
+                        return d.depth ?? d.height;
+                    })(),
                     crossSection: inferredCrossSection
                 };
             } else {

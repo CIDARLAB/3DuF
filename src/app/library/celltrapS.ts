@@ -16,7 +16,7 @@ export default class CellTrapS extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             channelWidth: "Float",
             channelLength: "Float",
             chamberWidth: "Float",
@@ -29,7 +29,7 @@ export default class CellTrapS extends Template {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            height: 250,
+            depth: 250,
             channelWidth: 1 * 1000,
             channelLength: 4 * 1000,
             chamberWidth: 2.5 * 1000,
@@ -42,7 +42,7 @@ export default class CellTrapS extends Template {
         this.__units = {
             componentSpacing: "μm",
             rotation: "°",
-            height: "μm",
+            depth: "μm",
             channelWidth: "μm",
             channelLength: "μm",
             chamberWidth: "μm",
@@ -53,7 +53,7 @@ export default class CellTrapS extends Template {
         this.__minimum = {
             componentSpacing: 0,
             rotation: 0,
-            height: 10,
+            depth: 10,
             channelWidth: 0.5 * 1000,
             channelLength: 2.5 * 1000,
             chamberWidth: 1.5 * 1000,
@@ -66,7 +66,7 @@ export default class CellTrapS extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             rotation: 360,
-            height: 1200,
+            depth: 1200,
             channelWidth: 2 * 1000,
             channelLength: 6 * 1000,
             chamberWidth: 4 * 1000,
@@ -80,7 +80,7 @@ export default class CellTrapS extends Template {
             componentSpacing: "componentSpacing",
             position: "position",
             rotation: "rotation",
-            height: "height",
+            depth: "depth",
             channelWidth: "channelWidth",
             channelLength: "channelLength",
             chamberWidth: "chamberWidth",
@@ -93,7 +93,7 @@ export default class CellTrapS extends Template {
         this.__targetParams = {
             componentSpacing: "componentSpacing",
             rotation: "rotation",
-            height: "height",
+            depth: "depth",
             channelWidth: "channelWidth",
             channelLength: "channelLength",
             chamberWidth: "chamberWidth",
@@ -114,7 +114,7 @@ export default class CellTrapS extends Template {
         this.__mint = "SQUARE CELL TRAP";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
+            FLOW: "depth",
             CELL: "chamberHeight"
         };
 

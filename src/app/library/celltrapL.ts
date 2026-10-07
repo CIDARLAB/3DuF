@@ -21,7 +21,7 @@ export default class CellTrapL extends Template {
             chamberWidth: "Float",
             numberOfChambers: "Float",
             chamberSpacing: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -34,7 +34,7 @@ export default class CellTrapL extends Template {
             chamberWidth: 1.23 * 1000,
             numberOfChambers: 6,
             chamberSpacing: 2.46 * 1000,
-            height: 250,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -47,7 +47,7 @@ export default class CellTrapL extends Template {
             chamberWidth: "μm",
             numberOfChambers: "",
             chamberSpacing: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -57,7 +57,7 @@ export default class CellTrapL extends Template {
             chamberWidth: 30,
             numberOfChambers: 1,
             chamberSpacing: 30,
-            height: 10,
+            depth: 10,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -70,7 +70,7 @@ export default class CellTrapL extends Template {
             chamberWidth: 6000,
             numberOfChambers: 100,
             chamberSpacing: 12 * 1000,
-            height: 1200,
+            depth: 1200,
             rotation: 360,
             mirrorByX: 1,
             mirrorByY: 1
@@ -85,7 +85,7 @@ export default class CellTrapL extends Template {
             numberOfChambers: "numberOfChambers",
             chamberSpacing: "chamberSpacing",
             feedingChannelWidth: "feedingChannelWidth",
-            height: "height",
+            depth: "depth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -98,7 +98,7 @@ export default class CellTrapL extends Template {
             numberOfChambers: "numberOfChambers",
             chamberSpacing: "chamberSpacing",
             feedingChannelWidth: "feedingChannelWidth",
-            height: "height",
+            depth: "depth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -114,8 +114,8 @@ export default class CellTrapL extends Template {
         this.__mint = "LONG CELL TRAP";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CELL: "height"
+            FLOW: "depth",
+            CELL: "depth"
         };
 
         this.__substrateOffset = {

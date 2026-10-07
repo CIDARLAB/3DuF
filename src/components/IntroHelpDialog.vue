@@ -219,9 +219,11 @@ export default {
                         "Component and connection settings show the netlist ID from the imported JSON for cross-checking with Parchmint / Neptune.",
                         "Mixer settings include edgeBend1 / edgeBend2; ports sit at the tip-square center. Connecting channels (rounded or square, any width) terminate on that same center. Default bendSpacing is 1400 µm and bendLength is 2000 µm.",
                         "MUX / TREE / YTREE settings use leafSpace and stageSpace; MUX valve pads use valveWidthX / valveWidthY. YTREE ports sit at RoundedChannel stadium-cap centers.",
+                        "MUX3D settings use leafSpace and outletLength (straight outlet-channel length). Changing out rebuilds side CONTROL ports so leftover dots from a larger mux disappear.",
                         "Parameter tables sort related keys together, and componentSpacing keepout is visible with a 2000 µm default.",
                         "Connection sidebar labels Channel type (square vs rounded); Edit Device refreshes spans when opened after a load; Move / Specify Position uses µm.",
-                        "Parchmint FLOW and CONTROL layers open on the same physical level in the layer toolbar instead of as separate levels."
+                        "Parchmint FLOW and CONTROL layers open on the same physical level in the layer toolbar instead of as separate levels.",
+                        "Each component uses a single depth (etch/extrusion z) on its layer. For region-specific depths, export DXF and edit in Fusion 360."
                     ],
                     workflowImprovements: [
                         "Use Ports view when preparing a cover layer: even droplet devices need a closed second layer so fluid can flow inside channels instead of open grooves.",
@@ -230,7 +232,8 @@ export default {
                         "A channel terminates on the mixer tip-square center (and on its own tip-circle / tip-square center) regardless of which side is wider.",
                         "VALVE3D flow gaps are clipped geometrically on import so the host channel stays interrupted at the valve slit.",
                         "Reset on an imported object restores its uploaded JSON parameters; hand-placed objects still reset to library defaults.",
-                        "Import / Escape clears placement ghosts so zoom cannot resurrect a stale component. Older JSON is filled with missing library defaults so new parameters still appear after you reopen a design."
+                        "Import / Escape clears placement ghosts so zoom cannot resurrect a stale component. Older JSON is filled with missing library defaults so new parameters still appear after you reopen a design.",
+                        "3DuF models one depth per feature/layer. After DXF export you can refine local depths in Fusion 360 if needed."
                     ],
                     // Placeholder: v1.2 videos are not ready yet, so reuse existing tutorials.
                     introductionVideoUrl: "https://www.youtube.com/embed/05nU8eQ73U8",

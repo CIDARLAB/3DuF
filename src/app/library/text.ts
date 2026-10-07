@@ -13,28 +13,28 @@ export default class Text extends Template {
 
         this.__heritable = {
             text: "String",
-            height: "Float",
+            depth: "Float",
             fontSize: "Float"
         };
 
         this.__defaults = {
             fontSize: 10000 / 3,
-            height: 250
+            depth: 250
         };
 
         this.__units = {
             fontSize: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             fontSize: 10000 / 3,
-            height: 1
+            depth: 1
         };
 
         this.__maximum = {
             fontSize: 10000 / 3,
-            height: 10000
+            depth: 10000
         };
 
         this.__toolParams = {
@@ -45,13 +45,13 @@ export default class Text extends Template {
             position: "position",
             text: "text",
             fontSize: "fontSize",
-            height: "height"
+            depth: "depth"
         };
 
         this.__targetParams = {
             text: "text",
             fontSize: "fontSize",
-            height: "height"
+            depth: "depth"
         };
 
         this.__placementTool = "PositionTool";
@@ -61,7 +61,7 @@ export default class Text extends Template {
         this.__mint = "TEXT";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

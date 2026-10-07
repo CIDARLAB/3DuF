@@ -131,31 +131,31 @@ export default class CustomComponent extends Template {
                 rotation: "Float",
                 // "x-scale": "Float",
                 // "width": "Float",
-                height: "Float"
+                depth: "Float"
             },
             units: {
                 rotation: "°",
                 // "length": "μm",
                 // "width": "μm",
-                height: "μm"
+                depth: "μm"
             },
             defaults: {
                 rotation: 0,
                 // "width": 1.23 * 1000,
                 // "length": 4.92 * 1000,
-                height: 0.1 * 1000
+                depth: 0.1 * 1000
             },
             minimum: {
                 rotation: 0,
                 // "width": 30,
                 // "length": 120,
-                height: 1
+                depth: 1
             },
             maximum: {
                 rotation: 359,
                 // "width": 6000,
                 // "length": 24 * 1000,
-                height: 1200
+                depth: 1200
             },
             mint: ""
         };

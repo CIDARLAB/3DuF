@@ -23,7 +23,7 @@ export default class ThreeDMixer extends Template {
             edgeBend2: "Float",
             bendLength: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -37,7 +37,7 @@ export default class ThreeDMixer extends Template {
             numberOfBends: 1,
             rotation: 0,
             bendLength: DEFAULT_MIXER_BEND_LENGTH_UM,
-            height: 250,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -51,7 +51,7 @@ export default class ThreeDMixer extends Template {
             edgeBend2: "μm",
             bendLength: "μm",
             rotation: "°",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -63,7 +63,7 @@ export default class ThreeDMixer extends Template {
             numberOfBends: 1,
             rotation: 0,
             bendLength: 10,
-            height: 10,
+            depth: 10,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -77,7 +77,7 @@ export default class ThreeDMixer extends Template {
             numberOfBends: 20,
             rotation: 360,
             bendLength: 12 * 1000,
-            height: 1200,
+            depth: 1200,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -120,8 +120,8 @@ export default class ThreeDMixer extends Template {
         this.__mint = "MIXER3D";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height"
+            FLOW: "depth",
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

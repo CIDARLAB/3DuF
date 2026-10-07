@@ -4,7 +4,7 @@ import paper from "paper";
 import { Point } from "@/app/core/init";
 
 function getLayerColor(feature: any) {
-    const height = feature.getValue("height");
+    const height = feature.getValue("depth");
     const layerHeight = 1; // feature.layer.estimateLayerHeight();
     let decimal = height / layerHeight;
     if (decimal > 1) decimal = 1;

@@ -16,31 +16,31 @@ export default class Via extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             radius: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 2000,
             radius: 0.7 * 1000,
-            height: 0
+            depth: 0
         };
 
         this.__units = {
             componentSpacing: "μm",
             radius: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             radius: 0.8 * 10,
-            height: 0
+            depth: 0
         };
 
         this.__maximum = {
             componentSpacing: 10000,
             radius: 2000,
-            height: 0
+            depth: 0
         };
 
         this.__placementTool = "componentPositionTool";
@@ -65,7 +65,7 @@ export default class Via extends Template {
         this.__mint = "VIA";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

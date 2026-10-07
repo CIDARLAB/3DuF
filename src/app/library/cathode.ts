@@ -18,7 +18,7 @@ export default class Cahode extends Template {
             cathodeRadius: "Float",
             pegRadius: "Float",
             pegThickness: "Float",
-            height: "Float",
+            depth: "Float",
             rotation: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -29,7 +29,7 @@ export default class Cahode extends Template {
             cathodeRadius: 0.9 * 1000,
             pegRadius: 0.7 * 1000,
             pegThickness: 0.3 * 1000,
-            height: 1.1 * 1000,
+            depth: 1.1 * 1000,
             rotation: 0
         };
 
@@ -38,7 +38,7 @@ export default class Cahode extends Template {
             cathodeRadius: "μm",
             pegRadius: "μm",
             pegThickness: "μm",
-            height: "μm",
+            depth: "μm",
             rotation: "°"
         };
 
@@ -47,7 +47,7 @@ export default class Cahode extends Template {
             cathodeRadius: 0.4 * 10,
             pegRadius: 0.1 * 1000,
             pegThickness: 0.1 * 1000,
-            height: 10,
+            depth: 10,
             rotation: 0
         };
 
@@ -56,7 +56,7 @@ export default class Cahode extends Template {
             cathodeRadius: 2000,
             pegRadius: 2 * 1000,
             pegThickness: 2 * 1000,
-            height: 1200,
+            depth: 1200,
             rotation: 90
         };
 

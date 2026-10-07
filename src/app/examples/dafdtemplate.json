@@ -1,12 +1,22 @@
 {
     "name": "DAFD Template",
-    "params": { "width": 135000, "length": 85000 },
+    "params": {
+        "width": 135000,
+        "length": 85000
+    },
     "components": [
         {
             "id": "e958b4d0-6155-11e9-89ad-d58be75aeb6f",
             "name": "Port_in",
             "entity": "PORT",
-            "params": { "position": [30000, 40000], "portRadius": 1998, "height": 1100 },
+            "params": {
+                "position": [
+                    30000,
+                    40000
+                ],
+                "portRadius": 1998,
+                "depth": 1100
+            },
             "xspan": 3996,
             "yspan": 3996,
             "ports": []
@@ -15,7 +25,14 @@
             "id": "eadf7be0-6155-11e9-89ad-d58be75aeb6f",
             "name": "Port_out",
             "entity": "PORT",
-            "params": { "position": [110000, 40000], "portRadius": 1998, "height": 1100 },
+            "params": {
+                "position": [
+                    110000,
+                    40000
+                ],
+                "portRadius": 1998,
+                "depth": 1100
+            },
             "xspan": 3996,
             "yspan": 3996,
             "ports": []
@@ -24,7 +41,14 @@
             "id": "ec125690-6155-11e9-89ad-d58be75aeb6f",
             "name": "Port_oil1",
             "entity": "PORT",
-            "params": { "position": [60000, 10000], "portRadius": 1998, "height": 1100 },
+            "params": {
+                "position": [
+                    60000,
+                    10000
+                ],
+                "portRadius": 1998,
+                "depth": 1100
+            },
             "xspan": 3996,
             "yspan": 3996,
             "ports": []
@@ -33,7 +57,14 @@
             "id": "f0839360-6155-11e9-89ad-d58be75aeb6f",
             "name": "Port_oil2",
             "entity": "PORT",
-            "params": { "position": [60000, 70000], "portRadius": 1998, "height": 1100 },
+            "params": {
+                "position": [
+                    60000,
+                    70000
+                ],
+                "portRadius": 1998,
+                "depth": 1100
+            },
             "xspan": 3996,
             "yspan": 3996,
             "ports": []
@@ -43,22 +74,45 @@
             "name": "DropletGen_1",
             "entity": "NOZZLE DROPLET GENERATOR",
             "params": {
-                "position": [60000, 40000],
+                "position": [
+                    60000,
+                    40000
+                ],
                 "orificeSize": 200,
                 "orificeLength": 400,
                 "oilInputWidth": 800,
                 "waterInputWidth": 600,
                 "outputWidth": 600,
                 "outputLength": 600,
-                "height": 250
+                "depth": 250
             },
             "xspan": 1800,
             "yspan": 600,
             "ports": [
-                { "x": 400, "y": -300, "layer": "FLOW", "label": "1" },
-                { "x": 1800, "y": 0, "layer": "FLOW", "label": "2" },
-                { "x": 400, "y": 300, "layer": "FLOW", "label": "3" },
-                { "x": 0, "y": 0, "layer": "FLOW", "label": "4" }
+                {
+                    "x": 400,
+                    "y": -300,
+                    "layer": "FLOW",
+                    "label": "1"
+                },
+                {
+                    "x": 1800,
+                    "y": 0,
+                    "layer": "FLOW",
+                    "label": "2"
+                },
+                {
+                    "x": 400,
+                    "y": 300,
+                    "layer": "FLOW",
+                    "label": "3"
+                },
+                {
+                    "x": 0,
+                    "y": 0,
+                    "layer": "FLOW",
+                    "label": "4"
+                }
             ]
         }
     ],
@@ -67,7 +121,10 @@
         {
             "name": "flow",
             "color": "indigo",
-            "params": { "z_offset": 0, "flip": false },
+            "params": {
+                "z_offset": 0,
+                "flip": false
+            },
             "features": {
                 "e957f180-6155-11e9-89ad-d58be75aeb6f": {
                     "id": "e957f180-6155-11e9-89ad-d58be75aeb6f",
@@ -75,7 +132,14 @@
                     "macro": "Port",
                     "set": "Basic",
                     "referenceID": "e958b4d0-6155-11e9-89ad-d58be75aeb6f",
-                    "params": { "position": [30000, 40000], "portRadius": 1998, "height": 1100 },
+                    "params": {
+                        "position": [
+                            30000,
+                            40000
+                        ],
+                        "portRadius": 1998,
+                        "height": 1100
+                    },
                     "dxfData": [],
                     "type": "XY"
                 },
@@ -85,7 +149,14 @@
                     "macro": "Port",
                     "set": "Basic",
                     "referenceID": "eadf7be0-6155-11e9-89ad-d58be75aeb6f",
-                    "params": { "position": [110000, 40000], "portRadius": 1998, "height": 1100 },
+                    "params": {
+                        "position": [
+                            110000,
+                            40000
+                        ],
+                        "portRadius": 1998,
+                        "height": 1100
+                    },
                     "dxfData": [],
                     "type": "XY"
                 },
@@ -95,7 +166,14 @@
                     "macro": "Port",
                     "set": "Basic",
                     "referenceID": "ec125690-6155-11e9-89ad-d58be75aeb6f",
-                    "params": { "position": [60000, 10000], "portRadius": 1998, "height": 1100 },
+                    "params": {
+                        "position": [
+                            60000,
+                            10000
+                        ],
+                        "portRadius": 1998,
+                        "height": 1100
+                    },
                     "dxfData": [],
                     "type": "XY"
                 },
@@ -105,7 +183,14 @@
                     "macro": "Port",
                     "set": "Basic",
                     "referenceID": "f0839360-6155-11e9-89ad-d58be75aeb6f",
-                    "params": { "position": [60000, 70000], "portRadius": 1998, "height": 1100 },
+                    "params": {
+                        "position": [
+                            60000,
+                            70000
+                        ],
+                        "portRadius": 1998,
+                        "height": 1100
+                    },
                     "dxfData": [],
                     "type": "XY"
                 },
@@ -130,7 +215,17 @@
                     "name": "Transition_3",
                     "macro": "Transition",
                     "set": "Basic",
-                    "params": { "position": [30500, 40000], "cw1": 2000, "cw2": 900, "length": 10000, "rotation": 270, "height": 250 },
+                    "params": {
+                        "position": [
+                            30500,
+                            40000
+                        ],
+                        "cw1": 2000,
+                        "cw2": 900,
+                        "length": 10000,
+                        "rotation": 270,
+                        "height": 250
+                    },
                     "dxfData": [],
                     "type": "XY"
                 },
@@ -139,7 +234,17 @@
                     "name": "Transition_4",
                     "macro": "Transition",
                     "set": "Basic",
-                    "params": { "position": [110000, 40000], "cw1": 2000, "cw2": 900, "length": 10000, "rotation": 90, "height": 250 },
+                    "params": {
+                        "position": [
+                            110000,
+                            40000
+                        ],
+                        "cw1": 2000,
+                        "cw2": 900,
+                        "length": 10000,
+                        "rotation": 90,
+                        "height": 250
+                    },
                     "dxfData": [],
                     "type": "XY"
                 },
@@ -148,7 +253,17 @@
                     "name": "Transition_5",
                     "macro": "Transition",
                     "set": "Basic",
-                    "params": { "position": [60000, 70000], "cw1": 2000, "cw2": 800, "length": 10000, "rotation": 180, "height": 250 },
+                    "params": {
+                        "position": [
+                            60000,
+                            70000
+                        ],
+                        "cw1": 2000,
+                        "cw2": 800,
+                        "length": 10000,
+                        "rotation": 180,
+                        "height": 250
+                    },
                     "dxfData": [],
                     "type": "XY"
                 },
@@ -157,7 +272,16 @@
                     "name": "Transition_6",
                     "macro": "Transition",
                     "set": "Basic",
-                    "params": { "position": [60000, 10000], "cw1": 2000, "cw2": 800, "length": 10000, "height": 250 },
+                    "params": {
+                        "position": [
+                            60000,
+                            10000
+                        ],
+                        "cw1": 2000,
+                        "cw2": 800,
+                        "length": 10000,
+                        "height": 250
+                    },
                     "dxfData": [],
                     "type": "XY"
                 },
@@ -168,7 +292,10 @@
                     "set": "Basic",
                     "referenceID": "b6d5c690-d628-11e9-9185-859b5727feb8",
                     "params": {
-                        "position": [60000, 40000],
+                        "position": [
+                            60000,
+                            40000
+                        ],
                         "orificeSize": 200,
                         "orificeLength": 400,
                         "oilInputWidth": 800,
@@ -185,7 +312,10 @@
         {
             "name": "control",
             "color": "red",
-            "params": { "z_offset": 1200, "flip": true },
+            "params": {
+                "z_offset": 1200,
+                "flip": true
+            },
             "features": {
                 "2ea7a050-6156-11e9-89ad-d58be75aeb6f": {
                     "id": "2ea7a050-6156-11e9-89ad-d58be75aeb6f",
@@ -208,7 +338,10 @@
         {
             "name": "cells",
             "color": "indigo",
-            "params": { "z_offset": 2000, "flip": false },
+            "params": {
+                "z_offset": 2000,
+                "flip": false
+            },
             "features": {
                 "2ea7a050-6156-11e9-89ad-d58be75aeb6f": {
                     "id": "2ea7a050-6156-11e9-89ad-d58be75aeb6f",

@@ -178,7 +178,7 @@ export default {
             snapshot: {
                 connectionSpacing: 1600,
                 channelWidth: 800,
-                height: 250
+                depth: 250
             },
             isManualMenuPosition: false,
             isDraggingMenu: false,
@@ -341,7 +341,7 @@ export default {
                     const feature = Registry.currentDevice.getFeatureByID(firstFeatureID);
                     featureValues.connectionSpacing = feature.getValue("connectionSpacing");
                     featureValues.channelWidth = feature.getValue("channelWidth");
-                    featureValues.height = feature.getValue("height");
+                    featureValues.depth = feature.getValue("depth");
                     featureValues.crossSection = feature.getValue("crossSection");
                 } catch {
                     // Fallback to connection params below.
@@ -360,7 +360,7 @@ export default {
             this.snapshot = {
                 connectionSpacing: toNumber("connectionSpacing", 1600),
                 channelWidth: toNumber("channelWidth", 800),
-                height: toNumber("height", 250)
+                depth: toNumber("depth", 250)
             };
             let crossSection = 0;
             try {
@@ -399,7 +399,7 @@ export default {
             this.spec = [
                 specItemFromDef(def, "connectionSpacing", this.snapshot.connectionSpacing),
                 specItemFromDef(def, "channelWidth", this.snapshot.channelWidth),
-                specItemFromDef(def, "height", this.snapshot.height)
+                specItemFromDef(def, "depth", this.snapshot.depth)
             ];
         },
         syncSpecItemToSnapshot(name, value) {
@@ -407,10 +407,10 @@ export default {
             if (!Number.isFinite(n)) return;
             if (name === "connectionSpacing") this.snapshot.connectionSpacing = n;
             else if (name === "channelWidth") this.snapshot.channelWidth = n;
-            else if (name === "height") this.snapshot.height = n;
+            else if (name === "depth") this.snapshot.depth = n;
             else if (name === "channelRadius") {
                 this.snapshot.channelWidth = n * 2;
-                this.snapshot.height = n * 2;
+                this.snapshot.depth = n * 2;
             }
         },
         _getContextMenuRootEl() {
@@ -463,7 +463,7 @@ export default {
             }
             this.currentConnection.updateParameter("connectionSpacing", this.snapshot.connectionSpacing);
             this.currentConnection.updateParameter("channelWidth", this.snapshot.channelWidth);
-            this.currentConnection.updateParameter("height", this.snapshot.height);
+            this.currentConnection.updateParameter("depth", this.snapshot.depth);
             this.currentConnection.updateParameter("crossSection", this.profileMintToCrossSection(this.selectedProfile));
             this.refreshConnectionRender();
             this.rebuildSettingsSpec();
@@ -606,7 +606,7 @@ export default {
         onSelectedProfileChanged(newVal, oldVal) {
             if (newVal === oldVal) return;
             if (this.profileMintToCrossSection(oldVal) < 0.5 && this.profileMintToCrossSection(newVal) >= 0.5) {
-                this.snapshot.height = this.snapshot.channelWidth;
+                this.snapshot.depth = this.snapshot.channelWidth;
             }
             this.rebuildSettingsSpec();
         }

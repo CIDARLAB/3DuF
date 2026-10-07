@@ -18,7 +18,7 @@ export default class Transition extends Template {
             cw2: "Float",
             length: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -29,7 +29,7 @@ export default class Transition extends Template {
             cw2: 0.9 * 1000,
             length: 1.0 * 1000,
             rotation: 0,
-            height: 250,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -40,7 +40,7 @@ export default class Transition extends Template {
             cw2: "μm",
             length: "μm",
             rotation: "°",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -48,7 +48,7 @@ export default class Transition extends Template {
             cw1: 3,
             cw2: 3,
             length: 10,
-            height: 10,
+            depth: 10,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -60,7 +60,7 @@ export default class Transition extends Template {
             cw1: 2000,
             cw2: 2000,
             length: 1200,
-            height: 1200,
+            depth: 1200,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -97,7 +97,7 @@ export default class Transition extends Template {
         this.__mint = "TRANSITION";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

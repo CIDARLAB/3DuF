@@ -24,7 +24,7 @@ export default class RotaryMixer extends Template {
             valveWidth: "Float",
             valveLength: "Float",
             valveSpacing: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -39,7 +39,7 @@ export default class RotaryMixer extends Template {
             valveLength: 1 * 1000,
             valveSpacing: 300,
             valveRadius: 1.2 * 1000,
-            height: 250,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -53,7 +53,7 @@ export default class RotaryMixer extends Template {
             valveWidth: "μm",
             valveLength: "μm",
             valveSpacing: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -65,7 +65,7 @@ export default class RotaryMixer extends Template {
             valveLength: 0.1 * 2.4 * 1000,
             valveSpacing: 0.1 * 300,
             valveRadius: 0.1 * 1.2 * 1000,
-            height: 0.1 * 200,
+            depth: 0.1 * 200,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -80,7 +80,7 @@ export default class RotaryMixer extends Template {
             valveLength: 10 * 2.4 * 1000,
             valveSpacing: 10 * 300,
             valveRadius: 10 * 1.2 * 1000,
-            height: 10 * 200,
+            depth: 10 * 200,
             rotation: 360,
             mirrorByX: 1,
             mirrorByY: 1
@@ -102,7 +102,7 @@ export default class RotaryMixer extends Template {
             valveWidth: "valveWidth",
             valveLength: "valveLength",
             valveSpacing: "valveSpacing",
-            height: "height",
+            depth: "depth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -117,7 +117,7 @@ export default class RotaryMixer extends Template {
             valveWidth: "valveWidth",
             valveLength: "valveLength",
             valveSpacing: "valveSpacing",
-            height: "height",
+            depth: "depth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -127,8 +127,8 @@ export default class RotaryMixer extends Template {
         this.__mint = "ROTARY MIXER";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height"
+            FLOW: "depth",
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

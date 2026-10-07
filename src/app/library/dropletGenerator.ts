@@ -21,7 +21,7 @@ export default class DropletGenerator extends Template {
             waterInputWidth: "Float",
             outputWidth: "Float",
             outputLength: "Float",
-            height: "Float",
+            depth: "Float",
             rotation: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
@@ -35,7 +35,7 @@ export default class DropletGenerator extends Template {
             waterInputWidth: 0.6 * 1000,
             outputWidth: 0.6 * 1000,
             outputLength: 0.6 * 1000,
-            height: 250,
+            depth: 250,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -44,7 +44,7 @@ export default class DropletGenerator extends Template {
         this.__units = {
             componentSpacing: "μm",
             orificeSize: "μm",
-            height: "μm",
+            depth: "μm",
             orificeLength: "μm",
             oilInputWidth: "μm",
             waterInputWidth: "μm",
@@ -61,7 +61,7 @@ export default class DropletGenerator extends Template {
             waterInputWidth: 10,
             outputWidth: 10,
             outputLength: 10,
-            height: 10,
+            depth: 10,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -75,7 +75,7 @@ export default class DropletGenerator extends Template {
             waterInputWidth: 2000,
             outputWidth: 2000,
             outputLength: 2000,
-            height: 1200,
+            depth: 1200,
             rotation: 360,
             mirrorByX: 1,
             mirrorByY: 1
@@ -90,7 +90,7 @@ export default class DropletGenerator extends Template {
             waterInputWidth: "waterInputWidth",
             outputWidth: "outputWidth",
             outputLength: "outputLength",
-            height: "height",
+            depth: "depth",
             rotation: "rotation",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
@@ -104,7 +104,7 @@ export default class DropletGenerator extends Template {
             waterInputWidth: "waterInputWidth",
             outputWidth: "outputWidth",
             outputLength: "outputLength",
-            height: "height",
+            depth: "depth",
             rotation: "rotation",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
@@ -121,7 +121,7 @@ export default class DropletGenerator extends Template {
         this.__mint = "NOZZLE DROPLET GENERATOR";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

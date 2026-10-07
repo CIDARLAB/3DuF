@@ -126,7 +126,9 @@ export default {
                         "Edit Device syncs name/spans on open and after design load; Move / Specify Position uses µm; connection UI labels Channel type for square vs rounded profiles.",
                         "Improved Valve3D placement and layer-aware rendering (CONTROL full circle vs FLOW crescents) plus precise flow-gap connection breaks.",
                         "Added legacy / paper-design JSON normalization so literature designs load into the current interchange format, with a Tutorial link to 3DuF-Paper-Designs.",
-                        "Versioned About/Help and Tutorial dialogs (v1.0–v1.2) with current-version labeling."
+                        "MUX3D uses leafSpace (leaf pitch) and outletLength (full vertical length of each straight outlet channel); valves on the same channel follow the MUX 0.3/0.7 stage split. Legacy stageSpace still loads.",
+                        "Component depth is the single etch/extrusion z for that feature on its layer. 3DuF does not expose separate per-region depths; export DXF and refine in Fusion 360 when you need that detail.",
+                        "Changing MUX/MUX3D/TREE/YTREE in/out rebuilds the port list (orphan side-port dots from a larger out count are removed)."
                     ]
                 }
             ]

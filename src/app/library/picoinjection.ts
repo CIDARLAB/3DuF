@@ -15,7 +15,7 @@ export default class PicoInjection extends Template {
 
         this.__heritable = {
             componentSpacing: "Float",
-            height: "Float",
+            depth: "Float",
             width: "Float",
             injectorWidth: "Float",
             injectorLength: "Float",
@@ -32,7 +32,7 @@ export default class PicoInjection extends Template {
 
         this.__defaults = {
             componentSpacing: 2000,
-            height: 250,
+            depth: 250,
             width: 10 * 1000,
             injectorWidth: 2 * 1000,
             injectorLength: 3 * 1000,
@@ -49,7 +49,7 @@ export default class PicoInjection extends Template {
 
         this.__units = {
             componentSpacing: "μm",
-            height: "μm",
+            depth: "μm",
             width: "μm",
             injectorWidth: "μm",
             injectorLength: "μm",
@@ -64,7 +64,7 @@ export default class PicoInjection extends Template {
 
         this.__minimum = {
             componentSpacing: 0,
-            height: 10,
+            depth: 10,
             width: 5 * 1000,
             injectorWidth: 1000,
             injectorLength: 1000,
@@ -81,7 +81,7 @@ export default class PicoInjection extends Template {
 
         this.__maximum = {
             componentSpacing: 10000,
-            height: 1200,
+            depth: 1200,
             width: 20 * 1000,
             injectorWidth: 4000,
             injectorLength: 5000,
@@ -140,8 +140,8 @@ export default class PicoInjection extends Template {
         this.__mint = "PICOINJECTOR";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            INTEGRATION: "height"
+            FLOW: "depth",
+            INTEGRATION: "depth"
         };
 
         this.__substrateOffset = {

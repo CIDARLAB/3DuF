@@ -151,7 +151,7 @@ function collectConnectionGeometries(device: Device): THREE.BufferGeometry[] {
             }
             const segments = feature.getValue("segments") as Array<[[number, number], [number, number]]>;
             const channelWidth = feature.getValue("channelWidth") as number;
-            const height = feature.getValue("height") as number;
+            const height = feature.getValue("depth") as number;
             const crossSection = Number(feature.getValue("crossSection"));
             if (!isFiniteNumber(channelWidth) || !isFiniteNumber(height) || channelWidth <= 0 || height <= 0) {
                 continue;
@@ -254,7 +254,7 @@ export function generateConnectionProfileGCode(device: Device, feedMmMin = 600, 
                 continue;
             }
             const segments = feature.getValue("segments") as Array<[[number, number], [number, number]]>;
-            const height = feature.getValue("height") as number;
+            const height = feature.getValue("depth") as number;
             if (!isFiniteNumber(height) || height <= 0) {
                 continue;
             }

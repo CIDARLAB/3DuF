@@ -448,6 +448,10 @@ export default {
                 this.$set(row, "value", nextValue);
             }
             this.appliedCanvasSpecSnapshot = this.specToValueSnapshot(this.spec);
+            // Refresh port dots immediately so orphan CONTROL/FLOW labels (MUX3D out shrink, etc.) disappear.
+            if (Registry.viewManager && typeof Registry.viewManager.view?.updateComponentPortsRender === "function") {
+                Registry.viewManager.view.updateComponentPortsRender();
+            }
         },
         applySettingsChanges() {
             if (this.isSidebarPlacementDefaultsPanel) {

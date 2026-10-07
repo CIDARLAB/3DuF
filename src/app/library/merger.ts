@@ -16,7 +16,7 @@ export default class Merger extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             inletWidth: "Float",
             inletLength: "Float",
             electrodeWidth: "Float",
@@ -35,7 +35,7 @@ export default class Merger extends Template {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            height: 250,
+            depth: 250,
             inletWidth: 2 * 1000,
             inletLength: 4 * 1000,
             electrodeWidth: 1000,
@@ -54,7 +54,7 @@ export default class Merger extends Template {
         this.__units = {
             componentSpacing: "μm",
             rotation: "°",
-            height: "μm",
+            depth: "μm",
             inletWidth: "μm",
             inletLength: "μm",
             electrodeWidth: "μm",
@@ -71,7 +71,7 @@ export default class Merger extends Template {
         this.__minimum = {
             componentSpacing: 0,
             rotation: 0,
-            height: 10,
+            depth: 10,
             inletWidth: 1000,
             inletLength: 1000,
             electrodeWidth: 500,
@@ -90,7 +90,7 @@ export default class Merger extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             rotation: 360,
-            height: 1200,
+            depth: 1200,
             inletWidth: 3 * 1000,
             inletLength: 6 * 1000,
             electrodeWidth: 3 * 1000,
@@ -154,7 +154,7 @@ export default class Merger extends Template {
         this.__mint = "DROPLET MERGER";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
+            FLOW: "depth",
             INTEGRATION: "electrodeDepth"
         };
 

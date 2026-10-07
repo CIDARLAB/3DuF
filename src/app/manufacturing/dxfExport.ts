@@ -143,7 +143,7 @@ export function computeMaxComponentDepthUm(device: Device): number {
         for (const component of device.components || []) {
             try {
                 if (typeof (component as any).getValue === "function") {
-                    consider((component as any).getValue("height"));
+                    consider((component as any).getValue("depth"));
                 }
             } catch (_err) {
                 // Param may be absent for this component type.
@@ -160,7 +160,7 @@ export function computeMaxComponentDepthUm(device: Device): number {
             if (!feature) continue;
             const t = String((feature as any).getType?.() || (feature as any).type || "");
             if (t === "EDGE" || t === "DxfSketch") continue;
-            const h = tryGetNumber(feature as Feature, "height");
+            const h = tryGetNumber(feature as Feature, "depth");
             if (h != null) consider(h);
             try {
                 const info = (feature as any).manufacturingInfo;

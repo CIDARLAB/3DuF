@@ -23,7 +23,7 @@ export default class CurvedMixer extends Template {
             edgeBend2: "Float",
             bendLength: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -37,7 +37,7 @@ export default class CurvedMixer extends Template {
             bendSpacing: DEFAULT_MIXER_BEND_SPACING_UM,
             numberOfBends: 1,
             bendLength: DEFAULT_MIXER_BEND_LENGTH_UM,
-            height: 250,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -51,7 +51,7 @@ export default class CurvedMixer extends Template {
             edgeBend1: "μm",
             edgeBend2: "μm",
             bendLength: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -63,7 +63,7 @@ export default class CurvedMixer extends Template {
             bendSpacing: 10,
             numberOfBends: 1,
             bendLength: 10,
-            height: 10,
+            depth: 10,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -77,7 +77,7 @@ export default class CurvedMixer extends Template {
             bendSpacing: 6000,
             numberOfBends: 20,
             bendLength: 12 * 1000,
-            height: 1200,
+            depth: 1200,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -120,7 +120,7 @@ export default class CurvedMixer extends Template {
         this.__mint = "CURVED MIXER";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

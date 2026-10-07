@@ -15,27 +15,27 @@ export default class Channel extends Template {
 
         this.__defaults = {
             channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
-            height: 250
+            depth: 250
         };
 
         this.__heritable = {
             channelWidth: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__units = {
             channelWidth: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             channelWidth: 3,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
             channelWidth: 12000,
-            height: 1200
+            depth: 1200
         };
 
         this.__placementTool = "DragTool";
@@ -61,7 +61,7 @@ export default class Channel extends Template {
         this.__mint = "CHANNEL";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

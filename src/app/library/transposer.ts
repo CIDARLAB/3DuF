@@ -17,7 +17,7 @@ export default class Transposer extends Template {
             componentSpacing: "Float",
             rotation: "Float",
             valveRadius: "Float",
-            height: "Float",
+            depth: "Float",
             valveGap: "Float",
             valveSpacing: "Float",
             flowChannelWidth: "Float",
@@ -30,7 +30,7 @@ export default class Transposer extends Template {
             componentSpacing: 2000,
             rotation: 0,
             valveRadius: 1.2 * 1000,
-            height: 250,
+            depth: 250,
             valveGap: 0.6 * 1000,
             valveSpacing: 0.6 * 1000,
             flowChannelWidth: 500,
@@ -43,7 +43,7 @@ export default class Transposer extends Template {
             componentSpacing: "μm",
             rotation: "°",
             valveRadius: "μm",
-            height: "μm",
+            depth: "μm",
             valveGap: "μm",
             valveSpacing: "μm",
             flowChannelWidth: "μm",
@@ -53,7 +53,7 @@ export default class Transposer extends Template {
         this.__minimum = {
             componentSpacing: 0,
             valveRadius: 0.1 * 100,
-            height: 0.1 * 100,
+            depth: 0.1 * 100,
             valveGap: 0.5 * 10,
             valveSpacing: 0.1 * 1000,
             flowChannelWidth: 0.1,
@@ -66,7 +66,7 @@ export default class Transposer extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             valveRadius: 0.2 * 10000,
-            height: 1.2 * 1000,
+            depth: 1.2 * 1000,
             valveGap: 0.1 * 10000,
             valveSpacing: 0.1 * 10000,
             flowChannelWidth: 0.1 * 10000,
@@ -113,9 +113,9 @@ export default class Transposer extends Template {
         this.__mint = "TRANSPOSER";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height",
-            // INVERSE: "height"
+            FLOW: "depth",
+            CONTROL: "depth",
+            // INVERSE: "depth"
         };
 
         this.__substrateOffset = {

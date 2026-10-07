@@ -965,13 +965,13 @@ export default class PaperView {
 
         // TODO: So this needs to be eliminated form the entire sequence
         try {
-            aHeight = aFeature.getValue("height");
+            aHeight = aFeature.getValue("depth");
         } catch (e) {
             aHeight = 9999;
         }
 
         try {
-            bHeight = bFeature.getValue("height");
+            bHeight = bFeature.getValue("depth");
         } catch (e) {
             bHeight = 9999;
         }

@@ -212,7 +212,7 @@ function collectPortFeatures(
             try {
                 const position = feature.getValue("position") as [number, number];
                 const radiusUm = tryGetNumber(feature, "portRadius");
-                const heightUm = tryGetNumber(feature, "height") ?? 1100;
+                const heightUm = tryGetNumber(feature, "depth") ?? 1100;
                 if (Array.isArray(position) && radiusUm != null && radiusUm > 0) {
                     ports.push({ xUm: position[0], yUm: position[1], radiusUm, heightUm });
                 }
@@ -268,13 +268,13 @@ function collectFlowFeatures(device: Device): {
             if (type === "Port") {
                 const position = feature.getValue("position") as [number, number];
                 const radiusUm = tryGetNumber(feature, "portRadius");
-                const heightUm = tryGetNumber(feature, "height") ?? 1100;
+                const heightUm = tryGetNumber(feature, "depth") ?? 1100;
                 if (Array.isArray(position) && radiusUm != null && radiusUm > 0) {
                     ports.push({ xUm: position[0], yUm: position[1], radiusUm, heightUm });
                 }
             } else if (type === "Connection") {
                 const segments = feature.getValue("segments") as SegUm[];
-                const heightUm = tryGetNumber(feature, "height") ?? 250;
+                const heightUm = tryGetNumber(feature, "depth") ?? 250;
                 const channelWidthUm = tryGetNumber(feature, "channelWidth") ?? DEFAULT_CHANNEL_WIDTH_UM;
                 if (Array.isArray(segments) && segments.length) {
                     channels.push({ segments, heightUm, channelWidthUm, label: "channel" });
@@ -285,7 +285,7 @@ function collectFlowFeatures(device: Device): {
                 const bendLength = tryGetNumber(feature, "bendLength") ?? 2460;
                 const bendSpacing = tryGetNumber(feature, "bendSpacing") ?? 1230;
                 const numberOfBends = tryGetNumber(feature, "numberOfBends") ?? 1;
-                const heightUm = tryGetNumber(feature, "height") ?? 250;
+                const heightUm = tryGetNumber(feature, "depth") ?? 250;
                 const edgeBend1 = tryGetNumber(feature, "edgeBend1") ?? undefined;
                 const edgeBend2 = tryGetNumber(feature, "edgeBend2") ?? undefined;
                 if (Array.isArray(position)) {

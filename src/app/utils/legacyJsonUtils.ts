@@ -141,6 +141,41 @@ function normalizeComponents(json: InterchangeV1_2): void {
 }
 
 /**
+ * Rename component/feature/connection param ``height`` → ``depth`` (etch z).
+ * Does not touch device canvas ``params.height`` (legacy chip Y span).
+ */
+function migrateHeightParamToDepth(params: Record<string, any> | null | undefined): void {
+    if (!params || typeof params !== "object") return;
+    if (Object.prototype.hasOwnProperty.call(params, "height")) {
+        if (!Object.prototype.hasOwnProperty.call(params, "depth")) {
+            params.depth = params.height;
+        }
+        delete params.height;
+    }
+}
+
+function migrateDeviceHeightParams(json: InterchangeV1_2): void {
+    for (const component of json.components || []) {
+        migrateHeightParamToDepth((component as any).params);
+    }
+    for (const connection of json.connections || []) {
+        migrateHeightParamToDepth((connection as any).params);
+    }
+    for (const valve of (json as any).valves || []) {
+        migrateHeightParamToDepth(valve && valve.params);
+    }
+    if (json.layers) {
+        for (const layer of json.layers) {
+            const features = layer.features as any;
+            if (!features || typeof features !== "object") continue;
+            for (const id of Object.keys(features)) {
+                migrateHeightParamToDepth(features[id] && features[id].params);
+            }
+        }
+    }
+}
+
+/**
  * Normalizes legacy literature/paper design JSON into the current interchange shape.
  */
 export function normalizeLegacyDeviceJson(json: InterchangeV1_2): InterchangeV1_2 {
@@ -162,5 +197,6 @@ export function normalizeLegacyDeviceJson(json: InterchangeV1_2): InterchangeV1_
 
     normalizeComponents(json);
     normalizeConnections(json);
+    migrateDeviceHeightParams(json);
     return json;
 }

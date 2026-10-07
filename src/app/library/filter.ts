@@ -16,7 +16,7 @@ export default class Filter extends Template {
         this.__heritable = {
             componentSpacing: "Float",
             rotation: "Float",
-            height: "Float",
+            depth: "Float",
             pillarDiameter: "Float",
             filterWidth: "Float",
             barrierWidth: "Float",
@@ -34,7 +34,7 @@ export default class Filter extends Template {
         this.__defaults = {
             componentSpacing: 2000,
             rotation: 0,
-            height: 250,
+            depth: 250,
             pillarDiameter: 2 * 1000,
             filterWidth: 1 * 1000,
             barrierWidth: 1 * 1000,
@@ -52,7 +52,7 @@ export default class Filter extends Template {
         this.__units = {
             componentSpacing: "μm",
             rotation: "°",
-            height: "μm",
+            depth: "μm",
             pillarDiameter: "μm",
             filterWidth: "μm",
             barrierWidth: "μm",
@@ -68,7 +68,7 @@ export default class Filter extends Template {
         this.__minimum = {
             componentSpacing: 0,
             rotation: 0,
-            height: 10,
+            depth: 10,
             pillarDiameter: 1 * 1000,
             filterWidth: 0.5 * 1000,
             barrierWidth: 0.5 * 1000,
@@ -86,7 +86,7 @@ export default class Filter extends Template {
         this.__maximum = {
             componentSpacing: 10000,
             rotation: 360,
-            height: 1200,
+            depth: 1200,
             pillarDiameter: 4 * 1000,
             filterWidth: 4 * 1000,
             barrierWidth: 6 * 1000,
@@ -147,7 +147,7 @@ export default class Filter extends Template {
         this.__mint = "FILTER";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

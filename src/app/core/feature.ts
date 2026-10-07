@@ -51,7 +51,7 @@ export default class Feature {
         if (this.type == "Port") modifierName = "PORT";
         else modifierName = "COMPONENT";
         console.log("rendName: ", tempRenderName);
-        const zOffsetKeyName = libEntry ? libEntry.object.zOffsetKey(tempRenderName) : "height";
+        const zOffsetKeyName = libEntry ? libEntry.object.zOffsetKey(tempRenderName) : "depth";
         let depthValue = 0;
         if (libEntry) {
             try {

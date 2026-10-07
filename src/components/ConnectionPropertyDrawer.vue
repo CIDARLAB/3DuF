@@ -130,7 +130,7 @@
                                                     :y="rectGeom.hTextY"
                                                     class="param-svg-name param-svg-name--control"
                                                 >
-                                                    height
+                                                    depth
                                                 </text>
                                             </g>
                                         </g>
@@ -225,7 +225,7 @@ export default {
             snapshot: {
                 connectionSpacing: 1600,
                 channelWidth: 800,
-                height: 250
+                depth: 250
             },
             /** Bumps computed props that read Registry view layer (non-reactive). */
             layerSyncTick: 0,
@@ -372,7 +372,7 @@ export default {
     watch: {
         selectedProfile(newVal, oldVal) {
             if (oldVal && oldVal !== newVal && oldVal === "CHANNEL" && newVal === "ROUNDED CHANNEL") {
-                this.snapshot.height = this.snapshot.channelWidth;
+                this.snapshot.depth = this.snapshot.channelWidth;
             }
             this.rebuildSettingsSpec();
             this.applyProfileToTool();
@@ -479,7 +479,7 @@ export default {
         },
         initSnapshotFromSpec() {
             const arr = this.computedSpec("Connection");
-            const snap = { connectionSpacing: 1600, channelWidth: 800, height: 250 };
+            const snap = { connectionSpacing: 1600, channelWidth: 800, depth: 250 };
             for (const item of arr) {
                 if (Object.prototype.hasOwnProperty.call(snap, item.name)) {
                     snap[item.name] = Number(item.value);
@@ -512,7 +512,7 @@ export default {
                 this.settingsSpec = [
                     specItemFromDef(def, "connectionSpacing", this.snapshot.connectionSpacing),
                     specItemFromDef(def, "channelWidth", this.snapshot.channelWidth),
-                    specItemFromDef(def, "height", this.snapshot.height)
+                    specItemFromDef(def, "depth", this.snapshot.depth)
                 ];
             }
         },
@@ -521,10 +521,10 @@ export default {
             const n = Number(value);
             if (name === "connectionSpacing") this.snapshot.connectionSpacing = n;
             else if (name === "channelWidth") this.snapshot.channelWidth = n;
-            else if (name === "height") this.snapshot.height = n;
+            else if (name === "depth") this.snapshot.depth = n;
             else if (name === "channelRadius") {
                 this.snapshot.channelWidth = n * 2;
-                this.snapshot.height = n * 2;
+                this.snapshot.depth = n * 2;
             }
         },
 
@@ -534,12 +534,12 @@ export default {
             if (key === "channelRadius") {
                 if (tool) {
                     tool.updateParameter("channelWidth", this.snapshot.channelWidth);
-                    tool.updateParameter("height", this.snapshot.height);
+                    tool.updateParameter("depth", this.snapshot.depth);
                 }
             } else if (tool) {
                 tool.updateParameter(key, Number(value));
             }
-            if (key === "channelWidth" || key === "height" || key === "channelRadius") {
+            if (key === "channelWidth" || key === "depth" || key === "channelRadius") {
                 this.$forceUpdate();
             }
         },
@@ -643,7 +643,7 @@ export default {
             if (!tool || typeof tool.updateParameter !== "function") return;
             tool.updateParameter("connectionSpacing", this.snapshot.connectionSpacing);
             tool.updateParameter("channelWidth", this.snapshot.channelWidth);
-            tool.updateParameter("height", this.snapshot.height);
+            tool.updateParameter("depth", this.snapshot.depth);
             this.selectedProfile = this.connectionProfiles[0] || "CHANNEL";
             tool.crossSection = 0;
             tool.updateParameter("crossSection", 0);

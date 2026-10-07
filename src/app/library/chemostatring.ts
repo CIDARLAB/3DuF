@@ -21,7 +21,7 @@ export default class ChemostatRing extends Template {
             radius: "Float",
             rotation: "Float",
             volume: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -34,7 +34,7 @@ export default class ChemostatRing extends Template {
             radius: 400,
             rotation: 0,
             volume: 30000000,
-            height: 20,
+            depth: 20,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -51,7 +51,7 @@ export default class ChemostatRing extends Template {
             radius: "μm",
             rotation: "°",
             volume: "μm3",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -62,7 +62,7 @@ export default class ChemostatRing extends Template {
             radius: 0.2 * 1000,
             rotation: 0,
             volume: 0.1 * 1000 * 1 * 1000 * 4 * 0.2 * 1000,
-            height: 0.2 * 1000,
+            depth: 0.2 * 1000,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -75,7 +75,7 @@ export default class ChemostatRing extends Template {
             radius: 10000,
             rotation: 260,
             volume: 0.5 * 10000 * 10 * 1000 * 4 * 1 * 10000,
-            height: 1 * 10000,
+            depth: 1 * 10000,
             mirrorByX: 1,
             mirrorByY: 1
         };
@@ -95,7 +95,7 @@ export default class ChemostatRing extends Template {
             radius: "radius",
             rotation: "rotation",
             volume: "volume",
-            height: "height",
+            depth: "depth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -108,7 +108,7 @@ export default class ChemostatRing extends Template {
             radius: "radius",
             rotation: "rotation",
             volume: "volume",
-            height: "height",
+            depth: "depth",
             mirrorByX: "mirrorByX",
             mirrorByY: "mirrorByY"
         };
@@ -118,8 +118,8 @@ export default class ChemostatRing extends Template {
         this.__mint = "CHEMOSTAT RING";
 
         this.__zOffsetKeys = {
-            FLOW: "height",
-            CONTROL: "height"
+            FLOW: "depth",
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {
@@ -133,7 +133,7 @@ export default class ChemostatRing extends Template {
         const controlChannelWidth = params.controlChannelWidth;
         const chemostatChannelWidth = params.chemostatChannelWidth;
         const volume = params.volume;
-        const height = params.height;
+        const height = params.depth;
         const radius = params.radius;
 
         const area = volume / height;
@@ -283,7 +283,7 @@ export default class ChemostatRing extends Template {
         const controlChannelWidth = params.controlChannelWidth;
         const chemostatChannelWidth = params.chemostatChannelWidth;
         const volume = params.volume;
-        const height = params.height;
+        const height = params.depth;
         const radius = params.radius;
         const rotation = params.rotation;
         const color = params.color;
@@ -574,7 +574,7 @@ export default class ChemostatRing extends Template {
         const controlChannelWidth = params.controlChannelWidth;
         const chemostatChannelWidth = params.chemostatChannelWidth;
         const volume = params.volume;
-        const height = params.height;
+        const height = params.depth;
         const radius = params.radius;
         const rotation = params.rotation;
         const color = params.color;

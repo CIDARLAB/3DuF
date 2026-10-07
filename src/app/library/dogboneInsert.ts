@@ -19,7 +19,7 @@ export default class DogboneInsert extends Template {
             length: "Float",
             innerRadius: "Float",
             outerRadius: "Float",
-            height: "Float",
+            depth: "Float",
             mirrorByX: "Float",
             mirrorByY: "Float"
         };
@@ -30,7 +30,7 @@ export default class DogboneInsert extends Template {
             innerRadius: 400,
             outerRadius: 800,
             length: 7200,
-            height: 250,
+            depth: 250,
             mirrorByX: 0,
             mirrorByY: 0
         };
@@ -41,7 +41,7 @@ export default class DogboneInsert extends Template {
             length: "μm",
             innerRadius: "μm",
             outerRadius: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
@@ -49,7 +49,7 @@ export default class DogboneInsert extends Template {
             innerRadius: 1,
             outerRadius: 1,
             length: 120,
-            height: 10,
+            depth: 10,
             rotation: 0,
             mirrorByX: 0,
             mirrorByY: 0
@@ -60,7 +60,7 @@ export default class DogboneInsert extends Template {
             innerRadius: 1000,
             outerRadius: 1000,
             length: 24 * 1000,
-            height: 1200,
+            depth: 1200,
             rotation: 360,
             mirrorByX: 1,
             mirrorByY: 1
@@ -98,7 +98,7 @@ export default class DogboneInsert extends Template {
         this.__mint = "DOGBONE INSERT";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

@@ -15,35 +15,35 @@ export default class CircleValve extends Template {
             componentSpacing: "Float",
             radius1: "Float",
             radius2: "Float",
-            height: "Float"
+            depth: "Float"
         };
 
         this.__defaults = {
             componentSpacing: 2000,
             radius1: 1.4 * 1000,
             radius2: 1.2 * 1000,
-            height: 250
+            depth: 250
         };
 
         this.__units = {
             componentSpacing: "μm",
             radius1: "μm",
             radius2: "μm",
-            height: "μm"
+            depth: "μm"
         };
 
         this.__minimum = {
             componentSpacing: 0,
             radius1: 10,
             radius2: 10,
-            height: 10
+            depth: 10
         };
 
         this.__maximum = {
             componentSpacing: 10000,
             radius1: 2000,
             radius2: 2000,
-            height: 1200
+            depth: 1200
         };
 
         this.__featureParams = {
@@ -70,7 +70,7 @@ export default class CircleValve extends Template {
         this.__mint = "CIRCLE VALVE";
 
         this.__zOffsetKeys = {
-            CONTROL: "height"
+            CONTROL: "depth"
         };
 
         this.__substrateOffset = {

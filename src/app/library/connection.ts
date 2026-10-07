@@ -18,7 +18,7 @@ export default class Connection extends Template {
         this.__heritable = {
             connectionSpacing: "Float",
             channelWidth: "Float",
-            height: "Float",
+            depth: "Float",
             /** 0 = rectangular (square) channel profile with flat ends; 1 = rounded profile (stadium outline, circular cross-section). */
             crossSection: "Float"
         };
@@ -26,28 +26,28 @@ export default class Connection extends Template {
         this.__defaults = {
             connectionSpacing: 1600,
             channelWidth: DEFAULT_CHANNEL_WIDTH_UM,
-            height: 250,
+            depth: 250,
             crossSection: 0
         };
 
         this.__units = {
             connectionSpacing: "μm",
             channelWidth: "μm",
-            height: "μm",
+            depth: "μm",
             crossSection: ""
         };
 
         this.__minimum = {
             connectionSpacing: 0,
             channelWidth: 3,
-            height: 10,
+            depth: 10,
             crossSection: 0
         };
 
         this.__maximum = {
             connectionSpacing: 10000,
             channelWidth: 12000,
-            height: 1200,
+            depth: 1200,
             crossSection: 1
         };
 
@@ -58,7 +58,7 @@ export default class Connection extends Template {
             wayPoints: "wayPoints",
             channelWidth: "channelWidth",
             segments: "segments",
-            height: "height",
+            depth: "depth",
             crossSection: "crossSection"
         };
 
@@ -67,7 +67,7 @@ export default class Connection extends Template {
             wayPoints: "wayPoints",
             channelWidth: "channelWidth",
             segments: "segments",
-            height: "height",
+            depth: "depth",
             crossSection: "crossSection"
         };
 
@@ -83,7 +83,7 @@ export default class Connection extends Template {
         this.__mint = "CHANNEL";
 
         this.__zOffsetKeys = {
-            FLOW: "height"
+            FLOW: "depth"
         };
 
         this.__substrateOffset = {

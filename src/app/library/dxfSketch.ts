@@ -17,35 +17,35 @@ export default class DxfSketch extends Template {
             channelTopZ: "Float",
             channelWidth: "Float",
             crossSection: "Float",
-            height: "Float"
+            depth: "Float"
         };
         this.__defaults = {
             channelFloorZ: 0,
             channelTopZ: 2,
             channelWidth: 1000,
             crossSection: 1,
-            height: 250
+            depth: 250
         };
         this.__units = {
             channelFloorZ: "mm",
             channelTopZ: "mm",
             channelWidth: "μm",
             crossSection: "",
-            height: "μm"
+            depth: "μm"
         };
         this.__minimum = {
             channelFloorZ: 0,
             channelTopZ: 0.1,
             channelWidth: 3,
             crossSection: 0,
-            height: 10
+            depth: 10
         };
         this.__maximum = {
             channelFloorZ: 1000,
             channelTopZ: 1000,
             channelWidth: 12000,
             crossSection: 1,
-            height: 1200
+            depth: 1200
         };
         this.__toolParams = {};
         this.__featureParams = {
@@ -53,7 +53,7 @@ export default class DxfSketch extends Template {
             channelTopZ: "channelTopZ",
             channelWidth: "channelWidth",
             crossSection: "crossSection",
-            height: "height"
+            depth: "depth"
         };
         this.__targetParams = {};
         this.__placementTool = "PositionTool";
