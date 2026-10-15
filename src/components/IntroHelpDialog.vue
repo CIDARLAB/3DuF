@@ -223,7 +223,9 @@ export default {
                         "Parameter tables sort related keys together, and componentSpacing keepout is visible with a 2000 µm default.",
                         "Connection sidebar labels Channel type (square vs rounded); Edit Device refreshes spans when opened after a load; Move / Specify Position uses µm.",
                         "Parchmint FLOW and CONTROL layers open on the same physical level in the layer toolbar instead of as separate levels.",
-                        "Each component uses a single depth (etch/extrusion z) on its layer. For region-specific depths, export DXF and edit in Fusion 360."
+                        "Each component uses a single depth (etch/extrusion z) on its layer. For region-specific depths, export DXF and edit in Fusion 360.",
+                        "TREE / YTREE / MUX / MUX3D out must be an integer ≥ 2. Non-powers of 2 round up to the next 2ⁿ, and a yellow banner at the top of the canvas explains the change.",
+                        "In component settings, Enter applies pending changes and Shift+Enter runs Reset. Number fields stay inside min/max, and Delete types in the field instead of removing canvas objects."
                     ],
                     workflowImprovements: [
                         "Use Ports view when preparing a cover layer: even droplet devices need a closed second layer so fluid can flow inside channels instead of open grooves.",
@@ -233,7 +235,9 @@ export default {
                         "VALVE3D flow gaps are clipped geometrically on import so the host channel stays interrupted at the valve slit.",
                         "Reset on an imported object restores its uploaded JSON parameters; hand-placed objects still reset to library defaults.",
                         "Import / Escape clears placement ghosts so zoom cannot resurrect a stale component. Older JSON is filled with missing library defaults so new parameters still appear after you reopen a design.",
-                        "3DuF models one depth per feature/layer. After DXF export you can refine local depths in Fusion 360 if needed."
+                        "3DuF models one depth per feature/layer. After DXF export you can refine local depths in Fusion 360 if needed.",
+                        "If a TREE / YTREE / MUX / MUX3D outlet count is not a power of 2, the device is drawn as the next 2ⁿ tree so the footprint stays consistent.",
+                        "Deleting a component also removes connections that pointed at it, so the saved design still opens. Bend handles and zero-length route pieces no longer leave gray dots."
                     ],
                     // Placeholder: v1.2 videos are not ready yet, so reuse existing tutorials.
                     introductionVideoUrl: "https://www.youtube.com/embed/05nU8eQ73U8",

@@ -128,7 +128,10 @@ export default {
                         "Added legacy / paper-design JSON normalization so literature designs load into the current interchange format, with a Tutorial link to 3DuF-Paper-Designs.",
                         "MUX3D uses leafSpace (leaf pitch) and outletLength (full vertical length of each straight outlet channel); valves on the same channel follow the MUX 0.3/0.7 stage split. Legacy stageSpace still loads.",
                         "Component depth is the single etch/extrusion z for that feature on its layer. 3DuF does not expose separate per-region depths; export DXF and refine in Fusion 360 when you need that detail.",
-                        "Changing MUX/MUX3D/TREE/YTREE in/out rebuilds the port list (orphan side-port dots from a larger out count are removed)."
+                        "Changing MUX/MUX3D/TREE/YTREE in/out rebuilds the port list (orphan side-port dots from a larger out count are removed).",
+                        "TREE / YTREE / MUX / MUX3D out must be an integer ≥ 2. Non-powers of 2 are rounded up to the next 2ⁿ; a yellow canvas banner explains the adjustment.",
+                        "Settings Apply is Enter and Reset is Shift+Enter. Parameter number fields honor min/max, and Delete types inside those fields instead of deleting canvas objects.",
+                        "Deleting a component also drops connections that referenced it so the file reloads. Bend handles and zero-length segments no longer leave gray dots."
                     ]
                 }
             ]

@@ -3,6 +3,7 @@ import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
 import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
+import { resolveBinaryLeafCount } from "./branchLeafs";
 
 export default class Mux extends Template {
     constructor() {
@@ -149,13 +150,10 @@ export default class Mux extends Template {
         const position = params.position;
         const cw = params.flowChannelWidth;
         let rotation = params.rotation;
-        const ins = params.in;
-        const outs = params.out;
-        let leafs;
-        if (ins < outs) {
-            leafs = outs;
-        } else {
-            leafs = ins;
+        // out must be ≥ 2 for MUX (binary tree + valves).
+        const resolved = resolveBinaryLeafCount(params);
+        const leafs = Math.max(2, resolved.leafs);
+        if (resolved.flip) {
             rotation += 180;
         }
         const color = params.color;
@@ -163,26 +161,13 @@ export default class Mux extends Template {
         const px = position[0];
         const py = position[1];
 
-        const levels = Math.ceil(Math.log2(leafs));
-        let isodd = false; // This is used to figure out how many lines have to be made
-        if (leafs % 2 === 0) {
-            isodd = false;
-        } else {
-            isodd = true;
-        }
-        const w = this.__muxFanWidth(params, leafs, levels);
-        const l = (levels + 1) * stagelength;
-
-        // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
-
         const treepath = new paper.CompoundPath("");
-
+        const levels = Math.log2(leafs);
+        const w = this.__muxFanWidth(params, leafs, levels);
         this.__generateMuxTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
-        // Draw the tree
-
         treepath.fillColor = color;
-        this.transformRender(params,treepath);
+        this.transformRender({ ...params, rotation }, treepath);
         return treepath;
     }
 
@@ -191,13 +176,9 @@ export default class Mux extends Template {
         const cw = params.flowChannelWidth;
         const ctlcw = params.controlChannelWidth;
         let rotation = params.rotation;
-        const ins = params.in;
-        const outs = params.out;
-        let leafs;
-        if (ins < outs) {
-            leafs = outs;
-        } else {
-            leafs = ins;
+        const resolved = resolveBinaryLeafCount(params);
+        const leafs = Math.max(2, resolved.leafs);
+        if (resolved.flip) {
             rotation += 180;
         }
         const color = params.color;
@@ -207,49 +188,33 @@ export default class Mux extends Template {
         const px = position[0];
         const py = position[1];
 
-        const levels = Math.ceil(Math.log2(leafs));
+        const treepath = new paper.CompoundPath("");
+        const levels = Math.log2(leafs);
         const w = this.__muxFanWidth(params, leafs, levels);
         const pitch = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
         const treeWidth = this.__muxTreeWidth(pitch, leafs, cw, valvewidth);
         const leftEdge = px - treeWidth / 2;
         const rightEdge = px + treeWidth / 2;
-
-        const isodd = !(leafs % 2);
-        const l = (levels + 1) * stagelength;
-
-        // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
-
-        const treepath = new paper.CompoundPath("");
-
         this.__generateMuxControlTwig(treepath, px, py, cw, ctlcw, stagelength, w, 1, levels, valvewidth, valvelength, leftEdge, rightEdge);
 
-        // Draw the tree
-
         treepath.fillColor = color;
-        this.transformRender(params,treepath);
+        this.transformRender({ ...params, rotation }, treepath);
         return treepath;
     }
 
     getPorts(params: { [k: string]: any }) {
         const ports = [];
         const cw = params.flowChannelWidth;
-        const ins = params.in;
-        const outs = params.out;
-        let leafs;
-        if (ins < outs) {
-            leafs = outs;
-        } else {
-            leafs = ins;
-        }
+        const leafs = Math.max(2, resolveBinaryLeafCount(params).leafs);
         const stagelength = this.__muxStageSpace(params);
 
-        const levels = Math.ceil(Math.log2(leafs));
+        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
+
+        const levels = Math.log2(leafs);
         const w = this.__muxFanWidth(params, leafs, levels);
 
         const length = levels * (cw + stagelength) + stagelength;
         const width = 2 * 0.5 * w * 2 * Math.pow(0.5, levels);
-
-        ports.push(new ComponentPort(0, 0, "1", LogicalLayerType.FLOW));
 
         for (let i = 0; i < leafs; i++) {
             ports.push(new ComponentPort(((leafs - 1) * width) / 2 - i * width, length, (2 + i).toString(), LogicalLayerType.FLOW));
@@ -269,7 +234,7 @@ export default class Mux extends Template {
         const rstarty = stagelength + cw;
         const rcentery = rstarty + offsets.right;
 
-        for (let i = 0; i < Math.log2(leafs); i++) {
+        for (let i = 0; i < levels; i++) {
             ports.push(new ComponentPort(leftEdge, i * (cw + stagelength) + lcentery, count.toString(), LogicalLayerType.CONTROL));
             count++;
             ports.push(new ComponentPort(rightEdge, i * (cw + stagelength) + rcentery, count.toString(), LogicalLayerType.CONTROL));

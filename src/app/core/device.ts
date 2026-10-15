@@ -426,6 +426,27 @@ export default class Device {
                 }
             }
         }
+        // Deleting a glyph drops the component object but used to leave the
+        // connection record pointing at that id. Reload then throws
+        // "Component not found" and the whole file is rejected.
+        this.pruneDanglingConnections();
+    }
+
+    /**
+     * Drop connections whose source or sink is no longer on the device.
+     * Those records are not drawn, but they make the saved JSON unloadable.
+     */
+    pruneDanglingConnections(): void {
+        const live = new Set(this.__components.map(component => component.id));
+        for (let i = this.__connections.length - 1; i >= 0; i--) {
+            const connection = this.__connections[i];
+            const sourceId = connection.source && connection.source.component ? connection.source.component.id : null;
+            const sinks = connection.sinks || [];
+            const sinksLive = sinks.length > 0 && sinks.every(sink => sink.component && live.has(sink.component.id));
+            if (!sourceId || !live.has(sourceId) || !sinksLive) {
+                this.__connections.splice(i, 1);
+            }
+        }
     }
 
     /**

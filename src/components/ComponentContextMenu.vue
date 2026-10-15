@@ -5,6 +5,7 @@
         class="component-context-card settings-panel-card settings-panel-card--chrome"
         :style="cardPositionStyle"
         scrollable
+        @keydown.native="onSettingsKeydown"
     >
         <div v-show="showRename" class="component-context-rename px-4 pt-3 pb-0">
             <v-row align="center" dense no-gutters>
@@ -40,27 +41,41 @@
         <div class="settings-panel-heading" @mousedown="startMenuDrag" @contextmenu.prevent>
             <span class="settings-panel-heading__title">{{ mint }}</span>
             <v-spacer />
-            <v-btn
-                small
-                depressed
-                dark
-                color="primary"
-                class="settings-panel-apply-btn"
-                :disabled="!hasPendingSpecChanges"
-                @click="applySettingsChanges"
-            >
-                Apply
-            </v-btn>
-            <v-btn
-                small
-                depressed
-                dark
-                color="orange darken-2"
-                class="settings-panel-reset-btn"
-                @click="resetCanvasComponentToFactoryDefaults"
-            >
-                Reset
-            </v-btn>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                    <span class="d-inline-block" v-bind="attrs" v-on="on">
+                        <v-btn
+                            small
+                            depressed
+                            dark
+                            color="primary"
+                            class="settings-panel-apply-btn"
+                            :disabled="!hasPendingSpecChanges"
+                            @click="applySettingsChanges"
+                        >
+                            Apply
+                        </v-btn>
+                    </span>
+                </template>
+                <span>Apply pending parameter changes (Enter)</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                    <span class="d-inline-block" v-bind="attrs" v-on="on">
+                        <v-btn
+                            small
+                            depressed
+                            dark
+                            color="orange darken-2"
+                            class="settings-panel-reset-btn"
+                            @click="resetCanvasComponentToFactoryDefaults"
+                        >
+                            Reset
+                        </v-btn>
+                    </span>
+                </template>
+                <span>Reset parameters to factory defaults (Shift+Enter)</span>
+            </v-tooltip>
         </div>
 
         <div v-if="!isSidebarPlacementDefaultsPanel" class="context-action-toolbar context-action-toolbar--panel">
@@ -141,6 +156,7 @@ import { ComponentAPI } from "@/componentAPI";
 import GenerateArrayDialog from "@/components/GenerateArrayDialog.vue";
 import paper from "paper";
 import { getFixedTopRightNearGridButton, getPlacedComponentScreenBottomRight } from "@/utils/contextDialogAnchor";
+import { BINARY_BRANCH_MINTS, resolveBinaryLeafCount } from "@/app/library/branchLeafs";
 
 export default {
     name: "ComponentContextMenu",
@@ -419,10 +435,47 @@ export default {
                 Registry.viewManager.updateTarget(typeStr, "Basic", view.lastTargetPosition, appliedRows);
             }
         },
+        onSettingsKeydown(event) {
+            if (!this.activeMenu || !event || event.key !== "Enter") return;
+            // Rename field has its own Enter / confirm controls.
+            if (this.showRename) return;
+            event.preventDefault();
+            event.stopPropagation();
+            if (event.shiftKey) {
+                this.resetCanvasComponentToFactoryDefaults();
+                return;
+            }
+            if (!this.hasPendingSpecChanges) return;
+            this.applySettingsChanges();
+        },
+        /** Clamp each row to its min/max; TREE/YTREE/MUX/MUX3D force out >= 2. */
+        clampSpecRowsToLimits(mint) {
+            if (!Array.isArray(this.spec)) return;
+            const binaryBranch = mint === "MUX" || mint === "MUX3D" || mint === "TREE" || mint === "YTREE";
+            let raisedOut = false;
+            for (const row of this.spec) {
+                if (!row || !row.name) continue;
+                let n = Number(row.value);
+                if (!Number.isFinite(n)) continue;
+                if (Number.isFinite(row.min) && n < row.min) n = row.min;
+                if (Number.isFinite(row.max) && n > row.max) n = row.max;
+                if (binaryBranch && row.name === "out" && n < 2) {
+                    n = 2;
+                    raisedOut = true;
+                }
+                this.$set(row, "value", n);
+            }
+            if (raisedOut) {
+                EventBus.get().emit(EventBus.CANVAS_WARNING, {
+                    message: `${mint}: out must be an integer ≥ 2 — value was raised to 2.`
+                });
+            }
+        },
         applySidebarPlacementChanges() {
             if (!this.isSidebarPlacementDefaultsPanel) return;
             const typeStr = ComponentAPI.getTypeForMINT(this.mint);
             if (!typeStr) return;
+            this.clampSpecRowsToLimits(this.mint);
             for (const row of this.spec) {
                 if (!row || !row.name) continue;
                 const n = Number(row.value);
@@ -432,11 +485,23 @@ export default {
             }
             this.appliedSidebarSpecSnapshot = this.specToValueSnapshot(this.spec);
             this.syncPlacementToolAndTarget(typeStr, this.spec);
+            this.warnIfBinaryLeafsRounded(this.mint, this.specToValueSnapshot(this.spec));
+        },
+        warnIfBinaryLeafsRounded(mint, params) {
+            if (!BINARY_BRANCH_MINTS.has(mint) || !params) return;
+            const { requested, leafs, roundedUp } = resolveBinaryLeafCount(params);
+            if (!roundedUp) return;
+            EventBus.get().emit(EventBus.CANVAS_WARNING, {
+                message:
+                    `${mint}: outlet count ${requested} is not a power of 2 — ` +
+                    `geometry was rounded up to ${leafs} so the device size matches a full 2ⁿ tree.`
+            });
         },
         applyCanvasComponentChanges() {
             if (this.isSidebarPlacementDefaultsPanel) return;
             if (!this.currentComponent) return;
             const typeStr = ComponentAPI.getTypeForMINT(this.currentComponent.mint);
+            this.clampSpecRowsToLimits(this.currentComponent.mint);
             for (const row of this.spec) {
                 if (!row || !row.name) continue;
                 const n = Number(row.value);
@@ -452,6 +517,7 @@ export default {
             if (Registry.viewManager && typeof Registry.viewManager.view?.updateComponentPortsRender === "function") {
                 Registry.viewManager.view.updateComponentPortsRender();
             }
+            this.warnIfBinaryLeafsRounded(this.currentComponent.mint, this.specToValueSnapshot(this.spec));
         },
         applySettingsChanges() {
             if (this.isSidebarPlacementDefaultsPanel) {

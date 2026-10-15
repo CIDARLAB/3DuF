@@ -490,8 +490,17 @@ export default class ConnectionTool extends MouseTool {
         // console.log("waypoints", this.wayPoints, this.startPoint);
         const ret = [];
         for (let i = 0; i < waypointscopy.length - 1; i++) {
-            const segment = [waypointscopy[i], waypointscopy[i + 1]];
-            ret.push(segment);
+            const a = waypointscopy[i];
+            const b = waypointscopy[i + 1];
+            if (!a || !b || a.length < 2 || b.length < 2) {
+                continue;
+            }
+            // startPoint/lastPoint are already inside wayPoints, so the first
+            // and last pairs are zero-length and draw as gray dots.
+            if (Number(a[0]) === Number(b[0]) && Number(a[1]) === Number(b[1])) {
+                continue;
+            }
+            ret.push([a, b]);
         }
         // console.log("segments:", ret);
         return ret;

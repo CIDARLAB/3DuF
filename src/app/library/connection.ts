@@ -125,6 +125,11 @@ export default class Connection extends Template {
             }
             p1 = segment[0];
             p2 = segment[1];
+            // A zero-length segment is a degenerate rectangle. paper.js still
+            // rasterizes it as a speck that survives some zoom levels.
+            if (Number(p1[0]) === Number(p2[0]) && Number(p1[1]) === Number(p2[1])) {
+                continue;
+            }
             startpoint = new paper.Point(p1[0], p1[1]);
             endpoint = new paper.Point(p2[0], p2[1]);
             const startKey = this.__pointKey(p1);

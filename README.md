@@ -37,6 +37,7 @@ Summary of the 2026 maintenance work on this branch:
 - MUX / TREE / YTREE leaf spacing is **leafSpace**; along-tree stage spacing is **stageSpace**. MUX control valve pads use **valveWidthX** / **valveWidthY**. Older JSON keys (`leafPitch`, `stageLength`, `spacing`, `width`, `length`, `valveWidth`) still load.
 - MUX3D uses **leafSpace** (leaf pitch) and **outletLength** (full vertical length of each straight outlet channel); valves on the same channel follow the MUX 0.3/0.7 stage split. Flow slit is **valveGap**. Legacy `stageSpace` / `gap` / `channelWidth` still load.
 - Changing MUX / MUX3D / TREE / YTREE **in** / **out** rebuilds the port list so orphan side-port dots from a larger fan-out are removed.
+- TREE / YTREE / MUX / MUX3D **out** must be an integer ≥ 2. Counts that are not a power of 2 are rounded up to the next 2ⁿ so geometry and ports match a full binary tree. A yellow canvas banner warns when the value is raised to 2 or when the leaf count is rounded up.
 - YTREE trunk and leaf ports sit at RoundedChannel stadium-cap centers so a rounded connection fully overlaps the opening instead of only kissing the rim.
 - New droplet primitive: **DROPLET MERGER JUNCTION** (3-port T-junction).
 
@@ -59,6 +60,8 @@ Summary of the 2026 maintenance work on this branch:
 - **Move** / Specify Position dialogs use **µm** for X and Y (canvas units), not mm.
 - **Edit Device** refreshes name and spans when opened and after a design load.
 - **Reset** on an imported component or connection restores that object's uploaded JSON parameters (not factory defaults). Hand-placed objects still reset to library defaults. Position / path geometry is left unchanged.
+- In the settings panel, **Enter** applies pending parameter changes and **Shift+Enter** runs Reset. Numeric fields honor each parameter’s min and max. Delete and letter keys type inside those fields instead of triggering canvas shortcuts.
+- Deleting a component also drops connections that still pointed at it, so the saved JSON reloads. Bend handles and zero-length route segments no longer leave gray dots on the canvas.
 
 ## Usage
 
@@ -157,6 +160,10 @@ Mixer serpentine ends expose **edgeBend1** / **edgeBend2** — the outward tip s
 MUX / TREE / YTREE expose **leafSpace** (adjacent leaf spacing) and **stageSpace** (along-tree stage spacing). MUX valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `leafPitch`, `stageLength`, `spacing`, `width`, `length`, and `valveWidth` are still accepted. YTREE ports sit at RoundedChannel stadium-cap centers.
 
 MUX3D uses **leafSpace** and **outletLength** (full vertical length of each straight outlet channel); valves on the same channel use the MUX 0.3/0.7 stage split. Flow slit is **valveGap**. Changing MUX / MUX3D / TREE / YTREE **in** / **out** rebuilds ports so leftover side-port dots from a larger fan-out disappear.
+
+TREE / YTREE / MUX / MUX3D **out** must be an integer ≥ 2. A count that is not a power of 2 is rounded up to the next 2ⁿ (for example 3 becomes 4) so the footprint matches a full binary tree. A yellow banner at the top of the canvas explains the adjustment and hides after a few seconds.
+
+In the floating settings panel, **Enter** applies pending changes and **Shift+Enter** runs Reset. Numeric fields stay inside each parameter’s min and max. Typing, including Delete, stays in the field instead of deleting canvas objects.
 
 **Move** / Specify Position uses **µm** for X and Y.
 

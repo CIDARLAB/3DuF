@@ -4,6 +4,22 @@ import EventBus from "@/events/events";
 import { exitCanvasSettingsLikeEscape } from "@/utils/exitCanvasUi";
 import { ViewManager } from "..";
 
+/** True when the event target is a text field — canvas shortcuts must not steal keys. */
+function isEditableKeyboardTarget(target: EventTarget | null): boolean {
+    if (!target || !(target instanceof Element)) {
+        return false;
+    }
+    const el = target as HTMLElement;
+    const tag = (el.tagName || "").toUpperCase();
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
+        return true;
+    }
+    if (el.isContentEditable) {
+        return true;
+    }
+    return Boolean(el.closest("input, textarea, select, [contenteditable='true']"));
+}
+
 /**
  * Mouse and Keyboard Handler class
  */
@@ -25,10 +41,11 @@ export default class MouseAndKeyboardHandler {
         this.__rightMouseTool = null;
         this.__middleMouseTool = new PanTool(viewManagerDelegate);
 
-        // Prevent default keyboard window events
+        // Only block browser Delete when not typing in a text field.
+        // (Previously this always preventDefault'd key 46, so Del never worked in inputs.)
         window.onkeydown = function(event: KeyboardEvent) {
             const key = event.keyCode || event.which;
-            if (key === 46) {
+            if (key === 46 && !isEditableKeyboardTarget(event.target)) {
                 event.preventDefault();
             }
         };
@@ -84,6 +101,10 @@ export default class MouseAndKeyboardHandler {
         const reference = this.viewManagerDelegate;
 
         window.addEventListener("keydown", function(event) {
+            // Let inputs/textareas receive normal typing (incl. Delete / letters).
+            if (isEditableKeyboardTarget(event.target)) {
+                return;
+            }
             const key = event.keyCode || event.which;
 
             // Saving
@@ -107,6 +128,9 @@ export default class MouseAndKeyboardHandler {
         });
 
         reference.view.setKeyDownFunction(function(event) {
+            if (isEditableKeyboardTarget(event.target)) {
+                return;
+            }
             const key = event.keyCode || event.which;
 
             // Delete

@@ -1,14 +1,7 @@
-(function() {
-    var call = Function.prototype.call;
-    Function.prototype.call = function() {
-        console.log(this, arguments);
-        return call.apply(this, arguments);
-    };
-}());
-
 <template>
     <v-app id="3duf">
         <ConnectionEscHintBanner />
+        <CanvasWarningBanner />
         <LayoutSidebar />
     </v-app>
 </template>
@@ -17,12 +10,14 @@
 import Visualiser from "./components/Visualiser.vue";
 import LayoutSidebar from "./views/layouts/SplitLayout.vue";
 import ConnectionEscHintBanner from "./components/ConnectionEscHintBanner.vue";
+import CanvasWarningBanner from "./components/CanvasWarningBanner.vue";
 
 export default {
     name: "App",
     components: {
         LayoutSidebar,
-        ConnectionEscHintBanner
+        ConnectionEscHintBanner,
+        CanvasWarningBanner
     }
 };
 </script>

@@ -3,6 +3,7 @@ import paper from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
 import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
+import { resolveBinaryLeafCount } from "./branchLeafs";
 
 export default class Tree extends Template {
     constructor() {
@@ -149,17 +150,11 @@ export default class Tree extends Template {
         const ports = [];
         const cw = params.flowChannelWidth;
         const spacing = this.__treeLeafSpace(params);
-        const ins = params.in;
-        const outs = params.out;
-        let leafs;
-        if (ins < outs) {
-            leafs = outs;
-        } else {
-            leafs = ins;
-        }
+        // out must be ≥ 2 (same rule as MUX); pad non-powers of 2 upward.
+        const leafs = Math.max(2, resolveBinaryLeafCount(params).leafs);
         const stagelength = this.__treeStageSpace(params);
 
-        const levels = Math.ceil(Math.log2(leafs));
+        const levels = Math.log2(leafs);
         const w = spacing * (leafs / 2 + 1);
 
         const length = levels * (cw + stagelength) + stagelength;
@@ -177,41 +172,20 @@ export default class Tree extends Template {
     render2D(params: { [k: string]: any }, key: string): paper.CompoundPath  {
         const position = params.position;
         const cw = params.flowChannelWidth;
-        const rotation = params.rotation;
         const spacing = this.__treeLeafSpace(params);
-        const ins = params.in;
-        const outs = params.out;
-        let leafs;
-        if (ins < outs) {
-            leafs = outs;
-        } else {
-            leafs = ins;
-        }
+        const leafs = Math.max(2, resolveBinaryLeafCount(params).leafs);
         const color = params.color;
         const stagelength = this.__treeStageSpace(params);
         const px = position[0];
         const py = position[1];
 
-        const levels = Math.ceil(Math.log2(leafs));
-        let isodd = false; // This is used to figure out how many lines have to be made
-        if (leafs % 2 === 0) {
-            isodd = false;
-        } else {
-            isodd = true;
-        }
-        const w = spacing * (leafs / 2 + 1);
-        const l = (levels + 1) * stagelength;
-
-        // console.log("CW: " + cw +  " levels: "+ levels +  " width: " + w + " length: " + l)
-
         const treepath = new paper.CompoundPath("");
-
+        const levels = Math.log2(leafs);
+        const w = spacing * (leafs / 2 + 1);
         this.__generateTwig(treepath, px, py, cw, stagelength, w, 1, levels);
 
-        // Draw the tree
-
         treepath.fillColor = color;
-        this.transformRender(params,treepath);
+        this.transformRender(params, treepath);
         return treepath;
     }
 

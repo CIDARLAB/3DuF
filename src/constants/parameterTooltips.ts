@@ -47,6 +47,8 @@ const COMMON: Record<string, string> = {
     valvespacing: "Center-to-center spacing between adjacent valves.",
     numberOfLeafs: "Number of outlet branches in a tree or mux.",
     leafs: "Number of branches (legacy parameter name) in a distribution tree.",
+    out: "Number of leaf outlets. For TREE, YTREE, MUX, and MUX3D this must be an integer ≥ 2; non-powers of 2 are rounded up to the next 2ⁿ for geometry.",
+    in: "Trunk / inlet side count. On MUX and MUX3D this is normally fixed at 1.",
     oilInputWidth: "Width of the oil inlet arm in droplet generators.",
     waterInputWidth: "Width of the aqueous inlet arm in droplet generators.",
     orificeLength: "Length of the nozzle orifice where droplets pinch off.",
@@ -87,6 +89,8 @@ const BY_FEATURE: Record<string, Record<string, string>> = {
         depth: "Etch / extrusion depth of the alignment mark pattern."
     },
     MUX: {
+        out: "Number of MUX leaf outlets. Must be an integer ≥ 2. Non-powers of 2 are rounded up to the next 2ⁿ for geometry.",
+        in: "MUX trunk side; normally 1 (fixed).",
         leafPitch: "Legacy MUX leaf spacing; use leafSpace.",
         leafSpace: "Distance between adjacent MUX leaf ports. Edit this to widen or tighten the tree.",
         valveWidthX: "Left-right size of each control valve pad. Increase this to stretch the valve horizontally.",
@@ -98,6 +102,8 @@ const BY_FEATURE: Record<string, Record<string, string>> = {
         stageSpace: "Along-tree spacing of successive flow stages."
     },
     MUX3D: {
+        out: "Number of MUX3D leaf outlets. Must be an integer ≥ 2. Non-powers of 2 are rounded up to the next 2ⁿ for geometry.",
+        in: "MUX3D trunk side; normally 1 (fixed).",
         leafSpace: "Horizontal pitch between adjacent MUX3D leaf/outlet channels.",
         outletLength: "Full vertical length of each straight MUX3D outlet channel. Valves on the same channel use the MUX 0.3/0.7 stage split.",
         stageSpace: "Legacy vertical pitch (outletLength ≈ N × stageSpace). Prefer outletLength.",

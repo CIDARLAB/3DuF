@@ -35,6 +35,9 @@ class EventBus extends EventEmitter {
     static SIDEBAR_PLACEMENT_SETTINGS_REPOSITION = "sidebar_placement_settings_reposition";
     /** Payload: boolean — show or hide the “press Esc to stop connection” banner */
     static CONNECTION_ESC_HINT = "connection_esc_hint";
+    /** Payload: string | { message: string } — canvas top warning strip (auto-hides) */
+    static CANVAS_WARNING = "canvas_warning";
+
     /** Emitted when the active render layer (FLOW / CTRL / … tab) changes — UI panels can mirror canvas emphasis */
     static ACTIVE_RENDER_LAYER_CHANGED = "active_render_layer_changed";
     /** Payload: boolean — canvas shows only FLOW/CONTROL ports (cover-layer view) */

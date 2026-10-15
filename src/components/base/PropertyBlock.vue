@@ -71,6 +71,8 @@
                                     dense
                                     hide-details
                                     outlined
+                                    :min="item.min"
+                                    :max="item.max"
                                     @change="paramChanged(item.value, item.name)"
                                 />
                                 <span v-if="item.units" class="param-unit">{{ item.units }}</span>

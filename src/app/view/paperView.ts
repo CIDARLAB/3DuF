@@ -151,11 +151,25 @@ export default class PaperView {
      */
     deleteSelectedFeatures(): void {
         // TODO: Refine how this works with the selection object code later on
-        const items = paper.project.selectedItems;
+        const items = paper.project.selectedItems.slice();
         if (items && items.length > 0) {
+            const seen = new Set<string>();
             for (let i = 0; i < items.length; i++) {
-                // @ts-ignore
-                this.__viewManagerDelegate.removeFeatureByID(items[i].featureID);
+                // Selected segment handles have no featureID. Looking them up
+                // throws and aborts the rest of the delete, which leaves the
+                // handle on the canvas as a gray dot.
+                const featureID = (items[i] as paper.Item & { featureID?: string }).featureID;
+                if (!featureID || seen.has(featureID)) {
+                    items[i].remove();
+                    continue;
+                }
+                seen.add(featureID);
+                try {
+                    this.__viewManagerDelegate.removeFeatureByID(featureID);
+                } catch (err) {
+                    console.warn(err);
+                    items[i].remove();
+                }
             }
 
             // Delete the selected Components !!!
@@ -171,6 +185,7 @@ export default class PaperView {
             for (const i in this.selectedConnections) {
                 this.__viewManagerDelegate.currentDevice.removeConnection(this.selectedConnections[i]);
             }
+            this.__viewManagerDelegate.currentDevice.pruneDanglingConnections();
         }
     }
 
