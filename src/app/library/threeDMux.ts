@@ -2,6 +2,7 @@ import Template from "./template";
 import paper, { CompoundPath } from "paper";
 import ComponentPort from "../core/componentPort";
 import { LogicalLayerType } from "../core/init";
+import { resolveBinaryLeafCount } from "./branchLeafs";
 
 export default class ThreeDMux extends Template {
     constructor() {
@@ -245,17 +246,8 @@ export default class ThreeDMux extends Template {
     }
 
     getPorts(params: { [k: string]: any }) {
-        const ins = params.in;
-        const outs = params.out;
-        let N;
-        let rotation = params.rotation;
-
-        if (ins < outs) {
-            N = outs;
-        } else {
-            N = ins;
-            rotation += 180;
-        }
+        // out must be ≥ 2 for MUX3D (binary valve tree).
+        const N = Math.max(2, resolveBinaryLeafCount(params).leafs);
 
         const { bottomlinelength: horizontal_length, vertlinelength: vertical_length } = this.__mux3dExtents(params, N);
         const ports = [];
@@ -299,13 +291,9 @@ export default class ThreeDMux extends Template {
 
         const px = position[0];
         const py = position[1];
-        const ins = params.in;
-        const outs = params.out;
-        let N;
-        if (ins < outs) {
-            N = outs;
-        } else {
-            N = ins;
+        const resolved = resolveBinaryLeafCount(params);
+        const N = Math.max(2, resolved.leafs);
+        if (resolved.flip) {
             rotation += 180;
         }
         const { bottomlinelength, vertlinelength } = this.__mux3dExtents(params, N);
@@ -441,14 +429,9 @@ export default class ThreeDMux extends Template {
         const px = position[0];
         const py = position[1];
 
-        const ins = params.in;
-        const outs = params.out;
-
-        let N;
-        if (ins < outs) {
-            N = outs;
-        } else {
-            N = ins;
+        const resolved = resolveBinaryLeafCount(params);
+        const N = Math.max(2, resolved.leafs);
+        if (resolved.flip) {
             rotation += 180;
         }
 
@@ -521,14 +504,9 @@ export default class ThreeDMux extends Template {
         const px = position[0];
         const py = position[1];
 
-        const ins = params.in;
-        const outs = params.out;
-
-        let N;
-        if (ins < outs) {
-            N = outs;
-        } else {
-            N = ins;
+        const resolved = resolveBinaryLeafCount(params);
+        const N = Math.max(2, resolved.leafs);
+        if (resolved.flip) {
             rotation += 180;
         }
 

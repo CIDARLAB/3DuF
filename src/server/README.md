@@ -71,6 +71,11 @@ whitespace, and applies these aliases before lookup:
   `channelWidth` → `flowChannelWidth`, `gap` → `valveGap`, plus
   `leafSpace` and `outletLength` (legacy `stageSpace` maps to
   `N * stageSpace`). Valve rows use the same 0.3 / 0.7 stage offsets as Mux.
+- **Binary leaf padding** (`src/app/library/branchLeafs.ts`).
+  `TREE` / `YTREE` / `MUX` / `MUX3D` size geometry and ports to the next
+  power of two via `resolveBinaryLeafCount()` (e.g. `out=3` uses the same
+  footprint as `out=4`). Mux / Mux3D / Tree / YTree clamp leaf count to
+  ≥ 2. Flip (180° rotation) when `in >= out` is unchanged.
 - **VALVE3D.** Dropped unused `width` / `length`; keep `valveRadius`, `gap`,
   `depth`, `rotation`.
 - **Tree / YTree.** Dropped unused `width`; `flowChannelWidth` defaults to

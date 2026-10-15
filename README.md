@@ -122,7 +122,9 @@ MINT identifiers are matched case-insensitively and tolerate underscores / extra
 
 **Breaking parameter rename:** feature Z-thickness is now `depth` (was `height`). `/defaults` and library JSON use `depth`. Connection loaders still accept legacy `height` and rewrite it to `depth`. Shared channel / mixer defaults live in `src/app/library/channelWidths.ts` (`DEFAULT_CHANNEL_WIDTH_UM = 600`).
 
-See [`src/server/README.md`](src/server/README.md) for the full component-library notes (renamed parameters, mixer `edgeBend*`, MUX3D layout params, `component_defaults.json` regeneration, etc.).
+**Binary fan-out sizing:** `TREE` / `YTREE` / `MUX` / `MUX3D` pad leaf count up to the next power of two (`src/app/library/branchLeafs.ts`), so e.g. `out=3` keeps the same footprint as `out=4`. Mux / Mux3D require at least 2 leaves.
+
+See [`src/server/README.md`](src/server/README.md) for the full component-library notes (renamed parameters, mixer `edgeBend*`, MUX3D layout params, binary leaf padding, `component_defaults.json` regeneration, etc.).
 
 ## Attributions
 
