@@ -451,23 +451,30 @@ export default {
         /** Clamp each row to its min/max; TREE/YTREE/MUX/MUX3D force out >= 2. */
         clampSpecRowsToLimits(mint) {
             if (!Array.isArray(this.spec)) return;
-            const binaryBranch = mint === "MUX" || mint === "MUX3D" || mint === "TREE" || mint === "YTREE";
-            let raisedOut = false;
+            const binaryBranch = BINARY_BRANCH_MINTS.has(mint);
+            // out's declared minimum is already 2, so a typed 1 is raised by the
+            // min clamp before the old `n < 2` check could see it. Record the
+            // entered value first, otherwise out=1 applies silently while 3/5
+            // still show the canvas banner.
+            let raisedOutFrom = null;
             for (const row of this.spec) {
                 if (!row || !row.name) continue;
                 let n = Number(row.value);
                 if (!Number.isFinite(n)) continue;
+                const entered = n;
                 if (Number.isFinite(row.min) && n < row.min) n = row.min;
                 if (Number.isFinite(row.max) && n > row.max) n = row.max;
                 if (binaryBranch && row.name === "out" && n < 2) {
                     n = 2;
-                    raisedOut = true;
+                }
+                if (binaryBranch && row.name === "out" && entered < 2 && n !== entered) {
+                    raisedOutFrom = entered;
                 }
                 this.$set(row, "value", n);
             }
-            if (raisedOut) {
+            if (raisedOutFrom !== null) {
                 EventBus.get().emit(EventBus.CANVAS_WARNING, {
-                    message: `${mint}: out must be an integer ≥ 2 — value was raised to 2.`
+                    message: `${mint}: out must be an integer ≥ 2 — value ${raisedOutFrom} was raised to 2.`
                 });
             }
         },
