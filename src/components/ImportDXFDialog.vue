@@ -1,5 +1,5 @@
 <template>
-    <Dialog title="Import (.json / .dxf)">
+    <Dialog title="Import (.json / .dxf)" confirm-on-enter @confirm="importSelectedFile">
         <template #content>
             <h4>Supported input formats: JSON and DXF only</h4>
             <div class="mdl-dialog__content">

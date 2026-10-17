@@ -293,9 +293,6 @@ export default class ThreeDMux extends Template {
         const py = position[1];
         const resolved = resolveBinaryLeafCount(params);
         const N = Math.max(2, resolved.leafs);
-        if (resolved.flip) {
-            rotation += 180;
-        }
         const { bottomlinelength, vertlinelength } = this.__mux3dExtents(params, N);
 
         const bottomlineleft = new paper.Point(px - channelWidth / 2, py - channelWidth / 2 + vertlinelength);
@@ -431,10 +428,6 @@ export default class ThreeDMux extends Template {
 
         const resolved = resolveBinaryLeafCount(params);
         const N = Math.max(2, resolved.leafs);
-        if (resolved.flip) {
-            rotation += 180;
-        }
-
         const { bottomlinelength, vertlinelength } = this.__mux3dExtents(params, N);
 
         const leftInput = px - N * 1000;
@@ -506,10 +499,6 @@ export default class ThreeDMux extends Template {
 
         const resolved = resolveBinaryLeafCount(params);
         const N = Math.max(2, resolved.leafs);
-        if (resolved.flip) {
-            rotation += 180;
-        }
-
         const { bottomlinelength, vertlinelength } = this.__mux3dExtents(params, N);
 
         const valvenum = Math.log(N) / Math.log(2);

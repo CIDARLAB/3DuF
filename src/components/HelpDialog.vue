@@ -131,7 +131,9 @@ export default {
                         "Changing MUX/MUX3D/TREE/YTREE in/out rebuilds the port list (orphan side-port dots from a larger out count are removed).",
                         "TREE / YTREE / MUX / MUX3D out must be an integer ≥ 2. Non-powers of 2 are rounded up to the next 2ⁿ; a yellow canvas banner explains the adjustment.",
                         "Settings Apply is Enter and Reset is Shift+Enter. Parameter number fields honor min/max, and Delete types inside those fields instead of deleting canvas objects.",
-                        "Deleting a component also drops connections that referenced it so the file reloads. Bend handles and zero-length segments no longer leave gray dots."
+                        "Deleting a component also drops connections that referenced it so the file reloads. Bend handles and zero-length segments no longer leave gray dots.",
+                        "MUX, MUX3D, and YTREE orientation follows the stored rotation only. in ≥ out no longer adds an extra 180°, so a saved rotation of 180 stays 180 and the glyph matches the ports.",
+                        "In the Import dialog, Enter confirms the selected JSON or DXF and Escape closes the dialog without the canvas-wide Escape handler."
                     ]
                 }
             ]

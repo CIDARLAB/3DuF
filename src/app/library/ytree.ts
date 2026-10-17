@@ -178,9 +178,6 @@ export default class YTree extends Template {
         const spacing = this.__treeLeafSpace(params);
         const resolved = resolveBinaryLeafCount(params);
         const leafs = Math.max(2, resolved.leafs);
-        if (resolved.flip) {
-            rotation += 180;
-        }
         const color = params.color;
         const stagelength = this.__treeStageSpace(params);
         const px = position[0];

@@ -15,14 +15,15 @@ export function nextPowerOfTwo(n: number): number {
 }
 
 /**
- * Resolve leaf count the same way TREE/MUX historically did (max of in/out,
- * with flip when in >= out), then pad up to 2^n for geometry and ports.
+ * Resolve leaf count the same way TREE/MUX historically did (max of in/out),
+ * then pad up to 2^n for geometry and ports. Orientation is params.rotation;
+ * do not add another 180° when in >= out.
  */
 export function resolveBinaryLeafCount(params: { [k: string]: any }): {
     requested: number;
     leafs: number;
     roundedUp: boolean;
-    /** True when drawing should rotate 180° (mux / mux3d when in >= out). */
+    /** Kept for callers. Drawing does not apply this; use params.rotation. */
     flip: boolean;
 } {
     const ins = Math.max(1, Math.floor(Number(params.in) || 1));

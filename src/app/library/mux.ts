@@ -153,9 +153,9 @@ export default class Mux extends Template {
         // out must be ≥ 2 for MUX (binary tree + valves).
         const resolved = resolveBinaryLeafCount(params);
         const leafs = Math.max(2, resolved.leafs);
-        if (resolved.flip) {
-            rotation += 180;
-        }
+        // Orientation is params.rotation only. An extra 180° when in >= out
+        // turns a stored rotation of 180 into 360°, so that MUX looks
+        // unrotated, and the glyph no longer matches getPorts().
         const color = params.color;
         const stagelength = this.__muxStageSpace(params);
         const px = position[0];
@@ -178,9 +178,6 @@ export default class Mux extends Template {
         let rotation = params.rotation;
         const resolved = resolveBinaryLeafCount(params);
         const leafs = Math.max(2, resolved.leafs);
-        if (resolved.flip) {
-            rotation += 180;
-        }
         const color = params.color;
         const stagelength = this.__muxStageSpace(params);
         const valvelength = this.__muxValveWidthY(params);

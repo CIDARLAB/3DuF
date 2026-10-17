@@ -43,6 +43,12 @@ export default {
             type: String,
             required: false,
             default: ""
+        },
+        /** Enter confirms and Escape cancels, without the canvas-wide Escape handler. */
+        confirmOnEnter: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
@@ -65,6 +71,26 @@ export default {
             ];
         }
     },
+    created() {
+        this.onDialogKeydown = event => {
+            if (!this.dialog || !this.confirmOnEnter) return;
+            if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) return;
+            const key = event.key;
+            if (key === "Enter") {
+                event.preventDefault();
+                event.stopPropagation();
+                this.$emit("confirm", this.callbacks);
+            } else if (key === "Escape" || key === "Esc") {
+                event.preventDefault();
+                event.stopPropagation();
+                if (this.callbacks && this.callbacks.close) {
+                    this.callbacks.close();
+                } else {
+                    this.dialog = false;
+                }
+            }
+        };
+    },
     mounted() {
         // Setup an event for closing all the dialogs
         const ref = this;
@@ -79,10 +105,17 @@ export default {
             this.dialog = false;
         });
     },
+    beforeDestroy() {
+        window.removeEventListener("keydown", this.onDialogKeydown, true);
+    },
     watch: {
         dialog(val) {
+            window.removeEventListener("keydown", this.onDialogKeydown, true);
             if (val) {
                 this.$emit("opened");
+                if (this.confirmOnEnter) {
+                    window.addEventListener("keydown", this.onDialogKeydown, true);
+                }
             }
         }
     }
