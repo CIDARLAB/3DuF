@@ -760,6 +760,91 @@ export default class Connection {
     }
 
     /**
+     * YTREE openings are stadium-cap centers. TREE-PLACE lands the channel on
+     * the AABB rim, half a channel width outside that center, so a rounded
+     * cap only kisses the rim. Pull those tips onto the library port. Leave
+     * a tip alone when it is not already beside that port.
+     */
+    snapYTreeStadiumCaps(): boolean {
+        let connectionWidth = DEFAULT_CHANNEL_WIDTH_UM;
+        try {
+            connectionWidth = Number(this.getValue("channelWidth") || DEFAULT_CHANNEL_WIDTH_UM);
+        } catch {
+            connectionWidth = DEFAULT_CHANNEL_WIDTH_UM;
+        }
+        const snapEnd = (target: ConnectionTarget | null | undefined, current: Point): Point => {
+            if (!target || !current) {
+                return current;
+            }
+            if (String(target.component.mint || "").toUpperCase() !== "YTREE") {
+                return current;
+            }
+            let glyphWidth = connectionWidth;
+            try {
+                const named = Number(target.component.getValue("flowChannelWidth"));
+                if (Number.isFinite(named) && named > 0) {
+                    glyphWidth = named;
+                }
+            } catch {
+                glyphWidth = connectionWidth;
+            }
+            // Use the opening the tip actually landed on. Leaf labels in the
+            // JSON are not always the geometric neighbor.
+            const limit = Math.max(glyphWidth, connectionWidth) + 32;
+            let cap: Point | null = null;
+            let best = Infinity;
+            target.component.ports.forEach(port => {
+                const candidate = ComponentPort.calculateAbsolutePosition(port, target.component);
+                const dist = Math.hypot(current[0] - candidate[0], current[1] - candidate[1]);
+                if (dist < best) {
+                    best = dist;
+                    cap = candidate;
+                }
+            });
+            // Rim offset is glyphWidth/2. Farther than one channel width means
+            // this tip is not sitting on that opening.
+            if (!cap || best > limit) {
+                return current;
+            }
+            return [cap[0], cap[1]];
+        };
+        if (this._paths.length === 0) {
+            try {
+                const wp = this.getValue("wayPoints");
+                if (Array.isArray(wp) && wp.length >= 2) {
+                    this._paths.push(wp.map((p: Point) => [p[0], p[1]] as Point));
+                }
+            } catch {
+                // no stored waypoints
+            }
+        }
+        let changed = false;
+        for (const path of this._paths) {
+            if (!path || path.length < 2) {
+                continue;
+            }
+            const start = snapEnd(this._source, path[0]);
+            const end = snapEnd(this._sinks[0], path[path.length - 1]);
+            if (start[0] !== path[0][0] || start[1] !== path[0][1] || end[0] !== path[path.length - 1][0] || end[1] !== path[path.length - 1][1]) {
+                path[0] = start;
+                path[path.length - 1] = end;
+                changed = true;
+            }
+        }
+        if (!changed) {
+            return false;
+        }
+        this.regenerateSegments();
+        const first = this._paths[0];
+        if (first && first.length >= 2) {
+            this.updateParameter("wayPoints", first);
+            this.updateParameter("start", first[0]);
+            this.updateParameter("end", first[first.length - 1]);
+        }
+        return true;
+    }
+
+    /**
      * Merges connections
      * @param {Connection} connection
      * @memberof Connection

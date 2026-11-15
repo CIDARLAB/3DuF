@@ -21,7 +21,7 @@ The design of microfluidic Lab on a Chip (LoC) systems is an onerous task requir
 Summary of the 2026 maintenance work on this branch:
 
 ### Import, export, and manufacturing
-- Single **Import** dialog for JSON and DXF (drop zone or file picker). **Enter** confirms the selected file; **Escape** closes the dialog without the canvas-wide Escape handler.
+- Single **Import** dialog for JSON and DXF (drop zone or file picker). **Enter** / **NumpadEnter** confirms the selected file; **Escape** closes the dialog without the canvas-wide Escape handler. Pressing Enter before a file is chosen does nothing (no alert).
 - **Export** panel: JSON · 3DuF, DXF, SVG, and flow-feature GCode; multilayer biochips export per-layer DXF/SVG instead of GCode.
 - Each export downloads as a zip with a matching **ports-only** file for cover-layer fabrication.
 - **ALL / PORTS** canvas toggle above Export previews only flow (blue) and control (red) ports.
@@ -39,7 +39,7 @@ Summary of the 2026 maintenance work on this branch:
 - Changing MUX / MUX3D / TREE / YTREE **in** / **out** rebuilds the port list so orphan side-port dots from a larger fan-out are removed.
 - TREE / YTREE / MUX / MUX3D **out** must be an integer ≥ 2. Counts that are not a power of 2 are rounded up to the next 2ⁿ so geometry and ports match a full binary tree. A yellow canvas banner warns when the value is raised to 2 or when the leaf count is rounded up.
 - MUX, MUX3D, and YTREE orientation follows the stored **rotation** only. `in` ≥ `out` no longer adds an extra 180°, so a saved rotation of 180 stays 180 and the drawn glyph matches the ports.
-- YTREE trunk and leaf ports sit at RoundedChannel stadium-cap centers so a rounded connection fully overlaps the opening instead of only kissing the rim.
+- YTREE trunk and leaf ports sit at RoundedChannel stadium-cap centers so a rounded connection fully overlaps the opening instead of only kissing the rim. On JSON load, connection tips that landed on the YTREE AABB rim are snapped onto those stadium-cap centers.
 - New droplet primitive: **DROPLET MERGER JUNCTION** (3-port T-junction).
 
 ### Neptune / Parchmint interoperability
@@ -158,13 +158,13 @@ Default sizes used when placing new features:
 
 Mixer serpentine ends expose **edgeBend1** / **edgeBend2** — the outward tip stub past each port (independent of each other; they never move the port). Ports sit at the tip-square center on the serpentine spine. A connecting channel terminates on that center (and on its own tip-circle / tip-square center) whether it is wider or narrower than the mixer. Defaults: **bendSpacing** 1400 µm, **bendLength** 2000 µm.
 
-MUX / TREE / YTREE expose **leafSpace** (adjacent leaf spacing) and **stageSpace** (along-tree stage spacing). MUX valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `leafPitch`, `stageLength`, `spacing`, `width`, `length`, and `valveWidth` are still accepted. YTREE ports sit at RoundedChannel stadium-cap centers.
+MUX / TREE / YTREE expose **leafSpace** (adjacent leaf spacing) and **stageSpace** (along-tree stage spacing). MUX valve pads use **valveWidthX** (left–right) and **valveWidthY** (up–down). Legacy JSON keys `leafPitch`, `stageLength`, `spacing`, `width`, `length`, and `valveWidth` are still accepted. YTREE ports sit at RoundedChannel stadium-cap centers; on import, channel tips that stopped on the AABB rim are pulled onto those centers so a rounded cap fully covers the opening.
 
 MUX3D uses **leafSpace** and **outletLength** (full vertical length of each straight outlet channel); valves on the same channel use the MUX 0.3/0.7 stage split. Flow slit is **valveGap**. Changing MUX / MUX3D / TREE / YTREE **in** / **out** rebuilds ports so leftover side-port dots from a larger fan-out disappear.
 
 TREE / YTREE / MUX / MUX3D **out** must be an integer ≥ 2. A count that is not a power of 2 is rounded up to the next 2ⁿ (for example 3 becomes 4) so the footprint matches a full binary tree. A yellow banner at the top of the canvas explains the adjustment and hides after a few seconds. MUX, MUX3D, and YTREE facing follows **rotation** only; `in` ≥ `out` does not add another 180°.
 
-In the **Import** dialog, **Enter** confirms the selected JSON or DXF and **Escape** closes the dialog.
+In the **Import** dialog, **Enter** / **NumpadEnter** confirms the selected JSON or DXF and **Escape** closes the dialog. Enter with no file chosen does not show an alert.
 
 In the floating settings panel, **Enter** applies pending changes and **Shift+Enter** runs Reset. Numeric fields stay inside each parameter’s min and max. Typing, including Delete, stays in the field instead of deleting canvas objects.
 

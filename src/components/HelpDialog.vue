@@ -133,7 +133,8 @@ export default {
                         "Settings Apply is Enter and Reset is Shift+Enter. Parameter number fields honor min/max, and Delete types inside those fields instead of deleting canvas objects.",
                         "Deleting a component also drops connections that referenced it so the file reloads. Bend handles and zero-length segments no longer leave gray dots.",
                         "MUX, MUX3D, and YTREE orientation follows the stored rotation only. in ≥ out no longer adds an extra 180°, so a saved rotation of 180 stays 180 and the glyph matches the ports.",
-                        "In the Import dialog, Enter confirms the selected JSON or DXF and Escape closes the dialog without the canvas-wide Escape handler."
+                        "In the Import dialog, Enter / NumpadEnter confirms the selected JSON or DXF and Escape closes the dialog without the canvas-wide Escape handler. Enter with no file chosen does not alert.",
+                        "On JSON load, connection tips that landed on a YTREE AABB rim are snapped to the library stadium-cap centers so rounded channels fully cover the openings."
                     ]
                 }
             ]

@@ -1136,6 +1136,9 @@ export default class ViewManager {
         // wayPoints are already absolute; snapping them to getPorts() (often
         // a different local frame than the Parchmint AABB ports) pulled
         // channels off mixers / valves / mux arms.
+        // YTREE is the exception: its library port is the stadium-cap center,
+        // and TREE-PLACE stops on the AABB rim, so the rounded cap only kisses.
+        this.snapYTreeStadiumCaps();
 
         // Re-apply valve-induced connection breaks after JSON load so imported designs
         // render the same valve gap geometry as interactive placement.
@@ -1175,6 +1178,39 @@ export default class ViewManager {
      * Pull imported connection terminals onto library port positions so the
      * drawn channel meets the primitive after rotation-center load.
      */
+    private snapYTreeStadiumCaps(): void {
+        const device = this.currentDevice;
+        if (!device) {
+            return;
+        }
+        for (const connection of device.connections) {
+            try {
+                if (!connection.snapYTreeStadiumCaps()) {
+                    continue;
+                }
+                const wps = connection.getValue("wayPoints");
+                const segs = connection.getValue("segments");
+                if (!Array.isArray(wps) || wps.length < 2) {
+                    continue;
+                }
+                // Connection features were built from the original waypoints
+                // before this snap. Copy the cap-center tips onto those
+                // features so the first canvas render uses them.
+                for (const feature of device.getAllFeaturesFromDevice()) {
+                    if (feature.referenceID !== connection.id) {
+                        continue;
+                    }
+                    feature.updateParameter("wayPoints", wps);
+                    feature.updateParameter("segments", segs);
+                    feature.updateParameter("start", wps[0]);
+                    feature.updateParameter("end", wps[wps.length - 1]);
+                }
+            } catch (err) {
+                console.warn("Could not snap YTREE stadium caps during JSON load:", connection.id, err);
+            }
+        }
+    }
+
     private snapImportedConnectionTerminals(): void {
         const device = this.currentDevice;
         if (!device) {

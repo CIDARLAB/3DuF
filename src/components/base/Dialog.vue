@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" persistent max-width="600">
+    <v-dialog v-model="dialog" persistent max-width="600" @keydown="onDialogKeydown">
         <template v-slot:activator="{ on, attrs }">
             <v-btn :id="buttonID" v-bind="attrs" :class="buttonClasses" v-on="on">
                 {{ title }}
@@ -76,10 +76,11 @@ export default {
             if (!this.dialog || !this.confirmOnEnter) return;
             if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) return;
             const key = event.key;
-            if (key === "Enter") {
+            if (key === "Enter" || key === "NumpadEnter") {
                 event.preventDefault();
                 event.stopPropagation();
-                this.$emit("confirm", this.callbacks);
+                if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+                this.$emit("confirm", this.callbacks, { fromKeyboard: true });
             } else if (key === "Escape" || key === "Esc") {
                 event.preventDefault();
                 event.stopPropagation();

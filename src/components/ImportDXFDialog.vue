@@ -152,10 +152,14 @@ export default {
                 reader.readAsText(this.selectedFile);
             });
         },
-        importSelectedFile(callbacks) {
+        importSelectedFile(callbacks, source) {
             const ext = this.getFileExtension(this.selectedFileName);
             if (!this.selectedFile || !ext) {
-                alert("Please choose a .json or .dxf file first.");
+                // Enter before a file is chosen must not pop an alert (the
+                // OS file picker can leak that key). The Confirm button still warns.
+                if (!(source && source.fromKeyboard)) {
+                    alert("Please choose a .json or .dxf file first.");
+                }
                 return;
             }
 
