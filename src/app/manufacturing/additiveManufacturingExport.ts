@@ -3,6 +3,7 @@ import Device from "../core/device";
 import Feature from "../core/feature";
 import Layer from "../core/layer";
 import { LogicalLayerType } from "../core/init";
+import { contiguousCenterlines, squareChannelOutline } from "../library/channelJoin";
 
 const UM_TO_MM = 0.001;
 
@@ -74,6 +75,22 @@ function buildSegmentExtrusion(axUm: number, ayUm: number, bxUm: number, byUm: n
     geom.rotateZ(angle);
     geom.translate(axUm * UM_TO_MM, -ayUm * UM_TO_MM, 0);
     return geom;
+}
+
+function buildOutlineExtrusion(outline: Array<[number, number]>, depthMm: number): THREE.BufferGeometry {
+    if (outline.length < 3 || !isFiniteNumber(depthMm) || depthMm <= 0) {
+        return new THREE.BufferGeometry();
+    }
+    const shape = new THREE.Shape();
+    shape.moveTo(outline[0][0] * UM_TO_MM, -outline[0][1] * UM_TO_MM);
+    for (let i = 1; i < outline.length; i++) {
+        shape.lineTo(outline[i][0] * UM_TO_MM, -outline[i][1] * UM_TO_MM);
+    }
+    shape.closePath();
+    return new THREE.ExtrudeGeometry(shape, {
+        depth: depthMm,
+        bevelEnabled: false
+    });
 }
 
 function scaleGeometryDepth(geometry: THREE.BufferGeometry, depthMm: number): void {
@@ -159,6 +176,16 @@ function collectConnectionGeometries(device: Device): THREE.BufferGeometry[] {
             const rounded = crossSection >= 0.5;
             const depthMm = height * UM_TO_MM;
             if (!segments || !Array.isArray(segments)) {
+                continue;
+            }
+            if (!rounded) {
+                for (const run of contiguousCenterlines(segments)) {
+                    const outline = squareChannelOutline(run, channelWidth);
+                    const g = buildOutlineExtrusion(outline, depthMm);
+                    if (g.attributes.position && (g.attributes.position as THREE.BufferAttribute).count > 0) {
+                        out.push(g);
+                    }
+                }
                 continue;
             }
             for (let s = 0; s < segments.length; s++) {

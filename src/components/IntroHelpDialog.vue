@@ -216,6 +216,7 @@ export default {
                         "Added an All/Ports toggle above Export (same interaction pattern as FLOW/CTRL). Ports shows only flow (blue) and control (red) port circles; All restores the full layout.",
                         "Neptune LFR DIYCOMPONENT parts now render as built-in black-box placeholders instead of disappearing when the custom library entry is missing.",
                         "Square-profile channels fill the outer corner at 90° turns, so compiled CHANNEL JSON no longer shows a gap at the joint.",
+                        "Square channels now use one constant-width outline per run: right angles stay sharp, other bends are rounded at half the channel width, and DXF export writes the same walls as the canvas.",
                         "Component and connection settings show the netlist ID from the imported JSON for cross-checking with Parchmint / Neptune.",
                         "Mixer settings include edgeBend1 / edgeBend2; ports sit at the tip-square center. Connecting channels (rounded or square, any width) terminate on that same center. Default bendSpacing is 1400 µm and bendLength is 2000 µm.",
                         "MUX / TREE / YTREE settings use leafSpace and stageSpace; MUX valve pads use valveWidthX / valveWidthY. YTREE ports sit at RoundedChannel stadium-cap centers.",
@@ -241,7 +242,8 @@ export default {
                         "If a TREE / YTREE / MUX / MUX3D outlet count is not a power of 2, the device is drawn as the next 2ⁿ tree so the footprint stays consistent.",
                         "Deleting a component also removes connections that pointed at it, so the saved design still opens. Bend handles and zero-length route pieces no longer leave gray dots.",
                         "Set MUX, MUX3D, and YTREE facing with rotation. A larger in than out does not flip the drawing on its own.",
-                        "When a design loads, channel tips that stopped on a YTREE AABB rim are moved onto the stadium-cap centers so rounded connections fully cover the openings."
+                        "When a design loads, channel tips that stopped on a YTREE AABB rim are moved onto the stadium-cap centers so rounded connections fully cover the openings.",
+                        "When drawing a channel, click the port you want: the closest port wins when it is clearly nearer than its neighbour, so tightly spaced YTREE leaves are easy to pick."
                     ],
                     // Placeholder: v1.2 videos are not ready yet, so reuse existing tutorials.
                     introductionVideoUrl: "https://www.youtube.com/embed/05nU8eQ73U8",

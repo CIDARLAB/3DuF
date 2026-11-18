@@ -26,12 +26,14 @@ Summary of the 2026 maintenance work on this branch:
 - Each export downloads as a zip with a matching **ports-only** file for cover-layer fabrication.
 - **ALL / PORTS** canvas toggle above Export previews only flow (blue) and control (red) ports.
 - DXF round-trip keeps device border and channel wall widths aligned with the canvas.
+- Square-profile channels export as open wall lines that match the canvas outline: 90° corners are sharp miters and other bends are rounded at half the channel width. Rounded channels keep their stadium outlines.
 
 ### Layout and geometry
 - Component `position` is the geometric / rotation center; PORT, VIA, NODE, and VALVE draw at that center.
 - Default sizes: port radius **1 mm**; channel / connection / valve-gap width **600 µm**; component keepout **componentSpacing** default **2000 µm** (editable in settings). Feature etch / extrusion z is **depth** (legacy JSON `height` migrates to `depth` on load). One depth per feature/layer — for region-specific z, export DXF and refine in Fusion 360.
 - Mixer serpentine ends expose **edgeBend1** / **edgeBend2** as independent outward tip stubs past each port (they do not move the ports or accumulate onto each other). Ports sit at the incomplete-end tip-square center on the serpentine spine. Connecting channels (rounded tip-circle or square tip-square, any width) terminate on that same center. Defaults: **bendSpacing** **1400 µm**, **bendLength** **2000 µm**.
-- Square channel joints fill 90° corners; square connections also draw tip-square end-caps at true terminals (same center rule as rounded tip-circles). VALVE3D FLOW gaps are clipped geometrically on import. CONTROL routes are not split by FLOW valve rectangles. VALVE3D settings expose **valveRadius**, **gap**, and **depth** (unused width/length removed).
+- Square channels are drawn as one constant-width outline per contiguous run: 90° corners stay sharp, and other bends use a round join at half the channel width, so the outside of a bend no longer leaves a gap or a square nub that pokes past the wall. Valve gaps still split runs. Square connections also draw tip-square end-caps at true terminals (same center rule as rounded tip-circles).
+- Clicking a port in the connection tool picks the nearest port when it is clearly closer than its neighbour. The margin scales with the gap between those two ports, so closely spaced YTREE leaves select the leaf you clicked. YTREE terminals are not inset again, so channels stay on the stadium-cap centers. VALVE3D FLOW gaps are clipped geometrically on import. CONTROL routes are not split by FLOW valve rectangles. VALVE3D settings expose **valveRadius**, **gap**, and **depth** (unused width/length removed).
 - PORT draws a single connection handle at the geometric center (like VIA). VALVE library ports use center-relative cardinals (1–4) for MINT / Fluigi connectivity.
 - NODE is a zero-radius junction: its center terminal is used for snapping only and does **not** draw a grey port marker on Y-junctions.
 - MUX / TREE / YTREE leaf spacing is **leafSpace**; along-tree stage spacing is **stageSpace**. MUX control valve pads use **valveWidthX** / **valveWidthY**. Older JSON keys (`leafPitch`, `stageLength`, `spacing`, `width`, `length`, `valveWidth`) still load.
@@ -186,7 +188,7 @@ Fabricated chips need a closed cover so fluid can flow inside channels instead o
 Use the sidebar **Export** section (not a separate Save menu) to download the current design:
 
 - **JSON · 3DuF** — default interchange format. Reopen and share designs in 3DuF.
-- **DXF** — CAD sketch for AutoCAD, Fusion 360, and other CAD / CAM tools. Multilayer biochips export one DXF per layer.
+- **DXF** — CAD sketch for AutoCAD, Fusion 360, and other CAD / CAM tools. Multilayer biochips export one DXF per layer. Square channels are written as the same mitered / rounded wall lines shown on the canvas.
 - **SVG** — vector graphics for documentation, illustrations, and laser-cutting prep.
 - **GCode** — CNC / router programs for flow-layer geometry. Not available for multilayer biochips (export each layer as DXF or SVG instead).
 

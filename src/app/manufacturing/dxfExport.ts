@@ -5,6 +5,7 @@ import DXFObject from "../core/dxfObject";
 import { LogicalLayerType } from "../core/init";
 import { getDxfModelFromDevice } from "../import/dxfDeviceImport";
 import { betterMixerCenterlineSegments } from "./flowGCodeExport";
+import { contiguousCenterlines, squareChannelWalls } from "../library/channelJoin";
 
 const UM_TO_MM = 0.001;
 
@@ -348,6 +349,30 @@ function exportChannelSegmentOutline(
     return out;
 }
 
+function exportWallPolyline(
+    points: Array<[number, number]>,
+    deviceHeightUm: number,
+    layer: string,
+    z: number
+): string {
+    let out = "";
+    for (let i = 0; i < points.length - 1; i++) {
+        const a = canvasUmToDxfMm(points[i][0], points[i][1], deviceHeightUm);
+        const b = canvasUmToDxfMm(points[i + 1][0], points[i + 1][1], deviceHeightUm);
+        out += writeLine(
+            {
+                type: "LINE",
+                vertices: [
+                    { x: a.x, y: a.y, z },
+                    { x: b.x, y: b.y, z }
+                ]
+            },
+            layer
+        );
+    }
+    return out;
+}
+
 function isStructuredDesignFeature(type: string): boolean {
     return (
         type === "Port" ||
@@ -464,6 +489,33 @@ function exportFeatureEntities(
             if (start && end) {
                 segments = [[start, end]];
             }
+        }
+
+        let rounded = type === "RoundedChannel" || type === "RoundedChannelConnection";
+        if (!rounded) {
+            try {
+                const crossSection = Number(feature.getValue("crossSection"));
+                if (Number.isFinite(crossSection) && crossSection >= 0.5) {
+                    rounded = true;
+                }
+            } catch (_err) {
+                // Missing crossSection is the square profile.
+            }
+        }
+
+        if (!rounded) {
+            // Same outline as the canvas: sharp 90° miters, round joins
+            // everywhere else. Walls stay open (no end caps) so a straight
+            // channel is still two parallel lines, not a closed border.
+            for (const run of contiguousCenterlines(segments)) {
+                const walls = squareChannelWalls(run, channelWidthUm);
+                if (!walls) {
+                    continue;
+                }
+                entities += exportWallPolyline(walls.left, deviceHeightUm, channelLayer, z);
+                entities += exportWallPolyline(walls.right, deviceHeightUm, channelLayer, z);
+            }
+            return entities;
         }
 
         for (const seg of segments) {

@@ -540,7 +540,7 @@ export default class ConnectionTool extends MouseTool {
         }
 
         if (clickPoint !== null) {
-            const aimed = this.__uniquelyClosestPort(located, clickPoint, component);
+            const aimed = this.__uniquelyClosestPort(located, clickPoint);
             if (aimed !== null) {
                 return aimed;
             }
@@ -581,31 +581,24 @@ export default class ConnectionTool extends MouseTool {
         return located;
     }
 
-    private __componentSpan(component: any): number {
-        try {
-            const bounds = component.getBoundingRectangle();
-            return Math.max(bounds.width, bounds.height, 1);
-        } catch {
-            return 1000;
-        }
-    }
-
     /**
      * Honor a click only when it is clearly nearer one port than the next.
-     * A click on the body/center is a near-tie and must not pick the top port.
+     * The margin is a fraction of the gap between those two ports, not of the
+     * whole component. YTREE leaves sit a few millimetres apart on a part
+     * that is tens of millimetres wide; 15% of that span was larger than the
+     * leaf gap, so a click on the leftmost leaf was treated as a tie and the
+     * center-facing fallback landed on a different leaf.
+     * A click on the body is still a near-tie and must not pick a port.
      */
-    private __uniquelyClosestPort(
-        located: Array<{ port: any; loc: Point }>,
-        clickPoint: Point,
-        component: any
-    ) {
+    private __uniquelyClosestPort(located: Array<{ port: any; loc: Point }>, clickPoint: Point) {
         if (located.length === 1) {
             return located[0].port;
         }
         const ranked = [...located].sort(
             (a, b) => this.__euclidean(clickPoint, a.loc) - this.__euclidean(clickPoint, b.loc)
         );
-        const uniqueMargin = Math.max(this.__componentSpan(component) * 0.15, 1);
+        const portGap = Math.max(this.__euclidean(ranked[0].loc, ranked[1].loc), 1);
+        const uniqueMargin = portGap * 0.25;
         if (this.__euclidean(clickPoint, ranked[1].loc) - this.__euclidean(clickPoint, ranked[0].loc) > uniqueMargin) {
             return ranked[0].port;
         }
@@ -658,12 +651,17 @@ export default class ConnectionTool extends MouseTool {
      * Channel endpoint on a component port: the absolute port, then inset
      * into the body by half the channel width so square channels overlap
      * the opening instead of sharing a zero-width edge.
+     * YTREE ports are already stadium-cap centers. Insetting them again
+     * shifts both square and rounded tips off the opening.
      */
     private __portTerminal(component: any, componentport: any): Point {
         const abs = ComponentPort.calculateAbsolutePosition(componentport, component);
         const entity = String(component?.mint || component?._entity || "").toUpperCase();
         if (entity === "MIXER" || entity === "CURVED MIXER" || entity === "MIXER3D") {
             return ComponentPort.mixerTerminalHinge(abs, component, this.__channelOverlap() * 2);
+        }
+        if (entity === "YTREE") {
+            return [abs[0], abs[1]];
         }
         return ComponentPort.insetTowardCenter(abs, component, this.__channelOverlap());
     }

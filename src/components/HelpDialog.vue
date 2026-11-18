@@ -134,7 +134,9 @@ export default {
                         "Deleting a component also drops connections that referenced it so the file reloads. Bend handles and zero-length segments no longer leave gray dots.",
                         "MUX, MUX3D, and YTREE orientation follows the stored rotation only. in ≥ out no longer adds an extra 180°, so a saved rotation of 180 stays 180 and the glyph matches the ports.",
                         "In the Import dialog, Enter / NumpadEnter confirms the selected JSON or DXF and Escape closes the dialog without the canvas-wide Escape handler. Enter with no file chosen does not alert.",
-                        "On JSON load, connection tips that landed on a YTREE AABB rim are snapped to the library stadium-cap centers so rounded channels fully cover the openings."
+                        "On JSON load, connection tips that landed on a YTREE AABB rim are snapped to the library stadium-cap centers so rounded channels fully cover the openings.",
+                        "Square-profile channels use one constant-width outline per run: 90° corners are sharp, other bends are rounded, and the outside of a bend no longer leaves a gap or a nub past the wall. DXF export writes the same wall lines as the canvas.",
+                        "Connection-tool port clicks pick the nearest port using the gap between neighbouring ports, so closely spaced YTREE leaves select the leaf you clicked."
                     ]
                 }
             ]

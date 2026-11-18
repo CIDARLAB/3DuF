@@ -1,6 +1,7 @@
 import Template from "./template";
 import paper from "paper";
 import { DEFAULT_CHANNEL_WIDTH_UM } from "./channelWidths";
+import { contiguousCenterlines, squareChannelOutline } from "./channelJoin";
 
 export default class Connection extends Template {
     constructor() {
@@ -115,47 +116,51 @@ export default class Connection extends Template {
             return connectionpath;
         }
 
-        const capAt = this.__roundedCapLookup(segments, wayPoints);
+        if (!roundedProfile) {
+            // One outline per contiguous run. 90° corners stay sharp; other
+            // bends fillet at half the channel width. Valve gaps stay open
+            // because those runs do not share an endpoint.
+            this.__drawSquareChannelRuns(connectionpath, segments, channelWidth);
+        } else {
+            const capAt = this.__roundedCapLookup(segments, wayPoints);
 
-        for (const i in segments) {
-            const segment = segments[i];
-            if (!segment || segment.length < 2 || !segment[0] || !segment[1]) {
-                console.warn("[3DuF] Connection render skipped a malformed segment", segment);
-                continue;
+            for (const i in segments) {
+                const segment = segments[i];
+                if (!segment || segment.length < 2 || !segment[0] || !segment[1]) {
+                    console.warn("[3DuF] Connection render skipped a malformed segment", segment);
+                    continue;
+                }
+                p1 = segment[0];
+                p2 = segment[1];
+                // A zero-length segment is a degenerate rectangle. paper.js still
+                // rasterizes it as a speck that survives some zoom levels.
+                if (Number(p1[0]) === Number(p2[0]) && Number(p1[1]) === Number(p2[1])) {
+                    continue;
+                }
+                startpoint = new paper.Point(p1[0], p1[1]);
+                endpoint = new paper.Point(p2[0], p2[1]);
+                const startKey = this.__pointKey(p1);
+                const endKey = this.__pointKey(p2);
+                // Rounded: stadium caps at terminals and corners.
+                const startCap = capAt.has(startKey);
+                const endCap = capAt.has(endKey);
+                this.__drawStraightConnection(
+                    connectionpath,
+                    startpoint,
+                    endpoint,
+                    channelWidth,
+                    true,
+                    startCap,
+                    endCap
+                );
             }
-            p1 = segment[0];
-            p2 = segment[1];
-            // A zero-length segment is a degenerate rectangle. paper.js still
-            // rasterizes it as a speck that survives some zoom levels.
-            if (Number(p1[0]) === Number(p2[0]) && Number(p1[1]) === Number(p2[1])) {
-                continue;
-            }
-            startpoint = new paper.Point(p1[0], p1[1]);
-            endpoint = new paper.Point(p2[0], p2[1]);
-            const startKey = this.__pointKey(p1);
-            const endKey = this.__pointKey(p2);
-            // Rounded: stadium caps at terminals and corners. Square: flat end
-            // faces on the centerline only — no separate tip-square children.
-            const startCap = roundedProfile ? capAt.has(startKey) : false;
-            const endCap = roundedProfile ? capAt.has(endKey) : false;
-            this.__drawStraightConnection(
-                connectionpath,
-                startpoint,
-                endpoint,
-                channelWidth,
-                roundedProfile,
-                startCap,
-                endCap
-            );
+
+            // Rounded stadiums add a circle at every endpoint. A 90° outer
+            // corner is also filled square so the joint stays sharp. Other
+            // angles keep only the circle — an axis-aligned square there
+            // sticks out past the walls.
+            this.__fillSquareChannelCorners(connectionpath, segments, channelWidth);
         }
-
-        // Square segments stop on the centerline, so a 90° turn leaves a
-        // channelWidth/2 hole on the outer corner. Rounded stadiums add a
-        // circle at every endpoint; CompoundPath defaults to even-odd, so
-        // two coincident joint circles cancel and reopen that same hole.
-        // Fill every orthogonal joint and keep a nonzero winding so the
-        // outermost mux bend stays connected.
-        this.__fillSquareChannelCorners(connectionpath, segments, channelWidth);
         connectionpath.fillRule = "nonzero";
         connectionpath.fillColor = color;
         return connectionpath;
@@ -205,6 +210,26 @@ export default class Connection extends Template {
         return capAt;
     }
 
+    __drawSquareChannelRuns(
+        compoundpath: paper.CompoundPath,
+        segments: Array<[[number, number], [number, number]]>,
+        channelWidth: number
+    ): void {
+        const runs = contiguousCenterlines(segments);
+        for (const run of runs) {
+            const outline = squareChannelOutline(run, channelWidth);
+            if (outline.length < 3) {
+                continue;
+            }
+            const path = new paper.Path();
+            for (const point of outline) {
+                path.add(new paper.Point(point[0], point[1]));
+            }
+            path.closed = true;
+            compoundpath.addChild(path);
+        }
+    }
+
     __fillSquareChannelCorners(
         compoundpath: paper.CompoundPath,
         segments: Array<[[number, number], [number, number]]>,
@@ -232,11 +257,22 @@ export default class Connection extends Template {
         for (let i = 1; i < nonzero.length; i++) {
             const prev = nonzero[i - 1];
             const next = nonzero[i];
-            const d0x = Math.sign(prev[1][0] - prev[0][0]);
-            const d0y = Math.sign(prev[1][1] - prev[0][1]);
-            const d1x = Math.sign(next[1][0] - next[0][0]);
-            const d1y = Math.sign(next[1][1] - next[0][1]);
-            if (d0x === d1x && d0y === d1y) {
+            if (Math.hypot(prev[1][0] - next[0][0], prev[1][1] - next[0][1]) > 0.5) {
+                continue;
+            }
+            const d0x = prev[1][0] - prev[0][0];
+            const d0y = prev[1][1] - prev[0][1];
+            const d1x = next[1][0] - next[0][0];
+            const d1y = next[1][1] - next[0][1];
+            const len0 = Math.hypot(d0x, d0y);
+            const len1 = Math.hypot(d1x, d1y);
+            if (len0 < 1e-6 || len1 < 1e-6) {
+                continue;
+            }
+            const deflection = Math.atan2(d0x * d1y - d0y * d1x, d0x * d1x + d0y * d1y);
+            // Only a right angle. A square at a shallow bend is the nub
+            // that sticks out past the channel wall.
+            if (Math.abs(Math.abs(deflection) - Math.PI / 2) > (8 * Math.PI) / 180) {
                 continue;
             }
             const joint = next[0];
